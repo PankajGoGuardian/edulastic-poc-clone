@@ -46,7 +46,8 @@ const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: "Group 1" /* For now, auto-generated. */,
   items: [],
-  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
+  index: 0
 };
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === "sectionLabel" ? "resource" : "question",
@@ -59,21 +60,22 @@ export const createWidget = ({ id, type, title }) => ({
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
   return produce(itemGroups, itemGroups => {
     for (const itemGroup of itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC)
+      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+        const isLimitedDeliveryType = itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED;
+        //For delivery type:LIMITED scoring should be as how item level scoring works
         itemGroup.items = itemGroup.items.map(o => ({
           itemId: o._id,
-          maxScore: scoring[o._id] || helpers.getPoints(o),
-          questions: o.data ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o)) : {}
+          maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
+          questions: o.data
+            ? helpers.getQuestionLevelScore(
+                { ...o, isLimitedDeliveryType },
+                o.data.questions,
+                helpers.getPoints(o),
+                scoring[o._id]
+              )
+            : {}
         }));
-      else itemGroup.items = [];
-    }
-  });
-};
-
-const transformItemGroupsFromMongoToUI = (itemGroups, oldItemGroups) => {
-  return produce(itemGroups, itemGroups => {
-    for (const [index, itemGroup] of itemGroups.entries()) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT) itemGroup.items = oldItemGroups[index].items;
+      } else itemGroup.items = [];
     }
   });
 };
@@ -401,7 +403,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       const { itemGroups, scoring: score, ...entity } = payload.entity;
       return {
         ...state,
-        entity: { ...state.entity, ...entity },
+        entity: {
+          ...state.entity,
+          ...entity,
+          itemGroups: state.entity.itemGroups.map((group, i) => ({ ...group, _id: itemGroups[i]._id }))
+        },
         createdItems: [],
         error: null,
         updated: false,
@@ -411,7 +417,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       const { itemGroups, scoring, ...dataRest } = payload.entity;
       return {
         ...state,
-        entity: { ...state.entity, ...dataRest },
+        entity: {
+          ...state.entity,
+          ...dataRest,
+          itemGroups: state.entity.itemGroups.map((group, i) => ({ ...group, _id: itemGroups[i]._id }))
+        },
         error: null,
         updated: false
       };
@@ -715,7 +725,6 @@ function* createTest(data) {
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
   let entity = yield call(testsApi.create, dataToSend);
-  data.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, data.itemGroups);
   entity = { ...entity, ...data };
   yield put({
     type: UPDATE_ENTITY_DATA,
@@ -789,7 +798,6 @@ function* updateTestSaga({ payload }) {
     payload.data.itemGroups = transformItemGroupsUIToMongo(payload.data.itemGroups, scoring);
 
     const entity = yield call(testsApi.update, payload);
-    entity.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, payload.data.itemGroups);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
 
@@ -1082,8 +1090,6 @@ function* setTestDataAndUpdateSaga(payload) {
       });
       testObj = omit(testObj, ["passages"]); // not accepted by backend validator (testSchema) EV-10685
       const entity = yield call(testsApi.create, testObj);
-
-      entity.itemGroups = transformItemGroupsFromMongoToUI(entity.itemGroups, newTest.itemGroups);
 
       yield put({
         type: UPDATE_ENTITY_DATA,
@@ -1459,9 +1465,30 @@ export const getSelectedTestItemsSelector = createSelector(
   test => test.itemGroups.flatMap(itemGroup => itemGroup.items || []) || []
 );
 
-export const getTestItemsSelector = createSelector(
+export const getItemGroupsSelector = createSelector(
   getTestEntitySelector,
-  test => test.itemGroups.flatMap(itemGroup => itemGroup.items || []) || []
+  test => test.itemGroups || []
+);
+
+export const getTestItemsSelector = createSelector(
+  getItemGroupsSelector,
+  itemGroups =>
+    itemGroups.flatMap(
+      itemGroup =>
+        itemGroup.items.map(item => ({
+          ...item,
+          isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED
+        })) || []
+    ) || []
+);
+
+export const getDisableAnswerOnPaperSelector = createSelector(
+  getTestEntitySelector,
+  test =>
+    //disable answer on paper feature for deliveryType:LIMITED or group.type:AUTOSELECT
+    test.itemGroups.some(
+      group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED || group.type === ITEM_GROUP_TYPES.AUTOSELECT
+    )
 );
 
 export const getCurentTestPassagesSelector = createSelector(

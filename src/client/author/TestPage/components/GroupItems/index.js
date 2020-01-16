@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
-import _ from "lodash";
+import { isEqual, pick, maxBy } from "lodash";
 import { withRouter } from "react-router-dom";
 import {
   Container,
@@ -36,7 +36,9 @@ import {
   addNewGroupAction,
   getAllTagsAction,
   getAllTagsSelector,
-  deleteItemsGroupAction
+  deleteItemsGroupAction,
+  getTestEntitySelector,
+  setTestDataAction
 } from "../../ducks";
 import { removeTestItemsAction } from "../AddItems/ducks";
 import selectsData from "../common/selectsData";
@@ -75,7 +77,9 @@ const GroupItems = ({
   curriculums,
   alignment,
   removeTestItems,
-  deleteItemsGroup
+  deleteItemsGroup,
+  entity,
+  setTestData
 }) => {
   const { Panel } = Collapse;
 
@@ -121,7 +125,8 @@ const GroupItems = ({
     type: ITEM_GROUP_TYPES.STATIC,
     groupName: `Group ${groupIndex}`,
     items: [],
-    deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL
+    deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
+    index: 0
   };
 
   const breadcrumbData = [
@@ -167,7 +172,7 @@ const GroupItems = ({
         )
       )
         extraPick = ["deliverItemsCount"];
-      updatedGroupData = _.pick(updatedGroupData, ["type", "groupName", "items", "deliveryType", ...extraPick]);
+      updatedGroupData = pick(updatedGroupData, ["type", "groupName", "items", "deliveryType", ...extraPick]);
     }
     setEditGroupDetails(updatedGroupData);
   };
@@ -218,10 +223,11 @@ const GroupItems = ({
     if (test.itemGroups.length === 15) {
       return message.warning("Cannot create more than 15 groups");
     }
-    const groupName = `Group ${parseInt(_.last(test.itemGroups).groupName.split(" ")[1]) + 1}`;
+    const { index } = maxBy(test.itemGroups, "index");
     const data = {
       ...deafultGroupData,
-      groupName
+      groupName: `Group ${index + 2}`,
+      index: index + 1
     };
     addNewGroup(data);
     setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()]);
@@ -273,7 +279,7 @@ const GroupItems = ({
   };
 
   const searchCurriculumStandards = searchObject => {
-    if (!_.isEqual(searchProps, searchObject)) {
+    if (!isEqual(searchProps, searchObject)) {
       setSearchProps(searchObject);
       getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
     }
@@ -401,6 +407,19 @@ const GroupItems = ({
       updatedGroupData = { ...updatedGroupData, items };
     } else if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC && oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT) {
       updatedGroupData = { ...updatedGroupData, items: [] };
+    }
+    if (
+      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+      updatedGroupData.items.some(item => item.itemLevelScoring === false)
+    ) {
+      return message.warn("All items inside LIMITED delivery type group should have item level scoring.");
+    }
+    const disableAnswerOnPaper =
+      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED ||
+      updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT;
+    if (entity.answerOnPaper && disableAnswerOnPaper) {
+      setTestData({ answerOnPaper: false });
+      message.warn("Answer on paper is not supported for AUTOSELECT groups or group with LIMITED delivery type");
     }
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex });
     setCurrentGroupIndex(null);
@@ -713,7 +732,8 @@ const enhance = compose(
       curriculumStandards: getStandardsListSelector(state),
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculums: getCurriculumsListSelector(state),
-      alignment: getDictionariesAlignmentsSelector(state)
+      alignment: getDictionariesAlignmentsSelector(state),
+      entity: getTestEntitySelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -722,7 +742,8 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       removeTestItems: removeTestItemsAction,
-      deleteItemsGroup: deleteItemsGroupAction
+      deleteItemsGroup: deleteItemsGroupAction,
+      setTestData: setTestDataAction
     }
   )
 );

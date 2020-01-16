@@ -26,6 +26,7 @@ import PeformanceBand from "../../../TestPage/components/Setting/components/Main
 
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
+import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -54,7 +55,8 @@ const Settings = ({
   userRole,
   isDocBased,
   forClassLevel = false,
-  showTestTypeOption = false
+  showTestTypeOption = false,
+  disableAnswerOnPaper
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -89,6 +91,9 @@ const Settings = ({
   };
   const overRideSettings = (key, value) => {
     if ((key === "maxAnswerChecks" || key === "maxAttempts") && value < 0) value = 0;
+    if (key === "answerOnPaper" && value && disableAnswerOnPaper) {
+      return message.error("Answer on paper not suppported for this test");
+    }
     const newSettingsState = {
       ...assignmentSettings,
       [key]: value
@@ -367,7 +372,7 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignSwitchRight
-                disabled={forClassLevel}
+                disabled={forClassLevel || disableAnswerOnPaper}
                 size="small"
                 defaultChecked={answerOnPaper}
                 onChange={value => overRideSettings("answerOnPaper", value)}
@@ -568,7 +573,8 @@ const Settings = ({
 
 export default connect(
   state => ({
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state)
   }),
   null
 )(Settings);

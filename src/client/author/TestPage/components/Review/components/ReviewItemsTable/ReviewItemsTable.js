@@ -97,10 +97,12 @@ const ItemsTable = ({
 
   const data = items.map((item, i) => {
     const isScoringDisabled =
-      (!!item?.data?.questions?.find(q => q.rubrics) && gradingRubricsFeature) || item.autoselectedItem;
+      (!!item?.data?.questions?.find(q => q.rubrics) && gradingRubricsFeature) ||
+      item.autoselectedItem ||
+      item.isLimitedDeliveryType;
     const main = {
       id: item._id,
-      points: scoring[item._id] || helpers.getPoints(item),
+      points: item.isLimitedDeliveryType ? 1 : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
       isScoringDisabled
     };

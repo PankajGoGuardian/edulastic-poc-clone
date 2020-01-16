@@ -215,7 +215,8 @@ const List = SortableContainer(
             }}
             isScoringDisabled={
               (!!testItems[i].data.questions.find(q => q.rubrics) && gradingRubricsFeature) ||
-              testItems[i].autoselectedItem
+              testItems[i].autoselectedItem ||
+              testItems[i].isLimitedDeliveryType
             }
             index={i}
             owner={owner}

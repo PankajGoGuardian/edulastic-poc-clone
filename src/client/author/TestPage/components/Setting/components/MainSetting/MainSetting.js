@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
+import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox, message } from "antd";
 
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
@@ -13,7 +13,8 @@ import {
   getTestEntitySelector,
   defaultTestTypeProfilesSelector,
   testTypeAsProfileNameType,
-  getReleaseScorePremiumSelector
+  getReleaseScorePremiumSelector,
+  getDisableAnswerOnPaperSelector
 } from "../../../../ducks";
 import UiTime from "../UiTime/UiTime";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
@@ -143,7 +144,8 @@ class MainSetting extends Component {
       performanceBandsData,
       standardsData,
       defaultTestTypeProfiles,
-      isReleaseScorePremium
+      isReleaseScorePremium,
+      disableAnswerOnPaper
     } = this.props;
     switch (key) {
       case "testType":
@@ -211,6 +213,10 @@ class MainSetting extends Component {
           });
         }
         break;
+      case "answerOnPaper":
+        if (value === true && disableAnswerOnPaper) {
+          return message.error("Answer on paper not suppported for this test");
+        }
     }
     setTestData({
       [key]: value
@@ -252,7 +258,8 @@ class MainSetting extends Component {
       features,
       isEditable,
       sebPasswordRef,
-      windowScrollTop
+      windowScrollTop,
+      disableAnswerOnPaper
     } = this.props;
 
     const {
@@ -554,7 +561,7 @@ class MainSetting extends Component {
                 <Title>Answer on Paper</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || !isEditable}
+                    disabled={!owner || !isEditable || disableAnswerOnPaper}
                     defaultChecked={answerOnPaper}
                     onChange={this.updateTestData("answerOnPaper")}
                   />
@@ -908,7 +915,8 @@ export default connect(
     defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
     standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
     performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
-    isReleaseScorePremium: getReleaseScorePremiumSelector(state)
+    isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

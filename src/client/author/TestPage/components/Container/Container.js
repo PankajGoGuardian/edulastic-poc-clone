@@ -65,7 +65,12 @@ import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 const { getDefaultImage } = testsApi;
-const { statusConstants, releaseGradeLabels, passwordPolicy: passwordPolicyValues } = testContants;
+const {
+  statusConstants,
+  releaseGradeLabels,
+  passwordPolicy: passwordPolicyValues,
+  ITEM_GROUP_DELIVERY_TYPES
+} = testContants;
 
 class Container extends PureComponent {
   propTypes = {
@@ -520,6 +525,16 @@ class Container extends PureComponent {
     if ((userFeatures.isPublisherAuthor || userFeatures.isCurator) && test.collections?.length === 0) {
       message.error("Test is not associated with any collection.");
       return false;
+    }
+    // for itemGroup with limted delivery type should not contain items with question level scoring
+    for (const itemGroup in test.itemGroups) {
+      if (
+        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+        itemGroup.items.some(item => item.itemLevelScoring === false)
+      ) {
+        message.error(`${itemGroup.name} contains items with question level scoring.`);
+        return false;
+      }
     }
 
     return true;

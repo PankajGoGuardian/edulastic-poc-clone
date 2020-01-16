@@ -56,7 +56,7 @@ import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 
-const { ITEM_GROUP_TYPES } = testContants;
+const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
 // render single item
 class Item extends Component {
@@ -239,15 +239,20 @@ class Item extends Component {
     this.setState({ selectedId: "" });
   };
 
-  handleAddRemove = (item, isAddOrRemove) => {
+  handleAddRemove = (item, isAdd) => {
     const {
       test: { itemGroups },
       setCurrentGroupIndex
     } = this.props;
     const staticGroups = itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC);
-    if (isAddOrRemove) {
+    if (isAdd) {
       if (staticGroups.length === 1) {
         const index = itemGroups.findIndex(g => g.groupName === staticGroups[0].groupName);
+        if (itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && item.itemLevelScoring === false) {
+          return message.warning(
+            "This item can not be added to group with limited delivery type as it has question level scoring"
+          );
+        }
         setCurrentGroupIndex(index);
         this.handleSelection(item);
       } else if (staticGroups.length > 1) {
@@ -261,7 +266,20 @@ class Item extends Component {
   };
 
   handleSelectGroupModalResponse = index => {
-    const { item, setCurrentGroupIndex } = this.props;
+    const {
+      item,
+      setCurrentGroupIndex,
+      test: { itemGroups }
+    } = this.props;
+    if (
+      itemGroups[index]?.type === ITEM_GROUP_TYPES.STATIC &&
+      itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+      item.itemLevelScoring === false
+    ) {
+      return message.warning(
+        "This item can not be added to group with limited delivery type as it has question level scoring"
+      );
+    }
     if (index || index === 0) {
       setCurrentGroupIndex(index);
       this.handleSelection(item);

@@ -176,12 +176,6 @@ function* loadTest({ payload }) {
       let allEvaluation = {};
 
       const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
-      // if questions are shuffled !!!
-      if (activity.shuffleQuestions) {
-        const itemsByKey = _keyBy(testItems, "_id");
-        testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
-      }
-
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
       const bookmarks = {};

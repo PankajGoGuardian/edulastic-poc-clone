@@ -318,7 +318,7 @@ class SimpleOptions extends React.Component {
           >
             <TestTypeSelector
               userRole={userRole}
-              testType={testSettings.testType}
+              testType={assignment.testType || testSettings.testType}
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>

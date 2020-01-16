@@ -20,10 +20,8 @@ const TestTypeSelector = ({
     [PRACTICE]: isAdmin ? "Practice" : "Practice Assessment"
   };
 
-  const valueProps = disabled ? { value: testType } : { defaultValue: testType };
-
   const SelectOption = (
-    <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} {...valueProps} disabled={disabled}>
+    <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
       {isAdmin && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment

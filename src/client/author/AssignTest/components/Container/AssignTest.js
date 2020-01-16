@@ -96,6 +96,7 @@ class AssignTest extends React.Component {
       page: 1,
       limit: 1000
     });
+    const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.setState(prevState => ({
@@ -104,20 +105,25 @@ class AssignTest extends React.Component {
           playlistId: match.params.playlistId,
           playlistModuleId: match.params.moduleId,
           testId: match.params.testId,
-          openPolicy: userRole === "district-admin" ? "Open Manually by Teacher" : prevState.assignment.openPolicy,
-          closePolicy: userRole === "district-admin" ? "Close Manually by Admin" : prevState.assignment.closePolicy
+          openPolicy: isAdmin
+            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+            : prevState.assignment.openPolicy,
+          closePolicy: isAdmin
+            ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
+            : prevState.assignment.closePolicy,
+          testType: isAdmin ? COMMON : ASSESSMENT
         }
       }));
     } else {
-      if (userRole === "district-admin" || userRole === "school-admin") {
-        this.setState(prevState => ({
-          assignment: {
-            ...prevState.assignment,
-            testType: COMMON,
-            openPolicy: "Open Manually by Teacher"
-          }
-        }));
-      }
+      this.setState(prevState => ({
+        assignment: {
+          ...prevState.assignment,
+          testType: isAdmin ? COMMON : ASSESSMENT,
+          openPolicy: isAdmin
+            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+            : prevState.assignment.openPolicy
+        }
+      }));
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);
       }

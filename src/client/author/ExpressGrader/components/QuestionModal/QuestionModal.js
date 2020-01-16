@@ -1,15 +1,15 @@
 import React, { createRef } from "react";
 import PropTypes from "prop-types";
 
-import Question from "../Question/Question";
-import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
-import { submitResponseAction } from "../../ducks";
-import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
-import BottomNavigation from "../BottomNavigation/BottomNavigation";
+import { ScrollContext } from "@edulastic/common";
 import { message } from "antd";
 import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
-import { getTeacherEditedScoreSelector } from "../../ducks";
+import Question from "../Question/Question";
+import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
+import { submitResponseAction, getTeacherEditedScoreSelector } from "../../ducks";
+import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
+import BottomNavigation from "../BottomNavigation/BottomNavigation";
 
 const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} ref={ref} />);
 
@@ -26,6 +26,7 @@ class QuestionModal extends React.Component {
       maxStudents: null,
       editResponse: false
     };
+    this.containerRef = createRef();
   }
 
   componentDidMount() {
@@ -208,17 +209,19 @@ class QuestionModal extends React.Component {
       >
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <QuestionWrapper style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}>
-              <Question
-                record={question}
-                key={question.id}
-                qIndex={colIndex}
-                student={student}
-                isPresentationMode={isPresentationMode}
-                editResponse={editResponse}
-                studentResponseLoading={studentResponseLoading}
-              />
-            </QuestionWrapper>
+            <ScrollContext.Provider value={{ getScrollElement: () => this.containerRef?.current }}>
+              <QuestionWrapper ref={this.containerRef} style={{ marginBottom: windowWidth > 1024 ? "66px" : "99px" }}>
+                <Question
+                  record={question}
+                  key={question.id}
+                  qIndex={colIndex}
+                  student={student}
+                  isPresentationMode={isPresentationMode}
+                  editResponse={editResponse}
+                  studentResponseLoading={studentResponseLoading}
+                />
+              </QuestionWrapper>
+            </ScrollContext.Provider>
             <BottomNavigationWrapper>
               <BottomNavigation
                 hideModal={this.hideModal}

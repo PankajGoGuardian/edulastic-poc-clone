@@ -22,6 +22,8 @@ class DragDropValues extends Component {
     onDrawDragDropValue(value, d.x - containerWidth - margin + width / 2, d.y - margin + valueHeight / 2);
   };
 
+  scrollHandler = e => e.preventDefault();
+
   render() {
     const { values, width, height, valueHeight, dragDropBoundsClassName, scale } = this.props;
     const containerStyle = {
@@ -43,8 +45,19 @@ class DragDropValues extends Component {
                 key={value.id}
                 position={position}
                 size={size}
-                onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value)}
-                onDrag={(e, d) => this.handleDragDropValue(d, value)}
+                onDragStop={(evt, d) => {
+                  if (window.isIOS) {
+                    document.body.removeEventListener("touchmove", this.scrollHandler);
+                  }
+                  this.handleDragDropValuePosition(d, value);
+                }}
+                onDrag={(e, d) => {
+                  if (window.isIOS) {
+                    document.body.addEventListener("touchmove", this.scrollHandler, { passive: false });
+                    document.body.scrollTop = 0;
+                  }
+                  this.handleDragDropValue(d, value);
+                }}
                 style={{ zIndex: 10 }}
                 disableDragging={false}
                 enableResizing={false}

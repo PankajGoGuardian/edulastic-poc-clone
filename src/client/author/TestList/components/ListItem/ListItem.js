@@ -123,7 +123,7 @@ class ListItem extends Component {
     const {
       item: {
         title,
-        analytics,
+        analytics = [],
         tags = [],
         _source,
         _id: testId,
@@ -146,13 +146,13 @@ class ListItem extends Component {
       handleCheckboxAction,
       checked,
       moduleTitle,
-      likes = analytics ? analytics[0].likes : "0",
-      usage = analytics ? analytics[0].usage : "0",
       selectedTests = [],
       onRemoveFromCart,
       onAddToCart,
       t
     } = this.props;
+    const likes = analytics?.[0]?.likes || "0";
+    const usage = analytics?.[0]?.usage || "0";
     const standardsIdentifiers = standards.map(item => item.identifier);
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;

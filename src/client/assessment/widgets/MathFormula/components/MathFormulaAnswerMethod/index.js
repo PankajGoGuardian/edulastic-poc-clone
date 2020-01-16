@@ -300,7 +300,7 @@ const MathFormulaAnswerMethod = ({
         case "interpretAsInterval":
           return (
             <CheckOption
-              dataCy="answer-set-evaluation"
+              dataCy="answer-set-Interval"
               optionKey="interpretAsInterval"
               options={options}
               onChange={changeOptions}
@@ -310,7 +310,7 @@ const MathFormulaAnswerMethod = ({
         case "interpretAsNumber":
           return (
             <CheckOption
-              dataCy="answer-set-evaluation"
+              dataCy="answer-set-Number"
               optionKey="interpretAsNumber"
               options={options}
               onChange={changeOptions}

@@ -391,14 +391,14 @@
     },
     {
       "name": "literal:inverseResult: simple fraction vs. decimal",
-      "attempt": "\\frac1{enter}1{downarrow}2",
+      "attempt": "\\frac{enter}1{downarrow}2",
       "options": { "inverseResult": true },
       "input": "0.5",
       "evaluation": true
     },
     {
       "name": "literal:inverseResult: fraction instead of number",
-      "attempt": "\\frac1{enter}4{downarrow}2",
+      "attempt": "\\frac{enter}4{downarrow}2",
       "options": { "inverseResult": true },
       "input": "2",
       "evaluation": true
@@ -536,343 +536,585 @@
   "equivSymbolic": [
     {
       "name": "symbolic: addition and multiplication non-associativity",
-      "attempt": "x+y*z",
+      "input": "x+y*z",
       "options": {},
-      "input": "(x+y) \\times{enter} z",
+      "attempt": "(x+y) \\times{enter} z",
       "evaluation": false
     },
     {
       "name": "symbolic: fraction with missing closing '}'",
-      "attempt": "\\frac{enter}{{}1{}}{downarrow}{{}10",
+      "input": "\\frac{enter}{{}1{}}{downarrow}{{}10",
       "options": {},
-      "input": "0.1",
+      "attempt": "0.1",
       "evaluation": false
     },
     {
       "name": "symbolic: simple fraction vs. decimal",
-      "attempt": "\\frac{enter}1{downarrow}10",
+      "input": "\\frac{enter}1{downarrow}10",
       "options": {},
-      "input": "0.1",
+      "attempt": "0.1",
       "evaluation": true
     },
     {
       "name": "symbolic:setDecimalSeparator=',': percent conversion",
-      "attempt": "10,1%",
+      "input": "10,1%",
       "options": { "setDecimalSeparator": "," },
-      "input": "0,101",
+      "attempt": "0,101",
       "evaluation": true
     },
     {
       "name": "symbolic:setDecimalSeparator=',': enumeration",
-      "attempt": "1, 2, 3",
-      "options": { "setDecimalSeparator": "," },
       "input": "1, 2, 3",
+      "options": { "setDecimalSeparator": "," },
+      "attempt": "1, 2, 3",
       "evaluation": false
     },
     {
       "name": "symbolic:setThousandsSeparator=[',']': simple fraction vs. decimal",
-      "attempt": "\\frac{enter}1{downarrow}1,000",
+      "input": "\\frac{enter}1{downarrow}1,000",
       "options": { "setThousandsSeparator": "," },
-      "input": "0.001",
+      "attempt": "0.001",
       "evaluation": true
     },
     {
       "name": "symbolic:compareSides: percent conversion",
-      "attempt": "30%+4.2=4.5",
+      "input": "30%+4.2=4.5",
       "options": { "compareSides": true },
-      "input": "0.3 + 4.2 = 4.5",
+      "attempt": "0.3 + 4.2 = 4.5",
       "evaluation": true
     },
     {
       "name": "symbolic:compareSides: wrong expression",
-      "attempt": "3+3=7",
+      "input": "3+3=7",
       "options": { "compareSides": true },
-      "input": "4 + 3 = 7",
+      "attempt": "4 + 3 = 7",
       "evaluation": false
     },
     {
       "name": "syntax:isMixedFraction with \frac and space",
-      "attempt": "1 \\frac{enter}1{downarrow}2",
-      "options": { "isMixedFraction": true },
       "input": "1 \\frac{enter}1{downarrow}2",
+      "options": { "isMixedFraction": true },
+      "attempt": "1 \\frac{enter}1{downarrow}2",
       "evaluation": true
     },
     {
       "name": "syntax:isMixedFraction with decimal",
-      "attempt": "1.0\\frac{enter}1{enter}2",
+      "input": "1.0\\frac{enter}1{enter}2",
       "options": { "isMixedFraction": true },
-      "input": "1.0\\frac{enter}1{downarrow}2",
+      "attempt": "1.0\\frac{enter}1{downarrow}2",
       "evaluation": false
     },
 
     {
       "name": "Eulers Number, EV-1087",
-      "attempt": "\\ln{enter}e^x",
+      "input": "\\ln{enter}e^x",
       "options": { "allowEulersNumber": true },
-      "input": "x",
+      "attempt": "x",
       "evaluation": true
     },
     {
       "name": "Eulers Number, EV-1087",
-      "attempt": "\\log{enter}10 + \\ln{enter} e^x {downarrow}= 0",
+      "input": "\\log{enter}10 + \\ln{enter} e^x {downarrow}= 0",
       "options": { "allowEulersNumber": true },
-      "input": "1 = -x",
+      "attempt": "1 = -x",
       "evaluation": true
     },
     {
       "name": "Eulers Number, EV-1087",
-      "attempt": "\\ln{enter} e^x = 1",
+      "input": "\\ln{enter} e^x = 1",
       "options": { "allowEulersNumber": true, "compareSides": true },
-      "input": "x-1 = 0",
+      "attempt": "x-1 = 0",
       "evaluation": false
     },
     {
       "name": "differentiation",
-      "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}e^-x^2",
+      "input": "\\frac{enter}d{downarrow}dx{rightarrow}e^-x^2",
       "options": { "allowEulersNumber": true },
-      "input": "e^-x^2{downarrow}{downarrow}(-2x)",
+      "attempt": "e^-x^2{downarrow}{downarrow}(-2x)",
       "evaluation": true
     },
     {
       "name": "thousands handling as an interval-Error",
-      "attempt": "234,1",
+      "input": "234,1",
       "options": { "interpretAsSet": true },
-      "input": "(1,234)",
+      "attempt": "(1,234)",
       "evaluation": false
     },
     {
       "name": "set with variables interpretAsSet---Error",
-      "attempt": "2,x + 1,3",
+      "input": "2,x + 1,3",
       "options": { "interpretAsSet": true },
-      "input": "(x + 1,2,3)",
+      "attempt": "(x + 1,2,3)",
       "evaluation": true
     },
     {
       "name": "set with hierarchy",
-      "attempt": "(x,y),(w,z)",
+      "input": "(x,y),(w,z)",
       "options": {},
-      "input": "{{}(x,y),(w,z){}}",
+      "attempt": "{{}(x,y),(w,z){}}",
       "evaluation": true
     },
 
     {
       "name": "thousands handling--Error",
-      "attempt": "234,1,567",
+      "input": "234,1,567",
       "options": { "setListTypeResponse": true },
-      "input": "{{}1,234,567{}}",
+      "attempt": "{{}1,234,567{}}",
       "evaluation": false
     },
 
     {
       "name": "thousands handling--Error",
-      "attempt": "234,567,0",
+      "input": "234,567,0",
       "options": { "setListTypeResponse": true },
-      "input": "0,234,567",
+      "attempt": "0,234,567",
       "evaluation": false
     },
     {
       "name": "symbolic:allowInterval",
-      "attempt": "[1, 2)",
-      "options": {},
       "input": "[1, 2)",
+      "options": {},
+      "attempt": "[1, 2)",
       "evaluation": true
     },
     {
       "name": "symbolic:allowInterval",
-      "attempt": "[1.1, 2.2)",
-      "options": {},
       "input": "[1.1, 2.2)",
+      "options": {},
+      "attempt": "[1.1, 2.2)",
       "evaluation": true
     },
     {
       "name": "support dollar as in mathquill",
-      "attempt": "$128",
-      "options": {},
       "input": "$128",
+      "options": {},
+      "attempt": "$128",
       "evaluation": true
     },
 
     {
       "name": "[] default to intervals",
-      "attempt": "(5,4]",
+      "input": "(5,4]",
       "options": {},
-      "input": "[5,4)",
+      "attempt": "[5,4)",
       "evaluation": false
     },
     {
       "name": "() and two elements -> default to intervals",
-      "attempt": "{{}2,3{}}",
+      "input": "{{}2,3{}}",
       "options": {},
-      "input": "(2, 3)",
+      "attempt": "(2, 3)",
       "evaluation": false
     },
     {
       "name": "() and two elements -> default to intervals",
-      "attempt": "(2 , 3 )",
+      "input": "(2 , 3 )",
       "options": {},
-      "input": "(  2  ,  3  )",
+      "attempt": "(  2  ,  3  )",
       "evaluation": true
     },
     {
       "name": "three intervals set",
-      "attempt": "(3,4),(2,3)",
+      "input": "(3,4),(2,3)",
       "options": {},
-      "input": "{{}(2,3),(3,4),(-1,0){}}",
+      "attempt": "{{}(2,3),(3,4),(-1,0){}}",
       "evaluation": false
     },
     {
       "name": "three intervals set",
-      "attempt": "(-1,0),(3,4),(2,3)",
+      "input": "(-1,0),(3,4),(2,3)",
       "options": {},
-      "input": "{{}(2,3),(3,4),(-1,0){}}",
+      "attempt": "{{}(2,3),(3,4),(-1,0){}}",
       "evaluation": true
     },
     {
       "name": "three intervals set",
-      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "input": "(0,1),(-1,0],(3,4),(2,3)",
       "options": {},
-      "input": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
+      "attempt": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
       "evaluation": true
     },
     {
       "name": "three intervals set",
-      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "input": "(0,1),(-1,0],(3,4),(2,3)",
       "options": {},
-      "input": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
+      "attempt": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
       "evaluation": true
     },
     {
       "name": "symbolic isExpanded: simple polynomial==Error",
-      "attempt": "x^2{downarrow}+3x",
-      "options": { "isExpanded": true },
       "input": "x^2{downarrow}+3x",
+      "options": { "isExpanded": true },
+      "attempt": "x^2{downarrow}+3x",
       "evaluation": true
     },
     {
       "name": "not to automatically multiple a pair of numbers separated by space",
-      "attempt": "3 2 1",
+      "input": "3 2 1",
       "options": {},
-      "input": "6",
+      "attempt": "6",
       "evaluation": false
     },
     {
       "name": "default",
-      "attempt": "4\\cdot{enter}(94/100{rightarrow})^x",
+      "input": "4\\cdot{enter}(94/100{rightarrow})^x",
       "options": { "isSimplified": true },
-      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "attempt": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
       "evaluation": false
     },
     {
       "name": "default",
-      "attempt": "4\\cdot{enter}(47/50{rightarrow})^x",
+      "input": "4\\cdot{enter}(47/50{rightarrow})^x",
       "options": { "isSimplified": true },
-      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "attempt": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
       "evaluation": true
     },
     {
       "name": "Simplification with paranthesis",
-      "attempt": "x(x+3/12)",
+      "input": "x(x+3/12)",
       "options": { "isSimplified": true },
-      "input": "x^2{downarrow} + x/4",
+      "attempt": "x^2{downarrow} + x/4",
       "evaluation": false
     },
     {
       "name": "Mixed fraction simplification",
-      "attempt": "7/4",
+      "input": "7/4",
       "options": { "isSimplified": true, "isMixedFraction": true },
-      "input": "1\\frac{enter}3{downarrow}/4",
+      "attempt": "1\\frac{enter}3{downarrow}/4",
       "evaluation": false
     },
     {
       "name": "support of le and ge",
-      "attempt": "y > x",
-      "options": {},
       "input": "y > x",
+      "options": {},
+      "attempt": "y > x",
       "evaluation": true
     },
 
     {
       "name": "symbolic;isSimplified==Error",
-      "attempt": "3x+y",
+      "input": "3x+y",
       "options": { "isSimplified": true },
-      "input": "x+x+x+y",
+      "attempt": "x+x+x+y",
       "evaluation": false
     },
     {
       "name": "''isRationalized 15'",
-      "attempt": "2/\\sqrt{enter}9",
+      "input": "2/\\sqrt{enter}9",
       "options": { "isRationalized": true },
-      "input": "2/3",
+      "attempt": "2/3",
       "evaluation": false
     },
     {
       "name": "''isRationalized 21b'",
-      "attempt": "2/5",
-      "options": { "isRationalized": true, "inverseResult": true },
       "input": "2/5",
+      "options": { "isRationalized": true, "inverseResult": true },
+      "attempt": "2/5",
       "evaluation": false
     },
     {
       "name": "''isRational in symbolic 31'",
-      "attempt": "1/2",
-      "options": { "isRationalized": true },
       "input": "1/2",
+      "options": { "isRationalized": true },
+      "attempt": "1/2",
       "evaluation": true
     },
     {
       "name": "Mixed fraction simplification different notations",
-      "attempt": "-2\\frac{enter}1{downarrow}2",
+      "input": "-2\\frac{enter}1{downarrow}2",
       "options": {},
-      "input": "-5/2",
+      "attempt": "-5/2",
       "evaluation": true
     },
     {
       "name": "symbolic",
-      "attempt": "2\\frac{enter}1{downarrow}2",
+      "input": "2\\frac{enter}1{downarrow}2",
       "options": { "isMixedFraction": true },
-      "input": "\\frac{enter}5{downarrow}2",
+      "attempt": "\\frac{enter}5{downarrow}2",
       "evaluation": true
     },
     {
       "name": "syntax:isMixedFraction with minus in enumerator",
-      "attempt": "1\\frac{enter}-1{downarrow}2",
-      "options": { "isMixedFraction": true },
       "input": "1\\frac{enter}-1{downarrow}2",
+      "options": { "isMixedFraction": true },
+      "attempt": "1\\frac{enter}-1{downarrow}2",
       "evaluation": false
     },
     {
       "name": "syntax:isMixedFraction with 1 1/2",
-      "attempt": "1 1/2",
-      "options": { "isMixedFraction": true },
       "input": "1 1/2",
+      "options": { "isMixedFraction": true },
+      "attempt": "1 1/2",
       "evaluation": true
     },
     {
       "name": "symbolic without compareSides but with equalities: wrong equality that evaluates to True",
-      "attempt": "3+3=6",
+      "input": "3+3=6",
       "options": {},
-      "input": "4 + 3 = 7",
+      "attempt": "4 + 3 = 7",
       "evaluation": true
     },
     {
       "name": "case 2.4",
-      "attempt": "x+1 < y",
+      "input": "x+1 < y",
       "options": { "compareSides": true },
-      "input": "x+1>y",
+      "attempt": "x+1>y",
       "evaluation": false
     },
     {
       "name": "case 1.2 *BUG*",
-      "attempt": "x+1 < y",
+      "input": "x+1 < y",
       "options": {},
-      "input": "x-y+1<0",
+      "attempt": "x-y+1<0",
       "evaluation": true
     },
     {
       "name": "symbolic without compareSides but with equalities: wrong expression and answer",
-      "attempt": "10+1/2",
+      "input": "10+1/2",
       "options": {},
-      "input": "10.5",
+      "attempt": "10.5",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:isSimplified",
+      "input": "\\frac{enter}3{downarrow}6",
+      "options": { "isSimplified": true },
+      "attempt": "\\frac{enter}1{downarrow}2",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic: fraction with missing closing '}'",
+      "input": "\\frac{enter}{{}1{}}{downarrow}{{}10",
+      "options": {},
+      "attempt": "0.1",
+      "evaluation": false
+    },
+    {
+      "name": "inequality support",
+      "input": "y=x",
+      "options": {},
+      "attempt": "y>x",
+      "evaluation": false
+    },
+    {
+      "name": "inequality support",
+      "input": "y<x+3",
+      "options": {
+        "compareSides": true
+      },
+      "attempt": "y=x+3",
+      "evaluation": false
+    },
+    {
+      "name": "circ is an alternative for degree",
+      "input": "128^\\circ{enter}",
+      "options": {},
+      "attempt": "128^\\circ{enter}",
+      "evaluation": true
+    },
+    {
+      "name": "fraction test",
+      "input": "\\frac3{downarrow}5",
+      "options": {},
+      "attempt": "6/10",
+      "evaluation": true
+    },
+    {
+      "name": "reversing inequality",
+      "input": "y<x",
+      "options": {},
+      "attempt": "y>x",
+      "evaluation": false
+    },
+    {
+      "name": "differentiation",
+      "input": "\\frac{enter}(x+2)-(x+1){downarrow}(x+2)^2",
+      "options": {},
+      "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}\\left{enter}\\frac{enter}x+1{downarrow}x+2\\right{enter}",
+      "evaluation": true
+    },
+    {
+      "name": "differentiation",
+      "input": "\\frac{enter}1{downarrow}x^2{downarrow}+4x+4",
+      "options": {},
+      "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}\\left{enter}\\frac{enter}x+1{downarrow}x+2\\right{enter}",
+      "evaluation": true
+    },
+    {
+      "name": "limits",
+      "input": "2/5",
+      "options": {},
+      "attempt": "\\lim_x\\to{enter}\\infty{enter}{rightarrow}\\cfrac{enter}2x^3{downarrow}-x^2{downarrow}+1{downarrow}5x^3{downarrow}+x-8",
+      "evaluation": true
+    },
+    {
+      "name": "limits",
+      "input": "0.4",
+      "options": {},
+      "attempt": "\\lim_x\\to{enter}\\infty{enter}{rightarrow}\\cfrac{enter}2x^3{downarrow}-x^2{downarrow}+1{downarrow}5x^3{downarrow}+x-8",
+      "evaluation": true
+    },
+    {
+      "name": "limits",
+      "input": "+\\infty{enter}",
+      "options": {},
+      "attempt": "\\lim_x\\to{enter}2^+{downarrow}{rightarrow}\\cfrac{enter}-3x+4x^2{downarrow}{downarrow}(-2+x)^7",
+      "evaluation": true
+    },
+    {
+      "name": "integral/primitive",
+      "input": "\\ln{enter}(x)",
+      "options": {},
+      "attempt": "\\int{enter}{rightarrow}{rightarrow} \\frac{enter}1{downarrow}x{rightarrow}dx",
+      "evaluation": true
+    },
+    {
+      "name": "integral/primitive",
+      "input": "\\frac{enter}1{downarrow}2{rightarrow}\\ln{enter}(x^2{downarrow}+1)",
+      "options": {},
+      "attempt": "\\int{enter}{rightarrow}{rightarrow} \\frac{enter}x {downarrow}x^2{downarrow}+1{rightarrow}dx",
+      "evaluation": true
+    },
+    {
+      "name": "integral/primitive",
+      "input": "x(\\ln{enter}(x)-1)",
+      "options": {},
+      "attempt": "\\int{enter}{rightarrow}{rightarrow}\\ln(x)dx",
+      "evaluation": true
+    },
+    {
+      "name": "integral/primitive",
+      "input": "x\\ln{enter}(x)-x",
+      "options": {},
+      "attempt": "\\int{enter}{rightarrow}{rightarrow}\\ln(x)dx",
+      "evaluation": true
+    },
+    {
+      "name": "integral/improper",
+      "input": "1/2",
+      "options": {},
+      "attempt": "\\int_2{uparrow}{uparrow}+\\infty{enter}{rightarrow}\\frac{enter}1 dx{downarrow}x^2",
+      "evaluation": true
+    },
+    {
+      "name": "integral/improper",
+      "input": "0.5",
+      "options": {},
+      "attempt": "\\int_2{uparrow}{uparrow}+\\infty{enter}{rightarrow}\\frac{enter}1 dx{downarrow}x^2",
+      "evaluation": true
+    },
+    {
+      "name": "harmonic series",
+      "input": "\\infty{enter}",
+      "options": {},
+      "attempt": "\\sum_n=1{uparrow}{uparrow}\\infty{enter}{rightarrow} \\frac{enter}1{downarrow}n",
+      "evaluation": true
+    },
+
+    {
+      "name": "EV-5582 latex inequalities",
+      "input": "x \\ge{enter} 12",
+      "options": {},
+      "attempt": "x\\ge{enter} 12",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5582 latex inequalities",
+      "input": "x \\ge{enter} 12",
+      "options": {},
+      "attempt": "x\\geq{enter} 12",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5582 latex inequalities",
+      "input": "x \\leq{enter} 12",
+      "options": {},
+      "attempt": "x\\leq{enter} 12",
+      "evaluation": true
+    },
+    {
+      "name": "EV-5582 latex inequalities",
+      "input": "x \\le{enter} 12",
+      "options": {},
+      "attempt": "x\\leq{enter} 12",
+      "evaluation": true
+    },
+    {
+      "name": "symbolic:setThousandSeparator=['.'],setDecimalSeparator=[',']",
+      "input": "1.000,0",
+      "options": { "setThousandsSeparator": ".", "setDecimalSeparator": "," },
+      "attempt": "1.001,0",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic:setThousandSeparator=[','],setDecimalSeparator=['.']",
+      "input": "1000.50 ",
+      "options": { "setThousandsSeparator": ",", "setDecimalSeparator": "." },
+      "attempt": "1,000.60",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic:setThousandSeparator=[','],setDecimalSeparator=['.']",
+      "input": "1",
+      "options": { "setThousandsSeparator": ".", "setDecimalSeparator": "," },
+      "attempt": "1.000",
+      "evaluation": false
+    },
+    {
+      "name": "symbolic:setThousandSeparator=['.'],setDecimalSeparator=[',']",
+      "input": "1",
+      "options": { "setThousandsSeparator": ",", "setDecimalSeparator": "." },
+      "attempt": "1.000",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "\\left{enter}(\\sqrt{{}\\left{enter}85\\right{enter}{}}{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}\\left{enter}{{}85\\right{enter}{}}{rightarrow},0\\right{enter})",
+      "options": { "interpretAsSet": true },
+      "attempt": "\\left{enter}(\\sqrt{{}\\left{enter}85\\right{enter}{}}{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}\\left{enter}{{}85\\right{enter}{}}{rightarrow},0\\right{enter})",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "\\left{enter}(\\sqrt{enter}85{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}85{rightarrow},0\\right{enter})",
+      "options": { "interpretAsSet": true },
+      "attempt": "\\left{enter}(\\sqrt{enter}85{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}85{rightarrow},0\\right{enter})",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "\\left{enter}(9,0\\right{enter}),\\left{enter}(-9,0\\right{enter})",
+      "options": { "interpretAsSet": true },
+      "attempt": "\\left{enter}(9,0\\right{enter}),\\left{enter}(-9,0\\right{enter})",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "\\left{enter}(85,0\\right{enter}),\\left{enter}(-85,0)",
+      "options": { "interpretAsSet": true },
+      "attempt": "\\left{enter}(85,0\\right{enter}),\\left{enter}(-85,0)",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "y=\\frac{enter}4x{downarrow}81{rightarrow},y=-\\frac{enter}4x{downarrow}81",
+      "options": { "interpretAsSet": true },
+      "attempt": "y=\\frac{enter}4x{downarrow}81{rightarrow},y=-\\frac{enter}4x{downarrow}81",
+      "evaluation": true
+    },
+
+    {
+      "name": "default",
+      "input": "y=\\frac{enter}4{downarrow}81{rightarrow},y=-\\frac{enter}4{downarrow}81",
+      "options": { "interpretAsSet": true },
+      "attempt": "y=\\frac{enter}4{downarrow}81{rightarrow},y=-\\frac{enter}4{downarrow}81",
+      "evaluation": true
+    },
+    {
+      "name": "default",
+      "input": "\\frac{enter}1{downarrow}2{rightarrow},-\\frac{enter}1{downarrow}2",
+      "options": { "interpretAsSet": true },
+      "attempt": "\\frac{enter}1{downarrow}2{rightarrow},-\\frac{enter}1{downarrow}2",
       "evaluation": true
     }
   ],
@@ -1612,7 +1854,6 @@
       "evaluation": true
     }
   ],
-
   "isTrue": [
     {
       "name": "isTrue: 1",

@@ -424,7 +424,7 @@ class MathFormulaEdit {
   setRule = rule => {
     this.getAnswerRuleDropdown()
       .click({ force: true })
-      .then(() => this.getAnswerRuleDropdownByValue(rule).click({ force: true }));
+      .then(() => this.getAnswerRuleDropdownByValue(rule).click());
   };
 
   unCheckAllCheckBoxInAnswers = checkBoxOrder =>

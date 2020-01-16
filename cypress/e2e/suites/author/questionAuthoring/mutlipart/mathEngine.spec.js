@@ -132,14 +132,14 @@ describe("math engine testcase ", () => {
           cy.route("POST", "**/math/evaluate").as("evaluate");
           preview.checkOnCheckAnswer().then(() => {
             cy.wait("@evaluate").then(xhr => {
-              xhr.responseBody.testCase = testCase;
+              xhr.responseBody.testcase = testcase;
               // verify evaluation request
               expect(
                 xhr.status,
                 `verify evaluation status - ${xhr.status} - ${xhr.status === 200 || JSON.stringify(xhr.responseBody)}`
               ).to.eq(200);
 
-              expect(xhr.response.body.correct, `${xhr.responseBody}`).eq(evaluation);
+              expect(xhr.response.body.correct, `${JSON.stringify(xhr.responseBody.testcase)}`).eq(evaluation);
 
               // verify score
               preview.getAntMsg().then($ele => {

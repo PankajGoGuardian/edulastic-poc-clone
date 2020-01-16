@@ -38,7 +38,7 @@ class MathTextDropDown extends MathFormulaEdit {
   // set decimal seperator
   setDecimalSeperator = seperator => {
     const key = seperator === "," ? "Comma" : "Dot";
-    const selector = `[data-cy="answer-set-decimal-separator-dropdown-list${key}"]`;
+    const selector = `[data-cy="answer-set-decimal-separator-dropdown-list-${key}"]`;
 
     cy.get(`[data-cy="answer-set-decimal-separator-dropdown"]`).click({ force: true });
     cy.get(selector).click({ force: true });

@@ -35,6 +35,8 @@ export const optionsAttribute = {
   allowNumericOnly: "answer-allow-numeric-only",
   allowedVariables: "answer-allowed-variables",
   interpretAsSet: "answer-set-evaluation",
+  interpretAsNumber: "answer-set-Number",
+  allowInterval: "answer-set-Interval",
   setListTypeResponse: "answer-list-evaluation",
   isRationalized: "answer-rationalized"
 };

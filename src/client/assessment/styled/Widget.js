@@ -223,4 +223,8 @@ export const WidgetFRInput = styled.div`
 export const StyledPaperWrapper = styled(Paper)`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
   ${({ overflowProps, paddingProps }) => ({ ...overflowProps, ...paddingProps })};
+
+  textarea {
+    user-select: text;
+  }
 `;

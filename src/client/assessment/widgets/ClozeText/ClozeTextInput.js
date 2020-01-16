@@ -117,7 +117,7 @@ ClozeTextInput.propTypes = {
 export default ClozeTextInput;
 
 const CustomInput = styled.div`
-  display: inline-flex;
+  display: inline-block;
   margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);

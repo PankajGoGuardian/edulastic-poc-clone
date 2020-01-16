@@ -269,7 +269,10 @@ const GroupItems = ({
 
   const checkDuplicateGroup = (collectionId, standardId) => {
     const duplicateGroup = test.itemGroups.find(
-      g => g.collectionDetails?._id === collectionId && g.standardDetails?.standardId === standardId
+      (g, index) =>
+        index !== currentGroupIndex &&
+        g.collectionDetails?._id === collectionId &&
+        g.standardDetails?.standardId === standardId
     );
     if (duplicateGroup) {
       message.warning(`The combination already exists in ${duplicateGroup.groupName}`);

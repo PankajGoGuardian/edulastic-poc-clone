@@ -2,9 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { cloneDeep, isNull } from "lodash";
-
 import { math } from "@edulastic/constants";
-import { MathKeyboard } from "@edulastic/common";
 
 import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
@@ -15,13 +13,14 @@ import { CorrectAnswerContainer } from "../../styled/CorrectAnswerContainer";
 
 import { latexKeys } from "./constants";
 
-const { methods } = math;
+const { methods, fields: fieldsConst } = math;
 
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
   value: ""
 };
+const initialOption = {};
 
 class MathFormulaAnswers extends React.Component {
   state = {
@@ -66,6 +65,22 @@ class MathFormulaAnswers extends React.Component {
           ].includes(draft.validation.validResponse.value[index].method)
         ) {
           delete draft.validation.validResponse.value[index].value;
+        }
+
+        if (prop === "method") {
+          if (value === methods.IS_FACTORISED && !initialOption.field) {
+            initialOption.field = fieldsConst.INTEGER;
+          }
+
+          draft.validation.validResponse.value[index].options = initialOption;
+
+          delete draft.allowedVariables;
+
+          if (draft.validation.validResponse.value[index].method === methods.EQUIV_VALUE) {
+            draft.allowNumericOnly = true;
+          } else {
+            delete draft.allowNumericOnly;
+          }
         }
 
         updateVariables(draft, latexKeys);

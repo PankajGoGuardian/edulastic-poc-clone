@@ -42,6 +42,7 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
         onChange={onChangeHandler}
         onBlur={e => {
           onChange(
+            "allowedVariables",
             (e.target.value || "")
               .split(",")
               .filter(el => !!el)

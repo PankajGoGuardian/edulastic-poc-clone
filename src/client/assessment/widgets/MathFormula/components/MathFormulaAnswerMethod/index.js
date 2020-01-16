@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick, get } from "lodash";
+import { get } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
 
@@ -34,11 +34,9 @@ import {
   CustomUnit
 } from "./options";
 
-const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
+const { methods: methodsConst, methodOptions: methodOptionsConst } = math;
 
 const methods = Object.keys(methodsConst);
-
-const clearOptions = (method, options) => pick(options, methodOptionsConst[method]);
 
 const RuleContainer = styled.div`
   max-width: 420px;
@@ -74,18 +72,6 @@ const MathFormulaAnswerMethod = ({
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
-  useEffect(() => {
-    const newOptions = clearOptions(method, { ...options });
-
-    if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
-      newOptions.field = fieldsConst.INTEGER;
-      onChange("options", newOptions);
-    }
-    if (method === methodsConst.EQUIV_VALUE && allowNumericOnly === null) {
-      onChangeAllowedOptions("allowNumericOnly", true);
-    }
-  }, [method]);
-
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,

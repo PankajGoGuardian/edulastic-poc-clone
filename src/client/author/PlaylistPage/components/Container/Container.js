@@ -148,6 +148,12 @@ class Container extends PureComponent {
     setData({ ...test, subjects });
   };
 
+  handleChangeCollection = (value, options) => {
+    const { setData, test } = this.props;
+    const _value = options.map(o => ({ name: o.props.title, _id: o.props.value }));
+    setData({ ...test, collections: _value });
+  };
+
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props;
     saveCurrentEditingTestId(test._id);
@@ -255,6 +261,7 @@ class Container extends PureComponent {
             owner={owner}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            onChangeCollection={this.handleChangeCollection}
             onChangeColor={handleChangeColor}
             textColor={textColor || white}
             isTextColorPickerVisible={isTextColorPickerVisible}

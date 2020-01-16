@@ -65,12 +65,17 @@ const Sidebar = ({
   isBackgroundColorPickerVisible,
   windowWidth,
   isEditable,
-  changePlayListTheme
+  changePlayListTheme,
+  features = {},
+  orgCollections,
+  onChangeCollection,
+  collections = []
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
   const playListTitleInput = createRef();
+  const isPublishers = !!(features.isPublisherAuthor || features.isCurator);
   useEffect(() => {
     if (playListTitleInput.current) {
       playListTitleInput.current.input.focus();
@@ -178,6 +183,30 @@ const Sidebar = ({
               </Select.Option>
             ))}
           </SummarySelect>
+
+          {isPublishers && (
+            <>
+              <MainTitle>Collections</MainTitle>
+              <SummarySelect
+                data-cy="collectionsSelect"
+                mode="multiple"
+                size="large"
+                style={{ width: "100%" }}
+                placeholder="Please select"
+                value={collections.map(o => o._id)}
+                onChange={onChangeCollection}
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                {orgCollections.map(o => (
+                  <Select.Option key={o._id} value={o._id} title={o.name}>
+                    {o.name}
+                  </Select.Option>
+                ))}
+              </SummarySelect>
+            </>
+          )}
+
           <MainTitle>Tags</MainTitle>
           <SummarySelect
             data-cy="tagsSelect"

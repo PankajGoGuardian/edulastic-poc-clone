@@ -583,8 +583,8 @@ class CoursesTable extends React.Component {
 
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/Courses"
+        title: role === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
+        to: role === roleuser.SCHOOL_ADMIN ? "/author/Courses" : "/author/districtprofile"
       },
       {
         title: "COURSES",

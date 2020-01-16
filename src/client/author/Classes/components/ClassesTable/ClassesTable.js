@@ -48,7 +48,7 @@ import {
   bulkUpdateClassesAction
 } from "../../ducks";
 
-import { getUserOrgId, getUser, getUserFeatures } from "../../../src/selectors/user";
+import { getUserOrgId, getUser, getUserFeatures, getUserRole } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
@@ -57,6 +57,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { IconPencilEdit, IconTrash, IconNotes } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import { roleuser } from "@edulastic/constants";
 
 const { Option } = Select;
 
@@ -518,6 +519,7 @@ class ClassesTable extends Component {
       bulkUpdateClasses,
       allTagsData,
       addNewTag,
+      role,
       t
     } = this.props;
 
@@ -646,8 +648,8 @@ class ClassesTable extends Component {
     ];
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/districtprofile"
+        title: role === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
+        to: role === roleuser.SCHOOL_ADMIN ? "/author/Classes" : "/author/districtprofile"
       },
       {
         title: "CLASSES",
@@ -886,7 +888,8 @@ const enhance = compose(
       schoolsData: getSchoolsSelector(state),
       bulkEditData: getBulkEditSelector(state),
       allTagsData: getAllTagsSelector(state, "group"),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      role: getUserRole(state)
     }),
     {
       createClass: createClassAction,

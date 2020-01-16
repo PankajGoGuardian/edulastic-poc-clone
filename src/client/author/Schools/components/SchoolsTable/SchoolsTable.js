@@ -444,17 +444,19 @@ class SchoolsTable extends React.Component {
       currentPage,
       refineButtonActive
     } = this.state;
+
+    const { userOrgId, totalSchoolsCount, role, t } = this.props;
+
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/districtprofile"
+        title: role === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
+        to: role === roleuser.SCHOOL_ADMIN ? "/author/Schools" : "/author/districtprofile"
       },
       {
         title: "SCHOOLS",
         to: ""
       }
     ];
-    const { userOrgId, totalSchoolsCount, role, t } = this.props;
     const columnsInfo = [
       {
         title: (

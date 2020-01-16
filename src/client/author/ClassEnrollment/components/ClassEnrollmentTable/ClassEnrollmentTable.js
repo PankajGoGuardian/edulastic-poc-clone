@@ -8,7 +8,7 @@ import { AddNewUserModal } from "../Common/AddNewUser";
 import { StyledTable } from "./styled";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
-import { getUserOrgId, getUser } from "../../../src/selectors/user";
+import { getUserOrgId, getUser, getUserRole } from "../../../src/selectors/user";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
 import { getClassEnrollmentUsersSelector, getClassEnrollmentUsersCountSelector } from "../../ducks";
 
@@ -47,6 +47,7 @@ import { IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { roleuser } from "@edulastic/constants";
 
 const { Option } = Select;
 
@@ -446,6 +447,7 @@ class ClassEnrollmentTable extends React.Component {
       moveUsersToOtherClass,
       resetClassDetails,
       totalUsers,
+      userRole,
       t
     } = this.props;
 
@@ -528,8 +530,8 @@ class ClassEnrollmentTable extends React.Component {
 
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/Class-Enrollment"
+        title: userRole === roleuser.SCHOOL_ADMIN ? "MANAGE SCHOOL" : "MANAGE DISTRICT",
+        to: userRole === roleuser.SCHOOL_ADMIN ? "/author/Class-Enrollment" : "/author/districtprofile"
       },
       {
         title: "CLASSES",
@@ -737,7 +739,8 @@ const enhance = compose(
       userDetails: getUser(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      totalUsers: getClassEnrollmentUsersCountSelector(state)
+      totalUsers: getClassEnrollmentUsersCountSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       createAdminUser: createAdminUserAction,

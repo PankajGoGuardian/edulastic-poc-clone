@@ -512,8 +512,8 @@ class SchoolAdminTable extends Component {
     );
     const breadcrumbData = [
       {
-        title: "MANAGE DISTRICT",
-        to: "/author/districtprofile"
+        title: "MANAGE SCHOOL",
+        to: "/author/users/school-admin"
       },
       {
         title: "USERS",

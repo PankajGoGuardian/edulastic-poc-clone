@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { Layout, Spin } from "antd";
 // components
-import ManageHeader from "../../sharedComponents/Header";
 import ManageClassContainer from "./Container";
 import { getEnrollClassAction, setFilterClassAction } from "../ducks";
 import { joinClassAction } from "../ducks";
@@ -25,18 +24,10 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
   useEffect(() => {
     loadAllClasses();
   }, []);
-  const [showClass, setShowClass] = useState("ACTIVE");
+  const [showClass, setShowClass] = useState(true);
   if (loading) return <Spin />;
   return (
     <Wrapper>
-      <ManageHeader
-        titleText="common.manageClassTitle"
-        classSelect={false}
-        showActiveClass={true}
-        classList={allClasses}
-        setClassList={setClassList}
-        setShowClass={setShowClass}
-      />
       <ContentWrapper>
         <ManageClassContainer
           classList={filterClasses}
@@ -44,6 +35,11 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
           showClass={showClass}
           joinClass={joinClass}
           studentData={studentData}
+          classSelect={false}
+          showActiveClass={true}
+          allClassList={allClasses}
+          setClassList={setClassList}
+          setShowClass={setShowClass}
         />
       </ContentWrapper>
     </Wrapper>

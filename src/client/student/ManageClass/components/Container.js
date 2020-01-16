@@ -2,21 +2,35 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Spin, Button, Modal, Input } from "antd";
+import { Spin, Button, Modal, Input, Row, Col } from "antd";
+import { IconPlus } from "@edulastic/icons";
+import styled from "styled-components";
+import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
 import ClassCard from "./CardContainer";
 
-import { Wrapper, NoDataBox, Title } from "../../styled";
+import { NoDataBox } from "../../styled";
 import NoDataIcon from "../../assets/nodata.svg";
-import styled from "styled-components";
-import { themeColor, white, tabletWidth, smallDesktopWidth } from "@edulastic/colors";
-import { IconPlus } from "@edulastic/icons";
+import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
+import ManageClassSubHeader from "./SubHeader";
 
 const ClassCards = ({ classList, t }) => {
   const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
   return cards;
 };
 
-const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, studentData }) => {
+const ManageClassContainer = ({
+  t,
+  classList,
+  loading,
+  showClass,
+  joinClass,
+  studentData,
+  classSelect,
+  showActiveClass,
+  allClassList,
+  setClassList,
+  setShowClass
+}) => {
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
   const [classCode, setClassCode] = useState(null);
   const joinClassHandler = () => {
@@ -35,7 +49,7 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
   return (
     <CustomWrapper>
       <HeaderWrapper>
-        <Title>{t("common.myClasses")}</Title>
+        <AssignmentTitle>{t("common.manageClassTitle")}</AssignmentTitle>
         <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
           <IconPlus width={12} height={12} color="white" stroke="white" />
           <span>{t("common.joinClass")}</span>
@@ -69,17 +83,35 @@ const ManageClassContainer = ({ t, classList, loading, showClass, joinClass, stu
           </JoinClassModal>
         )}
       </HeaderWrapper>
+      <SubHeaderWrapper>
+        <Col span={12}>
+          <ManageClassSubHeader />
+        </Col>
+        <Col span={12}>
+          {showActiveClass && (
+            <ShowActiveClass
+              t={t}
+              classList={allClassList}
+              setClassList={setClassList}
+              setShowClass={setShowClass}
+              showClass={showClass}
+            />
+          )}
+        </Col>
+      </SubHeaderWrapper>
 
       {classList.length ? (
         <ClassCardWrapper>
           <ClassCards classList={classList} t={t} />
         </ClassCardWrapper>
       ) : (
-        <NoDataBox>
-          <img src={NoDataIcon} alt="noData" />
-          <h4>{showClass === "ACTIVE" ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
-          <p>{showClass === "ACTIVE" ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
-        </NoDataBox>
+        <NoDataBoxWrapper>
+          <NoDataBox>
+            <img src={NoDataIcon} alt="noData" />
+            <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
+            <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
+          </NoDataBox>
+        </NoDataBoxWrapper>
       )}
     </CustomWrapper>
   );
@@ -99,14 +131,51 @@ ManageClassContainer.propTypes = {
   showClass: PropTypes.string.isRequired
 };
 
-const CustomWrapper = styled(Wrapper)`
-  padding: 30px 48px;
+const CustomWrapper = styled.div`
+  padding-top: ${props => props.theme.HeaderHeight.xs}px;
+  margin: 0px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    padding-top: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-top: ${props => props.theme.HeaderHeight.xl}px;
+  }
+`;
+
+const HeaderWrapper = styled.div`
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  background: ${themeColor};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 40px 0px 140px;
+  height: ${props => props.theme.HeaderHeight.xs}px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: ${props => props.theme.HeaderHeight.md}px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    height: ${props => props.theme.HeaderHeight.xl}px;
+  }
+`;
+
+const AssignmentTitle = styled.h2`
+  color: ${white};
+  margin: 0px;
+  font-size: 22px;
+  font-weight: bold;
+
   @media (max-width: ${smallDesktopWidth}) {
-    padding: 5px 34px;
+    font-size: 18px;
   }
-  @media (max-width:$${tabletWidth}) {
-    padding: 15px;
-  }
+`;
+
+const NoDataBoxWrapper = styled.div`
+  height: calc(100vh - 150px);
 `;
 
 const ClassCardWrapper = styled.div`
@@ -119,29 +188,46 @@ const ClassCardWrapper = styled.div`
   }
 `;
 
-const HeaderWrapper = styled.div`
+const SubHeaderWrapper = styled(Row)`
   display: flex;
   flex-direction: row;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin: 15px 0px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    margin: 10px 0px;
+  }
 `;
 const JoinClassBtn = styled(Button)`
-  background: ${themeColor};
+  background: ${white};
+  color: ${themeColor};
   border: none;
-  border-radius: 25px;
-  color: white;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 110px;
-  padding: 0 15px;
+  padding: 0 25px 0px 10px;
+  text-transform: uppercase;
   &:focus,
   :hover {
+    background: ${white};
+    color: ${themeColor};
+  }
+  svg {
+    margin-right: 20px;
+    height: 17px;
+    width: 17px;
     background: ${themeColor};
-    color: white;
+    border-radius: 50%;
+    padding: 4px;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+    height: 32px;
   }
 `;
 

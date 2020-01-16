@@ -4,13 +4,13 @@ import { compose } from "redux";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Row, Col, Button, Tooltip } from "antd";
+import { Row, Col, Button, Tooltip, Collapse } from "antd";
 import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
-import { tabletWidth, desktopWidth, largeDesktopWidth } from "@edulastic/colors";
+import { tabletWidth, desktopWidth, largeDesktopWidth, smallDesktopWidth, themeColor } from "@edulastic/colors";
 import { changeClassAction } from "../../Login/ducks";
 
-const ClassCard = ({ t, classItem, history, changeClass }) => {
+const ClassCard = ({ t, classItem, history, changeClass, key }) => {
   const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id === parent.id);
 
@@ -22,74 +22,118 @@ const ClassCard = ({ t, classItem, history, changeClass }) => {
     changeClass(sessionStorage.temporaryClass);
   };
 
+  const { Panel } = Collapse;
+
   return (
-    <ManageClassCardContent>
-      <CardHeader>
-        <Col span={11}>
-          <Tooltip placement="bottomLeft" title={name}>
-            <CardTitle>{name}</CardTitle>
-          </Tooltip>
-        </Col>
-        <Col span={13}>
-          <ClassStatus status={status}>
-            <span>{status == "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
-          </ClassStatus>
-        </Col>
-      </CardHeader>
-      <Row>
-        <Col span={12}>
-          <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
-          <Tooltip placement="bottomLeft" title={instructorName}>
-            <InfoContent span={16}>{instructorName}</InfoContent>
-          </Tooltip>
-        </Col>
+    <CollapsibleCard defaultActiveKey={key} expandIconPosition="right">
+      <Panel
+        header={
+          <Row type={"flex"} justify={"space-between"} align={"center"}>
+            <Col span={12}>
+              <Row type={"flex"} justify={"start"}>
+                <EllipsisContainer status={status}>
+                  <Tooltip placement="bottomLeft" title={name}>
+                    <CardTitle>{name}</CardTitle>
+                  </Tooltip>
+                  <ClassStatus status={status}>
+                    <span>{status == "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
+                  </ClassStatus>
+                </EllipsisContainer>
+              </Row>
+            </Col>
+            <Col span={12}>
+              <Row type={"flex"} justify={"end"} align={"center"}>
+                {active === 1 && (
+                  <Link to={{ pathname: "/home/assignments", classItem }}>
+                    <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
+                  </Link>
+                )}
 
-        {grades.length ? (
-          <Col span={12}>
-            <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
-            <Tooltip placement="bottomLeft" title={allgrades}>
-              <InfoContent span={16}>{allgrades}</InfoContent>
-            </Tooltip>
+                {active === 0 && (
+                  <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
+                )}
+              </Row>
+            </Col>
+          </Row>
+        }
+        key={key}
+      >
+        <ManageClassCardContent gutter={20}>
+          <Col span={8}>
+            <Row type="flex" align="middle">
+              <InfoLabel xs={24} md={8} xxl={6}>
+                {t("common.instructor")}
+              </InfoLabel>
+              <Tooltip placement="bottomLeft" title={instructorName}>
+                <InfoContent xs={24} md={16} xxl={18}>
+                  {instructorName}
+                </InfoContent>
+              </Tooltip>
+            </Row>
+
+            {grades.length ? (
+              <Row type="flex" align="middle">
+                <InfoLabel xs={24} md={8} xxl={6}>
+                  {t("common.grade")}
+                </InfoLabel>
+                <Tooltip placement="bottomLeft" title={allgrades}>
+                  <InfoContent xs={24} md={16} xxl={18}>
+                    {allgrades}
+                  </InfoContent>
+                </Tooltip>
+              </Row>
+            ) : (
+              ""
+            )}
           </Col>
-        ) : (
-          ""
-        )}
 
-        <Col span={12}>
-          <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
-          <Tooltip placement="bottomLeft" title={subject}>
-            <InfoContent span={16}>{subject}</InfoContent>
-          </Tooltip>
-        </Col>
+          <Col span={8}>
+            <Row type="flex" align="middle">
+              <InfoLabel xs={24} md={8} xxl={6}>
+                {t("common.subject")}
+              </InfoLabel>
+              <Tooltip placement="bottomLeft" title={subject}>
+                <InfoContent xs={24} md={16} xxl={18}>
+                  {subject}
+                </InfoContent>
+              </Tooltip>
+            </Row>
 
-        {standardSets.length ? (
-          <Col span={12}>
-            <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
-            <Tooltip placement="bottomLeft" title={allStandardSets}>
-              <InfoContent span={16}>{allStandardSets}</InfoContent>
-            </Tooltip>
+            {standardSets.length ? (
+              <Row type="flex" align="middle">
+                <InfoLabel xs={24} md={8} xxl={6}>
+                  {t("common.standard")}
+                </InfoLabel>
+                <Tooltip placement="bottomLeft" title={allStandardSets}>
+                  <InfoContent xs={24} md={16} xxl={18}>
+                    {allStandardSets}
+                  </InfoContent>
+                </Tooltip>
+              </Row>
+            ) : null}
           </Col>
-        ) : null}
 
-        <Col span={12}>
-          <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
-          <InfoContent span={16}>{startDate && moment(startDate).format("MMM DD, YYYY")}</InfoContent>
-        </Col>
-
-        <Col span={12}>
-          <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
-          <InfoContent span={16}>{endDate && moment(endDate).format("MMM DD, YYYY")}</InfoContent>
-        </Col>
-
-        {active === 1 && (
-          <Link to={{ pathname: "/home/assignments", classItem }}>
-            <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
-          </Link>
-        )}
-
-        {active === 0 && <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>}
-      </Row>
-    </ManageClassCardContent>
+          <Col span={8}>
+            <Row type="flex" align="middle">
+              <InfoLabel xs={24} md={8} xxl={6}>
+                {t("common.startDate")}
+              </InfoLabel>
+              <InfoContent xs={24} md={16} xxl={18}>
+                {startDate && moment(startDate).format("MMM DD, YYYY")}
+              </InfoContent>
+            </Row>
+            <Row type="flex" align="middle">
+              <InfoLabel xs={24} md={8} xxl={6}>
+                {t("common.endDate")}
+              </InfoLabel>
+              <InfoContent xs={24} md={16} xxl={18}>
+                {endDate && moment(endDate).format("MMM DD, YYYY")}
+              </InfoContent>
+            </Row>
+          </Col>
+        </ManageClassCardContent>
+      </Panel>
+    </CollapsibleCard>
   );
 };
 
@@ -110,54 +154,39 @@ ClassCard.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-const ManageClassCardContent = styled.div`
-  background: ${props => props.theme.classCard.cardBg};
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme.classCard.cardBorderColor};
-  width: 24%;
-  height: 285px;
-  padding: 5px 15px 5px 20px;
-  margin: 5px 5px 15px 5px;
-  text-align: center;
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 32%;
+const CollapsibleCard = styled(Collapse)`
+  width: 100%;
+  border: none;
+  background: white;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  & > .ant-collapse-item {
+    border: none;
   }
-  @media (max-width: ${desktopWidth}) {
-    margin: 0px 0px 15px;
-    width: 49%;
-  }
-  @media (max-width: ${tabletWidth}) {
-    width: 100%;
+  .ant-collapse-arrow {
+    svg {
+      fill: ${themeColor};
+    }
   }
 `;
 
-const CardHeader = styled(Row)`
-  padding: 15px 8px;
-  border-bottom: 1px solid ${props => props.theme.classCard.cardHeaderBorderColor};
-`;
-
-const CardTitle = styled.h3`
-  font-size: ${props => props.theme.classCard.cardTitleTextSize};
-  color: ${props => props.theme.classCard.cardTitleColor};
-  font-weight: bold;
-  margin: 0px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+const EllipsisContainer = styled.div`
+  padding-right: ${props => (props.status === 1 ? "100px" : "140px")};
+  display: inline-block;
+  position: relative;
+  max-width: 100%;
 `;
 
 const VisitClassButton = styled(Button)`
-  width: 206px;
-  height: 36px;
+  height: 32px;
   border-radius: 4px;
   background-color: ${props => props.theme.classCard.cardVisitClassBtnBgColor};
   text-transform: uppercase;
-  padding: 0px 20px;
+  padding: 0px 30px;
   font-size: ${props => props.theme.classCard.cardVisitClassBtnTextSize};
   color: ${props => props.theme.classCard.cardVisitClassBtnTextColor};
   border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   font-weight: 600;
-  margin-top: 20px;
 
   &:active,
   &:focus,
@@ -166,34 +195,29 @@ const VisitClassButton = styled(Button)`
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
     border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   }
-`;
 
-const InfoLabel = styled(Col)`
-  display: block;
-  width: 100%;
-  font-size: ${props => props.theme.classCard.cardUserInfoLabelTextSize};
-  font-weight: 700;
-  text-align: center;
-  color: ${props => props.theme.classCard.cardUserInfoLabelColor};
-  line-height: ${props => (props.theme.zoomLevel == "xs" ? "25px" : "unset")};
-  text-transform: uppercase;
-  margin-top: 12px;
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 28px;
+    padding: 0px 20px;
+  }
 `;
 
 const ClassStatus = styled(Col)`
-  display: block;
+  display: inline-block;
   font-size: ${props => props.theme.classCard.cardUserInfoLabelTextSize};
   font-weight: 700;
   color: ${props => props.theme.classCard.cardUserInfoLabelColor};
   line-height: ${props => (props.theme.zoomLevel == "xs" ? "25px" : "unset")};
   text-transform: uppercase;
-  width: 100%;
   text-align: right;
   color: ${props =>
     props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardUserInfoContentColor};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  position: absolute;
+  top: 0px;
+  right: 0px;
   span {
     display: inline-block;
     text-align: center;
@@ -204,6 +228,29 @@ const ClassStatus = styled(Col)`
       props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 28px;
+    span {
+      padding: ${props => (props.status == "0" ? "0px 10px" : "3px 24px")};
+    }
+  }
+`;
+
+const ManageClassCardContent = styled(Row)`
+  background: ${props => props.theme.classCard.cardBg};
+  text-align: center;
+  padding: 10px 15px;
+  text-align: left;
+`;
+
+const InfoLabel = styled(Col)`
+  font-size: ${props => props.theme.classCard.cardUserInfoLabelTextSize};
+  font-weight: 700;
+  color: ${props => props.theme.classCard.cardUserInfoLabelColor};
+  line-height: ${props => (props.theme.zoomLevel == "xs" ? "25px" : "unset")};
+  text-transform: uppercase;
+  margin: 5px 0px;
 `;
 
 const InfoContent = styled(Col)`
@@ -212,9 +259,21 @@ const InfoContent = styled(Col)`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  display: block;
-  width: 100%;
-  text-align: center;
   font-weight: 600;
-  margin-top: 4px;
+  margin: 5px 0px;
+`;
+
+const CardTitle = styled.h3`
+  font-size: ${props => props.theme.classCard.cardTitleTextSize};
+  color: ${props => props.theme.classCard.cardTitleColor};
+  font-weight: bold;
+  margin: 0px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 32px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    line-height: 28px;
+  }
 `;

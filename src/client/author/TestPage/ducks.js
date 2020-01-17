@@ -609,6 +609,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case DELETE_ITEMS_GROUP:
       return {
         ...state,
+        updated: true,
         entity: {
           ...state.entity,
           itemGroups: state.entity.itemGroups.filter(g => g.groupName !== payload)

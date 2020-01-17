@@ -291,7 +291,7 @@ class ClassQuestions extends Component {
           const setKeyId = setIds.setId;
           const examples = get(question, "variable.examples", []);
           const variables = get(question, "variable.variables", {});
-          const example = examples.find(x => x.key === setKeyId);
+          const example = examples.find(x => x.key === +setKeyId);
           if (!example) {
             continue;
           }

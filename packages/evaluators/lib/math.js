@@ -38,13 +38,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(source, true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function(key) {
         (0, _defineProperty2["default"])(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(source).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function(key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
     }
@@ -75,6 +75,10 @@ var getChecks = function getChecks(answer) {
       return f === false;
     });
     var midRes = Object.keys(options).reduce(function(acc, key, i) {
+      if (key === "interpretAsInterval" || key === "interpretAsNumber") {
+        acc = acc === "equivSymbolic" ? "symbolic" : acc;
+      }
+
       if (key === "allowedVariables" || key === "allowNumericOnly" || key === "unit") {
         return acc;
       }

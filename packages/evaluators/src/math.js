@@ -21,6 +21,9 @@ export const getChecks = answer => {
     options = omitBy(options, f => f === false);
 
     let midRes = Object.keys(options).reduce((acc, key, i) => {
+      if (key === "interpretAsInterval" || key === "interpretAsNumber") {
+        acc = acc === "equivSymbolic" ? "symbolic" : acc;
+      }
       if (key === "allowedVariables" || key === "allowNumericOnly" || key === "unit") {
         return acc;
       }

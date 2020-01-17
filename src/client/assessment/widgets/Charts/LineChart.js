@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import { isEqual } from "lodash";
+import produce from "immer";
 
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
@@ -16,6 +17,30 @@ import {
   displayVerticalLines,
   getGridVariables
 } from "./helpers";
+
+function normalizeTouchEvent(e) {
+  if (e?.nativeEvent?.changedTouches?.length) {
+    //e.preventDefault();
+    // e.clientX = e.nativeEvent.changedTouches[0].clientX;
+    // e.clientY = e.nativeEvent.changedTouches[0].clientY;
+    e.pageX = e.nativeEvent.changedTouches[0].pageX;
+    e.pageY = e.nativeEvent.changedTouches[0].pageY;
+  }
+}
+
+function useDisableDragScroll() {
+  const targetRef = useRef();
+
+  useEffect(() => {
+    const preventDefault = e => {
+      e.preventDefault();
+    };
+    targetRef.current.addEventListener("touchmove", preventDefault, { passive: false });
+    return () => targetRef.current.removeEventListener("touchmove", preventDefault);
+  }, []);
+
+  return targetRef;
+}
 
 const LineChart = ({
   item,
@@ -80,16 +105,19 @@ const LineChart = ({
   };
 
   const onMouseMove = e => {
-    const newLocalData = cloneDeep(localData);
+    normalizeTouchEvent(e);
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
-      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
-
-      setLocalData(newLocalData);
+      setLocalData(
+        produce(localData, newLocalData => {
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        })
+      );
     }
   };
 
   const onMouseDown = index => e => {
+    normalizeTouchEvent(e);
     setCursorY(e.pageY);
     setActiveIndex(index);
     setInitY(localData[index].y);
@@ -105,14 +133,19 @@ const LineChart = ({
     save();
   };
 
+  const targetRef = useDisableDragScroll();
+
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width + margin.left + margin.right}
       height={height + margin.top + margin.bottom}
       onMouseMove={onMouseMove}
+      onTouchMove={onMouseMove}
       onMouseUp={onMouseUp}
+      onTouchEnd={onMouseUp}
       onMouseLeave={onMouseLeave}
+      ref={targetRef}
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
         <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />

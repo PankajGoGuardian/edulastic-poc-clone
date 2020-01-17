@@ -68,8 +68,11 @@ const Points = ({
                   interactive
                   key={`circle-${index}`}
                   onMouseEnter={handleMouseAction(index)}
+                  onClick={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}
+                  onTouchEnd={handleMouseAction(null)}
                   onMouseDown={onMouseDown(index)}
+                  onTouchStart={onMouseDown(index)}
                   cx={getCenterX(index)}
                   cy={getCenterY(dot)}
                   r={6}

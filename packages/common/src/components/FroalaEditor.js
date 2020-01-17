@@ -256,6 +256,19 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons)
   return toolbarButtons;
 };
 
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => {
+      resolve();
+    };
+    image.onerror = () => {
+      reject();
+    };
+    image.src = src;
+  });
+}
+
 const CustomEditor = ({
   value,
   onChange,
@@ -481,11 +494,18 @@ const CustomEditor = ({
 
           return false;
         },
-        "image.inserted": function($img, response) {
-          $img.css({
-            verticalAlign: "middle",
-            width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
-          });
+        "image.inserted": async function($img, response) {
+          try {
+            if (!$img[0].complete) {
+              await loadImage($img[0].src);
+            }
+            $img.css({
+              verticalAlign: "middle",
+              width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
+            });
+          } catch (e) {
+            message.error("image loading failed");
+          }
         },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {

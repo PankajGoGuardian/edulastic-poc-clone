@@ -1,5 +1,6 @@
 import API from "./utils/API";
 import moment from "moment";
+import qs from "qs";
 
 const api = new API();
 const prefix = "/assignments";
@@ -105,7 +106,8 @@ const fetchAssignmentsSummary = ({ districtId = "", filters, sort }) =>
     .callApi({
       url: `${prefix}/district/${districtId}`,
       method: "get",
-      params: { ...filters, ...sort }
+      params: { ...filters, ...sort },
+      paramsSerializer: params => qs.stringify(params)
     })
     .then(result => result.data.result);
 

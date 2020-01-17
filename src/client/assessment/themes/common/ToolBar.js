@@ -116,7 +116,24 @@ export const StyledButton = styled(Button)`
       fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
     }
 
-    &:focus{
+    :disabled {
+      opacity: 0.4;
+      background: ${theme.default.headerButtonBgColor};
+    }
+  `}
+
+${({ theme, active }) =>
+  window.isIOS
+    ? `
+&:focus, &:hover{
+      background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+      svg{
+        fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+      }
+    }
+`
+    : `
+&:focus{
       background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
       svg{
         fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
@@ -131,11 +148,7 @@ export const StyledButton = styled(Button)`
       }
     }
 
-    :disabled {
-      opacity: 0.4;
-      background: ${theme.default.headerButtonBgColor};
-    }
-  `}
+`}
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: 40px;

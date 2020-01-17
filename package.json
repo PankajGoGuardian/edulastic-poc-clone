@@ -70,7 +70,7 @@
     "history": "^4.7.2",
     "howler": "^2.1.2",
     "jsxgraph": "^0.99.7",
-    "loaderjs": "^1.0.0",
+    "loadjs": "^4.2.0",
     "lodash": "^4.17.11",
     "mathjs": "^5.8.0",
     "mathquill": "^0.10.1-a",

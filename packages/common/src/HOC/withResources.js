@@ -11,7 +11,7 @@
  */
 // @ts-check
 import React, { useState, useEffect } from "react";
-import { load } from "loaderjs";
+import load from "loadjs";
 
 const NAMESPACE = "edulaticV2LoadedResources";
 const LOADING_RESOURCES = "edulasticV2LoadingResources";
@@ -45,7 +45,7 @@ const addToQueue = resource => {
   if (!window[LOADING_RESOURCES][resource]) {
     window[LOADING_RESOURCES][resource] = [];
 
-    load([resource]).then(() => {
+    load([resource], { returnPromise: true }).then(() => {
       // once the resource is loaded, tell em all components that "your needs are met"
       (window[LOADING_RESOURCES][resource] || []).forEach(resolve => resolve());
       // flag the resource as already loaded!

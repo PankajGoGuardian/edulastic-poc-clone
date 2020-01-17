@@ -259,8 +259,8 @@ const GroupItems = ({
   };
 
   const handleApply = data => {
-    if (!data) {
-      return setShowStandardModal(false);
+    if (!data?.eloStandards?.length) {
+      return message.warn("Please select a standard before applying");
     }
     const { subject, grades, eloStandards } = data;
     const { curriculumId, _id: standardId, tloId: domainId, identifier } = eloStandards[0];
@@ -463,7 +463,7 @@ const GroupItems = ({
           curriculumStandardsTLO={curriculumStandards.tlo}
           getCurriculumStandards={searchCurriculumStandards}
           curriculumStandardsLoading={curriculumStandardsLoading}
-          singleSelect={true}
+          singleSelect
         />
       )}
       {showConfirmModal && (

@@ -141,6 +141,18 @@ export const createGroupSummary = test => {
       test.scoring,
       isLimitedDeliveryType
     );
+    if (itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT) {
+      summaryData.standards = [
+        {
+          isEquivalentStandard: false,
+          identifier: itemGroup.standardDetails.identifier,
+          curriculumId: itemGroup.standardDetails.curriculumId
+        }
+      ];
+      summaryData.totalPoints = itemGroup.items.length;
+      summaryData.totalItems = itemGroup.items.length;
+    }
+
     summary.totalPoints += summaryData.totalPoints;
     summary.totalItems += summaryData.totalItems;
     summary.totalQuestions += summaryData.totalQuestions;

@@ -69,7 +69,11 @@ const StandardsModal = ({
 
   const handleCheckELO = c => {
     if (singleSelect && state.eloStandards.length) {
-      return message.warning("Cannot select more than 1 standard");
+      const [checked] = state.eloStandards;
+      if (checked._id === c._id) {
+        return setState({ ...state, eloStandards: [] });
+      }
+      return setState({ ...state, eloStandards: [c] });
     }
     if (!state.eloStandards.some(item => item._id === c._id))
       setState({ ...state, eloStandards: [...state.eloStandards, c] });

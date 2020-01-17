@@ -152,14 +152,7 @@ export const createGroupSummary = test => {
     }
     summary.noStandards.totalQuestions += noStandards.totalQuestions;
     summary.noStandards.totalPoints += noStandards.totalPoints;
-    if (
-      !(
-        itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT ||
-        itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED
-      )
-    ) {
-      summary.groupSummary.push({ ...summaryData, groupId: itemGroup._id || itemGroup.groupName });
-    }
+    summary.groupSummary.push({ ...summaryData, groupId: itemGroup._id || itemGroup.groupName });
   }
   if (hasRandomQuestions) {
     delete summary.totalPoints;

@@ -60,9 +60,7 @@ function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
-    console.log({ studentResponse, originalData });
     if (hasRandomQuestions(originalData.test.itemGroups)) {
-      console.log("has random questions");
       const itemGroups = originalData.test.itemGroups.map(group => ({
         ...group,
         items: studentResponse.itemGroups[group._id] || []
@@ -76,9 +74,8 @@ function* receiveStudentResponseSaga({ payload }) {
         type: UPDATE_STUDENT_TEST_ITEMS,
         payload: { testItems, itemGroups }
       });
+      yield put(setCurrentTestActivityIdAction(payload.testActivityId));
     }
-    // console.log({ originalData });
-    yield put(setCurrentTestActivityIdAction(payload.testActivityId));
     /**
      * transforming questionActivities to support chart/question labels, etc.,
      */

@@ -42,7 +42,7 @@ const testItemStatusConstants = {
   ARCHIVED: "archived"
 };
 
-const NewGroup = {
+export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: "Group 1" /* For now, auto-generated. */,
   items: [],
@@ -720,7 +720,8 @@ function* createTest(data) {
     "updatedDate",
     "passages", // not accepted by backend validator (testSchema)  EV-10685
     "isUsed",
-    "currentTab" // not accepted by backend validator (testSchema) EV-10685
+    "currentTab", // not accepted by backend validator (testSchema) EV-10685,
+    "summary"
   ]);
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
@@ -773,6 +774,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.scoring;
     delete payload.data.sharedType;
     delete payload.data.currentTab;
+    delete payload.data.summary;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -1088,7 +1090,9 @@ function* setTestDataAndUpdateSaga(payload) {
           draft.testContentVisibility = test.testContentVisibility.ALWAYS;
         }
       });
-      testObj = omit(testObj, ["passages"]); // not accepted by backend validator (testSchema) EV-10685
+      //summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
+      //passages doesnt accepted by BE
+      testObj = omit(testObj, ["passages", "summary"]);
       const entity = yield call(testsApi.create, testObj);
 
       yield put({

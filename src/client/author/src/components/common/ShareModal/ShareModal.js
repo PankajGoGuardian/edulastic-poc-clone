@@ -59,7 +59,7 @@ const sharedKeysObj = {
 };
 
 const shareTypeKeys = ["PUBLIC", "DISTRICT", "SCHOOL", "INDIVIDUAL"];
-const shareTypeKeyForDa = ["DISTRICT"];
+const shareTypeKeyForDa = ["PUBLIC", "DISTRICT", "INDIVIDUAL"];
 class ShareModal extends React.Component {
   constructor(props) {
     super(props);

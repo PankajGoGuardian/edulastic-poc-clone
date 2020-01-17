@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button, MenuIcon } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { get } from "lodash";
 import {
   mobileWidth,
   desktopWidth,
@@ -19,6 +21,12 @@ import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/toggleMenu";
 
+import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
+import { getUserOrgId, getUserRole } from "../../selectors/user";
+import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
+import UserSubHeader from "./AdminSubHeader/UserSubHeader";
+
 const ListHeader = ({
   onCreate,
   createAssignment,
@@ -32,55 +40,105 @@ const ListHeader = ({
   isAdvancedView,
   hasButton,
   renderButton,
-  midTitle
-}) => (
-  <Container>
-    <FlexContainer style={{ pointerEvents: "none" }}>
-      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-      <Title>{title}</Title>
-    </FlexContainer>
+  midTitle,
+  addBulkTeacher,
+  userOrgId = "",
+  setTeachersDetailsModalVisible,
+  teacherDetailsModalVisible,
+  userRole = ""
+}) => {
+  const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
-    {midTitle && (
-      <MidTitleWrapper>
-        <Title>{midTitle}</Title>
-      </MidTitleWrapper>
-    )}
+  const sendInvite = userDetails => {
+    addBulkTeacher({ addReq: userDetails });
+  };
 
-    <RightButtonWrapper>
-      <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
-      {renderFilter(isAdvancedView)}
-      {hasButton &&
-        !createAssignment &&
-        (renderButton ? (
-          renderButton()
-        ) : (
-          <CreateButton
-            data-cy="createNew"
-            onClick={onCreate}
-            color="secondary"
-            variant="create"
-            shadow="none"
-            icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
-          >
-            {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
-          </CreateButton>
-        ))}
-      {createAssignment && (
-        <Link to={"/author/assignments/select"}>
-          <TestButton
-            color="secondary"
-            variant="test"
-            shadow="none"
-            icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
-          >
-            NEW ASSIGNMENTS
-          </TestButton>
-        </Link>
+  const toggleInviteTeacherModalVisibility = () => {
+    toggleInviteTeacherModal(prevState => !prevState);
+  };
+
+  const closeTeachersDetailModal = () => {
+    setTeachersDetailsModalVisible(false);
+  };
+
+  return (
+    <Container>
+      <FlexContainer style={{ pointerEvents: "none" }}>
+        <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
+        <Title>{title}</Title>
+      </FlexContainer>
+
+      {midTitle && (
+        <MidTitleWrapper>
+          <Title>{midTitle}</Title>
+        </MidTitleWrapper>
       )}
-      {renderExtra()}
-    </RightButtonWrapper>
-  </Container>
-);
+
+      <RightButtonWrapper>
+        <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
+        {renderFilter(isAdvancedView)}
+        {hasButton &&
+          !createAssignment &&
+          (renderButton ? (
+            renderButton()
+          ) : (
+            <CreateButton
+              data-cy="createNew"
+              onClick={onCreate}
+              color="secondary"
+              variant="create"
+              shadow="none"
+              icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+            >
+              {btnTitle && btnTitle.length ? btnTitle : "New Item"}
+            </CreateButton>
+          ))}
+
+        {createAssignment && (
+          <>
+            {userRole && userRole === roleuser.DISTRICT_ADMIN && (
+              <TestButton
+                color="secondary"
+                onClick={toggleInviteTeacherModal}
+                icon={<i class="fa fa-users" aria-hidden="true" />}
+              >
+                INVITE TEACHERS
+              </TestButton>
+            )}
+            <Link to={"/author/assignments/select"}>
+              <TestButton
+                color="secondary"
+                variant="test"
+                shadow="none"
+                icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+              >
+                NEW ASSIGNMENTS
+              </TestButton>
+            </Link>
+          </>
+        )}
+        {renderExtra()}
+      </RightButtonWrapper>
+      {inviteTeacherModalVisible && (
+        <InviteMultipleTeacherModal
+          modalVisible={toggleInviteTeacherModalVisibility}
+          closeModal={toggleInviteTeacherModalVisibility}
+          addTeachers={sendInvite}
+          userOrgId={userOrgId}
+          t={t}
+        />
+      )}
+      {teacherDetailsModalVisible && (
+        <StudentsDetailsModal
+          modalVisible={teacherDetailsModalVisible}
+          closeModal={closeTeachersDetailModal}
+          role="teacher"
+          title="Teacher Details"
+        />
+      )}
+    </Container>
+  );
+};
 
 ListHeader.propTypes = {
   onCreate: PropTypes.func,
@@ -112,12 +170,22 @@ ListHeader.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces("author"),
+  withNamespaces("manageDistrict"),
   connect(
-    ({ user }) => ({
-      firstName: user.firstName || ""
-    }),
-    { toggleSideBar: toggleSideBarAction }
+    state => {
+      const { user } = state;
+      return {
+        userOrgId: getUserOrgId(state),
+        userRole: getUserRole(state),
+        firstName: user.firstName || "",
+        teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
+      };
+    },
+    {
+      toggleSideBar: toggleSideBarAction,
+      addBulkTeacher: addBulkTeacherAdminAction,
+      setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction
+    }
   )
 );
 export default enhance(ListHeader);

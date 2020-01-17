@@ -408,7 +408,7 @@ class AssessmentPlayerDefault extends React.Component {
     const headerStyleWidthZoom = {
       transform: `scale(${headerZoom})`, // maxScale of 1.5 to header
       transformOrigin: "0px 0px",
-      width: isZoomApplied && `${zoomLevel >= "1.75" ? "75" : "80"}%`,
+      width: isZoomApplied && `${zoomLevel >= "1.75" ? "76" : "80"}%`,
       padding: `${
         isZoomApplied
           ? zoomLevel >= "1.75"

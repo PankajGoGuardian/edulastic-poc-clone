@@ -2,7 +2,7 @@
 import Helpers from "../helpers";
 
 const addCustomClassToMath = mathHtml => {
-  if (!window.$ || !katex) return mathHtml;
+  if (!window.$) return mathHtml;
   const jqueryEl = $(mathHtml);
   jqueryEl.addClass("edu");
   // eslint-disable-next-line func-names
@@ -15,7 +15,16 @@ const addCustomClassToMath = mathHtml => {
 
 export const getMathHtml = latex => {
   if (!window.katex) return latex;
-  let katexString = window.katex.renderToString(latex, {
+  /**
+   * if the latex has dynamic parameters such as "2a\times3y", the katex produces an error.
+   * that error occurred when there is only \times or \div
+   * so we need to insert spaces between operators and variables.
+   */
+  const _latex = latex
+    .replace(new RegExp("\\\\times", "g"), " \\times ")
+    .replace(new RegExp("\\\\div", "g"), " \\div ");
+
+  let katexString = window.katex.renderToString(_latex, {
     throwOnError: false
   });
   // styles are applied to stimulus in itemBank/testReview(collapsed view)

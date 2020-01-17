@@ -8,12 +8,14 @@ const detectVariables = (str, isLatex = false) => {
   if (isLatex) {
     // const matches = str.match(/!([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
     const matches = str.match(/@([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
-    return matches ? matches.map(match => match.slice(1)) : [];
+    // we should take a character as a dynamic variable
+    return matches ? matches.map(match => match.slice(1).substring(0, 1)) : [];
   }
   // const matches = ` ${str}`.match(/([^\\]?\[)([a-zA-Z])+([a-zA-Z]|[0-9])*\]/g);
   // return matches ? matches.map(match => (match.startsWith("[") ? match.slice(1, -1) : match.slice(2, -1))) : [];
   const matches = str.match(/@([a-zA-Z])+([a-zA-Z]|[0-9])*/g);
-  return matches ? matches.map(match => match.slice(1)) : [];
+  // we should take a character as a dynamic variable
+  return matches ? matches.map(match => match.slice(1).substring(0, 1)) : [];
 };
 
 export const detectVariablesFromObj = (item, key = null, latexKeys = [], exceptions = []) => {

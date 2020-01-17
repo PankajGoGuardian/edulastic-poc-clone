@@ -154,7 +154,7 @@ const GroupItems = ({
         )
       )
         extraPick = ["deliverItemsCount"];
-      updatedGroupData = pick(updatedGroupData, ["type", "groupName", "items", "deliveryType", ...extraPick]);
+      updatedGroupData = pick(updatedGroupData, ["type", "groupName", "items", "deliveryType", "index", ...extraPick]);
     }
     setEditGroupDetails(updatedGroupData);
   };

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mainBgColor, themeColor, sectionBorder } from "@edulastic/colors";
+import { white, mainBgColor, themeColor, sectionBorder, smallDesktopWidth } from "@edulastic/colors";
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -9,6 +9,10 @@ export const AddQuestionWrapper = styled.div`
   bottom: 0;
   padding: 15px 0;
   background: ${mainBgColor};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 270px;
+  }
 `;
 
 export const ContentWrapper = styled.div`
@@ -38,18 +42,21 @@ export const AddQuestionIcon = styled.span`
   border-radius: 5px;
   background: ${themeColor};
   cursor: pointer;
-
   &:hover {
     svg {
       fill: ${white};
     }
   }
-
   svg {
     fill: ${white};
     width: 21px;
     height: 19px;
     height: unset;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 35px;
+    height: 35px;
   }
 `;
 

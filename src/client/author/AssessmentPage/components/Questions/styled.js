@@ -5,7 +5,8 @@ import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, small
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
   padding: ${props =>
     props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 15px"};
   display: flex;
@@ -15,7 +16,8 @@ export const QuestionsWrapper = styled.div`
   height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: 280px;
+    min-width: 300px;
+    max-width: 300px;
   }
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props => props.viewMode && `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
@@ -30,7 +32,7 @@ export const QuestionWidgetWrapper = styled.div`
   max-height: ${props =>
     `calc(100vh - ${
       props.testMode
-        ? "130"
+        ? "250"
         : props.reportMode
         ? props.theme.HeaderHeight.xs + 60
         : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
@@ -42,7 +44,7 @@ export const QuestionWidgetWrapper = styled.div`
     max-height: ${props =>
       `calc(100vh - ${
         props.testMode
-          ? "130"
+          ? "250"
           : props.reportMode
           ? props.theme.HeaderHeight.md + 60
           : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
@@ -52,7 +54,7 @@ export const QuestionWidgetWrapper = styled.div`
     max-height: ${props =>
       `calc(100vh - ${
         props.testMode
-          ? "130"
+          ? "250"
           : props.reportMode
           ? props.theme.HeaderHeight.xl + 60
           : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)

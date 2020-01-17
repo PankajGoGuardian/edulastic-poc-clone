@@ -40,34 +40,36 @@ export const QuestionNumber = styled.span`
   text-align: center;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    line-height: 28px;
+  }
 `;
 
 export const QuestionForm = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: 10px;
+  width: ${props => (props.review ? "100%" : "140px")};
 
-  .ant-select-selection {
-    width: ${({ review }) => (review ? "200px" : "133px")};
+  .ant-select-selection,
+  .input__math,
+  .ant-input {
+    width: 100%;
   }
   .input__math {
-    width: 220px;
     & + .input__absolute__keyboard {
       position: absolute;
       overflow: auto;
-      right: -15px;
+      right: 0px;
     }
-  }
-  .ant-input {
-    width: ${({ review }) => (review ? "200px" : "133px")};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    .ant-select-selection,
-    .input__math,
-    .ant-input {
-      width: ${({ review }) => (review ? "170px" : "133px")};
-    }
+    width: ${props => (props.review ? "100%" : "100px")};
   }
 `;
 

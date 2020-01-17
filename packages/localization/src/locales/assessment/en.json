@@ -274,7 +274,7 @@
       "value": "Value",
       "label": "Label",
       "minimum": "Minimum",
-      "maximum": "Maximun",
+      "maximum": "Maximum",
       "majorTicks": "Major Ticks",
       "minorTicks": "Minor Ticks",
       "showTicks": "Show Ticks",

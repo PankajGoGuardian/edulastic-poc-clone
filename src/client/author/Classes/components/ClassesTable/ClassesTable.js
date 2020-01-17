@@ -561,7 +561,7 @@ class ClassesTable extends Component {
         width: 200
       }
     ];
-    if (this.props.features.selecteCourse) {
+    if (this.props.features.selectCourse) {
       columnsData.push({
         title: t("class.course"),
         dataIndex: "_source.course",

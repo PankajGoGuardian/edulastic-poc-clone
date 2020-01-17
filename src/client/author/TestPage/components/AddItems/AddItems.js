@@ -419,8 +419,6 @@ class AddItems extends PureComponent {
           </Container>
         ) : (
           <GroupItems
-            groupIndex={test.itemGroups?.length + 1}
-            test={test}
             switchToAddItems={() => {
               this.setState({ showAddItemsPage: true });
             }}

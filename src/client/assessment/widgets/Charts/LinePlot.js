@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import { isEqual } from "lodash";
+import produce from "immer";
+
+import { useDisableDragScroll } from "@edulastic/common";
 
 import ArrowPair from "./components/ArrowPair";
 import ValueLabel from "./components/ValueLabel";
@@ -66,17 +69,28 @@ const LinePlot = ({
     saveAnswer(localData, active);
   };
 
+  const normalizeTouchEvent = e => {
+    if (e?.nativeEvent?.changedTouches?.length) {
+      e.pageX = e.nativeEvent.changedTouches[0].pageX;
+      e.pageY = e.nativeEvent.changedTouches[0].pageY;
+    }
+  };
+
   const onMouseMove = e => {
-    const newLocalData = cloneDeep(localData);
+    if (window.isIOS) normalizeTouchEvent(e);
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
-      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
-
-      setLocalData(newLocalData);
+      setLocalData(
+        produce(localData, newLocalData => {
+          setLocalData(newLocalData);
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        })
+      );
     }
   };
 
   const onMouseDown = index => e => {
+    if (window.isIOS) normalizeTouchEvent(e);
     setCursorY(e.pageY);
     setActiveIndex(index);
     setInitY(localData[index].y);
@@ -92,6 +106,8 @@ const LinePlot = ({
     save();
   };
 
+  const targetRef = useDisableDragScroll();
+
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
@@ -100,6 +116,9 @@ const LinePlot = ({
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
+      onTouchMove={onMouseMove}
+      onTouchEnd={onMouseUp}
+      ref={targetRef}
     >
       <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 

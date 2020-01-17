@@ -6,7 +6,7 @@ import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
-import { Bar, ActiveBar, Text, StrokedRect } from "../styled";
+import { Bar, ActiveBar, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 import AxisLabel from "./AxisLabel";
@@ -126,6 +126,9 @@ const Crosses = ({
                 onMouseEnter={handleMouse(index)}
                 onMouseLeave={handleMouse(null)}
                 onMouseDown={onMouseDown(index)}
+                onClick={handleMouse(index)}
+                onTouchEnd={handleMouse(null)}
+                onTouchStart={onMouseDown(index)}
                 x={getCenterX(index)}
                 y={getCenterY(dot) - 4}
                 width={step - 2}

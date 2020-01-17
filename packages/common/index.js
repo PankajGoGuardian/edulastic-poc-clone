@@ -71,8 +71,10 @@ export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 export { default as ScrollContext } from "./src/contexts/ScrollContext";
 export { default as HorizontalScrollContext } from "./src/contexts/HorizontalScrollContext";
 export { default as RefContext } from "./src/contexts/RefContext";
-// realtime hook
-export { default as useRealtimeV2 } from "./src/useRealtimeV2";
+
+// custom hook
+export { default as useRealtimeV2 } from "./src/customHooks/useRealtimeV2";
+export { default as useDisableDragScroll } from "./src/customHooks/useDisableDragScroll";
 
 // Mobile
 export { MenuIcon } from "./src/components/MenuIcon";

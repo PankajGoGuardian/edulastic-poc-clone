@@ -98,8 +98,9 @@ class ItemListPage {
     const metadataPage = new MetadataPage();
     return cy.fixture("questionAuthoring").then(itemData => {
       const [queType, queKey] = itemKey.split(".");
+      const questionJson = itemData[queType][queKey];
       let question;
-      if (itemData[queType][queKey]) {
+      if (questionJson) {
         switch (queType) {
           case queTypes.MULTIPLE_CHOICE_STANDARD:
             question = new MCQStandardPage();
@@ -139,10 +140,17 @@ class ItemListPage {
           question.createQuestion(queType, queKey, queIndex, publish);
         } else question.createQuestion(queKey, queIndex, publish);
 
-        if (itemData[queType][queKey].standards) {
+        if (questionJson.standards) {
           // editItem.getEditButton().click();
           editItem.header.metadata();
-          metadataPage.mapStandards(itemData[queType][queKey].standards);
+          metadataPage.mapStandards(questionJson.standards);
+          metadataPage.header.edit();
+        }
+
+        if (questionJson.meta) {
+          // editItem.getEditButton().click();
+          editItem.header.metadata();
+          metadataPage.setCollection(questionJson.meta.collections);
           metadataPage.header.edit();
         }
 

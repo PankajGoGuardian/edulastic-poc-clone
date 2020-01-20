@@ -473,7 +473,7 @@ const GroupItems = ({
               ]}
               key={index + 1}
             >
-              <ContentBody>
+              <ContentBody data-cy={`group-${itemGroup.groupName}`}>
                 <GroupField>
                   <Checkbox
                     checked={
@@ -492,7 +492,7 @@ const GroupItems = ({
                   <GroupField>
                     <Label>Items</Label>
                     <QuestionTagsWrapper>
-                      <QuestionTagsContainer>
+                      <QuestionTagsContainer data-cy={`item-container-${itemGroup.groupName}`}>
                         {(currentGroupIndex === index ? editGroupDetail.items : itemGroup.items)
                           .map(({ _id }) => _id.substring(_id.length, _id.length - 6))
                           .map(id => (
@@ -507,7 +507,7 @@ const GroupItems = ({
                     <SelectWrapper width="200px">
                       <Label>Collection</Label>
                       <Select
-                        data-cy="Collections"
+                        data-cy={`collection-${itemGroup.groupName}`}
                         size="default"
                         placeholder="Select Collection"
                         onChange={value => handleCollectionChange(value, index)}
@@ -625,7 +625,11 @@ const GroupItems = ({
                     {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                       (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
                       <>
-                        <Radio defaultChecked value={ITEM_GROUP_DELIVERY_TYPES.ALL}>
+                        <Radio
+                          data-cy={`check-deliver-all-${itemGroup.groupName}`}
+                          defaultChecked
+                          value={ITEM_GROUP_DELIVERY_TYPES.ALL}
+                        >
                           Deliver all Items in this Group
                         </Radio>
 
@@ -645,6 +649,7 @@ const GroupItems = ({
                       <ItemCountWrapper>
                         <span>Deliver a total of </span>
                         <Input
+                          data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
                           type="number"
                           disabled={
                             (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
@@ -694,10 +699,14 @@ const GroupItems = ({
           ))}
         </Collapse>
         <GroupField>
-          <AddGroupButton onClick={handleAddGroup}>Add Group</AddGroupButton>
+          <AddGroupButton data-cy="add-group" onClick={handleAddGroup}>
+            Add Group
+          </AddGroupButton>
         </GroupField>
         <Footer>
-          <DoneButton onClick={validateGroups}>Done</DoneButton>
+          <DoneButton data-cy="done" onClick={validateGroups}>
+            Done
+          </DoneButton>
         </Footer>
       </CreateGroupWrapper>
     </Container>

@@ -393,7 +393,7 @@ class AddItems extends PureComponent {
                       </StyledButton>
                       {(features.isCurator || features.isPublisherAuthor) && (
                         <StyledButton
-                          data-cy="createNewItem"
+                          data-cy="groupItem"
                           type="secondary"
                           size="large"
                           onClick={() => {

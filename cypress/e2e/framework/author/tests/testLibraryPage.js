@@ -73,6 +73,10 @@ export default class TestLibrary {
         });
       }
 
+      if (test.collections) {
+        testSummary.selectCollection(test.collections);
+      }
+
       // add items
       testSummary.header.clickOnAddItems();
       this.searchFilters.clearAll();

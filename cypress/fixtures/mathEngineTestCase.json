@@ -4,19 +4,31 @@
       "name": "setEvaluation: any order",
       "input": "3,-3",
       "attempt": "-3,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_304",
+      "apiAttempt": "-3,3",
+      "apiInput": "3,-3",
+      "apiChecks": "setEvaluation"
     },
     {
       "name": "setEvaluation: any order",
       "input": "3,-3",
       "attempt": "-6,-3,3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_305",
+      "apiAttempt": "-6,-3,3",
+      "apiInput": "3,-3",
+      "apiChecks": "setEvaluation"
     },
     {
       "name": "setEvaluation: any order",
       "input": "3,6,-3",
       "attempt": "-6,-3,3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_306",
+      "apiAttempt": "-6,-3,3",
+      "apiInput": "3,6,-3",
+      "apiChecks": "setEvaluation"
     }
   ],
   "equivSyntax": [
@@ -29,7 +41,11 @@
         }
       },
       "attempt": "2.165",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_195",
+      "apiAttempt": "2.165",
+      "apiInput": "",
+      "apiChecks": "syntax:isDecimal=3"
     },
     {
       "name": "syntax:isDecimal with argument 3 but 2 decimal digits",
@@ -40,7 +56,11 @@
         }
       },
       "attempt": "2.16",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_196",
+      "apiAttempt": "3.14",
+      "apiInput": "",
+      "apiChecks": "syntax:isDecimal=3"
     },
     {
       "name": "syntax:isDecimal with argument 3 but integer input",
@@ -51,7 +71,11 @@
         }
       },
       "attempt": "1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_197",
+      "apiAttempt": "1",
+      "apiInput": "",
+      "apiChecks": "syntax:isDecimal=3"
     },
     {
       "name": "syntax:isSimpleFraction with -1/2",
@@ -60,7 +84,11 @@
         "rule": "isSimpleFraction"
       },
       "attempt": "-1/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_200",
+      "apiAttempt": "-1/2",
+      "apiInput": "",
+      "apiChecks": "syntax:isSimpleFraction"
     },
     {
       "name": "syntax:isSimpleFraction with -\frac",
@@ -69,7 +97,11 @@
         "rule": "isSimpleFraction"
       },
       "attempt": "-\\frac{enter}1{downarrow}2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_202",
+      "apiAttempt": "-\frac{1}{2}",
+      "apiInput": "",
+      "apiChecks": "syntax:isSimpleFraction"
     },
     {
       "name": "syntax:isSimpleFraction with mixed fraction",
@@ -78,9 +110,12 @@
         "rule": "isSimpleFraction"
       },
       "attempt": "1\\frac{enter}1{downarrow}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_204",
+      "apiAttempt": "1\frac{1}{2}",
+      "apiInput": "",
+      "apiChecks": "syntax:isSimpleFraction"
     },
-
     {
       "name": "syntax:isExponent ",
       "input": "",
@@ -88,7 +123,11 @@
         "rule": "isExponent"
       },
       "attempt": "3.5^x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_212",
+      "apiAttempt": "3.5^x",
+      "apiInput": "",
+      "apiChecks": "syntax:isExponent"
     },
     {
       "name": "syntax:isExponent ",
@@ -97,7 +136,11 @@
         "rule": "isExponent"
       },
       "attempt": "e^x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_210",
+      "apiAttempt": "e^x",
+      "apiInput": "",
+      "apiChecks": "syntax:isExponent"
     },
     {
       "name": "syntax:isExponent ",
@@ -106,7 +149,11 @@
         "rule": "isExponent"
       },
       "attempt": "x^5",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_213",
+      "apiAttempt": "x^5",
+      "apiInput": "",
+      "apiChecks": "syntax:isExponent"
     },
     {
       "name": "syntax:isExponent ",
@@ -115,7 +162,11 @@
         "rule": "isExponent"
       },
       "attempt": "x^x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_214",
+      "apiAttempt": "x^x",
+      "apiInput": "",
+      "apiChecks": "syntax:isExponent"
     },
     {
       "name": "syntax:isStandardForm=linear",
@@ -126,7 +177,11 @@
         }
       },
       "attempt": "Ax+By=C",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_215",
+      "apiAttempt": "Ax+By=C",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=linear"
     },
     {
       "name": "syntax:isStandardForm=linear ",
@@ -137,7 +192,11 @@
         }
       },
       "attempt": "5x + 3y = 4",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_216",
+      "apiAttempt": "5x + 3y = 4",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=linear"
     },
     {
       "name": "syntax:isStandardForm=linear ",
@@ -148,7 +207,11 @@
         }
       },
       "attempt": "-x + y = 1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_217",
+      "apiAttempt": "-x + y = 1",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=linear"
     },
     {
       "name": "syntax:isStandardForm=linear ",
@@ -159,7 +222,11 @@
         }
       },
       "attempt": "1\\frac{enter}1{downarrow}2{rightarrow}x+\\frac{enter}3{downarrow}5{rightarrow}y=1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_218",
+      "apiAttempt": "1\frac{1}{2}x+\frac{3}{5}y=1",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=linear"
     },
     {
       "name": "syntax:isStandardForm=quadratic ",
@@ -170,7 +237,11 @@
         }
       },
       "attempt": "Ax^2{downarrow}+Bx+C=0",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_220",
+      "apiAttempt": "Ax^2+Bx+C=0",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=quadratic"
     },
     {
       "name": "syntax:isStandardForm=quadratic ",
@@ -181,7 +252,11 @@
         }
       },
       "attempt": "5x^2{downarrow} + 3x = 4",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_222",
+      "apiAttempt": "5x^2 + 3x = 4",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=quadratic"
     },
     {
       "name": "syntax:isStandardForm=quadratic ",
@@ -192,9 +267,12 @@
         }
       },
       "attempt": "1.1x^2{downarrow} + 3.3x + 4 = 0",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_224",
+      "apiAttempt": "1.1x^2 + 3.3x + 4 = 0",
+      "apiInput": "",
+      "apiChecks": "syntax:isStandardForm=quadratic"
     },
-
     {
       "name": "syntax:isSlopeInterceptForm",
       "input": "",
@@ -202,7 +280,11 @@
         "rule": "isSlopeInterceptForm"
       },
       "attempt": "y=ax+b",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_225",
+      "apiAttempt": "y=ax+b",
+      "apiInput": "",
+      "apiChecks": "syntax:isSlopeInterceptForm"
     },
     {
       "name": "syntax:isSlopeInterceptForm",
@@ -211,7 +293,11 @@
         "rule": "isSlopeInterceptForm"
       },
       "attempt": "y = -x + 1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_226",
+      "apiAttempt": "y = -x + 1",
+      "apiInput": "",
+      "apiChecks": "syntax:isSlopeInterceptForm"
     },
     {
       "name": "syntax:isSlopeInterceptForm",
@@ -220,14 +306,24 @@
         "rule": "isSlopeInterceptForm"
       },
       "attempt": "x+y=0",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_228",
+      "apiAttempt": "x+y=0",
+      "apiInput": "",
+      "apiChecks": "syntax:isSlopeInterceptForm"
     },
     {
       "name": "syntax:isSlopeInterceptForm",
       "input": "",
-      "options": { "rule": "isSlopeInterceptForm" },
+      "options": {
+        "rule": "isSlopeInterceptForm"
+      },
       "attempt": "x=y",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_229",
+      "apiAttempt": "x=y",
+      "apiInput": "",
+      "apiChecks": "syntax:isSlopeInterceptForm"
     },
     {
       "name": "syntax:isPointSlopeForm",
@@ -236,7 +332,11 @@
         "rule": "isPointSlopeForm"
       },
       "attempt": "(y-1)=2(x+3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_230",
+      "apiAttempt": "(y-1)=2(x+3)",
+      "apiInput": "",
+      "apiChecks": "syntax:isPointSlopeForm"
     },
     {
       "name": "syntax:isPointSlopeForm",
@@ -245,9 +345,12 @@
         "rule": "isPointSlopeForm"
       },
       "attempt": "y = -x + 1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_231",
+      "apiAttempt": "y = -x + 1",
+      "apiInput": "",
+      "apiChecks": "syntax:isPointSlopeForm"
     },
-
     {
       "name": "syntax:isPointSlopeForm",
       "input": "",
@@ -255,7 +358,11 @@
         "rule": "isPointSlopeForm"
       },
       "attempt": "x+y=0",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_233",
+      "apiAttempt": "x+y=0",
+      "apiInput": "",
+      "apiChecks": "syntax:isPointSlopeForm"
     },
     {
       "name": "syntax:isPointSlopeForm",
@@ -264,7 +371,11 @@
         "rule": "isPointSlopeForm"
       },
       "attempt": "3y-1=x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_234",
+      "apiAttempt": "3y-1=x",
+      "apiInput": "",
+      "apiChecks": "syntax:isPointSlopeForm"
     },
     {
       "name": "value:isMixedFraction with 1 1/2 ",
@@ -273,7 +384,11 @@
         "rule": "isMixedFraction"
       },
       "attempt": "1 1/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_461",
+      "apiAttempt": "1 1/2",
+      "apiInput": "",
+      "apiChecks": "syntax:isMixedFraction"
     },
     {
       "name": "value:isMixedFraction with ",
@@ -282,7 +397,11 @@
         "rule": "isMixedFraction"
       },
       "attempt": "1\\frac{enter}-1{downarrow}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_460",
+      "apiAttempt": "1\frac{-1}{2}",
+      "apiInput": "",
+      "apiChecks": "syntax:isMixedFraction"
     },
     {
       "name": "value:isSimpleFraction with -1/2",
@@ -291,7 +410,11 @@
         "rule": "isSimpleFraction"
       },
       "attempt": "-1/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_462",
+      "apiAttempt": "-1/2",
+      "apiInput": "",
+      "apiChecks": "syntax:isSimpleFraction"
     },
     {
       "name": "EV-5206",
@@ -300,7 +423,11 @@
         "rule": "numberType"
       },
       "attempt": "5",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_571",
+      "apiAttempt": "5",
+      "apiInput": "",
+      "apiChecks": "syntax:integerType"
     },
     {
       "name": "EV-5206",
@@ -309,7 +436,11 @@
         "rule": "integerType"
       },
       "attempt": "5",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_573",
+      "apiAttempt": "5",
+      "apiInput": "",
+      "apiChecks": "syntax:numberType"
     },
     {
       "name": "EV-5206 ",
@@ -318,7 +449,11 @@
         "rule": "variableType"
       },
       "attempt": "6",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_577",
+      "apiAttempt": "6",
+      "apiInput": "",
+      "apiChecks": "syntax:variableType"
     },
     {
       "name": "EV-5206 ",
@@ -327,7 +462,11 @@
         "rule": "scientificType"
       },
       "attempt": "1.3 \\times{enter} 10^-2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_579",
+      "apiAttempt": "1.3 \times 10^{-2}",
+      "apiInput": "",
+      "apiChecks": "syntax:scientificType"
     },
     {
       "name": "EV-5206 ",
@@ -336,7 +475,11 @@
         "rule": "scientificType"
       },
       "attempt": "10 \\times{enter} 10^2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_580",
+      "apiAttempt": "10 \times 10^2",
+      "apiInput": "",
+      "apiChecks": "syntax:scientificType"
     }
   ],
   "equivLiteral": [
@@ -345,556 +488,938 @@
       "attempt": "0.5",
       "options": {},
       "input": "\\frac{enter}1{downarrow}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_3",
+      "apiAttempt": "0.5",
+      "apiInput": "\frac{1}{2}",
+      "apiChecks": "literal"
     },
     {
       "name": "literal: fraction with minus",
       "attempt": "-\\frac{enter}1{downarrow}2",
       "options": {},
       "input": "-\\frac{enter}1{downarrow}2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_4",
+      "apiAttempt": "-\frac{1}{2}",
+      "apiInput": "-\frac{1}{2}",
+      "apiChecks": "literal "
     },
     {
       "name": "literal: fraction with minus",
       "attempt": "-\\frac{enter}1{downarrow}2",
       "options": {},
       "input": "\\frac{enter}-1{downarrow}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_5",
+      "apiAttempt": "-\frac{1}{2}",
+      "apiInput": "\frac{-1}{2}",
+      "apiChecks": "literal"
     },
     {
       "name": "literal: coefficient of 1",
       "attempt": "1x+2",
       "options": {},
       "input": "x+2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_10",
+      "apiAttempt": "1x+2",
+      "apiInput": "x+2",
+      "apiChecks": "literal"
     },
     {
       "name": "literal: decimal fractions",
       "attempt": ".5",
       "options": {},
       "input": "0.5",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_13",
+      "apiAttempt": ".5",
+      "apiInput": "0.5",
+      "apiChecks": "literal"
     },
     {
       "name": "literal: simple case with brackets",
       "attempt": "(2)",
       "options": {},
       "input": "2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_17",
+      "apiAttempt": "(2)",
+      "apiInput": "2",
+      "apiChecks": "literal"
     },
     {
       "name": "literal:inverseResult: decimal fractions",
       "attempt": "0.5",
-      "options": { "inverseResult": true },
+      "options": {
+        "inverseResult": true
+      },
       "input": "0.5",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_19",
+      "apiAttempt": "0.5",
+      "apiInput": "0.5 ",
+      "apiChecks": "literal:inverseResult"
     },
     {
       "name": "literal:inverseResult: simple fraction vs. decimal",
       "attempt": "\\frac{enter}1{downarrow}2",
-      "options": { "inverseResult": true },
+      "options": {
+        "inverseResult": true
+      },
       "input": "0.5",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_20",
+      "apiAttempt": "\frac{1}{2}",
+      "apiInput": "0.5",
+      "apiChecks": "literal:inverseResult"
     },
     {
       "name": "literal:inverseResult: fraction instead of number",
       "attempt": "\\frac{enter}4{downarrow}2",
-      "options": { "inverseResult": true },
+      "options": {
+        "inverseResult": true
+      },
       "input": "2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_23",
+      "apiAttempt": "4/2",
+      "apiInput": "2",
+      "apiChecks": "literal:inverseResult"
     },
     {
       "name": "literal:ignoreTrailingZeros",
       "attempt": "0.5",
-      "options": { "ignoreTrailingZeros": true },
+      "options": {
+        "ignoreTrailingZeros": true
+      },
       "input": "0.50000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_26",
+      "apiAttempt": "0.5",
+      "apiInput": "0.50000",
+      "apiChecks": "literal:ignoreTrailingZeros"
     },
     {
       "name": "literal:ignoreTrailingZeros",
       "attempt": "0.500001",
-      "options": { "ignoreTrailingZeros": true },
+      "options": {
+        "ignoreTrailingZeros": true
+      },
       "input": "0.50000",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_27",
+      "apiAttempt": "0.500001",
+      "apiInput": "0.5",
+      "apiChecks": "literal:ignoreTrailingZeros"
     },
     {
       "name": "literal:setDecimalSeparator=','",
       "attempt": "2,1",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "input": "1.1+1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_31",
+      "apiAttempt": "2,1",
+      "apiInput": "1.1+1",
+      "apiChecks": "literal:setDecimalSeparator=','"
     },
     {
       "name": "literal:setDecimalSeparator=','",
-      "attempt": "2,1",
-      "options": { "setDecimalSeparator": "," },
+      "attempt": "1.1+1",
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "input": "1.1+1",
-      "evaluation": false
+      "evaluation": true,
+      "testcaseId": "M_30",
+      "apiAttempt": "1,1+1",
+      "apiInput": "1.1+1",
+      "apiChecks": "literal:setDecimalSeparator=','"
     },
     {
       "name": "literal:setThousandsSeparator=[' ']",
       "attempt": "1 000 000",
-      "options": { "setThousandsSeparator": " " },
+      "options": {
+        "setThousandsSeparator": " "
+      },
       "input": "1000000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_36",
+      "apiAttempt": "1 000 000",
+      "apiInput": "1000000",
+      "apiChecks": "literal:setThousandsSeparator=[' ']"
     },
     {
       "name": "literal:setThousandsSeparator=[',']",
       "attempt": "1 000 + x",
-      "options": { "setThousandsSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ","
+      },
       "input": "1000 + x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_37",
+      "apiAttempt": "1 000 + x",
+      "apiInput": "1000 + x",
+      "apiChecks": "literal:setThousandsSeparator=[',']"
     },
     {
       "name": "literal",
       "attempt": "[1.0, 2.0)",
       "options": {},
       "input": "[1, 2)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_239",
+      "apiAttempt": "[1.0, 2.0)",
+      "apiInput": "[1, 2)",
+      "apiChecks": "literal"
     },
     {
       "name": "literal ignoring coefficient of 1",
       "attempt": "x+12",
-      "options": { "ignoreCoefficientOfOne": true },
+      "options": {
+        "ignoreCoefficientOfOne": true
+      },
       "input": "x+2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_253",
+      "apiAttempt": "x+12",
+      "apiInput": "x+2",
+      "apiChecks": "literal:ignoreCoefficientOfOne"
     },
     {
       "name": "literal ignoring coefficient of 1",
       "attempt": "1\\times{enter} x+2",
-      "options": { "ignoreCoefficientOfOne": true },
+      "options": {
+        "ignoreCoefficientOfOne": true
+      },
       "input": "x+2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_255",
+      "apiAttempt": "1\times x+2",
+      "apiInput": "x+2",
+      "apiChecks": "literal:ignoreCoefficientOfOne"
     },
     {
       "name": "literal ignoring order",
       "attempt": "1+x+x+x^2",
-      "options": { "ignoreOrder": true },
+      "options": {
+        "ignoreOrder": true
+      },
       "input": "x^2{downarrow}+2x+1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_262",
+      "apiAttempt": "1+x+x+x^2",
+      "apiInput": "x^2+2x+1",
+      "apiChecks": "literal:ignoreOrder"
     },
     {
       "name": "EV-1097, handling trailing zeroe",
       "attempt": "1000.000",
-      "options": { "ignoreTrailingZeros": true },
+      "options": {
+        "ignoreTrailingZeros": true
+      },
       "input": "1000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_337",
+      "apiAttempt": "1000.000",
+      "apiInput": "1000",
+      "apiChecks": "literal:ignoreTrailingZeros"
     },
     {
       "name": "parentheses, EV1150",
       "attempt": "(2)",
       "options": {},
       "input": "2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_344",
+      "apiAttempt": "left(2\right)",
+      "apiInput": "2",
+      "apiChecks": "literal"
     },
-
     {
       "name": "parentheses, EV1150",
       "attempt": "(2)",
       "options": {},
       "input": "3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_345",
+      "apiAttempt": "left(2\right)",
+      "apiInput": "3",
+      "apiChecks": "literal"
     },
     {
       "name": "literal",
       "attempt": "{{}x | x<2{}}",
       "options": {},
       "input": "(-\\infty{enter},2)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_401",
+      "apiAttempt": "{x | x<2}",
+      "apiInput": "(-infty,2)",
+      "apiChecks": "literal"
     },
-
     {
       "name": "scientific-notation",
       "attempt": "1e-2",
       "options": {},
       "input": "0.01",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_420",
+      "apiAttempt": "1e-2",
+      "apiInput": "0.01",
+      "apiChecks": "literal"
     },
-
     {
       "name": "literal:allowInterval  ",
       "attempt": "[1.1, 2.2)",
       "options": {},
       "input": "[1.1, 2.2)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_458",
+      "apiAttempt": "[1.1, 2.2)",
+      "apiInput": "[1.1, 2.2)",
+      "apiChecks": "literal"
     },
     {
       "name": "literal:allowInterval  ",
       "attempt": "2\\pi{enter}\\theta{enter}",
       "options": {},
       "input": "2\\pi{enter}\\theta{enter}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1099",
+      "apiAttempt": "2pi\theta ",
+      "apiInput": "2pi\theta",
+      "apiChecks": "literal"
     },
     {
       "name": "NONE  ",
       "attempt": "none",
       "options": {},
       "input": "none",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1130",
+      "apiAttempt": "none ",
+      "apiInput": "none",
+      "apiChecks": "literal"
     }
   ],
   "equivSymbolic": [
     {
       "name": "symbolic: addition and multiplication non-associativity",
-      "input": "x+y*z",
+      "input": "(x+y) \\times{enter} z",
       "options": {},
-      "attempt": "(x+y) \\times{enter} z",
-      "evaluation": false
+      "attempt": "x+y*z",
+      "evaluation": false,
+      "testcaseId": "M_40",
+      "apiAttempt": "x+y*z",
+      "apiInput": "(x+y) \times z ",
+      "apiChecks": "symbolic"
     },
-    {
-      "name": "symbolic: fraction with missing closing '}'",
-      "input": "\\frac{enter}{{}1{}}{downarrow}{{}10",
-      "options": {},
-      "attempt": "0.1",
-      "evaluation": false
-    },
+
     {
       "name": "symbolic: simple fraction vs. decimal",
-      "input": "\\frac{enter}1{downarrow}10",
+      "input": "0.1",
       "options": {},
-      "attempt": "0.1",
-      "evaluation": true
+      "attempt": "\\frac{enter}1{downarrow}10",
+      "evaluation": true,
+      "testcaseId": "M_46",
+      "apiAttempt": "\frac{1}{10}",
+      "apiInput": "0.1",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic:setDecimalSeparator=',': percent conversion",
-      "input": "10,1%",
-      "options": { "setDecimalSeparator": "," },
-      "attempt": "0,101",
-      "evaluation": true
+      "input": "0,101",
+      "options": {
+        "setDecimalSeparator": ","
+      },
+      "attempt": "10,1%",
+      "evaluation": true,
+      "testcaseId": "M_51",
+      "apiAttempt": "10,1%",
+      "apiInput": "0,101",
+      "apiChecks": "symbolic:setDecimalSeparator=','"
     },
     {
       "name": "symbolic:setDecimalSeparator=',': enumeration",
       "input": "1, 2, 3",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "1, 2, 3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_55",
+      "apiAttempt": "1, 2, 3",
+      "apiInput": "1, 2, 3",
+      "apiChecks": "symbolic:setDecimalSeparator=','",
+      "error": "Parsing_Error"
     },
     {
       "name": "symbolic:setThousandsSeparator=[',']': simple fraction vs. decimal",
-      "input": "\\frac{enter}1{downarrow}1,000",
-      "options": { "setThousandsSeparator": "," },
-      "attempt": "0.001",
-      "evaluation": true
+      "input": "0.001",
+      "options": {
+        "setThousandsSeparator": ","
+      },
+      "attempt": "\\frac{enter}1{downarrow}1,000",
+      "evaluation": true,
+      "testcaseId": "M_60",
+      "apiAttempt": "\frac{1}{1,000}",
+      "apiInput": "0.001",
+      "apiChecks": "symbolic:setThousandsSeparator=[',']"
     },
     {
       "name": "symbolic:compareSides: percent conversion",
-      "input": "30%+4.2=4.5",
-      "options": { "compareSides": true },
-      "attempt": "0.3 + 4.2 = 4.5",
-      "evaluation": true
+      "input": "0.3 + 4.2 = 4.5",
+      "options": {
+        "compareSides": true
+      },
+      "attempt": "30%+4.2=4.5",
+      "evaluation": true,
+      "testcaseId": "M_63",
+      "apiAttempt": "30%+4.2=4.5",
+      "apiInput": "0.3 + 4.2 = 4.5",
+      "apiChecks": "symbolic:compareSides"
     },
     {
       "name": "symbolic:compareSides: wrong expression",
-      "input": "3+3=7",
-      "options": { "compareSides": true },
-      "attempt": "4 + 3 = 7",
-      "evaluation": false
+      "input": "4 + 3 = 7",
+      "options": {
+        "compareSides": true
+      },
+      "attempt": "3+3=7",
+      "evaluation": false,
+      "testcaseId": "M_65",
+      "apiAttempt": "3+3=7",
+      "apiInput": "4 + 3 = 7",
+      "apiChecks": "symbolic:compareSides"
     },
     {
       "name": "syntax:isMixedFraction with \frac and space",
       "input": "1 \\frac{enter}1{downarrow}2",
-      "options": { "isMixedFraction": true },
+      "options": {
+        "isMixedFraction": true
+      },
       "attempt": "1 \\frac{enter}1{downarrow}2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_206",
+      "apiAttempt": "1 \frac{1}{2}",
+      "apiInput": "1 \frac{1}{2}",
+      "apiChecks": "symbolic:isMixedFraction"
     },
     {
       "name": "syntax:isMixedFraction with decimal",
       "input": "1.0\\frac{enter}1{enter}2",
-      "options": { "isMixedFraction": true },
+      "options": {
+        "isMixedFraction": true
+      },
       "attempt": "1.0\\frac{enter}1{downarrow}2",
-      "evaluation": false
-    },
-
-    {
-      "name": "Eulers Number, EV-1087",
-      "input": "\\ln{enter}e^x",
-      "options": { "allowEulersNumber": true },
-      "attempt": "x",
-      "evaluation": true
+      "evaluation": false,
+      "testcaseId": "M_209",
+      "apiAttempt": "1.0\frac{1}{2}",
+      "apiInput": "1.0\frac{1}{2}",
+      "apiChecks": "symbolic:isMixedFraction"
     },
     {
       "name": "Eulers Number, EV-1087",
-      "input": "\\log{enter}10 + \\ln{enter} e^x {downarrow}= 0",
-      "options": { "allowEulersNumber": true },
-      "attempt": "1 = -x",
-      "evaluation": true
+      "input": "x",
+      "options": {
+        "allowEulersNumber": true
+      },
+      "attempt": "\\ln{enter}e^x",
+      "evaluation": true,
+      "testcaseId": "M_353",
+      "apiAttempt": "ln e^x",
+      "apiInput": "x",
+      "apiChecks": "symbolic:allowEulersNumber"
     },
     {
       "name": "Eulers Number, EV-1087",
-      "input": "\\ln{enter} e^x = 1",
-      "options": { "allowEulersNumber": true, "compareSides": true },
-      "attempt": "x-1 = 0",
-      "evaluation": false
+      "input": "1 = -x",
+      "options": {
+        "allowEulersNumber": true
+      },
+      "attempt": "\\log{enter}10 + \\ln{enter} e^x {downarrow}= 0",
+      "evaluation": true,
+      "testcaseId": "M_357",
+      "apiAttempt": "log 10 + ln e^x = 0",
+      "apiInput": "1 = -x",
+      "apiChecks": "symbolic:allowEulersNumber"
+    },
+    {
+      "name": "Eulers Number, EV-1087",
+      "input": "x-1 = 0",
+      "options": {
+        "allowEulersNumber": true,
+        "compareSides": true
+      },
+      "attempt": "\\ln{enter} e^x = 1",
+      "evaluation": false,
+      "testcaseId": "M_356",
+      "apiAttempt": "ln e^x = 1",
+      "apiInput": "x-1 = 0",
+      "apiChecks": "symbolic:allowEulersNumber,compareSides"
     },
     {
       "name": "differentiation",
-      "input": "\\frac{enter}d{downarrow}dx{rightarrow}e^-x^2",
-      "options": { "allowEulersNumber": true },
-      "attempt": "e^-x^2{downarrow}{downarrow}(-2x)",
-      "evaluation": true
+      "input": "-2xe^-x^2",
+      "options": {
+        "allowEulersNumber": true
+      },
+      "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}e^-x^2",
+      "evaluation": true,
+      "testcaseId": "M_525",
+      "apiAttempt": "\frac{d}{dx}e^{-x^2}",
+      "apiInput": "-2xe^{-x^2}",
+      "apiChecks": "symbolic:allowEulersNumber"
     },
     {
       "name": "thousands handling as an interval-Error",
-      "input": "234,1",
-      "options": { "interpretAsSet": true },
-      "attempt": "(1,234)",
-      "evaluation": false
+      "input": "(1,234)",
+      "options": {
+        "interpretAsSet": true
+      },
+      "attempt": "234,1",
+      "evaluation": false,
+      "testcaseId": "M_642",
+      "apiAttempt": "234,1",
+      "apiInput": "(1,234)",
+      "apiChecks": "symbolic:interpretAsList"
     },
     {
       "name": "set with variables interpretAsSet---Error",
-      "input": "2,x + 1,3",
-      "options": { "interpretAsSet": true },
-      "attempt": "(x + 1,2,3)",
-      "evaluation": true
+      "input": "(x + 1,2,3)",
+      "options": {
+        "interpretAsSet": true
+      },
+      "attempt": "2,x + 1,3",
+      "evaluation": true,
+      "testcaseId": "M_681",
+      "apiAttempt": "2,x + 1,3",
+      "apiInput": "(x + 1,2,3)",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "set with hierarchy",
-      "input": "(x,y),(w,z)",
+      "input": "{{}(x,y),(w,z){}}",
       "options": {},
-      "attempt": "{{}(x,y),(w,z){}}",
-      "evaluation": true
+      "attempt": "(x,y),(w,z)",
+      "evaluation": true,
+      "testcaseId": "M_686",
+      "apiAttempt": "(x,y),(w,z)",
+      "apiInput": "{(x,y),(w,z)}",
+      "apiChecks": "symbolic"
     },
-
     {
-      "name": "thousands handling--Error",
-      "input": "234,1,567",
-      "options": { "setListTypeResponse": true },
-      "attempt": "{{}1,234,567{}}",
-      "evaluation": false
+      "name": "thousands handling",
+      "input": "{{}1,234,567{}}",
+      "options": {
+        "setListTypeResponse": true
+      },
+      "attempt": "234,1,567",
+      "evaluation": false,
+      "testcaseId": "M_646",
+      "apiAttempt": "234,1,567",
+      "apiInput": "{1,234,567}",
+      "apiChecks": "symbolic"
     },
-
     {
-      "name": "thousands handling--Error",
-      "input": "234,567,0",
-      "options": { "setListTypeResponse": true },
-      "attempt": "0,234,567",
-      "evaluation": false
+      "name": "thousands handling",
+      "input": "0,234,567",
+      "options": {
+        "setListTypeResponse": true
+      },
+      "attempt": "234,567,0",
+      "evaluation": false,
+      "testcaseId": "M_649",
+      "apiAttempt": "234,567,0",
+      "apiInput": "0,234,567",
+      "apiChecks": "symbolic:interpretAsList"
     },
     {
       "name": "symbolic:allowInterval",
       "input": "[1, 2)",
       "options": {},
       "attempt": "[1, 2)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_449",
+      "apiAttempt": "[1, 2)",
+      "apiInput": "[1, 2)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic:allowInterval",
       "input": "[1.1, 2.2)",
       "options": {},
       "attempt": "[1.1, 2.2)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_451",
+      "apiAttempt": "[1.1, 2.2)",
+      "apiInput": "[1.1, 2.2)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "support dollar as in mathquill",
       "input": "$128",
       "options": {},
       "attempt": "$128",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_486",
+      "apiAttempt": "$128",
+      "apiInput": "$128",
+      "apiChecks": "symbolic"
     },
-
     {
       "name": "[] default to intervals",
-      "input": "(5,4]",
+      "input": "[5,4)",
       "options": {},
-      "attempt": "[5,4)",
-      "evaluation": false
+      "attempt": "(5,4]",
+      "evaluation": false,
+      "testcaseId": "M_700",
+      "apiAttempt": "(5,4]",
+      "apiInput": "[5,4]",
+      "apiChecks": "symbolic"
     },
     {
       "name": "() and two elements -> default to intervals",
-      "input": "{{}2,3{}}",
+      "input": "(2, 3)",
       "options": {},
-      "attempt": "(2, 3)",
-      "evaluation": false
+      "attempt": "{{}2,3{}}",
+      "evaluation": false,
+      "testcaseId": "M_707",
+      "apiAttempt": "{2,3}",
+      "apiInput": "(2, 3)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "() and two elements -> default to intervals",
-      "input": "(2 , 3 )",
+      "input": "(  2  ,  3  )",
       "options": {},
-      "attempt": "(  2  ,  3  )",
-      "evaluation": true
+      "attempt": "(2 , 3 )",
+      "evaluation": true,
+      "testcaseId": "M_783",
+      "apiAttempt": "(2 , 3 )",
+      "apiInput": "(  2  ,  3  )",
+      "apiChecks": "symbolic"
     },
     {
       "name": "three intervals set",
-      "input": "(3,4),(2,3)",
+      "input": "{{}(2,3),(3,4),(-1,0){}}",
       "options": {},
-      "attempt": "{{}(2,3),(3,4),(-1,0){}}",
-      "evaluation": false
+      "attempt": "(3,4),(2,3)",
+      "evaluation": false,
+      "testcaseId": "M_1374",
+      "apiAttempt": "(3,4),(2,3)",
+      "apiInput": "{(2,3),(3,4),(-1,0)}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "three intervals set",
-      "input": "(-1,0),(3,4),(2,3)",
+      "input": "{{}(2,3),(3,4),(-1,0){}}",
       "options": {},
-      "attempt": "{{}(2,3),(3,4),(-1,0){}}",
-      "evaluation": true
+      "attempt": "(-1,0),(3,4),(2,3)",
+      "evaluation": true,
+      "testcaseId": "M_1375",
+      "apiAttempt": "(-1,0),(3,4),(2,3)",
+      "apiInput": "{(2,3),(3,4),(-1,0)}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "three intervals set",
-      "input": "(0,1),(-1,0],(3,4),(2,3)",
+      "input": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
       "options": {},
-      "attempt": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
-      "evaluation": true
+      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "evaluation": true,
+      "testcaseId": "M_1380",
+      "apiAttempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "apiInput": "{(0,1),(2,3),(3,4),(-1,0]}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "three intervals set",
-      "input": "(0,1),(-1,0],(3,4),(2,3)",
+      "input": "((0,1),(2,3),(3,4),(-1,0])",
       "options": {},
-      "attempt": "{{}(0,1),(2,3),(3,4),(-1,0]{}}",
-      "evaluation": true
+      "attempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "evaluation": false,
+      "testcaseId": "M_1381",
+      "apiAttempt": "(0,1),(-1,0],(3,4),(2,3)",
+      "apiInput": "((0,1),(2,3),(3,4),(-1,0])",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic isExpanded: simple polynomial==Error",
       "input": "x^2{downarrow}+3x",
-      "options": { "isExpanded": true },
+      "options": {
+        "isExpanded": true
+      },
       "attempt": "x^2{downarrow}+3x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_501",
+      "apiAttempt": "x^2+3x",
+      "apiInput": "x^2+3x",
+      "apiChecks": "symbolic:isExpanded"
     },
     {
       "name": "not to automatically multiple a pair of numbers separated by space",
-      "input": "3 2 1",
+      "input": "6",
       "options": {},
-      "attempt": "6",
-      "evaluation": false
+      "attempt": "3 2 1",
+      "evaluation": false,
+      "testcaseId": "M_727",
+      "apiAttempt": "3 2 1",
+      "apiInput": "6",
+      "apiChecks": "symbolic"
     },
     {
       "name": "default",
-      "input": "4\\cdot{enter}(94/100{rightarrow})^x",
-      "options": { "isSimplified": true },
-      "attempt": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
-      "evaluation": false
+      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "options": {
+        "isSimplified": true
+      },
+      "attempt": "4\\cdot{enter}(94/100{rightarrow})^x",
+      "evaluation": false,
+      "testcaseId": "M_1659",
+      "apiAttempt": "4cdot(94/100)^x",
+      "apiInput": "4(1-6/100)^x",
+      "apiChecks": "symbolic:isSimplified"
     },
     {
       "name": "default",
-      "input": "4\\cdot{enter}(47/50{rightarrow})^x",
-      "options": { "isSimplified": true },
-      "attempt": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
-      "evaluation": true
+      "input": "4(1-6/100){rightarrow}{rightarrow}{rightarrow}^x",
+      "options": {
+        "isSimplified": true
+      },
+      "attempt": "4\\cdot{enter}(47/50{rightarrow})^x",
+      "evaluation": true,
+      "testcaseId": "M_1660",
+      "apiAttempt": "4cdot(47/50)^x",
+      "apiInput": "4(1-6/100)^x",
+      "apiChecks": "symbolic:isSimplified"
     },
     {
       "name": "Simplification with paranthesis",
-      "input": "x(x+3/12)",
-      "options": { "isSimplified": true },
-      "attempt": "x^2{downarrow} + x/4",
-      "evaluation": false
+      "input": "x^2{downarrow} + x/4",
+      "options": {
+        "isSimplified": true
+      },
+      "attempt": "x(x+3/12)",
+      "evaluation": false,
+      "testcaseId": "M_280",
+      "apiAttempt": "x(x+3/12)",
+      "apiInput": "x^2 + x/4",
+      "apiChecks": "symbolic;isSimplified"
     },
     {
       "name": "Mixed fraction simplification",
-      "input": "7/4",
-      "options": { "isSimplified": true, "isMixedFraction": true },
-      "attempt": "1\\frac{enter}3{downarrow}/4",
-      "evaluation": false
+      "input": "1\\frac{enter}3{downarrow}/4",
+      "options": {
+        "isSimplified": true,
+        "isMixedFraction": true
+      },
+      "attempt": "7/4",
+      "evaluation": false,
+      "testcaseId": "M_285",
+      "apiAttempt": "7/4",
+      "apiInput": "1 3/4",
+      "apiChecks": "symbolic:isMixedFraction,isSimplified"
     },
     {
       "name": "support of le and ge",
       "input": "y > x",
       "options": {},
       "attempt": "y > x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_499",
+      "apiAttempt": "y > x",
+      "apiInput": "y > x",
+      "apiChecks": "symbolic"
     },
-
     {
       "name": "symbolic;isSimplified==Error",
-      "input": "3x+y",
-      "options": { "isSimplified": true },
-      "attempt": "x+x+x+y",
-      "evaluation": false
+      "input": "x+x+x+y",
+      "options": {
+        "isSimplified": true
+      },
+      "attempt": "3x+y",
+      "evaluation": false,
+      "testcaseId": "M_342",
+      "apiAttempt": "3x+y",
+      "apiInput": "x+x+x+y",
+      "apiChecks": "symbolic;isSimplified"
     },
     {
       "name": "''isRationalized 15'",
-      "input": "2/\\sqrt{enter}9",
-      "options": { "isRationalized": true },
-      "attempt": "2/3",
-      "evaluation": false
+      "input": "2/3",
+      "options": {
+        "isRationalized": true
+      },
+      "attempt": "2/\\sqrt{enter}9",
+      "evaluation": false,
+      "testcaseId": "M_802",
+      "apiAttempt": "2/sqrt{9}",
+      "apiInput": "2/3",
+      "apiChecks": "symbolic:isRationalized"
     },
     {
       "name": "''isRationalized 21b'",
       "input": "2/5",
-      "options": { "isRationalized": true, "inverseResult": true },
+      "options": {
+        "isRationalized": true,
+        "inverseResult": true
+      },
       "attempt": "2/5",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_809",
+      "apiAttempt": "2/5",
+      "apiInput": "2/5",
+      "apiChecks": "symbolic:isRationalized,inverseResult"
     },
     {
       "name": "''isRational in symbolic 31'",
       "input": "1/2",
-      "options": { "isRationalized": true },
+      "options": {
+        "isRationalized": true
+      },
       "attempt": "1/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_823",
+      "apiAttempt": "\frac{1}{2}",
+      "apiInput": "\frac{1}{2}",
+      "apiChecks": "symbolic:isRational"
     },
     {
       "name": "Mixed fraction simplification different notations",
-      "input": "-2\\frac{enter}1{downarrow}2",
+      "input": "-5/2",
       "options": {},
-      "attempt": "-5/2",
-      "evaluation": true
+      "attempt": "-2\\frac{enter}1{downarrow}2",
+      "evaluation": true,
+      "testcaseId": "M_331",
+      "apiAttempt": "-2\frac{1}{2}",
+      "apiInput": "-5/2",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic",
-      "input": "2\\frac{enter}1{downarrow}2",
-      "options": { "isMixedFraction": true },
-      "attempt": "\\frac{enter}5{downarrow}2",
-      "evaluation": true
+      "input": "\\frac{enter}5{downarrow}2",
+      "options": {
+        "isMixedFraction": true
+      },
+      "attempt": "2\\frac{enter}1{downarrow}2",
+      "evaluation": true,
+      "testcaseId": "M_333",
+      "apiAttempt": "2\frac{1}{2}",
+      "apiInput": "\frac{5}{2}",
+      "apiChecks": "symbolic:isMixedFraction"
     },
     {
       "name": "syntax:isMixedFraction with minus in enumerator",
       "input": "1\\frac{enter}-1{downarrow}2",
-      "options": { "isMixedFraction": true },
+      "options": {
+        "isMixedFraction": true
+      },
       "attempt": "1\\frac{enter}-1{downarrow}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_208",
+      "apiAttempt": "1\frac{-1}{2}",
+      "apiInput": "1\frac{-1}{2}",
+      "apiChecks": "symbolic:isMixedFraction"
     },
     {
       "name": "syntax:isMixedFraction with 1 1/2",
       "input": "1 1/2",
-      "options": { "isMixedFraction": true },
+      "options": {
+        "isMixedFraction": true
+      },
       "attempt": "1 1/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_205",
+      "apiAttempt": "1 1/2",
+      "apiInput": "1 1/2",
+      "apiChecks": "symbolic:isMixedFraction"
     },
     {
       "name": "symbolic without compareSides but with equalities: wrong equality that evaluates to True",
-      "input": "3+3=6",
+      "input": "4 + 3 = 7",
       "options": {},
-      "attempt": "4 + 3 = 7",
-      "evaluation": true
+      "attempt": "3+3=6",
+      "evaluation": true,
+      "testcaseId": "M_289",
+      "apiAttempt": "3+3=6",
+      "apiInput": "4 + 3 = 7",
+      "apiChecks": "symbolic"
     },
     {
       "name": "case 2.4",
-      "input": "x+1 < y",
-      "options": { "compareSides": true },
-      "attempt": "x+1>y",
-      "evaluation": false
+      "input": "x+1>y",
+      "options": {
+        "compareSides": true
+      },
+      "attempt": "x+1 < y",
+      "evaluation": false,
+      "testcaseId": "M_431",
+      "apiAttempt": "x+1 < y",
+      "apiInput": "x+1>y",
+      "apiChecks": "symbolic:compareSides"
     },
     {
       "name": "case 1.2 *BUG*",
-      "input": "x+1 < y",
+      "input": "x-y+1<0",
       "options": {},
-      "attempt": "x-y+1<0",
-      "evaluation": true
+      "attempt": "x+1 < y",
+      "evaluation": true,
+      "testcaseId": "M_425",
+      "apiAttempt": "x+1 < y",
+      "apiInput": "x-y+1<0",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic without compareSides but with equalities: wrong expression and answer",
-      "input": "10+1/2",
+      "input": "10.5",
       "options": {},
-      "attempt": "10.5",
-      "evaluation": true
+      "attempt": "10+1/2",
+      "evaluation": true,
+      "testcaseId": "M_291",
+      "apiAttempt": "10+1/2",
+      "apiInput": "10.5",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic:isSimplified",
       "input": "\\frac{enter}3{downarrow}6",
-      "options": { "isSimplified": true },
+      "options": {
+        "isSimplified": true
+      },
       "attempt": "\\frac{enter}1{downarrow}2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_413",
+      "apiAttempt": "\frac{1}{2}",
+      "apiInput": "\frac{3}{6}",
+      "apiChecks": "symbolic:isSimplified"
     },
     {
       "name": "symbolic: fraction with missing closing '}'",
-      "input": "\\frac{enter}{{}1{}}{downarrow}{{}10",
+      "input": "0.1",
       "options": {},
-      "attempt": "0.1",
-      "evaluation": false
+      "attempt": "\\frac{enter}{{}1{}}{downarrow}{{}10",
+      "evaluation": false,
+      "testcaseId": "M_44",
+      "apiAttempt": "\frac{1}{10",
+      "apiInput": "0.1",
+      "apiChecks": "symbolic"
     },
     {
       "name": "inequality support",
       "input": "y=x",
       "options": {},
       "attempt": "y>x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_489",
+      "apiAttempt": "y>x",
+      "apiInput": "y=x",
+      "apiChecks": "symbolic"
     },
     {
       "name": "inequality support",
@@ -903,219 +1428,367 @@
         "compareSides": true
       },
       "attempt": "y=x+3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_491",
+      "apiAttempt": "y=x+3",
+      "apiInput": "y<x+3",
+      "apiChecks": "symbolic:compareSides"
     },
     {
       "name": "circ is an alternative for degree",
       "input": "128^\\circ{enter}",
       "options": {},
       "attempt": "128^\\circ{enter}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_494",
+      "apiAttempt": "128^{circ}",
+      "apiInput": "128^{circ}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "fraction test",
       "input": "\\frac3{downarrow}5",
       "options": {},
       "attempt": "6/10",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_496",
+      "apiAttempt": "6/10",
+      "apiInput": "\frac{3}{5}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "reversing inequality",
       "input": "y<x",
       "options": {},
       "attempt": "y>x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_498",
+      "apiAttempt": "y>x",
+      "apiInput": "y<x",
+      "apiChecks": "symbolic"
     },
     {
       "name": "differentiation",
       "input": "\\frac{enter}(x+2)-(x+1){downarrow}(x+2)^2",
       "options": {},
       "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}\\left{enter}\\frac{enter}x+1{downarrow}x+2\\right{enter}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_528",
+      "apiAttempt": "\frac{d}{dx}left(\frac{x+1}{x+2}\right)",
+      "apiInput": "\frac{(x+2)-(x+1)}{(x+2)^2}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "differentiation",
       "input": "\\frac{enter}1{downarrow}x^2{downarrow}+4x+4",
       "options": {},
       "attempt": "\\frac{enter}d{downarrow}dx{rightarrow}\\left{enter}\\frac{enter}x+1{downarrow}x+2\\right{enter}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_530",
+      "apiAttempt": "\frac{d}{dx}left(\frac{x+1}{x+2}\right)",
+      "apiInput": "\frac{1}{x^2+4x+4}",
+      "apiChecks": "symbolic"
     },
     {
       "name": "limits",
       "input": "2/5",
       "options": {},
       "attempt": "\\lim_x\\to{enter}\\infty{enter}{rightarrow}\\cfrac{enter}2x^3{downarrow}-x^2{downarrow}+1{downarrow}5x^3{downarrow}+x-8",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_547",
+      "apiAttempt": "lim_{x\toinfty}cfrac{2x^3-x^2+1}{5x^3+x-8}",
+      "apiInput": "2/5",
+      "apiChecks": "symbolic"
     },
     {
       "name": "limits",
       "input": "0.4",
       "options": {},
       "attempt": "\\lim_x\\to{enter}\\infty{enter}{rightarrow}\\cfrac{enter}2x^3{downarrow}-x^2{downarrow}+1{downarrow}5x^3{downarrow}+x-8",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_549",
+      "apiAttempt": "lim_{x\toinfty}cfrac{2x^3-x^2+1}{5x^3+x-8}",
+      "apiInput": "0.4",
+      "apiChecks": "symbolic"
     },
     {
       "name": "limits",
       "input": "+\\infty{enter}",
       "options": {},
       "attempt": "\\lim_x\\to{enter}2^+{downarrow}{rightarrow}\\cfrac{enter}-3x+4x^2{downarrow}{downarrow}(-2+x)^7",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_551",
+      "apiAttempt": "lim_{x\to 2^+}cfrac{-3x+4x^2}{(-2+x)^7}",
+      "apiInput": "+infty",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/primitive",
       "input": "\\ln{enter}(x)",
       "options": {},
       "attempt": "\\int{enter}{rightarrow}{rightarrow} \\frac{enter}1{downarrow}x{rightarrow}dx",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_532",
+      "apiAttempt": "int \frac{1}{x}dx",
+      "apiInput": "ln(x)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/primitive",
       "input": "\\frac{enter}1{downarrow}2{rightarrow}\\ln{enter}(x^2{downarrow}+1)",
       "options": {},
       "attempt": "\\int{enter}{rightarrow}{rightarrow} \\frac{enter}x {downarrow}x^2{downarrow}+1{rightarrow}dx",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_533",
+      "apiAttempt": "int\frac{x}{x^2+1}dx",
+      "apiInput": "\frac{1}{2}ln(x^2+1)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/primitive",
       "input": "x(\\ln{enter}(x)-1)",
       "options": {},
       "attempt": "\\int{enter}{rightarrow}{rightarrow}\\ln(x)dx",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_537",
+      "apiAttempt": "intln(x)dx",
+      "apiInput": "x(ln(x)-1)",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/primitive",
       "input": "x\\ln{enter}(x)-x",
       "options": {},
       "attempt": "\\int{enter}{rightarrow}{rightarrow}\\ln(x)dx",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_539",
+      "apiAttempt": "intln(x)dx",
+      "apiInput": "xln(x)-x",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/improper",
       "input": "1/2",
       "options": {},
       "attempt": "\\int_2{uparrow}{uparrow}+\\infty{enter}{rightarrow}\\frac{enter}1 dx{downarrow}x^2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_541",
+      "apiAttempt": "int_2^{+infty}\frac{1}{x^2}dx",
+      "apiInput": "1/2",
+      "apiChecks": "symbolic"
     },
     {
       "name": "integral/improper",
       "input": "0.5",
       "options": {},
       "attempt": "\\int_2{uparrow}{uparrow}+\\infty{enter}{rightarrow}\\frac{enter}1 dx{downarrow}x^2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_543",
+      "apiAttempt": "int_2^{+infty}\frac{1}{x^2}dx",
+      "apiInput": "0.5",
+      "apiChecks": "symbolic"
     },
     {
       "name": "harmonic series",
       "input": "\\infty{enter}",
       "options": {},
       "attempt": "\\sum_n=1{uparrow}{uparrow}\\infty{enter}{rightarrow} \\frac{enter}1{downarrow}n",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_545",
+      "apiAttempt": "sum_{n=1}^{infty} \frac{1}{n}",
+      "apiInput": "infty",
+      "apiChecks": "symbolic"
     },
-
     {
       "name": "EV-5582 latex inequalities",
       "input": "x \\ge{enter} 12",
       "options": {},
       "attempt": "x\\ge{enter} 12",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_588",
+      "apiAttempt": "xge 12",
+      "apiInput": "x ge 12",
+      "apiChecks": "symbolic"
     },
     {
       "name": "EV-5582 latex inequalities",
       "input": "x \\ge{enter} 12",
       "options": {},
       "attempt": "x\\geq{enter} 12",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_589",
+      "apiAttempt": "xgeq 12",
+      "apiInput": "x ge 12",
+      "apiChecks": "symbolic"
     },
     {
       "name": "EV-5582 latex inequalities",
       "input": "x \\leq{enter} 12",
       "options": {},
       "attempt": "x\\leq{enter} 12",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_590",
+      "apiAttempt": "xleq 12",
+      "apiInput": "x leq 12",
+      "apiChecks": "symbolic"
     },
     {
       "name": "EV-5582 latex inequalities",
       "input": "x \\le{enter} 12",
       "options": {},
       "attempt": "x\\leq{enter} 12",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_591",
+      "apiAttempt": "xleq 12",
+      "apiInput": "x le 12",
+      "apiChecks": "symbolic"
     },
     {
       "name": "symbolic:setThousandSeparator=['.'],setDecimalSeparator=[',']",
       "input": "1.000,0",
-      "options": { "setThousandsSeparator": ".", "setDecimalSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ".",
+        "setDecimalSeparator": ","
+      },
       "attempt": "1.001,0",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_605",
+      "apiAttempt": "1.001,0",
+      "apiInput": "1.000,0",
+      "apiChecks": "symbolic:setThousandsSeparator=['.'],setDecimalSeparator=[',']"
     },
     {
       "name": "symbolic:setThousandSeparator=[','],setDecimalSeparator=['.']",
       "input": "1000.50 ",
-      "options": { "setThousandsSeparator": ",", "setDecimalSeparator": "." },
+      "options": {
+        "setThousandsSeparator": ",",
+        "setDecimalSeparator": "."
+      },
       "attempt": "1,000.60",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_607",
+      "apiAttempt": "1,000.60",
+      "apiInput": "1000.50",
+      "apiChecks": "symbolic:setThousandsSeparator=['.'],setDecimalSeparator=[',']"
     },
     {
       "name": "symbolic:setThousandSeparator=[','],setDecimalSeparator=['.']",
       "input": "1",
-      "options": { "setThousandsSeparator": ".", "setDecimalSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ".",
+        "setDecimalSeparator": ","
+      },
       "attempt": "1.000",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_609",
+      "apiAttempt": "1.000",
+      "apiInput": "1",
+      "apiChecks": "symbolic:setThousandsSeparator=['.'],setDecimalSeparator=[',']"
     },
     {
       "name": "symbolic:setThousandSeparator=['.'],setDecimalSeparator=[',']",
       "input": "1",
-      "options": { "setThousandsSeparator": ",", "setDecimalSeparator": "." },
+      "options": {
+        "setThousandsSeparator": ",",
+        "setDecimalSeparator": "."
+      },
       "attempt": "1.000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_610",
+      "apiAttempt": "1.000",
+      "apiInput": "1",
+      "apiChecks": "symbolic:setThousandsSeparator=[','],setDecimalSeparator=['.']"
     },
     {
       "name": "default",
       "input": "\\left{enter}(\\sqrt{{}\\left{enter}85\\right{enter}{}}{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}\\left{enter}{{}85\\right{enter}{}}{rightarrow},0\\right{enter})",
-      "options": { "interpretAsSet": true },
+      "options": {
+        "interpretAsSet": true
+      },
       "attempt": "\\left{enter}(\\sqrt{{}\\left{enter}85\\right{enter}{}}{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}\\left{enter}{{}85\\right{enter}{}}{rightarrow},0\\right{enter})",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1338",
+      "apiAttempt": "left(sqrt{left{85\right}},0\right),left(-sqrt{left{85\right}},0\right)",
+      "apiInput": "left(sqrt{left{85\right}},0\right),left(-sqrt{left{85\right}},0\right)",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "default",
-      "input": "\\left{enter}(\\sqrt{enter}85{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}85{rightarrow},0\\right{enter})",
-      "options": { "interpretAsSet": true },
-      "attempt": "\\left{enter}(\\sqrt{enter}85{rightarrow},0\\right{enter}),\\left{enter}(-\\sqrt{enter}85{rightarrow},0\\right{enter})",
-      "evaluation": true
+      "input": "\\left{enter}(\\sqrt{enter}85{rightarrow},0),(-\\sqrt{enter}85{rightarrow},0)",
+      "options": {
+        "interpretAsSet": true
+      },
+      "attempt": "(\\sqrt{enter}85{rightarrow},0),(-\\sqrt{enter}85{rightarrow},0)",
+      "evaluation": true,
+      "testcaseId": "M_1339",
+      "apiAttempt": "left(sqrt{85},0\right),left(-sqrt{85},0\right)",
+      "apiInput": "left(sqrt{85},0\right),left(-sqrt{85},0\right)",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "default",
-      "input": "\\left{enter}(9,0\\right{enter}),\\left{enter}(-9,0\\right{enter})",
-      "options": { "interpretAsSet": true },
-      "attempt": "\\left{enter}(9,0\\right{enter}),\\left{enter}(-9,0\\right{enter})",
-      "evaluation": true
+      "input": "(9,0),(-9,0)",
+      "options": {
+        "interpretAsSet": true
+      },
+      "attempt": "(9,0),(-9,0)",
+      "evaluation": true,
+      "testcaseId": "M_1340",
+      "apiAttempt": "left(9,0\right),left(-9,0\right)",
+      "apiInput": "left(9,0\right),left(-9,0\right)",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "default",
       "input": "\\left{enter}(85,0\\right{enter}),\\left{enter}(-85,0)",
-      "options": { "interpretAsSet": true },
+      "options": {
+        "interpretAsSet": true
+      },
       "attempt": "\\left{enter}(85,0\\right{enter}),\\left{enter}(-85,0)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1341",
+      "apiAttempt": "left(85,0\right),left(-85,0\right)",
+      "apiInput": "left(85,0\right),left(-85,0)",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "default",
       "input": "y=\\frac{enter}4x{downarrow}81{rightarrow},y=-\\frac{enter}4x{downarrow}81",
-      "options": { "interpretAsSet": true },
+      "options": {
+        "interpretAsSet": true
+      },
       "attempt": "y=\\frac{enter}4x{downarrow}81{rightarrow},y=-\\frac{enter}4x{downarrow}81",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1342",
+      "apiAttempt": "y=\frac{4x}{81},y=-\frac{4x}{81}",
+      "apiInput": "y=\frac{4x}{81},y=-\frac{4x}{81}",
+      "apiChecks": "symbolic:interpretAsSet"
     },
-
     {
       "name": "default",
       "input": "y=\\frac{enter}4{downarrow}81{rightarrow},y=-\\frac{enter}4{downarrow}81",
-      "options": { "interpretAsSet": true },
+      "options": {
+        "interpretAsSet": true
+      },
       "attempt": "y=\\frac{enter}4{downarrow}81{rightarrow},y=-\\frac{enter}4{downarrow}81",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1343",
+      "apiAttempt": "\frac{4x}{81},-\frac{4x}{81}",
+      "apiInput": "\frac{4x}{81},-\frac{4x}{81}",
+      "apiChecks": "symbolic:interpretAsSet"
     },
     {
       "name": "default",
       "input": "\\frac{enter}1{downarrow}2{rightarrow},-\\frac{enter}1{downarrow}2",
-      "options": { "interpretAsSet": true },
+      "options": {
+        "interpretAsSet": true
+      },
       "attempt": "\\frac{enter}1{downarrow}2{rightarrow},-\\frac{enter}1{downarrow}2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1345",
+      "apiAttempt": "\frac{1}{2},-\frac{1}{2}",
+      "apiInput": "\frac{1}{2},-\frac{1}{2}",
+      "apiChecks": "symbolic:interpretAsSet"
     }
   ],
   "equivValue": [
@@ -1126,7 +1799,11 @@
         "tolerance": 1.6
       },
       "attempt": "10",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_188",
+      "apiAttempt": "10",
+      "apiInput": "10",
+      "apiChecks": "value:tolerance=1.6"
     },
     {
       "name": "value with tolerance",
@@ -1135,7 +1812,11 @@
         "tolerance": 1.6
       },
       "attempt": "11.6",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_189",
+      "apiAttempt": "11.6",
+      "apiInput": "10",
+      "apiChecks": "value:tolerance=1.6"
     },
     {
       "name": "value with tolerance",
@@ -1144,7 +1825,11 @@
         "tolerance": 1.6
       },
       "attempt": "11.7",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_192",
+      "apiAttempt": "11.7",
+      "apiInput": "10",
+      "apiChecks": "value:tolerance=1.6"
     },
     {
       "name": "value with tolerance",
@@ -1154,18 +1839,25 @@
         "inverseResult": true
       },
       "attempt": "11.7",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_193",
+      "apiAttempt": "11.7",
+      "apiInput": "10",
+      "apiChecks": "value:tolerance=1.6,inverseResult"
     },
     {
       "name": "value with tolerance",
       "input": "10",
-
       "options": {
         "tolerance": 1.6,
         "inverseResult": true
       },
       "attempt": "8.4",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_194",
+      "apiAttempt": "8.4",
+      "apiInput": "10",
+      "apiChecks": "value:tolerance=1.6,inverseResult"
     },
     {
       "name": "value with significantDecimalPlaces",
@@ -1174,9 +1866,12 @@
         "significantDecimalPlaces": 3
       },
       "attempt": "10",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_245",
+      "apiAttempt": "10",
+      "apiInput": "10",
+      "apiChecks": "value:significantDecimalPlaces=3"
     },
-
     {
       "name": "value with significantDecimalPlaces",
       "input": "10",
@@ -1184,7 +1879,11 @@
         "significantDecimalPlaces": 3
       },
       "attempt": "9.9995",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_248",
+      "apiAttempt": "9.9995",
+      "apiInput": "10",
+      "apiChecks": "value:significantDecimalPlaces=3"
     },
     {
       "name": "value with significantDecimalPlaces",
@@ -1193,7 +1892,11 @@
         "significantDecimalPlaces": 3
       },
       "attempt": "10.001",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_250",
+      "apiAttempt": "10.001",
+      "apiInput": "10",
+      "apiChecks": "value:significantDecimalPlaces=3"
     },
     {
       "name": "value with significantDecimalPlaces ",
@@ -1202,7 +1905,11 @@
         "significantDecimalPlaces": 3
       },
       "attempt": "9.9994",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_251",
+      "apiAttempt": "9.9994",
+      "apiInput": "10",
+      "apiChecks": "value:significantDecimalPlaces=3"
     },
     {
       "name": "value thousands space ",
@@ -1211,7 +1918,11 @@
         "setThousandsSeparator": " "
       },
       "attempt": "1000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_465",
+      "apiAttempt": "1000",
+      "apiInput": "1 000",
+      "apiChecks": "value:setThousandsSeparator=' '"
     },
     {
       "name": "value thousands comma",
@@ -1220,439 +1931,725 @@
         "setThousandsSeparator": ","
       },
       "attempt": "1000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_466",
+      "apiAttempt": "1000",
+      "apiInput": "1,000",
+      "apiChecks": "value:setThousandsSeparator=','"
     },
-
     {
       "name": "EV-5574 symbol conversion to latex ",
       "input": "90\\degree{enter}",
       "options": {},
       "attempt": "90\\degree{enter}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_835",
+      "apiAttempt": "90°",
+      "apiInput": "90°",
+      "apiChecks": "value"
     },
     {
       "name": "textitsupport EV-5722",
       "input": "24  \\textit{enter}square \\textit{enter}centimeters",
       "options": {},
       "attempt": "24 square centimeters",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_837",
+      "apiAttempt": "24 square centimeters",
+      "apiInput": "24  \textit{square} \textit{centimeters}",
+      "apiChecks": "value"
     },
-
     {
       "name": "space handling",
       "input": "3x",
       "options": {},
       "attempt": "3 x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_849",
+      "apiAttempt": "3 x",
+      "apiInput": "3x",
+      "apiChecks": "value"
     },
-
     {
       "name": "space handling",
       "input": "1",
       "options": {},
       "attempt": "1,1 1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_851",
+      "apiAttempt": "1,1 1",
+      "apiInput": "1",
+      "apiChecks": "value"
     },
     {
       "name": "space handling",
       "input": "6",
       "options": {},
       "attempt": "2*3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_852",
+      "apiAttempt": "2*3",
+      "apiInput": "6",
+      "apiChecks": "value"
     },
     {
       "name": "basic list order violation ",
       "input": "(1,2,3)",
       "options": {},
       "attempt": "2,1,3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_855",
+      "apiAttempt": "2,1,3",
+      "apiInput": "(1,2,3)",
+      "apiChecks": "value"
     },
     {
       "name": "basic list missing element ",
       "input": "(1,2,3)",
       "options": {},
       "attempt": "1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_857",
+      "apiAttempt": "1",
+      "apiInput": "(1,2,3)",
+      "apiChecks": "value"
     },
     {
       "name": "basic list extra white space on expected",
       "input": "(1 ,2,3 )",
       "options": {},
       "attempt": "1,2,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_859",
+      "apiAttempt": "1,2,3",
+      "apiInput": "(1 ,2,3 )",
+      "apiChecks": "value"
     },
-
     {
       "name": "basic list extra white space on expected ",
       "input": "( 1 ,2,3 )",
       "options": {},
       "attempt": "1,2,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_861",
+      "apiAttempt": "1,2,3",
+      "apiInput": "( 1 ,2,3 )",
+      "apiChecks": "value"
     },
     {
       "name": "basic list extra white space on input",
       "input": "(1,2,3)",
       "options": {},
       "attempt": "1 ,  2,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_865",
+      "apiAttempt": "1 ,  2,3",
+      "apiInput": "(1,2,3)",
+      "apiChecks": "value"
     },
-
     {
       "name": "basic list with interpretAsList",
       "input": "1,2",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_872",
+      "apiAttempt": "1,2",
+      "apiInput": "1,2",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "basic list with interpretAsList over-ride parenthesis",
       "input": "{{}1,2{}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_873",
+      "apiAttempt": "1,2",
+      "apiInput": "{1,2}",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "basic list with interpretAsList over-ride parenthesis",
       "input": "{{}1,2{}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "2,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_874",
+      "apiAttempt": "2,1",
+      "apiInput": "{1,2}",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "thousands handling as an interval",
       "input": "(1,234)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,234",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_878",
+      "apiAttempt": "1,234",
+      "apiInput": "(1,234)",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "thousands handling as an interval",
       "input": "(1,234)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "234,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_879",
+      "apiAttempt": "234,1",
+      "apiInput": "(1,234)",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "thousands handling as an interval",
       "input": "(1,234)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "234,1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_881",
+      "apiAttempt": "234,1",
+      "apiInput": "(1,234)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "thousands handling",
       "input": "1,234,567",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "234,1,567",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_884",
+      "apiAttempt": "234,1,567",
+      "apiInput": "1,234,567",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "thousands handling",
       "input": "0,234,567",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "0,234,567",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_887",
+      "apiAttempt": "0,234,567",
+      "apiInput": "0,234,567",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2{}}",
       "options": {},
       "attempt": "0,1,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_889",
+      "apiAttempt": "0,1,2",
+      "apiInput": "{0,1,2}",
+      "apiChecks": "value"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2{}}",
       "options": {},
       "attempt": "0 1,2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_891",
+      "apiAttempt": "0 1,2",
+      "apiInput": "{0,1,2}",
+      "apiChecks": "value"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2{}}",
       "options": {},
       "attempt": "0,2,1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_893",
+      "apiAttempt": "0,2,1",
+      "apiInput": "{0,1,2}",
+      "apiChecks": "value"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2",
       "options": {},
       "attempt": "0,2,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_895",
+      "apiAttempt": "0,2,1",
+      "apiInput": "{0,1,2",
+      "apiChecks": "value",
+      "error": "Parentheses_Error"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2{}}",
-
       "options": {},
       "attempt": "{{}0,2,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_897",
+      "apiAttempt": "{0,2,1",
+      "apiInput": "{0,1,2}",
+      "apiChecks": "value"
     },
     {
       "name": "basic set",
       "input": "{{}0,1,2{}}",
       "options": {},
       "attempt": "0 2 1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_899",
+      "apiAttempt": "0 2 1",
+      "apiInput": "{0,1,2}",
+      "apiChecks": "value"
     },
-
     {
       "name": "basic set",
       "input": "{{}-1{}}",
       "options": {},
       "attempt": "-1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_901",
+      "apiAttempt": "-1",
+      "apiInput": "{-1}",
+      "apiChecks": "value"
     },
     {
       "name": "basic set",
       "input": "{{}-1,1{}}",
       "options": {},
       "attempt": "-1,2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_903",
+      "apiAttempt": "-1,2",
+      "apiInput": "{-1,1}",
+      "apiChecks": "value"
     },
-
     {
       "name": "basic set with interpretAsSet ",
       "input": "(-1,2)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "-1,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_905",
+      "apiAttempt": "-1,2",
+      "apiInput": "(-1,2)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "basic set with interpretAsSet ",
       "input": "(1,2,1)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,2,1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_907",
+      "apiAttempt": "1,2,1",
+      "apiInput": "(1,2,1)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "basic set with interpretAsSet",
       "input": "(1,2,1)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,1,2,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_908",
+      "apiAttempt": "1,1,2,1",
+      "apiInput": "(1,2,1)",
+      "apiChecks": "value:interpretAsSet"
     },
-
     {
       "name": "basic set with interpretAsList ",
       "input": "(1,1,2,1)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "1,1,2,1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_910",
+      "apiAttempt": "1,1,2,1",
+      "apiInput": "(1,1,2,1)",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "set with variables interpretAsSet",
       "input": "(x,2)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "x,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_912",
+      "apiAttempt": "x,2",
+      "apiInput": "(x,2)",
+      "apiChecks": "value:interpretAsSet"
     },
-
     {
       "name": "set with variables interpretAsSet",
       "input": "(x+1,2)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "x+1,2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_913",
+      "apiAttempt": "x+1,2",
+      "apiInput": "(x+1,2)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "set with variables interpretAsSet",
       "input": "(x+1,2)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "2,x + 1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_915",
+      "apiAttempt": "2,x + 1",
+      "apiInput": "(x+1,2)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "set with variables interpretAsSet",
       "input": "(x + 1,2,3)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "2,x + 1,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_918",
+      "apiAttempt": "2,x + 1,3",
+      "apiInput": "(x + 1,2,3)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "list with variables interpretAsList",
       "input": "{{}x + 1,3,2{}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "x + 1,2,3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_921",
+      "apiAttempt": "x + 1,2,3",
+      "apiInput": "{x + 1,3,2}",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "list with variables interpretAsList",
       "input": "{{}x + 1,3,2{}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "x + 1,2 3",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_922",
+      "apiAttempt": "x + 1,2 3",
+      "apiInput": "{x + 1,3,2}",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "list with hierarchy",
       "input": "{{}(x,y),(w,z){}}",
       "options": {},
       "attempt": "(x,y),(w,z)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_924",
+      "apiAttempt": "(x,y),(w,z)",
+      "apiInput": "{(x,y),(w,z)}",
+      "apiChecks": "value"
     },
     {
       "name": "list with hierarchy with space",
       "input": "{{}(x,y), (w ,z){}}",
       "options": {},
-      "attempt": "(x,y), (w,z)  ",
-      "evaluation": true
+      "attempt": "(x,y), (w,z)",
+      "evaluation": true,
+      "testcaseId": "M_926",
+      "apiAttempt": "(x,y), (w,z)",
+      "apiInput": "{(x,y), (w ,z)}",
+      "apiChecks": "value"
     },
     {
       "name": "list with hierarchy with space",
       "input": "{{}(x,y), (w ,z){}}",
       "options": {},
-      "attempt": "(x,y) (w,z) ",
-      "evaluation": false
+      "attempt": "(x,y) (w,z)",
+      "evaluation": false,
+      "testcaseId": "M_927",
+      "apiAttempt": "(x,y) (w,z)",
+      "apiInput": "{(x,y), (w ,z)}",
+      "apiChecks": "value"
     },
     {
       "name": "list with hierarchy",
       "input": "((x,y),(w,z))",
       "options": {},
       "attempt": "(w,z),(x,y)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_928",
+      "apiAttempt": "(w,z),(x,y)",
+      "apiInput": "((x,y),(w,z))",
+      "apiChecks": "value"
     },
-
     {
       "name": "set with variables interpretAsSet",
       "input": "{{}(x,y),(w,z){}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "+-(x,y),(w,z)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_930",
+      "apiAttempt": "+-(x,y),(w,z)",
+      "apiInput": "{(x,y),(w,z)}",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "[] default to intervals",
       "input": "[4,5)",
       "options": {},
       "attempt": "[4,5)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_935",
+      "apiAttempt": "[4,5)",
+      "apiInput": "[4,5)",
+      "apiChecks": "value"
     },
     {
       "name": "[] default to intervals",
       "input": "[5,4]",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "2,5",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_940",
+      "apiAttempt": "2,5",
+      "apiInput": "[5,4]",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "() and more than two elements -> default to list",
       "input": "(5,4,3)",
       "options": {},
       "attempt": "(5,4,3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_946",
+      "apiAttempt": "(5,4,3)",
+      "apiInput": "(5,4,3)",
+      "apiChecks": "value"
     },
     {
       "name": "() and more than two elements -> default to list",
       "input": "(5,4,3)",
       "options": {},
       "attempt": "(5,4,3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_948",
+      "apiAttempt": "(5,4,3)",
+      "apiInput": "(5,4,3)",
+      "apiChecks": "value"
     },
     {
       "name": "{} -> default to sets",
       "input": "{{}2, 3, 4{}}",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "(3, 2, 4)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_952",
+      "apiAttempt": "(3, 2, 4)",
+      "apiInput": "{2, 3, 4}",
+      "apiChecks": "value:interpretAsSet"
     },
-
     {
       "name": "extra white space",
       "input": "( 1 ,  2,3 )",
       "options": {},
       "attempt": "1,2,3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_970",
+      "apiAttempt": "1,2,3",
+      "apiInput": "( 1 ,  2,3 )",
+      "apiChecks": "value"
     },
     {
       "name": "() conflict with interpretAsSet",
       "input": "(1,2)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "(1,2)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_985",
+      "apiAttempt": "(1,2)",
+      "apiInput": "(1,2)",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "() conflict with interpretAsList",
       "input": "(2,1)",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "(1,2)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_986",
+      "apiAttempt": "(1,2)",
+      "apiInput": "(2,1)",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "() and more than two elements -> default to list",
       "input": "(1,1+x,3)",
       "options": {},
       "attempt": "(1,1+x,3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_989",
+      "apiAttempt": "(1,1+x,3)",
+      "apiInput": "(1,1+x,3)",
+      "apiChecks": "value"
     },
     {
       "name": "{} -> default to sets",
       "input": "{{}{{}1,2{}}, {{}3,4{}}{}}",
       "options": {},
       "attempt": "{{}{{}1,2{}}, {{}3,4{}}{}}",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_992",
+      "apiAttempt": "{{1,2}, {3,4}}",
+      "apiInput": "{{1,2}, {3,4}}",
+      "apiChecks": "value"
     },
     {
       "name": "thousands handling",
       "input": "1,234,000",
       "options": {},
       "attempt": "1,23,000",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1003",
+      "apiAttempt": "1,23,000",
+      "apiInput": "1,234,000",
+      "apiChecks": "value"
     },
     {
       "name": "thousands handling",
       "input": ",234,000",
       "options": {},
       "attempt": ",234,000",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1005",
+      "apiAttempt": ",234,000",
+      "apiInput": ",234,000",
+      "apiChecks": "value",
+      "error": "Parsing_Error"
     },
     {
       "name": "thousands handling",
       "input": ",234,000,",
       "options": {},
       "attempt": ",234,000,",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1006",
+      "apiAttempt": ",234,000,",
+      "apiInput": ",234,000,",
+      "apiChecks": "value",
+      "error": "Parsing_Error"
     },
     {
       "name": "thousands handling",
       "input": "234,110",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "110,234",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1007",
+      "apiAttempt": "110,234",
+      "apiInput": "234,110",
+      "apiChecks": "value:interpretAsSet"
     },
     {
       "name": "thousands handling",
       "input": "234,00",
       "options": {},
       "attempt": "234,00",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1008",
+      "apiAttempt": "234,00",
+      "apiInput": "234,00",
+      "apiChecks": "value",
+      "error": "Parsing_Error"
     },
     {
       "name": "thousands handling",
       "input": "234,1 ",
-      "options": { "setListTypeResponse": true },
+      "options": {
+        "setListTypeResponse": true
+      },
       "attempt": "234,1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1009",
+      "apiAttempt": "234,1",
+      "apiInput": "234,1",
+      "apiChecks": "value:interpretAsList"
     },
     {
       "name": "() and two elements -> default to intervals",
       "input": "( 2 ,  3  )",
       "options": {},
       "attempt": "{{}2,3{}}",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1014",
+      "apiAttempt": "{2,3}",
+      "apiInput": "( 2 ,  3  )",
+      "apiChecks": "value"
     },
     {
       "name": "() and two elements -> default to intervals",
       "input": "(  2  ,  3  )",
       "options": {},
       "attempt": "{{}2,3{}}",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_1016",
+      "apiAttempt": "{2,3}",
+      "apiInput": "(  2  ,  3  )",
+      "apiChecks": "value"
     },
     {
       "name": "() and two elements -> default to intervals",
       "input": "(  2  ,  3  )",
       "options": {},
       "attempt": "(2 , 3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_1019",
+      "apiAttempt": "(2 , 3)",
+      "apiInput": "(  2  ,  3  )",
+      "apiChecks": "value"
     }
   ],
   "isSimplified": [
@@ -1661,28 +2658,50 @@
       "input": "",
       "options": {},
       "attempt": "4x+1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_107",
+      "apiAttempt": "4x+1",
+      "apiInput": "",
+      "apiChecks": "isSimplified"
     },
     {
       "name": "isSimplified:setDecimalSeparator=',': 4x+2,1+1,1",
       "input": "",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "4x+2,1+1,1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_113",
+      "apiAttempt": "4x+2,1+1,1",
+      "apiInput": "",
+      "apiChecks": "isSimplified:setDecimalSeparator=','"
     },
     {
       "name": "isSimplified:setThousandsSeparator=[',']: 4x+2+1,000",
       "input": "",
-      "options": { "setThousandsSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ","
+      },
       "attempt": "4x+2+1,000",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_118",
+      "apiAttempt": "4x+2+1,000",
+      "apiInput": "",
+      "apiChecks": "isSimplified:setThousandsSeparator=[',']"
     },
     {
       "name": "isSimplified:inverseResult: x(x)",
       "input": "",
-      "options": { "rule": "" },
+      "options": {
+        "inverseResult": true
+      },
       "attempt": "x(x)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_124",
+      "apiAttempt": "x(x)",
+      "apiInput": "",
+      "apiChecks": "isSimplified:inverseResult"
     }
   ],
   "isFactorised": [
@@ -1691,63 +2710,111 @@
       "input": "",
       "options": {},
       "attempt": "(x+3)(x+y)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_91",
+      "apiAttempt": "(x+3)(x+y)",
+      "apiInput": "",
+      "apiChecks": "isFactorised"
     },
     {
       "name": "isFactorised: factorised + constant",
       "input": "",
       "options": {},
       "attempt": "x(x-3)+2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_89",
+      "apiAttempt": "x(x-3)+2",
+      "apiInput": "",
+      "apiChecks": "isFactorised"
     },
     {
       "name": "isFactorised:simple polynomial",
       "input": "",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "x^2{downarrow}+3,3x",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_88",
+      "apiAttempt": "x^2+3x",
+      "apiInput": "",
+      "apiChecks": "isFactorised"
     },
     {
       "name": "isFactorised:setDecimalSeparator=',': factorised",
       "input": "",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "(x+y)(x+3)",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_95",
+      "apiAttempt": "(x+y)(x+3)",
+      "apiInput": "",
+      "apiChecks": "isFactorised:setDecimalSeparator=','"
     },
     {
       "name": "isFactorised: factorised + constant",
       "input": "",
-      "options": { "setThousandsSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ","
+      },
       "attempt": "x(x-3)+2,000",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_99",
+      "apiAttempt": "x(x-3)+2,000",
+      "apiInput": "",
+      "apiChecks": "isFactorised:setThousandsSeparator=[' ']"
     },
     {
       "name": "isFactorised:inverseResult:simple polynomial",
       "input": "",
-      "options": { "inverseResult": true },
+      "options": {
+        "inverseResult": true
+      },
       "attempt": "x^2{downarrow}+3x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_103",
+      "apiAttempt": "x^2+3x",
+      "apiInput": "",
+      "apiChecks": "isFactorised:inverseResult"
     },
     {
       "name": "isFactorised:inverseResult: factorised",
       "input": "",
-      "options": { "inverseResult": true },
+      "options": {
+        "inverseResult": true
+      },
       "attempt": "(x+3)(x+y)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_106",
+      "apiAttempt": "(x+3)(x+y)",
+      "apiInput": "",
+      "apiChecks": "isFactorised:inverseResult"
     },
     {
       "name": "isFactorised: integer factorisedd",
       "input": "",
-      "options": { "field": "integerType" },
-      "attempt": "(x+y)(x+3)",
-      "evaluation": false
+      "options": {
+        "field": "integerType"
+      },
+      "attempt": "x^2{downarrow}-4x+4",
+      "evaluation": false,
+      "testcaseId": "M_447",
+      "apiAttempt": "x^2-4x+4",
+      "apiInput": "",
+      "apiChecks": "isFactorised:integerType"
     },
     {
       "name": "isFactorised: real factorised",
       "input": "",
       "options": {},
       "attempt": "x^2{downarrow}+1.5x+4.4",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_448",
+      "apiAttempt": "x^2+1.5x+4.4",
+      "apiInput": "",
+      "apiChecks": "isFactorised:realType"
     }
   ],
   "isExpanded": [
@@ -1756,50 +2823,85 @@
       "input": "",
       "options": {},
       "attempt": "x^2{downarrow}+xy+3x+3y",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_69",
+      "apiAttempt": "x^2+xy+3x+3y",
+      "apiInput": "",
+      "apiChecks": "isExpanded"
     },
     {
       "name": "isExpanded: product of two sums",
       "input": "",
       "options": {},
       "attempt": "(x+3)(x+y)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_71",
+      "apiAttempt": "(x+3)(x+y)",
+      "apiInput": "",
+      "apiChecks": "isExpanded"
     },
     {
       "name": "isExpanded: simple polynomial with two variables",
       "input": "",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "x^2{downarrow}+xy+3,0x+3,0y",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_74",
+      "apiAttempt": "x^2+xy+3,0x+3,0y",
+      "apiInput": "",
+      "apiChecks": "isExpanded:setDecimalSeparator=','"
     },
     {
       "name": "isExpanded: product of two sums",
       "input": "",
-      "options": { "setDecimalSeparator": "," },
+      "options": {
+        "setDecimalSeparator": ","
+      },
       "attempt": "(x+3,0)(x+y)",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_76",
+      "apiAttempt": "(x+3,0)(x+y)",
+      "apiInput": "",
+      "apiChecks": "isExpanded:setDecimalSeparator=','"
     },
     {
       "name": "isExpanded: simple polynomial",
       "input": "",
-      "options": { "setThousandsSeparator": "," },
+      "options": {
+        "setThousandsSeparator": ","
+      },
       "attempt": "x^2{downarrow}+3,000x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_78",
+      "apiAttempt": "x^2+3,000x",
+      "apiInput": "",
+      "apiChecks": "isExpanded:setThousandsSeparator=[',']"
     },
     {
       "name": "isExpanded: simple polynomial with two variables",
       "input": "",
-      "options": { "setThousandsSeparator": " " },
+      "options": {
+        "setThousandsSeparator": " "
+      },
       "attempt": "3 000y+3 000x+xy+x^2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_80",
+      "apiAttempt": "3 000y+3 000x+xy+x^2",
+      "apiInput": "",
+      "apiChecks": "isExpanded:setThousandsSeparator=[' ']"
     },
-
     {
       "name": "isExpanded with parenthesis EV-1154",
       "input": "",
       "options": {},
       "attempt": "x\\left{enter}(x+3\\right{enter})",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_346",
+      "apiAttempt": "xleft(x+3\right)",
+      "apiInput": "",
+      "apiChecks": "isExpanded"
     }
   ],
   "isRationalized": [
@@ -1808,50 +2910,77 @@
       "input": "",
       "options": {},
       "attempt": "1.2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_467",
+      "apiAttempt": "1.2",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
     {
       "name": "''isRationalized 5'",
       "input": "",
       "options": {},
       "attempt": "1/-2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_471",
+      "apiAttempt": "1/-2",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
     {
       "name": "''isRationalized 9'",
       "input": "",
       "options": {},
       "attempt": "2/1^0.5",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_475",
+      "apiAttempt": "2/1^{0.5}",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
     {
       "name": "''isRationalized 11'",
       "input": "",
       "options": {},
       "attempt": "2^0.7{downarrow}/2",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_477",
+      "apiAttempt": "2^{0.7}/2",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
     {
       "name": "''isRationalized 13'",
       "input": "",
       "options": {},
       "attempt": "2/\\sqrt{enter}2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_479",
+      "apiAttempt": "2/sqrt{2}",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
     {
       "name": "''isRationalized 6'",
       "input": "",
       "options": {},
       "attempt": "-1/-2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_472",
+      "apiAttempt": "-1/-2",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     },
-
     {
       "name": "''isRationalized 8'",
       "input": "",
       "options": {},
       "attempt": "5",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_474",
+      "apiAttempt": "5",
+      "apiInput": "",
+      "apiChecks": "isRationalized"
     }
   ],
   "isTrue": [
@@ -1859,99 +2988,168 @@
       "name": "isTrue: 1",
       "input": "",
       "attempt": "1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_127",
+      "apiAttempt": "1",
+      "apiInput": "",
+      "apiChecks": "isTrue"
     },
     {
       "name": "isTrue: 5>1",
       "input": "",
       "attempt": "5>1",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_128",
+      "apiAttempt": "5>1",
+      "apiInput": "",
+      "apiChecks": "isTrue"
     },
     {
       "name": "isTrue: x",
       "input": "",
       "attempt": "x",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_129",
+      "apiAttempt": "x",
+      "apiInput": "",
+      "apiChecks": "isTrue"
     },
     {
       "name": "isTrue: 1=2",
       "input": "",
       "attempt": "1=2",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_130",
+      "apiAttempt": "1=2",
+      "apiInput": "",
+      "apiChecks": "isTrue"
     },
     {
       "name": "isTrue: 5<1",
       "input": "",
-
       "attempt": "5<1",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_131",
+      "apiAttempt": "5<1",
+      "apiInput": "",
+      "apiChecks": "isTrue"
     }
   ],
   "stringMatch": [
     {
       "name": "stringMatch:ignoreLeadingAndTrailingSpaces: numbers",
       "input": "1, 2, 3",
-      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "options": {
+        "ignoreLeadingAndTrailingSpaces": true
+      },
       "attempt": "1, 2, 3 ",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_444",
+      "apiAttempt": "1, 2, 3 ",
+      "apiInput": "1, 2, 3",
+      "apiChecks": "stringMatch:ignoreLeadingAndTrailingSpaces"
     },
     {
       "name": "stringMatch:ignoreLeadingAndTrailingSpaces:times vs. cdot",
       "input": "\\cdot{enter}",
-      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "options": {
+        "ignoreLeadingAndTrailingSpaces": true
+      },
       "attempt": "\\times{enter}",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_165",
+      "apiAttempt": "\times",
+      "apiInput": "cdot",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
     {
       "name": "stringMatch: numbers",
       "input": "1, 2, 3",
       "options": {},
       "attempt": "1, 2, 3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_152",
+      "apiAttempt": "1, 2, 3",
+      "apiInput": "1, 2, 3",
+      "apiChecks": "stringMatch"
     },
-
     {
       "name": "stringMatch:treatMultipleSpacesAsOne",
       "input": "1, 2,  3",
-      "options": { "treatMultipleSpacesAsOne": true },
+      "options": {
+        "treatMultipleSpacesAsOne": true
+      },
       "attempt": "1, 2,  3",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_162",
+      "apiAttempt": "1, 2,  3",
+      "apiInput": "1, 2, 3",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
     {
       "name": "stringMatch:treatMultipleSpacesAsOne",
       "input": "*",
-      "options": { "treatMultipleSpacesAsOne": true },
+      "options": {
+        "treatMultipleSpacesAsOne": true
+      },
       "attempt": "*",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_166",
+      "apiAttempt": "*",
+      "apiInput": "*",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
-
     {
       "name": "spaces ",
       "input": "1, 2, 3",
-      "options": { "ignoreLeadingAndTrailingSpaces": true },
+      "options": {
+        "ignoreLeadingAndTrailingSpaces": true
+      },
       "attempt": "1, 2, 3 ",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_445",
+      "apiAttempt": "1, 2,  3",
+      "apiInput": "1, 2, 3",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
     {
       "name": "stringMatch:treatMultipleSpacesAsOne ",
       "input": "*",
-      "options": { "treatMultipleSpacesAsOne": true },
+      "options": {
+        "treatMultipleSpacesAsOne": true
+      },
       "attempt": "*",
-      "evaluation": true
+      "evaluation": true,
+      "testcaseId": "M_512",
+      "apiAttempt": "*",
+      "apiInput": "*",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
     {
       "name": "stringMatch:treatMultipleSpacesAsOne ",
       "input": "\\dot{enter}",
-      "options": { "treatMultipleSpacesAsOne": true },
+      "options": {
+        "treatMultipleSpacesAsOne": true
+      },
       "attempt": "\\cdot{enter}",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_164",
+      "apiAttempt": "dot",
+      "apiInput": "cdot",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     },
     {
       "name": "stringMatch:treatMultipleSpacesAsOne ",
       "input": "a",
-      "options": { "treatMultipleSpacesAsOne": true },
+      "options": {
+        "treatMultipleSpacesAsOne": true
+      },
       "attempt": "a",
-      "evaluation": false
+      "evaluation": false,
+      "testcaseId": "M_163",
+      "apiAttempt": "a",
+      "apiInput": "a",
+      "apiChecks": "stringMatch:treatMultipleSpacesAsOne"
     }
   ]
 }

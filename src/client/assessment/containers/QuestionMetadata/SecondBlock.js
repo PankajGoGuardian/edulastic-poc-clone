@@ -69,6 +69,7 @@ const SecondBlock = ({
           <ItemBody>
             <Label>{t("component.options.depthOfKnowledge")}</Label>
             <Select
+              data-cy="dokSelect"
               style={{ width: "100%" }}
               placeholder={t("component.options.selectDOK")}
               onSelect={onQuestionDataSelect("depthOfKnowledge")}
@@ -81,7 +82,7 @@ const SecondBlock = ({
               {selectsData.allDepthOfKnowledge.map(
                 el =>
                   el.value && (
-                    <Select.Option key={el.value} value={el.value}>
+                    <Select.Option data-cy={`dok-select-${el.text}`} key={el.value} value={el.value}>
                       {el.text}
                     </Select.Option>
                   )
@@ -93,6 +94,7 @@ const SecondBlock = ({
           <ItemBody>
             <Label>{t("component.options.difficultyLevel")}</Label>
             <Select
+              data-cy="difficultySelect"
               style={{ width: "100%" }}
               placeholder={t("component.options.selectDifficulty")}
               onSelect={onQuestionDataSelect("authorDifficulty")}
@@ -105,7 +107,7 @@ const SecondBlock = ({
               {selectsData.allAuthorDifficulty.map(
                 el =>
                   el.value && (
-                    <Select.Option key={el.value} value={el.value}>
+                    <Select.Option data-cy={`difficulty-select-${el.text}`} key={el.value} value={el.value}>
                       {el.text}
                     </Select.Option>
                   )
@@ -145,14 +147,14 @@ const SecondBlock = ({
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
               >
                 {!!searchValue.trim() ? (
-                  <Select.Option key={0} value={searchValue} title={searchValue}>
+                  <Select.Option data-cy={`dok-select-${searchValue}`} key={0} value={searchValue} title={searchValue}>
                     {`${searchValue} (Create new Tag)`}
                   </Select.Option>
                 ) : (
                   ""
                 )}
                 {newAllTagsData.map(({ tagName, _id }, index) => (
-                  <Select.Option key={_id} value={_id} title={tagName}>
+                  <Select.Option data-cy={`tags-select-${tagName}`} key={_id} value={_id} title={tagName}>
                     {tagName}
                   </Select.Option>
                 ))}
@@ -178,7 +180,7 @@ const SecondBlock = ({
                 autoFocus={highlightCollection}
               >
                 {orgData?.itemBanks?.map(({ _id, name }) => (
-                  <Select.Option key={_id} value={_id} title={name}>
+                  <Select.Option data-cy={`collection-select-${name}`} key={_id} value={_id} title={name}>
                     {name}
                   </Select.Option>
                 ))}

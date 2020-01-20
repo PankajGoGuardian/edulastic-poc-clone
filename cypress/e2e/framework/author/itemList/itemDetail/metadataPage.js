@@ -1,4 +1,5 @@
 import Header from "./header";
+import CypressHelper from "../../../util/cypressHelpers";
 
 class MetadataPage {
   constructor() {
@@ -114,6 +115,11 @@ class MetadataPage {
       this.setStandard(standard);
       cy.focused().blur();
     });
+  };
+
+  setCollection = collection => {
+    CypressHelper.selectDropDownByAttribute("collectionsSelect", collection);
+    cy.focused().blur(); // de-focus dropdown select
   };
 }
 

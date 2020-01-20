@@ -9,6 +9,7 @@ export default class TestAddItemTab {
     this.searchFilters = new SearchFilters();
     this.itemListPage = new ItemListPage();
   }
+
   clickOnCreateNewItem = () => {
     // cy.server();
     // cy.route("POST", "**/testitem**").as("saveItem");
@@ -31,6 +32,8 @@ export default class TestAddItemTab {
     cy.xpath("//li[text()='Authored by me']").click();
     return cy.wait("@search");
   };
+
+  getAddButtons = () => cy.contains("ADD");
 
   addItemById = itemId =>
     cy
@@ -60,4 +63,6 @@ export default class TestAddItemTab {
       .get(`[data-cy="${itemId}"]`)
       .contains("REMOVE")
       .click({ force: true });
+
+  clickOnGroupItem = () => cy.get('[data-cy="groupItem"]').click();
 }

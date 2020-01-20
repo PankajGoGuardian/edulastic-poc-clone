@@ -145,5 +145,12 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_MULTI.3", "MCQ_MULTI.1"]
+  },
+  "TEST_ITEM_GROUPS": {
+    "name": "Test Item Group",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "collections": "Content Check Math",
+    "itemKeys": ["MCQ_TF.3", "MCQ_TF.3"]
   }
 }

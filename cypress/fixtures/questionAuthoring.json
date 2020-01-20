@@ -55,6 +55,23 @@
           "grade": "Kindergarten"
         }
       ]
+    },
+    "4": {
+      "quetext": "This is MCQ_STD.4 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
+      "setAns": { "correct": "right-1", "points": 2 },
+      "attemptData": { "right": "right-1", "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "Content Check Math"
+      }
     }
   },
   "MCQ_MULTI": {
@@ -157,6 +174,41 @@
           "grade": "Kindergarten"
         }
       ]
+    },
+    "3": {
+      "quetext": "This is MCQ_TF.3 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.2"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "Content Check Math"
+      }
+    },
+
+    "4": {
+      "quetext": "This is MCQ_TF.4 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "Content Check ELA"
+      }
     }
   },
   "MCQ_BLOCK": {

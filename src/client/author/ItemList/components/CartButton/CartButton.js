@@ -12,7 +12,7 @@ const CartButton = ({ selectedItems, onClick, buttonText, numberChecker, tests }
     numberOfSelectedItems = numberChecker(tests.itemGroups.flatMap(itemGroup => itemGroup.items || []));
   }
   return (
-    <Container onClick={onClick} disabled={!numberOfSelectedItems}>
+    <Container data-cy={buttonText} onClick={onClick} disabled={!numberOfSelectedItems}>
       <CartButtonWrapper>
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>

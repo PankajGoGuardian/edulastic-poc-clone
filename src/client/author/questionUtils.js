@@ -229,8 +229,11 @@ export const isIncompleteQuestion = item => {
   return [false];
 };
 
+// TODO create a list of all question types where validation is stored
+// check the structure of validation for all such question types
+// make the helper generic to support all such question types
 const hasEmptyAnswers = item => {
-  if (item.type === questionType.GRAPH) {
+  if (item.type === questionType.GRAPH || item.type === questionType.SHORT_TEXT) {
     const correctAnswers = [item?.validation?.validResponse, ...item?.validation?.altResponses];
     return !correctAnswers.every(answer => answer?.value?.length);
   }

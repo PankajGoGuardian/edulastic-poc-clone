@@ -188,6 +188,7 @@ const Thumbnail = React.memo(styled.img`
   @media(max-width: ${desktopWidth}) {
     width: 100px;
     height: 90px;
+    object-fit: contain;
   }
   
   @media(max-width: ${mobileWidthMax}) {

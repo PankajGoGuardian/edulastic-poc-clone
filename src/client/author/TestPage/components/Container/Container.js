@@ -529,7 +529,7 @@ class Container extends PureComponent {
     // for itemGroup with limted delivery type should not contain items with question level scoring
     for (const itemGroup in test.itemGroups) {
       if (
-        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         itemGroup.items.some(item => item.itemLevelScoring === false)
       ) {
         message.error(`${itemGroup.name} contains items with question level scoring.`);

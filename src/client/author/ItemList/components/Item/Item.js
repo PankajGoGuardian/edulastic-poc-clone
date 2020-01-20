@@ -248,7 +248,10 @@ class Item extends Component {
     if (isAdd) {
       if (staticGroups.length === 1) {
         const index = itemGroups.findIndex(g => g.groupName === staticGroups[0].groupName);
-        if (itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && item.itemLevelScoring === false) {
+        if (
+          itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+          item.itemLevelScoring === false
+        ) {
           return message.warning(
             "This item can not be added to group with limited delivery type as it has question level scoring"
           );
@@ -273,7 +276,7 @@ class Item extends Component {
     } = this.props;
     if (
       itemGroups[index]?.type === ITEM_GROUP_TYPES.STATIC &&
-      itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+      itemGroups[index]?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       item.itemLevelScoring === false
     ) {
       return message.warning(

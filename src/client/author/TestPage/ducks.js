@@ -61,7 +61,7 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
   return produce(itemGroups, itemGroups => {
     for (const itemGroup of itemGroups) {
       if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
-        const isLimitedDeliveryType = itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED;
+        const isLimitedDeliveryType = itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
         //For delivery type:LIMITED scoring should be as how item level scoring works
         itemGroup.items = itemGroup.items.map(o => ({
           itemId: o._id,
@@ -1518,7 +1518,7 @@ export const getTestItemsSelector = createSelector(
       itemGroup =>
         itemGroup.items.map(item => ({
           ...item,
-          isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED
+          isLimitedDeliveryType: itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         })) || []
     ) || []
 );
@@ -1526,9 +1526,10 @@ export const getTestItemsSelector = createSelector(
 export const getDisableAnswerOnPaperSelector = createSelector(
   getTestEntitySelector,
   test =>
-    //disable answer on paper feature for deliveryType:LIMITED or group.type:AUTOSELECT
+    //disable answer on paper feature for deliveryType:LIMITED_RANDOM or group.type:AUTOSELECT
     test.itemGroups.some(
-      group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED || group.type === ITEM_GROUP_TYPES.AUTOSELECT
+      group =>
+        group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM || group.type === ITEM_GROUP_TYPES.AUTOSELECT
     )
 );
 

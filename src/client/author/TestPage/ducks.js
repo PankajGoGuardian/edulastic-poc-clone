@@ -661,7 +661,9 @@ function* receiveTestByIdSaga({ payload }) {
     if (entity._id !== payload.id) {
       yield put(
         push({
-          pathname: `/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`,
+          pathname: payload.editAssigned
+            ? `/author/tests/${entity._id}/editAssigned`
+            : `/author/tests/tab/review/id/${entity._id}`,
           state: { showCancelButton: payload.editAssigned }
         })
       );
@@ -740,12 +742,11 @@ function* createTest(data) {
 function* createTestSaga({ payload }) {
   try {
     let entity = yield createTest(payload.data);
-    const hash = payload.toReview ? "#review" : "";
     yield put(createTestSuccessAction(entity));
     if (payload.currentTab) {
-      yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}${hash}`));
+      yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}`));
     } else {
-      yield put(replace(`/author/tests/${entity._id}${hash}`));
+      yield put(replace(`/author/tests/tab/review/id/${entity._id}`));
     }
 
     yield call(message.success, "Test created");

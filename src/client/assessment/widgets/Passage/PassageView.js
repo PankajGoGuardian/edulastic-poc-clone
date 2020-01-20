@@ -39,7 +39,11 @@ const PassageView = ({
 
   const everyHeighlight = (_, em) => {
     const jQuery = window.$;
-    jQuery(em).on("mouseenter", function() {
+    jQuery(em).on("click", function(e) {
+      e.preventDefault();
+      if (e?.stopPropagation) {
+        e.stopPropagation();
+      }
       if (!selected && !startedSelectingText) {
         let deltaTop = 0;
         let deltaLeft = 0;
@@ -175,6 +179,8 @@ const PassageView = ({
             id="mainContents"
             onMouseUp={disableResponse ? null : handleHighlight}
             onMouseDown={disableResponse ? null : handleMouseDown}
+            onTouchEnd={disableResponse ? null : handleHighlight}
+            onTouchStart={disableResponse ? null : handleMouseDown}
             dangerouslySetInnerHTML={{ __html: getContent() }}
             userSelect={!disableResponse}
           />

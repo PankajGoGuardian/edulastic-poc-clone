@@ -17,6 +17,7 @@ const Stimulus = withTheme(
 
     & * {
       user-select: ${props => (props.userSelect ? "text !important" : "none")};
+      -webkit-touch-callout: none;
     }
 
     @media (max-width: ${desktopWidth}) {

@@ -72,7 +72,17 @@ const quadrantsDefaultConfig = {
     }
   },
   pan: {
-    enabled: false
+    enabled: false,
+    needShift: false,
+    needTwoFingers: false
+  },
+  zoom: {
+    enabled: false,
+    needShift: true,
+    min: 0,
+    max: 0,
+    pinchHorizontal: false,
+    pinchVertical: false
   }
 };
 

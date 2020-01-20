@@ -15,7 +15,8 @@ class ClozeMathInput extends React.Component {
 
   state = {
     showKeyboard: false,
-    currentMathQuill: null
+    currentMathQuill: null,
+    nativeKeyboard: !window.isMobileDevice
   };
 
   constructor(props) {
@@ -28,6 +29,7 @@ class ClozeMathInput extends React.Component {
   static contextType = AnswerContext;
 
   componentDidMount() {
+    const { nativeKeyboard } = this.state;
     const { resprops = {}, id } = this.props;
     const { answers = {}, disableResponse } = resprops;
     const { maths: userAnswers = [] } = answers;
@@ -35,9 +37,13 @@ class ClozeMathInput extends React.Component {
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
       const mQuill = MQ.MathField(this.mathRef.current, window.MathQuill);
+      this.mQuill = mQuill;
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
+        if (!nativeKeyboard) {
+          textarea.setAttribute("readonly", "readonly");
+        }
         textarea.disabled = disableResponse;
         if (!disableResponse) {
           textarea.addEventListener("keyup", this.handleKeypress);
@@ -46,10 +52,12 @@ class ClozeMathInput extends React.Component {
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
+    document.addEventListener("touchstart", this.clickOutside);
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.clickOutside);
+    document.removeEventListener("touchstart", this.clickOutside);
   }
 
   getUserAnswerFromProps = props => {
@@ -229,12 +237,46 @@ class ClozeMathInput extends React.Component {
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
+  toggleNativeKeyBoard = () => {
+    this.setState(
+      state => ({
+        nativeKeyboard: !state.nativeKeyboard
+      }),
+      () => {
+        const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
+        if (this.state.nativeKeyboard) {
+          textarea.removeAttribute("readonly");
+          textarea.focus();
+        } else {
+          textarea.blur();
+          textarea.setAttribute("readonly", "readonly");
+          this.setState({ showKeyboard: true });
+        }
+      }
+    );
+  };
+
   render() {
     const { resprops = {} } = this.props;
     const { height, width, item, uiStyles = {}, isV1Migrated, disableResponse } = resprops;
-    const { showKeyboard } = this.state;
+    const { showKeyboard, nativeKeyboard } = this.state;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
+
+    let mathKeyboardVisible = true;
+    if (!window.isMobileDevice && showKeyboard) {
+      mathKeyboardVisible = true;
+    } else if (window.isMobileDevice) {
+      if (!showKeyboard) {
+        mathKeyboardVisible = false;
+      } else {
+        if (nativeKeyboard) {
+          mathKeyboardVisible = false;
+        }
+      }
+    } else {
+      mathKeyboardVisible = false;
+    }
 
     return (
       <Wrapper
@@ -262,7 +304,15 @@ class ClozeMathInput extends React.Component {
               padding: "5px 11px 4px"
             }}
           />
-          {showKeyboard && (
+          {window.isMobileDevice && (
+            <KeyboardIcon
+              onClick={this.toggleNativeKeyBoard}
+              className={this.state.nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
+              aria-hidden="true"
+            />
+          )}
+
+          {mathKeyboardVisible && (
             <KeyboardWrapper ref={this.mathKeyboardRef}>
               <MathKeyboard
                 onInput={this.onInput}
@@ -280,6 +330,13 @@ class ClozeMathInput extends React.Component {
     );
   }
 }
+
+const KeyboardIcon = styled.i`
+  position: relative;
+  display: inline-block;
+  left: -32px;
+  padding: 8px;
+`;
 
 const MathInput = ({ resprops = {}, id, responseindex }) => {
   const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex, save } = resprops;

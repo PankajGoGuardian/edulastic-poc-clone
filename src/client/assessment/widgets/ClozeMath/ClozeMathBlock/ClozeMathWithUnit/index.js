@@ -15,7 +15,8 @@ class ClozeMathWithUnit extends React.Component {
   };
 
   state = {
-    showKeyboard: false
+    showKeyboard: false,
+    nativeKeyboard: !window.isMobileDevice
   };
 
   constructor(props) {
@@ -34,9 +35,13 @@ class ClozeMathWithUnit extends React.Component {
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
       const mQuill = MQ.MathField(this.mathRef.current, window.MathQuill);
+      this.mQuill = mQuill;
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
+        if (!this.state.nativeKeyboard) {
+          textarea.setAttribute("readonly", "readonly");
+        }
         textarea.disabled = disableResponse;
         if (!disableResponse) {
           textarea.addEventListener("keyup", this.handleKeypress);
@@ -45,10 +50,12 @@ class ClozeMathWithUnit extends React.Component {
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
+    document.addEventListener("touchstart", this.clickOutside);
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.clickOutside);
+    document.removeEventListener("touchstart", this.clickOutside);
   }
 
   getUserAnswerFromProps = props => {
@@ -244,14 +251,49 @@ class ClozeMathWithUnit extends React.Component {
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
+  toggleNativeKeyBoard = () => {
+    this.setState(
+      state => ({
+        nativeKeyboard: !state.nativeKeyboard
+      }),
+      () => {
+        const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
+        if (this.state.nativeKeyboard) {
+          textarea.removeAttribute("readonly");
+          textarea.focus();
+        } else {
+          textarea.blur();
+          textarea.setAttribute("readonly", "readonly");
+          this.setState({ showKeyboard: true });
+        }
+      }
+    );
+  };
+
   render() {
     const { resprops = {}, id } = this.props;
     const { item, uiStyles = {}, height, width, disableResponse = false } = resprops;
     const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
-    const { showKeyboard } = this.state;
+    const { showKeyboard, nativeKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
+
+    let mathKeyboardVisible = true;
+    if (!window.isMobileDevice && showKeyboard) {
+      mathKeyboardVisible = true;
+    } else if (window.isMobileDevice) {
+      if (!showKeyboard) {
+        mathKeyboardVisible = false;
+      } else {
+        if (nativeKeyboard) {
+          mathKeyboardVisible = false;
+        }
+      }
+    } else {
+      mathKeyboardVisible = false;
+    }
+
     return (
       <OuterWrapper disableResponse={disableResponse} ref={this.wrappedRef}>
         <InnerWrapper>
@@ -271,6 +313,13 @@ class ClozeMathWithUnit extends React.Component {
               alignItems: "center"
             }}
           />
+          {window.isMobileDevice && (
+            <KeyboardIcon
+              onClick={this.toggleNativeKeyBoard}
+              className={this.state.nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
+              aria-hidden="true"
+            />
+          )}
           <SelectUnit
             disabled={disableResponse}
             preview
@@ -282,7 +331,7 @@ class ClozeMathWithUnit extends React.Component {
             dropdownStyle={{ fontSize: btnStyle.fontSize }}
           />
         </InnerWrapper>
-        {showKeyboard && (
+        {mathKeyboardVisible && (
           <KeyboardWrapper ref={this.mathKeyboardRef}>
             <MathKeyboard
               onInput={this.onInput}
@@ -299,6 +348,13 @@ class ClozeMathWithUnit extends React.Component {
     );
   }
 }
+
+const KeyboardIcon = styled.i`
+  position: relative;
+  display: inline-block;
+  left: -32px;
+  padding: 8px;
+`;
 
 const InnerWrapper = styled.div`
   margin: 2px 2px 4px;

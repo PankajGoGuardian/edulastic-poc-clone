@@ -22,7 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
     it(">TC01 verify Active Classes", () => {
       manageClass.selectClassType("ACTIVE");
-      manageClass.verifyShowActiveClass();
+      manageClass.verifyShowActiveClass(3);
       manageClass.validateclassName("Automation_class");
       manageClass.validateclassName("automation_class2");
       manageClass.validateclassName("New_automation_Class");
@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
 
     it(">TC02 verify Archived Classes", () => {
       manageClass.selectClassType("ARCHIVE");
-      manageClass.verifyShowArchiveClass();
+      manageClass.verifyShowArchiveClass(1);
       manageClass.validateclassName("automation_class3");
       manageClass.selectClassType("ACTIVE");
     });

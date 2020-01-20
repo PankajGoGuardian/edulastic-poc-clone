@@ -13,9 +13,9 @@ export default class ManagePage {
   };
 
   selectClassType = classType => {
-    cy.get(".ant-select").click({ force: true });
+    // cy.get(".ant-select").click({ force: true });
 
-    cy.contains("li", classType)
+    cy.contains(classType)
       .should("be.visible")
       .click({ force: true });
   };
@@ -48,16 +48,12 @@ export default class ManagePage {
     cy.get('[data-cy="cancelbutton"]').click({ force: true });
   };
 
-  verifyShowActiveClass = () => {
-    cy.get(".ant-select-selection-selected-value")
-      .contains("ACTIVE")
-      .should("be.visible");
+  verifyShowActiveClass = activeCount => {
+    cy.contains(`ACTIVE (${activeCount})`).should("be.visible");
   };
 
-  verifyShowArchiveClass = () => {
-    cy.get(".ant-select-selection-selected-value")
-      .contains("ARCHIVE")
-      .should("be.visible");
+  verifyShowArchiveClass = archiveCount => {
+    cy.contains(`ARCHIVE (${archiveCount})`).should("be.visible");
   };
 
   typeClassCode = classCode => {

@@ -6,6 +6,7 @@ import { cloneDeep } from "lodash";
 import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
 import { Input } from "antd";
+import { useDisableDragScroll } from "@edulastic/common";
 
 const normalizeTouchEvent = e => {
   if (e?.nativeEvent?.changedTouches?.length) {
@@ -28,7 +29,7 @@ const SvgDraw = ({
   top,
   position
 }) => {
-  const svg = useRef(null);
+  const svg = useDisableDragScroll();
   const [points, setPoints] = useState([]);
   const [pathes, setPathes] = useState([]);
   const [dragStart, setDragStart] = useState(false);

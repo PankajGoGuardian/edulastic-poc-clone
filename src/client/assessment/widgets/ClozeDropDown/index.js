@@ -86,9 +86,9 @@ class ClozeDropDown extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
+        // eslint-disable-next-line max-len
         if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
           draft.validation.altResponses.splice(index, 1);
-          setQuestionData(draft);
         }
       })
     );

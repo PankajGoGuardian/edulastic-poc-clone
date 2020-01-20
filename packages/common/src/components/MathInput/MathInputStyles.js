@@ -131,9 +131,11 @@ export const MathInputStyles = styled.div`
 
   .mq-math-mode .mq-matrix {
     table {
-      margin: 4px 0px;
+      margin: 0px;
+      border-spacing: 0px;
       td {
         text-align: center;
+        padding-bottom: 4px;
       }
     }
   }

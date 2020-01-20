@@ -1,6 +1,7 @@
 import { questionType, question } from "@edulastic/constants";
 import { get, isString } from "lodash";
 import striptags from "striptags";
+import { templateHasImage } from "@edulastic/common";
 
 const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE } = questionType;
 
@@ -168,6 +169,9 @@ const hasEmptyFields = item => {
 export const isRichTextFieldEmpty = text => {
   if (!text) {
     return true;
+  }
+  if (templateHasImage(text)) {
+    return false;
   }
 
   if (text.includes(`<span class="input__math"`)) {

@@ -59,7 +59,6 @@ import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import { getInterestedCurriculumsSelector, getUserId, getUserFeatures } from "../../../src/selectors/user";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
-import GroupItems from "../GroupItems/index";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -95,8 +94,7 @@ class AddItems extends PureComponent {
   };
 
   state = {
-    questionCreateType: "Duplicate",
-    showAddItemsPage: true
+    questionCreateType: "Duplicate"
   };
 
   componentDidMount() {
@@ -344,87 +342,71 @@ class AddItems extends PureComponent {
       toggleFilter,
       isShowFilter,
       search,
-      features
+      features,
+      gotoGroupItems
     } = this.props;
 
     return (
-      <>
-        {this.state.showAddItemsPage ? (
-          <Container>
-            {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
-              <ItemFilter
-                onSearchFieldChange={this.handleSearchFieldChange}
-                onSearchInputChange={this.handleSearchInputChange}
-                onSearch={this.handleSearch}
-                onClearSearch={this.handleClearSearch}
-                onLabelSearch={this.handleLabelSearch}
-                windowWidth={windowWidth}
-                search={search}
-                curriculums={curriculums}
-                getCurriculumStandards={getCurriculumStandards}
-                curriculumStandards={curriculumStandards}
-                items={filterMenuItems}
-                toggleFilter={toggleFilter}
-                isShowFilter={isShowFilter}
-                t={t}
-              />
-            )}
-            <ListItems isShowFilter={isShowFilter}>
-              <Element>
-                <MobileFilterIcon>
-                  <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
-                </MobileFilterIcon>
-                <ContentWrapper borderRadius="0px" padding="0px">
-                  {loading && <Spin size="large" />}
-                  <ItemsMenu>
-                    <QuestionsFound>{count} questions found</QuestionsFound>
-                    <FlexContainer alignItems="center" justifyContent="space-between">
-                      <span style={{ fontSize: "12px" }}>
-                        {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
-                      </span>
-                      <StyledButton
-                        data-cy="createNewItem"
-                        type="secondary"
-                        size="large"
-                        onClick={this.handleCreateNewItem}
-                      >
-                        <IconPlusCircle color={themeColor} width={15} height={15} />
-                        <span>Create new Item</span>
-                      </StyledButton>
-                      {(features.isCurator || features.isPublisherAuthor) && (
-                        <StyledButton
-                          data-cy="groupItem"
-                          type="secondary"
-                          size="large"
-                          onClick={() => {
-                            this.setState({ showAddItemsPage: false });
-                          }}
-                        >
-                          <IconItemGroup color={themeColor} width={15} height={15} />
-                          <span>Group Items</span>
-                        </StyledButton>
-                      )}
-                    </FlexContainer>
-                  </ItemsMenu>
-
-                  {!loading && (
-                    <ScrollbarContainer>
-                      {this.renderItems()}
-                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
-                    </ScrollbarContainer>
-                  )}
-                </ContentWrapper>
-              </Element>
-            </ListItems>
-          </Container>
-        ) : (
-          <GroupItems
-            switchToAddItems={() => {
-              this.setState({ showAddItemsPage: true });
-            }}
+      <Container>
+        {(windowWidth < SMALL_DESKTOP_WIDTH ? !isShowFilter : isShowFilter) && (
+          <ItemFilter
+            onSearchFieldChange={this.handleSearchFieldChange}
+            onSearchInputChange={this.handleSearchInputChange}
+            onSearch={this.handleSearch}
+            onClearSearch={this.handleClearSearch}
+            onLabelSearch={this.handleLabelSearch}
+            windowWidth={windowWidth}
+            search={search}
+            curriculums={curriculums}
+            getCurriculumStandards={getCurriculumStandards}
+            curriculumStandards={curriculumStandards}
+            items={filterMenuItems}
+            toggleFilter={toggleFilter}
+            isShowFilter={isShowFilter}
+            t={t}
           />
         )}
-      </>
+        <ListItems isShowFilter={isShowFilter}>
+          <Element>
+            <MobileFilterIcon>
+              <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
+            </MobileFilterIcon>
+            <ContentWrapper borderRadius="0px" padding="0px">
+              {loading && <Spin size="large" />}
+              <ItemsMenu>
+                <QuestionsFound>{count} questions found</QuestionsFound>
+                <FlexContainer alignItems="center" justifyContent="space-between">
+                  <span style={{ fontSize: "12px" }}>
+                    {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
+                  </span>
+                  <StyledButton
+                    data-cy="createNewItem"
+                    type="secondary"
+                    size="large"
+                    onClick={this.handleCreateNewItem}
+                  >
+                    <IconPlusCircle color={themeColor} width={15} height={15} />
+                    <span>Create new Item</span>
+                  </StyledButton>
+                  {(features.isCurator || features.isPublisherAuthor) && (
+                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={gotoGroupItems}>
+                      <IconItemGroup color={themeColor} width={15} height={15} />
+                      <span>Group Items</span>
+                    </StyledButton>
+                  )}
+                </FlexContainer>
+              </ItemsMenu>
+
+              {!loading && (
+                <ScrollbarContainer>
+                  {this.renderItems()}
+                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                </ScrollbarContainer>
+              )}
+            </ContentWrapper>
+          </Element>
+        </ListItems>
+      </Container>
     );
   }
 }

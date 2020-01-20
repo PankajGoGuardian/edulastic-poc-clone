@@ -57,6 +57,7 @@ import Review from "../Review";
 import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
+import GroupItems from "../GroupItems";
 
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
@@ -360,6 +361,7 @@ class Container extends PureComponent {
               onSaveTestId={this.handleSaveTestId}
               test={test}
               gotoSummary={this.handleNavChange("description")}
+              gotoGroupItems={this.handleNavChange("groupItems")}
               toggleFilter={this.toggleFilter}
               isShowFilter={isShowFilter}
             />
@@ -424,6 +426,12 @@ class Container extends PureComponent {
         return (
           <Content>
             <Assign test={test} setData={setData} current={current} />
+          </Content>
+        );
+      case "groupItems":
+        return (
+          <Content>
+            <GroupItems />
           </Content>
         );
       default:

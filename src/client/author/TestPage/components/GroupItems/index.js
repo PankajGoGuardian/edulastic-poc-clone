@@ -61,7 +61,6 @@ const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
 
 const GroupItems = ({
   t,
-  switchToAddItems,
   match,
   updateGroupData,
   addNewGroup,
@@ -77,7 +76,8 @@ const GroupItems = ({
   removeTestItems,
   deleteItemsGroup,
   test,
-  setTestData
+  setTestData,
+  history
 }) => {
   const { Panel } = Collapse;
 
@@ -98,6 +98,10 @@ const GroupItems = ({
     standards = []
   } = alignment;
 
+  const goBackUrl = match.params?.id
+    ? `/author/tests/tab/addItems/id/${match.params.id}`
+    : "/author/tests/create/addItems";
+
   const breadcrumbData = [
     {
       title: "TESTS LIBRARY",
@@ -105,8 +109,7 @@ const GroupItems = ({
     },
     {
       title: "ADD ITEMS",
-      to: match.path,
-      onClick: switchToAddItems
+      to: goBackUrl
     },
     {
       title: "QUESTION DELIVERY GROUPS",
@@ -114,6 +117,9 @@ const GroupItems = ({
     }
   ];
 
+  const switchToAddItems = () => {
+    return history.push(goBackUrl);
+  };
   const collectionData = collections.map(o => ({ text: o.name, value: o._id }));
 
   useEffect(() => {

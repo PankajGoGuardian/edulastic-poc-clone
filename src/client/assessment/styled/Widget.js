@@ -36,7 +36,7 @@ export const Widget = styled.div`
       height: 0;
       overflow: hidden;
     `}
-
+  ${({ styles }) => styles};
   &:not(:first-child) {
     margin-top: 30px;
 

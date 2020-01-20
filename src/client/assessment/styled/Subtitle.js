@@ -15,6 +15,7 @@ export const SubtitleText = styled.div`
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
   padding: 0;
   margin: ${props => (props.margin ? props.margin : "0 0 25px")};
+  ${({ styles }) => styles};
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize || "18px"};
@@ -44,9 +45,9 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
     </FlexContainer>
   ) : null;
 
-export const Subtitle = ({ id, children }) => (
+export const Subtitle = ({ id, children, textStyles = {}, showIcon = true }) => (
   <FlexContainer justifyContent="flex-start" alignItems="baseline">
-    <SubtitleText>{children}</SubtitleText>
-    <QuestionIcon id={id} />
+    <SubtitleText styles={textStyles}>{children}</SubtitleText>
+    {showIcon && <QuestionIcon id={id} />}
   </FlexContainer>
 );

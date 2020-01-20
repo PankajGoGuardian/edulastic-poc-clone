@@ -150,7 +150,6 @@ class Container extends Component {
 
   handleCategory = ({ key }) => {
     const { setCategory } = this.props;
-
     setCategory(key);
   };
 

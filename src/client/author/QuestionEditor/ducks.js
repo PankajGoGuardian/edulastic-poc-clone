@@ -449,7 +449,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
     const redirectTestId = yield select(redirectTestIdSelector);
     let item;
-
+    console.log(data);
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
     if (itemDetail._id === "new") {

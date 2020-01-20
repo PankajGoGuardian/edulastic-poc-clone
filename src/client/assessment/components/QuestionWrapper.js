@@ -58,6 +58,7 @@ import { getFontSize } from "../utils/helpers";
 import FeedBackContainer from "./FeedBackContainer";
 import { PrintPreviewScore } from "./printPreviewScore";
 import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
+import { Coding } from "../widgets/Coding";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -233,6 +234,8 @@ const getQuestion = type => {
       return FractionEditor;
     case questionType.SECTION_LABEL:
       return DummyQuestion;
+    case questionType.CODING:
+      return Coding;
     default:
       return null;
   }
@@ -428,7 +431,7 @@ class QuestionWrapper extends Component {
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null
               }}
-              flowLayout={flowLayout}
+              flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
               twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
             >
               <StyledFlexContainer>

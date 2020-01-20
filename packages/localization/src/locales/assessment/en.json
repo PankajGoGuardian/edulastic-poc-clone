@@ -439,6 +439,47 @@
       "shuffleOptions": "Shuffle options",
       "choice": "Choice"
     },
+    "coding": {
+      "composeQuestion": "Question",
+      "questionPlaceholder": "Enter the question",
+      "questionTitlePlaceholder": "Enter a title",
+      "questionTitle": "Title",
+      "testCases": {
+        "title": "Test Cases",
+        "addtestCase": "Add test case",
+        "evaluationOptions": {
+          "auto": "Auto evaluate using test cases",
+          "manual": "Manual evaluation"
+        },
+        "table": {
+          "index": "#",
+          "desc": "Description",
+          "input": "Input",
+          "output": "Output",
+          "categories": "Categories",
+          "weightage": "Weightage",
+          "visibility": "Visibility",
+          "actions": "Actions"
+        },
+        "tabs": {
+          "summary": "summary",
+          "testCases": "Test cases"
+        }
+      },
+      "languageSection": "Language Section",
+      "codeStub": "Code Stub",
+      "codeStubGenerateBtn": "Generate code",
+      "codeStubClearAllBtntext": "Clear all",
+      "codeStubReadOnlyBtnText": "Read only",
+      "codeStubRunCodeBtnText": "Run code",
+      "codeStubRunAllTestBtnText": "Run all tests",
+      "codeSolution": "Solution",
+      "codeDisplayOptions": {
+        "title": "Layout",
+        "leftright": "left/right",
+        "topbottom": "top/bottom"
+      }
+    },
     "cloze": {
       "correctAnswer": "Correct Answer",
       "altAnswers": "Alternate Answers",

@@ -37,6 +37,7 @@ const GRAPH = "graph";
 const FRACTION_EDITOR = "fractionEditor";
 const TRUE_OR_FALSE = "trueOrFalse";
 const SECTION_LABEL = "sectionLabel";
+const CODING = "coding";
 
 const selectsData = [
   { value: "", text: "All Types" },
@@ -119,5 +120,6 @@ module.exports = {
   manuallyGradableQn,
   TRUE_OR_FALSE,
   SECTION_LABEL,
-  FRACTION_EDITOR
+  FRACTION_EDITOR,
+  CODING
 };

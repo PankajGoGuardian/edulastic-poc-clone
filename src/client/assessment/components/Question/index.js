@@ -66,7 +66,16 @@ class Question extends Component {
   };
 
   render() {
-    const { dataCy, children, questionTextArea, advancedAreOpen, position, visible, overflowHandlers } = this.props;
+    const {
+      dataCy,
+      children,
+      questionTextArea,
+      advancedAreOpen,
+      position,
+      visible,
+      overflowHandlers,
+      styles = {}
+    } = this.props;
 
     return (
       <Widget
@@ -77,6 +86,7 @@ class Question extends Component {
         position={position}
         visible={visible}
         overflowHandlers={overflowHandlers}
+        style={styles}
       >
         {children}
       </Widget>

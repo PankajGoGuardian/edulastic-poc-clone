@@ -2477,8 +2477,37 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
+    },
+    {
+      type: "other",
+      cardImage: MCBlockLayout,
+      data: {
+        title: "Coding",
+        type: questionType.CODING,
+        stimulus: "",
+        stimulusTitle: "",
+        languages: [{ label: "JAVASCRIPT", lang: "javascript" }],
+        uiStyle: {
+          type: "standard"
+        },
+        codeStubs: [],
+        testCases: {
+          evaluationType: "auto",
+          values: []
+        },
+        solutions: [],
+        layout: "left/right",
+        editorConfig: {
+          theme: "github",
+          fontSize: 14,
+          tabSize: 2,
+          autoComplete: true,
+          readOnly: false,
+          keyboardHandler: "sublime"
+        }
+      },
+      onSelectQuestionType
     }
   ];
-
   return isPassage ? cards.filter(i => !i.isPassageType) : cards;
 };

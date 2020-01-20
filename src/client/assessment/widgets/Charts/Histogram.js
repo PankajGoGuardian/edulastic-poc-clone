@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual } from "lodash";
+import { isEqual } from "lodash";
+import produce from "immer";
+
+import { useDisableDragScroll } from "@edulastic/common";
 
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
@@ -78,17 +81,28 @@ const Histogram = ({
     saveAnswer(localData, active);
   };
 
+  const normalizeTouchEvent = e => {
+    if (e?.nativeEvent?.changedTouches?.length) {
+      e.pageX = e.nativeEvent.changedTouches[0].pageX;
+      e.pageY = e.nativeEvent.changedTouches[0].pageY;
+    }
+  };
+
   const onMouseMove = e => {
-    const newLocalData = cloneDeep(localData);
+    if (window.isIOS) normalizeTouchEvent(e);
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
-      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
-
-      setLocalData(newLocalData);
+      setLocalData(
+        produce(localData, newLocalData => {
+          setLocalData(newLocalData);
+          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
+        })
+      );
     }
   };
 
   const onMouseDown = index => e => {
+    if (window.isIOS) normalizeTouchEvent(e);
     setCursorY(e.pageY);
     setActiveIndex(index);
     setInitY(localData[index].y);
@@ -104,6 +118,8 @@ const Histogram = ({
     save();
   };
 
+  const targetRef = useDisableDragScroll();
+
   return (
     <svg
       style={{ userSelect: "none", position: "relative", zIndex: "15" }}
@@ -112,6 +128,9 @@ const Histogram = ({
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
+      onTouchMove={onMouseMove}
+      onTouchEnd={onMouseUp}
+      ref={targetRef}
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
         <BarsAxises

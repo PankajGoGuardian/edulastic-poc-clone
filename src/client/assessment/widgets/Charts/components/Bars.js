@@ -75,10 +75,13 @@ const Bars = ({
           />
           {((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <ActiveBar
-              onClick={deleteMode ? () => saveAnswer(index) : () => {}}
+              // onClick={deleteMode ? () => saveAnswer(index) : () => { }}
               onMouseEnter={handleMouse(index)}
               onMouseLeave={handleMouse(null)}
               onMouseDown={onMouseDown(index)}
+              onClick={handleMouse(index)}
+              onTouchEnd={handleMouse(null)}
+              onTouchStart={onMouseDown(index)}
               x={getCenterX(index)}
               y={getCenterY(dot)}
               width={step * 0.8}

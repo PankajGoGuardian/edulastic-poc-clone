@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
+import styled from "styled-components";
 
 import { MathKeyboard } from "@edulastic/common";
 import { math } from "@edulastic/constants";
@@ -12,7 +13,8 @@ const { EMBED_RESPONSE } = math;
 class MathInput extends React.PureComponent {
   state = {
     mathField: null,
-    mathFieldFocus: false
+    mathFieldFocus: false,
+    nativeKeyboard: !window.isMobileDevice
   };
 
   containerRef = React.createRef();
@@ -64,8 +66,9 @@ class MathInput extends React.PureComponent {
     }));
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
+    this.mQuill = mathField;
     mathField.write(this.sanitizeLatex(value));
-
+    this.mathField1 = mathField;
     if (defaultFocus) {
       mathField.focus();
     }
@@ -75,6 +78,9 @@ class MathInput extends React.PureComponent {
       () => {
         const textarea = mathField.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
+        if (!this.state.nativeKeyboard) {
+          textarea.setAttribute("readonly", "readonly");
+        }
         textarea.addEventListener("keyup", this.handleChangeField);
         textarea.addEventListener("keypress", this.handleKeypress);
         document.addEventListener("click", this.handleClick, false);
@@ -165,6 +171,25 @@ class MathInput extends React.PureComponent {
     mathField.focus();
   };
 
+  toggleNativeKeyBoard = () => {
+    this.setState(
+      state => ({
+        nativeKeyboard: !state.nativeKeyboard
+      }),
+      () => {
+        const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
+        if (this.state.nativeKeyboard) {
+          textarea.removeAttribute("readonly");
+          textarea.focus();
+        } else {
+          textarea.blur();
+          textarea.setAttribute("readonly", "readonly");
+          this.setState({ mathFieldFocus: true });
+        }
+      }
+    );
+  };
+
   render() {
     const { mathFieldFocus } = this.state;
     const {
@@ -185,6 +210,23 @@ class MathInput extends React.PureComponent {
       hideKeypad,
       onInnerFieldClick
     } = this.props;
+
+    const { mathFieldFocus: showKeyboard } = this.state;
+    let mathKeyboardVisible = true;
+    if (!window.isMobileDevice && showKeyboard) {
+      mathKeyboardVisible = true;
+    } else if (window.isMobileDevice) {
+      if (!showKeyboard) {
+        mathKeyboardVisible = false;
+      } else {
+        if (nativeKeyboard) {
+          mathKeyboardVisible = false;
+        }
+      }
+    } else {
+      mathKeyboardVisible = false;
+    }
+
     return (
       <MathInputStyles
         fullWidth={fullWidth}
@@ -213,10 +255,18 @@ class MathInput extends React.PureComponent {
             data-cy="answer-math-input-field"
           >
             <span className="input__math__field" ref={this.mathFieldRef} />
+
+            {window.isMobileDevice && (
+              <KeyboardIcon
+                onClick={this.toggleNativeKeyBoard}
+                className={this.state.nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
+                aria-hidden="true"
+              />
+            )}
           </div>
           {!alwaysHideKeyboard && (
             <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
-              {(alwaysShowKeyboard || mathFieldFocus) && (
+              {(alwaysShowKeyboard || mathKeyboardVisible) && (
                 <MathKeyboard
                   symbols={symbols}
                   numberPad={numberPad}
@@ -236,6 +286,13 @@ class MathInput extends React.PureComponent {
     );
   }
 }
+
+const KeyboardIcon = styled.i`
+  position: relative;
+  display: inline-block;
+  left: -32px;
+  padding: 8px;
+`;
 
 MathInput.propTypes = {
   alwaysShowKeyboard: PropTypes.bool,

@@ -14,7 +14,8 @@ let config = {
   },
   output: {
     dir: process.env.DESTINATION || "./dist",
-    sourceMap: true
+    sourceMap: true,
+    ...(process.env.QUICK_BUILD ? { sourceMap: false, minimize: false } : {})
   },
 
   chainWebpack: (chain, opts) => {

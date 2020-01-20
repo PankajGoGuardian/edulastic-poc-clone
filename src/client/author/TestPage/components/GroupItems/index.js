@@ -149,7 +149,7 @@ const GroupItems = ({
     if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC) {
       let extraPick = [];
       if (
-        [ITEM_GROUP_DELIVERY_TYPES.LIMITED, ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM].includes(
+        [ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM, ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM].includes(
           updatedGroupData.deliveryType
         )
       )
@@ -282,7 +282,7 @@ const GroupItems = ({
         isValid = false;
         break;
       }
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && !deliverItemsCount) {
+      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
         break;
@@ -318,7 +318,7 @@ const GroupItems = ({
     let isValid = true;
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
       const { deliveryType, deliverItemsCount } = editGroupDetail;
-      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED && !deliverItemsCount) {
+      if (deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && !deliverItemsCount) {
         message.error("Please enter the total number of items to be delivered.");
         isValid = false;
       }
@@ -392,13 +392,13 @@ const GroupItems = ({
       updatedGroupData = { ...updatedGroupData, items: [] };
     }
     if (
-      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED &&
+      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
       updatedGroupData.items.some(item => item.itemLevelScoring === false)
     ) {
       return message.warn("All items inside LIMITED delivery type group should have item level scoring.");
     }
     const disableAnswerOnPaper =
-      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED ||
+      updatedGroupData.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
       updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT;
     if (test.answerOnPaper && disableAnswerOnPaper) {
       setTestData({ answerOnPaper: false });
@@ -642,7 +642,7 @@ const GroupItems = ({
                       defaultChecked={false}
                       value={
                         editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
-                          ? ITEM_GROUP_DELIVERY_TYPES.LIMITED
+                          ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
                           : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
                       }
                     >

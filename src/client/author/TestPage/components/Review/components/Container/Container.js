@@ -132,10 +132,10 @@ export const createGroupSummary = test => {
   const hasRandomQuestions = test.itemGroups.some(
     itemGroup =>
       itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT ||
-      itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED
+      itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
   );
   for (const itemGroup of test.itemGroups) {
-    const isLimitedDeliveryType = itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED;
+    const isLimitedDeliveryType = itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
     const { noStandards, ...summaryData } = createItemsSummaryData(
       itemGroup.items,
       test.scoring,

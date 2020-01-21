@@ -134,23 +134,26 @@ const ReviewSummary = ({
       </FlexBoxTwo>
 
       <FlexBoxThree>
-        {summary?.groupSummary?.map(group => {
-          const standards = group?.standards?.filter(item => !item.isEquivalentStandard)?.map(item => item.identifier);
-          return (
-            <>
-              <MainLabel>{groupsKeyed[group.groupId]?.groupName}</MainLabel>
-              <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
-                <SummaryInfoContainer style={{ borderRadius: 0, width: "50%" }}>
-                  <SummaryInfoNumber data-cy="question">{group.totalItems}</SummaryInfoNumber>
-                  <SummaryInfoTitle>Items</SummaryInfoTitle>
-                </SummaryInfoContainer>
-                <SummaryInfoContainer style={{ borderRadius: 0, width: "50%", padding: "2px 0" }}>
-                  <Tags tags={standards} key="standards" show={1} isStandards />
-                </SummaryInfoContainer>
-              </FlexContainer>
-            </>
-          );
-        })}
+        {isPublishers &&
+          summary?.groupSummary?.map(group => {
+            const standards = group?.standards
+              ?.filter(item => !item.isEquivalentStandard)
+              ?.map(item => item.identifier);
+            return (
+              <>
+                <MainLabel>{groupsKeyed[group.groupId]?.groupName}</MainLabel>
+                <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
+                  <SummaryInfoContainer style={{ borderRadius: 0, width: "50%" }}>
+                    <SummaryInfoNumber data-cy="question">{group.totalItems}</SummaryInfoNumber>
+                    <SummaryInfoTitle>Items</SummaryInfoTitle>
+                  </SummaryInfoContainer>
+                  <SummaryInfoContainer style={{ borderRadius: 0, width: "50%", padding: "2px 0" }}>
+                    <Tags tags={standards} key="standards" show={1} isStandards />
+                  </SummaryInfoContainer>
+                </FlexContainer>
+              </>
+            );
+          })}
 
         <MainLabel>Summary</MainLabel>
         <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">

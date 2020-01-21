@@ -74,13 +74,13 @@ class ClassQuestions extends Component {
   static contextType = AnswerContext;
 
   componentDidMount() {
-    this.loadScratchPadData();
+    //this.loadScratchPadData();
   }
 
   componentDidUpdate(prevProps) {
     const { questionActivities } = this.props;
     if (prevProps.questionActivities !== questionActivities) {
-      this.loadScratchPadData();
+      //this.loadScratchPadData();
     }
   }
 
@@ -322,8 +322,9 @@ class ClassQuestions extends Component {
       }
       // accumulating userwork also here to avoid an extra loops. ummm... another frugal
       // ride over the looops?
-      if (curr.scratchPad && !userWork[curr.testItemId]) {
-        userWork[curr.testItemId] = curr.scratchPad;
+      //to indicate scratchpadData available
+      if (curr.scratchPadPresent && !userWork[curr.testItemId]) {
+        userWork[curr.testItemId] = {};
       }
       return acc;
     }, {});

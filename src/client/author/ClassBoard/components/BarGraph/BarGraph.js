@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { get, groupBy, isEmpty } from "lodash";
 import { ticks } from "d3-array";
+import { connect } from "react-redux";
 import {
   white,
   pointColor,
@@ -14,9 +15,9 @@ import {
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
-import { MainDiv, StyledCustomTooltip } from "./styled";
+import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
-import { getAggregateByQuestion, getItemSummary } from "../../ducks";
+import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
 import memoizeOne from "memoize-one";
 import { scrollTo } from "@edulastic/common";
 import { MAX_XGA_WIDTH, NORMAL_MONITOR_WIDTH, LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../src/constants/others";
@@ -62,7 +63,7 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
   );
 };
 
-export default class BarGraph extends Component {
+class BarGraph extends Component {
   isMobile = () => {
     window.innerWidth < 480;
   };
@@ -246,12 +247,16 @@ export default class BarGraph extends Component {
   handleClick = (data, index) => {
     if (this.props.studentview) {
       const { qid } = data;
-      _scrollTo(qid);
-    } else {
-      const { onClickHandler } = this.props;
-      if (onClickHandler) {
-        onClickHandler(data, index);
-      }
+      return _scrollTo(qid);
+    }
+    const { onClickHandler, hasRandomQuestions } = this.props;
+    if (hasRandomQuestions) {
+      return message.error(
+        "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment."
+      );
+    }
+    if (onClickHandler) {
+      onClickHandler(data, index);
     }
   };
 
@@ -268,7 +273,7 @@ export default class BarGraph extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, hasRandomQuestions, isBoth } = this.props;
     const { pagination, chartData, renderData, maxAttemps, maxTimeSpent } = this.state;
     return (
       <MainDiv className="studentBarChart">
@@ -297,8 +302,13 @@ export default class BarGraph extends Component {
         />
 
         <ResponsiveContainer width="100%" height={240}>
-          {chartData.length === 0 ? (
-            <h3 style={{ textAlign: "center" }}> No Question found </h3>
+          {hasRandomQuestions && isBoth ? (
+            <OnScreenNotification>
+              The questions for each student have been dynamically selected and as a result, question based comparison
+              is unavailable for this assignment.
+            </OnScreenNotification>
+          ) : chartData.length === 0 ? (
+            <OnScreenNotification> No Question found </OnScreenNotification>
           ) : (
             <ComposedChart barGap={1} barSize={36} data={renderData}>
               <XAxis
@@ -403,3 +413,10 @@ export default class BarGraph extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    hasRandomQuestions: getHasRandomQuestionselector(state)
+  }),
+  null
+)(BarGraph);

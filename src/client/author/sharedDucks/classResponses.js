@@ -60,6 +60,7 @@ function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
+    //AUTOSELECT group will have different questions for every student hence update the items from student response api
     if (hasRandomQuestions(originalData.test.itemGroups)) {
       const itemGroups = originalData.test.itemGroups.map(group => ({
         ...group,

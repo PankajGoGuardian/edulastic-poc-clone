@@ -35,7 +35,7 @@ export default class Graph extends Component {
   };
 
   render() {
-    const { gradebook, onClickHandler, testQuestionActivities, testActivity, title = "" } = this.props;
+    const { gradebook, onClickHandler, testQuestionActivities, testActivity, title = "", isBoth = false } = this.props;
     const absentNumber = (testActivity || []).filter(x => x.status === "absent").length;
     const percentage = round(gradebook.avgScore * 100);
     return (
@@ -72,6 +72,7 @@ export default class Graph extends Component {
           gradebook={gradebook}
           testQuestionActivities={testQuestionActivities}
           onClickHandler={onClickHandler}
+          isBoth={isBoth}
         />
       </StyledDiv>
     );

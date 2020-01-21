@@ -89,8 +89,9 @@ class DistrictPolicyForm extends Component {
     /**
      * school selection is changed
      */
-    if (prevProps.schoolId != this.props.schoolId && this.props.schoolId) {
-      loadSchoolPolicy(this.props.schoolId);
+    const { schoolId, loadSchoolPolicy } = this.props;
+    if (prevProps.schoolId != schoolId && schoolId) {
+      loadSchoolPolicy(schoolId);
     }
   }
 

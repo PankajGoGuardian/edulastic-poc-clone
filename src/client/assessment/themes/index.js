@@ -222,7 +222,8 @@ const AssessmentContainer = ({
 
   return (
     <>
-      <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: true }}>
+      {/* at student side only scratchPad should be enabled, highlight image default pen should be disabled */}
+      <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
         {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
       </ScratchPadContext.Provider>
     </>

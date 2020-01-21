@@ -166,7 +166,7 @@ export function* watcherSaga() {
   yield all([yield takeEvery(CREATE_DISTRICT_POLICY_REQUEST, createDictrictPolicySaga)]);
 }
 
-export const getSchoolPolicy = state => get(state, "districtPolicyReducer.getSchoolPolicy");
+export const getSchoolPolicy = state => get(state, ["districtPolicyReducer", "schoolData"], []);
 export const getDistrictPolicy = state => get(state, ["districtPolicyReducer", "data"], []);
 
 export const getPolicies = createSelector(

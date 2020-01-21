@@ -74,13 +74,13 @@ class ClassQuestions extends Component {
   static contextType = AnswerContext;
 
   componentDidMount() {
-    //this.loadScratchPadData();
+    this.loadScratchPadData();
   }
 
   componentDidUpdate(prevProps) {
     const { questionActivities } = this.props;
     if (prevProps.questionActivities !== questionActivities) {
-      //this.loadScratchPadData();
+      this.loadScratchPadData();
     }
   }
 
@@ -93,8 +93,9 @@ class ClassQuestions extends Component {
           userWork[curr.testItemId] = curr.scratchPad;
         }
       });
-
-      loadScratchPad(userWork);
+      if (!isEmpty(userWork)) {
+        loadScratchPad(userWork);
+      }
     }
   };
 
@@ -325,6 +326,8 @@ class ClassQuestions extends Component {
       //to indicate scratchpadData available
       if (curr.scratchPadPresent && !userWork[curr.testItemId]) {
         userWork[curr.testItemId] = {};
+      } else if (curr.scratchPad && !userWork[curr.testItemId]) {
+        userWork[curr.testItemId] = curr.scratchPad;
       }
       return acc;
     }, {});

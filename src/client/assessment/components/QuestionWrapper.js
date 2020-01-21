@@ -327,6 +327,7 @@ class QuestionWrapper extends Component {
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
     const questionActivityId = get(data, "activity._id", null);
+    const qid = get(data, "activity.qid", undefined);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
@@ -462,7 +463,9 @@ class QuestionWrapper extends Component {
                       {!!showStudentWork && (
                         <ShowStudentWorkBtn
                           onClick={() => {
-                            loadScratchPad(questionActivityId);
+                            if (qid != questionActivityId) {
+                              loadScratchPad(questionActivityId);
+                            }
                             showStudentWork();
                           }}
                         >

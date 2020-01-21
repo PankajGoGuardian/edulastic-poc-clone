@@ -353,9 +353,9 @@ class ClassQuestions extends Component {
           title: classResponse.title,
           testletConfig: classResponse.testletConfig,
           testletState: get(testActivity, "userWork.testletState"),
-          testItems: [selectedTestItem]
+          itemGroups: [{ items: [selectedTestItem] }]
         }
-      : { testItems: [selectedTestItem] };
+      : { itemGroups: [{ items: [selectedTestItem] }] };
 
     let docBasedProps = {};
     if (testData.isDocBased) {

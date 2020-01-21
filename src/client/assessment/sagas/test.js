@@ -141,6 +141,7 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
+
     test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     if (
       testActivity?.assignmentSettings?.questionsDelivery ===

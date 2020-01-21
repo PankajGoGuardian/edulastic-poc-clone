@@ -1,6 +1,7 @@
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { IconCloseTextFormat, IconCorrectTextFormat } from "@edulastic/icons";
 
+import { clamp } from "lodash";
 import { CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
 import { Point } from ".";
@@ -136,12 +137,27 @@ function removePointForDrag(board) {
   }
 }
 
+const getClampedCoords = (value, bounds) => clamp(value, bounds[0], bounds[1]);
+
 function getConfig(dragDrop) {
+  const bounds = dragDrop.board.attr.boundingbox;
+  const p = dragDrop.parents[0];
+  const x = dragDrop.coords[p].usrCoords[1];
+  const y = dragDrop.coords[p].usrCoords[2];
+
+  const clampedX = (bounds && getClampedCoords(x, [bounds[0], bounds[1]])) || x;
+  const clampedY = (bounds && getClampedCoords(y, [bounds[2], bounds[3]])) || y;
+
+  if (clampedX !== x || clampedY !== y) {
+    dragDrop.translationPoints[0].moveTo([clampedX, clampedY]);
+    dragDrop.translationPoints[1].moveTo([clampedX, clampedY]);
+  }
+
   return {
     _type: dragDrop.type,
     type: CONSTANT.TOOLS.DRAG_DROP,
-    x: dragDrop.coords[dragDrop.parents[0]].usrCoords[1],
-    y: dragDrop.coords[dragDrop.parents[0]].usrCoords[2],
+    x: clampedX,
+    y: clampedY,
     id: dragDrop.id,
     text: dragDrop.labelHTML,
     label: false

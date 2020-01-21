@@ -10,6 +10,7 @@ import {
 } from "../../../../framework/constants/assignmentStatus";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 
 const { _ } = Cypress;
 const { LCB_3 } = require("../../../../../fixtures/testAuthoring");
@@ -661,9 +662,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
       cy.contains(className);
       lcb.checkSelectAllCheckboxOfStudent();
       lcb.clickOnMarkAsSubmit();
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.verifyStatus(teacherSide.IN_GRADING);
     });
 
     it(" > redirect class and verify student cards", () => {
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       lcb.uncheckSelectAllCheckboxOfStudent();
       lcb.clickOnRedirect();
       lcb.redirectPopup.clickOnEntireClass();
@@ -674,6 +680,47 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
         lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt);
         lcb.verifyRedirectIcon(user.stuName);
       });
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS);
+    });
+
+    it(" > assign new assignment, mark all submit, mark as Done - Redirect Entrie class", () => {
+      cy.deleteAllAssignments(student, teacher, password);
+      cy.login("teacher", teacher, password);
+      cy.visit(`/author/assignments/${testId}`);
+      cy.wait("@assignment");
+      testLibrary.assignPage.selectClass(className);
+      testLibrary.assignPage.clickOnAssign();
+      cy.contains("Success!");
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      cy.contains(className);
+      lcb.checkSelectAllCheckboxOfStudent();
+      lcb.clickOnMarkAsSubmit();
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.clickOnExpressGraderTab();
+      lcb.header.clickOnLCBTab();
+      cy.contains(className);
+      lcb.header.clickOnMarkAsDone();
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.verifyStatus(teacherSide.DONE);
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.verifyAssignmentStatus(teacherSide.DONE);
+      lcb.checkSelectAllCheckboxOfStudent();
+      lcb.clickOnRedirect();
+      lcb.redirectPopup.clickOnEntireClass();
+      // select redirect policy
+      lcb.clickOnRedirectSubmit();
+      const { score, perf } = lcb.getScoreAndPerformance(noattempt, questionTypeMap);
+      attemptsData.forEach(user => {
+        lcb.verifyStudentCard(user.stuName, teacherSide.REDIRECTED, score, perf, noattempt);
+        lcb.verifyRedirectIcon(user.stuName);
+      });
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS);
     });
   });
 

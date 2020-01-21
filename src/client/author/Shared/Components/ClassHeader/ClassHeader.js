@@ -362,7 +362,7 @@ class ClassHeader extends Component {
                 </StyledParaFirst>
               </div>
             )}
-            <StyledParaSecond>
+            <StyledParaSecond data-cy="assignmentStatusForDisplay">
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
               <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("MMM DD, YYYY")})`}</div>

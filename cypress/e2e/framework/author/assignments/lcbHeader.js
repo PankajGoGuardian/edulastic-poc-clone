@@ -71,4 +71,7 @@ export default class LCBHeader {
     this.getDropDown().click({ force: true });
     cy.get('[data-cy="viewPassword"]').click();
   };
+
+  getAssignmentStatus = () => cy.get('[data-cy="assignmentStatusForDisplay"]');
+  verifyAssignmentStatus = status => this.getAssignmentStatus().should("contain", status);
 }

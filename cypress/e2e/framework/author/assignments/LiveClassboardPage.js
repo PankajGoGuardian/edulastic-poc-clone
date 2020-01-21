@@ -4,6 +4,7 @@ import { studentSide as asgnStatus, studentSide, teacherSide } from "../../const
 import QuestionResponsePage from "./QuestionResponsePage";
 import { attemptTypes, queColor } from "../../constants/questionTypes";
 import RediectPopup from "./redirectPopupPage";
+import TeacherSideBar from "../SideBarPage";
 
 class LiveClassboardPage {
   constructor() {

@@ -41,6 +41,8 @@ export default class TestSettings {
 
   selectDontReleaseScoreResponse = () => cy.get('[value="DONT_RELEASE"]').click();
 
+  setRealeasePolicy = policy => cy.get(`[VALUE=${policy}]`).click();
+
   setMaxAttempt = attempts =>
     cy
       .get('[id="maximum-attempts-allowed"]')

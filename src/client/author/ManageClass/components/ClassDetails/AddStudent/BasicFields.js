@@ -24,7 +24,7 @@ const BasicFields = ({
   modalClose,
   showClassCodeField,
   fetchClassDetailsUsingCode,
-  resetClassDetails,
+  resetClassDetails = () => {},
   validatedClassDetails,
   ...restProps
 }) => {

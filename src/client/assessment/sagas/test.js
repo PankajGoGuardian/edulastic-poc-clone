@@ -33,6 +33,7 @@ import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../act
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 import { CLEAR_ITEM_EVALUATION } from "../../author/src/constants/actions";
+import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -140,8 +141,11 @@ function* loadTest({ payload }) {
       yield put(setPasswordStatusAction(""));
     }
     const isAuthorReview = Object.keys(testData).length > 0;
-    const [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
-
+              
+    let [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
+    if (preview) {
+      test = yield addAutoselectGroupItems({ payload: test, preview });
+    }
     test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     if (
       testActivity?.assignmentSettings?.questionsDelivery ===

@@ -1354,30 +1354,67 @@ function* approveOrRejectSingleTestSaga({ payload }) {
   }
 }
 
+function tranformItemGroupToData(itemGroup, index) {
+  const optionalFields = {
+    depthOfKnowledge: itemGroup.dok,
+    authorDifficulty: itemGroup.difficulty,
+    tags: itemGroup.tags
+  };
+  Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
+  return {
+    data: {
+      limit: itemGroup.deliverItemsCount,
+      search: {
+        collectionId: itemGroup.collectionDetails._id,
+        standardId: itemGroup.standardDetails.standardId,
+        ...optionalFields
+      }
+    },
+    isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && itemGroup.items.length === 0,
+    groupName: itemGroup.groupName,
+    index
+  };
+}
+
+function getItemGroupsTransformed(test) {
+  return test.itemGroups.map((itemGroup, index) => {
+    return tranformItemGroupToData(itemGroup, index);
+  });
+}
+
 function* addItemsToAutoselectGroupsSaga({ payload: test }) {
   try {
-    for (const itemGroup of test.itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && itemGroup.items.length === 0) {
-        const optionalFields = {
-          depthOfKnowledge: itemGroup.dok,
-          authorDifficulty: itemGroup.difficulty,
-          tags: itemGroup.tags
-        };
-        Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
-        const data = {
-          limit: itemGroup.deliverItemsCount,
-          search: {
-            collectionId: itemGroup.collectionDetails._id,
-            standardId: itemGroup.standardDetails.standardId,
-            ...optionalFields
-          }
-        };
+    const transformedData = getItemGroupsTransformed(test);
+    for (const { isFetchItems, data, groupName } of transformedData) {
+      if (isFetchItems) {
         const response = yield fetchAutoselectGroupItemsSaga(data);
         if (response) {
-          yield put(addItemsToAutoselectGroupAction({ items: response, groupName: itemGroup.groupName }));
+          yield put(addItemsToAutoselectGroupAction({ items: response, groupName }));
         }
       }
     }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export function* addAutoselectGroupItems({ payload: test }) {
+  try {
+    const transformedData = getItemGroupsTransformed(test);
+    const promises = transformedData.map(({ data, isFetchItems }) =>
+      isFetchItems ? testItemsApi.getAutoSelectedItems(data).then(response => ({ ...response })) : Promise.resolve(null)
+    );
+
+    const responses = yield Promise.all(promises);
+
+    const itemGroups = test.itemGroups.map((itemGroup, i) => {
+      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+        return { ...itemGroup, items: responses[i].items };
+      }
+      return itemGroup;
+    });
+
+    return { ...test, itemGroups };
   } catch (err) {
     console.error(err);
   }

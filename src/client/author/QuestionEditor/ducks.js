@@ -49,7 +49,7 @@ import {
   getRecentCollectionsListSelector
 } from "../src/selectors/dictionaries";
 import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
-import { getOrgDataSelector } from "../src/selectors/user";
+import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
 import { generateRecentlyUsedCollectionsList } from "../ItemDetail/ducks";
 
 // constants
@@ -503,9 +503,24 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         return;
       }
 
-      // add item to test entity
-      yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));
+      const isPublisherUser = yield select(isPublisherUserSelector);
 
+      if (isPublisherUser) {
+        yield call(message.info, "Please add the item manually to a group.");
+        const pathname =
+          tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";
+        yield put(
+          push({
+            pathname,
+            state: {
+              persistStore: true
+            }
+          })
+        );
+      } else {
+        // add item to test entity
+        yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));
+      }
       if (!isEditFlow) return;
       yield put(changeViewAction("edit"));
       return;

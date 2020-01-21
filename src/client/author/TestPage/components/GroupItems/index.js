@@ -77,7 +77,8 @@ const GroupItems = ({
   deleteItemsGroup,
   test,
   setTestData,
-  history
+  history,
+  handleSaveTest
 }) => {
   const { Panel } = Collapse;
 
@@ -414,6 +415,7 @@ const GroupItems = ({
     setCurrentGroupIndex(null);
     setEditGroupDetails({});
     setFetchingItems(false);
+    handleSaveTest();
   };
 
   const handleCancel = () => {

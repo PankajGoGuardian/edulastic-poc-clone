@@ -29,7 +29,7 @@ const HeaderBar = ({
   itemGroups
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
-  const disableRMbtns = itemGroups.length > 1 && itemGroups.some(group => group.type === ITEM_GROUP_TYPES.AUTOSELECT);
+  const disableRMbtns = itemGroups.some(group => group.type === ITEM_GROUP_TYPES.AUTOSELECT);
 
   const handleSuccess = position => {
     const post = position - 1;

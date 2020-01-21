@@ -82,3 +82,12 @@ export const StyledCustomTooltip = styled(CustomTooltip)`
 `;
 
 export const TooltipContainer = styled(Card)``;
+
+export const OnScreenNotification = styled.h3`
+  display: flex;
+  height: 100%;
+  padding: 0 10%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+`;

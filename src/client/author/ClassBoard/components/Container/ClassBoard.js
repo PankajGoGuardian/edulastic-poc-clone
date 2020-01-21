@@ -755,19 +755,14 @@ class ClassBoard extends Component {
             <ClassBreadBrumb />
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
-              <WithDisableMessage
-                disabled={hasRandomQuestions}
-                errMessage="This assignment has random items for every student."
+              <BothButton
+                disabled={isLoading}
+                style={{ marginLeft: "20px" }}
+                active={selectedTab === "Both"}
+                onClick={e => this.onTabChange(e, "Both")}
               >
-                <BothButton
-                  disabled={hasRandomQuestions || isLoading}
-                  style={{ marginLeft: "20px" }}
-                  active={selectedTab === "Both"}
-                  onClick={e => this.onTabChange(e, "Both")}
-                >
-                  CARD VIEW
-                </BothButton>
-              </WithDisableMessage>
+                CARD VIEW
+              </BothButton>
               <StudentButton
                 disabled={!firstStudentId || !isItemsVisible || isLoading}
                 active={selectedTab === "Student"}
@@ -814,6 +809,7 @@ class ClassBoard extends Component {
                     testActivity={testActivity}
                     testQuestionActivities={testQuestionActivities}
                     onClickHandler={this.onClickBarGraph}
+                    isBoth
                   />
                 </StyledCard>
               </GraphContainer>

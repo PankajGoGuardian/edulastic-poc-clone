@@ -4,7 +4,7 @@ import { message } from "antd";
 import { createSelector } from "reselect";
 import { push } from "connected-react-router";
 
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty, groupBy, sumBy } from "lodash";
 
 import { test, testActivity, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
 import {
@@ -115,25 +115,6 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData }
     });
-
-    const hasRandomQuestions = yield select(getHasRandomQuestionselector);
-    if (hasRandomQuestions) {
-      const testActivity = yield select(getSortedTestActivitySelector);
-      const firstStudent = get(testActivity.filter(x => !!x.testActivityId), [0], false);
-      if (!Object.keys(firstStudent).length) return;
-      yield put(
-        getAllTestActivitiesForStudentAction({
-          studentId: firstStudent.studentId,
-          assignmentId: payload.assignmentId,
-          groupId: payload.classId
-        })
-      );
-      yield put(
-        push(
-          `/author/classboard/${payload.assignmentId}/${payload.classId}/test-activity/${firstStudent.testActivityId}`
-        )
-      );
-    }
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
@@ -369,6 +350,28 @@ export function* watcherSaga() {
 
 export const stateGradeBookSelector = state => state.author_classboard_gradebook;
 export const stateTestActivitySelector = state => state.author_classboard_testActivity;
+export const stateClassResponseSelector = state => state.classResponse;
+export const stateStudentResponseSelector = state => state.studentResponse;
+export const stateClassStudentResponseSelector = state => state.classStudentResponse;
+export const stateFeedbackResponseSelector = state => state.feedbackResponse;
+export const stateStudentAnswerSelector = state => state.studentQuestionResponse;
+export const stateExpressGraderAnswerSelector = state => state.answers;
+export const stateQuestionAnswersSelector = state => state.classQuestionResponse;
+
+export const getClassResponseSelector = createSelector(
+  stateClassResponseSelector,
+  state => state.data
+);
+
+export const getHasRandomQuestionselector = createSelector(
+  getClassResponseSelector,
+  test => hasRandomQuestions(test?.itemGroups || [])
+);
+
+export const getTotalPoints = createSelector(
+  getClassResponseSelector,
+  test => test?.summary?.totalPoints
+);
 
 export const getCurrentTestActivityIdSelector = createSelector(
   stateTestActivitySelector,
@@ -554,24 +557,59 @@ export const removedStudentsSelector = createSelector(
   state => state.removedStudents
 );
 
-export const getGradeBookSelector = createSelector(
-  stateTestActivitySelector,
-  removedStudentsSelector,
-  (state, removedStudents) => {
-    const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
-    return getAggregateByQuestion(entities);
-  }
-);
-
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   removedStudentsSelector,
   (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
+export const getTestQuestionActivitiesSelector = createSelector(
+  stateTestActivitySelector,
+  state => {
+    if (state.data) {
+      return state.data.testQuestionActivities;
+    }
+    return [];
+  }
+);
+
 export const getSortedTestActivitySelector = createSelector(
   getTestActivitySelector,
-  state => state?.sort((a, b) => (a?.studentName?.toUpperCase() > b?.studentName?.toUpperCase() ? 1 : -1)) || []
+  getTestQuestionActivitiesSelector,
+  getHasRandomQuestionselector,
+  getTotalPoints,
+  (state, tqa, hasRandomQuestions, totalPoints) => {
+    const sortedTestActivities =
+      state?.sort((a, b) => (a?.studentName?.toUpperCase() > b?.studentName?.toUpperCase() ? 1 : -1)) || [];
+    if (hasRandomQuestions) {
+      const qActivityByUser = groupBy(tqa, "userId");
+      return sortedTestActivities.map(activity => ({
+        ...activity,
+        score: sumBy(qActivityByUser[activity.studentId], "score"),
+        maxScore: totalPoints,
+        questionActivities: qActivityByUser[activity.studentId] || []
+      }));
+    }
+    return sortedTestActivities;
+  }
+);
+
+export const getGradeBookSelector = createSelector(
+  stateTestActivitySelector,
+  removedStudentsSelector,
+  getHasRandomQuestionselector,
+  getSortedTestActivitySelector,
+  (state, removedStudents, hasRandomQuestions, sortedTestActivities) => {
+    const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
+    if (hasRandomQuestions) {
+      return {
+        ...getAggregateByQuestion(sortedTestActivities),
+        questionsOrder: {},
+        itemsSummary: []
+      };
+    }
+    return getAggregateByQuestion(entities);
+  }
 );
 
 export const notStartedStudentsSelector = createSelector(
@@ -747,19 +785,6 @@ export const getAssignmentClassIdSelector = createSelector(
   ({ classId, assignmentId }) => ({ classId, assignmentId })
 );
 
-export const stateClassResponseSelector = state => state.classResponse;
-export const stateStudentResponseSelector = state => state.studentResponse;
-export const stateClassStudentResponseSelector = state => state.classStudentResponse;
-export const stateFeedbackResponseSelector = state => state.feedbackResponse;
-export const stateStudentAnswerSelector = state => state.studentQuestionResponse;
-export const stateExpressGraderAnswerSelector = state => state.answers;
-export const stateQuestionAnswersSelector = state => state.classQuestionResponse;
-
-export const getClassResponseSelector = createSelector(
-  stateClassResponseSelector,
-  state => state.data
-);
-
 export const showScoreSelector = createSelector(
   stateClassResponseSelector,
   state => state.showScore
@@ -804,24 +829,9 @@ export const getStudentQuestionSelector = createSelector(
   }
 );
 
-export const getHasRandomQuestionselector = createSelector(
-  getClassResponseSelector,
-  test => hasRandomQuestions(test?.itemGroups || [])
-);
-
 export const getClassQuestionSelector = createSelector(
   stateQuestionAnswersSelector,
   state => state.data
-);
-
-export const getTestQuestionActivitiesSelector = createSelector(
-  stateTestActivitySelector,
-  state => {
-    if (state.data) {
-      return state.data.testQuestionActivities;
-    }
-    return [];
-  }
 );
 
 export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {

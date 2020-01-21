@@ -16,6 +16,7 @@ const preview = new PreviewItemPage();
 
 let resetInput = true;
 let resetOptions = true;
+let results = [];
 
 describe("math engine testcase ", () => {
   before("visit items page and select question type", () => {
@@ -42,9 +43,15 @@ describe("math engine testcase ", () => {
       });
 
       testCase[method].forEach((testcase, i) => {
-        const { name, options, input, attempt, evaluation } = testcase;
+        const { name, options, input, attempt, evaluation, testcaseId } = testcase;
 
-        it(` > testcase-${i + 1}:${name || "no_name"}`, () => {
+        it(` > testcase-${i + 1}-${testcaseId}:${name || "no_name"}`, () => {
+          const testresult = [];
+          testresult[0] = testcase.testcaseId;
+          testresult[1] = testcase.evaluation;
+          testresult[2] = "failed";
+          const currentLength = results.push(testresult);
+
           preview.header.edit();
           cy.get(".ant-collapse").click();
 
@@ -150,11 +157,20 @@ describe("math engine testcase ", () => {
                     JSON.stringify(testcase)}`
                 ).to.include(`score: ${evaluation ? 1 : 0}/1`);
                 Cypress.$(".ant-message-custom-content").detach();
+                testresult[2] = "passed";
+                results[currentLength - 1] = testresult;
               });
             });
           });
         });
       });
     });
+  });
+});
+
+describe("save", () => {
+  it("write test result", () => {
+    console.log("results", JSON.stringify(results));
+    cy.writeFile("cypress/fixtures/mathengine/ui-test-result.txt", results);
   });
 });

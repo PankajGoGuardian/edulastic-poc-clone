@@ -307,6 +307,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       cy.login("student", removeStudent[2].email, password);
       test.assignmentPage.getAssignmentButton().should("not.be.visible");
     });
+    it(" > removing 'Absent' student verify", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      //Verify student card status
+      lcb.verifyStudentCard(absentStudent[1].stuName, studentSide.ABSENT, "0 / 2", "0%", {
+        Q1: "noattempt"
+      });
+      // select the absent student and remove
+      lcb.selectCheckBoxByStudentName(absentStudent[1].stuName);
+      lcb.clickOnRemove();
+      //Verifiy student card not visible once removed
+      lcb
+        .getStudentCardByStudentName(absentStudent[1].stuName)
+        .should("not.be.visible", "after removing the student, student card should not be present");
+      //verify student login and assignment should not be visible
+      cy.login("student", absentStudent[1].email, password);
+      test.assignmentPage.getAssignmentButton().should("not.be.visible");
+    });
   });
 
   describe("add student", () => {

@@ -35,7 +35,7 @@ import changeViewAction from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { addQuestionAction, getCurrentQuestionSelector } from "../sharedDucks/questions";
-import { getOrgDataSelector } from "../src/selectors/user";
+import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
 import {
   getAlignmentFromQuestionSelector,
   setDictAlignmentFromQuestion,
@@ -958,6 +958,21 @@ export function* updateItemSaga({ payload }) {
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
+      const isPublisherUser = yield select(isPublisherUserSelector);
+      if (isPublisherUser) {
+        const tId = payload.testId;
+        const pathname =
+          tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";
+        yield put(
+          push({
+            pathname,
+            state: {
+              persistStore: true
+            }
+          })
+        );
+        return message.info("Please add the item manually to a group.");
+      }
       const nextTestItems = [...testItems, item._id];
 
       yield put(setTestItemsAction(nextTestItems));

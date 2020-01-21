@@ -112,6 +112,22 @@ export const getUserId = createSelector(
   state => _get(state, "_id")
 );
 
+export const getIsPublisherAuthor = createSelector(
+  getUserFeatures,
+  features => _get(features, "isPublisherAuthor", false)
+);
+
+export const getIsCurator = createSelector(
+  getUserFeatures,
+  features => _get(features, "isCurator", false)
+);
+
+export const isPublisherUserSelector = createSelector(
+  getIsPublisherAuthor,
+  getIsCurator,
+  (isPublisherAuthor, isCurator) => isPublisherAuthor || isCurator
+);
+
 export const getUserSchoolsListSelector = createSelector(
   getOrgDataSelector,
   state => state.schools

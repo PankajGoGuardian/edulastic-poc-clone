@@ -167,10 +167,16 @@ class AddItems extends PureComponent {
       onSaveTestId,
       createTestItem,
       test: { _id: testId, title },
-      clearDictAlignment
+      clearDictAlignment,
+      handleSaveTest,
+      updated
     } = this.props;
     if (!title) {
       return message.error("Name field cannot be empty");
+    }
+
+    if (updated) {
+      handleSaveTest();
     }
     const defaultWidgets = {
       rows: [

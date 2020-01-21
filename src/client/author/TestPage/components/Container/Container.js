@@ -329,7 +329,8 @@ class Container extends PureComponent {
       testStatus,
       questions,
       questionsById,
-      history
+      history,
+      updated
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -364,6 +365,8 @@ class Container extends PureComponent {
               gotoGroupItems={this.handleNavChange("groupItems")}
               toggleFilter={this.toggleFilter}
               isShowFilter={isShowFilter}
+              handleSaveTest={this.handleSave}
+              updated={updated}
             />
           </Content>
         );

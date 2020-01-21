@@ -146,6 +146,31 @@ const GroupItems = ({
             ? ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
             : ITEM_GROUP_DELIVERY_TYPES.ALL
       };
+    }
+    if (fieldName === "deliverItemsCount") {
+      if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC && value >= updatedGroupData.items.length) {
+        return message.error("Total items to be delivered should be lesser than the number of items selected.", 3);
+      }
+      if (updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT && value > 100) {
+        return message.error("Total Items to be delivered cannot be more than 100");
+      }
+      updatedGroupData = {
+        ...updatedGroupData,
+        [fieldName]: value
+      };
+    }
+    if (fieldName === "deliveryType") {
+      if (
+        updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
+        value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        updatedGroupData.items.length < 2
+      ) {
+        return message.error("Please select atleast 2 items to manually give the items delivery count.", 3);
+      }
+      updatedGroupData = {
+        ...updatedGroupData,
+        [fieldName]: value
+      };
     } else {
       updatedGroupData = {
         ...updatedGroupData,

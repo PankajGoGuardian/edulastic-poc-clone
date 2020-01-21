@@ -70,6 +70,7 @@ const {
   statusConstants,
   releaseGradeLabels,
   passwordPolicy: passwordPolicyValues,
+  ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES
 } = testContants;
 
@@ -533,9 +534,22 @@ class Container extends PureComponent {
       message.error("Please add a valid password.");
       return false;
     }
-    if ((userFeatures.isPublisherAuthor || userFeatures.isCurator) && test.collections?.length === 0) {
-      message.error("Test is not associated with any collection.");
-      return false;
+    if (userFeatures.isPublisherAuthor || userFeatures.isCurator) {
+      if (test.collections?.length === 0) {
+        message.error("Test is not associated with any collection.");
+        return false;
+      }
+      if (
+        test.itemGroups.some(
+          itemGroup =>
+            itemGroup.type === ITEM_GROUP_TYPES.STATIC &&
+            itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+            itemGroup.items.length <= itemGroup.deliverItemsCount
+        )
+      ) {
+        message.error("Selected items count in a group should be more than the delivered items count.", 3);
+        return false;
+      }
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     for (const itemGroup in test.itemGroups) {

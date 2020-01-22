@@ -146,7 +146,7 @@ function getConfig(dragDrop) {
   const y = dragDrop.coords[p].usrCoords[2];
 
   const clampedX = (bounds && getClampedCoords(x, [bounds[0], bounds[1]])) || x;
-  const clampedY = (bounds && getClampedCoords(y, [bounds[2], bounds[3]])) || y;
+  const clampedY = (bounds && getClampedCoords(y, [bounds[3], bounds[2]])) || y;
 
   if (clampedX !== x || clampedY !== y) {
     dragDrop.translationPoints[0].moveTo([clampedX, clampedY]);

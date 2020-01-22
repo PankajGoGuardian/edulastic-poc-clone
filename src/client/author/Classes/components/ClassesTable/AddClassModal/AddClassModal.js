@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { get, debounce, uniq } from "lodash";
 import { Form, Input, Row, Col, Select, Modal, Spin, message } from "antd";
-import { schoolApi, userApi, tagsApi } from "@edulastic/api";
+import { schoolApi, userApi, tagsApi, courseApi } from "@edulastic/api";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
+import { connect } from "react-redux";
+import { getCourseLoading, getCoursesForDistrictSelector } from "../../../../Courses/ducks";
 
 const { Option } = Select;
 const { allGrades } = selectsData;
@@ -15,7 +17,7 @@ class AddClassModal extends Component {
       schoolList: [],
       fetchingSchool: false,
       teacherList: [],
-      fetchingTeacher: [],
+      fetchingTeacher: false,
       searchValue: ""
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
@@ -88,8 +90,8 @@ class AddClassModal extends Component {
     value &&
       Object.assign(searchTerms, {
         search: {
-          name: { type: "cont", value },
-          number: { type: "cont", value },
+          name: [{ type: "cont", value }],
+          number: [{ type: "cont", value }],
           operator: "or"
         }
       });
@@ -168,7 +170,7 @@ class AddClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, coursesForDistrictList, allTagsData, t } = this.props;
+    const { modalVisible, allTagsData, t, courseList, fetchingCourse = false } = this.props;
     const { fetchingSchool, schoolList, fetchingTeacher, teacherList, searchValue } = this.state;
 
     const { getFieldDecorator } = this.props.form;
@@ -246,11 +248,12 @@ class AddClassModal extends Component {
                   showSearch
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
-                  notFoundContent={null}
+                  filterOption={false}
+                  notFoundContent={fetchingCourse ? <Spin size="small" /> : null}
                   placeholder={t("class.components.addclass.placeholder.course")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  {coursesForDistrictList.map(course => (
+                  {courseList.map(course => (
                     <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
                   ))}
                 </Select>
@@ -364,4 +367,12 @@ class AddClassModal extends Component {
 }
 
 const AddClassModalForm = Form.create()(AddClassModal);
-export default AddClassModalForm;
+
+const mapStateToProps = state => ({
+  courseList: getCoursesForDistrictSelector(state),
+  fetchingCourse: getCourseLoading(state)
+});
+export default connect(
+  mapStateToProps,
+  null
+)(AddClassModalForm);

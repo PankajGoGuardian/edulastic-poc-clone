@@ -85,6 +85,11 @@ export const getCoursesForDistrictSelector = createSelector(
   state => state.searchResult
 );
 
+export const getCourseLoading = createSelector(
+  stateCourseSelector,
+  state => state.searching
+);
+
 // reducers
 const initialState = {
   data: [],

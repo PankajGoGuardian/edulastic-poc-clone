@@ -1410,9 +1410,8 @@ export function* addAutoselectGroupItems({ payload: test }) {
     );
 
     const responses = yield Promise.all(promises);
-
     const itemGroups = test.itemGroups.map((itemGroup, i) => {
-      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && transformedData?.[i].isFetchItems) {
         return { ...itemGroup, items: responses[i].items };
       }
       return itemGroup;

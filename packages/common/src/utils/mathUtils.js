@@ -17,12 +17,10 @@ export const getMathHtml = latex => {
   if (!window.katex) return latex;
   /**
    * if the latex has dynamic parameters such as "2a\times3y", the katex produces an error.
-   * that error occurred when there is only \times or \div
+   * that error occurred when there are some operators
    * so we need to insert spaces between operators and variables.
    */
-  const _latex = latex
-    .replace(new RegExp("\\\\times", "g"), " \\times ")
-    .replace(new RegExp("\\\\div", "g"), " \\div ");
+  const _latex = latex.replace(new RegExp("(@.)", "g"), " $1").replace(new RegExp("#", "g"), " \\#");
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false

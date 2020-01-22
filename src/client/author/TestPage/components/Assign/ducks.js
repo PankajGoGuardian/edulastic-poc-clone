@@ -207,7 +207,8 @@ function* saveAssignment({ payload }) {
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 
     let userRole = yield select(getUserRole);
-    const testType = get(payload, "testType", test.testType);
+    const isTestLet = test.testType === testContants.type.TESTLET;
+    const testType = isTestLet ? test.testType : get(payload, "testType", test.testType);
     //teacher can not update test content visibility.
     const visibility = payload.testContentVisibility &&
       userRole !== roleuser.TEACHER && { testContentVisibility: payload.testContentVisibility };

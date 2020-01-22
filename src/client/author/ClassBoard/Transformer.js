@@ -344,7 +344,7 @@ export const transformGradeBookResponse = (
         const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
         const questionActivities = qids.map(
-          ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
+          ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel, _id: qActId }, index) => {
             const _id = el;
             const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
             if (!questionActivitiesIndexed[el]) {
@@ -356,6 +356,7 @@ export const transformGradeBookResponse = (
                 testItemId,
                 barLabel,
                 testActivityId,
+                qActId,
                 groupId,
                 score: 0,
                 qLabel,

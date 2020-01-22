@@ -46,6 +46,14 @@ const getById = (testActivityId, groupId) =>
     })
     .then(result => result.data.result);
 
+const getScratchpad = testActivityId =>
+  api
+    .callApi({
+      url: `/question-activity/${testActivityId}/scratchpad`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const saveOverallFeedback = ({ testActivityId, groupId, feedback: data }) =>
   api
     .callApi({
@@ -78,6 +86,7 @@ export default {
   submit,
   fetchReports,
   getById,
+  getScratchpad,
   previousResponses,
   saveOverallFeedback,
   updateResponseEntryAndScore,

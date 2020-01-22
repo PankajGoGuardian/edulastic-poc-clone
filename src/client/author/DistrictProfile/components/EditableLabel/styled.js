@@ -10,6 +10,7 @@ export const EditableLabelDiv = styled.div`
   }
   .not-editing-input:focus {
   }
+  flex-grow: ${({ flexGrow }) => flexGrow || ""};
 `;
 
 export const StyledFormItem = styled(Form.Item)`

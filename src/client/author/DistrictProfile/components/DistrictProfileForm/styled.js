@@ -59,9 +59,10 @@ export const SaveButton = styled(Button)`
 `;
 
 export const StyledUrlButton = styled(Button)`
-  margin-top: 5px;
   border: none;
   box-shadow: none;
+  align-self: center;
+  padding-right: 0px;
 `;
 
 export const StyledPopoverContent = styled.div`
@@ -135,4 +136,9 @@ export const EditableLabelDiv = styled.div`
   .not-editing-input:focus {
     box-shadow: none;
   }
+`;
+
+export const InputWithUrl = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;

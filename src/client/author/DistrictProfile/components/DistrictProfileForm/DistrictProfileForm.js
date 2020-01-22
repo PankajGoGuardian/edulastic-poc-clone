@@ -38,7 +38,8 @@ import {
   FormColumnRight,
   ColumnSpacer,
   StyledFormItem,
-  EditableLabelDiv
+  EditableLabelDiv,
+  InputWithUrl
 } from "./styled";
 import { ProfileImgWrapper, RightContainer } from "../Container/styled";
 
@@ -201,19 +202,32 @@ class DistrictProfileForm extends React.Component {
                 </StyledRowLogo>
                 <FormFlexContainer>
                   <FormColumnLeft>
-                    <EditableLabel
-                      value={districtProfile.shortName}
-                      valueName={"District Short Name"}
-                      maxLength={10}
-                      requiredStatus
-                      setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
-                      type={"text"}
-                      ref={this.childRefArr[1].component}
-                      isSpaceEnable={false}
-                      form={this.props.form}
-                      isInputEnabled={isInputEnabled}
-                    />
+                    <InputWithUrl>
+                      <EditableLabel
+                        value={districtProfile.shortName}
+                        valueName={"District Short Name"}
+                        maxLength={10}
+                        requiredStatus
+                        setProfileValue={this.updateProfileValue}
+                        updateEditing={this.setEditing}
+                        type={"text"}
+                        ref={this.childRefArr[1].component}
+                        isSpaceEnable={false}
+                        form={this.props.form}
+                        isInputEnabled={isInputEnabled}
+                        flexGrow={1}
+                      />
+                      <Popover
+                        trigger="click"
+                        visible={popoverVisible}
+                        content={popoverContent}
+                        onVisibleChange={this.handleVisibleChange}
+                      >
+                        <StyledUrlButton type="primary" ghost>
+                          (District Url)
+                        </StyledUrlButton>
+                      </Popover>
+                    </InputWithUrl>
                     <EditableLabel
                       value={districtProfile.city}
                       valueName={"City"}
@@ -287,16 +301,6 @@ class DistrictProfileForm extends React.Component {
                         )}
                       </StyledFormItem>
                     </EditableLabelDiv>
-                    {/* <Popover
-                      trigger="click"
-                      visible={popoverVisible}
-                      content={popoverContent}
-                      onVisibleChange={this.handleVisibleChange}
-                    >
-                      <StyledUrlButton type="primary" ghost>
-                        (District Url)
-                      </StyledUrlButton>
-                    </Popover> */}
                   </FormColumnRight>
                 </FormFlexContainer>
               </StyledDivMain>

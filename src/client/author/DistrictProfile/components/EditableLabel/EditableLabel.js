@@ -115,11 +115,11 @@ class EditableLabel extends React.Component {
 
   render() {
     const { value, validateStatus, validateMsg } = this.state;
-    const { valueName, requiredStatus, isInputEnabled } = this.props;
+    const { valueName, requiredStatus, isInputEnabled, flexGrow = "" } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <EditableLabelDiv>
+      <EditableLabelDiv flexGrow={flexGrow}>
         <label>{valueName}</label>
         <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal">
           {getFieldDecorator(valueName, {

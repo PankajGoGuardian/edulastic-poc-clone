@@ -48,6 +48,7 @@ import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
 import FeedbackRight from "./FeedbackRight";
 import { setQuestionDataAction } from "../../author/src/actions/question";
+import { requestScratchPadAction } from "../../author/ExpressGrader/ducks";
 import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
@@ -320,10 +321,13 @@ class QuestionWrapper extends Component {
       isPrintPreview = false,
       evaluation,
       scrollContainer,
+      loadScratchPad,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
+    const questionActivityId = get(data, "activity._id", null);
+    const qid = get(data, "activity.qid", undefined);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
@@ -457,7 +461,17 @@ class QuestionWrapper extends Component {
                   <>
                     <TimeSpentWrapper>
                       {!!showStudentWork && (
-                        <ShowStudentWorkBtn onClick={showStudentWork}> Show student work</ShowStudentWorkBtn>
+                        <ShowStudentWorkBtn
+                          onClick={() => {
+                            if (qid != questionActivityId) {
+                              loadScratchPad(questionActivityId);
+                            }
+                            showStudentWork();
+                          }}
+                        >
+                          {" "}
+                          Show student work
+                        </ShowStudentWorkBtn>
                       )}
                       <i className="fa fa-clock-o" aria-hidden="true" />
                       {round(timeSpent / 1000, 1)}s
@@ -582,7 +596,8 @@ const enhance = compose(
     }),
     {
       setQuestionData: setQuestionDataAction,
-      handleAdvancedOpen: toggleAdvancedSections
+      handleAdvancedOpen: toggleAdvancedSections,
+      loadScratchPad: requestScratchPadAction
     }
   )
 );

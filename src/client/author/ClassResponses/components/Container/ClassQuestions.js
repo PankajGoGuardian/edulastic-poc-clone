@@ -93,8 +93,9 @@ class ClassQuestions extends Component {
           userWork[curr.testItemId] = curr.scratchPad;
         }
       });
-
-      loadScratchPad(userWork);
+      if (!isEmpty(userWork)) {
+        loadScratchPad(userWork);
+      }
     }
   };
 
@@ -322,7 +323,10 @@ class ClassQuestions extends Component {
       }
       // accumulating userwork also here to avoid an extra loops. ummm... another frugal
       // ride over the looops?
-      if (curr.scratchPad && !userWork[curr.testItemId]) {
+      //to indicate scratchpadData available
+      if (curr.scratchPadPresent && !userWork[curr.testItemId]) {
+        userWork[curr.testItemId] = {};
+      } else if (curr.scratchPad && !userWork[curr.testItemId]) {
         userWork[curr.testItemId] = curr.scratchPad;
       }
       return acc;

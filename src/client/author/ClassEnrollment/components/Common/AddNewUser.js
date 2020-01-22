@@ -4,7 +4,7 @@ import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import { Icon, Collapse, Spin, Input, Select, DatePicker, message } from "antd";
 import { IconUser } from "@edulastic/icons";
 import { userApi, schoolApi } from "@edulastic/api";
-import { isEmailValid } from "../../../../common/utils/helpers";
+import { isEmailValid, nameValidator } from "../../../../common/utils/helpers";
 
 import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
@@ -164,6 +164,15 @@ class AddNewUserForm extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     );
+
+    const validateName = (rule, value, callback) => {
+      if (!nameValidator(value)) {
+        callback("The input is not valid name");
+      } else {
+        callback();
+      }
+    };
+
     return (
       <StyledModal title={title} footer={footer} visible={showModal} onCancel={() => closeModal()}>
         <Form>
@@ -229,10 +238,8 @@ class AddNewUserForm extends React.Component {
                 <legend>Name of user</legend>
                 <Form.Item>
                   {getFieldDecorator("fullName", {
-                    rules: [
-                      { required: true, message: "Please provide user full name" },
-                      { max: 128, message: "Must less than 128 characters!" }
-                    ]
+                    validateTrigger: ["onBlur"],
+                    rules: [{ validator: validateName }, { max: 128, message: "Must less than 128 characters!" }]
                   })(
                     <Input
                       prefix={<img style={iconSize} src={userIcon} alt="" />}

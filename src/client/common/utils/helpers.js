@@ -240,3 +240,19 @@ export const Tooltip = props =>
   ) : (
     <AntDTooltip {...props}>{props.children}</AntDTooltip>
   );
+
+export const nameValidator = name => {
+  const trimmedName = name.trim();
+
+  // rules (valid name)
+  // should start with alphabet
+  // should contain at least three char (eg: stu, st1 s01)
+  // should contain only one space between name/word
+  // can contain number after initial alphabet
+
+  const namePattern = /^(?!\d)[a-zA-Z\d]{2,}[a-zA-Z\d]+(?: [a-zA-z\d]+)*$/;
+  if (!trimmedName || !namePattern.test(trimmedName)) {
+    return false;
+  }
+  return true;
+};

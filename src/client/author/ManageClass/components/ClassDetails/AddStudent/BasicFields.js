@@ -9,6 +9,7 @@ import { userApi } from "@edulastic/api";
 import styled from "styled-components";
 import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor, boxShadowDefault } from "@edulastic/colors";
+import { nameValidator } from "../../../../../common/utils/helpers";
 const BasicFields = ({
   stds,
   isEdit,
@@ -26,6 +27,7 @@ const BasicFields = ({
   fetchClassDetailsUsingCode,
   resetClassDetails = () => {},
   validatedClassDetails,
+  t,
   ...restProps
 }) => {
   const _className = get(validatedClassDetails, "groupInfo.name", "");
@@ -143,6 +145,14 @@ const BasicFields = ({
   useEffect(() => {
     resetClassDetails();
   }, []);
+  
+  const validateName = (rule, value, callback) => {
+    if (!nameValidator(value)) {
+      callback("The input is not valid name");
+    } else {
+      callback();
+    }
+  };
 
   return (
     <FormBody>
@@ -213,7 +223,7 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator("fullName", {
               validateTrigger: ["onBlur"],
-              rules: [{ validator: checkFirstName }]
+              rules: [{ validator: validateName }]
             })(
               <Input
                 data-cy="fullName"

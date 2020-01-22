@@ -5,6 +5,7 @@ const Option = Select.Option;
 import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } from "../../../../../common/styled";
 
 import { authApi, schoolApi } from "@edulastic/api";
+import { nameValidator } from "../../../../../common/utils/helpers";
 
 class CreateSchoolAdminModal extends React.Component {
   constructor(props) {
@@ -134,6 +135,15 @@ class CreateSchoolAdminModal extends React.Component {
     });
   };
 
+  validateName = (rule, value, callback) => {
+    const { t } = this.props;
+    if (!nameValidator(value)) {
+      callback(t("users.schooladmin.createsa.validations.name"));
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, t } = this.props;
@@ -158,10 +168,10 @@ class CreateSchoolAdminModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label={t("users.schooladmin.name")}>
               {getFieldDecorator("name", {
+                validateTrigger: ["onBlur"],
                 rules: [
                   {
-                    required: true,
-                    message: t("users.schooladmin.createsa.validations.name")
+                    validator: this.validateName
                   }
                 ]
               })(<Input placeholder={t("users.schooladmin.createsa.entername")} />)}

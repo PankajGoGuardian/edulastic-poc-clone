@@ -54,7 +54,7 @@ const TextContainer = ({
               disable={!isSnapFitValues}
               disableResponse={disableResponse}
             >
-              <Container width="100%" height="100%">
+              <Container _lineHeight={style.height}>
                 <AnswerContent
                   popoverContent={popoverContent}
                   userAnswer={userAnswer}

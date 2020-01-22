@@ -87,8 +87,6 @@ const CheckboxTemplateBox = ({
   const dragItemStyle = {
     border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
     padding: lessMinWidth ? "0px 2px" : "0px 5px",
-    display: "inline-flex",
-    alignItems: "center",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
     width: "max-content",

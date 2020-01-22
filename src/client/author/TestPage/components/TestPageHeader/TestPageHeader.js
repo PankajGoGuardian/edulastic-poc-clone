@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor, desktopWidth } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -267,7 +267,7 @@ const TestPageHeader = ({
         onOk={confirmCancel}
         onClose={() => setCancelState(false)}
       />
-      {windowWidth > 992 ? (
+      {windowWidth > parseInt(desktopWidth, 10) ? (
         <HeaderWrapper>
           <TitleWrapper>
             <Title data-cy="title" title={title}>

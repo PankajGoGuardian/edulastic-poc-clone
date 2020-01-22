@@ -112,6 +112,7 @@
           "firstname": "Please input first name",
           "lastname": "Please input last name",
           "email": "Please input email",
+          "name": "The input is not valid name",
           "invalidemail": "The input is not valid e-mail",
           "password": "Please input password",
           "school": "Please select schools"
@@ -175,6 +176,7 @@
         "enterpassword": "Enter password",
         "selectschool": "Select Schools",
         "validations": {
+          "invalidName": "The input is not valid name",
           "name": "Please input name",
           "email": "Please input email",
           "password": "Please input password",

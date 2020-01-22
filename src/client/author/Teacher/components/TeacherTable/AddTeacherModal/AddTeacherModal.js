@@ -5,6 +5,7 @@ import { ButtonsContainer, OkButton, CancelButton, StyledModal, ModalFormItem } 
 import { authApi, schoolApi } from "@edulastic/api";
 import { IconLock, IconUser, IconMail } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
+import { nameValidator } from "../../../../../common/utils/helpers";
 
 class AddTeacherModal extends React.Component {
   constructor(props) {
@@ -212,6 +213,15 @@ class AddTeacherModal extends React.Component {
     });
   };
 
+  validateName = (rule, value, callback) => {
+    const { t } = this.props;
+    if (!nameValidator(value)) {
+      callback(t("users.teacher.addteachers.validations.invalidName"));
+    } else {
+      callback();
+    }
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, t } = this.props;
@@ -236,10 +246,10 @@ class AddTeacherModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label={t("users.teacher.name")}>
               {getFieldDecorator("name", {
+                validateTrigger: ["onBlur"],
                 rules: [
                   {
-                    required: true,
-                    message: t("users.teacher.addteachers.validations.name")
+                    validator: this.validateName
                   }
                 ]
               })(

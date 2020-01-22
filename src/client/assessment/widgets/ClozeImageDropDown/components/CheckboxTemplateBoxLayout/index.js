@@ -32,10 +32,12 @@ const CheckboxTemplateBoxLayout = ({
   checkAnswer,
   onClickHandler,
   isExpressGrader,
-  item
+  item,
+  containerHeight,
+  containerWidth
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+    <TemplateCover width={containerWidth} height={containerHeight > maxHeight ? containerHeight : maxHeight}>
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}
@@ -114,7 +116,9 @@ CheckboxTemplateBoxLayout.propTypes = {
   canvasWidth: PropTypes.number.isRequired,
   canvasHeight: PropTypes.number.isRequired,
   onClickHandler: PropTypes.func.isRequired,
-  isExpressGrader: PropTypes.bool
+  isExpressGrader: PropTypes.bool,
+  containerHeight: PropTypes.number.isRequired,
+  containerWidth: PropTypes.number.isRequired
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

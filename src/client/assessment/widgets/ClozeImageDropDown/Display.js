@@ -191,7 +191,7 @@ class Display extends Component {
         fontSize={fontSize}
         height={containerHeight}
       >
-        <StyledPreviewContainer smallSize={smallSize} height={containerHeight}>
+        <StyledPreviewContainer width={containerWidth} smallSize={smallSize} height={containerHeight}>
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -266,6 +266,8 @@ class Display extends Component {
 
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
+        containerHeight={containerHeight}
+        containerWidth={containerWidth}
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}

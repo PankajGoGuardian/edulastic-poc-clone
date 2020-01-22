@@ -218,7 +218,7 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
 
         studentTestPage.submitTest();
         assignmentsPage.sidebar.clickOnGrades();
-        assignmentsPage.getReviewButton().click();
+        assignmentsPage.clickOnReviewButton();
         reportsPage.verifyNoOfQuesInReview(itemIds.length);
         reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
       });

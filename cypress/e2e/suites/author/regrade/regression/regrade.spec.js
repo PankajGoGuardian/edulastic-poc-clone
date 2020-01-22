@@ -11,6 +11,7 @@ import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import SidebarPage from "../../../../framework/student/sidebarPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const students = {
   Student1: {
@@ -30,7 +31,7 @@ const students = {
   }
 };
 
-describe(`With Applying Regrading-Test Editing`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Test Editing`, () => {
   const testLibraryPage = new TestLibrary();
   const assignmentsPage = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();

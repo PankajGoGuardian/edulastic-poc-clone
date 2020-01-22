@@ -3,6 +3,7 @@ import SearchFilters from "../../../../framework/author/searchFiltersPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import TestHeader from "../../../../framework/author/tests/testDetail/header";
+import FileHelper from "../../../../framework/util/fileHelper";
 const userData = require("../../../../../fixtures/users");
 const quesData = require("../../../../../fixtures/questionAuthoring");
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -10,7 +11,7 @@ const testData = require("../../../../../fixtures/testAuthoring");
 const { dist1, dist2 } = userData["Sharing"];
 const { search_1, search_2, search_3 } = testData;
 
-describe("Searching Tests Using Tags,Tittle and Standards", () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags,Tittle and Standards`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();

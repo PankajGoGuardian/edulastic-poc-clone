@@ -169,6 +169,10 @@ class AssignmentsPage {
       .click({ force: true });
   };
 
+  clickOnReviewButton = () => {
+    this.getReviewButton().click({ force: true });
+  };
+
   // PAUSED
 
   verufyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");

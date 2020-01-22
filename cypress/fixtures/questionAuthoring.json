@@ -586,5 +586,26 @@
         }
       ]
     }
+  },
+  "ESSAY_RICH": {
+    "default": {
+      "quetext": "This Is Essay Rich Text",
+      "attemptData": {
+        "right": "right",
+        "wrong": "wrong0",
+        "partialCorrect": "partial"
+      },
+      "setAns": {
+        "points": 2
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
+    }
   }
 }

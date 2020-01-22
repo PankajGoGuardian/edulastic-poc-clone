@@ -98,7 +98,7 @@ export default class QuestionResponsePage {
     cy.wait(500); // front end renders slow and gets old value appended in the box, hence waiting
     this.getScoreInput(cy.get("@updatecard")).as("scoreinputbox");
 
-    if (score) {
+    if (!(typeof score === "undefined" || score === "")) {
       cy.get("@scoreinputbox")
         .type("{selectall}{del}", { force: score })
         .type(score, { force: true });

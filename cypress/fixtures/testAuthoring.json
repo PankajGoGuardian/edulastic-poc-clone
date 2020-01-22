@@ -152,5 +152,11 @@
     "subject": ["Math"],
     "collections": "Content Check Math",
     "itemKeys": ["MCQ_TF.3", "MCQ_TF.3"]
+  },
+  "MANUAL_GRADE": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["ESSAY_RICH.default", "ESSAY_RICH.default", "ESSAY_RICH.default"]
   }
 }

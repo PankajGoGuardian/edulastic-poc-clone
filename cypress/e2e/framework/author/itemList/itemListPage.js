@@ -8,10 +8,10 @@ import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
 import MetadataPage from "./itemDetail/metadataPage";
 import ClozeDropDownPage from "./questionType/fillInBlank/clozeWithDropDownPage";
-
 import SearchFilters from "../searchFiltersPage";
 import TeacherSideBar from "../SideBarPage";
 import PreviewItemPopup from "./itemPreview";
+import EssayRichTextPage from "./questionType/writtenAndSpoken/essayRichTextPage";
 
 class ItemListPage {
   constructor() {
@@ -128,7 +128,9 @@ class ItemListPage {
           case queTypes.CHOICE_MATRIX_INLINE:
             question = new ChoiceMatrixStandardPage();
             break;
-
+          case queTypes.ESSAY_RICH:
+            question = new EssayRichTextPage();
+            break;
           default:
             break;
         }

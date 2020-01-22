@@ -1,5 +1,7 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
+import EditItemPage from "../../itemDetail/editPage";
+import { questionGroup, questionType } from "../../../../constants/questionTypes";
 
 class EssayRichTextPage {
   constructor() {
@@ -32,9 +34,7 @@ class EssayRichTextPage {
   }
 
   // question content
-  getQuestionEditor() {
-    return cy.contains("Enter your question");
-  }
+  getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
   // word limit
   selectWordLimit(option) {
@@ -82,6 +82,45 @@ class EssayRichTextPage {
 
   getToobar() {
     return cy.get(".fr-toolbar");
+  }
+
+  openAdvancedOption = () => {
+    cy.get("body")
+      .contains(" ADVANCED OPTIONS")
+      .then(ele => {
+        if (ele.parent().siblings().length === 3) {
+          cy.wrap(ele).click();
+        }
+      });
+  };
+
+  setPoints = points => {
+    this.openAdvancedOption();
+    cy.get("body")
+      .find("li")
+      .contains("Dynamic Parameters")
+      .click({ force: true });
+    cy.get('[data-cy="maxscore"]')
+      .should("be.visible")
+      .type(`{selectall}${points}`, { force: true });
+  };
+
+  createQuestion(queKey = "default", queIndex = 0, onlyItem = true) {
+    const item = new EditItemPage();
+
+    item.createNewItem(onlyItem);
+    item.chooseQuestion(questionGroup.READ, questionType.ESSAY_RICH);
+    cy.fixture("questionAuthoring").then(authoringData => {
+      const { quetext, setAns } = authoringData.ESSAY_RICH[queKey];
+
+      if (quetext) {
+        const text = `Q${queIndex + 1} - ${quetext}`;
+        this.getQuestionEditor().type(text);
+      }
+      if (setAns.points) {
+        this.setPoints(setAns.points);
+      }
+    });
   }
 }
 

@@ -444,6 +444,10 @@ class StudentTestPage {
     return this;
   };
 
+  // Essay Type
+
+  typeEssayRichText = content => cy.get(".fr-element").type(content);
+
   // Sort List
 
   getSourceBoard = () => cy.contains("p", "Source").closest("div");
@@ -714,6 +718,9 @@ class StudentTestPage {
         if (attemptType !== attemptTypes.SKIP) {
           this.checkAnsDropdown(attempts);
         }
+        break;
+      case questionType.ESSAY_RICH:
+        this.typeEssayRichText(attempts);
         break;
       default:
         break;

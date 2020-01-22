@@ -440,7 +440,7 @@ class AssessmentPlayerDefault extends React.Component {
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
+      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel, twoColLayout: {} }}>
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
           {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
@@ -611,19 +611,6 @@ class AssessmentPlayerDefault extends React.Component {
                 Also, will use ScrollContext for auto-scroll on mobile */}
             <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
               <SettingsModal />
-              <SvgDraw
-                activeMode={activeMode}
-                scratchPadMode={scratchPadMode}
-                lineColor={currentColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
-                saveHistory={this.saveHistory("scratchpad")}
-                history={scratchPad}
-                height={`calc(100% - ${headerHeight}px)`}
-                top={`${headerHeight}px`}
-                position="fixed"
-              />
               <MainWrapper
                 responsiveWidth={responsiveWidth}
                 zoomLevel={zoomLevel}
@@ -641,6 +628,14 @@ class AssessmentPlayerDefault extends React.Component {
                     viewComponent="studentPlayer"
                     setHighlights={this.saveHistory("resourceId")}
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
+                    activeMode={activeMode}
+                    scratchPadMode={scratchPadMode}
+                    lineColor={currentColor}
+                    deleteMode={deleteMode}
+                    lineWidth={lineWidth}
+                    fillColor={fillColor}
+                    saveHistory={this.saveHistory("scratchpad")}
+                    history={scratchPad}
                   />
                 )}
                 {testItemState === "check" && (
@@ -660,6 +655,14 @@ class AssessmentPlayerDefault extends React.Component {
                     viewComponent="studentPlayer"
                     setHighlights={this.saveHistory("resourceId")} // this needs only for passage type
                     setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
+                    activeMode={activeMode}
+                    scratchPadMode={scratchPadMode}
+                    lineColor={currentColor}
+                    deleteMode={deleteMode}
+                    lineWidth={lineWidth}
+                    fillColor={fillColor}
+                    saveHistory={this.saveHistory("scratchpad")}
+                    history={scratchPad}
                   />
                 )}
                 {showHints && (

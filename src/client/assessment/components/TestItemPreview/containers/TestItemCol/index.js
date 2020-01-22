@@ -74,7 +74,7 @@ class TestItemCol extends Component {
     // For Multipart with item level scoring display only one feedback else allow for question level scoring
     const displayFeedback = index === 0;
     return (
-      <Tabs.TabContainer>
+      <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }}>
         <QuestionWrapper
           showFeedback={showFeedback}
           evaluation={evaluation}

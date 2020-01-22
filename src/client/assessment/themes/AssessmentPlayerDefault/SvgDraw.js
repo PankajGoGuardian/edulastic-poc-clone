@@ -26,6 +26,7 @@ const SvgDraw = ({
   deleteMode,
   height,
   top,
+  left,
   position
 }) => {
   const svg = useRef(null);
@@ -721,13 +722,13 @@ const SvgDraw = ({
       <svg
         ref={svg}
         {...getSvgHandlers()}
-        width="calc(100% - 50px)"
         style={{
-          height,
-          background: "transparent",
           position,
-          top,
-          left: 50,
+          top: 0,
+          left: 0,
+          height: "100%",
+          width: "100%",
+          background: "transparent",
           display: scratchPadMode ? "block" : "none",
           pointerEvents: activeMode === "" ? "none" : "all",
           zIndex: mouseClicked || dragStart || activeMode === "" ? 40 : 40

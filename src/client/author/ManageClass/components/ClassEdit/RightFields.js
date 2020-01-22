@@ -9,6 +9,7 @@ import { StyledFlexContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StandardsValidationMSG } from "../ClassCreate/styled";
+import Tags from "./Tags";
 
 const { allGrades, allSubjects } = selectsData;
 const subjects = filter(allSubjects, el => el.value !== "");
@@ -28,6 +29,7 @@ const RightFields = ({
   defaultStandardSets = [],
   defaultCourse = {},
   defaultSchool,
+  schoolList = [],
   subject,
   setSubject,
   filteredCurriculums,
@@ -202,11 +204,21 @@ const RightFields = ({
             </FieldLabel>
           </FeaturesSwitch>
         </Col>
+        <Col xs={12}>
+          <FieldLabel label="School" {...restProps} fiedlName="institutionId" initialValue={defaultSchool || ""}>
+            <Select placeholder="Select School">
+              {schoolList.map(el => (
+                <Select.Option key={el._id} value={el._id}>
+                  {el.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </FieldLabel>
+        </Col>
+        <Col xs={12}>
+          <Tags {...restProps} />
+        </Col>
       </StyledFlexContainer>
-
-      <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
-        <input type="hidden" />
-      </FieldLabel>
     </>
   );
 };
@@ -222,7 +234,6 @@ RightFields.propTypes = {
   courseList: PropTypes.array.isRequired,
   searchCourse: PropTypes.func.isRequired,
   isSearching: PropTypes.bool.isRequired,
-  getFieldDecorator: PropTypes.func.isRequired,
   defaultName: PropTypes.string.isRequired,
   defaultStartDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   defaultEndDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
@@ -232,7 +243,13 @@ RightFields.propTypes = {
   defaultCourse: PropTypes.object,
   defaultSchool: PropTypes.string,
   subject: PropTypes.string,
-  setSubject: PropTypes.func.isRequired
+  setSubject: PropTypes.func.isRequired,
+  schoolList: PropTypes.array,
+  getFieldValue: PropTypes.func.isRequired,
+  tags: PropTypes.array,
+  setFieldsValue: PropTypes.func.isRequired,
+  allTagsData: PropTypes.array,
+  addNewTag: PropTypes.func.isRequired
 };
 
 RightFields.defaultProps = {
@@ -242,7 +259,10 @@ RightFields.defaultProps = {
   defaultGrade: [],
   defaultSubject: "",
   defaultSchool: "",
-  defaultStandardSets: []
+  defaultStandardSets: [],
+  schoolList: [],
+  tags: [],
+  allTagsData: []
 };
 
 export default RightFields;

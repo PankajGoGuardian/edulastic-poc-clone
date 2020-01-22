@@ -146,7 +146,8 @@ class ClassEdit extends React.Component {
       setSubject,
       allTagsData,
       addNewTag,
-      selectedSubject
+      selectedSubject = "",
+      userOrgData = {}
     } = this.props;
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
 
@@ -166,6 +167,9 @@ class ClassEdit extends React.Component {
     } = selctedClass;
 
     if (!classLoaded) return <Spin />;
+
+    const { schools } = userOrgData;
+
     return (
       <Form onSubmit={this.handleSubmit} style={{ position: "relative" }}>
         <Header classId={classId} />
@@ -179,10 +183,7 @@ class ClassEdit extends React.Component {
                     getFieldDecorator={getFieldDecorator}
                     getFieldValue={getFieldValue}
                     thumbnailUri={thumbnail}
-                    tags={tags}
                     setFieldsValue={setFieldsValue}
-                    allTagsData={allTagsData}
-                    addNewTag={addNewTag}
                   />
                 </LeftContainer>
                 <RightContainer xs={16}>
@@ -195,6 +196,7 @@ class ClassEdit extends React.Component {
                     defaultStandardSets={standardSets}
                     defaultCourse={course || undefined}
                     defaultSchool={institutionId}
+                    schoolList={schools}
                     curriculums={curriculums}
                     getFieldDecorator={getFieldDecorator}
                     getFieldValue={getFieldValue}
@@ -206,6 +208,10 @@ class ClassEdit extends React.Component {
                     setSubject={setSubject}
                     subject={selectedSubject}
                     cleverId={cleverId}
+                    tags={tags}
+                    setFieldsValue={setFieldsValue}
+                    allTagsData={allTagsData}
+                    addNewTag={addNewTag}
                   />
                 </RightContainer>
               </Row>

@@ -49,47 +49,6 @@ const LeftField = props => {
       <FieldLabel label="Class Image" optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>
         <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
-      <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(t => t._id)}>
-        {searchValue.length && !searchValue.trim().length ? (
-          <Select
-            mode="multiple"
-            style={{ marginBottom: 0 }}
-            optionLabelProp="title"
-            placeholder="Select Tags"
-            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
-            onSearch={searchTags}
-          >
-            <Select.Option key={0} value={"invalid"} title={"invalid"} disabled>
-              {`Please enter valid characters`}
-            </Select.Option>
-          </Select>
-        ) : (
-          <Select
-            data-cy="tagsSelect"
-            mode="multiple"
-            style={{ marginBottom: 0 }}
-            optionLabelProp="title"
-            placeholder="Select Tags"
-            onSearch={searchTags}
-            onSelect={selectTags}
-            onDeselect={deselectTags}
-            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
-          >
-            {!!searchValue.trim() ? (
-              <Select.Option key={0} value={searchValue} title={searchValue}>
-                {`${searchValue} (Create new Tag)`}
-              </Select.Option>
-            ) : (
-              ""
-            )}
-            {allTagsData.map(({ tagName, _id }) => (
-              <Select.Option key={_id} value={_id} title={tagName}>
-                {tagName}
-              </Select.Option>
-            ))}
-          </Select>
-        )}
-      </FieldLabel>
     </>
   );
 };

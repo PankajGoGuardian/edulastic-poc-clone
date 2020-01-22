@@ -1364,14 +1364,17 @@ function tranformItemGroupToData(itemGroup, index) {
   };
   Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
   return {
-    data: {
-      limit: itemGroup.deliverItemsCount,
-      search: {
-        collectionId: itemGroup.collectionDetails._id,
-        standardId: itemGroup.standardDetails.standardId,
-        ...optionalFields
-      }
-    },
+    data:
+      itemGroup.type === ITEM_GROUP_TYPES.STATIC
+        ? null
+        : {
+            limit: itemGroup.deliverItemsCount,
+            search: {
+              collectionId: itemGroup.collectionDetails._id,
+              standardId: itemGroup.standardDetails.standardId,
+              ...optionalFields
+            }
+          },
     isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && itemGroup.items.length === 0,
     groupName: itemGroup.groupName,
     index

@@ -146,8 +146,7 @@ const GroupItems = ({
             ? ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
             : ITEM_GROUP_DELIVERY_TYPES.ALL
       };
-    }
-    if (fieldName === "deliverItemsCount") {
+    } else if (fieldName === "deliverItemsCount") {
       if (updatedGroupData.type === ITEM_GROUP_TYPES.STATIC && value >= updatedGroupData.items.length) {
         return message.error("Total items to be delivered should be lesser than the number of items selected.", 3);
       }
@@ -158,8 +157,7 @@ const GroupItems = ({
         ...updatedGroupData,
         [fieldName]: value
       };
-    }
-    if (fieldName === "deliveryType") {
+    } else if (fieldName === "deliveryType") {
       if (
         updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
         value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&

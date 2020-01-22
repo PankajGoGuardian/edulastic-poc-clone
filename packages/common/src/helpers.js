@@ -520,10 +520,9 @@ export const getFormattedAttrId = inputString => {
 export const templateHasImage = template => {
   let hasImage = false;
   if (window.$) {
-    const jqueryEl = window.$(template);
-    jqueryEl.each(function() {
-      hasImage = $(this).find("img").length > 0;
-    });
+    const fakeEm = window.$("<div/>", {});
+    fakeEm.append(template);
+    hasImage = fakeEm.find("img").length > 0;
   }
   return hasImage;
 };

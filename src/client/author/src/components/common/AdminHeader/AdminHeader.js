@@ -38,9 +38,9 @@ class AdminHeader extends Component {
       case "Class Enrollment":
         history.push(`/author/Class-Enrollment`);
         return;
-      case "Groups":
-        history.push(`/author/Groups`);
-        return;
+      // case "Groups":
+      //   history.push(`/author/Groups`);
+      //   return;
       case "Settings":
         history.push(`/author/settings/districtpolicies`);
         return;
@@ -64,7 +64,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Classes" key={"Classes"} />
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
-            <StyledTabPane tab="Groups" key={"Groups"} />
+            {/* <StyledTabPane tab="Groups" key={"Groups"} /> */}
 
             {role === roleuser.DISTRICT_ADMIN || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
               <StyledTabPane tab="Settings" key={"Settings"} />

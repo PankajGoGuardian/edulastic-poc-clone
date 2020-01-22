@@ -714,7 +714,7 @@ class CoursesTable extends React.Component {
           </LeftFilterDiv>
           <RightFilterDiv>
             <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
-              {t("common.showcurrent")}
+              {t("course.showactivecourse")}
             </StyledActiveCheckbox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <StyledDropdownBtn>

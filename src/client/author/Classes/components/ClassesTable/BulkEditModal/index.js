@@ -5,6 +5,7 @@ import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../../../../src/selectors/user";
+import moment from "moment";
 import { debounce } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
 
@@ -26,7 +27,7 @@ function BulkEditModal({
   setBulkEditMode,
   setBulkEditUpdateView,
   selectedIds,
-  selectedClasses,
+  selectedClasses = [],
   bulkUpdateClasses,
   searchCourseList,
   coursesForDistrictList,
@@ -51,6 +52,16 @@ function BulkEditModal({
     if (updateMode === "tags") {
       const tags = getFieldValue("tags");
       updatedData = tags.map(t => allTagsData.find(o => o._id === t));
+    }
+
+    // end date should not be less than the start date
+    let isInvalidEndDate = false;
+    if (updateMode === "endDate") {
+      isInvalidEndDate = selectedClasses.some(({ _source = {} }) => updatedData < _source.startDate);
+    }
+
+    if (isInvalidEndDate) {
+      return message.error("start date is greater than end date");
     }
 
     bulkUpdateClasses({
@@ -116,6 +127,8 @@ function BulkEditModal({
     }
   };
 
+  const disabledDate = current => current && current < moment().startOf("day");
+
   const renderEditableView = () => {
     switch (updateMode) {
       case "course":
@@ -175,13 +188,19 @@ function BulkEditModal({
         return (
           <div>
             <span>{t("class.components.bulkedit.choseenddate")}</span>
-            <DatePicker onChange={date => setValue(date.valueOf())} />
+            <DatePicker disabledDate={disabledDate} onChange={date => setValue(date.valueOf())} format="ll" />
           </div>
         );
       default:
         return <span>{t("class.components.bulkedit.default")}</span>;
     }
   };
+
+  const selectedClassesWithDateFormat = selectedClasses.map(data => {
+    const { _source = {} } = data;
+    if (_source.endDate) _source.endDate = moment(_source.endDate).format("ll");
+    return data;
+  });
 
   return (
     <StyledModal
@@ -214,7 +233,7 @@ function BulkEditModal({
           </Button>
           <Table
             rowKey={record => record._id}
-            dataSource={selectedClasses}
+            dataSource={selectedClassesWithDateFormat}
             pagination={false}
             columns={
               updateMode === "tags"

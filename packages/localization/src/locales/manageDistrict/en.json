@@ -363,6 +363,7 @@
     "createcourse": "+ Create Course",
     "addcourse": "Add Course",
     "updatecourse": "Update Course >",
+    "showactivecourse": "Show active courses only",
     "deactivatecoursemodal": {
       "title": "Deactivate course(s)",
       "confirmtext": "Are you sure you want to deactivate the following course(s)?"

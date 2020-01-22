@@ -77,8 +77,7 @@ const GroupItems = ({
   deleteItemsGroup,
   test,
   setTestData,
-  history,
-  handleSaveTest
+  history
 }) => {
   const { Panel } = Collapse;
 
@@ -438,7 +437,6 @@ const GroupItems = ({
     setCurrentGroupIndex(null);
     setEditGroupDetails({});
     setFetchingItems(false);
-    handleSaveTest();
   };
 
   const handleCancel = () => {
@@ -483,251 +481,257 @@ const GroupItems = ({
           <i class="fa fa-question-circle" aria-hidden="true" />
         </Heading>
         <Collapse activeKey={activePanels} onChange={panels => setActivePanels(panels)}>
-          {test.itemGroups.map((itemGroup, index) => (
-            <Panel
-              header={[
-                <PanelHeading>
-                  <Label fontWeight="600">{itemGroup.groupName}</Label>
-                  <div>
-                    {currentGroupIndex !== index && (
-                      <div title="Edit" onClick={e => handleEditGroup(e, itemGroup, index)}>
-                        <IconPencilEdit />
-                      </div>
-                    )}
-                    {test.itemGroups.length > 1 && (
-                      <div title="Delete" onClick={e => handleDeleteGroup(e, index)}>
-                        <i class="fa fa-trash-o" aria-hidden="true" />
-                      </div>
-                    )}
-                  </div>
-                </PanelHeading>
-              ]}
-              key={index + 1}
-            >
-              <ContentBody data-cy={`group-${itemGroup.groupName}`}>
-                <GroupField>
-                  <Checkbox
-                    checked={
-                      currentGroupIndex === index
-                        ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
-                        : itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT
-                    }
-                    disabled={currentGroupIndex !== index}
-                    onChange={e => handleTypeSelect(index)}
-                  >
-                    AUTO SELECT ITEMS BASED ON STANDARDS
-                  </Checkbox>
-                </GroupField>
-                {(currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
-                (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
-                  <GroupField>
-                    <Label>Items</Label>
-                    <QuestionTagsWrapper>
-                      <QuestionTagsContainer data-cy={`item-container-${itemGroup.groupName}`}>
-                        {(currentGroupIndex === index ? editGroupDetail.items : itemGroup.items)
-                          .map(({ _id }) => _id.substring(_id.length, _id.length - 6))
-                          .map(id => (
-                            <ItemTag>{id}</ItemTag>
-                          ))}
-                      </QuestionTagsContainer>
-                      <SelectItemsButton onClick={switchToAddItems}>Select Items</SelectItemsButton>
-                    </QuestionTagsWrapper>
-                  </GroupField>
-                ) : (
-                  <AutoSelectFields>
-                    <SelectWrapper width="200px">
-                      <Label>Collection</Label>
-                      <Select
-                        data-cy={`collection-${itemGroup.groupName}`}
-                        size="default"
-                        placeholder="Select Collection"
-                        onChange={value => handleCollectionChange(value, index)}
-                        value={
-                          currentGroupIndex === index
-                            ? editGroupDetail.collectionDetails?._id
-                            : itemGroup.collectionDetails?._id
-                        }
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        disabled={currentGroupIndex !== index}
-                      >
-                        {collectionData.map(el => (
-                          <Select.Option key={el.value} value={el.value}>
-                            {el.text}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </SelectWrapper>
-                    <SelectWrapper width="200px">
-                      <Label>Standards</Label>
-                      {(currentGroupIndex === index && editGroupDetail.standardDetails) ||
-                      (currentGroupIndex !== index && itemGroup.standardDetails) ? (
-                        <StandardNameSection>
-                          <span>
-                            {currentGroupIndex === index
-                              ? editGroupDetail.standardDetails.identifier
-                              : itemGroup.standardDetails.identifier}
-                          </span>
-                          <span
-                            onClick={() => {
-                              if (currentGroupIndex === index) handleChange("standardDetails", "");
-                            }}
-                          >
-                            <Icon type="close" />
-                          </span>
-                        </StandardNameSection>
-                      ) : (
-                        <BrowseButton
-                          onClick={() => {
-                            if (currentGroupIndex === index) {
-                              setShowStandardModal(true);
-                              setCurrentGroupIndex(index);
-                            }
-                          }}
-                        >
-                          Browse
-                        </BrowseButton>
+          {test.itemGroups.map((itemGroup, index) => {
+            const editingDeliveryType =
+              editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
+                ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM;
+            const currentDeliveryType =
+              itemGroup.type === ITEM_GROUP_TYPES.STATIC
+                ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+                : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM;
+            return (
+              <Panel
+                header={[
+                  <PanelHeading>
+                    <Label fontWeight="600">{itemGroup.groupName}</Label>
+                    <div>
+                      {currentGroupIndex !== index && (
+                        <div title="Edit" onClick={e => handleEditGroup(e, itemGroup, index)}>
+                          <IconPencilEdit />
+                        </div>
                       )}
-                    </SelectWrapper>
-                    <SelectWrapper width="200px">
-                      <Label>Depth of knowledge</Label>
-                      <Select
-                        data-cy="selectDOK"
-                        placeholder="Select DOK"
-                        size="default"
-                        onSelect={value => handleChange("dok", value)}
-                        value={currentGroupIndex === index ? editGroupDetail.dok : itemGroup.dok}
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        disabled={currentGroupIndex !== index}
-                      >
-                        {selectsData.allDepthOfKnowledge.map((el, index) => (
-                          <Select.Option key={el.value} value={el.value}>
-                            {`${index > 0 ? index : ""} ${el.text}`}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </SelectWrapper>
-                    <SelectWrapper width="200px">
-                      <Label>Tags</Label>
-                      <Select
-                        mode="multiple"
-                        data-cy="selectTags"
-                        size="default"
-                        onChange={value => handleChange("tags", value)}
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                        value={currentGroupIndex === index ? editGroupDetail.tags || [] : itemGroup.tags || []}
-                        disabled={currentGroupIndex !== index}
-                      >
-                        {allTagsData.map(el => (
-                          <Select.Option key={el._id} value={el._id}>
-                            {el.tagName}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </SelectWrapper>
-                    <SelectWrapper width="200px">
-                      <Label>Difficulty</Label>
-                      <Select
-                        placeholder="Select one"
-                        data-cy="selectDifficulty"
-                        size="default"
-                        onSelect={value => handleChange("difficulty", value)}
-                        value={currentGroupIndex === index ? editGroupDetail.difficulty : itemGroup.difficulty}
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        disabled={currentGroupIndex !== index}
-                      >
-                        {selectsData.allAuthorDifficulty.map(el => (
-                          <Select.Option key={el.value} value={el.value}>
-                            {el.text}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </SelectWrapper>
-                  </AutoSelectFields>
-                )}
-                <GroupField>
-                  <RadioGroup
-                    name="radiogroup"
-                    value={currentGroupIndex === index ? editGroupDetail.deliveryType : itemGroup.deliveryType}
-                    onChange={e => handleChange("deliveryType", e.target.value)}
-                    disabled={currentGroupIndex !== index}
-                  >
-                    {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
-                      (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
-                      <>
-                        <Radio
-                          data-cy={`check-deliver-all-${itemGroup.groupName}`}
-                          defaultChecked
-                          value={ITEM_GROUP_DELIVERY_TYPES.ALL}
-                        >
-                          Deliver all Items in this Group
-                        </Radio>
-
-                        <RadioMessage>
-                          Use this option to deliver a specific number of randomly picked question per Group.
-                        </RadioMessage>
-                      </>
-                    )}
-                    <Radio
-                      defaultChecked={false}
-                      value={
-                        editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
-                          ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-                          : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+                      {test.itemGroups.length > 1 && (
+                        <div title="Delete" onClick={e => handleDeleteGroup(e, index)}>
+                          <i class="fa fa-trash-o" aria-hidden="true" />
+                        </div>
+                      )}
+                    </div>
+                  </PanelHeading>
+                ]}
+                key={index + 1}
+              >
+                <ContentBody data-cy={`group-${itemGroup.groupName}`}>
+                  <GroupField>
+                    <Checkbox
+                      checked={
+                        currentGroupIndex === index
+                          ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
+                          : itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT
                       }
+                      disabled={currentGroupIndex !== index}
+                      onChange={e => handleTypeSelect(index)}
                     >
-                      <ItemCountWrapper>
-                        <span>Deliver a total of </span>
-                        <Input
-                          data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
-                          type="number"
-                          disabled={
-                            (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
-                              currentGroupIndex === index) ||
-                            currentGroupIndex !== index
-                          }
-                          min={0}
+                      AUTO SELECT ITEMS BASED ON STANDARDS
+                    </Checkbox>
+                  </GroupField>
+                  {(currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
+                  (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
+                    <GroupField>
+                      <Label>Items</Label>
+                      <QuestionTagsWrapper>
+                        <QuestionTagsContainer data-cy={`item-container-${itemGroup.groupName}`}>
+                          {(currentGroupIndex === index ? editGroupDetail.items : itemGroup.items)
+                            .map(({ _id }) => _id.substring(_id.length, _id.length - 6))
+                            .map(id => (
+                              <ItemTag>{id}</ItemTag>
+                            ))}
+                        </QuestionTagsContainer>
+                        <SelectItemsButton onClick={switchToAddItems}>Select Items</SelectItemsButton>
+                      </QuestionTagsWrapper>
+                    </GroupField>
+                  ) : (
+                    <AutoSelectFields>
+                      <SelectWrapper width="200px">
+                        <Label>Collection</Label>
+                        <Select
+                          data-cy={`collection-${itemGroup.groupName}`}
+                          size="default"
+                          placeholder="Select Collection"
+                          onChange={value => handleCollectionChange(value, index)}
                           value={
                             currentGroupIndex === index
-                              ? editGroupDetail.deliverItemsCount || ""
-                              : itemGroup.deliverItemsCount || ""
+                              ? editGroupDetail.collectionDetails?._id
+                              : itemGroup.collectionDetails?._id
                           }
-                          onChange={e => handleChange("deliverItemsCount", parseFloat(e.target.value))}
-                          max={editGroupDetail.type === ITEM_GROUP_TYPES.STATIC ? itemGroup.items.length : 100}
-                        />
-                        <span> Item(s)</span>
-                      </ItemCountWrapper>
-                    </Radio>
-                  </RadioGroup>
-                </GroupField>
-                <GroupField marginBottom="5px">
-                  {currentGroupIndex === index && (
-                    <>
-                      <SaveButton
-                        loading={fetchingItems}
-                        onClick={e => {
-                          handleSaveGroup();
-                          e.target.blur();
-                        }}
-                      >
-                        Save
-                      </SaveButton>
-                      <SaveButton
-                        loading={fetchingItems}
-                        onClick={e => {
-                          handleCancel();
-                          e.target.blur();
-                        }}
-                      >
-                        Cancel
-                      </SaveButton>
-                    </>
+                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          disabled={currentGroupIndex !== index}
+                        >
+                          {collectionData.map(el => (
+                            <Select.Option key={el.value} value={el.value}>
+                              {el.text}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </SelectWrapper>
+                      <SelectWrapper width="200px">
+                        <Label>Standards</Label>
+                        {(currentGroupIndex === index && editGroupDetail.standardDetails) ||
+                        (currentGroupIndex !== index && itemGroup.standardDetails) ? (
+                          <StandardNameSection>
+                            <span>
+                              {currentGroupIndex === index
+                                ? editGroupDetail.standardDetails.identifier
+                                : itemGroup.standardDetails.identifier}
+                            </span>
+                            <span
+                              onClick={() => {
+                                if (currentGroupIndex === index) handleChange("standardDetails", "");
+                              }}
+                            >
+                              <Icon type="close" />
+                            </span>
+                          </StandardNameSection>
+                        ) : (
+                          <BrowseButton
+                            onClick={() => {
+                              if (currentGroupIndex === index) {
+                                setShowStandardModal(true);
+                                setCurrentGroupIndex(index);
+                              }
+                            }}
+                          >
+                            Browse
+                          </BrowseButton>
+                        )}
+                      </SelectWrapper>
+                      <SelectWrapper width="200px">
+                        <Label>Depth of knowledge</Label>
+                        <Select
+                          data-cy="selectDOK"
+                          placeholder="Select DOK"
+                          size="default"
+                          onSelect={value => handleChange("dok", value)}
+                          value={currentGroupIndex === index ? editGroupDetail.dok : itemGroup.dok}
+                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          disabled={currentGroupIndex !== index}
+                        >
+                          {selectsData.allDepthOfKnowledge.map((el, index) => (
+                            <Select.Option key={el.value} value={el.value}>
+                              {`${index > 0 ? index : ""} ${el.text}`}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </SelectWrapper>
+                      <SelectWrapper width="200px">
+                        <Label>Tags</Label>
+                        <Select
+                          mode="multiple"
+                          data-cy="selectTags"
+                          size="default"
+                          onChange={value => handleChange("tags", value)}
+                          filterOption={(input, option) =>
+                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          }
+                          value={currentGroupIndex === index ? editGroupDetail.tags || [] : itemGroup.tags || []}
+                          disabled={currentGroupIndex !== index}
+                        >
+                          {allTagsData.map(el => (
+                            <Select.Option key={el._id} value={el._id}>
+                              {el.tagName}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </SelectWrapper>
+                      <SelectWrapper width="200px">
+                        <Label>Difficulty</Label>
+                        <Select
+                          placeholder="Select one"
+                          data-cy="selectDifficulty"
+                          size="default"
+                          onSelect={value => handleChange("difficulty", value)}
+                          value={currentGroupIndex === index ? editGroupDetail.difficulty : itemGroup.difficulty}
+                          getPopupContainer={triggerNode => triggerNode.parentNode}
+                          disabled={currentGroupIndex !== index}
+                        >
+                          {selectsData.allAuthorDifficulty.map(el => (
+                            <Select.Option key={el.value} value={el.value}>
+                              {el.text}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </SelectWrapper>
+                    </AutoSelectFields>
                   )}
-                </GroupField>
-              </ContentBody>
-            </Panel>
-          ))}
+                  <GroupField>
+                    <RadioGroup
+                      name="radiogroup"
+                      value={currentGroupIndex === index ? editGroupDetail.deliveryType : itemGroup.deliveryType}
+                      onChange={e => handleChange("deliveryType", e.target.value)}
+                      disabled={currentGroupIndex !== index}
+                    >
+                      {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
+                        (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
+                        <>
+                          <Radio
+                            data-cy={`check-deliver-all-${itemGroup.groupName}`}
+                            defaultChecked
+                            value={ITEM_GROUP_DELIVERY_TYPES.ALL}
+                          >
+                            Deliver all Items in this Group
+                          </Radio>
+
+                          <RadioMessage>
+                            Use this option to deliver a specific number of randomly picked question per Group.
+                          </RadioMessage>
+                        </>
+                      )}
+                      <Radio
+                        defaultChecked={false}
+                        value={currentGroupIndex === index ? editingDeliveryType : currentDeliveryType}
+                      >
+                        <ItemCountWrapper>
+                          <span>Deliver a total of </span>
+                          <Input
+                            data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
+                            type="number"
+                            disabled={
+                              (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+                                currentGroupIndex === index) ||
+                              currentGroupIndex !== index
+                            }
+                            min={0}
+                            value={
+                              currentGroupIndex === index
+                                ? editGroupDetail.deliverItemsCount || ""
+                                : itemGroup.deliverItemsCount || ""
+                            }
+                            onChange={e => handleChange("deliverItemsCount", parseFloat(e.target.value))}
+                            max={editGroupDetail.type === ITEM_GROUP_TYPES.STATIC ? itemGroup.items.length : 100}
+                          />
+                          <span> Item(s)</span>
+                        </ItemCountWrapper>
+                      </Radio>
+                    </RadioGroup>
+                  </GroupField>
+                  <GroupField marginBottom="5px">
+                    {currentGroupIndex === index && (
+                      <>
+                        <SaveButton
+                          loading={fetchingItems}
+                          onClick={e => {
+                            handleSaveGroup();
+                            e.target.blur();
+                          }}
+                        >
+                          Save
+                        </SaveButton>
+                        <SaveButton
+                          loading={fetchingItems}
+                          onClick={e => {
+                            handleCancel();
+                            e.target.blur();
+                          }}
+                        >
+                          Cancel
+                        </SaveButton>
+                      </>
+                    )}
+                  </GroupField>
+                </ContentBody>
+              </Panel>
+            );
+          })}
         </Collapse>
         <GroupField>
           <AddGroupButton data-cy="add-group" onClick={handleAddGroup}>

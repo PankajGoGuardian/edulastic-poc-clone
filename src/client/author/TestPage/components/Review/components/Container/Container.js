@@ -120,6 +120,14 @@ export const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryTyp
   return summary;
 };
 
+const isIncludesRandomQuestions = itemGroups => {
+  return itemGroups.some(
+    itemGroup =>
+      itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT ||
+      itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+  );
+};
+
 export const createGroupSummary = test => {
   const summary = {
     totalPoints: 0,
@@ -129,11 +137,9 @@ export const createGroupSummary = test => {
     noStandards: { totalQuestions: 0, totalPoints: 0 },
     groupSummary: []
   };
-  const hasRandomQuestions = test.itemGroups.some(
-    itemGroup =>
-      itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT ||
-      itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-  );
+
+  const hasRandomQuestions = isIncludesRandomQuestions(test.itemGroups);
+
   for (const itemGroup of test.itemGroups) {
     const isLimitedDeliveryType = itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
     const { noStandards, ...summaryData } = createItemsSummaryData(
@@ -151,6 +157,15 @@ export const createGroupSummary = test => {
       ];
       summaryData.totalPoints = itemGroup.items.length;
       summaryData.totalItems = itemGroup.items.length;
+    }
+    if (
+      itemGroup.type === testConstants.ITEM_GROUP_TYPES.STATIC &&
+      isLimitedDeliveryType &&
+      itemGroup.deliverItemsCount
+    ) {
+      summaryData.totalPoints = itemGroup.deliverItemsCount;
+      summaryData.totalItems = itemGroup.deliverItemsCount;
+      summaryData.totalQuestions = itemGroup.deliverItemsCount;
     }
 
     summary.totalPoints += summaryData.totalPoints;
@@ -533,7 +548,6 @@ class Review extends PureComponent {
             {isShowSummary && (
               <ReviewSummaryWrapper lg={24} xl={6}>
                 <ReviewSummary
-                  questionsCount={questionsCount}
                   grades={grades}
                   subjects={subjects}
                   collections={collections}
@@ -541,7 +555,6 @@ class Review extends PureComponent {
                   isEditable={isEditable}
                   onChangeField={this.handleChangeField}
                   thumbnail={defaultThumbnail || test.thumbnail}
-                  totalPoints={getTotalScore(test)}
                   onChangeGrade={onChangeGrade}
                   onChangeSubjects={onChangeSubjects}
                   onChangeCollection={onChangeCollection}

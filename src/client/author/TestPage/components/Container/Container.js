@@ -435,7 +435,7 @@ class Container extends PureComponent {
       case "groupItems":
         return (
           <Content>
-            <GroupItems handleSaveTest={this.handleSave} />
+            <GroupItems />
           </Content>
         );
       default:

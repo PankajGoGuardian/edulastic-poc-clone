@@ -2,7 +2,7 @@ import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
 import { Select, Button as AntdButton, Input, Dropdown, Pagination, Layout, Spin } from "antd";
 import { StyledTable as AntdTable } from "../../../common/styled";
-import { white, boxShadowDefault, lightGrey, mobileWidthMax } from "@edulastic/colors";
+import { white, boxShadowDefault, lightGrey, mobileWidthMax, extraDesktopWidthMax } from "@edulastic/colors";
 const { Search } = Input;
 const { Content } = Layout;
 
@@ -240,6 +240,9 @@ export const StyledContent = styled(Content)`
   padding-left: 20px;
   padding-right: 20px;
   margin: 80px 20px 20px 20px;
+  @media screen and (min-width: ${extraDesktopWidthMax}) {
+    margin-top: 100px;
+  }
 `;
 
 export const StyledLayout = styled(Layout)`

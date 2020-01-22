@@ -81,7 +81,7 @@ const JoinSchool = ({
   schoolTeachers,
   t
 }) => {
-  const { email, firstName, middleName, lastName } = userInfo;
+  const { email, firstName, middleName, lastName, currentSignUpState } = userInfo;
   const [selected, setSchool] = useState(null);
   const [tempSelected, setTempSchool] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -168,6 +168,7 @@ const JoinSchool = ({
       if (isSignupUsingDaURL || districtId) {
         searchSchoolByDistrictRequestAction({
           districtId,
+          currentSignUpState,
           search: {
             name: [{ type: "cont", value: searchText }],
             city: [{ type: "cont", value: searchText }],
@@ -185,7 +186,7 @@ const JoinSchool = ({
 
   useEffect(() => {
     if (isSignupUsingDaURL || districtId) {
-      searchSchoolByDistrictRequestAction({ districtId });
+      searchSchoolByDistrictRequestAction({ districtId, currentSignUpState });
     } else {
       searchSchool({ ipZipCode, email });
     }

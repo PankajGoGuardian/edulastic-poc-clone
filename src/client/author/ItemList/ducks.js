@@ -114,7 +114,8 @@ export function* approveOrRejectSingleItemSaga({ payload }) {
 
 export function* approveOrRejectMultipleItemSaga({ payload }) {
   const test = yield select(getTestEntitySelector);
-  const { testItems } = test;
+  const { itemGroups } = test;
+  const testItems = itemGroups.flatMap(itemGroup => itemGroup.items);
   if (testItems.length) {
     try {
       const data = {

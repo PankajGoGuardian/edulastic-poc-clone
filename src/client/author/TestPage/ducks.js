@@ -562,15 +562,20 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          testItems: state.entity.testItems.map(i => {
-            if (itemIdsMap[i._id]) {
-              return {
-                ...i,
-                status: payload.status
-              };
+          itemGroups: [
+            {
+              ...state.entity.itemGroups[0],
+              items: state.entity.itemGroups[0].items.map(i => {
+                if (itemIdsMap[i._id]) {
+                  return {
+                    ...i,
+                    status: payload.status
+                  };
+                }
+                return i;
+              })
             }
-            return i;
-          })
+          ]
         }
       };
     case APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS:

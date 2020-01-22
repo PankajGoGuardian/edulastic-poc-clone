@@ -506,7 +506,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       const isPublisherUser = yield select(isPublisherUserSelector);
 
       if (isPublisherUser) {
-        yield call(message.info, "Please add the item manually to a group.");
         const pathname =
           tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";
         yield put(
@@ -517,6 +516,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
             }
           })
         );
+        yield call(message.info, "Please add the item manually to a group.");
       } else {
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }));

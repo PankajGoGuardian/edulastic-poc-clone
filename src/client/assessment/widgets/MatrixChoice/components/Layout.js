@@ -5,7 +5,6 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { CustomQuillComponent } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import FontSizeSelect from "../../../components/FontSizeSelect";
@@ -14,7 +13,8 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
-
+import QuestionTextArea from "../../../components/QuestionTextArea";
+import { WidgetFRInput } from "../../../styled/Widget";
 class Layout extends Component {
   render() {
     const { onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, t, item } = this.props;
@@ -97,23 +97,25 @@ class Layout extends Component {
         <Row gutter={60}>
           <Col md={12}>
             <Label data-cy="stemColumnTitle">{t("component.options.stemColumnTitle")}</Label>
-            <CustomQuillComponent
-              toolbarId="stemColumnTitle"
-              style={inputStyle}
-              onChange={value => changeUiStyle("stemTitle", value)}
-              showResponseBtn={false}
-              value={uiStyle.stemTitle || ""}
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="stemTitle"
+                toolbarSize="SM"
+                value={uiStyle.stemTitle || ""}
+                onChange={value => changeUiStyle("stemTitle", value)}
+              />
+            </WidgetFRInput>
           </Col>
           <Col md={12}>
             <Label data-cy="optionRowTitle">{t("component.options.optionRowTitle")}</Label>
-            <CustomQuillComponent
-              toolbarId="optionRowTitle"
-              style={inputStyle}
-              onChange={value => changeUiStyle("optionRowTitle", value)}
-              showResponseBtn={false}
-              value={uiStyle.optionRowTitle || ""}
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="optionRowTitle"
+                toolbarSize="SM"
+                value={uiStyle.optionRowTitle || ""}
+                onChange={value => changeUiStyle("optionRowTitle", value)}
+              />
+            </WidgetFRInput>
           </Col>
         </Row>
 

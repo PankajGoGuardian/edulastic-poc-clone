@@ -8,6 +8,7 @@ export const Container = styled.div`
   justify-content: ${props => (props.isCollapsed ? "space-between" : "initial")};
   overflow: auto;
   width: 100%;
+  height: 100%;
 `;
 
 export const Divider = styled.div`

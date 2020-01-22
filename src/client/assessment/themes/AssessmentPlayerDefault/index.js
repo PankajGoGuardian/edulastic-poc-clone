@@ -731,7 +731,8 @@ const enhance = compose(
 export default enhance(AssessmentPlayerDefault);
 
 const StyledPaddingDiv = styled(PaddingDiv)`
-  padding: 0px 35px;
+  padding: 10px;
+  height: max-content;
 `;
 
 const ReportIssueContainer = styled.div`

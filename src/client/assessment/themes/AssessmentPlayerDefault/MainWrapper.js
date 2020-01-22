@@ -9,6 +9,7 @@ const MainWrapper = styled.section`
   height: 100%;
   overflow: auto;
   display: flex;
+  flex-direction: column;
 
   & * {
     -webkit-touch-callout: none;

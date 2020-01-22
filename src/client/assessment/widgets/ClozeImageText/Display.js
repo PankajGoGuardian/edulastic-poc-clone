@@ -28,10 +28,13 @@ class Display extends Component {
   constructor(props) {
     super(props);
     const userAnswers = new Array(props.responseContainers.length).fill("");
-    props.userSelections.map((userSelection, index) => {
-      userAnswers[index] = userSelection;
-      return 0;
-    });
+    // eslint-disable-next-line no-unused-expressions
+    props.userSelections &&
+      props.userSelections.length &&
+      props.userSelections.map((userSelection, index) => {
+        userAnswers[index] = userSelection;
+        return 0;
+      });
 
     this.state = {
       userAnswers
@@ -43,7 +46,7 @@ class Display extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       this.setState({
-        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : []
+        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : []
       });
     }
   }

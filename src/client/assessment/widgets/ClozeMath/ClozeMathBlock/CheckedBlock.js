@@ -45,11 +45,14 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
     checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
-  const showValue = isMath
-    ? userAnswer && userAnswer.value.search("=") === -1
-      ? `${userAnswer.value}\\ ${unit}`
-      : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
-    : userAnswer && userAnswer.value;
+  const showValue =
+    userAnswer && userAnswer.value
+      ? isMath
+        ? userAnswer.value.search("=") === -1
+          ? `${userAnswer.value}\\ ${unit}`
+          : userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
+        : userAnswer.value
+      : "";
 
   const { width: textWidth } = measureText(showValue);
   const avilableWidth = width - (showIndex ? 58 : 26);

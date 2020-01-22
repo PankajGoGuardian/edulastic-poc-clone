@@ -58,6 +58,7 @@ const PlayerContent = ({
         Object.assign(allResponses, testletResponse[key]);
       }
     }
+
     return allResponses[testletId];
   };
 
@@ -98,7 +99,7 @@ const PlayerContent = ({
       return;
     }
     const currentItem = findCurrentItemFromIdMap();
-    console.log(currentItem);
+
     if (!currentItem) {
       return;
     }
@@ -107,6 +108,7 @@ const PlayerContent = ({
       return;
     }
     const { type: cQuestionType } = cQuestion;
+
     let data = {};
     if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
       const { responseIds } = cQuestion;
@@ -197,6 +199,34 @@ const PlayerContent = ({
         } else {
           data.push(false);
         }
+      });
+    } else if (cQuestionType === questionType.CLOZE_DROP_DOWN) {
+      const { responseIds: eduItemResponses = [], options } = cQuestion;
+      data = eduItemResponses.map(eduRes => {
+        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+        const testletValue = findTestletValue(responseId);
+        const opIndex = ALPHABET.indexOf(testletValue);
+        const optionValue = testletValue ? options[eduRes.id][opIndex] : "";
+        return { ...eduRes, value: optionValue };
+      });
+    } else if (cQuestionType === questionType.TOKEN_HIGHLIGHT) {
+      const { templeWithTokens } = cQuestion;
+      data = [];
+      currentItem.responses.map(({ responseId }) => {
+        const testletValue = findTestletValue(responseId);
+        if (isArray(testletValue)) {
+          const selections = testletValue.map(value => ALPHABET.indexOf(value));
+          data = (templeWithTokens || []).map((el, i) => ({
+            value: el.value,
+            index: i,
+            selected: selections && selections.length ? selections.includes(i) : false
+          }));
+        }
+      });
+    } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT) {
+      currentItem.responses.map(({ responseId }) => {
+        const testletValue = findTestletValue(responseId);
+        data = testletValue;
       });
     }
     setUserAnswer(currentItem.uuid, data);

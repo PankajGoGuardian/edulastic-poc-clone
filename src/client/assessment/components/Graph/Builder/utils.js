@@ -415,45 +415,47 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 }
 
 export function flat2nestedConfig(config) {
-  return Object.values(
-    config.reduce((acc, element) => {
-      const { id, type, subElement = false, text = null, dashed = false, customOptions = {} } = element;
+  return config && config.length
+    ? Object.values(
+        config.reduce((acc, element) => {
+          const { id, type, subElement = false, text = null, dashed = false, customOptions = {} } = element;
 
-      if (type === CONSTANT.TOOLS.EQUATION) {
-        acc[id] = element;
-        return acc;
-      }
-
-      if (!acc[id] && !subElement) {
-        acc[id] = {
-          id,
-          type,
-          _type: element._type,
-          priorityColor: element.priorityColor || null,
-          label: element.label,
-          labelIsVisible: element.labelIsVisible,
-          baseColor: element.baseColor,
-          text,
-          dashed
-        };
-        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP || type === CONSTANT.TOOLS.AREA) {
-          acc[id].x = element.x;
-          acc[id].y = element.y;
-          acc[id].priorityColor = element.priorityColor || null;
-          if (type === CONSTANT.TOOLS.POINT) {
-            acc[id].pointIsVisible = element.pointIsVisible;
-            acc[id].labelIsVisible = element.labelIsVisible;
-            acc[id].baseColor = element.baseColor;
+          if (type === CONSTANT.TOOLS.EQUATION) {
+            acc[id] = element;
+            return acc;
           }
-        } else {
-          acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
-        }
-        acc[id].customOptions = customOptions;
-      }
 
-      return acc;
-    }, {})
-  );
+          if (!acc[id] && !subElement) {
+            acc[id] = {
+              id,
+              type,
+              _type: element._type,
+              priorityColor: element.priorityColor || null,
+              label: element.label,
+              labelIsVisible: element.labelIsVisible,
+              baseColor: element.baseColor,
+              text,
+              dashed
+            };
+            if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP || type === CONSTANT.TOOLS.AREA) {
+              acc[id].x = element.x;
+              acc[id].y = element.y;
+              acc[id].priorityColor = element.priorityColor || null;
+              if (type === CONSTANT.TOOLS.POINT) {
+                acc[id].pointIsVisible = element.pointIsVisible;
+                acc[id].labelIsVisible = element.labelIsVisible;
+                acc[id].baseColor = element.baseColor;
+              }
+            } else {
+              acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
+            }
+            acc[id].customOptions = customOptions;
+          }
+
+          return acc;
+        }, {})
+      )
+    : [];
 }
 
 export default getLineTypeByProp;

@@ -1,7 +1,14 @@
 import styled from "styled-components";
-import { Button, Select, Checkbox, Pagination, Icon } from "antd";
+import { Button, Select, Checkbox, Pagination, Icon, Menu } from "antd";
 import { StyledTable } from "../../../../common/styled";
-import { grey } from "@edulastic/colors";
+import { mainTextColor, grey } from "@edulastic/colors";
+
+export const StyledDropdownBtn = styled(Button)`
+  &:hover,
+  &:focus {
+    color: ${mainTextColor};
+  }
+`;
 
 export const StyledTableContainer = styled.div`
   display: flex;

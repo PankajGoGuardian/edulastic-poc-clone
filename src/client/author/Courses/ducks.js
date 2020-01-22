@@ -320,6 +320,7 @@ function* createCourseSaga({ payload }) {
       yield put(createCourseSuccessAction(course));
     } else {
       message.error(errorMessage);
+      yield put(createCourseErrorAction({ error: errorMessage }));
     }
   } catch (err) {
     const errorMessage = "Create Course is failing";

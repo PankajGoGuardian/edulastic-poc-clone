@@ -11,8 +11,8 @@ import { tabletWidth, desktopWidth, largeDesktopWidth, smallDesktopWidth, themeC
 import { changeClassAction } from "../../Login/ducks";
 
 const ClassCard = ({ t, classItem, history, changeClass, key }) => {
-  const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
-  const { name: instructorName } = owners.find(owner => owner.id === parent.id);
+  const { name, owners = [], parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
+  const { name: instructorName } = owners.find(owner => owner.id === parent.id) || owners[0] || "";
 
   const allgrades = grades && grades.join(", ").replace(/O/i, " Other ");
   const allStandardSets = standardSets && standardSets.map(std => std.name).join(",");

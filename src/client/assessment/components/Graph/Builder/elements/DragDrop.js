@@ -140,7 +140,7 @@ function removePointForDrag(board) {
 const getClampedCoords = (value, bounds) => clamp(value, bounds[0], bounds[1]);
 
 function getConfig(dragDrop) {
-  const bounds = dragDrop.board.attr.boundingbox;
+  const bounds = dragDrop.board.getBoundingBox();
   const p = dragDrop.parents[0];
   const x = dragDrop.coords[p].usrCoords[1];
   const y = dragDrop.coords[p].usrCoords[2];

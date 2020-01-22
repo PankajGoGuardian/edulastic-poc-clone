@@ -253,7 +253,7 @@ class AssessmentPlayerDefault extends React.Component {
     if (next.currentItem !== prevState.cloneCurrentItem) {
       const qId = get(next.items, `[${next.currentItem}].data.questions[0].id`, null);
       const currentToolMode = [];
-      if (next.scratchPad) {
+      if (next.scratchPad && !prevState.currentToolMode) {
         currentToolMode.push(5);
       }
       if (next.crossAction && next.crossAction[qId]) {

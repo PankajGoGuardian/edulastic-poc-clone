@@ -32,10 +32,10 @@ const ProceedConfirmation = ({
   };
 
   const Footer = [
-    <Button ghost disabled={saving} onClick={onCancel}>
+    <Button ghost disabled={saving} data-cy="noDuplicate" onClick={onCancel}>
       CANCEL
     </Button>,
-    <Button onClick={onProceed} loading={saving}>
+    <Button data-cy="duplicate" onClick={onProceed} loading={saving}>
       PROCEED
     </Button>
   ];

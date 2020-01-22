@@ -112,7 +112,7 @@ class AuthorAssignmentPage {
     cy.get('[data-cy="edit-Assignment"]')
       .click({ force: true })
       .then(() => {
-        //pop up that comes up when we try to edit a assigned test
+        // pop up that comes up when we try to edit a assigned test
         cy.contains("This test is already assigned to students.")
           .parent()
           .contains("span", "PROCEED")
@@ -146,9 +146,18 @@ class AuthorAssignmentPage {
         expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
       })
     );
+
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });
 
   clickOnApply = () => cy.get('[data-cy="apply"]').click({ force: true });
+
+  clickOnAssign = () => {
+    cy.server();
+    cy.route("POST", "**/api/group/search").as("classes");
+    this.clickOnActions();
+    cy.get('[data-cy="assign"]').click();
+    cy.wait("@classes");
+  };
 
   setReleaseGradeOption = releaseGradeType => {
     cy.server();

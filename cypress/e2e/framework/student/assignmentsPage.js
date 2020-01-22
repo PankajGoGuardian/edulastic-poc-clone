@@ -176,6 +176,8 @@ class AssignmentsPage {
   enterPassword = pass => cy.get('[placeholder="Enter assignment password"]').type(pass);
 
   clickOnStartAfterPassword = () => cy.get('[data-cy="start"]').click();
+
+  getStatusByPosition = pos => cy.get('[data-cy="status"]').eq(pos);
 }
 
 export default AssignmentsPage;

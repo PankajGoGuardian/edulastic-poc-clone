@@ -35,10 +35,10 @@ const MultipleAssignConfirmation = ({
   };
 
   const Footer = [
-    <Button ghost onClick={onProceed} disabled={saving}>
+    <Button ghost data-cy="duplicate" onClick={onProceed} disabled={saving}>
       Proceed with duplicate
     </Button>,
-    <Button disabled={saving} onClick={onRemoveDuplicates}>
+    <Button disabled={saving} data-cy="noDuplicate" onClick={onRemoveDuplicates}>
       Remove duplicates
     </Button>
   ];

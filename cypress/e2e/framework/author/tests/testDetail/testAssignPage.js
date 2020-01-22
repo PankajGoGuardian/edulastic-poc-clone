@@ -1,6 +1,11 @@
 import CypressHelper from "../../../util/cypressHelpers";
+import TeacherSideBar from "../../SideBarPage";
 
 export default class TestAssignPage {
+  constructor() {
+    this.sidebar = new TeacherSideBar();
+  }
+
   clickOnDropDownOptionByText = option => {
     cy.wait(500);
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
@@ -12,6 +17,13 @@ export default class TestAssignPage {
           })
       ).click({ force: true });
     });
+  };
+
+  visitAssignPageById = id => {
+    cy.server();
+    cy.route("POST", "**/api/group/search").as("classes");
+    cy.visit(`/author/assignments/${id}`);
+    cy.wait("@classes");
   };
 
   selectClass = className => {
@@ -67,18 +79,26 @@ export default class TestAssignPage {
     CypressHelper.setDateInCalender(end);
   };
 
-  clickOnAssign = () => {
+  clickOnAssign = (duplicate = {}) => {
     cy.wait(1000);
     cy.server();
     cy.route("POST", "**/assignments").as("assigned");
     cy.contains("ASSIGN").click();
-    cy.wait("@assigned").then(xhr => {
-      assert(
-        xhr.status === 200,
-        `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
-      );
-    });
-    cy.contains("Success!");
+    if (Object.entries(duplicate).length > 0) {
+      cy.wait("@assigned");
+      if (duplicate.duplicate === true) this.proceedWithDuplicate();
+      else this.proceedWithNoDuplicate();
+    }
+    if (!duplicate.willNotAssign) {
+      cy.wait("@assigned").then(xhr => {
+        assert(
+          xhr.status === 200,
+          `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
+        );
+      });
+      if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) return cy.contains("Success!");
+      else return cy.wait(1);
+    } else return cy.wait(1);
   };
 
   // OVER RIDE TEST SETTING
@@ -174,4 +194,8 @@ export default class TestAssignPage {
   clickOnEvalByType = type => {
     cy.get(`[ data-cy=${type}]`).click({ force: true });
   };
+
+  proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click();
+
+  proceedWithNoDuplicate = () => cy.get('[data-cy="noDuplicate"]').click();
 }

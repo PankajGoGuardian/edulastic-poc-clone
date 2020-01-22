@@ -130,7 +130,7 @@ export default class MobileAssignment extends React.Component {
           ))}
         </ExpandedRow>
         <Dropdown
-          overlay={ActionMenu(onOpenReleaseScoreSettings, assignment[0])}
+          overlay={ActionMenu({ onOpenReleaseScoreSettings, currentAssignment: assignment[0] })}
           placement="topCenter"
           trigger={["click"]}
         >

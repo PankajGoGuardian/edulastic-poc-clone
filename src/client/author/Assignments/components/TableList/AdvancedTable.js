@@ -16,6 +16,7 @@ import ActionMenu from "../ActionMenu/ActionMenu";
 
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
+import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
 
 class AdvancedTable extends Component {
   state = {
@@ -126,24 +127,36 @@ class AdvancedTable extends Component {
         title: "",
         dataIndex: "action",
         width: "10%",
-        render: (_, row) => (
-          <ActionDiv data-cy="testActions">
-            <Dropdown
-              data-cy="actionDropDown"
-              overlay={ActionMenu(
-                this.props.onOpenReleaseScoreSettings,
-                row,
-                this.props.history,
-                this.props.showPreviewModal,
-                this.props.toggleEditModal
-              )}
-              placement="bottomRight"
-              trigger={["click"]}
-            >
-              <BtnAction data-cy="testActions">ACTIONS</BtnAction>
-            </Dropdown>
-          </ActionDiv>
-        ),
+        render: (_, row) => {
+          const {
+            onOpenReleaseScoreSettings,
+            history,
+            showPreviewModal,
+            toggleEditModal,
+            userId = "",
+            userRole = ""
+          } = this.props;
+          return (
+            <ActionDiv data-cy="testActions">
+              <Dropdown
+                data-cy="actionDropDown"
+                overlay={ActionMenu({
+                  onOpenReleaseScoreSettings,
+                  row,
+                  history,
+                  showPreviewModal,
+                  toggleEditModal,
+                  userId,
+                  userRole
+                })}
+                placement="bottomRight"
+                trigger={["click"]}
+              >
+                <BtnAction data-cy="testActions">ACTIONS</BtnAction>
+              </Dropdown>
+            </ActionDiv>
+          );
+        },
         onCell: () => ({
           onMouseEnter: this.disableRowClick,
           onMouseLeave: this.enableRowClick
@@ -278,7 +291,9 @@ const enhance = compose(
       filtering: get(state, "author_assignments.filtering"),
       totalData: get(state, "author_assignments.total", 0),
       loading: get(state, "author_assignments.loading"),
-      folderData: getFolderSelector(state)
+      folderData: getFolderSelector(state),
+      userId: getUserIdSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction

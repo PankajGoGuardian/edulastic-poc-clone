@@ -96,13 +96,13 @@ class AssignmentAdvanced extends Component {
       </Breadcrumbs>
       <ActionDiv>
         <Dropdown
-          overlay={ActionMenu(
-            this.onOpenReleaseScoreSettings,
-            assingment,
+          overlay={ActionMenu({
+            onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
+            row: assingment,
             history,
-            this.toggleTestPreviewModal,
-            this.toggleEditModal
-          )}
+            showPreviewModal: this.toggleTestPreviewModal,
+            toggleEditModal: this.toggleEditModal
+          })}
           placement="bottomCenter"
           trigger={["click"]}
         >

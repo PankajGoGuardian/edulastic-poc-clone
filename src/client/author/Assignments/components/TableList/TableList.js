@@ -37,6 +37,7 @@ import {
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import { getUserIdSelector } from "../../../src/selectors/user";
 
 const convertTableData = (data, assignments, index) => ({
   name: data.title,
@@ -90,7 +91,8 @@ const TableList = ({
   showPreviewModal,
   showFilter,
   windowWidth,
-  toggleDeleteModal
+  toggleDeleteModal,
+  userId = ""
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -315,15 +317,16 @@ const TableList = ({
       render: (_, row) => (
         <ActionDiv>
           <Dropdown
-            overlay={ActionMenu(
+            overlay={ActionMenu({
               onOpenReleaseScoreSettings,
-              row.currentAssignment,
+              currentAssignment: row?.currentAssignment || {},
               history,
               showPreviewModal,
               toggleEditModal,
               toggleDeleteModal,
-              row
-            )}
+              row,
+              userId
+            })}
             placement="bottomRight"
             trigger={["click"]}
             onClick={e => e.stopPropagation()}
@@ -427,7 +430,8 @@ const enhance = compose(
   connect(
     state => ({
       loading: get(state, "author_assignments.loading"),
-      folderData: getFolderSelector(state)
+      folderData: getFolderSelector(state),
+      userId: getUserIdSelector(state)
     }),
     {}
   )

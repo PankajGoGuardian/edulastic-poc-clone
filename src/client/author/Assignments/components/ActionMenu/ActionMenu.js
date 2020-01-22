@@ -2,9 +2,10 @@ import React from "react";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
+import { get } from "lodash";
 
 import { IconPrint, IconTrashAlt } from "@edulastic/icons";
-
+import { roleuser } from "@edulastic/constants";
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
 import viewIcon from "../../assets/view.svg";
@@ -15,23 +16,37 @@ import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, A
 
 const { duplicateAssignment } = assignmentApi;
 
-const ActionMenu = (
-  onOpenReleaseScoreSettings,
-  currentAssignment,
-  history,
-  showPreviewModal,
-  toggleEditPopup,
-  toggleDeleteModal,
-  row = {}
-) => {
-  const currentTestId = currentAssignment.testId;
-  const currentAssignmentId = currentAssignment._id;
+const ActionMenu = ({
+  onOpenReleaseScoreSettings = () => {},
+  currentAssignment = {},
+  history = {},
+  showPreviewModal = false,
+  toggleEditModal = () => {},
+  toggleDeleteModal = () => {},
+  row = {},
+  userId = "",
+  userRole = ""
+}) => {
+  const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
+
+  const assignmentDetails = getAssignmentDetails();
+
+  const currentTestId = assignmentDetails.testId;
+  const currentAssignmentId = assignmentDetails._id;
   const createDuplicateAssignment = () => {
-    duplicateAssignment({ _id: currentTestId, title: currentAssignment.title }).then(testItem => {
+    duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title }).then(testItem => {
       const duplicateTestId = testItem._id;
       history.push(`/author/tests/${duplicateTestId}`);
     });
   };
+
+  // owner of the assignment
+  const assignmentOwnerId = get(assignmentDetails, "assignedBy._id", "");
+
+  // current user and assignment owner is same: true
+  const isAssignmentOwner = (userId && userId === assignmentOwnerId) || false;
+
+  const isDistrictAdmin = roleuser.DISTRICT_ADMIN === userRole;
 
   return (
     <Container>
@@ -85,28 +100,26 @@ const ActionMenu = (
             Release Scores
           </StyledLink>
         </Menu.Item>
-        <Menu.Item
-          data-cy="edit-Assignment"
-          key="edit-Assignment"
-          onClick={() => toggleEditPopup(true, currentAssignment.testId)}
-        >
+        <Menu.Item data-cy="edit-Assignment" key="edit-Assignment" onClick={() => toggleEditModal(true, currentTestId)}>
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={classIcon} />
             <SpaceElement />
             Edit Test
           </StyledLink>
         </Menu.Item>
-        <Menu.Item
-          data-cy="delete-Assignment"
-          key="delete-Assignment"
-          onClick={() => toggleDeleteModal(currentAssignment.testId)}
-        >
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <IconTrashAlt />
-            <SpaceElement />
-            Unassign
-          </StyledLink>
-        </Menu.Item>
+        {isAssignmentOwner || isDistrictAdmin ? (
+          <Menu.Item
+            data-cy="delete-Assignment"
+            key="delete-Assignment"
+            onClick={() => toggleDeleteModal(currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <IconTrashAlt />
+              <SpaceElement />
+              Unassign
+            </StyledLink>
+          </Menu.Item>
+        ) : null}
       </StyledMenu>
     </Container>
   );

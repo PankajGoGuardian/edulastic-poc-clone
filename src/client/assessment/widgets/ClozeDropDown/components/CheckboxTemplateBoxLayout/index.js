@@ -56,14 +56,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const indexStyle = lessMinWidth ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
   const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};
 
-  const content = (
+  const getContent = inPopover => (
     <span
       className={`
     response-btn 
     ${userAttempted ? "check-answer" : ""} 
     ${status} 
     ${showAnswer ? "show-answer" : ""}`}
-      style={_btnStyle}
+      style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       onClick={handleClick}
     >
       {(showAnswer || isPrint) && !lessMinWidth && (
@@ -71,9 +71,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           {indexStr}
         </span>
       )}
-      <span className="text container" style={{ padding: lessMinWidth ? "8px 2px" : null }}>
+      <span
+        className="text container"
+        style={{ padding: lessMinWidth ? "8px 2px" : null, whiteSpace: inPopover && "normal" }}
+      >
         <MathSpan
-          className="clipText"
+          className={!inPopover && "clipText"}
           style={{ ...textStyle, fontWeight: "normal" }}
           dangerouslySetInnerHTML={{ __html: userSelection?.value }}
         />
@@ -87,8 +90,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   const { scrollWidth } = measureText(userSelection?.value || "", _btnStyle);
   const showPopover = scrollWidth > _btnStyle.width && userAttempted;
+  const answerContent = getContent();
+  const popoverContent = getContent(true);
 
-  return showPopover ? <Popover content={content}>{content}</Popover> : content;
+  return showPopover ? <Popover content={popoverContent}>{answerContent}</Popover> : answerContent;
 };
 
 CheckboxTemplateBoxLayout.propTypes = {

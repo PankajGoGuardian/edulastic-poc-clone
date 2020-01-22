@@ -57,12 +57,15 @@ const Option = Select.Option;
 class InviteMultipleStudentModal extends Component {
   constructor(props) {
     super(props);
+    const {
+      orgData: { searchAndAddStudents = false }
+    } = props;
     this.state = {
       placeHolderVisible: true,
       curSel: "google",
       allStudents: [],
       studentsToEnroll: [],
-      searchViewVisible: true
+      searchViewVisible: searchAndAddStudents
     };
   }
 
@@ -323,16 +326,18 @@ class InviteMultipleStudentModal extends Component {
         closable={false}
         centered
       >
-        <Row>
-          <Col span={13}>
-            <SearchTabButton
-              data-cy="searchStudent"
-              searchViewVisible={searchViewVisible}
-              onClick={() => this.setState({ ...this.setState, searchViewVisible: true })}
-            >
-              {t("users.student.invitestudents.tab1")}
-            </SearchTabButton>
-          </Col>
+        <Row type={"flex"} justify={"space-between"}>
+          {searchAndAddStudents && (
+            <Col span={13}>
+              <SearchTabButton
+                data-cy="searchStudent"
+                searchViewVisible={searchViewVisible}
+                onClick={() => this.setState({ ...this.setState, searchViewVisible: true })}
+              >
+                {t("users.student.invitestudents.tab1")}
+              </SearchTabButton>
+            </Col>
+          )}
           <Col span={9}>
             <AddMultipleStudentsTabButton
               data-cy="addMultipleStudent"

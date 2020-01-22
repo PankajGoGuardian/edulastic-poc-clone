@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Icon, Select, message, Button, Menu } from "antd";
+import { Icon, Select, message, Menu } from "antd";
 const Option = Select.Option;
 
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
@@ -29,6 +29,7 @@ import {
   StyledSortIcon,
   UserNameContainer,
   UserName,
+  StyledDropdownBtn,
   CreateCourseBtn
 } from "./styled";
 
@@ -610,7 +611,6 @@ class CoursesTable extends React.Component {
         <Menu.Item key="upload csv">{t("course.uploadcourse")}</Menu.Item>
         <Menu.Item key="edit course">{t("course.editcourse")}</Menu.Item>
         <Menu.Item key="deactivate course">{t("course.deactivatecourse")}</Menu.Item>
-        <Menu.Item key="bulk edit courses">{t("course.bulkeditcourse")}</Menu.Item>
       </Menu>
     );
 
@@ -702,9 +702,9 @@ class CoursesTable extends React.Component {
               {t("common.showcurrent")}
             </StyledActiveCheckbox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-              <Button>
+              <StyledDropdownBtn>
                 {t("common.actions")} <Icon type="down" />
-              </Button>
+              </StyledDropdownBtn>
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>

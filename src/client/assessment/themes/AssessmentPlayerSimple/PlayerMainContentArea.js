@@ -136,6 +136,7 @@ const MainContent = styled.div`
   border-radius: 10px;
   display: flex;
   overflow: hidden;
+  width: 100%;
   & * {
     -webkit-touch-callout: none;
     user-select: none;

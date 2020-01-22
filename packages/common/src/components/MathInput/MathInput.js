@@ -211,7 +211,7 @@ class MathInput extends React.PureComponent {
       onInnerFieldClick
     } = this.props;
 
-    const { mathFieldFocus: showKeyboard } = this.state;
+    const { mathFieldFocus: showKeyboard, nativeKeyboard } = this.state;
     let mathKeyboardVisible = true;
     if (!window.isMobileDevice && showKeyboard) {
       mathKeyboardVisible = true;

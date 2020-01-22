@@ -225,6 +225,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     });
 
     it(` > verify student centric view after attempt`, () => {
+      studentTestPage.clickOnExitTest(); // temp fix: issue-  if above test fails while attempting, navigation by direct url is blocked here
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
@@ -327,6 +328,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     const { stuName, email, attempt } = redirectTestData.redirect2;
 
     before("login as teacher", () => {
+      studentTestPage.clickOnExitTest(); // temp fix: issue-  if above test fails while attempting, navigation by direct url is blocked here
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
@@ -379,6 +381,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     });
 
     it(` > verify student centric view after attempt`, () => {
+      studentTestPage.clickOnExitTest();
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
@@ -571,6 +574,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     });
 
     it(` > verify student centric view after attempt`, () => {
+      studentTestPage.clickOnExitTest(); // temp fix: issue-  if above test fails while attempting, navigation by direct url is blocked here
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);

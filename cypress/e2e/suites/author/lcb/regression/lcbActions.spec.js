@@ -307,6 +307,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       cy.login("student", removeStudent[2].email, password);
       test.assignmentPage.getAssignmentButton().should("not.be.visible");
     });
+
     it(" > removing 'Absent' student verify", () => {
       cy.login("teacher", teacher, password);
       teacherSidebar.clickOnAssignment();
@@ -322,6 +323,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       lcb
         .getStudentCardByStudentName(absentStudent[1].stuName)
         .should("not.be.visible", "after removing the student, student card should not be present");
+
+      // assert total student count
+      lcb
+        .getSubmitSummary()
+        .should(
+          "contain.text",
+          `${--stuCount} Submitted`,
+          "after remove 'Absent' student total student count should change"
+        );
+
       //verify student login and assignment should not be visible
       cy.login("student", absentStudent[1].email, password);
       test.assignmentPage.getAssignmentButton().should("not.be.visible");

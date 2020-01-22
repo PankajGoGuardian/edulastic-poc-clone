@@ -1,10 +1,10 @@
 import React from "react";
 
+import { FlexContainer } from "@edulastic/common";
+import { ThemeProvider } from "styled-components";
 import Wrapper from "./Wrapper";
 import Title from "./Title";
 import Text from "./Text";
-import { FlexContainer } from "@edulastic/common";
-import { ThemeProvider } from "styled-components";
 
 const Hints = ({ questions = [] }) => {
   /**
@@ -41,7 +41,7 @@ const Hints = ({ questions = [] }) => {
   if (!validHints) return <Wrapper>No Hints</Wrapper>;
   return (
     <ThemeProvider theme={{ isV1Migrated: questions[0]?.isV1Migrated }}>
-      <Wrapper className="fr-view">
+      <Wrapper margin="10px" className="fr-view">
         <Title>Hints</Title>
         {questions.map(question => {
           return question.hints ? (

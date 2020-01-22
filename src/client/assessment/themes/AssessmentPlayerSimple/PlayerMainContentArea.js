@@ -137,6 +137,7 @@ const MainContent = styled.div`
   display: flex;
   overflow: hidden;
   width: 100%;
+  flex-direction: column;
   & * {
     -webkit-touch-callout: none;
     user-select: none;

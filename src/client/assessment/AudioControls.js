@@ -187,6 +187,8 @@ export default connect(
 )(AudioControls);
 
 const AudioButtonsWrapper = styled.div`
-  padding: 20px 20px 0px;
-  height: 60px;
+  position: absolute;
+  top: 0px;
+  height: 40px;
+  padding: 0px 20px;
 `;

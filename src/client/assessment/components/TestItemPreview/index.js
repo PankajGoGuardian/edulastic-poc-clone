@@ -9,6 +9,7 @@ import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
 import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -92,6 +93,14 @@ class TestItemPreview extends Component {
       previewTab,
       LCBPreviewModal,
       showCollapseBtn = false,
+      activeMode,
+      scratchPadMode,
+      lineColor,
+      deleteMode,
+      lineWidth,
+      fillColor,
+      saveHistory,
+      history,
       ...restProps
     } = this.props;
     const { collapseDirection } = this.state;
@@ -142,6 +151,22 @@ class TestItemPreview extends Component {
               </>
             );
           })}
+          {scratchPadMode && (
+            <SvgDraw
+              activeMode={activeMode}
+              scratchPadMode={scratchPadMode}
+              lineColor={lineColor}
+              deleteMode={deleteMode}
+              lineWidth={lineWidth}
+              fillColor={fillColor}
+              saveHistory={saveHistory}
+              history={history}
+              height="100%`"
+              top="0"
+              left="0"
+              position="absolute"
+            />
+          )}
         </Container>
       </ThemeProvider>
     );

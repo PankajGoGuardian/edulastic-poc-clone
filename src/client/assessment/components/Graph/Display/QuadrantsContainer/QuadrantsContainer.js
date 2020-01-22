@@ -632,7 +632,8 @@ class GraphContainer extends PureComponent {
     const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
-    const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
+
+    const equations = elements && elements.length ? elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION) : [];
 
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>

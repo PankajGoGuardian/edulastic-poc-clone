@@ -146,7 +146,7 @@ class Display extends Component {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
       }
       return {
-        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
+        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
         possibleResponses
       };
     }

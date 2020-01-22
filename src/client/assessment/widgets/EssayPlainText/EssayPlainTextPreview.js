@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { get } from "lodash";
+import { get, isString } from "lodash";
 
-import {
-  Paper,
-  Stimulus,
-  FlexContainer,
-  InstructorStimulus,
-  QuestionNumberLabel,
-  AnswerContext
-} from "@edulastic/common";
+import { Stimulus, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
@@ -36,14 +30,11 @@ const EssayPlainTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  location,
   testItem,
-  qIndex,
   disableResponse,
   isReviewTab
 }) => {
-  const answerContext = useContext(AnswerContext);
-  const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
+  const [text, setText] = useState(isString(userAnswer) ? userAnswer : "");
 
   const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
 
@@ -56,12 +47,12 @@ const EssayPlainTextPreview = ({
   let node;
 
   useEffect(() => {
-    if (Array.isArray(userAnswer)) {
+    if (isString(userAnswer)) {
+      setText(userAnswer);
+    } else {
       setText("");
       saveAnswer("");
       setWordCount(0);
-    } else {
-      setText(userAnswer);
     }
   }, [userAnswer]);
 
@@ -135,9 +126,7 @@ const EssayPlainTextPreview = ({
       ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
       : {};
 
-  const minHeight = get(item, "uiStyle.minHeight", "inherit");
   const numberOfRows = get(item, "uiStyle.numberOfRows", 10);
-  const maxHeight = get(item, "uiStyle.max_height", "inherit");
   const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
 

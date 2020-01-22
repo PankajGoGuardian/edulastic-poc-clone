@@ -762,7 +762,6 @@ SchoolAdminTable.propTypes = {
   setPageNo: PropTypes.func.isRequired,
   setShowActiveUsers: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
-  changeFilterColumn: PropTypes.func.isRequired,
   changeFilterType: PropTypes.func.isRequired,
   changeFilterValue: PropTypes.func.isRequired,
   addFilter: PropTypes.func.isRequired,

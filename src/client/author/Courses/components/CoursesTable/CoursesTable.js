@@ -63,6 +63,7 @@ import { themeColor } from "@edulastic/colors";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { receiveAdminDataAction } from "../../../SchoolAdmin/ducks";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -96,7 +97,7 @@ class CoursesTable extends React.Component {
   }
 
   componentDidMount() {
-    const { userOrgId, loadCourseListData } = this.props;
+    const { userOrgId, loadCourseListData, loadAdminData, role } = this.props;
     loadCourseListData({
       districtId: userOrgId,
       page: 1,
@@ -106,6 +107,15 @@ class CoursesTable extends React.Component {
       search: {},
       active: 1
     });
+
+    // get all sa admin from current school
+
+    role === roleuser.SCHOOL_ADMIN &&
+      loadAdminData({
+        districtId: userOrgId,
+        role: "school-admin",
+        limit: 25
+      });
 
     this.setState({
       searchData: {
@@ -123,7 +133,8 @@ class CoursesTable extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       dataSource: nextProps.courseList,
-      selectedRowKeys: nextProps.selectedRowKeys
+      selectedRowKeys: nextProps.selectedRowKeys,
+      schoolAdmins: nextProps.schoolAdmins
     };
   }
 
@@ -474,8 +485,9 @@ class CoursesTable extends React.Component {
       refineButtonActive
     } = this.state;
 
-    const { totalCourseCount, userOrgId, role, t } = this.props;
-
+    const { totalCourseCount, userOrgId, role, t, schoolAdmins = {} } = this.props;
+    const isSchoolAdmin = role === roleuser.SCHOOL_ADMIN;
+    const schoolAdminIds = isSchoolAdmin ? Object.keys(schoolAdmins) : [];
     const columnsInfo = [
       {
         title: (
@@ -566,7 +578,7 @@ class CoursesTable extends React.Component {
         render: (text, record) => {
           return (
             <div style={{ whiteSpace: "nowrap" }}>
-              {role === roleuser.DISTRICT_ADMIN && !!record.active && (
+              {!(isSchoolAdmin && schoolAdminIds.indexOf(record.createdBy._id) === -1) && !!record.active && (
                 <>
                   <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
                     <IconPencilEdit color={themeColor} />
@@ -601,7 +613,10 @@ class CoursesTable extends React.Component {
 
     const rowSelection = {
       selectedRowKeys,
-      onChange: this.onSelectChange
+      onChange: this.onSelectChange,
+      getCheckboxProps: data => ({
+        disabled: isSchoolAdmin && schoolAdminIds.indexOf(data.createdBy._id) === -1 && !!data.active
+      })
     };
 
     const selectedCourse = dataSource.filter(item => item.key == editCourseKey);
@@ -778,7 +793,8 @@ const enhance = compose(
       courseList: getCourseListSelector(state),
       selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
       totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0),
-      role: getUserRole(state)
+      role: getUserRole(state),
+      schoolAdmins: get(state, ["schoolAdminReducer", "data", "result"], [])
     }),
     {
       createCourse: createCourseAction,
@@ -787,6 +803,7 @@ const enhance = compose(
       loadCourseListData: receiveCourseListAction,
       setSelectedRowKeys: setSelectedRowKeysAction,
       setShowActiveStatus: setShowActiveStatusAction,
+      loadAdminData: receiveAdminDataAction,
       resetUploadModal: resetUploadModalStatusAction
     }
   )
@@ -798,10 +815,10 @@ CoursesTable.propTypes = {
   userOrgId: PropTypes.string.isRequired,
   courseList: PropTypes.array.isRequired,
   loadCourseListData: PropTypes.func.isRequired,
+  loadAdminData: PropTypes.func.isRequired,
   createCourse: PropTypes.func.isRequired,
   updateCourse: PropTypes.func.isRequired,
   deactivateCourse: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired,
   setSelectedRowKeys: PropTypes.func.isRequired,
   setShowActiveStatus: PropTypes.func.isRequired,
   resetUploadModal: PropTypes.func.isRequired

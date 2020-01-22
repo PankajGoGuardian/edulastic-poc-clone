@@ -585,6 +585,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_GROUP_DATA:
       return {
         ...state,
+        updated: true,
         entity: {
           ...state.entity,
           itemGroups: state.entity.itemGroups.map((group, index) => {
@@ -729,7 +730,7 @@ function* createTest(data) {
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
   let entity = yield call(testsApi.create, dataToSend);
-  entity = { ...entity, ...data };
+  entity = { ...entity, ...data, itemGroups: entity.itemGroups };
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {

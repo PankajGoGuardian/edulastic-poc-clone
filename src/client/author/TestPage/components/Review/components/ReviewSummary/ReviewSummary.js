@@ -33,8 +33,6 @@ import { getTestEntitySelector, getDisableAnswerOnPaperSelector as hasRandomQues
 import Tags from "../../../../../src/components/common/Tags";
 
 const ReviewSummary = ({
-  totalPoints,
-  questionsCount,
   isEditable = false,
   onChangeGrade,
   owner,
@@ -55,7 +53,8 @@ const ReviewSummary = ({
   let subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
   const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
-  const groupsKeyed = keyBy(itemGroups, "_id");
+  const questionsCount = summary?.totalItems || 0;
+  const totalPoints = summary?.totalPoints || 0;
   return (
     <Container>
       <FlexBoxOne>
@@ -135,16 +134,16 @@ const ReviewSummary = ({
 
       <FlexBoxThree>
         {isPublishers &&
-          summary?.groupSummary?.map(group => {
+          summary?.groupSummary?.map((group, i) => {
             const standards = group?.standards
               ?.filter(item => !item.isEquivalentStandard)
               ?.map(item => item.identifier);
             return (
               <>
-                <MainLabel>{groupsKeyed[group.groupId]?.groupName}</MainLabel>
+                <MainLabel>{itemGroups[i]?.groupName}</MainLabel>
                 <FlexContainer flexWrap={windowWidth < 1200 && "wrap"} justifyContent="space-between">
                   <SummaryInfoContainer style={{ borderRadius: 0, width: "50%" }}>
-                    <SummaryInfoNumber data-cy={`item-${groupsKeyed[group.groupId]?.groupName}`}>
+                    <SummaryInfoNumber data-cy={`item-${itemGroups[i]?.groupName}`}>
                       {group.totalItems}
                     </SummaryInfoNumber>
                     <SummaryInfoTitle>Items</SummaryInfoTitle>

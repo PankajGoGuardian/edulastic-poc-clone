@@ -5,7 +5,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { isEqual, find, isObject, isArray } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
-
+import JXG from "jsxgraph";
+import uuidv4 from "uuid/v4";
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
 
@@ -20,6 +21,8 @@ const responseType = {
 };
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+
+const pointRegex = new RegExp("([^()]+)", "g");
 
 const PlayerContent = ({
   openExitPopup,
@@ -173,19 +176,21 @@ const PlayerContent = ({
       data.value = [];
       currentItem.responses.map(({ responseId }) => {
         let testletValue = findTestletValue(responseId) || [];
-        testletValue = testletValue.split(",");
-        data.value = Array.from({
-          length: testletValue.length
-        }).fill([]);
-        testletValue.map(v => {
-          const num = v.match(/[0-9]+/);
-          const alpha = v.match(/[a-z]+/);
-          if (num && alpha) {
-            const opIndex = ALPHABET.indexOf(alpha[0]);
-            const answer = [opIndex];
-            data.value[num[0] - 1] = answer;
-          }
-        });
+        if (testletValue) {
+          testletValue = testletValue.split(",");
+          data.value = Array.from({
+            length: testletValue.length
+          }).fill([]);
+          testletValue.map(v => {
+            const num = v.match(/[0-9]+/);
+            const alpha = v.match(/[a-z]+/);
+            if (num && alpha) {
+              const opIndex = ALPHABET.indexOf(alpha[0]);
+              const answer = [opIndex];
+              data.value[num[0] - 1] = answer;
+            }
+          });
+        }
       });
     } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
       // here is match
@@ -194,7 +199,7 @@ const PlayerContent = ({
         const testletValue = findTestletValue(responseId);
         const { options } = cQuestion;
         const opIndex = ALPHABET.indexOf(testletValue);
-        if (options[opIndex]) {
+        if (options[opIndex] && testletValue) {
           data.push(options[opIndex].value);
         } else {
           data.push(false);
@@ -223,12 +228,68 @@ const PlayerContent = ({
           }));
         }
       });
-    } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT) {
+    } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT || cQuestionType === questionType.SHORT_TEXT) {
       currentItem.responses.map(({ responseId }) => {
+        data = findTestletValue(responseId);
+      });
+    } else if (cQuestionType === questionType.CLOZE_IMAGE_DRAG_DROP) {
+      const { responses: eduItemResponses = [], options } = cQuestion;
+      data = eduItemResponses.map((eduRes, contIndex) => {
+        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
         const testletValue = findTestletValue(responseId);
-        data = testletValue;
+        const opIndex = ALPHABET.indexOf(testletValue);
+        if (testletValue && options[opIndex]) {
+          return {
+            responseBoxID: eduRes.id,
+            value: [options[opIndex]],
+            containerIndex: contIndex
+            // rect: {}, TODO: we will check this property later.
+          };
+        }
+        return {
+          responseBoxID: eduRes.id,
+          value: [],
+          containerIndex: contIndex
+          // rect: {}, TODO: we will check this property later.
+        };
+      });
+    } else if (cQuestionType === questionType.CLOZE_IMAGE_TEXT) {
+      const { responses: eduItemResponses = [] } = cQuestion;
+      data = eduItemResponses.map(eduRes => {
+        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+        return findTestletValue(responseId) || "";
+      });
+    } else if (cQuestionType === questionType.GRAPH) {
+      currentItem.responses.map(({ responseId, elementType }) => {
+        if (elementType === "point") {
+          const testletValue = findTestletValue(responseId);
+          if (testletValue && typeof testletValue === "string") {
+            data = (testletValue.match(pointRegex) || []).map(point => {
+              const coords = point.split(",");
+              return {
+                _type: JXG.OBJECT_TYPE_POINT,
+                id: uuidv4(),
+                type: "point",
+                x: coords[0],
+                y: coords[1]
+              };
+            });
+          } else {
+            data = [];
+          }
+        } else if (elementType === "line") {
+          const testletValue = findTestletValue(responseId);
+          data = {
+            expression: {
+              value: testletValue,
+              id: uuidv4(),
+              _type: JXG.OBJECT_TYPE_POINT
+            }
+          };
+        }
       });
     }
+
     setUserAnswer(currentItem.uuid, data);
   };
 

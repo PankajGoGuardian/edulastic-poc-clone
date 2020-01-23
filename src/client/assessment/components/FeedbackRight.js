@@ -194,11 +194,6 @@ class FeedbackRight extends Component {
 
   onKeyDownFeedback = e => {
     this.arrowKeyHandler(e.keyCode);
-    if (e.key === "Tab") {
-      e.stopPropagation();
-      e.preventDefault();
-      //this.focusScoreInput();
-    }
   };
 
   arrowKeyHandler = ({ keyCode }) => {
@@ -306,6 +301,7 @@ class FeedbackRight extends Component {
               ref={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
+              tabIndex={0}
             />
             <TextPara>{rubricMaxScore || maxScore}</TextPara>
           </ScoreInputWrapper>
@@ -319,6 +315,7 @@ class FeedbackRight extends Component {
         {!isError && (
           <Fragment>
             <FeedbackInput
+              tabIndex={0}
               data-cy="feedBackInput"
               onChange={this.onChangeFeedback}
               onBlur={this.preCheckSubmit}

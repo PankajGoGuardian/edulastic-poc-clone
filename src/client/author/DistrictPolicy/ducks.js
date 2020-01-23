@@ -142,6 +142,7 @@ function* updateDictrictPolicySaga({ payload }) {
   try {
     const updateDistrictPolicy = yield call(settingsApi.updateDistrictPolicy, payload);
     yield put(updateDistrictPolicySuccessAction(updateDistrictPolicy));
+    yield call(message.success, "Saved Successfully");
   } catch (err) {
     const errorMessage = "Update District Policy is failing";
     yield call(message.error, errorMessage);

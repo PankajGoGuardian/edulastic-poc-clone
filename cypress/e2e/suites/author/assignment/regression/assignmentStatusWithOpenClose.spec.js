@@ -181,8 +181,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.verifyStatus(`${teacherSide.IN_PROGRESS}`);
     });
-
-    it(` > due date over, should be ${teacherSide.DONE} `, () => {
+    // EV-11241-> This will be done manually as it takes longer time
+    /*   it(` > due date over, should be ${teacherSide.DONE} `, () => {
       cy.deleteAllAssignments(student, teacher, password);
       cy.login("teacher", teacher, password);
       cy.visit(`/author/assignments/${testId}`);
@@ -209,7 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       teacherSidebar.clickOnDashboard();
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.verifyStatus(`${teacherSide.DONE}`);
-    });
+    }); */
   });
 
   describe("grade release - manually", () => {

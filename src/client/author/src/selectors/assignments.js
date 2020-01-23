@@ -29,10 +29,10 @@ export const getAssignmentsByTestSelector = createSelector(
 export const getTestsSelector = createSelector(
   getEntitiesSelector,
   getAssignmentsByTestSelector,
-  (state, assignmentsById) => {
+  (state, assignmentsById = {}) => {
     const { tests = [] } = state;
     tests.forEach((item, i) => {
-      const createdDateArray = assignmentsById[item._id].map(item1 => item1.createdAt);
+      const createdDateArray = (assignmentsById?.[item._id] || []).map(item1 => item1.createdAt);
       const lastAssigned = Math.max.apply(null, createdDateArray);
       tests[i] = { ...tests[i], lastAssigned };
     });

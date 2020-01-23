@@ -352,7 +352,7 @@ class ClozeMathWithUnit extends React.Component {
 const KeyboardIcon = styled.i`
   position: relative;
   display: inline-block;
-  left: -32px;
+  margin-left: -32px;
   padding: 8px;
 `;
 

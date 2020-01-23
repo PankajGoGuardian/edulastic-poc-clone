@@ -29,7 +29,11 @@ import {
   getOrgDataSelector,
   getUserFeatures
 } from "../../../../../src/selectors/user";
-import { getTestEntitySelector, getDisableAnswerOnPaperSelector as hasRandomQuestions } from "../../../../ducks";
+import {
+  getTestEntitySelector,
+  getDisableAnswerOnPaperSelector as hasRandomQuestions,
+  getTestSummarySelector
+} from "../../../../ducks";
 import Tags from "../../../../../src/components/common/Tags";
 
 const ReviewSummary = ({
@@ -47,7 +51,8 @@ const ReviewSummary = ({
   windowWidth,
   orgData,
   userFeatures,
-  test: { itemGroups, summary },
+  test: { itemGroups },
+  summary,
   hasRandomQuestions
 }) => {
   let subjectsList = [...selectsData.allSubjects];
@@ -223,7 +228,8 @@ export default connect(
     orgData: getOrgDataSelector(state),
     userFeatures: getUserFeatures(state),
     test: getTestEntitySelector(state),
-    hasRandomQuestions: hasRandomQuestions(state)
+    hasRandomQuestions: hasRandomQuestions(state),
+    summary: getTestSummarySelector(state)
   }),
   null
 )(ReviewSummary);

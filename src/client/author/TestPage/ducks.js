@@ -8,6 +8,7 @@ import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } 
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
+import { createGroupSummary } from "./utils";
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -1665,4 +1666,9 @@ export const getAllTagsSelector = (state, tagType) => {
 export const getCurrentGroupIndexSelector = createSelector(
   stateSelector,
   state => state.currentGroupIndex
+);
+
+export const getTestSummarySelector = createSelector(
+  getTestEntitySelector,
+  state => createGroupSummary(state)
 );

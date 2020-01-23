@@ -38,7 +38,7 @@ import {
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 
-const convertTableData = (data, assignments, index) => ({
+const convertTableData = (data, assignments = [], index) => ({
   name: data.title,
   thumbnail: data.thumbnail,
   key: index.toString(),
@@ -47,11 +47,12 @@ const convertTableData = (data, assignments, index) => ({
   class: assignments.length,
   assigned: "",
   status: "status",
-  submitted: `${assignments.map(item => (item.submittedCount || 0) + (item.gradedCount || 0)).reduce((t, c) => t + c) ||
-    0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c)}`,
-  graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
+  submitted: `${assignments
+    .map(item => (item.submittedCount || 0) + (item.gradedCount || 0))
+    .reduce((t, c) => t + c, 0) || 0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c, 0)}`,
+  graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c, 0) || 0}`,
   action: "",
-  classId: assignments[0].classId,
+  classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
   testType: data.testType,
   hasAutoSelectGroups: data.hasAutoSelectGroups
@@ -206,7 +207,7 @@ const TableList = ({
     ];
     const expandTableList = [];
     let getInfo;
-    assignmentsByTestId[parentData.testId].forEach((assignment, index) => {
+    (assignmentsByTestId?.[parentData.testId] || []).forEach((assignment, index) => {
       if (!assignment.redirect) {
         getInfo = convertExpandTableData(assignment, parentData, index);
         expandTableList.push(getInfo);
@@ -338,7 +339,7 @@ const TableList = ({
       })
     }
   ];
-  const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
+  const getAssignmentsByTestId = Id => (assignmentsByTestId[Id] || []).filter(item => !item.redirect);
 
   const rowSelection = {
     selectedRowKeys: selectedRows.map(({ key }) => key),

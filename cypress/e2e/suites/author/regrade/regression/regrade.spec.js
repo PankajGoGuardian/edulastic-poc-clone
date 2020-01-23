@@ -12,6 +12,7 @@ import SidebarPage from "../../../../framework/student/sidebarPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const students = {
   Student1: {
@@ -176,6 +177,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         lcb.questionResponsePage.getTotalScore().should("have.text", "4");
         lcb.questionResponsePage.getMaxScore().should("have.text", "4");
       });
+      it("verify Question centric view", () => {
+        // verify count of questions
+        lcb.clickonQuestionsTab();
+        lcb.questionResponsePage.getDropDown().click({ force: true });
+        CypressHelper.getDropDownList().then(questions => {
+          expect(questions).to.have.lengthOf(itemsInTest.length);
+        });
+      });
 
       it("verify express grader view", () => {
         lcb.header.clickOnExpressGraderTab();
@@ -260,6 +269,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         lcb.questionResponsePage.selectStudent(Student2.name);
         lcb.questionResponsePage.getTotalScore().should("have.text", "8");
         lcb.questionResponsePage.getMaxScore().should("have.text", "8");
+      });
+
+      it("verify Question centric view", () => {
+        // verify updated points
+        lcb.clickonQuestionsTab();
+
+        lcb.questionResponsePage.selectQuestion(`Q1`);
+        Object.keys(students).forEach((student, index) => {
+          if (!(index === 2)) {
+            lcb.questionResponsePage.getQuestionContainerByStudent(students[student].name).as("studentCont");
+            lcb.questionResponsePage.getQuestionMaxScore(cy.get("@studentCont")).should("have.text", updatedPoints);
+          }
+        });
       });
 
       it("verify express grader view", () => {

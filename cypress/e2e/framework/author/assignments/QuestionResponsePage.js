@@ -8,6 +8,8 @@ export default class QuestionResponsePage {
 
   getScoreInput = card => card.find('[data-cy="scoreInput"]');
 
+  getQuestionMaxScore = card => this.getScoreInput(card).next();
+
   getFeedbackArea = card => card.contains("Leave a feedback!").next();
 
   getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');

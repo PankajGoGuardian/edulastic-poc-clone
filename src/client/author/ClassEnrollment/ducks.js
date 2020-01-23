@@ -8,12 +8,14 @@ import { keyBy } from "lodash";
 const RECEIVE_CLASSENROLLMENT_LIST_REQUEST = "[class enrollment] receive list request";
 const RECEIVE_CLASSENROLLMENT_LIST_SUCCESS = "[class enrollment] receive list success";
 const RECEIVE_CLASSENROLLMENT_LIST_ERROR = "[class enrollment] receive list error";
+const REQ_ENROL_EXISTING_USER_TO_CLASS = "[class enrollment] request enrol existing user to class";
 
 const SET_PAGE_NO = "[class enrollment] set page number";
 
 export const receiveClassEnrollmentListAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_REQUEST);
 export const receiveClassEnrollmentListSuccessAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_SUCCESS);
 export const receiveClassEnrollmentListErrorAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_ERROR);
+export const requestEnrolExistingUserToClassAction = createAction(REQ_ENROL_EXISTING_USER_TO_CLASS);
 
 export const setPageNoAction = createAction(SET_PAGE_NO);
 
@@ -66,6 +68,18 @@ function* receiveClassEnrollmentListSaga({ payload }) {
   }
 }
 
+function* enrolExistingUserToClass({ payload }) {
+  try {
+    const res = yield call(enrollmentApi.SearchAddEnrolMultiStudents, payload);
+    if (res) yield call(message.success, "Student successfully enrolled");
+  } catch (error) {
+    yield call(message.error, "Student enrollment is failing");
+  }
+}
+
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_CLASSENROLLMENT_LIST_REQUEST, receiveClassEnrollmentListSaga)]);
+  yield all([
+    yield takeEvery(RECEIVE_CLASSENROLLMENT_LIST_REQUEST, receiveClassEnrollmentListSaga),
+    yield takeEvery(REQ_ENROL_EXISTING_USER_TO_CLASS, enrolExistingUserToClass)
+  ]);
 }

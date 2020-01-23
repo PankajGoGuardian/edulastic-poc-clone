@@ -729,8 +729,7 @@ function* createTest(data) {
   ]);
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups);
-  let entity = yield call(testsApi.create, dataToSend);
-  entity = { ...entity, ...data, itemGroups: entity.itemGroups };
+  const entity = yield call(testsApi.create, dataToSend);
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -754,7 +753,7 @@ function* createTestSaga({ payload }) {
   } catch (err) {
     console.log({ err });
 
-    const errorMessage = "Failed to create test!";
+    const errorMessage = err?.data?.message || "Failed to create test!";
     yield call(message.error, errorMessage);
     yield put(createTestErrorAction(errorMessage));
   }
@@ -826,7 +825,8 @@ function* updateTestSaga({ payload }) {
     }
     yield put(setTestsLoadingAction(false));
   } catch (err) {
-    const errorMessage = "Update test is failing";
+    console.log({ err });
+    const errorMessage = err?.data?.message || "Update test is failing";
     yield call(message.error, errorMessage);
     yield put(updateTestErrorAction(errorMessage));
     yield put(setTestsLoadingAction(false));
@@ -874,7 +874,7 @@ function* updateTestDocBasedSaga({ payload }) {
       payload: { ...payload, data: newAssessment }
     });
   } catch (err) {
-    const errorMessage = "Update test is failing";
+    const errorMessage = err?.data?.message || "Update test is failing";
     yield call(message.error, errorMessage);
     yield put(updateTestErrorAction(errorMessage));
   }
@@ -886,7 +886,7 @@ function* updateRegradeDataSaga({ payload }) {
     yield call(message.success, "Success update");
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
-    const errorMessage = "Update test is failing";
+    const errorMessage = e?.data?.message || "Update test is failing";
     yield call(message.error, errorMessage);
   }
 }
@@ -1132,7 +1132,7 @@ function* setTestDataAndUpdateSaga(payload) {
     }
   } catch (e) {
     console.error(e);
-    const errorMessage = "Auto Save of Test is failing";
+    const errorMessage = e?.data?.message || "Auto Save of Test is failing";
     yield call(message.error, errorMessage);
   }
 }

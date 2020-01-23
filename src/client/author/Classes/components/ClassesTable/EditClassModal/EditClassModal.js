@@ -17,7 +17,10 @@ class EditClassModal extends Component {
 
   onSaveClass = () => {
     this.props.form.validateFields((err, row) => {
-      const { selClassData: { _source: { parent, districtId, standardSets } = {} } = {}, allTagsData } = this.props;
+      const {
+        selClassData: { _source: { parent, districtId, standardSets, startDate } = {} } = {},
+        allTagsData
+      } = this.props;
       if (!err) {
         const saveClassData = {
           name: row.name,
@@ -33,10 +36,22 @@ class EditClassModal extends Component {
           standardSets: standardSets || [],
           courseId: row.courseId
         };
-        this.props.saveClass(saveClassData);
-        if (row.endDate) {
-          Object.assign(saveClassData, { endDate: row.endDate.valueOf() });
+
+        const endDate = row?.endDate?.valueOf();
+
+        if (startDate && endDate) {
+          // end date should not be less than the start date
+          let isInvalidEndDate = false;
+          isInvalidEndDate = startDate > endDate;
+
+          if (isInvalidEndDate) {
+            return message.error("start date is greater than end date");
+          }
+
+          Object.assign(saveClassData, { endDate });
         }
+
+        this.props.saveClass(saveClassData);
       }
     });
   };
@@ -135,6 +150,9 @@ class EditClassModal extends Component {
     const subjects = allSubjects.filter(el => el.value !== "");
 
     const { getFieldDecorator } = this.props.form;
+
+    const disabledDate = current => current && current < moment().startOf("day");
+
     return (
       <StyledModal
         visible={modalVisible}
@@ -313,7 +331,7 @@ class EditClassModal extends Component {
             <ModalFormItem label={t("class.components.editclass.enddate")}>
               {getFieldDecorator("endDate", {
                 initialValue: moment(endDate)
-              })(<DatePicker style={{ width: "100%" }} />)}
+              })(<DatePicker disabledDate={disabledDate} style={{ width: "100%" }} format="ll" />)}
             </ModalFormItem>
           </Col>
         </Row>

@@ -390,6 +390,9 @@ class SchoolAdminTable extends Component {
       // sortField,
       // order
     };
+
+    queryObj["status"] = 0;
+
     if (showActive) {
       queryObj["status"] = 1;
     }

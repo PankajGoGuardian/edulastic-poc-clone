@@ -562,6 +562,8 @@ class StudentTable extends Component {
       queryObj.institutionId = location.institutionId;
     }
 
+    queryObj["status"] = 0;
+
     if (showActive) {
       queryObj["status"] = 1;
     }

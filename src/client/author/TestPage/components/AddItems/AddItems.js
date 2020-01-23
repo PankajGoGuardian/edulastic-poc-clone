@@ -175,7 +175,7 @@ class AddItems extends PureComponent {
       return message.error("Name field cannot be empty");
     }
 
-    if (updated) {
+    if (updated && testId) {
       handleSaveTest();
     }
     const defaultWidgets = {

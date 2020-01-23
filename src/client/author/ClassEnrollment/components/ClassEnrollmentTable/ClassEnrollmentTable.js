@@ -10,7 +10,11 @@ import { StyledTable } from "./styled";
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
 import { getUserOrgId, getUser, getUserRole } from "../../../src/selectors/user";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
-import { getClassEnrollmentUsersSelector, getClassEnrollmentUsersCountSelector } from "../../ducks";
+import {
+  getClassEnrollmentUsersSelector,
+  getClassEnrollmentUsersCountSelector,
+  requestEnrolExistingUserToClassAction
+} from "../../ducks";
 
 import { AddStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import { AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
@@ -18,7 +22,8 @@ import {
   getAddStudentsToOtherClassSelector,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
-  moveUsersToOtherClassAction
+  moveUsersToOtherClassAction,
+  getValidatedClassDetails
 } from "../../../Student/ducks";
 
 import {
@@ -48,6 +53,8 @@ import { themeColor } from "@edulastic/colors";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
+import { enrollmentApi } from "@edulastic/api";
+import withRouter from "react-router/withRouter";
 
 const { Option } = Select;
 
@@ -150,7 +157,23 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
-  addNewUser = () => {
+  addNewUser = (userInfo = {}) => {
+    // user info will be empty if user does not exists
+    const { requestEnrolExistingUserToClass } = this.props;
+    if (userInfo._id) {
+      const {
+        getValidatedClass: { groupInfo }
+      } = this.props;
+      const student = {
+        classCode: groupInfo?.code,
+        studentIds: [userInfo._id],
+        districtId: groupInfo?.districtId
+      };
+      requestEnrolExistingUserToClass(student);
+      this.onCloseAddNewUserModal();
+      return null;
+    }
+
     if (this.formRef) {
       const { userOrgId: districtId, createAdminUser } = this.props;
       const { form } = this.formRef.props;
@@ -448,7 +471,8 @@ class ClassEnrollmentTable extends React.Component {
       resetClassDetails,
       totalUsers,
       userRole,
-      t
+      t,
+      location
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -695,6 +719,7 @@ class ClassEnrollmentTable extends React.Component {
           wrappedComponentRef={this.saveFormRef}
           userOrgId={userOrgId}
           resetClassDetails={resetClassDetails}
+          location={location}
         />
 
         <AddStudentsToOtherClassModal
@@ -740,16 +765,18 @@ const enhance = compose(
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
       totalUsers: getClassEnrollmentUsersCountSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      getValidatedClass: getValidatedClassDetails(state)
     }),
     {
       createAdminUser: createAdminUserAction,
       deleteAdminUser: deleteAdminUserAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
-      moveUsersToOtherClass: moveUsersToOtherClassAction
+      moveUsersToOtherClass: moveUsersToOtherClassAction,
+      requestEnrolExistingUserToClass: requestEnrolExistingUserToClassAction
     }
   )
 );
 
-export default enhance(ClassEnrollmentTable);
+export default enhance(withRouter(ClassEnrollmentTable));

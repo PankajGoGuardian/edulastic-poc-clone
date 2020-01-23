@@ -141,9 +141,13 @@ function* loadTest({ payload }) {
       yield put(setPasswordStatusAction(""));
     }
     const isAuthorReview = Object.keys(testData).length > 0;
-              
     let [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
-    if (preview) {
+    if (
+      preview &&
+      test.itemGroups.some(
+        (group = {}) => (group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT) & !group.items?.length
+      )
+    ) {
       test = yield addAutoselectGroupItems({ payload: test, preview });
     }
     test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);

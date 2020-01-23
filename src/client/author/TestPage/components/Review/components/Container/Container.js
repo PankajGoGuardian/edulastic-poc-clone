@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, flatMap, flatten, map, groupBy, some, sumBy, keyBy, uniqBy } from "lodash";
+import { cloneDeep, get, uniq as _uniq, keyBy } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -42,152 +42,6 @@ import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/
 import { getUserFeatures } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 import { Content } from "../../../Container/styled";
-
-const getTotalScore = ({ itemGroups = [], scoring = {} }) =>
-  itemGroups
-    .flatMap(itemGroup => itemGroup.items || [])
-    .map(item => scoring[item._id] || helpers.getPoints(item))
-    .reduce((total, s) => total + s, 0);
-
-const getTotalQuestionsInItems = items => items?.flatMap((item = {}) => item.data?.questions)?.length || 0;
-
-const getStandardWiseSummary = (question, point) => {
-  let standardSummary;
-  if (question) {
-    const points = point;
-    const alignment = get(question, "alignment", []);
-    standardSummary = flatMap(alignment, ({ domains, isEquivalentStandard = false, curriculumId }) =>
-      flatMap(domains, ({ standards }) =>
-        map(standards, ({ name }) => ({
-          curriculumId: `${curriculumId}`,
-          identifier: name,
-          totalPoints: points,
-          totalQuestions: 1,
-          isEquivalentStandard
-        }))
-      )
-    );
-  }
-  return standardSummary;
-};
-
-export const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
-  const summary = {
-    totalPoints: 0,
-    totalQuestions: 0,
-    totalItems: items.length,
-    standards: [],
-    noStandards: { totalQuestions: 0, totalPoints: 0 }
-  };
-  for (const item of items) {
-    const { itemLevelScoring, maxScore, itemLevelScore, _id } = item;
-    const itemPoints = isLimitedDeliveryType ? 1 : (itemLevelScoring === true && itemLevelScore) || maxScore;
-    const questions = get(item, "data.questions", []);
-    const itemTotalQuestions = questions.length;
-    const questionWisePoints = helpers.getQuestionLevelScore(
-      { ...item, isLimitedDeliveryType },
-      questions,
-      helpers.getPoints(item),
-      scoring[_id]
-    );
-    for (const question of questions) {
-      const standardSummary = getStandardWiseSummary(question, questionWisePoints[question.id]);
-      if (standardSummary) {
-        summary.standards.push(...standardSummary);
-      }
-    }
-    if (summary.standards.length > 0) {
-      let standardSummary = groupBy(summary.standards, "curriculumId");
-      const standardSumm = map(standardSummary, (objects, curriculumId) => {
-        const obj = groupBy(objects, "identifier");
-        const standardObj = map(obj, (elements, identifier) => ({
-          curriculumId,
-          identifier,
-          totalQuestions: sumBy(elements, "totalQuestions"),
-          totalPoints: sumBy(elements, "totalPoints"),
-          isEquivalentStandard: !some(elements, ["isEquivalentStandard", false])
-        }));
-        return standardObj;
-      });
-      summary.standards = flatten(standardSumm);
-    } else {
-      summary.noStandards.totalQuestions += questions.length;
-      summary.noStandards.totalPoints += sumBy(questions, ({ id }) => questionWisePoints[id]);
-    }
-    summary.totalPoints += itemPoints;
-    summary.totalQuestions += itemTotalQuestions;
-  }
-  return summary;
-};
-
-const isIncludesRandomQuestions = itemGroups => {
-  return itemGroups.some(
-    itemGroup =>
-      itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT ||
-      itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-  );
-};
-
-export const createGroupSummary = test => {
-  const summary = {
-    totalPoints: 0,
-    totalItems: 0,
-    totalQuestions: 0,
-    standards: [],
-    noStandards: { totalQuestions: 0, totalPoints: 0 },
-    groupSummary: []
-  };
-
-  const hasRandomQuestions = isIncludesRandomQuestions(test.itemGroups);
-
-  for (const itemGroup of test.itemGroups) {
-    const isLimitedDeliveryType = itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
-    const { noStandards, ...summaryData } = createItemsSummaryData(
-      itemGroup.items,
-      test.scoring,
-      isLimitedDeliveryType
-    );
-    if (itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT) {
-      summaryData.standards = [
-        {
-          isEquivalentStandard: false,
-          identifier: itemGroup.standardDetails.identifier,
-          curriculumId: itemGroup.standardDetails.curriculumId
-        }
-      ];
-      summaryData.totalPoints = itemGroup.items.length;
-      summaryData.totalItems = itemGroup.items.length;
-    }
-    if (
-      itemGroup.type === testConstants.ITEM_GROUP_TYPES.STATIC &&
-      isLimitedDeliveryType &&
-      itemGroup.deliverItemsCount
-    ) {
-      summaryData.totalPoints = itemGroup.deliverItemsCount;
-      summaryData.totalItems = itemGroup.deliverItemsCount;
-      summaryData.totalQuestions = itemGroup.deliverItemsCount;
-    }
-
-    summary.totalPoints += summaryData.totalPoints;
-    summary.totalItems += summaryData.totalItems;
-    summary.totalQuestions += summaryData.totalQuestions;
-    if (summaryData.standards.length) {
-      summary.standards = uniqBy(
-        [...summaryData.standards.filter(s => !s.isEquivalentStandard), ...test.summary.standards],
-        "identifier"
-      );
-    }
-    summary.noStandards.totalQuestions += noStandards.totalQuestions;
-    summary.noStandards.totalPoints += noStandards.totalPoints;
-    summary.groupSummary.push({ ...summaryData, groupId: itemGroup._id || itemGroup.groupName });
-  }
-  if (hasRandomQuestions) {
-    delete summary.totalPoints;
-    delete summary.totalItems;
-    delete summary.totalQuestions;
-  }
-  return summary;
-};
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {
   static propTypes = {
@@ -221,7 +75,9 @@ class Review extends PureComponent {
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
     const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const isEmptyItems = !!test.itemGroups.find(g => g.type === "AUTOSELECT" && g.items.length === 0);
+    const isEmptyItems = !!test.itemGroups.find(
+      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT && g.items.length === 0
+    );
     if (isEmptyItems) {
       addItemsToAutoselectGroupsRequest(test);
     }
@@ -265,10 +121,6 @@ class Review extends PureComponent {
     if (!itemsSelected.length) {
       return message.warn("Please select at least one question to remove");
     }
-    if (newData.itemGroups[currentGroupIndex].items.length === itemsSelected.length) {
-      return message.warn("At least 1 item should be there in assignment");
-    }
-
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({
       ...itemGroup,
       items: itemGroup.items.filter(testItem => {
@@ -283,7 +135,6 @@ class Review extends PureComponent {
       return !(foundItem && foundItem.selected);
     });
     const testItems = newData.itemGroups.flatMap(itemGroup => itemGroup.items || []);
-    newData.summary = createGroupSummary(newData);
 
     setTestItems(testItems.map(item => item._id));
     this.setSelected([]);
@@ -332,9 +183,7 @@ class Review extends PureComponent {
     const newData = cloneDeep(test);
 
     if (!newData.scoring) newData.scoring = {};
-
     newData.scoring[testItemId] = value;
-    newData.summary = createGroupSummary(newData);
     setData(newData);
   };
 

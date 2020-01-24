@@ -521,9 +521,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   );
   let questionsOrder = {};
   if (entities.length > 0) {
-    questionsOrder = (
-      entities.find(e => studentId && studentId === e.studentId) || entities[0]
-    ).questionActivities.reduce((acc, cur, ind) => {
+    questionsOrder = entities[0].questionActivities.reduce((acc, cur, ind) => {
       acc[cur._id] = ind;
       return acc;
     }, {});
@@ -589,9 +587,7 @@ export const getSortedTestActivitySelector = createSelector(
         ...activity,
         score: sumBy(qActivityByUser[activity.studentId], "score"),
         maxScore: totalPoints,
-        questionActivities: activity.questionActivities.length
-          ? activity.questionActivities
-          : qActivityByUser[activity.studentId] || []
+        questionActivities: qActivityByUser[activity.studentId] || []
       }));
     }
     return sortedTestActivities;

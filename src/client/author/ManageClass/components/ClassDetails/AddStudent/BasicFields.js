@@ -145,7 +145,7 @@ const BasicFields = ({
   useEffect(() => {
     resetClassDetails();
   }, []);
-  
+
   const validateName = (rule, value, callback) => {
     if (!nameValidator(value)) {
       callback("The input is not valid name");

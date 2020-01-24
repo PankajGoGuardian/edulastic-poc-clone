@@ -12,7 +12,7 @@ export const FieldLabel = ({
   getFieldValue,
   fiedlName,
   initialValue,
-  disabled = false,
+  disabled = false
 }) => {
   const checkEndDate = (rule, value, callback) => {
     const startDate = getFieldValue("startDate");

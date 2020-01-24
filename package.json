@@ -82,6 +82,7 @@
     "mochawesome-merge": "1.0.7",
     "mochawesome-report-generator": "3.1.5",
     "mqtt": "^2.18.8",
+    "nanoid": "^2.1.10",
     "normalizr": "^3.3.0",
     "overlay-pslg": "^1.0.0",
     "pdfjs-dist": "2.1.266",

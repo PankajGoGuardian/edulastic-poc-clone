@@ -5,11 +5,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { isEqual, find, isObject, isArray } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
-import JXG from "jsxgraph";
-import uuidv4 from "uuid/v4";
 import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
-
+import { getLineFromExpression, getPoinstFromString, ALPHABET } from "./utility/helpers";
 import { MainContent, Main, OverlayDiv } from "./styled";
 
 let frameController = {};
@@ -19,10 +17,6 @@ const responseType = {
   input: "input",
   radio: "radio"
 };
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-
-const pointRegex = new RegExp("([^()]+)", "g");
 
 const PlayerContent = ({
   openExitPopup,
@@ -263,29 +257,10 @@ const PlayerContent = ({
       currentItem.responses.map(({ responseId, elementType }) => {
         if (elementType === "point") {
           const testletValue = findTestletValue(responseId);
-          if (testletValue && typeof testletValue === "string") {
-            data = (testletValue.match(pointRegex) || []).map(point => {
-              const coords = point.split(",");
-              return {
-                _type: JXG.OBJECT_TYPE_POINT,
-                id: uuidv4(),
-                type: "point",
-                x: coords[0],
-                y: coords[1]
-              };
-            });
-          } else {
-            data = [];
-          }
+          data = getPoinstFromString(testletValue);
         } else if (elementType === "line") {
           const testletValue = findTestletValue(responseId);
-          data = {
-            expression: {
-              value: testletValue,
-              id: uuidv4(),
-              _type: JXG.OBJECT_TYPE_POINT
-            }
-          };
+          data = getLineFromExpression(testletValue);
         }
       });
     }

@@ -75,10 +75,8 @@ class Review extends PureComponent {
   componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
     const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const isEmptyItems = !!test.itemGroups.find(
-      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT && g.items.length === 0
-    );
-    if (isEmptyItems) {
+    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
+    if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
     }
   }

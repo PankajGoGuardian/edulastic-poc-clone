@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
 import { isEqual, pick, maxBy, keyBy } from "lodash";
 import { withRouter } from "react-router-dom";
+import nanoid from "nanoid";
 import {
   Container,
   BreadcrumbContainer,
@@ -39,7 +40,8 @@ import {
   deleteItemsGroupAction,
   getTestEntitySelector,
   setTestDataAction,
-  NewGroup
+  NewGroup,
+  getStaticGroupItemIds
 } from "../../ducks";
 import { removeTestItemsAction } from "../AddItems/ducks";
 import selectsData from "../common/selectsData";
@@ -236,6 +238,7 @@ const GroupItems = ({
     const { index } = maxBy(test.itemGroups, "index");
     const data = {
       ...NewGroup,
+      _id: nanoid(),
       groupName: `Group ${index + 2}`,
       index: index + 1
     };
@@ -392,8 +395,10 @@ const GroupItems = ({
       return message.error("Maximum 100 question can be selected to deliver.");
     }
     setFetchingItems(true);
+
+    const allStaticGroupItemIds = getStaticGroupItemIds(test);
     testItemsApi
-      .getAutoSelectedItems(data)
+      .getAutoSelectedItems({ ...data, search: { ...data.search, nInItemIds: allStaticGroupItemIds } })
       .then(res => {
         const { items, total } = res;
         if (items.length === 0) {

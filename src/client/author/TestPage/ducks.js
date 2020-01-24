@@ -6,6 +6,7 @@ import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
+import nanoid from "nanoid";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
 import { createGroupSummary } from "./utils";
@@ -57,6 +58,17 @@ export const createWidget = ({ id, type, title }) => ({
   reference: id,
   tabIndex: 0
 });
+
+export const getStaticGroupItemIds = test => {
+  return (
+    test.itemGroups.flatMap((itemGroup = {}) => {
+      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+        return itemGroup?.items.map(item => item._id) || [];
+      }
+      return [];
+    }) || []
+  ).filter(e => !!e);
+};
 
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
   return produce(itemGroups, itemGroups => {
@@ -283,7 +295,8 @@ export const createBlankTest = () => ({
   thumbnail: defaultImage,
   itemGroups: [
     {
-      ...NewGroup
+      ...NewGroup,
+      _id: nanoid()
     }
   ],
   createdBy: {
@@ -401,28 +414,18 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, creating: true, error: null };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
-      const { itemGroups, scoring: score, ...entity } = payload.entity;
       return {
         ...state,
-        entity: {
-          ...state.entity,
-          ...entity,
-          itemGroups: state.entity.itemGroups.map((group, i) => ({ ...group, _id: itemGroups[i]._id }))
-        },
+        entity: payload.entity,
         createdItems: [],
         error: null,
         updated: false,
         creating: false
       };
     case UPDATE_ENTITY_DATA: {
-      const { itemGroups, scoring, ...dataRest } = payload.entity;
       return {
         ...state,
-        entity: {
-          ...state.entity,
-          ...dataRest,
-          itemGroups: state.entity.itemGroups.map((group, i) => ({ ...group, _id: itemGroups[i]._id }))
-        },
+        entity: payload.entity,
         error: null,
         updated: false
       };
@@ -734,7 +737,7 @@ function* createTest(data) {
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
-      entity
+      entity: { ...entity, itemGroups: data.itemGroups }
     }
   });
   return entity;
@@ -1102,7 +1105,7 @@ function* setTestDataAndUpdateSaga(payload) {
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {
-          entity
+          entity: { ...entity, itemGroups }
         }
       });
 
@@ -1358,7 +1361,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
   }
 }
 
-function tranformItemGroupToData(itemGroup, index) {
+function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
   const optionalFields = {
     depthOfKnowledge: itemGroup.dok,
     authorDifficulty: itemGroup.difficulty,
@@ -1374,18 +1377,20 @@ function tranformItemGroupToData(itemGroup, index) {
             search: {
               collectionId: itemGroup.collectionDetails._id,
               standardId: itemGroup.standardDetails.standardId,
+              nInItemIds: allStaticGroupItemIds,
               ...optionalFields
             }
           },
-    isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT && itemGroup.items.length === 0,
+    isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
     groupName: itemGroup.groupName,
     index
   };
 }
 
 function getItemGroupsTransformed(test) {
+  const allStaticGroupItemIds = getStaticGroupItemIds(test);
   return test.itemGroups.map((itemGroup, index) => {
-    return tranformItemGroupToData(itemGroup, index);
+    return tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds);
   });
 }
 
@@ -1408,9 +1413,15 @@ function* addItemsToAutoselectGroupsSaga({ payload: test }) {
 export function* addAutoselectGroupItems({ payload: test }) {
   try {
     const transformedData = getItemGroupsTransformed(test);
-    const promises = transformedData.map(({ data, isFetchItems }) =>
-      isFetchItems ? testItemsApi.getAutoSelectedItems(data).then(response => ({ ...response })) : Promise.resolve(null)
-    );
+    const allStaticGroupItemIds = getStaticGroupItemIds(test);
+    const promises = transformedData.map(({ data, isFetchItems }) => {
+      if (isFetchItems) {
+        return testItemsApi
+          .getAutoSelectedItems({ ...data, search: { ...data.search, nInItemIds: allStaticGroupItemIds } })
+          .then(response => ({ ...response }));
+      }
+      return Promise.resolve(null);
+    });
 
     const responses = yield Promise.all(promises);
     const itemGroups = test.itemGroups.map((itemGroup, i) => {

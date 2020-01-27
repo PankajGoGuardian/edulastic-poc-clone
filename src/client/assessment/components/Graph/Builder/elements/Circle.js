@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import { Point } from ".";
+import { Point, Equation } from ".";
 import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
@@ -41,7 +41,7 @@ function create(board, object, circlePoints, settings = {}) {
   newLine.dashed = object.dashed;
 
   if (latex && result) {
-    newLine.type = 98;
+    newLine.type = Equation.jxgType;
     newLine.latex = latex;
     newLine.apiLatex = result;
     newLine.pointsLabel = pointsLabel;

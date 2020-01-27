@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import { Point } from ".";
+import { Point, Equation } from ".";
 import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
@@ -45,7 +45,7 @@ function create(board, object, hypPoints, settings = {}) {
   newLine.dashed = object.dashed;
 
   if (latex && result) {
-    newLine.type = 98;
+    newLine.type = Equation.jxgType;
     newLine.latex = latex;
     newLine.apiLatex = result;
     newLine.pointsLabel = pointsLabel;

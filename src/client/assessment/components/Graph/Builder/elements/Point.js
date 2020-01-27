@@ -3,7 +3,7 @@ import { CONSTANT } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 import EditButton from "./EditButton";
 import { setLabel, nameGen, colorGenerator } from "../utils";
-import { Area } from ".";
+import { Area, Equation } from ".";
 
 function getColorParams(color) {
   return {
@@ -73,7 +73,7 @@ function create(board, object, settings = {}) {
   }
 
   if (latex != false && result != false) {
-    point.type = 98;
+    point.type = Equation.jxgType;
     point.latex = latex;
     point.apiLatex = result;
   }

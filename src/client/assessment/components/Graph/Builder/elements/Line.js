@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import { Point } from ".";
+import { Point, Equation } from ".";
 import { getLineTypeByProp, getPropsByLineType, handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
@@ -42,7 +42,7 @@ function create(board, object, linePoints, type, settings = {}) {
   newLine.dashed = object.dashed;
 
   if (latex && result) {
-    newLine.type = 98;
+    newLine.type = Equation.jxgType;
     newLine.latex = latex;
     newLine.apiLatex = result;
     newLine.pointsLabel = pointsLabel;
@@ -91,7 +91,7 @@ function clean(board) {
 function getConfig(line) {
   return {
     _type: line.type,
-    type: "line",
+    type: line.type === Equation.jxgType ? "line" : getLineTypeByProp(line.getAttributes()),
     id: line.id,
     label: line.labelHTML || false,
     labelIsVisible: line.labelIsVisible,

@@ -1,4 +1,4 @@
-import { Point, Line, Area } from ".";
+import { Point, Line, Area, Equation } from ".";
 import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
@@ -53,7 +53,7 @@ function create(board, object, parabolaPoints, settings = {}) {
   newLine.dashed = object.dashed;
 
   if (latex && result) {
-    newLine.type = 98;
+    newLine.type = Equation.jxgType;
     newLine.latex = latex;
     newLine.apiLatex = result;
     newLine.pointsLabel = pointsLabel;

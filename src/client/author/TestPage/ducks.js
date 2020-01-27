@@ -93,6 +93,16 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
   });
 };
 
+export const getTestGradeAndSubject = (group, testGrades, testSubjects) => {
+  if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+    return {
+      testGrades: _uniq([...testGrades, ...group.standardDetails.grades]),
+      testSubjects: _uniq([...testSubjects, group.standardDetails.subject])
+    };
+  }
+  return { testGrades, testSubjects };
+};
+
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
 export const CREATE_TEST_SUCCESS = "[tests] create test success";
@@ -592,6 +602,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         }
       };
     case UPDATE_GROUP_DATA:
+      const { testGrades, testSubjects } = getTestGradeAndSubject(
+        payload.updatedGroupData,
+        state.entity.grades,
+        state.entity.subjects
+      );
       return {
         ...state,
         updated: true,
@@ -600,7 +615,9 @@ export const reducer = (state = initialState, { type, payload }) => {
           itemGroups: state.entity.itemGroups.map((group, index) => {
             if (index === payload.groupIndex) return payload.updatedGroupData;
             return group;
-          })
+          }),
+          grades: testGrades,
+          subjects: testSubjects
         }
       };
     case ADD_NEW_GROUP:
@@ -1044,7 +1061,9 @@ function* setTestDataAndUpdateSaga(payload) {
     }
     // getting grades and subjects from each question array in test items
     const { itemGroups = [] } = newTest;
-    const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
+    const testItems = itemGroups
+      .filter(({ type }) => type !== ITEM_GROUP_TYPES.AUTOSELECT)
+      .flatMap(itemGroup => itemGroup.items || []);
     const questionGrades = testItems
       .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.grades || []);

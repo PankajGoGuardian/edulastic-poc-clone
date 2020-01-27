@@ -48,6 +48,9 @@ Cypress.on("test:after:run", (test, runnable) => {
     const imgPath = imgError
       ? `../snapshots/${Cypress.spec.name}/${width}/__diff_output__/${screenshotFileName}`
       : `../screenshots/${Cypress.spec.name}/${screenshotFileName}`;
-    addContext({ test }, imgPath);
+
+    addContext({ test }, { title: "test case flow - ", value: FileHelper.getTestFlow() });
+    addContext({ test }, { title: "screenshot for failed test case", value: imgPath });
+    addContext({ test }, { title: "video playback", value: `../videos/${Cypress.spec.name}.mp4` });
   }
 });

@@ -10,7 +10,7 @@ const receiveStandards = ({ curriculumId, grades = [], search }) => {
   return api
     .callApi({
       method: "post",
-      url: "/search/browseStandards",
+      url: "/search/browse-standards",
       data
     })
     .then(result => {

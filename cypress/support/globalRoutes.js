@@ -31,7 +31,7 @@ export default function initGlobalRoutes() {
   cy.route("**peer-progress-analysis**").as("peerProgressAnalysis");
   cy.route("**student-progress**").as("studentProgress");
 
-  cy.route("POST", "**browseStandards").as("browseStandards");
+  cy.route("POST", "**browse-standards").as("browseStandards");
   cy.route("**standard-mastery**").as("standardMastery");
   cy.route("**standards-summary**").as("standardsPerformanceSummary");
   cy.route("**standards-gradebook**").as("standardsGradebook");

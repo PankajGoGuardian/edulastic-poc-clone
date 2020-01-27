@@ -102,7 +102,7 @@ class MetadataPage {
 
   mapStandards = standardMaps => {
     cy.server();
-    cy.route("POST", "**/search/browseStandards").as("searchStandard");
+    cy.route("POST", "**/search/browse-standards").as("searchStandard");
     standardMaps.forEach(standards => {
       console.log("standards", standards);
       const { subject, standard, standardSet, grade } = standards;

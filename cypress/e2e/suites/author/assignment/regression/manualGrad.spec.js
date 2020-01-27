@@ -34,7 +34,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Manual Grading`, () => {
 
   const itemKeys = ["ESSAY_RICH.default", "ESSAY_RICH.default", "ESSAY_RICH.default"];
   const score = [2, 0, 1];
-  const percent = ["100", "50", "0"];
+  const percent = ["100", "0", "50"];
   const attemptData = {
     right: "right---Text",
     wrong: "wrong---Text",

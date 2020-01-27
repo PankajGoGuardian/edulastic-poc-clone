@@ -1035,7 +1035,9 @@ function* setTestDataAndUpdateSaga(payload) {
     } else {
       newTest = produce(newTest, draft => {
         draft.itemGroups = draft.itemGroups.map(itemGroup => {
-          itemGroup.items = itemGroup.items.filter(el => el._id !== item._id);
+          if (itemGroup.type !== ITEM_GROUP_TYPES.AUTOSELECT) {
+            itemGroup.items = itemGroup.items.filter(el => el._id !== item._id);
+          }
           return itemGroup;
         });
       });

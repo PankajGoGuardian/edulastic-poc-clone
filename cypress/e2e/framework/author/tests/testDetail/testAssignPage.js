@@ -73,6 +73,11 @@ export default class TestAssignPage {
     this.getStartDate().click({ force: true });
     CypressHelper.setDateInCalender(start);
   };
+  // Open Policy
+  selectOpenPolicy = openPolicy => {
+    cy.get('[data-cy="selectOpenPolicy"]').click();
+    this.clickOnDropDownOptionByText(openPolicy);
+  };
 
   setEndDate = end => {
     this.getCloseDate().click({ force: true });

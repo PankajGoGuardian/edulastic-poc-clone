@@ -423,7 +423,7 @@ class LiveClassboardPage {
 
   // lcb > MORE actions
 
-  clickOnMore = () => cy.get('[data-cy="moreAction"]').click();
+  clickOnMore = () => cy.get('[data-cy="moreAction"]').click({ force: true });
 
   getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
 
@@ -496,6 +496,7 @@ class LiveClassboardPage {
             "ant-select-dropdown-menu-item-disabled",
             "verify existing studnet should be disabled in list"
           );
+          cy.focused().blur();
         }
       });
   };

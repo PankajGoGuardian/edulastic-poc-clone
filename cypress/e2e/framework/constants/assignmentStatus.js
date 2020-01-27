@@ -10,6 +10,11 @@ export const teacherSide = {
   NOT_STARTED: "NOT STARTED"
 };
 
+export const openPolicyTypes = {
+  AUTO: "Automatically on Start Date",
+  MANUAL: "Open Manually in Class"
+};
+
 export const studentSide = {
   NOT_STARTED: "Not Started",
   IN_PROGRESS: "In Progress",

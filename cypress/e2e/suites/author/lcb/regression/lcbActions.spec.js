@@ -2,7 +2,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
-import { studentSide } from "../../../../framework/constants/assignmentStatus";
+import { studentSide, teacherSide, openPolicyTypes } from "../../../../framework/constants/assignmentStatus";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 
@@ -103,8 +103,7 @@ const lcbTestData = {
     1: students[1],
     2: students[5],
     3: students[6]
-  },
-  addStudent: students[7]
+  }
 };
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
@@ -124,12 +123,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
   const { itemKeys } = LCB_2;
   const studentAssignList = attemptsData.map(stu => stu.stuName);
   let questionTypeMap = {};
+  let testId;
+  let addStuCount = 1;
 
   before(" > create new assessment and assign", () => {
     questionTypeMap = lcb.getQuestionTypeMap(itemKeys, questionData, questionTypeMap);
     cy.deleteAllAssignments(student, teacher, password);
     cy.login("teacher", teacher, password);
-    testLibrary.createTest("LCB_2").then(() => {
+    testLibrary.createTest("LCB_2").then(_id => {
+      testId = _id;
       testLibrary.clickOnAssign();
       // assign to specific students
       testLibrary.assignPage.selectClass(className);
@@ -340,8 +342,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
   });
 
   describe("add student", () => {
-    beforeEach("login as teacher", () => {
+    before("login as teacher", () => {
+      cy.deleteAllAssignments(student, teacher, password);
       cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnTestLibrary();
+      testLibrary.searchFilters.clearAll();
+      testLibrary.searchFilters.typeInSearchBox(testId);
+      testLibrary.clickOnTestCardById(testId);
+      testLibrary.clickOnDetailsOfCard();
+      testLibrary.header.clickOnAssign();
+      // assign to specific students
+      testLibrary.assignPage.selectClass(className);
+      testLibrary.assignPage.clickOnSpecificStudent();
+      testLibrary.assignPage.selectStudent(students[1].stuName);
+      testLibrary.assignPage.selectOpenPolicy(openPolicyTypes.MANUAL);
+      testLibrary.assignPage.clickOnAssign();
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
     });
@@ -350,18 +365,102 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> LCB Actions`, () => {
       lcb.addOneStudent(students[1].email, false);
     });
 
-    it(" > add new student and verify", () => {
-      lcb.addOneStudent(addStudent.email);
+    it(" > add new student and verify, when assignment is in - Not Open state", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.addOneStudent(students[2].email);
       // assert student card should be present
       lcb
-        .getStudentCardByStudentName(addStudent.stuName)
+        .getStudentCardByStudentName(students[2].stuName)
         .should("be.visible", "after adding student student card should be present");
+      lcb.getStudentStatusByIndex(1).should("have.text", studentSide.NOT_STARTED);
       // assert total student count
       lcb
         .getSubmitSummary()
-        .should("contain.text", `${++stuCount} Submitted`, "after adding student total student count should change");
+        .should("contain.text", `${++addStuCount} Submitted`, "after adding student total student count should change");
       // verify student side assignment entry
-      cy.login("student", addStudent.email, password);
+      cy.login("student", students[2].email, password);
+      test.assignmentPage.verifyAssignmentIslocked();
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.getStudentCardByStudentName(students[2].stuName).should("be.visible");
+      lcb.header.clickOnOpen();
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      cy.login("student", students[2].email, password);
+      test.assignmentPage.getAssignmentButton().should("be.visible");
+    });
+
+    it(" > add new student and verify, when assignment is in - In Progress state", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      lcb.addOneStudent(students[3].email);
+      // assert student card should be present
+      lcb
+        .getStudentCardByStudentName(students[3].stuName)
+        .should("be.visible", "after adding student student card should be present");
+      lcb.getStudentStatusByIndex(2).should("have.text", studentSide.NOT_STARTED);
+      // assert total student count
+      lcb
+        .getSubmitSummary()
+        .should("contain.text", `${++addStuCount} Submitted`, "after adding student total student count should change");
+      // verify student side assignment entry
+      cy.login("student", students[3].email, password);
+      test.assignmentPage.getAssignmentButton().should("be.visible");
+    });
+
+    it(" > add new student and verify, when assignment is in - In Grading state", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      lcb.checkSelectAllCheckboxOfStudent();
+      lcb.clickOnMarkAsSubmit();
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_GRADING);
+      lcb.addOneStudent(students[4].email);
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      // assert student card should be present
+      lcb
+        .getStudentCardByStudentName(students[4].stuName)
+        .should("be.visible", "after adding student student card should be present");
+      lcb.getStudentStatusByIndex(3).should("have.text", studentSide.NOT_STARTED);
+      // assert total student count
+      lcb
+        .getSubmitSummary()
+        .should("contain.text", `${++addStuCount} Submitted`, "after adding student total student count should change");
+      // verify student side assignment entry
+      cy.login("student", students[4].email, password);
+      test.assignmentPage.getAssignmentButton().should("be.visible");
+    });
+    it(" > add new student and verify, when assignment is in - In Done state", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      lcb.selectCheckBoxByStudentName(students[4].stuName);
+      lcb.clickOnMarkAsSubmit();
+      teacherSidebar.clickOnAssignment();
+      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.header.clickOnExpressGraderTab();
+      lcb.header.clickOnLCBTab();
+      lcb.header.clickOnMarkAsDone();
+      lcb.header.verifyAssignmentStatus(teacherSide.DONE);
+      lcb.addOneStudent(students[5].email);
+      lcb.header.verifyAssignmentStatus(teacherSide.IN_PROGRESS);
+      // assert student card should be present
+      lcb
+        .getStudentCardByStudentName(students[5].stuName)
+        .should("be.visible", "after adding student student card should be present");
+      lcb.getStudentStatusByIndex(4).should("have.text", studentSide.NOT_STARTED);
+      // assert total student count
+      lcb
+        .getSubmitSummary()
+        .should("contain.text", `${++addStuCount} Submitted`, "after adding student total student count should change");
+      // verify student side assignment entry
+      cy.login("student", students[5].email, password);
       test.assignmentPage.getAssignmentButton().should("be.visible");
     });
   });

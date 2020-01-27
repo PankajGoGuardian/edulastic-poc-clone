@@ -104,7 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
 
       // verify student side that student is not able to take assignment
       cy.login("student", students[2].email, password);
-      studentAssignment.verufyAssignmentIslocked();
+      studentAssignment.verifyAssignmentIslocked();
       studentAssignment.getStatus().should("contain.text", teacherSide.PAUSED);
     });
 

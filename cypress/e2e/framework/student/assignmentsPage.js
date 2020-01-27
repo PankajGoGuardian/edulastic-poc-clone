@@ -175,7 +175,7 @@ class AssignmentsPage {
 
   // PAUSED
 
-  verufyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
+  verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
 
   enterPassword = pass => cy.get('[placeholder="Enter assignment password"]').type(pass);
 

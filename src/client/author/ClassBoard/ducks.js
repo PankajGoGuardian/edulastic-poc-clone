@@ -521,9 +521,11 @@ export const getAggregateByQuestion = (entities, studentId) => {
   );
   let questionsOrder = {};
   if (entities.length > 0) {
-    questionsOrder = (
-      entities.find(e => studentId && studentId === e.studentId) || entities[0]
-    ).questionActivities.reduce((acc, cur, ind) => {
+    let entity = entities[0];
+    if (studentId) {
+      entity = entities.find(e => e.studentId === studentId);
+    }
+    questionsOrder = (entity.questionActivities || []).reduce((acc, cur, ind) => {
       acc[cur._id] = ind;
       return acc;
     }, {});

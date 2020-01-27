@@ -32,6 +32,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     standards: [],
     noStandards: { totalQuestions: 0, totalPoints: 0 }
   };
+  if (!items || !items.length) return summary;
   for (const item of items) {
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item;
     const itemPoints = isLimitedDeliveryType
@@ -84,7 +85,7 @@ export const createGroupSummary = test => {
     noStandards: { totalQuestions: 0, totalPoints: 0 },
     groupSummary: []
   };
-
+  if (!test.itemGroups.length) return summary;
   for (const itemGroup of test.itemGroups) {
     const isLimitedDeliveryType = itemGroup.deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
     const isAutoSelect = itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT;
@@ -111,9 +112,9 @@ export const createGroupSummary = test => {
     summary.totalPoints += summaryData.totalPoints;
     summary.totalItems += summaryData.totalItems;
     summary.totalQuestions += summaryData.totalQuestions;
-    if (summaryData.standards.length) {
+    if (summaryData.standards?.length) {
       summary.standards = uniqBy(
-        [...summaryData.standards.filter(s => !s.isEquivalentStandard), ...test.summary.standards],
+        [...summaryData.standards.filter(s => !s.isEquivalentStandard), ...(test.summary?.standards || [])],
         "identifier"
       );
     }

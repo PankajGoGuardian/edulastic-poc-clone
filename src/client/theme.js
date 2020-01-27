@@ -776,7 +776,7 @@ export const defaultTheme = {
       previewTemplateBoxSmallFontSize: subtitleFontSize,
       iconPlusColor: themeColor,
       dropContainerDashedBorderColor: borderColor,
-      dropContainerSolidBorderColor: borderColor,
+      dropContainerSolidBorderColor: "#b9b9b9",
       dragItemBorderColor: borderColor,
       answerBorderColor: borderColor,
       responseBoxBgColor: containerGrey,

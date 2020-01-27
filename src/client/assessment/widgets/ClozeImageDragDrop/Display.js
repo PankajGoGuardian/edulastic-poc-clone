@@ -585,7 +585,8 @@ class Display extends Component {
                   minWidth: response.minWidth || "auto",
                   maxWidth: response.maxWidth,
                   transform: "translate3d(0px, 0px, 0px)",
-                  ...btnStyle
+                  ...btnStyle,
+                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor
                 }}
                 disableResponse={disableResponse}
                 className="imagelabeldragdrop-droppable active"

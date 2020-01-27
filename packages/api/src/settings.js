@@ -204,7 +204,7 @@ const deletePerformanceBand = (_id, districtId) =>
 const getInterestedStandards = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/intrested-standards/${orgId}?orgType=${orgType}`,
+      url: `${prefix}/interested-standards/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -212,7 +212,7 @@ const getInterestedStandards = ({ orgId, orgType = "district" }) =>
 const saveInterestedStandards = body =>
   api
     .callApi({
-      url: `${prefix}/intrested-standards/`,
+      url: `${prefix}/interested-standards/`,
       method: "post",
       data: body
     })
@@ -221,7 +221,7 @@ const saveInterestedStandards = body =>
 const updateInterestedStandards = body =>
   api
     .callApi({
-      url: `${prefix}/intrested-standards/`,
+      url: `${prefix}/interested-standards/`,
       method: "put",
       data: body
     })

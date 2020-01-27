@@ -114,7 +114,7 @@ const fetchStandardMasteryFilter = params => {
 
 const fetchStandardMasteryBrowseStandards = params => {
   return api.callApi({
-    url: `/search/browseStandards`,
+    url: `/search/browse-standards`,
     data: params,
     method: "POST"
   });

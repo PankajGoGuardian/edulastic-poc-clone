@@ -586,7 +586,9 @@ class Display extends Component {
                   maxWidth: response.maxWidth,
                   transform: "translate3d(0px, 0px, 0px)",
                   ...btnStyle,
-                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor
+                  background: transparentBackground
+                    ? "transparent"
+                    : theme.widgets.clozeImageDragDrop.responseBoxBgColor
                 }}
                 disableResponse={disableResponse}
                 className="imagelabeldragdrop-droppable active"

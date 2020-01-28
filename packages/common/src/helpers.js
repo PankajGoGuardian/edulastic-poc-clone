@@ -205,6 +205,14 @@ export const reIndexResponses = htmlStr => {
   return $(parsedHTML).html();
 };
 
+const tagMapping = {
+  img: "image",
+  mathunit: "math-input",
+  mathinput: "math-input",
+  textinput: "text-input",
+  textdropdown: "dropdown"
+};
+
 export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus) return question.DEFAULT_STIMULUS;
@@ -225,11 +233,29 @@ export const sanitizeForReview = stimulus => {
       if (elem.nodeName === "SPAN" && latex && latex.includes("matrix")) {
         shouldReplace = true;
       }
-      if (shouldReplace) $(this).replaceWith("...");
+      if (shouldReplace) {
+        if (tagMapping[tagToRemove]) {
+          $(this).replaceWith(` [${tagMapping[tagToRemove]}] `);
+        } else if (["br", "span"].includes(tagToRemove)) {
+          $(this).replaceWith("...");
+        } else {
+          $(this).replaceWith(` [${tagToRemove}] `);
+        }
+      }
       tagFound = true;
     });
   });
+
   //to remove any text after ...
+  jqueryEl.find("p").each(function() {
+    if (
+      $(this)
+        .text()
+        .trim() === "..."
+    ) {
+      $(this).remove();
+    }
+  });
   let splitJquery = jqueryEl.html();
   if (tagFound) {
     const firstIndexOf = jqueryEl.html().indexOf("...");

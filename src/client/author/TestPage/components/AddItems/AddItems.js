@@ -395,7 +395,7 @@ class AddItems extends PureComponent {
                     <span>Create new Item</span>
                   </StyledButton>
                   {(features.isCurator || features.isPublisherAuthor) && (
-                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={gotoGroupItems}>
+                    <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
                       <IconItemGroup color={themeColor} width={15} height={15} />
                       <span>Group Items</span>
                     </StyledButton>

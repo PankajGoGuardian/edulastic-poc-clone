@@ -38,10 +38,10 @@ const StandardsModal = ({
 
   const footer = (
     <div>
-      <Button ghost onClick={onCancel}>
+      <Button data-cy="cancel-Stand-Set" ghost onClick={onCancel}>
         Cancel
       </Button>
-      <Button type="primary" onClick={() => onApply(state)}>
+      <Button type="primary" data-cy="apply-Stand-Set" onClick={() => onApply(state)}>
         Apply
       </Button>
     </div>
@@ -90,7 +90,7 @@ const StandardsModal = ({
       modalWidth="800px"
       top="50px"
     >
-      <Paper>
+      <Paper data-cy="standard-PopUp">
         <PopupRowSelect
           handleChangeStandard={handleChangeStandard}
           handleChangeGrades={handleChangeGrades}
@@ -127,6 +127,7 @@ const StandardsModal = ({
                       style={{ marginBottom: 15 }}
                     >
                       <Checkbox
+                        data-cy={c.identifier}
                         onChange={() => handleCheckELO(c)}
                         checked={state.eloStandards.some(item => item._id === c._id)}
                       />

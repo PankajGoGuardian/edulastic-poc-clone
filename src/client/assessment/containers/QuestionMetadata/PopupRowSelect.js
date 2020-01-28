@@ -22,6 +22,7 @@ const PopupRowSelect = ({
         <ItemBody>
           <div className="select-label">{t("component.options.subject")}</div>
           <Select
+            data-cy="subject-Select"
             style={{ width: "100%" }}
             value={subject}
             onChange={handleChangeSubject}
@@ -43,6 +44,7 @@ const PopupRowSelect = ({
         <ItemBody>
           <div className="select-label">{t("component.options.standardSet")}</div>
           <Select
+            data-cy="standardSet-Select"
             style={{ width: "100%" }}
             showSearch
             filterOption
@@ -62,6 +64,7 @@ const PopupRowSelect = ({
         <ItemBody>
           <div className="select-label">{t("component.options.grade")}</div>
           <Select
+            data-cy="grade-Select"
             mode="multiple"
             showSearch
             style={{ width: "100%" }}

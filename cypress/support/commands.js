@@ -160,15 +160,26 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.route("POST", "**/auth/**").as("auth");
   cy.route("POST", "**/search/courses").as("searchCourse");
   cy.route("GET", "**/dashboard/**").as("teacherDashboard");
+  cy.route("GET", "**/api/user-context?name=RECENT_PLAYLISTS").as("curatorDash");
   login.fillLoginForm(postData.username, postData.password);
   login.clickOnSignin();
   cy.wait("@auth");
-  if (role === "teacher") {
-    cy.wait("@teacherDashboard");
-    cy.wait("@searchCourse");
-  } else {
-    cy.wait("@assignment");
-    cy.wait("@testActivity");
+
+  switch (role) {
+    case "teacher":
+      cy.wait("@teacherDashboard");
+      cy.wait("@searchCourse");
+      break;
+    case "student":
+      cy.wait("@assignment");
+      cy.wait("@testActivity");
+      break;
+    case "publisher":
+    case "curator":
+      cy.wait("@curatorDash");
+      break;
+    default:
+      break;
   }
 });
 

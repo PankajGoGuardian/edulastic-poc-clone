@@ -6,10 +6,12 @@ import { Button } from "antd";
 
 const TypeConfirmModal = ({ visible, handleResponse, confirmModalCategory, groupName }) => {
   const Footer = [
-    <Button ghost onClick={() => handleResponse("NO")}>
+    <Button ghost data-cy="NoOverRide" onClick={() => handleResponse("NO")}>
       NO
     </Button>,
-    <YesButton onClick={() => handleResponse("YES")}>YES</YesButton>
+    <YesButton data-cy="overRide" onClick={() => handleResponse("YES")}>
+      YES
+    </YesButton>
   ];
   return (
     <StyledModal

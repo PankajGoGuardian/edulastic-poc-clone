@@ -532,6 +532,7 @@ const GroupItems = ({
                           ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
                           : itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT
                       }
+                      data-cy={`autoselect-${itemGroup.groupName}`}
                       disabled={currentGroupIndex !== index}
                       onChange={e => handleTypeSelect(index)}
                     >
@@ -597,6 +598,7 @@ const GroupItems = ({
                           </StandardNameSection>
                         ) : (
                           <BrowseButton
+                            data-cy={`standard-${itemGroup.groupName}`}
                             onClick={() => {
                               if (currentGroupIndex === index) {
                                 setShowStandardModal(true);
@@ -690,6 +692,7 @@ const GroupItems = ({
                         </>
                       )}
                       <Radio
+                        data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
                         defaultChecked={false}
                         value={currentGroupIndex === index ? editingDeliveryType : currentDeliveryType}
                       >
@@ -722,6 +725,7 @@ const GroupItems = ({
                       <>
                         <SaveButton
                           loading={fetchingItems}
+                          data-cy={`save-${itemGroup.groupName}`}
                           onClick={e => {
                             handleSaveGroup();
                             e.target.blur();

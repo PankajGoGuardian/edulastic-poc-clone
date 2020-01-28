@@ -39,19 +39,16 @@ export default class TeacherSideBar {
     cy.server();
     cy.route("POST", "**/search/**").as("itemSearch");
 
-    cy.get('[data-cy="Item Bank"]')
-      .click({ force: true })
-      .click({ force: true });
+    cy.get('[data-cy="Item Bank"]').dblclick({ force: true });
+    // .click({ force: true });
     cy.wait("@itemSearch");
   };
 
   clickOnTestLibrary = () => {
     cy.server();
-    cy.route("POST", "**/search/tests").as("searchTest");
+    cy.route("POST", "**/tests").as("searchTest");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
-    cy.get('[data-cy="Test Library"]')
-      .click({ force: true })
-      .click({ force: true });
+    cy.get('[data-cy="Test Library"]').dblclick({ force: true });
     cy.wait("@searchTest");
   };
 }

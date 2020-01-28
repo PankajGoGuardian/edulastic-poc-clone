@@ -29,7 +29,9 @@ export default class SearchFilters {
   };
 
   setCollection = collection => {
+    this.routeSearch();
     CypressHelper.selectDropDownByAttribute("Collections", collection);
+    cy.wait("@search");
   };
 
   scrollFiltersToTop = () =>

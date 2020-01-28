@@ -97,9 +97,8 @@ export default class TestLibrary {
       cy.wait(2000);
       // testSummary.header.clickOnSaveButton(true);
       // publish
-      if (publish) testSummary.header.clickOnPublishButton();
-
-      return cy.url().then(url => url.split("/").reverse()[0]);
+      if (publish) return testSummary.header.clickOnPublishButton();
+      else return cy.url().then(url => url.split("/").reverse()[0]);
     });
   };
 
@@ -155,7 +154,7 @@ export default class TestLibrary {
 
   clickOnTestCardById = testId => {
     this.getTestCardById(testId)
-      .contains("TOTAL ITEMS")
+      // .contains("TOTAL ITEMS")
       // .click({ force: true })
       .click();
   };
@@ -412,4 +411,13 @@ export default class TestLibrary {
   };
 
   getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
+
+  createNewTestAndFillDetails = testData => {
+    this.sidebar.clickOnTestLibrary();
+    this.clickOnAuthorTest();
+    this.testSummary.setName(testData.name);
+    this.testSummary.selectGrade(testData.grade);
+    this.testSummary.selectSubject(testData.subject);
+    this.testSummary.selectCollection(testData.collections);
+  };
 }

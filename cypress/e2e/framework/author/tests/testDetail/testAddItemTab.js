@@ -64,5 +64,25 @@ export default class TestAddItemTab {
       .contains("REMOVE")
       .click({ force: true });
 
-  clickOnGroupItem = () => cy.get('[data-cy="groupItem"]').click();
+  clickOnGroupItem = () => {
+    cy.server();
+    cy.route("POST", "**/api/search/browse-standards").as("browseStandards");
+    cy.get('[data-cy="groupItem"]').click();
+    cy.wait("@browseStandards");
+  };
+
+  removeGroupItemById = itemId =>
+    cy
+      .get(`[data-cy="${itemId}"]`)
+      // .contains("Selected")
+      .click({ force: true });
+
+  addItemByIdByGroup = (group, itemId) => {
+    this.addItemById(itemId);
+    cy.get('[class^="SelectGroupModal"]')
+      .contains(`Group ${group}`)
+      .click();
+  };
+
+  verifyGroupOfItemInList = (group, itemId) => cy.get(`[data-cy="${itemId}"]`).should("contain", `Group ${group}`);
 }

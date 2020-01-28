@@ -169,4 +169,10 @@ export default class TestReviewTab {
   };
 
   getQueContainer = () => cy.get('[data-cy="question-container"]');
+
+  verifyNoOfItemsInGroupByNo = (group, itemCount) => {
+    cy.get(`[data-cy="item-Group ${group}"]`).should("contain", itemCount);
+  };
+
+  verifyItemCoutInPreview = count => cy.get('[data-cy="styled-wrapped-component"]').should("have.length", count);
 }

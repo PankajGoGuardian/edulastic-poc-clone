@@ -78,4 +78,6 @@ export default class CypressHelper {
 
     cy.wait(300);
   };
+
+  static getShortId = item => item.slice(item.length - 5);
 }

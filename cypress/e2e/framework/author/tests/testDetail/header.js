@@ -59,7 +59,7 @@ export default class TestHeader {
       cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
       return cy.wait("@published").then(xhr => {
         expect(xhr.status).to.eq(200);
-        return JSON.stringify(xhr.request)
+        return JSON.stringify(xhr.url)
           .split("/")
           .reverse()[1];
       });

@@ -767,7 +767,8 @@ function* createTest(data) {
 
 function* createTestSaga({ payload }) {
   try {
-    let entity = yield createTest(payload.data);
+    const entity = yield createTest(payload.data);
+    entity.itemGroups = payload.data.itemGroups;
     yield put(createTestSuccessAction(entity));
     if (payload.currentTab) {
       yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}`));

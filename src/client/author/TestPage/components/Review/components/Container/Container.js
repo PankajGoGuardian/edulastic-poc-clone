@@ -130,7 +130,7 @@ class Review extends PureComponent {
     newData.scoring.testItems = newData.scoring.testItems.filter(item => {
       const foundItem = newData.itemGroups
         .flatMap(itemGroup => itemGroup.items || [])
-        .items.find(({ id }) => id === item._id);
+        .find(({ id }) => id === item._id);
       return !(foundItem && foundItem.selected);
     });
     const testItems = newData.itemGroups.flatMap(itemGroup => itemGroup.items || []);

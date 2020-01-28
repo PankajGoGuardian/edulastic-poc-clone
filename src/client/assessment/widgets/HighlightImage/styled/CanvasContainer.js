@@ -11,7 +11,11 @@ export const CanvasContainer = styled.div`
   }
   canvas {
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 100%;
+    width: 100%;
   }
 `;

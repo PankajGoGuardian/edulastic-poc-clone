@@ -285,10 +285,10 @@ class SideMenu extends Component {
             </Link>
           </Menu.Item>
           {!isPublisher && (
-            <Menu.Item key="0" className="removeSelectedBorder">
-              <a>
+            <Menu.Item key="1" className="removeSelectedBorder">
+              <Link to="/author/subscription">
                 <IconSubscriptionHighlight /> {isCollapsed ? "" : "Subscription"}
-              </a>
+              </Link>
             </Menu.Item>
           )}
           <Menu.Item key="0" className="removeSelectedBorder">

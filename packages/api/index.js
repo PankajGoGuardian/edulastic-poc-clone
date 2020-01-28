@@ -39,3 +39,4 @@ export { default as tagsApi } from "./src/tags";
 export { default as contentErrorApi } from "./src/contentError";
 export { default as rubricsApi } from "./src/rubrics";
 export { default as publisherApi } from "./src/publisher";
+export { default as subscriptionApi } from "./src/subscription";

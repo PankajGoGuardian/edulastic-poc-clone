@@ -21,6 +21,7 @@ export const greyish = "#f3f3f4";
 export const greyishDarker1 = "#a7b1c2";
 export const greyishDarker2 = "#cccccc";
 export const mainBgColor = "#f3f3f8";
+export const greyishBorder = "#B9B9B9";
 export const mainTextColor = "#444444";
 export const textColor = "#848993";
 export const secondaryTextColor = "#434b5d";

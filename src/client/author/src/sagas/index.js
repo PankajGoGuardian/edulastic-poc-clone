@@ -41,6 +41,7 @@ import { watcherSaga as expressGraderWatcherSaga } from "../../ExpressGrader/duc
 import { classEnrollmentSaga } from "../../ClassEnrollment";
 import { rubricSaga } from "../../GradingRubric";
 import { watcherSaga as lcbAssignmentSettingsSaga } from "../../LCBAssignmentSettings/ducks";
+import { watcherSaga as subscriptionSaga } from "../../Subscription/ducks";
 
 const authorSagas = [
   itemsSaga(),
@@ -85,7 +86,8 @@ const authorSagas = [
   expressGraderWatcherSaga(),
   classEnrollmentSaga(),
   rubricSaga(),
-  lcbAssignmentSettingsSaga()
+  lcbAssignmentSettingsSaga(),
+  subscriptionSaga()
 ];
 
 export default authorSagas;

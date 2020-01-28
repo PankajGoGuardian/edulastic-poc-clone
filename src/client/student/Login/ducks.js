@@ -181,9 +181,11 @@ export default createReducer(initialState, {
   [UPDATE_DEFAULT_SUBJECT]: (state, { payload }) => {
     state.user.orgData.selectedSubject = payload;
   },
-  [FETCH_USER]: state => {
-    state.isAuthenticated = false;
-    state.authenticating = true;
+  [FETCH_USER]: (state, { payload }) => {
+    if (!payload?.background) {
+      state.authenticating = true;
+      state.isAuthenticated = false;
+    }
   },
   [FETCH_V1_REDIRECT]: state => {
     state.isAuthenticated = false;

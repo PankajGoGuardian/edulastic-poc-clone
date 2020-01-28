@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { MenuIcon } from "@edulastic/common";
-import { mediumDesktopWidth, themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 const ProfileHeader = ({ t, toggleSideBar }) => (

@@ -52,6 +52,7 @@ const ClassCreate = lazy(() => import("../ManageClass/components/ClassCreate"));
 const PrintPreviewClass = lazy(() => import("../ManageClass/components/PrintPreview"));
 
 const Profile = lazy(() => import("../DistrictProfile/components/Container/Profile"));
+const Subscription = lazy(() => import("../Subscription"));
 const DistrictProfile = lazy(() => import("../DistrictProfile"));
 const TestSetting = lazy(() => import("../TestSetting"));
 const Term = lazy(() => import("../Term"));
@@ -446,6 +447,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route exact path="/author/questions/edit/:questionType" component={QuestionEditor} />
                     <Route path="/author/reports/:reportType?" component={Reports} />
                     <Route exact path="/author/profile" component={Profile} />
+                    <Route exact path="/author/subscription" component={Subscription} />
                     <Route exact path="/author/districtprofile" component={DistrictProfile} />
                     <Route exact path="/author/settings/testsettings" component={TestSetting} />
                     <Route exact path="/author/settings/term" component={Term} />

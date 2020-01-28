@@ -48,7 +48,9 @@ import { dashboardTeacher } from "../../Dashboard";
 import { testItemPreview } from "../components/common/PreviewModal";
 import { classEnrollmentReducer } from "../../ClassEnrollment";
 import { rubricReducer } from "../../GradingRubric";
-import { slice } from "../../LCBAssignmentSettings/ducks";
+import { slice as LCBAssignmentSlice } from "../../LCBAssignmentSettings/ducks";
+import { slice as subscriptionSlice } from "../../Subscription/ducks";
+
 const authorReducers = {
   authorUi,
   view,
@@ -100,7 +102,8 @@ const authorReducers = {
   testItemPreview,
   classEnrollmentReducer,
   rubricReducer,
-  LCBAssignmentSettings: slice.reducer
+  LCBAssignmentSettings: LCBAssignmentSlice.reducer,
+  subscription: subscriptionSlice.reducer
 };
 
 export default authorReducers;

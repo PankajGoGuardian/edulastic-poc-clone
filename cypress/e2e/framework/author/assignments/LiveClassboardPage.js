@@ -13,6 +13,8 @@ class LiveClassboardPage {
     this.redirectPopup = new RediectPopup();
   }
 
+  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
+
   checkClassName(className) {
     return cy.get("[data-cy=CurrentClassName]").contains(className);
   }
@@ -81,11 +83,7 @@ class LiveClassboardPage {
       .contains("a", "STUDENTS")
       .click({ force: true });
 
-  clickonQuestionsTab = () =>
-    cy
-      .get("[data-cy=studentnQuestionTab]")
-      .contains("a", "QUESTIONS")
-      .click({ force: true });
+  clickonQuestionsTab = () => this.getQuestionsTab().click({ force: true });
 
   checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").check({ force: true });
 

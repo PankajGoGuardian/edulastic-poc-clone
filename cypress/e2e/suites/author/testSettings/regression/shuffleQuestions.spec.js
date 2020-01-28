@@ -4,9 +4,14 @@ import { assignmentButtonsText } from "../../../../framework/constants/assignmen
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
+import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const { TEST_SETTING } = require("../../../../../fixtures/testAuthoring");
 const questionData = require("../../../../../fixtures/questionAuthoring");
+
+const { _ } = Cypress;
 
 const students = {
   1: {
@@ -39,6 +44,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
   const studentTest = new StudentTestPage();
   const testLibrary = new TestLibrary();
   const teacherSidebar = new TeacherSideBar();
+  const teacherAssignmentPage = new AuthorAssignmentPage();
+  const lcb = new LiveClassboardPage();
 
   const { itemKeys, name: assignmentName } = TEST_SETTING;
   const asgnstatus = {
@@ -100,7 +107,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       });
 
       studentTest.submitTest().then(() => {
-        expect(isSequenceMatch(originalSequence, student1Sequence), "verify question seq is not same").to.eq(false);
+        // TODO: below assertion migth fail sometimes as probability is low for first student
+        expect(!isSequenceMatch(originalSequence, student1Sequence), "verify question seq is not same").to.eq(true);
       });
     });
 
@@ -116,7 +124,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       });
 
       studentTest.submitTest().then(() => {
-        expect(isSequenceMatch(originalSequence, student2Sequence), "verify question seq is not same").to.eq(false);
+        expect(
+          !isSequenceMatch(originalSequence, student2Sequence) || !_.isEqual(student2Sequence, student1Sequence),
+          "verify question seq is not same"
+        ).to.eq(true);
       });
     });
 
@@ -132,7 +143,34 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
       });
 
       studentTest.submitTest().then(() => {
-        expect(isSequenceMatch(originalSequence, student3Sequence), "verify question seq is not same").to.eq(false);
+        expect(
+          !isSequenceMatch(originalSequence, student3Sequence) ||
+            (!_.isEqual(student3Sequence, student1Sequence) || !_.isEqual(student3Sequence, student2Sequence)),
+          "verify question seq is not same"
+        ).to.eq(true);
+      });
+    });
+
+    it("> verify LCB student centric view - should have default sequence for all student", () => {
+      cy.login("teacher", teacher, password);
+      teacherSidebar.clickOnAssignment();
+      teacherAssignmentPage.clcikOnPresenatationIconByIndex(0);
+      lcb.clickOnStudentsTab();
+      _.keys(students).forEach(stu => {
+        const { stuName } = students[stu];
+        lcb.questionResponsePage.selectStudent(stuName);
+        originalSequence.forEach((queText, q) => {
+          lcb.questionResponsePage.getQuestionContainer(q).should("contain.text", queText);
+        });
+      });
+    });
+
+    it("> verify LCB questions centric view - should be enabled with all question", () => {
+      lcb.getQuestionsTab().should("not.have.attr", "disabled", "disabled");
+      lcb.clickonQuestionsTab();
+      lcb.questionResponsePage.getDropDown().click({ force: true });
+      CypressHelper.getDropDownList().then(questions => {
+        expect(questions).to.have.lengthOf(originalSequence.length);
       });
     });
   });

@@ -20,7 +20,11 @@ class ResponseBox extends Component {
 
   titleRef = React.createRef();
 
+  preventPageScroll = e => e.preventDefault();
+
   handleDragDropValuePosition = (d, value, width, height) => {
+    window.removeEventListener("touchstart", this.preventPageScroll);
+    window.removeEventListener("touchmove", this.preventPageScroll);
     const titleHeight = this.titleRef.current.clientHeight;
     const { onAddMark, position, markWidth, markHeight, minWidth } = this.props;
     let x = d.x + markWidth / 2;
@@ -43,7 +47,9 @@ class ResponseBox extends Component {
     this.setState({ draggingMark: null });
   };
 
-  handleDragStart = i => () => {
+  handleDragStart = i => e => {
+    window.addEventListener("touchstart", this.preventPageScroll, { passive: false });
+    window.addEventListener("touchmove", this.preventPageScroll, { passive: false });
     this.setState({ draggingMark: i });
   };
 

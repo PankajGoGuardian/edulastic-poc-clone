@@ -57,6 +57,7 @@ class Review extends PureComponent {
   };
 
   secondHeaderRef = React.createRef();
+  ContainerRef = React.createRef();
 
   state = {
     isCollapse: true,
@@ -69,11 +70,11 @@ class Review extends PureComponent {
   };
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    this.ContainerRef.current.removeEventListener("scroll", this.handleScroll);
   }
 
   componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
+    this.ContainerRef?.current?.addEventListener("scroll", this.handleScroll);
     const { test, addItemsToAutoselectGroupsRequest } = this.props;
     const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
     if (hasAutoSelectItems) {
@@ -241,11 +242,12 @@ class Review extends PureComponent {
   };
 
   handleScroll = e => {
+    const element = e.target;
     if (this.secondHeaderRef.current) {
-      if (window.scrollY > 50 && !this.state.hasStickyHeader) {
+      if (element.scrollTop > 50 && !this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.add("fixed-second-header");
         this.setState({ hasStickyHeader: true });
-      } else if (window.scrollY <= 50 && this.state.hasStickyHeader) {
+      } else if (element.scrollTop <= 50 && this.state.hasStickyHeader) {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
         this.setState({ hasStickyHeader: false });
       }
@@ -320,7 +322,7 @@ class Review extends PureComponent {
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
     return (
-      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible}>
+      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible} ref={this.ContainerRef}>
         <ReviewPageContainer>
           <Row>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>

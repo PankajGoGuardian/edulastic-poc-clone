@@ -145,6 +145,15 @@ export default class TestAssignPage {
 
   getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
 
+  getAnswerOnPaper = () => cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
+
+  selectAnswerOnPaper = () =>
+    this.getAnswerOnPaper().then($swich => {
+      if (!$swich.hasClass("ant-switch-checked")) {
+        cy.wrap($swich).click();
+      }
+    });
+
   deselectShuffleQuestions = () =>
     this.getShuffleQue().then($swich => {
       if ($swich.hasClass("ant-switch-checked")) {

@@ -231,7 +231,7 @@ export const sanitizeForReview = stimulus => {
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
       if (elem.nodeName === "SPAN" && latex && latex.includes("matrix")) {
-        shouldReplace = true;
+        $(this).replaceWith(` [matrix] `);
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {

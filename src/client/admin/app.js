@@ -12,6 +12,7 @@ import ProxyUser from "./Components/ProxyUser";
 import UpgradeUser from "./Containers/UpgradeUser";
 import { logoutAction } from "../author/src/actions/auth";
 import Logout from "./Common/Logout";
+import ApiForm from "./Containers/ApiForm";
 
 const siderMenuData = [
   {
@@ -28,6 +29,11 @@ const siderMenuData = [
     icon: "team",
     label: "Upgrade Plan",
     href: "/admin/upgrade"
+  },
+  {
+    icon: "team",
+    label: "Api Forms",
+    href: "/admin/apiForms"
   }
 ];
 
@@ -75,6 +81,7 @@ function Admin({ match, history, logoutAction, location }) {
               <Route path={`${match.path}/search`} component={CleverSearch} />
               <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
               <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
+              <Route path={`${match.path}/apiForms`} component={ApiForm} />
             </Switch>
           </ErrorHandler>
         </MainDiv>

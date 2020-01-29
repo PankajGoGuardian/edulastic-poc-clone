@@ -480,7 +480,13 @@ export const defaultTheme = {
     toolbarBorderColor: "none",
     triangleBorderLeftColor: "transparent",
     triangleBorderRightColor: "transparent",
-    triangleBorderBottomColor: triangleBottomColor
+    triangleBorderBottomColor: triangleBottomColor,
+    partiallyCorrectScoreBlockBgColor: "#fbfae0",
+    partiallyCorrectScoreBlockIconFillColor: "#dfd82c",
+    incorrectScoreBlockIconFillColor: "#ed5b84",
+    incorrectScoreBlockBgColor: "#fae1e9",
+    correctScoreBlockBgColor: "#1fe3a11e",
+    correctScoreBlockIconFillColor: "#1fe3a1"
   },
   manageDistrict: {
     refineResultsButtonTextColor: themeColor,

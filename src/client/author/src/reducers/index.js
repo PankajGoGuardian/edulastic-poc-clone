@@ -1,6 +1,7 @@
 import authorUi from "./authorUi";
 import view from "./view";
 import items from "./items";
+import itemScore from "../ItemScore/ducks";
 import testItem from "./testItem";
 import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
@@ -102,6 +103,7 @@ const authorReducers = {
   testItemPreview,
   classEnrollmentReducer,
   rubricReducer,
+  itemScore,
   LCBAssignmentSettings: LCBAssignmentSlice.reducer,
   subscription: subscriptionSlice.reducer
 };

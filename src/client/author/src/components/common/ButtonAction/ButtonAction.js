@@ -11,6 +11,7 @@ import { compose } from "redux";
 import { clearAnswersAction } from "../../../actions/answers";
 import { Container, PreviewBar, HeaderActionButton, LabelText, RightActionButton } from "./styled_components";
 import { ButtonLink } from "..";
+import ScoreBlock from "../ScoreBlock";
 
 class ButtonAction extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ class ButtonAction extends Component {
         )}
         {view === "preview" && (
           <PreviewBar>
+            <ScoreBlock />
             <RightActionButton
               style={showHints ? { background: themeColor } : null}
               hints

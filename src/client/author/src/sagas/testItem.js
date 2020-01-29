@@ -1,4 +1,5 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { delay } from "redux-saga";
 import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
@@ -20,9 +21,11 @@ import {
   CHANGE_VIEW
 } from "../constants/actions";
 
+import { SET_ITEM_SCORE, RESET_ITEM_SCORE } from "../ItemScore/ducks";
+
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { resetDictAlignmentsAction } from "../actions/dictionaries";
-import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
+import { PREVIEW, CLEAR } from "../../../assessment/constants/constantsForQuestions";
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
 
@@ -101,7 +104,6 @@ function* updateTestItemSaga({ payload }) {
 function* evaluateAnswers({ payload }) {
   try {
     // clear previous evaluation
-
     yield put({
       type: CLEAR_ITEM_EVALUATION
     });
@@ -117,12 +119,20 @@ function* evaluateAnswers({ payload }) {
         }
       });
 
-      message.config({
-        maxCount: 1
-      });
-      const previewMode = yield select(state => _get(state, "view.preview", null));
-      if (previewMode === CHECK) {
-        message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
+      if (payload?.mode !== "show") {
+        // do not re calculate the score in case show answer is clicked
+        yield put({
+          type: SET_ITEM_SCORE,
+          payload: {
+            score,
+            maxScore,
+            showScore: true
+          }
+        });
+        yield call(delay, 1500);
+        yield put({
+          type: RESET_ITEM_SCORE
+        });
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));
@@ -136,12 +146,19 @@ function* evaluateAnswers({ payload }) {
           ...evaluation
         }
       });
-      message.config({
-        maxCount: 1
-      });
-      const previewMode = yield select(state => _get(state, "view.preview", null));
-      if (previewMode === CHECK) {
-        message.success(`score: ${score ? +score.toFixed(2) : 0}/${maxScore}`);
+      if (payload?.mode !== "show") {
+        yield put({
+          type: SET_ITEM_SCORE,
+          payload: {
+            score,
+            maxScore,
+            showScore: true
+          }
+        });
+        yield call(delayer, 1500);
+        yield put({
+          type: RESET_ITEM_SCORE
+        });
       }
     }
   } catch (err) {

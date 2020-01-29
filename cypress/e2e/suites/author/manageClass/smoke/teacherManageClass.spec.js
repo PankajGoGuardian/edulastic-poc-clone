@@ -94,7 +94,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
             .getStandardSets()
             .click()
             .then(() => {
-              CypressHelper.getDropDownList().then(list => expect(list).to.include.members([subjectStdMap[sub]]));
+              CypressHelper.getDropDownList().then(list =>
+                expect(list, `verify standards${JSON.stringify(list)},are as per subject ${sub}`).to.include.members([
+                  subjectStdMap[sub]
+                ])
+              );
             })
             .wait(500)
             .focused()
@@ -117,6 +121,70 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         expect(cls.subject).to.eq(subject);
         expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");
+      });
+    });
+  });
+
+  context("> add students", () => {
+    beforeEach(() => {
+      sideBar.clickOnManageClass();
+    });
+
+    it("> add one student", () => {
+      const username = Helpers.getRamdomEmail();
+      const name = `smokeaddstudent ${random}`;
+      manageClass.getClassDetailsByName(testData.create.className);
+      manageClass.clickOnAddStudent();
+      manageClass.fillStudentDetails(username, name, user.password);
+      manageClass.clickOnAddUserButton().then(() => {
+        sideBar.clickOnManageClass();
+        cy.wait("@mygroups");
+        manageClass.getClassRowDetails(testData.create.className).then(cls => {
+          expect(cls.students).to.eq("1");
+        });
+      });
+    });
+
+    _.keys(userType).forEach(uType => {
+      it(`> add multiple students by - ${userType[uType]}`, () => {
+        const users = [];
+        switch (uType) {
+          case "GOOGLE":
+            users.push(Helpers.getRamdomEmail("gmail.com"));
+            users.push(Helpers.getRamdomEmail("gmail.com"));
+            break;
+
+          case "MSO":
+            users.push(Helpers.getRamdomEmail("outlook.com"));
+            users.push(Helpers.getRamdomEmail("outlook.com"));
+            break;
+
+          case "FL_NAME":
+            users.push(`smokeaddstudent1 ${random}`);
+            users.push(`smokeaddstudent2 ${random}`);
+            break;
+
+          case "LF_NAME":
+            users.push(`${random} smokeaddstudent1`);
+            users.push(`${random} smokeaddstudent2`);
+            break;
+
+          default:
+            break;
+        }
+
+        manageClass.getClassRowDetails(testData.create.className).then(cls => {
+          const previousCount = parseInt(cls.students, 10);
+          manageClass.getClassDetailsByName(testData.create.className);
+          manageClass.clickOnAddStudents();
+          manageClass.addMultipleStudent(users, userType[uType]).then(() => {
+            sideBar.clickOnManageClass();
+            cy.wait("@mygroups");
+            manageClass.getClassRowDetails(testData.create.className).then(c => {
+              expect(c.students).to.eq(`${previousCount + 2}`);
+            });
+          });
+        });
       });
     });
   });
@@ -163,70 +231,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         expect(cls.subject).to.eq(subject);
         expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");
-      });
-    });
-  });
-
-  context("> add students", () => {
-    beforeEach(() => {
-      sideBar.clickOnManageClass();
-    });
-
-    it("> add one student", () => {
-      const username = Helpers.getRamdomEmail();
-      const name = `smokeaddstudent ${random}`;
-      manageClass.getClassDetailsByName(testData.edit.className);
-      manageClass.clickOnAddStudent();
-      manageClass.fillStudentDetails(username, name, user.password);
-      manageClass.clickOnAddUserButton().then(() => {
-        sideBar.clickOnManageClass();
-        cy.wait("@mygroups");
-        manageClass.getClassRowDetails(testData.edit.className).then(cls => {
-          expect(cls.students).to.eq("1");
-        });
-      });
-    });
-
-    _.keys(userType).forEach(uType => {
-      it(`> add multiple students by - ${userType[uType]}`, () => {
-        const users = [];
-        switch (uType) {
-          case "GOOGLE":
-            users.push(Helpers.getRamdomEmail("gmail.com"));
-            users.push(Helpers.getRamdomEmail("gmail.com"));
-            break;
-
-          case "MSO":
-            users.push(Helpers.getRamdomEmail("outlook.com"));
-            users.push(Helpers.getRamdomEmail("outlook.com"));
-            break;
-
-          case "FL_NAME":
-            users.push(`smokeaddstudent1 ${random}`);
-            users.push(`smokeaddstudent2 ${random}`);
-            break;
-
-          case "LF_NAME":
-            users.push(`${random} smokeaddstudent1`);
-            users.push(`${random} smokeaddstudent2`);
-            break;
-
-          default:
-            break;
-        }
-
-        manageClass.getClassRowDetails(testData.edit.className).then(cls => {
-          const previousCount = parseInt(cls.students, 10);
-          manageClass.getClassDetailsByName(testData.edit.className);
-          manageClass.clickOnAddStudents();
-          manageClass.addMultipleStudent(users, userType[uType]).then(() => {
-            sideBar.clickOnManageClass();
-            cy.wait("@mygroups");
-            manageClass.getClassRowDetails(testData.edit.className).then(c => {
-              expect(c.students).to.eq(`${previousCount + 2}`);
-            });
-          });
-        });
       });
     });
   });

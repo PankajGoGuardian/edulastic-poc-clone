@@ -68,8 +68,13 @@ export const StyledCard = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
+  cursor: ${props => (props.isClickEnable ? "pointer" : "default")};
+  transition: all 0.2s ease-in;
   .ant-card-body {
     padding: 19px 22px;
+  }
+  &:hover {
+    box-shadow: ${props => (props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)")};
   }
 
   @media (min-width: ${mobileWidth}) and (max-width: 767px) {

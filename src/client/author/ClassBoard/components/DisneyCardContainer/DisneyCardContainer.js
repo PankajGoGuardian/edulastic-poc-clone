@@ -156,8 +156,15 @@ class DisneyCardContainer extends Component {
           ) : (
             ""
           );
+        const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
         const studentData = (
-          <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
+          <StyledCard
+            data-cy={`student-card-${name}`}
+            bordered={false}
+            key={index}
+            isClickEnable={canShowResponse}
+            onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
+          >
             <PaginationInfoF>
               {isPresentationMode ? (
                 <i
@@ -209,7 +216,7 @@ class DisneyCardContainer extends Component {
               </StyledName>
               <RightAlignedCol>
                 <Row>
-                  <Col>
+                  <Col onClick={e => e.stopPropagation()}>
                     <CardCheckbox
                       checked={selectedStudents[student.studentId]}
                       onChange={e => {

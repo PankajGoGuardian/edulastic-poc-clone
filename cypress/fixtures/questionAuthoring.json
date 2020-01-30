@@ -189,10 +189,9 @@
         }
       ],
       "meta": {
-        "collections": "Content Check Math"
+        "collections": "auto collection 3"
       }
     },
-
     "4": {
       "quetext": "This is MCQ_TF.4 question",
       "choices": ["right", "wrong"],
@@ -207,7 +206,41 @@
         }
       ],
       "meta": {
-        "collections": "Content Check ELA"
+        "collections": "auto collection 4"
+      }
+    },
+    "5": {
+      "quetext": "This is MCQ_TF.5 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "auto collection 1"
+      }
+    },
+    "6": {
+      "quetext": "This is MCQ_TF.6 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.2"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "auto collection 1"
       }
     }
   },
@@ -605,7 +638,10 @@
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
-      ]
+      ],
+      "meta": {
+        "collections": "Content Check ELA"
+      }
     }
   }
 }

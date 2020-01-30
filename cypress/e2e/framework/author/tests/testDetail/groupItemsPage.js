@@ -24,9 +24,10 @@ export default class GroupItemsPage {
   uncheckAutoSelectForGroup = group => this.getAutoSelectItemForGroup(group).uncheck();
 
   // question delievery
-  checkDeliverAllItemForGroup = group => cy.get(`[data-cy="check-deliver-all-Group ${group}"]`).check();
+  checkDeliverAllItemForGroup = group => cy.get(`[data-cy="check-deliver-all-Group ${group}"]`).check({ force: true });
 
-  checkDeliverCountForGroup = group => cy.get(`[data-cy="check-deliver-bycount-Group ${group}"]`).check();
+  checkDeliverCountForGroup = group =>
+    cy.get(`[data-cy="check-deliver-bycount-Group ${group}"]`).check({ force: true });
 
   setItemCountForDeliveryByGroup = (group, count) =>
     cy.get(`[data-cy="input-deliver-bycount-Group ${group}"]`).type(`{selectall}${count}`);
@@ -66,22 +67,29 @@ export default class GroupItemsPage {
     cy
       .get('[title="Edit"]')
       .eq(group - 1)
-      .click();
+      .click({ force: true });
 
   clickOnSaveByGroup = (group, dynamicGroup = false) => {
+    cy.server();
     cy.route("POST", "**/testitem/auto-select/search").as("waitForItems");
     cy.get(`[data-cy="save-Group ${group}"]`).click();
-    if (dynamicGroup) cy.wait("@waitForItems");
+    if (dynamicGroup)
+      cy.wait("@waitForItems").then(xhr => {
+        expect(xhr.status).to.eq(200);
+      });
     cy.wait(500);
   };
+
+  getGroupContainerByGroup = group => cy.get(".ant-collapse-item").eq(group - 1);
 
   clickOnCollectionByGroup = group => cy.get(`[data-cy="collection-Group ${group}"]`).click();
 
   selectCollectionByGroupAndCollection = (group, collection) => {
     this.clickOnCollectionByGroup(group);
-    cy.get(".ant-select-dropdown-menu-item")
+    this.getGroupContainerByGroup(group)
+      .find(".ant-select-dropdown-menu-item")
       .contains(collection)
-      .click();
+      .click({ force: true });
   };
 
   clickBrowseOnStandardsByGroup = group => cy.get(`[data-cy="standard-Group ${group}"]`).click();
@@ -116,6 +124,19 @@ export default class GroupItemsPage {
 
   clickOnApply = () => cy.get('[data-cy="apply-Stand-Set"]').click();
 
+  createDynamicTest = (group, filterForAutoselect, overRide = false) => {
+    const { standard, collection, deliveryCount, dok, tags, difficulty } = filterForAutoselect;
+    const { subject, grade, standardSet, standardsToSelect } = standard;
+    this.clickOnEditByGroup(group);
+    if (overRide) this.checkAutoSelectForGroup(group, true);
+    else this.checkAutoSelectForGroup(group);
+    this.clickBrowseOnStandardsByGroup(group);
+    this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect);
+    this.clickOnApply();
+    this.selectCollectionByGroupAndCollection(group, collection);
+    this.setItemCountForDeliveryByGroup(group, deliveryCount);
+    this.clickOnSaveByGroup(group, true);
+  };
   // =========Till Here=======================
 
   assertNoItemsFoundWarning = () =>

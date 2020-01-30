@@ -20,6 +20,8 @@ import {
   AddPointBtn
 } from "../../../styled/Grid";
 
+import { CustomInput } from "./Input";
+
 class PointsList extends Component {
   getHoverSettings = () => {
     const { t } = this.props;
@@ -101,12 +103,7 @@ class PointsList extends Component {
                 />
               </Col>
               <Col md={4}>
-                <StyledTextField
-                  type="number"
-                  value={dot.y}
-                  onChange={e => handleChange(index)("value", e.target.value)}
-                  disabled={false}
-                />
+                <CustomInput index={index} type="number" value={dot.y} handleChange={handleChange} />
               </Col>
               <Col md={4}>
                 <FormatedSelect

@@ -46,13 +46,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(source, true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function(key) {
         (0, _defineProperty2["default"])(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(source).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function(key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
     }
@@ -108,11 +108,11 @@ var mathEval = function mathEval(_ref) {
 
                       if (unit) {
                         value = combineUnitAndExpression(value, unit);
-                      }
-                      // removing pattern `<space> after \\`
+                      } // removing pattern `<space> after \\`
+
                       var data = {
-                        input: value.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
-                        expected: ans ? ans.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$") : "",
+                        input: value.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
+                        expected: ans ? ans.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$") : "",
                         checks: checks
                       };
                       return (0, _math.evaluate)(data);
@@ -500,12 +500,12 @@ var mixAndMatchMathEvaluator = function mixAndMatchMathEvaluator(_ref3) {
 
                         if (_userResponse[id].unit) {
                           input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
-                        }
-                        // removing pattern `<space> after \\`
+                        } // removing pattern `<space> after \\`
+
                         return (0, _math.evaluate)({
                           checks: checks,
-                          input: input.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
-                          expected: expected.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$")
+                          input: input.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
+                          expected: expected.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$")
                         });
                       });
                       _context4.next = 5;

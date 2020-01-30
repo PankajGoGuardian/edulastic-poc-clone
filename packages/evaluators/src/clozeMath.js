@@ -37,8 +37,8 @@ const mathEval = async ({ userResponse, validation }) => {
 
       // removing pattern `<space> after \\`
       const data = {
-        input: value.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
-        expected: ans ? ans.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$") : "",
+        input: value.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
+        expected: ans ? ans.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$") : "",
         checks
       };
 
@@ -205,8 +205,8 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
       // removing pattern `<space> after \\`
       return evaluate({
         checks,
-        input: input.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$"),
-        expected: expected.replace(/\\\s+/g, " ").replace(/[$]/g, "\\$")
+        input: input.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$"),
+        expected: expected.replace(/(\\\s|\s)+/g, "").replace(/[$]/g, "\\$")
       });
     });
 

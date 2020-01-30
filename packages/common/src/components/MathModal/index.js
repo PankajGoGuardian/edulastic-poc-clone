@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 import { Modal, Button } from "antd";
 import { themeColor, white, titleColor } from "@edulastic/colors";
 import styled from "styled-components";
+import { math } from "@edulastic/constants";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
+
+const defaultSymbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
+const { defaultNumberPad } = math;
 
 const MathModal = ({
   value,
@@ -83,8 +87,8 @@ const MathModal = ({
 MathModal.propTypes = {
   show: PropTypes.bool,
   isEditable: PropTypes.bool,
-  symbols: PropTypes.array.isRequired,
-  numberPad: PropTypes.array.isRequired,
+  symbols: PropTypes.array,
+  numberPad: PropTypes.array,
   width: PropTypes.string,
   showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
@@ -98,6 +102,8 @@ MathModal.defaultProps = {
   isEditable: true,
   value: "",
   width: null,
+  symbols: defaultSymbols,
+  numberPad: defaultNumberPad,
   showDropdown: false,
   showResponse: false,
   onSave: () => {},

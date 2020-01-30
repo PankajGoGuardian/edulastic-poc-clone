@@ -1,6 +1,6 @@
 import { groupBy, difference, isEmpty } from "lodash";
-import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { FRACTION_FORMATS } from "../constants/constantsForQuestions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -407,4 +407,12 @@ export const createStandardTextStyle = props => {
           font-size: ${props?.theme?.common?.smallFontSize || "12px"};
       }
   `;
+};
+
+export const normalizeTouchEvent = e => {
+  if (e?.nativeEvent?.changedTouches?.length) {
+    e.preventDefault();
+    e.clientX = e.nativeEvent.changedTouches[0].clientX;
+    e.clientY = e.nativeEvent.changedTouches[0].clientY;
+  }
 };

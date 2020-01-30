@@ -451,6 +451,12 @@ export const hexToRGB = (hex, alpha) => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
+export const getAlpha = color => {
+  const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
+
+  return color.match(regexValuesFromRgbaColor) !== null ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100 : 100;
+};
+
 export const formatBytes = (bytes = 0, decimals = 2) => {
   if (bytes === 0) return "0 Bytes";
 

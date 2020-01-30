@@ -24,7 +24,7 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import ReportIssuePopover from "../common/ReportIssuePopover";
-import { Tooltip } from "../../../common/utils/helpers";
+import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import {
   ControlBtn,
@@ -55,7 +55,6 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
-import { isZoomGreator } from "../../../common/utils/helpers";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -317,7 +316,6 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = "default",
       closeTestPreviewModal,
       showTools = true,
-      setSettingsModalVisibility,
       showScratchPad
     } = this.props;
     const {
@@ -733,8 +731,4 @@ export default enhance(AssessmentPlayerDefault);
 const StyledPaddingDiv = styled(PaddingDiv)`
   padding: 10px;
   height: max-content;
-`;
-
-const ReportIssueContainer = styled.div`
-  float: right;
 `;

@@ -57,6 +57,7 @@ export {
   highlightSelectedText,
   decodeHTML,
   hexToRGB,
+  getAlpha,
   rgbToHexc,
   formatBytes,
   measureText,

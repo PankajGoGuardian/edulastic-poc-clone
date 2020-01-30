@@ -2,19 +2,14 @@
 import React, { useRef, useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
-
 import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
 import { Input } from "antd";
 import { useDisableDragScroll } from "@edulastic/common";
 
-const normalizeTouchEvent = e => {
-  if (e?.nativeEvent?.changedTouches?.length) {
-    e.preventDefault();
-    e.clientX = e.nativeEvent.changedTouches[0].clientX;
-    e.clientY = e.nativeEvent.changedTouches[0].clientY;
-  }
-};
+import MathDraw from "./components/MathDraw";
+import MeasureTools from "./components/MeasureTools";
+import { normalizeTouchEvent } from "../../../utils/helpers";
 
 const SvgDraw = ({
   lineColor,
@@ -22,12 +17,9 @@ const SvgDraw = ({
   activeMode,
   scratchPadMode,
   history,
-  saveHistory,
+  saveHistory: saveWorkHistory,
   fillColor,
   deleteMode,
-  height,
-  top,
-  left,
   position
 }) => {
   const svg = useDisableDragScroll();
@@ -43,6 +35,7 @@ const SvgDraw = ({
   const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
   const [inputValue, setInputValue] = useState("");
   const [texts, setTexts] = useState([]);
+  const [newMathItem, setNewMathItem] = useState({});
   const boundedRef = useRef();
 
   useEffect(() => {
@@ -67,6 +60,10 @@ const SvgDraw = ({
   useEffect(() => {
     setActive(null);
   }, [activeMode]);
+
+  const saveHistory = values => {
+    saveWorkHistory({ ...history, ...values });
+  };
 
   const handleMove = e => {
     if (mouseClicked) {
@@ -581,7 +578,6 @@ const SvgDraw = ({
             onMouseMove: handleTextMove,
             onTouchMove: handleTextMove
           };
-
         default:
       }
     } else {
@@ -715,11 +711,12 @@ const SvgDraw = ({
         onChange={handleInputChange}
         onBlur={handleBlur}
         value={inputValue}
-        inputIsVisible={inputIsVisible}
+        inputIsVisible={inputIsVisible && activeMode === drawTools.DRAW_TEXT}
         x={currentPosition.x}
         y={currentPosition.y}
         size="large"
       />
+
       <svg
         ref={svg}
         {...getSvgHandlers()}
@@ -735,11 +732,25 @@ const SvgDraw = ({
           zIndex: mouseClicked || dragStart || activeMode === "" ? 40 : 40
         }}
       >
-        {active !== null && figures[active] && !deleteMode && activeMode !== drawTools.DRAW_TEXT && (
-          <Fragment>{renderActiveFigure()}</Fragment>
-        )}
+        {active !== null &&
+          figures[active] &&
+          !deleteMode &&
+          activeMode !== drawTools.DRAW_TEXT &&
+          activeMode !== drawTools.DRAW_MATH && <Fragment>{renderActiveFigure()}</Fragment>}
 
-        {figures.length > 0 && figures.map((path, i) => i !== active && renderFigure(path, i))}
+        {figures.length > 0 &&
+          figures.map((path, i) => {
+            if (i !== active) {
+              return renderFigure(path, i);
+            }
+            if (activeMode === drawTools.DRAW_MATH) {
+              return renderFigure(path, i);
+            }
+            if (activeMode === drawTools.DRAW_TEXT) {
+              return renderFigure(path, i);
+            }
+            return false;
+          })}
 
         {texts.length > 0 &&
           texts.map(
@@ -787,6 +798,18 @@ const SvgDraw = ({
           />
         )}
       </svg>
+      <MathDraw
+        newItem={newMathItem}
+        setNewItem={setNewMathItem}
+        workHistory={history}
+        saveHistory={saveHistory}
+        activeMode={activeMode}
+        scratchPadMode={scratchPadMode}
+        deleteMode={deleteMode}
+        lineWidth={lineWidth}
+        lineColor={lineColor}
+      />
+      {activeMode === drawTools.DRAW_MEASURE_TOOL && <MeasureTools />}
     </Fragment>
   );
 };
@@ -835,7 +858,7 @@ const Text = styled.text`
 `;
 
 const ControlInput = styled(Input)`
-  position: relative;
+  position: absolute;
   display: ${({ inputIsVisible }) => (inputIsVisible ? "block" : "none")};
   top: ${({ y }) => y}px;
   left: ${({ x }) => x}px;

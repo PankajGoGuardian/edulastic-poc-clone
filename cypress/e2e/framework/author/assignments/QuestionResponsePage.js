@@ -208,7 +208,8 @@ export default class QuestionResponsePage {
     this.getDropDownMenu()
       .contains(`Question ${queNum.slice(1)}`)
       .click({ force: true });
-    if (queNum !== "Q1") cy.wait("@item");
+    if (queNum !== "Q1") cy.wait("@item"); // .then(xhr => xhr.response.body.result[0].testItemId);
+    // else return cy.wait(1);
   };
 
   getQuestionContainer = cardIndex => cy.get('[data-cy="question-container"]').eq(cardIndex);

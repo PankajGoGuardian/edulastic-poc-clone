@@ -174,5 +174,14 @@ export default class TestReviewTab {
     cy.get(`[data-cy="item-Group ${group}"]`).should("contain", itemCount);
   };
 
-  verifyItemCoutInPreview = count => cy.get('[data-cy="styled-wrapped-component"]').should("have.length", count);
+  verifyItemCoutInPreview = count => this.getAllquestionInReview().should("have.length", count);
+
+  getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]');
+
+  getItemIdIdByIndex = index =>
+    cy
+      .get('[data-cy="styled-wrapped-component"]')
+      .eq(index)
+      .parent()
+      .invoke("attr", "data-cy");
 }

@@ -106,7 +106,7 @@ class AssignmentsPage {
       this.enterPassword(pass);
       this.clickOnStartAfterPassword();
     }
-    cy.wait("@gettest");
+    return cy.wait("@gettest").then(xhr => xhr.response.body.result.itemGroups);
   };
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType = "A") {

@@ -48,6 +48,7 @@ class AuthorAssignmentPage {
       .eq(index)
       .click();
     cy.wait("@assignment");
+    cy.wait("@assignment");
   };
 
   getStatus = () => cy.get('[data-cy="status"]');

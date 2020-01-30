@@ -83,7 +83,14 @@ class LiveClassboardPage {
       .contains("a", "STUDENTS")
       .click({ force: true });
 
-  clickonQuestionsTab = () => this.getQuestionsTab().click({ force: true });
+  clickonQuestionsTab = () => {
+    cy.server();
+    cy.route("GET", "**/api/assignments/**").as("getFirstQuestion");
+    this.getQuestionsTab().click({ force: true });
+    return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
+  };
+
+  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
 
   checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").check({ force: true });
 

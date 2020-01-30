@@ -69,8 +69,10 @@ export default class TestHeader {
   clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });
 
   clickOnAssign = () => {
+    cy.server();
+    cy.route("POST", "**/group/search").as("groups");
     cy.get('[data-cy="assign"]').click();
-    cy.wait("@assignment");
+    cy.wait("@groups");
   };
 
   clickOnfilters = () =>

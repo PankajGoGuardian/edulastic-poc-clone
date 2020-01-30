@@ -139,6 +139,6 @@ export default class GroupItemsPage {
         cy.wait(500);
       }
     });
-    return cy.wait(1).then(() => testID);
+    return cy.wait(1000).then(() => testID);
   };
 }

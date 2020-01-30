@@ -413,11 +413,12 @@ export default class TestLibrary {
   getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
 
   createNewTestAndFillDetails = testData => {
+    const { grade, name, subject, collections } = testData;
     this.sidebar.clickOnTestLibrary();
     this.clickOnAuthorTest();
-    this.testSummary.setName(testData.name);
-    this.testSummary.selectGrade(testData.grade);
-    this.testSummary.selectSubject(testData.subject);
-    this.testSummary.selectCollection(testData.collections);
+    this.testSummary.setName(name);
+    if (grade) this.testSummary.selectGrade(grade);
+    if (subject) this.testSummary.selectSubject(subject);
+    if (collections) this.testSummary.selectCollection(collections);
   };
 }

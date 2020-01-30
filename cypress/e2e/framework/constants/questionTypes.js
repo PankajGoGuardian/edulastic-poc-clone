@@ -46,6 +46,12 @@ export const attemptTypes = {
   NO_ATTEMPT: "noattempt"
 };
 
+export const deliverType = {
+  ALL: "ALL",
+  LIMITED_RANDOM: "LIMITED_RANDOM",
+  ALL_RANDOM: "ALL_RANDOM"
+};
+
 export const queColor = {
   RIGHT: "rgb(94, 181, 0)",
   WRONG: "rgb(243, 95, 95)",

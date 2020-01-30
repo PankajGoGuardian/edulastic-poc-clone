@@ -66,6 +66,13 @@ const PlayerContent = ({
     return currentItem;
   };
 
+  const getCurrentQuestion = id => {
+    if (questions[id]) {
+      return questions[id];
+    }
+    return find(questions, _q => _q.previousQuestionId === id);
+  };
+
   const saveUserResponse = () => {
     if (!LCBPreviewModal) {
       const currentItem = findCurrentItemFromIdMap();
@@ -100,7 +107,9 @@ const PlayerContent = ({
     if (!currentItem) {
       return;
     }
-    const cQuestion = questions[currentItem.uuid];
+
+    const cQuestion = getCurrentQuestion(currentItem.uuid);
+
     if (!cQuestion) {
       return;
     }
@@ -265,7 +274,7 @@ const PlayerContent = ({
       });
     }
 
-    setUserAnswer(currentItem.uuid, data);
+    setUserAnswer(cQuestion.id, data);
   };
 
   useEffect(() => {

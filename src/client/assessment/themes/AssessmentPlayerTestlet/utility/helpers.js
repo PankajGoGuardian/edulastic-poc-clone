@@ -3,7 +3,7 @@ import uuidv4 from "uuid/v4";
 
 export const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-export const getLineFromExpression = expressions => {
+export const getLineFromExpression = (expressions, points = {}) => {
   const getLines = expression => {
     if (!expression) {
       return [];
@@ -42,8 +42,8 @@ export const getLineFromExpression = expressions => {
         endPoint: p2.id
       }
     });
-    const point1 = getPoints(1, "A");
-    const point2 = getPoints(6, "B");
+    const point1 = getPoints(points?.p0 || 2, "A");
+    const point2 = getPoints(points?.p1 || 4, "B");
     const line = getLine(point1, point2);
     return [line, point1, point2];
   };
@@ -75,8 +75,8 @@ export const getPoinstFromString = expression => {
         id: uuidv4(),
         label: ALPHABET[pointIndex].toUpperCase(),
         type: "point",
-        x: coords[0],
-        y: coords[1]
+        x: parseFloat(coords[0]),
+        y: parseFloat(coords[1])
       };
     });
   };

@@ -68,7 +68,7 @@ class Variables extends Component {
     const getMathFormulaTemplate = latex => `<span class="input__math" data-latex="${latex}"></span>`;
     const variableEnabled = get(questionData, "variable.enabled", false);
     const variables = get(questionData, "variable.variables", {});
-    const variableCombinationCount = get(questionData, "variable.combinationsCount", 5);
+    const variableCombinationCount = get(questionData, "variable.combinationsCount", 25);
     const examples = get(questionData, "variable.examples", []);
 
     const types = Object.keys(variableTypes);

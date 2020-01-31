@@ -6,7 +6,6 @@ const MainWrapper = styled.section`
   text-align: left;
   border-radius: 4px;
   max-width: 100%;
-  height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -33,6 +32,7 @@ const MainWrapper = styled.section`
 
     return `
       width: ${zoomed ? `${responsiveWidth}px` : "100%"};
+      height: ${zoomed ? `${100 / zoomLevel}%` : "100%"};
       transform: ${zoomed ? `scale(${zoomLevel})` : ""};
       transform-origin: ${zoomed ? `top left` : ""};
       margin: ${!zoomed ? "auto" : ""};

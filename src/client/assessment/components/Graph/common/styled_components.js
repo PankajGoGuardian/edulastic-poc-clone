@@ -200,6 +200,7 @@ export const StyledDragHandle = styled.div`
 export const QuestionTitleWrapper = styled.div`
   font-size: ${props => props.theme.fontSize};
   display: flex;
+  align-items: baseline;
 `;
 
 export const Item = styled.div`

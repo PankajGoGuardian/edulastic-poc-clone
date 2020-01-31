@@ -2,10 +2,10 @@ import styled from "styled-components";
 import { Button } from "antd";
 
 export const StyledDiv = styled.div`
-  width: ${props => (props.wide ? "50%" : "25%")}
+  width: ${props => (props.wide ? "50%" : "25%")};
   height: 100%;
   justify-content: center;
-  flex: 1 0 auto;
+  flex: ${props => (props.wide ? 2 : 1)};
   padding-right: 1px;
   &:last-child {
     padding-right: 0;

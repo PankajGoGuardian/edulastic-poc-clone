@@ -118,7 +118,7 @@ export const cardBg = "#f8f8fb";
 export const cardBorder = "#e6e6e6";
 
 // shadows
-export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
+export const boxShadowDefault = "0px 2px 5px 0px rgba(0, 0, 0, 0.7)";
 
 export const boxShadowColor = "#C9D0DB80";
 export const boxShadowColor2 = "#0000001A";

@@ -66,7 +66,9 @@ const BarChart = ({
           [active].split(",")[index]
       : null;
 
-  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+  const getActivePointValue = () => (active !== null ? +localData[active].y : null);
+
+  const getActiveFractionFormat = () => (active !== null ? localData[active].labelFractionFormat : "Decimal");
 
   const save = () => {
     if (cursorY === null) {
@@ -161,8 +163,8 @@ const BarChart = ({
         <ValueLabel
           getActivePoint={getActivePoint}
           getActivePointValue={getActivePointValue}
+          getActiveFractionFormat={getActiveFractionFormat}
           active={active}
-          gridParams={gridParams}
         />
       </g>
     </svg>
@@ -180,14 +182,17 @@ BarChart.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
+    showGridlines: PropTypes.bool
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired,
-  toggleBarDragging: PropTypes.func
+  toggleBarDragging: PropTypes.func,
+  showAnswer: PropTypes.bool.isRequired,
+  margin: PropTypes.object.isRequired
 };
 
 BarChart.defaultProps = {

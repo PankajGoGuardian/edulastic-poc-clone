@@ -153,6 +153,7 @@ class PointsList extends Component {
 }
 
 PointsList.propTypes = {
+  item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   points: PropTypes.array.isRequired,
   onAdd: PropTypes.func.isRequired,

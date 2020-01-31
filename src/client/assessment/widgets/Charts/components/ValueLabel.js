@@ -5,13 +5,14 @@ import AxisLabel from "./AxisLabel";
 import { convertNumberToFraction } from "../../../utils/helpers";
 import { ValueBg } from "../styled";
 
-const ValueLabel = ({ getActivePoint, getActivePointValue, active, gridParams }) => {
-  const { fractionFormat } = gridParams;
+const ValueLabel = ({ getActivePoint, getActivePointValue, active, getActiveFractionFormat }) => {
   const textPaddingLeft = 5;
   const margin = 15;
   const symbolWidth = 8;
 
   const visibleValue = () => +getActivePointValue()?.toFixed(2);
+
+  const fractionFormat = getActiveFractionFormat();
 
   const getWidth = value => {
     if (getActivePoint(0)) {
@@ -19,9 +20,8 @@ const ValueLabel = ({ getActivePoint, getActivePointValue, active, gridParams })
         const result = convertNumberToFraction(value, fractionFormat);
         const plainText = Object.values(result).join("");
         return plainText.length * symbolWidth + textPaddingLeft * 2;
-      } else {
-        return value.toString().length * symbolWidth + textPaddingLeft * 2;
       }
+      return value.toString().length * symbolWidth + textPaddingLeft * 2;
     }
     return 0;
   };
@@ -44,7 +44,12 @@ const ValueLabel = ({ getActivePoint, getActivePointValue, active, gridParams })
 ValueLabel.propTypes = {
   getActivePoint: PropTypes.func.isRequired,
   getActivePointValue: PropTypes.func.isRequired,
+  getActiveFractionFormat: PropTypes.func,
   active: PropTypes.number.isRequired
+};
+
+ValueLabel.defaultProps = {
+  getActiveFractionFormat: () => "Decimal"
 };
 
 export default ValueLabel;

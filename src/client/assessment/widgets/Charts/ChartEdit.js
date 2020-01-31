@@ -193,6 +193,14 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
   const points =
     currentTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[currentTab - 1].score;
 
+  const showFractionFormatSetting = [
+    questionType.LINE_PLOT,
+    questionType.DOT_PLOT,
+    questionType.BAR_CHART,
+    questionType.LINE_CHART,
+    questionType.HISTOGRAM
+  ].includes(type);
+
   return (
     <Fragment>
       <ComposeQuestion
@@ -210,7 +218,7 @@ const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advance
       />
 
       <PointsList
-        showFractionFormatSetting={type === questionType.LINE_PLOT || type === questionType.DOT_PLOT}
+        showFractionFormatSetting={showFractionFormatSetting}
         handleChange={handlePointChange}
         handleDelete={handleDelete}
         points={item.chart_data.data}

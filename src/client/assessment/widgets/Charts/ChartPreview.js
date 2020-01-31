@@ -184,6 +184,9 @@ const ChartPreview = ({
     />
   );
 
+  const getPreviewData = () =>
+    data.map(({ x, y, ...rest }, index) => (answerIsActual() ? { ...userAnswer[index], ...rest } : { x, y, ...rest }));
+
   return (
     <>
       {view === PREVIEW && (
@@ -204,7 +207,7 @@ const ChartPreview = ({
         <ChartContainer preview={view === EDIT}>
           <CurrentChart
             name={name}
-            data={answerIsActual() ? userAnswer : data.map(({ x, y }) => ({ x, y }))}
+            data={getPreviewData()}
             gridParams={calculatedParams}
             deleteMode={tool === "delete"}
             view={view}
@@ -233,7 +236,7 @@ const ChartPreview = ({
                 correct={answerCorrect}
                 item={item}
                 setQuestionData={setQuestionData}
-                showAnswer={true}
+                showAnswer
               />
             </ChartContainer>
           </CorrectAnswersContainer>
@@ -257,7 +260,7 @@ const ChartPreview = ({
                   correct={altAnswerCorrect[index]}
                   item={item}
                   setQuestionData={setQuestionData}
-                  showAnswer={true}
+                  showAnswer
                 />
               </ChartContainer>
             </CorrectAnswersContainer>

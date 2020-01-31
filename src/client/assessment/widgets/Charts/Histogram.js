@@ -68,6 +68,8 @@ const Histogram = ({
 
   const getActivePointValue = () => (active !== null ? localData[active].y : null);
 
+  const getActiveFractionFormat = () => (active !== null ? localData[active].labelFractionFormat : "Decimal");
+
   const save = () => {
     if (cursorY === null) {
       return;
@@ -165,8 +167,8 @@ const Histogram = ({
         <ValueLabel
           getActivePoint={getActivePoint}
           getActivePointValue={getActivePointValue}
+          getActiveFractionFormat={getActiveFractionFormat}
           active={active}
-          gridParams={gridParams}
         />
       </g>
     </svg>
@@ -184,14 +186,16 @@ Histogram.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
+    showGridlines: PropTypes.bool
   }).isRequired,
   view: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired,
-  toggleBarDragging: PropTypes.func
+  toggleBarDragging: PropTypes.func,
+  margin: PropTypes.object.isRequired
 };
 
 Histogram.defaultProps = {

@@ -6,6 +6,7 @@ const Subtitle = styled.h3`
   line-height: 1.38;
   letter-spacing: 0.2px;
   color: ${mainTextColor};
+  padding-right: 8px;
   text-transform: uppercase;
   text-align: ${({ direction }) => {
     if (direction === "row" || direction === "row-reverse") {

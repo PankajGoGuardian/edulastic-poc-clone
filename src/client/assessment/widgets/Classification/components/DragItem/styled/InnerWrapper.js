@@ -8,35 +8,21 @@ export const InnerWrapper = styled.div`
   border-radius: 5px;
   border-style: dotted;
   overflow: hidden;
+  position: relative;
+  padding: 8px;
 
-  ${({
-    theme,
-    valid,
-    preview,
-    transparent,
-    dragging,
-    maxWidth,
-    minWidth,
-    minHeight,
-    maxHeight,
-    noBorder,
-    width,
-    padding
-  }) => {
+  ${({ theme, valid, preview, transparent, dragging, maxWidth, minWidth, minHeight, maxHeight, width, showIcon }) => {
     let bgColor = theme.widgets.classification.dragItemBgColor;
     let borderColor = theme.widgets.classification.dragItemBorderColor;
-    let borderWidth = noBorder ? 0 : 2;
 
     if (preview && valid !== undefined) {
       bgColor = theme.widgets.classification.dragItemNotValidBorderColor;
       borderColor = theme.widgets.classification.dragItemNotValidBgColor;
-      borderWidth = 0;
     }
 
     if (preview && valid) {
       bgColor = theme.widgets.classification.dragItemValidBgColor;
       borderColor = theme.widgets.classification.dragItemValidBorderColor;
-      borderWidth = 0;
     }
 
     if (transparent) {
@@ -44,17 +30,17 @@ export const InnerWrapper = styled.div`
     }
 
     return `
-      border-color: ${borderColor};
+      border-color: ${showIcon ? "transparent" : borderColor};
       background-color: ${bgColor};
       opacity:  ${dragging ? 0.1 : 1};
       font-weight: ${theme.widgets.classification.dragItemFontWeight};
-      border-width: ${borderWidth}px;
+      border-width: 2px;
       width: ${width ? `${width}px` : ""};
       min-width: ${minWidth}px;
-      max-width: ${maxWidth}px;
+      max-width: ${maxWidth - 25}px;
       min-height: ${minHeight}px;
       max-height: ${maxHeight}px;
-      padding: ${padding};
+      padding-right: ${showIcon ? "20px" : ""};
     `;
   }}
 `;

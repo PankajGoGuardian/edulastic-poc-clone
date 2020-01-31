@@ -10,7 +10,17 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { RndWrapper, Rnd } from "./styled/RndWrapper";
 
 const ResponseRnd = props => {
-  const { children, question, setQuestionData, isResizable, index, hasRowTitle = true, maxWidth } = props;
+  const {
+    children,
+    question,
+    setQuestionData,
+    isResizable,
+    index,
+    hasRowTitle = true,
+    width,
+    maxWidth,
+    showIndex
+  } = props;
   const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
@@ -56,14 +66,22 @@ const ResponseRnd = props => {
     setMinHeight(0);
   };
 
-  const offsetX = maxWidth;
+  let offsetX = width + 40;
+
+  if (offsetX > maxWidth) {
+    offsetX = maxWidth;
+  }
+
+  if (showIndex) {
+    offsetX += 45;
+  }
   /**
    * +100 will be width of rowTitle
    * TODO: need to get width of rowTitle, if it is not set
    */
   const rndX = get(question, `responseOptions[${index}].x`, hasRowTitle ? index * offsetX + 100 : index * offsetX);
   const rndY = get(question, `responseOptions[${index}].y`, 0);
-  const rndWidth = get(question, `responseOptions[${index}].width`, maxWidth);
+  const rndWidth = get(question, `responseOptions[${index}].width`, offsetX);
   return (
     <RndWrapper isResizable={isResizable} translateProps={`${rndX}px, ${rndY}px`}>
       <Rnd
@@ -89,8 +107,9 @@ const ResponseRnd = props => {
 
 ResponseRnd.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  maxWidth: PropTypes.number,
+  width: PropTypes.number,
   isResizable: PropTypes.bool,
+  showIndex: PropTypes.bool,
   index: PropTypes.number,
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired
@@ -98,7 +117,8 @@ ResponseRnd.propTypes = {
 
 ResponseRnd.defaultProps = {
   isResizable: true,
-  maxWidth: 220,
+  showIndex: false,
+  width: 220,
   index: 0
 };
 

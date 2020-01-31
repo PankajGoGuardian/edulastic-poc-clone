@@ -47,6 +47,7 @@ const DragItemContainer = ({
   dragHandle,
   isResetOffset,
   disableDrag,
+  multiRow,
   ...rest
 }) => {
   const itemProps = {

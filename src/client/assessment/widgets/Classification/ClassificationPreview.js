@@ -60,8 +60,8 @@ const ClassificationPreview = ({
     wrapperStyle: {
       display: "flex",
       flexDirection: direction,
-      overflow: "auto",
-      justifyContent: "center"
+      justifyContent: "center",
+      width: "fit-content"
     },
     dragItemsContainerStyle: {
       display: "flex",
@@ -245,11 +245,14 @@ const ClassificationPreview = ({
         return shuffleOptions ? shuffle(responses) : responses;
       });
 
+  const choiceWidth = maxBy(posResp.map(op => measureText(op?.value || "")), obj => obj?.width)?.width;
+
   const dragItemSize = {
     maxWidth: dragItemMaxWidth,
     minWidth: dragItemMinWidth,
     minHeight: choiceDefaultMinH,
-    maxHeight: choiceDefaultMaxH
+    maxHeight: choiceDefaultMaxH,
+    width: choiceWidth + 10
   };
   const dragItemProps = {
     onDrop,
@@ -291,6 +294,7 @@ const ClassificationPreview = ({
           setQuestionData={setQuestionData}
           rowHeader={rowHeader}
           dragItemSize={dragItemSize}
+          showIndex={previewTab === SHOW}
         />
       )
   );
@@ -302,7 +306,7 @@ const ClassificationPreview = ({
       rowTitles={rowTitles}
       colTitles={colTitles}
       width={get(item, "uiStyle.row_titles_width", "max-content")}
-      minWidth="200px"
+      minWidth={200}
       height={get(item, "uiStyle.row_min_height", "85px")}
       isBackgroundImageTransparent={transparentBackgroundImage}
       isTransparent={transparentPossibleResponses}
@@ -316,10 +320,13 @@ const ClassificationPreview = ({
       onDrop={onDrop}
       disableResponse={disableResponse}
       rowHeader={rowHeader}
+      dragItemSize={dragItemSize}
+      showIndex={previewTab === SHOW}
     />
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
+
   let minResponseWidth = Infinity;
   const widthArr = posResp.map(op => {
     const respWidth = measureText(op?.value || "");
@@ -341,32 +348,57 @@ const ClassificationPreview = ({
         </QuestionTitleWrapper>
       )}
 
-      <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
-        <ResponseContainer
-          direction={direction}
-          imageOptions={imageOptions}
-          imageUrl={imageUrl}
-          disableResponse={disableResponse}
-        >
-          {tableContent}
-        </ResponseContainer>
-        {!disableResponse && (
-          <ChoiceContainer
+      <div style={{ overflow: "auto" }}>
+        <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
+          <ResponseContainer
             direction={direction}
-            choiceWidth={dragItemMaxWidth}
-            title={t("component.classification.dragItemsTitle")}
+            imageOptions={imageOptions}
+            imageUrl={imageUrl}
+            disableResponse={disableResponse}
           >
-            <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
-              <FlexContainer
-                style={{ width: "100%" }}
-                flexDirection="column"
-                alignItems="stretch"
-                justifyContent="center"
-                maxWidth="100%"
-              >
-                {groupPossibleResponses ? (
-                  verifiedGroupDragItems.map((i, index) => (
-                    <Fragment key={index}>
+            {tableContent}
+          </ResponseContainer>
+          {!disableResponse && (
+            <ChoiceContainer
+              direction={direction}
+              choiceWidth={dragItemMaxWidth}
+              title={t("component.classification.dragItemsTitle")}
+            >
+              <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+                <FlexContainer
+                  style={{ width: "100%" }}
+                  flexDirection="column"
+                  alignItems="stretch"
+                  justifyContent="center"
+                  maxWidth="100%"
+                >
+                  {groupPossibleResponses ? (
+                    verifiedGroupDragItems.map((i, index) => (
+                      <Fragment key={index}>
+                        <FlexContainer
+                          style={{ flex: 1 }}
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="flex-start"
+                          maxWidth="100%"
+                        >
+                          <Subtitle>{get(item, `possibleResponseGroups[${index}].title`, "")}</Subtitle>
+                          <FlexContainer className="choice-items-wrapper">
+                            {i.map((ite, ind) => (
+                              <DragItem
+                                {...dragItemProps}
+                                renderIndex={getStemNumeration(stemNumeration, ind)}
+                                item={ite.value}
+                                key={ite.id}
+                              />
+                            ))}
+                          </FlexContainer>
+                        </FlexContainer>
+                        {index !== possibleResponseGroups.length - 1 && <Separator />}
+                      </Fragment>
+                    ))
+                  ) : (
+                    <Fragment>
                       <FlexContainer
                         style={{ flex: 1 }}
                         flexDirection="column"
@@ -374,59 +406,27 @@ const ClassificationPreview = ({
                         justifyContent="flex-start"
                         maxWidth="100%"
                       >
-                        <Subtitle
-                          id={getFormattedAttrId(
-                            `${item?.title}-${t(get(item, `possibleResponseGroups[${index}].title`, "undefined"))}`
-                          )}
-                        >
-                          {get(item, `possibleResponseGroups[${index}].title`, "")}
-                        </Subtitle>
                         <FlexContainer className="choice-items-wrapper">
-                          {i.map((ite, ind) => (
+                          {verifiedDragItems.map(ite => (
                             <DragItem
                               {...dragItemProps}
                               width={maxBy(widthArr, obj => obj?.width)?.width}
-                              renderIndex={getStemNumeration(stemNumeration, ind)}
-                              item={ite.value}
                               key={ite.id}
+                              item={ite.value}
+                              renderIndex={possibleResponses.indexOf(ite)}
                               disableResponse={disableResponse || !isAnswerModifiable}
                             />
                           ))}
                         </FlexContainer>
                       </FlexContainer>
-                      {index !== possibleResponseGroups.length - 1 && <Separator />}
                     </Fragment>
-                  ))
-                ) : (
-                  <Fragment>
-                    <FlexContainer
-                      style={{ flex: 1 }}
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="flex-start"
-                      maxWidth="100%"
-                    >
-                      <FlexContainer className="choice-items-wrapper">
-                        {verifiedDragItems.map(ite => (
-                          <DragItem
-                            {...dragItemProps}
-                            width={maxBy(widthArr, obj => obj?.width)?.width}
-                            key={ite.id}
-                            item={ite.value}
-                            renderIndex={possibleResponses.indexOf(ite)}
-                            disableResponse={disableResponse || !isAnswerModifiable}
-                          />
-                        ))}
-                      </FlexContainer>
-                    </FlexContainer>
-                  </Fragment>
-                )}
-              </FlexContainer>
-            </DropContainer>
-          </ChoiceContainer>
-        )}
+                  )}
+                </FlexContainer>
+              </DropContainer>
+            </ChoiceContainer>
+          )}
+        </div>
       </div>
-
       {previewTab === SHOW || isReviewTab ? (
         <ChoiceContainer>
           <CorrectAnswers
@@ -437,6 +437,7 @@ const ClassificationPreview = ({
             stemNumeration={stemNumeration}
             dragItemProps={dragItemProps}
             title={t("component.classification.correctAnswers")}
+            multiRow={rowCount > 1}
           />
           {altArrays.map((altArray, ind) => (
             <CorrectAnswers
@@ -446,6 +447,7 @@ const ClassificationPreview = ({
               columnTitles={colTitles}
               stemNumeration={stemNumeration}
               dragItemProps={dragItemProps}
+              multiRow={rowCount > 1}
               key={`alt-answer-${ind}`}
               title={`${t("component.classification.alternateAnswer")} ${ind + 1}`}
             />

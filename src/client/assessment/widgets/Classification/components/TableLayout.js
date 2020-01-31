@@ -1,11 +1,14 @@
+/* eslint-disable react/prop-types */
 import React from "react";
-import Table from "../styled/Table";
 import { CenteredText } from "@edulastic/common";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
+import { Table, TH, TD, TR } from "../styled/TableLayout";
 
 import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
+import { IndexBox } from "./DragItem/styled/IndexBox";
+import { getStemNumeration } from "../../../utils/helpers";
 
 const TableLayout = ({
   rowCount,
@@ -26,8 +29,12 @@ const TableLayout = ({
   onDrop,
   minWidth,
   disableResponse,
-  rowHeader = ""
+  rowHeader = "",
+  dragItemSize = {},
+  showIndex
 }) => {
+  const uiStyle = get(item, "uiStyle", {});
+
   let validIndex = -1;
   const styles = {
     columnContainerStyle: {
@@ -37,7 +44,6 @@ const TableLayout = ({
       minWidth,
       width: "100%",
       height: "100%",
-      borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
@@ -45,68 +51,82 @@ const TableLayout = ({
     ? item.possibleResponseGroups.flatMap(group => group.responses)
     : item.possibleResponses;
   const columnTitles = [];
+  console.log(minWidth);
   for (let index = 0; index < colCount; index++) {
     columnTitles.push(
-      <th colSpan={2}>
+      <TH colSpan={2} style={{ minWidth: showIndex ? minWidth + 40 : minWidth }}>
         <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: colTitles[index] }} />
-      </th>
+      </TH>
     );
   }
   const rows = [];
   for (let index = 0; index < rowCount; index++) {
     const arr = [];
     arr.push(
-      <td>
+      <TD center>
         <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowTitles[index] }} />
-      </td>
+      </TD>
     );
     for (let innnerIndex = 0; innnerIndex < colCount; innnerIndex++) {
       validIndex++;
+      const hasAnswer = Array.isArray(answers) && Array.isArray(answers[validIndex]);
+      const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, validIndex);
+
       arr.push(
-        <td colSpan={2}>
+        <TD>
           <DropContainer
-            style={{
-              ...styles.columnContainerStyle,
-              justifyContent: "center"
-            }}
             drop={drop}
             index={validIndex}
             flag="column"
+            style={{
+              display: "flex",
+              borderRadius: 4
+            }}
           >
-            {Array.isArray(answers) &&
-              Array.isArray(answers[validIndex]) &&
-              answers[validIndex].map((ansId, answerIndex) => {
-                const resp = responses.find(resp => resp.id === ansId);
-                const valid = get(validArray, [validIndex, answerIndex], undefined);
-                return (
-                  <DragItem
-                    isTransparent={isTransparent}
-                    dragHandle={dragHandle}
-                    valid={isReviewTab ? true : valid}
-                    preview={preview}
-                    key={answerIndex}
-                    renderIndex={responses.findIndex(resp => resp.id === ansId) + 1} // index starts with 0 so +1
-                    onDrop={onDrop}
-                    item={(resp && resp.value) || ""}
-                    disableResponse={disableResponse}
-                    isResetOffset
-                  />
-                );
-              })}
+            {showIndex && <IndexBox style={{ margin: "5px 0px 5px 5px" }}>{renderIndex}</IndexBox>}
+            <div
+              style={{
+                ...styles.columnContainerStyle,
+                justifyContent: "flex-start",
+                position: "relative",
+                flexDirection: "column"
+              }}
+            >
+              {hasAnswer &&
+                // eslint-disable-next-line no-loop-func
+                answers[validIndex].map((ansId, answerIndex) => {
+                  const resp = responses.find(res => res.id === ansId);
+                  const valid = get(validArray, [validIndex, answerIndex], undefined);
+                  return (
+                    <DragItem
+                      isTransparent={isTransparent}
+                      dragHandle={dragHandle}
+                      valid={isReviewTab ? true : valid}
+                      preview={preview}
+                      key={answerIndex}
+                      onDrop={onDrop}
+                      item={(resp && resp.value) || ""}
+                      disableResponse={disableResponse}
+                      {...dragItemSize}
+                      isResetOffset
+                    />
+                  );
+                })}
+            </div>
           </DropContainer>
-        </td>
+        </TD>
       );
     }
-    rows.push(<tr>{arr}</tr>);
+    rows.push(<TR>{arr}</TR>);
   }
   return (
     <Table>
-      <tr>
-        <th>
+      <TR>
+        <TH>
           <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowHeader }} />
-        </th>
+        </TH>
         {columnTitles}
-      </tr>
+      </TR>
       {rows}
     </Table>
   );

@@ -1,5 +1,15 @@
 import styled from "styled-components";
 
+const indexStyle = `
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 40px;
+  width: 40px;
+  border-radius: 0px;
+  z-index: 10;
+`;
+
 export const IndexBox = styled.div`
   font-size: ${props => props.theme.widgets.classification.indexBoxFontSize};
   font-weight: ${props => props.theme.widgets.classification.indexBoxFontWeight};
@@ -7,10 +17,8 @@ export const IndexBox = styled.div`
   align-items: center;
   align-self: stretch;
   justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
+  width: 40px;
+  height: 40px;
   color: ${props => props.theme.widgets.classification.indexBoxColor};
   background: ${({ preview, valid, theme }) =>
     valid && preview
@@ -18,4 +26,5 @@ export const IndexBox = styled.div`
       : preview && valid !== undefined
       ? theme.widgets.classification.indexBoxNotValidBgColor
       : theme.widgets.classification.indexBoxBgColor};
+  ${({ pos }) => pos === "absolute" && indexStyle}
 `;

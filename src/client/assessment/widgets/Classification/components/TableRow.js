@@ -13,6 +13,7 @@ import { Rnd } from "../styled/RndWrapper";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
+import { IndexBox } from "./DragItem/styled/IndexBox";
 
 const TableRow = ({
   startIndex,
@@ -36,7 +37,8 @@ const TableRow = ({
   view,
   setQuestionData,
   rowHeader,
-  dragItemSize
+  dragItemSize,
+  showIndex
 }) => {
   const wrapperRef = useRef();
   const observeRef = useRef(null);
@@ -159,24 +161,33 @@ const TableRow = ({
         </Rnd>
       );
     }
+    const renderIndex = getStemNumeration(uiStyle.validationStemNumeration, index);
+    const hasAnswer = Array.isArray(answers) && Array.isArray(answers[index]) && answers[index].length > 0;
+
     cols.push(
-      <ResponseRnd hasRowTitle={hasRowTitle} question={item} index={index} isResizable={isResizable} {...dragItemSize}>
+      <ResponseRnd
+        hasRowTitle={hasRowTitle}
+        question={item}
+        index={index}
+        isResizable={isResizable}
+        showIndex={showIndex}
+        {...dragItemSize}
+      >
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
-            justifyContent: "center"
+            justifyContent: showIndex ? "flex-end" : "center",
+            position: "relative"
           }}
           drop={drop}
           index={index}
           flag="column"
         >
-          {Array.isArray(answers) &&
-            Array.isArray(answers[index]) &&
-            answers[index].length > 0 &&
-            // eslint-disable-next-line no-loop-func
+          {showIndex && hasAnswer && <IndexBox style={{ marginTop: 5 }}>{renderIndex}</IndexBox>}
+          {hasAnswer &&
             answers[index].map((answerValue, answerIndex) => {
               const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
               const valid = get(validArray, [index, answerIndex], undefined);
@@ -187,10 +198,6 @@ const TableRow = ({
                   valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={getStemNumeration(
-                    uiStyle.validationStemNumeration,
-                    responses.findIndex(_resp => _resp.id === answerValue)
-                  )}
                   onDrop={onDrop}
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
@@ -258,7 +265,8 @@ TableRow.propTypes = {
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
   rowHeader: PropTypes.string,
-  dragItemSize: PropTypes.object.isRequired
+  dragItemSize: PropTypes.object.isRequired,
+  showIndex: PropTypes.bool.isRequired
 };
 
 TableRow.defaultProps = {

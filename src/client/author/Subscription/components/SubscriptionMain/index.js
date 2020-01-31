@@ -141,7 +141,7 @@ const PlansComponent = ({
 
 const getLicenseExpiryDate = subEndDate => {
   if (!subEndDate) return null;
-  const date = Date(subEndDate).split(" ");
+  const date = new Date(subEndDate).toString().split(" ");
   return `${date[2]} ${date[1]}, ${date[3]}`;
 };
 

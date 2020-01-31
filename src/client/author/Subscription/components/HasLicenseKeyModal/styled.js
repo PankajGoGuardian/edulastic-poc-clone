@@ -4,7 +4,7 @@ import { lightGreySecondary, black, white, secondaryTextColor, titleColor } from
 
 export const StyledHasLicenseKeyModal = styled(Modal)`
   width: 665px !important;
-  height: 670px;
+  min-height: 370px;
 
   .ant-modal-header,
   .ant-modal-body,

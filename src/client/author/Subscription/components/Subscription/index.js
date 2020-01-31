@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { withNamespaces } from "@edulastic/localization"; // TODO: Need i18n support
+import { connect } from "react-redux";
+import { slice } from "../../ducks";
 
 import SubscriptionHeader from "../SubscriptionHeader";
 import SubscriptionMain from "../SubscriptionMain";
 import { Wrapper } from "../styled/commonStyled";
+import PurchaseLicenseModal from "../PurchaseLicenseModal";
+import PaymentServiceModal from "../PaymentServiceModal";
+import HasLicenseKeyModal from "../HasLicenseKeyModal";
 import { CompareModal, PlanCard, PlanHeader, PlanLabel, PlanContent, PlanTitle, PlanDescription } from "./styled";
 
 const comparePlansData = [
@@ -137,22 +143,102 @@ const Plans = ({ cardTitle, cardLabel, data, color }) => (
 );
 
 const Subscription = props => {
-  const [comparePlan, setComparePlan] = useState(false);
-  const openComparePlanModal = () => setComparePlan(true);
+  const {
+    t,
+    verificationPending,
+    subscription,
+    isPremiumAccount,
+    verifyAndUpgradeLicense,
+    stripePaymentAction,
+    isSuccess = false,
+    subscription: { subEndDate, subType } = {},
+    user,
+    fetchUserSubscriptionStatus
+  } = props;
 
-  const handleCancel = () => setComparePlan(false);
+  useEffect(() => {
+    // getSubscription on mount
+    fetchUserSubscriptionStatus();
+  }, []);
+
+  const [comparePlan, setComparePlan] = useState(false);
+  const [paymentServiceModal, setPaymentServiceModal] = useState(false);
+  const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false);
+  const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false);
+
+  const openComparePlanModal = () => setComparePlan(true);
+  const closeComparePlansModal = () => setComparePlan(false);
+  const openPaymentServiceModal = () => setPaymentServiceModal(true);
+  const closePaymentServiceModal = () => setPaymentServiceModal(false);
+  const openHasLicenseKeyModal = () => setHasLicenseKeyModal(true);
+  const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false);
+  const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true);
+  const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false);
+
+  const isSubscribed = subType === "premium" || subType === "enterprise" || isSuccess;
 
   return (
     <Wrapper>
-      <SubscriptionHeader openComparePlanModal={openComparePlanModal} />
-      <SubscriptionMain />
-      <CompareModal title="" visible={comparePlan} onCancel={handleCancel} footer={[]} style={{ top: 25 }}>
+      <SubscriptionHeader
+        openComparePlanModal={openComparePlanModal}
+        openPaymentServiceModal={openPaymentServiceModal}
+        isSubscribed={isSubscribed}
+      />
+
+      <SubscriptionMain
+        isSubscribed={isSubscribed}
+        openPaymentServiceModal={openPaymentServiceModal}
+        openHasLicenseKeyModal={openHasLicenseKeyModal}
+        openPurchaseLicenseModal={openPurchaseLicenseModal}
+        subEndDate={subEndDate}
+        subType={subType}
+      />
+
+      <CompareModal title="" visible={comparePlan} onCancel={closeComparePlansModal} footer={[]} style={{ top: 25 }}>
         {comparePlansData.map(plan => (
           <Plans {...plan} />
         ))}
       </CompareModal>
+
+      <PaymentServiceModal
+        visible={paymentServiceModal && !isSuccess}
+        closeModal={closePaymentServiceModal}
+        verificationPending={verificationPending}
+        stripePaymentAction={stripePaymentAction}
+        user={user}
+        reason="Premium Upgrade"
+      />
+
+      <HasLicenseKeyModal
+        visible={hasLicenseKeyModal}
+        closeModal={closeHasLicenseKeyModal}
+        expDate={Date(subEndDate).substring(0, 15)}
+        isSubscribed={isSubscribed}
+        verificationPending={verificationPending}
+        verifyAndUpgradeLicense={verifyAndUpgradeLicense}
+      />
+
+      <PurchaseLicenseModal
+        visible={purchaseLicenseModal}
+        closeModal={closePurchaseLicenseModal}
+        openPaymentServiceModal={openPaymentServiceModal}
+        verificationPending={verificationPending}
+      />
     </Wrapper>
   );
 };
 
-export default Subscription;
+export default connect(
+  state => ({
+    verificationPending: state?.subscription?.verificationPending,
+    subscription: state?.subscription?.subscriptionData?.subscription,
+    isSuccess: state?.subscription?.subscriptionData?.success,
+    isPremiumAccount: state?.user?.user?.features?.premium,
+    user: state.user.user
+  }),
+  {
+    verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
+    stripePaymentAction: slice.actions.stripePaymentAction,
+    fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus
+  }
+)(Subscription);

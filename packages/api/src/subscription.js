@@ -12,6 +12,15 @@ const upgradeUsingLicenseKey = licenseKey =>
     })
     .then(result => result.data.result);
 
+const subscriptionStatus = () =>
+  api
+    .callApi({
+      url: `${prefix}/me`,
+      method: "get"
+    })
+    .then(result => result.data);
+
 export default {
-  upgradeUsingLicenseKey
+  upgradeUsingLicenseKey,
+  subscriptionStatus
 };

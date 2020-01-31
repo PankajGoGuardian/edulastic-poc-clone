@@ -7,13 +7,22 @@ import { connect } from "react-redux";
 import { MenuIcon } from "@edulastic/common";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
-import { HeaderWrapper, Title, CompareActionBtn } from "./styled";
+import { HeaderWrapper, Title, ActionBtnWrapper, HeaderActionBtn } from "./styled";
 
-const SubscriptionHeader = ({ t, toggleSideBar, openComparePlanModal }) => (
+const SubscriptionHeader = ({ t, toggleSideBar, openComparePlanModal, openPaymentServiceModal, isSubscribed }) => (
   <HeaderWrapper borderBottom="none">
     <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
     <Title>{t("common.subscriptionTitle")}</Title>
-    <CompareActionBtn onClick={openComparePlanModal}>COMPARE PLANS</CompareActionBtn>
+    {!isSubscribed && (
+      <ActionBtnWrapper>
+        <HeaderActionBtn onClick={openComparePlanModal} width="195px">
+          COMPARE PLANS
+        </HeaderActionBtn>
+        <HeaderActionBtn onClick={openPaymentServiceModal} width="215px">
+          UPGRADE NOW FOR $100/YEAR
+        </HeaderActionBtn>
+      </ActionBtnWrapper>
+    )}
   </HeaderWrapper>
 );
 

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Layout, Button } from "antd";
-import { themeColor, fadedBlack, white, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, fadedBlack, white } from "@edulastic/colors";
 
 export const Wrapper = styled(Layout)`
   width: 100%;
@@ -27,17 +27,18 @@ export const Container = styled.div`
 export const ActionsWrapper = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: ${({ row }) => (row ? "row" : "column")};
   justify-content: space-evenly;
   height: 110px;
   margin-right: 20px;
+  width: ${({ width }) => width};
 `;
 
 export const ThemeButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  background: ${({ inverse }) => (inverse ? themeColor : white)};
+  background: ${({ inverse }) => (inverse ? themeColor : "transparent")};
   border-color: ${themeColor};
   color: ${({ inverse }) => (inverse ? white : themeColor)};
   width: ${({ width }) => width || "200px"};
@@ -46,8 +47,12 @@ export const ThemeButton = styled(Button)`
   font-size: 11px;
   font-weight: 600;
 
-  &:hover,
   &:focus {
+    color: ${({ inverse }) => (inverse ? white : themeColor)};
+    background: ${({ inverse }) => (inverse ? themeColor : white)};
+  }
+
+  &:hover {
     color: ${white};
     background: ${themeColor};
     border-color: ${themeColor};

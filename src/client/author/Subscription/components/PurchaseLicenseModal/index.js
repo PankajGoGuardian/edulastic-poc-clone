@@ -59,8 +59,8 @@ const PurchaseLicenseModal = props => {
     if (currentModalState === 2) {
       if (radioValue) {
         if (radioValue === 1) {
-          closeModal();
-          // update store before proceeding
+          // replace hideModal with closeModal and update store before proceeding
+          hideModal();
           openPaymentServiceModal();
         } else {
           // update store before proceeding
@@ -150,10 +150,7 @@ const PurchaseLicenseModal = props => {
 
           <Title>share licenses Keys with</Title>
           <Input.TextArea
-            placeholder="Enter the comma separated email ids like...
-                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                 John.doe@yourschool.com, 
-                 jane.doe@yourschool.com, ..."
+            placeholder={`Enter the comma separated email ids like...\nJohn.doe@yourschool.com,\njane.doe@yourschool.com, ...`}
             autoSize={false}
             style={{
               height: "155px",
@@ -194,7 +191,7 @@ const PurchaseLicenseModal = props => {
           <br />
           <br />
           <Input.TextArea
-            placeholder="Hello, I'm interested in knowing more about the Premium Version of Edulastic."
+            placeholder={`Hello,\nI'm interested in knowing more about the Premium Version of Edulastic.`}
             autoSize={false}
             style={{
               height: "155px",

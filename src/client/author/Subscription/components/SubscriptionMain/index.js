@@ -1,17 +1,23 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { slice } from "../../ducks";
 
 import {
   SubscriptionMainWrapper,
   CurrentPlanContainer,
   AvailablePlansContainer,
+  PlanContainerWrapper,
   PlansContainer,
   ContentWrapper,
   PlanImage,
   PlanDetails,
-  PlanStatus
+  PlanStatus,
+  GridContainer,
+  FeatureDescription,
+  FlexCard,
+  InnerWrapper,
+  Img,
+  StyledLink,
+  StyledParagraph
 } from "./styled";
 import { Title, Description, Container, ThemeButton, ActionsWrapper } from "../styled/commonStyled";
 
@@ -19,17 +25,16 @@ import { Title, Description, Container, ThemeButton, ActionsWrapper } from "../s
 import IMG1 from "../../static/1.png";
 import IMG2 from "../../static/2.png";
 import IMG3 from "../../static/3.png";
+import IMG4 from "../../static/4.png";
 
-import PurchaseLicenseModal from "../PurchaseLicenseModal";
-import PaymentServiceModal from "../PaymentServiceModal";
-import HasLicenseKeyModal from "../HasLicenseKeyModal";
-
-const getUpgradeToTeacherPlanActions = ({ openPaymentServiceModal, openHasLicenseKeyModal }) => (
+const getUpgradeToTeacherPlanActions = ({ openPaymentServiceModal, openHasLicenseKeyModal, isblur }) => (
   <ActionsWrapper>
-    <ThemeButton onClick={openPaymentServiceModal} inverse>
+    <ThemeButton onClick={openPaymentServiceModal} disabled={isblur} inverse>
       UPGRADE NOW FOR $100/YEAR
     </ThemeButton>
-    <ThemeButton onClick={openHasLicenseKeyModal}>ALREADY HAVE A LICENSE KEY</ThemeButton>
+    <ThemeButton onClick={openHasLicenseKeyModal} disabled={isblur}>
+      ALREADY HAVE A LICENSE KEY
+    </ThemeButton>
   </ActionsWrapper>
 );
 
@@ -78,17 +83,44 @@ const availablePlans = [
   }
 ];
 
+const featuresData = [
+  {
+    title: "In-depth Reporting",
+    description: "Show student growth over time. Analyze answer distractor. See complete student mastery profile."
+  },
+  {
+    title: "Read Aloud",
+    description: "Choose students to have questions and answer choices read to them."
+  },
+  {
+    title: "Collaboration",
+    description: "Work on assessment as a team before they're published."
+  },
+  {
+    title: "Advanced Assessment Options",
+    description: "Shuffle question order for each student. Show student actions but hide correct answers."
+  },
+  {
+    title: "Rubric Scoring",
+    description: "Create and share rubrics school or district wide."
+  },
+  {
+    title: "Presentation Mode",
+    description: "Review answers and common mistake with the class without showing names."
+  }
+];
+
 const PlansComponent = ({
   imgSrc,
   title,
   description,
   getActionsComp,
-  isEnterprise,
-  openPurchaseLicenseModal,
+  isblur,
   openPaymentServiceModal,
-  openHasLicenseKeyModal
+  openHasLicenseKeyModal,
+  openPurchaseLicenseModal
 }) => (
-  <PlansContainer isEnterprise={isEnterprise}>
+  <PlansContainer isblur={isblur}>
     <ContentWrapper>
       <PlanImage>
         <img src={imgSrc} />
@@ -98,73 +130,122 @@ const PlansComponent = ({
         <Description>{description}</Description>
       </PlanDetails>
     </ContentWrapper>
-    {getActionsComp({ openPurchaseLicenseModal, openPaymentServiceModal, openHasLicenseKeyModal })}
+    {getActionsComp({
+      openPaymentServiceModal,
+      openHasLicenseKeyModal,
+      openPurchaseLicenseModal,
+      isblur
+    })}
   </PlansContainer>
 );
 
-const SubscriptionMain = props => {
-  const { subscription: { subEndDate, subType } = {}, verificationPending, verifyAndUpgradeLicense } = props;
-  const [purchaseLicenseModal, setpurchaseLicenseModal] = useState(false);
-  const [paymentServiceModal, setPaymentServiceModal] = useState(false);
-  const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false);
+const getLicenseExpiryDate = subEndDate => {
+  if (!subEndDate) return null;
+  const date = Date(subEndDate).split(" ");
+  return `${date[2]} ${date[1]}, ${date[3]}`;
+};
 
-  const isSubscribed = subType === "premium" || subType === "enterprise";
+const SubscriptionMain = props => {
+  const {
+    isSubscribed = false,
+    subEndDate,
+    subType,
+    isPremiumAccount = true,
+    openPaymentServiceModal,
+    openHasLicenseKeyModal,
+    openPurchaseLicenseModal
+  } = props;
+
+  const licenseExpiryDate = getLicenseExpiryDate(subEndDate);
+
+  const [showPlans, setShowPlans] = useState(false);
 
   return (
     <>
       <SubscriptionMainWrapper>
-        <CurrentPlanContainer>
+        <CurrentPlanContainer onClick={() => setShowPlans(false)}>
           <Container>
             <Title padding="0 30px 0 0">Current Plan</Title>
-            <Description>{isSubscribed ? "Premium Version" : "Free Plan"}</Description>
+            <Description>{isSubscribed && licenseExpiryDate ? "Premium Version" : "Free Plan"}</Description>
           </Container>
-          <PlanStatus>{isSubscribed ? Date(subEndDate).substring(0, 15) : "Free Forever"}</PlanStatus>
+          <PlanStatus>
+            {isSubscribed && licenseExpiryDate ? (
+              <p>
+                Expires on: <StyledLink>{licenseExpiryDate}</StyledLink>
+              </p>
+            ) : (
+              <StyledLink>Free Forever</StyledLink>
+            )}
+          </PlanStatus>
         </CurrentPlanContainer>
-        <AvailablePlansContainer>
-          {availablePlans.map((plan, index) => (
-            <PlansComponent
-              key={index}
-              isEnterprise={subType === "enterprise" && index !== 2}
-              openPaymentServiceModal={() => setPaymentServiceModal(true)}
-              openHasLicenseKeyModal={() => setHasLicenseKeyModal(true)}
-              openPurchaseLicenseModal={() => setpurchaseLicenseModal(true)}
-              {...plan}
-            />
-          ))}
-        </AvailablePlansContainer>
+
+        {!showPlans && (
+          <>
+            <PlanContainerWrapper>
+              {isSubscribed ? (
+                <h2 style={{ fontWeight: 600, padding: "40px 0 12px 70px" }}>Cool features in your plan</h2>
+              ) : (
+                <PlansContainer isEnterprise={false}>
+                  <ContentWrapper>
+                    <PlanImage>
+                      <img src={availablePlans[0].imgSrc} />
+                    </PlanImage>
+                    <PlanDetails>
+                      <Title margin="0 0 8px 0">{availablePlans[0].title}</Title>
+                      <Description>{availablePlans[0].description}</Description>
+                    </PlanDetails>
+                  </ContentWrapper>
+                </PlansContainer>
+              )}
+
+              <GridContainer>
+                {featuresData.map(({ title, description }) => (
+                  <FlexCard>
+                    <InnerWrapper>
+                      <Img src={IMG4} />
+                      <h3 style={{ fontWeight: 700, paddingLeft: 20 }}>{title}</h3>
+                    </InnerWrapper>
+                    <FeatureDescription>{description}</FeatureDescription>
+                  </FlexCard>
+                ))}
+              </GridContainer>
+            </PlanContainerWrapper>
+
+            {!isSubscribed && (
+              <ActionsWrapper width="460px" row>
+                <ThemeButton onClick={openHasLicenseKeyModal}>ALREADY HAVE A LICENSE KEY</ThemeButton>
+                <ThemeButton onClick={openPaymentServiceModal} inverse>
+                  UPGRADE NOW FOR $100/YEAR
+                </ThemeButton>
+              </ActionsWrapper>
+            )}
+            <StyledParagraph isSubscribed={isSubscribed}>
+              interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
+              {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
+              <a href="https://edulastic.com/teacher-premium/" target="_blank">
+                {" "}
+                click here.
+              </a>
+            </StyledParagraph>
+          </>
+        )}
+        {showPlans && (
+          <AvailablePlansContainer>
+            {availablePlans.map((plan, index) => (
+              <PlansComponent
+                key={index}
+                isblur={isSubscribed && index === 0}
+                openPaymentServiceModal={openPaymentServiceModal}
+                openHasLicenseKeyModal={openHasLicenseKeyModal}
+                openPurchaseLicenseModal={openPurchaseLicenseModal}
+                {...plan}
+              />
+            ))}
+          </AvailablePlansContainer>
+        )}
       </SubscriptionMainWrapper>
-
-      <PaymentServiceModal
-        visible={paymentServiceModal}
-        closeModal={() => setPaymentServiceModal(false)}
-        verificationPending={verificationPending}
-      />
-
-      <HasLicenseKeyModal
-        visible={hasLicenseKeyModal}
-        closeModal={() => setHasLicenseKeyModal(false)}
-        expDate={Date(subEndDate).substring(0, 15)}
-        isSubscribed={isSubscribed}
-        verificationPending={verificationPending}
-        verifyAndUpgradeLicense={verifyAndUpgradeLicense}
-      />
-
-      <PurchaseLicenseModal
-        visible={purchaseLicenseModal}
-        closeModal={() => setpurchaseLicenseModal(false)}
-        openPaymentServiceModal={() => setPaymentServiceModal(true)}
-        verificationPending={verificationPending}
-      />
     </>
   );
 };
 
-export default connect(
-  state => ({
-    verificationPending: state.subscription.verificationPending,
-    subscription: state.subscription.subscriptionData
-  }),
-  {
-    verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending
-  }
-)(SubscriptionMain);
+export default SubscriptionMain;

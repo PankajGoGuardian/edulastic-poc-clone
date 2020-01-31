@@ -768,7 +768,7 @@ function* createTestSaga({ payload }) {
     if (payload.currentTab) {
       yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}`));
     } else {
-      yield put(replace(`/author/tests/tab/review/id/${entity._id}`));
+      yield put(replace(`/author/tests/tab/description/id/${entity._id}`));
     }
 
     yield call(message.success, "Test created");

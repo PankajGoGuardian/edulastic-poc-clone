@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { findDOMNode } from "react-dom";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";

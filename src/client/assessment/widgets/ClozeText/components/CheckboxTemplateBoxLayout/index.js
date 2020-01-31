@@ -82,8 +82,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             textAlign: "center",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            lineHeight: `${boxHeight}px`
+            whiteSpace: "nowrap"
           }}
           showIndex={!checkAnswer}
           dangerouslySetInnerHTML={{ __html: userAnswer || "" }}

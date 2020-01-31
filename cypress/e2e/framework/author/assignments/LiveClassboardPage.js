@@ -77,15 +77,16 @@ class LiveClassboardPage {
       .contains("a", "CARD VIEW")
       .click({ force: true });
 
-  clickOnStudentsTab = () =>
-    cy
-      .get("[data-cy=studentnQuestionTab]")
+  clickOnStudentsTab = () => {
+    cy.get("[data-cy=studentnQuestionTab]")
       .contains("a", "STUDENTS")
       .click({ force: true });
+    cy.contains("Leave a feedback!"); // waiting for UI to render
+  };
 
   clickonQuestionsTab = () => {
     cy.server();
-    cy.route("GET", "**/api/assignments/**").as("getFirstQuestion");
+    cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
     this.getQuestionsTab().click({ force: true });
     return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
   };

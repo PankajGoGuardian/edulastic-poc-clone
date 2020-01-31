@@ -77,7 +77,7 @@ export default class GroupItemsPage {
       cy.wait("@waitForItems").then(xhr => {
         expect(xhr.status).to.eq(200);
       });
-    cy.wait(500);
+    cy.wait(2000); // waiting for search to retrieve items
   };
 
   getGroupContainerByGroup = group => cy.get(".ant-collapse-item").eq(group - 1);
@@ -147,9 +147,9 @@ export default class GroupItemsPage {
     cy.server();
     cy.route("POST", "**api/test").as("createTest");
     this.testLibraryPage.testSummary.header.clickOnAddItems();
+    this.addItems.searchFilters.clearAll();
+    this.addItems.searchFilters.getAuthoredByMe();
     itemIds.forEach((item, index) => {
-      this.addItems.searchFilters.clearAll();
-      this.addItems.searchFilters.getAuthoredByMe();
       if (!group) this.addItems.addItemById(item);
       else this.addItems.addItemByIdByGroup(group, item);
       if (index === 0 && newTest === true) {
@@ -160,6 +160,50 @@ export default class GroupItemsPage {
         cy.wait(500);
       }
     });
-    return cy.wait(1000).then(() => testID);
+    return cy.wait(3000).then(() => testID);
+    // GET 200 /api/test/default-thumbnail?subject=Other this is triggering for indefinate numbers
+    // so the wait is
+  };
+
+  getItemDeliverySeq = (deliveredItemGroups, groups, deliveryType, deliveryCount) => {
+    const deliveredGroup = {};
+    let deliveredArray = [];
+    let OriginalArray = [];
+
+    deliveredItemGroups.forEach((gArray, ind) => {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!deliveredGroup.hasOwnProperty(`group${ind + 1}`)) deliveredGroup[`group${ind + 1}`] = [];
+      gArray.items.forEach(itemObj => {
+        deliveredGroup[`group${ind + 1}`].push(itemObj._id);
+        expect(
+          itemObj._id,
+          `Expected item-${itemObj._id} should be part of group-${ind + 1}-[${groups[ind]}]`
+        ).to.be.oneOf(groups[`GROUP${ind + 1}`]);
+      });
+
+      deliveredArray = [...deliveredArray, ...deliveredGroup[Cypress._.keys(deliveredGroup)[ind]]];
+      OriginalArray = [...OriginalArray, ...groups[Cypress._.keys(groups)[ind]]];
+    });
+
+    switch (deliveryType) {
+      // Static + all
+      case "ALL":
+        CypressHelper.checkObjectEquality(deliveredArray, OriginalArray);
+        break;
+      // Static + all + shuffle
+      case "ALL_SHUFFLE":
+        CypressHelper.checkObjectInEquality(deliveredArray, OriginalArray);
+        expect(deliveredArray.length).to.eq(deliveryCount);
+        break;
+      // Auto + count
+      // Static + count
+      case "ALL_RANDOM":
+      case "LIMITED_RANDOM":
+        CypressHelper.checkObjectInEquality(deliveredArray, OriginalArray.slice(deliveryCount + 1));
+        expect(deliveredArray.length).to.eq(deliveryCount);
+        break;
+      default:
+    }
+    return deliveredArray;
   };
 }

@@ -11,6 +11,8 @@ import LiveClassboardPage from "../../../../framework/author/assignments/LiveCla
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes, deliverType } from "../../../../framework/constants/questionTypes";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
+import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary();
@@ -23,6 +25,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const lcb = new LiveClassboardPage();
   const studentAssignment = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();
+  const sbr = new StandardBasedReportPage();
 
   const testData = {
     name: "Test Item Group",
@@ -52,30 +55,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     deliveryCount: 3
   };
 
+  const deliveredArray = [[], []];
+  const redirected = [[], []];
+  const message = [
+    "-Expected to items be delivered same for  both students-",
+    "-Expected to items be delivered different for  both students-"
+  ];
+  const queText = " - This is MCQ_TF";
   const quesType = "MCQ_TF";
-
-  let testID = "5e30a00611bc880008342989";
-
-  let deliveredItemsByGroupByIndex = {
-    Student1: {
-      group1: [],
-      group2: [],
-      index1: [],
-      index2: []
-    },
-    Student2: {
-      group1: [],
-      group2: [],
-      index1: [],
-      index2: []
-    }
-  };
+  let queNum;
 
   const contEditor = {
     email: "content.editor.1@snapwiz.com",
     pass: "snapwiz"
   };
-
   const Teacher = {
     email: "teacher2.for.dynamic.test@snapwiz.com",
     pass: "snapwiz"
@@ -84,8 +77,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     { name: "Student1", email: "student1.group.question.delivery@snapwiz.com", pass: "snapwiz" },
     { name: "Student2", email: "student2.group.question.delivery@snapwiz.com", pass: "snapwiz" }
   ];
-
-  const questionText = " - This is MCQ_TF";
 
   const attemptByQuestion = {
     1: attemptTypes.RIGHT,
@@ -97,15 +88,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     7: attemptTypes.WRONG,
     8: attemptTypes.RIGHT
   };
-
   const attempData = { right: "right", wrong: "wrong" };
+
   const GROUPS = {
     GROUP1: [],
     GROUP2: []
   };
+
   const items = ["MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6"];
-  let itemIds = [];
+  const itemIds = [];
+  let testID;
   let group;
+
   before("Login and create new items", () => {
     cy.login("publisher", contEditor.email, contEditor.pass);
     items.forEach((itemToCreate, index) => {
@@ -170,63 +164,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       it(">login as student and verify", () => {
         students.forEach((student, index) => {
           cy.login("student", student.email, student.pass);
+          // Response Verification
           studentAssignment.clickOnAssigmentByTestId(testID).then(groupArray => {
-            // Response verification
-            groupArray.forEach((gArray, ind) => {
-              expect(
-                gArray.deliveryType,
-                `Expected Delivery Type For Gruop-${ind + 1} to be${deliverType.ALL_RANDOM}`
-              ).to.be.eq(deliverType.ALL_RANDOM);
-              gArray.items.forEach(itemObj => {
-                deliveredItemsByGroupByIndex[`Student${index + 1}`][`group${ind + 1}`].push(itemObj._id);
-                expect(
-                  itemObj._id,
-                  `Expected item-${itemObj._id} should be part of group-${ind + 1}-[${
-                    GROUPS[`GROUP${ind + 1}`]
-                  }] for Student${index + 1}`
-                ).to.be.oneOf(GROUPS[`GROUP${ind + 1}`]);
-                deliveredItemsByGroupByIndex[`Student${index + 1}`][`index${ind + 1}`].push(
-                  itemIds.indexOf(itemObj._id)
-                );
-              });
-            });
-            expect(
-              [
-                ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group1,
-                ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group2
-              ].length,
-              `Expected delivery count-${
-                [
-                  ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group1,
-                  ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group2
-                ].length
-              } to be 4`
-            ).to.eq(filterForAutoselect1.deliveryCount + filterForAutoselect2.deliveryCount);
-            // UI verification
-            [
-              ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index1,
-              ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index2
-            ].forEach(item => {
-              studentTestPage.getQuestionText().should("contain", `Q${item + 1}${questionText}`);
-              studentTestPage.attemptQuestion(quesType, attemptByQuestion[item + 1], attempData);
+            deliveredArray[index] = groupItemsPage.getItemDeliverySeq(groupArray, GROUPS, deliverType.ALL_RANDOM, 3);
+            // UI Verification
+            deliveredArray[index].forEach(item => {
+              queNum = itemIds.indexOf(item) + 1;
+              studentTestPage.getQuestionText().should("contain", `Q${queNum}${queText}`);
+              studentTestPage.attemptQuestion(quesType, attemptByQuestion[queNum], attempData);
               studentTestPage.clickOnNext();
             });
             studentTestPage.submitTest();
           });
         });
-        // TODO: Clarify below whether to be equal or not
-        cy.wait(1).then(() =>
-          assert.notDeepEqual(
-            [...deliveredItemsByGroupByIndex.Student1.group1, ...deliveredItemsByGroupByIndex.Student1.group2],
-            [...deliveredItemsByGroupByIndex.Student2.group1, ...deliveredItemsByGroupByIndex.Student2.group2],
-            `Expected items delivered to Student1-[
-            ${[
-              ...deliveredItemsByGroupByIndex.Student1.group1,
-              ...deliveredItemsByGroupByIndex.Student1.group2
-            ]}] not be Same as Items delivered to Student2-[
-            ${[...deliveredItemsByGroupByIndex.Student2.group1, ...deliveredItemsByGroupByIndex.Student2.group2]}]`
-          )
-        );
+        cy.wait(1).then(() => CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1]));
       });
       it(">login as teacher verify in LCB", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
@@ -236,33 +187,79 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         // UI Verification
         students.forEach((student, index) => {
           lcb.questionResponsePage.selectStudent(student.name);
-          [
-            ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index1,
-            ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index2
-          ].forEach((queNo, ind) => {
-            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNo + 1}${questionText}`);
+          deliveredArray[index].forEach((item, ind) => {
+            queNum = itemIds.indexOf(item) + 1;
+            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
           });
         });
+
         lcb.getQuestionsTab().should("have.attr", "disabled", `disabled`);
         lcb.header.getExpressGraderTab().should("have.attr", "disabled", `disabled`);
+
+        lcb.header.clickOnStandardBasedReportTab();
+        sbr.getTableHeaderElements().should("have.length", 4);
+      });
+      context(">redirect", () => {
+        it(">redirect the test", () => {
+          sbr.header.clickOnLCBTab();
+          lcb.clickOnCardViewTab();
+          lcb.checkSelectAllCheckboxOfStudent();
+          lcb.clickOnRedirect();
+          lcb.clickOnRedirectSubmit();
+        });
+        it(">login as student and verify", () => {
+          students.forEach((student, index) => {
+            if (index === 0) {
+              cy.login("student", student.email, student.pass);
+              // Response Verification
+              studentAssignment.clickOnAssigmentByTestId(testID).then(groupArray => {
+                redirected[index] = groupItemsPage.getItemDeliverySeq(groupArray, GROUPS, deliverType.LIM_RANDOM, 3);
+                // UI Verification
+                redirected[index].forEach(item => {
+                  queNum = itemIds.indexOf(item) + 1;
+                  studentTestPage.getQuestionText().should("contain", `Q${queNum}${queText}`);
+                  studentTestPage.attemptQuestion(quesType, attemptByQuestion[queNum], attempData);
+                  studentTestPage.clickOnNext();
+                });
+                studentTestPage.submitTest();
+              });
+            }
+          });
+          cy.wait(1).then(() => {
+            //  CypressHelper.checkObjectInEquality(redirected[0], redirected[1], message[1]);
+            CypressHelper.checkObjectEquality(redirected[0], deliveredArray[0], students[0].name);
+            //  CypressHelper.checkObjectEquality(redirected[1], deliveredArray[1], students[1].name);
+          });
+        });
+        it(">login as teacher verify in LCB", () => {
+          cy.login("teacher", Teacher.email, Teacher.pass);
+          testLibraryPage.sidebar.clickOnAssignment();
+          authorAssignPage.clcikOnPresenatationIconByIndex(0);
+          lcb.clickOnStudentsTab();
+          // UI Verification
+          students.forEach((student, index) => {
+            if (index === 0) {
+              lcb.questionResponsePage.selectStudent(student.name);
+              for (let i = 1; i <= 2; i++) {
+                lcb.questionResponsePage.selectAttempt(i);
+                // eslint-disable-next-line no-loop-func
+                deliveredArray[index].forEach((item, ind) => {
+                  queNum = itemIds.indexOf(item) + 1;
+                  lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
+                });
+              }
+            }
+          });
+          lcb.getQuestionsTab().should("have.attr", "disabled", `disabled`);
+          lcb.header.getExpressGraderTab().should("have.attr", "disabled", `disabled`);
+
+          lcb.header.clickOnStandardBasedReportTab();
+          sbr.getTableHeaderElements().should("have.length", 4);
+        });
       });
     });
     context(">auto select + static", () => {
       before("login", () => {
-        deliveredItemsByGroupByIndex = {
-          Student1: {
-            group1: [],
-            group2: [],
-            index1: [],
-            index2: []
-          },
-          Student2: {
-            group1: [],
-            group2: [],
-            index1: [],
-            index2: []
-          }
-        };
         cy.deleteAllAssignments("", Teacher.email);
         cy.login("publisher", contEditor.email, contEditor.pass);
       });
@@ -310,69 +307,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       it(">login as student and verify", () => {
         students.forEach((student, index) => {
           cy.login("student", student.email, student.pass);
+          // Response Verification
           studentAssignment.clickOnAssigmentByTestId(testID).then(groupArray => {
-            // Response verification
-            groupArray.forEach((gArray, ind) => {
-              if (ind === 0)
-                expect(
-                  gArray.deliveryType,
-                  `Expected Delivery Type For Gruop-${ind + 1} to be${deliverType.ALL}`
-                ).to.be.eq(deliverType.ALL);
-              else
-                expect(
-                  gArray.deliveryType,
-                  `Expected Delivery Type For Gruop-${ind + 1} to be${deliverType.ALL_RANDOM}`
-                ).to.be.eq(deliverType.ALL_RANDOM);
-              gArray.items.forEach(itemObj => {
-                deliveredItemsByGroupByIndex[`Student${index + 1}`][`group${ind + 1}`].push(itemObj._id);
-                expect(
-                  itemObj._id,
-                  `Expected item-${itemObj._id} should be part of group-${ind + 1}-[${
-                    GROUPS[`GROUP${ind + 1}`]
-                  }] for Student${index + 1}`
-                ).to.be.oneOf(GROUPS[`GROUP${ind + 1}`]);
-                deliveredItemsByGroupByIndex[`Student${index + 1}`][`index${ind + 1}`].push(
-                  itemIds.indexOf(itemObj._id)
-                );
-              });
-            });
-            expect(
-              [
-                ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group1,
-                ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group2
-              ].length,
-              `Expected delivery count-${
-                [
-                  ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group1,
-                  ...deliveredItemsByGroupByIndex[`Student${index + 1}`].group2
-                ].length
-              } to be ${GROUPS.GROUP1.length + filterForAutoselect2.deliveryCount}`
-            ).to.eq(GROUPS.GROUP1.length + filterForAutoselect2.deliveryCount);
-            // UI verification
-            [
-              ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index1,
-              ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index2
-            ].forEach(item => {
-              studentTestPage.getQuestionText().should("contain", `Q${item + 1}${questionText}`);
-              studentTestPage.attemptQuestion(quesType, attemptByQuestion[item + 1], attempData);
+            deliveredArray[index] = groupItemsPage.getItemDeliverySeq(groupArray, GROUPS, deliverType.ALL_RANDOM, 3);
+            // UI Verification
+            deliveredArray[index].forEach(item => {
+              queNum = itemIds.indexOf(item) + 1;
+              studentTestPage.getQuestionText().should("contain", `Q${queNum}${queText}`);
+              studentTestPage.attemptQuestion(quesType, attemptByQuestion[queNum], attempData);
               studentTestPage.clickOnNext();
             });
             studentTestPage.submitTest();
           });
         });
-        // TODO: Clarify below whether to be equal or not
-        cy.wait(1).then(() =>
-          assert.notDeepEqual(
-            [...deliveredItemsByGroupByIndex.Student1.group1, ...deliveredItemsByGroupByIndex.Student1.group2],
-            [...deliveredItemsByGroupByIndex.Student2.group1, ...deliveredItemsByGroupByIndex.Student2.group2],
-            `Expected items delivered to Student1-[
-            ${[
-              ...deliveredItemsByGroupByIndex.Student1.group1,
-              ...deliveredItemsByGroupByIndex.Student1.group2
-            ]}] not be Same as Items delivered to Student2-[
-            ${[...deliveredItemsByGroupByIndex.Student2.group1, ...deliveredItemsByGroupByIndex.Student2.group2]}]`
-          )
-        );
+        cy.wait(1).then(() => {
+          CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1]);
+          CypressHelper.checkObjectEquality(
+            deliveredArray[0].slice(0, GROUPS.GROUP1.length + 1),
+            deliveredArray[1].slice(0, GROUPS.GROUP1.length + 1),
+            message[0]
+          );
+        });
       });
       it(">login as teacher verify in LCB", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
@@ -382,15 +337,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         // UI Verification
         students.forEach((student, index) => {
           lcb.questionResponsePage.selectStudent(student.name);
-          [
-            ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index1,
-            ...deliveredItemsByGroupByIndex[`Student${index + 1}`].index2
-          ].forEach((queNo, ind) => {
-            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNo + 1}${questionText}`);
+          deliveredArray[index].forEach((item, ind) => {
+            queNum = itemIds.indexOf(item) + 1;
+            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
           });
         });
+
         lcb.getQuestionsTab().should("have.attr", "disabled", `disabled`);
         lcb.header.getExpressGraderTab().should("have.attr", "disabled", `disabled`);
+
+        lcb.header.clickOnStandardBasedReportTab();
+        sbr.getTableHeaderElements().should("have.length", 4);
       });
     });
   });

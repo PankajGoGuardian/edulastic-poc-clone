@@ -80,4 +80,12 @@ export default class CypressHelper {
   };
 
   static getShortId = item => item.slice(item.length - 5);
+
+  static checkObjectEquality = (obj1, obj2, message = "Equal") => {
+    expect(obj1, `${obj1} ${message} ${obj2}`).to.deep.eq(obj2);
+  };
+
+  static checkObjectInEquality = (obj1, obj2, message = "Not Equal") => {
+    expect(obj1, `${obj1} ${message} ${obj2}`).not.to.deep.eq(obj2);
+  };
 }

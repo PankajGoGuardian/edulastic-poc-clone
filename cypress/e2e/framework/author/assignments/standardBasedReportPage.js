@@ -178,4 +178,8 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
     }
     this.verifyStudentPerformance(students);
   };
+
+  getTableHeader = () => cy.get(".ant-table-thead").eq(0);
+
+  getTableHeaderElements = () => this.getTableHeader().find("th");
 }

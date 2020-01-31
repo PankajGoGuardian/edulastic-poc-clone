@@ -29,7 +29,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     subject: "Mathematics",
     standardSet: "Math - Common Core",
     grade: ["Kindergarten"],
-    standardsToSelect: ["K.CC.A.2"]
+    standardsToSelect: ["K.CC.A.2"],
+    collection: "auto collection 3",
+    deliveryCount: 2
   };
 
   const GROUPS = {
@@ -52,12 +54,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     context(">default group", () => {
       context(">add item to default group from 'add item' tab", () => {
         before("create new test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
         });
         it(">add items", () => {
           cy.server();
@@ -107,12 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       });
       context(">add item to default group from 'itemgroup' page", () => {
         before("create new test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
           testLibraryPage.testSummary.header.clickOnAddItems();
           addItemTab.clickOnGroupItem();
         });
@@ -165,12 +157,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     context(">new group", () => {
       context(">add item to group from 'add item' tab", () => {
         before("create test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
           testReviewTab.testheader.clickOnAddItems();
         });
         it(">add new group", () => {
@@ -254,12 +241,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     });
     context(">multiple group", () => {
       before("create test", () => {
-        testLibraryPage.sidebar.clickOnTestLibrary();
-        testLibraryPage.clickOnAuthorTest();
-        testLibraryPage.testSummary.setName(testData.name);
-        testLibraryPage.testSummary.selectGrade(testData.grade);
-        testLibraryPage.testSummary.selectSubject(testData.subject);
-        testLibraryPage.testSummary.selectCollection(testData.collections);
+        testLibraryPage.createNewTestAndFillDetails(testData);
         testReviewTab.testheader.clickOnAddItems();
         addItemTab.clickOnGroupItem();
         groupItemsPage.clickOnAddGroup();
@@ -317,12 +299,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     context(">edit group", () => {
       context(">delivery count", () => {
         before("create test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
         });
         it("add items to groups", () => {
           testReviewTab.testheader.clickOnAddItems();
@@ -357,29 +334,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       });
       context(">auto select", () => {
         before("create test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
         });
         it(">create dynamic group", () => {
           testLibraryPage.testSummary.header.clickOnAddItems();
           addItemTab.clickOnGroupItem();
-          groupItemsPage.clickOnEditByGroup(1);
-          groupItemsPage.checkAutoSelectForGroup(1);
-          groupItemsPage.clickBrowseOnStandardsByGroup(1);
-          groupItemsPage.selectStandardsBySubGradeStandardSet(
-            filterForAutoselect.subject,
-            filterForAutoselect.grade,
-            filterForAutoselect.standardSet,
-            filterForAutoselect.standardsToSelect
-          );
-          groupItemsPage.clickOnApply();
-          groupItemsPage.selectCollectionByGroupAndCollection(1, testData.collections);
-          groupItemsPage.setItemCountForDeliveryByGroup(1, 2);
-          groupItemsPage.clickOnSaveByGroup(1, true);
+          groupItemsPage.createDynamicTest(1, filterForAutoselect);
           // TODO : Remove this static wait and verify once you get 2 or 3 results
           cy.wait(3000);
         });
@@ -412,12 +372,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       });
       context(">manual to auto select", () => {
         before("create test", () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.clickOnAuthorTest();
-          testLibraryPage.testSummary.setName(testData.name);
-          testLibraryPage.testSummary.selectGrade(testData.grade);
-          testLibraryPage.testSummary.selectSubject(testData.subject);
-          testLibraryPage.testSummary.selectCollection(testData.collections);
+          testLibraryPage.createNewTestAndFillDetails(testData);
         });
         it("add items to groups", () => {
           testReviewTab.testheader.clickOnAddItems();
@@ -448,19 +403,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">edit group", () => {
           testReviewTab.testheader.clickOnAddItems();
           addItemTab.clickOnGroupItem();
-          groupItemsPage.clickOnEditByGroup(1);
-          groupItemsPage.checkAutoSelectForGroup(1, true);
-          groupItemsPage.clickBrowseOnStandardsByGroup(1);
-          groupItemsPage.selectStandardsBySubGradeStandardSet(
-            filterForAutoselect.subject,
-            filterForAutoselect.grade,
-            filterForAutoselect.standardSet,
-            filterForAutoselect.standardsToSelect
-          );
-          groupItemsPage.clickOnApply();
-          groupItemsPage.selectCollectionByGroupAndCollection(1, testData.collections);
-          groupItemsPage.setItemCountForDeliveryByGroup(1, 2);
-          groupItemsPage.clickOnSaveByGroup(1, true);
+          groupItemsPage.createDynamicTest(1, filterForAutoselect, true);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();

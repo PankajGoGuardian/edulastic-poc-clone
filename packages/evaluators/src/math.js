@@ -11,6 +11,10 @@ export const evaluate = data =>
     })
     .then(result => result.data)
     .catch(err => {
+      if (!data.expected) {
+        console.error("Error from mathengine", err.response.data);
+        return {};
+      }
       throw err.response.data;
     });
 

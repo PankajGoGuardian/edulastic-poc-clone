@@ -61,6 +61,10 @@ var evaluate = function evaluate(data) {
       return result.data;
     })
     ["catch"](function(err) {
+      if (!data.expected) {
+        console.error("Error from mathengine", err.response.data);
+        return {};
+      }
       throw err.response.data;
     });
 };

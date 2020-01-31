@@ -13,7 +13,7 @@ export const Label = styled.label`
   margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
   display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
-  margin: ${({ marginX, marginY }) => `${marginX} ${marginY}`};
+  margin: ${({ marginX, marginY }) => `${marginY} ${marginX}`};
   padding-top: ${props => (props.top ? `${props.top}px` : 0)};
   padding-bottom: ${props => (props.bottom ? `${props.bottom}px` : 0)};
   padding-left: ${props => (props.left ? `${props.left}px` : 0)};

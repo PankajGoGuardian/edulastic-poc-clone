@@ -89,9 +89,12 @@ class MathFormulaPreview extends Component {
   }
 
   isStatic() {
-    const { studentTemplate } = this.props;
+    const { studentTemplate, item } = this.props;
     return (
-      studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1 && studentTemplate !== "\\MathQuillMathField{}"
+      (studentTemplate &&
+        studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1 &&
+        studentTemplate !== "\\MathQuillMathField{}") ||
+      item.templateDisplay
     );
   }
 

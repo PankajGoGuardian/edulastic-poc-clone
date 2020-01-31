@@ -58,7 +58,9 @@ const MathFormula = ({
 
   const itemForPreview = useMemo(() => replaceVariables(item, latexKeys), [item]);
   const studentTemplate =
-    itemForPreview.template && itemForPreview.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
+    itemForPreview.templateDisplay &&
+    itemForPreview.template &&
+    itemForPreview.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
 
   return (
     <Fragment>

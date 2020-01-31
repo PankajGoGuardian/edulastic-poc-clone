@@ -44,6 +44,7 @@ export const LeftTemplateContainer = styled.div`
   flex: 1;
   width: ${({ studentReport, responseBoxContainerWidth }) =>
     studentReport ? null : `calc(100% - ${responseBoxContainerWidth + 30}px)}`};
+  overflow: auto;
 `;
 
 export const LeftResponseContainer = styled.div.attrs({

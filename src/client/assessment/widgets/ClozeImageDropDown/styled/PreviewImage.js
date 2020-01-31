@@ -8,7 +8,7 @@ export const PreviewImage = styled.div`
   user-select: none;
   pointer-events: none;
   max-width: unset !important;
-  background-size: contain;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-image: url(${({ imageSrc }) => imageSrc || ""});
 `;

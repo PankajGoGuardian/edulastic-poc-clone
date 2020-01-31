@@ -534,7 +534,6 @@ class Display extends Component {
 
     const responseBoxWidth = choiceMaxWidth;
     const containerStyle = {
-      margin: "auto",
       minWidth: choiceMaxWidth,
       maxWidth: responseposition === "left" || responseposition === "right" ? 1050 : 750
     };

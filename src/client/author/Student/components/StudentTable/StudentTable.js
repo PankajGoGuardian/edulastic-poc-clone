@@ -74,7 +74,7 @@ import {
 
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { getFullNameFromString } from "../../../../common/utils/helpers";
 
@@ -84,6 +84,7 @@ import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router-dom";
+import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
 const { Option } = Select;
@@ -210,7 +211,12 @@ class StudentTable extends Component {
   }
 
   componentDidMount() {
-    const { dataPassedWithRoute } = this.props;
+    const { dataPassedWithRoute, loadSchoolPolicy, role, loadDistrictPolicy, schoolId, userOrgId } = this.props;
+    if (role === "school-admin") {
+      loadSchoolPolicy(schoolId);
+    } else {
+      loadDistrictPolicy({ orgId: userOrgId });
+    }
     if (!isEmpty(dataPassedWithRoute)) {
       this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
     } else {
@@ -625,6 +631,7 @@ class StudentTable extends Component {
       validatedClassDetails,
       resetClassDetails,
       history,
+      policy,
       t
     } = this.props;
 
@@ -794,6 +801,7 @@ class StudentTable extends Component {
             features={features}
             setProvider={setProvider}
             t={t}
+            policy={policy}
           />
         )}
 
@@ -884,7 +892,10 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
       features: getUserFeatures(state),
-      validatedClassDetails: getValidatedClassDetails(state)
+      validatedClassDetails: getValidatedClassDetails(state),
+      policy: getPolicies(state),
+      schoolId: get(state, "user.saSettingsSchool"),
+      role: getUserRole(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -913,7 +924,9 @@ const enhance = compose(
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
       setProvider: setMultiStudentsProviderAction,
-      resetClassDetails: resetFetchedClassDetailsAction
+      resetClassDetails: resetFetchedClassDetailsAction,
+      loadSchoolPolicy: receiveSchoolPolicyAction,
+      loadDistrictPolicy: receiveDistrictPolicyAction
     }
   )
 );

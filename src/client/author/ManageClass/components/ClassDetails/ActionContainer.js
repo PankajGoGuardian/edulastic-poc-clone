@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
@@ -44,6 +44,7 @@ import {
 } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 
 const modalStatus = {};
 
@@ -64,7 +65,9 @@ const ActionContainer = ({
   features,
   history,
   setSelectedStudents,
-  cleverId
+  cleverId,
+  loadSchoolPolicy,
+  policy
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -247,6 +250,11 @@ const ActionContainer = ({
     }
   };
 
+  useEffect(() => {
+    // if school policy does not exists then action will populate district policy
+    loadSchoolPolicy(selectedClass.institutionId);
+  }, []);
+
   return (
     <>
       {infoModelVisible && (
@@ -372,6 +380,7 @@ const ActionContainer = ({
               setIsAddMultipleStudentsModal={setIsAddMultipleStudentsModal}
               loadStudents={loadStudents}
               features={features}
+              policy={policy}
             />
           )}
         </ButtonsWrapper>
@@ -403,12 +412,14 @@ export default connect(
     studentLoaded: get(state, "manageClass.loaded"),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
     studentsList: get(state, "manageClass.studentsList", []),
-    features: getUserFeatures(state)
+    features: getUserFeatures(state),
+    policy: getSchoolPolicy(state)
   }),
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction,
-    setSelectedStudents: selectStudentAction
+    setSelectedStudents: selectStudentAction,
+    loadSchoolPolicy: receiveSchoolPolicyAction
   }
 )(ActionContainer);

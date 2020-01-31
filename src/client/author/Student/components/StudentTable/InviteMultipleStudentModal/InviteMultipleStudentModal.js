@@ -239,9 +239,10 @@ class InviteMultipleStudentModal extends Component {
       loadStudents,
       features,
       role,
+      policy,
       t
     } = this.props;
-
+    const { googleUsernames = true, office365Usernames = true, firstNameAndLastName = true } = policy;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
     const { classList = [], searchAndAddStudents = false, schools = [] } = orgData || {};
     const isPremium = isFeatureAccessible({
@@ -394,10 +395,12 @@ class InviteMultipleStudentModal extends Component {
                   onChange={this.handleChange}
                   defaultValue="google"
                 >
-                  <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>
-                  <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>
-                  <Option value="fl">{t("users.student.invitestudents.fl")}</Option>
-                  <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
+                  {googleUsernames && <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>}
+                  {office365Usernames && <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>}
+                  {firstNameAndLastName && [
+                    <Option value="fl">{t("users.student.invitestudents.fl")}</Option>,
+                    <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
+                  ]}
                 </Select>
               </Col>
             </SelUserKindDiv>

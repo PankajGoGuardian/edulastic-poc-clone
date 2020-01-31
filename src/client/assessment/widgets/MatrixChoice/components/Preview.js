@@ -49,7 +49,7 @@ const Preview = ({
 
   return (
     <QuestionWrapper>
-      <QuestionContentWrapper>
+      <QuestionContent>
         <Matrix
           stems={item.stems}
           options={item.options}
@@ -60,7 +60,7 @@ const Preview = ({
           evaluation={evaluation}
           smallSize={smallSize}
         />
-      </QuestionContentWrapper>
+      </QuestionContent>
 
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </QuestionWrapper>
@@ -91,7 +91,7 @@ Preview.defaultProps = {
 
 export default Preview;
 
-const QuestionContentWrapper = styled.div`
+const QuestionContent = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;

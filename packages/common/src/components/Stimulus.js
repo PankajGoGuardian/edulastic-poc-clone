@@ -20,6 +20,12 @@ const Stimulus = withTheme(
       -webkit-touch-callout: none;
     }
 
+    & .input__math,
+    & .input__math * {
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};
     }

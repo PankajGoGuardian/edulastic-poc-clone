@@ -12,7 +12,7 @@ export const RoundDiv = styled.div`
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s ease;
-  min-height: 230px;
+  min-height: 190px;
 
   &:hover {
     background-color: ${themeColor};

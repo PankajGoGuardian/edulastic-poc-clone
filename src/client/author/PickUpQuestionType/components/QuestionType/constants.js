@@ -70,6 +70,8 @@ import GRFractionEditor from "../../../src/assets/graphing/fraction-editor.svg";
 // Charts
 import LinePlot from "../../../src/assets/charts/line-plot.svg";
 import DotPlot from "../../../src/assets/charts/dot-plot.svg";
+import LinePlotNumberLine from "../../../src/assets/charts/line-plot-number-line.svg";
+import DotPlotNumberLine from "../../../src/assets/charts/dot-plot-number-line.svg";
 import Histogram from "../../../src/assets/charts/histogram.svg";
 import BarChart from "../../../src/assets/charts/bar-chart.svg";
 import LineChart from "../../../src/assets/charts/line-chart.svg";
@@ -366,7 +368,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       type: "charts",
       cardImage: DotPlot,
       data: {
-        title: "Dot plot",
+        title: "Dot plot - Categories",
         firstMount: true,
         type: "dots",
         stimulus: "",
@@ -453,7 +455,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: DotPlot,
+      cardImage: DotPlotNumberLine,
       data: {
         title: "Dot Plot - Number Line",
         type: questionType.GRAPH,
@@ -649,7 +651,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "charts",
-      cardImage: LinePlot,
+      cardImage: LinePlotNumberLine,
       data: {
         title: "Line Plot - Number Line",
         type: questionType.GRAPH,

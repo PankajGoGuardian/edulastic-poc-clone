@@ -103,7 +103,7 @@ const ClozeMath = ({
           {view === PREVIEW && (
             <StyledPaperWrapper
               isV1Multipart={isV1Multipart}
-              style={{ height: "100%", overflow: "visible", flex: "auto" }}
+              style={{ height: "100%", overflow: "auto", "max-width": "100%", flex: "auto" }}
             >
               <ClozeMathPreview
                 type={actualPreviewMode}

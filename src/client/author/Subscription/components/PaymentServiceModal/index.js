@@ -28,7 +28,7 @@ const PaymentServiceModal = props => {
         <StripeProvider apiKey={stripePubKey}>
           <Elements>
             <PaymentForm
-              userId={`${user.role}_${user._id}`}
+              userId={user.userName || user.email}
               reason={reason}
               handlePayment={stripePaymentAction}
               verificationPending={verificationPending}

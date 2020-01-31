@@ -17,10 +17,11 @@ const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
     <Popover
       content={<CharacterMap onClick={onSelect} buttonStyle={buttonStyle} />}
       title={t("component.options.characterMap")}
-      placement="bottom"
+      placement="bottomLeft"
       trigger="click"
       visible={visible}
       onVisibleChange={() => setVisible(!visible)}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
     >
       <NumberPadButton buttonStyle={buttonStyle} onClick={() => setVisible(!visible)}>
         {isEmpty(item.label) ? <EmptyWrapper>{item.label}</EmptyWrapper> : item.label}

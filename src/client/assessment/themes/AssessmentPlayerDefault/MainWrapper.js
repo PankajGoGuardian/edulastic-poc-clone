@@ -39,10 +39,6 @@ const MainWrapper = styled.section`
       background-color: ${hasCollapseButtons ? "transparent" : theme.widgets.assessmentPlayers.mainContentBgColor};
       color: ${theme.widgets.assessmentPlayers.mainContentTextColor};
       box-shadow: ${hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)"};
-
-      @media (max-width: 1100px) {
-        width: ${zoomed ? "95%" : ""};
-      }
     `;
   }}
 `;

@@ -67,6 +67,7 @@ export const withMathFormula = WrappedComponent => {
     dangerouslySetInnerHTML: {
       __html: ""
     },
+    className: "",
     style: {}
   };
 

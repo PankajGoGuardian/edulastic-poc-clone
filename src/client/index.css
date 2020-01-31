@@ -1900,6 +1900,20 @@ span.token.active-word {
   min-height: 1vh !important;
 }
 
+.katex-display {
+  display: inline !important;
+  text-align: left !important;
+}
+
+.katex-display > .katex {
+  display: inline !important;
+  text-align: left !important;
+}
+
+.katex-display > .katex > .katex-html {
+  display: inline !important;
+}
+
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;

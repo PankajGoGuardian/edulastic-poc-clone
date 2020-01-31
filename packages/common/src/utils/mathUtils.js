@@ -15,6 +15,7 @@ const addCustomClassToMath = mathHtml => {
 
 export const getMathHtml = latex => {
   if (!window.katex) return latex;
+
   /**
    * if the latex has dynamic parameters such as "2a\times3y", the katex produces an error.
    * that error occurred when there are some operators
@@ -23,7 +24,8 @@ export const getMathHtml = latex => {
   const _latex = latex.replace(new RegExp("(@.)", "g"), " $1").replace(new RegExp("#", "g"), " \\#");
 
   let katexString = window.katex.renderToString(_latex, {
-    throwOnError: false
+    throwOnError: false,
+    displayMode: true
   });
   // styles are applied to stimulus in itemBank/testReview(collapsed view)
   // it was affecting math content as well and EV-10152 was caused

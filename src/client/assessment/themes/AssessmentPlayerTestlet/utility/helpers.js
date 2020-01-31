@@ -3,13 +3,13 @@ import uuidv4 from "uuid/v4";
 
 export const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-export const getLineFromExpression = (expressions, points = {}) => {
-  const getLines = expression => {
+export const getLineFromExpression = (expressions, points = {}, labels = []) => {
+  const getLines = (expression, index = 0) => {
     if (!expression) {
       return [];
     }
 
-    const getPoint = (x, y, label = "") => ({
+    const getPoint = (x, y, label = false) => ({
       _type: JXG.OBJECT_TYPE_POINT,
       type: "point",
       x,
@@ -37,13 +37,14 @@ export const getLineFromExpression = (expressions, points = {}) => {
       type: "line",
       _type: JXG.OBJECT_TYPE_LINE,
       id: uuidv4(),
+      label: labels[index] || false,
       subElementsIds: {
         startPoint: p1.id,
         endPoint: p2.id
       }
     });
-    const point1 = getPoints(points?.p0 || 2, "A");
-    const point2 = getPoints(points?.p1 || 4, "B");
+    const point1 = getPoints(points?.p0 || 2);
+    const point2 = getPoints(points?.p1 || 4);
     const line = getLine(point1, point2);
     return [line, point1, point2];
   };
@@ -53,15 +54,15 @@ export const getLineFromExpression = (expressions, points = {}) => {
   }
 
   if (Array.isArray(expressions)) {
-    return expressions.reduce((lines, expression) => {
-      const line = getLines(expression);
+    return expressions.reduce((lines, expression, lineIdex) => {
+      const line = getLines(expression, lineIdex);
       return [...lines, ...line];
     }, []);
   }
   return [];
 };
 
-export const getPoinstFromString = expression => {
+export const getPoinstFromString = (expression, labels = []) => {
   const pointRegex = new RegExp("([^()]+)", "g");
 
   const getPoint = str => {
@@ -73,7 +74,7 @@ export const getPoinstFromString = expression => {
       return {
         _type: JXG.OBJECT_TYPE_POINT,
         id: uuidv4(),
-        label: ALPHABET[pointIndex].toUpperCase(),
+        label: labels[pointIndex] || false,
         type: "point",
         x: parseFloat(coords[0]),
         y: parseFloat(coords[1])

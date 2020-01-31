@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-
-import { clozeImage } from "@edulastic/constants";
+import { smallDesktopWidth } from "@edulastic/colors";
 
 import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
@@ -22,82 +21,81 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections = [],
   stemNumeration,
-
   evaluation,
   maxHeight,
   minWidthShowAnswer,
   imageOptions,
   canvasHeight,
-  canvasWidth,
   checkAnswer,
   onClickHandler,
   isExpressGrader,
-  item,
-  containerHeight,
-  containerWidth
-}) => (
-  <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={containerWidth} height={containerHeight > maxHeight ? containerHeight : maxHeight}>
-      <StyledPreviewImage
-        imageSrc={imageUrl || ""}
-        width={imageWidth}
-        height={imageHeight}
-        heighcanvasDimensionst={imageHeight}
-        alt={imageAlterText}
-        style={{
-          position: "absolute",
-          top: imageOptions.y || 0,
-          left: imageOptions.x || 0
-        }}
-      />
-      {responseContainers.map((responseContainer, index) => {
-        const dropTargetIndex = index;
-        const btnStyle = {
-          position: "absolute",
-          top: responseContainer.top,
-          left: responseContainer.left,
-          height: responseContainer.height,
-          width: responseContainer.width,
-          borderRadius: 5
-        };
-        let indexStr = "";
-        switch (stemNumeration) {
-          case "lowercase": {
-            indexStr = ALPHABET[dropTargetIndex];
-            break;
+  item
+}) => {
+  const widthGreaterThanWindowWidth = window.innerWidth > parseInt(smallDesktopWidth.replace("px", ""), 10);
+  return (
+    <StyledTemplateBox fontSize={fontSize}>
+      <TemplateCover height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        <StyledPreviewImage
+          imageSrc={imageUrl || ""}
+          width={widthGreaterThanWindowWidth ? imageWidth : ""}
+          height={imageHeight}
+          heighcanvasDimensionst={imageHeight}
+          alt={imageAlterText}
+          style={{
+            position: "absolute",
+            top: widthGreaterThanWindowWidth ? imageOptions.y || 0 : 0,
+            left: widthGreaterThanWindowWidth ? imageOptions.x || 0 : 0
+          }}
+        />
+        {responseContainers.map((responseContainer, index) => {
+          const dropTargetIndex = index;
+          const btnStyle = {
+            position: "absolute",
+            top: widthGreaterThanWindowWidth ? responseContainer.top : responseContainer.top - imageOptions.y,
+            left: widthGreaterThanWindowWidth ? responseContainer.left : responseContainer.left - imageOptions.x,
+            height: responseContainer.height,
+            width: responseContainer.width,
+            borderRadius: 5
+          };
+          let indexStr = "";
+          switch (stemNumeration) {
+            case "lowercase": {
+              indexStr = ALPHABET[dropTargetIndex];
+              break;
+            }
+            case "uppercase": {
+              indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+              break;
+            }
+            default:
+              indexStr = dropTargetIndex + 1;
           }
-          case "uppercase": {
-            indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-            break;
+          let status = "";
+          if (userSelections[dropTargetIndex] && evaluation[dropTargetIndex] !== undefined) {
+            status = evaluation[dropTargetIndex] ? "right" : "wrong";
           }
-          default:
-            indexStr = dropTargetIndex + 1;
-        }
-        let status = "";
-        if (userSelections[dropTargetIndex] && evaluation[dropTargetIndex] !== undefined) {
-          status = evaluation[dropTargetIndex] ? "right" : "wrong";
-        }
-        const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
-        return (
-          <Response
-            lessMinWidth={lessMinWidth}
-            showAnswer={showAnswer}
-            checkAnswer={checkAnswer}
-            btnStyle={btnStyle}
-            responseContainer={responseContainer}
-            userSelections={userSelections}
-            status={status}
-            onClickHandler={onClickHandler}
-            indexStr={indexStr}
-            dropTargetIndex={dropTargetIndex}
-            isExpressGrader={isExpressGrader}
-            item={item}
-          />
-        );
-      })}
-    </TemplateCover>
-  </StyledTemplateBox>
-);
+          const lessMinWidth = parseInt(responseContainer.width, 10) < minWidthShowAnswer;
+          return (
+            <Response
+              lessMinWidth={lessMinWidth}
+              showAnswer={showAnswer}
+              checkAnswer={checkAnswer}
+              btnStyle={btnStyle}
+              responseContainer={responseContainer}
+              userSelections={userSelections}
+              status={status}
+              onClickHandler={onClickHandler}
+              indexStr={indexStr}
+              dropTargetIndex={dropTargetIndex}
+              isExpressGrader={isExpressGrader}
+              item={item}
+            />
+          );
+        })}
+      </TemplateCover>
+    </StyledTemplateBox>
+  );
+};
 
 CheckboxTemplateBoxLayout.propTypes = {
   fontSize: PropTypes.string.isRequired,
@@ -113,12 +111,9 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageWidth: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
   imageOptions: PropTypes.object,
-  canvasWidth: PropTypes.number.isRequired,
   canvasHeight: PropTypes.number.isRequired,
   onClickHandler: PropTypes.func.isRequired,
-  isExpressGrader: PropTypes.bool,
-  containerHeight: PropTypes.number.isRequired,
-  containerWidth: PropTypes.number.isRequired
+  isExpressGrader: PropTypes.bool
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

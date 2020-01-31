@@ -258,6 +258,7 @@ class Container extends PureComponent {
     const { editEnable } = this.state;
     if (!this.props.test?.title?.trim()?.length) {
       message.warn("Please enter test name.");
+      return;
     }
     if (value === "source") {
       this.setState({

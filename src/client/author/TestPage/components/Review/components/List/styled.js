@@ -25,6 +25,10 @@ export const TestItemWrapper = styled.div`
       & [class*="QuestionContentWrapper"] {
         width: calc(100% - 50px); /* 50px is width of question label */
       }
+
+      @media (max-width: ${smallDesktopWidth}) {
+        padding: 0px;
+      }
     }
   }
 `;

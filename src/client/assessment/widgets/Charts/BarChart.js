@@ -120,6 +120,9 @@ const BarChart = ({
     save();
   };
 
+  gridParams.width -= 24;
+
+  // Decrease svg width as CorrectAnswerContainer's padding(left+right)
   const targetRef = useDisableDragScroll();
 
   return (

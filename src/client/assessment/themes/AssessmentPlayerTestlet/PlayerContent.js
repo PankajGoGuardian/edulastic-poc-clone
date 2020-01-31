@@ -263,13 +263,13 @@ const PlayerContent = ({
         return findTestletValue(responseId) || "";
       });
     } else if (cQuestionType === questionType.GRAPH) {
-      currentItem.responses.map(({ responseId, elementType, points }) => {
+      currentItem.responses.map(({ responseId, elementType, points, labels }) => {
         if (elementType === "point") {
           const testletValue = findTestletValue(responseId);
-          data = getPoinstFromString(testletValue);
+          data = getPoinstFromString(testletValue, labels);
         } else if (elementType === "line") {
           const testletValue = findTestletValue(responseId);
-          data = getLineFromExpression(testletValue, points);
+          data = getLineFromExpression(testletValue, points, labels);
         }
       });
     }

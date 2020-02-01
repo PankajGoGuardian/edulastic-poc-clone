@@ -17,8 +17,6 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 
 // player theme
 import { themes } from "../../../theme";
-import { getZoomedTheme } from "../../../student/zoomTheme";
-import { playersZoomTheme } from "../assessmentPlayersTheme";
 
 class AssessmentPlayerTestlet extends React.Component {
   static propTypes = {
@@ -66,7 +64,7 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, items, currentItem, selectedTheme = "default", zoomLevel } = this.props;
+    const { theme, items, currentItem, selectedTheme = "default" } = this.props;
     const { showExitPopup } = this.state;
 
     const item = items[currentItem];
@@ -74,7 +72,7 @@ class AssessmentPlayerTestlet extends React.Component {
       return <div />;
     }
 
-    let themeToPass = theme[selectedTheme] || theme.default;
+    const themeToPass = theme[selectedTheme] || theme.default;
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);

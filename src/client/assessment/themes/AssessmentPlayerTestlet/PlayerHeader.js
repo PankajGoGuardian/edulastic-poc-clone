@@ -10,6 +10,7 @@ import Logo from "../../assets/ets-log.png";
 
 const PlayerHeader = ({
   title,
+  previewPlayer,
   dropdownOptions,
   currentItem,
   onNextQuestion,
@@ -30,9 +31,11 @@ const PlayerHeader = ({
             <FlexDisplay>
               {currentItem > 1 && (
                 <>
-                  <ActionButton onClick={onPrevQuestion} title="Prev">
-                    <IconChevronLeft />
-                  </ActionButton>
+                  {previewPlayer && (
+                    <ActionButton onClick={onPrevQuestion} title="Prev">
+                      <IconChevronLeft />
+                    </ActionButton>
+                  )}
                   <ActionButton onClick={onNextQuestion} title="Next" disable={!unlockNext}>
                     <span>Next</span>
                     <IconGraphRightArrow />

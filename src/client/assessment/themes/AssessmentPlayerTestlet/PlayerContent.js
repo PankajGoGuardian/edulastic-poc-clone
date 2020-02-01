@@ -31,6 +31,7 @@ const PlayerContent = ({
   testletState,
   testletConfig = {},
   LCBPreviewModal,
+  previewPlayer,
   location = { state: {} },
   groupId
 }) => {
@@ -337,6 +338,7 @@ const PlayerContent = ({
         onNextQuestion={nextQuestion}
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
+        previewPlayer={previewPlayer}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>

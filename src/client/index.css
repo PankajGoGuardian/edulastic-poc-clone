@@ -1077,6 +1077,7 @@ textinput::before {
 
 .imagelabeldragdrop-droppable.noAnswer {
   border: 1px solid #d9d9d9;
+  background: #fff;
   border-radius: 4px;
   border-right-width: 1px !important;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);

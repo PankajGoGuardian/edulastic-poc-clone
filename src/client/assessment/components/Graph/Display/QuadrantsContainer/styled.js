@@ -42,7 +42,7 @@ export const JSXBox = styled.div`
 export const LabelTop = WithMathFormula(styled.div`
   height: 20px;
   line-height: 20px;
-  top: 20px;
+  top: 0px;
   left: 0;
   text-align: center;
   position: absolute;
@@ -52,7 +52,7 @@ export const LabelTop = WithMathFormula(styled.div`
 export const LabelBottom = WithMathFormula(styled.div`
   height: 20px;
   line-height: 20px;
-  bottom: 20px;
+  bottom: 0px;
   left: 0;
   text-align: center;
   position: absolute;
@@ -65,7 +65,7 @@ export const LabelRight = WithMathFormula(styled.div`
   transform: rotate(90deg);
   transform-origin: top right;
   bottom: 0;
-  right: 20px;
+  right: 0px;
   text-align: center;
   position: absolute;
   width: 100%;
@@ -78,7 +78,7 @@ export const LabelLeft = WithMathFormula(styled.div`
   transform: rotate(-90deg);
   transform-origin: top left;
   bottom: 0;
-  left: 20px;
+  left: 0px;
   text-align: center;
   position: absolute;
   width: 100%;

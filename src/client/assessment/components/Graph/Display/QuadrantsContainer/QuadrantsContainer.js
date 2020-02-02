@@ -667,7 +667,7 @@ class GraphContainer extends PureComponent {
                 drawingObjects={this.getDrawingObjects()}
               />
             )}
-            <JSXBoxWrapper width={+layout.width + 40}>
+            <JSXBoxWrapper>
               {annotation && annotation.labelTop && (
                 <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
               )}

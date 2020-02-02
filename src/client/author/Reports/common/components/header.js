@@ -44,7 +44,13 @@ export const CustomizedHeaderWrapper = ({
           <h1>Reports</h1>
         </HeaderTitle>
         {navigationItems.length ? (
-          <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+          activeNavigationKey === "standard-reports" ? (
+            <FeaturesSwitch inputFeatures="customReport" actionOnInaccessible="hidden" key="customReport">
+              <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+            </FeaturesSwitch>
+          ) : (
+            <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+          )
         ) : null}
         <StyledCol>
           <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">

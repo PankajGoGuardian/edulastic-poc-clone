@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { Row, Col } from "antd";
+import { pullAllBy } from "lodash";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
@@ -25,10 +26,21 @@ import {
   setCsvDownloadingStateAction,
   getCsvDownloadingState
 } from "./ducks";
+import CustomReports from "./components/customReport";
+import CustomReportIframe from "./components/customReport/customReportIframe";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
-  const [navigationItems, setNavigationItems] = useState([]);
+  const reportType = props?.match?.params?.reportType || "standard-reports";
+  const groupName = navigation.locToData[reportType].group;
+  const [navigationItems, setNavigationItems] = useState(navigation.navigation[groupName]);
+  const [dynamicBreadcrumb, setDynamicBreadcrumb] = useState("");
+
+  useEffect(() => {
+    if (reportType === "standard-reports" || reportType === "custom-reports") {
+      setNavigationItems(navigation.navigation[groupName]);
+    }
+  }, [reportType]);
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
@@ -64,8 +76,30 @@ const Container = props => {
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
   const headerSettings = useMemo(() => {
-    let loc = props.match.params.reportType;
-    if (loc) {
+    let loc = props?.match?.params?.reportType;
+    if (!loc || (loc && (loc === "standard-reports" || loc === "custom-reports"))) {
+      loc = !loc ? reportType : loc;
+      const breadcrumbInfo = navigation.locToData[loc].breadcrumb;
+      if (loc === "custom-reports" && dynamicBreadcrumb) {
+        const isCustomReportLoading = props.location.pathname.split("custom-reports")[1].length > 1 || false;
+        if (isCustomReportLoading) {
+          pullAllBy(breadcrumbInfo, [{ to: "" }], "to");
+          breadcrumbInfo.push({
+            title: dynamicBreadcrumb,
+            to: ""
+          });
+        } else if (breadcrumbInfo && breadcrumbInfo[breadcrumbInfo.length - 1].to === "") {
+          pullAllBy(breadcrumbInfo, [{ to: "" }], "to");
+        }
+      }
+      return {
+        loc: loc,
+        group: navigation.locToData[loc].group,
+        title: navigation.locToData[loc].title,
+        breadcrumbData: breadcrumbInfo,
+        navigationItems
+      };
+    } else {
       return {
         loc: loc,
         group: navigation.locToData[loc].group,
@@ -77,8 +111,6 @@ const Container = props => {
         breadcrumbData: navigation.locToData[loc].breadcrumb,
         navigationItems
       };
-    } else {
-      return { title: "Reports" };
     }
   });
 
@@ -94,10 +126,18 @@ const Container = props => {
         onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
         onRefineResultsCB={headerSettings.onRefineResultsCB}
         navigationItems={headerSettings.navigationItems}
-        activeNavigationKey={props.match.params.reportType}
+        activeNavigationKey={reportType}
       />
       <StyledReportsContentContainer>
-        {!props.match.params.reportType ? <Route exact path={props.match.path} component={Reports} /> : null}
+        {reportType === "custom-reports" ? (
+          <Route
+            exact
+            path={props.match.path}
+            render={_props => <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
+          />
+        ) : reportType === "standard-reports" ? (
+          <Route exact path={props.match.path} component={Reports} />
+        ) : null}
         <Route
           path={[
             `/author/reports/assessment-summary/test/`,
@@ -111,7 +151,7 @@ const Container = props => {
             <SingleAssessmentReportContainer
               {..._props}
               showFilter={expandFilter}
-              loc={props.match.params.reportType}
+              loc={reportType}
               updateNavigation={setNavigationItems}
             />
           )}
@@ -126,7 +166,7 @@ const Container = props => {
             <MultipleAssessmentReportContainer
               {..._props}
               showFilter={showFilter}
-              loc={props.match.params.reportType}
+              loc={reportType}
               updateNavigation={setNavigationItems}
             />
           )}
@@ -137,7 +177,7 @@ const Container = props => {
             <StandardsMasteryReportContainer
               {..._props}
               showFilter={expandFilter}
-              loc={props.match.params.reportType}
+              loc={reportType}
               updateNavigation={setNavigationItems}
             />
           )}
@@ -152,10 +192,14 @@ const Container = props => {
             <StudentProfileReportContainer
               {..._props}
               showFilter={showFilter}
-              loc={props.match.params.reportType}
+              loc={reportType}
               updateNavigation={setNavigationItems}
             />
           )}
+        />
+        <Route
+          path={`/author/reports/custom-reports/:id`}
+          render={_props => <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
         />
       </StyledReportsContentContainer>
     </PrintableScreen>

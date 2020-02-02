@@ -181,6 +181,26 @@
         }
       ],
       "group": "studentProfileReport"
+    },
+    "standard-reports": {
+      "title": "Standard Reports",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        }
+      ],
+      "group": "mainReport"
+    },
+    "custom-reports": {
+      "title": "Custom Reports",
+      "breadcrumb": [
+        {
+          "title": "CUSTOM REPORTS",
+          "to": "/author/reports/custom-reports"
+        }
+      ],
+      "group": "mainReport"
     }
   },
   "navigation": {
@@ -260,6 +280,18 @@
         "key": "student-assessment-profile",
         "title": "Student Assessment Profile",
         "location": "/author/reports/student-assessment-profile/student/"
+      }
+    ],
+    "mainReport": [
+      {
+        "key": "standard-reports",
+        "title": "STANDARD REPORTS",
+        "location": "/author/reports/"
+      },
+      {
+        "key": "custom-reports",
+        "title": "CUSTOM REPORTS",
+        "location": "/author/reports/custom-reports/"
       }
     ]
   }

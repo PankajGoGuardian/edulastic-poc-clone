@@ -82,6 +82,7 @@ import {
   reportStandardsGradebookReducer,
   reportStandardsGradebookSaga
 } from "./subPages/standardsMasteryReport/standardsGradebook/ducks";
+import { customReportReducer, customReportSaga } from "./components/customReport/ducks";
 
 const SET_PRINTING_STATE = "[reports] set printing state";
 const SET_CSV_DOWNLOADING_STATE = "[reports] set csv download state";
@@ -155,7 +156,8 @@ export const reportReducer = combineReducers({
   reportStudentMasteryProfileReducer,
   reportStudentAssessmentProfileReducer,
   reportStandardsPerformanceSummaryReducer,
-  reportStandardsGradebookReducer
+  reportStandardsGradebookReducer,
+  customReportReducer
 });
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -186,7 +188,8 @@ export function* reportSaga(params) {
     reportStudentMasteryProfileSaga(),
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
-    reportStandardsGradebookSaga()
+    reportStandardsGradebookSaga(),
+    customReportSaga()
   ]);
 }
 

@@ -7,9 +7,9 @@ const assignmentQue = assignedTests["5de8ce86c05b97000826d0ae"];
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   const pageURL = "/home/grades";
   before("set token", () => {
-    cy.fixture("users").then(users => {
-      const user = users["visual-regression"].student;
-      cy.setToken(user.username, user.password); // setting auth token for student user
+    cy.fixture("usersVisualRegression").then(allusers => {
+      const { username, password } = allusers.default.student;
+      cy.setToken(username, password); // setting auth token for student user
     });
   });
 

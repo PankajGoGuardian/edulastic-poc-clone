@@ -59,7 +59,10 @@ const sideBar = new TeacherSideBar();
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}-`, () => {
   before("set token", () => {
-    cy.login("teacher", "tea01@pbspsc03.com", "snapwiz"); // setting auth token for teacher user
+    cy.fixture("usersVisualRegression").then(allusers => {
+      const { username, password } = allusers.teacherReports;
+      cy.login("teacher", username, password); // setting auth token for teacher user
+    });
   });
 
   beforeEach(() => {

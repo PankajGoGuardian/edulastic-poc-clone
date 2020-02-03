@@ -7,7 +7,10 @@ const liveClassboardPage = new LiveClassboardPage();
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
-    cy.setToken("tea01@vvksssc01.com"); // setting auth token for teacher user
+    cy.fixture("usersVisualRegression").then(allusers => {
+      const { username, password } = allusers.teacherAssignment;
+      cy.setToken(username, password); // setting auth token for teacher user
+    });
   });
 
   context(`teacher assignments page`, () => {

@@ -21,9 +21,9 @@ const questions = getQuestions(draftTests);
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
-    cy.fixture("users").then(users => {
-      const user = users["visual-regression"].teacher;
-      cy.setToken(user.username, user.password); // setting auth token for teacher user
+    cy.fixture("usersVisualRegression").then(allusers => {
+      const { username, password } = allusers.default.teacher;
+      cy.setToken(username, password); // setting auth token for teacher user
     });
   });
 

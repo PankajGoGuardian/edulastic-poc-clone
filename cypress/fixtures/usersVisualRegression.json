@@ -1,0 +1,15 @@
+{
+  "default": {
+    "teacher": {
+      "username": "teacher.visual-automation@snapwiz.com",
+      "password": "automation"
+    },
+    "student": {
+      "username": "student.1.visual-automation@snapwiz.com",
+      "password": "automation"
+    }
+  },
+  "studentSkillMastery": { "username": "stu01@ssbmarcl01.com", "password": "snapwiz" },
+  "teacherReports": { "username": "tea01@pbspsc03.com", "password": "snapwiz" },
+  "teacherAssignment": { "username": "tea01@vvksssc01.com" }
+}

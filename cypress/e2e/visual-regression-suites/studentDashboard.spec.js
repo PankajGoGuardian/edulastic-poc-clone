@@ -7,9 +7,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
     const pageURL = "home/assignments";
 
     before("set token", () => {
-      cy.fixture("users").then(users => {
-        const user = users["visual-regression"].student;
-        cy.setToken(user.username, user.password); // setting auth token for student user
+      cy.fixture("usersVisualRegression").then(allusers => {
+        const { username, password } = allusers.default.student;
+        cy.setToken(username, password); // setting auth token for student user
       });
     });
 
@@ -20,7 +20,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.wait("@testactivity"); // wait for xhr to finish
         cy.get("img")
           .should("be.visible")
-          .and("have.length.greaterThan", 0); // ensure the dom elements are rendered
+          .and("have.length.greaterThan", 0); // ensure ther dom elements are rendered
         cy.matchImageSnapshotWithSize();
       });
     });

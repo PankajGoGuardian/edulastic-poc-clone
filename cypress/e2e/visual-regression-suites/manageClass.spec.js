@@ -9,9 +9,9 @@ const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 describe.skip(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`manage classs page`, () => {
     before("set token", () => {
-      cy.fixture("users").then(users => {
-        const user = users["visual-regression"].teacher;
-        cy.setToken(user.username, user.password); // setting auth token for teacher user
+      cy.fixture("usersVisualRegression").then(allusers => {
+        const { username, password } = allusers.default.teacher;
+        cy.setToken(username, password); // setting auth token for teacher user
       });
 
       Cypress.Screenshot.defaults({

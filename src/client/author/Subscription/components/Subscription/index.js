@@ -142,6 +142,12 @@ const Plans = ({ cardTitle, cardLabel, data, color }) => (
   </PlanCard>
 );
 
+function formatDate(subEndDate) {
+  if (!subEndDate) return null;
+  const date = new Date(subEndDate).toString().split(" ");
+  return `${date[2]} ${date[1]}, ${date[3]}`;
+}
+
 const Subscription = props => {
   const {
     t,
@@ -212,7 +218,7 @@ const Subscription = props => {
       <HasLicenseKeyModal
         visible={hasLicenseKeyModal}
         closeModal={closeHasLicenseKeyModal}
-        expDate={Date(subEndDate).substring(0, 15)}
+        expDate={formatDate(subEndDate)}
         isSubscribed={isSubscribed}
         verificationPending={verificationPending}
         verifyAndUpgradeLicense={verifyAndUpgradeLicense}

@@ -15,6 +15,9 @@ const slice = createSlice({
     fetchUserSubscriptionStatus: state => {
       state.verificationPending = true;
     },
+    disablePending: state => {
+      state.verificationPending = false;
+    },
     updateUserSubscriptionStatus: (state, { payload }) => {
       state.verificationPending = false;
       state.subscriptionData = payload.data;
@@ -92,10 +95,11 @@ function* handleStripePayment({ payload }) {
       }
     } else {
       yield call(message.error, {
-        content: "Creating token failed : " + error,
+        content: "Creating token failed : " + error.message,
         key: "handle-payment",
         duration: 2
       });
+      yield put(slice.actions.disablePending());
       console.error("ERROR WHILE PROCESSING PAYMENT [Create Token] : ", error);
     }
   } catch (err) {

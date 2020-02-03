@@ -139,11 +139,11 @@ const PlansComponent = ({
   </PlansContainer>
 );
 
-const getLicenseExpiryDate = subEndDate => {
+function formatDate(subEndDate) {
   if (!subEndDate) return null;
   const date = new Date(subEndDate).toString().split(" ");
   return `${date[2]} ${date[1]}, ${date[3]}`;
-};
+}
 
 const SubscriptionMain = props => {
   const {
@@ -156,7 +156,7 @@ const SubscriptionMain = props => {
     openPurchaseLicenseModal
   } = props;
 
-  const licenseExpiryDate = getLicenseExpiryDate(subEndDate);
+  const licenseExpiryDate = formatDate(subEndDate);
 
   const [showPlans, setShowPlans] = useState(false);
 

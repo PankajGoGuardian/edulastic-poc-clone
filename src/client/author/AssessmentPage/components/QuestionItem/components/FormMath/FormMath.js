@@ -51,7 +51,8 @@ export default class FormMath extends React.Component {
     const {
       question: { numberPad, symbols },
       answer,
-      view
+      view,
+      highlighted
     } = this.props;
 
     if (mode === "report") {
@@ -66,6 +67,7 @@ export default class FormMath extends React.Component {
           check={["check", "show"].includes(view)}
           value={answer}
           fullWidth
+          ref={el => highlighted && el?.setFocus()}
         />
       </ThemeProvider>
     );

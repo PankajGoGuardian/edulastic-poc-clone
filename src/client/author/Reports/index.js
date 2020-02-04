@@ -253,11 +253,9 @@ const Reports = ({ premium }) => {
             <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
               <StandardsMasteryReport premium={premium} />
             </StyledCard>
-            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-              <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                <SubscriptionReport premium={premium} />
-              </StyledCard>
-            </FeaturesSwitch>
+            <StyledCard margin="0px 0px 20px" className="upgrade subscription report">
+              <SubscriptionReport premium={premium} />
+            </StyledCard>
           </Col>
         </Row>
       )}

@@ -33,7 +33,8 @@ export default class FormEssay extends React.Component {
       question: {
         uiStyle: { numberOfRows = 10 }
       },
-      mode
+      mode,
+      highlighted
     } = this.props;
     return (
       <Input.TextArea
@@ -42,6 +43,7 @@ export default class FormEssay extends React.Component {
         onChange={this.handleChange}
         disabled={mode === "report"}
         rows={numberOfRows} // textarea number of rows
+        ref={el => highlighted && el?.focus()}
       />
     );
   };

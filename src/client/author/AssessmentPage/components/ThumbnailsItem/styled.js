@@ -8,6 +8,7 @@ export const ThumbnailsItemWrapper = styled.div`
   border-radius: 10px;
   overflow: hidden;
   background: ${white};
+  border: 1px solid ${props => (props.active ? themeColor : secondaryTextColor)};
 `;
 
 export const PagePreview = styled.div`

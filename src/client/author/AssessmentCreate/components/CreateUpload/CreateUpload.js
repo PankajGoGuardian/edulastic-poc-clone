@@ -73,13 +73,13 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
       </ButtonsContainer>
       {creating && (
         <>
-          {!!fileInfo.name && (
+          {fileInfo?.fileName && (
             <FileInfoCont>
               <FileName>
                 <Icon type="file-pdf" />
                 <span>{fileInfo.fileName}</span>
+                <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
               </FileName>
-              <FileSize>{formatBytes(fileInfo.fileSize)}</FileSize>
             </FileInfoCont>
           )}
           {percent > 0 && percent < 100 ? (
@@ -117,8 +117,14 @@ const FileInfoCont = styled.div`
 `;
 
 const FileName = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   svg {
     font-size: 20px;
     margin-right: 4px;

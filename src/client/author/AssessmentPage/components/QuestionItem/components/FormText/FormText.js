@@ -39,13 +39,14 @@ export default class FormText extends React.Component {
   };
 
   renderForm = () => {
-    const { answer, view } = this.props;
+    const { answer, view, highlighted = false } = this.props;
     return (
       <Input
         size="large"
         value={answer}
         style={{ width: ["check", "show"].includes(view) && "210px" }}
         onChange={this.handleChange}
+        ref={el => highlighted && el?.focus()}
       />
     );
   };
@@ -61,7 +62,7 @@ export default class FormText extends React.Component {
       onCreateAnswer
     } = this.props;
 
-    return <Input size="large" onPressEnter={onCreateAnswer(id, type)} />;
+    return <Input size="large" onPressEnter={onCreateAnswer(id, type)} ref={el => highlighted && el?.focus()} />;
   };
 
   render() {

@@ -28,9 +28,12 @@ export const Container = styled(CardComponent)`
 
 export const ButtonsContainer = styled.div`
   display: flex;
-  display: flex;
   width: 50%;
   justify-content: space-evenly;
+
+  .ant-upload-list {
+    display: none;
+  }
 `;
 
 export const RoundedButton = styled(Button)`

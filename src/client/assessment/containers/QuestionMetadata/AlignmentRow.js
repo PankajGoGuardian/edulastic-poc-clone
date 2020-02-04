@@ -222,7 +222,7 @@ const AlignmentRow = ({
       <Row gutter={isDocBased ? 0 : 36}>
         <Col md={20}>
           <Row gutter={1}>
-            <Col md={7}>
+            <Col md={12}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"
                 title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
@@ -290,7 +290,7 @@ const AlignmentRow = ({
                 </Fragment>
               </CustomTreeSelect>
             </Col>
-            <Col md={17}>
+            <Col md={12}>
               <ItemBody data-cy="searchStandardSelectItem">
                 <Select
                   data-cy="searchStandardSelect"

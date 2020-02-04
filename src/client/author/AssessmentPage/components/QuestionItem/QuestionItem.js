@@ -182,7 +182,7 @@ class QuestionItem extends React.Component {
     );
   };
 
-  renderContent = () => {
+  renderContent = highlighted => {
     let { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
@@ -192,7 +192,8 @@ class QuestionItem extends React.Component {
       answer: userAnswer || data?.activity?.userResponse,
       question: data,
       mode: viewMode,
-      view: previewMode
+      view: previewMode,
+      highlighted
     };
     switch (data.type) {
       case MULTIPLE_CHOICE:
@@ -338,7 +339,7 @@ class QuestionItem extends React.Component {
               {qIndex || index + 1}
             </QuestionNumber>
           </Draggable>
-          {!annotations && <QuestionForm review={review}>{this.renderContent()}</QuestionForm>}
+          {!annotations && <QuestionForm review={review}>{this.renderContent(highlighted)}</QuestionForm>}
 
           {!review && this.renderEditButton()}
           {review &&

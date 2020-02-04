@@ -116,7 +116,7 @@ const ThumbnailsItem = ({
         }
       </Modal>
       <Dropdown overlay={contextMenu} disabled={viewMode !== "edit"} trigger={["contextMenu"]}>
-        <ThumbnailsItemWrapper onClick={onClick}>
+        <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
             {url && (
               <Document file={url} renderMode="canvas">

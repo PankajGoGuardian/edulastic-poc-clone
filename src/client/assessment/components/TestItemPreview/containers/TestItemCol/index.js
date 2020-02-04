@@ -112,6 +112,7 @@ class TestItemCol extends Component {
             noBoxShadow
             isFlex
             flowLayout={flowLayout}
+            displayFeedback={false}
             prevQActivityForQuestion={prevQActivityForQuestion}
             LCBPreviewModal={LCBPreviewModal}
             {...restProps}

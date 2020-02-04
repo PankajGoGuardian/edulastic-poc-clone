@@ -491,20 +491,24 @@ class QuestionWrapper extends Component {
                 )}
               </StyledFlexContainer>
             </PaperWrapper>
-            {showFeedback && !isPassageOrVideoType && !studentReportFeedbackVisible && !isPrintPreview && (
-              <FeedbackRight
-                data-cy="feedBackRight"
-                // eslint-disable-next-line
-                twoColLayout={this.props.theme?.twoColLayout}
-                showCollapseBtn={showCollapseBtn}
-                disabled={disabled}
-                widget={data}
-                studentId={userId}
-                studentName={studentName}
-                rubricDetails={rubricDetails}
-                {...presentationModeProps}
-              />
-            )}
+            {showFeedback &&
+              !isPassageOrVideoType &&
+              displayFeedback &&
+              !studentReportFeedbackVisible &&
+              !isPrintPreview && (
+                <FeedbackRight
+                  data-cy="feedBackRight"
+                  // eslint-disable-next-line
+                  twoColLayout={this.props.theme?.twoColLayout}
+                  showCollapseBtn={showCollapseBtn}
+                  disabled={disabled}
+                  widget={data}
+                  studentId={userId}
+                  studentName={studentName}
+                  rubricDetails={rubricDetails}
+                  {...presentationModeProps}
+                />
+              )}
             {!isEmpty(prevQActivityForQuestion) && displayFeedback && !isPrintPreview && (
               <FeedBackContainer
                 data-cy="feedBackContainer"

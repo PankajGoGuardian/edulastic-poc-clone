@@ -193,7 +193,7 @@ class FeedbackRight extends Component {
   };
 
   onKeyDownFeedback = e => {
-    this.arrowKeyHandler(e.keyCode);
+    this.arrowKeyHandler(e);
   };
 
   arrowKeyHandler = ({ keyCode }) => {

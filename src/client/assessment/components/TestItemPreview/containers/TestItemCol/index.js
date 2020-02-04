@@ -41,7 +41,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, index) => {
+  renderTabContent = (widget, flowLayout, nextWidget = {}, index) => {
     const {
       preview,
       LCBPreviewModal,
@@ -73,6 +73,8 @@ class TestItemCol extends Component {
     }
     // For Multipart with item level scoring display only one feedback else allow for question level scoring
     const displayFeedback = index === 0;
+    const isResourceWidget = nextWidget.widgetType === "resource";
+    const resource = questions[nextWidget.reference];
     return (
       <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }}>
         <QuestionWrapper
@@ -95,6 +97,26 @@ class TestItemCol extends Component {
           displayFeedback={displayFeedback}
           {...restProps}
         />
+        {isResourceWidget && (
+          <QuestionWrapper
+            evaluation={evaluation}
+            multiple={multiple}
+            type={nextWidget.type}
+            view="preview"
+            qIndex={qIndex}
+            previewTab={preview}
+            timespent={timespent}
+            questionId={nextWidget.reference}
+            data={{ ...resource, smallSize: true }}
+            noPadding
+            noBoxShadow
+            isFlex
+            flowLayout={flowLayout}
+            prevQActivityForQuestion={prevQActivityForQuestion}
+            LCBPreviewModal={LCBPreviewModal}
+            {...restProps}
+          />
+        )}
       </Tabs.TabContainer>
     );
   };
@@ -144,14 +166,14 @@ class TestItemCol extends Component {
         )}
         <WidgetContainer>
           {col.widgets
-            .filter(widget => widget.type !== questionType.SECTION_LABEL)
+            .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
             .map((widget, i) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
                   value === widget.tabIndex &&
-                  this.renderTabContent(widget, col.flowLayout)}
-                {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
+                  this.renderTabContent(widget, col.flowLayout, col.widgets[i + 1])}
+                {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, col.widgets[i + 1], i)}
               </React.Fragment>
             ))}
         </WidgetContainer>

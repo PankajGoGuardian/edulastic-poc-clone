@@ -7,6 +7,7 @@ import { fetchUserAction } from "../../student/Login/ducks";
 const slice = createSlice({
   name: "subscription",
   initialState: {
+    isSubscriptionExpired: false,
     verificationPending: false,
     subscriptionData: {},
     error: ""
@@ -48,6 +49,12 @@ const slice = createSlice({
       state.verificationPending = false;
       state.subscriptionData = {};
       state.error = payload;
+    },
+    updateUserSubscriptionExpired: state => {
+      state.isSubscriptionExpired = true;
+      state.verificationPending = false;
+      state.subscriptionData = {};
+      state.error = "";
     }
   }
 });
@@ -116,6 +123,10 @@ function* handleStripePayment({ payload }) {
 function* fetchUserSubscription() {
   try {
     const apiUserSubscriptionStatus = yield call(subscriptionApi.subscriptionStatus);
+    if (apiUserSubscriptionStatus?.result === -1) {
+      yield put(slice.actions.updateUserSubscriptionExpired());
+      return;
+    }
     if (apiUserSubscriptionStatus.result) {
       const data = { success: true, subscription: apiUserSubscriptionStatus.result };
 

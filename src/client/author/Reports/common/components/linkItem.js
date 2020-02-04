@@ -33,9 +33,9 @@ const StyledIcon = styled(Icon)`
 export const LinkItem = props => {
   return (
     <Item>
-      <Link data-cy={props.data.key} to={props.data.location}>
+      <Link data-cy={props.data.key} to={!props.inverse && props.data.location}>
         {props.data.title}
-        <StyledIcon type="right" />
+        {!props.inverse && <StyledIcon type="right" />}
       </Link>
     </Item>
   );

@@ -18,7 +18,7 @@ const links = [
   }
 ];
 
-export const StandardsMasteryReport = props => {
+export const StandardsMasteryReport = ({ premium }) => {
   return (
     <div>
       <BoxHeading heading={"Standards Mastery Report"} iconType={"pie-chart"} />
@@ -27,9 +27,11 @@ export const StandardsMasteryReport = props => {
         report
       </StyledP>
       <LinksWrapper>
-        {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
-        })}
+        {!premium ? (
+          <LinkItem key={links[1].title} data={links[1]} />
+        ) : (
+          links.map((data, index) => <LinkItem key={data.title} data={data} />)
+        )}
       </LinksWrapper>
     </div>
   );

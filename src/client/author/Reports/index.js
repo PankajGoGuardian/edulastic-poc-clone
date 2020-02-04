@@ -12,6 +12,7 @@ import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 import { StyledContainer, StyledCard, PrintableScreen, StyledReportsContentContainer } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
+import { SubscriptionReport } from "./components/subscriptionReport";
 import { StudentProfileReport } from "./components/studentProfileReport";
 import { StandardsMasteryReport } from "./components/standardsMasteryReport";
 import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
@@ -136,7 +137,7 @@ const Container = props => {
             render={_props => <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
           />
         ) : reportType === "standard-reports" ? (
-          <Route exact path={props.match.path} component={Reports} />
+          <Route exact path={props.match.path} component={() => <Reports premium={props.premium} />} />
         ) : null}
         <Route
           path={[
@@ -206,50 +207,69 @@ const Container = props => {
   );
 };
 
-const Reports = connect(
-  state => {},
-  {}
-)(props => {
+const Reports = ({ premium }) => {
   return (
     <StyledContainer>
-      <Row gutter={20}>
-        <FeaturesSwitch
-          inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
-          operation="OR"
-          actionOnInaccessible="hidden"
-        >
+      {premium && (
+        <Row gutter={20}>
+          <FeaturesSwitch
+            inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
+            operation="OR"
+            actionOnInaccessible="hidden"
+          >
+            <Col md={12} xs={24}>
+              <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+                <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
+                  <SingleAssessmentReport />
+                </StyledCard>
+              </FeaturesSwitch>
+              <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+                <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
+                  <SubscriptionReport premium={premium} />
+                </StyledCard>
+              </FeaturesSwitch>
+            </Col>
+          </FeaturesSwitch>
           <Col md={12} xs={24}>
-            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-              <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                <SingleAssessmentReport />
+            <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
+              <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
+                <MultipleAssessmentReport />
               </StyledCard>
             </FeaturesSwitch>
+            <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
+              <StandardsMasteryReport premium={premium} />
+            </StyledCard>
             <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
                 <StudentProfileReport />
               </StyledCard>
             </FeaturesSwitch>
           </Col>
-        </FeaturesSwitch>
-        <Col md={12} xs={24}>
-          <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
-            <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
-              <MultipleAssessmentReport />
+        </Row>
+      )}
+      {!premium && (
+        <Row>
+          <Col md={24} xs={24}>
+            <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
+              <StandardsMasteryReport premium={premium} />
             </StyledCard>
-          </FeaturesSwitch>
-          <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-            <StandardsMasteryReport />
-          </StyledCard>
-        </Col>
-      </Row>
+            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+              <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
+                <SubscriptionReport premium={premium} />
+              </StyledCard>
+            </FeaturesSwitch>
+          </Col>
+        </Row>
+      )}
     </StyledContainer>
   );
-});
+};
 
 const enhance = connect(
   state => ({
     isPrinting: getPrintingState(state),
-    isCsvDownloading: getCsvDownloadingState(state)
+    isCsvDownloading: getCsvDownloadingState(state),
+    premium: state?.user?.user?.features?.premium
   }),
   {
     setPrintingStateAction,

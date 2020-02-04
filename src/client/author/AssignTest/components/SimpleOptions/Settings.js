@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input, InputNumber } from "antd";
-import { green, red, blueBorder } from "@edulastic/colors";
+import { green, red, blueBorder, greyishBorder, secondaryTextColor } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
@@ -19,7 +19,9 @@ import {
   MessageSpan,
   MaxAttemptIInput,
   DivBlock,
-  Label
+  Label,
+  UpgradeBtn,
+  IconItem
 } from "./styled";
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
@@ -27,6 +29,8 @@ import PeformanceBand from "../../../TestPage/components/Setting/components/Main
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
+import { FlexContainer } from "@edulastic/common";
+import { Link } from "react-router-dom";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -56,7 +60,8 @@ const Settings = ({
   isDocBased,
   forClassLevel = false,
   showTestTypeOption = false,
-  disableAnswerOnPaper
+  disableAnswerOnPaper,
+  premium
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -559,6 +564,39 @@ const Settings = ({
             />
           </DivBlock>
         </FeaturesSwitch>
+        {!premium && (
+          <FlexContainer flexDirection="column" padding="40px 0 10px 0">
+            <FlexContainer width="100%" style={{ borderBottom: "1px solid #E3E3E3" }} padding="0 0 20px 0">
+              <FlexContainer flexDirection="column" width="100%" alignItems="flex-start">
+                <h2 style={{ fontSize: "20px", fontWeight: 700, color: secondaryTextColor }}>Advanced Options</h2>
+                <p style={{ color: greyishBorder, fontSize: 14, fontWeight: "normal" }}>
+                  Assess with even more options for students.
+                </p>
+              </FlexContainer>
+              <Link to="/author/subscription">
+                <UpgradeBtn>Upgrade Now</UpgradeBtn>
+              </Link>
+            </FlexContainer>
+            <FlexContainer width="100%" padding="15px 10px">
+              <IconItem>
+                <i class="fa fa-random" aria-hidden="true" />
+                <p>Shuffle Questions & Choices</p>
+              </IconItem>
+              <IconItem>
+                <i class="fa fa-eye-slash" aria-hidden="true" />
+                <p> Hide Answers</p>
+              </IconItem>
+              <IconItem>
+                <i class="fa fa-th-large" aria-hidden="true" />
+                <p> Rubric Grading</p>
+              </IconItem>
+              <IconItem>
+                <Icon type="calculator" />
+                <p> Show Calculator</p>
+              </IconItem>
+            </FlexContainer>
+          </FlexContainer>
+        )}
         <DivBlock>
           <StandardProficiencyTable
             disabled={forClassLevel}
@@ -574,7 +612,8 @@ const Settings = ({
 export default connect(
   state => ({
     userRole: getUserRole(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state)
+    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+    premium: state?.user?.user?.features?.premium
   }),
   null
 )(Settings);

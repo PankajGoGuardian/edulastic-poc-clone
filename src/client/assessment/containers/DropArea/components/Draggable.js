@@ -33,7 +33,6 @@ const Draggable = ({
     onResize={onResize}
     position={{ x: response.left, y: response.top }}
     size={{ width: responseWidth, height: responseHeight }}
-    bounds="parent"
   >
     <FlexContainer justifyContent="space-between" style={{ height: "100%" }}>
       {showIndex && <IndexBox isActive={response.active}>{index}</IndexBox>}

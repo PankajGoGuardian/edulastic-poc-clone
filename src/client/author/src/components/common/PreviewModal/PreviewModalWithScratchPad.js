@@ -1,0 +1,157 @@
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { ActionCreators } from "redux-undo";
+import { get } from "lodash";
+import SvgDraw from "../../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
+import Tools from "../../../../../assessment/themes/AssessmentPlayerDefault/Tools";
+import { hexToRGB } from "@edulastic/common";
+import { allThemeVars } from "../../../../../theme";
+import { StyledTools, StyledFlex, StyledInput, StyledRejectionSubmitBtn, StyledFlexContainer } from "./styled";
+
+import { savePreviewRejectAction } from "./ducks";
+
+const PreviewModalWithScratchPad = ({
+  submitReviewFeedback,
+  saveUserWork,
+  rejectFeedbackData,
+  scratchPad,
+  item,
+  undoScratchPad,
+  redoScratchPad,
+  columnsContentArea: ColumnsContentArea,
+  sectionQue,
+  resourceCount
+}) => {
+  const [currentColor, setCurrentColor] = useState("#ff0000");
+  const [fillColor, setFillColor] = useState("#ff0000");
+  const [lineWidth, setLineWidth] = useState(6);
+  const [activeMode, setActiveMode] = useState("");
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [history, setHistory] = useState(0);
+  const [note, setNote] = useState("");
+
+  const handleScratchToolChange = value => () => {
+    if (value === "deleteMode") {
+      setDeleteMode(!deleteMode);
+    } else if (activeMode === value) {
+      setActiveMode("");
+    } else {
+      setActiveMode(value);
+      setDeleteMode(false);
+    }
+  };
+
+  const handleColorChange = obj => setCurrentColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100));
+
+  // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
+  // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
+  const saveHistory = sourceId => data => {
+    setHistory(history + 1);
+    saveUserWork({
+      [item._id]: { ...rejectFeedbackData, [sourceId]: data }
+    });
+  };
+
+  const handleUndo = () => {
+    if (history > 0) {
+      setHistory(history + 1);
+      undoScratchPad();
+    }
+  };
+
+  const handleRedo = () => {
+    setHistory(history + 1);
+    redoScratchPad();
+  };
+
+  const onFillColorChange = obj => setFillColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100));
+
+  const handleNote = e => setNote(e.target.value);
+
+  const handleSubmit = () => submitReviewFeedback(note, scratchPad);
+
+  const _renderAddRejectNoteSection = () => {
+    return (
+      <StyledFlex style={{ marginTop: "18px" }}>
+        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} />
+        <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
+      </StyledFlex>
+    );
+  };
+
+  return (
+    <>
+      <StyledFlexContainer
+        style={{
+          alignItems: "flex-start",
+          width: "100%",
+          background: allThemeVars.containerWhite,
+          borderRadius: "10px"
+        }}
+      >
+        <Tools
+          onFillColorChange={onFillColorChange}
+          fillColor={fillColor}
+          deleteMode={deleteMode}
+          currentColor={currentColor}
+          onToolChange={handleScratchToolChange}
+          activeMode={activeMode}
+          undo={handleUndo}
+          redo={handleRedo}
+          onColorChange={handleColorChange}
+          className="review-scratchpad"
+        />
+        <div style={{ width: "100%", position: "relative" }}>
+          <ColumnsContentArea sectionQue={sectionQue} resourceCount={resourceCount} className="scratchpad-wrapper">
+            <SvgDraw
+              activeMode={activeMode}
+              scratchPadMode
+              lineColor={currentColor}
+              deleteMode={deleteMode}
+              lineWidth={lineWidth}
+              fillColor={fillColor}
+              saveHistory={saveHistory("scratchpad")}
+              height="100%`"
+              top="0"
+              left="0"
+              position="absolute"
+              history={scratchPad}
+            />
+          </ColumnsContentArea>
+        </div>
+      </StyledFlexContainer>
+      {_renderAddRejectNoteSection()}
+    </>
+  );
+};
+
+const enhance = compose(
+  connect(
+    (state, ownProps) => ({
+      scratchPad: get(state, `testItemPreview.present[${ownProps.item._id}].scratchpad`, null),
+      rejectFeedbackData: get(state, `testItemPreview.present[${ownProps.item._id}]`, null)
+    }),
+    {
+      saveUserWork: savePreviewRejectAction,
+      undoScratchPad: ActionCreators.undo,
+      redoScratchPad: ActionCreators.redo
+    }
+  )
+);
+
+PreviewModalWithScratchPad.propTypes = {
+  submitReviewFeedback: PropTypes.func.isRequired,
+  saveUserWork: PropTypes.func.isRequired,
+  rejectFeedbackData: PropTypes.object,
+  scratchPad: PropTypes.object,
+  item: PropTypes.object.isRequired,
+  undoScratchPad: PropTypes.func.isRequired,
+  redoScratchPad: PropTypes.func.isRequired,
+  columnsContentArea: PropTypes.node,
+  sectionQue: PropTypes.array,
+  resourceCount: PropTypes.number
+};
+
+export default enhance(PreviewModalWithScratchPad);

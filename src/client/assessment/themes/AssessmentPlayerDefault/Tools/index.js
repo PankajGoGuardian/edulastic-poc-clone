@@ -24,7 +24,8 @@ const Tools = ({
   testMode,
   review,
   isToolBarVisible,
-  isDocBased = false
+  isDocBased = false,
+  className
 }) => {
   let buttonsList = tools;
 
@@ -43,6 +44,7 @@ const Tools = ({
       testMode={testMode}
       flexDirection="column"
       isToolBarVisible={isToolBarVisible}
+      className={className}
     >
       {activeMode === "" &&
         buttonsList.map((button, i) => (

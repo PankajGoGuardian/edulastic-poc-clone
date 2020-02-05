@@ -44,3 +44,4 @@ export { default as collectionsApi } from "./src/itemBank";
 export { default as subscriptionApi } from "./src/subscription";
 export { default as customReportApi } from "./src/customReport";
 export { default as paymentApi } from "./src/payment";
+export { default as attchmentApi } from "./src/attachment";

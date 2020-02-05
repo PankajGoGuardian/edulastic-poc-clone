@@ -32,9 +32,14 @@ import {
   StyledText
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
-import { approveOrRejectSingleItem } from "../../../../ItemList/ducks";
-import { getUserId, getUserFeatures } from "../../../selectors/user";
+import {
+  approveOrRejectSingleItem,
+  submitReviewFeedbackAction,
+  loadScratchPadAction
+} from "../../../../ItemList/ducks";
+import { getUserId, getUserFeatures, getUserSelector } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
 
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
@@ -50,11 +55,19 @@ class AuthorTestItemPreview extends Component {
     super(props);
     this.state = {
       value: 0,
-      collapseDirection: ""
+      collapseDirection: "",
+      isRejectMode: false
     };
   }
 
   scrollContainer = React.createRef();
+
+  componentDidMount() {
+    const { item, userId, loadScratchPad, user, attachmentId } = this.props;
+    if (attachmentId) {
+      loadScratchPad(attachmentId);
+    }
+  }
 
   handleTabChange = value => {
     this.setState({
@@ -76,11 +89,31 @@ class AuthorTestItemPreview extends Component {
     return deleteItem({ id: _id, isItemPrevew: page === "addItems" || page === "itemList" });
   };
 
-  handleSingleApproveOrReject = status => {
+  handleApproveOrRejectSingleItem = value => {
     const { approveOrRejectSingleItem, item } = this.props;
     if (item?._id) {
-      approveOrRejectSingleItem({ itemId: item._id, status });
+      approveOrRejectSingleItem({ itemId: item._id, status: value });
     }
+  };
+
+  handleReject = () => this.setState({ isRejectMode: true });
+
+  submitReviewFeedback = (note, scratchpad) => {
+    const { submitReviewFeedback, item } = this.props;
+    submitReviewFeedback({
+      status: "rejected",
+      data: {
+        type: "scratchpad",
+        referrerType: "TestItemContent",
+        referrerId: item._id,
+        data: {
+          note,
+          scratchpad
+        },
+        status: "reject"
+      }
+    });
+    this.setState({ isRejectMode: false });
   };
 
   getStyle = first => {
@@ -209,8 +242,11 @@ class AuthorTestItemPreview extends Component {
       item,
       userId,
       page,
-      userFeatures
+      userFeatures,
+      isReviwer
     } = this.props;
+
+    const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId;
 
     return (
@@ -270,15 +306,16 @@ class AuthorTestItemPreview extends Component {
                 {item.status === "inreview" ? (
                   <EduButton
                     title="Reject"
-                    style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
+                    style={{ padding: 0, borderColor: themeColor, height: "28px" }}
                     size="large"
-                    onClick={() => this.handleSingleApproveOrReject("rejected")}
+                    onClick={this.handleReject}
+                    type={isRejectMode ? "primary" : ""}
                   >
                     <StyledFlex>
                       <SyledSpan>
                         <Icon type="stop" color={red} />
                       </SyledSpan>
-                      <StyledText danger>Reject</StyledText>
+                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>Reject</StyledText>
                     </StyledFlex>
                   </EduButton>
                 ) : null}
@@ -287,7 +324,7 @@ class AuthorTestItemPreview extends Component {
                     title="Approve"
                     style={{ padding: 0, borderColor: themeColor, height: "28px" }}
                     size="large"
-                    onClick={() => this.handleSingleApproveOrReject("published")}
+                    onClick={() => this.handleApproveOrRejectSingleItem("published")}
                   >
                     <StyledFlex>
                       <SyledSpan>
@@ -379,7 +416,7 @@ class AuthorTestItemPreview extends Component {
     const { style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
     let subCount = 0;
-    return (
+    const columns = (
       <>
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
           <Tabs value={value} onChange={this.handleTabChange}>
@@ -422,7 +459,25 @@ class AuthorTestItemPreview extends Component {
         </WidgetContainer>
       </>
     );
+
+    if (this.state.isRejectMode && colIndex === 0) {
+      return <div style={{ paddingLeft: "45px" }}>{columns}</div>;
+    }
+    return columns;
   }
+
+  renderColumnContentAreaWithScratchpad = (sectionQue, resourceCount) => {
+    const { item } = this.props;
+    return (
+      <PreviewModalWithScratchPad
+        item={item}
+        columnsContentArea={this.renderColumnsContentArea}
+        sectionQue={sectionQue}
+        resourceCount={resourceCount}
+        submitReviewFeedback={this.submitReviewFeedback}
+      />
+    );
+  };
 
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
@@ -462,9 +517,34 @@ class AuthorTestItemPreview extends Component {
     return sections;
   };
 
-  render() {
+  renderColumnsContentArea = ({ sectionQue, resourceCount, children = null, ...rest }) => {
     const { cols, page } = this.props;
     const { collapseDirection } = this.state;
+
+    return (
+      <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
+        {cols.map((col, i) => {
+          const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+          if (hideColumn) return "";
+          return (
+            <>
+              {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
+              <ColumnContentArea isAuthoring={page === "itemAuthoring"} hide={hideColumn}>
+                {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
+                {this.renderColumns(col, i, sectionQue, resourceCount)}
+              </ColumnContentArea>
+              {collapseDirection === "right" && this.renderCollapseButtons(i)}
+            </>
+          );
+        })}
+        {children}
+      </Container>
+    );
+  };
+
+  render() {
+    const { cols, item } = this.props;
+    const { isRejectMode } = this.state;
     let questionCount = 0;
     let resourceCount = 0;
     cols
@@ -487,23 +567,9 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-          <Container ref={this.scrollContainer} data-cy="scroll-conteianer">
-            {cols.map((col, i) => {
-              const hideColumn =
-                (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-              if (hideColumn) return "";
-              return (
-                <>
-                  {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                  <ColumnContentArea isAuthoring={page === "itemAuthoring"} hide={hideColumn}>
-                    {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                    {this.renderColumns(col, i, sectionQue, resourceCount)}
-                  </ColumnContentArea>
-                  {collapseDirection === "right" && this.renderCollapseButtons(i)}
-                </>
-              );
-            })}
-          </Container>
+          {isRejectMode
+            ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
+            : this.renderColumnsContentArea({ sectionQue, resourceCount })}
         </ScrollContext.Provider>
       </ThemeProvider>
     );
@@ -515,11 +581,14 @@ const enhance = compose(
     state => ({
       deleting: getItemDeletingSelector(state),
       userFeatures: getUserFeatures(state),
-      userId: getUserId(state)
+      userId: getUserId(state),
+      user: getUserSelector(state).user
     }),
     {
       deleteItem: deleteItemAction,
-      approveOrRejectSingleItem
+      approveOrRejectSingleItem,
+      submitReviewFeedback: submitReviewFeedbackAction,
+      loadScratchPad: loadScratchPadAction
     }
   )
 );

@@ -7,10 +7,10 @@ import {
   linkColor,
   red,
   mediumDesktopWidth,
-  largeDesktopWidth
+  largeDesktopWidth,
+  smallDesktopWidth
 } from "@edulastic/colors";
-import { Button, Icon, Typography } from "antd";
-
+import { Button, Icon, Typography, Input } from "antd";
 const { Text } = Typography;
 
 export const Container = styled.div`
@@ -18,6 +18,11 @@ export const Container = styled.div`
   justify-content: space-between;
   overflow: auto;
   width: 100%;
+  &.scratchpad-wrapper {
+    input {
+      position: absolute;
+    }
+  }
 `;
 export const WidgetContainer = styled.div`
   display: flex;
@@ -254,6 +259,7 @@ export const StyledFlex = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  ${({ style }) => style};
 `;
 
 export const StyledText = styled(Text)`
@@ -270,4 +276,86 @@ export const StyledText = styled(Text)`
 export const SyledSpan = styled.span`
   line-height: 0;
   padding: 0 11px;
+`;
+
+export const StyledInput = styled(Input)`
+  padding: 11px 22px;
+  height: 40px;
+`;
+export const StyledRejectionSubmitBtn = styled(Button)`
+  background: ${themeColor};
+  height: 40px;
+  width: 194px;
+  text-transform: uppercase;
+  margin-left: 10px;
+  color: ${white};
+  &:hover {
+    background: green;
+    font-weight: 500;
+    color: ${white};
+  }
+`;
+
+export const StyledFlexContainer = styled(FlexContainer)`
+  .review-scratchpad {
+    position: absolute;
+    background: ${white};
+    left: 50px;
+    top: 138px;
+    min-height: 380px;
+    > div {
+      min-height: 380px;
+    }
+    .ant-btn {
+      margin-bottom: 8px;
+      background: ${themeColor};
+      width: 40px;
+      height: 40px;
+      &:hover {
+        background: green;
+      }
+    }
+    .ant-select {
+      width: 40px;
+      height: 40px;
+      .ant-select-selection__rendered {
+        line-height: 40px;
+      }
+    }
+    #tool {
+      margin-bottom: 4px;
+      .rc-color-picker-wrap {
+        width: 40px !important;
+        height: 40px !important;
+        .rc-color-picker-trigger {
+          width: 40px !important;
+          height: 40px !important;
+        }
+      }
+    }
+    .scratchpad-back-btn {
+      background: ${themeColor};
+      color: ${white};
+      padding: 10px 0px;
+      border-radius: 4px;
+    }
+    .scratchpad-fillcolor-container {
+      background: ${themeColor};
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+    .active-btn {
+      background: green;
+    }
+    > div {
+      justify-content: unset;
+    }
+    #tool div > div {
+      color: unset;
+      font-size: 13px;
+    }
+    @media (max-width: ${smallDesktopWidth}) {
+      top: 170px;
+    }
+  }
 `;

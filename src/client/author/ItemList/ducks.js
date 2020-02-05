@@ -1,6 +1,6 @@
 import { takeEvery, takeLatest, call, put, select, take, race } from "redux-saga/effects";
 import { message } from "antd";
-import { uniq } from "lodash";
+import { uniq, get } from "lodash";
 import produce from "immer";
 import { test as testConstant, roleuser } from "@edulastic/constants";
 import { setTestItemsAction, showAddPassageItemsModalAction } from "../TestPage/components/AddItems/ducks";
@@ -13,7 +13,7 @@ import {
 } from "../TestPage/ducks";
 import { getUserRole } from "../src/selectors/user";
 import { createAction } from "redux-starter-kit";
-import { testItemsApi } from "@edulastic/api";
+import { testItemsApi, attchmentApi } from "@edulastic/api";
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
@@ -23,6 +23,13 @@ import {
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
+
+export const PREVIEW_FEEDBACK_REQUEST = "[item list] preview item reject feedback request";
+export const PREVIEW_FEEDBACK_SUCCESS = "[item list] preview item reject feedback success";
+export const PREVIEW_FEEDBACK_FAILURE = "[item list] preview item reject feedback failure";
+export const LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST = "[item list] preview item feedback data request";
+export const LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS = "[item list] preview item feedback data success";
+export const LOAD_ITEM_PREVIEW_FEEDBACK_FAILURE = "[item list] preview item feedback data failure";
 
 export const addItemToCartAction = item => ({
   type: ADD_ITEM_TO_CART,
@@ -40,6 +47,8 @@ export const createTestFromCartAction = testName => ({
 
 export const approveOrRejectSingleItem = createAction(APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST);
 export const approveOrRejectMultipleItem = createAction(APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST);
+export const submitReviewFeedbackAction = createAction(PREVIEW_FEEDBACK_REQUEST);
+export const loadScratchPadAction = createAction(LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST);
 
 export function* addItemToCartSaga({ payload }) {
   const { item } = payload;
@@ -153,9 +162,34 @@ export function* approveOrRejectMultipleItemSaga({ payload }) {
   }
 }
 
+export function* submitReviewFeedbackSaga({ payload: { status, data } }) {
+  try {
+    const payload = { itemId: data.referrerId, status };
+    const result = yield call(attchmentApi.saveAttachment, data);
+    yield call(message.success, `Item successfully ${payload.status}.`);
+    yield call(testItemsApi.publishTestItem, payload);
+    yield put({ type: APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS, payload: payload });
+    yield put({ type: PREVIEW_FEEDBACK_SUCCESS, payload: result });
+  } catch (e) {
+    console.error(e);
+    yield call(message.error, `Failed to update Status`);
+  }
+}
+
+export function* loadScratchPadSaga({ attachmentId }) {
+  try {
+    const result = yield call(attchmentApi.loadAttachment, attachmentId);
+    yield put({ type: LOAD_ITEM_PREVIEW_FEEDBACK_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.error, "Failed to load scratchpad data");
+  }
+}
+
 export function* watcherSaga() {
   yield takeEvery(ADD_ITEM_TO_CART, addItemToCartSaga);
   yield takeLatest(CREATE_TEST_FROM_CART, createTestFromCart);
   yield takeLatest(APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST, approveOrRejectSingleItemSaga);
   yield takeLatest(APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST, approveOrRejectMultipleItemSaga);
+  yield takeLatest(PREVIEW_FEEDBACK_REQUEST, submitReviewFeedbackSaga);
+  yield takeLatest(LOAD_ITEM_PREVIEW_FEEDBACK_REQUEST, loadScratchPadSaga);
 }

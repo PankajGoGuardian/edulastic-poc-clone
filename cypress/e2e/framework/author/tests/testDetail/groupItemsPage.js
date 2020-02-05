@@ -1,6 +1,7 @@
 import CypressHelper from "../../../util/cypressHelpers";
 import TestLibrary from "../testLibraryPage";
 import TestAddItemTab from "./testAddItemTab";
+import { deliverType } from "../../../constants/questionTypes";
 
 export default class GroupItemsPage {
   constructor() {
@@ -134,6 +135,9 @@ export default class GroupItemsPage {
     this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect);
     this.clickOnApply();
     this.selectCollectionByGroupAndCollection(group, collection);
+    if (dok) this.setDOK(dok);
+    if (difficulty) this.setDifficulty(difficulty);
+    if (tags) this.setTag(tags);
     this.setItemCountForDeliveryByGroup(group, deliveryCount);
     this.clickOnSaveByGroup(group, true);
   };
@@ -159,51 +163,73 @@ export default class GroupItemsPage {
         });
         cy.wait(500);
       }
+      cy.wait(100);
     });
-    return cy.wait(3000).then(() => testID);
+    return cy.wait(2000).then(() => testID);
     // GET 200 /api/test/default-thumbnail?subject=Other this is triggering for indefinate numbers
     // so the wait is
   };
 
-  getItemDeliverySeq = (deliveredItemGroups, groups, deliveryType, deliveryCount) => {
+  getItemDeliverySeq = (deliveredItemGroups, groups, shuffle = false) => {
     const deliveredGroup = {};
     let deliveredArray = [];
-    let OriginalArray = [];
+    let deliverTypeAtStudentSide = [];
 
     deliveredItemGroups.forEach((gArray, ind) => {
+      deliverTypeAtStudentSide.push(gArray.deliveryType);
       // eslint-disable-next-line no-prototype-builtins
-      if (!deliveredGroup.hasOwnProperty(`group${ind + 1}`)) deliveredGroup[`group${ind + 1}`] = [];
+      if (!deliveredGroup.hasOwnProperty(ind + 1)) deliveredGroup[ind + 1] = [];
+      expect(gArray.deliveryType).to.eq(groups[ind + 1].deliverType);
       gArray.items.forEach(itemObj => {
-        deliveredGroup[`group${ind + 1}`].push(itemObj._id);
-        expect(
-          itemObj._id,
-          `Expected item-${itemObj._id} should be part of group-${ind + 1}-[${groups[ind]}]`
-        ).to.be.oneOf(groups[`GROUP${ind + 1}`]);
+        deliveredGroup[ind + 1].push(itemObj._id);
+        expect(itemObj._id, `Expected item-${itemObj._id} should be part of group-${ind + 1}`).to.be.oneOf(
+          groups[ind + 1].items
+        );
       });
 
       deliveredArray = [...deliveredArray, ...deliveredGroup[Cypress._.keys(deliveredGroup)[ind]]];
-      OriginalArray = [...OriginalArray, ...groups[Cypress._.keys(groups)[ind]]];
     });
 
-    switch (deliveryType) {
-      // Static + all
-      case "ALL":
-        CypressHelper.checkObjectEquality(deliveredArray, OriginalArray);
-        break;
-      // Static + all + shuffle
-      case "ALL_SHUFFLE":
-        CypressHelper.checkObjectInEquality(deliveredArray, OriginalArray);
-        expect(deliveredArray.length).to.eq(deliveryCount);
-        break;
-      // Auto + count
-      // Static + count
-      case "ALL_RANDOM":
-      case "LIMITED_RANDOM":
-        CypressHelper.checkObjectInEquality(deliveredArray, OriginalArray.slice(deliveryCount + 1));
-        expect(deliveredArray.length).to.eq(deliveryCount);
-        break;
-      default:
-    }
+    deliverTypeAtStudentSide.forEach((type, ind) => {
+      switch (type) {
+        case deliverType.ALL:
+          if (shuffle === false) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+          else {
+            if (!groups[ind + 1].items.length === 1)
+              CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+            expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
+          }
+          break;
+        case deliverType.LIMITED_RANDOM:
+        case deliverType.ALL_RANDOM:
+          if (!groups[ind + 1].items.length === 1)
+            CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+          expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
+          break;
+        default:
+          assert.fail(`Unexpected delivery type of group-${ind + 1}-${type}`); //
+          break;
+      }
+    });
     return deliveredArray;
+  };
+
+  setTag = tag => {
+    CypressHelper.selectDropDownByAttribute("selectTags", tag);
+    cy.focused().blur(); // de-focus dropdown select
+  };
+
+  setDOK = dok => {
+    // CypressHelper.selectDropDownByAttribute("selectDOK", DOK);
+    // cy.focused().blur();
+    cy.get('[data-cy="selectDOK"]').click();
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains(dok)
+      .click({ force: true });
+  };
+
+  setDifficulty = difficulty => {
+    CypressHelper.selectDropDownByAttribute("selectDifficulty", difficulty);
+    cy.focused().blur();
   };
 }

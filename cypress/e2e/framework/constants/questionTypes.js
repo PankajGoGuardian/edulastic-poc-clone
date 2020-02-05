@@ -48,9 +48,8 @@ export const attemptTypes = {
 
 export const deliverType = {
   ALL: "ALL",
-  LIM_RANDOM: "LIMITED_RANDOM",
-  ALL_RANDOM: "ALL_RANDOM",
-  ALL_SHUF: "ALL_SHUFFLE"
+  LIMITED_RANDOM: "LIMITED_RANDOM",
+  ALL_RANDOM: "ALL_RANDOM"
 };
 
 export const queColor = {

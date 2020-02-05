@@ -159,6 +159,7 @@ export default class QuestionResponsePage {
     if (index > 0) cy.wait("@test-activity");
     // if (!studentName.includes("Student01")) cy.wait("@test-activity");
     this.getQuestionContainer(0).should("contain", studentName);
+    cy.wait(500); // detachment problem
   };
 
   selectAttempt = attemptNum => {

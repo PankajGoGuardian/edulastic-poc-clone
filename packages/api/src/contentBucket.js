@@ -11,19 +11,19 @@ const fetchBuckets = () =>
     })
     .then(({ data: response }) => response);
 
-const createBucket = data =>
+const createBucket = ({ collectionId, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/${data.collectionId}/buckets`,
+      url: `${prefix}/${collectionId}/buckets`,
       method: "post",
       data
     })
     .then(result => result.data.result);
 
-const updateBucket = ({ _id, ...data }) =>
+const updateBucket = ({ _id, collectionId, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/${data.collectionId}/buckets/${_id}`,
+      url: `${prefix}/${collectionId}/buckets/${_id}`,
       method: "put",
       data
     })

@@ -5,9 +5,8 @@ import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
 import { get, without } from "lodash";
-import moment from "moment";
 
-import { testsApi, testItemsApi } from "@edulastic/api";
+import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
 import { aws, roleuser, test as testConstant } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { uploadToS3 } from "../src/utils/upload";

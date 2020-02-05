@@ -97,6 +97,7 @@ class ClassHeader extends Component {
   }
 
   switchClass(classId) {
+    if (!classId) return;
     const { loadTestActivity, match, studentUnselectAll, resetView, active } = this.props;
     const { assignmentId } = match.params;
     if (match.params.classId === classId) return;

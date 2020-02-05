@@ -76,7 +76,6 @@ const GoogleChooser = ({
     const picker = new window.google.picker.PickerBuilder()
       .addView(view)
       .setOAuthToken(oauthToken)
-      .setDeveloperKey(developerKey)
       .setCallback(onChange);
 
     if (origin) {

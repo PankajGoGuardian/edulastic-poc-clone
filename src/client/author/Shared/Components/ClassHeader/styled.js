@@ -338,6 +338,7 @@ export const OpenCloseButton = styled(Button)`
 
 export const MenuItems = styled(Menu.Item)`
   font-size: 12px;
+
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
     background-color: ${themeColor};
@@ -362,6 +363,21 @@ export const DropMenu = styled(Menu)`
 
 export const ClassDropMenu = styled(DropMenu)`
   margin-top: 0px;
+
+  .ant-dropdown-menu-item-selected {
+    a {
+      color: ${themeColor};
+      background: ${white};
+      font-weight: 700;
+    }
+  }
+
+  .ant-dropdown-menu-item-selected:hover {
+    a {
+      color: ${white};
+      background: ${themeColor};
+    }
+  }
 `;
 
 export const StudentStatusDetails = styled.div`

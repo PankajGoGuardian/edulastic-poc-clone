@@ -26,7 +26,6 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
   const handleDriveUpload = ({ action, docs }) => {
     if (action === "picked" && docs) {
       const [doc] = docs;
-      console.log("doc", doc);
       const { id, name, sizeBytes: size, mimeType } = doc;
       if (size > 1024 * 1024 * 5) {
         message.error("The selected document is too big to be uploaded");
@@ -61,7 +60,6 @@ const CreateUpload = ({ creating, percent, fileInfo, onUpload, cancelUpload, upl
         {/* TODO add proper client ID and developer key via .env files */}
         <GooglePicker
           clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-          developerKey={process.env.POI_APP_GOOGLE_KEY}
           onChange={handleDriveUpload}
           onAuthFailed={handleAuthFailed}
           mimeTypes={["application/pdf"]}

@@ -198,7 +198,11 @@ function* testItemLocationChangeSaga({ payload }) {
   // when user lands at item-detail route (item level)
   // Clear current on authorQuestions, so we have a clean item/question state every time
   // we rely on this in evaluateAnswers
-  if (payload.location.pathname.indexOf("item-detail") !== -1) {
+  const currentItemId = yield select(state => _get(state, "itemDetail.item._id"));
+  if (
+    payload.location.pathname.indexOf("item-detail") !== -1 &&
+    (payload.location.pathname.split("/")[3] !== currentItemId || !currentItemId)
+  ) {
     yield put({
       type: CHANGE_CURRENT_QUESTION,
       payload: ""

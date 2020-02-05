@@ -2155,3 +2155,6 @@ iframe {
   border-bottom: 3px solid #000 !important;
   font-weight: bold !important;
 }
+.migrated-question img {
+  max-height: unset !important;
+}

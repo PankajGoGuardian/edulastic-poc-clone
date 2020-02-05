@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../../../../src/selectors/user";
 import moment from "moment";
-import { debounce } from "lodash";
+import { debounce, uniq } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
 
 import { ButtonsContainer, OkButton, CancelButton, StyledModal } from "../../../../../common/styled";
@@ -94,8 +94,8 @@ function BulkEditModal({
 
   const selectTags = async id => {
     let newTag = {};
+    const tempSearchValue = searchValue;
     if (id === searchValue) {
-      const tempSearchValue = searchValue;
       setSearchValue("");
       try {
         const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
@@ -107,9 +107,9 @@ function BulkEditModal({
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
-    const tagsSelected = getFieldValue("tags");
-    const newTags = [...tagsSelected, newTag._id];
-    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
+    const tagsSelected = getFieldValue("tags") || [];
+    const newTags = uniq([...tagsSelected, newTag._id]);
+    setFieldsValue({ tags: newTags.filter(tag => tag !== tempSearchValue) });
     setSearchValue("");
   };
 

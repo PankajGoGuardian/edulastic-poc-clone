@@ -26,8 +26,8 @@ import {
 import { getInterestedStandards } from "../../../../../dataUtils";
 import {
   getInterestedCurriculumsSelector,
-  getOrgDataSelector,
-  getUserFeatures
+  getUserFeatures,
+  getItemBucketsSelector
 } from "../../../../../src/selectors/user";
 import {
   getTestEntitySelector,
@@ -49,7 +49,7 @@ const ReviewSummary = ({
   collections = [],
   interestedCurriculums,
   windowWidth,
-  orgData,
+  orgCollections,
   userFeatures,
   test: { itemGroups },
   summary,
@@ -122,14 +122,20 @@ const ReviewSummary = ({
               disabled={!owner || !isEditable}
               style={{ width: "100%" }}
               placeholder="Please select"
-              value={collections.map(o => o._id)}
+              value={collections.map(o => o.bucketId)}
               onChange={onChangeCollection}
               filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
               marginBottom="0px"
             >
-              {orgData?.itemBanks?.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id} title={name}>
-                  {name}
+              {orgCollections?.map(o => (
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  bucketName={o.name}
+                  collectionName={o.collectionName}
+                  _id={o._id}
+                >
+                  {o.collectionName} - {o.name}
                 </Select.Option>
               ))}
             </SummarySelectBox>
@@ -225,7 +231,7 @@ ReviewSummary.propTypes = {
 export default connect(
   state => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
-    orgData: getOrgDataSelector(state),
+    orgCollections: getItemBucketsSelector(state),
     userFeatures: getUserFeatures(state),
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestions(state),

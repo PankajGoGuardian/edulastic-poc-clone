@@ -49,6 +49,8 @@ import { dashboardTeacher } from "../../Dashboard";
 import { testItemPreview } from "../components/common/PreviewModal";
 import { classEnrollmentReducer } from "../../ClassEnrollment";
 import { rubricReducer } from "../../GradingRubric";
+import { bucketReducer } from "../../ContentBuckets";
+import { collectionsReducer } from "../../ContentCollections";
 import { slice as LCBAssignmentSlice } from "../../LCBAssignmentSettings/ducks";
 import { slice as subscriptionSlice } from "../../Subscription/ducks";
 
@@ -103,6 +105,8 @@ const authorReducers = {
   testItemPreview,
   classEnrollmentReducer,
   rubricReducer,
+  bucketReducer,
+  collectionsReducer,
   itemScore,
   LCBAssignmentSettings: LCBAssignmentSlice.reducer,
   subscription: subscriptionSlice.reducer

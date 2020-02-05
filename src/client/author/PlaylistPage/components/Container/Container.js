@@ -150,7 +150,12 @@ class Container extends PureComponent {
 
   handleChangeCollection = (value, options) => {
     const { setData, test } = this.props;
-    const _value = options.map(o => ({ name: o.props.title, _id: o.props.value }));
+    let _value = options.map(o => ({
+      bucketId: o.props.value,
+      _id: o.props._id,
+      bucketName: o.props.bucketName,
+      collectionName: o.props.collectionName
+    }));
     setData({ ...test, collections: _value });
   };
 

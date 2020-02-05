@@ -66,6 +66,8 @@ import ItemListContainer from "./ItemListContainer";
 import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../ducks";
 import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import Actions from "../Actions";
+import SelectCollectionModal from "../Actions/SelectCollection";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -352,6 +354,7 @@ class Contaier extends Component {
 
     return (
       <div>
+        <SelectCollectionModal contentType="TESTITEM" />
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
@@ -386,6 +389,7 @@ class Contaier extends Component {
                   <>
                     <ItemsMenu>
                       <QuestionsFound>{count} questions found</QuestionsFound>
+                      <Actions type="TESTITEM" />
                     </ItemsMenu>
 
                     <ScrollbarContainer>

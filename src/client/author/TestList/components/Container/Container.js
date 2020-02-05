@@ -26,7 +26,8 @@ import {
   AffixWrapper,
   StyleChangeWrapper,
   CardBox,
-  StyledCountText
+  StyledCountText,
+  ItemsMenu
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -94,6 +95,8 @@ import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../src/selectors/user";
+import Actions from "../../../ItemList/components/Actions";
+import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -1010,10 +1013,11 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main>
-              <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
+              <ItemsMenu justifyContent="space-between" style={{ marginBottom: 10 }}>
                 <PaginationInfo>
                   {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
+
                 {mode === "embedded" && (
                   <BtnActionsContainer>
                     <StyledCountText>{markedTests.length} TESTS SELECTED</StyledCountText>
@@ -1034,20 +1038,24 @@ class TestList extends Component {
                     </StyledButton>
                   </BtnActionsContainer>
                 )}
-              </FlexContainer>
-              <CardContainer type={blockStyle}>
-                {this.renderCardContent()}
-                <PaginationWrapper
-                  type={blockStyle}
-                  current={page}
-                  total={count}
-                  pageSize={limit}
-                  onChange={this.handlePaginationChange}
-                  hideOnSinglePage
-                />
-              </CardContainer>
+                {mode !== "embedded" && blockStyle === "horizontal" && <Actions type="TEST" />}
+              </ItemsMenu>
+              <PerfectScrollbar style={{ padding: "0 30px" }}>
+                <CardContainer type={blockStyle}>
+                  {this.renderCardContent()}
+                  <PaginationWrapper
+                    type={blockStyle}
+                    current={page}
+                    total={count}
+                    pageSize={limit}
+                    onChange={this.handlePaginationChange}
+                    hideOnSinglePage
+                  />
+                </CardContainer>
+              </PerfectScrollbar>
             </Main>
           </FlexContainer>
+          <SelectCollectionModal contentType="TEST" />
         </Container>
       </>
     );

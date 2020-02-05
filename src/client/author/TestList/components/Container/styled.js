@@ -8,9 +8,10 @@ import {
   grey,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  placeholderGray
+  placeholderGray,
+  lightGreySecondary
 } from "@edulastic/colors";
-import { Card } from "@edulastic/common";
+import { Card, FlexContainer } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
   padding-right: 30px;
@@ -113,15 +114,15 @@ export const Main = styled.div`
   flex: 1;
   background: white;
   box-shadow: -1px 0px 5px 1px ${grey};
-  padding: 20px 25px;
   width: calc(100% - 250px);
-  min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
+  overflow: hidden;
+  height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     width: 100%;
@@ -188,4 +189,15 @@ export const StyledCountText = styled.div`
   padding-right: 10px;
   font-size: 12px;
   font-weight: 600;
+`;
+
+export const ItemsMenu = styled(FlexContainer)`
+  background: ${lightGreySecondary};
+  align-items: space-between;
+  justify-content: space-between;
+  padding: 10px 20px;
+
+  @media screen and (max-width: 993px) {
+    padding: 8px 15px;
+  }
 `;

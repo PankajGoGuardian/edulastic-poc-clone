@@ -107,6 +107,30 @@ export const getCollectionsSelector = createSelector(
   state => _get(state, "user.orgData.itemBanks", [])
 );
 
+export const getCustomCollectionsSelector = createSelector(
+  getCollectionsSelector,
+  collections => collections.filter(item => item.isCustom)
+);
+
+export const getItemBucketsSelector = createSelector(
+  getCustomCollectionsSelector,
+  state => {
+    const flatttenBuckets = state.flatMap(collection => {
+      return collection.buckets.map(bucket => {
+        return {
+          ...bucket,
+          _id: collection._id,
+          bucketId: bucket._id,
+          collectionStatus: collection.status,
+          collectionName: collection.name,
+          collectionDescription: collection.description
+        };
+      });
+    });
+    return flatttenBuckets;
+  }
+);
+
 export const getUserId = createSelector(
   getUser,
   state => _get(state, "_id")

@@ -22,10 +22,10 @@ const SecondBlock = ({
   handleCollectionsSelect,
   handleRecentCollectionsSelect,
   collections,
-  orgData,
   userFeatures,
   highlightCollection,
-  recentCollectionsList
+  recentCollectionsList,
+  orgCollections
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], "tagName");
   const [searchValue, setSearchValue] = useState("");
@@ -171,17 +171,22 @@ const SecondBlock = ({
                 className="tagsSelect"
                 data-cy="collectionsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
-                optionLabelProp="title"
                 placeholder="Please select"
-                value={collections.map(i => i._id)}
+                value={collections.map(i => i.bucketId)}
                 onChange={(value, options) => handleCollectionsSelect(value, options)}
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
                 suffixIcon={<SelectSuffixIcon type="caret-down" />}
                 autoFocus={highlightCollection}
               >
-                {orgData?.itemBanks?.map(({ _id, name }) => (
-                  <Select.Option data-cy={`collection-select-${name}`} key={_id} value={_id} title={name}>
-                    {name}
+                {orgCollections.map(o => (
+                  <Select.Option
+                    key={o.bucketId}
+                    value={o.bucketId}
+                    bucketName={o.name}
+                    collectionName={o.collectionName}
+                    _id={o._id}
+                  >
+                    {o.collectionName} - {o.name}
                   </Select.Option>
                 ))}
               </Select>

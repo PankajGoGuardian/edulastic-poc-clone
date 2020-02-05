@@ -127,8 +127,9 @@ class SideMenu extends Component {
     let _menuItems = cloneDeep(menuItems);
     if (features.isCurator || features.isPublisherAuthor) {
       _menuItems[0].path = "publisher/dashboard";
+      _menuItems[7].label = "Organization";
       const [item1, item2, item3, item4, item5] = _menuItems;
-      _menuItems = [item1, item3, item4, item5];
+      _menuItems = [item1, item3, item4, item5, _menuItems[7]];
     }
     if (features.isPublisherAuthor) {
       const [item1, ...rest] = _menuItems;

@@ -70,6 +70,8 @@ const InterestedStandards = lazy(() => import("../InterestedStandards"));
 const PlayList = lazy(() => import("../Playlist"));
 const PlaylistPage = lazy(() => import("../PlaylistPage"));
 const ClassEnrollment = lazy(() => import("../ClassEnrollment"));
+const ContentBuckets = lazy(() => import("../ContentBuckets"));
+const Collections = lazy(() => import("../ContentCollections"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, location, role, orgId, districtProfileLoading, loadDistrictPolicy }) => {
@@ -463,6 +465,9 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route exact path="/author/classes" component={Classes} />
                     <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
                     <Route exact path="/author/Class-Enrollment" component={ClassEnrollment} />
+                    <Route exact path="/author/content/buckets" component={ContentBuckets} />
+                    <Route exact path="/author/content/collections" component={Collections} />
+                    <Route exact path="/author/content/subscriptions" component={() => <div />} />
                   </Switch>
                 </Suspense>
               </ErrorHandler>

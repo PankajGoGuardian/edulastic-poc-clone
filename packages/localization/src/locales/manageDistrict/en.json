@@ -398,5 +398,61 @@
     "addstds": "Add Student(s)",
     "movetoanotherclass": "Move User(s) to another class",
     "moveusers": "Move User(s)"
+  },
+  "content": {
+    "buckets": {
+      "createBuckets": "Create bucket",
+      "bucketsLoadErrorMsg": "Receive Buckets is failing!",
+      "bucketUpdateSuccessMsg": "Bucket updated successfully",
+      "bucketUpdateErrorMsg": "Update Bucket is failing",
+      "bucketCreateErrorMsg": "Create Bucket is failing",
+      "tableHeader": {
+        "name": "name",
+        "collectionName": "Collection name",
+        "owner": "Owner",
+        "cloneItem": "Clone item",
+        "cloneTest": "Clone test",
+        "clonePlaylist": "Clone playlist",
+        "itemVisibility": "Item visibility",
+        "testVisibility": "test visibility",
+        "items": "Items",
+        "test": "Test",
+        "playlist": "Playlist",
+        "status": "Status"
+      },
+      "upsertModal": {
+        "createTitle": "Create Bucket",
+        "updateTitle": "Edit a Bucket",
+        "cancelBtn": "Cancel",
+        "okBtn": "Apply",
+        "name": "Name",
+        "enterName": "Insert a name",
+        "collectionName": "Collection name",
+        "enterCollectionName": "Select collection",
+        "description": "Description",
+        "enterDescription": "Insert a description",
+        "allowDuplicate": {
+          "title": "Allow non-authors to duplicate",
+          "scopes": {
+            "item": "Item",
+            "test": "Test",
+            "playlist": "Playlist"
+          }
+        },
+        "allowToSee": {
+          "title": "Allow non-authors to see",
+          "scopes": {
+            "item": "Item",
+            "test": "Test"
+          }
+        },
+        "bucketActive": "Bucket active",
+        "validations": {
+          "name": "Please input name",
+          "collectionName": "Please input collection name",
+          "description": "Please input description"
+        }
+      }
+    }
   }
 }

@@ -164,14 +164,20 @@ const Sidebar = ({
               size="large"
               style={{ width: "100%" }}
               placeholder="Please select"
-              value={collections.map(o => o._id)}
+              value={collections.map(o => o.bucketId)}
               onChange={onChangeCollection}
               optionFilterProp="children"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {orgCollections.map(o => (
-                <Select.Option key={o._id} value={o._id} title={o.name}>
-                  {o.name}
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  bucketName={o.name}
+                  collectionName={o.collectionName}
+                  _id={o._id}
+                >
+                  {o.collectionName} - {o.name}
                 </Select.Option>
               ))}
             </SummarySelect>

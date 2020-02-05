@@ -42,7 +42,8 @@ import AlignmentRow from "./AlignmentRow";
 import {
   getInterestedCurriculumsSelector,
   getOrgDataSelector,
-  getUserFeatures
+  getUserFeatures,
+  getItemBucketsSelector
 } from "../../../author/src/selectors/user";
 import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
 import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
@@ -77,7 +78,8 @@ const QuestionMetadata = ({
   orgData,
   userFeatures,
   highlightCollection,
-  recentCollectionsList
+  recentCollectionsList,
+  orgCollections
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
   const { id: qId, grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
@@ -113,7 +115,12 @@ const QuestionMetadata = ({
   };
 
   const handleCollectionsSelect = (value, options) => {
-    let _value = options.map(i => ({ _id: i.props.value, name: i.props.title }));
+    let _value = options.map(o => ({
+      bucketId: o.props.value,
+      _id: o.props._id,
+      bucketName: o.props.bucketName,
+      collectionName: o.props.collectionName
+    }));
     setCollections(_value);
   };
 
@@ -193,6 +200,7 @@ const QuestionMetadata = ({
           userFeatures={userFeatures}
           highlightCollection={highlightCollection}
           recentCollectionsList={recentCollectionsList}
+          orgCollections={orgCollections}
         />
       </div>
     </ThemeProvider>
@@ -255,7 +263,8 @@ const enhance = compose(
       orgData: getOrgDataSelector(state),
       userFeatures: getUserFeatures(state),
       highlightCollection: getHighlightCollectionSelector(state),
-      recentCollectionsList: getRecentCollectionsListSelector(state)
+      recentCollectionsList: getRecentCollectionsListSelector(state),
+      orgCollections: getItemBucketsSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

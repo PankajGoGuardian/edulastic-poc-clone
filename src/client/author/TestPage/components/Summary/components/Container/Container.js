@@ -16,7 +16,7 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
-import { getUser, getCollectionsSelector } from "../../../../../src/selectors/user";
+import { getUser, getItemBucketsSelector } from "../../../../../src/selectors/user";
 import {
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
@@ -176,7 +176,7 @@ const enhance = compose(
       allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
-      orgCollections: getCollectionsSelector(state)
+      orgCollections: getItemBucketsSelector(state)
     }),
     {
       getAllTags: getAllTagsAction,

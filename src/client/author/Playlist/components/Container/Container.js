@@ -27,7 +27,8 @@ import {
   PaginationWrapper,
   AffixWrapper,
   StyleChangeWrapper,
-  CardBox
+  CardBox,
+  ItemsMenu
 } from "../../../TestList/components/Container/styled";
 
 import CardWrapper from "../../../TestList/components/CardWrapper/CardWrapper";
@@ -438,22 +439,24 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main>
-              <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
+              <ItemsMenu justifyContent="space-between" style={{ marginBottom: 10 }}>
                 <PaginationInfo>
                   {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
-              </FlexContainer>
-              <CardContainer type={blockStyle}>
-                {this.renderCardContent()}
-                <PaginationWrapper
-                  type={blockStyle}
-                  current={page}
-                  total={count}
-                  pageSize={limit}
-                  onChange={this.handlePaginationChange}
-                  hideOnSinglePage
-                />
-              </CardContainer>
+              </ItemsMenu>
+              <PerfectScrollbar style={{ padding: "0 30px" }}>
+                <CardContainer type={blockStyle}>
+                  {this.renderCardContent()}
+                  <PaginationWrapper
+                    type={blockStyle}
+                    current={page}
+                    total={count}
+                    pageSize={limit}
+                    onChange={this.handlePaginationChange}
+                    hideOnSinglePage
+                  />
+                </CardContainer>
+              </PerfectScrollbar>
             </Main>
           </FlexContainer>
         </Container>

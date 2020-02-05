@@ -12,6 +12,8 @@ import ProxyUser from "./Components/ProxyUser";
 import UpgradeUser from "./Containers/UpgradeUser";
 import { logoutAction } from "../author/src/actions/auth";
 import Logout from "./Common/Logout";
+import Collections from "../author/ContentCollections/components/Collections/Collections";
+import ContentBucket from "../author/ContentBuckets/components/ContentBucketsTable/index";
 import ApiForm from "./Containers/ApiForm";
 
 const siderMenuData = [
@@ -30,10 +32,15 @@ const siderMenuData = [
     label: "Upgrade Plan",
     href: "/admin/upgrade"
   },
+  
   {
     icon: "team",
     label: "Api Forms",
     href: "/admin/apiForms"
+  },
+  {
+    label: "Content",
+    href: "/admin/content/collections"
   }
 ];
 
@@ -82,6 +89,9 @@ function Admin({ match, history, logoutAction, location }) {
               <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
               <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
               <Route path={`${match.path}/apiForms`} component={ApiForm} />
+              <Route path={`${match.path}/content/collections`} component={Collections} />
+              <Route path={`${match.path}/content/buckets`} component={ContentBucket} />
+              <Route path={`${match.path}/content/subscriptions`} />
             </Switch>
           </ErrorHandler>
         </MainDiv>

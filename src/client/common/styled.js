@@ -97,6 +97,26 @@ export const StyledSchoolSearch = styled(Input.Search)`
   }
 `;
 
+export const StyledContentBucketSearch = styled(Input.Search)`
+  max-width: ${props => (props.width ? `${props.width}px` : "auto")};
+  margin-right: 20px;
+  .ant-input {
+    border-radius: ${props => props.theme.manageDistrict.inputFieldBorderRadius};
+    background: ${props => props.theme.manageDistrict.inputFieldBgColor};
+    border: 1px solid ${props => props.theme.manageDistrict.inputFieldBorderColor};
+    height: 40px;
+    padding: 11px 17.3px;
+  }
+  .ant-input-search-icon {
+    color: ${props => props.theme.manageDistrict.iconColor};
+    font-weight: ${props => props.theme.manageDistrict.iconFontWeight};
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+`;
+
 export const StyledButton = styled(Button)`
   &.ant-btn {
     font-size: ${props => props.theme.manageDistrict.refineResultsButtonTextFontSize};

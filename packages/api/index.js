@@ -39,6 +39,8 @@ export { default as tagsApi } from "./src/tags";
 export { default as contentErrorApi } from "./src/contentError";
 export { default as rubricsApi } from "./src/rubrics";
 export { default as publisherApi } from "./src/publisher";
+export { default as contentBucketApi } from "./src/contentBucket";
+export { default as collectionsApi } from "./src/itemBank";
 export { default as subscriptionApi } from "./src/subscription";
 export { default as customReportApi } from "./src/customReport";
 export { default as paymentApi } from "./src/payment";

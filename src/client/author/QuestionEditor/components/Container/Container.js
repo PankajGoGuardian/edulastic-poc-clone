@@ -147,16 +147,18 @@ class Container extends Component {
   };
 
   handleChangePreviewTab = previewTab => {
-    const { checkAnswer, showAnswer, changePreview } = this.props;
+    const { checkAnswer, showAnswer, changePreview, preview } = this.props;
 
-    if (previewTab === "check") {
-      checkAnswer("question");
+    // call the actions only if the new view is different from the previous view
+    if (preview !== previewTab) {
+      if (previewTab === "check") {
+        checkAnswer("question");
+      }
+      if (previewTab === "show") {
+        showAnswer("edit");
+      }
+      changePreview(previewTab);
     }
-    if (previewTab === "show") {
-      showAnswer("edit");
-    }
-
-    changePreview(previewTab);
   };
 
   renderQuestion = () => {

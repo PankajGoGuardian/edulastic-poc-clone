@@ -50,10 +50,24 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     width: btnStyle.widthpx,
     height: btnStyle.heightpx,
     minWidth: "unset",
-    marginTop: 0
+    margin: "0px 4px 5px",
+    display: "inline-block",
+    verticalAlign: "middle"
+  };
+
+  const indexStyle = {
+    display: "inline-block",
+    "text-align": "center",
+    height: "100%"
   };
   const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
-  const indexStyle = lessMinWidth ? { width: response.indexSizeSmallBox, padding: "8px", minWidth: "unset" } : {};
+
+  if (lessMinWidth) {
+    indexStyle.width = response.indexSizeSmallBox;
+    indexStyle.padding = "8px";
+    indexStyle.minWidth = "unset";
+  }
+
   const textStyle = lessMinWidth ? { maxWidth: "80%" } : {};
 
   const getContent = inPopover => (
@@ -71,16 +85,23 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           {indexStr}
         </span>
       )}
-      <span
-        className="text container"
-        style={{ padding: lessMinWidth ? "8px 2px" : null, whiteSpace: inPopover && "normal" }}
-      >
-        <MathSpan
-          className={!inPopover && "clipText"}
-          style={{ ...textStyle, fontWeight: "normal" }}
-          dangerouslySetInnerHTML={{ __html: userSelection?.value }}
-        />
-      </span>
+      {userAttempted && (
+        <span
+          className="text container"
+          style={{
+            display: "inline-flex",
+            width: showAnswer ? "calc(100% - 40px)" : "100%",
+            padding: lessMinWidth ? "8px 2px" : null,
+            whiteSpace: inPopover && "normal"
+          }}
+        >
+          <MathSpan
+            className={!inPopover && "clipText"}
+            style={{ ...textStyle, fontWeight: "normal" }}
+            dangerouslySetInnerHTML={{ __html: userSelection?.value }}
+          />
+        </span>
+      )}
       <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
         {userAttempted && status === "right" && <RightIcon />}
         {userAttempted && status === "wrong" && <WrongIcon />}

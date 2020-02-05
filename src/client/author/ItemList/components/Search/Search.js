@@ -89,6 +89,35 @@ const Search = ({
       .sort((a, b) => (a.value > b.value ? 1 : -1))
   ];
 
+  const getStatusFilter = () => {
+    return (
+      <Item>
+        <ItemHeader>Status</ItemHeader>
+        <ItemBody>
+          <Select
+            data-cy="selectStatus"
+            size="large"
+            onSelect={onSearchFieldChange("status")}
+            value={status}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
+            {selectsData.allStatus.map(el => (
+              <Select.Option key={el.value} value={el.value}>
+                {el.text}
+              </Select.Option>
+            ))}
+            {isPublishers &&
+              selectsData.extraStatus.map(el => (
+                <Select.Option key={el.value} value={el.value}>
+                  {el.text}
+                </Select.Option>
+              ))}
+          </Select>
+        </ItemBody>
+      </Item>
+    );
+  };
+
   return (
     <MainFilterItems>
       {showModal ? (
@@ -102,6 +131,43 @@ const Search = ({
         ""
       )}
       <Container>
+        {isPublishers && getStatusFilter()}
+        {userFeatures.isCurator && (
+          <Item>
+            <ItemHeader>Authored By</ItemHeader>
+            <ItemBody>
+              <Select
+                mode="multiple"
+                size="large"
+                placeholder="All Authors"
+                optionFilterProp={"children"}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                onChange={onSearchFieldChange("authoredByIds")}
+                value={authoredByIds}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {currentDistrictUsers?.map(el => (
+                  <Select.Option key={el._id} value={el._id}>
+                    {`${el.firstName} ${el.lastName}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Item>
+        )}
+
+        {isPublishers && (
+          <Item>
+            <ItemHeader>Created On</ItemHeader>
+            <ItemBody>
+              <StyledDatePicker
+                format={"DD/MM/YYYY"}
+                onChange={onSearchFieldChange("createdAt")}
+                value={createdAt ? moment(createdAt) : ""}
+              />
+            </ItemBody>
+          </Item>
+        )}
         <Item>
           <ItemHeader>Grades</ItemHeader>
           <Select
@@ -266,69 +332,7 @@ const Search = ({
           </Select>
         </Item>
 
-        {(showStatus || isPublishers) && (
-          <Item>
-            <ItemHeader>Status</ItemHeader>
-            <ItemBody>
-              <Select
-                data-cy="selectStatus"
-                size="large"
-                onSelect={onSearchFieldChange("status")}
-                value={status}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-              >
-                {selectsData.allStatus.map(el => (
-                  <Select.Option key={el.value} value={el.value}>
-                    {el.text}
-                  </Select.Option>
-                ))}
-                {isPublishers &&
-                  selectsData.extraStatus.map(el => (
-                    <Select.Option key={el.value} value={el.value}>
-                      {el.text}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </ItemBody>
-          </Item>
-        )}
-
-        {isPublishers && (
-          <Item>
-            <ItemHeader>Created On</ItemHeader>
-            <ItemBody>
-              <StyledDatePicker
-                format={"DD/MM/YYYY"}
-                onChange={onSearchFieldChange("createdAt")}
-                value={createdAt ? moment(createdAt) : ""}
-              />
-            </ItemBody>
-          </Item>
-        )}
-
-        {userFeatures.isCurator && (
-          <Item>
-            <ItemHeader>Authored By</ItemHeader>
-            <ItemBody>
-              <Select
-                mode="multiple"
-                size="large"
-                placeholder="All Authors"
-                optionFilterProp={"children"}
-                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                onChange={onSearchFieldChange("authoredByIds")}
-                value={authoredByIds}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-              >
-                {currentDistrictUsers?.map(el => (
-                  <Select.Option key={el._id} value={el._id}>
-                    {`${el.firstName} ${el.lastName}`}
-                  </Select.Option>
-                ))}
-              </Select>
-            </ItemBody>
-          </Item>
-        )}
+        {showStatus && !isPublishers && getStatusFilter()}
 
         <Item>
           <ItemHeader>Tags</ItemHeader>

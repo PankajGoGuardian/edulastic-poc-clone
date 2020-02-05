@@ -144,19 +144,22 @@ const TestListFilters = ({
             ...collections.map(o => ({ value: o._id, text: o.name }))
           ],
           onChange: "collections"
-        },
-        ...getAuthoredByFilterData()
+        }
       ]
     );
-    filterData1.push({
-      mode: "multiple",
-      size: "large",
-      title: "Tags",
-      placeholder: "Please select",
-      onChange: "tags",
-      filterOption: searchFilterOption,
-      data: allTagsData.map(o => ({ value: o._id, text: o.tagName }))
-    });
+    filterData1 = [
+      ...filterData1,
+      ...getAuthoredByFilterData(),
+      {
+        mode: "multiple",
+        size: "large",
+        title: "Tags",
+        placeholder: "Please select",
+        onChange: "tags",
+        filterOption: searchFilterOption,
+        data: allTagsData.map(o => ({ value: o._id, text: o.tagName }))
+      }
+    ];
     return filterData1;
   };
   const handleApply = standardIds => {
@@ -169,7 +172,14 @@ const TestListFilters = ({
     setShowModal(true);
   };
 
-  const mappedfilterData = getFilters();
+  let mappedfilterData = getFilters();
+  if (isPublishers) {
+    const filtersToBeMoved = mappedfilterData.filter(f => ["Status", "Authored By"].includes(f.title));
+    mappedfilterData = [
+      ...filtersToBeMoved,
+      ...mappedfilterData.filter(f => !["Status", "Authored By"].includes(f.title))
+    ];
+  }
   return (
     <Container>
       {showModal ? (
@@ -190,51 +200,53 @@ const TestListFilters = ({
       </FilerHeading>
       <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
       {mappedfilterData.map((filterItem, index) => (
-        <FilterItemWrapper key={index}>
-          {filterItem.isStandardSelect && (
-            <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
-          )}
-          <SubTitle>{filterItem.title}</SubTitle>
-          <Select
-            data-cy={filterItem.title}
-            showSearch={filterItem.showSearch}
-            onSearch={filterItem.onSearch && filterItem.onSearch}
-            mode={filterItem.mode}
-            size={filterItem.size}
-            placeholder={filterItem.placeholder}
-            filterOption={filterItem.filterOption}
-            optionFilterProp={filterItem.optionFilterProp}
-            defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value}
-            value={search[filterItem.onChange]}
-            onChange={value => onChange(filterItem.onChange, value)}
-            disabled={filterItem.disabled}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {filterItem.data.map(({ value, text, disabled }, index1) => (
-              <Select.Option value={value} key={index1} disabled={disabled}>
-                {text}
-              </Select.Option>
-            ))}
-            {isPublishers &&
-              filterItem.title === "Status" &&
-              filterItem.publisherOptions.map(({ value, text }) => (
-                <Select.Option value={value} key={value}>
+        <>
+          <FilterItemWrapper key={index}>
+            {filterItem.isStandardSelect && (
+              <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
+            )}
+            <SubTitle>{filterItem.title}</SubTitle>
+            <Select
+              data-cy={filterItem.title}
+              showSearch={filterItem.showSearch}
+              onSearch={filterItem.onSearch && filterItem.onSearch}
+              mode={filterItem.mode}
+              size={filterItem.size}
+              placeholder={filterItem.placeholder}
+              filterOption={filterItem.filterOption}
+              optionFilterProp={filterItem.optionFilterProp}
+              defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value}
+              value={search[filterItem.onChange]}
+              onChange={value => onChange(filterItem.onChange, value)}
+              disabled={filterItem.disabled}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {filterItem.data.map(({ value, text, disabled }, index1) => (
+                <Select.Option value={value} key={index1} disabled={disabled}>
                   {text}
                 </Select.Option>
               ))}
-          </Select>
-        </FilterItemWrapper>
+              {isPublishers &&
+                filterItem.title === "Status" &&
+                filterItem.publisherOptions.map(({ value, text }) => (
+                  <Select.Option value={value} key={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+            </Select>
+          </FilterItemWrapper>
+          {isPublishers && index === 1 && (
+            <FilterItemWrapper>
+              <SubTitle>Created On</SubTitle>
+              <StyledDatePicker
+                format={"DD/MM/YYYY"}
+                onChange={(value, dateString) => onChange("createdAt", value, dateString)}
+                value={search["createdAt"] ? moment(search["createdAt"]) : ""}
+              />
+            </FilterItemWrapper>
+          )}
+        </>
       ))}
-      {isPublishers && (
-        <FilterItemWrapper>
-          <SubTitle>Created On</SubTitle>
-          <StyledDatePicker
-            format={"DD/MM/YYYY"}
-            onChange={(value, dateString) => onChange("createdAt", value, dateString)}
-            value={search["createdAt"] ? moment(search["createdAt"]) : ""}
-          />
-        </FilterItemWrapper>
-      )}
     </Container>
   );
 };

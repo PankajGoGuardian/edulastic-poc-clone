@@ -159,12 +159,6 @@ const CollectionsTable = ({
     }
   ];
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, "selectedRows: ", selectedRows);
-    }
-  };
-
   const handleCollectionModalResponse = () => {
     setAddCollectionModalVisibility(false);
     if (!!editCollectionData) setEditCollectionData(null);
@@ -179,7 +173,6 @@ const CollectionsTable = ({
       </HeadingContainer>
       <StyledScollBar table="collectionTable">
         <StyledTable
-          rowSelection={rowSelection}
           dataSource={searchValue ? filteredCollectionList : collectionList}
           columns={columns}
           pagination={false}

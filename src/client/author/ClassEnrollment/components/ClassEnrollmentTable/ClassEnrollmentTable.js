@@ -387,7 +387,9 @@ class ClassEnrollmentTable extends React.Component {
 
   getSearchQuery = () => {
     const { userOrgId: districtId, userDetails } = this.props;
-    const { filtersData, searchByName, currentPage } = this.state;
+    const { filtersData = [], searchByName, currentPage } = this.state;
+
+    const { role = "" } = filtersData?.[0] || {};
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -400,6 +402,19 @@ class ClassEnrollmentTable extends React.Component {
         }
       }
     }
+
+    const filtersColumnWithRole = filtersData.some(({ filtersColumn }) => filtersColumn === "role");
+
+    // location.state.role
+    if (!filtersColumnWithRole && role) {
+      search.role = [
+        {
+          type: "eq",
+          value: role
+        }
+      ];
+    }
+
     if (searchByName) {
       search["name"] = [{ type: "cont", value: searchByName }];
     }

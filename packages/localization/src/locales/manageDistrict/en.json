@@ -274,6 +274,7 @@
     "code": "Class code",
     "course": "Course",
     "teacher": "Teacher",
+    "student": "Student",
     "users": "Users",
     "editclass": "Edit",
     "archiveclass": "Archive selected Class(es)",

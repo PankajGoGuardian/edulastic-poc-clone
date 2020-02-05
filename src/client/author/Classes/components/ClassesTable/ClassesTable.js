@@ -592,7 +592,7 @@ class ClassesTable extends Component {
         sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
       },
       {
-        title: t("class.users"),
+        title: t("class.student"),
         dataIndex: "_source.studentCount",
         editable: true,
         sortDirections: ["descend", "ascend"],
@@ -609,7 +609,8 @@ class ClassesTable extends Component {
                   filtersColumn: "code",
                   filtersValue: "eq",
                   filterStr: classCode,
-                  filterAdded: true
+                  filterAdded: true,
+                  role: roleuser.STUDENT
                 }
               }}
             >

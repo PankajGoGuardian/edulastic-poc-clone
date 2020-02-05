@@ -4,6 +4,7 @@ const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const ReactRefreshPlugin = require("react-refresh-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
+const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 console.log("port", port);
@@ -17,7 +18,13 @@ let config = {
     sourceMap: true,
     ...(process.env.QUICK_BUILD ? { sourceMap: false, minimize: false } : {})
   },
-
+  configureWebpack: {
+    resolve: {
+      alias: {
+        appDetails: path.resolve(__dirname, "package.json")
+      }
+    }
+  },
   chainWebpack: (chain, opts) => {
     if (process.env.NODE_ENV === "production") {
       chain

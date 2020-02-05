@@ -9,7 +9,7 @@ import { DndProvider } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
-import { Spin } from "antd";
+import { Spin, Modal } from "antd";
 import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
 import { isMobileDevice, OfflineNotifier } from "@edulastic/common";
@@ -84,6 +84,10 @@ class App extends Component {
     tutorial: null
   };
 
+  state = {
+    showAppUpdate: false
+  };
+
   componentDidMount() {
     const { fetchUser, location } = this.props;
     const publicPath = location.pathname.split("/").includes("public");
@@ -93,7 +97,25 @@ class App extends Component {
     if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect) {
       fetchUser();
     }
+    window.addEventListener("request-client-update", () => {
+      this.setState({
+        showAppUpdate: true
+      });
+    });
   }
+
+  handleOk = () => {
+    window.location.reload(true);
+    this.setState({
+      showAppUpdate: false
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      showAppUpdate: false
+    });
+  };
 
   render() {
     /**
@@ -172,6 +194,10 @@ class App extends Component {
     // signup routes hidden till org reference is not done
     return (
       <div>
+        <Modal title="App Update" visible={this.state.showAppUpdate} onOk={this.handleOk} onCancel={this.handleCancel}>
+          A newer version of app is available. do you want to refresh?
+        </Modal>
+
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>

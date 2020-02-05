@@ -3,6 +3,8 @@ import axios from "axios";
 import { message } from "antd";
 import config from "../config";
 import { getAccessToken } from "./Storage";
+import AppDetails from "appDetails";
+import semverCompare from "semver-compare";
 
 const getCurrentPath = () => {
   const location = window.location;
@@ -62,7 +64,21 @@ export default class API {
       return config;
     });
     this.instance.interceptors.response.use(
-      response => response,
+      response => {
+        // has support since IE8.
+        if (window.sessionStorage) {
+          // if appVersion sent recieved from api is greater than in the client, then dispatch an event.
+          const appVersion = AppDetails?.version;
+          const apiAppVersion = response.headers["app-version"];
+          const refreshRequested = window.sessionStorage["refreshRequested"];
+          if (semverCompare(apiAppVersion, appVersion) == 1 && !refreshRequested && apiAppVersion) {
+            const event = new Event("request-client-update");
+            window.dispatchEvent(event);
+            window.sessionStorage["refreshRequested"] = true;
+          }
+        }
+        return response;
+      },
       data => {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {

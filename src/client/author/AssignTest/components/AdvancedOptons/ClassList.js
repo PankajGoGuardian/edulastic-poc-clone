@@ -187,7 +187,14 @@ class ClassList extends React.Component {
         <ClassListFilter>
           <StyledRowLabel>
             School
-            <Select mode="multiple" placeholder="All School" onChange={changeField("institutionIds")}>
+            <Select
+              mode="multiple"
+              placeholder="All School"
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              onChange={changeField("institutionIds")}
+              value={searchTerms.institutionIds}
+            >
               {schools.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
                   {name}
@@ -203,6 +210,8 @@ class ClassList extends React.Component {
               value={searchTerms.grades}
               placeholder="All grades"
               onChange={changeField("grades")}
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -222,6 +231,8 @@ class ClassList extends React.Component {
               value={searchTerms.subjects}
               placeholder="All subjects"
               onChange={changeField("subjects")}
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -233,7 +244,13 @@ class ClassList extends React.Component {
 
           <StyledRowLabel>
             Course
-            <Select mode="multiple" placeholder="All Course" onChange={changeField("courseIds")}>
+            <Select
+              mode="multiple"
+              placeholder="All Course"
+              onChange={changeField("courseIds")}
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
                   {name}

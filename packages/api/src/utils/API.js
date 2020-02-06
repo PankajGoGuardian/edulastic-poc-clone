@@ -59,6 +59,13 @@ export default class API {
       if (token) {
         config.headers["Authorization"] = token;
       }
+
+      if (window.sessionStorage) {
+        // config.headers["X-Amzn-Trace-Id"] = `Root=${window.sessionStorage.browtabId}-${userId}-${districtId}`;
+        config.headers["X-Amzn-Trace-Id"] = `Root=${window.sessionStorage.browtabId}-${localStorage.getItem(
+          "defaultTokenKey"
+        )}`;
+      }
       return config;
     });
     this.instance.interceptors.response.use(

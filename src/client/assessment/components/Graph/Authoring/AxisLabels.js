@@ -16,6 +16,8 @@ import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
 import Question from "../../Question";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = stimulus => {
@@ -127,10 +129,10 @@ class GraphAxisLabels extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphline")}`)}>
             {t("component.graphing.graphline")}
           </Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>Minimum value</Label>
-              <StyledTextField
+              <TextInputStyled
                 type="number"
                 value={canvas.xMin}
                 name="xMin"
@@ -138,14 +140,11 @@ class GraphAxisLabels extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 step={1}
                 disabled={false}
-                marginBottom="0px"
-                marginRight="0px"
-                width="100%"
               />
             </Col>
             <Col md={12}>
               <Label>Maximum value</Label>
-              <StyledTextField
+              <TextInputStyled
                 type="number"
                 value={canvas.xMax}
                 name="xMax"
@@ -153,9 +152,6 @@ class GraphAxisLabels extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 10)}
                 step={1}
                 disabled={false}
-                marginBottom="0px"
-                marginRight="0px"
-                width="100%"
               />
             </Col>
           </Row>
@@ -168,12 +164,10 @@ class GraphAxisLabels extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <PaddingDiv>
-            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
-              {t("component.graphing.title")}
-            </Subtitle>
-            <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
-          </PaddingDiv>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
+            {t("component.graphing.title")}
+          </Subtitle>
+          <TextInputStyled type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
         </Question>
 
         <Question
@@ -183,10 +177,10 @@ class GraphAxisLabels extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <PaddingDiv>
-            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
-              {t("component.graphing.possibleresponses")}
-            </Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
+            {t("component.graphing.possibleresponses")}
+          </Subtitle>
+          <>
             <QuillSortableList
               items={graphData.list.map(o => o.text)}
               onSortEnd={this.onSortOrderListEnd}
@@ -194,17 +188,10 @@ class GraphAxisLabels extends Component {
               onRemove={this.handleDeleteQuestion}
               onChange={this.handleQuestionsChange}
             />
-            <Button
-              style={{ minWidth: 130, marginTop: 10 }}
-              onClick={this.handleAddQuestion}
-              variant="extendedFab"
-              outlined
-              type="button"
-              color="primary"
-            >
+            <AddNewChoiceBtn width={"auto"} onClick={this.handleAddQuestion} variant="extendedFab" type="button">
               {t("component.graphing.addnewpossibleresponsebtn")}
-            </Button>
-          </PaddingDiv>
+            </AddNewChoiceBtn>
+          </>
         </Question>
       </div>
     );

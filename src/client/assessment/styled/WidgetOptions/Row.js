@@ -11,7 +11,7 @@ export const Row = styled(AntRow)`
     `
     display: flex;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: ${props.mb || "18"}px;
     
     > * {
       margin-top: 0 !important;

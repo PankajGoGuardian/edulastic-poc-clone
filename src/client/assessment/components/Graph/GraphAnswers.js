@@ -13,6 +13,7 @@ import withPoints from "../HOC/withPoints";
 import GraphDisplay from "./Display/GraphDisplay";
 
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const GraphDisplayWithPoints = withPoints(GraphDisplay);
 
@@ -177,8 +178,7 @@ class GraphAnswers extends Component {
     if (graphData.graphType === "axisLabels") {
       const { numberlineAxis } = graphData;
       return (
-        <Checkbox
-          label={t("component.graphing.shuffleAnswerChoices")}
+        <CheckboxLabel
           name="shuffleAnswerChoices"
           onChange={() =>
             handleNumberlineChange({
@@ -187,7 +187,9 @@ class GraphAnswers extends Component {
             })
           }
           checked={numberlineAxis.shuffleAnswerChoices}
-        />
+        >
+          {t("component.graphing.shuffleAnswerChoices")}
+        </CheckboxLabel>
       );
     }
   };

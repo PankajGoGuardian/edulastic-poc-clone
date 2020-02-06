@@ -13,6 +13,7 @@ import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import Question from "../../Question";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 class AxisSegments extends Component {
   onChangeQuestion = stimulus => {
@@ -85,10 +86,10 @@ class AxisSegments extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.graphline")}`)}>
             {t("component.graphing.graphline")}
           </Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.minVal")}</Label>
-              <StyledTextField
+              <TextInputStyled
                 type="number"
                 name="xMin"
                 value={canvas.xMin}
@@ -96,14 +97,11 @@ class AxisSegments extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 disabled={false}
                 step={1}
-                marginBottom="0px"
-                marginRight="0px"
-                width="100%"
               />
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.maxVal")}</Label>
-              <StyledTextField
+              <TextInputStyled
                 type="number"
                 name="xMax"
                 value={canvas.xMax}
@@ -111,16 +109,13 @@ class AxisSegments extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 10)}
                 disabled={false}
                 step={1}
-                marginBottom="0px"
-                marginRight="0px"
-                width="100%"
               />
             </Col>
           </Row>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.responseNumAllowed")}</Label>
-              <StyledTextField
+              <TextInputStyled
                 type="number"
                 name="responsesAllowed"
                 value={canvas.responsesAllowed}
@@ -128,9 +123,6 @@ class AxisSegments extends Component {
                 disabled={false}
                 step={1}
                 min={1}
-                marginBottom="0px"
-                marginRight="0px"
-                width="100%"
               />
             </Col>
           </Row>
@@ -143,12 +135,10 @@ class AxisSegments extends Component {
           fillSections={fillSections}
           advancedAreOpen
         >
-          <PaddingDiv>
-            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
-              {t("component.graphing.title")}
-            </Subtitle>
-            <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
-          </PaddingDiv>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.title")}`)}>
+            {t("component.graphing.title")}
+          </Subtitle>
+          <TextInputStyled type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
         </Question>
       </div>
     );

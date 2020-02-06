@@ -1,14 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 // import get from "lodash/get";
-import { Row, Col, Select, Modal, message } from "antd";
+import { Select, Modal, message } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import Question from "../../../components/Question/index";
 import Input from "./Input";
 import { Subtitle } from "../../../styled/Subtitle";
-import Label from "../styled/Label";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, item }) => {
   const { confirm } = Modal;
@@ -74,82 +77,70 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
         {t("common.options.mainTitle")}
       </Subtitle>
 
-      <FlexContainer justifyContent="flex-start">
-        <Col span={14}>
-          <FlexContainer marginBottom="1em" justifyContent="flex-start">
-            <Label>Fraction Model: </Label>
-            <Select
-              value={fractionType}
-              placeholder="Fraction Type"
-              onChange={handleFractionTypeChange}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              <Option value="circles">Circles</Option>
-              <Option value="rectangles">Rectangles</Option>
-            </Select>
-          </FlexContainer>
+      <Row gutter={24}>
+        <Col span={12}>
+          <Label>Fraction Model</Label>
+          <SelectInputStyled
+            value={fractionType}
+            placeholder="Fraction Type"
+            onChange={handleFractionTypeChange}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
+          >
+            <Option value="circles">Circles</Option>
+            <Option value="rectangles">Rectangles</Option>
+          </SelectInputStyled>
         </Col>
-      </FlexContainer>
+      </Row>
       {fractionType === "circles" ? (
-        <Row gutter={16}>
-          <Col span={5}>
-            <FlexContainer marginBottom="1em" justifyContent="flex-start">
-              <Label>Count: </Label>
-              <Input
-                value={fractionProperties.count}
-                placeholder="Fraction count"
-                onBlur={value => handleDimensionChange("count", +value)}
-              />
-            </FlexContainer>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Label>Count</Label>
+            <Input
+              value={fractionProperties.count}
+              placeholder="Fraction count"
+              onBlur={value => handleDimensionChange("count", +value)}
+            />
           </Col>
-          <Col span={5}>
-            <FlexContainer>
-              <Label>Sectors: </Label>
-              <Input
-                size="default"
-                value={fractionProperties.sectors || 7}
-                placeholder="Sectors"
-                onBlur={value => handleDimensionChange("sectors", +value)}
-                min={2}
-              />
-            </FlexContainer>
+          <Col span={12}>
+            <Label>Sectors</Label>
+            <Input
+              size="default"
+              value={fractionProperties.sectors || 7}
+              placeholder="Sectors"
+              onBlur={value => handleDimensionChange("sectors", +value)}
+              min={2}
+            />
           </Col>
         </Row>
       ) : (
-        <Row gutter={16}>
-          <Col span={5}>
-            <FlexContainer marginBottom="1em" justifyContent="flex-start">
-              <Label>Count: </Label>
-              <Input
-                value={fractionProperties.count}
-                placeholder="Fraction count"
-                onBlur={value => handleDimensionChange("count", +value)}
-              />
-            </FlexContainer>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Label>Count</Label>
+            <Input
+              value={fractionProperties.count}
+              placeholder="Fraction count"
+              onBlur={value => handleDimensionChange("count", +value)}
+            />
           </Col>
-          <Col span={5}>
-            <FlexContainer>
-              <Label>Rows: </Label>
-              <Input
-                size="default"
-                value={fractionProperties.rows}
-                placeholder="Rows"
-                onBlur={value => handleDimensionChange("rows", +value)}
-                min={1}
-              />
-            </FlexContainer>
+          <Col span={8}>
+            <Label>Rows</Label>
+            <Input
+              size="default"
+              value={fractionProperties.rows}
+              placeholder="Rows"
+              onBlur={value => handleDimensionChange("rows", +value)}
+              min={1}
+            />
           </Col>
-          <Col span={6}>
-            <FlexContainer>
-              <Label>Columns: </Label>
-              <Input
-                size="default"
-                value={fractionProperties.columns}
-                placeholder="Columns"
-                onBlur={value => handleDimensionChange("columns", +value)}
-                min={1}
-              />
-            </FlexContainer>
+          <Col span={8}>
+            <Label>Columns</Label>
+            <Input
+              size="default"
+              value={fractionProperties.columns}
+              placeholder="Columns"
+              onBlur={value => handleDimensionChange("columns", +value)}
+              min={1}
+            />
           </Col>
         </Row>
       )}

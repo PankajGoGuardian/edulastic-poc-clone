@@ -2,15 +2,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 
-import { themeColor } from "@edulastic/colors";
+import { themeColor, themeLightGrayColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Subtitle } from "../../styled/Subtitle";
-import Question from "../Question";
 
 import { IconClose } from "./styled/IconClose";
+import styled from "styled-components";
 
 class CorrectAnswers extends Component {
   state = {
@@ -77,12 +77,13 @@ class CorrectAnswers extends Component {
       <Button
         style={{
           background: "transparent",
-          color: themeColor,
+          color: "#878A91",
           borderRadius: 0,
           padding: 0,
           boxShadow: "none",
           marginLeft: "auto",
-          minHeight: 28
+          minHeight: 28,
+          textTransform: "uppercase"
         }}
         onClick={() => {
           onTabChange();
@@ -102,23 +103,21 @@ class CorrectAnswers extends Component {
     const { tabs } = this.state;
 
     return (
-      <Question
+      <div
         section="main"
         label={t("component.correctanswers.setcorrectanswers")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <FlexContainer>
-          <Subtitle
-            margin="0 0 6px"
-            id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}
-          >
-            {t("component.correctanswers.setcorrectanswers")}
-          </Subtitle>
+        <Subtitle
+          margin="0 0 6px"
+          id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}
+        >
+          {t("component.correctanswers.setcorrectanswers")}
+        </Subtitle>
+        <AddAlternative>
           {this.renderPlusButton()}
-        </FlexContainer>
-        <div>
-          <Tabs value={correctTab} onChange={onTabChange} style={{ marginBottom: 10 }}>
+          <Tabs value={correctTab} onChange={onTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"
@@ -130,10 +129,10 @@ class CorrectAnswers extends Component {
             )}
             {this.renderAltResponses()}
           </Tabs>
-          {children}
-        </div>
+        </AddAlternative>
+        {children}
         {options}
-      </Question>
+      </div>
     );
   }
 }
@@ -159,3 +158,11 @@ CorrectAnswers.defaultProps = {
 };
 
 export default withNamespaces("assessment")(CorrectAnswers);
+
+const AddAlternative = styled.div`
+  width: 100%;
+  float: right;
+  margin-top: 30px;
+  position: relative;
+  z-index: 1;
+`;

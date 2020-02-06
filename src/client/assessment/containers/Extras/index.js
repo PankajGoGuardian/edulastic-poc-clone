@@ -56,8 +56,8 @@ class Extras extends Component {
             </Subtitle>
           )}
 
-          <Row gutter={60}>
-            <Col md={17}>
+          <Row gutter={24}>
+            <Col md={24}>
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
               <WidgetFRInput fontSize={theme?.fontSize}>
@@ -72,8 +72,8 @@ class Extras extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
-            <Col md={17}>
+          <Row gutter={24}>
+            <Col md={24}>
               <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
 
               <WidgetFRInput fontSize={theme?.fontSize}>

@@ -11,9 +11,8 @@ export const SortableItemContainer = styled.div.attrs({
     styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 12px 0"};
   display: inline-flex;
   flex-direction: column;
-  background: ${white};
-  border: ${({ styleType }) =>
-    styleType === "list" || styleType === "inline" ? "none" : `1px solid ${dashBorderColor}`};
+  background: #f8f8f8;
+  border: ${({ styleType }) => (styleType === "list" || styleType === "inline" ? "none" : `1px solid #b9b9b9`)};
   border-radius: 4px;
   padding-right: 12px;
   z-index: 99999;
@@ -24,7 +23,7 @@ export const SortableItemContainer = styled.div.attrs({
 
   &:hover {
     input {
-      border-color: ${inputBorder};
+      border-color: #b9b9b9;
     }
   }
   & div.main {
@@ -35,7 +34,7 @@ export const SortableItemContainer = styled.div.attrs({
     height: 100%;
     display: flex;
     align-items: center;
-    background: #fff;
+    background: #f8f8f8;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     margin-right: 0;
   }
@@ -61,7 +60,7 @@ export const DragIcon = styled.div`
 export const DragLine = styled.div`
   width: 19px;
   height: 3px;
-  background: ${themeColor};
+  background: #878a91;
 
   &:not(:last-child) {
     margin-bottom: 4px;

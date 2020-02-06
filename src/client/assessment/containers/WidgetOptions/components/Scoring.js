@@ -9,6 +9,8 @@ import { themeColor, themeColorTagsBg } from "@edulastic/colors";
 
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType, nonAutoGradableTypes } from "@edulastic/constants";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { rubricsApi } from "@edulastic/api";
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -16,23 +18,20 @@ import {
   getIsGradingCheckboxState
 } from "../../../../author/QuestionEditor/ducks";
 
-import { rubricsApi } from "@edulastic/api";
 import { removeRubricIdAction } from "../../../../author/sharedDucks/questions";
-import Question from "../../../components/Question";
-
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { ColNoPaddingLeft } from "../../../styled/WidgetOptions/ColNoPadding";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 import { Subtitle } from "../../../styled/Subtitle";
+import { AddNewChoiceBtn as StyledButton } from "../../../styled/AddNewChoiceBtn";
 import { FormGroup } from "../styled/FormGroup";
-import { StyledButton } from "../styled/Buttons";
-import { StyledSelect, StyledInput, StyledCheckbox } from "../../../components/Common/InputField";
 import GradingRubricModal from "./GradingRubricModal";
 import { updateRubricDataAction } from "../../../../author/GradingRubric/ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
@@ -120,7 +119,7 @@ class Scoring extends Component {
     const questionTitle = item?.title || questionData?.title;
 
     return (
-      <Question
+      <div
         section="advanced"
         label={t("component.options.scoring")}
         fillSections={fillSections}
@@ -137,125 +136,109 @@ class Scoring extends Component {
           </Subtitle>
         )}
         {isAutoMarkBtnVisible && (
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
-              <StyledCheckbox
+              <CheckboxLabel
                 data-cy="autoscoreChk"
                 checked={isAutomarkChecked}
                 onChange={e => handleChangeValidation("automarkable", e.target.checked)}
                 size="large"
               >
                 {t("component.options.automarkable")}
-              </StyledCheckbox>
+              </CheckboxLabel>
             </Col>
             {isAutomarkChecked && (
               <Col md={12}>
-                <StyledCheckbox
+                <CheckboxLabel
                   data-cy="unscoredChk"
                   checked={questionData.validation.unscored}
                   onChange={e => handleChangeValidation("unscored", e.target.checked)}
                   size="large"
                 >
                   {t("component.options.unscored")}
-                </StyledCheckbox>
+                </CheckboxLabel>
               </Col>
             )}
           </Row>
         )}
 
         {isAutomarkChecked && (
-          <Row gutter={60} center>
+          <Row gutter={24} type={"flex"} wrap={"wrap"} mb="0">
             {!isAutoMarkBtnVisible && (
               <Col md={12}>
-                <ColWrapper noPaddingLeft={noPaddingLeft}>
-                  <Label>{t("component.options.maxScore")}</Label>
-                  <FormGroup center>
-                    <StyledInput
-                      data-cy="maxscore"
-                      type="number"
-                      value={maxScore}
-                      min={1}
-                      onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
-                      size="large"
-                      style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                      disabled={(!!questionData.rubrics && userFeatures.gradingrubrics) || isGradingCheckboxState}
-                    />
-                  </FormGroup>
-                </ColWrapper>
+                <Label>{t("component.options.maxScore")}</Label>
+                <FormGroup center>
+                  <TextInputStyled
+                    data-cy="maxscore"
+                    type="number"
+                    value={maxScore}
+                    min={1}
+                    onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
+                    size="large"
+                    style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
+                    disabled={(!!questionData.rubrics && userFeatures.gradingrubrics) || isGradingCheckboxState}
+                  />
+                </FormGroup>
               </Col>
             )}
             {scoringTypes.length > 1 && showSelect && (
-              <Col md={12} style={{ alignSelf: "flex-start" }}>
-                <Row>
-                  <React.Fragment>
-                    <Label>{t("component.options.scoringType")}</Label>
-                    <SelectWrapper
-                      size="large"
-                      data-cy="scoringType"
-                      value={questionData.validation.scoringType}
-                      getPopupContainer={triggerNode => triggerNode.parentNode}
-                      onChange={value => handleChangeValidation("scoringType", value)}
-                    >
-                      {scoringTypes.map(({ value: val, label }) => (
-                        <Select.Option data-cy={val} key={val} value={val}>
-                          {label}
-                        </Select.Option>
-                      ))}
-                    </SelectWrapper>
-                  </React.Fragment>
-                </Row>
+              <Col md={12}>
+                <Label>{t("component.options.scoringType")}</Label>
+                <SelectInputStyled
+                  size="large"
+                  data-cy="scoringType"
+                  value={questionData.validation.scoringType}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={value => handleChangeValidation("scoringType", value)}
+                >
+                  {scoringTypes.map(({ value: val, label }) => (
+                    <Select.Option data-cy={val} key={val} value={val}>
+                      {label}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
               </Col>
             )}
-            <Col md={12}>
-              <Row>
-                {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
-                  <>
-                    <Col md={24}>
-                      <Label>{t("component.options.rounding")}</Label>
-                      <SelectWrapper
-                        data-cy="rounding"
-                        size="large"
-                        value={questionData.validation.rounding}
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        onChange={value => handleChangeValidation("rounding", value)}
-                      >
-                        {roundingTypes.map(({ value: val, label }) => (
-                          <Select.Option data-cy={val} key={val} value={val}>
-                            {label}
-                          </Select.Option>
-                        ))}
-                      </SelectWrapper>
-                    </Col>
-                    <Col md={24}>
-                      <Row>
-                        <Col md={24} style={{ margin: 0 }}>
-                          <Label>{t("component.options.penalty")}</Label>
-                        </Col>
-                        <Col md={24}>
-                          <FormGroup center>
-                            <StyledInput
-                              type="number"
-                              data-cy="penalty"
-                              value={questionData.validation.penalty}
-                              onChange={e => handleChangeValidation("penalty", +e.target.value)}
-                              size="large"
-                              style={{ width: "100%", borderColor: "#E1E1E1" }}
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </>
-                )}
-              </Row>
-            </Col>
+            {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
+              <>
+                <Col md={12}>
+                  <Label>{t("component.options.rounding")}</Label>
+                  <SelectInputStyled
+                    data-cy="rounding"
+                    size="large"
+                    value={questionData.validation.rounding}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onChange={value => handleChangeValidation("rounding", value)}
+                  >
+                    {roundingTypes.map(({ value: val, label }) => (
+                      <Select.Option data-cy={val} key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Col>
+                <Col md={12}>
+                  <Label>{t("component.options.penalty")}</Label>
+                  <FormGroup center>
+                    <TextInputStyled
+                      type="number"
+                      data-cy="penalty"
+                      value={questionData.validation.penalty}
+                      onChange={e => handleChangeValidation("penalty", +e.target.value)}
+                      size="large"
+                      style={{ width: "100%", borderColor: "#E1E1E1" }}
+                    />
+                  </FormGroup>
+                </Col>
+              </>
+            )}
           </Row>
         )}
 
         {userFeatures.gradingrubrics && (
-          <Row>
+          <Row gutter={24} mb="0">
             <Col md={12}>
-              <StyledCheckbox
+              <CheckboxLabel
                 data-cy="gradingRubricChk"
                 checked={isGradingCheckboxState || questionData.rubrics}
                 onChange={e => {
@@ -265,18 +248,20 @@ class Scoring extends Component {
                 size="large"
               >
                 {t("component.options.gradingRubric")}
-              </StyledCheckbox>
+              </CheckboxLabel>
             </Col>
           </Row>
         )}
         {(isGradingCheckboxState || questionData.rubrics) && userFeatures.gradingrubrics && (
-          <Row gutter={16}>
-            <Col md={24} lg={24} xs={24}>
+          <Row gutter={24}>
+            <Col marginBottom="0px" md={24} lg={24} xs={24}>
               <StyledButton
                 onClick={e => {
                   this.handleRubricAction("CREATE NEW");
                   e.target.blur();
                 }}
+                display="inline-block"
+                margin="0px 15px 0px 0px"
               >
                 Create New Rubric
               </StyledButton>
@@ -285,6 +270,8 @@ class Scoring extends Component {
                   this.handleRubricAction("USE EXISTING");
                   e.target.blur();
                 }}
+                display="inline-block"
+                margin="0px 15px 0px 0px"
               >
                 Use Existing Rubric
               </StyledButton>
@@ -313,7 +300,7 @@ class Scoring extends Component {
             }}
           />
         )}
-      </Question>
+      </div>
     );
   }
 }
@@ -360,10 +347,6 @@ const enhance = compose(
 );
 
 export default enhance(Scoring);
-
-const SelectWrapper = styled(StyledSelect)`
-  width: 100%;
-`;
 
 export const StyledTag = styled.div`
   display: inline-block;

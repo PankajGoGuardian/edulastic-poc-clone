@@ -57,7 +57,7 @@ export const MainContainer = styled.div`
     .ant-select-selection {
       &:hover,
       &:focus {
-        border-color: ${props => props.theme.themeColor};
+        border-color: #b9b9b9;
       }
       .ant-select-arrow-icon {
         svg {
@@ -74,7 +74,7 @@ export const MainContainer = styled.div`
   .ant-input {
     &:hover,
     &:focus {
-      border-color: ${props => props.theme.themeColor};
+      border-color: #b9b9b9;
     }
   }
 

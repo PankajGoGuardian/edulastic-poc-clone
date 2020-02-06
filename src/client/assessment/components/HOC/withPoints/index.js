@@ -7,6 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Container } from "./styled/Container";
 import { PointsText } from "./styled/PointsText";
 import ItemLevelContext from "../../../../author/QuestionEditor/components/Container/QuestionContext";
+import styled from "styled-components";
 
 export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, ...props }) => {
@@ -16,7 +17,8 @@ export default WrappedComponent => {
       <React.Fragment>
         {itemLevelScoring || (
           <Container>
-            <Input
+            <PointsText>{t("component.correctanswers.points")}</PointsText>
+            <PointsInput
               type="number"
               data-cy="points"
               value={points}
@@ -26,11 +28,9 @@ export default WrappedComponent => {
                 }
               }}
               step={0.5}
-              style={{ width: 140, textAlign: "center", fontSize: 14, background: "#F8F8FB" }}
               size="large"
               min={0.5}
             />
-            <PointsText>{t("component.correctanswers.points")}</PointsText>
           </Container>
         )}
         <WrappedComponent {...props} />
@@ -46,3 +46,13 @@ export default WrappedComponent => {
 
   return withNamespaces("assessment")(hocComponent);
 };
+
+const PointsInput = styled(Input)`
+  &.ant-input {
+    width: 230px;
+    font-size: 14px;
+    background: #f8f8f8;
+    height: 36px;
+    min-height: 36px;
+  }
+`;

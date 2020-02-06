@@ -1,26 +1,25 @@
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
+import { Checkbox } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox, PaddingDiv } from "@edulastic/common";
 import { Select } from "antd";
-
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import { compose } from "redux";
+import { AnnotationSettings, ScoreSettings } from "..";
 import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
-import { MoreOptionsInput } from "../../common/styled_components";
-
-import { Row } from "../../../../styled/WidgetOptions/Row";
+import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
+import { ColoredRow, ColumnLabel, RowLabel, StyledTextField } from "../../../../styled/Grid";
+import { SelectInputStyled, TextInputStyled } from "../../../../styled/InputStyles";
+import { Subtitle } from "../../../../styled/Subtitle";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
-import { Subtitle } from "../../../../styled/Subtitle";
-
-import { GraphDisplay } from "../../Display";
-import { AnnotationSettings, ScoreSettings } from "..";
+import { Row } from "../../../../styled/WidgetOptions/Row";
 import Question from "../../../Question";
-import GraphToolsParams from "../../components/GraphToolsParams";
+import { MoreOptionsInput } from "../../common/styled_components";
 import Tools from "../../common/Tools";
-import { ColumnLabel, ColoredRow, RowLabel, StyledTextField } from "../../../../styled/Grid";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import GraphToolsParams from "../../components/GraphToolsParams";
+import { GraphDisplay } from "../../Display";
 
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
@@ -235,12 +234,10 @@ class QuadrantsMoreOptions extends Component {
             fillSections={fillSections}
             advancedAreOpen
           >
-            <PaddingDiv>
-              <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.studentInteraction")}`)}>
-                {t("component.graphing.studentInteraction")}
-              </Subtitle>
-              <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} />
-            </PaddingDiv>
+            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.studentInteraction")}`)}>
+              {t("component.graphing.studentInteraction")}
+            </Subtitle>
+            <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} />
           </Question>
         )}
         <Question
@@ -269,10 +266,10 @@ class QuadrantsMoreOptions extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.display")}`)}>
             {t("component.graphing.display")}
           </Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.width")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue="600"
                 name="layoutWidth"
@@ -282,7 +279,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.height")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue="600"
                 name="layoutHeight"
@@ -292,7 +289,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.margin")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue="0"
                 name="layoutMargin"
@@ -302,7 +299,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.fontSize")}</Label>
-              <Select
+              <SelectInputStyled
                 size="large"
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => this.handleSelect("currentFontSize", val)}
@@ -315,53 +312,58 @@ class QuadrantsMoreOptions extends Component {
                     {option.label}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </Col>
             <Col md={12}>
-              <Checkbox
-                label={t("component.graphing.grid_options.show_grid")}
+              <CheckboxLabel
                 name="showGrid"
                 onChange={() => this.handleCheckbox("showGrid", showGrid)}
                 checked={showGrid}
                 textTransform="uppercase"
-              />
+              >
+                {t("component.graphing.grid_options.show_grid")}
+              </CheckboxLabel>
             </Col>
             <Col md={12}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.displayPositionOnHover")}
+              <CheckboxLabel
                 name="displayPositionOnHover"
                 onChange={() => this.handleCheckbox("displayPositionOnHover", displayPositionOnHover)}
                 checked={displayPositionOnHover}
                 textTransform="uppercase"
-              />
+              >
+                {t("component.graphing.layoutoptions.displayPositionOnHover")}
+              </CheckboxLabel>
             </Col>
             <Col md={12}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.drawLabelzero")}
+              <CheckboxLabel
                 name="drawLabelZero"
                 onChange={() => this.handleCheckbox("drawLabelZero", drawLabelZero)}
                 checked={drawLabelZero}
                 textTransform="uppercase"
-              />
+              >
+                {t("component.graphing.layoutoptions.drawLabelzero")}
+              </CheckboxLabel>
             </Col>
             <Col md={12}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.snapToGrid")}
+              <CheckboxLabel
                 name="layoutSnapto"
                 onChange={() => this.handleCheckbox("layoutSnapto", layoutSnapto)}
                 checked={layoutSnapto}
                 textTransform="uppercase"
-              />
+              >
+                {t("component.graphing.layoutoptions.snapToGrid")}
+              </CheckboxLabel>
             </Col>
             {this.isQuadrantsPlacement() && (
               <Col md={24}>
-                <Checkbox
-                  label={t("component.graphing.layoutoptions.displayPositionPoint")}
+                <CheckboxLabel
                   name="displayPositionPoint"
                   onChange={() => this.handleCheckbox("displayPositionPoint", displayPositionPoint)}
                   checked={displayPositionPoint}
                   textTransform="uppercase"
-                />
+                >
+                  {t("component.graphing.layoutoptions.displayPositionPoint")}
+                </CheckboxLabel>
               </Col>
             )}
           </Row>
@@ -433,7 +435,7 @@ class QuadrantsMoreOptions extends Component {
                 <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_x")}</RowLabel>
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="X"
                   name="xAxisLabel"
@@ -441,30 +443,33 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="xMin"
                   value={xMin}
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="xMax"
                   value={xMax}
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="1"
                   min={0}
@@ -473,10 +478,11 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="1"
                   min={0}
@@ -485,10 +491,11 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="xRatio"
                   min={0}
@@ -496,55 +503,56 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
             </Col>
             <Col md={11} style={{ marginBottom: "0" }}>
               <Row type="flex" justify="space-between">
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="xShowAxis"
                     onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
                     checked={xShowAxis}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xShowAxisLabel", xShowAxisLabel)}
                     checked={xShowAxisLabel}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xHideTicks", xHideTicks)}
                     checked={xHideTicks}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xMinArrow", xMinArrow)}
                     checked={xMinArrow}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xMaxArrow", xMaxArrow)}
                     checked={xMaxArrow}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xCommaInLabel", xCommaInLabel)}
                     checked={xCommaInLabel}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("xDrawLabel", xDrawLabel)}
                     checked={xDrawLabel}
@@ -559,7 +567,7 @@ class QuadrantsMoreOptions extends Component {
                 <RowLabel style={{ justifyContent: "center" }}>{t("component.graphing.grid_options.axis_y")}</RowLabel>
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="X"
                   name="yAxisLabel"
@@ -567,30 +575,33 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="yMin"
                   value={yMin}
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="yMax"
                   value={yMax}
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="1"
                   min={0}
@@ -599,10 +610,11 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   defaultValue="1"
                   min={0}
@@ -611,10 +623,11 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
-                <StyledTextField
+                <TextInputStyled
                   type="text"
                   name="yRatio"
                   min={0}
@@ -622,55 +635,56 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
+                  height={"30px"}
                 />
               </Col>
             </Col>
             <Col md={11} style={{ marginBottom: "0" }}>
               <Row type="flex" justify="space-between">
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="yShowAxis"
                     onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
                     checked={yShowAxis}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yShowAxisLabel", yShowAxisLabel)}
                     checked={yShowAxisLabel}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yHideTicks", yHideTicks)}
                     checked={yHideTicks}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yMinArrow", yMinArrow)}
                     checked={yMinArrow}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yMaxArrow", yMaxArrow)}
                     checked={yMaxArrow}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yCommaInLabel", yCommaInLabel)}
                     checked={yCommaInLabel}
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: "0" }}>
-                  <Checkbox
+                  <CheckboxLabel
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox("yDrawLabel", yDrawLabel)}
                     checked={yDrawLabel}
@@ -717,10 +731,10 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <Subtitle>{t("component.graphing.background_options.background_image")}</Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={24}>
               <Label>{t("component.graphing.background_options.image_url")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="src"
@@ -729,10 +743,10 @@ class QuadrantsMoreOptions extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.background_options.height")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="height"
@@ -742,7 +756,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.background_options.width")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="width"
@@ -752,10 +766,10 @@ class QuadrantsMoreOptions extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.background_options.x_axis_image_position")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="x"
@@ -765,7 +779,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.background_options.y_axis_image_position")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="y"
@@ -775,10 +789,10 @@ class QuadrantsMoreOptions extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={24} type={"flex"} align={"middle"}>
             <Col md={12}>
               <Label>{t("component.graphing.background_options.opacity")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 defaultValue=""
                 name="opacity"
@@ -786,13 +800,14 @@ class QuadrantsMoreOptions extends Component {
                 onChange={this.handleBgImgInputChange}
               />
             </Col>
-            <Col md={12}>
-              <Checkbox
-                label={t("component.graphing.background_options.show_bg_shape_points")}
+            <Col md={12} marginBottom="0px">
+              <CheckboxLabel
                 name="showShapePoints"
                 onChange={() => this.handleBgImgCheckbox("showShapePoints", backgroundImage.showShapePoints)}
                 checked={backgroundImage.showShapePoints}
-              />
+              >
+                {t("component.graphing.background_options.show_bg_shape_points")}
+              </CheckboxLabel>
             </Col>
           </Row>
         </Question>

@@ -506,7 +506,7 @@ class AxisSegmentsContainer extends PureComponent {
     const vertical = layout.orientation === "vertical";
 
     return (
-      <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
+      <div data-cy="axis-labels-container">
         <GraphWrapper vertical={vertical}>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { Input } from "antd";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 const CustomInput = ({ size, type, value, placeholder, onBlur, style }) => {
   const [inputValue, changeInputValue] = useState(value);
@@ -13,7 +13,7 @@ const CustomInput = ({ size, type, value, placeholder, onBlur, style }) => {
   const handleInputBlur = () => onBlur(inputValue);
 
   return (
-    <Input
+    <TextInputStyled
       size={size}
       type={type}
       onChange={handleInputChange}

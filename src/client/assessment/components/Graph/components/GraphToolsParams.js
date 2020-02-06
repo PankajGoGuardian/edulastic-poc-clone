@@ -7,7 +7,8 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import { Label } from "../../../styled/WidgetOptions/Label";
+import { InnerTitle } from "../../../styled/InnerTitle";
+import { RadioLabel } from "../../../styled/RadioWithLabel";
 
 class GraphToolsParams extends Component {
   getDrawingPromptOptions = () => {
@@ -38,14 +39,14 @@ class GraphToolsParams extends Component {
 
     return (
       <React.Fragment>
-        <Row gutter={60} marginTop={15}>
-          <Col md={24}>
-            <Label>{t("component.graphing.drawingprompt")}</Label>
+        <Row>
+          <Col md={24} marginBottom="0px">
+            <InnerTitle innerText={t("component.graphing.drawingprompt")} />
             <Radio.Group value={drawingPrompt} onChange={this.handleSelectDrawingPrompt} data-cy="drawingPrompt">
               {this.getDrawingPromptOptions().map(({ value, label }) => (
-                <Radio value={value} key={value}>
+                <RadioLabel width="100%" mb="10px" value={value} key={value}>
                   {label}
-                </Radio>
+                </RadioLabel>
               ))}
             </Radio.Group>
           </Col>

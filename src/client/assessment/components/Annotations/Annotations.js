@@ -3,13 +3,13 @@ import { v4 } from "uuid";
 import PropTypes from "prop-types";
 import produce from "immer";
 
-import { EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import Annotation from "./Annotation";
 import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
 import { AnnotationsStyle } from "./styled/styled_components";
-import { Subtitle } from "./styled/Subtitle";
+import { Subtitle } from "../../styled/Subtitle";
+import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 class Annotations extends Component {
   ref = createRef();
@@ -94,19 +94,9 @@ class Annotations extends Component {
 
         {editable && (
           <EditAnnotationsContainer>
-            <EduButton
-              type="primary"
-              style={{
-                marginBottom: "30px",
-                minWidth: 227,
-                minHeight: 40,
-                marginRight: "0.7em",
-                borderRadius: "4px"
-              }}
-              onClick={this.handleClick}
-            >
+            <AddNewChoiceBtn margin="0px 0px 15px" onClick={this.handleClick}>
               ADD NEW ANNOTATION
-            </EduButton>
+            </AddNewChoiceBtn>
 
             {annotations.map((annotation, i) => (
               <Annotation

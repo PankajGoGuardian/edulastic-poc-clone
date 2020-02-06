@@ -27,7 +27,7 @@ class AnnotationSettings extends Component {
     return (
       <Fragment>
         <Subtitle>Labels</Subtitle>
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>Title</Label>
             <WidgetFRInput>
@@ -52,7 +52,7 @@ class AnnotationSettings extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>Label left</Label>
             <WidgetFRInput>
@@ -77,7 +77,7 @@ class AnnotationSettings extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>Label bottom</Label>
             <WidgetFRInput>

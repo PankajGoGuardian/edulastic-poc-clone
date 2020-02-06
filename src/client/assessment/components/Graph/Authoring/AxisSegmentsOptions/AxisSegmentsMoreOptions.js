@@ -19,6 +19,8 @@ import { Subtitle } from "../../../../styled/Subtitle";
 import { ScoreSettings, SegmentsToolsSettings } from "..";
 import Question from "../../../Question";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { SelectInputStyled, TextInputStyled } from "../../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
 
 class AxisSegmentsMoreOptions extends Component {
   constructor(props) {
@@ -252,11 +254,10 @@ class AxisSegmentsMoreOptions extends Component {
             {t("component.graphing.display")}
           </Subtitle>
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.orientation")}</Label>
-              <Select
-                style={{ width: "100%" }}
+              <SelectInputStyled
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => this.handleSelect("orientation", val)}
                 options={orientationList}
@@ -267,12 +268,12 @@ class AxisSegmentsMoreOptions extends Component {
                     {t(option.label)}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </Col>
             {orientation === "horizontal" && (
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.width")}</Label>
-                <MoreOptionsInput
+                <TextInputStyled
                   type="text"
                   name="layoutWidth"
                   onChange={this.handleOptionsInputChange}
@@ -283,10 +284,10 @@ class AxisSegmentsMoreOptions extends Component {
           </Row>
 
           {orientation === "vertical" && (
-            <Row gutter={60}>
+            <Row gutter={24}>
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.minWidth")}</Label>
-                <MoreOptionsInput
+                <TextInputStyled
                   type="text"
                   name="layoutWidth"
                   onChange={this.handleOptionsInputChange}
@@ -295,7 +296,7 @@ class AxisSegmentsMoreOptions extends Component {
               </Col>
               <Col md={12}>
                 <Label>{t("component.graphing.layoutoptions.height")}</Label>
-                <MoreOptionsInput
+                <TextInputStyled
                   type="text"
                   name="layoutHeight"
                   onChange={this.handleOptionsInputChange}
@@ -305,10 +306,10 @@ class AxisSegmentsMoreOptions extends Component {
             </Row>
           )}
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.linemargin")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 name="margin"
                 placeholder="0"
@@ -318,7 +319,7 @@ class AxisSegmentsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.spacingBtwStacked")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 name="stackResponsesSpacing"
                 placeholder="0"
@@ -326,42 +327,9 @@ class AxisSegmentsMoreOptions extends Component {
                 value={numberlineAxis.stackResponsesSpacing === 0 ? null : numberlineAxis.stackResponsesSpacing}
               />
             </Col>
-          </Row>
-          <Row gutter={60}>
-            <Col md={12} marginBottom="0px">
-              <Row>
-                <Col md={24}>
-                  <Checkbox
-                    label={t("component.graphing.layoutoptions.showMinArrow")}
-                    onChange={() => this.handleNumberlineCheckboxChange("leftArrow", numberlineAxis.leftArrow)}
-                    name="leftArrow"
-                    checked={numberlineAxis.leftArrow}
-                  />
-                </Col>
-                <Col md={24}>
-                  <Checkbox
-                    label={t("component.graphing.layoutoptions.showMaxArrow")}
-                    onChange={() => this.handleNumberlineCheckboxChange("rightArrow", numberlineAxis.rightArrow)}
-                    name="rightArrow"
-                    checked={numberlineAxis.rightArrow}
-                  />
-                </Col>
-                <Col md={24}>
-                  <Checkbox
-                    label={t("component.graphing.layoutoptions.stackResponses")}
-                    name="stackResponses"
-                    onChange={() =>
-                      this.handleNumberlineCheckboxChange("stackResponses", numberlineAxis.stackResponses)
-                    }
-                    checked={numberlineAxis.stackResponses}
-                  />
-                </Col>
-              </Row>
-            </Col>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.fontSize")}</Label>
-              <Select
-                style={{ width: "100%" }}
+              <SelectInputStyled
                 data-cy="fontSize"
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={this.changeFontSize}
@@ -372,7 +340,36 @@ class AxisSegmentsMoreOptions extends Component {
                     {option.label}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col md={24}>
+              <CheckboxLabel
+                onChange={() => this.handleNumberlineCheckboxChange("leftArrow", numberlineAxis.leftArrow)}
+                name="leftArrow"
+                checked={numberlineAxis.leftArrow}
+              >
+                {t("component.graphing.layoutoptions.showMinArrow")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={24}>
+              <CheckboxLabel
+                onChange={() => this.handleNumberlineCheckboxChange("rightArrow", numberlineAxis.rightArrow)}
+                name="rightArrow"
+                checked={numberlineAxis.rightArrow}
+              >
+                {t("component.graphing.layoutoptions.showMaxArrow")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={24}>
+              <CheckboxLabel
+                name="stackResponses"
+                onChange={() => this.handleNumberlineCheckboxChange("stackResponses", numberlineAxis.stackResponses)}
+                checked={numberlineAxis.stackResponses}
+              >
+                {t("component.graphing.layoutoptions.stackResponses")}
+              </CheckboxLabel>
             </Col>
           </Row>
         </Question>
@@ -397,10 +394,10 @@ class AxisSegmentsMoreOptions extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.ticksoptionstitle")}`)}>
             {t("component.graphing.ticksoptionstitle")}
           </Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.ticksoptions.tickdistance")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 name="ticksDistance"
                 placeholder="1, 1/2, 1 1/2"
@@ -411,84 +408,80 @@ class AxisSegmentsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.graphing.ticksoptions.minorTicks")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 name="minorTicks"
                 onChange={this.handleNumberlineInputChange}
                 value={numberlineAxis.minorTicks}
               />
             </Col>
-          </Row>
-          <Row gutter={60}>
             <Col md={12}>
-              <Row>
-                <Col md={24} marginBottom="0px">
-                  <Checkbox
-                    label={t("component.graphing.ticksoptions.showticks")}
-                    name="showTicks"
-                    onChange={() => this.handleNumberlineCheckboxChange("showTicks", numberlineAxis.showTicks)}
-                    checked={numberlineAxis.showTicks}
-                  />
-                </Col>
-                <Col md={24} marginBottom="0px">
-                  <Checkbox
-                    label={t("component.graphing.labelsoptions.showmax")}
-                    name="showMax"
-                    onChange={() => this.handleNumberlineCheckboxChange("showMax", numberlineAxis.showMax)}
-                    checked={numberlineAxis.showMax}
-                  />
-                </Col>
-                <Col md={24} marginBottom="0px">
-                  <Checkbox
-                    label={t("component.graphing.labelsoptions.showmin")}
-                    name="showMin"
-                    onChange={() => this.handleNumberlineCheckboxChange("showMin", numberlineAxis.showMin)}
-                    checked={numberlineAxis.showMin}
-                  />
-                </Col>
-                <Col md={12} marginBottom="0px">
-                  <Checkbox
-                    label={t("component.graphing.ticksoptions.snaptoticks")}
-                    name="snapToTicks"
-                    onChange={() => this.handleNumberlineCheckboxChange("snapToTicks", numberlineAxis.snapToTicks)}
-                    checked={numberlineAxis.snapToTicks}
-                  />
-                </Col>
-              </Row>
+              <Label>{t("component.options.fractionFormat")}</Label>
+              <SelectInputStyled
+                style={{ width: "100%" }}
+                onChange={this.changeFractionsFormat}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={fractionsFormat || FRACTION_FORMATS.decimal}
+              >
+                {this.getFractionFormatSettings().map(option => (
+                  <Select.Option data-cy={option.value} key={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
             </Col>
             <Col md={12}>
-              <Row>
-                <Col md={24}>
-                  <Label>{t("component.options.fractionFormat")}</Label>
-                  <Select
-                    style={{ width: "100%" }}
-                    onChange={this.changeFractionsFormat}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    value={fractionsFormat || FRACTION_FORMATS.decimal}
-                  >
-                    {this.getFractionFormatSettings().map(option => (
-                      <Select.Option data-cy={option.value} key={option.value}>
-                        {option.label}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Col>
-                <Col md={24}>
-                  <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
-                  <Select
-                    style={{ width: "100%" }}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    onChange={this.changeRenderingBase}
-                    value={currentRenderingBaseItem.label}
-                  >
-                    {renderingBaseList.map(option => (
-                      <Select.Option data-cy={option.value} key={option.value}>
-                        {option.label}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Col>
-              </Row>
+              <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
+              <SelectInputStyled
+                style={{ width: "100%" }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                onChange={this.changeRenderingBase}
+                value={currentRenderingBaseItem.label}
+              >
+                {renderingBaseList.map(option => (
+                  <Select.Option data-cy={option.value} key={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col md={12}>
+              <CheckboxLabel
+                name="showTicks"
+                onChange={() => this.handleNumberlineCheckboxChange("showTicks", numberlineAxis.showTicks)}
+                checked={numberlineAxis.showTicks}
+              >
+                {t("component.graphing.ticksoptions.showticks")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                name="showMax"
+                onChange={() => this.handleNumberlineCheckboxChange("showMax", numberlineAxis.showMax)}
+                checked={numberlineAxis.showMax}
+              >
+                {t("component.graphing.labelsoptions.showmax")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                name="showMin"
+                onChange={() => this.handleNumberlineCheckboxChange("showMin", numberlineAxis.showMin)}
+                checked={numberlineAxis.showMin}
+              >
+                {t("component.graphing.labelsoptions.showmin")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                name="snapToTicks"
+                onChange={() => this.handleNumberlineCheckboxChange("snapToTicks", numberlineAxis.snapToTicks)}
+                checked={numberlineAxis.snapToTicks}
+              >
+                {t("component.graphing.ticksoptions.snaptoticks")}
+              </CheckboxLabel>
             </Col>
           </Row>
         </Question>
@@ -503,10 +496,10 @@ class AxisSegmentsMoreOptions extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.labelstitle")}`)}>
             {t("component.graphing.labelstitle")}
           </Subtitle>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.graphing.labelsoptions.displayspecificpoints")}</Label>
-              <MoreOptionsInput
+              <TextInputStyled
                 type="text"
                 name="specificPoints"
                 onChange={this.handleNumberlineInputChange}
@@ -514,30 +507,33 @@ class AxisSegmentsMoreOptions extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.labelsoptions.showLabels")}
+              <CheckboxLabel
                 name="showLabels"
                 onChange={() => this.handleNumberlineCheckboxChange("showLabels", numberlineAxis.showLabels)}
                 checked={numberlineAxis.showLabels}
-              />
+              >
+                {t("component.graphing.labelsoptions.showLabels")}
+              </CheckboxLabel>
             </Col>
             <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.labelsoptions.showmax")}
+              <CheckboxLabel
                 name="labelShowMax"
                 onChange={() => this.handleNumberlineCheckboxChange("labelShowMax", numberlineAxis.labelShowMax)}
                 checked={numberlineAxis.labelShowMax}
-              />
+              >
+                {t("component.graphing.labelsoptions.showmax")}
+              </CheckboxLabel>
             </Col>
             <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.labelsoptions.showmin")}
+              <CheckboxLabel
                 name="labelShowMin"
                 onChange={() => this.handleNumberlineCheckboxChange("labelShowMin", numberlineAxis.labelShowMin)}
                 checked={numberlineAxis.labelShowMin}
-              />
+              >
+                {t("component.graphing.labelsoptions.showmin")}
+              </CheckboxLabel>
             </Col>
           </Row>
         </Question>

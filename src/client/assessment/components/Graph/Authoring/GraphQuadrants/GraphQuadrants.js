@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, PaddingDiv } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
 import { Subtitle } from "../../../../styled/Subtitle";
+import { AddNewChoiceBtn as AddButton } from "../../../../styled/AddNewChoiceBtn";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class GraphQuadrants extends Component {
   isQuadrantsPlacement = () => {
@@ -122,10 +122,10 @@ class GraphQuadrants extends Component {
             fillSections={fillSections}
             advancedAreOpen
           >
-            <PaddingDiv>
-              <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
-                {t("component.graphing.possibleresponses")}
-              </Subtitle>
+            <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
+              {t("component.graphing.possibleresponses")}
+            </Subtitle>
+            <>
               <QuillSortableList
                 items={graphData.list.map(o => o.text)}
                 onSortEnd={this.onSortOrderListEnd}
@@ -133,17 +133,10 @@ class GraphQuadrants extends Component {
                 onRemove={this.handleDeleteListItem}
                 onChange={this.handleChangeListItem}
               />
-              <Button
-                style={{ minWidth: 130, marginTop: 10 }}
-                onClick={this.handleAddListItem}
-                variant="extendedFab"
-                outlined
-                type="button"
-                color="primary"
-              >
+              <AddButton width="auto" onClick={this.handleAddListItem} variant="extendedFab" outlined type="button">
                 {t("component.graphing.addnewpossibleresponsebtn")}
-              </Button>
-            </PaddingDiv>
+              </AddButton>
+            </>
           </Question>
         )}
       </div>

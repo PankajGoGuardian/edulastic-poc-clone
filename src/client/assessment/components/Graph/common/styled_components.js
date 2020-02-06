@@ -9,8 +9,6 @@ import {
   mobileWidthMax,
   desktopWidth,
   themeColor,
-  white,
-  green,
   mediumDesktopExactWidth,
   smallDesktopWidth
 } from "@edulastic/colors";
@@ -468,7 +466,7 @@ export const ToolBtn = styled.li`
   align-items: center;
   justify-content: center;
   background-color: ${props => props.theme.containerWhite};
-  color: ${props => props.theme.themeColor};
+  color: #878a91;
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
@@ -480,16 +478,16 @@ export const ToolBtn = styled.li`
 
   > ${ToolbarItem} {
     svg {
-      color: ${props => props.theme.themeColor};
-      stroke: ${props => props.theme.themeColor};
-      fill: ${props => props.theme.themeColor};
+      color: #878a91;
+      stroke: #878a91;
+      fill: #878a91;
     }
   }
 
   &:hover,
   &:active,
   &.active {
-    background-color: ${props => props.theme.themeColor};
+    background-color: #878a91;
     color: ${props => props.theme.containerWhite};
     border: none;
 
@@ -505,6 +503,11 @@ export const ToolBtn = styled.li`
   &:active,
   &.active {
     box-shadow: none;
+  }
+
+  .tool-btn-icon + span {
+    font-size: 11px !important;
+    text-transform: uppercase;
   }
 `;
 

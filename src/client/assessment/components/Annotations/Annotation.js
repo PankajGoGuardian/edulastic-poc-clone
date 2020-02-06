@@ -7,10 +7,11 @@ import { IconTrashAlt } from "@edulastic/icons";
 import { greenDark, red } from "@edulastic/colors";
 
 import { Header, FroalaInput, Container } from "./styled/styled_components";
+import { Row } from "antd";
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles}>
-    <IconTrashAlt onClick={onDelete} color={greenDark} hoverColor={red} width={16} height={16} />
+    <IconTrashAlt onClick={onDelete} color="#878A91" hoverColor={red} width={16} height={16} />
   </Container>
 );
 
@@ -28,8 +29,8 @@ class Annotation extends Component {
     const { removeAnnotation, updateAnnotation, index, value } = this.props;
     return (
       <div>
-        <Header style={{ textTransform: "none" }}>
-          <FroalaInput>
+        <Row style={{ marginBottom: "15px", textTransform: "none" }} type={"flex"} justify={"space-between"}>
+          <FroalaInput pl={"0px"}>
             <FroalaEditor
               value={value}
               onChange={val => updateAnnotation(val, index)}
@@ -41,7 +42,7 @@ class Annotation extends Component {
             />
           </FroalaInput>
           <DeleteButton onDelete={() => removeAnnotation(index)} />
-        </Header>
+        </Row>
       </div>
     );
   }

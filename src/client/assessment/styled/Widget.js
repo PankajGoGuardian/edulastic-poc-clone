@@ -20,10 +20,7 @@ export const WidgetWrapper = styled.div`
 
 export const Widget = styled.div`
   position: ${({ position }) => position || "relative"};
-  padding: 25px 30px 30px;
-  background: #f8f8fb;
-  border-radius: 4px;
-  min-height: 200px;
+  padding: 0px 20px 40px;
   ${({ overflowHandlers }) => overflowHandlers};
   display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
@@ -37,13 +34,6 @@ export const Widget = styled.div`
       overflow: hidden;
     `}
   ${({ styles }) => styles};
-  &:not(:first-child) {
-    margin-top: 30px;
-
-    @media (max-width: ${mediumDesktopWidth}) {
-      margin-top: 10px;
-    }
-  }
 
   .ant-checkbox-wrapper + span,
   .ant-checkbox + span {
@@ -200,11 +190,15 @@ export const WidgetFRInput = styled.div`
   }
   .fr {
     &-box {
-      background: ${white};
-      border-radius: 4px;
-      border: 1px solid ${dashBorderColor};
-      display: flex;
-      min-height: 42px;
+      background-color: #f8f8f8;
+      border: 1px solid #b9b9b9;
+      color: #6a737f;
+      font-size: ${props => props.fontSize || "13px"};
+      width: 100%;
+      min-height: 40px;
+      padding: 0 15px;
+      border-radius: 5px;
+      font-weight: normal;
     }
     &-wrapper {
       width: 100%;
@@ -213,8 +207,8 @@ export const WidgetFRInput = styled.div`
     }
     &-view {
       width: 100%;
-      min-height: 100%;
-      padding: 9px 21px;
+      min-height: 40px;
+      padding: 12px 0px 8px;
       ${props => createStandardTextStyle(props)}
     }
   }

@@ -614,8 +614,8 @@ export const defaultTheme = {
     itemFontWeight: semiBold
   },
   sortableList: {
-    iconTrashColor: themeColor,
-    iconTrashHoverColor: iconDeleteColor,
+    iconTrashColor: "#878A91",
+    iconTrashHoverColor: iconDeleteHoverColor,
     iconTrashWrapperBgHoverColor: iconDeleteHoverColor,
     itemContainerBorderColor: borderColor,
     dragIconColor: themeColor,
@@ -624,8 +624,8 @@ export const defaultTheme = {
     inputFontSize: subtitleFontSize
   },
   typedList: {
-    iconTrashColor: themeColor,
-    iconTrashHoverColor: iconDeleteColor,
+    iconTrashColor: "#878A91",
+    iconTrashHoverColor: iconDeleteHoverColor,
     itemContainerBorderColor: borderColor,
     dragIconColor: themeColor,
     dragIconFontSize: questionTextextraFontSize
@@ -987,7 +987,7 @@ export const defaultTheme = {
       inputCorrectBorderColor: rightBorderColor,
       inputIncorrectColor: wrongBgColor,
       inputIncorrectBorderColor: wrongBorderColor,
-      iconTrashColor: themeColor,
+      iconTrashColor: "#878A91",
       iconTrashHoverColor: iconDeleteHoverColor,
       quillBorderColor: borderColor,
       iconCheckColor: checkColor,

@@ -172,10 +172,10 @@ const BackgroundStyleWrapper = styled.div.attrs({
       return `
         .fr {
           &-box {
-            background: ${white};
-            min-height: 134px;
-            border-radius: 4px;
-            border: 1px solid ${dashBorderColor};
+            background: #f8f8f8;
+            min-height: 120px;
+            border-radius: 0px;
+            border: 1px solid #b9b9b9;
             display: flex;
           }
           &-wrapper {

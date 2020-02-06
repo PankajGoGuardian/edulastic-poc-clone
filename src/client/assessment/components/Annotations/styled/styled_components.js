@@ -11,19 +11,20 @@ export const FroalaInput = styled.div`
   // align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: ${({ isRnd }) => (isRnd ? "none" : "0 2px 5px 0 rgba(0, 0, 0, 0.07)")};
-  padding-left: 8px;
-  background: ${({ isRnd }) => (isRnd ? "transparent" : "#fff")};
-  width: ${({ isRnd }) => (isRnd ? "auto" : "400px")};
+  border: 1px solid #b9b9b9;
+  padding-left: ${props => props.pl || "8px"};
+  background: ${({ isRnd }) => (isRnd ? "transparent" : "#f8f8f8")};
+  width: ${({ isRnd }) => (isRnd ? "auto" : "calc(100% - 50px)")};
   padding-right: ${({ isRnd }) => (isRnd ? "8px" : "0")};
-  margin-right: ${({ isRnd }) => (isRnd ? "0" : "10px")};
   .fr-box {
     width: 100%;
   }
-  [class^="fr-"] {
-    height: 100%;
+  .fr-view {
     overflow: hidden;
-    text-overflow: ellipsis;
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 15px;
+    text-align: left;
   }
 
   .drag-ans.wrap-text {
@@ -49,16 +50,14 @@ export const Header = styled.div`
   }
 `;
 
-export const AnnotationsStyle = styled.div`
-  margin-top: 30px;
-`;
+export const AnnotationsStyle = styled.div``;
 
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 15px 0;
-  width: 50%;
+  justify-content: flex-end;
+  padding: 12px 0;
+  width: 50px;
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;

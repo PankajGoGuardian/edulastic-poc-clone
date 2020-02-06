@@ -1,8 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import { desktopWidth, mediumDesktopExactWidth, smallDesktopWidth, white, themeColor } from "@edulastic/colors";
+import { mediumDesktopExactWidth, smallDesktopWidth, white, themeColor } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
+
+const WidgetTitle = styled.h2`
+  background: #f1f1f5;
+  color: #434b5d;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  margin: 0px -20px 20px;
+  font-weight: bold;
+`;
 
 export const SubtitleText = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
@@ -14,14 +25,10 @@ export const SubtitleText = styled.div`
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
   padding: 0;
-  margin: ${props => (props.margin ? props.margin : "0 0 25px")};
   ${({ styles }) => styles};
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: ${({ theme }) => theme?.common?.titleSecondarySectionFontSize || "18px"};
-  }
-  @media (max-width: ${desktopWidth}) {
-    margin-bottom: 20px;
   }
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${({ theme }) => theme?.common?.titleSectionFontSize || "16px"};
@@ -46,8 +53,8 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
   ) : null;
 
 export const Subtitle = ({ id, children, textStyles = {}, showIcon = true }) => (
-  <FlexContainer justifyContent="flex-start" alignItems="baseline">
+  <WidgetTitle justifyContent="flex-start" alignItems="baseline">
     <SubtitleText styles={textStyles}>{children}</SubtitleText>
     {showIcon && <QuestionIcon id={id} />}
-  </FlexContainer>
+  </WidgetTitle>
 );

@@ -2,13 +2,14 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Button } from "@edulastic/common";
 import { Select } from "antd";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Subtitle } from "../../../styled/Subtitle";
-import { SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
+import { SelectWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
+import { SelectInputStyled } from "../../../styled/InputStyles";
+import { AddNewChoiceBtn as AddToolButton } from "../../../styled/AddNewChoiceBtn";
 
 class SegmentsToolsSettings extends Component {
   controls = [
@@ -78,23 +79,7 @@ class SegmentsToolsSettings extends Component {
     });
   };
 
-  renderAddToolBtn = groupIndex => (
-    <Row>
-      <Button
-        style={{
-          minWidth: 227,
-          minHeight: 40,
-          marginRight: "0.7em",
-          borderRadius: "4px"
-        }}
-        onClick={() => this.addTool(groupIndex)}
-        color="primary"
-        outlined
-      >
-        ADD TOOL
-      </Button>
-    </Row>
-  );
+  renderAddToolBtn = groupIndex => <AddToolButton onClick={() => this.addTool(groupIndex)}>ADD TOOL</AddToolButton>;
 
   renderSingleToolsInDefaultGroup = () => {
     const { toolbar } = this.props;
@@ -120,7 +105,7 @@ class SegmentsToolsSettings extends Component {
           ) : null
         )}
 
-        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
+        {this.renderAddToolBtn()}
       </Col>
     );
   };
@@ -131,7 +116,7 @@ class SegmentsToolsSettings extends Component {
     return (
       <Fragment>
         <Subtitle>Toolbar</Subtitle>
-        <Row gutter={60}>{this.renderSingleToolsInDefaultGroup()}</Row>
+        <Row gutter={24}>{this.renderSingleToolsInDefaultGroup()}</Row>
       </Fragment>
     );
   }
@@ -170,7 +155,7 @@ const Tool = props => {
   return (
     <React.Fragment>
       <SelectWrapper>
-        <Select
+        <SelectInputStyled
           data-cy="segmentTool"
           getPopupContainer={triggerNode => triggerNode.parentNode}
           style={{ width: selectWidth || "70%", height: "40px" }}
@@ -183,7 +168,7 @@ const Tool = props => {
               {option.label}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
 
         {isNeedToShowDeleteButton() && (
           <DeleteButton

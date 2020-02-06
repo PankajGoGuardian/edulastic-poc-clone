@@ -749,9 +749,11 @@ export const nameGen = elements => {
       !elements.some(
         element =>
           element &&
-          (element.labelHTML === alphabet[i] ||
+          ([element.name, element.labelHTML].includes(alphabet[i]) ||
             // || element.name === alphabet[i]
-            Object.values(element.ancestors).some(ancestor => ancestor && ancestor.labelHTML === alphabet[i]))
+            Object.values(element.ancestors).some(
+              ancestor => ancestor && [ancestor.name, ancestor.labelHTML].includes(alphabet[i])
+            ))
       )
     ) {
       return alphabet[i];
@@ -764,9 +766,9 @@ export const nameGen = elements => {
         !elements.some(
           element =>
             element &&
-            (element.labelHTML === alphabet[j] + alphabet[i] ||
+            ([element.name, element.labelHTML].includes(alphabet[j] + alphabet[i]) ||
               Object.values(element.ancestors).some(
-                ancestor => ancestor && ancestor.labelHTML === alphabet[j] + alphabet[i]
+                ancestor => ancestor && [ancestor.name, ancestor.labelHTML].includes(alphabet[j] + alphabet[i])
               ))
         )
       ) {

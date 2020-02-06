@@ -22,6 +22,10 @@ export const CheckboxStyle = styled(Checkbox)`
     border-color: #878a91;
     background: #f8f8f8;
   }
+  .ant-checkbox + span {
+    font-size: ${props => props.labelFontSize || "12px"};
+    padding: ${props => props.labelPadding || "0px 20px"};
+  }
   .ant-checkbox-input:focus + .ant-checkbox-inner,
   &.ant-checkbox-wrapper:hover .ant-checkbox-inner,
   .ant-checkbox:hover .ant-checkbox-inner {

@@ -5,6 +5,7 @@ import { evaluationType } from "@edulastic/constants";
 
 import Scoring from "./components/Scoring";
 import Variables from "./components/Variables";
+import Question from "../../components/Question";
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 
@@ -50,14 +51,22 @@ class WidgetOptions extends Component {
       <Fragment>
         {renderExtra}
         {showScoring && (
-          <Scoring
-            scoringTypes={scoringTypes}
+          <Question
+            section="advanced"
+            label="Scoring"
             fillSections={fillSections}
             cleanSections={cleanSections}
             advancedAreOpen={advancedAreOpen}
-            showSelect={showSelect}
-            item={item}
-          />
+          >
+            <Scoring
+              scoringTypes={scoringTypes}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+              advancedAreOpen={advancedAreOpen}
+              showSelect={showSelect}
+              item={item}
+            />
+          </Question>
         )}
         {showVariables && (
           <Variables

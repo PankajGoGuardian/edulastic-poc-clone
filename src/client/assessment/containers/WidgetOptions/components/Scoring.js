@@ -25,8 +25,9 @@ import { ColNoPaddingLeft } from "../../../styled/WidgetOptions/ColNoPadding";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 import { Subtitle } from "../../../styled/Subtitle";
-import { AddNewChoiceBtn as StyledButton } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { FormGroup } from "../styled/FormGroup";
+import { StyledSelect, StyledInput, StyledCheckbox } from "../../../components/Common/InputField";
 import GradingRubricModal from "./GradingRubricModal";
 import { updateRubricDataAction } from "../../../../author/GradingRubric/ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
@@ -254,8 +255,8 @@ class Scoring extends Component {
         )}
         {(isGradingCheckboxState || questionData.rubrics) && userFeatures.gradingrubrics && (
           <Row gutter={24}>
-            <Col marginBottom="0px" md={24} lg={24} xs={24}>
-              <StyledButton
+            <Col md={24} lg={24} xs={24}>
+              <CustomStyleBtn
                 onClick={e => {
                   this.handleRubricAction("CREATE NEW");
                   e.target.blur();
@@ -264,8 +265,8 @@ class Scoring extends Component {
                 margin="0px 15px 0px 0px"
               >
                 Create New Rubric
-              </StyledButton>
-              <StyledButton
+              </CustomStyleBtn>
+              <CustomStyleBtn
                 onClick={e => {
                   this.handleRubricAction("USE EXISTING");
                   e.target.blur();
@@ -274,7 +275,7 @@ class Scoring extends Component {
                 margin="0px 15px 0px 0px"
               >
                 Use Existing Rubric
-              </StyledButton>
+              </CustomStyleBtn>
             </Col>
           </Row>
         )}

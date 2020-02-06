@@ -9,7 +9,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { SelectWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
 import { SelectInputStyled } from "../../../styled/InputStyles";
-import { AddNewChoiceBtn as AddToolButton } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 class SegmentsToolsSettings extends Component {
   controls = [
@@ -79,7 +79,7 @@ class SegmentsToolsSettings extends Component {
     });
   };
 
-  renderAddToolBtn = groupIndex => <AddToolButton onClick={() => this.addTool(groupIndex)}>ADD TOOL</AddToolButton>;
+  renderAddToolBtn = groupIndex => <CustomStyleBtn onClick={() => this.addTool(groupIndex)}>ADD TOOL</CustomStyleBtn>;
 
   renderSingleToolsInDefaultGroup = () => {
     const { toolbar } = this.props;

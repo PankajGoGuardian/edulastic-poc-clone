@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import QuillSortableList from "../../../components/QuillSortableList";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Heading } from "../../../styled/WidgetOptions/Heading";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -138,9 +138,9 @@ class AdditionalOptions extends Component {
             onChange={(index, e) => this.editOptions(index, e)}
           />
           <PaddingDiv top={6}>
-            <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn()}>
+            <CustomStyleBtn onClick={() => this.addNewChoiceBtn()}>
               {t("component.cloze.imageDropDown.addnewchoice")}
-            </AddNewChoiceBtn>
+            </CustomStyleBtn>
           </PaddingDiv>
         </PaddingDiv>
       </PaddingDiv>

@@ -15,7 +15,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
 import { ChoicesConatiner } from "./styled/ChoicesConatiner";
@@ -136,9 +136,9 @@ class ChoicesForResponse extends Component {
               onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
             />
             <div>
-              <AddNewChoiceBtn data-cy={response.index} onClick={() => this.addNewChoiceBtn(response.id)}>
+              <CustomStyleBtn data-cy={response.index} onClick={() => this.addNewChoiceBtn(response.id)}>
                 {t("component.cloze.dropDown.addnewchoice")}
-              </AddNewChoiceBtn>
+              </CustomStyleBtn>
             </div>
           </ChoicesConatiner>
         ))}

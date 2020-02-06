@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { PaddingDiv, Button } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep, clone } from "lodash";
-import { StyledTextField, TitleTextInput } from "../common/styled_components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -17,7 +15,7 @@ import QuillSortableList from "../../QuillSortableList";
 import Question from "../../Question";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { TextInputStyled } from "../../../styled/InputStyles";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = stimulus => {
@@ -180,18 +178,16 @@ class GraphAxisLabels extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
             {t("component.graphing.possibleresponses")}
           </Subtitle>
-          <>
-            <QuillSortableList
-              items={graphData.list.map(o => o.text)}
-              onSortEnd={this.onSortOrderListEnd}
-              useDragHandle
-              onRemove={this.handleDeleteQuestion}
-              onChange={this.handleQuestionsChange}
-            />
-            <AddNewChoiceBtn width={"auto"} onClick={this.handleAddQuestion} variant="extendedFab" type="button">
-              {t("component.graphing.addnewpossibleresponsebtn")}
-            </AddNewChoiceBtn>
-          </>
+          <QuillSortableList
+            items={graphData.list.map(o => o.text)}
+            onSortEnd={this.onSortOrderListEnd}
+            useDragHandle
+            onRemove={this.handleDeleteQuestion}
+            onChange={this.handleQuestionsChange}
+          />
+          <CustomStyleBtn width={"auto"} onClick={this.handleAddQuestion} variant="extendedFab" type="button">
+            {t("component.graphing.addnewpossibleresponsebtn")}
+          </CustomStyleBtn>
         </Question>
       </div>
     );

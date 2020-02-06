@@ -17,7 +17,7 @@ import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { WidgetWrapper } from "../../styled/Widget";
 import Question from "../../components/Question";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 class ChoicesForDropDown extends Component {
   static propTypes = {
@@ -147,9 +147,9 @@ class ChoicesForDropDown extends Component {
               />
 
               <div>
-                <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
+                <CustomStyleBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
                   {t("component.cloze.dropDown.addnewchoice")}
-                </AddNewChoiceBtn>
+                </CustomStyleBtn>
               </div>
             </Question>
           ))}

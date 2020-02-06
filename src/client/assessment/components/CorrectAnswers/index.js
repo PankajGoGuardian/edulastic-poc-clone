@@ -11,6 +11,7 @@ import { Subtitle } from "../../styled/Subtitle";
 
 import { IconClose } from "./styled/IconClose";
 import styled from "styled-components";
+import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -74,17 +75,7 @@ class CorrectAnswers extends Component {
   renderPlusButton = () => {
     const { onTabChange, onAdd, t } = this.props;
     return (
-      <Button
-        style={{
-          background: "transparent",
-          color: "#878A91",
-          borderRadius: 0,
-          padding: 0,
-          boxShadow: "none",
-          marginLeft: "auto",
-          minHeight: 28,
-          textTransform: "uppercase"
-        }}
+      <AlternateAnswerLink
         onClick={() => {
           onTabChange();
           onAdd();
@@ -94,7 +85,7 @@ class CorrectAnswers extends Component {
         data-cy="alternate"
       >
         {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-      </Button>
+      </AlternateAnswerLink>
     );
   };
 

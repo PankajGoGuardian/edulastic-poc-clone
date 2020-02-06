@@ -16,7 +16,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
@@ -393,7 +393,7 @@ class Layout extends Component {
           )}
           <Row gutter={20}>
             <Col md={24}>
-              <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>
+              <CustomStyleBtn onClick={() => addIndividual()}>{t("component.options.add")}</CustomStyleBtn>
             </Col>
           </Row>
         </Block>

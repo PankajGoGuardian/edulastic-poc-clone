@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../styled/WidgetOptions/Label";
 import { StyledSelect } from "./Common/InputField";
+import { SelectInputStyled } from "../styled/InputStyles";
 
 const FontSizeSelect = ({ t, onChange, value }) => {
   const options = [
@@ -18,11 +19,10 @@ const FontSizeSelect = ({ t, onChange, value }) => {
   return (
     <Fragment>
       <Label>{t("component.options.fontSize")}</Label>
-      <StyledSelect
+      <SelectInputStyled
         data-cy="fontSizeSelect"
         size="large"
         value={value}
-        style={{ width: "100%" }}
         onChange={onChange}
         getPopupContainer={triggerNode => triggerNode.parentNode}
       >
@@ -31,7 +31,7 @@ const FontSizeSelect = ({ t, onChange, value }) => {
             {label}
           </StyledSelect.Option>
         ))}
-      </StyledSelect>
+      </SelectInputStyled>
     </Fragment>
   );
 };

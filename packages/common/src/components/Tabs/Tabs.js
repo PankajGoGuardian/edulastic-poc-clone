@@ -13,18 +13,20 @@ class Tabs extends Component {
     const { children, onChange, value, extra, style } = this.props;
 
     return (
-      <Container style={style} data-cy="tabs">
-        {React.Children.map(children, (child, index) => {
-          if (!child) return null;
-          return React.cloneElement(child, {
-            onClick: () => {
-              onChange(index);
-            },
-            active: value === index
-          });
-        })}
+      <AnswersTabContainer>
         {extra}
-      </Container>
+        <Container style={style} data-cy="tabs">
+          {React.Children.map(children, (child, index) => {
+            if (!child) return null;
+            return React.cloneElement(child, {
+              onClick: () => {
+                onChange(index);
+              },
+              active: value === index
+            });
+          })}
+        </Container>
+      </AnswersTabContainer>
     );
   }
 }
@@ -50,4 +52,8 @@ const Container = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   margin-bottom: 4px;
+`;
+
+const AnswersTabContainer = styled.div`
+  width: 100%;
 `;

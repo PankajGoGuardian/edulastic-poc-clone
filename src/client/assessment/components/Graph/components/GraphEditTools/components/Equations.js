@@ -7,13 +7,14 @@ import { isEqual } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { graphEvaluateApi } from "@edulastic/api";
-import { Button, MathModal, MathInput } from "@edulastic/common";
+import { MathModal, MathInput } from "@edulastic/common";
 import { IconTrash } from "@edulastic/icons";
 import { math } from "@edulastic/constants";
-import { backgrounds, red, themeColor, white } from "@edulastic/colors";
+import { backgrounds, red, white } from "@edulastic/colors";
 
 import { CONSTANT } from "../../../Builder/config/index";
 import { IconKeyboard } from "../styled/IconKeyboard";
+import { CustomStyleBtn } from "../../../../../styled/ButtonStyles";
 
 const { defaultNumberPad } = math;
 
@@ -170,14 +171,6 @@ class Equations extends Component {
     const { t } = this.props;
     const { showMathModal, selectedEqIndex, eqs, changedEqs, newEquation } = this.state;
 
-    const btnStyles = {
-      height: "40px",
-      minWidth: "40px",
-      maxWidth: "40px",
-      marginLeft: "5px",
-      borderRadius: "4px"
-    };
-
     return (
       <Container>
         {eqs.map((eq, index) => (
@@ -191,31 +184,38 @@ class Equations extends Component {
               value={eq}
               onInput={latex => this.handleInput(latex, index)}
             />
-            <Button
+            <CustomStyleBtn
+              width="50px"
+              padding="0px"
+              margin="0px 0px 0px 5px"
               key={`eq-math-${index}`}
-              style={{ ...btnStyles, backgroundColor: white }}
               onClick={this.toggleMathModal(true, index)}
             >
-              <IconKeyboard color={themeColor} />
-            </Button>
+              <IconKeyboard color={white} />
+            </CustomStyleBtn>
             {!changedEqs[index] && (
-              <Button
+              <CustomStyleBtn
+                width="50px"
+                padding="0px"
+                margin="0px 0px 0px 5px"
+                bg={red}
                 key={`eq-del-${index}`}
-                style={{ ...btnStyles, backgroundColor: red, minWidth: "50px", maxWidth: "50px" }}
                 onClick={this.handleDeleteEquation(index)}
               >
                 <IconTrash color={white} />
-              </Button>
+              </CustomStyleBtn>
             )}
             {changedEqs[index] && (
-              <Button
+              <CustomStyleBtn
+                width="50px"
+                padding="0px"
+                margin="0px 0px 0px 5px"
                 key={`eq-plot-${index}`}
-                style={{ ...btnStyles, minWidth: "50px", maxWidth: "50px" }}
                 onClick={this.saveEquation(index)}
                 color="primary"
               >
                 {t("component.graphing.settingsPopup.plot")}
-              </Button>
+              </CustomStyleBtn>
             )}
           </Wrapper>
         ))}
@@ -229,21 +229,24 @@ class Equations extends Component {
             value={newEquation}
             onInput={latex => this.handleInput(latex)}
           />
-          <Button
+          <CustomStyleBtn
+            width="50px"
+            padding="0px"
+            margin="0px 0px 0px 5px"
             key="eq-math-add"
-            style={{ ...btnStyles, backgroundColor: white }}
             onClick={this.toggleMathModal(true, -1)}
           >
-            <IconKeyboard color={themeColor} />
-          </Button>
-          <Button
+            <IconKeyboard color={white} />
+          </CustomStyleBtn>
+          <CustomStyleBtn
+            width="50px"
+            padding="0px"
+            margin="0px 0px 0px 5px"
             key="eq-add"
-            style={{ ...btnStyles, minWidth: "50px", maxWidth: "50px" }}
             onClick={this.handleAddEquation}
-            color="primary"
           >
             {t("component.graphing.settingsPopup.plot")}
-          </Button>
+          </CustomStyleBtn>
         </Wrapper>
         <MathModal
           show={showMathModal}

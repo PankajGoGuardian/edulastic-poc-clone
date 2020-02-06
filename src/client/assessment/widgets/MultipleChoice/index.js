@@ -24,6 +24,7 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { getFontSize } from "../../utils/helpers";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const EmptyWrapper = styled.div``;
 
@@ -234,13 +235,13 @@ class MultipleChoice extends Component {
                   {...restProps}
                 />
                 <Divider />
-                <Checkbox
+                <CheckboxLabel
                   data-cy="multi"
                   onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
                   checked={multipleResponses}
                 >
                   {t("component.multiplechoice.multipleResponses")}
-                </Checkbox>
+                </CheckboxLabel>
               </Question>
 
               {advancedLink}

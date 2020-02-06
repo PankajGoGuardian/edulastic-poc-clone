@@ -4,16 +4,16 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
-import { themeColor } from "@edulastic/colors";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Tab, TabContainer, Tabs } from "@edulastic/common";
+import { Tab, TabContainer, Tabs } from "@edulastic/common";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { CorrectAnswersContainer } from "./styled/CorrectAnswers";
 
 import CorrectAnswer from "./CorrectAnswer";
+import { AlternateAnswerLink } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -64,25 +64,16 @@ class CorrectAnswers extends Component {
     const { onAddAltResponses, validation, t } = this.props;
 
     return (
-      <Button
-        style={{
-          background: "transparent",
-          color: themeColor,
-          borderRadius: 0,
-          padding: 0,
-          boxShadow: "none",
-          marginLeft: "auto"
-        }}
+      <AlternateAnswerLink
         onClick={() => {
           this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();
         }}
-        color="primary"
         variant="extendedFab"
         data-cy="alternate"
       >
         {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-      </Button>
+      </AlternateAnswerLink>
     );
   };
 
@@ -165,19 +156,17 @@ class CorrectAnswers extends Component {
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
-            <TabContainer>
-              <CorrectAnswer
-                uiStyle={uiStyle}
-                response={validation.validResponse}
-                stimulus={stimulus}
-                multipleResponses={multipleResponses}
-                options={options}
-                onUpdateValidationValue={this.updateCorrectValidationAnswers}
-                onUpdatePoints={this.handleUpdateCorrectScore}
-                styleType={styleType}
-                fontSize={fontSize}
-              />
-            </TabContainer>
+            <CorrectAnswer
+              uiStyle={uiStyle}
+              response={validation.validResponse}
+              stimulus={stimulus}
+              multipleResponses={multipleResponses}
+              options={options}
+              onUpdateValidationValue={this.updateCorrectValidationAnswers}
+              onUpdatePoints={this.handleUpdateCorrectScore}
+              styleType={styleType}
+              fontSize={fontSize}
+            />
           )}
           {validation.altResponses &&
             !!validation.altResponses.length &&

@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import QuillSortableList from "../QuillSortableList";
 
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { ALPHABET } from "../../widgets/MultipleChoice/constants/alphabet";
 import { updateVariables } from "../../utils/variables";
 import { Label } from "../../styled/WidgetOptions/Label";
@@ -90,9 +90,9 @@ class QuillSortableHintsList extends Component {
           onChange={this.editOptions}
         />
 
-        <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+        <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
           {t("component.addANewHint")}
-        </AddNewChoiceBtn>
+        </CustomStyleBtn>
       </Fragment>
     );
   }

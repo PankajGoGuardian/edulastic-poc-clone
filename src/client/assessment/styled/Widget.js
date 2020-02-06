@@ -208,7 +208,7 @@ export const WidgetFRInput = styled.div`
     &-view {
       width: 100%;
       min-height: 40px;
-      padding: 12px 0px 8px;
+      padding: 10px 0px;
       ${props => createStandardTextStyle(props)}
     }
   }

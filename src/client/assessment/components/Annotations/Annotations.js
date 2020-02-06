@@ -9,7 +9,7 @@ import Annotation from "./Annotation";
 import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
 import { AnnotationsStyle } from "./styled/styled_components";
 import { Subtitle } from "../../styled/Subtitle";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 class Annotations extends Component {
   ref = createRef();
@@ -94,10 +94,9 @@ class Annotations extends Component {
 
         {editable && (
           <EditAnnotationsContainer>
-            <AddNewChoiceBtn margin="0px 0px 15px" onClick={this.handleClick}>
+            <CustomStyleBtn margin="0px 0px 15px" onClick={this.handleClick}>
               ADD NEW ANNOTATION
-            </AddNewChoiceBtn>
-
+            </CustomStyleBtn>
             {annotations.map((annotation, i) => (
               <Annotation
                 key={annotation.id}

@@ -6,11 +6,12 @@ import { isEqual } from "lodash";
 import { v4 } from "uuid";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Button, FroalaEditor } from "@edulastic/common";
+import { FroalaEditor } from "@edulastic/common";
 import { IconTrash } from "@edulastic/icons";
 import { red, secondaryTextColor, white } from "@edulastic/colors";
 
 import { FroalaInput } from "../styled/FroalaInput";
+import { CustomStyleBtn } from "../../../../../styled/ButtonStyles";
 
 class Annotations extends Component {
   constructor(props) {
@@ -112,20 +113,11 @@ class Annotations extends Component {
     const { t } = this.props;
     const { ans, newAnnotation } = this.state;
 
-    const btnStyles = {
-      height: "40px",
-      minWidth: "40px",
-      maxWidth: "40px",
-      marginLeft: "5px",
-      borderRadius: "4px",
-      padding: "5px"
-    };
-
     return (
       <Container>
         {ans.map((an, index) => (
           <Wrapper key={`annotation-wrapper-${index}`} style={{ marginBottom: "7px" }}>
-            <FroalaInput style={{ width: "205px" }}>
+            <FroalaInput style={{ width: "195px" }}>
               <FroalaEditor
                 value={an}
                 onChange={val => this.handleInput(val, index)}
@@ -134,13 +126,16 @@ class Annotations extends Component {
                 config={{ placeholder: "" }}
               />
             </FroalaInput>
-            <Button
+            <CustomStyleBtn
               key={`an-del-${index}`}
-              style={{ ...btnStyles, backgroundColor: red }}
+              width="50px"
+              padding="0px"
+              margin="0px 0px 0px 5px"
+              bg={red}
               onClick={this.handleDeleteAnnotation(index)}
             >
               <IconTrash color={white} />
-            </Button>
+            </CustomStyleBtn>
           </Wrapper>
         ))}
         <Wrapper key="annotation-wrapper-add">
@@ -154,14 +149,15 @@ class Annotations extends Component {
               config={{ placeholder: "" }}
             />
           </FroalaInput>
-          <Button
+          <CustomStyleBtn
             key="an-add"
-            style={{ ...btnStyles, minWidth: "85px", maxWidth: "85px" }}
+            width="85px"
+            padding="0px"
+            margin="0px 0px 0px 5px"
             onClick={this.handleAddAnnotation}
-            color="primary"
           >
             {t("component.graphing.settingsPopup.addText")}
-          </Button>
+          </CustomStyleBtn>
         </Wrapper>
       </Container>
     );

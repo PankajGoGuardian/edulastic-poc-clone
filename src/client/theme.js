@@ -448,7 +448,7 @@ export const defaultTheme = {
     addNewChoiceButtonHoverColor: brandWhite,
     addNewChoiceButtonBgActiveColor: themeColor,
     addNewChoiceButtonActiveColor: linkFilledBgColor,
-    mathInputMathBorderColor: borderColor,
+    mathInputMathBorderColor: "#b9b9b9",
     mathInputMathClearBgColor: clearIconColor,
     mathInputMathWrongBgColor: wrongBgColor,
     mathInputMathSuccessBgColor: rightIconColor,

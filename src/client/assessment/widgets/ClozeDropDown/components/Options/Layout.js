@@ -8,7 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { response as Dimensions } from "@edulastic/constants";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../../styled/ButtonStyles";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
@@ -279,7 +279,7 @@ class Layout extends Component {
         })}
         <Row>
           <Col md={12}>
-            <AddNewChoiceBtn onClick={addIndividual}>{t("component.options.add")}</AddNewChoiceBtn>
+            <CustomStyleBtn onClick={addIndividual}>{t("component.options.add")}</CustomStyleBtn>
           </Col>
         </Row>
       </Question>

@@ -1,16 +1,16 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
-import { EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 const withAddButton = WrappedComponent => {
   const withAddButtonHocComponent = ({ buttonText, onAdd, t, ...props }) => (
     <Fragment>
       <WrappedComponent t={t} {...props} />
-      <EduButton data-cy="addButton" onClick={onAdd} type="primary">
+      <CustomStyleBtn data-cy="addButton" onClick={onAdd}>
         {buttonText || t("component.options.addNewChoice")}
-      </EduButton>
+      </CustomStyleBtn>
     </Fragment>
   );
 

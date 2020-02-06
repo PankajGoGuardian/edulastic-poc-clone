@@ -12,7 +12,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 import { ALPHABET } from "../constants/alphabet";
 import QuillSortableList from "../../../components/QuillSortableList";
@@ -120,9 +120,9 @@ class MultipleChoiceOptions extends Component {
           fontSize={fontSize}
         />
         <div>
-          <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+          <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
             {t("component.multiplechoice.addnewchoice")}
-          </AddNewChoiceBtn>
+          </CustomStyleBtn>
         </div>
       </Question>
     );

@@ -81,15 +81,15 @@ export const ToolButton = styled.div`
   height: 40px;
   margin-bottom: 5px;
   box-shadow: 0px 2px 4px #c9d0dbd9;
-  background-color: ${props => (props.selected ? props.theme.themeColor : white)};
-  color: ${props => (props.selected ? white : props.theme.themeColor)};
+  background-color: ${props => (props.selected ? "#878a91" : white)};
+  color: ${props => (props.selected ? white : "#878a91")};
   cursor: pointer;
   font-size: 18px;
   font-weight: bolder;
 
   :active {
-    background-color: ${props => props.theme.themeColor};
-    color: ${props => (props.selected ? white : props.theme.themeColor)};
+    background-color: #878a91;
+    color: ${props => (props.selected ? white : "#878a91")};
 
     > svg {
       fill: ${white};
@@ -100,9 +100,9 @@ export const ToolButton = styled.div`
   }
 
   > svg {
-    fill: ${props => (props.selected ? white : props.theme.themeColor)};
+    fill: ${props => (props.selected ? white : "#878a91")};
     :hover {
-      fill: ${props => (props.selected ? white : props.theme.themeColor)};
+      fill: ${props => (props.selected ? white : "#878a91")};
     }
   }
 `;

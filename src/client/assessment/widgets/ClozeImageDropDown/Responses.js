@@ -16,7 +16,7 @@ import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import SortableList from "../../components/SortableList/index";
 import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
@@ -147,9 +147,9 @@ class Response extends Component {
               onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
             />
             <PaddingDiv top={6}>
-              <AddNewChoiceBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
+              <CustomStyleBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
                 {t("component.cloze.imageDropDown.addnewchoice")}
-              </AddNewChoiceBtn>
+              </CustomStyleBtn>
             </PaddingDiv>
           </>
         ))}

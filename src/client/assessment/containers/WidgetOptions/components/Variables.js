@@ -25,6 +25,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
 import { StyledCheckbox } from "../../../components/Common/InputField";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const { defaultNumberPad } = math;
@@ -357,26 +358,26 @@ class Variables extends Component {
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}>
           {t("component.options.dynamicParameters")}
         </Subtitle>
-        <Row gutter={36}>
+        <Row gutter={24}>
           <Col md={24}>
             <DynamicText>{t("component.options.dynamicParametersDescription")}</DynamicText>
           </Col>
         </Row>
-        <Row gutter={36}>
+        <Row gutter={24}>
           <Col md={24}>
-            <StyledCheckbox
+            <CheckboxLabel
               data-cy="variableEnabled"
               checked={variableEnabled}
               onChange={e => handleChangeVariable("enabled", e.target.checked)}
               size="large"
             >
               {t("component.options.checkVariables")}
-            </StyledCheckbox>
+            </CheckboxLabel>
           </Col>
         </Row>
         {variableEnabled && Object.keys(variables).length > 0 && (
           <Block>
-            <Row gutter={36}>
+            <Row gutter={24}>
               <Col md={3}>{t("component.options.variable")}</Col>
               <Col md={5}>{t("component.options.variableType")}</Col>
               <Col md={3}>{t("component.options.variableMin")}</Col>
@@ -534,7 +535,7 @@ class Variables extends Component {
         )}
         {variableEnabled && Object.keys(variables).length > 0 && (
           <Block>
-            <Row gutter={36}>
+            <Row gutter={24}>
               <Col md={20}>
                 <InlineLabel>{t("component.options.beforeCombinationCount")}</InlineLabel>
                 <CombinationInput
@@ -552,7 +553,7 @@ class Variables extends Component {
                 </Button>
               </Col>
             </Row>
-            <Row gutter={36}>
+            <Row gutter={24}>
               <Col md={24}>
                 <Table
                   columns={columns}

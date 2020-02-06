@@ -9,7 +9,7 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
 import { Subtitle } from "../../../../styled/Subtitle";
-import { AddNewChoiceBtn as AddButton } from "../../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../../styled/ButtonStyles";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
 
@@ -125,18 +125,16 @@ class GraphQuadrants extends Component {
             <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.possibleresponses")}`)}>
               {t("component.graphing.possibleresponses")}
             </Subtitle>
-            <>
-              <QuillSortableList
-                items={graphData.list.map(o => o.text)}
-                onSortEnd={this.onSortOrderListEnd}
-                useDragHandle
-                onRemove={this.handleDeleteListItem}
-                onChange={this.handleChangeListItem}
-              />
-              <AddButton width="auto" onClick={this.handleAddListItem} variant="extendedFab" outlined type="button">
-                {t("component.graphing.addnewpossibleresponsebtn")}
-              </AddButton>
-            </>
+            <QuillSortableList
+              items={graphData.list.map(o => o.text)}
+              onSortEnd={this.onSortOrderListEnd}
+              useDragHandle
+              onRemove={this.handleDeleteListItem}
+              onChange={this.handleChangeListItem}
+            />
+            <CustomStyleBtn onClick={this.handleAddListItem} variant="extendedFab" outlined type="button">
+              {t("component.graphing.addnewpossibleresponsebtn")}
+            </CustomStyleBtn>
           </Question>
         )}
       </div>

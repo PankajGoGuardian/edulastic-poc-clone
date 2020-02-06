@@ -4,10 +4,8 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Select } from "antd";
-import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { TextField } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -18,7 +16,7 @@ import FontSizeSelect from "../../../components/FontSizeSelect";
 import Question from "../../../components/Question";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { StyledTextField, StyledSelect } from "../../../components/Common/InputField";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 class Layout extends Component {
   static propTypes = {
@@ -88,10 +86,10 @@ class Layout extends Component {
           {t("component.options.display")}
         </Subtitle>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.style")}</Label>
-            <SelectWrapper
+            <SelectInputStyled
               data-cy="styleSelect"
               size="large"
               id="select"
@@ -104,15 +102,14 @@ class Layout extends Component {
                   {label}
                 </Select.Option>
               ))}
-            </SelectWrapper>
+            </SelectInputStyled>
           </Col>
           <Col md={12}>
             <Label>{t("component.options.columns")}</Label>
-            <StyledTextField
+            <TextInputStyled
               type="number"
               data-cy="columns"
               disabled={false}
-              containerStyle={{ width: 120 }}
               onChange={e => changeUiStyle("columns", +e.target.value)}
               min={1}
               value={uiStyle.columns || 1}
@@ -120,7 +117,7 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <OrientationSelect onChange={val => changeUiStyle("orientation", val)} value={uiStyle.orientation} />
           </Col>
@@ -129,10 +126,10 @@ class Layout extends Component {
           </Col>
         </Row>
         {uiStyle.type === "block" && (
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.stemNumeration")}</Label>
-              <SelectWrapper
+              <SelectInputStyled
                 size="large"
                 data-cy="labelTypeSelect"
                 getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -144,7 +141,7 @@ class Layout extends Component {
                     {label}
                   </Select.Option>
                 ))}
-              </SelectWrapper>
+              </SelectInputStyled>
             </Col>
           </Row>
         )}
@@ -160,7 +157,3 @@ const enhance = compose(
 );
 
 export default enhance(Layout);
-
-const SelectWrapper = styled(StyledSelect)`
-  width: 100%;
-`;

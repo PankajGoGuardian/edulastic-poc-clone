@@ -24,7 +24,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import DropArea from "../../containers/DropArea";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { Subtitle } from "../../styled/Subtitle";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -836,9 +836,9 @@ class Authoring extends Component {
                   onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
                 />
                 <PaddingDiv>
-                  <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
+                  <CustomStyleBtn onClick={() => this.addNewChoiceBtn(index)}>
                     {t("component.cloze.imageText.addnewchoice")}
-                  </AddNewChoiceBtn>
+                  </CustomStyleBtn>
                 </PaddingDiv>
               </PaddingDiv>
             ))}

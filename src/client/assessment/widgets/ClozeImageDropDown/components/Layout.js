@@ -11,7 +11,7 @@ import { response } from "@edulastic/constants";
 import styled from "styled-components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
 
 import { OptionSelect } from "../styled/OptionSelect";

@@ -5,9 +5,11 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 import Display from "./components/Display";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -57,10 +59,11 @@ class CorrectAnswer extends Component {
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
-      <div>
+      <>
         {itemLevelScoring || (
           <CorrectAnswerHeader>
-            <CorrectAnswerPointField
+            <Label>{t("component.correctanswers.points")}</Label>
+            <TextInputStyled
               type="number"
               data-cy="points"
               value={responseScore}
@@ -68,11 +71,9 @@ class CorrectAnswer extends Component {
               onBlur={this.updateScore}
               disabled={false}
               min={0}
-              height="40px"
-              width="auto"
               step={0.5}
+              width={"200px"}
             />
-            <span>{t("component.correctanswers.points")}</span>
           </CorrectAnswerHeader>
         )}
         <Display
@@ -88,7 +89,7 @@ class CorrectAnswer extends Component {
           multipleResponses={multipleResponses}
           fontSize={fontSize}
         />
-      </div>
+      </>
     );
   }
 }

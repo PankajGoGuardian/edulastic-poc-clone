@@ -17,7 +17,7 @@ import QuillSortableList from "../../components/QuillSortableList/index";
 
 import { updateVariables } from "../../utils/variables";
 import { Subtitle } from "../../styled/Subtitle";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { ActionWrapper } from "./styled/ActionWrapper";
 import { CheckContainer } from "./styled/CheckContainer";
 
@@ -267,9 +267,9 @@ class GroupResponses extends React.Component {
               onChange={this.editOptions}
             />
             <ActionWrapper>
-              <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
+              <CustomStyleBtn onClick={this.addNewChoiceBtn}>
                 {t("component.cloze.dragDrop.addnewchoice")}
-              </AddNewChoiceBtn>
+              </CustomStyleBtn>
               {this.groupResponseOption()}
             </ActionWrapper>
           </PaddingDiv>
@@ -320,9 +320,9 @@ class GroupResponses extends React.Component {
                     />
                   )}
                   <PaddingDiv top={10} bottom={10}>
-                    <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
+                    <CustomStyleBtn onClick={() => this.addNewGroupOption(index)}>
                       {t("component.cloze.dragDrop.addnewchoice")}
-                    </AddNewChoiceBtn>
+                    </CustomStyleBtn>
                   </PaddingDiv>
                 </PaddingDiv>
               </fieldset>
@@ -330,7 +330,7 @@ class GroupResponses extends React.Component {
           ))}
         {item.hasGroupResponses && (
           <ActionWrapper>
-            <AddNewChoiceBtn onClick={this.addGroup}>{t("component.cloze.dragDrop.addgroup")}</AddNewChoiceBtn>
+            <CustomStyleBtn onClick={this.addGroup}>{t("component.cloze.dragDrop.addgroup")}</CustomStyleBtn>
             {this.groupResponseOption()}
           </ActionWrapper>
         )}

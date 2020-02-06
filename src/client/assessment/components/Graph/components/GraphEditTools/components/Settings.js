@@ -15,6 +15,8 @@ import { IconAllArrows } from "../styled/IconAllArrows";
 import { IconMaxArrows } from "../styled/IconMaxArrows";
 import { IconWrapper } from "../styled/IconWrapper";
 import { Label } from "../styled/Label";
+import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../../../../styled/InputStyles";
 
 class Settings extends Component {
   constructor(props) {
@@ -258,16 +260,18 @@ class Settings extends Component {
         </Row>
         <Separator />
         <Row style={{ marginBottom: "15px" }}>
-          <Checkbox
-            label={t("component.graphing.settingsPopup.xAxis")}
+          <CheckboxLabel
             name="xShowAxis"
             onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
             checked={xShowAxis}
-            labelFontSize="12px"
-          />
-          <Input
+            labelPadding="0px 10px"
+          >
+            {t("component.graphing.settingsPopup.xAxis")}
+          </CheckboxLabel>
+          <TextInputStyled
             type="text"
-            width={170}
+            width="170px"
+            height="30px"
             name="xAxisLabel"
             value={xAxisLabel}
             placeholder={t("component.graphing.settingsPopup.addLabel")}
@@ -275,27 +279,30 @@ class Settings extends Component {
           />
         </Row>
         <Row style={{ marginBottom: "20px" }}>
-          <Input
+          <TextInputStyled
             type="number"
-            width={60}
+            width="60px"
+            height="30px"
             name="xMin"
             value={xMin}
             placeholder={t("component.graphing.settingsPopup.min")}
             onChange={e => this.handleInputChange("xMin", e)}
           />
           <MinMaxSeparator>x</MinMaxSeparator>
-          <Input
+          <TextInputStyled
             type="number"
-            width={60}
+            width="60px"
+            height="30px"
             name="xMax"
             value={xMax}
             placeholder={t("component.graphing.settingsPopup.max")}
             onChange={e => this.handleInputChange("xMax", e)}
           />
-          <Input
+          <TextInputStyled
             type="number"
-            width={92}
-            marginLeft={18}
+            width="92px"
+            height="30px"
+            margin="0px 0px 0px 18px"
             name="xDistance"
             value={xDistance}
             placeholder={t("component.graphing.settingsPopup.step")}
@@ -303,16 +310,18 @@ class Settings extends Component {
           />
         </Row>
         <Row style={{ marginBottom: "15px" }}>
-          <Checkbox
-            label={t("component.graphing.settingsPopup.yAxis")}
+          <CheckboxLabel
             name="yShowAxis"
             onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
             checked={yShowAxis}
-            labelFontSize="12px"
-          />
-          <Input
+            labelPadding="0px 10px"
+          >
+            {t("component.graphing.settingsPopup.yAxis")}
+          </CheckboxLabel>
+          <TextInputStyled
             type="text"
-            width={170}
+            width="170px"
+            height="30px"
             name="yAxisLabel"
             value={yAxisLabel}
             placeholder={t("component.graphing.settingsPopup.addLabel")}
@@ -320,27 +329,30 @@ class Settings extends Component {
           />
         </Row>
         <Row>
-          <Input
+          <TextInputStyled
             type="number"
-            width={60}
+            width="60px"
+            height="30px"
             name="yMin"
             value={yMin}
             placeholder={t("component.graphing.settingsPopup.min")}
             onChange={e => this.handleInputChange("yMin", e)}
           />
           <MinMaxSeparator>x</MinMaxSeparator>
-          <Input
+          <TextInputStyled
             type="number"
-            width={60}
+            width="60px"
+            height="30px"
             name="yMax"
             value={yMax}
             placeholder={t("component.graphing.settingsPopup.max")}
             onChange={e => this.handleInputChange("yMax", e)}
           />
-          <Input
+          <TextInputStyled
             type="number"
-            width={92}
-            marginLeft={18}
+            width="92px"
+            height="30px"
+            margin="0px 0px 0px 18px"
             name="yDistance"
             value={yDistance}
             placeholder={t("component.graphing.settingsPopup.step")}

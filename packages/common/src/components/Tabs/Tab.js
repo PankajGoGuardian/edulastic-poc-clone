@@ -96,23 +96,25 @@ Tab.defaultProps = {
 export default Tab;
 
 const Container = styled.div`
-  color: ${({ active }) => (active ? themeColor : title)};
-  padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
+  color: ${title};
+  padding: ${({ type }) => (type === "primary" ? "0px 15px 0px 0px" : "10px 25px")};
   cursor: pointer;
   background: ${white};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
-  min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
-  text-align: center;
+  min-width: ${({ type }) => (type === "primary" ? "100px" : "0")};
+  text-align: left;
   border-radius: ${({ borderRadius }) => (borderRadius ? "4px" : 0)};
   text-transform: uppercase;
-  border-bottom: 2px solid ${({ active }) => (active ? themeColor : "transparent")};
+  border-bottom: 2px solid ${({ active }) => (active ? "#434B5D" : "transparent")};
+  position: relative;
+  margin-right: 10px;
 
   span {
     font-size: 14px;
     font-weight: 600;
     margin: auto;
-    color: ${({ active }) => (active ? themeColor : title)};
+    color: ${title};
     text-transform: uppercase;
   }
 
@@ -124,7 +126,12 @@ const Container = styled.div`
   svg {
     width: 8px;
     height: 8px;
-    fill: ${({ active }) => (active ? themeColor : title)};
+    fill: ${title};
+    position: absolute;
+    right: 5px;
+    &:hover {
+      fill: ${title};
+    }
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

@@ -15,6 +15,8 @@ import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { WidgetFRInput } from "../../../styled/Widget";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 class Layout extends Component {
   render() {
     const { onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, t, item } = this.props;
@@ -55,12 +57,11 @@ class Layout extends Component {
           {t("component.options.display")}
         </Subtitle>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.matrix.matrixStyle")}</Label>
-            <Select
+            <SelectInputStyled
               size="large"
-              style={{ width: "100%" }}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("type", val)}
               value={uiStyle.type}
@@ -71,12 +72,12 @@ class Layout extends Component {
                   {option.label}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </Col>
           {uiStyle.type === "table" && (
             <Col md={12}>
               <Label>{t("component.options.stemNumeration")}</Label>
-              <Select
+              <SelectInputStyled
                 size="large"
                 style={{ width: "100%" }}
                 onChange={val => changeUiStyle("stemNumeration", val)}
@@ -89,12 +90,12 @@ class Layout extends Component {
                     {option.label}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </Col>
           )}
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label data-cy="stemColumnTitle">{t("component.options.stemColumnTitle")}</Label>
             <WidgetFRInput>
@@ -119,10 +120,10 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.stemWidth")}</Label>
-            <Input
+            <TextInputStyled
               data-cy="stemWidth"
               size="large"
               type="number"
@@ -133,7 +134,7 @@ class Layout extends Component {
           </Col>
           <Col md={12}>
             <Label>{t("component.options.optionWidth")}</Label>
-            <Input
+            <TextInputStyled
               data-cy="optionWidth"
               size="large"
               type="number"
@@ -144,19 +145,19 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
+        <Row gutter={24} type={"flex"} align={"middle"}>
           <Col md={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
-          <Col md={12}>
-            <Checkbox
+          <Col md={12} marginBottom="0px">
+            <CheckboxLabel
               data-cy="dividersCheckbox"
               size="large"
               checked={uiStyle.horizontalLines}
               onChange={e => changeUiStyle("horizontalLines", e.target.checked)}
             >
               {t("component.options.dividers")}
-            </Checkbox>
+            </CheckboxLabel>
           </Col>
         </Row>
       </Question>

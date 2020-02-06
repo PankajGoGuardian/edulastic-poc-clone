@@ -16,7 +16,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import QuillSortableList from "../../components/QuillSortableList/index";
-import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 
@@ -136,9 +136,9 @@ class PossibleResponses extends Component {
           onChange={this.editOptions}
         />
         <div>
-          <AddNewChoiceBtn data-cy="add-new-ch" onClick={() => this.addNewChoiceBtn()}>
+          <CustomStyleBtn data-cy="add-new-ch" onClick={() => this.addNewChoiceBtn()}>
             {t("component.cloze.imageDragDrop.addnewchoice")}
-          </AddNewChoiceBtn>
+          </CustomStyleBtn>
         </div>
       </Question>
     );

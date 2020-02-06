@@ -7,8 +7,9 @@ export const TextInputStyled = styled(Input)`
     border: 1px solid #b9b9b9;
     color: #6a737f;
     font-size: ${props => props.fontSize || "13px"};
-    width: 100%;
+    width: ${props => props.width || "100%"};
     height: ${props => props.height || "40px"};
+    margin: ${props => props.margin || "0px"};
     min-height: 30px;
     padding: 0 15px;
     border-radius: 5px;

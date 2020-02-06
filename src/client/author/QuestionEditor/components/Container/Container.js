@@ -21,6 +21,7 @@ import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view
 import { ButtonBar, SecondHeadBar, ButtonAction } from "../../../src/components/common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
+import QuestionAuditTrailLogs from "../../../../assessment/containers/QuestionAuditTrailLogs";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 
 import ItemHeader from "../ItemHeader/ItemHeader";
@@ -168,6 +169,11 @@ class Container extends Component {
     if (view === "metadata") {
       return <QuestionMetadata />;
     }
+
+    if (view === "auditTrail") {
+      return <QuestionAuditTrailLogs />;
+    }
+
     if (questionType) {
       const hidingScoringBlock = shouldHideScoringBlock(itemFromState, question.id);
       return (
@@ -363,6 +369,7 @@ class Container extends Component {
         itemStatus={item && item.status}
         renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
         onShowSettings={() => setShowSettings(true)}
+        showAuditTrail={!!item}
       />
     ) : (
       <ButtonBar
@@ -373,6 +380,7 @@ class Container extends Component {
         withLabels
         onSaveScrollTop={onSaveScrollTop}
         savedWindowScrollTop={savedWindowScrollTop}
+        showAuditTrail={!!item}
         renderExtra={() =>
           modalItemId && (
             <ButtonClose onClick={onModalClose}>
@@ -429,7 +437,7 @@ class Container extends Component {
                 <BackLink onClick={history.goBack}>Back to Item List</BackLink>
               )}
             </Col>
-            {view !== "preview" && (
+            {view !== "preview" && view != "auditTrail" && (
               <Col span={12}>
                 <StyledButton id={getFormattedAttrId(`${question?.title}-how-to-author`)}>How to author</StyledButton>
               </Col>

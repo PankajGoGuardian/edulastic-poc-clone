@@ -110,6 +110,7 @@ class MainContainer extends Component {
             onSave={() => {}}
             view={view}
             previewTab={previewTab}
+            showAuditTrail={!!item}
           />
         </ItemHeader>
         <PaddingDiv top={160}>

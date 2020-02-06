@@ -87,7 +87,8 @@ class ButtonBar extends Component {
       renderRightSide,
       withLabels,
       disableSave = false,
-      showMetaData = false
+      showMetaData = false,
+      showAuditTrail = false
     } = this.props;
     const MobileDropMenu = (
       <DropMenuList>
@@ -143,6 +144,18 @@ class ButtonBar extends Component {
                     <IconMetadata color={white} width={18} height={16} />
                   </HeadIcon>
                   Meta data
+                </MenuItem>
+              )}
+              {hasAuthorPermission && showAuditTrail && (
+                <MenuItem
+                  data-cy="auditTrailButton"
+                  className={view === "auditTrail" && "active"}
+                  onClick={() => this.handleMenuClick("auditTrail")}
+                >
+                  <HeadIcon>
+                    <IconPencilEdit color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Audit trail
                 </MenuItem>
               )}
             </MenuList>

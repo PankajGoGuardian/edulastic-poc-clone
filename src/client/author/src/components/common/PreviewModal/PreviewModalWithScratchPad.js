@@ -10,7 +10,7 @@ import { hexToRGB } from "@edulastic/common";
 import { allThemeVars } from "../../../../../theme";
 import { StyledTools, StyledFlex, StyledInput, StyledRejectionSubmitBtn, StyledFlexContainer } from "./styled";
 
-import { savePreviewRejectAction } from "./ducks";
+import { savePreviewRejectAction } from "./previewAttachment.ducks";
 
 const PreviewModalWithScratchPad = ({
   submitReviewFeedback,
@@ -22,7 +22,8 @@ const PreviewModalWithScratchPad = ({
   redoScratchPad,
   columnsContentArea: ColumnsContentArea,
   sectionQue,
-  resourceCount
+  resourceCount,
+  onlySratchpad
 }) => {
   const [currentColor, setCurrentColor] = useState("#ff0000");
   const [fillColor, setFillColor] = useState("#ff0000");
@@ -75,7 +76,7 @@ const PreviewModalWithScratchPad = ({
   const _renderAddRejectNoteSection = () => {
     return (
       <StyledFlex style={{ marginTop: "18px" }}>
-        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} />
+        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={2} />
         <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
       </StyledFlex>
     );
@@ -91,20 +92,27 @@ const PreviewModalWithScratchPad = ({
           borderRadius: "10px"
         }}
       >
-        <Tools
-          onFillColorChange={onFillColorChange}
-          fillColor={fillColor}
-          deleteMode={deleteMode}
-          currentColor={currentColor}
-          onToolChange={handleScratchToolChange}
-          activeMode={activeMode}
-          undo={handleUndo}
-          redo={handleRedo}
-          onColorChange={handleColorChange}
-          className="review-scratchpad"
-        />
+        {!onlySratchpad && (
+          <Tools
+            onFillColorChange={onFillColorChange}
+            fillColor={fillColor}
+            deleteMode={deleteMode}
+            currentColor={currentColor}
+            onToolChange={handleScratchToolChange}
+            activeMode={activeMode}
+            undo={handleUndo}
+            redo={handleRedo}
+            onColorChange={handleColorChange}
+            className="review-scratchpad"
+          />
+        )}
         <div style={{ width: "100%", position: "relative" }}>
-          <ColumnsContentArea sectionQue={sectionQue} resourceCount={resourceCount} className="scratchpad-wrapper">
+          <ColumnsContentArea
+            sectionQue={sectionQue}
+            resourceCount={resourceCount}
+            className="scratchpad-wrapper"
+            style={{ pointerEvents: "none" }}
+          >
             <SvgDraw
               activeMode={activeMode}
               scratchPadMode
@@ -122,7 +130,7 @@ const PreviewModalWithScratchPad = ({
           </ColumnsContentArea>
         </div>
       </StyledFlexContainer>
-      {_renderAddRejectNoteSection()}
+      {!onlySratchpad && _renderAddRejectNoteSection()}
     </>
   );
 };
@@ -130,8 +138,8 @@ const PreviewModalWithScratchPad = ({
 const enhance = compose(
   connect(
     (state, ownProps) => ({
-      scratchPad: get(state, `testItemPreview.present[${ownProps.item._id}].scratchpad`, null),
-      rejectFeedbackData: get(state, `testItemPreview.present[${ownProps.item._id}]`, null)
+      scratchPad: get(state, `testItemPreviewAttachment.present[${ownProps.item._id}].scratchpad`, null),
+      rejectFeedbackData: get(state, `testItemPreviewAttachment.present[${ownProps.item._id}]`, null)
     }),
     {
       saveUserWork: savePreviewRejectAction,

@@ -71,6 +71,7 @@ import { ConfirmationModal } from "../../../src/components/common/ConfirmationMo
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
 import { setCreatedItemToTestAction } from "../../../TestPage/ducks";
+import QuestionAuditTrailLogs from "../../../../assessment/containers/QuestionAuditTrailLogs";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -529,6 +530,11 @@ class Container extends Component {
       </AnswerContext.Provider>
     );
   };
+
+  renderAuditTrailLogs = () => {
+    return <QuestionAuditTrailLogs />;
+  };
+
   render() {
     const { showSettings, showRemovePassageItemPopup } = this.state;
     const {
@@ -602,6 +608,7 @@ class Container extends Component {
     const disableSave = !item.passageId && item.rows.every(row => row?.widgets?.length === 0);
 
     const layoutType = isPassage ? COMPACT : DEFAULT;
+
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
         <ConfirmationModal
@@ -666,6 +673,7 @@ class Container extends Component {
               showPublishButton={showPublishButton}
               hasAuthorPermission={hasAuthorPermission}
               itemStatus={item && item.status}
+              showAuditTrail={!!item}
               withLabels
               renderExtra={() =>
                 modalItemId && (
@@ -720,6 +728,7 @@ class Container extends Component {
             </BreadCrumbBar>
             {view === "edit" && this.renderEdit()}
             {view === "preview" && this.renderPreview()}
+            {view === "auditTrail" && this.renderAuditTrailLogs()}
           </ContentWrapper>
         </Layout>
       </ItemDetailContext.Provider>

@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
-import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
+import { testItemsApi, passageApi, itemsApi, attchmentApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
@@ -109,6 +109,10 @@ export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passa
 export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
 export const SET_COLLECTIONS = "[itemDetail] set collections";
 export const SET_HIGHLIGHT_COLLECTION = "[itemDetail] set highlight collection";
+
+export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST = "[question] recieve question preview attachment request";
+export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_SUCCESS = "[question] recieve question preview attachment success";
+export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE = "[question] recieve question preview attachment failure";
 // actions
 
 //
@@ -127,6 +131,7 @@ export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PAS
 export const setCollectionsAction = createAction(SET_COLLECTIONS);
 export const setItemLevelScoreFromRubricAction = createAction(SET_ITEM_LEVEL_SCORING_FROM_RUBRIC);
 export const setHighlightCollectionAction = createAction(SET_HIGHLIGHT_COLLECTION);
+export const fetchQuestionPreviewAttachmentsAction = createAction(RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -426,7 +431,8 @@ const initialState = {
   redirectTestId: null,
   currentEditingTestId: null,
   showWarningModal: false,
-  highlightCollection: false
+  highlightCollection: false,
+  loadingAuditLogs: false
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -714,6 +720,25 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         highlightCollection: payload
+      };
+    }
+    case RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST: {
+      return {
+        ...state,
+        loadingAuditLogs: true
+      };
+    }
+    case RECEIVE_QUESTION_PREVIEW_ATTACHMENT_SUCCESS: {
+      return {
+        ...state,
+        previewData: payload,
+        loadingAuditLogs: false
+      };
+    }
+    case RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE: {
+      return {
+        ...state,
+        loadingAuditLogs: false
       };
     }
     default:
@@ -1376,6 +1401,22 @@ function* addWidgetToPassage({ payload }) {
   }
 }
 
+function* loadQuestionPreviewAttachmentsSaga({ payload }) {
+  try {
+    const result = yield call(attchmentApi.loadAllAttachments, payload);
+    yield put({
+      type: RECEIVE_QUESTION_PREVIEW_ATTACHMENT_SUCCESS,
+      payload: result
+    });
+  } catch (e) {
+    const errorMessage = "Loading audit trail logs failed";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE
+    });
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -1388,6 +1429,7 @@ export function* watcherSaga() {
     yield takeLatest(CONVERT_TO_PASSAGE_WITH_QUESTIONS, convertToPassageWithQuestions),
     yield takeLatest(SAVE_PASSAGE, savePassage),
     yield takeLatest(ADD_WIDGET_TO_PASSAGE, addWidgetToPassage),
-    yield takeEvery(DELETE_ITEM, deleteItemSaga)
+    yield takeEvery(DELETE_ITEM, deleteItemSaga),
+    yield takeLatest(RECEIVE_QUESTION_PREVIEW_ATTACHMENT_REQUEST, loadQuestionPreviewAttachmentsSaga)
   ]);
 }

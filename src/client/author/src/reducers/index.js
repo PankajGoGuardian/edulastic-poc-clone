@@ -53,6 +53,7 @@ import { bucketReducer } from "../../ContentBuckets";
 import { collectionsReducer } from "../../ContentCollections";
 import { slice as LCBAssignmentSlice } from "../../LCBAssignmentSettings/ducks";
 import { slice as subscriptionSlice } from "../../Subscription/ducks";
+import { testItemPreviewAttachment } from "../components/common/PreviewModal/previewAttachment.ducks";
 
 const authorReducers = {
   authorUi,
@@ -109,7 +110,8 @@ const authorReducers = {
   collectionsReducer,
   itemScore,
   LCBAssignmentSettings: LCBAssignmentSlice.reducer,
-  subscription: subscriptionSlice.reducer
+  subscription: subscriptionSlice.reducer,
+  testItemPreviewAttachment
 };
 
 export default authorReducers;

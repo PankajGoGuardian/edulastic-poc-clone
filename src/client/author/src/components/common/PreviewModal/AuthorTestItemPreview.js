@@ -243,11 +243,12 @@ class AuthorTestItemPreview extends Component {
       userId,
       page,
       userFeatures,
-      isReviwer
+      hideButtons
     } = this.props;
 
     const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId;
+    if (hideButtons) return null;
 
     return (
       <>
@@ -356,9 +357,10 @@ class AuthorTestItemPreview extends Component {
       page,
       handleShowHints,
       showHints,
-      toggleReportIssue
+      toggleReportIssue,
+      hideButtons
     } = this.props;
-
+    if (hideButtons) return null;
     const hints = get(item, "data.questions.[0].hints", []);
     const showHintsBtn = hints.length > 0 ? hints[0].label : false;
 
@@ -467,7 +469,7 @@ class AuthorTestItemPreview extends Component {
   }
 
   renderColumnContentAreaWithScratchpad = (sectionQue, resourceCount) => {
-    const { item } = this.props;
+    const { item, onlySratchpad } = this.props;
     return (
       <PreviewModalWithScratchPad
         item={item}
@@ -475,11 +477,13 @@ class AuthorTestItemPreview extends Component {
         sectionQue={sectionQue}
         resourceCount={resourceCount}
         submitReviewFeedback={this.submitReviewFeedback}
+        onlySratchpad={onlySratchpad}
       />
     );
   };
 
   renderCollapseButtons = () => {
+    if (this.props.hideButtons) return null;
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
@@ -543,7 +547,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   render() {
-    const { cols, item } = this.props;
+    const { cols, item, onlySratchpad } = this.props;
     const { isRejectMode } = this.state;
     let questionCount = 0;
     let resourceCount = 0;
@@ -567,7 +571,7 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-          {isRejectMode
+          {isRejectMode || onlySratchpad
             ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
             : this.renderColumnsContentArea({ sectionQue, resourceCount })}
         </ScrollContext.Provider>

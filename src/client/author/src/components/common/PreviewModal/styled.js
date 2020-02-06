@@ -278,7 +278,7 @@ export const SyledSpan = styled.span`
   padding: 0 11px;
 `;
 
-export const StyledInput = styled(Input)`
+export const StyledInput = styled(Input.TextArea)`
   padding: 11px 22px;
   height: 40px;
 `;

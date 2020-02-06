@@ -20,7 +20,17 @@ const saveAttachment = data =>
     })
     .then(result => result.data.result);
 
+const loadAllAttachments = filter =>
+  api
+    .callApi({
+      url: `${prefix}/`,
+      method: "get",
+      params: filter
+    })
+    .then(result => result.data.result);
+
 export default {
   loadAttachment,
-  saveAttachment
+  saveAttachment,
+  loadAllAttachments
 };

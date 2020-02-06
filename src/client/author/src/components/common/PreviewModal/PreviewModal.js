@@ -215,7 +215,9 @@ class PreviewModal extends React.Component {
       page,
       showAddPassageItemToTestButton = false, // show if add item to test button needs to shown.
       windowWidth,
-      userFeatures
+      userFeatures,
+      hideButtons,
+      onlySratchpad
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField } = this.state;
@@ -309,6 +311,8 @@ class PreviewModal extends React.Component {
                   item={item}
                   page={page}
                   showCollapseBtn
+                  hideButtons={hideButtons}
+                  onlySratchpad={onlySratchpad}
                 />
                 {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
                 {showReportIssueField && (
@@ -358,7 +362,7 @@ const enhance = compose(
     (state, ownProps) => {
       const itemId = (ownProps.data || {}).id;
       return {
-        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page),
+        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page) || get(state, "itemDetail.item"),
         collections: getCollectionsSelector(state),
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),

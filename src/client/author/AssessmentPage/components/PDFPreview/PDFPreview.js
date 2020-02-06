@@ -53,7 +53,9 @@ const PDFPreview = ({
   removeAnswers,
   testMode,
   reportMode,
-  studentWork = false
+  studentWork = false,
+  highlighted,
+  forwardedRef
 }) => {
   const [pdfScale, scalePDF] = useState(1);
   const review = viewMode === "review";
@@ -95,7 +97,7 @@ const PDFPreview = ({
   }, [viewMode, testMode]);
 
   const handleHighlight = questionId => () => {
-    onHighlightQuestion(questionId);
+    onHighlightQuestion(questionId, true);
   };
 
   const handleRemoveHighlight = () => {
@@ -111,7 +113,7 @@ const PDFPreview = ({
       isToolBarVisible={isToolBarVisible}
       minimized={minimized}
     >
-      <PerfectScrollbar>
+      <PerfectScrollbar ref={forwardedRef}>
         <Droppable
           types={["question"]}
           onDrop={handleDrop(currentPage, onDropAnnotation)}
@@ -143,10 +145,11 @@ const PDFPreview = ({
                 data={questionsById[questionId]}
                 answer={answersById[questionId]}
                 previewMode={viewMode === "edit" ? "clear" : previewMode}
-                pdfPreview
+                testMode={testMode}
+                highlighted={highlighted === questionId}
                 viewMode="review"
                 annotations
-                testMode={testMode}
+                pdfPreview
               />
             </div>
           ))}

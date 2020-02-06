@@ -65,7 +65,12 @@ const StyledCancelBtn = styled(Button)`
   border-color: ${themeColor};
 `;
 
-class Worksheet extends React.Component {
+class WorksheetComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.pdfRef = React.createRef();
+  }
+
   static propTypes = {
     docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
@@ -130,10 +135,25 @@ class Worksheet extends React.Component {
     }
   }
 
-  handleHighlightQuestion = questionId =>
-    this.setState({
-      highlightedQuestion: questionId
-    });
+  handleHighlightQuestion = (questionId, pdfPreview = false) => {
+    this.setState({ highlightedQuestion: questionId });
+    const { annotations } = this.props;
+    if (!pdfPreview) {
+      const { page, x, y } = annotations.find(x => x.questionId === questionId) || {};
+      if (!page) return;
+      if (page - 1 !== this.state.currentPage) this.handleChangePage(page - 1);
+      if (this?.pdfRef?.current) {
+        const scrollableDOMNode = this.pdfRef?.current?._ps?.element;
+        const { top } = scrollableDOMNode.getBoundingClientRect() || {};
+        if (y > top) {
+          scrollableDOMNode.scrollTo({
+            top: y - top || 0,
+            behavior: "smooth"
+          });
+        }
+      }
+    }
+  };
 
   handleChangePage = nextPage => {
     this.setState({ currentPage: nextPage });
@@ -689,6 +709,8 @@ class Worksheet extends React.Component {
               pageChange={this.handleChangePage}
               testMode={testMode}
               studentWork={studentWork}
+              highlighted={highlightedQuestion}
+              forwardedRef={this.pdfRef}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools
@@ -733,6 +755,17 @@ class Worksheet extends React.Component {
     );
   }
 }
+
+const withForwardedRef = Component => {
+  const handle = (props, ref) => <Component {...props} forwardedRef={ref} />;
+
+  const name = Component.displayName || Component.name;
+  handle.displayName = `withForwardedRef(${name})`;
+
+  return React.forwardRef(handle);
+};
+
+const Worksheet = withForwardedRef(WorksheetComponent);
 
 export { Worksheet };
 

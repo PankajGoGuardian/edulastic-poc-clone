@@ -335,7 +335,12 @@ class QuestionItem extends React.Component {
             onDragEnd={this.handleDragEnd}
             enabled={!review}
           >
-            <QuestionNumber viewMode={viewMode === "edit"} dragging={dragging}>
+            <QuestionNumber
+              viewMode={viewMode === "edit"}
+              dragging={dragging}
+              highlighted={highlighted}
+              pdfPreview={pdfPreview}
+            >
               {qIndex || index + 1}
             </QuestionNumber>
           </Draggable>

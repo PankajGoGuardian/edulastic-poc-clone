@@ -18,7 +18,7 @@ export const QuestionItemWrapper = styled.div`
   background: ${({ pdfPreview }) => (pdfPreview ? "transparent" : white)};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
   border: ${({ pdfPreview }) => !pdfPreview && "1px solid " + sectionBorder};
-  box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
+  box-shadow: ${({ highlighted, pdfPreview }) => (!pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
 `;
 
 export const AnswerForm = styled.div`
@@ -41,6 +41,7 @@ export const QuestionNumber = styled.span`
   text-align: center;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
+  box-shadow: ${({ highlighted, pdfPreview }) => pdfPreview && highlighted && "0 0 10px 0 #00AD50"};
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;

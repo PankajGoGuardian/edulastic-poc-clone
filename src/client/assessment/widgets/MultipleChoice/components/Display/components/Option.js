@@ -177,7 +177,9 @@ const Option = props => {
               fontSize={fontSize}
               smallSize={smallSize}
               style={{ marginBottom: 17 }}
-              isCrossAction={isCrossAction || hovered}
+              isCrossAction={isCrossAction}
+              hovered={hovered}
+              charCount={(item.label || "").length}
             >
               <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
@@ -189,7 +191,13 @@ const Option = props => {
           <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
             <span className="labelOnly">{getOptionLabel(index)}</span>
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
+            <MultiChoiceContent
+              fontSize={fontSize}
+              smallSize={smallSize}
+              isCrossAction={isCrossAction}
+              hovered={hovered}
+              charCount={(item.label || "").length}
+            >
               <MathFormulaDisplay paddingLeft fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </StyledOptionsContainer>
@@ -200,7 +208,13 @@ const Option = props => {
           <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             {container}
             <span className="labelOnly">{getOptionLabel(index)}</span>
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} isCrossAction={isCrossAction || hovered}>
+            <MultiChoiceContent
+              fontSize={fontSize}
+              smallSize={smallSize}
+              isCrossAction={isCrossAction}
+              hovered={hovered}
+              charCount={(item.label || "").length}
+            >
               <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
           </StyledOptionsContainer>

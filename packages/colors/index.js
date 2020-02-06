@@ -60,6 +60,7 @@ export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
 export const deleteRed = "#FF0080";
 export const deleteRed2 = "#EF3863";
+export const strikeOutHover = "#f7cbcc";
 
 export const mainBlueColor = "#00b0ff";
 export const blue = "#1774F0";

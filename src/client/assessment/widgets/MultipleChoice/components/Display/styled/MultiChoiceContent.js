@@ -1,14 +1,26 @@
 import styled from "styled-components";
-import { tabGrey, someGreyColor1 } from "@edulastic/colors";
+import { red, strikeOutHover } from "@edulastic/colors";
 
-const underline = `
-  content: "";
-  width: calc(100% + 10px);
-  position: absolute;
-  left: -5px;
-  border-bottom: 2px ${tabGrey} solid;
-  height: 3px;
-`;
+const getDegree = (charCount = 0) => {
+  let degrees;
+
+  if (charCount <= 5) {
+    degrees = 30;
+  } else if (charCount > 5 && charCount <= 10) {
+    degrees = 20;
+  } else if (charCount > 10 && charCount <= 18) {
+    degrees = 15;
+  } else if (charCount > 18 && charCount <= 25) {
+    degrees = 10;
+  } else if (charCount > 25 && charCount <= 35) {
+    degrees = 7.5;
+  } else if (charCount > 35 && charCount < 100) {
+    degrees = 5;
+  } else {
+    degrees = 3;
+  }
+  return degrees;
+};
 
 export const MultiChoiceContent = styled.div`
   display: flex;
@@ -17,15 +29,38 @@ export const MultiChoiceContent = styled.div`
   font-weight: ${props => props.theme.widgets.multipleChoice.multiChoiceContentFontWeight};
   font-size: ${props => props.fontSize || props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
 
-  ${({ isCrossAction }) =>
-    isCrossAction &&
-    `
+  ${({ isCrossAction, hovered, charCount }) => {
+    let color = strikeOutHover;
+    if (isCrossAction) {
+      color = red;
+    }
+    const count = getDegree(charCount);
+    return (
+      (isCrossAction || hovered) &&
+      `
       position: relative;
-      & * {
-        color: ${someGreyColor1} !important;
+      display: inline-block;
+
+      &:before, &:after {
+        content: "";
+        width: 100%;
+        position: absolute;
+        right: 0;
+        top: 50%;
       }
-      &:after { ${underline} }
-    `}
+
+      &:before {
+        border-bottom: 4px solid ${color};
+        transform: skewY(-${count}deg);
+      }
+      
+      &:after {
+        border-bottom: 4px solid ${color};
+        transform: skewY(${count}deg);
+      }
+    `
+    );
+  }}
 `;
 
 export const MultipleChoiceLabelContainer = styled.div`

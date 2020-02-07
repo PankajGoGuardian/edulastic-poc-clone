@@ -52,9 +52,8 @@ class Index extends React.Component {
   submitModal = data => {
     const { createCustomReportAction, updateCustomReportAction, openModalType } = this.props;
     console.log(`submit called!`);
-    /*TODO: use correct url for the api and then enable the commented line*/
     if (openModalType === "edit") {
-      // updateCustomReportAction(data);
+      updateCustomReportAction(data);
     } else {
       createCustomReportAction(data);
     }

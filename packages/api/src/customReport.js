@@ -29,12 +29,12 @@ const updatePermissionStatus = ({ _id, enable, permissionIds }) =>
     .then(({ data }) => data.result);
 
 /*TODO: create new api and change the url*/
-const updateCustomReport = ({ _id, enable, permissionIds }) =>
+const updateCustomReport = data =>
   api
     .callApi({
-      url: `/`,
+      url: `${prefix}/new-report`,
       method: "put",
-      data: { enable, permissionIds }
+      data
     })
     .then(({ data }) => data.result);
 

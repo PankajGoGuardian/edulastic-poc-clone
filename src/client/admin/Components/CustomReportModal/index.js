@@ -106,11 +106,16 @@ class CustomReportModal extends React.Component {
   };
 
   onSubmitForm = async () => {
-    const { onSubmit, districtId } = this.props;
+    const {
+      onSubmit,
+      districtId,
+      reportData: { _id, permissions = [] },
+      modalType
+    } = this.props;
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { active = true, desc, institutionIds = [], level, name, url, logo, roles = [], users = "" } = row;
-        onSubmit({
+        const submitData = {
           districtId,
           name,
           desc,
@@ -121,7 +126,15 @@ class CustomReportModal extends React.Component {
           roles,
           users: users ? users.split(",") : [],
           active
-        });
+        };
+        if (modalType === "edit") {
+          Object.assign(submitData, {
+            reportId: _id,
+            permissionIds: permissions.map(o => o._id)
+          });
+        }
+        onSubmit(submitData);
+        this.onModalClose();
       }
     });
   };

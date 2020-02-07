@@ -512,7 +512,8 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
           push({
             pathname,
             state: {
-              persistStore: true
+              persistStore: true,
+              isAuthoredNow: true
             }
           })
         );
@@ -591,7 +592,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
       });
       // save the test and navigate to test page.
       const path = !isEditFlow
-        ? `/author/tests/tab/review/id/${testId}`
+        ? `/author/tests/tab/addItems/id/${testId}`
         : `/author/tests/${testId}/createItem/${item._id}`;
       yield put(updateTestAndNavigateAction(path));
     }

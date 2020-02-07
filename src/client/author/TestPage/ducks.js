@@ -770,12 +770,8 @@ function* createTestSaga({ payload }) {
     const entity = yield createTest(payload.data);
     entity.itemGroups = payload.data.itemGroups;
     yield put(createTestSuccessAction(entity));
-    if (payload.currentTab) {
-      yield put(replace(`/author/tests/tab/${payload.currentTab}/id/${entity._id}`));
-    } else {
-      yield put(replace(`/author/tests/tab/description/id/${entity._id}`));
-    }
-
+    const currentTab = payload.isCartTest ? "description" : "addItems";
+    yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`));
     yield call(message.success, "Test created");
   } catch (err) {
     console.log({ err });
@@ -978,8 +974,8 @@ function* publishTestSaga({ payload }) {
       yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     }
     if (features.isCurator || features.isPublisherAuthor) {
-      yield put(push(`/author/tests`));
-      return;
+      yield put(push(`/author/tests?filter=AUTHORED_BY_ME`));
+      return message.success("Test saved successfully. Test not visible? Clear the applied filters.");
     }
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
@@ -1142,8 +1138,8 @@ function* setTestDataAndUpdateSaga(payload) {
       } else {
         yield put(
           replace({
-            pathname: `/author/tests/tab/review/id/${entity._id}`,
-            state: { showItemAddedMessage: true }
+            pathname: `/author/tests/tab/addItems/id/${entity._id}`,
+            state: { showItemAddedMessage: true, isAuthoredNow: true }
           })
         );
       }

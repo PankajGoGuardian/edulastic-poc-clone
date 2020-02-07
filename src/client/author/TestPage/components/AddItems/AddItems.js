@@ -106,15 +106,19 @@ class AddItems extends PureComponent {
       test,
       curriculums,
       getAllTags,
-      search: initSearch
+      search: initSearch,
+      history
     } = this.props;
 
+    const isAuthoredNow = history?.location?.state?.isAuthoredNow;
+    const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
     const selectedSubjects = test.subjects.filter(item => !!item);
     const selectedGrades = test.grades.filter(item => !!item);
     const search = {
       ...initSearch,
       ...sessionFilters,
+      ...applyAuthoredFilter,
       subject: selectedSubjects.length ? selectedSubjects[0] : sessionFilters?.subject || initSearch.subject,
       grades: selectedGrades.length
         ? selectedGrades

@@ -86,14 +86,17 @@ class Contaier extends Component {
       setDefaultTestData,
       clearSelectedItems,
       search: initSearch,
-      getAllTags
+      getAllTags,
+      history
     } = this.props;
-
+    const isAuthoredNow = history?.location?.state?.isAuthoredNow;
+    const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const { params = {} } = match;
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
     const search = {
       ...initSearch,
       ...sessionFilters,
+      ...applyAuthoredFilter,
       subject: sessionFilters?.subject || initSearch.subject,
       grades: sessionFilters?.grades?.length ? sessionFilters.grades : initSearch.grades
     };

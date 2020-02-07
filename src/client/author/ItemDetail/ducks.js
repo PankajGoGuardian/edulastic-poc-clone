@@ -992,11 +992,12 @@ export function* updateItemSaga({ payload }) {
           push({
             pathname,
             state: {
-              persistStore: true
+              persistStore: true,
+              isAuthoredNow: true
             }
           })
         );
-        return message.info("Please add the item manually to a group.");
+        return message.success("Please add the item manually to a group.");
       }
       const nextTestItems = [...testItems, item._id];
 
@@ -1006,7 +1007,14 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/tab/review/id/${payload.testId}`));
+        yield put(
+          push({
+            pathname: `/author/tests/tab/addItems/id/${payload.testId}`,
+            state: {
+              isAuthoredNow: true
+            }
+          })
+        );
       }
       yield put(changeViewAction("edit"));
       return;
@@ -1171,7 +1179,7 @@ function* publishTestItemSaga({ payload }) {
 
       let successMessage, testItemStatus;
       if (payload.status === "published") {
-        successMessage = "Item created successfully";
+        successMessage = "Item saved successfully. Item not visible? Clear the applied filters.";
         testItemStatus = testItemStatusConstants.PUBLISHED;
       } else {
         successMessage = "Review request is submitted successfully.";
@@ -1182,11 +1190,13 @@ function* publishTestItemSaga({ payload }) {
       yield put(changeUpdatedFlagAction(false));
       if (redirectTestId) {
         yield delay(1500);
-        yield put(push(`/author/tests/${redirectTestId}`));
+        yield put(
+          push({ pathname: `/author/tests/tests/tab/addItems/id/${redirectTestId}`, state: { isAuthoredNow: true } })
+        );
         yield put(clearRedirectTestAction());
       } else {
         // on publishing redirect to items bank.
-        yield put(push("/author/items"));
+        yield put(push({ pathname: "/author/items", state: { isAuthoredNow: true } }));
       }
 
       yield call(message.success, successMessage);

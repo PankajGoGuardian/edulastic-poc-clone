@@ -11,6 +11,7 @@ import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from "./styled";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
+import Styled from "styled-components";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -133,26 +134,33 @@ const PDFPreview = ({
             )}
             {renderExtra}
           </Preview>
+          <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
+            {annotations
+              .filter(item => item.toolbarMode === "question" && item.page === currentPage)
+              .map(({ uuid, qIndex, x, y, questionId }) => (
+                <div
+                  className="annotation-item"
+                  key={uuid}
+                  onClick={handleHighlight(questionId)}
+                  style={getNumberStyles(x, y)}
+                >
+                  <QuestionItem
+                    key={questionId}
+                    index={qIndex}
+                    review
+                    data={questionsById[questionId]}
+                    answer={answersById[questionId]}
+                    previewMode={viewMode === "edit" ? "clear" : previewMode}
+                    testMode={testMode}
+                    highlighted={highlighted === questionId}
+                    viewMode="review"
+                    annotations
+                    pdfPreview
+                  />
+                </div>
+              ))}
+          </AnnotationsContainer>
         </Droppable>
-        {annotations
-          .filter(item => item.toolbarMode === "question" && item.page === currentPage)
-          .map(({ uuid, qIndex, x, y, questionId }) => (
-            <div key={uuid} onClick={handleHighlight(questionId)} style={getNumberStyles(x, y)}>
-              <QuestionItem
-                key={questionId}
-                index={qIndex}
-                review
-                data={questionsById[questionId]}
-                answer={answersById[questionId]}
-                previewMode={viewMode === "edit" ? "clear" : previewMode}
-                testMode={testMode}
-                highlighted={highlighted === questionId}
-                viewMode="review"
-                annotations
-                pdfPreview
-              />
-            </div>
-          ))}
 
         {!studentWork ? (
           <ZoomControlCotainer>
@@ -164,6 +172,16 @@ const PDFPreview = ({
     </PDFPreviewWrapper>
   );
 };
+
+const AnnotationsContainer = Styled.div`
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  transform-origin: left top;
+  transform: scale(${props => props.zoom || 1});
+`;
 
 PDFPreview.propTypes = {
   page: PropTypes.object.isRequired,

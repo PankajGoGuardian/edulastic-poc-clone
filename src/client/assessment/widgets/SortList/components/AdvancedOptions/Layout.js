@@ -1,16 +1,15 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Row, Col } from "antd";
-import { withNamespaces } from "@edulastic/localization";
-import { ChoiceDimensions } from "@edulastic/constants";
-import { get } from "lodash";
-
-import FontSizeSelect from "../../../../containers/WidgetOptions/components/FontSize";
-import OrientationSelect from "../../../../components/OrientationSelect";
-
-import { Layout, StemNumerationOption, NumberInput } from "../../../../containers/WidgetOptions/components";
-import Question from "../../../../components/Question";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { ChoiceDimensions } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import OrientationSelect from "../../../../components/OrientationSelect";
+import Question from "../../../../components/Question";
+import { Layout, NumberInput, StemNumerationOption } from "../../../../containers/WidgetOptions/components";
+import FontSizeSelect from "../../../../containers/WidgetOptions/components/FontSize";
+import { Col } from "../../../../styled/WidgetOptions/Col";
+import { Row } from "../../../../styled/WidgetOptions/Row";
 
 const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class LayoutWrapper extends Component {
@@ -28,7 +27,7 @@ class LayoutWrapper extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <FontSizeSelect
                 value={fontsize}
@@ -48,7 +47,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <NumberInput
                 label={t("component.options.choiceMinWidth")}
@@ -65,7 +64,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <StemNumerationOption
                 onChange={val => onUiChange("validationStemNumeration", val)}

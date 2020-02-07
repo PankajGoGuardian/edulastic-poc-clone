@@ -98,7 +98,6 @@ class ListComponent extends Component {
           onSortEnd={onSortOrderListEnd}
           useDragHandle
           styleType="button"
-          centerContent
           lockToContainerEdges
           lockOffset={["10%", "10%"]}
           onRemove={handleDeleteQuestion}

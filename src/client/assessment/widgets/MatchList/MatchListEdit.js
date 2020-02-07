@@ -296,17 +296,25 @@ const MatchListEdit = ({ item, setQuestionData, advancedLink, advancedAreOpen, f
             item={item}
           />
         </Question>
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
+
+        <Question
+          section="main"
+          label={t("component.matchList.setcorrectanswers")}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          questionType={item?.title}
-        />
+        >
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            questionType={item?.title}
+          />
+        </Question>
 
         {advancedLink}
 

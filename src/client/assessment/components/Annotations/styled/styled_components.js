@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tabletWidth } from "@edulastic/colors";
+import { tabletWidth, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 export const FroalaInput = styled.div`
   border-radius: 4px;
@@ -11,9 +11,9 @@ export const FroalaInput = styled.div`
   // align-items: center;
   justify-content: center;
   text-align: center;
-  border: 1px solid #b9b9b9;
+  border: 1px solid ${greyThemeLight};
   padding-left: ${props => props.pl || "8px"};
-  background: ${({ isRnd }) => (isRnd ? "transparent" : "#f8f8f8")};
+  background: ${({ isRnd }) => (isRnd ? "transparent" : greyThemeLighter)};
   width: ${({ isRnd }) => (isRnd ? "auto" : "calc(100% - 50px)")};
   padding-right: ${({ isRnd }) => (isRnd ? "8px" : "0")};
   .fr-box {

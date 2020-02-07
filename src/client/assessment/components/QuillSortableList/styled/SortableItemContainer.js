@@ -1,5 +1,5 @@
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import styled from "styled-components";
-import { themeColor, inputBorder, dashBorderColor, white } from "@edulastic/colors";
 
 export const SortableItemContainer = styled.div.attrs({
   className: "sortable-item-container"
@@ -11,8 +11,9 @@ export const SortableItemContainer = styled.div.attrs({
     styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 10px 0" : "0 0 12px 0"};
   display: inline-flex;
   flex-direction: column;
-  background: #f8f8f8;
-  border: ${({ styleType }) => (styleType === "list" || styleType === "inline" ? "none" : `1px solid #b9b9b9`)};
+  background: ${greyThemeLighter};
+  border: ${({ styleType }) =>
+    styleType === "list" || styleType === "inline" ? "none" : `1px solid ${greyThemeLight}`};
   border-radius: 4px;
   padding-right: 12px;
   z-index: 99999;
@@ -23,7 +24,7 @@ export const SortableItemContainer = styled.div.attrs({
 
   &:hover {
     input {
-      border-color: #b9b9b9;
+      border-color: ${greyThemeLight};
     }
   }
   & div.main {
@@ -34,7 +35,7 @@ export const SortableItemContainer = styled.div.attrs({
     height: 100%;
     display: flex;
     align-items: center;
-    background: #f8f8f8;
+    background: ${greyThemeLighter};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     margin-right: 0;
   }

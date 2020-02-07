@@ -44,7 +44,7 @@ class LayoutWrapper extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <ListStyleOption
                 onChange={val => changeUIStyle("type", val)}
@@ -59,7 +59,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <NumberInput
                 label={t("component.options.choiceMinWidth")}
@@ -76,7 +76,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={24}>
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}

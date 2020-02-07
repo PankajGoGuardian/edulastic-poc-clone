@@ -4,15 +4,15 @@ import { Select } from "antd";
 import i18n, { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const ResponseContainerPosition = ({ t, onChange, value, size, options, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.responseContainerPositionOption")}</Label>
-    <Select
+    <SelectInputStyled
       data-cy="responseContainerPositionSelect"
       size="large"
       value={value}
-      style={{ width: "100%" }}
       onChange={onChange}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       {...restProps}
@@ -22,7 +22,7 @@ const ResponseContainerPosition = ({ t, onChange, value, size, options, ...restP
           {label}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

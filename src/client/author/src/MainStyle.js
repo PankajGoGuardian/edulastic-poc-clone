@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { tabletWidth, secondaryTextColor, title, themeColor, smallDesktopWidth } from "@edulastic/colors";
+import {
+  tabletWidth,
+  secondaryTextColor,
+  title,
+  themeColor,
+  smallDesktopWidth,
+  greyThemeLight
+} from "@edulastic/colors";
 
 export const MainContainer = styled.div`
   padding-left: ${props => {
@@ -57,7 +64,7 @@ export const MainContainer = styled.div`
     .ant-select-selection {
       &:hover,
       &:focus {
-        border-color: #b9b9b9;
+        border-color: ${greyThemeLight};
       }
       .ant-select-arrow-icon {
         svg {
@@ -74,7 +81,7 @@ export const MainContainer = styled.div`
   .ant-input {
     &:hover,
     &:focus {
-      border-color: #b9b9b9;
+      border-color: ${greyThemeLight};
     }
   }
 

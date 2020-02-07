@@ -1,10 +1,11 @@
 import { Input, Select } from "antd";
 import styled from "styled-components";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 export const TextInputStyled = styled(Input)`
   &.ant-input {
-    background-color: #f8f8f8;
-    border: ${props => (props.noBorder ? "0px" : "1px solid #b9b9b9 !important")};
+    background-color: ${greyThemeLighter};
+    border: ${props => (props.noBorder ? "0px" : `1px solid ${greyThemeLight} !important`)};
     color: #6a737f;
     font-size: ${props => props.fontSize || "13px"};
     width: ${props => props.width || "100%"};
@@ -18,8 +19,8 @@ export const TextInputStyled = styled(Input)`
     outline: 0;
     &:focus,
     &:hover {
-      border: 1px solid #b9b9b9;
-      background-color: #f8f8f8;
+      border: 1px solid ${greyThemeLight};
+      background-color: ${greyThemeLighter};
       box-shadow: none;
     }
   }
@@ -29,8 +30,8 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
     .ant-select-selection {
-      background-color: #f8f8f8;
-      border: 1px solid #b9b9b9;
+      background-color: ${greyThemeLighter};
+      border: 1px solid ${greyThemeLight};
       color: #6a737f;
       font-size: ${props => props.fontSize || "13px"};
       width: ${props => props.width || "100%"};
@@ -43,8 +44,8 @@ export const SelectInputStyled = styled(Select)`
       outline: 0;
       &:focus,
       &:hover {
-        border: 1px solid #b9b9b9;
-        background-color: #f8f8f8;
+        border: 1px solid ${greyThemeLight};
+        background-color: ${greyThemeLighter};
         box-shadow: none;
       }
       &.ant-select-selection--single {

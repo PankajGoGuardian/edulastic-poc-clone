@@ -4,11 +4,12 @@ import { Select } from "antd";
 import i18n, { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const ListStyle = ({ t, onChange, value, size, options, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.listStyle")}</Label>
-    <Select
+    <SelectInputStyled
       data-cy="listStyleOption"
       size="large"
       value={value}
@@ -22,7 +23,7 @@ const ListStyle = ({ t, onChange, value, size, options, ...restProps }) => (
           {label}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

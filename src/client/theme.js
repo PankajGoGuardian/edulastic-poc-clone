@@ -1,4 +1,12 @@
-import { themeColor, themeColorLight, white, dashBorderColor, mainTextColor } from "@edulastic/colors";
+import {
+  themeColor,
+  themeColorLight,
+  white,
+  dashBorderColor,
+  mainTextColor,
+  greyThemeLight,
+  greyThemeDark2
+} from "@edulastic/colors";
 
 // all theme variables
 
@@ -448,7 +456,7 @@ export const defaultTheme = {
     addNewChoiceButtonHoverColor: brandWhite,
     addNewChoiceButtonBgActiveColor: themeColor,
     addNewChoiceButtonActiveColor: linkFilledBgColor,
-    mathInputMathBorderColor: "#b9b9b9",
+    mathInputMathBorderColor: greyThemeLight,
     mathInputMathClearBgColor: clearIconColor,
     mathInputMathWrongBgColor: wrongBgColor,
     mathInputMathSuccessBgColor: rightIconColor,
@@ -614,7 +622,7 @@ export const defaultTheme = {
     itemFontWeight: semiBold
   },
   sortableList: {
-    iconTrashColor: "#878A91",
+    iconTrashColor: greyThemeDark2,
     iconTrashHoverColor: iconDeleteHoverColor,
     iconTrashWrapperBgHoverColor: iconDeleteHoverColor,
     itemContainerBorderColor: borderColor,
@@ -624,7 +632,7 @@ export const defaultTheme = {
     inputFontSize: subtitleFontSize
   },
   typedList: {
-    iconTrashColor: "#878A91",
+    iconTrashColor: greyThemeDark2,
     iconTrashHoverColor: iconDeleteHoverColor,
     itemContainerBorderColor: borderColor,
     dragIconColor: themeColor,
@@ -782,7 +790,7 @@ export const defaultTheme = {
       previewTemplateBoxSmallFontSize: subtitleFontSize,
       iconPlusColor: themeColor,
       dropContainerDashedBorderColor: borderColor,
-      dropContainerSolidBorderColor: "#b9b9b9",
+      dropContainerSolidBorderColor: greyThemeLight,
       dragItemBorderColor: borderColor,
       answerBorderColor: borderColor,
       responseBoxBgColor: containerGrey,
@@ -946,8 +954,8 @@ export const defaultTheme = {
       textInputColor: labelStyle,
       textInputBorderColor: "none",
       textInputLimitedBgColor: wrongBgColor,
-      toolbarItemBgHoverColor: "#B9B9B9",
-      toolbarItemBgActiveColor: "#878A91"
+      toolbarItemBgHoverColor: greyThemeLight,
+      toolbarItemBgActiveColor: greyThemeDark2
     },
     essayRichText: {
       qlBlocksFontFamily: "Arial",
@@ -987,7 +995,7 @@ export const defaultTheme = {
       inputCorrectBorderColor: rightBorderColor,
       inputIncorrectColor: wrongBgColor,
       inputIncorrectBorderColor: wrongBorderColor,
-      iconTrashColor: "#878A91",
+      iconTrashColor: greyThemeDark2,
       iconTrashHoverColor: iconDeleteHoverColor,
       quillBorderColor: borderColor,
       iconCheckColor: checkColor,
@@ -1233,7 +1241,7 @@ export const defaultTheme = {
       dragDropTitleFontWeight: bold,
       dragDropTitleFontSize: subtitleFontSize,
       buttonLabelStroke: textColor,
-      buttonActiveLabelStroke: "#878A91",
+      buttonActiveLabelStroke: greyThemeDark2,
       buttonActiveBgColor: brandWhite,
       buttonHoverBgColor: brandWhite,
       rightBgColor,

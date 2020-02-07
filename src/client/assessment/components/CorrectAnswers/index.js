@@ -96,10 +96,7 @@ class CorrectAnswers extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          margin="0 0 6px"
-          id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}>
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
         <AddAlternative>
@@ -149,7 +146,6 @@ export default withNamespaces("assessment")(CorrectAnswers);
 const AddAlternative = styled.div`
   width: 100%;
   float: right;
-  margin-top: 30px;
   position: relative;
   z-index: 1;
 `;

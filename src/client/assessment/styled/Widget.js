@@ -1,17 +1,15 @@
-import styled from "styled-components";
-
 import {
-  desktopWidth,
-  mediumDesktopWidth,
-  fadedBlack,
-  extraDesktopWidthMax,
-  white,
   dashBorderColor,
-  selectColor,
-  mediumDesktopExactWidth
+  desktopWidth,
+  extraDesktopWidthMax,
+  fadedBlack,
+  greyThemeLight,
+  greyThemeLighter,
+  mediumDesktopExactWidth,
+  selectColor
 } from "@edulastic/colors";
-
 import { Paper } from "@edulastic/common";
+import styled from "styled-components";
 import { createStandardTextStyle } from "../utils/helpers";
 
 export const WidgetWrapper = styled.div`
@@ -190,8 +188,8 @@ export const WidgetFRInput = styled.div`
   }
   .fr {
     &-box {
-      background-color: #f8f8f8;
-      border: 1px solid #b9b9b9;
+      background-color: ${greyThemeLighter};
+      border: 1px solid ${greyThemeLight};
       color: #6a737f;
       font-size: ${props => props.fontSize || "13px"};
       width: 100%;

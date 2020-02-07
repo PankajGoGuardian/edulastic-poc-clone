@@ -159,7 +159,6 @@ const OrderList = ({
       <OptionsList
         fontSize={fontSize}
         axis={axis}
-        centerContent
         data-cy="match-option-list"
         prefix="options2"
         readOnly

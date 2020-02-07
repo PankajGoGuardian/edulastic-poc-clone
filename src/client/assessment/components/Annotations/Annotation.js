@@ -1,17 +1,15 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
-import { withNamespaces } from "@edulastic/localization";
+import { red, greyThemeDark2 } from "@edulastic/colors";
 import { FroalaEditor } from "@edulastic/common";
 import { IconTrashAlt } from "@edulastic/icons";
-import { greenDark, red } from "@edulastic/colors";
-
-import { Header, FroalaInput, Container } from "./styled/styled_components";
+import { withNamespaces } from "@edulastic/localization";
 import { Row } from "antd";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { Container, FroalaInput } from "./styled/styled_components";
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles}>
-    <IconTrashAlt onClick={onDelete} color="#878A91" hoverColor={red} width={16} height={16} />
+    <IconTrashAlt onClick={onDelete} color={greyThemeDark2} hoverColor={red} width={16} height={16} />
   </Container>
 );
 

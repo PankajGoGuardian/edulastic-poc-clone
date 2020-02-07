@@ -12,6 +12,8 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import Group from "./Group";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 const List = withAddButton(QuillSortableList);
 
@@ -21,19 +23,14 @@ class GroupPossibleResponses extends Component {
 
     return (
       <Fragment>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.matchList.possibleRespTitle")}`)}
-          margin="0 0 15px"
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.matchList.possibleRespTitle")}`)}>
           {t("component.matchList.possibleRespTitle")}
         </Subtitle>
         {checkboxVal ? (
           <Fragment>
-            <div style={{ marginBottom: 20 }}>
-              <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-                {t("component.matchList.groupPossibleRespTitle")}
-              </Checkbox>
-            </div>
+            <CheckboxLabel defaultChecked={checkboxVal} onChange={checkboxChange}>
+              {t("component.matchList.groupPossibleRespTitle")}
+            </CheckboxLabel>
             <Row>
               {items.map((item, index) => (
                 <Col data-cy={`group-container-${index}`} key={index} span={24}>
@@ -50,17 +47,13 @@ class GroupPossibleResponses extends Component {
                 </Col>
               ))}
             </Row>
-            <EduButton type="primary" onClick={onAdd}>
-              {t("component.matchList.addNewGroup")}
-            </EduButton>
+            <CustomStyleBtn onClick={onAdd}>{t("component.matchList.addNewGroup")}</CustomStyleBtn>
           </Fragment>
         ) : (
           <Fragment>
-            <div style={{ marginBottom: 20 }}>
-              <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-                {t("component.matchList.groupPossibleRespTitle")}
-              </Checkbox>
-            </div>
+            <CheckboxLabel mb="15px" defaultChecked={checkboxVal} onChange={checkboxChange}>
+              {t("component.matchList.groupPossibleRespTitle")}
+            </CheckboxLabel>
             <Row>
               <Col>
                 <List

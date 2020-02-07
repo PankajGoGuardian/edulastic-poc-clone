@@ -1,13 +1,17 @@
 import styled from "styled-components";
 import { TextField } from "@edulastic/common";
+import { greyThemeLight } from "@edulastic/colors";
 
 export const CorrectAnswerPointField = styled(TextField)`
-  width: 140px;
+  width: 230px;
+  background: #f8f8fb;
+  border: 1px solid ${greyThemeLight};
   max-height: 40px;
   min-height: 40px;
-  line-height: 40px;
+  font-size: 14px;
+  line-height: 38px;
   padding: 0 15px;
-  margin-right: 25px;
-  border: 1px solid #b9b9b9;
-  background: #f8f8fb;
+  margin-right: ${props => props.mr || "0px"};
+  position: relative;
+  z-index: 1;
 `;

@@ -10,7 +10,7 @@ import { get } from "lodash";
 import produce from "immer";
 import uuid from "uuid/v4";
 
-import { Paper, Checkbox, EduButton, FlexContainer, beforeUpload } from "@edulastic/common";
+import { Paper, FlexContainer, beforeUpload } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { message, Upload } from "antd";
@@ -36,6 +36,9 @@ import { DropContainer } from "./styled/DropContainer";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 
 const OptionsList = withPoints(ClassificationPreview);
 
@@ -489,6 +492,7 @@ const EditClassification = ({
     <Fragment>
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+
         <Question section="main" label="Background" fillSections={fillSections} cleanSections={cleanSections}>
           {item.imageUrl ? (
             <FlexContainer flexDirection="column">
@@ -511,21 +515,20 @@ const EditClassification = ({
                   bounds="parent"
                 />
               </DropContainer>
-              <EduButton onClick={deleteBgImg} style={{ marginTop: 20 }} type="primary">
-                {t("component.classification.deleteBackImage")}
-              </EduButton>
+              <CustomStyleBtn onClick={deleteBgImg}>{t("component.classification.deleteBackImage")}</CustomStyleBtn>
             </FlexContainer>
           ) : (
             <Dragger
               className="super-dragger styled-dragger"
               {...uploadProps}
-              style={{ padding: 0, marginTop: 20, background: "transparent" }}
+              style={{ padding: 0, margin: 0, background: "transparent" }}
               showUploadList={false}
             >
-              <EduButton type="primary">{t("component.classification.addBackImage")}</EduButton>
+              <CustomStyleBtn>{t("component.classification.addBackImage")}</CustomStyleBtn>
             </Dragger>
           )}
         </Question>
+
         <RowColumn
           item={item}
           theme={theme}
@@ -533,6 +536,7 @@ const EditClassification = ({
           cleanSections={cleanSections}
           toolbarSize="MD"
         />
+
         <Question
           section="main"
           label={t("component.classification.possibleRespTitle")}
@@ -564,56 +568,66 @@ const EditClassification = ({
             item={item}
           />
 
-          <div style={{ marginTop: 20 }}>
-            <CheckboxLabel
-              className="additional-options"
-              onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
-              checked={!!showDragHandle}
-            >
-              {t("component.cloze.imageDragDrop.showdraghandle")}
-            </CheckboxLabel>
-            <CheckboxLabel
-              className="additional-options"
-              onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
-              checked={!!duplicateResponses}
-            >
-              {t("component.cloze.imageDragDrop.duplicatedresponses")}
-            </CheckboxLabel>
-            <CheckboxLabel
-              className="additional-options"
-              onChange={() => handleItemChangeChange("shuffleOptions", !shuffleOptions)}
-              checked={!!shuffleOptions}
-            >
-              {t("component.cloze.imageDragDrop.shuffleoptions")}
-            </CheckboxLabel>
-            <CheckboxLabel
-              className="additional-options"
-              onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
-              checked={!!transparentPossibleResponses}
-            >
-              {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-            </CheckboxLabel>
-            <CheckboxLabel
-              className="additional-options"
-              onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
-              checked={!!transparentBackgroundImage}
-            >
-              {t("component.cloze.imageDragDrop.transparentbackgroundimage")}
-            </CheckboxLabel>
-          </div>
+          <Row gutter={24} marginTop={15}>
+            <Col span={24} marginBottom="0px">
+              <CheckboxLabel
+                className="additional-options"
+                onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
+                checked={!!showDragHandle}
+              >
+                {t("component.cloze.imageDragDrop.showdraghandle")}
+              </CheckboxLabel>
+              <CheckboxLabel
+                className="additional-options"
+                onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
+                checked={!!duplicateResponses}
+              >
+                {t("component.cloze.imageDragDrop.duplicatedresponses")}
+              </CheckboxLabel>
+              <CheckboxLabel
+                className="additional-options"
+                onChange={() => handleItemChangeChange("shuffleOptions", !shuffleOptions)}
+                checked={!!shuffleOptions}
+              >
+                {t("component.cloze.imageDragDrop.shuffleoptions")}
+              </CheckboxLabel>
+              <CheckboxLabel
+                className="additional-options"
+                onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
+                checked={!!transparentPossibleResponses}
+              >
+                {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+              </CheckboxLabel>
+              <CheckboxLabel
+                className="additional-options"
+                onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
+                checked={!!transparentBackgroundImage}
+              >
+                {t("component.cloze.imageDragDrop.transparentbackgroundimage")}
+              </CheckboxLabel>
+            </Col>
+          </Row>
         </Question>
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
+
+        <Question
+          section="main"
+          label={t("component.classification.correctAnswers")}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          marginBottom="-50px"
-          questionType={item?.title}
-        />
+        >
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            marginBottom="-50px"
+            questionType={item?.title}
+          />
+        </Question>
       </Paper>
 
       {advancedLink}

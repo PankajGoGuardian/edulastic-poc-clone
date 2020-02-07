@@ -33,6 +33,7 @@ import { GroupsSeparator } from "./styled/GroupsSeparator";
 import { getFontSize, getDirection, getStemNumeration } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 
@@ -476,20 +477,22 @@ const MatchListPreview = ({
       </div>
       {view === "edit" && (
         <React.Fragment>
-          <Checkbox
+          <CheckboxLabel
             className="additional-options"
             key={`shuffleOptions_${item.shuffleOptions}`}
             onChange={handleShuffleChange}
-            label={t("component.cloze.dragDrop.shuffleoptions")}
             checked={item.shuffleOptions}
-          />
-          <Checkbox
+          >
+            {t("component.cloze.dragDrop.shuffleoptions")}
+          </CheckboxLabel>
+          <CheckboxLabel
             className="additional-options"
             key="duplicatedResponses"
             onChange={handleDuplicatedResponsesChange}
-            label={t("component.matchList.duplicatedResponses")}
             checked={!!item.duplicatedResponses}
-          />
+          >
+            {t("component.matchList.duplicatedResponses")}
+          </CheckboxLabel>
         </React.Fragment>
       )}
       {previewTab === SHOW || isReviewTab ? (

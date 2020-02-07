@@ -10,7 +10,7 @@ import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws, math } from "@edulastic/constants";
-import { white, dashBorderColor } from "@edulastic/colors";
+import { white, dashBorderColor, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 import FroalaEditor from "froala-editor";
 import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/css/plugins.pkgd.min.css";
@@ -172,10 +172,10 @@ const BackgroundStyleWrapper = styled.div.attrs({
       return `
         .fr {
           &-box {
-            background: #f8f8f8;
+            background: ${greyThemeLighter};
             min-height: 120px;
             border-radius: 0px;
-            border: 1px solid #b9b9b9;
+            border: 1px solid ${greyThemeLight};
             display: flex;
           }
           &-wrapper {

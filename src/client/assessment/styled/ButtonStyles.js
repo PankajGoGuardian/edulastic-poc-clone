@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import { white } from "@edulastic/colors";
+import { white, greyThemeDark2 } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const CustomStyleBtn = styled(Button)`
   &.ant-btn {
-    background: ${props => (props.ghost ? "transparent" : props.bg || "#878A91")};
-    color: ${props => (props.ghost ? "#878A91" : props.color || white)};
+    background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
+    color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
     width: ${props => props.width || "220px"};
     height: ${props => props.height || "40px"};
     padding: ${props => props.padding || "0px 30px"};
     margin: ${props => props.margin || "15px 0px 0px"};
-    border: ${props => (props.ghost ? "1px solid #878A91" : "0px")} !important;
+    border: ${props => (props.ghost ? `1px solid ${greyThemeDark2}` : "0px")} !important;
     border-radius: ${props => (props.rounded ? "15px" : "4px")};
     display: ${props => props.display || "flex"};
     align-items: center;
@@ -24,8 +24,8 @@ export const CustomStyleBtn = styled(Button)`
     &:hover,
     &:focus,
     &:active {
-      background: ${props => (props.ghost ? "transparent" : props.bg || "#878A91")};
-      color: ${props => (props.ghost ? "#878A91" : props.color || white)};
+      background: ${props => (props.ghost ? "transparent" : props.bg || greyThemeDark2)};
+      color: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
     }
   }
 `;
@@ -33,7 +33,7 @@ export const CustomStyleBtn = styled(Button)`
 export const AlternateAnswerLink = styled(Button)`
   &.ant-btn {
     background: transparent;
-    color: #878a91;
+    color: ${greyThemeDark2};
     border-radius: 0;
     padding: 0;
     box-shadow: none;
@@ -51,7 +51,7 @@ export const AlternateAnswerLink = styled(Button)`
     &:active,
     &:visited {
       background: transparent;
-      color: #878a91;
+      color: ${greyThemeDark2};
       border: none !important;
       outline: none !important;
       box-shadow: none !important;

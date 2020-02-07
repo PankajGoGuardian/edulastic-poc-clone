@@ -12,6 +12,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import { IconTrash } from "../styled/IconTrash";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 const List = withAddButton(QuillSortableList);
 
@@ -48,7 +49,7 @@ const Group = ({
         {headText}
       </Subtitle>
       <div style={{ marginBottom: 20 }}>
-        <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
+        <TextInputStyled size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
       </div>
       <List
         prefix={prefix}

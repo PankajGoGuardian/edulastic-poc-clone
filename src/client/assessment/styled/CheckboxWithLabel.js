@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeDark2, greyThemeLighter } from "@edulastic/colors";
 import { Checkbox } from "antd";
 
 export const CheckboxStyle = styled(Checkbox)`
@@ -12,15 +12,18 @@ export const CheckboxStyle = styled(Checkbox)`
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
   text-transform: uppercase;
+  &.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin-left: 0px;
+  }
   .ant-checkbox-checked {
     &:after,
     & *:after {
-      border-color: #878a91;
+      border-color: ${greyThemeDark2};
     }
   }
   .ant-checkbox-inner {
-    border-color: #878a91;
-    background: #f8f8f8;
+    border-color: ${greyThemeDark2};
+    background: ${greyThemeLighter};
   }
   .ant-checkbox + span {
     font-size: ${props => props.labelFontSize || "12px"};
@@ -29,8 +32,8 @@ export const CheckboxStyle = styled(Checkbox)`
   .ant-checkbox-input:focus + .ant-checkbox-inner,
   &.ant-checkbox-wrapper:hover .ant-checkbox-inner,
   .ant-checkbox:hover .ant-checkbox-inner {
-    border-color: #878a91;
-    background: #f8f8f8;
+    border-color: ${greyThemeDark2};
+    background: ${greyThemeLighter};
   }
 
   @media (max-width: ${mediumDesktopExactWidth}) {

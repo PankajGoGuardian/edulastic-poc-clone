@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { IconTrashAlt } from "@edulastic/icons";
-import { green, greenDark, red, lightGrey } from "@edulastic/colors";
+import { green, red, lightGrey, greyThemeDark2 } from "@edulastic/colors";
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles} onClick={onDelete}>
-    <IconTrashAlt color={"#878A91"} hoverColor={red} width={16} height={16} />
+    <IconTrashAlt color={greyThemeDark2} hoverColor={red} width={16} height={16} />
   </Container>
 );
 

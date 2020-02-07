@@ -1,12 +1,8 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { Select } from "antd";
-
 import { withNamespaces } from "@edulastic/localization";
-
-import { Label } from "../styled/WidgetOptions/Label";
-import { StyledSelect } from "./Common/InputField";
+import PropTypes from "prop-types";
+import React, { Fragment } from "react";
 import { SelectInputStyled } from "../styled/InputStyles";
+import { Label } from "../styled/WidgetOptions/Label";
 
 const OrientationSelect = ({ t, onChange, value }) => {
   const options = [
@@ -25,9 +21,9 @@ const OrientationSelect = ({ t, onChange, value }) => {
         getPopupContainer={triggerNode => triggerNode.parentNode}
       >
         {options.map(({ value: val, label }) => (
-          <StyledSelect.Option data-cy={val} key={val} value={val}>
+          <SelectInputStyled.Option data-cy={val} key={val} value={val}>
             {label}
-          </StyledSelect.Option>
+          </SelectInputStyled.Option>
         ))}
       </SelectInputStyled>
     </Fragment>

@@ -14,6 +14,10 @@ import GraphDisplay from "./Display/GraphDisplay";
 
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { SelectInputStyled } from "../../styled/InputStyles";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 
 const GraphDisplayWithPoints = withPoints(GraphDisplay);
 
@@ -133,44 +137,40 @@ class GraphAnswers extends Component {
     if (graphData.graphType === "quadrants" || graphData.graphType === "firstQuadrant") {
       return (
         <Fragment>
-          <Select
-            data-cy="ignoreRepeatedShapes"
-            style={{
-              width: "170px",
-              margin: "11px 10px 0 0",
-              borderRadius: "10px"
-            }}
-            onChange={val => handleSelectIgnoreRepeatedShapes(val)}
-            options={getIgnoreRepeatedShapesOptions()}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            value={graphData.validation.ignore_repeated_shapes || "no"}
-          >
-            {getIgnoreRepeatedShapesOptions().map(option => (
-              <Select.Option data-cy={option.value} key={option.value}>
-                {option.label}
-              </Select.Option>
-            ))}
-          </Select>
-          Ignore repeated shapes
-          <Select
-            data-cy="ignoreLabels"
-            style={{
-              width: "80px",
-              margin: "11px 10px 0 25px",
-              borderRadius: "10px"
-            }}
-            onChange={val => handleSelectIgnoreLabels(val)}
-            options={getIgnoreLabelsOptions()}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            value={graphData.validation.ignoreLabels || "yes"}
-          >
-            {getIgnoreLabelsOptions().map(option => (
-              <Select.Option data-cy={option.value} key={option.value}>
-                {option.label}
-              </Select.Option>
-            ))}
-          </Select>
-          Ignore labels
+          <Row marginTop={15} gutter={24}>
+            <Col span={8}>
+              <Label>Ignore repeated shapes</Label>
+              <SelectInputStyled
+                data-cy="ignoreRepeatedShapes"
+                onChange={val => handleSelectIgnoreRepeatedShapes(val)}
+                options={getIgnoreRepeatedShapesOptions()}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={graphData.validation.ignore_repeated_shapes || "no"}
+              >
+                {getIgnoreRepeatedShapesOptions().map(option => (
+                  <Select.Option data-cy={option.value} key={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+            <Col span={4}>
+              <Label>Ignore labels</Label>
+              <SelectInputStyled
+                data-cy="ignoreLabels"
+                onChange={val => handleSelectIgnoreLabels(val)}
+                options={getIgnoreLabelsOptions()}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={graphData.validation.ignoreLabels || "yes"}
+              >
+                {getIgnoreLabelsOptions().map(option => (
+                  <Select.Option data-cy={option.value} key={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </Row>
         </Fragment>
       );
     }

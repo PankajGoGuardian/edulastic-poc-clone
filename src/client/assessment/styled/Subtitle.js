@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, smallDesktopWidth, white, themeColor } from "@edulastic/colors";
+import { mediumDesktopExactWidth, smallDesktopWidth, white, themeColor, greyThemeDark1 } from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 const WidgetTitle = styled.h2`
   background: #f1f1f5;
-  color: #434b5d;
+  color: ${greyThemeDark1};
   padding: 10px 20px;
   display: flex;
   align-items: center;
   border-radius: 4px;
-  margin: 0px -20px 20px;
+  margin: ${props => props.margin || "0px -20px 20px"};
   font-weight: bold;
 `;
 
@@ -52,8 +52,8 @@ export const QuestionIcon = ({ id = "", customStyle = {} }) =>
     </FlexContainer>
   ) : null;
 
-export const Subtitle = ({ id, children, textStyles = {}, showIcon = true }) => (
-  <WidgetTitle justifyContent="flex-start" alignItems="baseline">
+export const Subtitle = ({ id, children, textStyles = {}, showIcon = true, margin }) => (
+  <WidgetTitle margin={margin} justifyContent="flex-start" alignItems="baseline">
     <SubtitleText styles={textStyles}>{children}</SubtitleText>
     {showIcon && <QuestionIcon id={id} />}
   </WidgetTitle>

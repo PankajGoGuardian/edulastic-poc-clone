@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { mediumDesktopExactWidth, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
 import { Radio } from "antd";
 
 export const RadioStyle = styled(Radio)`
@@ -16,21 +16,21 @@ export const RadioStyle = styled(Radio)`
     padding: 0px 20px;
   }
   .ant-radio-inner {
-    border-color: #878a91;
-    background: #f8f8f8;
+    border-color: ${greyThemeDark2};
+    background: ${greyThemeLighter};
   }
   .ant-radio-checked {
     .ant-radio-inner {
       &:after {
-        background: #878a91;
+        background: ${greyThemeDark2};
       }
     }
   }
   .ant-radio-input:focus + .ant-radio-inner,
   &.ant-radio-wrapper:hover .ant-radio-inner,
   .ant-radio:hover .ant-radio-inner {
-    border-color: #878a91;
-    background: #f8f8f8;
+    border-color: ${greyThemeDark2};
+    background: ${greyThemeLighter};
   }
 
   @media (max-width: ${mediumDesktopExactWidth}) {

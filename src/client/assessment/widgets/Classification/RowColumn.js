@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
 import { connect } from "react-redux";
-import { Row, Col, Select } from "antd";
+import { Select } from "antd";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 
@@ -14,12 +14,15 @@ import QuillSortableList from "../../components/QuillSortableList/index";
 import withAddButton from "../../components/HOC/withAddButton";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 
 import { updateVariables } from "../../utils/variables";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import Question from "../../components/Question";
+import { SelectInputStyled } from "../../styled/InputStyles";
 
 const List = QuillSortableList;
 const { Option } = Select;
@@ -155,105 +158,86 @@ class RowColumn extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Row gutter={60}>
+        <Row gutter={64}>
           <Col data-cy="row-container" span={12}>
             <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.rowsSubtitle")}`)}>
               {t("component.classification.rowsSubtitle")}
             </Subtitle>
 
-            <Label
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              margin="20px 0px 10px"
-            >
-              {t("component.classification.rowsCountSubtitle")}
-            </Label>
-
-            <Select
-              data-cy="classification-row-dropdown"
-              size="large"
-              style={{ width: "calc(100% - 30px)" }}
-              value={uiStyle.rowCount}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              onChange={value => onUiChange("rowCount")(+value)}
-            >
-              {Array.from({ length: 10 }).map((v, index) => (
-                <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
-                  {index + 1}
-                </Option>
-              ))}
-            </Select>
-
-            <Label
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              margin="20px 0px 10px"
-            >
-              {t("component.classification.editRowListSubtitle")}
-            </Label>
-
-            <List
-              prefix="rows"
-              buttonText={t("component.classification.addNewRow")}
-              items={item.uiStyle.rowTitles}
-              onAdd={handleMain(actions.ADD, "rowTitles")}
-              onSortEnd={handleMain(actions.SORTEND, "rowTitles")}
-              onChange={handleChange("rowTitles")}
-              onRemove={handleMain(actions.REMOVE, "rowTitles")}
-              firstFocus={firstMount}
-              useDragHandle
-              columns={1}
-            />
+            <Row>
+              <Col span={24}>
+                <Label>{t("component.classification.rowsCountSubtitle")}</Label>
+                <SelectInputStyled
+                  data-cy="classification-row-dropdown"
+                  size="large"
+                  value={uiStyle.rowCount}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={value => onUiChange("rowCount")(+value)}
+                >
+                  {Array.from({ length: 10 }).map((v, index) => (
+                    <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
+                      {index + 1}
+                    </Option>
+                  ))}
+                </SelectInputStyled>
+              </Col>
+              <Col span={24}>
+                <Label>{t("component.classification.editRowListSubtitle")}</Label>
+                <List
+                  prefix="rows"
+                  buttonText={t("component.classification.addNewRow")}
+                  items={item.uiStyle.rowTitles}
+                  onAdd={handleMain(actions.ADD, "rowTitles")}
+                  onSortEnd={handleMain(actions.SORTEND, "rowTitles")}
+                  onChange={handleChange("rowTitles")}
+                  onRemove={handleMain(actions.REMOVE, "rowTitles")}
+                  firstFocus={firstMount}
+                  useDragHandle
+                  columns={1}
+                />
+              </Col>
+            </Row>
           </Col>
+
           <Col data-cy="column-container" span={12}>
             <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.columnsSubtitle")}`)}>
               {t("component.classification.columnsSubtitle")}
             </Subtitle>
 
-            <Label
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              margin="20px 0px 10px"
-            >
-              {t("component.classification.columnsCountSubtitle")}
-            </Label>
-
-            <Select
-              data-cy="classification-column-dropdown"
-              size="large"
-              style={{ width: "calc(100% - 30px)" }}
-              value={uiStyle.columnCount}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              onChange={value => onUiChange("columnCount")(+value)}
-            >
-              {Array.from({ length: 10 }).map((v, index) => (
-                <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
-                  {index + 1}
-                </Option>
-              ))}
-            </Select>
-
-            <Label
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              margin="20px 0px 10px"
-            >
-              {t("component.classification.editColListSubtitle")}
-            </Label>
-
-            <List
-              prefix="columns"
-              buttonText={t("component.classification.addNewColumn")}
-              items={item.uiStyle.columnTitles}
-              onAdd={handleMain(actions.ADD, "columnTitles")}
-              onSortEnd={handleMain(actions.SORTEND, "columnTitles")}
-              onChange={handleChange("columnTitles")}
-              onRemove={handleMain(actions.REMOVE, "columnTitles")}
-              firstFocus={firstMount}
-              useDragHandle
-              columns={1}
-              toolbarSize={toolbarSize}
-            />
+            <Row>
+              <Col span={24}>
+                <Label>{t("component.classification.columnsCountSubtitle")}</Label>
+                <SelectInputStyled
+                  data-cy="classification-column-dropdown"
+                  size="large"
+                  value={uiStyle.columnCount}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={value => onUiChange("columnCount")(+value)}
+                >
+                  {Array.from({ length: 10 }).map((v, index) => (
+                    <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
+                      {index + 1}
+                    </Option>
+                  ))}
+                </SelectInputStyled>
+              </Col>
+              <Col span={24}>
+                <Label>{t("component.classification.editColListSubtitle")}</Label>
+                <List
+                  prefix="columns"
+                  buttonText={t("component.classification.addNewColumn")}
+                  items={item.uiStyle.columnTitles}
+                  onAdd={handleMain(actions.ADD, "columnTitles")}
+                  onSortEnd={handleMain(actions.SORTEND, "columnTitles")}
+                  onChange={handleChange("columnTitles")}
+                  onRemove={handleMain(actions.REMOVE, "columnTitles")}
+                  firstFocus={firstMount}
+                  useDragHandle
+                  columns={1}
+                  toolbarSize={toolbarSize}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Question>

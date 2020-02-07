@@ -14,10 +14,11 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 import AdvancedOptions from "./components/AdvancedOptions";
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
+import Question from "../../components/Question";
 
 const OptionsList = withPoints(QuillSortableList);
 
-const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections }) => {
+const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleUiStyleChange = (prop, value) => {
@@ -123,17 +124,24 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          readOnly
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
+        <Question
+          section="main"
+          label={t("component.sortList.correctAnswers")}
           fillSections={fillSections}
           cleanSections={cleanSections}
-        />
+        >
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            readOnly
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+        </Question>
       </Paper>
 
       {advancedLink}
@@ -155,7 +163,8 @@ EditSortList.propTypes = {
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedLink: PropTypes.any
+  advancedLink: PropTypes.any,
+  t: PropTypes.func.isRequired
 };
 
 EditSortList.defaultProps = {

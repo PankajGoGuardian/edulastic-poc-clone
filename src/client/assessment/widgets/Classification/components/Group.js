@@ -10,6 +10,9 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import { IconTrash } from "../styled/IconTrash";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 const List = withAddButton(QuillSortableList);
 
@@ -40,22 +43,24 @@ const Group = ({
     >
       {headText}
     </Subtitle>
-    <div style={{ marginBottom: 20 }}>
-      <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
-    </div>
-    <div data-cy="group-choices" style={{ marginBottom: 30 }}>
-      <List
-        prefix={prefix}
-        items={item.responses}
-        firstFocus={firstFocus}
-        onAdd={onAddInner(index)}
-        onSortEnd={onSortEnd(index)}
-        onChange={onChange(index)}
-        onRemove={onRemoveInner(index)}
-        useDragHandle
-        columns={1}
-      />
-    </div>
+    <Row gutter={24}>
+      <Col span={24}>
+        <TextInputStyled size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
+      </Col>
+      <Col span={24} data-cy="group-choices">
+        <List
+          prefix={prefix}
+          items={item.responses}
+          firstFocus={firstFocus}
+          onAdd={onAddInner(index)}
+          onSortEnd={onSortEnd(index)}
+          onChange={onChange(index)}
+          onRemove={onRemoveInner(index)}
+          useDragHandle
+          columns={1}
+        />
+      </Col>
+    </Row>
   </Fragment>
 );
 

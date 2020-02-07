@@ -11,6 +11,11 @@ export const themeColorBreadcrumb = "#69727E";
 export const themeLightGrayColor = "#BBBFC4";
 export const themeLightGrayBgColor = "#F1F1F1";
 
+export const greyThemeDark1 = "#434B5D";
+export const greyThemeDark2 = "#878A91";
+export const greyThemeLight = "#b9b9b9";
+export const greyThemeLighter = "#f8f8f8";
+
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
 export const fadedGrey = "#e5e5e5";

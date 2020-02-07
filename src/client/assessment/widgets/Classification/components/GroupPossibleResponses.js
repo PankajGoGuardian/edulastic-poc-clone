@@ -1,18 +1,17 @@
+import { EduButton } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
+import { withNamespaces } from "@edulastic/localization";
+import { Checkbox, Col, Row } from "antd";
+import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { Checkbox, Row, Col } from "antd";
-import PropTypes from "prop-types";
-
-import { withNamespaces } from "@edulastic/localization";
-import { EduButton } from "@edulastic/common";
-
-import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
-
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { Subtitle } from "../../../styled/Subtitle";
 import Group from "./Group";
-import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 const List = withAddButton(QuillSortableList);
 
@@ -34,20 +33,15 @@ class GroupPossibleResponses extends Component {
     const { item, checkboxChange, checkboxVal, items, t, firstFocus, onAdd, ...restProps } = this.props;
     return (
       <Fragment>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.classification.possibleRespTitle")}`)}
-          margin="0 0 15px"
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.classification.possibleRespTitle")}`)}>
           {t("component.classification.possibleRespTitle")}
         </Subtitle>
         {checkboxVal ? (
           <Fragment>
-            <div style={{ marginBottom: 20 }}>
-              <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-                {t("component.classification.groupPossibleRespTitle")}
-              </Checkbox>
-            </div>
-            <Row gutter={60}>
+            <CheckboxLabel defaultChecked={checkboxVal} onChange={checkboxChange}>
+              {t("component.classification.groupPossibleRespTitle")}
+            </CheckboxLabel>
+            <Row gutter={24}>
               {items.map((item, index) => (
                 <Col data-cy={`group-container-${index}`} key={index}>
                   <Group
@@ -63,19 +57,15 @@ class GroupPossibleResponses extends Component {
                 </Col>
               ))}
             </Row>
-            <EduButton type="primary" onClick={onAdd}>
-              {t("component.classification.addNewGroup")}
-            </EduButton>
+            <CustomStyleBtn onClick={onAdd}>{t("component.classification.addNewGroup")}</CustomStyleBtn>
           </Fragment>
         ) : (
           <Fragment>
             <Row>
-              <Col>
-                <div style={{ marginBottom: 20 }}>
-                  <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-                    {t("component.classification.groupPossibleRespTitle")}
-                  </Checkbox>
-                </div>
+              <Col span={24}>
+                <CheckboxLabel mb="15px" defaultChecked={checkboxVal} onChange={checkboxChange}>
+                  {t("component.classification.groupPossibleRespTitle")}
+                </CheckboxLabel>
                 <List
                   prefix="group"
                   items={items}

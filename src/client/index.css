@@ -1110,7 +1110,8 @@ textinput::before {
   overflow: hidden;
 }
 
-.super-dragger .ant-upload.ant-upload-drag {
+.super-dragger .ant-upload.ant-upload-drag,
+.super-dragger.ant-upload.ant-upload-drag .ant-upload-btn {
   padding: 0;
 }
 

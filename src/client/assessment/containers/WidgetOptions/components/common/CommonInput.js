@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
+import { TextInputStyled } from "../../../../styled/InputStyles";
 
 const CommonInput = ({ onChange, value, size, type, shadedCellsCount = false }) => (
   /**
    * FIXME: this is used as common text for all. `shadedCellsCount` seems like a specific behavior
    */
-  <Input
+  <TextInputStyled
     onChange={e => onChange(e.target.value > shadedCellsCount || !shadedCellsCount ? e.target.value : shadedCellsCount)}
     type={type}
     value={value}

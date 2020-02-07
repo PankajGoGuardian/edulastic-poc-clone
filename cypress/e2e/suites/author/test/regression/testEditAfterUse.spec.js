@@ -10,6 +10,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import Regrade from "../../../../framework/author/tests/testDetail/regrade";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ReportsPage from "../../../../framework/student/reportsPage";
+import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Without Regrade`, () => {
   const testLibraryPage = new TestLibrary();
@@ -23,6 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
   const sidebarPage = new SidebarPage();
   const regrade = new Regrade();
   const reportsPage = new ReportsPage();
+  const mcqTrueFalsePage = new MCQTrueFalsePage();
   const newItemKey = "MCQ_STD.default";
   const isAssigned = true;
   const TEST = "EDIT_ASSIGNED_TEST";
@@ -45,11 +47,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
   let item3;
   let item4;
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.test.edit.after.use@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student.test.edit.after.use@snapwiz.com",
     pass: "snapwiz"
   };
 
@@ -89,14 +91,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     before("Attempt the test from student side", () => {
-      cy.login("student", "300@xyz.com", "snapwiz");
+      cy.login("student", Student1.email, Student1.pass);
       sidebarPage.clickOnAssignment();
       assignmentsPage.clickOnAssigmentByTestId(assignedTest);
       studentTestPage.clickOnExitTest();
     });
 
     it("Edit the name , grade , subject and verify", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
       const [testname, grade, subject] = ["editedTest", "Grade 8", "ELA"];
       // Get the  test and convert it to draft
       testLibraryPage.sidebar.clickOnTestLibrary();
@@ -123,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     it("Edit question text from Review tab", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
       // Get Test Card and Draft It
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
@@ -135,7 +137,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         newTestId = id;
         // Edit Question Text From Review Tab
         testReviewTab.previewAndEditById(item3);
-        testReviewTab.editQuestionText("Edited Text");
+        mcqTrueFalsePage.setQuestionEditorText("Edited Text");
         testReviewTab.itemHeader.saveAndgetId().then(item => {
           expect(item).not.eq(item3);
           cy.saveItemDetailToDelete(item);
@@ -153,7 +155,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     it("Remove one question from review tab and verify test", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
@@ -179,7 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     it("Add a precreated item and verify test", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
       // Create A New Item
       item.createItem(newItemKey).then(id => {
         newItemId = id;
@@ -214,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     it("Remove one question from add item tab and verify test", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
 
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();
@@ -242,7 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
 
     it("Update points from review tab and verify test", () => {
-      cy.login("teacher", "300@abc.com", "snapwiz");
+      cy.login("teacher", Teacher.email, Teacher.pass);
 
       testLibraryPage.sidebar.clickOnTestLibrary();
       testLibraryPage.searchFilters.clearAll();

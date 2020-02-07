@@ -109,13 +109,6 @@ export default class TestReviewTab {
       .contains(question)
       .should("be.exist", `verify added items - ${question}should appear in review tab`);
 
-  editQuestionText = text => {
-    cy.get("[data-cy='questiontext']")
-      .find("p")
-      .clear({ force: true })
-      .type(text, { force: true });
-  };
-
   previewQuestById = id => {
     this.getQueCardByItemIdInCollapsed(id)
       .find("span", "Preview")

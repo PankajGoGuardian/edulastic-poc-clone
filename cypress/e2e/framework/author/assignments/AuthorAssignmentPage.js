@@ -48,7 +48,7 @@ class AuthorAssignmentPage {
       .eq(index)
       .click();
     cy.wait("@assignment");
-    cy.wait("@assignment");
+    cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
   };
 
   getStatus = () => cy.get('[data-cy="status"]');

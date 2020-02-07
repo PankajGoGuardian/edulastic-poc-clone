@@ -136,7 +136,7 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
-            <Title>Basic Calculator</Title>
+            <Title data-cy="BASIC">Basic Calculator</Title>
           </div>
           <BasicCalculator id="edulastic-basiccalculator" />
         </RndWrapper>
@@ -146,7 +146,7 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         <RndWrapper default={defaultRndPros.geogebraCalculator} dragHandleClassName="calculator-drag-handler">
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
-            <Title>Graphing Calculator</Title>
+            <Title data-cy="GRAPHING">Graphing Calculator</Title>
           </div>
           <Calculator id="geogebra-graphingculator" />
         </RndWrapper>
@@ -156,7 +156,7 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
         <RndWrapper default={defaultRndPros.geogebraCalculator} dragHandleClassName="calculator-drag-handler">
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
-            <Title>Scientific Calculator</Title>
+            <Title data-cy="SCIENTIFIC">Scientific Calculator</Title>
           </div>
           <Calculator id="geogebra-scientificcalculator" />
         </RndWrapper>

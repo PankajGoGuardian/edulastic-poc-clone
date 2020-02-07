@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Menu, Button } from "antd";
+import { get } from "lodash";
 import { Tooltip } from "../../../../../common/utils/helpers";
 import {
   IconSaveNew,
@@ -88,7 +89,8 @@ class ButtonBar extends Component {
       withLabels,
       disableSave = false,
       showMetaData = false,
-      showAuditTrail = false
+      showAuditTrail = false,
+      permissions
     } = this.props;
     const MobileDropMenu = (
       <DropMenuList>
@@ -146,7 +148,7 @@ class ButtonBar extends Component {
                   Meta data
                 </MenuItem>
               )}
-              {hasAuthorPermission && showAuditTrail && (
+              {hasAuthorPermission && showAuditTrail && !!permissions.length && (
                 <MenuItem
                   data-cy="auditTrailButton"
                   className={view === "auditTrail" && "active"}
@@ -356,7 +358,9 @@ const enhance = compose(
   withWindowSizes,
   withNamespaces("author"),
   connect(
-    null,
+    state => ({
+      permissions: get(state, ["user", "user", "permissions"])
+    }),
     {
       clearAnswers: clearAnswersAction
     }

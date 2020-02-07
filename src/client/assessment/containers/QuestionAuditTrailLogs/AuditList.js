@@ -5,7 +5,13 @@ import { get } from "lodash";
 import moment from "moment";
 
 import { StyledAuditTable, StyledButton } from "./styled";
-import { themeColorLight, red } from "@edulastic/colors";
+
+const statusColors = {
+  rejected: "#CE5A7C",
+  published: "#798CA8",
+  "content error": "#CE5A7C",
+  inreview: "#51A9B7"
+};
 
 const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes }) => {
   const columns = [
@@ -51,7 +57,11 @@ const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes })
       title: "Action",
       dataIndex: "status",
       key: "status",
-      render: value => <span style={{ textTransform: "uppercase", color: red, fontSize: "11px" }}>{value}</span>,
+      render: value => (
+        <span style={{ textTransform: "uppercase", color: statusColors[value], fontSize: "11px" }}>
+          {value === "inreview" ? "in review" : value}
+        </span>
+      ),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "status", "");

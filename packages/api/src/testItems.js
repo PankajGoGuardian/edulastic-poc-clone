@@ -99,15 +99,17 @@ const publishTestItem = data =>
       method: "put"
     })
     .then(result => {
-      AttchmentApi.saveAttachment({
-        type: "testitem",
-        referrerType: "TestItemContent",
-        referrerId: data.itemId,
-        data: {
-          note: ""
-        },
-        status: data.status
-      });
+      if (data.status !== "rejected") {
+        AttchmentApi.saveAttachment({
+          type: "testitem",
+          referrerType: "TestItemContent",
+          referrerId: data.itemId,
+          data: {
+            note: ""
+          },
+          status: data.status
+        });
+      }
       return result.data.result;
     });
 

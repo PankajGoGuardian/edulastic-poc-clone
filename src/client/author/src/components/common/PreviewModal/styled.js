@@ -279,7 +279,7 @@ export const SyledSpan = styled.span`
 `;
 
 export const StyledInput = styled(Input.TextArea)`
-  padding: 11px 22px;
+  padding: 8px 22px;
   height: 40px;
 `;
 export const StyledRejectionSubmitBtn = styled(Button)`

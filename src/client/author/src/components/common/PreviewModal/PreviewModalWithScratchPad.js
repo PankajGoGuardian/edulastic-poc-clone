@@ -76,7 +76,7 @@ const PreviewModalWithScratchPad = ({
   const _renderAddRejectNoteSection = () => {
     return (
       <StyledFlex style={{ marginTop: "18px" }}>
-        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={2} />
+        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={1} />
         <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
       </StyledFlex>
     );
@@ -111,7 +111,7 @@ const PreviewModalWithScratchPad = ({
             sectionQue={sectionQue}
             resourceCount={resourceCount}
             className="scratchpad-wrapper"
-            style={{ pointerEvents: "none" }}
+            style={onlySratchpad ? { pointerEvents: "none" } : {}}
           >
             <SvgDraw
               activeMode={activeMode}

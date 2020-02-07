@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { white, themeColor, desktopWidth } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { EduButton, MenuIcon } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import {
@@ -16,7 +16,8 @@ import {
   IconDescription,
   IconSend,
   IconPencilEdit,
-  IconCopy
+  IconCopy,
+  IconPrint
 } from "@edulastic/icons";
 import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import {
@@ -287,16 +288,18 @@ const TestPageHeader = ({
           />
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
-            {showShareButton && false && (
-              <EduButton
-                data-cy="source"
-                style={ButtonWithIconStyle}
-                size="large"
-                onClick={onShowSource}
-                disabled={isTestLoading}
-              >
-                <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
-              </EduButton>
+            {showShareButton && (
+              <Link to={`/author/printAssessment/${test?._id}`} target="_blank" rel="noopener noreferrer">
+                <EduButton
+                  title="Print"
+                  data-cy="printTest"
+                  style={ButtonWithIconStyle}
+                  size="large"
+                  disabled={isTestLoading}
+                >
+                  <IconPrint color={themeColor} style={{ stroke: themeColor }} />
+                </EduButton>
+              </Link>
             )}
             {showShareButton && (owner || features.isCurator) && (
               <EduButton

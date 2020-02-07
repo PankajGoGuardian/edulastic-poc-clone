@@ -478,6 +478,10 @@ class TestList extends Component {
   };
 
   handleAddTests = item => {
+    if (!item) {
+      console.error("Test data is missing while adding tests in bulk..");
+      return;
+    }
     const {
       playlist: { modules }
     } = this.props;
@@ -485,10 +489,10 @@ class TestList extends Component {
       this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
       message.warning("Create atleast 1 module");
     } else {
-      if (item.status === "draft") {
-        message.warning("Draft tests cannot be added");
-      } else {
+      if (item?.status !== "draft") {
         this.setState({ showAddTestInModules: true, testAdded: item });
+      } else {
+        message.warning("Draft tests cannot be added");
       }
     }
   };

@@ -23,7 +23,9 @@ import {
   IconTarget,
   IconRulerPencil,
   IconPlay,
-  IconMultipart
+  IconMultipart,
+  IconRead,
+  IconWrite
 } from "@edulastic/icons";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
@@ -271,9 +273,13 @@ class Container extends Component {
                     <IconLayout />
                     {"Classify, Match & Order"}
                   </Menu.Item>
+                  <Menu.Item key="read">
+                    <IconRead />
+                    {"Reading"}
+                  </Menu.Item>
                   <Menu.Item key="edit">
-                    <IconEdit />
-                    {"Reading & Comprehension"}
+                    <IconWrite />
+                    {"Writing"}
                   </Menu.Item>
                   <Menu.Item key="highlight">
                     <IconTarget />
@@ -295,9 +301,9 @@ class Container extends Component {
                     <IconMultipart />
                     {"Multipart"}
                   </Menu.Item>
-                  <Menu.Item key="video-passages">
+                  <Menu.Item key="instruction">
                     <IconPlay />
-                    {"Video & Text"}
+                    {"Instructions"}
                   </Menu.Item>
                   <Menu.Item key="rulers-calculators">
                     <IconRulerPencil />
@@ -378,9 +384,13 @@ class Container extends Component {
                 <IconLayout />
                 {"Classify, Match & Order"}
               </Menu.Item>
+              <Menu.Item key="read" onClick={this.toggleCategories}>
+                <IconRead />
+                {"Reading"}
+              </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
-                <IconEdit />
-                {"Reading & Comprehension"}
+                <IconWrite />
+                {"Writing"}
               </Menu.Item>
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
                 <IconTarget />
@@ -402,9 +412,9 @@ class Container extends Component {
                 <IconMultipart />
                 {"Multipart"}
               </Menu.Item>
-              <Menu.Item key="video-passages" onClick={this.toggleCategories}>
+              <Menu.Item key="instruction" onClick={this.toggleCategories}>
                 <IconPlay />
-                {"Video & Text"}
+                {"Instructions"}
               </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />

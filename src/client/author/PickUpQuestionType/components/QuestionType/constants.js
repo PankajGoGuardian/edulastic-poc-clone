@@ -2011,7 +2011,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "edit",
+      type: "read",
       cardImage: VPPassage,
       isPassageType: true,
       data: {
@@ -2026,7 +2026,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "edit",
+      type: "read",
       cardImage: VPPassage,
       isPassageType: true,
       data: {
@@ -2036,7 +2036,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "video-passages",
+      type: "instruction",
       cardImage: VPVideoPlayer,
       stimulus: "",
       data: {
@@ -2059,7 +2059,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "video-passages",
+      type: "instruction",
       cardImage: TextResource,
       stimulus: "",
       data: {

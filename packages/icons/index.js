@@ -207,3 +207,5 @@ export { default as IconContrast } from "./src/IconContrast";
 export { default as IconSelectCaretDown } from "./src/IconSelectCaretDown";
 export { default as IconClear } from "./src/IconClear";
 export { default as IconItemGroup } from "./src/IconItemGroup";
+export { default as IconRead } from "./src/IconRead";
+export { default as IconWrite } from "./src/IconWrite";

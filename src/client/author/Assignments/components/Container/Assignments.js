@@ -7,7 +7,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { test } from "@edulastic/constants";
+import { roleuser } from "@edulastic/constants";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 
@@ -62,45 +62,38 @@ import {
 } from "../../../sharedDucks/assignments";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 
-const { releaseGradeLabels, type } = test;
-
 const initialFilterState = {
   grades: [],
   subject: "",
   termId: "",
   testType: "",
   folderId: "",
-  classId: ""
+  classId: "",
+  showFilter: false
 };
 class Assignments extends Component {
   state = {
-    showFilter: false,
     selectedRows: [],
-    filterState: initialFilterState,
+    filterState: {},
     isPreviewModalVisible: false,
     openEditPopup: false,
     currentTestId: ""
   };
 
   componentDidMount() {
-    const {
-      loadAssignments,
-      loadAssignmentsSummary,
-      districtId,
-      loadFolders,
-      userRole,
-      defaultFilters,
-      orgData
-    } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
+    const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
+    const { showFilter = userRole === roleuser.TEACHER ? false : true } = storedFilters;
     const filters = {
-      ...defaultFilters,
-      testType: ""
+      ...initialFilterState,
+      ...storedFilters,
+      showFilter
     };
-    if (defaultTermId && !defaultFilters.hasOwnProperty("termId")) {
-      const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
-      filters.termId = defaultTerm._id || "";
+    if (defaultTermId && !storedFilters.termId) {
+      const isTermExists = terms.some(({ _id }) => _id === defaultTermId);
+      filters.termId = isTermExists ? defaultTermId : "";
     }
 
     loadAssignments({ filters });
@@ -111,9 +104,7 @@ class Assignments extends Component {
   }
 
   setFilterState = filterState => {
-    const { setAssignmentFilters } = this.props;
-    storeInLocalStorage("filterAssignments", JSON.stringify(filterState));
-    setAssignmentFilters(filterState);
+    sessionStorage.setItem("filters[Assignments]", JSON.stringify(filterState));
     this.setState({ filterState });
   };
 
@@ -174,8 +165,12 @@ class Assignments extends Component {
   );
 
   toggleFilter = () => {
-    const { showFilter } = this.state;
-    this.setState({ showFilter: !showFilter });
+    this.setState(
+      prev => ({ filterState: { ...prev.filterState, showFilter: !prev.filterState.showFilter } }),
+      () => {
+        sessionStorage.setItem("filters[Assignments]", JSON.stringify(this.state.filterState));
+      }
+    );
   };
 
   onSelectRow = selected => {
@@ -204,7 +199,8 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState
     } = this.props;
-    const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
+    const { selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
+    const { showFilter = false } = filterState;
     const tabletWidth = 768;
 
     const currentTest = find(tests, o => o._id === currentTestId);

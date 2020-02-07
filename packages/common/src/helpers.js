@@ -206,14 +206,15 @@ export const reIndexResponses = htmlStr => {
 };
 
 const tagMapping = {
-  img: "image",
-  mathunit: "math-input",
-  mathinput: "math-input",
-  textinput: "text-input",
-  textdropdown: "dropdown"
+  img: "[image]",
+  mathunit: " ",
+  mathinput: " ",
+  textinput: " ",
+  textdropdown: " "
 };
 
 export const sanitizeForReview = stimulus => {
+  // console.log("what is stimulus", stimulus);
   if (!window.$) return stimulus;
   if (!stimulus) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
@@ -224,6 +225,7 @@ export const sanitizeForReview = stimulus => {
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       const elem = $(this).context;
+      // console.log("what is elem", elem);
       // replace if tag is not span
       // span comes when we use italic or bold
       let shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
@@ -235,9 +237,9 @@ export const sanitizeForReview = stimulus => {
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
-          $(this).replaceWith(` [${tagMapping[tagToRemove]}] `);
+          $(this).replaceWith(` ${tagMapping[tagToRemove]} `);
         } else if (["br", "span"].includes(tagToRemove)) {
-          $(this).replaceWith("...");
+          $(this).replaceWith("");
         } else {
           $(this).replaceWith(` [${tagToRemove}] `);
         }
@@ -248,15 +250,17 @@ export const sanitizeForReview = stimulus => {
 
   //to remove any text after ...
   jqueryEl.find("p").each(function() {
-    if (
-      $(this)
-        .text()
-        .trim() === "..."
-    ) {
+    const text = $(this)
+      .text()
+      .trim();
+    // console.log("what is text", text);
+    if (!text || text === "...") {
       $(this).remove();
     }
   });
   let splitJquery = jqueryEl.html();
+  // console.log("what is splitJquery initially", splitJquery);
+
   if (tagFound) {
     const firstIndexOf = jqueryEl.html().indexOf("...");
     if (firstIndexOf != -1) {
@@ -266,10 +270,13 @@ export const sanitizeForReview = stimulus => {
       splitJquery = question.DEFAULT_STIMULUS;
     }
   }
-  if (splitJquery.includes("</p>")) {
-    splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} </p>`;
-  }
-  return sanitizeSelfClosingTags(splitJquery);
+  // if (splitJquery.includes("</p>")) {
+  //   splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} </p>`;
+  // }
+  // console.log("what is splitJquery", splitJquery);
+  const returnValue = sanitizeSelfClosingTags(splitJquery);
+  // console.log("what is return value", returnValue);
+  return returnValue;
 };
 
 export const removeIndexFromTemplate = tmpl => {

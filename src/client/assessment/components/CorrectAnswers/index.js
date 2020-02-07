@@ -1,17 +1,13 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
-
-import { themeColor, themeLightGrayColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
+import { FlexContainer, Tab, Tabs } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-
-import { Subtitle } from "../../styled/Subtitle";
-
-import { IconClose } from "./styled/IconClose";
+import { withNamespaces } from "@edulastic/localization";
+import { isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import styled from "styled-components";
 import { AlternateAnswerLink } from "../../styled/ButtonStyles";
+import { Subtitle } from "../../styled/Subtitle";
+import { IconClose } from "./styled/IconClose";
 
 class CorrectAnswers extends Component {
   state = {

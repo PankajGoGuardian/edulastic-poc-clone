@@ -1,18 +1,15 @@
-import React, { Component } from "react";
+import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-
-import { withNamespaces } from "@edulastic/localization";
-
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
-import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-
-import { CorrectAnswerHeader } from "./styled/CorrectAnswerHeader";
-import { Points } from "./styled/Points";
-import Display from "./Display";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import { selectColor } from "@edulastic/colors";
+import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
+import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { Label } from "../../styled/WidgetOptions/Label";
+import Display from "./Display";
+
 class CorrectAnswer extends Component {
   static propTypes = {
     response: PropTypes.object.isRequired,
@@ -94,6 +91,7 @@ class CorrectAnswer extends Component {
       <div>
         {this.context || (
           <CorrectAnswerHeader>
+            <Label>{t("component.correctanswers.points")}</Label>
             <CorrectAnswerPointField
               type="number"
               value={responseScore}
@@ -107,7 +105,6 @@ class CorrectAnswer extends Component {
               width="auto"
               style={{ "font-weight": "600", color: "#434B4F" }}
             />
-            <Points>{t("component.correctanswers.points")}</Points>
           </CorrectAnswerHeader>
         )}
         <Display

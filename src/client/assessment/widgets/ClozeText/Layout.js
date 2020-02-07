@@ -22,6 +22,8 @@ import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
 import Question from "../../components/Question";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 class Layout extends Component {
   static propTypes = {
@@ -206,7 +208,7 @@ class Layout extends Component {
           <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
             {t("component.options.display")}
           </Subtitle>
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.fontSize")}</Label>
               <SelectWrapper>
@@ -245,30 +247,30 @@ class Layout extends Component {
             </Col>
           </Row>
           <SpecialCharacters />
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={24}>
               <Label>{t("component.options.responsecontainerglobal")}</Label>
             </Col>
           </Row>
-          <Row>
-            <Checkbox
-              checked={!!uiStyle.globalSettings}
-              onChange={e => changeUiStyle("globalSettings", e.target.checked)}
-            >
-              {t("component.options.autoexpandoninput")}
-            </Checkbox>
-          </Row>
-          <Row gutter={20}>
-            <Col md={24}>
-              <Checkbox checked={!!multipleLine} onChange={e => onChange("multiple_line", e.target.checked)}>
+          <Row gutter={24}>
+            <Col md={12}>
+              <CheckboxLabel
+                checked={!!uiStyle.globalSettings}
+                onChange={e => changeUiStyle("globalSettings", e.target.checked)}
+              >
+                {t("component.options.autoexpandoninput")}
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel checked={!!multipleLine} onChange={e => onChange("multiple_line", e.target.checked)}>
                 {t("component.options.multiline")}
-              </Checkbox>
+              </CheckboxLabel>
             </Col>
           </Row>
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.widthpx")}</Label>
-              <TextField
+              <TextInputStyled
                 type="number"
                 disabled={false}
                 containerStyle={{ width: 350 }}
@@ -285,7 +287,7 @@ class Layout extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.options.heightpx")}</Label>
-              <TextField
+              <TextInputStyled
                 type="number"
                 disabled={false}
                 containerStyle={{ width: 350 }}
@@ -295,7 +297,7 @@ class Layout extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.inputtype")}</Label>
               <SelectWrapper>
@@ -311,7 +313,7 @@ class Layout extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.options.placeholder")}</Label>
-              <TextField
+              <TextInputStyled
                 disabled={false}
                 containerStyle={{ width: 350 }}
                 onChange={e => changeUiStyle("placeholder", e.target.value)}
@@ -319,7 +321,7 @@ class Layout extends Component {
               />
             </Col>
           </Row>
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={24}>
               <Label>{t("component.options.responsecontainerindividuals")}</Label>
             </Col>
@@ -327,18 +329,27 @@ class Layout extends Component {
           {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) =>
             responsecontainerindividual.placeholder ? (
               <Container key={index}>
-                <Row>
+                <Row gutter={24}>
                   <Col md={18}>
                     <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
                   </Col>
                   <Col md={6}>
-                    <Delete onClick={() => removeIndividual(index)}>X</Delete>
+                    <CustomStyleBtn
+                      width="40px"
+                      height="30px"
+                      padding="0px"
+                      margin="0px"
+                      style={{ float: "right" }}
+                      onClick={() => removeIndividual(index)}
+                    >
+                      X
+                    </CustomStyleBtn>
                   </Col>
                 </Row>
-                <Row gutter={20}>
+                <Row gutter={24}>
                   <Col md={12}>
                     <Label>{t("component.options.widthpx")}</Label>
-                    <TextField
+                    <TextInputStyled
                       ref={ref => {
                         this[`individualWidth${index}`] = ref;
                       }}
@@ -353,7 +364,7 @@ class Layout extends Component {
                   </Col>
                   <Col md={12}>
                     <Label>{t("component.options.heightpx")}</Label>
-                    <TextField
+                    <TextInputStyled
                       type="number"
                       disabled={false}
                       containerStyle={{ width: 350 }}
@@ -363,7 +374,7 @@ class Layout extends Component {
                     />
                   </Col>
                 </Row>
-                <Row gutter={20}>
+                <Row gutter={24}>
                   <Col md={12}>
                     <Label>{t("component.options.inputtype")}</Label>
                     <SelectWrapper>
@@ -380,7 +391,7 @@ class Layout extends Component {
                   </Col>
                   <Col md={12}>
                     <Label>{t("component.options.placeholder")}</Label>
-                    <TextField
+                    <TextInputStyled
                       disabled={false}
                       containerStyle={{ width: 350 }}
                       onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}

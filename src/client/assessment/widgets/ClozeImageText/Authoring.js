@@ -1,59 +1,56 @@
 /* eslint-disable func-names */
-import React, { Component, createRef } from "react";
+import { themeColor } from "@edulastic/colors";
+// import { API_CONFIG, TokenStorage } from "@edulastic/api";
+import { beforeUpload, PaddingDiv } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { aws, clozeImage } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { Dropdown, message, Select, Upload } from "antd";
+import produce from "immer";
+import { get, isUndefined, maxBy } from "lodash";
 import PropTypes from "prop-types";
+import React, { Component, createRef } from "react";
+import { ChromePicker } from "react-color";
+import "react-quill/dist/quill.snow.css";
+import { connect } from "react-redux";
 import { Rnd } from "react-rnd";
+import { withRouter } from "react-router-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import produce from "immer";
-import uuidv4 from "uuid/v4";
-import { themeColor } from "@edulastic/colors";
-import "react-quill/dist/quill.snow.css";
-import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
-import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { isUndefined, maxBy, get } from "lodash";
-
-// import { API_CONFIG, TokenStorage } from "@edulastic/api";
-import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { withNamespaces } from "@edulastic/localization";
-import { clozeImage, aws } from "@edulastic/constants";
+import uuidv4 from "uuid/v4";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { updateVariables } from "../../utils/variables";
-
+import { uploadToS3 } from "../../../author/src/utils/upload";
+import Question from "../../components/Question";
+import QuestionTextArea from "../../components/QuestionTextArea";
+import SortableList from "../../components/SortableList";
 import DropArea from "../../containers/DropArea";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../styled/InputStyles";
 import { Subtitle } from "../../styled/Subtitle";
-
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { FormContainer } from "./styled/FormContainer";
-import { ImageWidthInput } from "./styled/ImageWidthInput";
-import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
-import { ColorBox } from "./styled/ColorBox";
-import { FlexContainer } from "./styled/FlexContainer";
-import { ControlButton, MoveControlButton } from "./styled/ControlButton";
-import { PointerContainer } from "./styled/PointerContainer";
-import { PointerSelect } from "./styled/PointerSelect";
-import { ImageFlexView } from "./styled/ImageFlexView";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { ImageContainer } from "./styled/ImageContainer";
-import { PreivewImage } from "./styled/PreviewImage";
+import { Col } from "../../styled/WidgetOptions/Col";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { updateVariables } from "../../utils/variables";
 import { CheckContainer } from "./styled/CheckContainer";
+import { ColorBox } from "./styled/ColorBox";
+import { ControlButton, MoveControlButton } from "./styled/ControlButton";
+import { FieldWrapper } from "./styled/FieldWrapper";
+import { FlexContainer } from "./styled/FlexContainer";
+import { FormContainer } from "./styled/FormContainer";
 // import { IconDrawResize } from "./styled/IconDrawResize";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
-import { FieldLabel } from "./styled/FieldLabel";
+import { ImageContainer } from "./styled/ImageContainer";
+import { ImageFlexView } from "./styled/ImageFlexView";
+import { ImageWidthInput } from "./styled/ImageWidthInput";
+import { PointerContainer } from "./styled/PointerContainer";
+import { PointerSelect } from "./styled/PointerSelect";
+import { PreivewImage } from "./styled/PreviewImage";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
-import { FieldWrapper } from "./styled/FieldWrapper";
 import { UploadButton } from "./styled/UploadButton";
-
-import { uploadToS3 } from "../../../author/src/utils/upload";
-
-import SortableList from "../../components/SortableList";
-import Question from "../../components/Question";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -573,7 +570,7 @@ class Authoring extends Component {
               value={item.stimulus}
               border="border"
             />
-            <PaddingDiv />
+            <PaddingDiv top={30} />
             <FormContainer data-cy="top-toolbar-area">
               <FieldWrapper>
                 <ImageWidthInput
@@ -612,13 +609,13 @@ class Authoring extends Component {
               </FieldWrapper>
 
               <CheckContainer position="unset" alignSelf="center">
-                <Checkbox
+                <CheckboxLabel
                   data-cy="drag-drop-image-aria-check"
                   checked={keepAspectRatio}
                   onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
                 >
                   {t("component.cloze.imageText.keepAspectRatio")}
-                </Checkbox>
+                </CheckboxLabel>
               </CheckContainer>
 
               <PointerContainer className="controls-bar">
@@ -772,54 +769,59 @@ class Authoring extends Component {
             <FlexContainer justifyContent="flex-start">
               {item.imageUrl && (
                 <UploadButton {...uploadProps} showUploadList={false}>
-                  <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                  <CustomStyleBtn margin="0px 15px 0px 0px">
+                    {t("component.cloze.imageText.updateImageButtonText")}
+                  </CustomStyleBtn>
                 </UploadButton>
               )}
-              <CheckContainer position="unset" alignSelf="center">
-                <Checkbox
-                  data-cy="drag-drop-image-aria-check"
-                  defaultChecked={isEditAriaLabels}
-                  onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-                >
-                  {t("component.cloze.imageText.editAriaLabels")}
-                </Checkbox>
-              </CheckContainer>
-              <Checkbox
+              <CheckboxLabel
+                data-cy="drag-drop-image-aria-check"
+                defaultChecked={isEditAriaLabels}
+                onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+              >
+                {t("component.cloze.imageText.editAriaLabels")}
+              </CheckboxLabel>
+              <CheckboxLabel
                 data-cy="drag-drop-image-border-check"
                 defaultChecked={responseLayout && responseLayout.showborder}
                 onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
               >
                 {t("component.cloze.imageText.showborder")}
-              </Checkbox>
+              </CheckboxLabel>
             </FlexContainer>
-            <PaddingDiv>
-              {isEditAriaLabels && (
+            {isEditAriaLabels && (
+              <PaddingDiv top={30}>
                 <React.Fragment>
                   <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
                     {t("component.cloze.imageText.editAriaLabels")}
                   </Subtitle>
 
-                  <FieldLabel>{t("component.cloze.imageText.imagealtertext")}</FieldLabel>
-                  <ImageAlterTextInput
-                    data-cy="image-alternate-input"
-                    size="large"
-                    defaultValue={imageAlterText}
-                    onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
-                  />
-
-                  <FieldLabel>{t("component.cloze.imageText.responsesaltertext")}</FieldLabel>
-                  {responses.map((responseContainer, index) => (
-                    <ResponsTextInputWrapper key={index}>
-                      <span className="index-box">{index + 1}</span>
-                      <Input
-                        defaultValue={responseContainer.label}
-                        onChange={e => this.onResponseLabelChange(index, e.target.value)}
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Label>{t("component.cloze.imageText.imagealtertext")}</Label>
+                      <TextInputStyled
+                        data-cy="image-alternate-input"
+                        size="large"
+                        defaultValue={imageAlterText}
+                        onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
                       />
-                    </ResponsTextInputWrapper>
-                  ))}
+                    </Col>
+                    <Col span={24}>
+                      <Label>{t("component.cloze.imageText.responsesaltertext")}</Label>
+                      {responses.map((responseContainer, index) => (
+                        <ResponsTextInputWrapper key={index}>
+                          <span className="index-box">{index + 1}</span>
+                          <TextInputStyled
+                            defaultValue={responseContainer.label}
+                            onChange={e => this.onResponseLabelChange(index, e.target.value)}
+                          />
+                        </ResponsTextInputWrapper>
+                      ))}
+                    </Col>
+                  </Row>
                 </React.Fragment>
-              )}
-            </PaddingDiv>
+              </PaddingDiv>
+            )}
             {item.options.map((option, index) => (
               <PaddingDiv key={`${option}_${index}`}>
                 <Subtitle

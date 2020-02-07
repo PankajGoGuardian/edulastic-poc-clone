@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { TextField } from "@edulastic/common";
-import { sectionBorder } from "@edulastic/colors";
 
 export const CorrectAnswerPointField = styled(TextField)`
   width: 140px;
@@ -9,6 +8,6 @@ export const CorrectAnswerPointField = styled(TextField)`
   line-height: 40px;
   padding: 0 15px;
   margin-right: 25px;
-  border: 1px solid ${sectionBorder};
+  border: 1px solid #b9b9b9;
   background: #f8f8fb;
 `;

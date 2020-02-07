@@ -14,6 +14,7 @@ import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class Layout extends Component {
@@ -114,7 +115,7 @@ class Layout extends Component {
           <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
             {t("component.options.display")}
           </Subtitle>
-          <Row gutter={20}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
               <SelectWrapper>
@@ -168,7 +169,7 @@ class Layout extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.options.choiceMinWidth")}</Label>
-              <Input
+              <TextInputStyled
                 type="number"
                 min="1"
                 defaultValue={uiStyle.choiceMinWidth || choiceMinW}
@@ -178,7 +179,7 @@ class Layout extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.options.choiceMaxWidth")}</Label>
-              <Input
+              <TextInputStyled
                 type="number"
                 min="1"
                 onBlur={event => changeUiStyle("choiceMaxWidth", +event.target.value)}
@@ -188,9 +189,8 @@ class Layout extends Component {
 
             <Col md={12}>
               <Label>{t("component.options.widthpx")}</Label>
-              <Input
+              <TextInputStyled
                 type="number"
-                size="large"
                 disabled={false}
                 onBlur={this.handleWidthChange}
                 onChange={e => changeUiStyle("widthpx", e.target.value)}
@@ -201,9 +201,8 @@ class Layout extends Component {
             </Col>
             <Col md={12}>
               <Label>{t("component.options.heightpx")}</Label>
-              <Input
+              <TextInputStyled
                 type="number"
-                size="large"
                 disabled={false}
                 onBlur={this.handleHeightChange}
                 onChange={e => changeUiStyle("heightpx", e.target.value)}

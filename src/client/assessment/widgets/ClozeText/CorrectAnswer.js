@@ -6,6 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { selectColor } from "@edulastic/colors";
 import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 
@@ -73,7 +74,8 @@ class CorrectAnswer extends Component {
     return (
       <div>
         {this.context || (
-          <CorrectAnswerHeader>
+          <CorrectAnswerHeader mb="15px">
+            <Label>{t("component.correctanswers.points")}</Label>
             <CorrectAnswerPointField
               type="number"
               value={responseScore}
@@ -85,7 +87,6 @@ class CorrectAnswer extends Component {
               step={0.5}
               style={{ "font-size": "12px", "font-weight": "600", color: selectColor }}
             />
-            <span>{t("component.correctanswers.points")}</span>
           </CorrectAnswerHeader>
         )}
         <Display

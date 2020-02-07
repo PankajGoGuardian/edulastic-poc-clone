@@ -131,10 +131,9 @@ class Response extends Component {
         cleanSections={cleanSections}
       >
         {options.map((option, index) => (
-          <>
+          <PaddingDiv top={index > 0 ? "30" : "0"}>
             <Subtitle
               id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDropDown.response")} ${index + 1}`)}
-              style={{ paddingTop: index > 0 ? "30px" : "0px" }}
             >
               {t("component.cloze.imageDropDown.response")} {index + 1}
             </Subtitle>
@@ -146,12 +145,10 @@ class Response extends Component {
               onRemove={itemIndex => this.remove(index, itemIndex)}
               onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
             />
-            <PaddingDiv top={6}>
-              <CustomStyleBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
-                {t("component.cloze.imageDropDown.addnewchoice")}
-              </CustomStyleBtn>
-            </PaddingDiv>
-          </>
+            <CustomStyleBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
+              {t("component.cloze.imageDropDown.addnewchoice")}
+            </CustomStyleBtn>
+          </PaddingDiv>
         ))}
       </Question>
     );

@@ -11,6 +11,7 @@ import DropDownAnswer from "./ClozeDropDownAnswer";
 import InputAnswer from "./ClozeInputAnswer";
 import withPoints from "../../../components/HOC/withPoints";
 import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const { methods } = math;
 
@@ -497,26 +498,26 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           return null;
         })}
       </CorrectAnswerContainer>
-      <Checkbox
-        className="additional-options"
+      <CheckboxLabel
         onChange={() => handleValidationOptionsChange("ignoreCase", !item.validation.ignoreCase)}
-        label={t("component.multipart.ignoreCase")}
         checked={!!item.validation.ignoreCase}
-      />
-      <Checkbox
-        className="additional-options"
+      >
+        {t("component.multipart.ignoreCase")}
+      </CheckboxLabel>
+      <CheckboxLabel
         onChange={() =>
           handleValidationOptionsChange("allowSingleLetterMistake", !item.validation.allowSingleLetterMistake)
         }
-        label={t("component.multipart.allowsinglelettermistake")}
         checked={!!item.validation.allowSingleLetterMistake}
-      />
-      <Checkbox
-        className="additional-options"
+      >
+        {t("component.multipart.allowsinglelettermistake")}
+      </CheckboxLabel>
+      <CheckboxLabel
         onChange={() => handleValidationOptionsChange("mixAndMatch", !item.validation.mixAndMatch)}
-        label={t("component.multipart.mixNmatch")}
         checked={!!item.validation.mixAndMatch}
-      />
+      >
+        {t("component.multipart.mixNmatch")}
+      </CheckboxLabel>
     </CorrectAnswers>
   );
 };

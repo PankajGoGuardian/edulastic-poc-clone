@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { white } from "@edulastic/colors";
 
 export const ToolBtn = styled.li`
   display: flex;
@@ -10,24 +11,31 @@ export const ToolBtn = styled.li`
   width: 60px;
   height: 60px;
   text-transform: capitalize;
+  background-color: ${white};
   color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.25);
-  background-color: white;
   font-size: ${({ theme }) => theme.size4}px;
   cursor: pointer;
   user-select: none;
   box-shadow: ${({ active }) => (active ? "0 1px 3px 0 rgba(0, 0, 0, 0.25)" : "0 3px 6px 0 rgba(0, 0, 0, 0.25)")};
+  &.active {
+    background-color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+    color: ${white};
+    svg {
+      fill: ${white};
+      &:hover {
+        fill: ${white};
+      }
+    }
+  }
   svg {
-    color: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
     fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+    &:hover {
+      fill: ${props => props.theme.widgets.graphPlacement.buttonActiveLabelStroke};
+    }
   }
   &:first-child {
     margin-left: 0px;
-  }
-  &:hover,
-  &:active,
-  &.active {
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25);
   }
 `;
 

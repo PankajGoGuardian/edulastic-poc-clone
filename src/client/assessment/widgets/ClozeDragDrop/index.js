@@ -28,6 +28,7 @@ import { CheckContainer } from "./styled/CheckContainer";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import AppConfig from "../../../../../app-config";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const EmptyWrapper = styled.div``;
 
@@ -175,34 +176,34 @@ class ClozeDragDrop extends Component {
                   />
                   <CorrectAnswerOptions>
                     <CheckContainer>
-                      <Checkbox
+                      <CheckboxLabel
                         className="additional-options"
                         key={`duplicatedResponses_${duplicatedResponses}`}
                         onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
                         checked={duplicatedResponses}
                       >
                         {t("component.cloze.dragDrop.duplicatedresponses")}
-                      </Checkbox>
+                      </CheckboxLabel>
                     </CheckContainer>
                     <CheckContainer>
-                      <Checkbox
+                      <CheckboxLabel
                         className="additional-options"
                         key={`showDraghandle_${showDraghandle}`}
                         onChange={() => this.handleOptionsChange("showDraghandle", !showDraghandle)}
                         checked={showDraghandle}
                       >
                         {t("component.cloze.dragDrop.showdraghandle")}
-                      </Checkbox>
+                      </CheckboxLabel>
                     </CheckContainer>
                     <CheckContainer>
-                      <Checkbox
+                      <CheckboxLabel
                         className="additional-options"
                         key={`shuffleOptions_${shuffleOptions}`}
                         onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                         checked={shuffleOptions}
                       >
                         {t("component.cloze.dragDrop.shuffleoptions")}
-                      </Checkbox>
+                      </CheckboxLabel>
                     </CheckContainer>
                   </CorrectAnswerOptions>
                 </Question>
@@ -210,7 +211,7 @@ class ClozeDragDrop extends Component {
 
               {advancedLink}
 
-              <div style={{ marginTop: 35 }}>
+              <div>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}

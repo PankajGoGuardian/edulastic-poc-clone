@@ -411,6 +411,7 @@
     "orderlist": {
       "composequestion": "Question",
       "enteryourquestion": "Enter your question",
+      "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoicebtn": "Add New Choice",
       " ": "Enter your question",
       "correctanswer": "Correct Answer:",

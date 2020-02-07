@@ -7,7 +7,7 @@ import { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
 import { arrayMove } from "react-sortable-hoc";
-import { Button, Icon, Input, Checkbox } from "antd";
+import { Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { PaddingDiv } from "@edulastic/common";
@@ -17,6 +17,11 @@ import QuillSortableList from "../../components/QuillSortableList/index";
 
 import { updateVariables } from "../../utils/variables";
 import { Subtitle } from "../../styled/Subtitle";
+import { TextInputStyled } from "../../styled/InputStyles";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { ActionWrapper } from "./styled/ActionWrapper";
 import { CheckContainer } from "./styled/CheckContainer";
@@ -238,13 +243,13 @@ class GroupResponses extends React.Component {
     const { t, item } = this.props;
     return (
       <CheckContainer>
-        <Checkbox
+        <CheckboxLabel
           data-cy="drag-drop-aria-check"
           checked={item.hasGroupResponses}
           onChange={e => this.groupResponsesHandler(e)}
         >
           {t("component.cloze.dragDrop.grouppossibleresponses")}
-        </Checkbox>
+        </CheckboxLabel>
       </CheckContainer>
     );
   };
@@ -278,7 +283,7 @@ class GroupResponses extends React.Component {
           item.groupResponses &&
           item.groupResponses.length > 0 &&
           item.groupResponses.map((group, index) => (
-            <div key={index}>
+            <Row key={index}>
               <fieldset
                 style={{
                   borderColor: theme.widgets.clozeDragDrop.groupResponseFieldsetBorderColor,
@@ -292,23 +297,28 @@ class GroupResponses extends React.Component {
                   {t("component.cloze.dragDrop.group")} {index + 1}
                 </legend>
                 <div style={{ float: "right" }}>
-                  <Button onClick={() => this.removeGroup(index)} size="small" type="button">
+                  <CustomStyleBtn
+                    width="40px"
+                    margin="0px"
+                    padding="0px"
+                    height="30px"
+                    onClick={() => this.removeGroup(index)}
+                    size="small"
+                    type="button"
+                  >
                     <Icon type="close" />
-                  </Button>
+                  </CustomStyleBtn>
                 </div>
-                <PaddingDiv top={10} bottom={10}>
-                  <div>{t("component.cloze.dragDrop.title")}</div>
-                </PaddingDiv>
-                <div>
-                  <Input
+                <Col span={24}>
+                  <Label>{t("component.cloze.dragDrop.title")}</Label>
+                  <TextInputStyled
                     size="large"
-                    style={{ width: "100%" }}
                     onChange={e => this.changeGroupRespTitle(index, e)}
                     value={group.title}
                   />
-                </div>
-                <PaddingDiv top={20} bottom={10}>
-                  <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
+                </Col>
+                <Col span={24}>
+                  <Label>{t("component.cloze.dragDrop.choicesforresponse")}</Label>
                   {group.options.length > 0 && (
                     <QuillSortableList
                       prefix={`group_${index}`}
@@ -319,14 +329,14 @@ class GroupResponses extends React.Component {
                       onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
                     />
                   )}
-                  <PaddingDiv top={10} bottom={10}>
-                    <CustomStyleBtn onClick={() => this.addNewGroupOption(index)}>
-                      {t("component.cloze.dragDrop.addnewchoice")}
-                    </CustomStyleBtn>
-                  </PaddingDiv>
-                </PaddingDiv>
+                </Col>
+                <Col span={24}>
+                  <CustomStyleBtn onClick={() => this.addNewGroupOption(index)}>
+                    {t("component.cloze.dragDrop.addnewchoice")}
+                  </CustomStyleBtn>
+                </Col>
               </fieldset>
-            </div>
+            </Row>
           ))}
         {item.hasGroupResponses && (
           <ActionWrapper>

@@ -26,6 +26,7 @@ import ChoicesForResponses from "./ChoicesForResponses";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import AppConfig from "../../../../../app-config";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const EmptyWrapper = styled.div``;
 
@@ -163,13 +164,14 @@ class ClozeDropDown extends Component {
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
                   <CorrectAnswerOptions>
-                    <Checkbox
+                    <CheckboxLabel
                       className="additional-options"
                       key="shuffleOptions"
                       onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                      label={t("component.cloze.dropDown.shuffleoptions")}
                       checked={shuffleOptions}
-                    />
+                    >
+                      {t("component.cloze.dropDown.shuffleoptions")}
+                    </CheckboxLabel>
                   </CorrectAnswerOptions>
                 </Question>
                 <ChoicesForResponses
@@ -182,20 +184,18 @@ class ClozeDropDown extends Component {
 
               {advancedLink}
 
-              <div style={{ marginTop: 35 }}>
-                <Options
-                  onChange={this.handleOptionsChange}
-                  uiStyle={uiStyle}
-                  outerStyle={{
-                    padding: "30px 120px"
-                  }}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                  advancedAreOpen={advancedAreOpen}
-                  responseIDs={responseIds}
-                  item={item}
-                />
-              </div>
+              <Options
+                onChange={this.handleOptionsChange}
+                uiStyle={uiStyle}
+                outerStyle={{
+                  padding: "30px 120px"
+                }}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                advancedAreOpen={advancedAreOpen}
+                responseIDs={responseIds}
+                item={item}
+              />
             </React.Fragment>
           </ContentArea>
         )}

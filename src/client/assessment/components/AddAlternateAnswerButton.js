@@ -1,29 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-import { themeColor } from "@edulastic/colors";
-import { Button } from "@edulastic/common";
+import { AlternateAnswerLink } from "../styled/ButtonStyles";
 
 const AddAlternateAnswerButton = ({ onClickHandler, text }) => (
-  <Button
-    style={{
-      minWidth: 130,
-      minHeight: 40,
-      padding: 0,
-      marginLeft: "auto",
-      background: "transparent",
-      color: themeColor,
-      borderRadius: 0,
-      boxShadow: "none",
-      outline: "none"
-    }}
-    onClick={onClickHandler}
-    color="primary"
-    variant="extendedFab"
-    data-cy="alternative"
-  >
+  <AlternateAnswerLink onClick={onClickHandler} variant="extendedFab" data-cy="alternative">
     {text}
-  </Button>
+  </AlternateAnswerLink>
 );
 
 AddAlternateAnswerButton.propTypes = {

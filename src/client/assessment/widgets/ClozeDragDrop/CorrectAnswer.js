@@ -7,6 +7,7 @@ import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 import Display from "./Display";
 import { mainTextColor } from "@edulastic/colors";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -68,7 +69,8 @@ class CorrectAnswer extends Component {
     return (
       <div>
         {itemLevelScoring || (
-          <CorrectAnswerHeader>
+          <CorrectAnswerHeader mb="15px">
+            <Label>{t("component.correctanswers.points")}</Label>
             <CorrectAnswerPointField
               data-cy="points"
               type="number"
@@ -82,7 +84,6 @@ class CorrectAnswer extends Component {
               width="auto"
               style={{ "font-size": "14px", "font-weight": "400", color: mainTextColor }}
             />
-            <span>{t("component.correctanswers.points")}</span>
           </CorrectAnswerHeader>
         )}
         <Display

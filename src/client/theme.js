@@ -946,8 +946,8 @@ export const defaultTheme = {
       textInputColor: labelStyle,
       textInputBorderColor: "none",
       textInputLimitedBgColor: wrongBgColor,
-      toolbarItemBgHoverColor: sideBarColor,
-      toolbarItemBgActiveColor: sideBarColor
+      toolbarItemBgHoverColor: "#B9B9B9",
+      toolbarItemBgActiveColor: "#878A91"
     },
     essayRichText: {
       qlBlocksFontFamily: "Arial",
@@ -1233,7 +1233,7 @@ export const defaultTheme = {
       dragDropTitleFontWeight: bold,
       dragDropTitleFontSize: subtitleFontSize,
       buttonLabelStroke: textColor,
-      buttonActiveLabelStroke: themeColor,
+      buttonActiveLabelStroke: "#878A91",
       buttonActiveBgColor: brandWhite,
       buttonHoverBgColor: brandWhite,
       rightBgColor,

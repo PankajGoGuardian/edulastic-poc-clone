@@ -85,7 +85,7 @@ class Layout extends Component {
             <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
               {t("component.options.display")}
             </Subtitle>
-            <Row gutter={20}>
+            <Row gutter={24}>
               <Col md={12}>
                 <MultipleLineOption
                   checked={get(item, "multiple_line", false)}
@@ -100,7 +100,7 @@ class Layout extends Component {
               </Col>
             </Row>
             <SpecialCharacters />
-            <Row gutter={20}>
+            <Row gutter={24}>
               <Col md={12}>
                 <StemNumerationOption
                   onChange={val => changeUiStyle("validationStemNumeration", val)}

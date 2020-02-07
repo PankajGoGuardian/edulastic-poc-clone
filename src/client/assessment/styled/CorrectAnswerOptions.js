@@ -12,9 +12,6 @@ export const CorrectAnswerOptions = styled.div`
     text-align: left;
   }
 
-  & input {
-  }
-
   .additional-options {
     white-space: nowrap;
     margin-right: 0px;

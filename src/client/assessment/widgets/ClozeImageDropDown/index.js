@@ -25,6 +25,7 @@ import { EditorContainer } from "./styled/EditorContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
 import { ContentArea } from "../../styled/ContentArea";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 class ClozeImageDropDown extends Component {
   static contextType = AnswerContext;
@@ -231,34 +232,31 @@ class ClozeImageDropDown extends Component {
                       cleanSections={cleanSections}
                       imageOptions={item.imageOptions}
                     />
-                    <AdditionalContainer>
-                      <CorrectAnswerOptions>
-                        <Checkbox
-                          className="additional-options"
-                          onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                          label={t("component.cloze.imageDropDown.shuffleoptions")}
-                          checked={shuffleOptions}
-                        />
-                      </CorrectAnswerOptions>
-                    </AdditionalContainer>
+                    <CorrectAnswerOptions>
+                      <CheckboxLabel
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                        checked={shuffleOptions}
+                      >
+                        {t("component.cloze.imageDropDown.shuffleoptions")}
+                      </CheckboxLabel>
+                    </CorrectAnswerOptions>
                   </Question>
                 </div>
               </EditorContainer>
 
               {advancedLink}
 
-              <OptionsContainer>
-                <Options
-                  questionData={item}
-                  uiStyle={uiStyle}
-                  onChange={this.handleOptionsChange}
-                  advancedAreOpen={advancedAreOpen}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                  responses={item.responses}
-                  item={item}
-                />
-              </OptionsContainer>
+              <Options
+                questionData={item}
+                uiStyle={uiStyle}
+                onChange={this.handleOptionsChange}
+                advancedAreOpen={advancedAreOpen}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                responses={item.responses}
+                item={item}
+              />
             </React.Fragment>
           </ContentArea>
         )}

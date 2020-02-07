@@ -29,7 +29,7 @@ const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, d
         data-cy="deleteButton"
         cIndex={cyIndex}
         onClick={onRemove}
-        color={themeColor}
+        color="#878A91"
         hoverColor={red}
         width={20}
         height={20}

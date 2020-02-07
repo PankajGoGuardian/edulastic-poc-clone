@@ -4,15 +4,15 @@ import { Select } from "antd";
 import i18n, { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const StemNumeration = ({ t, onChange, value, size, options, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
-    <Select
+    <SelectInputStyled
       data-cy="stemNumerationSelect"
       size="large"
       value={value}
-      style={{ width: "100%" }}
       onChange={onChange}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       {...restProps}
@@ -22,7 +22,7 @@ const StemNumeration = ({ t, onChange, value, size, options, ...restProps }) => 
           {label}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

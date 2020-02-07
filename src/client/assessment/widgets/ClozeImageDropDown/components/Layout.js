@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Select, Row, Col, Input } from "antd";
+import { Select, Input } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -13,6 +13,8 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../../auth
 
 import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 import { OptionSelect } from "../styled/OptionSelect";
 import { OptionCheckbox } from "../styled/OptionCheckbox";
@@ -23,6 +25,7 @@ import Delete from "./styled/Delete";
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 class Layout extends Component {
   handleWidthChange = () => {
@@ -155,11 +158,11 @@ class Layout extends Component {
             <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
               {t("component.options.display")}
             </Subtitle>
-            <MarginRow gutter={20}>
+            <Row gutter={24}>
               <Col md={12}>
                 <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
                 <SelectWrapper>
-                  <OptionSelect
+                  <SelectInputStyled
                     size="large"
                     onChange={val => changeUiStyle("stemNumeration", val)}
                     value={uiStyle.stemNumeration || "normal"}
@@ -170,13 +173,13 @@ class Layout extends Component {
                         {label}
                       </Select.Option>
                     ))}
-                  </OptionSelect>
+                  </SelectInputStyled>
                 </SelectWrapper>
               </Col>
               <Col md={12}>
                 <Label>{t("component.options.fontSize")}</Label>
                 <SelectWrapper>
-                  <OptionSelect
+                  <SelectInputStyled
                     size="large"
                     onChange={fontsize => changeUiStyle("fontsize", fontsize)}
                     value={uiStyle.fontsize || "normal"}
@@ -187,14 +190,14 @@ class Layout extends Component {
                         {label}
                       </Select.Option>
                     ))}
-                  </OptionSelect>
+                  </SelectInputStyled>
                 </SelectWrapper>
               </Col>
-            </MarginRow>
-            <MarginRow gutter={20}>
+            </Row>
+            <Row gutter={24}>
               <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
-                <Input
+                <TextInputStyled
                   type="number"
                   size="large"
                   disabled={false}
@@ -207,7 +210,7 @@ class Layout extends Component {
               </Col>
               <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
-                <Input
+                <TextInputStyled
                   type="number"
                   size="large"
                   disabled={false}
@@ -218,7 +221,7 @@ class Layout extends Component {
                   min={response.minHeight}
                 />
               </Col>
-            </MarginRow>
+            </Row>
           </Block>
         </Question>
       </React.Fragment>

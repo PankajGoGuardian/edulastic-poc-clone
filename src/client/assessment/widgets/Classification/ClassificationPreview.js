@@ -348,7 +348,7 @@ const ClassificationPreview = ({
         </QuestionTitleWrapper>
       )}
 
-      <div style={{ overflow: "auto" }}>
+      <div style={{ overflow: "auto", width: "100%" }}>
         <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
           <ResponseContainer
             direction={direction}

@@ -26,6 +26,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -35,6 +36,7 @@ const QuestionTitleWrapper = styled.div`
 
 const OptionsContainer = styled.div`
   overflow-x: auto;
+  width: 100%;
   .orderlist-set-correct-answer {
     ${({ styleType }) =>
       styleType === "inline" &&
@@ -244,17 +246,24 @@ const OrderList = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <CorrectAnswers
-            onTabChange={onTabChange}
-            correctTab={correctTab}
-            onAdd={handleAddAltResponse}
-            validation={item.validation}
-            options={renderOptions}
-            onCloseTab={handleDeleteAltAnswers}
+          <Question
+            section="main"
+            label={t("component.orderlist.setcorrectanswers")}
             fillSections={fillSections}
             cleanSections={cleanSections}
-            questionType={item?.title}
-          />
+          >
+            <CorrectAnswers
+              onTabChange={onTabChange}
+              correctTab={correctTab}
+              onAdd={handleAddAltResponse}
+              validation={item.validation}
+              options={renderOptions}
+              onCloseTab={handleDeleteAltAnswers}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+              questionType={item?.title}
+            />
+          </Question>
 
           {advancedLink}
 

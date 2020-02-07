@@ -97,14 +97,13 @@ export default Tab;
 
 const Container = styled.div`
   color: ${title};
-  padding: ${({ type }) => (type === "primary" ? "0px 15px 0px 0px" : "10px 25px")};
+  padding: ${({ type }) => (type === "primary" ? "0px 20px 0px 0px" : "10px 25px")};
   cursor: pointer;
   background: ${white};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
-  min-width: ${({ type }) => (type === "primary" ? "100px" : "0")};
   text-align: left;
-  border-radius: ${({ borderRadius }) => (borderRadius ? "4px" : 0)};
+  border-radius: 0px;
   text-transform: uppercase;
   border-bottom: 2px solid ${({ active }) => (active ? "#434B5D" : "transparent")};
   position: relative;
@@ -128,6 +127,7 @@ const Container = styled.div`
     height: 8px;
     fill: ${title};
     position: absolute;
+    bottom: 8px;
     right: 5px;
     &:hover {
       fill: ${title};

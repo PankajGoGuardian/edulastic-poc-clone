@@ -24,6 +24,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import AppConfig from "../../../../../app-config";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 class ClozeImageText extends Component {
   static contextType = AnswerContext;
@@ -221,27 +222,27 @@ class ClozeImageText extends Component {
                     />
 
                     <AdditionalContainer>
-                      <Checkbox
-                        className="additional-options"
+                      <CheckboxLabel
                         onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
-                        label={t("component.cloze.dropDown.ignorecase")}
                         checked={!!ignoreCase}
-                      />
+                      >
+                        {t("component.cloze.dropDown.ignorecase")}
+                      </CheckboxLabel>
 
-                      <Checkbox
-                        className="additional-options"
+                      <CheckboxLabel
                         onChange={() =>
                           this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
                         }
-                        label={t("component.cloze.dropDown.allowsinglelettermistake")}
                         checked={!!allowSingleLetterMistake}
-                      />
-                      <Checkbox
-                        className="additional-options"
+                      >
+                        {t("component.cloze.dropDown.allowsinglelettermistake")}
+                      </CheckboxLabel>
+                      <CheckboxLabel
                         onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
-                        label="Mix-n-Match alternative answers"
                         checked={!!mixAndMatch}
-                      />
+                      >
+                        Mix-n-Match alternative answers
+                      </CheckboxLabel>
                     </AdditionalContainer>
                   </Question>
                 </div>
@@ -249,20 +250,18 @@ class ClozeImageText extends Component {
 
               {advancedLink}
 
-              <OptionsContainer>
-                <Options
-                  onChange={this.handleOptionsChange}
-                  uiStyle={uiStyle}
-                  outerStyle={{
-                    padding: "16px 60px 7px 60px"
-                  }}
-                  advancedAreOpen={advancedAreOpen}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                  responses={item.responses}
-                  item={item}
-                />
-              </OptionsContainer>
+              <Options
+                onChange={this.handleOptionsChange}
+                uiStyle={uiStyle}
+                outerStyle={{
+                  padding: "16px 60px 7px 60px"
+                }}
+                advancedAreOpen={advancedAreOpen}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                responses={item.responses}
+                item={item}
+              />
             </ContentArea>
           )}
           {view === "preview" && (

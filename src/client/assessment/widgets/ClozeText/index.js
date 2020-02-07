@@ -23,6 +23,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import AppConfig from "../../../../../app-config";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const EmptyWrapper = styled.div``;
 
@@ -271,29 +272,29 @@ class ClozeText extends Component {
                   previewTab={previewTab}
                   item={item}
                 />
-                <div style={{ marginTop: 40 }}>
-                  <Checkbox
-                    className="additional-options"
+                <div>
+                  <CheckboxLabel
                     onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
-                    label={t("component.cloze.dropDown.ignorecase")}
                     checked={!!ignoreCase}
-                  />
+                  >
+                    {t("component.cloze.dropDown.ignorecase")}
+                  </CheckboxLabel>
 
-                  <Checkbox
-                    className="additional-options"
+                  <CheckboxLabel
                     onChange={() =>
                       this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
                     }
-                    label={t("component.cloze.dropDown.allowsinglelettermistake")}
                     checked={!!allowSingleLetterMistake}
-                  />
+                  >
+                    {t("component.cloze.dropDown.allowsinglelettermistake")}
+                  </CheckboxLabel>
 
-                  <Checkbox
-                    className="additional-options"
+                  <CheckboxLabel
                     onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
-                    label="Mix-n-Match alternative answers"
                     checked={!!mixAndMatch}
-                  />
+                  >
+                    Mix-n-Match alternative answers
+                  </CheckboxLabel>
                 </div>
               </Question>
 

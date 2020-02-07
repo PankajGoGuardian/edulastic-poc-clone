@@ -4,15 +4,15 @@ import { Select } from "antd";
 import i18n, { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const FontSize = ({ t, onChange, value, size, options, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.fontSize")}</Label>
-    <Select
+    <SelectInputStyled
       data-cy="fontSizeSelect"
       size="large"
       value={value}
-      style={{ width: "100%" }}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={onChange}
       {...restProps}
@@ -22,7 +22,7 @@ const FontSize = ({ t, onChange, value, size, options, ...restProps }) => (
           {label}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

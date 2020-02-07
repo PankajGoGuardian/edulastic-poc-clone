@@ -1,50 +1,51 @@
-import React, { Component, createRef } from "react";
-import PropTypes from "prop-types";
+import { themeColor } from "@edulastic/colors";
+import { beforeUpload, PaddingDiv } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { aws, clozeImage } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { Dropdown, Input, InputNumber, message, Select, Upload } from "antd";
 import produce from "immer";
+import { get, isUndefined, maxBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component, createRef } from "react";
+import { ChromePicker } from "react-color";
+import "react-quill/dist/quill.snow.css";
+import { connect } from "react-redux";
 import { Rnd } from "react-rnd";
+import { withRouter } from "react-router-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import uuidv4 from "uuid/v4";
-import "react-quill/dist/quill.snow.css";
-import { Checkbox, Input, InputNumber, Select, Upload, message, Dropdown } from "antd";
-import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { isUndefined, maxBy, get } from "lodash";
-
-import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { withNamespaces } from "@edulastic/localization";
-import { themeColor } from "@edulastic/colors";
-import { aws, clozeImage } from "@edulastic/constants";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import QuestionTextArea from "../../components/QuestionTextArea";
+import uuidv4 from "uuid/v4";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { updateVariables } from "../../utils/variables";
-
+import { uploadToS3 } from "../../../author/src/utils/upload";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
+import Question from "../../components/Question";
+import QuestionTextArea from "../../components/QuestionTextArea";
 import DropArea from "../../containers/DropArea";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { FlexView } from "../../styled/FlexView";
 import { Subtitle } from "../../styled/Subtitle";
-
-import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
+import { Col } from "../../styled/WidgetOptions/Col";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { updateVariables } from "../../utils/variables";
+import { CheckContainer } from "../ClozeImageDropDown/styled/CheckContainer";
+import { FormBottomContainer, FormContainer } from "../ClozeImageDropDown/styled/FormContainer";
+import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
+import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
+import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
 import { ColorBox } from "./styled/ColorBox";
+import { ControlButton, MoveControlButton } from "./styled/ControlButton";
+import { FieldLabel, FieldWrapper } from "./styled/FieldWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
-import { FieldWrapper, FieldLabel } from "./styled/FieldWrapper";
-import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
 import { PointerSelect } from "./styled/PointerSelect";
-import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
-import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
-import { CheckContainer } from "../ClozeImageDropDown/styled/CheckContainer";
-import { FormContainer, FormBottomContainer } from "../ClozeImageDropDown/styled/FormContainer";
-import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
-import Question from "../../components/Question";
-
-import { uploadToS3 } from "../../../author/src/utils/upload";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -512,7 +513,6 @@ class ComposeQuestion extends Component {
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDragDrop.composequestion")}`)}>
           {t("component.cloze.imageDragDrop.composequestion")}
         </Subtitle>
-
         <QuestionTextArea
           toolbarId="stimulus"
           inputId="stimulusInput"
@@ -561,14 +561,14 @@ class ComposeQuestion extends Component {
           </FieldWrapper>
 
           <CheckContainer position="unset" alignSelf="center">
-            <Checkbox
+            <CheckboxLabel
               data-cy="drag-drop-image-aria-check"
               defaultChecked={isEditAriaLabels}
               checked={responseLayout && responseLayout.keepAspectRatio}
               onChange={val => this.onResponsePropChange("keepAspectRatio", val.target.checked)}
             >
               {t("component.cloze.imageText.keepAspectRatio")}
-            </Checkbox>
+            </CheckboxLabel>
           </CheckContainer>
           <PointerContainer className="controls-bar">
             <FieldWrapper>
@@ -607,7 +607,6 @@ class ComposeQuestion extends Component {
             </FieldWrapper>
           </Dropdown>
         </FormContainer>
-
         <PaddingDiv top={30} />
         <FlexContainer>
           <FlexView
@@ -712,51 +711,67 @@ class ComposeQuestion extends Component {
         <FormBottomContainer align="flex-start">
           {item.imageUrl && (
             <UploadButton {...uploadProps} showUploadList={false}>
-              <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+              <CustomStyleBtn margin="0px 15px 0px 0px">
+                {t("component.cloze.imageText.updateImageButtonText")}
+              </CustomStyleBtn>
             </UploadButton>
           )}
-          <Checkbox
-            data-cy="drag-drop-image-aria-check"
-            defaultChecked={isEditAriaLabels}
-            onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.editAriaLabels")}
-          </Checkbox>
-          <Checkbox
-            data-cy="drag-drop-image-dashboard-check"
-            defaultChecked={responseLayout && responseLayout.showdashedborder}
-            onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.showdashedborder")}
-          </Checkbox>
-          <Checkbox
-            data-cy="drag-drop-image-transparent-check"
-            defaultChecked={responseLayout && responseLayout.transparentbackground}
-            onChange={val => this.onResponsePropChange("transparentbackground", val.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.transparentbackground")}
-          </Checkbox>
-          <Checkbox
-            data-cy="drag-drop-image-border-check"
-            defaultChecked={responseLayout && responseLayout.showborder}
-            onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.showborder")}
-          </Checkbox>
-          <Checkbox
-            data-cy="drag-drop-image-border-check"
-            defaultChecked={responseLayout && responseLayout.isSnapFitValues}
-            onChange={val => this.onResponsePropChange("isSnapFitValues", val.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.snapfittodroparea")}
-          </Checkbox>
-          <Checkbox
-            data-cy="drag-drop-image-wrap-text-to-fit"
-            defaultChecked={responseLayout && responseLayout.isWrapText}
-            onChange={e => this.onResponsePropChange("isWrapText", e.target.checked)}
-          >
-            {t("component.cloze.imageDragDrop.wrapTextToFitDropArea")}
-          </Checkbox>
+          <Row gutter={24} type={"flex"} wrap={"wrap"} marginTop="15">
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-aria-check"
+                defaultChecked={isEditAriaLabels}
+                onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.editAriaLabels")}
+              </CheckboxLabel>
+            </Col>
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-dashboard-check"
+                defaultChecked={responseLayout && responseLayout.showdashedborder}
+                onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.showdashedborder")}
+              </CheckboxLabel>
+            </Col>
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-transparent-check"
+                defaultChecked={responseLayout && responseLayout.transparentbackground}
+                onChange={val => this.onResponsePropChange("transparentbackground", val.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.transparentbackground")}
+              </CheckboxLabel>
+            </Col>
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-border-check"
+                defaultChecked={responseLayout && responseLayout.showborder}
+                onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.showborder")}
+              </CheckboxLabel>
+            </Col>
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-border-check"
+                defaultChecked={responseLayout && responseLayout.isSnapFitValues}
+                onChange={val => this.onResponsePropChange("isSnapFitValues", val.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.snapfittodroparea")}
+              </CheckboxLabel>
+            </Col>
+            <Col span={8}>
+              <CheckboxLabel
+                data-cy="drag-drop-image-wrap-text-to-fit"
+                defaultChecked={responseLayout && responseLayout.isWrapText}
+                onChange={e => this.onResponsePropChange("isWrapText", e.target.checked)}
+              >
+                {t("component.cloze.imageDragDrop.wrapTextToFitDropArea")}
+              </CheckboxLabel>
+            </Col>
+          </Row>
         </FormBottomContainer>
         <PaddingDiv>
           {isEditAriaLabels && (
@@ -765,26 +780,31 @@ class ComposeQuestion extends Component {
                 {t("component.cloze.imageDragDrop.editAriaLabels")}
               </Subtitle>
 
-              <FieldLabel>{t("component.cloze.imageDropDown.imagealtertext")}</FieldLabel>
-              <div className="imagelabeldragdrop-droppable iseditablearialabel">
-                <Input
-                  data-cy="image-alternate-input"
-                  size="large"
-                  defaultValue={imageAlterText}
-                  onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
-                />
-              </div>
-
-              <FieldLabel>{t("component.cloze.imageText.responsesaltertext")}</FieldLabel>
-              {responses.map((responseContainer, index) => (
-                <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
-                  <span className="index-box">{index + 1}</span>
-                  <Input
-                    defaultValue={responseContainer.label}
-                    onChange={e => this.onResponseLabelChange(index, e.target.value)}
-                  />
-                </div>
-              ))}
+              <Row gutter={24}>
+                <Col span={24}>
+                  <Label>{t("component.cloze.imageDropDown.imagealtertext")}</Label>
+                  <div className="imagelabeldragdrop-droppable iseditablearialabel">
+                    <TextInputStyled
+                      data-cy="image-alternate-input"
+                      size="large"
+                      defaultValue={imageAlterText}
+                      onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
+                    />
+                  </div>
+                </Col>
+                <Col span={24}>
+                  <Label>{t("component.cloze.imageText.responsesaltertext")}</Label>
+                  {responses.map((responseContainer, index) => (
+                    <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
+                      <span className="index-box">{index + 1}</span>
+                      <TextInputStyled
+                        defaultValue={responseContainer.label}
+                        onChange={e => this.onResponseLabelChange(index, e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </Col>
+              </Row>
             </React.Fragment>
           )}
         </PaddingDiv>

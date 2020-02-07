@@ -54,5 +54,7 @@ const PointsInput = styled(Input)`
     background: #f8f8f8;
     height: 36px;
     min-height: 36px;
+    position: relative;
+    z-index: 1;
   }
 `;

@@ -12,11 +12,14 @@ import { CustomStyleBtn } from "../../../../styled/ButtonStyles";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
+import { H4InnerTitle } from "../../../../styled/InnerTitle";
 
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
+import { TextInputStyled } from "../../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
 
 const { maxWidth: choiceMaxW, minWidth: choiceMinW } = ChoiceDimensions;
 class Layout extends Component {
@@ -163,7 +166,7 @@ class Layout extends Component {
         <Subtitle id={getFormattedAttrId(`${questionType}-${t("component.options.display")}`)}>
           {t("component.options.display")}
         </Subtitle>
-        <Row gutter={20}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerposition")}</Label>
             <FieldWrapper>
@@ -217,7 +220,7 @@ class Layout extends Component {
           </Col>
           <Col md={12}>
             <Label>{t("component.options.choiceMinWidth")}</Label>
-            <Input
+            <TextInputStyled
               type="number"
               min="1"
               defaultValue={uiStyle.choiceMinWidth || choiceMinW}
@@ -225,33 +228,36 @@ class Layout extends Component {
               label={t("component.options.choiceMinWidth")}
             />
           </Col>
+        </Row>
+        <Row gutter={24} type={"flex"} align={"middle"}>
           <Col md={12}>
             <Label>{t("component.options.choiceMaxWidth")}</Label>
-            <Input
+            <TextInputStyled
               type="number"
               min="1"
               onBlur={event => changeUiStyle("choiceMaxWidth", +event.target.value)}
               defaultValue={uiStyle.choiceMaxWidth || choiceMaxW}
             />
           </Col>
+          <Col md={12} marginBottom="0px">
+            <CheckboxLabel
+              checked={!!uiStyle.globalSettings}
+              onChange={() => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
+            >
+              {t("component.options.globalSettings")}
+            </CheckboxLabel>
+          </Col>
         </Row>
 
-        <Row>
-          <Checkbox
-            label={t("component.options.globalSettings")}
-            checked={!!uiStyle.globalSettings}
-            onChange={() => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
-          />
-        </Row>
-        <Row marginTop={13}>
+        <Row gutter={24} marginTop={15}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
         </Row>
-        <Row gutter={20}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.widthpx")}</Label>
-            <TextField
+            <TextInputStyled
               type="number"
               ref={ref => {
                 this.widthInput = ref;
@@ -265,7 +271,7 @@ class Layout extends Component {
           </Col>
           <Col md={12}>
             <Label>{t("component.options.heightpx")}</Label>
-            <TextField
+            <TextInputStyled
               type="number"
               disabled={false}
               onBlur={this.handleBlurGlobalHeight}
@@ -273,33 +279,33 @@ class Layout extends Component {
               value={uiStyle.heightpx}
             />
           </Col>
-        </Row>
-        <Row>
           <Col md={12}>
-            <Checkbox
-              onChange={() => changeUiStyle("wordwrap", !uiStyle.wordwrap)}
-              label={t("component.options.wordwrap")}
-              checked={uiStyle.wordwrap}
-            />
+            <CheckboxLabel onChange={() => changeUiStyle("wordwrap", !uiStyle.wordwrap)} checked={uiStyle.wordwrap}>
+              {t("component.options.wordwrap")}
+            </CheckboxLabel>
           </Col>
         </Row>
-        <Row marginTop={13}>
-          <Col md={12}>
-            <Label>{t("component.options.responsecontainerindividuals")}</Label>
-          </Col>
-        </Row>
+
+        <H4InnerTitle margin="20px 0px 10px">{t("component.options.responsecontainerindividuals")}</H4InnerTitle>
         {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-          <Container key={index}>
-            <Delete onClick={() => removeIndividual(index)}>X</Delete>
-            <Row>
-              <Col md={12}>
-                <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-              </Col>
-            </Row>
-            <Row gutter={20}>
+          <Row key={index}>
+            <CustomStyleBtn
+              onClick={() => removeIndividual(index)}
+              width="40px"
+              height="30px"
+              padding="0px"
+              margin="0px"
+              style={{ float: "right", position: "relative", zIndex: 1 }}
+            >
+              X
+            </CustomStyleBtn>
+            <H4InnerTitle margin="10px 0px 20px">
+              {`${t("component.options.responsecontainerindividual")} ${index + 1}`}
+            </H4InnerTitle>
+            <Row gutter={24}>
               <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
-                <TextField
+                <TextInputStyled
                   type="number"
                   ref={ref => {
                     this[`individualWidth${index}`] = ref;
@@ -313,7 +319,7 @@ class Layout extends Component {
               </Col>
               <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
-                <TextField
+                <TextInputStyled
                   type="number"
                   disabled={false}
                   onBlur={() => this.handleBlurIndividualHeight(index)}
@@ -321,19 +327,18 @@ class Layout extends Component {
                   value={responsecontainerindividual.heightpx}
                 />
               </Col>
-            </Row>
-            <Row>
               <Col md={12}>
-                <Checkbox
+                <CheckboxLabel
                   onChange={() => changeIndividualUiStyle("wordwrap", !responsecontainerindividual.wordwrap, index)}
-                  label={t("component.options.wordwrap")}
                   checked={responsecontainerindividual.wordwrap}
-                />
+                >
+                  {t("component.options.wordwrap")}
+                </CheckboxLabel>
               </Col>
             </Row>
-          </Container>
+          </Row>
         ))}
-        <Row>
+        <Row gutter={24}>
           <Col md={12}>
             <CustomStyleBtn onClick={() => addIndividual()}>{t("component.options.add")}</CustomStyleBtn>
           </Col>

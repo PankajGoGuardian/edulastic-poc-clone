@@ -35,6 +35,7 @@ import RowColumn from "./RowColumn";
 import { DropContainer } from "./styled/DropContainer";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const OptionsList = withPoints(ClassificationPreview);
 
@@ -564,36 +565,41 @@ const EditClassification = ({
           />
 
           <div style={{ marginTop: 20 }}>
-            <Checkbox
+            <CheckboxLabel
               className="additional-options"
               onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
-              label={t("component.cloze.imageDragDrop.showdraghandle")}
               checked={!!showDragHandle}
-            />
-            <Checkbox
+            >
+              {t("component.cloze.imageDragDrop.showdraghandle")}
+            </CheckboxLabel>
+            <CheckboxLabel
               className="additional-options"
               onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
-              label={t("component.cloze.imageDragDrop.duplicatedresponses")}
               checked={!!duplicateResponses}
-            />
-            <Checkbox
+            >
+              {t("component.cloze.imageDragDrop.duplicatedresponses")}
+            </CheckboxLabel>
+            <CheckboxLabel
               className="additional-options"
               onChange={() => handleItemChangeChange("shuffleOptions", !shuffleOptions)}
-              label={t("component.cloze.imageDragDrop.shuffleoptions")}
               checked={!!shuffleOptions}
-            />
-            <Checkbox
+            >
+              {t("component.cloze.imageDragDrop.shuffleoptions")}
+            </CheckboxLabel>
+            <CheckboxLabel
               className="additional-options"
               onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
-              label={t("component.cloze.imageDragDrop.transparentpossibleresponses")}
               checked={!!transparentPossibleResponses}
-            />
-            <Checkbox
+            >
+              {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+            </CheckboxLabel>
+            <CheckboxLabel
               className="additional-options"
               onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
-              label={t("component.cloze.imageDragDrop.transparentbackgroundimage")}
               checked={!!transparentBackgroundImage}
-            />
+            >
+              {t("component.cloze.imageDragDrop.transparentbackgroundimage")}
+            </CheckboxLabel>
           </div>
         </Question>
         <CorrectAnswers

@@ -85,44 +85,30 @@ export const ToolBtn = styled.li`
   justify-content: center;
   width: 93px;
   height: 84px;
-  background-color: transparent;
-  color: ${secondaryTextColor};
+  background-color: ${white};
+  color: #878a91;
   cursor: pointer;
   display: inline-block;
   line-height: 1.5em;
   transition: background-color 0.1s ease-in;
   user-select: none;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
-
   svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
-  }
-
-  &:hover {
-    background-color: ${white};
-  }
-
-  &:active {
-    background-color: ${white};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+    stroke: #878a91;
+    fill: #878a91;
+    &:hover {
+      stroke: #878a91;
+      fill: #878a91;
+    }
   }
 
   &.active {
-    background-color: ${white};
+    background-color: #878a91;
+    color: ${white};
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
-
-    .dd-header-title svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
-    }
-
-    .tool-btn-icon svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
+    svg {
+      stroke: #878a91;
+      fill: #878a91;
     }
   }
 `;

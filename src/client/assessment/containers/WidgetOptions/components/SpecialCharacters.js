@@ -10,6 +10,8 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { getQuestionDataSelector, setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 const SpecialCharacters = ({ item, setQuestionData, t }) => {
   const _change = (propName, value) => {
@@ -24,9 +26,9 @@ const SpecialCharacters = ({ item, setQuestionData, t }) => {
   };
 
   return (
-    <Row gutter={36}>
+    <Row gutter={24} type={"flex"} align={"middle"}>
       <Col md={12}>
-        <Checkbox
+        <CheckboxLabel
           checked={!!item.characterMap}
           onChange={e => {
             if (e.target.checked) {
@@ -37,12 +39,12 @@ const SpecialCharacters = ({ item, setQuestionData, t }) => {
           }}
         >
           {t("component.options.specialcharacters")}
-        </Checkbox>
+        </CheckboxLabel>
       </Col>
       {item.characterMap && (
         <Col md={12}>
           <Label>{t("component.options.charactersToDisplay")}</Label>
-          <Input value={item.characterMap.join("")} size="large" onChange={_characterMapChange} />
+          <TextInputStyled value={item.characterMap.join("")} size="large" onChange={_characterMapChange} />
         </Col>
       )}
     </Row>

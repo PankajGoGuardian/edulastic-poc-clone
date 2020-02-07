@@ -9,6 +9,7 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { OptionSelect } from "../styled/OptionSelect";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
   const inputtypeOptions = [
@@ -30,11 +31,11 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
 
   return (
     <Fragment>
-      <Row gutter={20}>
+      <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.options.inputtype")}</Label>
           <SelectWrapper>
-            <OptionSelect
+            <SelectInputStyled
               size="large"
               onChange={type => onChange("inputtype", type)}
               value={uiStyle.inputtype}
@@ -45,22 +46,22 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
                   {label}
                 </Select.Option>
               ))}
-            </OptionSelect>
+            </SelectInputStyled>
           </SelectWrapper>
         </Col>
         <Col md={12}>
           <Label>{t("component.options.placeholder")}</Label>
-          <TextField
+          <TextInputStyled
             disabled={false}
             onChange={e => onChange("placeholder", e.target.value)}
             value={uiStyle.placeholder}
           />
         </Col>
       </Row>
-      <Row gutter={20}>
+      <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.options.widthpx")}</Label>
-          <TextField
+          <TextInputStyled
             type="number"
             size="large"
             minimum={30}
@@ -82,7 +83,7 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
         </Col>
         <Col md={12}>
           <Label>{t("component.options.heightpx")}</Label>
-          <TextField
+          <TextInputStyled
             type="number"
             size="large"
             minimum={30}

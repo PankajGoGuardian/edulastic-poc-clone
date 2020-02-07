@@ -17,6 +17,7 @@ import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
+import { TextInputStyled } from "../../../../styled/InputStyles";
 
 class Layout extends Component {
   state = {
@@ -157,7 +158,7 @@ class Layout extends Component {
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
           {t("component.options.display")}
         </Subtitle>
-        <Row gutter={20}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.fontSize")}</Label>
             <FieldWrapper>
@@ -195,15 +196,15 @@ class Layout extends Component {
             </FieldWrapper>
           </Col>
         </Row>
-        <Row marginTop={13}>
+        <Row marginTop={15}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
         </Row>
-        <Row gutter={20}>
+        <Row gutter={24}>
           <Col md={12}>
             <Label>{t("component.options.widthpx")}</Label>
-            <TextField
+            <TextInputStyled
               ref={ref => {
                 this.widthInput = ref;
               }}
@@ -217,7 +218,7 @@ class Layout extends Component {
           </Col>
           <Col md={12}>
             <Label>{t("component.options.heightpx")}</Label>
-            <TextField
+            <TextInputStyled
               type="number"
               ref={this.globalHeight}
               disabled={false}
@@ -227,7 +228,7 @@ class Layout extends Component {
             />
           </Col>
         </Row>
-        <Row marginTop={13}>
+        <Row marginTop={15}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerindividuals")}</Label>
           </Col>
@@ -245,13 +246,22 @@ class Layout extends Component {
                   <Label>{`${t("component.options.responsecontainerindividual")} ${respIndex + 1}`}</Label>
                 </Col>
                 <Col md={6}>
-                  <Delete onClick={() => removeIndividual(respIndex)}>X</Delete>
+                  <CustomStyleBtn
+                    width="40px"
+                    height="30px"
+                    padding="0px"
+                    margin="0px"
+                    style={{ float: "right" }}
+                    onClick={() => removeIndividual(respIndex)}
+                  >
+                    X
+                  </CustomStyleBtn>
                 </Col>
               </Row>
-              <Row gutter={20}>
+              <Row gutter={24}>
                 <Col md={12}>
                   <Label>{t("component.options.widthpx")}</Label>
-                  <TextField
+                  <TextInputStyled
                     ref={ref => {
                       this[`individualWidth${respIndex}`] = ref;
                     }}
@@ -265,7 +275,7 @@ class Layout extends Component {
                 </Col>
                 <Col md={12}>
                   <Label>{t("component.options.heightpx")}</Label>
-                  <TextField
+                  <TextInputStyled
                     type="number"
                     disabled={false}
                     onBlur={() => this.handleBlurIndividualHeight(respIndex)}

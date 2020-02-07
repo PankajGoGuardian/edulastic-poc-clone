@@ -28,6 +28,8 @@ import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { Label } from "../../styled/WidgetOptions/Label";
 
 const EmptyWrapper = styled.div`
   overflow-x: auto;
@@ -211,38 +213,38 @@ class ClozeImageDragDrop extends Component {
                     item={item}
                   >
                     <CorrectAnswerOptions>
-                      <Checkbox
+                      <CheckboxLabel
                         data-cy="multi-check"
-                        className="additional-options"
                         onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
                         defaultChecked={duplicatedResponses}
+                        mb="10px"
                       >
                         {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                      </Checkbox>
-                      <Checkbox
+                      </CheckboxLabel>
+                      <CheckboxLabel
                         data-cy="drag-check"
-                        className="additional-options"
                         onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
                         defaultChecked={showDraghandle}
+                        mb="10px"
                       >
                         {t("component.cloze.imageDragDrop.showdraghandle")}
-                      </Checkbox>
-                      <Checkbox
+                      </CheckboxLabel>
+                      <CheckboxLabel
                         data-cy="shuffle-check"
-                        className="additional-options"
                         onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                         defaultChecked={shuffleOptions}
+                        mb="10px"
                       >
                         {t("component.cloze.imageDragDrop.shuffleoptions")}
-                      </Checkbox>
-                      <Checkbox
+                      </CheckboxLabel>
+                      <CheckboxLabel
                         data-cy="transparent-check"
-                        className="additional-options"
                         onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
                         defaultChecked={transparentResponses}
+                        mb="10px"
                       >
                         {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                      </Checkbox>
+                      </CheckboxLabel>
                     </CorrectAnswerOptions>
                     <MaxRespCountWrapper>
                       <MaxRespCountInput
@@ -252,7 +254,7 @@ class ClozeImageDragDrop extends Component {
                         defaultValue={item.maxRespCount}
                         onChange={val => this.handleOptionsChange("maxRespCount", val)}
                       />
-                      <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                      <Label>{t("component.cloze.imageDragDrop.maximumresponses")}</Label>
                     </MaxRespCountWrapper>
                   </CorrectAnswers>
                 </Question>

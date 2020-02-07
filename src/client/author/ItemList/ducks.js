@@ -164,11 +164,7 @@ export function* approveOrRejectMultipleItemSaga({ payload }) {
 
 export function* submitReviewFeedbackSaga({ payload: { status, data } }) {
   try {
-    const payload = { itemId: data.referrerId, status };
     const result = yield call(attchmentApi.saveAttachment, data);
-    yield call(message.success, `Item successfully ${payload.status}.`);
-    yield call(testItemsApi.publishTestItem, payload);
-    yield put({ type: APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS, payload: payload });
     yield put({ type: PREVIEW_FEEDBACK_SUCCESS, payload: result });
   } catch (e) {
     console.error(e);

@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import AttchmentApi from "./attachment";
 
 const api = new API();
 const prefix = "/testitem";
@@ -97,7 +98,18 @@ const publishTestItem = data =>
       url: `${prefix}/${data.itemId}/publish?status=${data.status}`,
       method: "put"
     })
-    .then(result => result.data.result);
+    .then(result => {
+      AttchmentApi.saveAttachment({
+        type: "testitem",
+        referrerType: "TestItemContent",
+        referrerId: data.itemId,
+        data: {
+          note: ""
+        },
+        status: data.status
+      });
+      return result.data.result;
+    });
 
 const bulkPublishTestItems = data =>
   api

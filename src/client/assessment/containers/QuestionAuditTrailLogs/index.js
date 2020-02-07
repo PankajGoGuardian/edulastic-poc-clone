@@ -24,8 +24,6 @@ const QuestionAuditTrailLogs = ({
 
   useEffect(() => {
     fetchQuestionPreviewAttachments({
-      type: "scratchpad",
-      referrerType: "TestItemContent",
       referrerId: item._id
     });
   }, []);

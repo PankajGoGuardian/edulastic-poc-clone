@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Input } from "antd";
 import { ReportIssueContainer, ReportHeader, CloseButton, TextAreaSendButton } from "./styled";
 import { reportContentErrorAction } from "../../../../TestPage/components/AddItems/ducks";
+import { submitReviewFeedbackAction } from "../../../../ItemList/ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
 
 const ReportIssue = ({
@@ -13,7 +14,8 @@ const ReportIssue = ({
   visible,
   toggleModal,
   confirmationResponse,
-  userRole
+  userRole,
+  submitReviewFeedback
 }) => {
   const [reportedComment, setReportComment] = useState("");
 
@@ -36,6 +38,18 @@ const ReportIssue = ({
         contentId: item._id,
         contentType: "testitem",
         comments: reportedComment
+      });
+      submitReviewFeedback({
+        status: "content error",
+        data: {
+          type: "testItem",
+          referrerType: "TestItemContent",
+          referrerId: item._id,
+          data: {
+            note: reportedComment
+          },
+          status: "content error"
+        }
       });
       setTimeout(toggleReportIssue(), 1000);
     }
@@ -84,5 +98,8 @@ export default connect(
   state => ({
     userRole: getUserRole(state)
   }),
-  { reportTestItemError: reportContentErrorAction }
+  {
+    reportTestItemError: reportContentErrorAction,
+    submitReviewFeedback: submitReviewFeedbackAction
+  }
 )(ReportIssue);

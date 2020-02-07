@@ -90,29 +90,45 @@ class AuthorTestItemPreview extends Component {
   };
 
   handleApproveOrRejectSingleItem = value => {
-    const { approveOrRejectSingleItem, item } = this.props;
+    const { approveOrRejectSingleItem, item, submitReviewFeedback } = this.props;
     if (item?._id) {
       approveOrRejectSingleItem({ itemId: item._id, status: value });
+      submitReviewFeedback({
+        status: "published",
+        data: {
+          type: "preview",
+          referrerType: "TestItemContent",
+          referrerId: item._id,
+          data: {
+            note: ""
+          },
+          status: "published"
+        }
+      });
     }
   };
 
   handleReject = () => this.setState({ isRejectMode: true });
 
   submitReviewFeedback = (note, scratchpad) => {
-    const { submitReviewFeedback, item } = this.props;
-    submitReviewFeedback({
-      status: "rejected",
-      data: {
-        type: "scratchpad",
-        referrerType: "TestItemContent",
-        referrerId: item._id,
+    const { submitReviewFeedback, item, approveOrRejectSingleItem } = this.props;
+
+    if (item?._id) {
+      submitReviewFeedback({
+        status: "rejected",
         data: {
-          note,
-          scratchpad
-        },
-        status: "reject"
-      }
-    });
+          type: "scratchpad",
+          referrerType: "TestItemContent",
+          referrerId: item._id,
+          data: {
+            note,
+            scratchpad
+          },
+          status: "rejected"
+        }
+      });
+      approveOrRejectSingleItem({ itemId: item._id, status: "rejected" });
+    }
     this.setState({ isRejectMode: false });
   };
 
@@ -242,13 +258,11 @@ class AuthorTestItemPreview extends Component {
       item,
       userId,
       page,
-      userFeatures,
-      hideButtons
+      userFeatures
     } = this.props;
 
     const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId;
-    if (hideButtons) return null;
 
     return (
       <>
@@ -357,10 +371,8 @@ class AuthorTestItemPreview extends Component {
       page,
       handleShowHints,
       showHints,
-      toggleReportIssue,
-      hideButtons
+      toggleReportIssue
     } = this.props;
-    if (hideButtons) return null;
     const hints = get(item, "data.questions.[0].hints", []);
     const showHintsBtn = hints.length > 0 ? hints[0].label : false;
 
@@ -415,7 +427,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumns(col, colIndex, sectionQue, resourceCount) {
-    const { style, windowWidth, ...restProps } = this.props;
+    const { style, windowWidth, onlySratchpad, ...restProps } = this.props;
     const { value } = this.state;
     let subCount = 0;
     const columns = (
@@ -462,7 +474,7 @@ class AuthorTestItemPreview extends Component {
       </>
     );
 
-    if (this.state.isRejectMode && colIndex === 0) {
+    if ((this.state.isRejectMode || onlySratchpad) && colIndex === 0) {
       return <div style={{ paddingLeft: "45px" }}>{columns}</div>;
     }
     return columns;
@@ -483,7 +495,6 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderCollapseButtons = () => {
-    if (this.props.hideButtons) return null;
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>

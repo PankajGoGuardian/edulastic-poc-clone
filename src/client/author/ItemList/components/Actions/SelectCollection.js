@@ -32,18 +32,18 @@ const SelectCollectionModal = ({
   const addedItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    const contents =
+    const contentIds =
       contentType === "TEST"
-        ? selectedTests.map(item => ({ versionId: item.versionId, status: item.status }))
-        : selectedItems.map(_id => ({ versionId: itemsKeyed[_id]?.versionId, status: itemsKeyed[_id]?.status }));
-    if (!contents.length) {
+        ? selectedTests.map(item => item.versionId)
+        : selectedItems.map(_id => itemsKeyed[_id]?.versionId);
+    if (!contentIds.length) {
       message.error("Add atleast one item to cart");
       return handleCancel();
     }
     saveItemsToBucket({
       _id,
       contentType,
-      contents,
+      contentIds,
       itemBankId,
       name,
       collectionName

@@ -39,14 +39,14 @@ const getPermissions = bankId =>
 const organizationSearch = data =>
   api.callApi({ url: `${prefix}/organisation-entities-search`, method: "post", data }).then(result => result.data);
 
-const saveItemsToBucket = ({ itemBankId, _id, contentType, contents }) => {
+const saveItemsToBucket = ({ itemBankId, _id, contentType, contentIds }) => {
   return api
     .callApi({
       url: `${prefix}/${itemBankId}/bucket/${_id}/add-content`,
       method: "post",
       data: {
         contentType,
-        contents
+        contentIds
       }
     })
     .then(result => result.data);

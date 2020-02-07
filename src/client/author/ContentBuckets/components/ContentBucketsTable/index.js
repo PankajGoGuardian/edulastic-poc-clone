@@ -54,7 +54,6 @@ const ContentBucketsTable = ({
 }) => {
   const [upsertModalVisibility, setUpsertModalVisibility] = useState(false);
   const [editableBucketId, setEditableBucketId] = useState("");
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
@@ -96,8 +95,6 @@ const ContentBucketsTable = ({
     }
     return buckets;
   };
-
-  const onSelectChange = selectedRowKeys => setSelectedRowKeys(selectedRowKeys);
 
   const onCollectionSearch = debounce(value => {
     if (value.trim().length >= 3)
@@ -271,11 +268,6 @@ const ContentBucketsTable = ({
     }
   ];
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
-
   const editableBucket = buckets.find(bucket => bucket._id === editableBucketId);
 
   let filteredCollections = collections;
@@ -316,13 +308,7 @@ const ContentBucketsTable = ({
         </RightFilterDiv>
       </StyledFilterDiv>
       <TableContainer style={{ boxShadow: "none" }}>
-        <StyledContentBucketsTable
-          rowKey={record => record._id}
-          dataSource={filteredBuckets()}
-          columns={columns}
-          pagination={false}
-          rowSelection={rowSelection}
-        />
+        <StyledContentBucketsTable rowKey={record => record._id} dataSource={filteredBuckets()} columns={columns} pagination={false} />
       </TableContainer>
       {upsertModalVisibility && (
         <CreateBucketModalForm

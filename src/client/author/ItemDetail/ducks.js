@@ -28,7 +28,8 @@ import {
   getTestEntitySelector,
   setTestDataAndUpdateAction,
   setTestDataAction,
-  setCreatedItemToTestAction
+  setCreatedItemToTestAction,
+  setTestPassageAction
 } from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
@@ -1253,6 +1254,7 @@ function* convertToPassageWithQuestions({ payload }) {
     });
 
     yield put(addPassageAction(passage));
+    yield put(setTestPassageAction(passage));
 
     yield put(
       addQuestionAction({

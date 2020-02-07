@@ -4,7 +4,7 @@ import { test, roleuser, questionType } from "@edulastic/constants";
 import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
 import nanoid from "nanoid";
 import produce from "immer";
@@ -158,6 +158,7 @@ export const SET_CURRENT_GROUP_INDEX = "[tests] set current group index";
 export const DELETE_ITEMS_GROUP = "[tests] delete items group";
 export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST = "[test] add items to autoselect groups request";
 export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect group";
+export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage create";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -181,6 +182,7 @@ export const setCurrentGroupIndexAction = createAction(SET_CURRENT_GROUP_INDEX);
 export const deleteItemsGroupAction = createAction(DELETE_ITEMS_GROUP);
 export const addItemsToAutoselectGroupsRequestAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST);
 export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUP);
+export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -329,7 +331,8 @@ export const createBlankTest = () => ({
   analytics: {
     usage: "0",
     likes: "0"
-  }
+  },
+  passages: []
 });
 
 const initialState = {
@@ -657,6 +660,14 @@ export const reducer = (state = initialState, { type, payload }) => {
           })
         }
       };
+    case SET_TEST_PASSAGE_AFTER_CREATE:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          passages: [...state.entity.passages, payload]
+        }
+      };
     default:
       return state;
   }
@@ -682,8 +693,10 @@ export const getQuestions = (itemGroups = []) => {
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
+    const tests = yield select(state => state.tests);
     const createdItems = yield select(getTestCreatedItemsSelector);
     const entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
+    entity.passages = [...entity.passages, ...differenceBy(tests.entity.passages, entity.passages, "_id")];
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     if (entity._id !== payload.id) {
       yield put(

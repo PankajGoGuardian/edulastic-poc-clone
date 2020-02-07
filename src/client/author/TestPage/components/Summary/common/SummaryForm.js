@@ -32,7 +32,7 @@ export const SummaryButton = styled(Button)`
   }
 `;
 
-export const SummarySelect = styled(Select)`
+export const SummarySelect = styled(props => <Select {...props} getPopupContainer={trigger => trigger.parentNode} />)`
   margin-bottom: ${FieldsMargin};
 
   .ant-select-selection {

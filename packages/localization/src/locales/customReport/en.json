@@ -1,0 +1,39 @@
+{
+  "customreport": {
+    "reportname": "Report Name",
+    "nameplaceholder": "Insert a report name",
+    "namerequireerror": "Please enter report name",
+    "namemaxerror": "Max 128 char allowed",
+    "namecharerror": "Please enter alphanumeric name only",
+    "description": "Description",
+    "descriptionplaceholder": "Insert a description",
+    "descriptionlengtherror": "Please enter maximum 256 char for description",
+    "logo": "Report Logo",
+    "logoplaceholder": "Select a logo",
+    "logoerror": "Please select valid logo",
+    "tableauurl": "Tableau Url",
+    "tableauplaceholder": "Place a tableau url",
+    "tableauurlerror": "Tableau url is required",
+    "accesslevel": "Access Level",
+    "accesslevelplaceholder": "Select access Level",
+    "accesslevelerror": "Please select access level",
+    "activatereport": "Activate Report",
+    "cancel": "Cancel",
+    "school": "School",
+    "schoolselecterror": "Please select school",
+    "selectschool": "Select Schools",
+    "selectroles": "Select Roles",
+    "selectrolesrequired": "Please select at least one role",
+    "selectusers": "User(s)",
+    "selectusersplaceholder": "Enter comma separated user(s) email",
+    "selectusersrequired": "user(s) required",
+    "edit": {
+      "title": "Edit Report",
+      "ok": "Update"
+    },
+    "create": {
+      "title": "Configure New Report",
+      "ok": "Add"
+    }
+  }
+}

@@ -43,7 +43,8 @@ i18n
         summary: require("./locales/summary/en"),
         classBoard: require("./locales/classboard/en"),
         manageDistrict: require("./locales/manageDistrict/en"),
-        subscription: require("./locales/subscription/en")
+        subscription: require("./locales/subscription/en"),
+        customReports: require("./locales/customReport/en")
       }
     }
   });

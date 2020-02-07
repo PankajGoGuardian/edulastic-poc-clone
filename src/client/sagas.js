@@ -13,6 +13,7 @@ import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
 import { CurriculumSequenceSaga } from "./author/CurriculumSequence";
 import { default as adminSagas } from "./admin/sagas";
+import { saga as customReportSaga } from "./admin/Components/CustomReportContainer/ducks";
 import publisherSagas from "./publisher/sagas";
 
 export default function*() {
@@ -28,6 +29,7 @@ export default function*() {
     ...adminSagas,
     CurriculumSequenceSaga(),
     signupSaga(),
-    ...publisherSagas
+    ...publisherSagas,
+    customReportSaga
   ]);
 }

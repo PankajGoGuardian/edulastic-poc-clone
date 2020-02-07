@@ -15,6 +15,7 @@ import Logout from "./Common/Logout";
 import Collections from "../author/ContentCollections/components/Collections/Collections";
 import ContentBucket from "../author/ContentBuckets/components/ContentBucketsTable/index";
 import ApiForm from "./Containers/ApiForm";
+import CustomReportContainer from "./Components/CustomReportContainer";
 
 const siderMenuData = [
   {
@@ -32,7 +33,7 @@ const siderMenuData = [
     label: "Upgrade Plan",
     href: "/admin/upgrade"
   },
-  
+
   {
     icon: "team",
     label: "Api Forms",
@@ -41,6 +42,11 @@ const siderMenuData = [
   {
     label: "Content",
     href: "/admin/content/collections"
+  },
+  {
+    icon: "team",
+    label: "Custom Report",
+    href: "/admin/customReport"
   }
 ];
 
@@ -92,6 +98,7 @@ function Admin({ match, history, logoutAction, location }) {
               <Route path={`${match.path}/content/collections`} component={Collections} />
               <Route path={`${match.path}/content/buckets`} component={ContentBucket} />
               <Route path={`${match.path}/content/subscriptions`} />
+              <Route path={`${match.path}/customReport`} component={CustomReportContainer} />
             </Switch>
           </ErrorHandler>
         </MainDiv>

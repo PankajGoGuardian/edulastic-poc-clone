@@ -139,7 +139,7 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
   if (payload.role === "school-admin" && get(payload, "orgData.schools[0]._id")) {
-    //setting first school as default on initial load
+    // setting first school as default on initial load
     state.saSettingsSchool = get(payload, "orgData.schools[0]._id");
   }
   state.isAuthenticated = true;
@@ -375,6 +375,7 @@ function* login({ payload }) {
     const user = pick(result, userPickFields);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
+    TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
@@ -578,10 +579,8 @@ export function* fetchUser() {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
     }
-    yield put({
-      type: SET_USER,
-      payload: user
-    });
+    TokenStorage.updateKID(user.kid);
+    yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
     );
@@ -614,11 +613,8 @@ export function* fetchV1Redirect({ payload: id }) {
     }
 
     const user = yield call(userApi.getUser);
-
-    yield put({
-      type: SET_USER,
-      payload: user
-    });
+    TokenStorage.updateKID(user.kid);
+    yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
     );
@@ -635,6 +631,8 @@ function* logout() {
     const user = yield select(getUser);
     yield call(segmentApi.unloadIntercom, { user });
     localStorage.clear();
+    TokenStorage.removeKID();
+    TokenStorage.initKID();
     yield put({ type: "RESET" });
 
     yield put(push(getSignOutUrl()));
@@ -845,6 +843,7 @@ function* getUserData({ payload: res }) {
     const user = pick(res, userPickFields);
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
+    TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());

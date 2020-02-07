@@ -42,6 +42,7 @@ import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import { getUserFeatures } from "../../../student/Login/ducks";
+import { isOrganizationDistrictSelector } from "../selectors/user";
 import { roleuser } from "@edulastic/constants";
 
 const menuItems = [
@@ -122,9 +123,12 @@ class SideMenu extends Component {
     this.sideMenuRef = React.createRef();
   }
   get MenuItems() {
-    const { lastPlayList, isSidebarCollapsed, features } = this.props;
+    const { lastPlayList, isSidebarCollapsed, features, isOrganizationDistrict } = this.props;
 
     let _menuItems = cloneDeep(menuItems);
+    if (isOrganizationDistrict) {
+      _menuItems[7].label = "Organization";
+    }
     if (features.isCurator || features.isPublisherAuthor) {
       _menuItems[0].path = "publisher/dashboard";
       const [item1, item2, item3, item4, item5] = _menuItems;
@@ -471,6 +475,7 @@ const enhance = compose(
       middleName: get(state.user, "user.middleName", ""),
       lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
+      isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, "user.thumbnail"),

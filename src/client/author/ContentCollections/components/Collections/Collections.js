@@ -10,17 +10,17 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import ImportContentModal from "../Modals/ImportContentModal";
 import AddCollectionModal from "../Modals/AddCollectionModal";
 import { StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
-import { getUser } from "../../../src/selectors/user";
+import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
 const menuActive = { mainMenu: "Content", subMenu: "Collections" };
 
-const Collections = ({ history, user }) => {
+const Collections = ({ history, user, manageTabLabel }) => {
   const [selectedCollection, setCollection] = useState(null);
   const [showImportModal, setImportModalVisibility] = useState(false);
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const breadcrumbData = [
     {
-      title: "ORGANIZATION",
+      title: manageTabLabel.toUpperCase(),
       to: "/author/districtprofile"
     },
     {
@@ -75,4 +75,6 @@ const Collections = ({ history, user }) => {
   );
 };
 
-export default connect(state => ({ user: getUser(state) }))(Collections);
+export default connect(state => ({ user: getUser(state), manageTabLabel: getManageTabLabelSelector(state) }))(
+  Collections
+);

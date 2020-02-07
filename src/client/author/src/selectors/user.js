@@ -1,6 +1,7 @@
 import { get as _get } from "lodash";
 import { createSelector } from "reselect";
 import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
+import { roleuser } from "@edulastic/constants";
 
 export const stateSelector = state => state.user;
 
@@ -162,4 +163,24 @@ export const getSchoolsByUserRoleSelector = createSelector(
   getUserSchoolsListSelector,
   getDistrictSchoolsSelector,
   (role, userSchools, districtSchools) => (role === "teacher" ? userSchools : districtSchools)
+);
+
+export const isOrganizationDistrictSelector = createSelector(
+  getUser,
+  state => {
+    if (state.role === roleuser.DISTRICT_ADMIN && state.orgData.districtPermissions.includes("publisher")) {
+      return true;
+    }
+    return false;
+  }
+);
+
+export const getManageTabLabelSelector = createSelector(
+  getUser,
+  isOrganizationDistrictSelector,
+  (state, isOrganization) => {
+    if (isOrganization) return "Organization";
+    if (state.role === roleuser.DISTRICT_ADMIN) return "Manage District";
+    return "Manage School";
+  }
 );

@@ -37,7 +37,7 @@ import {
 } from "../../../TestPage/components/AddItems/ducks";
 import { loadAssignmentsAction } from "../../../TestPage/components/Assign/ducks";
 import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
-import { getUserSelector } from "../../../src/selectors/user";
+import { getUserSelector, getItemBucketsSelector } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -149,14 +149,27 @@ class Container extends PureComponent {
   };
 
   handleChangeCollection = (value, options) => {
-    const { setData, test } = this.props;
-    let _value = options.map(o => ({
-      bucketId: o.props.value,
-      _id: o.props._id,
-      bucketName: o.props.bucketName,
-      collectionName: o.props.collectionName
-    }));
-    setData({ ...test, collections: _value });
+    const { setData, test, orgCollections, playlist } = this.props;
+    let data = {};
+    options.forEach(o => {
+      if (data[o.props._id]) {
+        data[o.props._id].push(o.props.value);
+      } else {
+        data[o.props._id] = [o.props.value];
+      }
+    });
+
+    const collectionArray = [];
+    for (const [key, value] of Object.entries(data)) {
+      collectionArray.push({
+        _id: key,
+        bucketIds: value
+      });
+    }
+
+    const orgCollectionIds = orgCollections.map(o => o._id);
+    const extraCollections = playlist.collections.filter(c => !orgCollectionIds.includes(c._id));
+    setData({ ...test, collections: [...collectionArray, ...extraCollections] });
   };
 
   handleSaveTestId = () => {
@@ -469,7 +482,8 @@ const enhance = compose(
       isTestLoading: getTestsLoadingSelector(state),
       userFeatures: getUserFeatures(state),
       testStatus: getTestStatusSelector(state),
-      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      orgCollections: getItemBucketsSelector(state)
     }),
     {
       createPlayList: createPlaylistAction,

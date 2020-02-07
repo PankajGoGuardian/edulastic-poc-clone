@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select, message } from "antd";
 import { uniqBy } from "lodash";
@@ -61,6 +61,12 @@ const SecondBlock = ({
       setSearchValue(value);
     }
   };
+
+  // here we are filtering out the collection which are not from current district.
+  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+    collections,
+    orgCollections
+  ]);
 
   return (
     <Container padding="20px">
@@ -172,20 +178,14 @@ const SecondBlock = ({
                 data-cy="collectionsSelect"
                 style={{ marginBottom: 0, width: "100%" }}
                 placeholder="Please select"
-                value={collections.map(i => i.bucketId)}
+                value={filteredCollections.flatMap(c => c.bucketIds)}
                 onChange={(value, options) => handleCollectionsSelect(value, options)}
                 filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
                 suffixIcon={<SelectSuffixIcon type="caret-down" />}
                 autoFocus={highlightCollection}
               >
                 {orgCollections.map(o => (
-                  <Select.Option
-                    key={o.bucketId}
-                    value={o.bucketId}
-                    bucketName={o.name}
-                    collectionName={o.collectionName}
-                    _id={o._id}
-                  >
+                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                     {o.collectionName} - {o.name}
                   </Select.Option>
                 ))}

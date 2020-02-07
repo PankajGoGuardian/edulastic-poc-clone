@@ -115,13 +115,29 @@ const QuestionMetadata = ({
   };
 
   const handleCollectionsSelect = (value, options) => {
-    let _value = options.map(o => ({
-      bucketId: o.props.value,
-      _id: o.props._id,
-      bucketName: o.props.bucketName,
-      collectionName: o.props.collectionName
-    }));
-    setCollections(_value);
+    let data = {};
+    options.forEach(o => {
+      if (data[o.props._id]) {
+        data[o.props._id].push(o.props.value);
+      } else {
+        data[o.props._id] = [o.props.value];
+      }
+    });
+
+    const collectionArray = [];
+    for (const [key, value] of Object.entries(data)) {
+      collectionArray.push({
+        _id: key,
+        bucketIds: value
+      });
+    }
+
+    const orgCollectionIds = orgCollections.map(o => o._id);
+
+    /****** here were extracting out the collection which are not of current user district (if any) so that 
+          while saving, collections array contains these extra collections also ******/
+    const extraCollections = collections.filter(c => !orgCollectionIds.includes(c._id));
+    setCollections([...collectionArray, ...extraCollections]);
   };
 
   const handleRecentCollectionsSelect = collectionItem => {

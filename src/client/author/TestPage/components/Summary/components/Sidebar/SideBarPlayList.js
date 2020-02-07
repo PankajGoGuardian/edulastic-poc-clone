@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect, createRef, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Select, Row, Col, message } from "antd";
 import { uniqBy } from "lodash";
@@ -116,6 +116,11 @@ const Sidebar = ({
       setSearchValue(value);
     }
   };
+
+  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+    collections,
+    orgCollections
+  ]);
   return (
     <Block>
       <Col span={24}>
@@ -193,19 +198,13 @@ const Sidebar = ({
                 size="large"
                 style={{ width: "100%" }}
                 placeholder="Please select"
-                value={collections.map(o => o.bucketId)}
+                value={filteredCollections.flatMap(c => c.bucketIds)}
                 onChange={onChangeCollection}
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {orgCollections.map(o => (
-                  <Select.Option
-                    key={o.bucketId}
-                    value={o.bucketId}
-                    bucketName={o.name}
-                    collectionName={o.collectionName}
-                    _id={o._id}
-                  >
+                  <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                     {o.collectionName} - {o.name}
                   </Select.Option>
                 ))}

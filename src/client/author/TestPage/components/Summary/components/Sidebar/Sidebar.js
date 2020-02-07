@@ -88,6 +88,11 @@ const Sidebar = ({
   };
 
   const selectedTags = useMemo(() => tags.map(t => t._id), [tags]);
+
+  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+    collections,
+    orgCollections
+  ]);
   return (
     <FlexContainer padding="30px" flexDirection="column">
       <Block>
@@ -164,19 +169,13 @@ const Sidebar = ({
               size="large"
               style={{ width: "100%" }}
               placeholder="Please select"
-              value={collections.map(o => o.bucketId)}
+              value={filteredCollections.flatMap(c => c.bucketIds)}
               onChange={onChangeCollection}
               optionFilterProp="children"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {orgCollections.map(o => (
-                <Select.Option
-                  key={o.bucketId}
-                  value={o.bucketId}
-                  bucketName={o.name}
-                  collectionName={o.collectionName}
-                  _id={o._id}
-                >
+                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                   {o.collectionName} - {o.name}
                 </Select.Option>
               ))}

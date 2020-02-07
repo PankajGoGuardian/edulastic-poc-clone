@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Select, Row } from "antd";
@@ -60,6 +60,11 @@ const ReviewSummary = ({
   const isPublishers = userFeatures.isPublisherAuthor || userFeatures.isCurator;
   const questionsCount = summary?.totalItems || 0;
   const totalPoints = summary?.totalPoints || 0;
+  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+    collections,
+    orgCollections
+  ]);
+
   return (
     <Container>
       <FlexBoxOne>
@@ -122,19 +127,13 @@ const ReviewSummary = ({
               disabled={!owner || !isEditable}
               style={{ width: "100%" }}
               placeholder="Please select"
-              value={collections.map(o => o.bucketId)}
+              value={filteredCollections.flatMap(c => c.bucketIds)}
               onChange={onChangeCollection}
               filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
               marginBottom="0px"
             >
               {orgCollections?.map(o => (
-                <Select.Option
-                  key={o.bucketId}
-                  value={o.bucketId}
-                  bucketName={o.name}
-                  collectionName={o.collectionName}
-                  _id={o._id}
-                >
+                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                   {o.collectionName} - {o.name}
                 </Select.Option>
               ))}

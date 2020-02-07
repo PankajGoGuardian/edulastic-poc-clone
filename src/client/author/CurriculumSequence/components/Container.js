@@ -89,6 +89,15 @@ class CurriculumContainer extends Component {
      */
   };
 
+  expandAll = () => {
+    if (
+      this.props?.destinationCurriculumSequence?.modules &&
+      this.props?.destinationCurriculumSequence?.status === "published"
+    ) {
+      this.setState({ expandedModules: this.props.destinationCurriculumSequence.modules.map((x, index) => index) });
+    }
+  };
+
   componentDidMount() {
     // Hardcoded because we currently don't have a way to store/read what are the
     // default curriculumSequences for the user(and grade)
@@ -98,6 +107,14 @@ class CurriculumContainer extends Component {
     const { match, getAllCurriculumSequences } = this.props;
     if (match.params.id) {
       getAllCurriculumSequences([match.params.id]);
+    }
+
+    this.expandAll();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps?.destinationCurriculumSequence?.modules && this.props?.destinationCurriculumSequence?.modules) {
+      this.expandAll();
     }
   }
 

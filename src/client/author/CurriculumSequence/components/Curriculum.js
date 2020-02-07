@@ -57,7 +57,7 @@ const SortableItem = sortableElement(props => {
           mode={mode}
           status={status}
           curriculum={curriculum}
-          collapsed={expandedModules.indexOf(id) === -1 && status !== "published"}
+          collapsed={expandedModules.indexOf(id) === -1}
           onCollapseExpand={onCollapseExpand}
           key={moduleItem._id}
           playlistId={playlistId}

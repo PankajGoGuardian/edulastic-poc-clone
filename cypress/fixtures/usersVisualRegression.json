@@ -11,5 +11,6 @@
   },
   "studentSkillMastery": { "username": "stu01@ssbmarcl01.com", "password": "snapwiz" },
   "teacherReports": { "username": "tea01@pbspsc03.com", "password": "snapwiz" },
-  "teacherAssignment": { "username": "tea01@vvksssc01.com" }
+  "teacherAssignment": { "username": "tea01@vvksssc01.com" },
+  "teacherPlaylist": { "username": "cyplaylist1@yopmail.com", "password": "snapwiz" }
 }

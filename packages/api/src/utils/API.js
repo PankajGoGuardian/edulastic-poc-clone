@@ -75,7 +75,7 @@ export default class API {
         if (window.sessionStorage) {
           // if appVersion sent recieved from api is greater than in the client, then dispatch an event.
           const appVersion = AppDetails?.version;
-          const apiAppVersion = response.headers["app-version"];
+          const apiAppVersion = response.headers["app-version"] || "";
           const refreshRequested = window.sessionStorage["refreshRequested"];
           if (semverCompare(apiAppVersion, appVersion) == 1 && !refreshRequested && apiAppVersion) {
             const event = new Event("request-client-update");

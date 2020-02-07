@@ -14,7 +14,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {isStandards ? tag : tag.tagName}
+          {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
     </PopupContainer>
@@ -24,7 +24,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards }) => {
     <Labels>
       {visibleTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {isStandards ? tag : tag.tagName}
+          {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (

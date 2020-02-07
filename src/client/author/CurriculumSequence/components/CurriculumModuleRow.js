@@ -384,7 +384,7 @@ class ModuleRow extends Component {
                                 )}
                               </ModuleAssignedUnit>
                             )}
-                            <Tags tags={standardTags} />
+                            <Tags tags={moduleData.standardIdentifiers} show={3} />
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>

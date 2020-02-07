@@ -9,7 +9,5 @@ export const StyledPreviewTemplateBox = styled.div.attrs(() => ({
   max-width: ${({ maxWidth }) => (!maxWidth ? null : `${maxWidth}px`)};
   height: ${({ height }) => (!height ? null : `${height}px`)};
   width: ${({ width }) => (!width ? null : `${width}px`)};
-  margin: auto;
-
   zoom: ${props => props.theme.widgets.clozeImageDropDown.imageZoom};
 `;

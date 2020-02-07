@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { SubHeaderWrapper, StyledTabPane, StyledSubMenu } from "./styled";
 
-import { isPublisherUserSelector, getUser } from "../../../selectors/user";
+import { getUser } from "../../../selectors/user";
 
-const ContentSubHeader = ({ isPublisherUser, active, history, user }) => {
+const ContentSubHeader = ({ active, history, user }) => {
   const userType = user.role === "edulastic-admin" ? "admin" : "author";
   const onSubTab = (key, e) => {
     switch (key) {
@@ -15,9 +15,6 @@ const ContentSubHeader = ({ isPublisherUser, active, history, user }) => {
       case "Buckets":
         history.push(`/${userType}/content/buckets`);
         return;
-      case "Subscriptions":
-        history.push(`/${userType}/content/subscriptions`);
-        return;
     }
   };
   return (
@@ -26,7 +23,6 @@ const ContentSubHeader = ({ isPublisherUser, active, history, user }) => {
         <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={onSubTab}>
           <StyledTabPane tab="Collections" key="Collections" />
           <StyledTabPane tab="Buckets" key="Buckets" />
-          {!isPublisherUser && <StyledTabPane tab="Subscriptions" key="Subscriptions" />}
         </StyledSubMenu>
       )}
     </SubHeaderWrapper>
@@ -35,7 +31,6 @@ const ContentSubHeader = ({ isPublisherUser, active, history, user }) => {
 
 export default connect(
   state => ({
-    isPublisherUser: isPublisherUserSelector(state),
     user: getUser(state)
   }),
   {}

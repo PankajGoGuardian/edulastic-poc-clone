@@ -467,7 +467,6 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route exact path="/author/Class-Enrollment" component={ClassEnrollment} />
                     <Route exact path="/author/content/buckets" component={ContentBuckets} />
                     <Route exact path="/author/content/collections" component={Collections} />
-                    <Route exact path="/author/content/subscriptions" component={() => <div />} />
                   </Switch>
                 </Suspense>
               </ErrorHandler>

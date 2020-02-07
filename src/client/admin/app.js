@@ -97,7 +97,6 @@ function Admin({ match, history, logoutAction, location }) {
               <Route path={`${match.path}/apiForms`} component={ApiForm} />
               <Route path={`${match.path}/content/collections`} component={Collections} />
               <Route path={`${match.path}/content/buckets`} component={ContentBucket} />
-              <Route path={`${match.path}/content/subscriptions`} />
               <Route path={`${match.path}/customReport`} component={CustomReportContainer} />
             </Switch>
           </ErrorHandler>

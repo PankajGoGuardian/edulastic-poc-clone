@@ -147,7 +147,8 @@ class TestList extends Component {
     showAddModules: false,
     selectedTests: [],
     isShowFilter: false,
-    markedTests: []
+    markedTests: [],
+    moduleModalAdd: null
   };
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -481,6 +482,7 @@ class TestList extends Component {
       playlist: { modules }
     } = this.props;
     if (!modules.length) {
+      this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
       message.warning("Create atleast 1 module");
     } else {
       if (item.status === "draft") {
@@ -566,7 +568,11 @@ class TestList extends Component {
   handleTestAdded = index => {
     const { addTestToModule, handleSave } = this.props;
     const { testAdded, selectedTests } = this.state;
-    this.setState(prevState => ({ ...prevState, selectedTests: [...selectedTests, testAdded._id] }));
+    this.setState(prevState => ({
+      ...prevState,
+      selectedTests: [...selectedTests, testAdded._id],
+      moduleModalAdd: null
+    }));
     addTestToModule({ moduleIndex: index, testAdded });
     if (selectedTests.length === 0) handleSave();
   };
@@ -955,6 +961,9 @@ class TestList extends Component {
                 handleAddModule={this.onCloseCreateModule}
                 handleApply={handleSave}
                 onCloseManageModule={this.onCloseManageModule}
+                addState={this.state.moduleModalAdd}
+                handleTestAdded={this.handleTestAdded}
+                testAddedTitle={this.state?.testAdded?.title}
               />
             </Modal>
           )}

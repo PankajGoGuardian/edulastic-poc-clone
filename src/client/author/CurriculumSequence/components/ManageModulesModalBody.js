@@ -191,7 +191,7 @@ const SortableModules = SortableContainer(props => (
 ));
 
 const ManageModulesModalBody = props => {
-  const [addState, toggleAddState] = useState(false);
+  const [addState, toggleAddState] = useState(props.addState || false);
 
   const [addTitle, setAddTitle] = useState("");
   const [addDescription, setAddDescription] = useState("");
@@ -233,6 +233,10 @@ const ManageModulesModalBody = props => {
         return;
       }
       addModuleToPlaylist({ title: addTitle, description: addDescription });
+      if (props.addState) {
+        props.handleTestAdded(0);
+        message.info(`${addTitle} module is created and added ${props.testAddedTitle} test to it`);
+      }
       toggleAddState(false);
       clearPreviousAddData();
     } else {

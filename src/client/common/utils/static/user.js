@@ -20,6 +20,7 @@ export const userPickFields = [
   "tts",
   "lastSigninSSO",
   "role",
+  "kid",
   "title",
   "thumbnail"
 ];

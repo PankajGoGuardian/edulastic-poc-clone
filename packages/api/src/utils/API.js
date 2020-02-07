@@ -1,8 +1,7 @@
 //@ts-check
 import axios from "axios";
-import { message } from "antd";
 import config from "../config";
-import { getAccessToken } from "./Storage";
+import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
 
 const getCurrentPath = () => {
   const location = window.location;
@@ -59,12 +58,12 @@ export default class API {
       if (token) {
         config.headers["Authorization"] = token;
       }
-
+      // Initialise browser tab id
+      initTID();
+      // Initialise kid for unauthenticated user
+      initKID();
       if (window.sessionStorage) {
-        // config.headers["X-Amzn-Trace-Id"] = `Root=${window.sessionStorage.browtabId}-${userId}-${districtId}`;
-        config.headers["X-Amzn-Trace-Id"] = `Root=${window.sessionStorage.browtabId}-${localStorage.getItem(
-          "defaultTokenKey"
-        )}`;
+        config.headers["X-Amzn-Trace-Id"] = getTraceId();
       }
       return config;
     });

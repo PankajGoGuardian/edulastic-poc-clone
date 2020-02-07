@@ -43,7 +43,8 @@ const SortableItem = sortableElement(props => {
     moduleItem,
     onDrop,
     handleTestsSort,
-    isReview
+    isReview,
+    urlHasUseThis
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -70,6 +71,7 @@ const SortableItem = sortableElement(props => {
           hideEditOptions={hideEditOptions}
           customize={customize}
           handleTestsSort={handleTestSort}
+          urlHasUseThis={urlHasUseThis}
         />
       </DropContainer>
     </AssignmentItemContainer>

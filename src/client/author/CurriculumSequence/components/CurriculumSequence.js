@@ -334,12 +334,12 @@ class CurriculumSequence extends Component {
       history,
       handleTestsSort,
       collections,
-      features
+      features,
+      urlHasUseThis
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
-    const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
@@ -674,6 +674,7 @@ class CurriculumSequence extends Component {
                 isReview={current === "review"}
                 onSortEnd={onSortEnd}
                 handleTestsSort={handleTestsSort}
+                urlHasUseThis={urlHasUseThis}
               />
             )}
           </Wrapper>

@@ -234,7 +234,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                       path="/author/playlists/:id/use-this"
                       render={props => (
                         <Suspense fallback={<Progress />}>
-                          <CurriculumContainer {...props} />
+                          <CurriculumContainer {...props} urlHasUseThis={true} />
                         </Suspense>
                       )}
                     />

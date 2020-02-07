@@ -3,9 +3,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Button, Menu, Dropdown, Icon, Modal, Tag, Col } from "antd";
+import { Button, Menu, Dropdown, Icon, Modal, Tag, Col, message } from "antd";
 import {
   mobileWidth,
   white,
@@ -166,7 +167,8 @@ class ModuleRow extends Component {
       moduleStatus,
       handleRemove,
       removeUnit,
-      handleTestsSort
+      handleTestsSort,
+      urlHasUseThis
     } = this.props;
     const { title, _id, data = [], description = "" } = module;
     const completed = moduleStatus;
@@ -295,8 +297,18 @@ class ModuleRow extends Component {
                     const contentCompleted =
                       statusList.filter(_status => _status === "DONE").length === statusList.length &&
                       statusList.length > 0;
+
+                    const isAssigned = assignments.length > 0;
+
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
+                        <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
+                        {isAssigned && (
+                          <Menu.Item>
+                            <Link to="/author/assignments">View Assignments</Link>
+                          </Menu.Item>
+                        )}
+                        <Menu.Item onClick={() => this.viewTest(moduleData.contentId)}>Preview Test</Menu.Item>
                         <Menu.Item
                           data-cy="moduleItemMoreMenuItem"
                           onClick={() => handleRemove(moduleIndex, moduleData.contentId)}
@@ -305,7 +317,7 @@ class ModuleRow extends Component {
                         </Menu.Item>
                       </Menu>
                     );
-                    const isAssigned = assignments.length > 0;
+
                     if (mode === "embedded") {
                       return (
                         <SortableElement
@@ -345,7 +357,17 @@ class ModuleRow extends Component {
                             <CustomIcon marginLeft={16}>
                               <Icon type="right" style={{ color: "#707070" }} />
                             </CustomIcon>
-                            <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
+                            {isAssigned ? (
+                              <Link to="/author/assignments">
+                                <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
+                              </Link>
+                            ) : (
+                              <ModuleDataName
+                                onClick={() => message.warning("Test is not yet assigned to any class(es)")}
+                              >
+                                {moduleData.contentTitle}
+                              </ModuleDataName>
+                            )}
                           </AssignmentContent>
                           <AssignmentIconsWrapper expanded={isContentExpanded}>
                             {!hideEditOptions && (
@@ -372,6 +394,16 @@ class ModuleRow extends Component {
                                   />
                                 </CustomIcon>
                               </AssignmentIcon>
+
+                              {((isAssigned && !hideEditOptions) ||
+                                (status === "published" && mode === "embedded")) && (
+                                <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
+                                  <LinkWrapper>
+                                    <Link to="/author/assignments">ASSIGNMENTS</Link>
+                                  </LinkWrapper>
+                                </AssignmentButton>
+                              )}
+
                               {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
@@ -384,15 +416,16 @@ class ModuleRow extends Component {
                                   </Button>
                                 </AssignmentButton>
                               )}
-                              {mode === "embedded" && (
-                                <AssignmentIcon>
-                                  <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                    <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                                      <IconMoreVertical color={themeColor} />
-                                    </CustomIcon>
-                                  </Dropdown>
-                                </AssignmentIcon>
-                              )}
+                              {mode === "embedded" ||
+                                (urlHasUseThis && (
+                                  <AssignmentIcon>
+                                    <Dropdown overlay={moreMenu} trigger={["click"]}>
+                                      <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                                        <IconMoreVertical color={themeColor} />
+                                      </CustomIcon>
+                                    </Dropdown>
+                                  </AssignmentIcon>
+                                ))}
                             </AssignmentIconsHolder>
                           </AssignmentIconsWrapper>
                         </AssignmentInnerWrapper>
@@ -474,12 +507,13 @@ export const CustomIcon = styled.span`
   margin-right: ${props => (props.marginRight ? props.marginRight : 25)}px;
   margin-left: ${({ marginLeft }) => marginLeft || 0}px;
   font-size: 16px;
+  align-self: flex-start;
+
   @media only screen and (max-width: ${mobileWidth}) {
     margin-right: 5px;
     margin-left: 0px;
     padding: 5px;
   }
-  align-self: flex-start;
 `;
 
 export const AssignmentIconsHolder = styled.div`
@@ -578,6 +612,8 @@ export const AssignmentButton = styled.div`
     display: flex;
     align-items: center;
     box-shadow: 0 2px 4px rgba(201, 208, 219, 0.5);
+    margin: ${({ margin }) => margin};
+
     svg {
       fill: ${({ assigned }) => (assigned ? white : themeColor)};
     }
@@ -630,6 +666,28 @@ export const AssignmentContent = styled.div`
   min-width: ${props => (!props.expanded ? "30%" : "45%")};
   @media only screen and (max-width: ${mobileWidth}) {
     width: 80%;
+  }
+`;
+
+const LinkWrapper = styled.div`
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  background: ${white};
+  text-align: center;
+  border-radius: 4px;
+  margin-right: 18px;
+  padding: 4px 10px;
+  min-height: 30px;
+  font-size: 12px;
+  display: table-cell;
+  vertical-align: middle;
+  box-sizing: border-box;
+
+  &:hover {
+    background: ${themeColor};
+    a {
+      color: ${white};
+    }
   }
 `;
 
@@ -720,6 +778,7 @@ export const AssignmentIcon = styled.span`
   cursor: pointer;
   margin-left: 10px;
   margin-right: 10px;
+  width: 30px;
 `;
 
 const Row = styled.div`

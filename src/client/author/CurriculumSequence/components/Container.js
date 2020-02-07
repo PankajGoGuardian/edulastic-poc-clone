@@ -230,7 +230,7 @@ class CurriculumContainer extends Component {
 
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum();
 
-    const { destinationCurriculumSequence = {} } = this.props;
+    const { destinationCurriculumSequence = {}, urlHasUseThis } = this.props;
     const { collections: selectedCollections } = destinationCurriculumSequence;
 
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
@@ -275,6 +275,7 @@ class CurriculumContainer extends Component {
           match={match}
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
+          urlHasUseThis={urlHasUseThis}
         />
       </>
     );

@@ -5,7 +5,6 @@ import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
 import { evaluateItem } from "../utils/evalution";
-import createShowAnswerData from "../utils/showAnswer";
 
 import {
   CREATE_TEST_ITEM_REQUEST,
@@ -155,7 +154,7 @@ function* evaluateAnswers({ payload }) {
             showScore: true
           }
         });
-        yield call(delayer, 1500);
+        yield call(delay, 1500);
         yield put({
           type: RESET_ITEM_SCORE
         });
@@ -172,7 +171,7 @@ function* evaluateAnswers({ payload }) {
 function* showAnswers() {
   try {
     yield put({ type: CHECK_ANSWER, payload: { mode: "show" } }); // validate the results first then show it
-    //with check answer itself,it will save evaluation , we dont need this again.
+    // with check answer itself,it will save evaluation , we dont need this again.
   } catch (err) {
     console.error(err);
     const errorMessage = "Show Answer Failed";
@@ -182,8 +181,6 @@ function* showAnswers() {
 
 function* setAnswerSaga({ payload }) {
   try {
-    const answers = yield select(state => state.answers);
-    const id = yield select(state => _get(state, "question.entity.data.id", {}));
     const { preview, view } = yield select(state => _get(state, "view", {}));
 
     if ((preview === CLEAR && view === PREVIEW) || payload.view === "edit") {

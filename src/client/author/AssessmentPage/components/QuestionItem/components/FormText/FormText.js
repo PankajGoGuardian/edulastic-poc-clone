@@ -59,7 +59,8 @@ export default class FormText extends React.Component {
   renderAnswerCreateForm = () => {
     const {
       question: { id, type },
-      onCreateAnswer
+      onCreateAnswer,
+      highlighted = false
     } = this.props;
 
     return <Input size="large" onPressEnter={onCreateAnswer(id, type)} ref={el => highlighted && el?.focus()} />;

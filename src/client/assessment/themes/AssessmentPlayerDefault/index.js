@@ -48,7 +48,6 @@ import TestItemPreview from "../../components/TestItemPreview";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
-import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
 import { saveUserWorkAction, clearUserWorkAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
@@ -208,6 +207,8 @@ class AssessmentPlayerDefault extends React.Component {
       currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
   };
+
+  handleLineWidthChange = size => this.setState({ lineWidth: size });
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
@@ -450,6 +451,8 @@ class AssessmentPlayerDefault extends React.Component {
               activeMode={activeMode}
               undo={this.handleUndo}
               redo={this.handleRedo}
+              lineWidth={lineWidth}
+              onChangeSize={this.handleLineWidthChange}
               onColorChange={this.handleColorChange}
             />
           )}

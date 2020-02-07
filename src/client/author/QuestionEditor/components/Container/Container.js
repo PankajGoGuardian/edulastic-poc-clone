@@ -62,6 +62,7 @@ class Container extends Component {
     this.state = {
       showModal: false,
       saveClicked: false,
+      clearClicked: false,
       showHints: false
     };
 
@@ -160,11 +161,17 @@ class Container extends Component {
       }
       changePreview(previewTab);
     }
+
+    // need to use this approach becasue some question type does not know
+    // user is clicked clear button in author preview
+    if (previewTab === "clear") {
+      this.setState({ clearClicked: true }, () => this.setState({ clearClicked: false }));
+    }
   };
 
   renderQuestion = () => {
     const { view, question, preview, itemFromState } = this.props;
-    const { saveClicked, showHints } = this.state;
+    const { saveClicked, showHints, clearClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
@@ -182,11 +189,13 @@ class Container extends Component {
             type={questionType}
             view={view}
             previewTab={preview}
+            viewComponent="editQuestion"
             changePreviewTab={this.handleChangePreviewTab}
             key={questionType && view && saveClicked}
             data={question}
             questionId={question.id}
             saveClicked={saveClicked}
+            clearClicked={clearClicked}
             scrollContainer={this.scrollContainer}
           />
           {showHints && <Hints questions={[question]} />}

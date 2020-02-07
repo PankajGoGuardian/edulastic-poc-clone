@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { get } from "lodash";
 import produce from "immer";
 import { drawTools } from "@edulastic/constants";
 import { MathModal, MathFormulaDisplay } from "@edulastic/common";
@@ -11,6 +12,8 @@ const MathDrawWrapper = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
+  top: 0px;
+  left: 0px;
   z-index: ${({ activeMode }) => (activeMode === drawTools.DRAW_MATH ? 45 : 10)};
   display: ${({ scratchPadMode }) => (scratchPadMode ? "block" : "none")};
   pointer-events: ${({ activeMode }) => (activeMode === "" ? "none" : "all")};
@@ -25,9 +28,19 @@ const MathFormula = styled(MathFormulaDisplay).attrs(({ top, left }) => ({
   width: max-content;
   cursor: pointer;
   z-index: 50;
+  user-select: none;
 `;
 
-const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor, lineWidth, scratchPadMode }) => {
+const MathDraw = ({
+  workHistory,
+  saveHistory,
+  activeMode,
+  deleteMode,
+  lineColor,
+  lineWidth,
+  scratchPadMode,
+  disableRemove
+}) => {
   const [latexs, setLatexs] = useState([]);
   const [activeItem, setActiveItem] = useState(null);
   const [cursor, setCursor] = useState(null);
@@ -54,9 +67,8 @@ const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor,
   const onClose = () => setNewItem({});
 
   useEffect(() => {
-    if (workHistory && workHistory.maths) {
-      setLatexs(workHistory.maths);
-    }
+    const nextLatexs = get(workHistory, "maths", []);
+    setLatexs(nextLatexs);
   }, [workHistory]);
 
   const handleOnMouseDown = i => e => {
@@ -78,6 +90,7 @@ const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor,
   };
 
   const handleOnMouseUp = i => () => {
+    if (disableRemove(i, "maths")) return;
     if (activeMode === drawTools.DRAW_MATH && !deleteMode) {
       saveHistory({ maths: latexs });
     } else if (activeMode === drawTools.DRAW_MATH && deleteMode) {
@@ -92,6 +105,7 @@ const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor,
   };
 
   const handleOnMouseMove = e => {
+    if (disableRemove(activeItem, "maths")) return;
     if (activeMode === drawTools.DRAW_MATH && !deleteMode) {
       normalizeTouchEvent(e);
       setLatexs(
@@ -107,6 +121,7 @@ const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor,
   };
 
   const handleDoubleClick = i => () => {
+    if (disableRemove(i, "maths")) return;
     setNewItem(latexs[i]);
   };
 
@@ -152,9 +167,10 @@ const MathDraw = ({ workHistory, saveHistory, activeMode, deleteMode, lineColor,
 MathDraw.propTypes = {
   workHistory: PropTypes.object,
   scratchPadMode: PropTypes.bool.isRequired,
-  lineWidth: PropTypes.string.isRequired,
+  lineWidth: PropTypes.number.isRequired,
   lineColor: PropTypes.string.isRequired,
   activeMode: PropTypes.string.isRequired,
+  disableRemove: PropTypes.func.isRequired,
   deleteMode: PropTypes.bool.isRequired,
   saveHistory: PropTypes.func.isRequired
 };

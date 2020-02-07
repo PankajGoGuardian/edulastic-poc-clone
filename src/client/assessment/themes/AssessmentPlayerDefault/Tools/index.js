@@ -25,7 +25,10 @@ const Tools = ({
   review,
   isToolBarVisible,
   isDocBased = false,
-  className
+  className,
+  lineWidth,
+  onChangeSize,
+  containerStyle
 }) => {
   let buttonsList = tools;
 
@@ -45,6 +48,7 @@ const Tools = ({
       flexDirection="column"
       isToolBarVisible={isToolBarVisible}
       className={className}
+      style={containerStyle}
     >
       {activeMode === "" &&
         buttonsList.map((button, i) => (
@@ -58,17 +62,17 @@ const Tools = ({
       {activeMode !== "" && (
         <ActiveToolBoxContainer flexDirection="column" justifyContent="space-between">
           <FlexContainer flexDirection="column">
-            <StyledButton onClick={onToolChange("")} separate>
+            <StyledButton onClick={onToolChange("")} separateLine>
               <Back />
             </StyledButton>
 
             {activeTool && (
-              <StyledButton enable onClick={onToolChange("")} separate>
+              <StyledButton enable onClick={onToolChange("")} separateLine>
                 <activeTool.icon color={greenDark5} />
               </StyledButton>
             )}
             <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
-              <Size />
+              <Size value={lineWidth} onChangeSize={onChangeSize} />
               <ColorPicker
                 activeMode={activeMode}
                 fillColor={fillColor}
@@ -90,12 +94,19 @@ Tools.propTypes = {
   onToolChange: PropTypes.func.isRequired,
   activeMode: PropTypes.string.isRequired,
   currentColor: PropTypes.string.isRequired,
+  onChangeSize: PropTypes.func.isRequired,
   onColorChange: PropTypes.func.isRequired,
   undo: PropTypes.func.isRequired,
   redo: PropTypes.func.isRequired,
   onFillColorChange: PropTypes.func.isRequired,
   fillColor: PropTypes.string.isRequired,
-  deleteMode: PropTypes.bool.isRequired
+  deleteMode: PropTypes.bool.isRequired,
+  lineWidth: PropTypes.number.isRequired,
+  containerStyle: PropTypes.object
+};
+
+Tools.defaultProps = {
+  containerStyle: {}
 };
 
 export default Tools;

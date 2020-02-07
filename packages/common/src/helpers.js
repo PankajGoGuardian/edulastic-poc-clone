@@ -496,9 +496,9 @@ export const isMobileDevice = () => {
  * @param {object} style styles for text, it can be styles of parent element or null
  * @return {object} calculated width and height of text
  */
-export const measureText = (text, style = {}) => {
-  const fakeEm = document.createElement("div");
-  const innerEm = document.createElement("span");
+export const measureText = (text, style = {}, tag1 = "div", tag2 = "span") => {
+  const fakeEm = document.createElement(tag1);
+  const innerEm = document.createElement(tag2);
   document.body.appendChild(fakeEm);
   if (style.fontSize) {
     fakeEm.style.fontSize = style.fontSize;

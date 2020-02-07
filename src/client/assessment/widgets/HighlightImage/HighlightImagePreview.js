@@ -21,6 +21,8 @@ import { CanvasContainer } from "./styled/CanvasContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import DEFAULT_IMAGE from "../../assets/grid.png";
 
+import Scratch from "./Scratch";
+
 const isMobile = isMobileDevice();
 
 const HighlightImagePreview = ({
@@ -31,7 +33,9 @@ const HighlightImagePreview = ({
   userAnswer,
   showQuestionNumber,
   disableResponse,
-  theme
+  theme,
+  viewComponent,
+  clearClicked
 }) => {
   const canvas = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -177,34 +181,40 @@ const HighlightImagePreview = ({
   }
 
   const disableDrawing = disableResponse || !isAnswerModifiable;
+
+  useEffect(() => {
+    if (clearClicked && ctx) {
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+  }, [clearClicked]);
+
   return (
     <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <div
+      <CanvasContainer
         ref={canvasContainerRef}
-        style={{
-          minHeight: `${canvasDimensions.maxHeight}px`,
-          width: disableDrawing ? "auto" : `${canvasContainerWidth}px`
-        }}
+        minHeight={canvasDimensions.maxHeight}
+        width={disableDrawing ? "auto" : `${canvasContainerWidth}px`}
       >
-        <CanvasContainer>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-          </QuestionTitleWrapper>
-          {renderImage()}
-          {enableQuestionLevelScratchPad && (
-            <canvas
-              onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
-              onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
-              onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
-              onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
-              onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-              onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-              ref={canvas}
-            />
-          )}
-        </CanvasContainer>
-      </div>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+          {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+        </QuestionTitleWrapper>
+        {renderImage()}
+        {enableQuestionLevelScratchPad && (
+          <canvas
+            onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
+            onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
+            onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
+            onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
+            onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+            onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+            ref={canvas}
+          />
+        )}
+      </CanvasContainer>
+      {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
+        <Scratch clearClicked={clearClicked} />
+      )}
     </PreviewContainer>
   );
 };
@@ -213,14 +223,17 @@ HighlightImagePreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   view: PropTypes.string.isRequired,
+  viewComponent: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   showQuestionNumber: PropTypes.bool,
+  clearClicked: PropTypes.bool,
   disableResponse: PropTypes.bool
 };
 
 HighlightImagePreview.defaultProps = {
   showQuestionNumber: false,
+  clearClicked: false,
   smallSize: false,
   disableResponse: false
 };

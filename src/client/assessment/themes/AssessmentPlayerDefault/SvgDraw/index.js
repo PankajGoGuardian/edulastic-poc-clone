@@ -2,13 +2,15 @@
 import React, { useRef, useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
+import produce from "immer";
 import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
-import { Input } from "antd";
-import { useDisableDragScroll } from "@edulastic/common";
+import { useDisableDragScroll, measureText } from "@edulastic/common";
 
 import MathDraw from "./components/MathDraw";
+import CurvedLine from "./components/CurveLine";
 import MeasureTools from "./components/MeasureTools";
+import TextInput from "./components/TextInput";
 import { normalizeTouchEvent } from "../../../utils/helpers";
 
 const SvgDraw = ({
@@ -20,7 +22,8 @@ const SvgDraw = ({
   saveHistory: saveWorkHistory,
   fillColor,
   deleteMode,
-  position
+  position,
+  fromFreeFormNotes
 }) => {
   const svg = useDisableDragScroll();
   const [points, setPoints] = useState([]);
@@ -33,10 +36,10 @@ const SvgDraw = ({
   const [mouseClicked, setMouseClicked] = useState(false);
   const [inputIsVisible, setInputIsVisible] = useState(false);
   const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
-  const [inputValue, setInputValue] = useState("");
   const [texts, setTexts] = useState([]);
   const [newMathItem, setNewMathItem] = useState({});
   const boundedRef = useRef();
+  const curvedLineRef = useRef();
 
   useEffect(() => {
     if (history && history.points && history.pathes && history.figures && history.texts) {
@@ -65,6 +68,33 @@ const SvgDraw = ({
     saveWorkHistory({ ...history, ...values });
   };
 
+  const disableRemove = (index, prop) =>
+    fromFreeFormNotes && fromFreeFormNotes[prop] && index < fromFreeFormNotes[prop];
+
+  const getSvgRect = () => svg?.current?.getBoundingClientRect() || {};
+
+  const calcTextPosition = text => {
+    const { width, height } = measureText(text.value, { fontSize: `${lineWidth * 3}px` }, "svg", "text");
+    const bounded = getSvgRect();
+    return produce(text, draft => {
+      const xDiff = draft.x + width - bounded.width - 10;
+      if (xDiff > 0) {
+        draft.x -= xDiff + 5;
+      }
+      if (draft.x < 0) {
+        draft.x = 5;
+      }
+
+      const yDiff = draft.y + height - bounded.height;
+      if (yDiff > 0) {
+        draft.y -= yDiff + 5;
+      }
+      if (draft.y < 0) {
+        draft.y = 0;
+      }
+    });
+  };
+
   const handleMove = e => {
     if (mouseClicked) {
       normalizeTouchEvent(e);
@@ -82,7 +112,7 @@ const SvgDraw = ({
   const handleMouseDown = e => {
     setMouseClicked(true);
     normalizeTouchEvent(e);
-    boundedRef.current = svg.current.getBoundingClientRect();
+    boundedRef.current = getSvgRect();
     const bounded = boundedRef.current;
     const newPoints = points.concat({
       lineWidth,
@@ -108,7 +138,7 @@ const SvgDraw = ({
   const handlePoint = (modifier = "") => e => {
     normalizeTouchEvent(e);
     const newPoints = cloneDeep(points);
-    const bounded = svg.current.getBoundingClientRect();
+    const bounded = getSvgRect();
     if (newPoints.length === 0) {
       newPoints.push({
         lineWidth,
@@ -134,7 +164,7 @@ const SvgDraw = ({
     if (mouseClicked) {
       normalizeTouchEvent(e);
       const newPoints = cloneDeep(points);
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
 
       newPoints[1] = {
         lineWidth,
@@ -147,6 +177,7 @@ const SvgDraw = ({
   };
 
   const handleDeletePath = index => () => {
+    if (disableRemove(index, "pathes")) return;
     const newPathes = cloneDeep(pathes);
     newPathes.splice(index, 1);
     setPathes(newPathes);
@@ -154,6 +185,7 @@ const SvgDraw = ({
   };
 
   const handleDeleteFigure = index => () => {
+    if (disableRemove(index, "figures")) return;
     const newFigures = cloneDeep(figures);
     newFigures.splice(index, 1);
     setActive(null);
@@ -170,7 +202,7 @@ const SvgDraw = ({
     if (active === null) {
       normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
       newFigures.push({
         strokeWidth: lineWidth,
         stroke: lineColor,
@@ -191,7 +223,7 @@ const SvgDraw = ({
     if (active === null) {
       normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
       newFigures.push({
         strokeWidth: lineWidth,
         stroke: lineColor,
@@ -212,7 +244,7 @@ const SvgDraw = ({
     if (active === null) {
       normalizeTouchEvent(e);
       const newFigures = cloneDeep(figures);
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
       const point = { x: e.clientX - bounded.left, y: e.clientY - bounded.top };
       newFigures.push({
         strokeWidth: lineWidth,
@@ -230,24 +262,17 @@ const SvgDraw = ({
   const drawText = e => {
     if (currentPosition.index === undefined) {
       normalizeTouchEvent(e);
-      const newTexts = cloneDeep(texts);
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
       const point = { x: e.clientX - bounded.left, y: e.clientY - bounded.top };
-      newTexts.push({
+      setInputIsVisible(true);
+      setCurrentPosition({
         color: lineColor,
         lineWidth,
         value: "",
         x: point.x,
-        y: point.y
+        y: point.y,
+        index: texts.length
       });
-      setInputIsVisible(true);
-      setCurrentPosition({
-        x: point.x + 40,
-        y: point.y - 20,
-        index: newTexts.length - 1
-      });
-      setTexts(newTexts);
-      saveHistory({ pathes, points: [], figures, texts: newTexts });
     } else {
       setInputIsVisible(false);
       setCurrentPosition({ x: 0, y: 0 });
@@ -258,7 +283,7 @@ const SvgDraw = ({
     normalizeTouchEvent(e);
     const newPoints = cloneDeep(points);
     if (newPoints.length > 1) {
-      const bounded = svg.current.getBoundingClientRect();
+      const bounded = getSvgRect();
 
       newPoints[newPoints.length - 1] = {
         lineWidth,
@@ -272,9 +297,9 @@ const SvgDraw = ({
   };
 
   const handleResizeRect = e => {
-    if (mouseClicked && activeIndex !== null) {
+    const newFigures = cloneDeep(figures);
+    if (mouseClicked && newFigures[active]) {
       normalizeTouchEvent(e);
-      const newFigures = cloneDeep(figures);
       if (activeIndex === 1 || activeIndex === 2) {
         if (e.clientX < cursor.x) {
           newFigures[active].width -= cursor.x - e.clientX;
@@ -307,9 +332,7 @@ const SvgDraw = ({
         setFigures(newFigures);
       }
     }
-    if (dragStart) {
-      const newFigures = cloneDeep(figures);
-
+    if (dragStart && newFigures[active]) {
       if (e.clientX < cursor.x) {
         newFigures[active].x -= cursor.x - e.clientX;
       } else {
@@ -329,8 +352,8 @@ const SvgDraw = ({
 
   const handleResizeCircle = e => {
     normalizeTouchEvent(e);
-    if (mouseClicked && activeIndex !== null) {
-      const newFigures = cloneDeep(figures);
+    const newFigures = cloneDeep(figures);
+    if (mouseClicked && newFigures[active]) {
       if (activeIndex === 1 || activeIndex === 2) {
         if (e.clientX < cursor.x) {
           newFigures[active].rx -= cursor.x - e.clientX;
@@ -361,9 +384,7 @@ const SvgDraw = ({
         setFigures(newFigures);
       }
     }
-    if (dragStart) {
-      const newFigures = cloneDeep(figures);
-
+    if (dragStart && newFigures[active]) {
       if (e.clientX < cursor.x) {
         newFigures[active].cx -= cursor.x - e.clientX;
       } else {
@@ -421,6 +442,7 @@ const SvgDraw = ({
   };
 
   const handleActive = index => e => {
+    if (disableRemove(index, "figures")) return;
     e.preventDefault();
     e.stopPropagation();
     if (!mouseClicked) {
@@ -448,6 +470,7 @@ const SvgDraw = ({
   };
 
   const handleDragStart = i => e => {
+    if (disableRemove(i, "figures")) return;
     normalizeTouchEvent(e);
     e.preventDefault();
     e.stopPropagation();
@@ -457,53 +480,82 @@ const SvgDraw = ({
   };
 
   const handleDragEnd = i => e => {
+    if (disableRemove(i, "figures")) return;
     normalizeTouchEvent(e);
     e.preventDefault();
     e.stopPropagation();
     setActive(i);
     setCursor({ x: e.clientX, y: e.clientY });
     setDragStart(false);
-    saveHistory({ pathes, points: [], figures, texts });
+
+    saveHistory({
+      pathes,
+      points: [],
+      figures,
+      texts: produce(texts, draft => {
+        if (draft[active]) {
+          draft[active] = calcTextPosition(draft[active]);
+        }
+      })
+    });
   };
 
   const editText = index => () => {
-    setInputValue(texts[index].value);
-    setInputIsVisible(true);
-    setCurrentPosition({ x: texts[index].x, y: texts[index].y + 40, index });
-  };
-
-  const handleBlur = () => {
-    const newTexts = cloneDeep(texts);
-    if (inputValue.trim()) {
-      newTexts[currentPosition.index] = {
-        ...newTexts[currentPosition.index],
-        value: inputValue,
-        x: currentPosition.x,
-        y: currentPosition.y - 40
-      };
+    if (disableRemove(index, "texts")) return;
+    if (texts[index]) {
+      setInputIsVisible(true);
+      setCurrentPosition(texts[index]);
     }
-    setInputValue("");
-    setInputIsVisible(false);
-    setTexts(newTexts);
-    saveHistory({ pathes, points: [], figures, texts: newTexts });
   };
 
-  const handleInputChange = e => {
-    setInputValue(e.target.value);
+  const handleBlur = newText => {
+    if (newText?.value?.trim()) {
+      saveHistory({
+        pathes,
+        points: [],
+        figures,
+        texts: produce(texts, draft => {
+          draft[newText.index] = calcTextPosition(newText);
+        })
+      });
+    }
+    setInputIsVisible(false);
   };
 
   const handleTextMove = e => {
-    if (dragStart) {
+    if (dragStart && texts[active] && !disableRemove(active, "texts")) {
       normalizeTouchEvent(e);
-      const newTexts = cloneDeep(texts);
-      const xPoint = newTexts[active].x - (cursor.x - e.clientX);
-      const yPoint = newTexts[active].y - (cursor.y - e.clientY);
-
-      newTexts[active].x = xPoint;
-      newTexts[active].y = yPoint;
-
       setCursor({ x: e.clientX, y: e.clientY });
-      setTexts(newTexts);
+      setTexts(
+        produce(texts, draft => {
+          const xPoint = draft[active].x - (cursor.x - e.clientX);
+          const yPoint = draft[active].y - (cursor.y - e.clientY);
+
+          draft[active].x = xPoint;
+          draft[active].y = yPoint;
+          draft[active] = draft[active];
+        })
+      );
+    }
+  };
+
+  // CurvedLine Handlers here.
+  const handleMouseMoveCurvedLine = e => {
+    normalizeTouchEvent(e);
+    if (curvedLineRef.current && typeof curvedLineRef.current.handleMouseMove === "function") {
+      curvedLineRef.current.handleMouseMove(e, svg);
+    }
+  };
+
+  const handleMouseUpCurvedLine = e => {
+    if (curvedLineRef.current && typeof curvedLineRef.current.handleMouseUp === "function") {
+      curvedLineRef.current.handleMouseUp(e, svg);
+    }
+  };
+
+  const handleDoubleClick = () => {
+    if (curvedLineRef.current && typeof curvedLineRef.current.handleDoubleClick === "function") {
+      curvedLineRef.current.handleDoubleClick();
     }
   };
 
@@ -578,6 +630,16 @@ const SvgDraw = ({
             onMouseMove: handleTextMove,
             onTouchMove: handleTextMove
           };
+        case drawTools.DRAW_CURVE_LINE:
+          return {
+            onMouseUp: handleMouseUpCurvedLine,
+            onTouchEnd: handleMouseUpCurvedLine,
+
+            onDoubleClick: handleDoubleClick,
+
+            onMouseMove: handleMouseMoveCurvedLine,
+            onTouchMove: handleMouseMoveCurvedLine
+          };
         default:
       }
     } else {
@@ -586,6 +648,7 @@ const SvgDraw = ({
   };
 
   const handleDeleteText = index => () => {
+    if (disableRemove(index, "texts")) return;
     const newTexts = cloneDeep(texts);
     newTexts.splice(index, 1);
     setTexts(newTexts);
@@ -707,16 +770,14 @@ const SvgDraw = ({
 
   return (
     <Fragment>
-      <ControlInput
-        onChange={handleInputChange}
-        onBlur={handleBlur}
-        value={inputValue}
-        inputIsVisible={inputIsVisible && activeMode === drawTools.DRAW_TEXT}
-        x={currentPosition.x}
-        y={currentPosition.y}
-        size="large"
-      />
-
+      {inputIsVisible && activeMode === drawTools.DRAW_TEXT && (
+        <TextInput
+          bounded={getSvgRect()}
+          text={currentPosition}
+          onBlur={handleBlur}
+          setCurrentPosition={setCurrentPosition}
+        />
+      )}
       <svg
         ref={svg}
         {...getSvgHandlers()}
@@ -743,10 +804,7 @@ const SvgDraw = ({
             if (i !== active) {
               return renderFigure(path, i);
             }
-            if (activeMode === drawTools.DRAW_MATH) {
-              return renderFigure(path, i);
-            }
-            if (activeMode === drawTools.DRAW_TEXT) {
+            if (activeMode === drawTools.DRAW_MATH || activeMode === drawTools.DRAW_TEXT) {
               return renderFigure(path, i);
             }
             return false;
@@ -767,8 +825,8 @@ const SvgDraw = ({
                   key={i}
                   color={text.color}
                   fontSize={text.lineWidth * 3}
-                  x={text.x - 45}
-                  y={text.y + 65}
+                  x={text.x}
+                  y={text.y + 25}
                 >
                   {text.value}
                 </Text>
@@ -797,6 +855,17 @@ const SvgDraw = ({
             d={getPointsForDrawingPath(points)}
           />
         )}
+        <CurvedLine
+          deleteMode={deleteMode}
+          activeMode={activeMode}
+          workHistory={history}
+          saveHistory={saveHistory}
+          ref={curvedLineRef}
+          lineWidth={lineWidth}
+          lineColor={lineColor}
+          disableRemove={disableRemove}
+          pointColor="rgb(244, 0, 137)"
+        />
       </svg>
       <MathDraw
         newItem={newMathItem}
@@ -807,6 +876,7 @@ const SvgDraw = ({
         scratchPadMode={scratchPadMode}
         deleteMode={deleteMode}
         lineWidth={lineWidth}
+        disableRemove={disableRemove}
         lineColor={lineColor}
       />
       {activeMode === drawTools.DRAW_MEASURE_TOOL && <MeasureTools />}
@@ -819,6 +889,7 @@ SvgDraw.propTypes = {
   lineWidth: PropTypes.number.isRequired,
   activeMode: PropTypes.string.isRequired,
   scratchPadMode: PropTypes.bool.isRequired,
+  fromFreeFormNotes: PropTypes.object,
   deleteMode: PropTypes.bool.isRequired,
   history: PropTypes.any.isRequired,
   fillColor: PropTypes.string.isRequired,
@@ -826,6 +897,10 @@ SvgDraw.propTypes = {
   width: PropTypes.string.isRequired,
   top: PropTypes.string.isRequired,
   position: PropTypes.string.isRequired
+};
+
+SvgDraw.defaultProps = {
+  fromFreeFormNotes: {}
 };
 
 export default SvgDraw;
@@ -854,15 +929,7 @@ const Rect = styled.rect`
 const Text = styled.text`
   cursor: pointer;
   stroke: ${({ color }) => color};
+  fill: ${({ color }) => color};
   font-size: ${({ fontSize }) => fontSize}px;
-`;
-
-const ControlInput = styled(Input)`
-  position: absolute;
-  display: ${({ inputIsVisible }) => (inputIsVisible ? "block" : "none")};
-  top: ${({ y }) => y}px;
-  left: ${({ x }) => x}px;
-  width: auto;
-  height: 40px;
-  z-index: 1002;
+  user-select: none;
 `;

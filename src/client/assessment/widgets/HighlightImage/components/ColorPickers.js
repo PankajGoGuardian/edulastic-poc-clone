@@ -6,7 +6,6 @@ import { withTheme } from "styled-components";
 import { compose } from "redux";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { greenDark, red } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Paper } from "@edulastic/common";
 
@@ -14,7 +13,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
 
-const ColorPikers = ({ onRemove, colors, changeHandler, t, theme }) => {
+const ColorPikers = ({ onRemove, colors, changeHandler, t, theme, item }) => {
   const getAlpha = color => {
     const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
 
@@ -52,6 +51,7 @@ ColorPikers.propTypes = {
   changeHandler: PropTypes.func.isRequired,
   colors: PropTypes.array.isRequired,
   onRemove: PropTypes.any,
+  item: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired
 };
 

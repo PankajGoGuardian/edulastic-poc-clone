@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { isEmpty, get, debounce } from "lodash";
+import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB, withWindowSizes } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
@@ -72,10 +73,8 @@ class WorksheetComponent extends React.Component {
   }
 
   static propTypes = {
-    docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
     userWork: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
     answersById: PropTypes.object,
@@ -90,8 +89,7 @@ class WorksheetComponent extends React.Component {
     annotations: [],
     noCheck: false,
     pageStructure: [],
-    answersById: {},
-    docUrl: ""
+    answersById: {}
   };
 
   cancelUpload;
@@ -111,13 +109,26 @@ class WorksheetComponent extends React.Component {
     deleteMode: false,
     minimized: false,
     lineWidth: 6,
-    isToolBarVisible: true
+    isToolBarVisible: true,
+    fromFreeFormNotes: {}
   };
 
   componentDidMount() {
     const { saveUserWork, itemDetail, freeFormNotes } = this.props;
+
+    const fromFreeFormNotes = {};
     if (itemDetail?._id) {
+      for (const key in freeFormNotes) {
+        if (Object.prototype.hasOwnProperty.call(freeFormNotes, key)) {
+          for (const figureType in freeFormNotes[key]) {
+            if (Object.prototype.hasOwnProperty.call(freeFormNotes[key], figureType)) {
+              fromFreeFormNotes[figureType] = freeFormNotes[key][figureType].length;
+            }
+          }
+        }
+      }
       saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } });
+      this.setState({ fromFreeFormNotes });
     }
   }
 
@@ -128,7 +139,8 @@ class WorksheetComponent extends React.Component {
         creating: false,
         isAddPdf: false
       };
-    } else if (!prevState.creating && props.creating) {
+    }
+    if (!prevState.creating && props.creating) {
       return {
         creating: true
       };
@@ -137,11 +149,12 @@ class WorksheetComponent extends React.Component {
 
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
     this.setState({ highlightedQuestion: questionId });
+    const { currentPage } = this.state;
     const { annotations } = this.props;
     if (!pdfPreview) {
-      const { page, x, y } = annotations.find(x => x.questionId === questionId) || {};
+      const { page, y } = annotations.find(x => x.questionId === questionId) || {};
       if (!page) return;
-      if (page - 1 !== this.state.currentPage) this.handleChangePage(page - 1);
+      if (page - 1 !== currentPage) this.handleChangePage(page - 1);
       if (this?.pdfRef?.current) {
         const scrollableDOMNode = this.pdfRef?.current?._ps?.element;
         const { top } = scrollableDOMNode.getBoundingClientRect() || {};
@@ -249,25 +262,31 @@ class WorksheetComponent extends React.Component {
     updatedPageStructure.splice(pageNumber, 1);
 
     const newFreeFormNotes = {};
-    //TODO some one plis fix this shit.
-    /*Scratchpad component requires an object in this({"1":value,"2":value,"3":value}) format to perform rendering. As the freeFormNotes is not an array can not perform the shift or splice operations. So found below way to shift items.*/
+    // TODO some one plis fix this shit.
+    /* Scratchpad component requires an object in this({"1":value,"2":value,"3":value}) format to perform rendering.
+    As the freeFormNotes is not an array can not perform the shift or splice operations. 
+    So found below way to shift items. */
     Object.keys(freeFormNotes).forEach(item => {
-      const parsedItem = parseInt(item);
-      //new note should not have the removed key so return here
+      const parsedItem = parseInt(item, 10);
+      // new note should not have the removed key so return here
       if (parsedItem === pageNumber) return;
-      //all items greater than the removed should shift backwards.
+      // all items greater than the removed should shift backwards.
       if (parsedItem > pageNumber) {
+        // eslint-disable-next-line no-return-assign
         return (newFreeFormNotes[parsedItem - 1] = freeFormNotes[item]);
       }
       newFreeFormNotes[parsedItem] = freeFormNotes[item];
     });
     const updatedAnnotations = annotations
+      // eslint-disable-next-line array-callback-return
       .map(x => {
         if (x.page === pageNumber) {
           return null;
-        } else if (x.page < pageNumber) {
+        }
+        if (x.page < pageNumber) {
           return x;
-        } else if (x.page > pageNumber) {
+        }
+        if (x.page > pageNumber) {
           return { ...x, page: x.page - 1 };
         }
       })
@@ -414,6 +433,7 @@ class WorksheetComponent extends React.Component {
   handleAddPdf = () => {
     this.setState({ uploadModal: true, isAddPdf: true });
   };
+
   // Set up for scratchpad
   onFillColorChange = obj => {
     this.setState({
@@ -481,6 +501,8 @@ class WorksheetComponent extends React.Component {
     });
   };
 
+  handleChangeLineWidth = size => this.setState({ lineWidth: size });
+
   onDragStart = () => {
     this.setState({ activeMode: "" });
   };
@@ -547,26 +569,6 @@ class WorksheetComponent extends React.Component {
   // setup for scratchpad ends
   render() {
     const {
-      currentPage,
-      uploadModal,
-      highlightedQuestion,
-      currentColor,
-      fillColor,
-      activeMode,
-      deleteConfirmation,
-      deleteMode,
-      isAddPdf,
-      selected,
-      minimized,
-      lineWidth,
-      isToolBarVisible
-    } = this.state;
-    let { answersById, studentWork } = this.props;
-    if (this.props.studentWorkAnswersById) {
-      answersById = this.props.studentWorkAnswersById;
-    }
-    const {
-      docUrl,
       annotations,
       review,
       creating,
@@ -581,8 +583,33 @@ class WorksheetComponent extends React.Component {
       freeFormNotes = {},
       windowWidth,
       test: { isDocBased },
-      testMode = false
+      testMode = false,
+      studentWorkAnswersById,
+      studentWork,
+      isAssessmentPlayer
     } = this.props;
+
+    const {
+      currentPage,
+      uploadModal,
+      highlightedQuestion,
+      currentColor,
+      fillColor,
+      activeMode,
+      deleteConfirmation,
+      deleteMode,
+      isAddPdf,
+      selected,
+      minimized,
+      lineWidth,
+      isToolBarVisible,
+      fromFreeFormNotes
+    } = this.state;
+    let { answersById } = this.props;
+    if (studentWorkAnswersById) {
+      answersById = studentWorkAnswersById;
+    }
+
     const selectedPage = pageStructure[currentPage] || defaultPage;
     const userHistory = review ? freeFormNotes[currentPage] : scratchPad && scratchPad[currentPage];
 
@@ -599,6 +626,7 @@ class WorksheetComponent extends React.Component {
         height="100%"
         top={0}
         position="absolute"
+        fromFreeFormNotes={isAssessmentPlayer ? fromFreeFormNotes : {}}
       />
     );
 
@@ -628,7 +656,7 @@ class WorksheetComponent extends React.Component {
             </StyledSubmitBtn>
           ]}
         >
-          {"Are you sure that you want to delete this page?"}
+          Are you sure that you want to delete this page?
         </Modal>
         <Modal
           width={700}
@@ -726,6 +754,8 @@ class WorksheetComponent extends React.Component {
                 onColorChange={this.handleColorChange}
                 testMode={testMode}
                 review={review}
+                lineWidth={lineWidth}
+                onChangeSize={this.handleChangeLineWidth}
                 isToolBarVisible={isToolBarVisible}
                 isDocBased={isDocBased}
               />
@@ -744,7 +774,7 @@ class WorksheetComponent extends React.Component {
           onHighlightQuestion={this.handleHighlightQuestion}
           lockToContainerEdges
           lockOffset={["10%", "0%"]}
-          lockAxis={"y"}
+          lockAxis="y"
           useDragHandle
           onSortEnd={this.onSortEnd}
           testMode={testMode}

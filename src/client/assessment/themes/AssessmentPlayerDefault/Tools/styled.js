@@ -70,8 +70,8 @@ export const StyledButton = styled(Button)`
     }
   }
 
-  ${({ separate }) =>
-    separate &&
+  ${({ separateLine }) =>
+    separateLine &&
     `&:after {
     display: block;
     content: " ";

@@ -612,8 +612,8 @@ class CurriculumSequence extends Component {
                   ) : null}
                 </SunHeaderInfo>
               </CurriculumSubHeaderRow>
-              {!urlHasUseThis && (
-                <CurriculumSubHeaderRow className="curriculumSubHeaderRow">
+              {urlHasUseThis && (
+                <CurriculumSubHeaderRow>
                   <ModuleProgressWrapper>
                     <ModuleProgressLabel>
                       <ModuleProgressText style={{ color: textColor }}>Module Progress</ModuleProgressText>
@@ -1155,14 +1155,6 @@ const SubTopBarContainer = styled.div`
   margin-right: ${props => (props.active ? "" : "auto")};
   border-radius: 5px;
   box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.1);
-
-  .curriculumSubHeaderRow{
-    display: none;
-  }
-
-  &:hover .curriculumSubHeaderRow{
-    display: block;
-  }
 
   @media only screen and (max-width: 1366px) {
     flex-direction: column;

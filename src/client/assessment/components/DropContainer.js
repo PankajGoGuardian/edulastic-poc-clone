@@ -32,13 +32,14 @@ const DropContainer = ({
   noBorder,
   noTopBorder,
   theme,
-  borderNone
+  borderNone,
+  isPlaylist
 }) => {
   const border = `${
     !noBorder
       ? isOver
         ? `2px dashed ${theme.dropContainer.isOverBorderColor}`
-        : `2px dashed ${theme.dropContainer.isNotOverBorderColor}`
+        : `2px dashed ${isPlaylist ? "transparent" : theme.dropContainer.isNotOverBorderColor}`
       : isOver
       ? `2px solid ${theme.dropContainer.isOverBorderColor}`
       : `2px solid ${theme.dropContainer.isNotOverBorderColor}`

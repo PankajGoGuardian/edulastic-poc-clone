@@ -52,7 +52,7 @@ const SortableItem = sortableElement(props => {
   return (
     <AssignmentItemContainer>
       {isReview && <SortableTestsHandle />}
-      <DropContainer theme={themes.default} key={`drop-${id}-${moduleItem._id}`} drop={() => onDrop(id)}>
+      <DropContainer theme={themes.default} key={`drop-${id}-${moduleItem._id}`} drop={() => onDrop(id)} isPlaylist>
         <CurriculumModuleRow
           mode={mode}
           status={status}

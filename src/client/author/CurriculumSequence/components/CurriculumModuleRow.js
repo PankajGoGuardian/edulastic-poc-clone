@@ -309,12 +309,12 @@ class ModuleRow extends Component {
                           </Menu.Item>
                         )}
                         <Menu.Item onClick={() => this.viewTest(moduleData.contentId)}>Preview Test</Menu.Item>
-                        <Menu.Item
+                        {/* <Menu.Item
                           data-cy="moduleItemMoreMenuItem"
                           onClick={() => handleRemove(moduleIndex, moduleData.contentId)}
                         >
                           Remove
-                        </Menu.Item>
+                        </Menu.Item> */}
                       </Menu>
                     );
 
@@ -388,7 +388,12 @@ class ModuleRow extends Component {
                                 )}
                               </ModuleAssignedUnit>
                             )}
-                            <Tags tags={moduleData.standardIdentifiers} show={3} />
+                            <Tags
+                              tags={moduleData.standardIdentifiers}
+                              completed={!hideEditOptions && contentCompleted}
+                              show={3}
+                              isPlaylist
+                            />
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>
@@ -735,6 +740,9 @@ export const ModuleDataName = styled.div`
   color: ${({ isDragging }) => (isDragging ? white : textColor)};
   font-size: 14px;
   font-family: Open Sans, SemiBold;
+  min-width: 210px;
+  max-width: 210px;
+
   @media only screen and (max-width: ${desktopWidth}) {
     min-width: auto;
     order: 2;
@@ -755,12 +763,12 @@ const ModuleInfo = styled.div`
 `;
 
 const AssignmentIconsWrapper = styled.div`
-  margin-left: auto;
+  width: 100%;
   padding: 0px;
   display: inline-flex;
   min-width: 65%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   @media screen and (max-width: ${extraDesktopWidth}) {
     min-width: 45%;
   }

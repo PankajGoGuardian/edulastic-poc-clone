@@ -13,7 +13,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards, isPlaylist = fal
   const popup = (
     <PopupContainer>
       {hiddenTags.map((tag, i) => (
-        <Label style={labelStyle} key={i} type={type}>
+        <Label popupContainer style={labelStyle} key={i} type={type}>
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
@@ -103,5 +103,5 @@ const Label = styled(Tag)`
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
   border: none;
-  margin-right: 3px;
+  margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : 0)} 0;
 `;

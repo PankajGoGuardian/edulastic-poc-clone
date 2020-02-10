@@ -262,6 +262,8 @@ const defaultTheme = {
     cardUserInfoLabelColor: "#AAAFB5",
     cardUserInfoLabelTextSize: "11px",
     cardUserInfoContentColor: "#4aac8b",
+    cardInstitutionInfoTextSize: "11px",
+    cardInstitutionInfoTextColor: "#AAAFB5",
     cardActiveStatusBgColor: "rgba(0, 173, 80, .2)",
     cardActiveStatusTextColor: themeColor,
     cardActiveStatusTextSize: "10px",

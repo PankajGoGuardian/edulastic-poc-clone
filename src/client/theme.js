@@ -1533,6 +1533,8 @@ export const defaultTheme = {
     cardUserInfoLabelTextSize: tagFontSize,
     cardUserInfoContentColor: labelStyle,
     cardUserInfoFontSize: smallFontSize,
+    cardInstitutionInfoTextSize: tagFontSize,
+    cardInstitutionInfoTextColor: tableColumnColor,
     cardActiveStatusBgColor: notstartedBgColor,
     cardActiveStatusTextColor: themeColor,
     cardActiveStatusTextSize: tagFontSize,

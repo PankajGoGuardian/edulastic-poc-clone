@@ -11,7 +11,20 @@ import { tabletWidth, desktopWidth, largeDesktopWidth, smallDesktopWidth, themeC
 import { changeClassAction } from "../../Login/ducks";
 
 const ClassCard = ({ t, classItem, history, changeClass, key }) => {
-  const { name, owners = [], parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
+  const {
+    name,
+    owners = [],
+    parent,
+    startDate,
+    endDate,
+    subject,
+    grades,
+    active,
+    status,
+    standardSets,
+    institutionName,
+    districtName
+  } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id === parent.id) || owners[0] || "";
 
   const allgrades = grades && grades.join(", ").replace(/O/i, " Other ");
@@ -43,15 +56,21 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
             </Col>
             <Col span={12}>
               <Row type={"flex"} justify={"end"} align={"center"}>
-                {active === 1 && (
-                  <Link to={{ pathname: "/home/assignments", classItem }}>
-                    <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
-                  </Link>
-                )}
+                <EllipsisContainer>
+                  <InstitutionInfo>
+                    {institutionName}, {districtName}
+                  </InstitutionInfo>
 
-                {active === 0 && (
-                  <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
-                )}
+                  {active === 1 && (
+                    <VisitLink to={{ pathname: "/home/assignments", classItem }}>
+                      <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
+                    </VisitLink>
+                  )}
+
+                  {active === 0 && (
+                    <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
+                  )}
+                </EllipsisContainer>
               </Row>
             </Col>
           </Row>
@@ -171,8 +190,9 @@ const CollapsibleCard = styled(Collapse)`
 `;
 
 const EllipsisContainer = styled.div`
-  padding-right: ${props => (props.status === 1 ? "100px" : "140px")};
-  display: inline-block;
+  padding-right: ${props => (props.status ? (props.status === 1 ? "100px" : "140px") : "0px")};
+  display: inline-flex;
+  align-items: center;
   position: relative;
   max-width: 100%;
 `;
@@ -276,4 +296,26 @@ const CardTitle = styled.h3`
   @media (max-width: ${smallDesktopWidth}) {
     line-height: 28px;
   }
+`;
+
+const InstitutionInfo = styled.h3`
+  font-size: ${props => props.theme.classCard.cardInstitutionInfoTextSize};
+  color: ${props => props.theme.classCard.cardInstitutionInfoTextColor};
+  font-weight: bold;
+  margin: 0px;
+  padding-left: 25px;
+  padding-right: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 32px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    line-height: 28px;
+  }
+`;
+
+const VisitLink = styled(Link)`
+  display: inline-block;
+  position: relative;
 `;

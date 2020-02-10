@@ -4,14 +4,14 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { StyledModal, ModalBody, Heading, YesButton, FieldRow } from "./ImportContentModal";
 import { getUser } from "../../../src/selectors/user";
-import { debounce } from "lodash";
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
 import {
   getCreateCollectionStateSelector,
   searchOrgaizationRequestAction,
   getSchoolListSelector,
   getUserListSelector,
-  getDistrictListSelector
+  getDistrictListSelector,
+  getFetchOrganizationStateSelector
 } from "../../ducks";
 import moment from "moment";
 import staticData from "../../staticData";
@@ -29,7 +29,8 @@ const AddPermissionModal = ({
   districtList,
   itemBankName,
   selectedPermission,
-  isEditPermission
+  isEditPermission,
+  isFetchingOrganization
 }) => {
   const [fieldData, setFieldData] = useState({
     districtId: user.role === "edulastic-admin" ? "" : user.districtId,
@@ -94,12 +95,8 @@ const AddPermissionModal = ({
   ];
 
   const handleFieldChange = (fieldName, value) => {
-    if (
-      user.role === "edulastic-admin" &&
-      !fieldData.districtId &&
-      !["districtId", "districtName"].includes(fieldName)
-    ) {
-      return message.error("Please select a district first");
+    if (user.role === "edulastic-admin" && !fieldData.districtId) {
+      return message.error("Please select an organization first");
     }
 
     const updatedFieldData = { ...fieldData, [fieldName]: value };
@@ -127,13 +124,14 @@ const AddPermissionModal = ({
     setFieldData(updatedFieldData);
   };
 
-  const handleSelectDistrict = value => {
-    const { _id, name } = districtList.find(d => d._id === value);
-    handleFieldChange("districtId", _id);
-    handleFieldChange("districtName", name);
+  const handleSelectDistrict = (value, option) => {
+    const { value: districtId, name: districtName } = option.props;
+
+    //resetting all the org fields as we are changing the organization(district)
+    setFieldData({ ...fieldData, districtId, districtName, orgType: "", orgId: "", orgName: "" });
   };
 
-  const handleSearch = debounce((searchString, searchType) => {
+  const handleSearch = (searchString, searchType) => {
     if (user.role === "edulastic-admin" && !fieldData.districtId && searchType !== "DISTRICT")
       return message.error("PLease select a district first");
     const data = {
@@ -142,7 +140,7 @@ const AddPermissionModal = ({
     };
     if (searchType !== "DISTRICT") data.districtId = fieldData.districtId;
     searchRequest(data);
-  }, 500);
+  };
 
   const handleDate = (fieldName, date) => {
     let currentDate = moment().format("DD-MM-YYYY");
@@ -171,13 +169,18 @@ const AddPermissionModal = ({
               style={{ width: "100%" }}
               showSearch
               placeholder="Search for an organization"
+              loading={isFetchingOrganization}
               value={fieldData.districtId}
               onFocus={() => handleSearch("", "DISTRICT")}
-              onSearch={value => handleSearch(value, "DISTRICT")}
               onChange={handleSelectDistrict}
+              filterOption={(inputValue, option) =>
+                option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+              }
             >
               {districtList.map(({ _id, name }) => (
-                <Select.Option value={_id}>{name}</Select.Option>
+                <Select.Option key={_id} value={_id} name={name}>
+                  {name}
+                </Select.Option>
               ))}
             </Select>
           </StyledFieldRow>
@@ -207,10 +210,13 @@ const AddPermissionModal = ({
               style={{ width: "100%" }}
               showSearch
               placeholder={fieldData.orgType === "SCHOOL" ? "Please select school" : "Please select user"}
+              loading={isFetchingOrganization}
               value={fieldData.orgId}
               onFocus={() => handleSearch("", fieldData.orgType)}
-              onSearch={value => handleSearch(value, fieldData.orgType)}
               onChange={value => handleFieldChange("orgId", value)}
+              filterOption={(inputValue, option) =>
+                option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+              }
             >
               {fieldData.orgType === "SCHOOL" &&
                 schoolList.map(school => <Select.Option value={school._id}>{school.name}</Select.Option>)}
@@ -303,7 +309,8 @@ export default connect(
     isCreating: getCreateCollectionStateSelector(state),
     schoolList: getSchoolListSelector(state),
     userList: getUserListSelector(state),
-    districtList: getDistrictListSelector(state)
+    districtList: getDistrictListSelector(state),
+    isFetchingOrganization: getFetchOrganizationStateSelector(state)
   }),
   { searchRequest: searchOrgaizationRequestAction }
 )(AddPermissionModal);

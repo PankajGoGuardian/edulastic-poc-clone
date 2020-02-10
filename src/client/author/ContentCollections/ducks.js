@@ -22,6 +22,7 @@ export const FETCH_PERMISSIONS_SUCCESS = "[collection] fetch permissions success
 export const FETCH_PERMISSIONS_FAILED = "[collection] fetch permissions failed";
 export const SEARCH_ORGANIZATION_REQUEST = "[collection] search organization request";
 export const SEARCH_ORGANIZATION_SUCCESS = "[collection] search organization success";
+export const SEARCH_ORGANIZATION_FAILED = "[collection] search organization failed";
 
 //actions
 export const createCollectionRequestAction = createAction(CREATE_NEW_COLLECTION_REQUEST);
@@ -41,11 +42,13 @@ export const fetchPermissionsSuccessAction = createAction(FETCH_PERMISSIONS_SUCC
 export const fetchPermissionsFailedAction = createAction(FETCH_PERMISSIONS_FAILED);
 export const searchOrgaizationRequestAction = createAction(SEARCH_ORGANIZATION_REQUEST);
 export const searchOrgaizationSuccessAction = createAction(SEARCH_ORGANIZATION_SUCCESS);
+export const searchOrgaizationFailedAction = createAction(SEARCH_ORGANIZATION_FAILED);
 
 const initialState = {
   creating: false,
   fetchingCollections: false,
   fetchingPermissions: false,
+  fetchingOrganization: false,
   collectionList: [],
   permissions: [],
   schools: [],
@@ -96,6 +99,9 @@ export const reducer = createReducer(initialState, {
   [FETCH_PERMISSIONS_FAILED]: state => {
     state.fetchingPermissions = false;
   },
+  [SEARCH_ORGANIZATION_REQUEST]: state => {
+    state.fetchingOrganization = true;
+  },
   [SEARCH_ORGANIZATION_SUCCESS]: (state, { payload }) => {
     if (payload.orgType === "SCHOOL") {
       state.schools = payload.result;
@@ -104,6 +110,10 @@ export const reducer = createReducer(initialState, {
     } else {
       state.districts = payload.result;
     }
+    state.fetchingOrganization = false;
+  },
+  [SEARCH_ORGANIZATION_FAILED]: state => {
+    state.fetchingOrganization = false;
   },
   [ADD_PERMISSION_SUCCESS]: (state, { payload }) => {
     state.permissions.push(payload);
@@ -175,7 +185,9 @@ function* addPermissionRequestSaga({ payload }) {
     yield call(message.success, "Permission added successfully.");
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Error occured while adding permision.");
+    let errorMessage = "Error occured while adding permision.";
+    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
+    yield call(message.error, errorMessage);
   }
 }
 
@@ -206,6 +218,7 @@ function* searchOrgaizationRequestSaga({ payload }) {
     const result = yield call(collectionsApi.organizationSearch, payload);
     yield put(searchOrgaizationSuccessAction({ result, orgType: payload.orgType }));
   } catch (err) {
+    yield put(searchOrgaizationFailedAction());
     console.error(err);
   }
 }
@@ -264,4 +277,9 @@ export const getUserListSelector = createSelector(
 export const getDistrictListSelector = createSelector(
   stateSelector,
   state => state.districts
+);
+
+export const getFetchOrganizationStateSelector = createSelector(
+  stateSelector,
+  state => state.fetchingOrganization
 );

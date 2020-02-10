@@ -333,20 +333,21 @@ class QuestionItem extends React.Component {
             data={JSON.stringify({ id, index: qIndex || index })}
             onDragStart={this.handleDragStart}
             onDragEnd={this.handleDragEnd}
-            enabled={!review}
+            enabled={!review && !testMode}
           >
             <QuestionNumber
               viewMode={viewMode === "edit"}
               dragging={dragging}
               highlighted={highlighted}
               pdfPreview={pdfPreview}
+              // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
               {qIndex || index + 1}
             </QuestionNumber>
           </Draggable>
           {!annotations && <QuestionForm review={review}>{this.renderContent(highlighted)}</QuestionForm>}
 
-          {!review && this.renderEditButton()}
+          {!review && !pdfPreview && this.renderEditButton()}
           {review &&
             (previewMode !== "clear" || check) &&
             typeof answer !== "undefined" &&

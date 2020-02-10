@@ -86,7 +86,7 @@ const SortableQuestionItem = SortableElement(
         answer={answer}
         feedback={feedback}
         previousFeedback={previousFeedback}
-        onDragStart={onDragStart}
+        onDragStart={() => onDragStart(data.id)}
         highlighted={highlighted}
         testMode={testMode}
       />

@@ -503,7 +503,8 @@ class WorksheetComponent extends React.Component {
 
   handleChangeLineWidth = size => this.setState({ lineWidth: size });
 
-  onDragStart = () => {
+  onDragStart = questionId => {
+    this.handleHighlightQuestion(questionId, true);
     this.setState({ activeMode: "" });
   };
 
@@ -723,6 +724,7 @@ class WorksheetComponent extends React.Component {
               page={selectedPage}
               currentPage={currentPage + 1}
               annotations={annotations}
+              onDragStart={this.onDragStart}
               onDropAnnotation={this.handleAddAnnotation}
               onHighlightQuestion={this.handleHighlightQuestion}
               questions={questions}
@@ -739,6 +741,7 @@ class WorksheetComponent extends React.Component {
               studentWork={studentWork}
               highlighted={highlightedQuestion}
               forwardedRef={this.pdfRef}
+              review={review}
             />
             {viewMode !== "report" && !minimized && isToolBarVisible && (
               <Tools

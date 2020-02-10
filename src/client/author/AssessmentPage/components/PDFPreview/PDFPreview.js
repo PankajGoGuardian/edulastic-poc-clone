@@ -56,10 +56,11 @@ const PDFPreview = ({
   reportMode,
   studentWork = false,
   highlighted,
-  forwardedRef
+  forwardedRef,
+  onDragStart,
+  review
 }) => {
   const [pdfScale, scalePDF] = useState(1);
-  const review = viewMode === "review";
 
   const PDFScaleUp = (scale = 0.25) => {
     scalePDF(prevState => (prevState < 3 ? prevState + scale : prevState));
@@ -147,13 +148,14 @@ const PDFPreview = ({
                   <QuestionItem
                     key={questionId}
                     index={qIndex}
-                    review
+                    review={review}
                     data={questionsById[questionId]}
                     answer={answersById[questionId]}
                     previewMode={viewMode === "edit" ? "clear" : previewMode}
+                    onDragStart={() => onDragStart(questionId)}
                     testMode={testMode}
                     highlighted={highlighted === questionId}
-                    viewMode="review"
+                    viewMode={viewMode}
                     annotations
                     pdfPreview
                   />

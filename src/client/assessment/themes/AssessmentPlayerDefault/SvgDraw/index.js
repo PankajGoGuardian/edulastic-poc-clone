@@ -23,7 +23,8 @@ const SvgDraw = ({
   fillColor,
   deleteMode,
   position,
-  fromFreeFormNotes
+  fromFreeFormNotes,
+  fontFamily
 }) => {
   const svg = useDisableDragScroll();
   const [points, setPoints] = useState([]);
@@ -92,6 +93,7 @@ const SvgDraw = ({
       if (draft.y < 0) {
         draft.y = 0;
       }
+      draft.fontFamily = fontFamily;
     });
   };
 
@@ -271,6 +273,7 @@ const SvgDraw = ({
         value: "",
         x: point.x,
         y: point.y,
+        fontFamily,
         index: texts.length
       });
     } else {
@@ -823,6 +826,7 @@ const SvgDraw = ({
                   onClick={getDeleteTextHandler(i)}
                   onDoubleClick={activeMode === drawTools.DRAW_TEXT ? editText(i) : undefined}
                   key={i}
+                  fontFamily={text.fontFamily}
                   color={text.color}
                   fontSize={text.lineWidth * 3}
                   x={text.x}
@@ -896,11 +900,13 @@ SvgDraw.propTypes = {
   saveHistory: PropTypes.any.isRequired,
   width: PropTypes.string.isRequired,
   top: PropTypes.string.isRequired,
-  position: PropTypes.string.isRequired
+  position: PropTypes.string.isRequired,
+  fontFamily: PropTypes.string
 };
 
 SvgDraw.defaultProps = {
-  fromFreeFormNotes: {}
+  fromFreeFormNotes: {},
+  fontFamily: ""
 };
 
 export default SvgDraw;
@@ -931,5 +937,6 @@ const Text = styled.text`
   stroke: ${({ color }) => color};
   fill: ${({ color }) => color};
   font-size: ${({ fontSize }) => fontSize}px;
+  font-family: ${({ fontFamily }) => fontFamily || ""};
   user-select: none;
 `;

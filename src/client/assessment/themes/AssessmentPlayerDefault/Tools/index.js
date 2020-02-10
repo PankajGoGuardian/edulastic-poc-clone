@@ -2,13 +2,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { white, greenDark5 } from "@edulastic/colors";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, FontPicker } from "@edulastic/common";
+import { drawTools } from "@edulastic/constants";
 import { Tooltip } from "../../../../common/utils/helpers";
 import Size from "./Size";
 import ColorPicker from "./color";
 import BottomTools from "./BottomTools";
 import tools, { Back } from "./tools";
 import { StyledButton, ToolBox, ActiveToolBoxContainer } from "./styled";
+
+const showFontArr = [drawTools.DRAW_TEXT, drawTools.DRAW_MATH, drawTools.MOVE_ITEM];
 
 const Tools = ({
   isWorksheet,
@@ -28,7 +31,9 @@ const Tools = ({
   className,
   lineWidth,
   onChangeSize,
-  containerStyle
+  containerStyle,
+  onChangeFont,
+  currentFont
 }) => {
   let buttonsList = tools;
 
@@ -73,6 +78,7 @@ const Tools = ({
             )}
             <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
               <Size value={lineWidth} onChangeSize={onChangeSize} />
+              {showFontArr.includes(activeMode) && <FontPicker onChange={onChangeFont} currentFont={currentFont} />}
               <ColorPicker
                 activeMode={activeMode}
                 fillColor={fillColor}
@@ -102,11 +108,15 @@ Tools.propTypes = {
   fillColor: PropTypes.string.isRequired,
   deleteMode: PropTypes.bool.isRequired,
   lineWidth: PropTypes.number.isRequired,
-  containerStyle: PropTypes.object
+  containerStyle: PropTypes.object,
+  onChangeFont: PropTypes.func,
+  currentFont: PropTypes.string
 };
 
 Tools.defaultProps = {
-  containerStyle: {}
+  containerStyle: {},
+  onChangeFont: () => null,
+  currentFont: ""
 };
 
 export default Tools;

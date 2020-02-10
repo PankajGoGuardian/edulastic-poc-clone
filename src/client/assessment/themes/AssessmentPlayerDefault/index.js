@@ -62,6 +62,7 @@ class AssessmentPlayerDefault extends React.Component {
     this.state = {
       currentColor: "#ff0000",
       fillColor: "#ff0000",
+      currentFont: "",
       activeMode: "",
       lineWidth: 6,
       cloneCurrentItem: props.currentItem,
@@ -208,6 +209,8 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
+  handleChangeFont = font => this.setState({ currentFont: font });
+
   handleLineWidthChange = size => this.setState({ lineWidth: size });
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
@@ -326,6 +329,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSavePauseModalVisible,
       activeMode,
       currentColor,
+      currentFont,
       deleteMode,
       lineWidth,
       fillColor,
@@ -454,6 +458,8 @@ class AssessmentPlayerDefault extends React.Component {
               lineWidth={lineWidth}
               onChangeSize={this.handleLineWidthChange}
               onColorChange={this.handleColorChange}
+              onChangeFont={this.handleChangeFont}
+              currentFont={currentFont}
             />
           )}
           <FeaturesSwitch
@@ -635,6 +641,7 @@ class AssessmentPlayerDefault extends React.Component {
                     deleteMode={deleteMode}
                     lineWidth={lineWidth}
                     fillColor={fillColor}
+                    fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
                   />
@@ -662,6 +669,7 @@ class AssessmentPlayerDefault extends React.Component {
                     deleteMode={deleteMode}
                     lineWidth={lineWidth}
                     fillColor={fillColor}
+                    fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
                   />

@@ -1,14 +1,15 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
 
 import { withWindowSizes } from "@edulastic/common";
+import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
-import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
 class TestItemPreview extends Component {
@@ -37,6 +38,7 @@ class TestItemPreview extends Component {
   state = {
     collapseDirection: ""
   };
+
   getStyle = first => {
     const { verticalDivider, scrolling } = this.props;
 
@@ -101,6 +103,7 @@ class TestItemPreview extends Component {
       fillColor,
       saveHistory,
       history,
+      fontFamily,
       ...restProps
     } = this.props;
     const { collapseDirection } = this.state;
@@ -113,7 +116,7 @@ class TestItemPreview extends Component {
     if (questionCount === 0) {
       return null;
     }
-    //show collapse button only in student player or in author preview mode.
+    // show collapse button only in student player or in author preview mode.
     const hasResourceTypeQuestion =
       cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
@@ -161,6 +164,7 @@ class TestItemPreview extends Component {
               fillColor={fillColor}
               saveHistory={saveHistory}
               history={history}
+              fontFamily={fontFamily}
               height="100%`"
               top="0"
               left="0"

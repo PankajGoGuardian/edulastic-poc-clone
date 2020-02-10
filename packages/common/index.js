@@ -41,6 +41,7 @@ export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 export { default as Hints } from "./src/components/Hints";
 export { default as ErrorHandler } from "./src/components/ErrorHandler";
 export { default as OfflineNotifier } from "./src/components/OfflineNotifier";
+export { default as FontPicker } from "./src/components/FontPicker";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { default as withWindowScroll } from "./src/HOC/withWindowScroll";

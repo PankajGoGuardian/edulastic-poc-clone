@@ -14,6 +14,7 @@ const toolBoxStyle = {
 const Scratch = ({ clearClicked }) => {
   const [fillColor, setFillColor] = useState("#ff0000");
   const [currentColor, setCurrentColor] = useState("#ff0000");
+  const [currentFont, setCurrentFont] = useState("");
   const [activeMode, setActiveMode] = useState("");
   const [deleteMode, setDeletMode] = useState(false);
   const [lineWidth, setLineWidth] = useState(6);
@@ -47,6 +48,8 @@ const Scratch = ({ clearClicked }) => {
   };
 
   const handleChangeSize = size => setLineWidth(size);
+
+  const handleChangeFont = font => setCurrentFont(font);
 
   const handleUndo = () => {
     const pastData = cloneDeep(past);
@@ -98,6 +101,8 @@ const Scratch = ({ clearClicked }) => {
         onChangeSize={handleChangeSize}
         onChangeLineWidth={setLineWidth}
         onToolChange={handleScratchToolChange}
+        onChangeFont={handleChangeFont}
+        currentFont={currentFont}
         onFillColorChange={obj => setFillColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
         onColorChange={obj => setCurrentColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
       />
@@ -108,6 +113,7 @@ const Scratch = ({ clearClicked }) => {
         deleteMode={deleteMode}
         lineWidth={lineWidth}
         fillColor={fillColor}
+        fontFamily={currentFont}
         saveHistory={addData}
         history={preset}
         height="100%`"

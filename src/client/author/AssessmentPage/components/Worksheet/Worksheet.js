@@ -99,6 +99,7 @@ class WorksheetComponent extends React.Component {
     highlightedQuestion: undefined,
     currentColor: "#ff0000",
     fillColor: "#ff0000",
+    currentFont: "",
     activeMode: "",
     history: 0,
     selected: 0,
@@ -453,6 +454,8 @@ class WorksheetComponent extends React.Component {
     }
   };
 
+  handleChangeFont = font => this.setState({ currentFont: font });
+
   handleUndo = () => {
     const { undoScratchPad } = this.props;
     const { history } = this.state;
@@ -595,6 +598,7 @@ class WorksheetComponent extends React.Component {
       uploadModal,
       highlightedQuestion,
       currentColor,
+      currentFont,
       fillColor,
       activeMode,
       deleteConfirmation,
@@ -627,6 +631,7 @@ class WorksheetComponent extends React.Component {
         height="100%"
         top={0}
         position="absolute"
+        fontFamily={currentFont}
         fromFreeFormNotes={isAssessmentPlayer ? fromFreeFormNotes : {}}
       />
     );
@@ -751,6 +756,8 @@ class WorksheetComponent extends React.Component {
                 deleteMode={deleteMode}
                 currentColor={currentColor}
                 onToolChange={this.handleToolChange}
+                onChangeFont={this.handleChangeFont}
+                currentFont={currentFont}
                 activeMode={activeMode}
                 undo={this.handleUndo}
                 redo={this.handleRedo}

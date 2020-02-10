@@ -11,7 +11,7 @@ const ApiForm = props => {
   const onClose = () => setId();
   const handleOnSave = data => {
     const option = apiForms.find(ar => ar.id === id);
-    submit(data, option.endPoint, "post").then(res => {
+    submit(data, option.endPoint, option.method).then(res => {
       if (res?.result) {
         if (res.result.success || res.status === 200) {
           message.success(res?.result?.message || "Success");
@@ -44,7 +44,7 @@ const ApiForm = props => {
           );
         })}
       </Select>
-      {id && <ApiFormsMain fields={option.fields} name={option.name} handleOnSave={handleOnSave} onClose={onClose} />}
+      {id && <ApiFormsMain fields={option.fields} name={option.name} handleOnSave={handleOnSave} />}
     </div>
   );
 };

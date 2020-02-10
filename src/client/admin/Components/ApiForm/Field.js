@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { get } from "lodash";
 import moment from "moment";
-import { Input, DatePicker, Select, Checkbox, Radio, Button, Table } from "antd";
+import { Input, DatePicker, Select, Checkbox, Radio, Button, Table, message } from "antd";
 
 import { doValidate } from "./apis";
 
@@ -23,16 +23,21 @@ const Field = ({ displayName, type, validate, onChange, ...rest }) => {
     };
   };
   const handleValidation = () => {
+    setResponse([]);
+    onChange({});
     doValidate(
       {
-        [validate.validateField]: value.split(",").map(v => v.trim())
+        [validate.validateField]: validate.paramsType === "string" ? value : value.split(",").map(v => v.trim())
       },
-      validate.endPoint
+      validate.endPoint,
+      validate.method
     ).then(data => {
       const res = get(data, validate.response.lodashDepth);
       if (res) {
-        setResponse(res);
-        onChange(res.map(r => r._id), rest.name);
+        setResponse(validate.multiple ? res : [res]);
+        onChange(validate.multiple ? res.map(r => r._id) : res.districtId, rest.name);
+      } else {
+        onChange(validate.multiple ? [] : "", rest.name);
       }
     });
   };
@@ -114,7 +119,12 @@ const Field = ({ displayName, type, validate, onChange, ...rest }) => {
             </div>
           );
         case "json":
-          return <div>{JSON.stringify(response)}</div>;
+          return (
+            <div>
+              <span style={{ fontSize: "16px", fontWeight: "bold" }}>{display.title}</span>
+              <div>{JSON.stringify(response?.[0] || "Please enter valid input")}</div>
+            </div>
+          );
       }
     }
   };

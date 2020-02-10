@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Modal, Form, Alert } from "antd";
+import { Alert, Button, Form } from "antd";
 import Field from "./Field";
+import { FirstDiv, H2, OuterDiv } from "../../Common/StyledComponents";
 
-const ApiFormsMain = ({ fields, name, handleOnSave, onClose }) => {
+const ApiFormsMain = ({ fields, name, handleOnSave }) => {
   const [data, setData] = useState({});
   const [errors, setErrors] = useState([]);
   const onChange = (value, type) => {
@@ -21,27 +22,29 @@ const ApiFormsMain = ({ fields, name, handleOnSave, onClose }) => {
   const onCloseError = () => setErrors([]);
 
   return (
-    <Modal
-      visible
-      title={name}
-      maskClosable
-      onOk={onSave}
-      onCancel={onClose}
-      maskClosable
-      className="wrapClassName"
-      width={800}
-      okText="Submit"
-      okButtonProps={{ htmlType: "submit" }}
-    >
-      <Form onSubmit={handleOnSave}>
-        {!!errors.length && (
-          <Alert message={`${errors.join(", ")} fields are required`} type="error" closable onClose={onCloseError} />
-        )}
-        {fields.map(field => (
-          <Field {...field} onChange={onChange} />
-        ))}
-      </Form>
-    </Modal>
+    <div>
+      <OuterDiv>
+        <H2>{name}</H2>
+        <FirstDiv>
+          <Form style={{ width: "100%" }}>
+            {!!errors.length && (
+              <Alert
+                message={`${errors.join(", ")} fields are required`}
+                type="error"
+                closable
+                onClose={onCloseError}
+              />
+            )}
+            {fields.map(field => (
+              <Field {...field} onChange={onChange} />
+            ))}
+            <Button type="primary" htmlType="submit" onClick={onSave}>
+              Submit
+            </Button>
+          </Form>
+        </FirstDiv>
+      </OuterDiv>
+    </div>
   );
 };
 

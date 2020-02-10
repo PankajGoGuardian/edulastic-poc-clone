@@ -36,6 +36,56 @@ export const apiForms = [
     ]
   },
   {
+    id: "custom-report-auth",
+    name: "Configure Report Authorization",
+    endPoint: "custom-report/user",
+    method: "post",
+    fields: [
+      {
+        name: "districtId",
+        displayName: "District",
+        placeholder: "Enter district id",
+        type: "string",
+        required: true,
+        validate: {
+          endPoint: "custom-report/user",
+          method: "get",
+          paramsType: "string",
+          multiple: false,
+          validateField: "id",
+          response: {
+            lodashDepth: "result",
+            display: {
+              type: "json",
+              title: "Existing user of selected district "
+            }
+          }
+        }
+      },
+      {
+        name: "username",
+        displayName: "Username",
+        placeholder: "Enter tableau username",
+        type: "string",
+        required: true
+      },
+      {
+        name: "csManager",
+        displayName: "CS Manager",
+        placeholder: "Enter cs manager name",
+        type: "string",
+        required: true
+      },
+      {
+        name: "notes",
+        displayName: "Notes",
+        placeholder: "Enter notes",
+        type: "textarea",
+        required: true
+      }
+    ]
+  },
+  {
     id: "upgradeuser",
     name: "Upgrade User",
     endPoint: "subscription",

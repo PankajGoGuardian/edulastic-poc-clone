@@ -7,7 +7,8 @@ export const doValidate = (params, endpoint, method = "post") =>
     .callApi({
       url: endpoint,
       method,
-      data: params
+      data: method === "post" ? params : {},
+      params: method === "get" ? params : {}
     })
     .then(({ data }) => data)
     .catch(({ data: errorData }) => message.error(errorData.message));

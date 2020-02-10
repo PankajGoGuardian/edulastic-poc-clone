@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { green } from "@edulastic/colors";
+import { green, red } from "@edulastic/colors";
 import { FlexContainer, MenuIcon } from "@edulastic/common";
 import {
   TitleWrapper,
@@ -67,9 +67,13 @@ const HeaderSection = ({ toggleSideBar, premium, isSubscriptionExpired = false, 
               visible={visible}
             >
               <ManageClassButton data-cy="manageClass">
-                <i class="fa fa-unlock-alt" aria-hidden="true" />
+                <i class={isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"} aria-hidden="true" />
                 <ButtonText>
-                  {isSubscriptionExpired ? <span>RENEW SUBSCRIPTION</span> : "UNLOCK MORE FEATURES"}
+                  {isSubscriptionExpired ? (
+                    <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
+                  ) : (
+                    "UNLOCK MORE FEATURES"
+                  )}
                 </ButtonText>
               </ManageClassButton>
             </Popover>

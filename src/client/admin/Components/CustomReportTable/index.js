@@ -34,8 +34,20 @@ const CustomReportTable = ({ customReportData = [], updatePermissionStatusAction
       dataIndex: "permissions",
       key: "accessLevel",
       render: permissions => {
-        const orgType = permissions?.[0].orgType;
-        return <span>{capitalize(orgType)}</span>;
+        let orgType = permissions?.[0].orgType;
+        if (orgType === "role") {
+          const roles = permissions.map(o =>
+            o.permissionLevel === "district-admin"
+              ? `District Admin`
+              : o.permissionLevel === "school-admin"
+              ? `School Admin`
+              : "Teacher"
+          );
+          orgType = `${capitalize(orgType)} [ ${roles.join(", ")} ]`;
+        } else {
+          orgType = capitalize(orgType);
+        }
+        return <span>{orgType}</span>;
       }
     },
     {

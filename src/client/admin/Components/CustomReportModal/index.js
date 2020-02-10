@@ -51,7 +51,7 @@ class CustomReportModal extends React.Component {
         isRoleSelected: true,
         isUsersSelected: false
       });
-    } else if (val === "users") {
+    } else if (val === "user") {
       this.setState({
         isUsersSelected: true,
         isSchoolSelected: false,
@@ -124,7 +124,12 @@ class CustomReportModal extends React.Component {
           level,
           schoolIds: institutionIds.map(o => o.key),
           roles,
-          users: users ? users.split(",") : [],
+          users: users
+            ? users
+                .split(",")
+                .filter(o => o.trim().length > 0)
+                .map(o => o.trim())
+            : [],
           active
         };
         if (modalType === "edit") {
@@ -149,12 +154,12 @@ class CustomReportModal extends React.Component {
           })
         : [];
     const roles = orgType === "role" ? permissions.map(o => o.permissionLevel) : [];
-    const users = orgType === "user" ? permissions.map(o => o.user.email).concat(",") : "";
+    const users = orgType === "user" ? permissions.map(o => o.user.email).join(", ") : "";
     this.setState({
       isUsersSelected: orgType === "user" ? true : false,
       isSchoolSelected: orgType === "school" ? true : false,
       isRoleSelected: orgType === "role" ? true : false,
-      orgType: orgType === "users" ? "user" : orgType,
+      orgType,
       schoolsState: {
         list: [...schools],
         fetching: false,
@@ -201,7 +206,6 @@ class CustomReportModal extends React.Component {
       orgType
     } = this.state;
     const { title = "", description = "", thumbnail = "", url = "", archived = false } = reportData;
-    console.log(orgType);
     return (
       <StyledModal
         visible={!!modalType}
@@ -311,7 +315,8 @@ class CustomReportModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label={t(`customreport.accesslevel`)}>
               {getFieldDecorator("level", {
-                initialValue: orgType || "",
+                initialValue: orgType || undefined,
+                placeholder: t(`customreport.accesslevelplaceholder`),
                 rules: [
                   {
                     required: true,
@@ -327,7 +332,7 @@ class CustomReportModal extends React.Component {
                   <Option value="district">District</Option>
                   <Option value="school">School</Option>
                   <Option value="role">Roles</Option>
-                  <Option value="users">Users</Option>
+                  <Option value="user">Users</Option>
                 </Select>
               )}
             </ModalFormItem>
@@ -406,7 +411,7 @@ class CustomReportModal extends React.Component {
                       message: t("customreport.selectusersrequired")
                     }
                   ]
-                })(<Input placeholder={t(`customreport.selectusersplaceholder`)} />)}
+                })(<TextArea placeholder={t(`customreport.selectusersplaceholder`)} />)}
               </ModalFormItem>
             </Col>
           </Row>
@@ -414,7 +419,7 @@ class CustomReportModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label={t(`customreport.activatereport`)}>
-              {getFieldDecorator("active")(<Switch checked={!archived} onChange={this.onStatusChange} />)}
+              {getFieldDecorator("active")(<Switch defaultChecked={!archived} onChange={this.onStatusChange} />)}
             </ModalFormItem>
           </Col>
         </Row>

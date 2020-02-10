@@ -273,13 +273,13 @@ class Container extends Component {
                     <IconLayout />
                     {"Classify, Match & Order"}
                   </Menu.Item>
-                  <Menu.Item key="read">
-                    <IconRead />
-                    {"Reading"}
-                  </Menu.Item>
                   <Menu.Item key="edit">
                     <IconWrite />
                     {"Writing"}
+                  </Menu.Item>
+                  <Menu.Item key="read">
+                    <IconRead />
+                    {"Reading"}
                   </Menu.Item>
                   <Menu.Item key="highlight">
                     <IconTarget />
@@ -384,13 +384,13 @@ class Container extends Component {
                 <IconLayout />
                 {"Classify, Match & Order"}
               </Menu.Item>
-              <Menu.Item key="read" onClick={this.toggleCategories}>
-                <IconRead />
-                {"Reading"}
-              </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
                 <IconWrite />
                 {"Writing"}
+              </Menu.Item>
+              <Menu.Item key="read" onClick={this.toggleCategories}>
+                <IconRead />
+                {"Reading"}
               </Menu.Item>
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
                 <IconTarget />

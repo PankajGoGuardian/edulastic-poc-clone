@@ -2015,6 +2015,16 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: VPPassage,
       isPassageType: true,
       data: {
+        title: "Passage with Questions",
+        type: questionType.PASSAGE_WITH_QUESTIONS
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "read",
+      cardImage: VPPassage,
+      isPassageType: true,
+      data: {
         title: "Passage with Multiple parts",
         type: questionType.PASSAGE,
         heading: "Section 3",
@@ -2023,16 +2033,6 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         hints: [{ value: uuids[0], label: "" }]
       },
       list: ["Item A", "Item B"],
-      onSelectQuestionType
-    },
-    {
-      type: "read",
-      cardImage: VPPassage,
-      isPassageType: true,
-      data: {
-        title: "Passage with Questions",
-        type: questionType.PASSAGE_WITH_QUESTIONS
-      },
       onSelectQuestionType
     },
     {

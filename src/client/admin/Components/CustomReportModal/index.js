@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col, Form, Icon, Input, Row, Select, Spin, Switch, Upload } from "antd";
+import { Col, Form, Input, Row, Select, Spin, Switch } from "antd";
 import { ButtonsContainer, CancelButton, ModalFormItem, OkButton, StyledModal } from "../../../common/styled";
 import TextArea from "antd/es/input/TextArea";
 import { schoolApi } from "@edulastic/api";
@@ -20,7 +20,8 @@ class CustomReportModal extends React.Component {
       isUsersSelected: false,
       roleList: [],
       selectedStatus: true,
-      reportData: {}
+      reportData: {},
+      imageLoading: false
     };
   }
 
@@ -267,7 +268,7 @@ class CustomReportModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-        {/*<Row>
+        <Row>
           <Col span={24}>
             <ModalFormItem label={t(`customreport.logo`)}>
               {getFieldDecorator("logo", {
@@ -278,23 +279,10 @@ class CustomReportModal extends React.Component {
                     required: false
                   }
                 ]
-              })(
-                <Row>
-                  <Col span={18}>
-                    <Input placeholder={t(`customreport.logoplaceholder`)} />
-                  </Col>
-                  <Col span={6}>
-                    <Upload>
-                      <Button>
-                        <Icon type="upload" /> Browse
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              )}
+              })(<Input placeholder={t(`customreport.logoplaceholder`)} />)}
             </ModalFormItem>
           </Col>
-        </Row>*/}
+        </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem label={t(`customreport.tableauurl`)}>

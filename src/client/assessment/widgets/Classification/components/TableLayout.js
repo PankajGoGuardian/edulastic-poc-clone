@@ -51,7 +51,7 @@ const TableLayout = ({
     ? item.possibleResponseGroups.flatMap(group => group.responses)
     : item.possibleResponses;
   const columnTitles = [];
-  console.log(minWidth);
+
   for (let index = 0; index < colCount; index++) {
     columnTitles.push(
       <TH colSpan={2} style={{ minWidth: showIndex ? minWidth + 40 : minWidth }}>

@@ -100,6 +100,8 @@ const CorrectAnswerContainer = styled.div`
 const ColWrapper = styled.div`
   display: flex;
   align-items: stretch;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 const ColumnTitle = styled.div`

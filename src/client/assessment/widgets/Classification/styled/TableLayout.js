@@ -8,7 +8,7 @@ export const Table = styled.div`
 
 export const TR = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 `;
 
 export const TH = styled.div`

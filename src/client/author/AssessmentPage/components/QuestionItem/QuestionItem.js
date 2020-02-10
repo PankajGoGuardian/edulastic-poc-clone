@@ -220,8 +220,8 @@ class QuestionItem extends React.Component {
         <ButtonWrapper>
           <IconPencilEdit onClick={onOpenEdit} title="Edit" />
         </ButtonWrapper>
-        <ButtonWrapper>
-          <IconTrash onClick={onDelete} title="Delete" />
+        <ButtonWrapper onClick={onDelete} title="Delete" inverse>
+          X
         </ButtonWrapper>
       </EditButton>
     );

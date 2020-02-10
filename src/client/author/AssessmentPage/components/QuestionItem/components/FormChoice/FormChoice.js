@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
-import { isUndefined, chunk } from "lodash";
+import { Input, Radio } from "antd";
+import { isUndefined } from "lodash";
 
 import { QuestionOption, QuestionChunk } from "../../common/Form";
 
@@ -49,6 +49,30 @@ export default class FormChoice extends React.Component {
     saveAnswer(currentValue);
   };
 
+  renderRadioForm = (chosenValue, handleChange = () => {}) => {
+    const {
+      question: { options }
+    } = this.props;
+
+    const radioStyle = {
+      marginLeft: "2px",
+      paddingLeft: "2px"
+    };
+
+    return (
+      <QuestionChunk>
+        <Radio.Group onChange={handleChange} value={chosenValue[0]}>
+          <Radio style={radioStyle} value={options[0].value}>
+            {options[0].label}
+          </Radio>
+          <Radio style={radioStyle} value={options[1].value}>
+            {options[1].label}
+          </Radio>
+        </Radio.Group>
+      </QuestionChunk>
+    );
+  };
+
   renderView = () => {
     const {
       question: {
@@ -57,8 +81,11 @@ export default class FormChoice extends React.Component {
         validation: {
           validResponse: { value }
         }
-      }
+      },
+      isTrueOrFalse
     } = this.props;
+
+    if (isTrueOrFalse) return this.renderRadioForm(value);
 
     if (!options.length) return this.renderOptionsCreateForm();
 
@@ -78,8 +105,13 @@ export default class FormChoice extends React.Component {
       question: { options, multipleResponses: multipleResponses },
       evaluation,
       view,
-      answer
+      answer,
+      isTrueOrFalse
     } = this.props;
+
+    const onChangeHandler = e => this.handleSelect(e.target.value)();
+
+    if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler);
 
     const getCorrect = value => {
       if (!multipleResponses) {
@@ -94,11 +126,10 @@ export default class FormChoice extends React.Component {
 
       return false;
     };
-    const optionChunks = chunk(options, 4);
 
-    return optionChunks.map((items, chunkKey) => (
-      <QuestionChunk key={`form-choice-chunk-${chunkKey}`}>
-        {items.map(({ label, value }, key) => (
+    return (
+      <QuestionChunk>
+        {options.map(({ label, value }, key) => (
           <QuestionOption
             mode={mode}
             key={`form-${label}-${key}`}
@@ -113,7 +144,7 @@ export default class FormChoice extends React.Component {
           </QuestionOption>
         ))}
       </QuestionChunk>
-    ));
+    );
   };
 
   renderOptionsCreateForm = () => {

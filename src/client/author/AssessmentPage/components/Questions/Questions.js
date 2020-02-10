@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { sortBy, maxBy, get, uniqBy } from "lodash";
 import { SortableElement, sortableHandle, SortableContainer } from "react-sortable-hoc";
 import styled from "styled-components";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import {
   SHORT_TEXT,
@@ -120,7 +121,7 @@ const defaultQuestionOptions = {
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]
   },
-  [TRUE_OR_FALSE]: [{ label: "T", value: uuid() }, { label: "F", value: uuid() }]
+  [TRUE_OR_FALSE]: [{ label: "TRUE", value: uuid() }, { label: "FALSE", value: uuid() }]
 };
 
 const mathData = {
@@ -150,7 +151,7 @@ const essayData = {
 };
 
 const trueOrFalseData = {
-  type: "multipleChoice",
+  type: "trueOrFalse",
   uiStyle: { type: "horizontal" }
 };
 
@@ -457,34 +458,36 @@ class Questions extends React.Component {
           ref={this.containerRef}
         >
           <QuestionWidgetWrapper reportMode={reportMode} testMode={testMode} review={review}>
-            {this.questionList.map((question, i) =>
-              question.type === "sectionLabel" ? (
-                <Section
-                  key={question.id}
-                  section={question}
-                  viewMode={viewMode}
-                  onUpdate={this.handleUpdateSection}
-                  onDelete={this.handleDeleteQuestion(question.id)}
-                />
-              ) : (
-                <SortableQuestionItem
-                  key={question.id}
-                  index={i}
-                  data={question}
-                  review={review}
-                  onCreateOptions={this.handleCreateOptions}
-                  onOpenEdit={this.handleOpenEditModal(i)}
-                  onDelete={this.handleDeleteQuestion(question.id)}
-                  previewMode={previewMode}
-                  viewMode={viewMode}
-                  answer={answersById[question.id]}
-                  onDragStart={onDragStart}
-                  highlighted={highlighted === question.id}
-                  testMode={testMode}
-                  onHighlightQuestion={onHighlightQuestion}
-                />
-              )
-            )}
+            <PerfectScrollbar>
+              {this.questionList.map((question, i) =>
+                question.type === "sectionLabel" ? (
+                  <Section
+                    key={question.id}
+                    section={question}
+                    viewMode={viewMode}
+                    onUpdate={this.handleUpdateSection}
+                    onDelete={this.handleDeleteQuestion(question.id)}
+                  />
+                ) : (
+                  <SortableQuestionItem
+                    key={question.id}
+                    index={i}
+                    data={question}
+                    review={review}
+                    onCreateOptions={this.handleCreateOptions}
+                    onOpenEdit={this.handleOpenEditModal(i)}
+                    onDelete={this.handleDeleteQuestion(question.id)}
+                    previewMode={previewMode}
+                    viewMode={viewMode}
+                    answer={answersById[question.id]}
+                    onDragStart={onDragStart}
+                    highlighted={highlighted === question.id}
+                    testMode={testMode}
+                    onHighlightQuestion={onHighlightQuestion}
+                  />
+                )
+              )}
+            </PerfectScrollbar>
           </QuestionWidgetWrapper>
           {!review && (
             <AddQuestion

@@ -7,7 +7,8 @@ import {
   green,
   red,
   greyishDarker1,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  smallDesktopWidth
 } from "@edulastic/colors";
 
 const getBackground = ({ selected, checked, correct }) =>
@@ -17,8 +18,13 @@ const getBorder = ({ selected, checked, correct }) =>
   selected ? (checked ? (correct ? green : red) : themeColor) : greyishDarker1;
 
 export const QuestionChunk = styled.div`
+  min-width: 180px;
   &:not(:last-child) {
     margin-bottom: 5px;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    min-width: 145px;
   }
 `;
 
@@ -27,7 +33,7 @@ export const QuestionOption = styled.span`
   min-width: 32px;
   height: 32px;
   border: 1px solid ${getBorder};
-  font-size: 10px;
+  font-size: 13px;
   margin-bottom: 2px;
   text-align: center;
   line-height: 30px;
@@ -35,15 +41,16 @@ export const QuestionOption = styled.span`
   background: ${getBackground};
   cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
   border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
+  margin-bottom: 8px;
   &:not(:last-child) {
     margin-right: 4px;
   }
   font-weight: bold;
   @media (min-width: ${extraDesktopWidthMax}) {
-    min-width: 36px;
-    height: 36px;
-    font-size: ${props => props.theme.questionTextextraFontSize};
-    line-height: 34px;
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+    line-height: 30px;
   }
 `;
 
@@ -51,5 +58,5 @@ export const QuestionText = styled.p`
   margin: 0;
   font-size: 14px;
   padding: 10px 0;
-  width: ${({ check }) => check && "210px"};
+  width: ${({ check }) => (check ? "210px" : "178px")};
 `;

@@ -8,7 +8,7 @@ export const QuestionsWrapper = styled.div`
   min-width: 350px;
   max-width: 350px;
   padding: ${props =>
-    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 15px"};
+    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 0 30px 15px"};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -103,7 +103,7 @@ export const StyledHandleSpan = styled.span`
   border: 1px solid #e6e6e6;
   border-radius: 10px 0 0 10px;
   background: #fff;
-  width: 30px;
+  border-right: 0;
   padding-left: 6px;
   cursor: grab;
 `;

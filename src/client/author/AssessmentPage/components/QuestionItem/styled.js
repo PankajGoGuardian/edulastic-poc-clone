@@ -13,12 +13,17 @@ import {
 } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "100%" : "calc(100% - 30px)")};
+  width: ${({ review, annotations }) => (annotations ? "70px" : review ? "100%" : "270px")};
   padding: ${({ pdfPreview }) => !pdfPreview && "10px"};
   background: ${({ pdfPreview }) => (pdfPreview ? "transparent" : white)};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
   border: ${({ pdfPreview }) => !pdfPreview && "1px solid " + sectionBorder};
   box-shadow: ${({ highlighted, pdfPreview }) => (!pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
+  border-left: 0;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 225px;
+  }
 `;
 
 export const AnswerForm = styled.div`
@@ -35,9 +40,9 @@ export const QuestionNumber = styled.span`
   background: ${({ dragging }) => (dragging ? "transparent" : "#aaafb8")};
   border: 2px ${({ dragging }) => (dragging ? "dashed" : "solid")} #aaafb8;
   border-radius: 4px;
-  width: 36px;
-  height: 36px;
-  line-height: 34px;
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
   text-align: center;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
@@ -45,9 +50,6 @@ export const QuestionNumber = styled.span`
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;
-    width: 32px;
-    height: 32px;
-    line-height: 28px;
   }
 `;
 
@@ -55,7 +57,8 @@ export const QuestionForm = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-left: 10px;
-  width: ${props => (props.review ? "100%" : "140px")};
+  width: 100%;
+  padding-right: 2px;
 
   .ant-select-selection,
   .input__math,
@@ -81,17 +84,25 @@ export const EditButton = styled.span`
   justify-content: space-between;
   padding: 8px 0px;
   margin-left: 5px;
+  position: relative;
+  right: 6px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    right: -36px;
+  }
 `;
 
 export const ButtonWrapper = styled.span`
-  background: #fff;
-  box-shadow: 0px 2px 4px rgba(201, 208, 219, 0.5);
+  background: ${({ inverse }) => (inverse ? "transparent" : white)};
+  font-weight: 600;
   margin-right: 5px;
   border-radius:4px;
   width: 30px;
   height: 30px;
   line-height: 30px;
   text-align: center;
+  cursor: pointer;
+
   svg {
     fill: ${themeColor};
     width: 13px;

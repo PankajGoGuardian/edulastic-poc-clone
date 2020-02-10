@@ -8,7 +8,8 @@ import {
   MULTIPLE_CHOICE,
   CLOZE_DROP_DOWN,
   MATH,
-  ESSAY_PLAIN_TEXT
+  ESSAY_PLAIN_TEXT,
+  TRUE_OR_FALSE
 } from "@edulastic/constants/const/questionType";
 
 import { QuestionNumber } from "../QuestionItem/styled";
@@ -69,6 +70,7 @@ export default class QuestionEditModal extends React.Component {
 
     switch (type) {
       case MULTIPLE_CHOICE:
+      case TRUE_OR_FALSE:
         return <QuestionChoice {...props} />;
       case SHORT_TEXT:
         return <QuestionText {...props} />;

@@ -39,6 +39,7 @@ export default class FormDropdown extends React.Component {
         value={(value[0] && value[0].value) || ""}
         check={["check", "show"].includes(view)}
         onChange={this.handleChange}
+        style={{ width: "178px" }}
         disabled
       >
         {options[0].map((option, key) => (

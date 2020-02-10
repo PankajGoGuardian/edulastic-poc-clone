@@ -24,7 +24,7 @@ export default class FormEssay extends React.Component {
     } = this.props;
     if (!validation) return this.renderForm();
 
-    return <Input disabled placeholder="Essay type" />;
+    return <Input style={{ width: "178px" }} disabled placeholder="Essay type" />;
   };
 
   renderForm = () => {

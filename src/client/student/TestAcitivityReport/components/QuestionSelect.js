@@ -15,6 +15,7 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
     <Select
       data-cy="questionNumber"
       value={current}
+      getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={val => {
         setCurrentItem(val);
       }}
@@ -88,6 +89,9 @@ const QuestionListWrapper = styled.div`
     display: flex;
     align-items: center;
     margin-left: 10px;
+  }
+  .ant-select-dropdown {
+    z-index: 1;
   }
 `;
 

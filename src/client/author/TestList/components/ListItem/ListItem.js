@@ -41,7 +41,8 @@ import {
   ViewButtonStyled
 } from "../../../ItemList/components/Item/styled";
 import { getSelectedTestsSelector } from "../../ducks";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { getUserRole } from "../../../src/selectors/user";
+import { roleuser } from "@edulastic/constants";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 
 class ListItem extends Component {
@@ -149,7 +150,8 @@ class ListItem extends Component {
       selectedTests = [],
       onRemoveFromCart,
       onAddToCart,
-      t
+      t,
+      userRole
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -233,27 +235,25 @@ class ListItem extends Component {
                     />
                   </ViewButtonWrapper>
                 )}
-                {!isPlaylist && mode !== "embedded" && (
+                {!isPlaylist && mode !== "embedded" && userRole === roleuser.DISTRICT_ADMIN && (
                   <ViewButtonContainer>
-                    <FeaturesSwitch inputFeatures="isCurator" actionOnInAccessible="hidden">
-                      <ViewButtonStyled
-                        onClick={e => {
-                          e.stopPropagation();
-                          this.showPreviewModal(item._id);
-                        }}
-                      >
-                        <IconEye /> {t("component.item.view")}
-                      </ViewButtonStyled>
-                      <AddButtonStyled
-                        selectedToCart={isInCart}
-                        onClick={e => {
-                          e.stopPropagation();
-                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                        }}
-                      >
-                        {isInCart ? "Remove" : <IconPlus />}
-                      </AddButtonStyled>
-                    </FeaturesSwitch>
+                    <ViewButtonStyled
+                      onClick={e => {
+                        e.stopPropagation();
+                        this.showPreviewModal(item._id);
+                      }}
+                    >
+                      <IconEye /> {t("component.item.view")}
+                    </ViewButtonStyled>
+                    <AddButtonStyled
+                      selectedToCart={isInCart}
+                      onClick={e => {
+                        e.stopPropagation();
+                        isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                      }}
+                    >
+                      {isInCart ? "Remove" : <IconPlus />}
+                    </AddButtonStyled>
                   </ViewButtonContainer>
                 )}
               </Outer>
@@ -318,7 +318,7 @@ class ListItem extends Component {
 const enhance = compose(
   withNamespaces("author"),
   connect(
-    state => ({ selectedTests: getSelectedTestsSelector(state) }),
+    state => ({ selectedTests: getSelectedTestsSelector(state), userRole: getUserRole(state) }),
     { approveOrRejectSingleTestRequestAction }
   )
 );

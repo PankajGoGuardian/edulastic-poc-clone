@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 
 import { red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
-import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+import { EDIT } from "../../../constants/constantsForQuestions";
 
 import { Bar, ActiveBar } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
@@ -17,7 +18,6 @@ const Bars = ({
   activeIndex,
   view,
   gridParams,
-  previewTab,
   correct,
   deleteMode,
   saveAnswer,
@@ -113,12 +113,10 @@ Bars.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string,
   saveAnswer: PropTypes.func,
   deleteMode: PropTypes.bool
 };
 Bars.defaultProps = {
-  previewTab: CLEAR,
   saveAnswer: () => {},
   deleteMode: false
 };

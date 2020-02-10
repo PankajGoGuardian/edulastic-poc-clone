@@ -25,7 +25,7 @@ export const InnerWrapper = styled.div`
       borderColor = theme.widgets.classification.dragItemValidBorderColor;
     }
 
-    if (transparent) {
+    if (!preview && transparent) {
       bgColor = "transparent";
     }
 

@@ -20,32 +20,32 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
   describe(`use existing test`, () => {
     const testdata = {
       className: "Class",
-      teacher: "300@abc.com",
-      student: "300@xyz.com",
+      teacher: "teacher.release.policy@snapwiz.com",
+      student: "student1.release.policy@snapwiz.com",
       password: "snapwiz",
       assignmentName: `Smoke Test 1`,
       attemptsData: [
         {
-          email: "300@xyz.com",
-          stuName: "300",
+          email: "student1.release.policy@snapwiz.com",
+          stuName: "Student1",
           attempt: { Q1: "right", Q2: "right" },
           status: "Submitted"
         },
         {
-          email: "301@xyz.com",
-          stuName: "301",
+          email: "student2.release.policy@snapwiz.com",
+          stuName: "Student2",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         },
         {
-          email: "302@xyz.com",
-          stuName: "302",
+          email: "student3.item.edit@snapwiz.com",
+          stuName: "Student3",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         },
         {
-          email: "303@xyz.com",
-          stuName: "303",
+          email: "student4.item.edit@snapwiz.com",
+          stuName: "Student4",
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         }

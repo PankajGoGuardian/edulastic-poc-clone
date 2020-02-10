@@ -1,16 +1,5 @@
 {
-  "visual-regression": {
-    "teacher": {
-      "username": "teacher.visual-automation@snapwiz.com",
-      "password": "automation"
-    },
-    "student": {
-      "username": "student.1.visual-automation@snapwiz.com",
-      "password": "automation"
-    }
-  },
-
-  "Sharing": {
+  "testSharing": {
     "dist1": {
       "school1": {
         "Teachers": ["Teacher1", "Teacher2", "Teacher3"],
@@ -62,6 +51,177 @@
           "email": "teacher1.school1.dist2@snapwiz.com",
           "pass": "snapwiz",
           "district": "dist2",
+          "school": "School1"
+        }
+      }
+    }
+  },
+  "itemSharingIndividual": {
+    "dist001": {
+      "school1": {
+        "Teachers": ["Teacher1", "Teacher2", "Teacher3"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school1.dist001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist001",
+          "school": "School-1"
+        },
+        "Teacher2": {
+          "name": "Teacher2",
+          "email": "teacher2.school1.dist001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist001",
+          "school": "School-1"
+        },
+        "Teacher3": {
+          "name": "Teacher3",
+          "email": "teacher3.school1.dist001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist001",
+          "school": "School-1"
+        }
+      },
+      "school2": {
+        "Teachers": ["Teacher1", "Teacher2"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school2.dist001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist001",
+          "school": "School-2"
+        },
+        "Teacher2": {
+          "name": "Teacher2",
+          "email": "teacher2.school2.dist001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist001",
+          "school": "School-2"
+        }
+      }
+    },
+    "dist002": {
+      "school1": {
+        "Teachers": ["Teacher1"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school1.dist002@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist002",
+          "school": "School1"
+        }
+      }
+    }
+  },
+  "itemSharingLevels": {
+    "dist0001": {
+      "school1": {
+        "Teachers": ["Teacher1", "Teacher2", "Teacher3"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school1.dist0001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0001",
+          "school": "School-1"
+        },
+        "Teacher2": {
+          "name": "Teacher2",
+          "email": "teacher2.school1.dist0001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0001",
+          "school": "School-1"
+        },
+        "Teacher3": {
+          "name": "Teacher3",
+          "email": "teacher3.school1.dist0001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0001",
+          "school": "School-1"
+        }
+      },
+      "school2": {
+        "Teachers": ["Teacher1", "Teacher2"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school2.dist0001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0001",
+          "school": "School-2"
+        },
+        "Teacher2": {
+          "name": "Teacher2",
+          "email": "teacher2.school2.dist0001@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0001",
+          "school": "School-2"
+        }
+      }
+    },
+    "dist0002": {
+      "school1": {
+        "Teachers": ["Teacher1"],
+        "Teacher1": {
+          "name": "Teacher1",
+          "email": "teacher1.school1.dist0002@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dist0002",
+          "school": "School1"
+        }
+      }
+    }
+  },
+  "playListSharing": {
+    "dist1": {
+      "school1": {
+        "Teachers": ["Teacher1", "Teacher2", "Teacher3"],
+        "Teacher1": {
+          "name": "teacher1",
+          "email": "teacher1.school1.dis1@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis1",
+          "school": "School-1"
+        },
+        "Teacher2": {
+          "name": "teacher2",
+          "email": "teacher2.school1.dis1@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis1",
+          "school": "School-1"
+        },
+        "Teacher3": {
+          "name": "teacher3",
+          "email": "teacher3.school1.dis1@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis1",
+          "school": "School-1"
+        }
+      },
+      "school2": {
+        "Teachers": ["Teacher1", "Teacher2"],
+        "Teacher1": {
+          "name": "teacher1",
+          "email": "teacher1.school2.dis1@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis1",
+          "school": "School-2"
+        },
+        "Teacher2": {
+          "name": "teacher2",
+          "email": "teacher2.school2.dis1@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis1",
+          "school": "School-2"
+        }
+      }
+    },
+    "dist2": {
+      "school1": {
+        "Teachers": ["Teacher1"],
+        "Teacher1": {
+          "name": "teacher1",
+          "email": "teacher1.school1.dis2@snapwiz.com",
+          "pass": "snapwiz",
+          "district": "dis2",
           "school": "School1"
         }
       }

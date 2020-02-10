@@ -44,8 +44,10 @@ class ClozeDropDownPage {
   getPoints = () =>
     cy
       .get('[data-cy="tabs"]')
+      .parent()
       .next()
-      .find("input");
+      .find("input")
+      .eq(0);
 
   // advance options
   clickOnAdvancedOptions() {

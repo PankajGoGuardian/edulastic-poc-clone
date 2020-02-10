@@ -29,13 +29,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
   const liveClassBoardPage = new LiveClassboardPage();
 
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.overiding@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student1.overiding@snapwiz.com",
     pass: "snapwiz",
-    name: "300"
+    name: "Student1"
   };
   const staticPassword = "123546";
   let OriginalTestId;

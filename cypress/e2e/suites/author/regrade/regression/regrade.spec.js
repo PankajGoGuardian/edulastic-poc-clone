@@ -16,18 +16,18 @@ import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 const students = {
   Student1: {
-    name: "300",
-    email: "300@xyz.com",
+    name: "Student1",
+    email: "student1.for.regrade@snapwiz.com",
     pass: "snapwiz"
   },
   Student2: {
-    name: 301,
-    email: "301@xyz.com",
+    name: "Student2",
+    email: "student2.for.regrade@snapwiz.com",
     pass: "snapwiz"
   },
   Student3: {
-    name: 302,
-    email: "302@xyz.com",
+    name: "Student3",
+    email: "student3.for.regrade@snapwiz.com",
     pass: "snapwiz"
   }
 };
@@ -49,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   const updatedPoints = "6";
   const isAssigned = true;
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.for.regrade@snapwiz.com",
     pass: "snapwiz"
   };
   const { Student1, Student2 } = students;
@@ -64,16 +64,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
   before("Get Data Of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
-      testName = testData["EDIT_ASSIGNED_TEST_REGRADE"]["name"];
-      itemsInTest = testData["EDIT_ASSIGNED_TEST_REGRADE"]["itemKeys"];
+      testName = testData.EDIT_ASSIGNED_TEST_REGRADE.name;
+      itemsInTest = testData.EDIT_ASSIGNED_TEST_REGRADE.itemKeys;
     });
     cy.fixture("questionAuthoring").then(quesData => {
       itemsInTest.forEach(element => {
         [qType, num] = element.split(".");
-        questText.push(quesData[qType][num]["quetext"]);
+        questText.push(quesData[qType][num].quetext);
         questionType.push(qType);
-        points.push(quesData[qType][num]["setAns"]["points"]);
-        attempt.push(quesData[qType][num]["attemptData"]);
+        points.push(quesData[qType][num].setAns.points);
+        attempt.push(quesData[qType][num].attemptData);
       });
     });
   });

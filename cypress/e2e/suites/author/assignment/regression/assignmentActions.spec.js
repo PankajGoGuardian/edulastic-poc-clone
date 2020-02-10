@@ -41,15 +41,15 @@ describe(`Verify Actions Button In Author Side Assignments Page`, () => {
   const updatedPoints = "6";
   const isAssigned = true;
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.for.assign.actions@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student1.for.assign.actions@snapwiz.com",
     pass: "snapwiz"
   };
   const Student2 = {
-    email: "301@xyz.com",
+    email: "student2.for.assign.actions@snapwiz.com",
     pass: "snapwiz"
   };
 

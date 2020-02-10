@@ -75,6 +75,7 @@ class MCQStandardPage {
     cy
       .get('[data-cy="tabs"]')
       .parent()
+      .parent()
       .find("label");
 
   addNewChoice() {

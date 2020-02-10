@@ -19,7 +19,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
   let standardsOfItems;
   const itemsToCreate = ["MCQ_STD.1", "MCQ_STD.default", "MCQ_STD.default"];
 
-  const Author = { email: "302@abc.com", pass: "snapwiz" };
+  const Author = { email: "teacher1.item.search@snapwiz.com", pass: "snapwiz" };
 
   const standardToSearch = {};
   const item_ids = [];

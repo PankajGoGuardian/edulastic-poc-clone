@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
   const questionType = [];
   const attemptData = [];
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.item.preview@snapwiz.com",
     pass: "snapwiz"
   };
 

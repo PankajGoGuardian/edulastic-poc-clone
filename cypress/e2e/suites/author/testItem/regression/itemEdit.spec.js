@@ -40,15 +40,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
   const UPDATED_POINTS = [3, 4, 5, 6, 7];
   const UPDATED_TEXT = "Updated Text";
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.item.edit@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student1.item.edit@snapwiz.com",
     pass: "snapwiz"
   };
   const Student2 = {
-    email: "301@xyz.com",
+    email: "student2.item.edit@snapwiz.com",
     pass: "snapwiz"
   };
 

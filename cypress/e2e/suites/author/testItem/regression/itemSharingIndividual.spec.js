@@ -19,7 +19,7 @@ ITEMS.forEach(ele => {
 });
 const userData = require("../../../../../fixtures/users");
 
-const { dist1, dist2 } = userData.Sharing;
+const { dist001, dist002 } = userData.itemSharingIndividual;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   const techersidebar = new TeacherSideBar();
@@ -45,9 +45,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   const TEACHER3 = "Teacher3";
   const DIST = "district";
 
-  DIST1_SCHOOL1 = dist1[SCHOOL1];
-  DIST1_SCHOOL2 = dist1[SCHOOL2];
-  DIST2_SCHOOL1 = dist2[SCHOOL1];
+  DIST1_SCHOOL1 = dist001[SCHOOL1];
+  DIST1_SCHOOL2 = dist001[SCHOOL2];
+  DIST2_SCHOOL1 = dist002[SCHOOL1];
   Author = DIST1_SCHOOL1[TEACHER1];
 
   // Permissions given to Tests are applied to items too

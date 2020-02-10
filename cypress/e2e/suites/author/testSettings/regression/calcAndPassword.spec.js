@@ -20,11 +20,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
   const lcb = new LiveClassboardPage();
 
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.calc.password@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student.calc.password@snapwiz.com",
     pass: "snapwiz"
   };
   const staticPassword = "123546";
@@ -61,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
       context(`${CALC}`, () => {
         it(`Edit Setings-${CALC}`, () => {
           cy.deleteAllAssignments(Student1.email, Teacher.email);
-          cy.login("teacher", "300@abc.com", "snapwiz");
+          cy.login("teacher", Teacher.email, Teacher.pass);
           testLibraryPage.sidebar.clickOnTestLibrary();
           testLibraryPage.searchFilters.clearAll();
           testLibraryPage.searchFilters.getAuthoredByMe();

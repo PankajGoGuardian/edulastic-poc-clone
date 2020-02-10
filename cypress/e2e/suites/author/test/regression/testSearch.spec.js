@@ -8,7 +8,6 @@ const userData = require("../../../../../fixtures/users");
 const quesData = require("../../../../../fixtures/questionAuthoring");
 const testData = require("../../../../../fixtures/testAuthoring");
 
-const { dist1, dist2 } = userData["Sharing"];
 const { search_1, search_2, search_3 } = testData;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags,Tittle and Standards`, () => {
@@ -17,16 +16,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
   const testLibrary = new TestLibrary();
   const testHeader = new TestHeader();
   const testSummaryTab = new TestSummayTab();
-  let Author;
-  const EMAIL = "email";
-  const PASS = "pass";
-  const SCHOOL1 = "school1";
-  const TEACHER1 = "Teacher1";
   let itemsInTest, standardsOfTest;
   const testToCreate = ["search_1", "search_2", "search_3"];
-  let DIST1_SCHOOL1;
-  DIST1_SCHOOL1 = dist1[SCHOOL1];
-  Author = DIST1_SCHOOL1[TEACHER1];
+
+  const Author = {
+    email: "teacher.test.search@snapwiz.com",
+    pass: "snapwiz"
+  };
   const tags = [];
   const testNames = [];
   const tagsToTest = {};
@@ -36,11 +32,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
 
   context("Searching in Draft State", () => {
     before("Login As Author and Create Tests in Draft-State", () => {
-      cy.login("teacher", Author[EMAIL], Author[PASS]);
+      cy.login("teacher", Author.email, Author.pass);
       tests.forEach((test, i) => {
         testLibrary.createTest(testToCreate[i], false).then(id => {
           test_ids[i] = id;
-          itemsInTest = test["itemKeys"];
+          itemsInTest = test.itemKeys;
           itemsInTest.forEach(item => {
             const [queType, queKey] = item.split(".");
             if (quesData[queType][queKey].standards) {
@@ -104,7 +100,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
       it("Search By id in Draft-State", () => {
-        test_ids.forEach((id, i) => {
+        test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -145,7 +141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
       it("Search By id in Draft-State", () => {
-        test_ids.forEach((id, i) => {
+        test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(id);
@@ -200,7 +196,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
       it("Search By id-Published", () => {
-        test_ids.forEach((id, i) => {
+        test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -245,7 +241,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
       it("Search By id in Published-State", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
-        test_ids.forEach((id, i) => {
+        test_ids.forEach(id => {
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(id);
           testLibrary.getTestCardById(id).should("be.visible");

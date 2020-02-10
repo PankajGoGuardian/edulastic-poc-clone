@@ -24,11 +24,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
   const reportsPage = new ReportsPage();
 
   const Teacher = {
-    email: "300@abc.com",
+    email: "teacher.eval.methods@snapwiz.com",
     pass: "snapwiz"
   };
   const Student1 = {
-    email: "300@xyz.com",
+    email: "student1.eval.methods@snapwiz.com",
     pass: "snapwiz"
   };
   const questionType = [];
@@ -59,7 +59,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Evaluation
     context(`${method}`, () => {
       before(`Edit Settings`, () => {
         cy.deleteAllAssignments(Student1.email, Teacher.email);
-        cy.login("teacher", "300@abc.com", "snapwiz");
+        cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.searchFilters.clearAll();
         testLibraryPage.searchFilters.getAuthoredByMe();

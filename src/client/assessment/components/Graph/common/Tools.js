@@ -294,12 +294,12 @@ export default function Tools(props) {
       newTools.push(tool);
     }
     setPopupTools(newTools);
+    setTools(newTools);
   };
 
   const onOverlayClick = e => {
     e.stopPropagation();
     setToolsPopupExpanded(false);
-    setTools(popupTools);
   };
 
   const isSelectedPopupTool = tool => {

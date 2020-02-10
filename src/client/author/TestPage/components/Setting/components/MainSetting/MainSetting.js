@@ -44,6 +44,7 @@ import {
 } from "./styled";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import StandardProficiencyTable from "./StandardProficiencyTable";
+import SubscriptionsBlock from "./SubscriptionsBlock";
 import PeformanceBand from "./PeformanceBand";
 
 const {
@@ -259,7 +260,8 @@ class MainSetting extends Component {
       isEditable,
       sebPasswordRef,
       windowScrollTop,
-      disableAnswerOnPaper
+      disableAnswerOnPaper,
+      premium
     } = this.props;
 
     const {
@@ -725,6 +727,9 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
+
+            {!premium && <SubscriptionsBlock />}
+
             <Block id="standards-proficiency" smallSize={isSmallSize}>
               <StandardProficiencyTable
                 standardGradingScale={standardGradingScale}
@@ -916,7 +921,8 @@ export default connect(
     standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
     performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
     isReleaseScorePremium: getReleaseScorePremiumSelector(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state)
+    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+    premium: state?.user?.user?.features?.premium
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

@@ -293,34 +293,3 @@ export const Label = styled.label`
 export const StyledDiv = styled.div`
   flex: 1;
 `;
-
-export const UpgradeBtn = styled.button`
-  color: ${white};
-  background: ${themeColor};
-  border: none;
-  outline: none;
-  width: 280px;
-  border-radius: 4px;
-  height: 40px;
-  text-transform: uppercase;
-  cursor: pointer;
-`;
-
-export const IconItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  width: 400px;
-  padding: 20px;
-  box-sizing: border-box;
-
-  p {
-    width: 120px;
-  }
-
-  i {
-    font-size: 40px;
-    color: ${themeColor};
-  }
-`;

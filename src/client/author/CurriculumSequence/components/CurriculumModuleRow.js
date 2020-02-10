@@ -345,6 +345,10 @@ class ModuleRow extends Component {
                         padding="14px 30px 14px 50px"
                         borderRadius="unset"
                         boxShadow="unset"
+                        onClick={e => {
+                          e?.preventDefault?.();
+                          e?.stopPropagation?.();
+                        }}
                       >
                         <ModuleFocused />
                         <AssignmentInnerWrapper>

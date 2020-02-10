@@ -39,6 +39,7 @@
     "test:visual-regression-run:update-base": "cypress run --env configFile=visual-regression,updateSnapshots=true",
     "cy:clear-reports": "rm -rf cypress/reports cypress/results",
     "cy:merge-reports": "mochawesome-merge --reportDir cypress/reports > cypress/reports/cypress-report.json",
+    "cy:merge-reports-docker": "mochawesome-merge --reportDir docker_results/json > cypress/reports/cypress-report.json",
     "cy:generate-report": "marge --no-code --cdn=true -o=cypress/reports -f=Cypress_Test_Report --ts=fullDate cypress/reports/cypress-report.json",
     "publish-evaluators": "git subtree push --prefix packages/evaluators git@github.com:snapwiz/edu-eval.git master",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",

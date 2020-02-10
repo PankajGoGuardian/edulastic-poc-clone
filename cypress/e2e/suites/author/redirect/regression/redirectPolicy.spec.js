@@ -23,33 +23,33 @@ const testLibrary = new TestLibrary();
 const teacherSidebar = new TeacherSideBar();
 const studentTestPage = new StudentTestPage();
 const students = {
-  1: {
-    email: "student1.regression.automation@snapwiz.com",
-    stuName: "1, student1"
+  "1": {
+    email: "student.1.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.1"
   },
-  2: {
-    email: "student2.regression.automation@snapwiz.com",
-    stuName: "regression, student2"
+  "2": {
+    email: "student.2.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.2"
   },
-  3: {
-    email: "student3.regression.automation@snapwiz.com",
-    stuName: "regression, student3"
+  "3": {
+    email: "student.3.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.3"
   },
-  4: {
-    email: "student4.regression.automation@snapwiz.com",
-    stuName: "regression, student4"
+  "4": {
+    email: "student.4.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.4"
   },
-  5: {
-    email: "student5.regression.automation@snapwiz.com",
-    stuName: "regression, student5"
+  "5": {
+    email: "student.5.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.5"
   },
-  6: {
-    email: "student6.regression.automation@snapwiz.com",
-    stuName: "regression, student6"
+  "6": {
+    email: "student.6.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.6"
   },
-  7: {
-    email: "student7.regression.automation@snapwiz.com",
-    stuName: "regression, student7"
+  "7": {
+    email: "student.7.redirectpolicy@snapwiz.com",
+    stuName: "redirectpolicy, student.7"
   }
 };
 
@@ -61,10 +61,10 @@ const teacherFeedback = "You need to work hard";
 const queList = _.keys(allRight);
 
 const redirectTestData = {
-  className: "Regression Automation Class",
-  teacher: "teacher1.regression.automation@snapwiz.com",
+  className: "Automation Class - redirectpolicy teacher.1",
+  teacher: "teacher.1.redirectpolicy@snapwiz.com",
   student: students[1].email,
-  password: "automation",
+  password: "snapwiz",
   assignmentName: "New Assessment LCB",
   attemptsData: [
     {

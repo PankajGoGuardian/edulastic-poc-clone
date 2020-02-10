@@ -13,34 +13,49 @@ const itemListPage = new ItemListPage();
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
   describe(`customise existing test - duplicate`, () => {
+    const students = {
+      "1": {
+        email: "student.1.editexistingtest@snapwiz.com",
+        stuName: "editexistingTest, student.1"
+      },
+      "2": {
+        email: "student.2.editexistingtest@snapwiz.com",
+        stuName: "editexistingTest, student.2"
+      },
+      "3": {
+        email: "student.3.editexistingtest@snapwiz.com",
+        stuName: "editexistingTest, student.3"
+      },
+      "4": {
+        email: "student.4.editexistingtest@snapwiz.com",
+        stuName: "editexistingTest, student.4"
+      }
+    };
+
     const testdata = {
-      className: "Smoke Automation Class",
-      teacher: "teacher1.smoke.automation@snapwiz.com",
-      student: "student1.smoke.automation@snapwiz.com",
-      password: "automation",
+      className: "Automation Class - editexistingTest teacher.1",
+      teacher: "teacher.1.editexistingtest@snapwiz.com",
+      student: students[1].email,
+      password: "snapwiz",
       assignmentName: "Smoke Test 5",
       attemptsData: [
         {
-          email: "student1.smoke.automation@snapwiz.com",
-          stuName: "smoke, student1",
+          ...students[1],
           attempt: { Q1: "right", Q2: "right", Q3: "right" },
           status: "Submitted"
         },
         {
-          email: "student2.smoke.automation@snapwiz.com",
-          stuName: "smoke, student2",
+          ...students[2],
           attempt: { Q1: "right", Q2: "wrong", Q3: "partialCorrect" },
           status: "Submitted"
         },
         {
-          email: "student3.smoke.automation@snapwiz.com",
-          stuName: "smoke, student3",
+          ...students[3],
           attempt: { Q1: "right", Q2: "wrong", Q3: "right" },
           status: "Submitted"
         },
         {
-          email: "student4.smoke.automation@snapwiz.com",
-          stuName: "smoke, student4",
+          ...students[4],
           attempt: { Q1: "right", Q2: "wrong", Q3: "wrong" },
           status: "Submitted"
         }

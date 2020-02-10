@@ -7,8 +7,8 @@ const { SMOKE_2, SMOKE_3, SMOKE_4 } = require("../../../../../fixtures/testAutho
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Create Flows`, () => {
   const testLibrary = new TestLibrary();
-  const teacher = "teacher1.smoke.automation@snapwiz.com";
-  const password = "automation";
+  const teacher = "teacher.1.testcreate@snapwiz.com";
+  const password = "snapwiz";
   const itemListPage = new ItemListPage();
 
   before(() => cy.login("teacher", teacher, password));

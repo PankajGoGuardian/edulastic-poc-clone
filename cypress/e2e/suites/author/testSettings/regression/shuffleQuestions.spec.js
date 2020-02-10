@@ -14,17 +14,17 @@ const questionData = require("../../../../../fixtures/questionAuthoring");
 const { _ } = Cypress;
 
 const students = {
-  1: {
-    email: "student1.regression.automation@snapwiz.com",
-    stuName: "1, student1"
+  "1": {
+    email: "student.1.shufflequestions@snapwiz.com",
+    stuName: "shuffleQuestions, student.1"
   },
-  2: {
-    email: "student2.regression.automation@snapwiz.com",
-    stuName: "regression, student2"
+  "2": {
+    email: "student.2.shufflequestions@snapwiz.com",
+    stuName: "shuffleQuestions, student.2"
   },
-  3: {
-    email: "student3.regression.automation@snapwiz.com",
-    stuName: "regression, student3"
+  "3": {
+    email: "student.3.shufflequestions@snapwiz.com",
+    stuName: "shuffleQuestions, student.3"
   }
 };
 
@@ -56,9 +56,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
   };
   const { start, retake, review } = assignmentButtonsText;
 
-  const className = "Regression Automation Class";
-  const teacher = "teacher1.regression.automation@snapwiz.com";
-  const password = "automation";
+  const className = "Automation Class - shuffleQuestions teacher.1";
+  const teacher = "teacher.1.shufflequestions@snapwiz.com";
+  const password = "snapwiz";
   let testId;
 
   before(" > create new test set shuffle question", () => {

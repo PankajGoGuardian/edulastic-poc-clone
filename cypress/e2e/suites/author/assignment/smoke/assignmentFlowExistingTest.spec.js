@@ -11,34 +11,45 @@ const testLibrary = new TestLibrary();
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () => {
   describe(`use existing test`, () => {
+    const students = {
+      "1": {
+        email: "student.1.existingtest@snapwiz.com",
+        stuName: "existingTest, student.1"
+      },
+      "2": {
+        email: "student.2.existingtest@snapwiz.com",
+        stuName: "existingTest, student.2"
+      },
+      "3": {
+        email: "student.3.existingtest@snapwiz.com",
+        stuName: "existingTest, student.3"
+      },
+      "4": {
+        email: "student.4.existingtest@snapwiz.com",
+        stuName: "existingTest, student.4"
+      }
+    };
+
     const testdata = {
-      className: "Smoke Automation Class",
-      teacher: "teacher1.smoke.automation@snapwiz.com",
-      student: "student1.smoke.automation@snapwiz.com",
-      password: "automation",
+      className: "Automation Class - existingTest teacher.1",
+      teacher: "teacher.1.existingtest@snapwiz.com",
+      student: students[1].email,
+      password: "snapwiz",
       assignmentName: `Smoke Test 1`,
       attemptsData: [
         {
-          email: "student1.smoke.automation@snapwiz.com",
-          stuName: "smoke, student1",
+          ...students[1],
           attempt: { Q1: "right", Q2: "right" },
           status: "Submitted"
         },
+        { ...students[2], attempt: { Q1: "right", Q2: "wrong" }, status: "Submitted" },
         {
-          email: "student2.smoke.automation@snapwiz.com",
-          stuName: "smoke, student2",
+          ...students[3],
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         },
         {
-          email: "student3.smoke.automation@snapwiz.com",
-          stuName: "smoke, student3",
-          attempt: { Q1: "right", Q2: "wrong" },
-          status: "Submitted"
-        },
-        {
-          email: "student4.smoke.automation@snapwiz.com",
-          stuName: "smoke, student4",
+          ...students[4],
           attempt: { Q1: "right", Q2: "wrong" },
           status: "Submitted"
         }

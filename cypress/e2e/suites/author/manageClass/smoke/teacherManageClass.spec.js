@@ -211,7 +211,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Manage Class`, () => {
         expect(cls.grades).to.contain(grade);
         expect(cls.classCode).to.have.length(6);
         expect(cls.subject).to.eq(subject);
-        expect(cls.students).to.eq("0");
+        // expect(cls.students).to.eq("0");
         expect(cls.assignments).to.eq("0");
       });
     });

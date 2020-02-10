@@ -12,25 +12,25 @@ const testLibrary = new TestLibrary();
 const teacherSidebar = new TeacherSideBar();
 
 const students = {
-  1: {
-    email: "student1.regression.automation@snapwiz.com",
-    stuName: "1, student1"
+  "1": {
+    email: "student.1.shufflechoice@snapwiz.com",
+    stuName: "shuffleChoice, student.1"
   },
-  2: {
-    email: "student2.regression.automation@snapwiz.com",
-    stuName: "regression, student2"
+  "2": {
+    email: "student.2.shufflechoice@snapwiz.com",
+    stuName: "shuffleChoice, student.2"
   },
-  3: {
-    email: "student3.regression.automation@snapwiz.com",
-    stuName: "regression, student3"
+  "3": {
+    email: "student.3.shufflechoice@snapwiz.com",
+    stuName: "shuffleChoice, student.3"
   }
 };
 
 const { choices: originalChoiceSequence } = questionData.MCQ_MULTI.default;
 
-const className = "Regression Automation Class";
-const teacher = "teacher1.regression.automation@snapwiz.com";
-const password = "automation";
+const className = "Automation Class - shuffleChoice teacher.1";
+const teacher = "teacher.1.shufflechoice@snapwiz.com";
+const password = "snapwiz";
 let testId;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => {

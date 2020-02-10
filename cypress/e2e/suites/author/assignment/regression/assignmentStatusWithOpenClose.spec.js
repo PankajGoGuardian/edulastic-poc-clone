@@ -12,21 +12,21 @@ const authorAssignmentPage = new AuthorAssignmentPage();
 const lcb = new LiveClassboardPage();
 const testLibrary = new TestLibrary();
 const students = {
-  1: {
-    email: "student1.regression.automation@snapwiz.com",
-    stuName: "1, student1"
+  "1": {
+    email: "student.1.assignmentsstatus@snapwiz.com",
+    stuName: "assignmentsstatus, student.1"
   },
-  2: {
-    email: "student2.regression.automation@snapwiz.com",
-    stuName: "regression, student2"
+  "2": {
+    email: "student.2.assignmentsstatus@snapwiz.com",
+    stuName: "assignmentsstatus, student.2"
   }
 };
 
 const testingData = {
-  className: "Regression Automation Class",
-  teacher: "teacher1.regression.automation@snapwiz.com",
+  className: "Automation Class - assignmentsstatus teacher.1",
+  teacher: "teacher.1.assignmentsstatus@snapwiz.com",
   student: students[1].email,
-  password: "automation",
+  password: "snapwiz",
   assignmentName: "New Assessment LCB"
 };
 

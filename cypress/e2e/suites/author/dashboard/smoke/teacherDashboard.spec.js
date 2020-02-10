@@ -11,10 +11,10 @@ const dashboard = new TeacherDashBoardPage();
 const testLibrary = new TestLibrary();
 
 const random = Helpers.getRamdomString();
-const teacher = { email: "teacher1.smoke.automation@snapwiz.com", password: "automation" };
-const student = { email: "teacher1.smoke.automation@snapwiz.com", password: "automation" };
+const teacher = { email: "teacher.1.teacherdashboard@snapwiz.com", password: "snapwiz" };
+const student = { email: "student.1.teacherdashboard@snapwiz.com", password: "snapwiz" };
 const classDetail = {
-  name: "Smoke Automation Class",
+  name: "Automation Class - teacherDashboard",
   grades: "K",
   subject: "Mathematics",
   students: 4,

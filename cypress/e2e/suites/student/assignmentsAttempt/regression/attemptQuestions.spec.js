@@ -16,10 +16,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
   const lcb = new LiveClassboardPage();
 
   const { RIGHT } = attemptTypes;
-  const student = "student1.t2.automation@snapwiz.com";
-  const teacher = "teacher2.regression.automation@snapwiz.com";
+  const student = "student.1.attemptquestions@snapwiz.com";
+  const teacher = "teacher.1.attemptquestions@snapwiz.com";
   const password = "snapwiz";
-  const className = "Automation Class Teacher 2";
+  const className = "Automation Class - attemptQuestions teacher.1";
 
   const { itemKeys } = STUDENT_ATTEMPT;
   const questionTypeMap = lcb.getQuestionTypeMap(itemKeys, questionData, {});

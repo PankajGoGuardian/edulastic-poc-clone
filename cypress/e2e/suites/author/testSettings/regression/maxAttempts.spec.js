@@ -29,10 +29,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Settings`, () => 
   };
   const { start, retake, review } = assignmentButtonsText;
 
-  const student = "student1.t2.automation@snapwiz.com";
-  const teacher = "teacher2.regression.automation@snapwiz.com";
+  const student = "student.1.maxattempts@snapwiz.com";
+  const teacher = "teacher.1.maxattempts@snapwiz.com";
   const password = "snapwiz";
-  const className = "Automation Class Teacher 2";
+  const className = "Automation Class - maxAttempts teacher.1";
   const maxAttempt = 3;
   let testId;
 

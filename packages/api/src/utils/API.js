@@ -65,7 +65,7 @@ export default class API {
       // Initialise kid for unauthenticated user
       initKID();
       if (window.sessionStorage) {
-        // config.headers["X-Amzn-Trace-Id"] = getTraceId();
+        config.headers["X-Amzn-Trace-Id"] = getTraceId();
       }
       return config;
     });

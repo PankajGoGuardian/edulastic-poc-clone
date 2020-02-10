@@ -18,13 +18,6 @@ let config = {
     sourceMap: true,
     ...(process.env.QUICK_BUILD ? { sourceMap: false, minimize: false } : {})
   },
-  configureWebpack: {
-    resolve: {
-      alias: {
-        appDetails: path.resolve(__dirname, "package.json")
-      }
-    }
-  },
   chainWebpack: (chain, opts) => {
     if (process.env.NODE_ENV === "production") {
       chain
@@ -63,6 +56,9 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
+
+    chain.resolve.alias.set("appDetails", path.resolve(__dirname, "package.json"));
+
     chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
     // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
     // not really required, since the plugin by itself is doing the same.

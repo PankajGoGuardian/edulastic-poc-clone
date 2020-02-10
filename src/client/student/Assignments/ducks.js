@@ -6,6 +6,7 @@ import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
+import { Effects } from "@edulastic/common";
 import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -285,7 +286,7 @@ function* launchAssignment({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
-    yield takeLatest(START_ASSIGNMENT, startAssignment),
+    yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment)

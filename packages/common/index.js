@@ -1,4 +1,5 @@
 import * as StyledComponents from "./src/components/StyledComponents";
+import * as Effects from "./src/effects";
 
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
@@ -36,6 +37,7 @@ export { default as Tab } from "./src/components/Tabs/Tab";
 export { default as TabContainer } from "./src/components/Tabs/TabContainer";
 export { default as MathModal } from "./src/components/MathModal";
 export { StyledComponents };
+export { Effects };
 export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmModal";
 export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 export { default as Hints } from "./src/components/Hints";

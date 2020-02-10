@@ -216,7 +216,8 @@ export const StandardsGradebookTable = ({
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
-        }
+        },
+        render: data => (tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data)
       },
       {
         title: "SIS ID",

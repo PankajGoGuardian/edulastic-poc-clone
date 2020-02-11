@@ -79,10 +79,11 @@ const ContentBucketsTable = ({
   };
 
   const handleCreateBucket = data => {
-    data = { ...data, owner: [user.firstName, user.lastName].filter(n => n).join(" ") };
     if (data._id) {
+      data = { ...data, owner: editableBucket.owner };
       updateBucket(data);
     } else {
+      data = { ...data, owner: [user.firstName, user.lastName].filter(n => n).join(" ") };
       createBucket(data);
     }
     toggleCreateBucketModal();
@@ -308,7 +309,12 @@ const ContentBucketsTable = ({
         </RightFilterDiv>
       </StyledFilterDiv>
       <TableContainer style={{ boxShadow: "none" }}>
-        <StyledContentBucketsTable rowKey={record => record._id} dataSource={filteredBuckets()} columns={columns} pagination={false} />
+        <StyledContentBucketsTable
+          rowKey={record => record._id}
+          dataSource={filteredBuckets()}
+          columns={columns}
+          pagination={false}
+        />
       </TableContainer>
       {upsertModalVisibility && (
         <CreateBucketModalForm

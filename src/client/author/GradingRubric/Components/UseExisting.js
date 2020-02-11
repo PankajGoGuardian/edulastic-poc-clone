@@ -37,6 +37,8 @@ import ConfirmModal from "./common/ConfirmModal";
 import { getUserDetails } from "../../../student/Login/ducks";
 import { setRubricIdAction, getCurrentQuestionSelector, removeRubricIdAction } from "../../sharedDucks/questions";
 import { setItemLevelScoreFromRubricAction } from "../../ItemDetail/ducks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus, faClone, faPencilAlt, faTrashAlt, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const UseExisting = ({
   updateRubricData,
@@ -115,11 +117,11 @@ const UseExisting = ({
                   )}
                   {currentQuestion.rubrics?._id === currentRubricData._id && (
                     <span onClick={() => dissociateRubricFromQuestion()}>
-                      <i class="fa fa-minus" aria-hidden="true" /> Remove
+                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                     </span>
                   )}
                   <span onClick={() => handleClone(currentRubricData)}>
-                    <i class="fa fa-clone" aria-hidden="true" /> <span>Clone</span>
+                    <FontAwesomeIcon icon={faClone} aria-hidden="true" /> <span>Clone</span>
                   </span>
                   {currentRubricData.createdBy._id === user._id && (
                     <>
@@ -128,11 +130,11 @@ const UseExisting = ({
                       </span>
 
                       <span onClick={() => handleEditRubric()}>
-                        <i class="fa fa-pencil" aria-hidden="true" /> <span>Edit</span>
+                        <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" /> <span>Edit</span>
                       </span>
 
                       <span onClick={() => setShowDeleteModal(true)}>
-                        <i class="fa fa-trash" aria-hidden="true" /> <span>Delete</span>
+                        <FontAwesomeIcon icon={faTrashAlt} aria-hidden="true" /> <span>Delete</span>
                       </span>
                     </>
                   )}
@@ -147,7 +149,7 @@ const UseExisting = ({
                     <Icon type="save" theme="filled" /> <span>Save</span>
                   </span>
                   <span className="publish" onClick={() => handleSaveRubric("published")}>
-                    <i class="fa fa-paper-plane" aria-hidden="true" /> <span>Save & Publish</span>
+                    <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> <span>Save & Publish</span>
                   </span>
                 </>
               )}

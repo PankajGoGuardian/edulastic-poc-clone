@@ -21,6 +21,9 @@ import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../
 import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExpandAlt } from "@fortawesome/free-solid-svg-icons";
+
 const Search = ({
   search: {
     grades,
@@ -233,7 +236,7 @@ const Search = ({
         </Item>
         <ItemRelative>
           <IconWrapper>
-            <i class="fa fa-expand" aria-hidden="true" onClick={() => setShowModal(true)} />
+            <FontAwesomeIcon icon={faExpandAlt} aria-hidden="true" onClick={() => setShowModal(true)} />
           </IconWrapper>
           <ItemHeader>Standards</ItemHeader>
           <Select

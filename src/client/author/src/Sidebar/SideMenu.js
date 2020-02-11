@@ -44,6 +44,8 @@ import { toggleSideBarAction } from "../actions/toggleMenu";
 import { getUserFeatures } from "../../../student/Login/ducks";
 import { isOrganizationDistrictSelector } from "../selectors/user";
 import { roleuser } from "@edulastic/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const menuItems = [
   {
@@ -146,7 +148,8 @@ class SideMenu extends Component {
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
       <TextIcon isSidebarCollapsed={isSidebarCollapsed}>
-        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`} <i className="fa fa-heart" />
+        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`}
+        <FontAwesomeIcon icon={faHeart} />
       </TextIcon>
     );
     return [

@@ -39,7 +39,10 @@ import {
 } from "../../../../ItemList/ducks";
 import { getUserId, getUserFeatures, getUserSelector } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
+
 
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
@@ -419,7 +422,7 @@ class AuthorTestItemPreview extends Component {
           )}
 
           <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
-            <i className="fa fa-exclamation-triangle" aria-hidden="true" />
+            <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueButton>
         </ButtonsWrapper>
       </>

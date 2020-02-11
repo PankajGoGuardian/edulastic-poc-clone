@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { IconCorrect } from "@edulastic/icons";
 import { themeColor, largeDesktopWidth } from "@edulastic/colors";
 import { FlexContainer } from "../common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 
@@ -11,10 +13,10 @@ const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQu
   <MainFooter isSidebarVisible={isSidebarVisible}>
     <FlexContainer>
       <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
-        <i className="fa fa-angle-left" />
+        <FontAwesomeIcon icon={faAngleLeft} />
       </PrevButton>
       <NextButton data-cy="next" onClick={moveToNext}>
-        <i className="fa fa-angle-right" />
+        <FontAwesomeIcon icon={faAngleRight} />
         <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
       </NextButton>
     </FlexContainer>

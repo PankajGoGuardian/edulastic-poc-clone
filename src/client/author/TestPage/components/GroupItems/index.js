@@ -58,6 +58,9 @@ import {
 import TypeConfirmModal from "./TypeConfirmModal";
 import { testItemsApi } from "@edulastic/api";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
 
@@ -491,7 +494,7 @@ const GroupItems = ({
       <CreateGroupWrapper>
         <Heading>
           Question Delivery Groups&nbsp;&nbsp;
-          <i class="fa fa-question-circle" aria-hidden="true" />
+          <FontAwesomeIcon icon={faQuestionCircle} aria-hidden="true" />
         </Heading>
         <Collapse activeKey={activePanels} onChange={panels => setActivePanels(panels)}>
           {test.itemGroups.map((itemGroup, index) => {
@@ -516,7 +519,7 @@ const GroupItems = ({
                       )}
                       {test.itemGroups.length > 1 && (
                         <div title="Delete" onClick={e => handleDeleteGroup(e, index)}>
-                          <i class="fa fa-trash-o" aria-hidden="true" />
+                          <FontAwesomeIcon icon={faTrashAlt} />
                         </div>
                       )}
                     </div>

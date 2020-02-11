@@ -26,6 +26,8 @@ import { getUserOrgId, getUserRole } from "../../selectors/user";
 import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import UserSubHeader from "./AdminSubHeader/UserSubHeader";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
 
 const ListHeader = ({
   onCreate,
@@ -100,7 +102,7 @@ const ListHeader = ({
               <TestButton
                 color="secondary"
                 onClick={toggleInviteTeacherModal}
-                icon={<i class="fa fa-users" aria-hidden="true" />}
+                icon={<FontAwesomeIcon icon={faUsers} aria-hidden="true" />}
               >
                 INVITE TEACHERS
               </TestButton>

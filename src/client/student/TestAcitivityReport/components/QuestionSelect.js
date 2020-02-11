@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } from "../../sharedDucks/TestItem";
 import Nav from "../../../assessment/themes/common/Nav";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const { Option } = Select;
 
@@ -29,12 +31,12 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => (
     <div>
       {current > 0 && (
         <PreviousBtn data-cy="previousItem" onClick={() => setCurrentItem(current - 1)}>
-          <i className="fa fa-angle-left" />
+          <FontAwesomeIcon icon={faAngleLeft} />
         </PreviousBtn>
       )}
       {current < count - 1 && (
         <NextBtn data-cy="nextItem" onClick={() => setCurrentItem(current + 1)}>
-          <i className="fa fa-angle-right" />
+          <FontAwesomeIcon icon={faAngleRight} />
         </NextBtn>
       )}
     </div>

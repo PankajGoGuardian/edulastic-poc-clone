@@ -9,7 +9,8 @@ import { message } from "antd";
 import { ActionCreators } from "redux-undo";
 import get from "lodash/get";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
@@ -608,11 +609,11 @@ class AssessmentPlayerDefault extends React.Component {
           >
             {currentItem > 0 && (
               <Nav.BackArrow onClick={moveToPrev}>
-                <i className="fa fa-angle-left" />
+                <FontAwesomeIcon icon={faAngleLeft} />
               </Nav.BackArrow>
             )}
             <Nav.NextArrow onClick={moveToNext}>
-              <i className="fa fa-angle-right" />
+              <FontAwesomeIcon icon={faAngleRight} />
             </Nav.NextArrow>
             {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
                 Also, will use ScrollContext for auto-scroll on mobile */}

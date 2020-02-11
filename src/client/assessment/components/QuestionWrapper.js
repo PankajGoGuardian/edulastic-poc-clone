@@ -60,6 +60,8 @@ import FeedBackContainer from "./FeedBackContainer";
 import { PrintPreviewScore } from "./printPreviewScore";
 import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
 import { Coding } from "../widgets/Coding";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -476,7 +478,7 @@ class QuestionWrapper extends Component {
                           Show student work
                         </ShowStudentWorkBtn>
                       )}
-                      <i className="fa fa-clock-o" aria-hidden="true" />
+                      <FontAwesomeIcon icon={faClock} aria-hidden="true" />
                       {round(timeSpent / 1000, 1)}s
                     </TimeSpentWrapper>
                   </>

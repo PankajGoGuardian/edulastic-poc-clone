@@ -18,6 +18,8 @@ import {
 import Rating from "./Rating";
 import TextInput from "./common/TextInput";
 import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClone, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, className }) => {
   let scrollBarRef;
@@ -124,12 +126,12 @@ const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, c
         <CiteriaActionsContainer>
           {isEditable && (
             <DuplicateCriteria className="duplicate-critera-button" title="Clone" onClick={handleDuplicate}>
-              <i class="fa fa-clone" aria-hidden="true" /> Clone Criteria
+              <FontAwesomeIcon icon={faClone} aria-hidden="true" /> Clone Criteria
             </DuplicateCriteria>
           )}
           {currentRubricData.criteria.length > 1 && isEditable && (
             <DeleteCriteria className="delete-critera-button" title="Delete" onClick={handleDelete}>
-              <i class="fa fa-trash" aria-hidden="true" />
+              <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
             </DeleteCriteria>
           )}
         </CiteriaActionsContainer>

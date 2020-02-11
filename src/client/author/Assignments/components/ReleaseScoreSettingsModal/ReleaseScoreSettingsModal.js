@@ -4,6 +4,8 @@ import { Button, Radio, Row } from "antd";
 import { test } from "@edulastic/constants";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { ReleaseGradesModal, Info } from "./styled";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -60,13 +62,13 @@ const ReleaseScoreSettingsModal = ({
       {!!releaseGradeValue &&
         (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
           <Info>
-            <i class="fa fa-info-circle" aria-hidden="true" /> This setting will be retained and the scores will not be
-            released to the students
+            <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" /> This setting will be retained and the scores will
+            not be released to the students
           </Info>
         ) : (
           <Info>
-            <i class="fa fa-info-circle" aria-hidden="true" /> This setting will be retained and scores will be released
-            automatically when students complete the assignment
+            <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" /> This setting will be retained and scores will be
+            released automatically when students complete the assignment
           </Info>
         ))}
     </ReleaseGradesModal>

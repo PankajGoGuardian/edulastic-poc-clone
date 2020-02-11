@@ -8,6 +8,8 @@ import { MathSpan, FlexContainer, AnswerContext } from "@edulastic/common";
 
 import DragItem from "./DragItem";
 import { StyledResponseDiv, StyledResponseOption } from "../../ClozeDragDrop/styled/ResponseBox";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowsAlt } from "@fortawesome/free-solid-svg-icons";
 
 const specTarget = {
   drop: (props, monitor) => {
@@ -104,7 +106,7 @@ const ResponseBoxLayout = ({
                     data={`${option}_null_${index}`}
                     disableResponse={!isAnswerModifiable}
                   >
-                    <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+                    <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />
                     <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
                   </DragItem>
                 )}

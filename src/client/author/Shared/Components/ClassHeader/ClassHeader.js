@@ -71,6 +71,8 @@ import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
 import ViewPasswordModal from "./ViewPasswordModal";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -435,7 +437,7 @@ class ClassHeader extends Component {
           {window.innerWidth > desktopWidth && renderOpenClose}
           <Dropdown overlay={actionsMenu} placement={"bottomRight"}>
             <HeaderMenuIcon data-cy="headerDropDown">
-              <i class="fa fa-ellipsis-v" />
+              <FontAwesomeIcon icon={faEllipsisV} />
             </HeaderMenuIcon>
           </Dropdown>
           <StyledDiv>

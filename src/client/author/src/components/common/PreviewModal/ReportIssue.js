@@ -5,6 +5,8 @@ import { ReportIssueContainer, ReportHeader, CloseButton, TextAreaSendButton } f
 import { reportContentErrorAction } from "../../../../TestPage/components/AddItems/ducks";
 import { submitReviewFeedbackAction } from "../../../../ItemList/ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const ReportIssue = ({
   textareaRows,
@@ -68,7 +70,7 @@ const ReportIssue = ({
     <ReportIssueContainer>
       <ReportHeader>
         <span>
-          <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+          <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           Report Content Issue
         </span>
         <CloseButton

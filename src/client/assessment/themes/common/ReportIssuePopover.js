@@ -3,6 +3,8 @@ import { Button } from "antd";
 import ReportIssue from "../../../author/src/components/common/PreviewModal/ReportIssue";
 import styled from "styled-components";
 import ReportIssueConfirmaModal from "./ReportIssueConfirmaModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 
 const ReportIssuePopover = ({ item }) => {
   const [visible, setVisibility] = useState(false);
@@ -34,7 +36,7 @@ const ReportIssuePopover = ({ item }) => {
       </Popover>
 
       <StyledButton title="Report Issue" type="danger" onClick={() => toggleVisibility(!visible)}>
-        <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+        <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
       </StyledButton>
       <ReportIssueConfirmaModal toggleModal={toggleModal} visible={showConfirmModal} handleResponse={handleResponse} />
     </>

@@ -49,6 +49,8 @@ import {
   CaretUp
 } from "./styled";
 import { getUserRole, getGroupList } from "../../../src/selectors/user";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArchive } from "@fortawesome/free-solid-svg-icons";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
@@ -530,7 +532,7 @@ class LeftFilter extends React.Component {
                   {classListArchive.map(item => (
                     <Select.Option key={item._id} value={item._id}>
                       <span style={{ marginRight: "15px" }}>{item.name}</span>
-                      <i class="fa fa-archive" />
+                      <FontAwesomeIcon icon={faArchive} />
                     </Select.Option>
                   ))}
                 </Select>

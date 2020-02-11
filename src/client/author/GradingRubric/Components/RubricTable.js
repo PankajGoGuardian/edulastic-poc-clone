@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Col, Icon } from "antd";
 import { TableActionsContainer, StyledTable, StyledScrollbarContainer } from "../styled";
 import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClone, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 const RubricTable = ({ handleTableAction, searchedRubricList, loading, user }) => {
   const columns = [
@@ -37,12 +39,12 @@ const RubricTable = ({ handleTableAction, searchedRubricList, loading, user }) =
           <Icon type="eye" />
         </span>
         <span title="Clone" onClick={() => handleTableAction("CLONE", record._id)}>
-          <i class="fa fa-clone" aria-hidden="true" />
+          <FontAwesomeIcon icon={faClone} aria-hidden="true" />
         </span>
         {record.createdBy._id === user._id && (
           <>
             <span title="Delete" onClick={() => handleTableAction("DELETE", record._id)}>
-              <i class="fa fa-trash" aria-hidden="true" />
+              <FontAwesomeIcon icon={faTrashAlt} aria-hidden="true" />
             </span>
             <span title="Share" onClick={() => handleTableAction("SHARE", record._id)}>
               <Icon type="share-alt" />

@@ -31,10 +31,6 @@ export const HeadingContainer = styled.div`
   height: 40px;
   margin-bottom: 10px;
   display: flex;
-  > div {
-    width: 50%;
-    display: inline-block;
-  }
 `;
 
 export const TableHeading = styled.span`

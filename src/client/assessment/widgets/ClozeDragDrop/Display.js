@@ -414,7 +414,7 @@ class ClozeDragDropDisplay extends Component {
     };
 
     const questionContent = (
-      <div style={{ margin: "auto" }}>
+      <div>
         {responsecontainerposition === "top" && (
           <div style={answerContainerStyle}>
             <div style={responseBoxStyle}>{responseBoxLayout}</div>

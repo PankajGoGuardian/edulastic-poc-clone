@@ -32,6 +32,7 @@ Cypress.on("uncaught:exception", () => false);
 
 // attach screenshots in report for all failed tests
 Cypress.on("test:after:run", (test, runnable) => {
+  addContext({ test }, { title: "specName", value: `${Cypress.spec.name}` });
   if (test.state === "failed") {
     const imgError = test.err.stack.includes("saved snapshot");
     let screenshotFileName = FileHelper.getTestFullName();

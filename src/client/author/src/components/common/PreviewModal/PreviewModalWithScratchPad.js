@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
+import { AnswerContext } from "@edulastic/common";
 import SvgDraw from "../../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 import Tools from "../../../../../assessment/themes/AssessmentPlayerDefault/Tools";
 import { hexToRGB } from "@edulastic/common";
@@ -23,7 +24,8 @@ const PreviewModalWithScratchPad = ({
   columnsContentArea: ColumnsContentArea,
   sectionQue,
   resourceCount,
-  onlySratchpad
+  onlySratchpad,
+  scrollContainerRef
 }) => {
   const [currentColor, setCurrentColor] = useState("#ff0000");
   const [fillColor, setFillColor] = useState("#ff0000");
@@ -32,6 +34,18 @@ const PreviewModalWithScratchPad = ({
   const [deleteMode, setDeleteMode] = useState(false);
   const [history, setHistory] = useState(0);
   const [note, setNote] = useState("");
+  const [svgHeight, setSvgHeight] = useState();
+
+  useEffect(() => {
+    if (scrollContainerRef) {
+      scrollContainerRef.current.addEventListener("scroll", handleScroll, { passive: true });
+    }
+    return () => {
+      scrollContainerRef?.current.removeEventListener("scroll", handleScroll);
+    };
+  });
+
+  const handleScroll = e => setSvgHeight(e.target.scrollHeight);
 
   const handleScratchToolChange = value => () => {
     if (value === "deleteMode") {
@@ -83,7 +97,7 @@ const PreviewModalWithScratchPad = ({
   };
 
   return (
-    <>
+    <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
       <StyledFlexContainer
         style={{
           alignItems: "flex-start",
@@ -103,15 +117,16 @@ const PreviewModalWithScratchPad = ({
             undo={handleUndo}
             redo={handleRedo}
             onColorChange={handleColorChange}
+            lineWidth={lineWidth}
             className="review-scratchpad"
           />
         )}
-        <div style={{ width: "100%", position: "relative" }}>
+        <div style={{ width: "100%", position: "relative", overflow: "auto" }}>
           <ColumnsContentArea
             sectionQue={sectionQue}
             resourceCount={resourceCount}
             className="scratchpad-wrapper"
-            style={onlySratchpad ? { pointerEvents: "none" } : {}}
+            style={{ position: "relative", minWidth: "1200px" }}
           >
             <SvgDraw
               activeMode={activeMode}
@@ -121,7 +136,7 @@ const PreviewModalWithScratchPad = ({
               lineWidth={lineWidth}
               fillColor={fillColor}
               saveHistory={saveHistory("scratchpad")}
-              height="100%`"
+              height={!!svgHeight ? `${svgHeight}px` : "100%"}
               top="0"
               left="0"
               position="absolute"
@@ -131,7 +146,7 @@ const PreviewModalWithScratchPad = ({
         </div>
       </StyledFlexContainer>
       {!onlySratchpad && _renderAddRejectNoteSection()}
-    </>
+    </AnswerContext.Provider>
   );
 };
 

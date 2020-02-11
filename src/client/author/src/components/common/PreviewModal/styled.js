@@ -66,6 +66,7 @@ export const ButtonsContainer = styled(FlexContainer)`
   padding: 15px;
   justify-content: space-between;
   border-radius: 10px 10px 0px 0px;
+  ${({ style }) => style};
 `;
 
 export const ButtonsWrapper = styled.div`
@@ -73,6 +74,7 @@ export const ButtonsWrapper = styled.div`
   justify-content: ${props => props.justifyContent};
   margin: 0;
   padding: ${props => props.padding || "0px"};
+  ${({ style }) => style};
   .ant-btn {
     margin-bottom: ${props => props.mb || "0px"};
   }
@@ -89,7 +91,8 @@ export const ColumnContentArea = styled.div`
   height: ${props => (props.isAuthoring ? "auto" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "flex")};
   flex-direction: column;
-  flex-basis: 100%;
+  flex-basis: 100%;,
+  ${({ style }) => style};
 `;
 
 export const EvaluateButton = styled(Button)`
@@ -330,6 +333,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
         .rc-color-picker-trigger {
           width: 40px !important;
           height: 40px !important;
+          position: absolute;
         }
       }
     }
@@ -356,6 +360,34 @@ export const StyledFlexContainer = styled(FlexContainer)`
     }
     @media (max-width: ${smallDesktopWidth}) {
       top: 170px;
+      left: 45px;
+      .ant-btn {
+        margin-bottom: 4px;
+        background: ${themeColor};
+        width: 30px;
+        height: 30px;
+        &:hover {
+          background: green;
+        }
+      }
+      .ant-select {
+        width: 30px;
+        height: 30px;
+        .ant-select-selection__rendered {
+          line-height: 30px;
+        }
+      }
+      #tool {
+        margin-bottom: 4px;
+        .rc-color-picker-wrap {
+          width: 30px !important;
+          height: 30px !important;
+          .rc-color-picker-trigger {
+            width: 30px !important;
+            height: 30px !important;
+          }
+        }
+      }
     }
   }
 `;

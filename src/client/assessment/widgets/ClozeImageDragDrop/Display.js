@@ -708,7 +708,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <div style={{ fontSize, margin: "auto", overflow: "hidden" }}>
+      <div style={{ fontSize, margin: "auto", overflow: "auto" }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />

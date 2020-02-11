@@ -2159,3 +2159,9 @@ iframe {
 .migrated-question img {
   max-height: unset !important;
 }
+.migrated-question #dragged-ans-choice,
+.value-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -72,7 +72,7 @@ class CorrectAnswers extends Component {
   };
 
   updateCorrectValidationAnswers = answers => {
-    const { question, setQuestionData } = this.props;
+    const { question, setQuestionData, updateVariables } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
       ...question.data,
@@ -83,11 +83,12 @@ class CorrectAnswers extends Component {
     };
     newData.validation.validResponse = updatedValidation.validResponse;
     const updatedData = this.updateResponseBoxWidth(newData);
+    updateVariables(updatedData);
     setQuestionData(updatedData);
   };
 
   updateAltCorrectValidationAnswers = (answers, tabIndex) => {
-    const { question, setQuestionData } = this.props;
+    const { question, setQuestionData, updateVariables } = this.props;
     const newData = cloneDeep(question);
 
     const updatedAltResponses = newData.validation.altResponses;
@@ -98,6 +99,7 @@ class CorrectAnswers extends Component {
 
     newData.validation.altResponses = updatedAltResponses;
     const updatedData = this.updateResponseBoxWidth(newData);
+    updateVariables(updatedData);
     setQuestionData(updatedData);
   };
 
@@ -228,7 +230,8 @@ CorrectAnswers.propTypes = {
   maxRespCount: PropTypes.number,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  updateVariables: PropTypes.func.isRequired
 };
 
 CorrectAnswers.defaultProps = {

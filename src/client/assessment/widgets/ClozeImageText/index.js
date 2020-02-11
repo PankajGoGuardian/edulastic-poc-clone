@@ -219,6 +219,7 @@ class ClozeImageText extends Component {
                       cleanSections={cleanSections}
                       imageOptions={item.imageOptions}
                       item={item}
+                      updateVariables={updateVariables}
                     />
 
                     <AdditionalContainer>

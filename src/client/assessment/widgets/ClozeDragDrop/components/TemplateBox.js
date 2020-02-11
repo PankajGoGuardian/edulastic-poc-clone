@@ -68,7 +68,8 @@ const TemplateBox = ({ resprops, id }) => {
     display: "flex",
     justifyContent: "flext-start",
     alignItems: "center",
-    height: "100%"
+    height: "100%",
+    "max-width": Dimensions.maxWidth
   };
 
   const boxHeight = response ? height : responseBtnStyle.heightpx;

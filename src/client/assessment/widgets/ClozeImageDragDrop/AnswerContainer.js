@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Popover } from "antd";
 import { MathSpan, measureText } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 const convertNumToPixel = val => {
   if (val.toString().search("px") === -1) {
@@ -70,7 +71,7 @@ const AnswerContainer = ({ answer, height, width, isWrapText, fontSize }) => {
   const { width: contentWidth } = measureText(answer, { fontSize });
   const isOverText = width < contentWidth || height < imageOriginalSize.height;
   const content = (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", maxWidth: response.maxWidth }}>
       <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
     </div>
   );

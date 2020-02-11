@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { response } from "@edulastic/constants";
 
 import { getStemNumeration } from "../../../utils/helpers";
 import { IconWrapper } from "./CheckboxTemplateBoxLayout/styled/IconWrapper";
@@ -17,11 +18,14 @@ const PopoverContent = ({ stemNumeration, index, fontSize, userSelections, statu
         } ${status} show-answer"`}
         style={{ position: "relative" }}
       >
-        <span className="index index-box" style={{ display: checkAnswer && !isExpressGrader ? "none" : "flex" }}>
+        <span
+          className="index index-box"
+          style={{ display: checkAnswer && !isExpressGrader ? "none" : "flex", "align-self": "stretch" }}
+        >
           {indexStr}
         </span>
-        <div className="text container">
-          <div className="clipText">{userSelections[index]}</div>
+        <div className="text container" style={{ maxWidth: response.maxWidth }}>
+          <div style={{ whiteSpace: "normal" }}>{userSelections[index]}</div>
           <IconWrapper rightPosition={10} style={{ top: "50%", transform: "translateY(-50%)" }}>
             {userSelections.length > 0 && status === "right" && <RightIcon />}
             {userSelections.length > 0 && status === "wrong" && <WrongIcon />}

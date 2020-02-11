@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { response } from "@edulastic/constants";
 
 import { getStemNumeration } from "../../../utils/helpers";
 import { IconWrapper } from "./CheckboxTemplateBoxLayout/styled/IconWrapper";
@@ -19,7 +20,7 @@ const PopoverContent = ({
 }) => {
   const indexStr = getStemNumeration(stemNumeration, index);
   return (
-    <div fontSize={fontSize} className={className} style={{ position: "relative" }}>
+    <div fontSize={fontSize} className={className} style={{ position: "relative", "max-width": response.maxWidth }}>
       <div
         className="index index-box"
         style={{ display: checkAnswer && !isExpressGrader ? "none" : "flex", alignSelf: "stretch", height: "auto" }}

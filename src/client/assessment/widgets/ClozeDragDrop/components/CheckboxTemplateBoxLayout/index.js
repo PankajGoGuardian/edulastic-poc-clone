@@ -145,7 +145,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     </div>
   );
 
-  const entireAnswer = <MathSpan className="clipText" dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />;
+  const entireAnswer = <MathSpan dangerouslySetInnerHTML={{ __html: getFormulaLabel() }} />;
 
   const popoverContent = (
     <PopoverContent

@@ -258,15 +258,15 @@ class AuthorTestItemPreview extends Component {
       item,
       userId,
       page,
-      userFeatures
+      userFeatures,
+      onlySratchpad
     } = this.props;
 
     const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId;
-
     return (
       <>
-        <ButtonsContainer>
+        <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && (
               <EduButton
@@ -371,7 +371,8 @@ class AuthorTestItemPreview extends Component {
       page,
       handleShowHints,
       showHints,
-      toggleReportIssue
+      toggleReportIssue,
+      onlySratchpad
     } = this.props;
     const hints = get(item, "data.questions.[0].hints", []);
     const showHintsBtn = hints.length > 0 ? hints[0].label : false;
@@ -393,6 +394,7 @@ class AuthorTestItemPreview extends Component {
           padding={isPassage ? "15px 15px 0px 45px" : "0px"}
           mb={isPassage ? "5px" : "0px"}
           justifyContent="flex-end"
+          style={onlySratchpad ? { visibility: "hidden" } : {}}
         >
           {page !== "itemAuthoring" && showHintsBtn && (
             <EvaluateButton
@@ -490,14 +492,20 @@ class AuthorTestItemPreview extends Component {
         resourceCount={resourceCount}
         submitReviewFeedback={this.submitReviewFeedback}
         onlySratchpad={onlySratchpad}
+        scrollContainerRef={this.scrollContainer}
       />
     );
   };
 
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
+    const { onlySratchpad } = this.props;
     return (
-      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
+      <Divider
+        isCollapsed={!!collapseDirection}
+        collapseDirection={collapseDirection}
+        style={onlySratchpad ? { visibility: "hidden" } : {}}
+      >
         <div>
           <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
             <IconArrowLeft />
@@ -533,8 +541,8 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumnsContentArea = ({ sectionQue, resourceCount, children = null, ...rest }) => {
-    const { cols, page } = this.props;
-    const { collapseDirection } = this.state;
+    const { cols, page, onlySratchpad } = this.props;
+    const { collapseDirection, isRejectMode } = this.state;
 
     return (
       <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
@@ -544,7 +552,11 @@ class AuthorTestItemPreview extends Component {
           return (
             <>
               {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-              <ColumnContentArea isAuthoring={page === "itemAuthoring"} hide={hideColumn}>
+              <ColumnContentArea
+                isAuthoring={page === "itemAuthoring"}
+                hide={hideColumn}
+                style={onlySratchpad ? { boxShadow: "none" } : {}}
+              >
                 {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                 {this.renderColumns(col, i, sectionQue, resourceCount)}
               </ColumnContentArea>

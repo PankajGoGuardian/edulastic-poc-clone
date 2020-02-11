@@ -14,89 +14,58 @@ class QuestionMenu extends Component {
   };
 
   handleScroll = (option, e) => {
-    const { scrollContainer, main, advanced } = this.props;
-    const target = scrollContainer?.current || option.el;
+    this.contentWrapper.removeEventListener("scroll", this.throttledFindActiveTab);
+    const { main, advanced } = this.props;
     const options = [...main, ...advanced];
     const activeTab = options.findIndex(opt => opt.label === option.label);
 
-    if (option.el.clientHeight >= window.innerHeight / 2) {
-      this.setState({ activeTab }, () => {
-        target.scrollTo({
-          top: option.el.offsetTop - 111,
-          behavior: "smooth"
-        });
+    this.setState({ activeTab }, () => {
+      option.el.scrollIntoView({
+        behavior: "smooth"
       });
-    } else {
-      this.setState({ activeTab }, () => {
-        target.scrollTo({
-          top: option.el.offsetTop - 111 + option.el.clientHeight - window.innerHeight / 2,
-          behavior: "smooth"
-        });
-      });
-    }
+      setTimeout(() => this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab), 1000);
+    });
   };
 
   componentDidMount() {
-    window.addEventListener("scroll", this.throttledFindActiveTab);
+    this.contentWrapper = this.props.scrollContainer.current;
+    this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.throttledFindActiveTab);
+    this.contentWrapper.removeEventListener("scroll", this.throttledFindActiveTab);
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.scrollContainer.current !== nextProps.scrollContainer.current) {
+      this.contentWrapper = nextProps.scrollContainer.current;
+    }
     this.setState({ activeTab: nextProps.activeTab });
     this.findActiveTab();
   }
 
-  isActive = (index, options) => {
-    const { activeTab } = this.state;
-    const { advancedAreOpen } = this.props;
-
-    if ((!advancedAreOpen && options[index].section === "advanced") || !options[index].el) return false;
-
-    const summaryScrollHeight = document.querySelector("#react-app").scrollHeight;
-    const { el } = options[index];
-    const activeOption = document.querySelector(".option.active");
-    const scrollBarOptions = document.querySelector(".option.active")?.parentNode?.parentNode;
-
-    if (!scrollBarOptions) {
-      return;
+  findActiveTab = e => {
+    const { main, advanced, advancedAreOpen } = this.props;
+    let allOptions = main;
+    if (advancedAreOpen) {
+      allOptions = allOptions.concat(advanced);
     }
-
-    scrollBarOptions.scrollTo({
-      top: activeOption.offsetTop,
-      behavior: "smooth"
-    });
-
-    if (window.scrollY <= 40 && activeTab !== index && index === 0) {
-      return this.setState({ activeTab: 0 });
-    }
-
-    // last section
-    if (
-      window.scrollY + window.innerHeight >= summaryScrollHeight - 40 &&
-      activeTab !== index &&
-      index === options.length - 1
-    ) {
-      return this.setState({ activeTab: options.length - 1 });
-    }
-
-    if (
-      window.scrollY + window.innerHeight / 3 >= el.offsetTop &&
-      window.scrollY + (window.innerHeight / 4) * 2 <= el.offsetTop + el.clientHeight &&
-      activeTab !== index
-    ) {
-      return this.setState({ activeTab: index });
-    }
-  };
-
-  findActiveTab = () => {
-    const { main, advanced } = this.props;
-    const allOptions = main.concat(advanced);
-
     for (let i = 0; i < allOptions.length; i++) {
-      this.isActive(i, allOptions);
+      const elm = allOptions[i].el;
+      if (
+        allOptions.length > this.state.activeTab &&
+        this.contentWrapper.scrollTop >= elm.offsetTop - this.contentWrapper.offsetTop + elm.scrollHeight
+      ) {
+        this.setState({ activeTab: i + 1 });
+      }
+    }
+    if (this.contentWrapper.scrollTop < allOptions[0].el.scrollHeight / 2) {
+      this.setState({ activeTab: 0 });
+    } else if (
+      allOptions.length > this.state.activeTab &&
+      this.contentWrapper.scrollHeight <= this.contentWrapper.scrollTop + this.contentWrapper.clientHeight
+    ) {
+      this.setState({ activeTab: allOptions.length - 1 });
     }
   };
 
@@ -207,8 +176,8 @@ const MainOptions = styled.ul`
         `${props.activeTab * (props.windowWidth >= extraDesktopWidthMax.replace("px", "") ? 80 : 50) +
           (props.activeTab > props.main.length - 1
             ? props.windowWidth >= extraDesktopWidthMax.replace("px", "")
-              ? 48
-              : 77
+              ? 50
+              : 79
             : 0)}px`}
     );
   }
@@ -222,6 +191,7 @@ const Option = styled.li`
   font-style: normal;
   font-stretch: normal;
   line-height: 0;
+  height: 0;
   position: relative;
   letter-spacing: 0.2px;
   text-align: left;

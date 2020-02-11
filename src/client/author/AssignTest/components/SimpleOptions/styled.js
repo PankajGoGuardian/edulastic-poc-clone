@@ -173,7 +173,6 @@ export const StyledSelect = styled(Select)`
   .ant-select-selection {
     background: #f8f8f8;
     min-height: 40px;
-    margin-bottom: 10px;
     padding: 3px;
     border-radius: 2px;
     border: 1px #e1e1e1 solid;
@@ -210,10 +209,6 @@ export const StyledSelect = styled(Select)`
       svg {
         fill: ${themeColor};
       }
-    }
-
-    .ant-select-selection-selected-value {
-      margin-top: 4px;
     }
   }
 `;

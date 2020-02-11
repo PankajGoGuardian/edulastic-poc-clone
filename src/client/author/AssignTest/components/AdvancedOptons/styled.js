@@ -99,6 +99,13 @@ export const StyledSelect = styled(Select)`
   }
 `;
 
+export const Label = styled.label`
+  width: 100%;
+  display: inline-block;
+  margin: 0px 0px 5px;
+  font-weight: 600;
+`;
+
 export const StyledDatePicker = styled(DatePicker)`
   .ant-calendar-picker-input {
     background: #f8f8f8;

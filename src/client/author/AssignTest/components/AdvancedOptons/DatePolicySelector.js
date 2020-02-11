@@ -1,12 +1,12 @@
+import { test as testConst } from "@edulastic/constants";
+import { Col, Select } from "antd";
+import * as moment from "moment";
 import React from "react";
 import { connect } from "react-redux";
 import { getUserRole } from "../../../src/selectors/user";
-import * as moment from "moment";
-import { Col, Select } from "antd";
-import { test as testConst } from "@edulastic/constants";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./styled";
 import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
+import { Label, StyledDatePicker, StyledRow, StyledRowLabel, StyledSelect } from "./styled";
 
 const DatePolicySelector = ({
   startDate,
@@ -41,14 +41,9 @@ const DatePolicySelector = ({
 
   return (
     <React.Fragment>
-      <StyledRowLabel gutter={48} style={{ marginBottom: "10" }}>
-        <Col span={6}>Open Date</Col>
-        <Col span={6}>Close Date</Col>
-        <Col span={6}>Open Policy</Col>
-        <Col span={6}>Close Policy</Col>
-      </StyledRowLabel>
       <StyledRow gutter={48}>
-        <Col span={6}>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Open Date</Label>
           <StyledDatePicker
             allowClear={false}
             data-cy="startDate"
@@ -63,7 +58,8 @@ const DatePolicySelector = ({
             disabled={passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC}
           />
         </Col>
-        <Col span={6}>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Close Date</Label>
           <StyledDatePicker
             allowClear={false}
             data-cy="closeDate"
@@ -78,7 +74,8 @@ const DatePolicySelector = ({
             onChange={changeField("endDate")}
           />
         </Col>
-        <Col span={6}>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Open Policy</Label>
           <StyledSelect
             data-cy="selectOpenPolicy"
             placeholder="Please select"
@@ -94,7 +91,8 @@ const DatePolicySelector = ({
             ))}
           </StyledSelect>
         </Col>
-        <Col span={6}>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Close Policy</Label>
           <StyledSelect
             data-cy="selectClosePolicy"
             placeholder="Please select"
@@ -110,11 +108,9 @@ const DatePolicySelector = ({
           </StyledSelect>
         </Col>
       </StyledRow>
-      <StyledRowLabel gutter={48} style={{ marginBottom: "10" }}>
-        <Col span={6}>Test Type</Col>
-      </StyledRowLabel>
-      <StyledRow>
-        <Col span={6}>
+      <StyledRow gutter={48}>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Test Type</Label>
           <TestTypeSelector
             isAdvanceView
             userRole={userRole}

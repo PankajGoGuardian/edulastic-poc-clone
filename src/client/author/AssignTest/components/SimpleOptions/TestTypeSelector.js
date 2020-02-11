@@ -36,25 +36,21 @@ const TestTypeSelector = ({
   );
 
   return fullwidth ? (
-    <StyledRowSelect gutter={16}>
-      <Col span={12}>
+    <StyledRowSelect gutter={48}>
+      <Col span={24}>
         <Label>TEST TYPE</Label>
       </Col>
-      <Col span={12}>{SelectOption}</Col>
+      <Col span={24}>{SelectOption}</Col>
     </StyledRowSelect>
   ) : (
     <React.Fragment>
-      <StyledRow gutter={32}>
-        <Col span={12}>
-          <Row>
-            {!isAdvanceView && (
-              <ColLabel span={24}>
-                <Label>TEST TYPE</Label>
-              </ColLabel>
-            )}
-            <Col span={24}>{SelectOption}</Col>
-          </Row>
-        </Col>
+      <StyledRow gutter={48}>
+        {!isAdvanceView && (
+          <ColLabel span={24}>
+            <Label>TEST TYPE</Label>
+          </ColLabel>
+        )}
+        <Col span={24}>{SelectOption}</Col>
       </StyledRow>
     </React.Fragment>
   );

@@ -964,7 +964,7 @@ export const defaultTheme = {
       quillTextColor: labelStyle,
       quillLimitedBgColor: wrongBgColor,
       qlBlocksBgColor: buttonBackgroundColor,
-      qlBlocksBgActiveColor: checkColor,
+      qlBlocksBgActiveColor: greyThemeDark2,
       qlBlocksColor: iconColor,
       qlBlocksActiveColor: actionIconActiveColor,
       flexConBorderColor: borderColor,

@@ -27,6 +27,7 @@ import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 
 import { changeItemAction, changeUIStyleAction } from "../../../author/src/actions/question";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 class LayoutComponent extends Component {
   render() {
@@ -59,7 +60,7 @@ class LayoutComponent extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={36}>
+          <Row gutter={24} type="flex" align="middle">
             <Col md={12}>
               <SpecialCharactersOption
                 onChange={checked => {
@@ -83,7 +84,7 @@ class LayoutComponent extends Component {
             )}
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <MinHeightOption
                 onChange={val => changeUIStyle("minHeight", +val)}
@@ -98,7 +99,7 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <PlaceholderOption
                 onChange={val => {
@@ -109,15 +110,6 @@ class LayoutComponent extends Component {
               />
             </Col>
             <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={val => changeItem("spellcheck", val)}
-                checked={get(item, "spellcheck", false)}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
                 value={get(item, "uiStyle.fontsize", "normal")}
@@ -125,13 +117,22 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Checkbox
-            style={{ marginTop: 16, marginBottom: 16 }}
-            defaultChecked={item && item.validation && item.validation.submitOverLimit}
-            onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
-          >
-            {t("component.essayText.submitOverLimit")}
-          </Checkbox>
+          <Row gutter={24}>
+            <Col md={12}>
+              <BrowserSpellcheckOption
+                onChange={val => changeItem("spellcheck", val)}
+                checked={get(item, "spellcheck", false)}
+              />
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                defaultChecked={item && item.validation && item.validation.submitOverLimit}
+                onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
+              >
+                {t("component.essayText.submitOverLimit")}
+              </CheckboxLabel>
+            </Col>
+          </Row>
         </Layout>
       </Question>
     );

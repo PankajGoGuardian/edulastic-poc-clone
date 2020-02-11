@@ -1,14 +1,12 @@
-import React from "react";
-import { SortableElement, SortableHandle } from "react-sortable-hoc";
-import { FaBars } from "react-icons/fa";
-import { withTheme } from "styled-components";
-
+import { greyThemeDark2, greyThemeDark1 } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
-
-import { QlBlocks } from "../styled/QlBlocks";
+import { IconImage, IconTranslator } from "@edulastic/icons";
+import React from "react";
+import { FaBars } from "react-icons/fa";
+import { SortableElement, SortableHandle } from "react-sortable-hoc";
+import { withTheme } from "styled-components";
 import { FlexCon } from "../styled/FlexCon";
-import { IconTranslator, IconImage } from "@edulastic/icons";
-import renderEmpty from "antd/lib/config-provider/renderEmpty";
+import { QlBlocks } from "../styled/QlBlocks";
 
 const DragHandle = withTheme(
   SortableHandle(({ theme }) => (
@@ -20,7 +18,7 @@ const DragHandle = withTheme(
         }}
         justifyContent="center"
       >
-        <FaBars />
+        <FaBars color={greyThemeDark1} />
       </FlexContainer>
     </QlBlocks>
   ))

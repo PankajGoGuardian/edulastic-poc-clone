@@ -14,6 +14,8 @@ import { ContentArea } from "../../../styled/ContentArea";
 import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
+import Question from "../../../components/Question";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const EditEssayPlainText = ({
   item,
@@ -44,32 +46,31 @@ const EditEssayPlainText = ({
 
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-      <Scoring
-        isSection={false}
-        t={t}
-        scoringTypes={[]}
-        questionData={item}
-        advancedAreOpen={advancedAreOpen}
-        noPaddingLeft
+      <Question
+        section="main"
+        label={t("component.essayText.scoring")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
       >
-        <WordLimitAndCount
-          onChange={handleItemChangeChange}
-          selectValue={item.showWordLimit}
-          inputValue={item.maxWord}
-          advancedAreOpen={advancedAreOpen}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          showHeading={false}
-        />
+        <Scoring isSection={false} t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen}>
+          <WordLimitAndCount
+            onChange={handleItemChangeChange}
+            selectValue={item.showWordLimit}
+            inputValue={item.maxWord}
+            advancedAreOpen={advancedAreOpen}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            showHeading={false}
+          />
 
-        <Checkbox
-          style={{ marginTop: 32 }}
-          defaultChecked={item.showWordCount}
-          onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-        >
-          {t("component.essayText.showWordCheckbox")}
-        </Checkbox>
-      </Scoring>
+          <CheckboxLabel
+            defaultChecked={item.showWordCount}
+            onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+          >
+            {t("component.essayText.showWordCheckbox")}
+          </CheckboxLabel>
+        </Scoring>
+      </Question>
 
       {advancedLink}
 

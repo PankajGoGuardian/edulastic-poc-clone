@@ -1,19 +1,16 @@
-import React, { Fragment, Component } from "react";
-import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import { Input, Select, Col } from "antd";
-import styled from "styled-components";
-
-import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
-
+import { withNamespaces } from "@edulastic/localization";
+import { Input, Select } from "antd";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import ReactDOM from "react-dom";
+import styled from "styled-components";
+import { ALWAYS, OFF, ON_LIMIT } from "../../constants/constantsForQuestions";
 import { Subtitle } from "../../styled/Subtitle";
-
-import { ON_LIMIT, ALWAYS, OFF } from "../../constants/constantsForQuestions";
-import { AdaptiveRow } from "./styled/AdaptiveRow";
-
-import { LabelText } from "./styled/LabelText";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { TextInputStyled, SelectInputStyled } from "../../styled/InputStyles";
 
 const { Option } = Select;
 
@@ -41,7 +38,7 @@ class WordLimitAndCount extends Component {
   }
 
   render() {
-    const { onChange, selectValue, inputValue, withOutTopMargin, t, showHeading } = this.props;
+    const { onChange, selectValue, inputValue, t, showHeading } = this.props;
 
     const options = [
       { value: ON_LIMIT, label: t("component.essayText.onLimit") },
@@ -51,18 +48,11 @@ class WordLimitAndCount extends Component {
 
     return (
       <Fragment>
-        {showHeading && (
-          <Subtitle padding={withOutTopMargin ? "0px 0 16px 0" : ""}>{t("component.essayText.scoring")}</Subtitle>
-        )}
-        <AdaptiveRow gutter={70}>
+        {showHeading && <Subtitle>{t("component.essayText.wordsLimitTitle")}</Subtitle>}
+        <Row gutter={24} type="flex" align="bottom">
           <Col span={12}>
-            <LabelText>{t("component.essayText.wordsLimitTitle")}</LabelText>
-            <Select
-              style={{ width: "100%", marginTop: 10 }}
-              size="large"
-              value={selectValue}
-              onChange={val => onChange("showWordLimit", val)}
-            >
+            <Label>{t("component.essayText.wordsLimitTitle")}</Label>
+            <SelectInputStyled size="large" value={selectValue} onChange={val => onChange("showWordLimit", val)}>
               {options.map((item, i) => {
                 const { label, value } = item;
                 return (
@@ -71,13 +61,13 @@ class WordLimitAndCount extends Component {
                   </Option>
                 );
               })}
-            </Select>
+            </SelectInputStyled>
           </Col>
           <Col span={12}>
-            <StyledFlexContainer style={{ marginTop: 31, paddingTop: "10px" }}>
-              <Input
+            <Row type="flex" justify="start" align="middle">
+              <TextInputStyled
                 size="large"
-                style={{ width: 120 }}
+                width="120px"
                 value={inputValue}
                 onChange={e => {
                   const val = parseInt(e.target.value);
@@ -86,10 +76,10 @@ class WordLimitAndCount extends Component {
                   }
                 }}
               />
-              <Label>{t("component.essayText.wordsLimitTitle")}</Label>
-            </StyledFlexContainer>
+              <Label style={{ margin: "0px 0px 0px 15px" }}>{t("component.essayText.wordsLimitTitle")}</Label>
+            </Row>
           </Col>
-        </AdaptiveRow>
+        </Row>
       </Fragment>
     );
   }
@@ -100,7 +90,6 @@ WordLimitAndCount.propTypes = {
   selectValue: PropTypes.string.isRequired,
   inputValue: PropTypes.number.isRequired,
   t: PropTypes.func.isRequired,
-  withOutTopMargin: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
@@ -109,7 +98,6 @@ WordLimitAndCount.propTypes = {
 
 WordLimitAndCount.defaultProps = {
   showHeading: true,
-  withOutTopMargin: false,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

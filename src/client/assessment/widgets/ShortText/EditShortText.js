@@ -14,6 +14,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import CorrectAnswer from "./components/CorrectAnswer";
 import ComposeQuestion from "./components/ComposeQuestion";
 import Options from "./components/Options";
+import Question from "../../components/Question";
 
 const OptionsList = withPoints(CorrectAnswer);
 
@@ -121,17 +122,24 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
         setQuestionData={setQuestionData}
       />
 
-      <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
-        onAdd={handleAddAnswer}
-        validation={item.validation}
-        options={renderOptions()}
-        onCloseTab={handleCloseTab}
+      <Question
+        section="main"
+        label={t("component.shortText.correctAnswers")}
         fillSections={fillSections}
         cleanSections={cleanSections}
-        questionType={item?.title}
-      />
+      >
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          questionType={item?.title}
+        />
+      </Question>
 
       {advancedLink}
 

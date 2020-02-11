@@ -8,21 +8,20 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Subtitle } from "../../../styled/Subtitle";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme, item }) => (
-  <Row gutter={60}>
+  <Row gutter={64}>
     <Col span={12}>
       <Subtitle
         id={getFormattedAttrId(`${item?.title}-${t("component.shortText.selectLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
-        padding="0 0 16px 0"
       >
         {t("component.shortText.selectLabel")}
       </Subtitle>
-      <Select
+      <SelectInputStyled
         size="large"
-        style={{ width: "100%" }}
         value={selectValue}
         onChange={onSelectChange}
         getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -32,18 +31,17 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
             {item.label}
           </Select.Option>
         ))}
-      </Select>
+      </SelectInputStyled>
     </Col>
     <Col span={12}>
       <Subtitle
         id={getFormattedAttrId(`${item?.title}-${t("component.shortText.inputLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
-        padding="20px 0 16px 0"
       >
         {t("component.shortText.inputLabel")}
       </Subtitle>
-      <Input size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
+      <TextInputStyled size="large" value={inputValue} onChange={e => onChange(e.target.value)} />
     </Col>
   </Row>
 );

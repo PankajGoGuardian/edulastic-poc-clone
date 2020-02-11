@@ -55,7 +55,7 @@ class LayoutComponent extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
                 onChange={checked => {
@@ -77,7 +77,7 @@ class LayoutComponent extends Component {
           </Row>
 
           {Array.isArray(item.characterMap) && (
-            <Row gutter={36}>
+            <Row gutter={24}>
               <Col md={12}>
                 <CharactersToDisplayOption
                   onChange={val => _change("characterMap", val.split(""))}
@@ -87,7 +87,7 @@ class LayoutComponent extends Component {
             </Row>
           )}
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <InputTypeOption
                 onChange={val => _uiStyleChange("input_type", val)}
@@ -99,7 +99,7 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <FontSizeOption
                 onChange={val => _uiStyleChange("fontsize", val)}

@@ -1,16 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
-
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer } from "@edulastic/common";
-
-import { updateVariables } from "../../../utils/variables";
-
-import { AdaptiveCheckbox } from "../styled/AdaptiveCheckbox";
-import { Subtitle } from "../../../styled/Subtitle";
+import produce from "immer";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import Question from "../../../components/Question";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { Subtitle } from "../../../styled/Subtitle";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { updateVariables } from "../../../utils/variables";
 
 class FormattingOptions extends Component {
   render() {
@@ -35,26 +33,32 @@ class FormattingOptions extends Component {
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.essayText.plain.formattingOptions")}`)}>
           {t("component.essayText.plain.formattingOptions")}
         </Subtitle>
-        <FlexContainer childMarginRight={100}>
-          <AdaptiveCheckbox
-            defaultChecked={item.showCopy}
-            onChange={e => handleItemChangeChange("showCopy", e.target.checked)}
-          >
-            {t("component.essayText.copy")}
-          </AdaptiveCheckbox>
-          <AdaptiveCheckbox
-            defaultChecked={item.showCut}
-            onChange={e => handleItemChangeChange("showCut", e.target.checked)}
-          >
-            {t("component.essayText.cut")}
-          </AdaptiveCheckbox>
-          <AdaptiveCheckbox
-            defaultChecked={item.showPaste}
-            onChange={e => handleItemChangeChange("showPaste", e.target.checked)}
-          >
-            {t("component.essayText.paste")}
-          </AdaptiveCheckbox>
-        </FlexContainer>
+        <Row gutter={24}>
+          <Col span={6}>
+            <CheckboxLabel
+              defaultChecked={item.showCopy}
+              onChange={e => handleItemChangeChange("showCopy", e.target.checked)}
+            >
+              {t("component.essayText.copy")}
+            </CheckboxLabel>
+          </Col>
+          <Col span={6}>
+            <CheckboxLabel
+              defaultChecked={item.showCut}
+              onChange={e => handleItemChangeChange("showCut", e.target.checked)}
+            >
+              {t("component.essayText.cut")}
+            </CheckboxLabel>
+          </Col>
+          <Col span={6}>
+            <CheckboxLabel
+              defaultChecked={item.showPaste}
+              onChange={e => handleItemChangeChange("showPaste", e.target.checked)}
+            >
+              {t("component.essayText.paste")}
+            </CheckboxLabel>
+          </Col>
+        </Row>
       </Question>
     );
   }

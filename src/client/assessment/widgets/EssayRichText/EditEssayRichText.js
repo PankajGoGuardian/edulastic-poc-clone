@@ -19,6 +19,7 @@ import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 import Scoring from "../../containers/WidgetOptions/components/Scoring";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const EditEssayRichText = ({
   item,
@@ -81,23 +82,30 @@ const EditEssayRichText = ({
           showHeading={false}
         />
 
-        <Checkbox
-          style={{ marginTop: 32 }}
+        <CheckboxLabel
           defaultChecked={item.showWordCount}
           onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
         >
           {t("component.essayText.showWordCheckbox")}
-        </Checkbox>
+        </CheckboxLabel>
       </Question>
 
-      <Scoring
-        setQuestionData={setQuestionData}
-        t={t}
-        scoringTypes={[]}
-        questionData={item}
-        advancedAreOpen={advancedAreOpen}
+      <Question
+        section="main"
+        label={t("component.essayText.scoring")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
         item={item}
-      />
+      >
+        <Scoring
+          setQuestionData={setQuestionData}
+          t={t}
+          scoringTypes={[]}
+          questionData={item}
+          advancedAreOpen={advancedAreOpen}
+          item={item}
+        />
+      </Question>
 
       {advancedLink}
 

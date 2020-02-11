@@ -24,6 +24,7 @@ import {
   CharactersToDisplayOption
 } from "../../../containers/WidgetOptions/components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 class LayoutComponent extends Component {
   render() {
@@ -69,7 +70,7 @@ class LayoutComponent extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <SpecialCharactersOption
                 onChange={checked => {
@@ -91,7 +92,7 @@ class LayoutComponent extends Component {
           </Row>
 
           {Array.isArray(item.characterMap) && (
-            <Row gutter={36}>
+            <Row gutter={24}>
               <Col md={12}>
                 <CharactersToDisplayOption
                   onChange={val => handleItemChangeChange("characterMap", val.split(""))}
@@ -101,7 +102,7 @@ class LayoutComponent extends Component {
             </Row>
           )}
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <MinHeightOption
                 onChange={val => handleUIStyleChange("minHeight", +val)}
@@ -116,7 +117,7 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <PlaceholderOption
                 onChange={val => handleItemChangeChange("placeholder", val)}
@@ -132,13 +133,12 @@ class LayoutComponent extends Component {
           </Row>
         </Layout>
 
-        <Checkbox
-          style={{ marginTop: 16, marginBottom: 16 }}
+        <CheckboxLabel
           defaultChecked={item && item.validation && item.validation.submitOverLimit}
           onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
         >
           {t("component.essayText.submitOverLimit")}
-        </Checkbox>
+        </CheckboxLabel>
       </Question>
     );
   }

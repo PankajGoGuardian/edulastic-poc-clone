@@ -73,11 +73,11 @@ export const Widget = styled.div`
     &-lg {
       .ant-select-selection__rendered {
         max-height: 40px;
-        line-height: 42px;
+        line-height: 38px;
       }
 
       .ant-select-selection--single {
-        height: 42px;
+        height: 40px;
       }
     }
   }

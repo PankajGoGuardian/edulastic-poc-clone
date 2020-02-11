@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const SpecialCharactersCheckbox = ({ onChange, checked, t, ...restProps }) => (
-  <Checkbox checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
+  <CheckboxLabel checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
     {t("component.options.specialcharacters")}
-  </Checkbox>
+  </CheckboxLabel>
 );
 
 SpecialCharactersCheckbox.propTypes = {

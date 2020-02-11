@@ -189,7 +189,7 @@ function* addPermissionRequestSaga({ payload }) {
   try {
     const permission = yield call(collectionsApi.addPermission, payload);
     yield put(addPermissionSuccessAction(permission));
-    yield call(message.success, "Permission added successfully.");
+    yield call(message.success, `Permission added successfully for ${payload.collectionName}.`);
   } catch (err) {
     console.error(err);
     let errorMessage = "Error occured while adding permision.";

@@ -121,7 +121,11 @@ const PermissionsTable = ({
   const handlePermissionModalResponse = response => {
     setPermissionModalVisibility(false);
     if (response) {
-      const data = { bankId: selectedCollection.bankId, data: response };
+      const data = {
+        bankId: selectedCollection.bankId,
+        collectionName: selectedCollection.itemBankName,
+        data: response
+      };
       if (selectedPermission) {
         editPermissionRequest({ ...data, id: selectedPermission._id });
       } else {

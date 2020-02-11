@@ -115,6 +115,7 @@ function* updateBucketSaga({ payload }) {
 function* createBucketSaga({ payload }) {
   try {
     const createBucket = yield call(contentBucketApi.createBucket, payload);
+    message.success(i18next.t(`${localizationPrefix}:content.buckets.bucketCreateSuccessMsg`));
     yield put(createBucketSuccessAction(createBucket));
   } catch (err) {
     const errorMessage = i18next.t(`${localizationPrefix}:content.buckets.bucketCreateErrorMsg`);

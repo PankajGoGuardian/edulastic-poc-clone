@@ -405,6 +405,7 @@
       "bucketsLoadErrorMsg": "Receive Buckets is failing!",
       "bucketUpdateSuccessMsg": "Bucket updated successfully",
       "bucketUpdateErrorMsg": "Update Bucket is failing",
+      "bucketCreateSuccessMsg": "Bucket created successfully",
       "bucketCreateErrorMsg": "Create Bucket is failing",
       "tableHeader": {
         "name": "name",

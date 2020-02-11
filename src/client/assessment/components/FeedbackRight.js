@@ -121,7 +121,7 @@ class FeedbackRight extends Component {
       return;
     }
 
-    this.props.setTeacherEditedScore({ [id]: _score });
+    this.props.setTeacherEditedScore({ [id]: rubricResponse ? rubricResponse.score : _score });
 
     const payload = {
       score: rubricResponse ? rubricResponse : { score: _score },

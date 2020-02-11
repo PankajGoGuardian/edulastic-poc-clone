@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
-
+import { isEqual } from "lodash";
 import { receiveStudentQuestionAction } from "../../../src/actions/classBoard";
 import {
   getAssignmentClassIdSelector,
@@ -13,6 +13,7 @@ import {
 } from "../../../ClassBoard/ducks";
 import ClassQuestions from "../../../ClassResponses/components/Container/ClassQuestions";
 import { AnswerContext, ScratchPadContext } from "@edulastic/common";
+import { getTeacherEditedScoreSelector } from "../../ducks";
 
 class Question extends Component {
   constructor() {
@@ -29,6 +30,20 @@ class Question extends Component {
     const { testActivityId, studentId, _id, weight, testItemId } = record;
     if (testActivityId) {
       loadStudentQuestionResponses(assignmentId, classId, _id, studentId, weight > 1 ? testItemId : undefined);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore)) {
+      const {
+        record,
+        loadStudentQuestionResponses,
+        assignmentClassId: { assignmentId, classId }
+      } = this.props;
+      const { testActivityId, studentId, _id, weight, testItemId } = record;
+      if (testActivityId) {
+        loadStudentQuestionResponses(assignmentId, classId, _id, studentId, weight > 1 ? testItemId : undefined);
+      }
     }
   }
 
@@ -95,7 +110,8 @@ const enhance = compose(
     state => ({
       testItems: getTestItemsDataSelector(state),
       assignmentClassId: getAssignmentClassIdSelector(state),
-      studentQuestion: getStudentQuestionSelector(state)
+      studentQuestion: getStudentQuestionSelector(state),
+      teacherEditedScore: getTeacherEditedScoreSelector(state)
     }),
     {
       loadStudentQuestionResponses: receiveStudentQuestionAction

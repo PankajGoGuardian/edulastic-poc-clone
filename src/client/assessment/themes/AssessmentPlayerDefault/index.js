@@ -54,19 +54,14 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
+import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props);
     const { settings } = props;
     this.state = {
-      currentColor: "#ff0000",
-      fillColor: "#ff0000",
-      currentFont: "",
-      activeMode: "",
-      lineWidth: 6,
       cloneCurrentItem: props.currentItem,
-      deleteMode: false,
       testItemState: "",
       isToolbarModalVisible: false,
       isSubmitConfirmationVisible: false,
@@ -179,11 +174,8 @@ class AssessmentPlayerDefault extends React.Component {
     history.push("/home/assignments");
   };
 
-  onFillColorChange = obj => {
-    this.setState({
-      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
+  onFillColorChange = obj =>
+    this.props.updateScratchPad({ fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
 
   handleModeCaculate = calculateMode => {
     this.setState({
@@ -192,26 +184,29 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   handleScratchToolChange = value => () => {
-    const { activeMode } = this.state;
+    const { scratchpadData, updateScratchPad } = this.props;
+    const { activeMode, deleteMode } = scratchpadData;
+    let data = {};
 
     if (value === "deleteMode") {
-      this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
+      data.deleteMode = !deleteMode;
     } else if (activeMode === value) {
-      this.setState({ activeMode: "" });
+      data.activeMode = "";
     } else {
-      this.setState({ activeMode: value, deleteMode: false });
+      data.activeMode = value;
+      data.deleteMode = false;
     }
+    updateScratchPad(data);
   };
 
-  handleColorChange = obj => {
-    this.setState({
+  handleColorChange = obj =>
+    this.props.updateScratchPad({
       currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
-  };
 
-  handleChangeFont = font => this.setState({ currentFont: font });
+  handleChangeFont = font => this.props.updateScratchPad({ currentFont: font });
 
-  handleLineWidthChange = size => this.setState({ lineWidth: size });
+  handleLineWidthChange = size => this.props.updateScratchPad({ lineWidth: size });
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
@@ -270,10 +265,8 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode,
         cloneCurrentItem: next.currentItem,
         history: 0,
-        activeMode: "",
         enableCrossAction: currentToolMode.indexOf(3) !== -1
       };
-
       return nextState;
     }
 
@@ -320,26 +313,21 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = "default",
       closeTestPreviewModal,
       showTools = true,
-      showScratchPad
+      showScratchPad,
+      scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode }
     } = this.props;
     const {
       testItemState,
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
-      activeMode,
-      currentColor,
-      currentFont,
-      deleteMode,
-      lineWidth,
-      fillColor,
       calculateMode,
-      currentToolMode,
       showHints,
       enableCrossAction,
       minWidth,
       defaultContentWidth,
-      defaultHeaderHeight
+      defaultHeaderHeight,
+      currentToolMode
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -694,10 +682,11 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork, showScratchPad } = this.props;
+    const { previewPlayer, clearUserWork, showScratchPad, resetScratchPadData } = this.props;
     if (previewPlayer && !showScratchPad) {
       clearUserWork();
     }
+    resetScratchPadData();
   }
 }
 
@@ -722,7 +711,8 @@ const enhance = compose(
       userAnswers: state.answers,
       zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme,
-      previousQuestionActivities: get(state, "previousQuestionActivity", {})
+      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
+      scratchpadData: state.scratchpad
     }),
     {
       changePreview: changePreviewAction,
@@ -732,7 +722,9 @@ const enhance = compose(
       toggleBookmark: toggleBookmarkAction,
       checkAnswer: checkAnswerEvaluation,
       setUserAnswer: setUserAnswerAction,
-      clearUserWork: clearUserWorkAction
+      clearUserWork: clearUserWorkAction,
+      updateScratchPad: updateScratchpadAction,
+      resetScratchPadData: resetScratchPadDataAction
     }
   )
 );

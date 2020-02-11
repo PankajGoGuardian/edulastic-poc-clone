@@ -158,19 +158,6 @@ const Search = ({
             </ItemBody>
           </Item>
         )}
-
-        {isPublishers && (
-          <Item>
-            <ItemHeader>Created On</ItemHeader>
-            <ItemBody>
-              <StyledDatePicker
-                format={"DD/MM/YYYY"}
-                onChange={onSearchFieldChange("createdAt")}
-                value={createdAt ? moment(createdAt) : ""}
-              />
-            </ItemBody>
-          </Item>
-        )}
         <Item>
           <ItemHeader>Grades</ItemHeader>
           <Select

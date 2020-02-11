@@ -235,16 +235,6 @@ const TestListFilters = ({
                 ))}
             </Select>
           </FilterItemWrapper>
-          {isPublishers && index === 1 && (
-            <FilterItemWrapper>
-              <SubTitle>Created On</SubTitle>
-              <StyledDatePicker
-                format={"DD/MM/YYYY"}
-                onChange={(value, dateString) => onChange("createdAt", value, dateString)}
-                value={search["createdAt"] ? moment(search["createdAt"]) : ""}
-              />
-            </FilterItemWrapper>
-          )}
         </>
       ))}
     </Container>

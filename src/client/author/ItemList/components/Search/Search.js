@@ -37,7 +37,8 @@ const Search = ({
     depthOfKnowledge,
     authorDifficulty,
     authoredByIds,
-    createdAt
+    createdAt,
+    filter
   },
   allTagsData,
   onSearchFieldChange,
@@ -134,7 +135,7 @@ const Search = ({
         ""
       )}
       <Container>
-        {isPublishers && getStatusFilter()}
+        {isPublishers && filter !== "ENTIRE_LIBRARY" && getStatusFilter()}
         {userFeatures.isCurator && (
           <Item>
             <ItemHeader>Authored By</ItemHeader>

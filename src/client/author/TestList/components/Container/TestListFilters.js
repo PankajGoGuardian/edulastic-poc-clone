@@ -64,7 +64,8 @@ const TestListFilters = ({
     const { filter } = search;
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
-      if (filter !== filterMenuItems[0].filter || isPublishers) {
+      const showStatusFilter = isPublishers && filter !== filterMenuItems[0].filter;
+      if (showStatusFilter) {
         filterTitles.push("Status");
       }
       filterData1 = filterData.filter(o => filterTitles.includes(o.title));
@@ -102,7 +103,8 @@ const TestListFilters = ({
 
     const standardsPlaceholder = !curriculumId ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
-    if (filter === filterMenuItems[0].filter && !isPublishers) {
+    const showStatusFilter = isPublishers && filter !== filterMenuItems[0].filter;
+    if (!showStatusFilter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     let curriculumsList = [];

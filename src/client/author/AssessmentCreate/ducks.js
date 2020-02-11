@@ -4,7 +4,7 @@ import { message } from "antd";
 import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
-import { get, without } from "lodash";
+import { get, without, omit } from "lodash";
 
 import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
 import { aws, roleuser, test as testConstant } from "@edulastic/constants";
@@ -238,7 +238,10 @@ function* createAssessmentSaga({ payload }) {
       if (newAssessment.passwordPolicy !== testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
         delete newAssessment.passwordExpireIn;
       }
-      const assessment = yield call(testsApi.create, newAssessment);
+      // Omit passages in doc basedtest creation flow as backend is not expecting it
+      const assesmentPayload = omit(newAssessment, ["passages"]);
+
+      const assessment = yield call(testsApi.create, assesmentPayload);
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     }

@@ -38,14 +38,14 @@ function create(board, object, parabolaPoints, settings = {}) {
     fixed,
     id
   };
-
+  //parabolaPoints
   const directrixColor = `${priorityColor || board.priorityColor || baseColor}50`;
-  const directrix = board.$board.create("line", [parabolaPoints[0], parabolaPoints[1]], {
+  const directrix = board.$board.create("line", [parabolaPoints[1], parabolaPoints[2]], {
     ...Line.getColorParams(directrixColor),
     fixed
   });
 
-  const newLine = board.$board.create("parabola", [parabolaPoints[2], directrix], params);
+  const newLine = board.$board.create("parabola", [parabolaPoints[0], directrix], params);
 
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
@@ -61,16 +61,16 @@ function create(board, object, parabolaPoints, settings = {}) {
 
   newLine.addParents([...parabolaPoints, directrix]);
   newLine.ancestors = {
-    [parabolaPoints[0].id]: parabolaPoints[0],
     [parabolaPoints[1].id]: parabolaPoints[1],
-    [parabolaPoints[2].id]: parabolaPoints[2]
+    [parabolaPoints[2].id]: parabolaPoints[2],
+    [parabolaPoints[0].id]: parabolaPoints[0]
   };
 
   if (!fixed) {
     handleSnap(newLine, Object.values(newLine.ancestors), board);
     directrix.on("up", () => {
       if (directrix.dragged) {
-        [parabolaPoints[0], parabolaPoints[1]].forEach(point => point.snapToGrid());
+        [parabolaPoints[1], parabolaPoints[2]].forEach(point => point.snapToGrid());
         directrix.dragged = false;
         Area.updateShadingsForAreaPoints(board, board.elements);
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_UPDATE);

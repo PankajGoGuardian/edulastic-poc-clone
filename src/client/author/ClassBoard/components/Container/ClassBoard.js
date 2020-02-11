@@ -766,7 +766,14 @@ class ClassBoard extends Component {
               <StudentButton
                 disabled={!firstStudentId || !isItemsVisible || isLoading}
                 active={selectedTab === "Student"}
-                onClick={e => this.onTabChange(e, "Student", firstStudentId, testActivityId)}
+                onClick={e =>
+                  this.onTabChange(
+                    e,
+                    "Student",
+                    firstStudentId,
+                    testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId
+                  )
+                }
               >
                 STUDENTS
               </StudentButton>

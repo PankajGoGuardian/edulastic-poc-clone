@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button, Modal, DatePicker, message } from "antd";
 import moment from "moment";
-import { debounce } from "lodash";
+import { debounce, uniqBy } from "lodash";
 const Option = Select.Option;
 import selectsData from "../../../../TestPage/components/common/selectsData";
 const { allGrades, allSubjects } = selectsData;
@@ -120,15 +120,53 @@ class EditClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList, allTagsData, t } = this.props;
+    const {
+      modalVisible,
+      selClassData,
+      schoolsData = [],
+      teacherList = [],
+      coursesForDistrictList = [],
+      allTagsData,
+      t,
+      institutionDetails = []
+    } = this.props;
     const { searchValue } = this.state;
     const {
-      _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate, course } = {}
+      _source: {
+        owners = [],
+        name,
+        subject,
+        institutionId = "",
+        institutionName = "",
+        grades,
+        tags,
+        endDate,
+        course = {}
+      } = {}
     } = selClassData;
-    const ownersData = owners?.[0]?.id || "";
+
+    let courseFinalList = [...coursesForDistrictList];
+    if (course?.id) {
+      courseFinalList.push({ _id: course.id, name: course.name });
+      courseFinalList = uniqBy(courseFinalList, "_id");
+    }
+
+    let teacherFinalList = [...teacherList];
+    if (owners.length) {
+      teacherFinalList.push({ _id: owners[0]?.id, firstName: owners[0]?.name });
+      teacherFinalList = uniqBy(teacherFinalList, "_id");
+    }
+
+    let schoolsFinalList = [...schoolsData];
+    if (institutionId && institutionName) {
+      schoolsFinalList.push({ _id: institutionId, name: institutionName });
+      schoolsFinalList = uniqBy(schoolsFinalList, "_id");
+    }
+
+    const ownersData = owners?.[0]?.id;
     const schoolsOptions = [];
-    if (schoolsData.length !== undefined) {
-      schoolsData.map((row, index) => {
+    if (schoolsFinalList.length) {
+      schoolsFinalList.map((row, index) => {
         schoolsOptions.push(
           <Option key={row._id} value={row._id} title={row.name}>
             {row.name}
@@ -138,8 +176,8 @@ class EditClassModal extends Component {
     }
 
     const teacherOptions = [];
-    if (teacherList.length !== undefined) {
-      teacherList.map(row => {
+    if (teacherFinalList.length) {
+      teacherFinalList.map(row => {
         const teacherName = row.lastName ? `${row.firstName} ${row.lastName}` : `${row.firstName}`;
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>);
       });
@@ -240,8 +278,10 @@ class EditClassModal extends Component {
                   onFocus={this.fetchCoursesForDistrict}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  {coursesForDistrictList.map(course => (
-                    <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
+                  {courseFinalList.map(course => (
+                    <Option key={course._id} value={course._id}>{`${course.name}${
+                      course.number ? " - " + course.number : ""
+                    }`}</Option>
                   ))}
                 </Select>
               )}

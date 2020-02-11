@@ -134,7 +134,7 @@ const ReviewSummary = ({
             >
               {orgCollections?.map(o => (
                 <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
-                  {o.collectionName} - {o.name}
+                  {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
               ))}
             </SummarySelectBox>

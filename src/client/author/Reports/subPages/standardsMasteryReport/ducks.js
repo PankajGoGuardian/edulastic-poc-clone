@@ -29,7 +29,7 @@ export const getReportsSMRSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: { key: "", title: "" },
+  selectedTest: [],
   requestFilters: {
     termId: "",
     subject: "",

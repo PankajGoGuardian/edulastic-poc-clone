@@ -8,6 +8,8 @@ import qs from "qs";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
+import { MultipleSelect } from "../../../../common/components/widgets/MultipleSelect";
+import { toggleItem } from "../../../../common/util";
 
 import { getUserRole, getUser, getInterestedCurriculumsSelector } from "../../../../../src/selectors/user";
 
@@ -32,7 +34,7 @@ import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
 
 const StandardsFilters = ({
   filters,
-  testId,
+  testIds,
   standardsFilters,
   browseStandards,
   user,
@@ -53,16 +55,6 @@ const StandardsFilters = ({
 }) => {
   const browseStandardsReceiveCount = useRef(0);
   const standardsFilteresReceiveCount = useRef(0);
-
-  const getTitleByTestId = testId => {
-    let arr = get(standardsFilters, "result.testData", []);
-    let item = arr.find(o => o.testId === testId);
-
-    if (item) {
-      return item.testName;
-    }
-    return "";
-  };
 
   useEffect(() => {
     const search = qs.parse(location.search.substring(1));
@@ -168,8 +160,9 @@ const StandardsFilters = ({
 
     let settings = {
       filters: { ..._filters },
-      selectedTest: { key: testId, title: getTitleByTestId(testId) }
+      selectedTest: testIds
     };
+
     if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
       _onGoClick(settings);
     }
@@ -177,11 +170,10 @@ const StandardsFilters = ({
     browseStandardsReceiveCount.current++;
   }
 
-  const testIds = useMemo(() => {
-    let arr = [{ key: "All", title: "All Assessments" }];
+  const allTestIds = useMemo(() => {
+    let arr = [];
     if (standardsFilters && !isEmpty(standardsFilters)) {
       let tempArr = get(standardsFilters, "data.result.testData", []);
-
       tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
       tempArr = tempArr.map((item, index) => {
         return {
@@ -195,31 +187,22 @@ const StandardsFilters = ({
   }, [standardsFilters]);
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
-    // testIds Received
+    // allTestIds Received
 
     const search = qs.parse(location.search.substring(1));
     setPrevStandardsFiltersAction(standardsFilters);
 
-    // now check if testId in url is in the array if not select the first one
+    // check if testIds in url are valid (present in the array)
 
-    let urlTestId = testIds.find((item, index) => {
-      if (item.key === search.testId) {
-        return true;
-      }
-    });
+    let urlTestIds = search.testIds || [];
 
-    let _testId = testId;
-    if (!urlTestId && testIds.length) {
-      _testId = testIds[0].key;
-      setTestIdAction(_testId);
-    } else if (!urlTestId) {
-      _testId = "";
-      setTestIdAction(_testId);
-    }
+    let validTestIds = allTestIds.filter(test => urlTestIds.includes(test.key));
+
+    setTestIdAction(validTestIds);
 
     let settings = {
       filters: { ...filters },
-      selectedTest: { key: testId, title: getTitleByTestId(_testId) }
+      selectedTest: validTestIds
     };
 
     if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
@@ -314,14 +297,25 @@ const StandardsFilters = ({
   //   setFiltersAction(obj);
   // };
 
-  const onTestIdChange = (selected, comData) => {
-    setTestIdAction(selected.key);
+  // const onTestIdChange = (selected, comData) => {
+  //   setTestIdAction(selected.key);
+  // };
+
+  const onSelectTest = test => {
+    const items = toggleItem(testIds.map(test => test.key), test.key);
+    setTestIdAction(allTestIds.filter(test => !!items.includes(test.key)));
+  };
+
+  const onChangeTest = items => {
+    if (!items.length) {
+      setTestIdAction([]);
+    }
   };
 
   const onGoClick = () => {
     let settings = {
       filters: { ...filters },
-      selectedTest: { key: testId, title: getTitleByTestId(testId) }
+      selectedTest: testIds
     };
     _onGoClick(settings);
   };
@@ -398,12 +392,15 @@ const StandardsFilters = ({
         </Row>
         <Row type="flex" className="standards-gradebook-bottom-filter">
           <Col className="standards-gradebook-domain-autocomplete-container">
-            <AutocompleteDropDown
+            <MultipleSelect
               containerClassName="standards-gradebook-domain-autocomplete"
-              data={testIds}
-              by={testId}
+              data={allTestIds}
+              valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
+              by={testIds}
               prefix="Assessment Name"
-              selectCB={onTestIdChange}
+              onSelect={onSelectTest}
+              onChange={onChangeTest}
+              placeholder="All Assessments"
             />
           </Col>
           <Col className={"standards-gradebook-go-button-container"}>
@@ -423,7 +420,7 @@ const enhance = compose(
       browseStandards: getReportsStandardsBrowseStandards(state),
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
-      testId: getTestIdSelector(state),
+      testIds: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),

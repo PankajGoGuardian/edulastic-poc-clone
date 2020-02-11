@@ -92,7 +92,7 @@ const StandardsGradebook = ({
   useEffect(() => {
     if (settings.requestFilters.termId && settings.requestFilters.domainIds) {
       let q = {
-        testId: settings.selectedTest.key,
+        testIds: settings.selectedTest.map(test => test.key).join(),
         ...settings.requestFilters
       };
       getStandardsGradebookRequestAction(q);
@@ -148,7 +148,7 @@ const StandardsGradebook = ({
   ]);
 
   const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandardsAction({ ...params, testId: settings.selectedTest.key });
+    getStudentStandardsAction({ ...params, testIds: settings.selectedTest.map(test => test.key).join() });
     setClickedStandard(standard);
     setStudentAssignmentModal(true);
     setClickedStudentName(studentName);

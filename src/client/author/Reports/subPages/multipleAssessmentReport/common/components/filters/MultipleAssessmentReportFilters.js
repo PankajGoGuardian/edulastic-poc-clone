@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { find } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { get, isEmpty, map } from "lodash";
+import { find, get, isEmpty, map } from "lodash";
 import queryString from "query-string";
 
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
@@ -283,7 +282,7 @@ const SingleAssessmentReportFilters = ({
 
   const onSelectTest = test => {
     const items = toggleItem(map(testIds, test => test.key), test.key);
-    setTestIdAction(map(items, item => processedTestIds.testIds.find(test => test.key == item)));
+    setTestIdAction(processedTestIds.testIds.filter(test => !!items.includes(test.key)));
   };
 
   const onChangeTest = items => {

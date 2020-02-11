@@ -63,7 +63,7 @@ const initialState = {
     // classSectionId: "All",
     // assessmentType: "All"
   },
-  testId: "",
+  testIds: "",
   studentStandard: [],
   loadingStudentStandard: false
 };

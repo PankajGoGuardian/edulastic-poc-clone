@@ -54,7 +54,7 @@ const StandardsMasteryReportContainer = props => {
           obj[item] = gradebookSettings.requestFilters[item];
         }
       });
-      obj.testId = gradebookSettings.selectedTest.key;
+      obj.testIds = gradebookSettings.selectedTest.map(items => items.key).join();
       let path = qs.stringify(obj, { arrayFormat: "comma" });
       props.history.push("?" + path);
     }
@@ -79,7 +79,7 @@ const StandardsMasteryReportContainer = props => {
 
     setSMRSettingsAction({
       ...gradebookSettings,
-      selectedTest: _settings.selectedTest.key === "All" ? { key: "", title: "" } : _settings.selectedTest,
+      selectedTest: _settings.selectedTest,
       requestFilters: { ...obj }
     });
   };

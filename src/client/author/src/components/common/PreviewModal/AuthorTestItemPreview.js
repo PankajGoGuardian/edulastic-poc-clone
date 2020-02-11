@@ -43,7 +43,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
 
-
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
     showFeedback: false,
@@ -96,18 +95,6 @@ class AuthorTestItemPreview extends Component {
     const { approveOrRejectSingleItem, item, submitReviewFeedback } = this.props;
     if (item?._id) {
       approveOrRejectSingleItem({ itemId: item._id, status: value });
-      submitReviewFeedback({
-        status: "published",
-        data: {
-          type: "preview",
-          referrerType: "TestItemContent",
-          referrerId: item._id,
-          data: {
-            note: ""
-          },
-          status: "published"
-        }
-      });
     }
   };
 

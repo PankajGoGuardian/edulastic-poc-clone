@@ -213,7 +213,21 @@ export const SummaryCardValue = styled.div`
   font-weight: 600;
   margin-right: 15px;
 `;
+export const GroupName = styled(SummaryTitle)`
+  margin-bottom: 5px;
+`;
 
+export const GroupSummaryCard = styled(SummaryCard)`
+  padding: 2px 10px;
+`;
+
+export const GroupSummaryCardValue = styled(SummaryCardValue)`
+  font-size: 16px;
+`;
+
+export const GroupSummaryCardContainer = styled(SummaryCardContainer)`
+  margin-bottom: 5px;
+`;
 export const SummaryList = styled.div``;
 export const ListHeader = styled.div`
   display: flex;

@@ -51,7 +51,10 @@ import {
   TestStatus,
   IconWrapper,
   TestTitleWrapper,
-  ViewModalButton
+  ViewModalButton,
+  GroupName,
+  GroupSummaryCard,
+  GroupSummaryCardValue
 } from "./styled";
 import {
   getInterestedCurriculumsSelector,
@@ -61,6 +64,7 @@ import {
 import { getInterestedStandards } from "../../../dataUtils";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StyledSelect } from "../../../../common/styled";
+import Tags from "../../../src/components/common/Tags";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -109,7 +113,7 @@ class ViewModal extends React.Component {
       subjects = [],
       thumbnail = "",
       analytics = [],
-      testItems = [],
+      itemGroups = [],
       scoring = {},
       summary = {},
       sharing = [],
@@ -304,35 +308,58 @@ class ViewModal extends React.Component {
               </SummaryCardContainer>
             </SummaryContainer>
             <PerfectScrollbar>
-              <SummaryList>
-                <ListHeader>
-                  <ListHeaderCell>SUMMARY</ListHeaderCell>
-                  <ListHeaderCell>Qs</ListHeaderCell>
-                  <ListHeaderCell>POINTS</ListHeaderCell>
-                </ListHeader>
-                {summary &&
-                  getInterestedStandards(summary, interestedCurriculums).map(
-                    data =>
-                      !data.isEquivalentStandard && (
-                        <ListRow>
-                          <ListCell>
-                            <SammaryMark>{data.identifier}</SammaryMark>
-                          </ListCell>
-                          <ListCell>{data.totalQuestions}</ListCell>
-                          <ListCell>{data.totalPoints}</ListCell>
-                        </ListRow>
-                      )
+              {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
+              {summary?.groupSummary?.length > 1 || itemGroups[0].type === "AUTOSELECT" ? (
+                summary?.groupSummary.map((group, i) => {
+                  const standards = group?.standards
+                    ?.filter(item => !item.isEquivalentStandard)
+                    ?.map(item => item.identifier);
+                  return (
+                    <>
+                      <GroupName>{itemGroups[i]?.groupName}</GroupName>
+                      <SummaryCardContainer>
+                        <GroupSummaryCard>
+                          <GroupSummaryCardValue>{group.totalItems}</GroupSummaryCardValue>
+                          <SummaryCardLabel>Items</SummaryCardLabel>
+                        </GroupSummaryCard>
+                        <GroupSummaryCard>
+                          <Tags tags={standards} key="standards" show={2} isStandards />
+                        </GroupSummaryCard>
+                      </SummaryCardContainer>
+                    </>
+                  );
+                })
+              ) : (
+                <SummaryList>
+                  <ListHeader>
+                    <ListHeaderCell>SUMMARY</ListHeaderCell>
+                    <ListHeaderCell>Qs</ListHeaderCell>
+                    <ListHeaderCell>POINTS</ListHeaderCell>
+                  </ListHeader>
+                  {summary &&
+                    getInterestedStandards(summary, interestedCurriculums).map(
+                      data =>
+                        !data.isEquivalentStandard && (
+                          <ListRow>
+                            <ListCell>
+                              <SammaryMark>{data.identifier}</SammaryMark>
+                            </ListCell>
+                            <ListCell>{data.totalQuestions}</ListCell>
+                            <ListCell>{data.totalPoints}</ListCell>
+                          </ListRow>
+                        )
+                    )}
+                  {summary?.noStandards?.totalQuestions > 0 && (
+                    <ListRow>
+                      <ListCell>
+                        <SammaryMark>No Standard</SammaryMark>
+                      </ListCell>
+                      <ListCell>{summary.noStandards.totalQuestions}</ListCell>
+                      <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                    </ListRow>
                   )}
-                {summary?.noStandards?.totalQuestions > 0 && (
-                  <ListRow>
-                    <ListCell>
-                      <SammaryMark>No Standard</SammaryMark>
-                    </ListCell>
-                    <ListCell>{summary.noStandards.totalQuestions}</ListCell>
-                    <ListCell>{summary.noStandards.totalPoints}</ListCell>
-                  </ListRow>
-                )}
-              </SummaryList>
+                </SummaryList>
+              )}
             </PerfectScrollbar>
           </ModalColumn>
         </ModalContainer>

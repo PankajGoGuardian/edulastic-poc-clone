@@ -4,8 +4,9 @@ import { white, themeColor, desktopWidth } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
+import { message } from "antd";
 import { EduButton, MenuIcon } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import {
   IconAddItems,
   IconReview,
@@ -44,9 +45,9 @@ import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeMo
 import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
-import { getUserFeatures, getUserId } from "../../../../student/Login/ducks";
+import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
 
-const { statusConstants } = test;
+const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
 
 export const navButtonsTest = [
   {
@@ -153,7 +154,8 @@ const TestPageHeader = ({
   showCancelButton,
   features,
   userId,
-  onCuratorApproveOrReject
+  onCuratorApproveOrReject,
+  userRole
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -245,6 +247,20 @@ const TestPageHeader = ({
     onCuratorApproveOrReject({ testId, status: "rejected" });
   };
 
+  const handlePrintTest = () => {
+    const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+    if (
+      !isAdmin &&
+      (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
+        test?.testContentVisibility === testContentVisibilityOptions.GRADING)
+    ) {
+      return message.warn(
+        `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
+      );
+    }
+    window.open(`/author/printAssessment/${test?._id}`, "_blank");
+  };
+
   return (
     <>
       <EditTestModal
@@ -289,17 +305,16 @@ const TestPageHeader = ({
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
             {showShareButton && (
-              <Link to={`/author/printAssessment/${test?._id}`} target="_blank" rel="noopener noreferrer">
-                <EduButton
-                  title="Print"
-                  data-cy="printTest"
-                  style={ButtonWithIconStyle}
-                  size="large"
-                  disabled={isTestLoading}
-                >
-                  <IconPrint color={themeColor} style={{ stroke: themeColor }} />
-                </EduButton>
-              </Link>
+              <EduButton
+                title="Print"
+                data-cy="printTest"
+                style={ButtonWithIconStyle}
+                size="large"
+                disabled={isTestLoading}
+                onClick={handlePrintTest}
+              >
+                <IconPrint color={themeColor} style={{ stroke: themeColor }} />
+              </EduButton>
             )}
             {showShareButton && (owner || features.isCurator) && (
               <EduButton
@@ -539,7 +554,8 @@ const enhance = compose(
       test: state.tests.entity,
       testAssignments: getAssignmentsSelector(state),
       features: getUserFeatures(state),
-      userId: getUserId(state)
+      userId: getUserId(state),
+      userRole: getUserRole(state)
     }),
     {
       toggleSideBar: toggleSideBarAction,

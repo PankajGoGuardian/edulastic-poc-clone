@@ -56,7 +56,8 @@ const convertTableData = (data, assignments = [], index) => ({
   classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
   testType: data.testType,
-  hasAutoSelectGroups: data.hasAutoSelectGroups
+  hasAutoSelectGroups: data.hasAutoSelectGroups,
+  assignmentVisibility: assignments.map(item => item.testContentVisibility || test.testContentVisibility.ALWAYS)
 });
 
 const convertExpandTableData = (data, testItem, index) => ({

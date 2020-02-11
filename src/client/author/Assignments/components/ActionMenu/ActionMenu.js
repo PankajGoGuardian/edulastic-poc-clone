@@ -1,11 +1,11 @@
 import React from "react";
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 import { get } from "lodash";
 
 import { IconPrint, IconTrashAlt } from "@edulastic/icons";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, test } from "@edulastic/constants";
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
 import viewIcon from "../../assets/view.svg";
@@ -15,6 +15,7 @@ import responsiveIcon from "../../assets/responses.svg";
 import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
 
 const { duplicateAssignment } = assignmentApi;
+const { testContentVisibility: testContentVisibilityOptions } = test;
 
 const ActionMenu = ({
   onOpenReleaseScoreSettings = () => {},
@@ -38,6 +39,18 @@ const ActionMenu = ({
       const duplicateTestId = testItem._id;
       history.push(`/author/tests/${duplicateTestId}`);
     });
+  };
+
+  const handlePrintTest = () => {
+    const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+    const { assignmentVisibility = [] } = row;
+    const { HIDDEN, GRADING } = testContentVisibilityOptions;
+    if (!isAdmin && (assignmentVisibility.includes(HIDDEN) || assignmentVisibility.includes(GRADING))) {
+      return message.warn(
+        `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
+      );
+    }
+    window.open(`/author/printAssessment/${currentTestId}`, "_blank");
   };
 
   // owner of the assignment
@@ -82,12 +95,10 @@ const ActionMenu = ({
             View Test Details
           </Link>
         </Menu.Item>
-        <Menu.Item data-cy="print-assignment" key="print-assignment">
-          <Link to={`/author/printAssessment/${currentTestId}`} target="_blank" rel="noopener noreferrer">
-            <IconPrint />
-            <SpaceElement />
-            Print Test
-          </Link>
+        <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
+          <IconPrint />
+          <SpaceElement />
+          Print Test
         </Menu.Item>
         <Menu.Item
           data-cy="release-grades"

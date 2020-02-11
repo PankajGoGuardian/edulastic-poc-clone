@@ -59,7 +59,7 @@ class QuestionMenu extends Component {
         this.setState({ activeTab: i + 1 });
       }
     }
-    if (this.contentWrapper.scrollTop < allOptions[0].el.scrollHeight / 2) {
+    if (allOptions[0] && this.contentWrapper.scrollTop < allOptions[0].el.scrollHeight / 2) {
       this.setState({ activeTab: 0 });
     } else if (
       allOptions.length > this.state.activeTab &&

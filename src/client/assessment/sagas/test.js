@@ -3,6 +3,7 @@ import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep } from "lodash";
+import produce from "immer";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -34,6 +35,19 @@ import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 import { CLEAR_ITEM_EVALUATION } from "../../author/src/constants/actions";
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
+
+const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
+
+const modifyTestDataForPreview = test => {
+  return produce(test, draft => {
+    const { itemGroups } = draft;
+    for (const group of itemGroups) {
+      if (group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && group.deliverItemsCount) {
+        group.items = group.items.filter((_, i) => i < group.deliverItemsCount);
+      }
+    }
+  });
+};
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -149,6 +163,10 @@ function* loadTest({ payload }) {
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview });
+    }
+    if (preview && test.itemGroups?.some(group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM)) {
+      //for all limited random group update items as per number of delivery items count
+      test = modifyTestDataForPreview(test);
     }
     test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
     if (

@@ -80,7 +80,7 @@ class GraphQuadrants extends Component {
     const newItem = cloneDeep(graphData);
 
     newItem.list = newItem.list.concat({
-      text: "New Option",
+      text: "<p>New Option</p>",
       id: `list-item-${Math.random()
         .toString(36)
         .substr(2, 9)}`

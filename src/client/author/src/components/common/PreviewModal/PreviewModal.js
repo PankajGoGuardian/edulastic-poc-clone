@@ -158,7 +158,7 @@ class PreviewModal extends React.Component {
     if (page === "itemList") {
       return addItemToCart(item);
     }
-    if (!test.title.trim().length && page !== "itemList") {
+    if (!test?.title?.trim()?.length && page !== "itemList") {
       this.closeModal();
       gotoSummary();
       console.log("Reaching here");

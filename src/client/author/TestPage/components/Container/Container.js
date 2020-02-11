@@ -494,8 +494,8 @@ class Container extends PureComponent {
   };
 
   handleSave = () => {
-    const { test, updateTest, createTest, editAssigned } = this.props;
-    if (!test.title.trim().length) {
+    const { test = {}, updateTest, createTest, editAssigned } = this.props;
+    if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
     }
     const newTest = this.modifyTest();
@@ -727,7 +727,7 @@ class Container extends PureComponent {
           onSave={isDocBased ? this.handleDocBasedSave : this.handleSave}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
-          title={test.title}
+          title={test?.title || ""}
           creating={creating}
           showEditButton={showEditButton}
           owner={owner}

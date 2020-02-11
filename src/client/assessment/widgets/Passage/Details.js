@@ -2,9 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
-import { Checkbox, Select } from "antd";
+import { Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton } from "@edulastic/common";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuestionTextArea from "../../components/QuestionTextArea";
@@ -12,12 +11,14 @@ import { updateVariables } from "../../utils/variables";
 import Question from "../../components/Question";
 import QuillSortableList from "../../components/QuillSortableList";
 
-import { StyledInput } from "./styled/StyledInput";
 import { Subtitle } from "../../styled/Subtitle";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 import { WidgetFRInput } from "../../styled/Widget";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
+import { TextInputStyled, SelectInputStyled } from "../../styled/InputStyles";
 
 const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
   const handleChange = (prop, value) => {
@@ -153,9 +154,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
                 onChange={handleChangePage}
               />
             ) : null}
-            <EduButton type="primary" onClick={handleAddPage}>
-              {t("component.passage.add")}
-            </EduButton>
+            <CustomStyleBtn onClick={handleAddPage}>{t("component.passage.add")}</CustomStyleBtn>
           </div>
         )}
       </Question>
@@ -168,18 +167,18 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.details")}`)}>
           {t("component.passage.details")}
         </Subtitle>
-        <Row gutter={30}>
-          <Col marginBottom="20px" span={12}>
+        <Row gutter={24}>
+          <Col span={12}>
             <Label>{t("component.passage.fleschKincaid")}</Label>
-            <StyledInput
+            <TextInputStyled
               size="large"
               value={item.flesch_kincaid || ""}
               onChange={e => handleChange("flesch_kincaid", e.target.value)}
             />
           </Col>
-          <Col marginBottom="20px" span={12}>
+          <Col span={12}>
             <Label>{t("component.passage.lexile")}</Label>
-            <StyledInput
+            <TextInputStyled
               size="large"
               value={item.lexile || ""}
               onChange={e => handleChange("lexile", e.target.value)}
@@ -197,8 +196,8 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           {t("component.passage.instructorStimulus")}
         </Subtitle>
 
-        <Row gutter={30}>
-          <Col marginBottom="20px" span={24}>
+        <Row gutter={24}>
+          <Col span={24}>
             <WidgetFRInput>
               <QuestionTextArea
                 onChange={value => handleChange("instructorStimulus", value)}
@@ -208,14 +207,14 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               />
             </WidgetFRInput>
           </Col>
-          <Col marginBottom="20px" span={24}>
-            <Checkbox
+          <Col span={24}>
+            <CheckboxLabel
               checked={item.paginated_content}
               onChange={e => handleChange("paginated_content", e.target.checked)}
               tabIndex={1}
             >
-              <b>{t("component.passage.enablePaginatedContent")}</b>
-            </Checkbox>
+              {t("component.passage.enablePaginatedContent")}
+            </CheckboxLabel>
           </Col>
         </Row>
       </Question>
@@ -230,10 +229,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.passage.mathRenderer")}`)}>
             {t("component.passage.mathRenderer")}
           </Subtitle>
-          <Select
+          <SelectInputStyled
             size="large"
             value={item.math_renderer}
-            style={{ width: "100%" }}
             getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={value => handleChange("math_renderer", value)}
             tabIndex={1}
@@ -243,7 +241,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
                 {label}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Question>
       )}
     </div>

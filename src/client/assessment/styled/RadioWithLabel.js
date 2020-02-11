@@ -1,6 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
+import {
+  mediumDesktopExactWidth,
+  greyThemeLighter,
+  greyThemeDark2,
+  themeColor,
+  greyThemeLight,
+  white
+} from "@edulastic/colors";
 import { Radio } from "antd";
 
 export const RadioStyle = styled(Radio)`
@@ -12,25 +19,41 @@ export const RadioStyle = styled(Radio)`
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
   text-transform: uppercase;
-  .ant-radio + span {
-    padding: 0px 20px;
-  }
-  .ant-radio-inner {
-    border-color: ${greyThemeDark2};
-    background: ${greyThemeLighter};
-  }
-  .ant-radio-checked {
-    .ant-radio-inner {
-      &:after {
-        background: ${greyThemeDark2};
+  &.ant-radio-wrapper {
+    & + .ant-radio-wrapper {
+      margin-left: 0px;
+    }
+    .ant-radio-input:focus + .ant-radio-inner {
+      box-shadow: none;
+    }
+    .ant-radio {
+      & + span {
+        font-size: ${props => props.labelFontSize || "12px"};
+        padding: ${props => props.labelPadding || "0px 20px"};
+      }
+      .ant-radio-inner {
+        border-color: ${greyThemeDark2};
+        background: ${greyThemeLighter};
+      }
+      &.ant-radio-checked {
+        &:after {
+          border-color: ${themeColor};
+        }
+        .ant-radio-inner {
+          border-color: ${themeColor};
+          background: ${white};
+        }
+      }
+      &.ant-radio-disabled {
+        &:after {
+          border-color: ${greyThemeLight};
+        }
+        .ant-radio-inner {
+          border-color: ${greyThemeLight};
+          background: ${greyThemeLight};
+        }
       }
     }
-  }
-  .ant-radio-input:focus + .ant-radio-inner,
-  &.ant-radio-wrapper:hover .ant-radio-inner,
-  .ant-radio:hover .ant-radio-inner {
-    border-color: ${greyThemeDark2};
-    background: ${greyThemeLighter};
   }
 
   @media (max-width: ${mediumDesktopExactWidth}) {

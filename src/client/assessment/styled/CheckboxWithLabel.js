@@ -1,6 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, greyThemeDark2, greyThemeLighter } from "@edulastic/colors";
+import {
+  mediumDesktopExactWidth,
+  greyThemeDark2,
+  greyThemeLighter,
+  themeColor,
+  greyThemeLight
+} from "@edulastic/colors";
 import { Checkbox } from "antd";
 
 export const CheckboxStyle = styled(Checkbox)`
@@ -12,28 +18,38 @@ export const CheckboxStyle = styled(Checkbox)`
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
   text-transform: uppercase;
-  &.ant-checkbox-wrapper + .ant-checkbox-wrapper {
-    margin-left: 0px;
-  }
-  .ant-checkbox-checked {
-    &:after,
-    & *:after {
-      border-color: ${greyThemeDark2};
+  &.ant-checkbox-wrapper {
+    & + .ant-checkbox-wrapper {
+      margin-left: 0px;
     }
-  }
-  .ant-checkbox-inner {
-    border-color: ${greyThemeDark2};
-    background: ${greyThemeLighter};
-  }
-  .ant-checkbox + span {
-    font-size: ${props => props.labelFontSize || "12px"};
-    padding: ${props => props.labelPadding || "0px 20px"};
-  }
-  .ant-checkbox-input:focus + .ant-checkbox-inner,
-  &.ant-checkbox-wrapper:hover .ant-checkbox-inner,
-  .ant-checkbox:hover .ant-checkbox-inner {
-    border-color: ${greyThemeDark2};
-    background: ${greyThemeLighter};
+    .ant-checkbox {
+      & + span {
+        font-size: ${props => props.labelFontSize || "12px"};
+        padding: ${props => props.labelPadding || "0px 20px"};
+      }
+      .ant-checkbox-inner {
+        border-color: ${greyThemeDark2};
+        background: ${greyThemeLighter};
+      }
+      &.ant-checkbox-checked {
+        &:after {
+          border-color: ${themeColor};
+        }
+        .ant-checkbox-inner {
+          border-color: ${themeColor};
+          background: ${themeColor};
+        }
+      }
+      &.ant-checkbox-disabled {
+        &:after {
+          border-color: ${greyThemeLight};
+        }
+        .ant-checkbox-inner {
+          border-color: ${greyThemeLight};
+          background: ${greyThemeLight};
+        }
+      }
+    }
   }
 
   @media (max-width: ${mediumDesktopExactWidth}) {

@@ -28,6 +28,11 @@ const editPermission = data =>
     .callApi({ url: `${prefix}/${data.bankId}/edit-permission/${data.id}`, method: "put", data: data.data })
     .then(result => result.data.result);
 
+const deletePermission = ({ bankId, id }) =>
+  api
+    .callApi({ url: `${prefix}/${bankId}/delete-permission/${id}`, method: "delete" })
+    .then(result => result.data.data);
+
 const getPermissions = bankId =>
   api
     .callApi({
@@ -58,6 +63,7 @@ export default {
   getCollectionList,
   addPermission,
   editPermission,
+  deletePermission,
   getPermissions,
   organizationSearch,
   saveItemsToBucket

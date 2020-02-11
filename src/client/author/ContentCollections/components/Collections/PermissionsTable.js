@@ -15,7 +15,8 @@ import {
   StyledTab,
   StyledTable,
   StyledScollBar,
-  StatusText
+  StatusText,
+  DeletePermissionButton
 } from "../../styled";
 import AddPermissionModal from "../Modals/AddPermissionModal";
 import {
@@ -23,7 +24,8 @@ import {
   getPermissionsSelector,
   addPermissionRequestAction,
   fetchPermissionsRequestAction,
-  editPermissionRequestAction
+  editPermissionRequestAction,
+  deletePermissionRequestAction
 } from "../../ducks";
 
 const { TabPane } = Tabs;
@@ -34,7 +36,8 @@ const PermissionsTable = ({
   permissions,
   fetchPermissionsRequest,
   addPermissionRequest,
-  editPermissionRequest
+  editPermissionRequest,
+  deletePermissionRequest
 }) => {
   const [showPermissionModal, setPermissionModalVisibility] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState(null);
@@ -97,6 +100,9 @@ const PermissionsTable = ({
             <span style={{ cursor: "pointer" }} onClick={() => handleEditPermission(record)}>
               <IconPencilEdit color={themeColor} />
             </span>
+            <DeletePermissionButton onClick={() => handleDeactivatePermission(record._id)}>
+              <i class="fa fa-trash-o" aria-hidden="true" />
+            </DeletePermissionButton>
           </div>
         );
       }
@@ -106,6 +112,10 @@ const PermissionsTable = ({
   const handleEditPermission = permission => {
     setSelectedPermission(permission);
     setPermissionModalVisibility(true);
+  };
+
+  const handleDeactivatePermission = id => {
+    deletePermissionRequest({ bankId: selectedCollection.bankId, id });
   };
 
   const handlePermissionModalResponse = response => {
@@ -189,7 +199,8 @@ const PermissionsTableComponent = connect(
   {
     fetchPermissionsRequest: fetchPermissionsRequestAction,
     addPermissionRequest: addPermissionRequestAction,
-    editPermissionRequest: editPermissionRequestAction
+    editPermissionRequest: editPermissionRequestAction,
+    deletePermissionRequest: deletePermissionRequestAction
   }
 )(PermissionsTable);
 export { PermissionsTableComponent as PermissionsTable };

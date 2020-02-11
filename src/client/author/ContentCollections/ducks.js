@@ -23,6 +23,8 @@ export const FETCH_PERMISSIONS_FAILED = "[collection] fetch permissions failed";
 export const SEARCH_ORGANIZATION_REQUEST = "[collection] search organization request";
 export const SEARCH_ORGANIZATION_SUCCESS = "[collection] search organization success";
 export const SEARCH_ORGANIZATION_FAILED = "[collection] search organization failed";
+export const DELETE_PERMISSION_REQUEST = "[collection] delete permission request";
+export const DELETE_PERMISSION_SUCCESS = "[collection] delete permission success";
 
 //actions
 export const createCollectionRequestAction = createAction(CREATE_NEW_COLLECTION_REQUEST);
@@ -43,6 +45,8 @@ export const fetchPermissionsFailedAction = createAction(FETCH_PERMISSIONS_FAILE
 export const searchOrgaizationRequestAction = createAction(SEARCH_ORGANIZATION_REQUEST);
 export const searchOrgaizationSuccessAction = createAction(SEARCH_ORGANIZATION_SUCCESS);
 export const searchOrgaizationFailedAction = createAction(SEARCH_ORGANIZATION_FAILED);
+export const deletePermissionRequestAction = createAction(DELETE_PERMISSION_REQUEST);
+export const deletePermissionSuccessAction = createAction(DELETE_PERMISSION_SUCCESS);
 
 const initialState = {
   creating: false,
@@ -127,6 +131,9 @@ export const reducer = createReducer(initialState, {
         };
       return p;
     });
+  },
+  [DELETE_PERMISSION_SUCCESS]: (state, { payload }) => {
+    state.permissions = state.permissions.filter(p => p._id !== payload);
   }
 });
 
@@ -223,6 +230,17 @@ function* searchOrgaizationRequestSaga({ payload }) {
   }
 }
 
+function* deletePermissionRequestSaga({ payload }) {
+  try {
+    yield call(collectionsApi.deletePermission, payload);
+    yield put(deletePermissionSuccessAction(payload.id));
+    yield call(message.success, "Permission deactivated successfully");
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Unable to deactivate permission");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_NEW_COLLECTION_REQUEST, createCollectionRequestSaga),
@@ -231,7 +249,8 @@ export function* watcherSaga() {
     yield takeEvery(ADD_PERMISSION_REQUEST, addPermissionRequestSaga),
     yield takeEvery(FETCH_PERMISSIONS_REQUEST, fetchPermissionsRequestSaga),
     yield takeEvery(SEARCH_ORGANIZATION_REQUEST, searchOrgaizationRequestSaga),
-    yield takeEvery(EDIT_PERMISSION_REQUEST, editPermissionRequestSaga)
+    yield takeEvery(EDIT_PERMISSION_REQUEST, editPermissionRequestSaga),
+    yield takeEvery(DELETE_PERMISSION_REQUEST, deletePermissionRequestSaga)
   ]);
 }
 

@@ -242,3 +242,10 @@ export const StyledScollBar = styled(PerfectScrollbar)`
     max-height: ${({ table }) => (table === "collectionTable" ? "270px" : "250px")};
   }
 `;
+
+export const DeletePermissionButton = styled.span`
+  cursor: pointer;
+  color: ${themeColor};
+  margin-left: 7px;
+  font-size: 18px;
+`;

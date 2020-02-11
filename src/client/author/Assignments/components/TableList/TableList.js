@@ -316,7 +316,7 @@ const TableList = ({
       dataIndex: "action",
       width: "10%",
       render: (_, row) => (
-        <ActionDiv>
+        <ActionDiv onClick={e => e.stopPropagation()}>
           <Dropdown
             overlay={ActionMenu({
               onOpenReleaseScoreSettings,
@@ -330,7 +330,6 @@ const TableList = ({
             })}
             placement="bottomRight"
             trigger={["click"]}
-            onClick={e => e.stopPropagation()}
           >
             <BtnAction data-cy="actions">ACTIONS</BtnAction>
           </Dropdown>

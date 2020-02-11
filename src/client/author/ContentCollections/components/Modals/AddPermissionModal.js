@@ -60,6 +60,15 @@ const AddPermissionModal = ({
         });
       }
     }
+
+    //setting default start and end date.
+    if (!isEditPermission && user.role === "edulastic-admin") {
+      const startDate = moment().valueOf();
+      const endDate = moment()
+        .add(1, "years")
+        .valueOf();
+      setFieldData({ ...fieldData, startDate, endDate });
+    }
   }, []);
 
   const validateFields = () => {

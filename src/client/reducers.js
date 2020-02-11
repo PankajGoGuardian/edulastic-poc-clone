@@ -8,6 +8,7 @@ import tutorial from "./tutorials/tutorialReducer";
 import adminReducers from "./admin/reducers";
 import publisherReducer from "./publisher/reducers";
 import { customReportReducer } from "./admin/Components/CustomReportContainer/ducks";
+import commonReducers from "./common/ducks";
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   tutorial,
   curriculumSequence: curriculumSequenceReducers,
   ...publisherReducer,
-  customReportReducer
+  customReportReducer,
+  ...commonReducers
 });
 
 export default rootReducer;

@@ -31,6 +31,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import ShadesView from "./components/ShadesView";
 import { getFontSize } from "../../utils/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import { SelectInputStyled, TextInputStyled } from "../../styled/InputStyles";
 
 const { Option } = Select;
 
@@ -155,14 +156,16 @@ const ShadingPreview = ({
             >
               {t("component.shading.methodSubtitle")}
             </Subtitle>
-            <AdaptiveSelect
+            <SelectInputStyled
+              width="140px"
+              margin="15px 0px"
               value={method}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={handleSelectMethod}
             >
               <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
               <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
-            </AdaptiveSelect>
+            </SelectInputStyled>
 
             {method === BY_LOCATION_METHOD ? (
               <ShadesView
@@ -172,10 +175,10 @@ const ShadingPreview = ({
                 lockedCells={read_only_author_cells ? shaded : undefined}
               />
             ) : (
-              <Input
+              <TextInputStyled
                 size="large"
                 type="number"
-                style={{ marginTop: 40, width: 320 }}
+                width="320px"
                 value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
                 onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
               />

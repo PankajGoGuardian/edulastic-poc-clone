@@ -321,7 +321,8 @@
       "multipleResponses": "Multiple responses",
       "areaSelectLabel": "Select Area",
       "composeQuestion": "Question",
-      "enterQuestion": "Enter your question"
+      "enterQuestion": "Enter your question",
+      "correctAnswer": "Correct Answer"
     },
     "tokenHighlight": {
       "composeQuestion": "Question",
@@ -332,7 +333,8 @@
       "custom": "Custom",
       "templateTitle": "Template",
       "editTemplateTab": "Edit template",
-      "editTokenTab": "Edit token"
+      "editTokenTab": "Edit token",
+      "correctAnswer": "Correct Answer"
     },
     "matchList": {
       "editPossibleResponses": "Possible responses",

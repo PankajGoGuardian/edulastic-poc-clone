@@ -1056,7 +1056,7 @@ export const defaultTheme = {
       sideBarBgColor: buttonBackgroundColor,
       containerBgColor: containerWhite,
       containerBorderColor: borderColor,
-      withShadowButtonActiveBgColor: buttonBackgroundColor,
+      withShadowButtonActiveBgColor: greyThemeDark2,
       withShadowButtonBgColor: buttonBackgroundColor,
       withShadowButtonShadowColor: shadowColor,
       buttonBgColor: themeColor,

@@ -22,7 +22,10 @@ import Question from "../../../components/Question";
 import CustomInput from "../../../components/Input";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 import ResizableImage from "./Resizeable";
 import Dragger from "antd/lib/upload/Dragger";
 import UpdateImageButton from "../styled/UpdateImageButton";
@@ -198,48 +201,48 @@ class ComposeQuestion extends Component {
           border="border"
         />
 
-        <FlexContainer paddding="1rem 0">
-          <FlexContainer style={{ marginRight: `1rem` }}>
+        <Row marginTop={15} type="flex" align="middle">
+          <Col span={6} style={{ display: `flex`, alignItems: `center` }}>
             <CustomInput
               size="large"
-              style={{ width: `70%`, marginRight: `5px` }}
+              style={{ width: `90px`, marginRight: `5px` }}
               type="number"
               value={item?.image?.width || maxWidth}
               onChange={val => handleImageToolbarChange("width", val)}
               placeholder={t("component.hotspot.widthLabel")}
             />
-            <Label>{t("component.hotspot.widthLabel")}</Label>
-          </FlexContainer>
-          <FlexContainer style={{ marginRight: `1rem` }}>
+            <Label marginBottom="0px">{t("component.hotspot.widthLabel")}</Label>
+          </Col>
+          <Col span={6} style={{ display: `flex`, alignItems: `center` }}>
             <CustomInput
               size="large"
-              style={{ width: `70%`, marginRight: `5px` }}
+              style={{ width: `90px`, marginRight: `5px` }}
               type="number"
               value={item?.image?.height || maxHeight}
               onChange={val => handleImageToolbarChange("height", val)}
               placeholder={t("component.hotspot.heightLabel")}
             />
-            <Label>{t("component.hotspot.heightLabel")}</Label>
-          </FlexContainer>
-          <FlexContainer>
+            <Label marginBottom="0px">{t("component.hotspot.heightLabel")}</Label>
+          </Col>
+          <Col span={12} style={{ display: `flex`, alignItems: `center` }}>
             <CustomInput
               size="large"
-              style={{ marginRight: `5px` }}
+              style={{ width: `200px`, marginRight: `5px` }}
               type="text"
               value={altText}
               onChange={val => handleImageToolbarChange("altText", val)}
               placeholder={t("component.hotspot.altTextLabel")}
             />
-            <Label>{t("component.hotspot.altTextLabel")}</Label>
-          </FlexContainer>
-        </FlexContainer>
+            <Label marginBottom="0px">{t("component.hotspot.altTextLabel")}</Label>
+          </Col>
+        </Row>
 
         {thumb ? (
           <FlexContainer className="imageContainer" flexDirection="column" marginBottom="1rem">
             {thumb}
             <div style={{ marginRight: "auto" }}>
               <UpdateImageButton {...uploadProps}>
-                <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")} </EduButton>
+                <CustomStyleBtn>{t("component.cloze.imageText.updateImageButtonText")} </CustomStyleBtn>
               </UpdateImageButton>
             </div>
           </FlexContainer>

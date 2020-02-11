@@ -17,10 +17,19 @@ import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
 import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
+import Question from "../../components/Question";
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
-const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
+const TokenHighlightEdit = ({
+  item,
+  setQuestionData,
+  fillSections,
+  cleanSections,
+  advancedLink,
+  advancedAreOpen,
+  t
+}) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const [templateTab, setTemplateTab] = useState(0);
@@ -163,16 +172,23 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         cleanSections={cleanSections}
       />
 
-      <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
-        onAdd={handleAddAnswer}
-        validation={item.validation}
-        options={renderOptions()}
-        onCloseTab={handleCloseTab}
+      <Question
+        section="main"
+        label={t("component.tokenHighlight.correctAnswer")}
         fillSections={fillSections}
         cleanSections={cleanSections}
-      />
+      >
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+      </Question>
 
       {advancedLink}
 

@@ -10,10 +10,12 @@ export const Label = styled.label`
   letter-spacing: -0.4px;
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
-  margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
   display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
-  margin: ${({ marginX, marginY }) => `${marginY} ${marginX}`};
+  margin-top: ${props => props.mt || "0px"};
+  margin-right: ${props => props.mr || "0px"};
+  margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
+  margin-left: ${props => props.ml || "0px"};
   padding-top: ${props => (props.top ? `${props.top}px` : 0)};
   padding-bottom: ${props => (props.bottom ? `${props.bottom}px` : 0)};
   padding-left: ${props => (props.left ? `${props.left}px` : 0)};

@@ -17,6 +17,7 @@ export const TextInputStyled = styled(Input)`
     font-weight: 600;
     line-height: 1.38;
     outline: 0;
+    ${props => props.style};
     &:focus,
     &:hover {
       border: 1px solid ${greyThemeLight};
@@ -29,6 +30,7 @@ export const TextInputStyled = styled(Input)`
 export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${props => props.width || "100%"};
+    margin: ${props => props.margin || "0px"};
     .ant-select-selection {
       background-color: ${greyThemeLighter};
       border: 1px solid ${greyThemeLight};

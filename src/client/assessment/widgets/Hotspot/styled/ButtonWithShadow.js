@@ -13,8 +13,15 @@ export const ButtonWithShadow = styled.div`
     active ? `1px 3px 6px 0 ${theme.widgets.hotspot.withShadowButtonShadowColor}` : "none"};
   background-color: ${({ active, theme }) =>
     active ? theme.widgets.hotspot.withShadowButtonActiveBgColor : theme.widgets.hotspot.withShadowButtonBgColor};
+  color: ${({ active, theme }) =>
+    active ? theme.widgets.hotspot.withShadowButtonBgColor : theme.widgets.hotspot.withShadowButtonActiveBgColor};
   transition: all 0.3s ease-in-out;
   &:hover {
     box-shadow: 1px 3px 6px 0 ${({ theme }) => theme.widgets.hotspot.withShadowButtonShadowColor};
+  }
+
+  & svg {
+    fill: ${({ active, theme }) =>
+      active ? theme.widgets.hotspot.withShadowButtonBgColor : theme.widgets.hotspot.withShadowButtonActiveBgColor};
   }
 `;

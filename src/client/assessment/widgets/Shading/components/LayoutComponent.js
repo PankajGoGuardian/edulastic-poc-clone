@@ -66,7 +66,7 @@ class LayoutComponent extends Component {
         cleanSections={cleanSections}
       >
         <Layout id={getFormattedAttrId(`${item?.title}-${t("component.options.display")}`)}>
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <Label>{t("component.options.hideCells")}</Label>
               <ShadesView
@@ -82,7 +82,7 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24}>
             <Col md={12}>
               <BorderTypeOption onChange={val => changeItem("border", val)} value={item.border} />
             </Col>
@@ -97,14 +97,14 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={24} type="flex" align="middle">
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
                 value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
-            <Col md={12}>
+            <Col md={12} marginBottom="0px">
               <HoverStateCheckbox checked={!!item.hover} onChange={val => changeItem("hover", val)} />
             </Col>
           </Row>

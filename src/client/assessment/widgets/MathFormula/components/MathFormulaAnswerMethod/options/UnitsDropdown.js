@@ -105,7 +105,7 @@ const UnitsDropdownPure = ({
       {!preview && (
         <FlexContainer justifyContent="center">
           <FlexContainer alignItems="center" flexDirection="row">
-            <Label marginBottom="0" marginY="0" marginX="10px" data-cy="answer-math-unit-dropdown">
+            <Label marginBottom="0" data-cy="answer-math-unit-dropdown">
               {t("component.math.showDropdown")}
             </Label>
             <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">

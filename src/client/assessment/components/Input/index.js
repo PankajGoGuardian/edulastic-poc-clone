@@ -1,13 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Input } from "antd";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 const CustomInput = ({ size, style, type, value, placeholder, onChange }) => {
   const handleInputChange = event => onChange(event.target.value);
   // eslint-disable-next-line max-len
   return (
-    <Input size={size} style={style} type={type} value={value} onChange={handleInputChange} placeholder={placeholder} />
+    <TextInputStyled
+      size={size}
+      style={style}
+      type={type}
+      value={value}
+      onChange={handleInputChange}
+      placeholder={placeholder}
+    />
   );
 };
 

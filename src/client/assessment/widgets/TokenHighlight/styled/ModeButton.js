@@ -1,17 +1,15 @@
+import { white, greyThemeDark2 } from "@edulastic/colors";
 import styled from "styled-components";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
-export const ModeButton = styled.button`
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid
-    ${({ active, theme }) =>
-      active
-        ? theme.widgets.tokenHighlight.modeButtonActiveBorderColor
-        : theme.widgets.tokenHighlight.modeButtonBorderColor};
-  color: ${props => props.theme.widgets.tokenHighlight.modeButtonColor};
-  background: ${({ active, theme }) =>
-    active ? theme.widgets.tokenHighlight.modeButtonActiveBgColor : theme.widgets.tokenHighlight.modeButtonBgColor};
-  &:focus {
-    outline: none;
+export const ModeButton = styled(CustomStyleBtn)`
+  &.ant-btn {
+    width: auto;
+    height: 30px;
+    padding: 0px 10px;
+    margin: 0px 10px 0px 0px;
+    color: ${props => (props.active ? white : greyThemeDark2)};
+    background: ${props => (props.active ? greyThemeDark2 : white)};
+    border: 1px solid ${greyThemeDark2} !important;
   }
 `;

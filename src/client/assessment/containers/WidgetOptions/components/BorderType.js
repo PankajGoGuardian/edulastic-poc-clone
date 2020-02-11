@@ -4,15 +4,15 @@ import { Select } from "antd";
 import i18n, { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const BorderType = ({ t, onChange, value, size, options, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.borderType")}</Label>
-    <Select
+    <SelectInputStyled
       data-cy="borderTypeSelect"
       size="large"
       value={value}
-      style={{ width: "100%" }}
       onChange={onChange}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       {...restProps}
@@ -22,7 +22,7 @@ const BorderType = ({ t, onChange, value, size, options, ...restProps }) => (
           {label}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

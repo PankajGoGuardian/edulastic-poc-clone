@@ -19,6 +19,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import CanvasSubtitle from "./CanvasSubtitle";
 import ShadesSubtitle from "./ShadesSubtitle";
 import Options from "./components/Options";
+import Question from "../../components/Question";
 
 const OptionsList = withPoints(ShadingPreview);
 
@@ -30,7 +31,8 @@ const ShadingEdit = ({
   advancedLink,
   advancedAreOpen,
   fillSections,
-  cleanSections
+  cleanSections,
+  t
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -144,17 +146,24 @@ const ShadingEdit = ({
         setQuestionData={setQuestionData}
       />
 
-      <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
-        onAdd={handleAddAnswer}
-        validation={item.validation}
-        options={renderOptions()}
-        onCloseTab={handleCloseTab}
+      <Question
+        section="main"
+        label={t("component.shading.correctAnswer")}
         fillSections={fillSections}
         cleanSections={cleanSections}
-        questionType={item?.title}
-      />
+      >
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          questionType={item?.title}
+        />
+      </Question>
 
       {advancedLink}
 

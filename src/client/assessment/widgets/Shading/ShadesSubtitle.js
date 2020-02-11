@@ -14,6 +14,7 @@ import ShadesView from "./components/ShadesView";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 import { StyledCheckbox } from "./styled/StyledCheckbox";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 class ShadesSubtitle extends Component {
   render() {
@@ -81,15 +82,17 @@ class ShadesSubtitle extends Component {
             border={item.border}
             hover={item.hover}
             shaded={shaded}
+            marginTop="20"
           />
         </div>
 
-        <StyledCheckbox
+        <CheckboxLabel
           onChange={() => handleCanvasOptionsChange("read_only_author_cells", !read_only_author_cells)}
           defaultChecked={read_only_author_cells}
+          mt="20px"
         >
           {t("component.shading.lockShadedCells")}
-        </StyledCheckbox>
+        </CheckboxLabel>
       </Question>
     );
   }

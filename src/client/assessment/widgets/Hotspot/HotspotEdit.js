@@ -22,6 +22,8 @@ import ComposeQuestion from "./ComposeQuestion";
 import AreasBlockTitle from "./AreasBlockTitle";
 import AttributesTitle from "./AttributesTitle";
 import Options from "./components/Options";
+import Question from "../../components/Question";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const OptionsList = withPoints(HotspotPreview);
 
@@ -164,21 +166,27 @@ const HotspotEdit = ({
         cleanSections={cleanSections}
       />
 
-      <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
-        onAdd={handleAddAnswer}
-        validation={item.validation}
-        options={renderOptions()}
-        onCloseTab={handleCloseTab}
+      <Question
+        section="main"
+        label={t("component.hotspot.correctAnswer")}
         fillSections={fillSections}
         cleanSections={cleanSections}
-        questionType={item?.title}
       >
-        <StyledCheckbox onChange={handleResponseMode} defaultChecked={multipleResponses} style={{ marginBottom: 30 }}>
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          questionType={item?.title}
+        />
+        <CheckboxLabel mt="15px" onChange={handleResponseMode} defaultChecked={multipleResponses}>
           {t("component.hotspot.multipleResponses")}
-        </StyledCheckbox>
-      </CorrectAnswers>
+        </CheckboxLabel>
+      </Question>
 
       {advancedLink}
 

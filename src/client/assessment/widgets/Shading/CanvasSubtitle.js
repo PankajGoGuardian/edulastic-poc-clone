@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { Input, Row, Col } from "antd";
+import { Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
@@ -12,7 +12,10 @@ import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 import Question from "../../components/Question";
+import { TextInputStyled } from "../../styled/InputStyles";
 
 class CanvasSubtitle extends Component {
   render() {
@@ -52,17 +55,13 @@ class CanvasSubtitle extends Component {
           {t("component.shading.canvasSubtitle")}
         </Subtitle>
 
-        <Row gutter={70}>
-          <Col span={12} style={{ marginBottom: 25 }}>
-            <Label
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-              padding="0 0 16px 0"
-            >
+        <Row gutter={24}>
+          <Col span={12}>
+            <Label fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.rowsCountSubtitle")}
             </Label>
 
-            <Input
+            <TextInputStyled
               size="large"
               value={rowCount}
               type="number"
@@ -71,15 +70,11 @@ class CanvasSubtitle extends Component {
             />
           </Col>
           <Col span={12}>
-            <Label
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-              padding="0 0 16px 0"
-            >
+            <Label fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.colsCountSubtitle")}
             </Label>
 
-            <Input
+            <TextInputStyled
               size="large"
               value={columnCount}
               min={0}
@@ -89,13 +84,13 @@ class CanvasSubtitle extends Component {
           </Col>
         </Row>
 
-        <Row gutter={70}>
-          <Col span={12} style={{ marginBottom: 25 }}>
+        <Row gutter={24}>
+          <Col span={12}>
             <Label fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.cellWidthSubtitle")}
             </Label>
 
-            <Input
+            <TextInputStyled
               size="large"
               value={cell_width}
               type="number"
@@ -108,7 +103,7 @@ class CanvasSubtitle extends Component {
               {t("component.shading.cellHeightSubtitle")}
             </Label>
 
-            <Input
+            <TextInputStyled
               size="large"
               value={cell_height}
               min={1}

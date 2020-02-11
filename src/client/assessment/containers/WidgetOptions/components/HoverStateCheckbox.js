@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const HoverStateCheckbox = ({ onChange, checked, t, ...restProps }) => (
-  <Checkbox data-cy="hoverStateOption" checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
+  <CheckboxLabel data-cy="hoverStateOption" checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
     {t("component.options.hoverState")}
-  </Checkbox>
+  </CheckboxLabel>
 );
 
 HoverStateCheckbox.propTypes = {

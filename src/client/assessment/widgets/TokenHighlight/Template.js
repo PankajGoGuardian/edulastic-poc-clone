@@ -169,33 +169,23 @@ const Template = ({
 
         {templateTab === 1 ? (
           <Fragment>
-            <Container>
+            <Container justifyContent="flex-start">
               <ModeButton
                 active={mode === PARAGRAPH_MODE}
                 onClick={() => handleItemChange("tokenization", PARAGRAPH_MODE)}
-                type="button"
               >
                 {t("component.tokenHighlight.paragraph")}
               </ModeButton>
               <ModeButton
                 active={mode === SENTENCE_MODE}
                 onClick={() => handleItemChange("tokenization", SENTENCE_MODE)}
-                type="button"
               >
                 {t("component.tokenHighlight.sentence")}
               </ModeButton>
-              <ModeButton
-                active={mode === WORD_MODE}
-                onClick={() => handleItemChange("tokenization", WORD_MODE)}
-                type="button"
-              >
+              <ModeButton active={mode === WORD_MODE} onClick={() => handleItemChange("tokenization", WORD_MODE)}>
                 {t("component.tokenHighlight.word")}
               </ModeButton>
-              <ModeButton
-                active={mode === CUSTOM_MODE}
-                onClick={() => handleItemChange("tokenization", CUSTOM_MODE)}
-                type="button"
-              >
+              <ModeButton active={mode === CUSTOM_MODE} onClick={() => handleItemChange("tokenization", CUSTOM_MODE)}>
                 {t("component.tokenHighlight.custom")}
               </ModeButton>
             </Container>

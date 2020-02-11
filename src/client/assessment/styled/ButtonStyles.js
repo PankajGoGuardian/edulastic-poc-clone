@@ -20,6 +20,17 @@ export const CustomStyleBtn = styled(Button)`
     font-size: ${props => props.theme.common.addNewChoiceButtonFontSize};
     font-weight: ${props => props.theme.common.addNewChoiceButtonFontWeight};
     letter-spacing: 0.2px;
+    ${props => props.style};
+
+    & div,
+    & span {
+      font-size: ${props => props.theme.common.addNewChoiceButtonFontSize};
+    }
+
+    & svg {
+      fill: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
+      margin-right: 10px;
+    }
 
     &:hover,
     &:focus,

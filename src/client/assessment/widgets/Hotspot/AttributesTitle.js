@@ -163,8 +163,8 @@ class AttributesTitle extends Component {
           {renderAltResponses()}
         </Tabs>
         {customizeTab === 0 ? (
-          <Row gutter={80}>
-            <Col span={5}>
+          <Row gutter={64}>
+            <Col span={6}>
               <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
                 {t("component.hotspot.fillColorTitle")}
               </Subtitle>
@@ -175,7 +175,7 @@ class AttributesTitle extends Component {
                 onChange={changeHandler("fill")}
               />
             </Col>
-            <Col span={5}>
+            <Col span={6}>
               <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
                 {t("component.hotspot.outlineColorTitle")}
               </Subtitle>

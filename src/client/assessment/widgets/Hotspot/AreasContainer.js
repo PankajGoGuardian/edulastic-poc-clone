@@ -18,6 +18,7 @@ import { Button } from "./styled/Button";
 import { SideBar } from "./styled/SideBar";
 import { ButtonWithShadow } from "./styled/ButtonWithShadow";
 import { AreaText } from "./styled/AreaText";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuestionData }) => {
   const [history, setHistory] = useState([{ areas: [], points: [] }]);
@@ -83,22 +84,33 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
     setMode(newMode);
   };
 
+  const btnStyle = {
+    width: "auto",
+    height: "30px",
+    padding: "0px 10px",
+    margin: "0px 5px 10px"
+  };
+
   return (
     <FlexContainer>
       <div style={{ width: width + 117 }}>
-        <Container justifyContent="flex-end" childMarginRight={45}>
-          <Button disabled={historyTab === 0} onClick={handleUndoClick}>
+        <Container padding="0px" mt="0px" justifyContent="flex-end" childMarginRight={45}>
+          <CustomStyleBtn style={btnStyle} disabled={historyTab === 0} onClick={handleUndoClick}>
             <IconUndo data-cy="area-undo" />
             <AreaText>{t("component.hotspot.undo")}</AreaText>
-          </Button>
-          <Button disabled={history.length === 0 || historyTab === history.length - 1} onClick={handleRedoClick}>
+          </CustomStyleBtn>
+          <CustomStyleBtn
+            style={btnStyle}
+            disabled={history.length === 0 || historyTab === history.length - 1}
+            onClick={handleRedoClick}
+          >
             <IconRedo data-cy="area-redo" />
             <AreaText>{t("component.hotspot.redo")}</AreaText>
-          </Button>
-          <Button onClick={handleClearClick}>
+          </CustomStyleBtn>
+          <CustomStyleBtn style={btnStyle} onClick={handleClearClick}>
             <IconEraseText data-cy="area-clear" />
             <AreaText>{t("component.hotspot.clear")}</AreaText>
-          </Button>
+          </CustomStyleBtn>
         </Container>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="flex-start">
           <SideBar>

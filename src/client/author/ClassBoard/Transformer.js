@@ -308,7 +308,10 @@ export const transformGradeBookResponse = (
             present: isAbsent ? false : true,
             status: isAbsent ? "absent" : "notStarted",
             maxScore: testMaxScore,
-            questionActivities: emptyQuestionActivities
+            questionActivities: emptyQuestionActivities.map(qact => ({
+              ...qact,
+              userId: studentId
+            }))
           };
         }
         const testActivity = studentTestActivities[studentId];
@@ -325,7 +328,7 @@ export const transformGradeBookResponse = (
             status: "redirected",
             redirected: true,
             maxScore: testMaxScore,
-            questionActivities: emptyQuestionActivities
+            questionActivities: emptyQuestionActivities.map(x => ({ ...x, userId: studentId }))
           };
         }
 
@@ -351,6 +354,7 @@ export const transformGradeBookResponse = (
               return {
                 _id,
                 qid: _id,
+                userId: studentId,
                 weight,
                 disabled,
                 testItemId,
@@ -404,7 +408,8 @@ export const transformGradeBookResponse = (
               graded,
               qLabel,
               barLabel,
-              pendingEvaluation
+              pendingEvaluation,
+              userId: studentId
             };
           }
         );

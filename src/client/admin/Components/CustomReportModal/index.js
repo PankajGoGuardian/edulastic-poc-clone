@@ -119,8 +119,6 @@ class CustomReportModal extends React.Component {
         const submitData = {
           districtId,
           name,
-          desc,
-          logo,
           url,
           level,
           schoolIds: institutionIds.map(o => o.key),
@@ -133,6 +131,8 @@ class CustomReportModal extends React.Component {
             : [],
           active
         };
+        desc && Object.assign(submitData, { desc });
+        logo && Object.assign(submitData, { logo });
         if (modalType === "edit") {
           Object.assign(submitData, {
             reportId: _id,
@@ -206,7 +206,8 @@ class CustomReportModal extends React.Component {
       users,
       orgType
     } = this.state;
-    const { title = "", description = "", thumbnail = "", url = "", archived = false } = reportData;
+    const { title = "", description = "", thumbnail = "", url = "", archived = false, permissions = [] } = reportData;
+    const enabled = permissions?.[0] ? permissions?.[0].enabled : true;
     return (
       <StyledModal
         visible={!!modalType}
@@ -407,7 +408,7 @@ class CustomReportModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label={t(`customreport.activatereport`)}>
-              {getFieldDecorator("active")(<Switch defaultChecked={!archived} onChange={this.onStatusChange} />)}
+              {getFieldDecorator("active")(<Switch defaultChecked={enabled} onChange={this.onStatusChange} />)}
             </ModalFormItem>
           </Col>
         </Row>

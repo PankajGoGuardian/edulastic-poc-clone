@@ -216,7 +216,8 @@ class PreviewModal extends React.Component {
       showAddPassageItemToTestButton = false, // show if add item to test button needs to shown.
       windowWidth,
       userFeatures,
-      onlySratchpad
+      onlySratchpad,
+      changePreviewMode
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField } = this.state;
@@ -310,6 +311,7 @@ class PreviewModal extends React.Component {
                   item={item}
                   page={page}
                   showCollapseBtn
+                  changePreviewTab={changePreviewMode}
                   onlySratchpad={onlySratchpad}
                 />
                 {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}

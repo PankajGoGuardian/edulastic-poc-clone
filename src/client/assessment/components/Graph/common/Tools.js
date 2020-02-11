@@ -35,7 +35,6 @@ import {
   ToolbarItemLabel,
   ToolbarItemIcon,
   Popup,
-  Overlay,
   PopupToolsContainer,
   PopupContent
 } from "./styled_components";
@@ -78,6 +77,7 @@ export default function Tools(props) {
 
   const [toolsPopupExpanded, setToolsPopupExpanded] = useState(false);
   const [popupTools, setPopupTools] = useState(tools);
+  let choosed = false;
 
   const isActive = tool => selected.includes(tool);
 
@@ -295,15 +295,15 @@ export default function Tools(props) {
     }
     setPopupTools(newTools);
     setTools(newTools);
-  };
-
-  const onOverlayClick = e => {
-    e.stopPropagation();
-    setToolsPopupExpanded(false);
+    choosed = true;
   };
 
   const isSelectedPopupTool = tool => {
     return popupTools.includes(tool);
+  };
+
+  const addTools = () => {
+    if (!choosed) setToolsPopupExpanded(toolsPopupExpanded ? false : true);
   };
 
   return (
@@ -336,7 +336,7 @@ export default function Tools(props) {
             <ToolBtn
               style={{ ...getSize(), zIndex: 40 }}
               className={toolsPopupExpanded ? "active" : ""}
-              onClick={() => setToolsPopupExpanded(true)}
+              onClick={addTools}
               key="tool-btn-add"
             >
               <ToolbarItem>
@@ -346,7 +346,6 @@ export default function Tools(props) {
               </ToolbarItem>
               {toolsPopupExpanded && (
                 <Fragment>
-                  <Overlay onClick={e => onOverlayClick(e)} />
                   <Popup bottom>
                     <PopupContent>
                       <PopupToolsContainer>

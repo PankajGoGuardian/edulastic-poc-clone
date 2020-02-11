@@ -31,11 +31,16 @@ class GraphToolsParams extends Component {
     });
   };
 
+  changeLabel = e => {
+    this.props.changeLabel(e.target.name, e.target.value);
+  };
+
   render() {
     const {
       t,
       toolbar: { drawingPrompt }
     } = this.props;
+    const drawingObjects = this.props.toolbar.drawingObjects;
 
     return (
       <React.Fragment>
@@ -51,6 +56,26 @@ class GraphToolsParams extends Component {
             </Radio.Group>
           </Col>
         </Row>
+        {drawingPrompt == "byObjects" ? (
+          <div>
+            {drawingObjects &&
+              drawingObjects.map((obj, i) => (
+                <div key={i}>
+                  <span>
+                    {obj.type.charAt(0).toUpperCase() + obj.type.slice(1)}{" "}
+                    {obj.pointLabels && obj.pointLabels.map((point, i) => point.label)}
+                  </span>
+                  <input
+                    value={typeof obj.label === "boolean" ? "" : obj.label}
+                    onChange={this.changeLabel}
+                    name={obj.id}
+                  />
+                </div>
+              ))}
+          </div>
+        ) : (
+          ""
+        )}
       </React.Fragment>
     );
   }

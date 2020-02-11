@@ -59,6 +59,11 @@ class GraphAnswers extends Component {
   updateValidationValue = value => {
     const { question, setQuestionData } = this.props;
     const { validation, toolbar } = question;
+    for (let i = 0; i < value.length; i++) {
+      if (typeof value[i].label !== "boolean") {
+        value[i].label = value[i].label.replace(/<p>/g, "").replace(/<\/p>/g, "");
+      }
+    }
     if (toolbar && toolbar.drawingPrompt) {
       toolbar.drawingObjects = this.getDrawingObjects(value);
     }

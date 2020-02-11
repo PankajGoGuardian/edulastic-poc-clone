@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { getFontSize } from "../../utils/helpers";
 import { ContentArea } from "../../styled/ContentArea";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { setQuestionDataAction, changeLabelAction } from "../../../author/src/actions/question";
 import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
 import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
 import NumberLinePlotOptions from "./Authoring/NumberLinePlotOptions";
@@ -136,8 +136,73 @@ class Graph extends Component {
       setAnnotation: this.handleAnnotationChange,
       fillSections,
       cleanSections,
-      advancedAreOpen
+      advancedAreOpen,
+      test: "1",
+      changeLabel: this.handleChangeLabel
     };
+  };
+
+  getDrawingObjects = value => {
+    const allowedTypes = [
+      "point",
+      "line",
+      "ray",
+      "segment",
+      "vector",
+      "circle",
+      "ellipse",
+      "sine",
+      "tangent",
+      "secant",
+      "exponent",
+      "logarithm",
+      "polynom",
+      "hyperbola",
+      "polygon",
+      "parabola",
+      "parabola2"
+    ];
+
+    const shapes = value.filter(elem => allowedTypes.includes(elem.type) && !elem.subElement);
+    return shapes.map(elem => {
+      const { id, type, label, baseColor, dashed } = elem;
+      const result = { id, type, label, baseColor };
+
+      if (type !== "point") {
+        result.dashed = dashed;
+        result.pointLabels = Object.values(elem.subElementsIds).map(pointId => {
+          const point = value.find(item => item.id === pointId);
+          return {
+            label: point ? point.label : "",
+            baseColor: point.baseColor
+          };
+        });
+      }
+
+      return result;
+    });
+  };
+
+  handleChangeLabel = (id, labelValue) => {
+    labelValue = labelValue.replace(/<p>/g, "").replace(/<\/p>/g, "");
+
+    const { item, setQuestionData, changeLabel } = this.props;
+    const { validation, toolbar } = item;
+    let oldValue;
+    const value = item.validation.validResponse.value;
+    for (let i = 0; i < value.length; i++) {
+      if (value[i].id == id) {
+        oldValue = value[i].label;
+        value[i].label = labelValue;
+        break;
+      }
+    }
+
+    if (toolbar && toolbar.drawingPrompt) {
+      toolbar.drawingObjects = this.getDrawingObjects(value);
+    }
+    setQuestionData({ ...item, validation, toolbar });
+    changeLabel({ data: value, oldValue, valId: id });
   };
 
   getAxisLabelsOptionsProps = () => {
@@ -508,7 +573,10 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     null,
-    { setQuestionData: setQuestionDataAction }
+    {
+      setQuestionData: setQuestionDataAction,
+      changeLabel: changeLabelAction
+    }
   )
 );
 

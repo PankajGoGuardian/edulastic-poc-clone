@@ -156,6 +156,6 @@ const Button = styled.div`
 export const Title = styled.div`
   padding: 5px;
   width: 100%;
-  font-size: ${props => props.theme.widgets.quadrants.dragDropTitleFontSize};
+  font-size: 15px;
   font-weight: ${props => props.theme.widgets.quadrants.dragDropTitleFontWeight};
 `;

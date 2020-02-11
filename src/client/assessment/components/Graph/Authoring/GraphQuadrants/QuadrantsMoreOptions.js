@@ -178,7 +178,8 @@ class QuadrantsMoreOptions extends Component {
       setToolbar,
       setAnnotation,
       setValidation,
-      advancedAreOpen
+      advancedAreOpen,
+      changeLabel
     } = this.props;
 
     const { uiStyle, backgroundImage, controlbar, annotation, toolbar } = graphData;
@@ -237,7 +238,7 @@ class QuadrantsMoreOptions extends Component {
             <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.studentInteraction")}`)}>
               {t("component.graphing.studentInteraction")}
             </Subtitle>
-            <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} />
+            <GraphToolsParams toolbar={toolbar} setToolbar={setToolbar} changeLabel={changeLabel} />
           </Question>
         )}
         <Question

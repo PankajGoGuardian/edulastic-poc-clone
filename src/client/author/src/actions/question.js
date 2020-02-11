@@ -7,7 +7,13 @@ import {
   SET_QUESTION,
   LOAD_QUESTION
 } from "../constants/actions";
-import { UPDATE_QUESTION, SET_FIRST_MOUNT, CHANGE_ITEM, CHANGE_ITEM_UI_STYLE } from "../../sharedDucks/questions";
+import {
+  UPDATE_QUESTION,
+  SET_FIRST_MOUNT,
+  CHANGE_ITEM,
+  CHANGE_ITEM_UI_STYLE,
+  CHANGE_LABEL
+} from "../../sharedDucks/questions";
 
 export const receiveQuestionByIdAction = id => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -18,6 +24,11 @@ export const receiveQuestionByIdAction = id => ({
 
 export const saveQuestionAction = () => ({
   type: SAVE_QUESTION_REQUEST
+});
+
+export const changeLabelAction = value => ({
+  type: CHANGE_LABEL,
+  payload: value
 });
 
 export const setQuestionDataAction = question => ({

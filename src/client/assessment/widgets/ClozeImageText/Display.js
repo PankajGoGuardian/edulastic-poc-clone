@@ -168,7 +168,7 @@ class Display extends Component {
     const { userAnswers } = this.state;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemNumeration } = uiStyle;
+    const { height, wordwrap, validationStemNumeration: stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",

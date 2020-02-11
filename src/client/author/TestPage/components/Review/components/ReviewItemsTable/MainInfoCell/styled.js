@@ -27,6 +27,9 @@ export const Stimulus = WithMathFormula(styled.div`
   }
   p {
     margin-left: 0 !important;
+    -moz-padding-inline-end: ${({ isCollapse }) => (isCollapse ? "10px" : "0px")};
+    -webkit-padding-inline-end: ${({ isCollapse }) => (isCollapse ? "10px" : "0px")};
+    padding-inline-end: ${({ isCollapse }) => (isCollapse ? "10px" : "0px")};
   }
 
   * {

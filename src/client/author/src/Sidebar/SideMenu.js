@@ -181,8 +181,13 @@ class SideMenu extends Component {
 
   handleMenu = item => {
     const { history } = this.props;
-    if (this.MenuItems[item.key].path !== undefined) {
-      history.push(`/${this.MenuItems[item.key].path}`);
+    const path = this.MenuItems[item.key].path;
+    if (path !== undefined) {
+      if (path.match(/playlists\/.{24}\/use-this/)) {
+        history.push({ pathname: `/${path}`, state: { from: "favouritePlaylist" } });
+      } else {
+        history.push(`/${path}`);
+      }
     }
   };
 

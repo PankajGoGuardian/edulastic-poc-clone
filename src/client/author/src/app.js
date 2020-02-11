@@ -138,7 +138,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route
                       exact
                       path={`${match.url}/assignments/:testId`}
-                      component={props => <AssignTest {...props} />}
+                      component={props => <AssignTest {...props} from="assignments" />}
                     />
                     <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
                     <Route path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
@@ -241,12 +241,12 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route
                       exact
                       path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
-                      component={props => <AssignTest {...props} isPlaylist />}
+                      component={props => <AssignTest {...props} isPlaylist from="playlistLibrary" />}
                     />
                     <Route
                       exact
                       path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
-                      component={props => <AssignTest {...props} isPlaylist />}
+                      component={props => <AssignTest {...props} isPlaylist from="playlistLibrary" />}
                     />
                     <Route
                       exact

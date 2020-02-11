@@ -40,8 +40,10 @@ class Container extends Component {
 
     const { lastPlayList = {}, toggleSideBar } = this.props;
     let toLinkForPlaylist = "/author/playlists";
+    let from = "playlistLibrary";
     if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
       toLinkForPlaylist = `/author/playlists/${lastPlayList.value._id}/use-this`;
+      from = "favouritePlaylist";
     }
 
     return (
@@ -64,7 +66,7 @@ class Container extends Component {
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
                   <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
-                  <Link to={toLinkForPlaylist}>
+                  <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
                     <ButtonComponent type="primary">Play List</ButtonComponent>
                   </Link>
                   <Divider />

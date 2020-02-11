@@ -550,9 +550,9 @@ function* useThisPlayListSaga({ payload }) {
     const location = yield select(state => state.router.location.pathname);
     const urlHasUseThis = location.match(/use-this/g);
     if (onChange && !urlHasUseThis) {
-      yield put(push(`/author/playlists/${_id}`));
+      yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary" } }));
     } else {
-      yield put(push(`/author/playlists/${_id}/use-this`));
+      yield put(push({ pathname: `/author/playlists/${_id}/use-this`, state: { from: "favouritePlaylist" } }));
     }
   } catch (error) {
     console.error(error);

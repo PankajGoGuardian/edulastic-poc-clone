@@ -46,6 +46,13 @@ const setTime = userRole => {
     .set({ hour: 23, minute: 0, second: 0, millisecond: 0 });
 };
 
+const parentMenu = {
+  assignments: { title: "Assignments", to: "assignments" },
+  playlistLibrary: { title: "Playlist Library", to: "playlists" },
+  favouritePlaylist: { title: "Favourite playlist", to: "favouriteLibrary" },
+  testLibrary: { title: "Test Library", to: "tests" }
+};
+
 class AssignTest extends React.Component {
   constructor(props) {
     super(props);
@@ -257,8 +264,23 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, assignment, specificStudents } = this.state;
-    const { classList, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
+    const {
+      classList,
+      fetchStudents,
+      students,
+      testSettings,
+      testItem,
+      isPlaylist,
+      playlist,
+      from,
+      location
+    } = this.props;
     const { title, _id } = isPlaylist ? playlist : testItem;
+    const exactMenu = parentMenu[location?.state?.from || from];
+    if (exactMenu.to === "favouriteLibrary") {
+      exactMenu.to = `playlists/${_id}/use-this`;
+    }
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
@@ -273,10 +295,7 @@ class AssignTest extends React.Component {
         <Container>
           <FullFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt;{" "}
-              <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}`}>
-                {isPlaylist ? "PLAYLIST LIBRARY" : "TEST LIBRARY"}
-              </AnchorLink>
+              &lt; <AnchorLink to={`/author/${exactMenu?.to}`}>{exactMenu?.title}</AnchorLink>
               &nbsp;/&nbsp;
               <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}/${_id}#review`}>{title}</AnchorLink>
               &nbsp;/&nbsp;

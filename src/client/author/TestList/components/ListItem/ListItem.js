@@ -89,7 +89,7 @@ class ListItem extends Component {
   assignTest = e => {
     e && e.stopPropagation();
     const { history, item } = this.props;
-    history.push(`/author/assignments/${item._id}`);
+    history.push({ pathname: `/author/assignments/${item._id}`, state: { from: "testLibrary" } });
   };
 
   openModal = () => {

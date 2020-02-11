@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Button, Menu, Dropdown, Icon, Modal, Tag, Col, message } from "antd";
@@ -127,8 +127,11 @@ class ModuleRow extends Component {
   };
 
   assignTest = (moduleId, testId) => {
-    const { history, playlistId } = this.props;
-    history.push(`/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`);
+    const { history, playlistId, location } = this.props;
+    history.push({
+      pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
+      state: location.state
+    });
   };
 
   viewTest = testId => {
@@ -961,6 +964,7 @@ const ModuleHelperText = styled.p`
 `;
 
 const enhance = compose(
+  withRouter,
   connect(
     ({ curriculumSequence }) => ({
       checkedUnitItems: curriculumSequence.checkedUnitItems,

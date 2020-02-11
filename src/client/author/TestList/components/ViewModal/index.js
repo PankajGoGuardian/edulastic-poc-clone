@@ -309,8 +309,8 @@ class ViewModal extends React.Component {
             </SummaryContainer>
             <PerfectScrollbar>
               {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-              {summary?.groupSummary?.length > 1 || itemGroups[0].type === "AUTOSELECT" ? (
-                summary?.groupSummary.map((group, i) => {
+              {summary?.groupSummary?.length > 1 || itemGroups?.[0]?.type === "AUTOSELECT" ? (
+                summary?.groupSummary?.map((group, i) => {
                   const standards = group?.standards
                     ?.filter(item => !item.isEquivalentStandard)
                     ?.map(item => item.identifier);

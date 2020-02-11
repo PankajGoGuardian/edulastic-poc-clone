@@ -231,10 +231,12 @@ const buildGraphApiResponse = (elements = []) => {
     if (!allowedShapes.includes(el.type)) {
       return;
     }
-
+    // handling case if points are empty, will br sending (0,0) for math-engine
     if (el.type === ShapeTypes.AREA) {
       points.push(`(${+el.x.toFixed(4)},${+el.y.toFixed(4)})`);
       return;
+    } else {
+      points.push(`(0,0)`);
     }
 
     if (el.type === ShapeTypes.EQUATION) {
@@ -315,12 +317,7 @@ const evaluator = async ({ userResponse, validation }) => {
   let result = {};
 
   for (const [index, answer] of answers.entries()) {
-    if (userResponse.some(x => x.type === ShapeTypes.AREA)) {
-      result = await checkEquations(answer.value, userResponse);
-    } else {
-      result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
-    }
-
+    result = await checkEquations(answer.value, userResponse);
     if (result.commonResult) {
       score = Math.max(answer.score, score);
     }

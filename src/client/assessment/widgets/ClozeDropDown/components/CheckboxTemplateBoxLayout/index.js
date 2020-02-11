@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import { Popover } from "antd";
 import { response } from "@edulastic/constants";
+import { measureText, MathSpan } from "@edulastic/common";
+
 import { getStemNumeration } from "../../../../utils/helpers";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
-import { measureText, MathSpan } from "@edulastic/common";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -110,7 +111,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   );
 
   const { scrollWidth } = measureText(userSelection?.value || "", _btnStyle);
-  const showPopover = scrollWidth > _btnStyle.width && userAttempted;
+  let contentWidth = scrollWidth + 40; // 40 is padding and margin and ellipsis width
+  if (showAnswer) {
+    contentWidth += lessMinWidth ? response.indexSizeSmallBox : 35; // index box size
+  }
+  const showPopover = contentWidth >= _btnStyle.width && userAttempted;
   const answerContent = getContent();
   const popoverContent = getContent(true);
 

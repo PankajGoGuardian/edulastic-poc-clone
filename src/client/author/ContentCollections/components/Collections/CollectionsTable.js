@@ -128,7 +128,7 @@ const CollectionsTable = ({
       title: selectedCollection ? "" : "Permissions",
       key: "permissions",
       width: selectedCollection ? 20 : 150,
-      align: selectedCollection ? "right" : "left",
+      align: "left",
       render: (_, record) =>
         selectedCollection ? (
           selectedCollection.bankId === record._id ? (
@@ -171,7 +171,12 @@ const CollectionsTable = ({
           <TableHeading>Custom Collection</TableHeading>
         </div>
       </HeadingContainer>
-      <StyledScollBar table="collectionTable">
+      <StyledScollBar
+        table="collectionTable"
+        option={{
+          suppressScrollX: true
+        }}
+      >
         <StyledTable
           dataSource={searchValue ? filteredCollectionList : collectionList}
           columns={columns}

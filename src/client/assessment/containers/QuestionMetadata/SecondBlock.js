@@ -180,7 +180,7 @@ const SecondBlock = ({
                 placeholder="Please select"
                 value={filteredCollections.flatMap(c => c.bucketIds)}
                 onChange={(value, options) => handleCollectionsSelect(value, options)}
-                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 suffixIcon={<SelectSuffixIcon type="caret-down" />}
                 autoFocus={highlightCollection}
               >

@@ -170,6 +170,12 @@ const GroupItems = ({
         ...updatedGroupData,
         [fieldName]: value
       };
+    } else if (fieldName === "tags") {
+      const allTagsKeyById = keyBy(allTagsData, "_id");
+      updatedGroupData = {
+        ...updatedGroupData,
+        [fieldName]: value.map(tagId => allTagsKeyById[tagId])
+      };
     } else {
       updatedGroupData = {
         ...updatedGroupData,
@@ -383,12 +389,11 @@ const GroupItems = ({
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
       return saveGroupToTest();
     }
-    const allTagsKeyById = keyBy(allTagsData, "_id");
-    const searchTags = editGroupDetail.tags?.map(tag => allTagsKeyById[tag].tagName || "") || [];
+
     const optionalFields = {
       depthOfKnowledge: editGroupDetail.dok,
       authorDifficulty: editGroupDetail.difficulty,
-      tags: searchTags
+      tags: editGroupDetail.tags.map(tag => tag.tagName)
     };
     Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
     const data = {
@@ -638,7 +643,11 @@ const GroupItems = ({
                           filterOption={(input, option) =>
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                           }
-                          value={currentGroupIndex === index ? editGroupDetail.tags || [] : itemGroup.tags || []}
+                          value={
+                            currentGroupIndex === index
+                              ? editGroupDetail.tags?.map(tag => tag._id) || []
+                              : itemGroup.tags?.map(tag => tag._id) || []
+                          }
                           disabled={currentGroupIndex !== index}
                         >
                           {allTagsData.map(el => (

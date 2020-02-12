@@ -120,12 +120,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
                 // create new items
                 if (index === 2) {
                   itemListPage.createItem(itemKey, index, false);
-                  // testLibrary.searchFilters.waitForSearchResponse();
+                  testLibrary.searchFilters.waitForSearchResponse(); // Redirect has been changed back to add-item tab in app
                   cy.wait(1000);
                 }
               });
 
               cy.wait(1000);
+              testLibrary.header.clickOnReview(); // Redirect has been changed back to add-item tab in app
               cy.contains("View as Student");
               itemKeys.forEach(itemKey => {
                 testLibrary.review.verifyItemByContent(itemKey);

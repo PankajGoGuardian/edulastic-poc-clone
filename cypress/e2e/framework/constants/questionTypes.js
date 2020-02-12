@@ -69,7 +69,8 @@ export const questionGroup = {
   MCQ: "Multiple Choice",
   FILL_IN_BLANK: "Fill in the Blanks",
   CLASSIFICATION: "Classify, Match & Order",
-  READ: "Reading & Comprehension",
+  WRITING: "Writing",
+  READING: "Reading",
   HIGHLIGHT: "Highlight",
   MATH: "Math",
   GRAPH: "Graphing",
@@ -105,13 +106,8 @@ export const questionTypeMap = {
     "Label Image with Text"
   ],
   "Classify, Match & Order": ["Sort List", "Classification", "Match list", "OrderList"],
-  "Reading & Comprehension": [
-    "Essay with rich text",
-    "Essay with plain text",
-    "Short text",
-    "Passage with Multiple parts",
-    "Passage with Questions"
-  ],
+  Writing: ["Essay with rich text", "Essay with plain text", "Short text"],
+  Reading: ["Passage with Multiple parts", "Passage with Questions"],
   Highlight: ["Highlight Image", "Shading", "Hotspot", "Token highlight"],
   Math: [
     "Expression & Formula",

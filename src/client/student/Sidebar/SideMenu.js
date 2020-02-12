@@ -168,7 +168,12 @@ class SideMenu extends Component {
     const menuIndex = getIndex(page, menuItems, isReports);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible} className="footerDropWrap" isSidebarCollapsed={isSidebarCollapsed}>
+      <FooterDropDown
+        data-cy="footer-dropdown"
+        isVisible={isVisible}
+        className="footerDropWrap"
+        isSidebarCollapsed={isSidebarCollapsed}
+      >
         <Menu isSidebarCollapsed={isSidebarCollapsed} onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/home/profile">
@@ -176,7 +181,7 @@ class SideMenu extends Component {
               <span>{isSidebarCollapsed ? "" : t("common.myProfileText")}</span>
             </Link>
           </Menu.Item>
-          <Menu.Item key="0" className="removeSelectedBorder">
+          <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight />
               <span>{isSidebarCollapsed ? "" : t("common.signOutText")}</span>

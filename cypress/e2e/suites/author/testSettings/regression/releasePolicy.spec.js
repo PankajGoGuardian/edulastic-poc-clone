@@ -104,7 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.DONT_RELEASE}`, () => {
           cy.login("teacher", teacher, password);
-          cy.deleteAllAssignments("300@xyz.com", "300@abc.com");
+          cy.deleteAllAssignments(student, teacher);
           testLibrary.sidebar.clickOnTestLibrary();
           testLibrary.searchFilters.clearAll();
           testLibrary.clickOnTestCardById(testId);
@@ -138,7 +138,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.SCORE_ONLY}`, () => {
           cy.login("teacher", teacher, password);
-          cy.deleteAllAssignments("300@xyz.com", "300@abc.com");
+          cy.deleteAllAssignments(student, teacher);
           testLibrary.sidebar.clickOnTestLibrary();
           testLibrary.searchFilters.clearAll();
           testLibrary.clickOnTestCardById(testId);
@@ -176,7 +176,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_RESPONSE}`, () => {
           cy.login("teacher", teacher, password);
-          cy.deleteAllAssignments("300@xyz.com", "300@abc.com");
+          cy.deleteAllAssignments(student, teacher);
           testLibrary.sidebar.clickOnTestLibrary();
           testLibrary.searchFilters.clearAll();
           testLibrary.clickOnTestCardById(testId);
@@ -219,7 +219,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
 
         it(`> teacher update release grade policy - ${releaseGradeTypes.WITH_ANSWERS}`, () => {
           cy.login("teacher", teacher, password);
-          cy.deleteAllAssignments("300@xyz.com", "300@abc.com");
+          cy.deleteAllAssignments(student, teacher);
           testLibrary.sidebar.clickOnTestLibrary();
           testLibrary.searchFilters.clearAll();
           testLibrary.clickOnTestCardById(testId);

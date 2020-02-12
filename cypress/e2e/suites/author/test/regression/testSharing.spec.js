@@ -8,7 +8,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 
 const userData = require("../../../../../fixtures/users");
 
-const { dist1, dist2 } = userData.Sharing;
+const { dist1, dist2 } = userData.testSharing;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sharing`, () => {
   const techersidebar = new TeacherSideBar();

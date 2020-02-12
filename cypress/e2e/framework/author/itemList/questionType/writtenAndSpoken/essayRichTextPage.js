@@ -109,7 +109,7 @@ class EssayRichTextPage {
     const item = new EditItemPage();
 
     item.createNewItem(onlyItem);
-    item.chooseQuestion(questionGroup.READ, questionType.ESSAY_RICH);
+    item.chooseQuestion(questionGroup.WRITING, questionType.ESSAY_RICH);
     cy.fixture("questionAuthoring").then(authoringData => {
       const { quetext, setAns } = authoringData.ESSAY_RICH[queKey];
 

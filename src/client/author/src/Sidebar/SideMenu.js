@@ -289,7 +289,7 @@ class SideMenu extends Component {
     }
 
     const footerDropdownMenu = (
-      <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
+      <FooterDropDown data-cy="footer-dropdown" isVisible={isVisible} isCollapsed={isCollapsed}>
         <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="1" className="removeSelectedBorder">
             <Link to="/author/profile">
@@ -303,7 +303,7 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          <Menu.Item key="0" className="removeSelectedBorder">
+          <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
             <a>
               <IconSignoutHighlight /> {isCollapsed ? "" : "Sign Out"}
             </a>

@@ -141,18 +141,14 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
     : email;
   postData.password = password;
   cy.clearToken();
-  /* cy.request({
-          url: `${BASE_URL}/auth/login`,
-          method: 'POST',
-          body: postData
-        }).then(({ body }) => {
-          console.log('Result = ', body.result);
-          window.localStorage.setItem('access_token', body.result.token);
-          return true;
-        }); */
+  // FIXME: sometimgs app fails to load to login page
+  if (Cypress.$('[data-cy="footer-dropdown"]').length > 0) {
+    Cypress.$('[data-cy="footer-dropdown"]').click();
+    Cypress.$('[data-cy="signout"]').click();
+  }
 
   const login = new LoginPage();
-  cy.visit("/login");
+  cy.visit("/");
   cy.server();
   cy.route("GET", "**/test-activity/**").as("testActivity");
   cy.route("GET", "**curriculum**").as("apiLoad");

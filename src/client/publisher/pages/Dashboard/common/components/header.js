@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Button, Col, Icon } from "antd";
+import { connect } from "react-redux";
 
 import { themeColor, green, white } from "@edulastic/colors";
 import HeaderWrapper from "../../../../../author/src/mainContent/headerWrapper";
 import { StyledPrimaryWhiteButton } from "../../components/styled";
+import { getUserOrgName } from "../../../../../author/src/selectors/user";
 
-export const CustomizedHeaderWrapper = ({ breadcrumbsData, partner = "GREAT MINDS" }) => {
+const CustomizedHeaderWrapper = props => {
+  const { districtName } = props;
   return (
     <div>
       <HeaderWrapper>
         <HeaderTitle>
           <h1 className="heading-title">Dashboard</h1>
-          <h1 className="heading-partner">{partner}</h1>
+          <h1 className="heading-partner">{districtName}</h1>
         </HeaderTitle>
         <StyledCol>
-          <StyledPrimaryWhiteButton type="primary" icon="unlock">
-            UNLOCK MORE FEATURES
-          </StyledPrimaryWhiteButton>
           <StyledPrimaryWhiteButton type="primary" icon="plus-circle">
             MANAGE CLASS
           </StyledPrimaryWhiteButton>
@@ -26,6 +26,12 @@ export const CustomizedHeaderWrapper = ({ breadcrumbsData, partner = "GREAT MIND
     </div>
   );
 };
+
+const mapStateToProps = state => ({
+  districtName: getUserOrgName(state)
+});
+
+export default connect(mapStateToProps)(CustomizedHeaderWrapper);
 
 const HeaderTitle = styled.div`
   display: flex;

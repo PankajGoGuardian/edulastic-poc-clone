@@ -4,11 +4,12 @@ import styled from "styled-components";
 import { white, desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 import { StyledCard } from "../../../author/Reports/common/styled";
-import { CustomizedHeaderWrapper } from "./common/components/header";
+import CustomizedHeaderWrapper from "./common/components/header";
 import { StyledLeftSide } from "./components/leftSide";
 import { Usage } from "./components/Usage";
 import { Collections } from "./components/Collections";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import SideContent from "../../../author/Dashboard/components/SideContent/Sidecontent";
 
 const Dashboard = () => {
   return (
@@ -25,7 +26,9 @@ const Dashboard = () => {
             </StyledCard>
           </div>
           <div className="left-side">
-            <StyledLeftSide />
+            {/*<StyledLeftSide />*/}
+            <SideContent />
+            {/*using teacher's side content for publishers also*/}
           </div>
         </DashboardContentContainer>
       </DashboardContainer>

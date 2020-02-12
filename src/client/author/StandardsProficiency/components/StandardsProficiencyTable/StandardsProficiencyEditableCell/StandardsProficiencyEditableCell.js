@@ -127,7 +127,19 @@ class StandardsProficiencyEditableCell extends React.Component {
     const { selectedColor, colorValidate } = this.state;
 
     const colorMenuItems = [];
-    const colors = ["#F3FCCF", "#C8EB9B", "#FDFDC8", "#FAFA2B", "#FDE2B3", "#FABDBD", "#FFC300", "#D4E9FA"];
+    const colors = [
+      "#576ba9",
+      "#a1c3ea",
+      "#f39300",
+      "#fec571",
+      "#3db04e",
+      "#74e27a",
+      "#afa515",
+      "#ebdd54",
+      "#b22222",
+      "#7c0a02",
+      "#db75c5"
+    ];
     for (let i = 0; i < colors.length; i++) {
       colorMenuItems.push(
         <Menu.Item key={colors[i]}>

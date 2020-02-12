@@ -112,7 +112,7 @@ class StandardsProficiencyTable extends React.Component {
       masteryLevel: "Proficiency 1",
       shortName: "P1",
       threshold: 0,
-      color: "#D4E9FA"
+      color: "#ebdd54"
     };
 
     data.map(row => {

@@ -7,30 +7,40 @@ const result = loadJsonFile.sync("./cypress/reports/cypress-report.json");
 const { stats, suites } = result;
 const completesummary = [];
 const getAllSummary = {};
-let currentSuite;
+let currentSuite = "";
 
 function getFormatedTime(millis) {
   const minutes = Math.floor(millis / 60000);
   const seconds = ((millis % 60000) / 1000).toFixed(0);
-  return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  return (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
 }
 
 function finalSummary(stats) {
   const { testsRegistered: tests, passes, failures, skipped, duration, pending } = stats;
-  console.log(`----------------------------------------------------`);
-  console.table([
+  // console.log(`---------------------------------------------------------`);
+  /* console.table([
     {
-      name: "Total",
-      time: duration > 1000 ? getFormatedTime(duration) : `${duration}ms`,
-      total: tests,
-      pass: `${passes}(${Math.round((passes * 100) / tests)}%)`,
-      fail: `${failures}(${Math.round((failures * 100) / tests)}%)`,
-      skip: `${skipped}(${Math.round((skipped * 100) / tests)}%)`,
-      pending: `${pending}(${Math.round((pending * 100) / tests)}%)`
+      "": "Total",
+      Time: duration > 1000 ? getFormatedTime(duration) : `${duration}ms`,
+      Tests: tests,
+      Passing: `${passes}(${Math.round((passes * 100) / tests)}%)`,
+      Failing: `${failures}(${Math.round((failures * 100) / tests)}%)`,
+      Skipped: `${skipped}(${Math.round((skipped * 100) / tests)}%)`,
+      Pending: `${pending}(${Math.round((pending * 100) / tests)}%)`
     }
   ]);
   // console.log(`Total Test = ${tests} , Passed = ${passes} , Failed = ${failures} , Skipped = ${skipped}`);
-  console.log(`Test Passing % = ${Math.round((passes * 100) / tests)}%`);
+  console.log(`Test Passing % = ${Math.round((passes * 100) / tests)}%`); */
+  return {
+    Status: tests === passes ? "✔" : "✖",
+    Spec: "Overall",
+    Duration: duration > 1000 ? getFormatedTime(duration) : `${duration}ms`,
+    Tests: tests,
+    Passing: `${passes}(${Math.round((passes * 100) / tests)}%)`,
+    Failing: `${failures}(${Math.round((failures * 100) / tests)}%)`,
+    Skipped: `${skipped}(${Math.round((skipped * 100) / tests)}%)`,
+    Pending: `${pending}(${Math.round((pending * 100) / tests)}%)`
+  };
 }
 
 function getSuiteSummary(suite) {
@@ -39,7 +49,13 @@ function getSuiteSummary(suite) {
     if (tests.length > 0) {
       tests.forEach(test => {
         const { duration, context, state } = test;
-        const specName = context ? JSON.parse(context).filter(con => con.title === "specName")[0].value : currentSuite;
+        const contexts = context && JSON.parse(context);
+        // console.log("test -", test.uuid);
+        const specName = contexts
+          ? Array.isArray(contexts)
+            ? contexts.filter(con => con.title === "specName")[0].value
+            : contexts.value
+          : currentSuite;
         currentSuite = specName;
         const specSummary = getAllSummary[specName]
           ? getAllSummary[specName]
@@ -66,16 +82,27 @@ Object.keys(getAllSummary)
   .forEach(suiteName => {
     const { time, total, pass, fail, skip, pending } = getAllSummary[suiteName];
     completesummary.push({
-      status: total === pass ? "✔" : "✖",
-      name: `${suiteName}`,
-      time: time > 1000 ? getFormatedTime(time) : `${time}ms`,
-      total,
-      pass,
-      fail,
-      skip,
-      pending
+      Status: total === pass ? "✔" : "✖",
+      Spec: `${suiteName}`,
+      Duration: time > 1000 ? getFormatedTime(time) : `${time}ms`,
+      Tests: total,
+      Passing: `${pass}`,
+      Failing: fail,
+      Skipped: skip,
+      Pending: pending
     });
   });
 
+completesummary.push({
+  Status: "-",
+  Spec: "-",
+  Duration: "-",
+  Tests: "-",
+  Passing: "-",
+  Failing: "-",
+  Skipped: "-",
+  Pending: "-"
+});
+
+completesummary.push(finalSummary(stats));
 console.table("Run Summary", completesummary);
-finalSummary(stats);

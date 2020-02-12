@@ -54,6 +54,13 @@ import { faArchive } from "@fortawesome/free-solid-svg-icons";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
+const AssignmentStatus = {
+  NOT_OPEN: "NOT OPEN",
+  IN_PROGRESS: "IN PROGRESS",
+  IN_GRADING: "IN GRADING",
+  DONE: "DONE"
+};
+
 const ExtendedInput = ({ value, onChange, visible, onKeyUp }) => {
   const renameInput = useRef();
   useLayoutEffect(() => {
@@ -334,7 +341,7 @@ class LeftFilter extends React.Component {
   render() {
     const { termsData, selectedRows, folders, filterState, isAdvancedView, userRole, classList } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
-    const { subject, grades, termId, testType, classId } = filterState;
+    const { subject, grades, termId, testType, classId, status } = filterState;
     const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
     const oldFolderName = selectedFolder ? folders.find(folder => selectedFolder === folder._id).folderName : "";
     const classListByTerm = classList.filter(item => item.termId === termId || !termId);
@@ -533,6 +540,26 @@ class LeftFilter extends React.Component {
                     <Select.Option key={item._id} value={item._id}>
                       <span style={{ marginRight: "15px" }}>{item.name}</span>
                       <FontAwesomeIcon icon={faArchive} />
+                    </Select.Option>
+                  ))}
+                </Select>
+                <StyledBoldText>Status</StyledBoldText>
+                <Select
+                  data-cy="filter-status"
+                  showSearch
+                  optionFilterProp="children"
+                  mode="default"
+                  placeholder="Select status"
+                  value={status}
+                  onChange={this.handleChange("status")}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  <Select.Option key={"all"} value={""}>
+                    Select Status
+                  </Select.Option>
+                  {Object.keys(AssignmentStatus).map(status => (
+                    <Select.Option key={status} value={AssignmentStatus[status]}>
+                      {AssignmentStatus[status]}
                     </Select.Option>
                   ))}
                 </Select>

@@ -284,6 +284,7 @@ class Assignments extends Component {
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
+                          status={filterState.status}
                         />
                       )}
                     </StyledCard>

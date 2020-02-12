@@ -49,11 +49,11 @@ const fetchAssigned = groupId =>
 
 const fetchTeacherAssignments = ({
   groupId = "",
-  filters: { grades = [], subject = "", termId = "", testType = "", classId = "" }
+  filters: { grades = [], subject = "", termId = "", testType = "", classId = "", status = "" }
 }) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}`,
+      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}`,
       method: "get"
     })
     .then(result => result.data.result);

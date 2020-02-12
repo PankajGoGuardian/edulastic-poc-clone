@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { find, isEmpty, get } from "lodash";
-import { Dropdown } from "antd";
+import { Dropdown, Button } from "antd";
 import * as qs from "query-string";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -31,7 +31,10 @@ import {
   ActionDiv,
   BtnAction,
   StyledCard,
-  TableWrapper
+  TableWrapper,
+  StyledButton,
+  StyledSpan,
+  StyledFlexContainer
 } from "./styled";
 import { Breadcrumb } from "../Breadcrumb";
 import TableList from "../TableList";
@@ -68,49 +71,66 @@ class AssignmentAdvanced extends Component {
     this.setState({ currentTestId: testId });
   };
 
-  renderBreadcrumbs = (assingment, history) => (
-    <FlexContainer>
-      <Breadcrumbs>
-        <Breadcrumb
-          handleClick={() => this.setState({ filterStatus: "NOT OPEN" })}
-          first
-          color={assignmentStatusBg.NOT_OPEN}
-        >
-          <span>{assingment.notStarted || 0}</span>Not Open
-        </Breadcrumb>
-        <Breadcrumb
-          handleClick={() => this.setState({ filterStatus: "IN PROGRESS" })}
-          color={assignmentStatusBg.IN_PROGRESS}
-        >
-          <span>{assingment.inProgress || 0}</span>In Progress
-        </Breadcrumb>
-        <Breadcrumb
-          handleClick={() => this.setState({ filterStatus: "IN GRADING" })}
-          color={assignmentStatusBg.IN_GRADING}
-        >
-          <span>{assingment.inGrading || 0}</span>In Grading
-        </Breadcrumb>
-        <Breadcrumb handleClick={() => this.setState({ filterStatus: "DONE" })} color={assignmentStatusBg.DONE}>
-          <span>{assingment.graded || 0}</span>Done
-        </Breadcrumb>
-      </Breadcrumbs>
-      <ActionDiv>
-        <Dropdown
-          overlay={ActionMenu({
-            onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
-            row: assingment,
-            history,
-            showPreviewModal: this.toggleTestPreviewModal,
-            toggleEditModal: this.toggleEditModal
-          })}
-          placement="bottomCenter"
-          trigger={["click"]}
-        >
-          <BtnAction>Actions</BtnAction>
-        </Dropdown>
-      </ActionDiv>
-    </FlexContainer>
-  );
+  renderBreadcrumbs = (assingment, history) => {
+    const { filterStatus } = this.state;
+
+    return (
+      <FlexContainer>
+        <div style={{ marginRight: "20px" }}>
+          <StyledSpan>Filter By</StyledSpan>
+          <StyledButton type="primary" onClick={() => this.setState({ filterStatus: "" })}>
+            All
+          </StyledButton>
+        </div>
+        <Breadcrumbs>
+          <Breadcrumb
+            handleClick={() => this.setState({ filterStatus: "NOT OPEN" })}
+            first
+            color={filterStatus === "NOT OPEN" ? "white" : assignmentStatusBg.NOT_OPEN}
+            bgColor={filterStatus === "NOT OPEN" && assignmentStatusBg.NOT_OPEN}
+          >
+            <span>{assingment.notStarted || 0}</span>Not Open
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() => this.setState({ filterStatus: "IN PROGRESS" })}
+            color={filterStatus === "IN PROGRESS" ? "white" : assignmentStatusBg.IN_PROGRESS}
+            bgColor={filterStatus === "IN PROGRESS" && assignmentStatusBg.IN_PROGRESS}
+          >
+            <span>{assingment.inProgress || 0}</span>In Progress
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() => this.setState({ filterStatus: "IN GRADING" })}
+            color={filterStatus === "IN GRADING" ? "white" : assignmentStatusBg.IN_GRADING}
+            bgColor={filterStatus === "IN GRADING" && assignmentStatusBg.IN_GRADING}
+          >
+            <span>{assingment.inGrading || 0}</span>In Grading
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() => this.setState({ filterStatus: "DONE" })}
+            color={filterStatus === "DONE" ? "white" : assignmentStatusBg.DONE}
+            bgColor={filterStatus === "DONE" && assignmentStatusBg.DONE}
+          >
+            <span>{assingment.graded || 0}</span>Done
+          </Breadcrumb>
+        </Breadcrumbs>
+        <ActionDiv>
+          <Dropdown
+            overlay={ActionMenu({
+              onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
+              row: assingment,
+              history,
+              showPreviewModal: this.toggleTestPreviewModal,
+              toggleEditModal: this.toggleEditModal
+            })}
+            placement="bottomCenter"
+            trigger={["click"]}
+          >
+            <BtnAction>Actions</BtnAction>
+          </Dropdown>
+        </ActionDiv>
+      </FlexContainer>
+    );
+  };
 
   onEnableEdit = () => {
     const { history, match } = this.props;
@@ -168,12 +188,12 @@ class AssignmentAdvanced extends Component {
 
         <ListHeader title={assingment.title || "Loading..."} hasButton={false} />
         <Container>
-          <FlexContainer justifyContent="space-between">
+          <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
               &lt; <AnchorLink to="/author/assignments">Assignments</AnchorLink> / <Anchor>{assingment.title}</Anchor>
             </PaginationInfo>
             {this.renderBreadcrumbs(assingment, history)}
-          </FlexContainer>
+          </StyledFlexContainer>
           <TableWrapper>
             <StyledCard>
               <TableList classList={classList} filterStatus={filterStatus} rowKey={recode => recode.assignmentId} />

@@ -94,7 +94,8 @@ const TableList = ({
   showFilter,
   windowWidth,
   toggleDeleteModal,
-  userId = ""
+  userId = "",
+  status = ""
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -209,8 +210,12 @@ const TableList = ({
       }
     ];
     const expandTableList = [];
+    let filterData = assignmentsByTestId?.[parentData.testId] || [];
     let getInfo;
-    (assignmentsByTestId?.[parentData.testId] || []).forEach((assignment, index) => {
+    if (status) {
+      filterData = filterData.filter(assignment => assignment.status === status);
+    }
+    filterData.forEach((assignment, index) => {
       if (!assignment.redirect) {
         getInfo = convertExpandTableData(assignment, parentData, index);
         expandTableList.push(getInfo);
@@ -342,6 +347,7 @@ const TableList = ({
       })
     }
   ];
+
   const getAssignmentsByTestId = Id => (assignmentsByTestId[Id] || []).filter(item => !item.redirect);
 
   const rowSelection = {
@@ -366,6 +372,10 @@ const TableList = ({
       }
     });
     data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
+  }
+
+  if (status) {
+    data = data.filter(d => getAssignmentsByTestId(d.testId).find(assignment => assignment.status === status));
   }
 
   if (loading) {

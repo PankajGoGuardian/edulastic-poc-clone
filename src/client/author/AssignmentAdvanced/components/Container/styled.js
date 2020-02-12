@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { tabletWidth, mobileWidth, linkColor, themeColor, white, darkGrey } from "@edulastic/colors";
-import { Card } from "@edulastic/common";
+import { Card, FlexContainer } from "@edulastic/common";
 
 export const Container = styled.div`
   padding: 30px;
@@ -133,5 +133,29 @@ export const Breadcrumbs = styled.div`
   span {
     margin-right: 10px;
     font-size: 20px;
+  }
+`;
+
+export const StyledButton = styled(Button)`
+  width: 130px;
+  height: 36px;
+  text-transform: uppercase;
+  font-size: 13px;
+  @media (max-width: 1365px) {
+    width: 50px;
+  }
+`;
+
+export const StyledSpan = styled.span`
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: bold;
+  margin-right: 20px;
+`;
+
+export const StyledFlexContainer = styled(FlexContainer)`
+  @media (max-width: 1365px) {
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;

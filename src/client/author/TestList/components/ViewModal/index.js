@@ -65,6 +65,7 @@ import { getInterestedStandards } from "../../../dataUtils";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StyledSelect } from "../../../../common/styled";
 import Tags from "../../../src/components/common/Tags";
+import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -144,9 +145,13 @@ class ViewModal extends React.Component {
           <Tooltip title={title}>
             <TestTitleWrapper>{title}</TestTitleWrapper>
           </Tooltip>
-          <TestStatus view="tile" status={status}>
-            {status}
-          </TestStatus>
+          <TestStatusWrapper status={status}>
+            {({ children, ...rest }) => (
+              <TestStatus {...rest} view="tile">
+                {children}
+              </TestStatus>
+            )}
+          </TestStatusWrapper>
         </ModalTitle>
         <ModalContainer>
           <ModalColumn>

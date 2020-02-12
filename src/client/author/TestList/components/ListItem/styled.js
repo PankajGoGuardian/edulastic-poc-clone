@@ -3,6 +3,10 @@ import { themeColor, fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colo
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 import IconELogo from "@edulastic/icons/src/IconELogo";
+import {
+  testStatusBackgroundColor as backgroundColor,
+  testStatusTextColor as textColor
+} from "../../../src/constants/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -46,11 +50,11 @@ export const TagsWrapper = styled(Col)`
 `;
 
 export const TestStatus = styled.span`
-  background: ${props => (props.status === "draft" ? "#F9F9F9" : "#E8F2FF")};
+  background: ${({ status }) => backgroundColor[status]};
   padding: 4px 10px;
   border-radius: 5px;
   font-size: 9px;
-  color: ${props => (props.status === "draft" ? "#979BA1" : "#798CA8")};
+  color: ${({ status }) => textColor[status]};
   text-transform: uppercase;
   font-weight: bold;
 `;

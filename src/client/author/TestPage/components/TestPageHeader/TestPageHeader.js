@@ -46,6 +46,7 @@ import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
+import { getStatus } from "../../../src/utils/getStatus";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
 
@@ -291,7 +292,7 @@ const TestPageHeader = ({
               {title || "Untitled Test"}{" "}
             </Title>
             <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
-              {isPlaylist || editEnable ? "DRAFT" : testStatus}
+              {isPlaylist || editEnable ? "DRAFT" : getStatus(testStatus)}
             </TestStatus>
           </TitleWrapper>
 

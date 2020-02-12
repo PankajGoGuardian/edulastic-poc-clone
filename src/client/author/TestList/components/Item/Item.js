@@ -41,6 +41,7 @@ import { TestStatus, EdulasticVerified } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
+import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 const sharedTypeMap = {
   0: "PUBLIC",
@@ -292,9 +293,13 @@ class Item extends Component {
               </Author>
             )}
             <StatusRow>
-              <TestStatus status={status || _source?.status} view="tile">
-                {status || _source?.status}
-              </TestStatus>
+              <TestStatusWrapper status={status || _source?.status}>
+                {({ children, ...rest }) => (
+                  <TestStatus {...rest} view="tile">
+                    {children}
+                  </TestStatus>
+                )}
+              </TestStatusWrapper>
             </StatusRow>
           </Inner>
 

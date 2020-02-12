@@ -44,6 +44,7 @@ import { getSelectedTestsSelector } from "../../ducks";
 import { getUserRole } from "../../../src/selectors/user";
 import { roleuser } from "@edulastic/constants";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
+import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 class ListItem extends Component {
   static propTypes = {
@@ -266,16 +267,20 @@ class ListItem extends Component {
                     <Tags tags={tags} show={1} key="tags" />
                     {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
                     <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
+                  </>
+                )}
+                <TestStatusWrapper status={testStatus || _source?.status}>
+                  {({ children, ...rest }) => (
                     <TestStatus
                       style={{
                         marginLeft: tags.length || (standardsIdentifiers && standardsIdentifiers.length) ? "10px" : 0
                       }}
-                      status={testStatus}
+                      {...rest}
                     >
-                      {testStatus}
+                      {children}
                     </TestStatus>
-                  </>
-                )}
+                  )}
+                </TestStatusWrapper>
                 {collections.find(o => o.name === "Edulastic Certified") &&
                   getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon}
               </TagsWrapper>
@@ -318,7 +323,10 @@ class ListItem extends Component {
 const enhance = compose(
   withNamespaces("author"),
   connect(
-    state => ({ selectedTests: getSelectedTestsSelector(state), userRole: getUserRole(state) }),
+    state => ({
+      selectedTests: getSelectedTestsSelector(state),
+      userRole: getUserRole(state)
+    }),
     { approveOrRejectSingleTestRequestAction }
   )
 );

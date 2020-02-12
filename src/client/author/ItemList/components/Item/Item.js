@@ -55,6 +55,8 @@ import { getCollectionsSelector } from "../../../src/selectors/user";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
+import { TestStatus } from "./../../../TestList/components/ListItem/styled";
+import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
@@ -437,6 +439,11 @@ class Item extends Component {
                   {item.collectionName ? <PremiumTag /> : null}
                   <CollectionTag collectionName={item?.collectionName} />
                 </CategoryContent>
+                {windowWidth > MAX_TAB_WIDTH && (
+                  <TestStatusWrapper status={item.status}>
+                    {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}
+                  </TestStatusWrapper>
+                )}
               </TypeCategory>
               {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
             </Detail>
@@ -485,6 +492,9 @@ class Item extends Component {
             <Details isOpenedDetails={isOpenedDetails}>
               <Standards item={item} search={search} />
               <Tags tags={item.tags} key="tags" />
+              <TestStatusWrapper>
+                {({ children, ...rest }) => <TestStatus {...rest}>{children}</TestStatus>}
+              </TestStatusWrapper>
               <Categories>{this.renderDetails()}</Categories>
             </Details>
           )}

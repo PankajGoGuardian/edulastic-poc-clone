@@ -14,6 +14,10 @@ import {
   smallDesktopWidth
 } from "@edulastic/colors";
 import { Status } from "../../../AssessmentPage/components/Header/styled";
+import {
+  testStatusBackgroundColor as backgroundColor,
+  testStatusTextColor as textColor
+} from "../../../src/constants/colors";
 
 export const ModalTitle = styled.h2`
   font-weight: bolder;
@@ -281,8 +285,8 @@ export const TestStatus = styled.span`
   position: relative;
   font-size: 9px;
   top: -5px;
-  color: ${greyDarken};
-  background-color: ${props => (props.status === "draft" ? white : publishStatusColor)};
+  color: ${({ status }) => textColor[status]};
+  background-color: ${({ status }) => backgroundColor[status]};
   border-radius: 4px;
   border: 1px solid ${borders.tag};
   text-transform: uppercase;

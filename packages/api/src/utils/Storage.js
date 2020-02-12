@@ -49,6 +49,13 @@ export const removeKID = () => {
   }
 };
 
+// function to fetch values from sessionStorage
+export const getFromSessionStorage = key => {
+  if (window && window.sessionStorage) {
+    return window.sessionStorage.getItem(key);
+  }
+};
+
 // Trace id -- a way to connect client requests(on ALB) to consumer(lambda)
 export const getTraceId = () => `tid=${window.sessionStorage.tid};kid=${window.sessionStorage.kid}`;
 

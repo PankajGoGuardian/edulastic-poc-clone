@@ -24,6 +24,7 @@ import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
 import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
+import Kid from "./kid/app";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
@@ -94,7 +95,8 @@ class App extends Component {
     const ssoPath = location.pathname.split("/").includes("auth");
     const partnerPath = location.pathname.split("/").includes("partnerLogin");
     const isV1Redirect = location.pathname.includes("/fwd");
-    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect) {
+    const kidPath = location.pathname.includes("/kid");
+    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
       fetchUser();
     }
     window.addEventListener("request-client-update", () => {
@@ -127,7 +129,10 @@ class App extends Component {
       history.push(`/d/ap?eAId=${v1Id}`);
     }
 
-    const publicPath = location.pathname.split("/").includes("public") || location.pathname.includes("/fwd");
+    const publicPath =
+      location.pathname.split("/").includes("public") ||
+      location.pathname.includes("/fwd") ||
+      location.pathname.includes("/kid");
 
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
@@ -217,6 +222,7 @@ class App extends Component {
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
+              <Route exact path="/kid" render={props => <Kid {...props} redirectPath={defaultRoute} />} />
               <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />
               <LoggedOutRoute
                 path="/district/:districtShortName"

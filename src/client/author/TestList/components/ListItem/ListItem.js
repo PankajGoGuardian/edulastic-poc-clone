@@ -183,14 +183,17 @@ class ListItem extends Component {
           <ContentWrapper>
             <Col span={24}>
               <Outer>
-                <div>
-                  <ListCard
-                    title={
-                      <Header src={thumbnailData}>
-                        <Stars size="small" />
-                      </Header>
-                    }
-                  />
+                <div style={{ display: "flex" }}>
+                  <div>
+                    <ListCard
+                      title={
+                        <Header src={thumbnailData}>
+                          <Stars size="small" />
+                        </Header>
+                      }
+                    />
+                  </div>
+
                   <Inner>
                     <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
                     <Description title={isPlaylist ? _source.description : description}>

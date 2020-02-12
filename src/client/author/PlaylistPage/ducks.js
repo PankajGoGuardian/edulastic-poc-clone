@@ -561,9 +561,8 @@ function* publishPlaylistSaga({ payload }) {
       yield call(message.success, "Successfully published");
     }
     yield put(push(`/author/playlists/${id}`));
-  } catch (e) {
-    const errorMessage = "publish failed";
-    yield call(message.error, errorMessage);
+  } catch (error) {
+    yield call(message.error, error?.data?.message || "publish failed");
   }
 }
 

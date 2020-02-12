@@ -20,6 +20,8 @@ import {
   getFetchCollectionListStateSelector,
   getCollectionListSelector
 } from "../../ducks";
+import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
+import { roleuser } from "@edulastic/constants";
 
 const CollectionsTable = ({
   selectedCollection,
@@ -27,7 +29,9 @@ const CollectionsTable = ({
   fetchCollectionListRequest,
   fetchCollectionListState,
   collectionList,
-  searchValue
+  searchValue,
+  userRole,
+  userDistrictId
 }) => {
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(false);
   const [editCollectionData, setEditCollectionData] = useState(null);
@@ -140,20 +144,27 @@ const CollectionsTable = ({
           <>
             <PermissionsButton
               onClick={() =>
-                handlePermissionClick({ itemBankName: record.name, bankId: record._id, buckets: record.buckets })
+                handlePermissionClick({
+                  itemBankName: record.name,
+                  bankId: record._id,
+                  buckets: record.buckets,
+                  districtId: record.districtId
+                })
               }
             >
               <span>Permissions</span>
             </PermissionsButton>
-            <span
-              onClick={() => {
-                setEditCollectionData(record);
-                setAddCollectionModalVisibility(true);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              <IconPencilEdit color={themeColor} />
-            </span>
+            {(userRole === roleuser.EDULASTIC_ADMIN || record.districtId === userDistrictId) && (
+              <span
+                onClick={() => {
+                  setEditCollectionData(record);
+                  setAddCollectionModalVisibility(true);
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <IconPencilEdit color={themeColor} />
+              </span>
+            )}
           </>
         )
     }
@@ -201,7 +212,9 @@ const CollectionsTable = ({
 const CollectionsTableComponent = connect(
   state => ({
     fetchCollectionListState: getFetchCollectionListStateSelector(state),
-    collectionList: getCollectionListSelector(state)
+    collectionList: getCollectionListSelector(state),
+    userRole: getUserRole(state),
+    userDistrictId: getUserOrgId(state)
   }),
   { fetchCollectionListRequest: fetchCollectionListRequestAction }
 )(CollectionsTable);

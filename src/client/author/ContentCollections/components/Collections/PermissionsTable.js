@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Tabs, Icon } from "antd";
+import { Tabs } from "antd";
 import { get } from "lodash";
 import moment from "moment";
 import { themeColor } from "@edulastic/colors";
@@ -27,6 +27,8 @@ import {
   editPermissionRequestAction,
   deletePermissionRequestAction
 } from "../../ducks";
+import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
+import { roleuser } from "@edulastic/constants";
 
 const { TabPane } = Tabs;
 
@@ -37,7 +39,9 @@ const PermissionsTable = ({
   fetchPermissionsRequest,
   addPermissionRequest,
   editPermissionRequest,
-  deletePermissionRequest
+  deletePermissionRequest,
+  userRole,
+  userDistrictId
 }) => {
   const [showPermissionModal, setPermissionModalVisibility] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState(null);
@@ -95,16 +99,18 @@ const PermissionsTable = ({
       title: "",
       key: "actions",
       render: (_, record) => {
-        return (
-          <div>
-            <span style={{ cursor: "pointer" }} onClick={() => handleEditPermission(record)}>
-              <IconPencilEdit color={themeColor} />
-            </span>
-            <DeletePermissionButton onClick={() => handleDeactivatePermission(record._id)}>
-              <i class="fa fa-trash-o" aria-hidden="true" />
-            </DeletePermissionButton>
-          </div>
-        );
+        if (userRole === roleuser.EDULASTIC_ADMIN || selectedCollection.districtId === userDistrictId)
+          return (
+            <div>
+              <span style={{ cursor: "pointer" }} onClick={() => handleEditPermission(record)}>
+                <IconPencilEdit color={themeColor} />
+              </span>
+              <DeletePermissionButton onClick={() => handleDeactivatePermission(record._id)}>
+                <i class="fa fa-trash-o" aria-hidden="true" />
+              </DeletePermissionButton>
+            </div>
+          );
+        return null;
       }
     }
   ];
@@ -198,7 +204,9 @@ const PermissionsTable = ({
 const PermissionsTableComponent = connect(
   state => ({
     isFetchingPermissions: getFetchPermissionsStateSelector(state),
-    permissions: getPermissionsSelector(state)
+    permissions: getPermissionsSelector(state),
+    userRole: getUserRole(state),
+    userDistrictId: getUserOrgId(state)
   }),
   {
     fetchPermissionsRequest: fetchPermissionsRequestAction,

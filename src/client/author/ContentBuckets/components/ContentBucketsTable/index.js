@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { withTheme } from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty, debounce } from "lodash";
 import { Button } from "antd";
-
+import { roleuser } from "@edulastic/constants";
 import { StyledFilterDiv } from "../../../../admin/Common/StyledComponents";
 
 import {
@@ -265,11 +265,18 @@ const ContentBucketsTable = ({
     },
     {
       dataIndex: "_id",
-      render: id => <StyledIconPencilEdit color={theme.themeColor} onClick={() => onEditBucket(id)} />
+      render: (id, record) => {
+        if (record.collection.districtId === user.districtId || user.role === roleuser.EDULASTIC_ADMIN)
+          return <StyledIconPencilEdit color={theme.themeColor} onClick={() => onEditBucket(id)} />;
+        return null;
+      }
     }
   ];
 
-  const editableBucket = buckets.find(bucket => bucket._id === editableBucketId);
+  const editableBucket = useMemo(() => buckets.find(bucket => bucket._id === editableBucketId), [
+    buckets,
+    editableBucketId
+  ]);
 
   let filteredCollections = collections;
   if (editableBucket && !filteredCollections.find(fc => fc._id === editableBucket.collection._id)) {
@@ -279,7 +286,7 @@ const ContentBucketsTable = ({
   return (
     <MainContainer>
       <SubHeaderWrapper>
-        {user.role !== "edulastic-admin" && <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />}
+        {user.role !== roleuser.EDULASTIC_ADMIN && <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />}
       </SubHeaderWrapper>
       <ContentSubHeader active={menuActive} history={history} />
 

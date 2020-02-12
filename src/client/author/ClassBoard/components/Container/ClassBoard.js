@@ -516,12 +516,7 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    const { assignmentStatus, additionalData, testActivity } = this.props;
-    if (assignmentStatus === "DONE") {
-      return message.warn(
-        "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
-      );
-    }
+    const { additionalData, testActivity } = this.props;
     // total count represents total students count in the class
     if (additionalData.totalCount <= testActivity.length) {
       return message.warn("This assessment is already assigned to all students in the class.");

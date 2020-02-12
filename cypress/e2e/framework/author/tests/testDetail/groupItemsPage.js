@@ -87,10 +87,7 @@ export default class GroupItemsPage {
 
   selectCollectionByGroupAndCollection = (group, collection) => {
     this.clickOnCollectionByGroup(group);
-    this.getGroupContainerByGroup(group)
-      .find(".ant-select-dropdown-menu-item")
-      .contains(collection)
-      .click({ force: true });
+    this.selectOptionByAttrByGroup(group, collection);
   };
 
   clickBrowseOnStandardsByGroup = group => cy.get(`[data-cy="standard-Group ${group}"]`).click();
@@ -125,7 +122,7 @@ export default class GroupItemsPage {
 
   clickOnApply = () => cy.get('[data-cy="apply-Stand-Set"]').click();
 
-  createDynamicTest = (group, filterForAutoselect, overRide = false) => {
+  createDynamicTest = (group = 1, filterForAutoselect, overRide = false) => {
     const { standard, collection, deliveryCount, dok, tags, difficulty } = filterForAutoselect;
     const { subject, grade, standardSet, standardsToSelect } = standard;
     this.clickOnEditByGroup(group);
@@ -135,9 +132,9 @@ export default class GroupItemsPage {
     this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect);
     this.clickOnApply();
     this.selectCollectionByGroupAndCollection(group, collection);
-    if (dok) this.setDOK(dok);
-    if (difficulty) this.setDifficulty(difficulty);
-    if (tags) this.setTag(tags);
+    if (dok) this.setDOK(group, dok);
+    if (difficulty) this.setDifficulty(group, difficulty);
+    if (tags) this.setTag(group, tags);
     this.setItemCountForDeliveryByGroup(group, deliveryCount);
     this.clickOnSaveByGroup(group, true);
   };
@@ -214,22 +211,33 @@ export default class GroupItemsPage {
     return deliveredArray;
   };
 
-  setTag = tag => {
-    CypressHelper.selectDropDownByAttribute("selectTags", tag);
-    cy.focused().blur(); // de-focus dropdown select
+  // setTag = (group, tag) => {
+  //   cy.get('[data-cy="selectTags"]')
+  //     .click().eq(group-1);
+  //   cy.wait(300);
+
+  //     .find(".ant-select-dropdown-menu-item")
+  //     .contains(tag)
+  //     .click({ force: true });
+  // };
+
+  setDOK = (group, dok) => {
+    cy.get('[data-cy="selectDOK"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
+    this.selectOptionByAttrByGroup(group, dok);
   };
 
-  setDOK = dok => {
-    // CypressHelper.selectDropDownByAttribute("selectDOK", DOK);
-    // cy.focused().blur();
-    cy.get('[data-cy="selectDOK"]').click();
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(dok)
-      .click({ force: true });
+  setDifficulty = (group, difficulty) => {
+    cy.get('[data-cy="selectDifficulty"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
+    this.selectOptionByAttrByGroup(group, difficulty);
   };
 
-  setDifficulty = difficulty => {
-    CypressHelper.selectDropDownByAttribute("selectDifficulty", difficulty);
-    cy.focused().blur();
+  selectOptionByAttrByGroup = (group, attr) => {
+    cy.get(`[data-cy="Group ${group} ${attr}"]`).click();
   };
 }

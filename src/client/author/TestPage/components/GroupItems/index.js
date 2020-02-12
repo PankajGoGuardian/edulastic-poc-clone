@@ -575,7 +575,11 @@ const GroupItems = ({
                           disabled={currentGroupIndex !== index}
                         >
                           {collectionData.map(el => (
-                            <Select.Option key={el.value} value={el.value}>
+                            <Select.Option
+                              key={el.value}
+                              value={el.value}
+                              data-cy={`${itemGroup.groupName} ${el.text}`}
+                            >
                               {el.text}
                             </Select.Option>
                           ))}
@@ -625,7 +629,11 @@ const GroupItems = ({
                           disabled={currentGroupIndex !== index}
                         >
                           {selectsData.allDepthOfKnowledge.map((el, index) => (
-                            <Select.Option key={el.value} value={el.value}>
+                            <Select.Option
+                              key={el.value}
+                              value={el.value}
+                              data-cy={`${itemGroup.groupName} ${el.text}`}
+                            >
                               {`${index > 0 ? index : ""} ${el.text}`}
                             </Select.Option>
                           ))}
@@ -645,7 +653,7 @@ const GroupItems = ({
                           disabled={currentGroupIndex !== index}
                         >
                           {allTagsData.map(el => (
-                            <Select.Option key={el._id} value={el._id}>
+                            <Select.Option key={el._id} value={el._id} data-cy={`${itemGroup.groupName} ${el.tagName}`}>
                               {el.tagName}
                             </Select.Option>
                           ))}
@@ -663,7 +671,11 @@ const GroupItems = ({
                           disabled={currentGroupIndex !== index}
                         >
                           {selectsData.allAuthorDifficulty.map(el => (
-                            <Select.Option key={el.value} value={el.value}>
+                            <Select.Option
+                              key={el.value}
+                              value={el.value}
+                              data-cy={`${itemGroup.groupName} ${el.text}`}
+                            >
                               {el.text}
                             </Select.Option>
                           ))}

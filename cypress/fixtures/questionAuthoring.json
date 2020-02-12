@@ -189,7 +189,7 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 3"
+        "collections": "auto collection 3 - auto collection 3 Bucket"
       }
     },
     "4": {
@@ -206,7 +206,7 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 4"
+        "collections": "auto collection 4 - auto collection 4 Bucket"
       }
     },
     "5": {
@@ -223,7 +223,7 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 1"
+        "collections": "auto collection 1 - auto collection 1 Bucket"
       }
     },
     "6": {
@@ -240,7 +240,7 @@
         }
       ],
       "meta": {
-        "collections": "auto collection 1"
+        "collections": "auto collection 1 - auto collection 1 Bucket"
       }
     }
   },

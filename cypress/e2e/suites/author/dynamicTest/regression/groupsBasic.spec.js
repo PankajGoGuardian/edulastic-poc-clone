@@ -26,10 +26,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   let itemCount;
 
   const filterForAutoselect = {
-    subject: "Mathematics",
-    standardSet: "Math - Common Core",
-    grade: ["Kindergarten"],
-    standardsToSelect: ["K.CC.A.2"],
+    standard: {
+      subject: "Mathematics",
+      standardSet: "Math - Common Core",
+      grade: ["Kindergarten"],
+      standardsToSelect: ["K.CC.A.2"]
+    },
     collection: "auto collection 3",
     deliveryCount: 2
   };

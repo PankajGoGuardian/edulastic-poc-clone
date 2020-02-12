@@ -1,15 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-import { white, greenDark5 } from "@edulastic/colors";
 import { FlexContainer, FontPicker } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
-import { Tooltip } from "../../../../common/utils/helpers";
 import Size from "./Size";
 import ColorPicker from "./color";
 import BottomTools from "./BottomTools";
-import tools, { Back } from "./tools";
-import { StyledButton, ToolBox, ActiveToolBoxContainer } from "./styled";
+import SelectToolOptions from "./SelectToolOptions";
+import DrawingTools, { ActiveTool, BackButton } from "./tools";
+import { ToolBox, ActiveToolBoxContainer } from "./styled";
 
 const showFontArr = [drawTools.DRAW_TEXT, drawTools.DRAW_MATH, drawTools.MOVE_ITEM];
 
@@ -34,67 +33,48 @@ const Tools = ({
   containerStyle,
   onChangeFont,
   currentFont
-}) => {
-  let buttonsList = tools;
+}) => (
+  <ToolBox
+    activeMode={activeMode}
+    isWorksheet={isWorksheet}
+    justifyContent="space-around"
+    review={review}
+    testMode={testMode}
+    flexDirection="column"
+    isToolBarVisible={isToolBarVisible}
+    className={className}
+    style={containerStyle}
+  >
+    {activeMode === "" && <DrawingTools onChange={onToolChange} isTestMode={isDocBased || testMode} />}
 
-  if (isDocBased || testMode) {
-    buttonsList = tools.filter(obj => obj.mode !== "none");
-  }
-
-  const activeTool = buttonsList.find(button => button.mode === activeMode);
-
-  return (
-    <ToolBox
-      activeMode={activeMode}
-      isWorksheet={isWorksheet}
-      justifyContent="space-around"
-      review={review}
-      testMode={testMode}
-      flexDirection="column"
-      isToolBarVisible={isToolBarVisible}
-      className={className}
-      style={containerStyle}
-    >
-      {activeMode === "" &&
-        buttonsList.map((button, i) => (
-          <Tooltip placement="right" title={button.label}>
-            <StyledButton key={i} onClick={onToolChange(button.mode)} enable={activeMode === button.mode}>
-              <button.icon color={white} />
-            </StyledButton>
-          </Tooltip>
-        ))}
-
-      {activeMode !== "" && (
-        <ActiveToolBoxContainer flexDirection="column" justifyContent="space-between">
-          <FlexContainer flexDirection="column">
-            <StyledButton onClick={onToolChange("")} separateLine>
-              <Back />
-            </StyledButton>
-
-            {activeTool && (
-              <StyledButton enable onClick={onToolChange("")} separateLine>
-                <activeTool.icon color={greenDark5} />
-              </StyledButton>
+    {activeMode !== "" && (
+      <ActiveToolBoxContainer flexDirection="column" justifyContent="space-between">
+        <FlexContainer flexDirection="column">
+          <BackButton onClick={onToolChange} />
+          <ActiveTool activeMode={activeMode} />
+          <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
+            {drawTools.SELECT_TOOL !== activeMode && (
+              <>
+                <Size value={lineWidth} onChangeSize={onChangeSize} />
+                {showFontArr.includes(activeMode) && <FontPicker onChange={onChangeFont} currentFont={currentFont} />}
+                <ColorPicker
+                  activeMode={activeMode}
+                  fillColor={fillColor}
+                  currentColor={currentColor}
+                  onFillColorChange={onFillColorChange}
+                  onColorChange={onColorChange}
+                />
+              </>
             )}
-            <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
-              <Size value={lineWidth} onChangeSize={onChangeSize} />
-              {showFontArr.includes(activeMode) && <FontPicker onChange={onChangeFont} currentFont={currentFont} />}
-              <ColorPicker
-                activeMode={activeMode}
-                fillColor={fillColor}
-                currentColor={currentColor}
-                onFillColorChange={onFillColorChange}
-                onColorChange={onColorChange}
-              />
-            </FlexContainer>
+            {drawTools.SELECT_TOOL === activeMode && <SelectToolOptions />}
           </FlexContainer>
+        </FlexContainer>
 
-          <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />
-        </ActiveToolBoxContainer>
-      )}
-    </ToolBox>
-  );
-};
+        <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />
+      </ActiveToolBoxContainer>
+    )}
+  </ToolBox>
+);
 
 Tools.propTypes = {
   onToolChange: PropTypes.func.isRequired,

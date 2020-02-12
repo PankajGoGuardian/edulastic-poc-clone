@@ -19,12 +19,13 @@ export const ToolBox = styled(FlexContainer)`
   min-height: ${toolBoxDimension.height};
   position: fixed;
   margin-left: ${props => (props.isToolBarVisible ? "-60px" : "0px")};
-  background: ${props => props.theme.default.sideToolbarBgColor};
+  background: transparent;
   z-index: 500;
   border-radius: 4px;
   padding: 0;
   display: ${props => (props.review && !props.testMode ? "none" : "")};
   top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.xs + 30)}px;
+  left: 8px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.md + 30)}px;
@@ -43,20 +44,22 @@ export const Label = styled.div`
   white-space: nowrap;
 `;
 
-export const StyledButton = styled(Button)`
-  margin-bottom: 4px;
+export const StyledButton = styled(Button).attrs({ className: "drawing-tool-button" })`
+  margin-bottom: 8px;
   box-shadow: none !important;
-  background: transparent;
-  height: 30px;
-  width: 30px;
+  background: ${props => props.theme.default.sideToolbarBgColor};
+  height: 40px;
+  width: 40px;
   position: relative;
   border: none !important;
 
   &:active,
   &:focus,
   &:hover {
-    background: ${({ enable, theme }) =>
-      enable ? theme.default.headerButtonActiveBgColor : theme.default.headerButtonBgColor};
+    background: ${props => props.theme.default.sideToolbarBgColor};
+    & svg {
+      fill: ${greenDark5};
+    }
   }
 
   &:last-child {
@@ -64,25 +67,21 @@ export const StyledButton = styled(Button)`
   }
 
   & svg {
-    fill: ${({ enable }) => (enable ? greenDark5 : null)};
+    fill: ${({ active }) => (active ? greenDark5 : null)};
     &:hover {
-      fill: ${({ enable }) => (enable ? greenDark5 : null)};
+      fill: ${({ active }) => (active ? greenDark5 : null)};
     }
   }
+`;
 
-  ${({ separateLine }) =>
-    separateLine &&
-    `&:after {
-    display: block;
-    content: " ";
-    width: 90%;
-    opacity: 0.4;
-    border-bottom: 1px solid ${secondaryTextColor};
-    position: absolute;
-    bottom: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-  }`}
+export const Separate = styled.div`
+  width: 90%;
+  opacity: 0.4;
+  border-bottom: 1px solid ${secondaryTextColor};
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 export const customizeIcon = icon => styled(icon)`
@@ -99,9 +98,14 @@ export const customizeIcon = icon => styled(icon)`
 `;
 
 export const ActiveToolBoxContainer = styled(FlexContainer)`
-  padding: 5px 0px;
+  border-radius: 4px;
   width: ${toolBoxDimension.width};
   min-height: ${toolBoxDimension.height};
+  background: ${props => props.theme.default.sideToolbarBgColor};
+
+  & .drawing-tool-button {
+    margin: 0px;
+  }
 `;
 
 export const Block = styled.div`

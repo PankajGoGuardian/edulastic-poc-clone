@@ -12,7 +12,7 @@ const BottomTools = ({ undo, redo, onToolChange, deleteMode }) => (
     <StyledButton onClick={redo}>
       <Redo />
     </StyledButton>
-    <StyledButton onClick={onToolChange("deleteMode")} enable={deleteMode}>
+    <StyledButton onClick={onToolChange("deleteMode")} active={deleteMode}>
       <Trash />
     </StyledButton>
   </FlexContainer>
@@ -22,7 +22,7 @@ BottomTools.propTypes = {
   undo: PropTypes.func.isRequired,
   redo: PropTypes.func.isRequired,
   onToolChange: PropTypes.func.isRequired,
-  deleteMode: PropTypes.string.isRequired
+  deleteMode: PropTypes.bool.isRequired
 };
 
 export default BottomTools;

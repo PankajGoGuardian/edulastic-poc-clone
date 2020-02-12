@@ -895,16 +895,16 @@ SvgDraw.propTypes = {
   scratchPadMode: PropTypes.bool.isRequired,
   fromFreeFormNotes: PropTypes.object,
   deleteMode: PropTypes.bool.isRequired,
-  history: PropTypes.any.isRequired,
+  history: PropTypes.any,
   fillColor: PropTypes.string.isRequired,
   saveHistory: PropTypes.any.isRequired,
-  width: PropTypes.string.isRequired,
   top: PropTypes.string.isRequired,
   position: PropTypes.string.isRequired,
   fontFamily: PropTypes.string
 };
 
 SvgDraw.defaultProps = {
+  history: {},
   fromFreeFormNotes: {},
   fontFamily: ""
 };

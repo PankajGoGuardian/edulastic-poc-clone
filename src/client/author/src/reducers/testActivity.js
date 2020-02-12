@@ -413,6 +413,9 @@ const reducer = (state = initialState, { type, payload }) => {
       const activeStudents = state.data.students.filter(item => !state.removedStudents.includes(item.studentId));
       const dataToTransform = {
         ...state.data,
+        //for DONE assignment student status is absent hence update status to inprogress and increase the endDate so that student status will change to not started for done assignments
+        status: "IN PROGRESS",
+        endDate: Date.now() + 100,
         students: [...activeStudents, ...studentsData]
       };
 
@@ -422,10 +425,15 @@ const reducer = (state = initialState, { type, payload }) => {
         removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
         data: {
           ...state.data,
+          status: state.data.status === "DONE" ? "IN PROGRESS" : state.data.status,
           //merge newly added student to gradebook entity and student object
           students: [...activeStudents, ...studentsData]
         },
-        entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId")
+        entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId"),
+        additionalData: {
+          ...state.additionalData,
+          endDate: state.data.status === "DONE" ? Date.now() + 100 : state.additionalData.endDate
+        }
       };
     case RECEIVE_STUDENT_RESPONSE_SUCCESS:
       return {

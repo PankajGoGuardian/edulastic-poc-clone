@@ -1,36 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Input, Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton, FlexContainer } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 import { IconTrash } from "../styled/IconTrash";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 const CustomKeys = ({ blocks, onChange, onAdd, onDelete, t }) => (
   <>
     <Label>{t("component.options.customkeys")}</Label>
 
-    <Row gutter={32}>
+    <Row gutter={24}>
       {blocks.map((block, index) => (
-        <Col style={{ marginBottom: 15 }} span={12} key={index}>
+        <Col span={12} key={index}>
           <FlexContainer>
-            <Input
-              style={{ width: "100%" }}
-              size="large"
-              value={block}
-              onChange={e => onChange({ index, value: e.target.value })}
-            />
+            <TextInputStyled size="large" value={block} onChange={e => onChange({ index, value: e.target.value })} />
             <IconTrash onClick={() => onDelete(index)} />
           </FlexContainer>
         </Col>
       ))}
     </Row>
 
-    <EduButton onClick={onAdd} type="primary">
-      {t("component.options.addNewKey")}
-    </EduButton>
+    <CustomStyleBtn onClick={onAdd}>{t("component.options.addNewKey")}</CustomStyleBtn>
   </>
 );
 

@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import { Col, Select, Input } from "antd";
+import { Select, Input } from "antd";
 import { isObject } from "lodash";
 import { math } from "@edulastic/constants";
 import { MathKeyboard, Keyboard, FlexContainer } from "@edulastic/common";
@@ -14,7 +14,9 @@ import KeyPad from "../KeyPad";
 import Question from "../Question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
-import { StyledRow } from "./styled/StyledRow";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
+import { SelectInputStyled, TextInputStyled } from "../../styled/InputStyles";
 
 const defaultNumberPad = [
   "1",
@@ -136,13 +138,12 @@ class KeyPadOptions extends Component {
       >
         <Subtitle>{t("component.options.keypad")}</Subtitle>
 
-        <StyledRow gutter={60}>
+        <Row gutter={24}>
           <Col span={12}>
             <Label>{t("component.options.defaultMode")}</Label>
-            <Select
+            <SelectInputStyled
               size="large"
               value={isCustom ? "custom" : symbol}
-              style={{ width: "100%" }}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={this.handleSymbolsChange}
               data-cy="text-formatting-options-select"
@@ -152,26 +153,25 @@ class KeyPadOptions extends Component {
                   {label}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </Col>
           <Col span={12} />
-        </StyledRow>
+        </Row>
 
         {isCustom && (
-          <StyledRow gutter={60}>
+          <Row gutter={24}>
             <Col span={12}>
-              <div>{t("component.options.label")}</div>
-              <Input
-                style={{ width: "100%" }}
+              <Label>{t("component.options.label")}</Label>
+              <TextInputStyled
                 onChange={e => this.handleCustomSymboleLabel(e.target.value)}
                 value={symbol.label}
                 size="large"
               />
             </Col>
-          </StyledRow>
+          </Row>
         )}
 
-        <StyledRow gutter={60}>
+        <Row gutter={24}>
           <Col span={24}>
             <FlexContainer justifyContent="flex-start" flexWrap="wrap">
               {symbol === "qwerty" && <Keyboard onInput={() => {}} />}
@@ -190,7 +190,7 @@ class KeyPadOptions extends Component {
             </FlexContainer>
           </Col>
           <Col span={12} />
-        </StyledRow>
+        </Row>
 
         {renderExtra}
       </Question>

@@ -5,7 +5,8 @@ import {
   dashBorderColor,
   mainTextColor,
   greyThemeLight,
-  greyThemeDark2
+  greyThemeDark2,
+  greyThemeLighter
 } from "@edulastic/colors";
 
 // all theme variables
@@ -460,7 +461,7 @@ export const defaultTheme = {
     mathInputMathClearBgColor: clearIconColor,
     mathInputMathWrongBgColor: wrongBgColor,
     mathInputMathSuccessBgColor: rightIconColor,
-    mathInputBgColor: containerWhite,
+    mathInputBgColor: greyThemeLighter,
     mathResponseEmbedFontSize: questionTextextraFontSize,
     mathResponseEmbedCharBgColor: questionTextColor,
     mathResponseEmbedCharColor: clearIconColor,
@@ -752,7 +753,7 @@ export const defaultTheme = {
       dragItemFontWeight: semiBold,
       iconCheckColor: checkColor,
       iconCloseColor: closeColor,
-      iconTrashColor: iconDeleteColor,
+      iconTrashColor: greyThemeDark2,
       iconTrashHoverColor: iconDeleteHoverColor,
       dropContainerBgColor: containerWhite
     },
@@ -1018,7 +1019,7 @@ export const defaultTheme = {
       buttonHoverColor: themeColorHover,
       buttonSvgColor: iconColor,
       buttonHoverSvgColor: iconColor,
-      iconTrashColor: iconDeleteColor,
+      iconTrashColor: greyThemeDark2,
       iconTrashHoverColor: iconDeleteHoverColor
     },
     shading: {

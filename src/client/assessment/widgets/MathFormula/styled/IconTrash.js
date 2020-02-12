@@ -4,9 +4,10 @@ import { IconTrash as Icon } from "@edulastic/icons";
 export const IconTrash = styled(Icon)`
   width: 16px;
   height: 16px;
+  margin-left: 10px;
   cursor: pointer;
-  fill: ${props => props.theme.widgets.mathFormula.iconTrashColor}
+  fill: ${props => props.theme.widgets.mathFormula.iconTrashColor};
   :hover {
-    fill: ${props => props.theme.widgets.mathFormula.iconTrashHoverColor}
+    fill: ${props => props.theme.widgets.mathFormula.iconTrashHoverColor};
   }
 `;

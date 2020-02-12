@@ -23,6 +23,7 @@ import MathFormulaPreview from "./MathFormulaPreview";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -41,6 +42,7 @@ const MathFormula = ({
   cleanSections,
   advancedLink,
   changePreview,
+  t,
   ...restProps
 }) => {
   const answerContextConfig = useContext(AnswerContext);
@@ -80,13 +82,20 @@ const MathFormula = ({
               cleanSections={cleanSections}
             />
           )}
-          <MathFormulaAnswers
-            item={item}
-            setQuestionData={setQuestionData}
-            keypadOffset={keypadOffset}
+          <Question
+            section="main"
+            label={t("component.math.correctAnswers")}
             fillSections={fillSections}
             cleanSections={cleanSections}
-          />
+          >
+            <MathFormulaAnswers
+              item={item}
+              setQuestionData={setQuestionData}
+              keypadOffset={keypadOffset}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+          </Question>
 
           {advancedLink}
 

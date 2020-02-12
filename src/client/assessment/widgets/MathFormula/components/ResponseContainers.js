@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Input } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { EduButton, FlexContainer } from "@edulastic/common";
-
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 
 import { IconTrash } from "../styled/IconTrash";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 class ResponseContainers extends Component {
   render() {
@@ -21,7 +20,7 @@ class ResponseContainers extends Component {
 
         {containers.map((container, index) => (
           <Fragment>
-            <Row gutter={30}>
+            <Row gutter={24}>
               <Col md={24}>
                 <FlexContainer justifyContent="space-between">
                   <Label>
@@ -32,10 +31,10 @@ class ResponseContainers extends Component {
               </Col>
             </Row>
 
-            <Row gutter={30}>
+            <Row gutter={24}>
               <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
-                <Input
+                <TextInputStyled
                   type="number"
                   size="large"
                   value={container.widthpx || 0}
@@ -44,7 +43,7 @@ class ResponseContainers extends Component {
               </Col>
               <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
-                <Input
+                <TextInputStyled
                   type="number"
                   size="large"
                   value={container.heightpx || 0}
@@ -55,9 +54,7 @@ class ResponseContainers extends Component {
           </Fragment>
         ))}
 
-        <EduButton onClick={onAdd} type="primary">
-          {t("component.options.addResponseContainer")}
-        </EduButton>
+        <CustomStyleBtn onClick={onAdd}>{t("component.options.addResponseContainer")}</CustomStyleBtn>
       </Container>
     );
   }

@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Input } from "antd";
 import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -12,6 +11,8 @@ import NumberPad from "../../../NumberPad";
 import { IconTrash } from "../../styled/IconTrash";
 import { Row } from "./styled/Row";
 import { Col } from "./styled/Col";
+import { Label } from "../../../../styled/WidgetOptions/Label";
+import { TextInputStyled } from "../../../../styled/InputStyles";
 
 const CustomGroup = ({ onChange, onRemove, value, t }) => {
   const handleChangeValue = (field, val) => {
@@ -51,20 +52,18 @@ const CustomGroup = ({ onChange, onRemove, value, t }) => {
 
   return (
     <Fragment>
-      <Row>
-        <Col>
-          <div>{t("component.options.label")}</div>
-          <Input
-            style={{ width: "100%" }}
+      <Row gutter={24}>
+        <Col span={12}>
+          <Label>{t("component.options.label")}</Label>
+          <TextInputStyled
             onChange={e => handleChangeValue("label", e.target.value)}
             value={value.label}
             size="large"
           />
         </Col>
-        <Col>
-          <div>{t("component.options.title")}</div>
-          <Input
-            style={{ width: "100%" }}
+        <Col span={12}>
+          <Label>{t("component.options.title")}</Label>
+          <TextInputStyled
             onChange={e => handleChangeValue("title", e.target.value)}
             value={value.title}
             size="large"

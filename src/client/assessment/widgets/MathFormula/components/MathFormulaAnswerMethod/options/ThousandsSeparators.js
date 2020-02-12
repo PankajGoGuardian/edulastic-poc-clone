@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Select, Row, Col } from "antd";
+import { Select } from "antd";
 
-import { FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
+import { SelectInputStyled } from "../../../../../styled/InputStyles";
+import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../../styled/WidgetOptions/Col";
 
 const ThousandsSeparators = ({ separators, onChange, t }) => {
   const thousandsSeparators = [
@@ -20,48 +23,45 @@ const ThousandsSeparators = ({ separators, onChange, t }) => {
   }, [separators]);
 
   return (
-    <Col span={24}>
-      <FlexContainer flexDirection="column" alignItems="flex-start">
-        <Checkbox
-          data-cy="answer-allow-thousand-separator"
-          checked={allowThousandsSeparator}
-          onChange={e => {
-            setAllowThousandsSeparator(e.target.checked);
-            if (!e.target.checked) {
-              onChange({ val: null, ind: 0 });
-            } else {
-              onChange({ val: ",", ind: 0 });
-            }
-          }}
-        >
-          {t("component.math.setThousandsSeparator")}
-        </Checkbox>
+    <Col span={12}>
+      <Row>
+        <Col span={24} marginBottom="0px">
+          <CheckboxLabel
+            data-cy="answer-allow-thousand-separator"
+            checked={allowThousandsSeparator}
+            onChange={e => {
+              setAllowThousandsSeparator(e.target.checked);
+              if (!e.target.checked) {
+                onChange({ val: null, ind: 0 });
+              } else {
+                onChange({ val: ",", ind: 0 });
+              }
+            }}
+          >
+            {t("component.math.setThousandsSeparator")}
+          </CheckboxLabel>
+        </Col>
         {separators &&
           !!separators.length &&
           allowThousandsSeparator &&
           separators.map((separator, i) => (
-            <Row key={i} style={{ marginTop: 15, marginBottom: 15, width: "100%" }}>
-              <Col span={24}>
-                <FlexContainer>
-                  <Select
-                    size="large"
-                    value={separator}
-                    style={{ width: "100%" }}
-                    onChange={val => onChange({ val, ind: i })}
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    data-cy="thousands-separator-dropdown"
-                  >
-                    {thousandsSeparators.map(({ value: val, label }) => (
-                      <Select.Option data-cy={`thousands-separator-dropdown-list-${label}`} key={val} value={val}>
-                        {label}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </FlexContainer>
-              </Col>
-            </Row>
+            <Col span={24} key={i} marginTop="15px" marginBottom="0px">
+              <SelectInputStyled
+                size="large"
+                value={separator}
+                onChange={val => onChange({ val, ind: i })}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                data-cy="thousands-separator-dropdown"
+              >
+                {thousandsSeparators.map(({ value: val, label }) => (
+                  <Select.Option data-cy={`thousands-separator-dropdown-list-${label}`} key={val} value={val}>
+                    {label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
           ))}
-      </FlexContainer>
+      </Row>
     </Col>
   );
 };

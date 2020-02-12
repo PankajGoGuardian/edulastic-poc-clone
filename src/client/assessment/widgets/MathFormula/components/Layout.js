@@ -17,6 +17,8 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 import ResponseContainers from "./ResponseContainers";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 class Layout extends Component {
   state = {
@@ -132,13 +134,12 @@ class Layout extends Component {
           {t("component.options.display")}
         </Subtitle>
 
-        <Row gutter={60}>
+        <Row gutter={24}>
           <Col md={8}>
             <Label>{t("component.options.templateFontScale")}</Label>
-            <Select
+            <SelectInputStyled
               size="large"
               value={uiStyle.responseFontScale || math.templateFontScaleOption[0].value}
-              style={{ width: "100%" }}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("responseFontScale", val)}
             >
@@ -147,12 +148,12 @@ class Layout extends Component {
                   {label}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </Col>
 
           <Col md={8}>
             <Label>{t("component.options.defaultWidth")}</Label>
-            <Input
+            <TextInputStyled
               type="number"
               size="large"
               defaultValue={widthpx || uiStyle.widthpx || uiStyle.minWidth}
@@ -163,7 +164,7 @@ class Layout extends Component {
           </Col>
           <Col md={8}>
             <Label>{t("component.options.defaultHeight")}</Label>
-            <Input
+            <TextInputStyled
               type="number"
               size="large"
               value={heightpx || uiStyle.heightpx || minHeight}
@@ -174,18 +175,19 @@ class Layout extends Component {
             />
           </Col>
         </Row>
-        <Row gutter={60}>
+
+        <Row gutter={24} type="flex" align="middle">
           <Col md={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
 
-          <Col md={12}>
-            <Checkbox
+          <Col md={12} marginBottom="0px">
+            <CheckboxLabel
               checked={uiStyle.transparentBackground}
               onChange={e => changeUiStyle("transparentBackground", e.target.checked)}
             >
               {t("component.options.transparentBackground")}
-            </Checkbox>
+            </CheckboxLabel>
           </Col>
         </Row>
         {showResponseBoxes && (

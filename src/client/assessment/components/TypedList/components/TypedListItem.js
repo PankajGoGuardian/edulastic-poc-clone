@@ -1,31 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select, Input } from "antd";
+import { Select } from "antd";
 
 import { typedList as types } from "@edulastic/constants";
 
 import { IconTrash } from "../styled/IconTrash";
 import { SortableItemContainer } from "../styled/SortableItemContainer";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const TypedListItem = ({ type, selectData, value, onRemove, onChange, columns, indx }) => (
   <SortableItemContainer columns={columns}>
     <div className="main">
       {type === types.SELECT && !!selectData.length && (
-        <Select
-          size="large"
-          value={value}
-          style={{ width: "100%" }}
-          onChange={onChange}
-          data-cy="text-formatting-options-select"
-        >
+        <SelectInputStyled size="large" value={value} onChange={onChange} data-cy="text-formatting-options-select">
           {selectData.map(({ value: val, label }) => (
             <Select.Option key={val} value={val} data-cy={`text-formatting-options-selected-${val}`}>
               {label}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
       )}
-      {type === types.INPUT && <Input value={value} onChange={e => onChange(e.target.value)} size="large" />}
+      {type === types.INPUT && <TextInputStyled value={value} onChange={e => onChange(e.target.value)} size="large" />}
     </div>
     {onRemove && (
       <IconTrash data-cy={`delete${indx}`} data-cypress="deleteButton" onClick={onRemove} width={20} height={20} />

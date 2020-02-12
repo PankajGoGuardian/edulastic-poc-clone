@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Input } from "antd";
 
-import { FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../../../../styled/InputStyles";
+import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../../styled/WidgetOptions/Col";
 
 const AllowedUnits = ({ options, onChange, t }) => {
   const [allowedUnits, setAllowedUnits] = useState(false);
@@ -15,28 +17,33 @@ const AllowedUnits = ({ options, onChange, t }) => {
   }, [options.allowedUnits]);
 
   return (
-    <FlexContainer flexDirection="column" alignItems="flex-start">
-      <Checkbox
-        data-cy="answer-allowed-units"
-        checked={allowedUnits}
-        onChange={e => {
-          setAllowedUnits(e.target.checked);
-          if (!e.target.checked) {
-            onChange("allowedUnits", null);
-          }
-        }}
-      >
-        {t("component.math.allowedUnits")}
-      </Checkbox>
-      <Input
-        data-cy="answer-allowed-units"
-        style={{ marginTop: 15, width: "30%" }}
-        size="large"
-        value={options.allowedUnits}
-        readOnly={!allowedUnits}
-        onChange={e => onChange("allowedUnits", e.target.value)}
-      />
-    </FlexContainer>
+    <Col span={12}>
+      <Row>
+        <Col span={24}>
+          <CheckboxLabel
+            data-cy="answer-allowed-units"
+            checked={allowedUnits}
+            onChange={e => {
+              setAllowedUnits(e.target.checked);
+              if (!e.target.checked) {
+                onChange("allowedUnits", null);
+              }
+            }}
+          >
+            {t("component.math.allowedUnits")}
+          </CheckboxLabel>
+        </Col>
+        <Col span={24} marginBottom="0px">
+          <TextInputStyled
+            data-cy="answer-allowed-units"
+            size="large"
+            value={options.allowedUnits}
+            readOnly={!allowedUnits}
+            onChange={e => onChange("allowedUnits", e.target.value)}
+          />
+        </Col>
+      </Row>
+    </Col>
   );
 };
 

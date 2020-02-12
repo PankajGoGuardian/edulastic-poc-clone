@@ -1,12 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Input, Select } from "antd";
+import { Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
 
 import { Label } from "../../../../../styled/WidgetOptions/Label";
-import { StyledRow } from "../styled/StyledRow";
+import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../../styled/WidgetOptions/Col";
+import { SelectInputStyled, TextInputStyled } from "../../../../../styled/InputStyles";
 
 const RulePure = ({ syntax, argument, onChange, t }) => {
   const syntaxes = [
@@ -52,14 +54,13 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
   ];
 
   return (
-    <StyledRow gutter={32}>
-      <Col span={12}>
+    <Row gutter={24}>
+      <Col marginBottom="0px" span={12}>
         <Label>{t("component.math.rule")}</Label>
-        <Select
+        <SelectInputStyled
           data-cy="answer-rule-dropdown"
           size="large"
           value={syntax}
-          style={{ width: "100%" }}
           getPopupContainer={triggerNode => triggerNode.parentNode}
           onChange={val => {
             onChange("syntax", val);
@@ -70,12 +71,12 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
               {label}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
       </Col>
       {math.syntaxes.DECIMAL === syntax && (
-        <Col span={12}>
+        <Col marginBottom="0px" span={12}>
           <Label>{t("component.math.argument")}</Label>
-          <Input
+          <TextInputStyled
             size="large"
             type="number"
             value={argument || 0}
@@ -86,12 +87,11 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
         </Col>
       )}
       {math.syntaxes.STANDARD_FORM === syntax && (
-        <Col span={12}>
+        <Col marginBottom="0px" span={12}>
           <Label>{t("component.math.argument")}</Label>
-          <Select
+          <SelectInputStyled
             size="large"
             value={argument || ""}
-            style={{ width: "100%" }}
             onChange={val => onChange("argument", val)}
             getPopupContainer={triggerNode => triggerNode.parentNode}
             data-cy="answer-rule-argument-select"
@@ -101,10 +101,10 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
                 {val}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Col>
       )}
-    </StyledRow>
+    </Row>
   );
 };
 

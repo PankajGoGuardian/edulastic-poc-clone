@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Checkbox, Col } from "antd";
+import { Col } from "../../../../../styled/WidgetOptions/Col";
+import { CheckboxLabel } from "../../../../../styled/CheckboxWithLabel";
 
 export const CheckOption = ({ colSpan, dataCy, optionKey, options, onChange, label }) => (
   <Col span={colSpan}>
-    <Checkbox data-cy={dataCy} checked={options[optionKey]} onChange={e => onChange(optionKey, e.target.checked)}>
+    <CheckboxLabel data-cy={dataCy} checked={options[optionKey]} onChange={e => onChange(optionKey, e.target.checked)}>
       <span dangerouslySetInnerHTML={{ __html: label }} />
-    </Checkbox>
+    </CheckboxLabel>
   </Col>
 );
 

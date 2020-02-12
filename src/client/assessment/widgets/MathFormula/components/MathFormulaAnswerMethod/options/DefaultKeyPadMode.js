@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
+import { SelectInputStyled } from "../../../../../styled/InputStyles";
 
 const { Option } = Select;
 
@@ -35,11 +36,7 @@ DefaultKeyPadModePure.propTypes = {
 
 export const DefaultKeyPadMode = withNamespaces("assessment")(DefaultKeyPadModePure);
 
-const StyledSelect = styled(Select)`
-  width: 100%;
-  .ant-select-selection {
-    padding: 5px 2px;
-  }
+const StyledSelect = styled(SelectInputStyled)`
   svg {
     display: inline-block;
   }

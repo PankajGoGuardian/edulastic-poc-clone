@@ -9,7 +9,6 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 
 import MathFormulaAnswer from "./components/MathFormulaAnswer";
 import { updateVariables } from "../../utils/variables";
-import { CorrectAnswerContainer } from "../../styled/CorrectAnswerContainer";
 
 import { latexKeys } from "./constants";
 
@@ -282,50 +281,48 @@ class MathFormulaAnswers extends React.Component {
         cleanSections={cleanSections}
         questionType={item?.title}
       >
-        <CorrectAnswerContainer>
-          {correctTab === 0 && (
-            <MathFormulaWithPoints
-              item={item}
-              onChange={this.handleChangeCorrectMethod}
-              onChangeAllowedOptions={this.handleAllowedOptions}
-              onChangeShowDropdown={this.handleShowDropdown(null)}
-              onAdd={this.handleAddCorrectMethod}
-              onDelete={this.handleDeleteCorrectMethod}
-              answer={item.validation.validResponse.value}
-              points={item.validation.validResponse.score}
-              onChangePoints={points => this.handleChangeCorrectPoints(points)}
-              setQuestionData={setQuestionData}
-              onChangeKeypad={this.handleKeypadMode}
-              keypadOffset={keypadOffset}
-              toggleAdditional={this.toggleAdditional}
-            />
-          )}
-          {item.validation.altResponses &&
-            !!item.validation.altResponses.length &&
-            item.validation.altResponses.map((alter, i) => {
-              if (i + 1 === correctTab) {
-                return (
-                  <MathFormulaWithPoints
-                    key={i}
-                    item={item}
-                    onChange={this.handleChangeAltMethod(i)}
-                    onChangeAllowedOptions={this.handleAllowedOptions}
-                    onChangeShowDropdown={this.handleShowDropdown(i)}
-                    onAdd={this.handleAddAltMethod(i)}
-                    onDelete={this.handleDeleteAltMethod(i)}
-                    answer={alter.value}
-                    points={alter.score}
-                    onChangePoints={points => this.handleChangeAltPoints(points, i)}
-                    setQuestionData={setQuestionData}
-                    onChangeKeypad={this.handleKeypadMode}
-                    keypadOffset={keypadOffset}
-                    toggleAdditional={this.toggleAdditional}
-                  />
-                );
-              }
-              return null;
-            })}
-        </CorrectAnswerContainer>
+        {correctTab === 0 && (
+          <MathFormulaWithPoints
+            item={item}
+            onChange={this.handleChangeCorrectMethod}
+            onChangeAllowedOptions={this.handleAllowedOptions}
+            onChangeShowDropdown={this.handleShowDropdown(null)}
+            onAdd={this.handleAddCorrectMethod}
+            onDelete={this.handleDeleteCorrectMethod}
+            answer={item.validation.validResponse.value}
+            points={item.validation.validResponse.score}
+            onChangePoints={points => this.handleChangeCorrectPoints(points)}
+            setQuestionData={setQuestionData}
+            onChangeKeypad={this.handleKeypadMode}
+            keypadOffset={keypadOffset}
+            toggleAdditional={this.toggleAdditional}
+          />
+        )}
+        {item.validation.altResponses &&
+          !!item.validation.altResponses.length &&
+          item.validation.altResponses.map((alter, i) => {
+            if (i + 1 === correctTab) {
+              return (
+                <MathFormulaWithPoints
+                  key={i}
+                  item={item}
+                  onChange={this.handleChangeAltMethod(i)}
+                  onChangeAllowedOptions={this.handleAllowedOptions}
+                  onChangeShowDropdown={this.handleShowDropdown(i)}
+                  onAdd={this.handleAddAltMethod(i)}
+                  onDelete={this.handleDeleteAltMethod(i)}
+                  answer={alter.value}
+                  points={alter.score}
+                  onChangePoints={points => this.handleChangeAltPoints(points, i)}
+                  setQuestionData={setQuestionData}
+                  onChangeKeypad={this.handleKeypadMode}
+                  keypadOffset={keypadOffset}
+                  toggleAdditional={this.toggleAdditional}
+                />
+              );
+            }
+            return null;
+          })}
       </CorrectAnswers>
     );
   }

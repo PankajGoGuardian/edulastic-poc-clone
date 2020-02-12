@@ -12,6 +12,10 @@ import { withNamespaces } from "@edulastic/localization";
 import { textColor, mainTextColor, white } from "@edulastic/colors";
 import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
+import { SelectInputStyled } from "../../../../../styled/InputStyles";
+import { RadioLabel } from "../../../../../styled/RadioWithLabel";
+import { Row } from "../../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../../styled/WidgetOptions/Col";
 
 const { Option } = Select;
 
@@ -86,40 +90,42 @@ const UnitsDropdownPure = ({
   const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
   return (
     <>
-      <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
-        <Select
-          value={preview ? selected : options ? options.unit : ""}
-          onChange={handleChange}
-          disabled={disabled}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-          style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
-          statusColor={statusColor}
-        >
-          {allBtns.map((btn, i) => (
-            <Option value={btn.handler} key={i}>
-              {getLabel(btn.handler)}
-            </Option>
-          ))}
-        </Select>
-      </DropdownWrapper>
       {!preview && (
-        <FlexContainer justifyContent="center">
-          <FlexContainer alignItems="center" flexDirection="row">
+        <Row marginTop={15}>
+          <Col span={24}>
             <Label marginBottom="0" data-cy="answer-math-unit-dropdown">
               {t("component.math.showDropdown")}
             </Label>
-            <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">
-              <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
-                <Radio value="dropdown">
-                  <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
-                </Radio>
-                <Radio value="keypad">
-                  <FieldLabel>{t("component.math.keypad")}</FieldLabel>
-                </Radio>
-              </Radio.Group>
-            </FlexContainer>
-          </FlexContainer>
-        </FlexContainer>
+          </Col>
+          <Col span={24}>
+            <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
+              <RadioLabel value="dropdown">{t("component.math.dropdown")}</RadioLabel>
+              <RadioLabel value="keypad">{t("component.math.keypad")}</RadioLabel>
+            </Radio.Group>
+          </Col>
+        </Row>
+      )}
+      {item.showDropdown && (
+        <Row>
+          <Col span={12}>
+            <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
+              <SelectInputStyled
+                value={preview ? selected : options ? options.unit : ""}
+                onChange={handleChange}
+                disabled={disabled}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
+                statusColor={statusColor}
+              >
+                {allBtns.map((btn, i) => (
+                  <Option value={btn.handler} key={i}>
+                    {getLabel(btn.handler)}
+                  </Option>
+                ))}
+              </SelectInputStyled>
+            </DropdownWrapper>
+          </Col>
+        </Row>
       )}
     </>
   );
@@ -177,27 +183,4 @@ const DropdownWrapper = styled.span`
     padding: 5px 2px;
     background: ${({ statusColor }) => statusColor || white};
   }
-`;
-
-const FieldLabel = styled.div`
-  cursor: pointer;
-  text-transform: uppercase;
-  font-size: 11px;
-  color: ${mainTextColor};
-  position: relative;
-  margin-top: 2px;
-  display: inline-block;
-  letter-spacing: 0.1px;
-`;
-
-const CustomKeyLink = styled.a`
-  cursor: pointer;
-  font-size: 11px;
-  color: ${textColor};
-  position: relative;
-  margin-top: 2px;
-  display: inline-block;
-  letter-spacing: 0.1px;
-  margin-top: 2px;
-  user-select: none;
 `;

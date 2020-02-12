@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Select } from "antd";
+import { Select } from "antd";
 import { get } from "lodash";
 import styled from "styled-components";
-import { MathInput, withWindowSizes, FlexContainer, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
+import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -16,7 +16,7 @@ import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
 import { Rule } from "./options/Rule";
 import Units from "./options/Units";
-import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
+import { AdditionalToggle, AdditionalContainer } from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { ExpectAnswer } from "./styled/ExpectAnswer";
 import { StyledRow } from "./styled/StyledRow";
@@ -33,6 +33,9 @@ import {
   DefaultKeyPadMode,
   CustomUnit
 } from "./options";
+import { SelectInputStyled } from "../../../../styled/InputStyles";
+import { Row } from "../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../styled/WidgetOptions/Col";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst } = math;
 
@@ -378,9 +381,9 @@ const MathFormulaAnswerMethod = ({
 
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
-      <ExpectAnswer>
+      <Row gutter={24}>
         {!methodOptions.includes("notExpected") && (
-          <div>
+          <Col span={24}>
             <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
@@ -403,7 +406,7 @@ const MathFormulaAnswerMethod = ({
               )}
               {renderExtra}
             </MathInputWrapper>
-          </div>
+          </Col>
         )}
         {index > 0 ? (
           <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
@@ -411,19 +414,21 @@ const MathFormulaAnswerMethod = ({
           </div>
         ) : null}
         {item.isUnits && (
-          <UnitsDropdown
-            item={item}
-            options={options}
-            onChange={changeOptions}
-            keypadOffset={keypadOffset}
-            onChangeShowDropdown={onChangeShowDropdown}
-            unitsStyle={methodOptions.includes("notExpected")}
-          />
+          <Col span={24}>
+            <UnitsDropdown
+              item={item}
+              options={options}
+              onChange={changeOptions}
+              keypadOffset={keypadOffset}
+              onChangeShowDropdown={onChangeShowDropdown}
+              unitsStyle={methodOptions.includes("notExpected")}
+            />
+          </Col>
         )}
-      </ExpectAnswer>
+      </Row>
 
       {methodOptions.includes("field") && (
-        <StyledRow gutter={60}>
+        <StyledRow gutter={24}>
           <Col span={12}>
             <Field value={options.field} onChange={changeOptions} />
           </Col>
@@ -436,7 +441,7 @@ const MathFormulaAnswerMethod = ({
       ) : null}
       {/* This needs only for Math w/Units in ClozMath type */}
       {showDefaultMode && (
-        <StyledRow gutter={20}>
+        <StyledRow gutter={24}>
           <Label data-cy="unit-dropdown-default-mode">{t("component.options.defaultMode")}</Label>
           <Col span={6}>
             <DefaultKeyPadMode onChange={onChange} keypadMode={keypadMode} />
@@ -453,14 +458,13 @@ const MathFormulaAnswerMethod = ({
       </AdditionalToggle>
       {showAdditional ? (
         <AdditionalContainer>
-          <FlexContainer justifyContent="space-between" alignItems="none">
-            <AdditionalCompareUsing>
-              <Label marginBottom="7px !important">{t("component.math.compareUsing")}</Label>
-              <Select
+          <Row gutter={24}>
+            <Col span={10}>
+              <Label>{t("component.math.compareUsing")}</Label>
+              <SelectInputStyled
                 data-cy="method-selection-dropdown"
                 size="large"
                 value={method}
-                style={{ width: "100%", height: 42 }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onChange={val => onChange("method", val)}
               >
@@ -473,15 +477,15 @@ const MathFormulaAnswerMethod = ({
                     {t(`component.math.${methodsConst[methodKey]}`)}
                   </Select.Option>
                 ))}
-              </Select>
-            </AdditionalCompareUsing>
-            {methodOptions.includes("rule") && (
-              <RuleContainer>
+              </SelectInputStyled>
+            </Col>
+            <Col span={14}>
+              {methodOptions.includes("rule") && (
                 <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />
-              </RuleContainer>
-            )}
-          </FlexContainer>
-          <WidgetMethods>
+              )}
+            </Col>
+          </Row>
+          <Row gutter={24}>
             {renderMethodsOptions()}
             {item?.templateDisplay ? (
               <CheckOption
@@ -492,7 +496,7 @@ const MathFormulaAnswerMethod = ({
                 label="Use template"
               />
             ) : null}
-          </WidgetMethods>
+          </Row>
 
           {/* {index + 1 === answer.length && (
             <AdditionalContainerRule>

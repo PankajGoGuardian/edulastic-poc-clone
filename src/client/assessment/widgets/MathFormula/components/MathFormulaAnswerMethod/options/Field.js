@@ -6,17 +6,17 @@ import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../../../styled/WidgetOptions/Label";
+import { SelectInputStyled } from "../../../../../styled/InputStyles";
 
 const fields = [math.fields.INTEGER, math.fields.REAL, math.fields.COMPLEX];
 
 const FieldPure = ({ value, onChange, t }) => (
   <Fragment>
     <Label>{t("component.math.field")}</Label>
-    <Select
+    <SelectInputStyled
       size="large"
       data-cy="answer-field-dropdown"
       value={value}
-      style={{ width: "100%" }}
       getPopupContainer={triggerNode => triggerNode.parentNode}
       onChange={val => onChange("field", val)}
     >
@@ -25,7 +25,7 @@ const FieldPure = ({ value, onChange, t }) => (
           {val}
         </Select.Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   </Fragment>
 );
 

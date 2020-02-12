@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Input } from "antd";
+import { TextInputStyled } from "../../../../../styled/InputStyles";
 
 export const CustomUnit = ({ onChange, customUnits }) => {
   const [keys, updateKeys] = useState(customUnits);
@@ -32,7 +31,7 @@ export const CustomUnit = ({ onChange, customUnits }) => {
   }, [customUnits]);
 
   return (
-    <StyledInput
+    <TextInputStyled
       // onKeyPress={onKeyPressHandler}
       data-cy="custom-unit"
       size="large"
@@ -47,7 +46,3 @@ CustomUnit.propTypes = {
   onChange: PropTypes.func.isRequired,
   customUnits: PropTypes.func.isRequired
 };
-
-const StyledInput = styled(Input)`
-  width: 100%;
-`;

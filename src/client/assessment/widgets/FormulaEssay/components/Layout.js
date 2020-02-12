@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Select, Col } from "antd";
+import { Select } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
@@ -14,6 +14,9 @@ import KeyPadOptions from "../../../components/KeyPadOptions";
 import TypedList from "../../../components/TypedList";
 
 import { StyledRow } from "../styled/StyledRow";
+import { SelectInputStyled } from "../../../styled/InputStyles";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 class Layout extends Component {
   render() {
@@ -59,13 +62,12 @@ class Layout extends Component {
           {t("component.options.display")}
         </Subtitle>
 
-        <StyledRow gutter={36}>
+        <Row gutter={24}>
           <Col span={12}>
             <Label>{t("component.options.templateFontScale")}</Label>
-            <Select
+            <SelectInputStyled
               size="large"
               value={item.uiStyle.responseFontScale}
-              style={{ width: "100%" }}
               getPopupContainer={triggerNode => triggerNode.parentNode}
               onChange={val => changeUiStyle("responseFontScale", val)}
             >
@@ -74,20 +76,20 @@ class Layout extends Component {
                   {label}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </Col>
           <Col span={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={item.uiStyle.fontsize} />
           </Col>
-        </StyledRow>
+        </Row>
 
         <KeyPadOptions onChange={onChange} item={item} />
 
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.textBlocks")}`)}>
+        <Subtitle margin="20px 0px" id={getFormattedAttrId(`${item?.title}-${t("component.options.textBlocks")}`)}>
           {t("component.options.textBlocks")}
         </Subtitle>
 
-        <StyledRow gutter={36}>
+        <Row gutter={24}>
           <Col span={24}>
             <TypedList
               columns={2}
@@ -98,7 +100,7 @@ class Layout extends Component {
               onChange={handleBlockChange}
             />
           </Col>
-        </StyledRow>
+        </Row>
       </Question>
     );
   }

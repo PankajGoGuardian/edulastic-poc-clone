@@ -6,6 +6,8 @@ import { response } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
 import { getStylesFromUiStyleToCssStyle } from "../../../utils/helpers";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 class MathFormulaAnswer extends Component {
   render() {
@@ -31,29 +33,31 @@ class MathFormulaAnswer extends Component {
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || expectedAnsMinHeight;
     return (
-      <div>
-        {answer.map((method, i) => (
-          <MathFormulaAnswerMethod
-            onDelete={() => onDelete(i)}
-            key={i}
-            item={item}
-            index={i}
-            answer={answer}
-            onChange={handleChangeMethod(i)}
-            onChangeKeypad={onChangeKeypad}
-            onChangeAllowedOptions={onChangeAllowedOptions}
-            allowedVariables={item.allowedVariables || ""}
-            allowNumericOnly={item.allowNumericOnly}
-            template={item.template}
-            onChangeShowDropdown={onChangeShowDropdown}
-            onAdd={onAdd}
-            keypadOffset={keypadOffset}
-            style={cssStyles}
-            toggleAdditional={toggleAdditional}
-            {...method}
-          />
-        ))}
-      </div>
+      <Row>
+        <Col span={24}>
+          {answer.map((method, i) => (
+            <MathFormulaAnswerMethod
+              onDelete={() => onDelete(i)}
+              key={i}
+              item={item}
+              index={i}
+              answer={answer}
+              onChange={handleChangeMethod(i)}
+              onChangeKeypad={onChangeKeypad}
+              onChangeAllowedOptions={onChangeAllowedOptions}
+              allowedVariables={item.allowedVariables || ""}
+              allowNumericOnly={item.allowNumericOnly}
+              template={item.template}
+              onChangeShowDropdown={onChangeShowDropdown}
+              onAdd={onAdd}
+              keypadOffset={keypadOffset}
+              style={cssStyles}
+              toggleAdditional={toggleAdditional}
+              {...method}
+            />
+          ))}
+        </Col>
+      </Row>
     );
   }
 }

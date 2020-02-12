@@ -65,7 +65,6 @@ import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAss
 const initialFilterState = {
   grades: [],
   subject: "",
-  termId: "",
   testType: "",
   folderId: "",
   classId: "",
@@ -91,9 +90,12 @@ class Assignments extends Component {
       ...storedFilters,
       showFilter
     };
-    if (defaultTermId && !storedFilters.termId) {
+    if (defaultTermId && !storedFilters.hasOwnProperty("termId")) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId);
       filters.termId = isTermExists ? defaultTermId : "";
+    }
+    if (!defaultTermId) {
+      filters.termId = storedFilters.termId || "";
     }
 
     loadAssignments({ filters });

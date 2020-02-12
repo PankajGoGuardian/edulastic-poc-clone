@@ -1439,9 +1439,9 @@ class Board {
           const labelPoint1 = getLabel(this.labelForEq);
 
           var point1 = {
-            x: coords[0][0],
-            y: coords[0][1],
-            label: object.pointsLabel[0] || getLabel(this.labelForEq),
+            x: coords[1][0],
+            y: coords[1][1],
+            label: object.pointsLabel[1] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
             baseColor: "#595e98",
@@ -1452,9 +1452,9 @@ class Board {
           const labelPoint2 = getLabel(this.labelForEq);
 
           var point2 = {
-            x: coords[1][0],
-            y: coords[1][1],
-            label: object.pointsLabel[1] || getLabel(this.labelForEq),
+            x: coords[2][0],
+            y: coords[2][1],
+            label: object.pointsLabel[2] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
             baseColor: "#595e98",
@@ -1465,9 +1465,9 @@ class Board {
           const labelPoint3 = getLabel(this.labelForEq);
 
           var point3 = {
-            x: coords[2][0],
-            y: coords[2][1],
-            label: object.pointsLabel[2] || getLabel(this.labelForEq),
+            x: coords[0][0],
+            y: coords[0][1],
+            label: object.pointsLabel[0] || getLabel(this.labelForEq),
             labelIsVisible: true,
             pointIsVisible: true,
             baseColor: "#595e98",

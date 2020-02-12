@@ -104,16 +104,17 @@ class AuthorTestItemPreview extends Component {
     const { submitReviewFeedback, item, approveOrRejectSingleItem } = this.props;
 
     if (item?._id) {
+      let data = { note };
+      if (scratchpad) {
+        data.scratchpad = scratchpad;
+      }
       submitReviewFeedback({
         status: "rejected",
         data: {
           type: "scratchpad",
           referrerType: "TestItemContent",
           referrerId: item._id,
-          data: {
-            note,
-            scratchpad
-          },
+          data,
           status: "rejected"
         }
       });

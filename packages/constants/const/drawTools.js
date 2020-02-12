@@ -9,6 +9,7 @@ const DRAW_TRIANGLE = "drawTriangle";
 const DRAW_TEXT = "drawText";
 const DRAW_MATH = "drawMath";
 const DRAW_MEASURE_TOOL = "drawMeasureTool";
+const SELECT_TOOL = "selectTool";
 
 module.exports = {
   MOVE_ITEM,
@@ -21,5 +22,6 @@ module.exports = {
   DRAW_TRIANGLE,
   DRAW_TEXT,
   DRAW_MATH,
-  DRAW_MEASURE_TOOL
+  DRAW_MEASURE_TOOL,
+  SELECT_TOOL
 };

@@ -209,3 +209,8 @@ export { default as IconClear } from "./src/IconClear";
 export { default as IconItemGroup } from "./src/IconItemGroup";
 export { default as IconRead } from "./src/IconRead";
 export { default as IconWrite } from "./src/IconWrite";
+export { default as IconExpandArrowIn } from "./src/IconExpandArrowIn";
+export { default as IconExpandArrowOut } from "./src/IconExpandArrowOut";
+export { default as IconCut } from "./src/IconCut";
+export { default as IconInverse } from "./src/IconInverse";
+export { default as IconInverseOut } from "./src/IconInverseOut";

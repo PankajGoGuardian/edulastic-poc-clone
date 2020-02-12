@@ -135,7 +135,8 @@ const Search = ({
         ""
       )}
       <Container>
-        {isPublishers && filter !== "ENTIRE_LIBRARY" && getStatusFilter()}
+        {((userFeatures.isPublisherAuthor && filter !== "ENTIRE_LIBRARY") || userFeatures.isCurator) &&
+          getStatusFilter()}
         {userFeatures.isCurator && (
           <Item>
             <ItemHeader>Authored By</ItemHeader>

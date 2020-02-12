@@ -59,7 +59,7 @@ const ContentBucketTable = ({ buckets }) => {
       key: "status",
       align: "center",
       render: value => {
-        if (value) return <StatusText color="green">ENABLE</StatusText>;
+        if (value) return <StatusText color="green">ACTIVE</StatusText>;
         return <StatusText color="red">DISABLE</StatusText>;
       }
     }

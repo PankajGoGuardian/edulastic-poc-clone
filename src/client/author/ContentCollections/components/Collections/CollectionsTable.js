@@ -119,7 +119,7 @@ const CollectionsTable = ({
       dataIndex: "status",
       key: "status",
       render: value => {
-        if (value == 1) return <StatusText color="green">ENABLE</StatusText>;
+        if (value == 1) return <StatusText color="green">ACTIVE</StatusText>;
         if (value == 2) return <StatusText color="red">EXPIRED</StatusText>;
         return <StatusText color="red">DISABLE</StatusText>;
       }

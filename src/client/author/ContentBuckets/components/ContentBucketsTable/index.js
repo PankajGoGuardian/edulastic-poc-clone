@@ -252,7 +252,7 @@ const ContentBucketsTable = ({
             fontSize: "9px"
           }}
         >
-          {status === 0 ? "disable" : "enable"}
+          {status === 0 ? "Disable" : "Active"}
         </span>
       ),
       sortDirections: ["descend", "ascend"],

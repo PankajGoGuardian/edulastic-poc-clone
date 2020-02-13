@@ -25,7 +25,7 @@ const SvgDraw = ({
   position,
   fromFreeFormNotes,
   fontFamily,
-  height
+  height: svgHeight
 }) => {
   const svg = useDisableDragScroll();
   const [points, setPoints] = useState([]);
@@ -789,7 +789,7 @@ const SvgDraw = ({
           position,
           top: 0,
           left: 0,
-          height: height ? height : "100%",
+          height: svgHeight || "100%",
           width: "100%",
           background: "transparent",
           display: scratchPadMode ? "block" : "none",

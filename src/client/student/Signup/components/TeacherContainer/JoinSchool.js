@@ -199,7 +199,8 @@ const JoinSchool = ({
   }, [newSchool]);
 
   const dropdownSchoolData = useMemo(() => {
-    return schools.map(item => {
+    const approvedSchool = schools.filter(school => school.isApproved === true);
+    return approvedSchool.map(item => {
       return {
         ...item,
         title: item.schoolName,

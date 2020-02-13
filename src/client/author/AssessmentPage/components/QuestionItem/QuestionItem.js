@@ -65,6 +65,7 @@ class QuestionItem extends React.Component {
   };
 
   itemRef = React.createRef();
+  qFormRef = React.createRef();
 
   componentDidUpdate(prevProps) {
     const { highlighted } = this.props;
@@ -182,7 +183,7 @@ class QuestionItem extends React.Component {
     );
   };
 
-  renderContent = highlighted => {
+  renderContent = (highlighted, boundingRect) => {
     let { data, saveAnswer, viewMode, onCreateOptions, evaluation, userAnswer, previewMode } = this.props;
     if (!evaluation) {
       evaluation = data?.activity?.evaluation;
@@ -193,7 +194,8 @@ class QuestionItem extends React.Component {
       question: data,
       mode: viewMode,
       view: previewMode,
-      highlighted
+      highlighted,
+      boundingRect
     };
     switch (data.type) {
       case MULTIPLE_CHOICE:
@@ -345,7 +347,11 @@ class QuestionItem extends React.Component {
               {qIndex || index + 1}
             </QuestionNumber>
           </Draggable>
-          {!annotations && <QuestionForm review={review}>{this.renderContent(highlighted)}</QuestionForm>}
+          {!annotations && (
+            <QuestionForm review={review} ref={this.qFormRef}>
+              {this.renderContent(highlighted, this.qFormRef?.current?.getBoundingClientRect())}
+            </QuestionForm>
+          )}
 
           {!review && !pdfPreview && !testMode && this.renderEditButton()}
           {review &&

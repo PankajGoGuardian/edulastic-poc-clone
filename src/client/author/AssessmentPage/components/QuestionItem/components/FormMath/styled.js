@@ -15,9 +15,11 @@ export const MathAnswer = styled(MathInput)`
 
     &__absolute {
       &__keyboard {
+        position: fixed !important;
         left: unset;
-        top: 50px;
-        width: 244px;
+        right: ${({ right }) => right}px !important;
+        top: ${({ top }) => top}px;
+        width: auto;
 
         .keyboard {
           &__main {

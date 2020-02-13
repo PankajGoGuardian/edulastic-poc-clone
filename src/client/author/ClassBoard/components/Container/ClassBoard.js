@@ -614,7 +614,8 @@ class ClassBoard extends Component {
       studentViewFilter,
       disableMarkSubmitted,
       hasRandomQuestions,
-      isLoading
+      isLoading,
+      t
     } = this.props;
 
     const {
@@ -758,23 +759,27 @@ class ClassBoard extends Component {
               >
                 CARD VIEW
               </BothButton>
-              <StudentButton
-                disabled={!firstStudentId || !isItemsVisible || isLoading}
-                active={selectedTab === "Student"}
-                onClick={e =>
-                  this.onTabChange(
-                    e,
-                    "Student",
-                    firstStudentId,
-                    testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId
-                  )
-                }
-              >
-                STUDENTS
-              </StudentButton>
+              <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                <StudentButton
+                  disabled={!firstStudentId || !isItemsVisible || isLoading}
+                  active={selectedTab === "Student"}
+                  onClick={e =>
+                    this.onTabChange(
+                      e,
+                      "Student",
+                      firstStudentId,
+                      testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId
+                    )
+                  }
+                >
+                  STUDENTS
+                </StudentButton>
+              </WithDisableMessage>
               <WithDisableMessage
-                disabled={hasRandomQuestions}
-                errMessage="This assignment has random items for every student."
+                disabled={hasRandomQuestions || !isItemsVisible}
+                errMessage={
+                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                }
               >
                 <QuestionButton
                   active={selectedTab === "questionView"}

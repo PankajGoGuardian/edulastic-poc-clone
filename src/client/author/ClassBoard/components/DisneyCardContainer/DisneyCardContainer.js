@@ -4,6 +4,9 @@ import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
 import { themeColorLighter, yellow, red } from "@edulastic/colors";
 import { connect } from "react-redux";
+import { withNamespaces } from "@edulastic/localization";
+import { compose } from "redux";
+import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
 
@@ -77,7 +80,8 @@ class DisneyCardContainer extends Component {
       testActivityLoading,
       enrollmentStatus,
       isItemsVisible,
-      closed
+      closed,
+      t
     } = this.props;
 
     const noDataNotification = () => {
@@ -165,132 +169,140 @@ class DisneyCardContainer extends Component {
             isClickEnable={canShowResponse}
             onClick={e => (canShowResponse ? viewResponses(e, student.studentId, student.testActivityId) : () => {})}
           >
-            <PaginationInfoF>
-              {isPresentationMode ? (
-                <i
-                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
-                  style={{
-                    color: student.color,
-                    fontSize: "32px",
-                    marginRight: "12px",
-                    cursor: viewResponseStatus.includes(status.status) ? "pointer" : "default"
-                  }}
-                  className={`fa fa-${student.icon}`}
-                >
-                  {" "}
-                </i>
-              ) : (
-                <CircularDiv
-                  isLink={viewResponseStatus.includes(status.status)}
-                  title={isPresentationMode ? "" : student.userName}
-                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
-                >
-                  {getAvatarName(student.studentName)}
-                </CircularDiv>
-              )}
-              <StyledName>
-                <StyledParaF
-                  isLink={viewResponseStatus.includes(status.status)}
-                  data-cy="studentName"
-                  disabled={!isItemsVisible}
-                  title={isPresentationMode ? "" : student.userName}
-                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
-                >
-                  {name}
-                </StyledParaF>
-                {student.present ? (
-                  <StyledParaS
+            <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+              <PaginationInfoF>
+                {isPresentationMode ? (
+                  <i
+                    onClick={e =>
+                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    }
+                    style={{
+                      color: student.color,
+                      fontSize: "32px",
+                      marginRight: "12px",
+                      cursor: viewResponseStatus.includes(status.status) ? "pointer" : "default"
+                    }}
+                    className={`fa fa-${student.icon}`}
+                  >
+                    {" "}
+                  </i>
+                ) : (
+                  <CircularDiv
                     isLink={viewResponseStatus.includes(status.status)}
-                    data-cy="studentStatus"
-                    color={status.color}
+                    title={isPresentationMode ? "" : student.userName}
                     onClick={e =>
                       viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
                     }
                   >
-                    {enrollMentFlag}
-                    {status.status}
-                  </StyledParaS>
-                ) : (
-                  <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
+                    {getAvatarName(student.studentName)}
+                  </CircularDiv>
                 )}
-              </StyledName>
-              <RightAlignedCol>
-                <Row>
-                  <Col onClick={e => e.stopPropagation()}>
-                    <CardCheckbox
-                      checked={selectedStudents[student.studentId]}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          studentSelect(student.studentId);
-                        } else {
-                          studentUnselect(student.studentId);
-                        }
-                      }}
-                      studentId={student.studentId}
-                    />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    {student.redirected && (
-                      <i
-                        data-cy="redirected"
-                        title="Assessment is redirected to the student. The most recent response will be shown"
-                        className="fa fa-external-link"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </Col>
-                </Row>
-              </RightAlignedCol>
-            </PaginationInfoF>
-            <PaginationInfoS>
-              <PerfomanceSection>
-                <StyledFlexDiv>
-                  <StyledParaFF>Performance</StyledParaFF>
-                  <StyledParaSSS data-cy="studentPerformance">
-                    {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
-                  </StyledParaSSS>
-                </StyledFlexDiv>
-                <StyledFlexDiv>
-                  <StyledParaSS data-cy="studentScore">
-                    {round(student.score, 2) || 0} / {student.maxScore || 0}
-                  </StyledParaSS>
-                  {student.testActivityId && status.status !== "Absent" && (
-                    <PagInfo
-                      data-cy="viewResponse"
-                      disabled={!isItemsVisible}
-                      onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
+                <StyledName>
+                  <StyledParaF
+                    isLink={viewResponseStatus.includes(status.status)}
+                    data-cy="studentName"
+                    disabled={!isItemsVisible}
+                    title={isPresentationMode ? "" : student.userName}
+                    onClick={e =>
+                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    }
+                  >
+                    {name}
+                  </StyledParaF>
+                  {student.present ? (
+                    <StyledParaS
+                      isLink={viewResponseStatus.includes(status.status)}
+                      data-cy="studentStatus"
+                      color={status.color}
+                      onClick={e =>
+                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                      }
                     >
-                      {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
-                      VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-                      {/* </Link> */}
-                    </PagInfo>
+                      {enrollMentFlag}
+                      {status.status}
+                    </StyledParaS>
+                  ) : (
+                    <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                   )}
-                </StyledFlexDiv>
-              </PerfomanceSection>
-            </PaginationInfoS>
-            <PaginationInfoT data-cy="questions">
-              {student.questionActivities
-                .filter(x => !x.disabled)
-                .map((questionAct, questionIndex) => {
-                  const weight = questionAct.weight;
-                  if (questionAct.notStarted) {
-                    return <SquareColorDisabled key={questionIndex} />;
-                  } else if (questionAct.skipped && questionAct.score === 0) {
-                    return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
-                  } else if (questionAct.graded === false || questionAct.pendingEvaluation) {
-                    return <SquareColorBlue key={questionIndex} />;
-                  } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
-                    return <SquareColorDivGreen key={questionIndex} />;
-                  } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
-                    return <SquareColorDivYellow key={questionIndex} />;
-                  } else if (questionAct.score === 0) {
-                    return <SquareColorDivPink key={questionIndex} />;
-                  }
-                  return null;
-                })}
-            </PaginationInfoT>
+                </StyledName>
+                <RightAlignedCol>
+                  <Row>
+                    <Col onClick={e => e.stopPropagation()}>
+                      <CardCheckbox
+                        checked={selectedStudents[student.studentId]}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            studentSelect(student.studentId);
+                          } else {
+                            studentUnselect(student.studentId);
+                          }
+                        }}
+                        studentId={student.studentId}
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      {student.redirected && (
+                        <i
+                          data-cy="redirected"
+                          title="Assessment is redirected to the student. The most recent response will be shown"
+                          className="fa fa-external-link"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </Col>
+                  </Row>
+                </RightAlignedCol>
+              </PaginationInfoF>
+              <PaginationInfoS>
+                <PerfomanceSection>
+                  <StyledFlexDiv>
+                    <StyledParaFF>Performance</StyledParaFF>
+                    <StyledParaSSS data-cy="studentPerformance">
+                      {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
+                    </StyledParaSSS>
+                  </StyledFlexDiv>
+                  <StyledFlexDiv>
+                    <StyledParaSS data-cy="studentScore">
+                      {round(student.score, 2) || 0} / {student.maxScore || 0}
+                    </StyledParaSS>
+                    {student.testActivityId && status.status !== "Absent" && (
+                      <PagInfo
+                        data-cy="viewResponse"
+                        disabled={!isItemsVisible}
+                        onClick={e => viewResponses(e, student.studentId, student.testActivityId)}
+                      >
+                        {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+                        VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                        {/* </Link> */}
+                      </PagInfo>
+                    )}
+                  </StyledFlexDiv>
+                </PerfomanceSection>
+              </PaginationInfoS>
+              <PaginationInfoT data-cy="questions">
+                {student.questionActivities
+                  .filter(x => !x.disabled)
+                  .map((questionAct, questionIndex) => {
+                    const weight = questionAct.weight;
+                    if (questionAct.notStarted) {
+                      return <SquareColorDisabled key={questionIndex} />;
+                    } else if (questionAct.skipped && questionAct.score === 0) {
+                      return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
+                    } else if (questionAct.graded === false || questionAct.pendingEvaluation) {
+                      return <SquareColorBlue key={questionIndex} />;
+                    } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
+                      return <SquareColorDivGreen key={questionIndex} />;
+                    } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
+                      return <SquareColorDivYellow key={questionIndex} />;
+                    } else if (questionAct.score === 0) {
+                      return <SquareColorDivPink key={questionIndex} />;
+                    }
+                    return null;
+                  })}
+              </PaginationInfoT>
+            </WithDisableMessage>
           </StyledCard>
         );
         styledCard.push(studentData);
@@ -312,8 +324,13 @@ class DisneyCardContainer extends Component {
   }
 }
 
-export default connect(state => ({
+const withConnect = connect(state => ({
   isLoading: get(state, "classResponse.loading"),
   testActivityLoading: testActivtyLoadingSelector(state),
   isItemsVisible: isItemVisibiltySelector(state)
-}))(DisneyCardContainer);
+}));
+
+export default compose(
+  withNamespaces("classBoard"),
+  withConnect
+)(DisneyCardContainer);

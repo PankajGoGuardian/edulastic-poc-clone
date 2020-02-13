@@ -387,8 +387,10 @@ class ClassHeader extends Component {
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
               <WithDisableMessage
-                disabled={hasRandomQuestions}
-                errMessage="This assignment has random items for every student."
+                disabled={hasRandomQuestions || !isItemsVisible}
+                errMessage={
+                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                }
               >
                 <StyledLink
                   to={`/author/expressgrader/${assignmentId}/${classId}`}
@@ -408,20 +410,24 @@ class ClassHeader extends Component {
               </WithDisableMessage>
             </FeaturesSwitch>
 
-            <FeaturesSwitch
-              inputFeatures="standardBasedReport"
-              actionOnInaccessible="hidden"
-              disabled={!isItemsVisible}
-              groupId={classId}
-            >
-              <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
-                <StyledAnchor isActive={active === "standard_report"}>
-                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
-                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
-                    {t("common.standardBasedReports")}
-                  </LinkLabel>
-                </StyledAnchor>
-              </StyledLink>
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
+              <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
+                <StyledLink
+                  disabled={!isItemsVisible}
+                  to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
+                  data-cy="StandardsBasedReport"
+                >
+                  <StyledAnchor isActive={active === "standard_report"}>
+                    <IconNotes
+                      color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                      left={0}
+                    />
+                    <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                      {t("common.standardBasedReports")}
+                    </LinkLabel>
+                  </StyledAnchor>
+                </StyledLink>
+              </WithDisableMessage>
             </FeaturesSwitch>
             <StyledLink to={`/author/lcb/settings/${assignmentId}/${classId}`} data-cy="LCBAssignmentSettings">
               <StyledAnchor isActive={active === "settings"}>

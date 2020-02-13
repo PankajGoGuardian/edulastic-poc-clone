@@ -10,6 +10,7 @@
     "more": "MORE",
     "attempts": "ATTEMPTS",
     "avg_time": "AVG TIME (SECONDS)",
-    "standardBasedReports": "STANDARDS BASED REPORT"
+    "standardBasedReports": "STANDARDS BASED REPORT",
+    "testHidden": "View of Items is Restricted by the Admin"
   }
 }

@@ -115,10 +115,17 @@ export const getQuestionLabels = (testItemsData = []) => {
     } else {
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex];
-        result[q.id] = {
-          qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
-          barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
-        };
+        if (item.isDocBased) {
+          result[q.id] = {
+            qLabel: `Q${qIndex + 1}`,
+            barLabel: `Q${qIndex + 1}`
+          };
+        } else {
+          result[q.id] = {
+            qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+            barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+          };
+        }
       }
     }
   }

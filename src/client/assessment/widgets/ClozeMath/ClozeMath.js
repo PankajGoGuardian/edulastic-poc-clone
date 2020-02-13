@@ -26,6 +26,7 @@ import ChoicesForDropDown from "./ChoicesForDropDown";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 import AppConfig from "../../../../../app-config";
+import Question from "../../components/Question";
 
 const ClozeMath = ({
   view,
@@ -132,15 +133,24 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <ClozeMathAnswers
-            id="answers"
-            item={item}
-            setQuestionData={_setQuestionData}
+
+          <Question
+            section="main"
+            label={t("component.math.correctAnswers")}
             fillSections={fillSections}
             cleanSections={cleanSections}
-            onChangeKeypad={handleKeypadMode}
-            t={t}
-          />
+          >
+            <ClozeMathAnswers
+              id="answers"
+              item={item}
+              setQuestionData={_setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+              onChangeKeypad={handleKeypadMode}
+              t={t}
+            />
+          </Question>
+
           <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
           {advancedLink}

@@ -6,6 +6,7 @@ export const CorrectAnswerContainer = styled.div`
   padding: 43px 40px;
   border: 1px solid ${sectionBorder};
   border-radius: 4px;
+  ${props => props.style};
 
   input,
   .ant-input,

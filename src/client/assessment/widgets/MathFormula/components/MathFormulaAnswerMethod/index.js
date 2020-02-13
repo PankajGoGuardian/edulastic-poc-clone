@@ -442,8 +442,8 @@ const MathFormulaAnswerMethod = ({
       {/* This needs only for Math w/Units in ClozMath type */}
       {showDefaultMode && (
         <StyledRow gutter={24}>
-          <Label data-cy="unit-dropdown-default-mode">{t("component.options.defaultMode")}</Label>
           <Col span={6}>
+            <Label data-cy="unit-dropdown-default-mode">{t("component.options.defaultMode")}</Label>
             <DefaultKeyPadMode onChange={onChange} keypadMode={keypadMode} />
           </Col>
           {keypadMode === "custom" && (

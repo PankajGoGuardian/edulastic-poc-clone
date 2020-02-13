@@ -1,5 +1,5 @@
 import { FlexContainer, Paper } from "@edulastic/common";
-import { themeColor, mobileWidth } from "@edulastic/colors";
+import { themeColor, mobileWidth, greyThemeDark2 } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 
@@ -29,29 +29,10 @@ export const AddButtonContainer = styled(FlexContainer)`
 export const AddPassageBtnContainer = styled.div`
   display: flex;
   justify-content: center;
-  button {
-    margin-right: 10px;
-    background-color: ${themeColor};
-    color: #fff;
-    height: 45px;
+  button.ant-btn {
     width: 170px;
-    font-size: 11px;
-    &:hover {
-      color: ${themeColor};
-    }
-
-    &:focus > span:first-child,
-    &:active > span:first-child {
-      position: absolute;
-    }
-    &:last-child {
-      background-color: #fff;
-      color: ${themeColor};
-      &:focus > span,
-      &:active > span {
-        position: relative;
-      }
-    }
+    margin-right: 10px;
+    padding: 0px;
   }
 `;
 
@@ -118,18 +99,15 @@ export const CollapseBtn = styled.i`
 `;
 
 export const PlusIcon = styled.span`
-  position: absolute;
   display: inline-block;
   width: 20px;
   height: 20px;
   background: #fff;
   border-radius: 50%;
   margin-right: 10px;
-  border: 1px solid ${themeColor};
-  color: ${themeColor};
-  left: 10px;
-  top: 12px;
-  font-size: 18px;
+  border: 1px solid ${greyThemeDark2};
+  color: ${greyThemeDark2};
+  font-size: 18px !important;
   line-height: 1;
 `;
 

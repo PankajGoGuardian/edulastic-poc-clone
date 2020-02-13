@@ -3,7 +3,6 @@ import produce from "immer";
 import PropTypes from "prop-types";
 import { cloneDeep, set, get, forEach, find, findIndex, isEmpty } from "lodash";
 import { math } from "@edulastic/constants";
-import { Checkbox } from "@edulastic/common";
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
 import MathUnitAnswer from "./ClozeMathUnitAnswer";
@@ -380,7 +379,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       cleanSections={cleanSections}
       questionType={item?.title}
     >
-      <CorrectAnswerContainer>
+      <CorrectAnswerContainer style={{ border: "none", padding: "0px" }}>
         {correctTab === 0 && (
           <MathFormulaPoints
             points={get(item, "validation.validResponse.score", 1)}

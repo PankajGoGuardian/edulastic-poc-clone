@@ -3,7 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { greyThemeLight, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
 import { response as defaultResponse } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
@@ -12,12 +12,12 @@ const { Panel } = Collapse;
 
 const AnswerContainer = styled.div`
   .ant-collapse-item {
-    border: 1px solid ${inputBorder};
+    border: 1px solid ${greyThemeLight};
     margin-bottom: 16px;
 
     .ant-collapse-header {
-      background-color: ${darkGrey1};
-      color: ${white};
+      background-color: ${greyThemeLighter};
+      color: ${greyThemeDark2};
       font-weight: 600;
     }
 

@@ -20,15 +20,11 @@ class ResponseContainers extends Component {
 
         {containers.map((container, index) => (
           <Fragment>
-            <Row gutter={24}>
-              <Col md={24}>
-                <FlexContainer justifyContent="space-between">
-                  <Label>
-                    {t("component.options.responseBox")} {index + 1}
-                  </Label>
-                  <IconTrash onClick={() => onDelete(index)} />
-                </FlexContainer>
-              </Col>
+            <Row type="flex" justify="space-between" marginTop={15}>
+              <Label>
+                {t("component.options.responseBox")} {index + 1}
+              </Label>
+              <IconTrash onClick={() => onDelete(index)} />
             </Row>
 
             <Row gutter={24}>

@@ -1,21 +1,22 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Collapse, Input, Icon } from "antd";
-import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { Collapse, Icon } from "antd";
+import { greyThemeLighter, greyThemeDark2, greyThemeLight } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 const { Panel } = Collapse;
 
 const AnswerContainer = styled.div`
   margin-top: 16px;
   .ant-collapse-item {
-    border: 1px solid ${inputBorder};
+    border: 1px solid ${greyThemeLight};
     margin-bottom: 16px;
 
     .ant-collapse-header {
-      background-color: ${darkGrey1};
-      color: ${white};
+      background-color: ${greyThemeLighter};
+      color: ${greyThemeDark2};
       font-weight: 600;
     }
 
@@ -51,7 +52,7 @@ class ClozeInputAnswer extends Component {
             const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
             return (
               <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
-                <Input
+                <TextInputStyled
                   style={{ width, height, minWidth: "140px", minHeight: "35px" }}
                   value={answer.value}
                   onChange={e => this.onChangeHandler(e.target.value, answer.id)}

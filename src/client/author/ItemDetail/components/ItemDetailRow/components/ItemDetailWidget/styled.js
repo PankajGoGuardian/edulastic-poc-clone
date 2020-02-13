@@ -1,4 +1,4 @@
-import { themeColor, white, mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { white, mobileWidth, mediumDesktopWidth, greyThemeDark2 } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -39,20 +39,21 @@ export const Buttons = styled.div`
       text-align: center;
     }
   }
+  .ant-btn {
+    &.ant-btn-circle {
+      background: ${white};
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid ${greyThemeDark2};
+      border-radius: 3px;
+      margin-bottom: 10px;
 
-  .ant-btn-circle {
-    background: ${white};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    border: 1px solid ${themeColor};
-    border-radius: 3px;
-    margin-bottom: 10px;
-
-    svg {
-      fill: ${themeColor};
+      svg {
+        fill: ${greyThemeDark2};
+      }
     }
   }
 

@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import { Collapse, Select, Icon } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { greyThemeLight, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
 import { response } from "@edulastic/constants";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -13,12 +14,12 @@ const { Option } = Select;
 const AnswerContainer = styled.div`
   margin-top: 16px;
   .ant-collapse-item {
-    border: 1px solid ${inputBorder};
+    border: 1px solid ${greyThemeLight};
     margin-bottom: 16px;
 
     .ant-collapse-header {
-      background-color: ${darkGrey1};
-      color: ${white};
+      background-color: ${greyThemeLighter};
+      color: ${greyThemeDark2};
       font-weight: 600;
     }
 
@@ -28,7 +29,7 @@ const AnswerContainer = styled.div`
   }
 `;
 
-const AnswerSelect = styled(Select)`
+const AnswerSelect = styled(SelectInputStyled)`
   min-width: 140px;
   width: ${({ width }) => (!width ? null : `${width}`)};
   height: ${({ height }) => (!height ? null : `${height}`)};

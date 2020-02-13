@@ -30,6 +30,7 @@ import {
 // src/client/author/ItemDetail/ducks.js
 import { setItemLevelScoreAction } from "../../../../ducks";
 import { FlexContainer } from "@edulastic/common";
+import { CustomStyleBtn } from "../../../../../../assessment/styled/ButtonStyles";
 class Container extends Component {
   state = {
     tabIndex: 0
@@ -186,12 +187,12 @@ class Container extends Component {
                     isPassageQuestion
                       ? {
                           textAlign: "center",
-                          padding: "20px 15px",
+                          padding: "5px 15px",
                           display: "flex"
                         }
                       : {
                           textAlign: "center",
-                          padding: "20px 15px",
+                          padding: "5px 15px",
                           width: "50%"
                         }
                   }
@@ -209,7 +210,7 @@ class Container extends Component {
                   label={"ADD TAB"}
                   style={{
                     textAlign: "center",
-                    padding: "20px 15px"
+                    padding: "5px 15px"
                   }}
                   addTabs={addTabs}
                   isAddTab={true}
@@ -230,12 +231,12 @@ class Container extends Component {
         )}
         {isPassageQuestion && (
           <AddPassageBtnContainer>
-            <Button onClick={() => handleAddToPassage("video", tabIndex)}>
+            <CustomStyleBtn onClick={() => handleAddToPassage("video", tabIndex)}>
               <PlusIcon>+</PlusIcon>ADD VIDEO
-            </Button>
-            <Button onClick={() => handleAddToPassage("passage", tabIndex)}>
+            </CustomStyleBtn>
+            <CustomStyleBtn onClick={() => handleAddToPassage("passage", tabIndex)}>
               <PlusIcon>+</PlusIcon>ADD PASSAGE
-            </Button>
+            </CustomStyleBtn>
           </AddPassageBtnContainer>
         )}
       </Content>

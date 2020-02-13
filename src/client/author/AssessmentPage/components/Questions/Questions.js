@@ -151,7 +151,8 @@ const essayData = {
 };
 
 const trueOrFalseData = {
-  type: "trueOrFalse",
+  type: "multipleChoice",
+  subType: "trueOrFalse",
   uiStyle: { type: "horizontal" }
 };
 

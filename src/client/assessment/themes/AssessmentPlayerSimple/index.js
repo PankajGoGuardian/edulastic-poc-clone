@@ -7,7 +7,7 @@ import { get } from "lodash";
 import { message } from "antd";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { hexToRGB } from "@edulastic/common";
+import { hexToRGB, ScratchPadContext } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -72,6 +72,8 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   headerRef = React.createRef();
+
+  containerRef = React.createRef();
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.currentItem !== prevState.currentItem) {
@@ -257,67 +259,69 @@ class AssessmentPlayerSimple extends React.Component {
     const headerHeight = this.headerRef.current?.clientHeight || 0;
     return (
       <ThemeProvider theme={themeToPass}>
-        <Container scratchPadMode={scratchPadMode}>
-          {scratchPadMode && !previewPlayer && (
-            <Tools
-              onFillColorChange={this.onFillColorChange}
-              fillColor={fillColor}
-              deleteMode={deleteMode}
-              currentColor={currentColor}
-              onToolChange={this.handleToolChange}
+        <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
+          <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
+            {scratchPadMode && !previewPlayer && (
+              <Tools
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleToolChange}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                onColorChange={this.handleColorChange}
+              />
+            )}
+            <SvgDraw
               activeMode={activeMode}
-              undo={this.handleUndo}
-              redo={this.handleRedo}
-              onColorChange={this.handleColorChange}
+              scratchPadMode={scratchPadMode}
+              lineColor={currentColor}
+              deleteMode={deleteMode}
+              lineWidth={lineWidth}
+              fillColor={fillColor}
+              saveHistory={this.saveHistory("scratchpad")}
+              history={scratchPad}
+              height={`calc(100% - ${headerHeight}px)`}
+              top={`${headerHeight}px`}
+              position="fixed"
             />
-          )}
-          <SvgDraw
-            activeMode={activeMode}
-            scratchPadMode={scratchPadMode}
-            lineColor={currentColor}
-            deleteMode={deleteMode}
-            lineWidth={lineWidth}
-            fillColor={fillColor}
-            saveHistory={this.saveHistory("scratchpad")}
-            history={scratchPad}
-            height={`calc(100% - ${headerHeight}px)`}
-            top={`${headerHeight}px`}
-            position="fixed"
-          />
-          <PlayerHeader
-            headerRef={this.headerRef}
-            {...this.props}
-            theme={themeToPass}
-            dropdownOptions={dropdownOptions}
-            onOpenExitPopup={this.openExitPopup}
-            onshowHideHints={this.showHideHints}
-            checkAnswer={() => this.changeTabItemState("check")}
-            toggleToolsOpenStatus={this.toggleToolsOpenStatus}
-            toolsOpenStatus={toolsOpenStatus}
-            t={t}
-            previewPlayer={previewPlayer}
-          />
-          {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
-            <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
-          ) : null}
-          <PlayerMainContentArea
-            {...this.props}
-            theme={themeToPass}
-            previewTab={previewTab}
-            dropdownOptions={dropdownOptions}
-            items={items}
-            showHints={showHints}
-            settings={settings}
-            testItemState={testItemState}
-            t={t}
-            enableCrossAction={enableCrossAction}
-            unansweredQuestionCount={unansweredQuestionCount}
-            setHighlights={this.saveHistory("resourceId")}
-            setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
-            crossAction={crossAction || {}}
-            previousQuestionActivities={previousQuestionActivities}
-          />
-          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+            <PlayerHeader
+              headerRef={this.headerRef}
+              {...this.props}
+              theme={themeToPass}
+              dropdownOptions={dropdownOptions}
+              onOpenExitPopup={this.openExitPopup}
+              onshowHideHints={this.showHideHints}
+              checkAnswer={() => this.changeTabItemState("check")}
+              toggleToolsOpenStatus={this.toggleToolsOpenStatus}
+              toolsOpenStatus={toolsOpenStatus}
+              t={t}
+              previewPlayer={previewPlayer}
+            />
+            {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
+              <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
+            ) : null}
+            <PlayerMainContentArea
+              {...this.props}
+              theme={themeToPass}
+              previewTab={previewTab}
+              dropdownOptions={dropdownOptions}
+              items={items}
+              showHints={showHints}
+              settings={settings}
+              testItemState={testItemState}
+              t={t}
+              enableCrossAction={enableCrossAction}
+              unansweredQuestionCount={unansweredQuestionCount}
+              setHighlights={this.saveHistory("resourceId")}
+              setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
+              crossAction={crossAction || {}}
+              previousQuestionActivities={previousQuestionActivities}
+            />
+            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+          </ScratchPadContext.Provider>
         </Container>
       </ThemeProvider>
     );

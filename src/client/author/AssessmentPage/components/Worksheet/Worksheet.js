@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB, withWindowSizes } from "@edulastic/common";
+import { hexToRGB, withWindowSizes, ScratchPadContext } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, message, Button } from "antd";
@@ -70,6 +70,7 @@ class WorksheetComponent extends React.Component {
   constructor(props) {
     super(props);
     this.pdfRef = React.createRef();
+    this.containerRef = React.createRef();
   }
 
   static propTypes = {
@@ -724,52 +725,55 @@ class WorksheetComponent extends React.Component {
               overflowX: "auto",
               paddingLeft: `${!minimized && (testMode || viewMode === "edit") ? "60px" : "20px"}`
             }}
+            ref={this.containerRef}
           >
-            <PDFPreview
-              page={selectedPage}
-              currentPage={currentPage + 1}
-              annotations={annotations}
-              onDragStart={this.onDragStart}
-              onDropAnnotation={this.handleAddAnnotation}
-              onHighlightQuestion={this.handleHighlightQuestion}
-              questions={questions}
-              questionsById={questionsById}
-              answersById={answersById}
-              renderExtra={svgContainer}
-              viewMode={viewMode}
-              reportMode={reportMode}
-              isToolBarVisible={isToolBarVisible}
-              pdfWidth={pdfWidth - 100}
-              minimized={minimized}
-              pageChange={this.handleChangePage}
-              testMode={testMode}
-              studentWork={studentWork}
-              highlighted={highlightedQuestion}
-              forwardedRef={this.pdfRef}
-              review={review}
-            />
-            {viewMode !== "report" && !minimized && isToolBarVisible && (
-              <Tools
-                isWorksheet
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                onChangeFont={this.handleChangeFont}
-                currentFont={currentFont}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-                testMode={testMode}
-                review={review}
-                lineWidth={lineWidth}
-                onChangeSize={this.handleChangeLineWidth}
+            <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
+              <PDFPreview
+                page={selectedPage}
+                currentPage={currentPage + 1}
+                annotations={annotations}
+                onDragStart={this.onDragStart}
+                onDropAnnotation={this.handleAddAnnotation}
+                onHighlightQuestion={this.handleHighlightQuestion}
+                questions={questions}
+                questionsById={questionsById}
+                answersById={answersById}
+                renderExtra={svgContainer}
+                viewMode={viewMode}
+                reportMode={reportMode}
                 isToolBarVisible={isToolBarVisible}
-                isDocBased={isDocBased}
+                pdfWidth={pdfWidth - 100}
+                minimized={minimized}
+                pageChange={this.handleChangePage}
+                testMode={testMode}
+                studentWork={studentWork}
+                highlighted={highlightedQuestion}
+                forwardedRef={this.pdfRef}
+                review={review}
               />
-            )}
+              {viewMode !== "report" && !minimized && isToolBarVisible && (
+                <Tools
+                  isWorksheet
+                  onFillColorChange={this.onFillColorChange}
+                  fillColor={fillColor}
+                  deleteMode={deleteMode}
+                  currentColor={currentColor}
+                  onToolChange={this.handleToolChange}
+                  onChangeFont={this.handleChangeFont}
+                  currentFont={currentFont}
+                  activeMode={activeMode}
+                  undo={this.handleUndo}
+                  redo={this.handleRedo}
+                  onColorChange={this.handleColorChange}
+                  testMode={testMode}
+                  review={review}
+                  lineWidth={lineWidth}
+                  onChangeSize={this.handleChangeLineWidth}
+                  isToolBarVisible={isToolBarVisible}
+                  isDocBased={isDocBased}
+                />
+              )}
+            </ScratchPadContext.Provider>
           </div>
         </Fragment>
         <Questions

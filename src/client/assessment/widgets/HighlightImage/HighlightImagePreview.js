@@ -39,6 +39,8 @@ const HighlightImagePreview = ({
 }) => {
   const canvas = useRef(null);
   const canvasContainerRef = useRef(null);
+  const containerRef = useRef();
+
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
@@ -189,32 +191,34 @@ const HighlightImagePreview = ({
   }, [clearClicked]);
 
   return (
-    <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <CanvasContainer
-        ref={canvasContainerRef}
-        minHeight={canvasDimensions.maxHeight}
-        width={disableDrawing ? "auto" : `${canvasContainerWidth}px`}
-      >
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-        </QuestionTitleWrapper>
-        {renderImage()}
-        {enableQuestionLevelScratchPad && (
-          <canvas
-            onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
-            onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
-            onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
-            onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
-            onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-            onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-            ref={canvas}
-          />
+    <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""} ref={containerRef}>
+      <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
+        <CanvasContainer
+          ref={canvasContainerRef}
+          minHeight={canvasDimensions.maxHeight}
+          width={disableDrawing ? "auto" : `${canvasContainerWidth}px`}
+        >
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+          </QuestionTitleWrapper>
+          {renderImage()}
+          {enableQuestionLevelScratchPad && (
+            <canvas
+              onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
+              onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
+              onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
+              onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
+              onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+              onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+              ref={canvas}
+            />
+          )}
+        </CanvasContainer>
+        {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
+          <Scratch clearClicked={clearClicked} />
         )}
-      </CanvasContainer>
-      {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
-        <Scratch clearClicked={clearClicked} />
-      )}
+      </ScratchPadContext.Provider>
     </PreviewContainer>
   );
 };

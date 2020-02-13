@@ -130,7 +130,7 @@ const MathDraw = ({
       <MathModal
         value={newItem.value}
         isEditable
-        show={newItem.color}
+        show={newItem.color && activeMode === drawTools.DRAW_MATH}
         width="max-content"
         showDropdown
         onSave={onSave}

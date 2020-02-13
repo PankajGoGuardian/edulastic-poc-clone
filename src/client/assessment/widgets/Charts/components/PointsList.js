@@ -21,6 +21,9 @@ import {
 } from "../../../styled/Grid";
 
 import { CustomInput } from "./Input";
+import { SelectInputStyled } from "../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 class PointsList extends Component {
   getHoverSettings = () => {
@@ -106,33 +109,35 @@ class PointsList extends Component {
                 <CustomInput index={index} type="number" value={dot.y} handleChange={handleChange} />
               </Col>
               <Col md={4}>
-                <FormatedSelect
+                <SelectInputStyled
+                  height="32px"
                   value={dot.labelVisibility || SHOW_ALWAYS}
                   onSelect={value => handleChange(index)("labelVisibility", value)}
                 >
                   {this.getHoverSettings().map((setting, i) => (
-                    <FormatedSelect.Option key={`setting-${i}`} value={setting.value}>
+                    <SelectInputStyled.Option key={`setting-${i}`} value={setting.value}>
                       {setting.label}
-                    </FormatedSelect.Option>
+                    </SelectInputStyled.Option>
                   ))}
-                </FormatedSelect>
+                </SelectInputStyled>
               </Col>
               {showFractionFormatSetting && (
                 <Col md={4}>
-                  <FormatedSelect
+                  <SelectInputStyled
+                    height="32px"
                     value={dot.labelFractionFormat || FRACTION_FORMATS.decimal}
                     onSelect={value => handleChange(index)("labelFractionFormat", value)}
                   >
                     {this.getFractionFormatSettings().map((setting, i) => (
-                      <FormatedSelect.Option key={`setting-${i}`} value={setting.value}>
+                      <SelectInputStyled.Option key={`setting-${i}`} value={setting.value}>
                         {setting.label}
-                      </FormatedSelect.Option>
+                      </SelectInputStyled.Option>
                     ))}
-                  </FormatedSelect>
+                  </SelectInputStyled>
                 </Col>
               )}
               <Col md={isShowFractionField ? 3 : 4}>
-                <Checkbox
+                <CheckboxLabel
                   checked={!dot.notInteractive}
                   onChange={() => handleChange(index)("interactive", !dot.notInteractive)}
                 />
@@ -144,9 +149,9 @@ class PointsList extends Component {
           </Fragment>
         ))}
 
-        <AddPointBtn data-cy="addButton" onClick={onAdd} type="primary">
+        <CustomStyleBtn data-cy="addButton" onClick={onAdd}>
           {t("component.chart.addPoint")}
-        </AddPointBtn>
+        </CustomStyleBtn>
       </Question>
     );
   }

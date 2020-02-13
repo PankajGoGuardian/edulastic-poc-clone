@@ -13,6 +13,10 @@ import { Row } from "./styled/Grid";
 import { AlterBtn } from "./styled/AlterBtn";
 
 import { IconClose } from "./styled/IconClose";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { CorrectAnswerHeader } from "../../../styled/CorrectAnswerHeader";
+import { AlternateAnswerLink } from "../../../styled/ButtonStyles";
 
 const CorrectAnswers = ({
   t,
@@ -57,13 +61,24 @@ const CorrectAnswers = ({
         {t("component.correctanswers.setcorrectanswers")}
       </Subtitle>
 
-      <Row gutter={60}>
+      <Row gutter={24}>
         <Col md={12}>
-          <PointsText>{t("component.correctanswers.points")}</PointsText>
-          <Input type="number" value={points} onChange={handleChangePoint} step={0.5} min={0.5} />
+          <CorrectAnswerHeader>
+            <Label>{t("component.correctanswers.points")}</Label>
+            <TextInputStyled
+              width="230px"
+              type="number"
+              value={points}
+              onChange={handleChangePoint}
+              step={0.5}
+              min={0.5}
+            />
+          </CorrectAnswerHeader>
         </Col>
         <Col md={12}>
-          <AlterBtn onClick={handleAddAlternate}>{`+ ${t("component.correctanswers.alternativeAnswer")}`}</AlterBtn>
+          <AlternateAnswerLink onClick={handleAddAlternate}>
+            {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+          </AlternateAnswerLink>
         </Col>
       </Row>
       {isAlt && (

@@ -1,11 +1,11 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const MulticolorBarsOption = ({ t, onChange, value, size, ...restProps }) => (
   <Fragment>
-    <Checkbox
+    <CheckboxLabel
       data-cy="multicolorBars"
       checked={value}
       onChange={e => onChange(e.target.checked)}
@@ -13,7 +13,7 @@ const MulticolorBarsOption = ({ t, onChange, value, size, ...restProps }) => (
       {...restProps}
     >
       {t("component.options.multicolorBars")}
-    </Checkbox>
+    </CheckboxLabel>
   </Fragment>
 );
 

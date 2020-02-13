@@ -7,7 +7,6 @@ import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import { questionType } from "@edulastic/constants";
 import { Checkbox } from "@edulastic/common";
-import { Input } from "antd";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
@@ -18,11 +17,13 @@ import Question from "../../../components/Question";
 import PointStyleOption from "./PointStyle";
 import MulticolorBarsOption from "./MulticolorBarsOption";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const InputField = ({ name, value, onChange, type = "number", t }) => (
   <Fragment>
     <Label>{t(`component.chart.${name}`)}</Label>
-    <Input
+    <TextInputStyled
       size="large"
       type={type}
       value={value}
@@ -44,7 +45,9 @@ InputField.defaultProps = {
 };
 
 const CheckboxField = ({ t, onChange, value, name }) => (
-  <Checkbox label={t(`component.chart.${name}`)} onChange={onChange} checked={value} textTransform="uppercase" />
+  <CheckboxLabel onChange={onChange} checked={value} textTransform="uppercase">
+    {t(`component.chart.${name}`)}
+  </CheckboxLabel>
 );
 
 CheckboxField.propTypes = {
@@ -171,7 +174,7 @@ class LayoutsComponent extends Component {
           {settings.map((setting, index) => (
             <Fragment key={`fragment-${index}`}>
               {index % 2 === 0 && (
-                <Row gutter={36}>
+                <Row gutter={24}>
                   <Col md={12}>{settings[index]}</Col>
                   <Col md={12}>{settings[index + 1]}</Col>
                 </Row>

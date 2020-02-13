@@ -22,6 +22,7 @@ import ControlTools from "./ControlTools";
 import { GraphWrapper, JSXBox } from "./styled";
 
 import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
+import { Tools } from "../../../../widgets/Charts/components/Tools";
 
 const v1Dimenstions = {
   v1Height: 390,
@@ -407,7 +408,7 @@ class NumberLinePlotContainer extends PureComponent {
     return (
       <div data-cy="axis-labels-container" ref={this.numberLinePlotRef} style={{ overflowX: "hidden", width: "100%" }}>
         {!disableResponse && (
-          <ControlTools control={selectedControl} controls={controls} setControls={this.onSelectControl} />
+          <Tools tools={selectedControl} controls={controls} setTool={this.onSelectControl} justifyContent="flex-end" />
         )}
         <GraphWrapper>
           <div style={{ position: "relative" }}>

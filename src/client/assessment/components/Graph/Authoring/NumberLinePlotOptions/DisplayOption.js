@@ -9,6 +9,8 @@ import { MoreOptionsInput } from "../../common/styled_components";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
+import { TextInputStyled, SelectInputStyled } from "../../../../styled/InputStyles";
+import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
 
 const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setOptions, setNumberline, setCanvas }) => {
   const handleInputChange = event => {
@@ -49,20 +51,20 @@ const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setO
 
   return (
     <>
-      <Row gutter={60}>
+      <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.minWidth")}</Label>
-          <MoreOptionsInput type="text" name="layoutWidth" onChange={handleInputChange} value={uiStyle.layoutWidth} />
+          <TextInputStyled type="text" name="layoutWidth" onChange={handleInputChange} value={uiStyle.layoutWidth} />
         </Col>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.height")}</Label>
-          <MoreOptionsInput type="text" name="layoutHeight" onChange={handleInputChange} value={uiStyle.layoutHeight} />
+          <TextInputStyled type="text" name="layoutHeight" onChange={handleInputChange} value={uiStyle.layoutHeight} />
         </Col>
       </Row>
-      <Row gutter={60}>
+      <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.linemargin")}</Label>
-          <MoreOptionsInput
+          <TextInputStyled
             type="text"
             name="margin"
             placeholder="0"
@@ -72,8 +74,7 @@ const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setO
         </Col>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.fontSize")}</Label>
-          <Select
-            style={{ width: "100%" }}
+          <SelectInputStyled
             data-cy="fontSize"
             getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={handleChangeFontSize}
@@ -84,49 +85,37 @@ const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setO
                 {option.label}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Col>
       </Row>
-      <Row gutter={60}>
-        <Col md={12} marginBottom="0px">
-          <Row>
-            <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.showGrid")}
-                onChange={handleUiStyle("showGrid")}
-                name="showGrid"
-                checked={uiStyle.showGrid}
-              />
-            </Col>
-            <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.drawLabelZero")}
-                onChange={handleUiStyle("drawLabelZero")}
-                name="drawLabelZero"
-                checked={uiStyle.drawLabelZero}
-              />
-            </Col>
-          </Row>
+      <Row gutter={24}>
+        <Col md={12}>
+          <CheckboxLabel onChange={handleUiStyle("showGrid")} name="showGrid" checked={uiStyle.showGrid}>
+            {t("component.graphing.layoutoptions.showGrid")}
+          </CheckboxLabel>
         </Col>
-        <Col md={12} marginBottom="0px">
-          <Row>
-            <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.displayposition")}
-                onChange={handleUiStyle("displayPositionOnHover")}
-                name="displayPositionOnHover"
-                checked={uiStyle.displayPositionOnHover}
-              />
-            </Col>
-            <Col md={24}>
-              <Checkbox
-                label={t("component.graphing.layoutoptions.snapToGrid")}
-                onChange={handleNumberlineCheckboxChange("snapToGrid")}
-                name="snapToGrid"
-                checked={numberlineAxis.snapToGrid}
-              />
-            </Col>
-          </Row>
+        <Col md={12}>
+          <CheckboxLabel onChange={handleUiStyle("drawLabelZero")} name="drawLabelZero" checked={uiStyle.drawLabelZero}>
+            {t("component.graphing.layoutoptions.drawLabelZero")}
+          </CheckboxLabel>
+        </Col>
+        <Col md={12}>
+          <CheckboxLabel
+            onChange={handleUiStyle("displayPositionOnHover")}
+            name="displayPositionOnHover"
+            checked={uiStyle.displayPositionOnHover}
+          >
+            {t("component.graphing.layoutoptions.displayposition")}
+          </CheckboxLabel>
+        </Col>
+        <Col md={12}>
+          <CheckboxLabel
+            onChange={handleNumberlineCheckboxChange("snapToGrid")}
+            name="snapToGrid"
+            checked={numberlineAxis.snapToGrid}
+          >
+            {t("component.graphing.layoutoptions.snapToGrid")}
+          </CheckboxLabel>
         </Col>
       </Row>
     </>

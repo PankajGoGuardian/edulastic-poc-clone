@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { themeColorLight, themeColor, inputBgGrey, linkColor1 } from "@edulastic/colors";
+import {
+  themeColorLight,
+  themeColor,
+  inputBgGrey,
+  linkColor1,
+  greyThemeLighter,
+  greyThemeLight
+} from "@edulastic/colors";
 
 class TextField extends Component {
   state = {
@@ -95,15 +102,15 @@ const Icon = styled.span`
 `;
 
 const Field = styled.input`
-  border: 1px solid ${props => (props.referenceEditable ? themeColorLight : "#E1E1E1")};
-  background: ${inputBgGrey};
+  border: 1px solid ${greyThemeLight};
+  background: ${greyThemeLighter};
   border-radius: 4px;
   min-height: 100%;
   width: 100%;
   padding: 10px 35px;
   color: ${linkColor1};
   outline: none;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: 0.2px;
   text-align: center;
   ::placeholder {

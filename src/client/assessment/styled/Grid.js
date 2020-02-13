@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { TextField, EduButton } from "@edulastic/common";
-import { labelGrey, white } from "@edulastic/colors";
+import { white, title, greyScoreCardTitleColor } from "@edulastic/colors";
 import { Select, Row as AntdRow, Col as AntdCol } from "antd";
 
 export const ColumnLabel = styled.div`
@@ -8,7 +8,7 @@ export const ColumnLabel = styled.div`
   font-size: ${({ theme }) => theme.smallFontSize};
   font-weight: 600;
   text-align: center;
-  color: ${labelGrey};
+  color: ${greyScoreCardTitleColor};
 `;
 
 export const RowLabel = styled.div`
@@ -18,6 +18,7 @@ export const RowLabel = styled.div`
   display: flex;
   height: ${({ height }) => height || 32}px;
   align-items: center;
+  color: ${title};
 `;
 
 export const FormatedSelect = styled(Select)`

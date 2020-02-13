@@ -73,14 +73,22 @@ class NumberLinePlotMoreOptions extends Component {
           />
         </Question>
 
-        <ScoreSettings
-          scoringTypes={this.scoringTypes}
-          setValidation={setValidation}
-          graphData={graphData}
-          advancedAreOpen={advancedAreOpen}
+        <Question
+          section="advanced"
+          label={t("component.options.scoring")}
           cleanSections={cleanSections}
           fillSections={fillSections}
-        />
+          advancedAreOpen={advancedAreOpen}
+        >
+          <ScoreSettings
+            scoringTypes={this.scoringTypes}
+            setValidation={setValidation}
+            graphData={graphData}
+            advancedAreOpen={advancedAreOpen}
+            cleanSections={cleanSections}
+            fillSections={fillSections}
+          />
+        </Question>
 
         <Question
           section="advanced"

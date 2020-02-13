@@ -10,6 +10,7 @@ import Question from "../../components/Question";
 import { Subtitle } from "../../styled/Subtitle";
 
 import { Row, ColumnLabel, ColoredRow, RowLabel, StyledTextField, Col } from "../../styled/Grid";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
 const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) => {
   const [uiStyle, setUiStyle] = useState(item.uiStyle);
@@ -61,10 +62,10 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
         {t("component.chart.chartMainBlockTitle")}
       </Subtitle>
 
-      <Row gutter={30}>
+      <Row gutter={24}>
         <Col md={3} />
         <Col md={21}>
-          <Row noIndent>
+          <Row noIndent gutter={12}>
             <Col md={4}>
               <ColumnLabel>{t("component.chart.label")}</ColumnLabel>
             </Col>
@@ -86,12 +87,12 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
           </Row>
         </Col>
       </Row>
-      <ColoredRow gutter={30}>
+      <ColoredRow gutter={24}>
         <Col md={3}>
           <RowLabel>{t("component.chart.xAxis")}</RowLabel>
         </Col>
         <Col md={21} align="left">
-          <Row noIndent gutter={24}>
+          <Row noIndent gutter={12}>
             <Col md={4}>
               <StyledTextField
                 name="xAxisLabel"
@@ -104,12 +105,12 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
           </Row>
         </Col>
       </ColoredRow>
-      <ColoredRow gutter={30}>
+      <ColoredRow gutter={24}>
         <Col md={3}>
           <RowLabel>{t("component.chart.yAxis")}</RowLabel>
         </Col>
         <Col md={21}>
-          <Row noIndent gutter={24}>
+          <Row noIndent gutter={12}>
             <Col md={4}>
               <StyledTextField
                 name="yAxisLabel"
@@ -159,8 +160,12 @@ const AxisOptions = ({ t, fillSections, cleanSections, setQuestionData, item }) 
                 disabled={false}
               />
             </Col>
-            <Col md={3}>
-              <Checkbox name="showTicks" onChange={handleUiCheckboxChange("showTicks")} checked={uiStyle.showTicks} />
+            <Col md={4}>
+              <CheckboxLabel
+                name="showTicks"
+                onChange={handleUiCheckboxChange("showTicks")}
+                checked={uiStyle.showTicks}
+              />
             </Col>
           </Row>
         </Col>

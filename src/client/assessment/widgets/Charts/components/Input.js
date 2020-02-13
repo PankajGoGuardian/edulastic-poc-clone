@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-
-import { Input } from "antd";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 export const CustomInput = ({ type, value: propsValue, index, handleChange }) => {
   /**
@@ -32,8 +31,9 @@ export const CustomInput = ({ type, value: propsValue, index, handleChange }) =>
   };
 
   return (
-    <Input
+    <TextInputStyled
       type={type}
+      height="32px"
       value={currentValue}
       onChange={e => setCurrentValue(+e.target.value)}
       onBlur={handleBlur}

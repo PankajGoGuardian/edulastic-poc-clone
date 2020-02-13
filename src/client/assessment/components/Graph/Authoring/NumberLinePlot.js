@@ -5,14 +5,17 @@ import { connect } from "react-redux";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Select, Col, Row as AntdRow } from "antd";
 import styled from "styled-components";
-import { Checkbox, TextField } from "@edulastic/common";
+import { TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { labelGrey, textColor, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
 import QuestionTextArea from "../../QuestionTextArea";
 import Question from "../../Question";
+import { ColumnLabel, RowLabel } from "../../../styled/Grid";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 class NumberLinePlot extends Component {
   onChangeQuestion = stimulus => {
@@ -112,7 +115,7 @@ class NumberLinePlot extends Component {
           <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.lineplotchart")}`)}>
             {t("component.graphing.lineplotchart")}
           </Subtitle>
-          <Row gutter={8}>
+          <Row gutter={12}>
             <Col md={3} />
             <Col md={3}>
               <ColumnLabel>{t("component.graphing.ticksoptions.minimum")}</ColumnLabel>
@@ -136,7 +139,7 @@ class NumberLinePlot extends Component {
               <ColumnLabel>{t("component.graphing.labelsoptions.showmin")}</ColumnLabel>
             </Col>
           </Row>
-          <ColoredRow gutter={8}>
+          <ColoredRow gutter={12}>
             <Col md={3}>
               <RowLabel>X AXIS</RowLabel>
             </Col>
@@ -179,35 +182,36 @@ class NumberLinePlot extends Component {
               />
             </Col>
             <CenteredCol md={3}>
-              <Checkbox
+              <CheckboxLabel
                 name="showTicks"
                 onChange={this.handleNumberlineCheckboxChange("showTicks")}
                 checked={numberlineAxis.showTicks}
               />
             </CenteredCol>
             <CenteredCol md={3}>
-              <Checkbox
+              <CheckboxLabel
                 name="showMax"
                 onChange={this.handleNumberlineCheckboxChange("showMax")}
                 checked={numberlineAxis.showMax}
               />
             </CenteredCol>
             <CenteredCol md={3}>
-              <Checkbox
+              <CheckboxLabel
                 name="showMin"
                 onChange={this.handleNumberlineCheckboxChange("showMin")}
                 checked={numberlineAxis.showMin}
               />
             </CenteredCol>
           </ColoredRow>
-          <ColoredRow gutter={8}>
+          <ColoredRow gutter={12}>
             <Col md={3}>
               <RowLabel textTransform="capitalize" height={30}>
                 X-Axis label
               </RowLabel>
             </Col>
             <Col md={6}>
-              <LableFormatSelect
+              <SelectInputStyled
+                height="32px"
                 onChange={this.changeFractionsFormat}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 value={fractionsFormat || FRACTION_FORMATS.decimal}
@@ -217,7 +221,7 @@ class NumberLinePlot extends Component {
                     {option.label}
                   </Select.Option>
                 ))}
-              </LableFormatSelect>
+              </SelectInputStyled>
             </Col>
           </ColoredRow>
         </Question>
@@ -245,24 +249,6 @@ const enhance = compose(
 );
 
 export default enhance(NumberLinePlot);
-
-const ColumnLabel = styled.div`
-  text-transform: uppercase;
-  font-size: ${({ theme }) => theme.size4}px;
-  font-weight: 600;
-  text-align: center;
-  color: ${labelGrey};
-`;
-
-const RowLabel = styled.div`
-  color: ${textColor};
-  font-weight: 600;
-  text-transform: ${({ textTransform }) => textTransform || "uppercase"};
-  font-size: ${({ theme }) => theme.size4}px;
-  display: flex;
-  height: ${({ height }) => height || 32}px;
-  align-items: center;
-`;
 
 const LableFormatSelect = styled(Select)`
   width: 100%;

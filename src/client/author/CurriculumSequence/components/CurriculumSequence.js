@@ -54,7 +54,7 @@ import BreadCrumb from "../../src/components/Breadcrumb";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
-import { getCollectionsSelector } from "../../src/selectors/user";
+import { getCollectionsSelector, isPublisherUserSelector } from "../../src/selectors/user";
 import { getTestAuthorName } from "../../dataUtils";
 import { getUserFeatures } from "../../../student/Login/ducks";
 
@@ -335,7 +335,8 @@ class CurriculumSequence extends Component {
       handleTestsSort,
       collections,
       features,
-      urlHasUseThis
+      urlHasUseThis,
+      isPublisherUser
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -407,7 +408,7 @@ class CurriculumSequence extends Component {
         to: ""
       }
     ];
-    const showUseThisButton = status !== "draft" && !urlHasUseThis;
+    const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
     return (
       <>
@@ -520,11 +521,13 @@ class CurriculumSequence extends Component {
               <CurriculumHeader justifyContent="space-between">
                 <HeaderTitle>
                   {getTestAuthorName(destinationCurriculumSequence, collections)}
-                  <Icon
-                    style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
-                    type={curriculumGuide ? "up" : "down"}
-                    onClick={this.handleGuidePopup}
-                  />
+                  {!isPublisherUser && (
+                    <Icon
+                      style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
+                      type={curriculumGuide ? "up" : "down"}
+                      onClick={this.handleGuidePopup}
+                    />
+                  )}
                 </HeaderTitle>
                 <CurriculumHeaderButtons>
                   {(urlHasUseThis || features.isCurator) && (
@@ -1339,7 +1342,8 @@ const enhance = compose(
       dataForAssign: state.curriculumSequence.dataForAssign,
       recentPlaylists: getRecentPlaylistSelector(state),
       collections: getCollectionsSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      isPublisherUser: isPublisherUserSelector(state)
     }),
     {
       onGuideChange: changeGuideAction,

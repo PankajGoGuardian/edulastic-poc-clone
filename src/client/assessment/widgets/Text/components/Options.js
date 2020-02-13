@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import produce from "immer";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { Col } from "antd";
 import { updateVariables } from "../../../utils/variables";
-import { StyledRow } from "../styled/StyledRow";
-import { StyledInput } from "../styled/StyledInput";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 
+import { TextInputStyled } from "../../../styled/InputStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 const Options = ({ setQuestionData, item, t }) => {
   const handleChange = (prop, value) => {
@@ -23,18 +23,18 @@ const Options = ({ setQuestionData, item, t }) => {
 
   return (
     <div>
-      <StyledRow gutter={32}>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.text.heading")}</Label>
-          <StyledInput
+          <TextInputStyled
             size="large"
             placeholder={t("component.text.heading")}
             onChange={e => handleChange("heading", e.target.value)}
             value={item.heading}
           />
         </Col>
-      </StyledRow>
-      <StyledRow gutter={32}>
+      </Row>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.text.content")}</Label>
           <QuestionTextArea
@@ -44,7 +44,7 @@ const Options = ({ setQuestionData, item, t }) => {
             border="border"
           />
         </Col>
-      </StyledRow>
+      </Row>
     </div>
   );
 };

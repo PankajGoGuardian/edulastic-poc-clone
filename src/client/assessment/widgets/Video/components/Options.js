@@ -4,20 +4,19 @@ import produce from "immer";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { FlexContainer, Button } from "@edulastic/common";
 import { videoTypes } from "@edulastic/constants";
-import { Col, Select } from "antd";
+import { Select } from "antd";
 
+import { IconEdit, IconPlus } from "@edulastic/icons";
 import { updateVariables } from "../../../utils/variables";
 
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
-
-import { StyledRow } from "../styled/StyledRow";
-import { StyledInput } from "../styled/StyledInput";
-import { IconPlus } from "../styled/IconPlus";
-import { IconEdit } from "../styled/IconEdit";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 import FileSelectModal from "./FileSelectModal";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const Options = ({ setQuestionData, item, t }) => {
   const [modalSettings, setModalSettings] = useState({
@@ -57,12 +56,11 @@ const Options = ({ setQuestionData, item, t }) => {
           onCancel={() => setModalSettings({ editMode: false, modalName: "" })}
         />
       )}
-      <StyledRow gutter={32}>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.video.videoType")}</Label>
-          <Select
+          <SelectInputStyled
             size="large"
-            style={{ width: "100%" }}
             value={item.videoType}
             getPopupContainer={triggerNode => triggerNode.parentNode}
             onChange={value => handleChange("videoType", value)}
@@ -72,52 +70,59 @@ const Options = ({ setQuestionData, item, t }) => {
                 {label}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Col>
-      </StyledRow>
-      <StyledRow gutter={32}>
+      </Row>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.video.sourceURL")}</Label>
           {item.videoType === videoTypes.HOSTED ? (
-            <FlexContainer>
-              <StyledInput size="large" value={item.sourceURL} disabled />
-              <Button
-                icon={!!item.sourceURL ? <IconEdit /> : <IconPlus />}
-                color="primary"
-                onClick={() => setModalSettings({ editMode: !!item.sourceURL ? true : false, modalName: "sourceURL" })}
-              >
-                {!!item.sourceURL ? "Edit" : "Add"}
-              </Button>
-            </FlexContainer>
+            <Row gutter={24}>
+              <Col span={18} marginBottom="0px">
+                <TextInputStyled size="large" value={item.sourceURL} disabled />
+              </Col>
+              <Col span={6} marginBottom="0px">
+                <CustomStyleBtn
+                  margin="0px"
+                  width="100%"
+                  onClick={() =>
+                    setModalSettings({ editMode: !!item.sourceURL ? true : false, modalName: "sourceURL" })
+                  }
+                >
+                  {!!item.sourceURL ? <IconEdit width={12} height={12} /> : <IconPlus width={12} height={12} />}
+                  {!!item.sourceURL ? "Edit" : "Add"}
+                </CustomStyleBtn>
+              </Col>
+            </Row>
           ) : (
-            <StyledInput
+            <TextInputStyled
               size="large"
               value={item.sourceURL || ""}
               onChange={e => handleChange("sourceURL", e.target.value)}
             />
           )}
         </Col>
-      </StyledRow>
-      <StyledRow gutter={32}>
+      </Row>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.video.heading")}</Label>
-          <StyledInput
+          <TextInputStyled
             size="large"
             value={item.heading || ""}
             onChange={e => handleChange("heading", e.target.value)}
           />
         </Col>
-      </StyledRow>
-      <StyledRow gutter={32}>
+      </Row>
+      <Row gutter={24}>
         <Col span={24}>
           <Label>{t("component.video.summary")}</Label>
-          <StyledInput
+          <TextInputStyled
             size="large"
             value={item.summary || ""}
             onChange={e => handleChange("summary", e.target.value)}
           />
         </Col>
-      </StyledRow>
+      </Row>
     </div>
   );
 };

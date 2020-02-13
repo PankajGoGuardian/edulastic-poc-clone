@@ -5,19 +5,21 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { videoTypes } from "@edulastic/constants";
 
-import { Input, Checkbox } from "antd";
+import { Input } from "antd";
 import { FlexContainer, Button } from "@edulastic/common";
 import { updateVariables } from "../../../utils/variables";
 import FileSelectModal from "./FileSelectModal";
 
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Block } from "../../../styled/WidgetOptions/Block";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 import { IconPlus } from "../styled/IconPlus";
 import { IconEdit } from "../styled/IconEdit";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 class Settings extends Component {
   render() {
@@ -74,46 +76,55 @@ class Settings extends Component {
           />
         )}
 
-        <Block>
-          <Row>
-            <Col md={24}>
-              <Label>{t("component.video.posterImage")}</Label>
-              <FlexContainer>
-                <Input size="large" value={uiStyle.posterImage} disabled />
-                <Button
-                  icon={!uiStyle.posterImage ? <IconEdit /> : <IconPlus />}
-                  color="primary"
+        <Row>
+          <Col md={24}>
+            <Label>{t("component.video.posterImage")}</Label>
+            <Row gutter={24}>
+              <Col md={18} marginBottom="0px">
+                <TextInputStyled size="large" value={uiStyle.posterImage} disabled />
+              </Col>
+              <Col md={6}>
+                <CustomStyleBtn
+                  margin="0px"
+                  width="100%"
                   onClick={() => setModalSettings({ editMode: !uiStyle.posterImage, modalName: "posterImage" })}
                 >
+                  {!uiStyle.posterImage ? <IconEdit width={12} height={12} /> : <IconPlus width={12} height={12} />}
                   {!uiStyle.posterImage ? "Edit" : "Add"}
-                </Button>
-              </FlexContainer>
-            </Col>
-          </Row>
+                </CustomStyleBtn>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
 
-          <Row>
-            <Col md={6}>
-              <Checkbox checked={uiStyle.hideControls} onChange={e => _change("hideControls", e.target.checked)}>
-                {t("component.video.hideControls")}
-              </Checkbox>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={24}>
-              <Label>{t("component.video.captionURL")}</Label>
-              <FlexContainer>
-                <Input size="large" value={uiStyle.captionURL} disabled />
-                <Button
-                  icon={!uiStyle.captionURL ? <IconEdit /> : <IconPlus />}
-                  color="primary"
+        <Row>
+          <Col md={6}>
+            <CheckboxLabel checked={uiStyle.hideControls} onChange={e => _change("hideControls", e.target.checked)}>
+              {t("component.video.hideControls")}
+            </CheckboxLabel>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md={24}>
+            <Label>{t("component.video.captionURL")}</Label>
+            <Row gutter={24}>
+              <Col md={18} marginBottom="0px">
+                <TextInputStyled size="large" value={uiStyle.captionURL} disabled />
+              </Col>
+              <Col md={6}>
+                <CustomStyleBtn
+                  margin="0px"
+                  width="100%"
                   onClick={() => setModalSettings({ editMode: !uiStyle.captionURL, modalName: "captionURL" })}
                 >
+                  {!uiStyle.captionURL ? <IconEdit width={12} height={12} /> : <IconPlus width={12} height={12} />}
                   {!uiStyle.captionURL ? "Edit" : "Add"}
-                </Button>
-              </FlexContainer>
-            </Col>
-          </Row>
-        </Block>
+                </CustomStyleBtn>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </Question>
     );
   }

@@ -4,16 +4,17 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
-import { Col } from "antd";
 import produce from "immer";
 import WidgetOptions from "../../../containers/WidgetOptions";
 
 import Settings from "./Settings";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { StyledRow } from "../styled/StyledRow";
 import { StyledInput } from "../styled/StyledInput";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
   const [modalSettings, setModalSettings] = useState({
@@ -67,10 +68,10 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
           {t("component.options.extras")}
         </Subtitle>
 
-        <StyledRow gutter={32}>
+        <Row gutter={24}>
           <Col span={12}>
             <Label>{t("component.video.width")}</Label>
-            <StyledInput
+            <TextInputStyled
               size="large"
               type="number"
               value={item && item.uiStyle && item.uiStyle.width ? item.uiStyle.width : ""}
@@ -79,24 +80,24 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
           </Col>
           <Col span={12}>
             <Label>{t("component.video.height")}</Label>
-            <StyledInput
+            <TextInputStyled
               size="large"
               type="number"
               value={item && item.uiStyle && item.uiStyle.height ? item.uiStyle.height : ""}
               onChange={e => handleUiChange("height", e.target.value)}
             />
           </Col>
-        </StyledRow>
-        <StyledRow gutter={32}>
+        </Row>
+        <Row gutter={24}>
           <Col span={24}>
             <Label>{t("component.video.transcript")}</Label>
-            <StyledInput
+            <TextInputStyled
               size="large"
               value={item.transcript || ""}
               onChange={e => handleChange("transcript", e.target.value)}
             />
           </Col>
-        </StyledRow>
+        </Row>
       </Question>
     </WidgetOptions>
   );

@@ -1,15 +1,14 @@
-import React, { useState, useMemo } from "react";
-import PropTypes from "prop-types";
-import Dropzone from "react-dropzone";
-
-import { StyledModal } from "../styled/StyledModal";
-import { Paper, Image, Button, FlexContainer } from "@edulastic/common";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { StyledInput } from "../styled/StyledInput";
-import { Typography, Empty } from "antd";
+import { beforeUpload, FlexContainer, Image, Paper, uploadToS3 } from "@edulastic/common";
 import { aws } from "@edulastic/constants";
+import { Empty, Typography } from "antd";
+import PropTypes from "prop-types";
+import React, { useMemo, useState } from "react";
+import Dropzone from "react-dropzone";
 import StyledDropZone from "../../../components/StyledDropZone";
-import { uploadToS3, beforeUpload } from "@edulastic/common";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
+import { TextInputStyled } from "../../../styled/InputStyles";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
 
 const FileSelectModal = ({
   onCancel,
@@ -86,7 +85,7 @@ const FileSelectModal = ({
   }
 
   return (
-    <StyledModal title="Select file" visible={true} onCancel={onCancel} onOk={_onOk}>
+    <ConfirmationModal textAlign="left" title="Select file" visible={true} onCancel={onCancel} onOk={_onOk}>
       <Paper>
         <Dropzone
           onDrop={onDrop}
@@ -128,13 +127,13 @@ const FileSelectModal = ({
             ")"}
         </Label>
         <FlexContainer>
-          <StyledInput size="large" value={sourceURL} onChange={e => setSourceURL(e.target.value)} />
-          <Button disabled={!sourceURL} color="secondary" onClick={() => setSourceURL("")}>
+          <TextInputStyled size="large" value={sourceURL} onChange={e => setSourceURL(e.target.value)} />
+          <CustomStyleBtn margin="0px" width="auto" disabled={!sourceURL} onClick={() => setSourceURL("")}>
             Remove
-          </Button>
+          </CustomStyleBtn>
         </FlexContainer>
       </Paper>
-    </StyledModal>
+    </ConfirmationModal>
   );
 };
 

@@ -78,7 +78,10 @@ const Thumbnails = ({
         </ThumbnailsList>
         {!review && !testMode && (
           <ReuploadButtonWrapper noCheck={noCheck}>
-            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}>
+            <Dropdown
+              placement="topCenter"
+              overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage, list.length, onAddPdf)}
+            >
               <ReuploadButton>Manage document</ReuploadButton>
             </Dropdown>
           </ReuploadButtonWrapper>

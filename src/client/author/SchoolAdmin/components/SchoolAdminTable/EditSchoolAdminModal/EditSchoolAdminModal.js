@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button } from "antd";
-import { omit } from "lodash";
+import { omit, uniqBy } from "lodash";
 
 const Option = Select.Option;
 
@@ -43,14 +43,24 @@ class EditSchoolAdminModal extends Component {
     const {
       modalVisible,
       schoolAdminData: { _source },
-      schoolsList,
+      schoolsList = [],
       t
     } = this.props;
+
+    let { institutionDetails = [] } = _source;
+    let schooleFinalList = [...schoolsList];
+    if (institutionDetails.length) {
+      institutionDetails = institutionDetails
+        .filter(({ id = "", name = "" }) => id && name)
+        .map(({ id, name }) => ({ _id: id, name }));
+      schooleFinalList = uniqBy([...schooleFinalList, ...institutionDetails], "_id");
+    }
+
     const schoolsOptions = [];
-    schoolsList.map((row, index) => {
+    schooleFinalList.map((row, index) => {
       schoolsOptions.push(
-        <Option key={index} value={row._id}>
-          {row.name}
+        <Option key={index} value={row?._id}>
+          {row?.name}
         </Option>
       );
     });

@@ -67,7 +67,7 @@ const SubHeader = ({
   return (
     <ContainerHeader>
       <RightContent>
-        <ClassLink onClick={getAssignmentsByClass(_id)}>VIEW TEST</ClassLink>
+        <ClassLink onClick={getAssignmentsByClass(_id)}>VIEW ASSIGNMENT</ClassLink>
         {allowGoogleLogin !== false &&
           active === 1 &&
           (isUserGoogleLoggedIn ? (

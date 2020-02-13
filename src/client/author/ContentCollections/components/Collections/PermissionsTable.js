@@ -109,6 +109,7 @@ const PermissionsTable = ({
     {
       title: "",
       key: "actions",
+      width: "50px",
       render: (_, record) => {
         if (userRole === roleuser.EDULASTIC_ADMIN || selectedCollection.districtId === userDistrictId)
           return (

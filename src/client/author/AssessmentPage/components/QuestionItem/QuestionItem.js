@@ -197,7 +197,14 @@ class QuestionItem extends React.Component {
     };
     switch (data.type) {
       case MULTIPLE_CHOICE:
-        return <FormChoice onCreateOptions={onCreateOptions} evaluation={evaluation} {...props} />;
+        return (
+          <FormChoice
+            isTrueOrFalse={data.subType === "trueOrFalse" ? true : false}
+            onCreateOptions={onCreateOptions}
+            evaluation={evaluation}
+            {...props}
+          />
+        );
       case SHORT_TEXT:
         return <FormText onCreateAnswer={onCreateOptions} {...props} />;
       case CLOZE_DROP_DOWN:

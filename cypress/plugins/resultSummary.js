@@ -10,9 +10,13 @@ const getAllSummary = {};
 let currentSuite = "";
 
 function getFormatedTime(millis) {
-  const minutes = Math.floor(millis / 60000);
+  let minutes = Math.floor(millis / 60000);
   const seconds = ((millis % 60000) / 1000).toFixed(0);
-  return (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  const hour = Math.floor(minutes / 60);
+  minutes = hour > 0 ? (minutes % 60).toFixed(0) : minutes;
+  return `${(hour > 0 ? (hour > 10 ? `${hour}:` : `0${hour}:`) : "") + (minutes < 10 ? "0" : "") + minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
 }
 
 function finalSummary(stats) {

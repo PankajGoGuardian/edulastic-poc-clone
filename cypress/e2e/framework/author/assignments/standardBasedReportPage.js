@@ -10,7 +10,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
     const queList = Object.keys(questionTypeMap);
 
     stuAttemptData
-      .filter(({ status }) => status === studentSide.SUBMITTED)
+      .filter(({ status }) => status === studentSide.SUBMITTED || status === studentSide.IN_PROGRESS)
       .forEach(({ attempt, stuName }) => {
         queList.forEach(queNum => {
           const { points, standards, attemptData, queKey } = questionTypeMap[queNum];

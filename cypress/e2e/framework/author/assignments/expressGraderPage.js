@@ -48,22 +48,30 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   };
 
   clickOnPrevStudent = () => {
-    cy.contains("span", "PREV STUDENT").click();
+    cy.get("body")
+      .contains("span", "PREV STUDENT")
+      .click();
     this.waitForStudentData();
   };
 
   clickOnNextStudent = () => {
-    cy.contains("span", "NEXT STUDENT").click();
+    cy.get("body")
+      .contains("span", "NEXT STUDENT")
+      .click();
     this.waitForStudentData();
   };
 
   clickOnPrevQuestion = () => {
-    cy.contains("span", "PREV QUESTION").click();
+    cy.get("body")
+      .contains("span", "PREV QUESTION")
+      .click();
     this.waitForStudentData();
   };
 
   clickOnNextQuestion = () => {
-    cy.contains("span", "NEXT QUESTION").click();
+    cy.get("body")
+      .contains("span", "NEXT QUESTION")
+      .click();
     this.waitForStudentData();
   };
 

@@ -676,6 +676,10 @@ class StudentTestPage {
         this.clickOnNext();
       });
 
+      if (status === studentSide.IN_PROGRESS) {
+        cy.get("svg:nth-child(2)").click({ force: true }); // TODO: remove work around solution
+        this.clickOnProceed();
+      }
       if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
         this.submitTest();
         cy.contains("Grades").should("be.visible");

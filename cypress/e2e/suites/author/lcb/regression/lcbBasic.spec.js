@@ -11,6 +11,7 @@ import BarGraph from "../../../../framework/author/assignments/barGraphs";
 import Helpers from "../../../../framework/util/Helpers";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
+import SidebarPage from "../../../../framework/student/sidebarPage";
 
 const students = {
   1: {
@@ -215,6 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const sbrPage = new StandardBasedReportPage();
   const testLibrary = new TestLibrary();
   const teacherSidebar = new TeacherSideBar();
+  const studentSidebar = new SidebarPage();
   const bargraph = new BarGraph();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
   const queBarData = bargraph.getQueBarData(queList, attemptsData);
@@ -236,7 +238,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
       testLibrary.clickOnAssign();
-      // cy.visit("/author/assignments/5df39d6ca8ab0b0007202db0");
+      // cy.visit("/author/assignments/5e43b7147861bb000702b9c7");
       // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
@@ -250,6 +252,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       statsMap[stuName].attempt = attempt;
       statsMap[stuName].status = status;
       test.attemptAssignment(email, status, attempt, questionTypeMap);
+      studentSidebar.clickOnAssignment();
     });
   });
 
@@ -567,6 +570,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
 
     context(" > verify updating score", () => {
+      beforeEach(() => {
+        expressg.clickOnExit();
+      });
+
       before(() => {
         lcb.header.clickOnExpressGraderTab();
       });

@@ -8,9 +8,7 @@ class SidebarPage {
   };
 
   clickOnAssignment = () => {
-    cy.get('[data-cy="Assignments"]')
-      .click({ force: true })
-      .click({ force: true });
+    cy.get('[data-cy="Assignments"]').dblclick({ force: true });
   };
 
   clickOnGrades = () => {

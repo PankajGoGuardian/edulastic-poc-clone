@@ -5,7 +5,10 @@ export default class LCBHeader {
 
   getStandardBasedReportTab = () => cy.get("[data-cy=StandardsBasedReport]");
 
-  clickOnLCBTab = () => this.getLCBTab().click({ force: true });
+  clickOnLCBTab = () => {
+    this.getLCBTab().click({ force: true });
+    cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+  };
 
   clickOnExpressGraderTab = () =>
     this.getExpressGraderTab()

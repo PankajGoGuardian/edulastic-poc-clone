@@ -71,8 +71,9 @@ class TestItemCol extends Component {
     if (question.activity && question.activity.filtered) {
       return <div />;
     }
-    // For Multipart with item level scoring display only one feedback else allow for question level scoring
-    const displayFeedback = index === 0;
+
+    const displayFeedback = true;
+
     const isResourceWidget = nextWidget.widgetType === "resource";
     const resource = questions[nextWidget.reference];
     return (

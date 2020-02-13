@@ -40,11 +40,24 @@ export const markQuestionLabel = testItems => {
 /**
  * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number,qLabel:string,barLabel:string}[]}
  */
-const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
+export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
   for (let testItemId of testItemIds) {
     let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
-    if (testItemsDataKeyed[testItemId].itemLevelScoring) {
+    if (!questions.length) {
+      qids = [
+        ...qids,
+        {
+          id: "",
+          weight: 1,
+          maxScore: 1,
+          testItemId,
+          qids: [],
+          qLabel: "",
+          barLabel: ""
+        }
+      ];
+    } else if (testItemsDataKeyed[testItemId].itemLevelScoring) {
       qids = [
         ...qids,
         ...questions
@@ -130,7 +143,10 @@ const getMaxScoreFromQuestion = question => {
  * @param {string} qid
  * @param {Object[]} testItemsData
  */
-export const getMaxScoreOfQid = (qid, testItemsData) => {
+export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
+  if (!qid) {
+    return qActivityMaxScore || 1;
+  }
   for (let testItem of testItemsData) {
     let questions = get(testItem, ["data", "questions"], []);
     let questionNeeded = questions.find(x => x.id === qid);
@@ -171,13 +187,13 @@ const getMaxScoreFromItem = testItem => {
   if (!testItem) {
     return total;
   }
-  if (testItem.itemLevelScoring) {
+  if (testItem?.itemLevelScoring) {
     return testItem.itemLevelScore || 0;
   }
-  if (!(testItem.data && testItem.data.questions)) {
+  if (!testItem?.data?.questions) {
     return total;
   }
-  for (const question of testItem.data.questions) {
+  for (const question of testItem?.data?.questions || []) {
     total += getMaxScoreFromQuestion(question);
   }
   return total;
@@ -232,15 +248,17 @@ export const transformGradeBookResponse = (
    * TODO: need to refactor
    */
   testItemsData = testItemsData.map(testItem => {
-    testItem.data.questions = testItem.data.questions.filter(q => q.type !== questionType.SECTION_LABEL);
-    testItem.rows = testItem.rows.map(row => {
-      row.widgets = row.widgets.filter(w => w.type !== questionType.SECTION_LABEL);
-      return row;
-    });
+    if (testItem.data) {
+      testItem.data.questions = testItem.data.questions.filter(q => q.type !== questionType.SECTION_LABEL);
+      testItem.rows = testItem.rows.map(row => {
+        row.widgets = row.widgets.filter(w => w.type !== questionType.SECTION_LABEL);
+        return row;
+      });
+    }
     return testItem;
   });
 
-  const testItemIds = test.testItems.map(o => o._id);
+  const testItemIds = testItemsData.map(o => o._id);
   const testItemIdsSet = new Set(testItemIds);
   testQuestionActivities = testQuestionActivities.filter(x => testItemIdsSet.has(x.testItemId));
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
@@ -345,12 +363,19 @@ export const transformGradeBookResponse = (
         const score = (questionActivitiesRaw && questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) || 0;
 
         const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
+        const questionActivitiesKeyedByItemId =
+          (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.testItemId)) || {};
 
         const questionActivities = qids.map(
           ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel, _id: qActId }, index) => {
             const _id = el;
-            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
-            if (!questionActivitiesIndexed[el]) {
+            const currentQuestionActivity =
+              questionActivitiesIndexed[el] || questionActivitiesKeyedByItemId[testItemId];
+            const questionMaxScore = maxScore
+              ? maxScore
+              : getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
+
+            if (!currentQuestionActivity) {
               return {
                 _id,
                 qid: _id,
@@ -378,7 +403,7 @@ export const transformGradeBookResponse = (
               graded,
               pendingEvaluation,
               ...remainingProps
-            } = questionActivitiesIndexed[el];
+            } = currentQuestionActivity;
             skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
 
             if (score > 0 && skipped) {

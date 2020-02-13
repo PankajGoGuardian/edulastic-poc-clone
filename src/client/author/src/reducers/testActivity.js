@@ -82,7 +82,7 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         loading: false,
         data: payload.gradebookData,
-        entities: transformGradeBookResponse(payload.gradebookData),
+        entities: payload.entities,
         additionalData: payload.additionalData,
         removedStudents: payload.gradebookData.exStudents
       };
@@ -133,6 +133,25 @@ const reducer = (state = initialState, { type, payload }) => {
             _st.currentTestActivityId = _st.entities[index].testActivityId;
           }
           _st.entities[index].testActivityId = entity.testActivityId;
+
+          const isAutoselectItems = _st.entities[index].questionActivities.some(a => !a._id);
+          if (isAutoselectItems) {
+            const allItems = entity.itemsToDeliverInGroup
+              .flatMap(g => g.items)
+              .map(id => {
+                const item = state.data.testItemsData.find(ti => ti._id === id);
+                if (item) return item;
+                return {
+                  _id: id,
+                  itemLevelScoring: true
+                };
+              });
+            const entityDataGenerated = transformGradeBookResponse({ ..._st.data, testItemsData: allItems }).find(
+              e => e.studentId === entity.studentId
+            );
+
+            _st.entities[index].questionActivities = entityDataGenerated.questionActivities;
+          }
         } else {
           console.warn(`can't find any testactivity for studentId ${entity.studentId}`);
         }
@@ -213,7 +232,9 @@ const reducer = (state = initialState, { type, payload }) => {
         for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
           const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
           if (entityIndex != -1) {
-            const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(x => x._id == questionItem._id);
+            const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(
+              x => x._id == questionItem._id || x.testItemId === questionItem.testItemId
+            );
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);
             } else {

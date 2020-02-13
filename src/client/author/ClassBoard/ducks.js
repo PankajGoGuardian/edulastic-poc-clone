@@ -27,7 +27,7 @@ import {
 
 import { createFakeData, hasRandomQuestions } from "./utils";
 
-import { markQuestionLabel, getQuestionLabels, transformTestItems } from "./Transformer";
+import { markQuestionLabel, getQuestionLabels, transformTestItems, transformGradeBookResponse } from "./Transformer";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -98,6 +98,10 @@ export function* receiveTestActivitySaga({ payload }) {
     const students = get(gradebookData, "students", []);
     // the below methods mutates the gradebookData
     classResponse.testItems = classResponse.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+    classResponse.totalItemsCount = classResponse.itemGroups.reduce((prev, curr) => {
+      return prev + (curr.deliverItemsCount || curr.items.length);
+    }, 0);
+    const autoselectItemsCount = classResponse.totalItemsCount - classResponse.testItems.length;
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
     gradebookData.test = classResponse;
@@ -111,9 +115,51 @@ export function* receiveTestActivitySaga({ payload }) {
       ...fakeData[index]
     }));
 
+    let entities = [];
+    if (autoselectItemsCount) {
+      //students can have different test items so generating student data for each student with its testItems
+      const studentsDataWithTestItems = students.map(student => {
+        const activity = gradebookData.testActivities.find(activity => activity.userId === student._id);
+        let allItems = [];
+        if (activity) {
+          allItems = activity.itemsToDeliverInGroup
+            .flatMap(g => g.items)
+            .map(id => {
+              const item = gradebookData.testItemsData.find(ti => ti._id === id);
+              if (item) return item;
+              return {
+                _id: id,
+                itemLevelScoring: true
+              };
+            });
+        } else {
+          const dummyItems = [];
+          for (let i = 0; i < autoselectItemsCount; i++) {
+            dummyItems.push({ _id: "", itemLevelScoring: true });
+          }
+          allItems = [...gradebookData.testItemsData, ...dummyItems];
+        }
+        return {
+          activityId: activity?._id || "",
+          studentId: student._id,
+          items: allItems
+        };
+      });
+
+      entities = studentsDataWithTestItems.map(studentData => {
+        const studentActivityData = transformGradeBookResponse({
+          ...gradebookData,
+          testItemsData: studentData.items
+        });
+        return studentActivityData.find(sa => sa.studentId === studentData.studentId);
+      });
+    } else {
+      entities = transformGradeBookResponse(gradebookData);
+    }
+
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
-      payload: { gradebookData, additionalData }
+      payload: { gradebookData, additionalData, entities }
     });
   } catch (err) {
     console.log("err is", err);
@@ -589,7 +635,6 @@ export const getSortedTestActivitySelector = createSelector(
       const qActivityByUser = groupBy(tqa, "userId");
       return sortedTestActivities.map(activity => ({
         ...activity,
-        score: sumBy(qActivityByUser[activity.studentId], "score"),
         maxScore: totalPoints,
         questionActivities: activity.questionActivities.length
           ? activity.questionActivities

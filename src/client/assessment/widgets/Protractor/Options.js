@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Upload, Button, Col, Checkbox } from "antd";
-
-import { aws } from "@edulastic/constants";
-import { FlexContainer } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
-
-import { uploadToS3 } from "../../../author/src/utils/upload";
-
-import { Label } from "../../styled/WidgetOptions/Label";
-import { StyledRow } from "./styled/StyledRow";
-import { StyledInput } from "./styled/StyledInput";
 import { beforeUpload } from "@edulastic/common";
+import { aws } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { Upload } from "antd";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { uploadToS3 } from "../../../author/src/utils/upload";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
+import { TextInputStyled } from "../../styled/InputStyles";
+import { Col } from "../../styled/WidgetOptions/Col";
+import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
 
 function Options({ onChange, item, t }) {
   const [uploading, setUploading] = useState(false);
@@ -31,21 +30,21 @@ function Options({ onChange, item, t }) {
 
   return (
     <div>
-      <StyledRow gutter={32}>
+      <Row gutter={24}>
         <Col span={12}>
           <Label>{t("component.protractor.imageAlternativeText")}</Label>
-          <StyledInput size="large" value={item.alt} onChange={e => onChange("alt", e.target.value)} />
+          <TextInputStyled size="large" value={item.alt} onChange={e => onChange("alt", e.target.value)} />
         </Col>
         <Col span={12}>
           <Label>{t("component.protractor.label")}</Label>
-          <StyledInput value={item.label} onChange={e => onChange("label", e.target.value)} />
+          <TextInputStyled value={item.label} onChange={e => onChange("label", e.target.value)} />
         </Col>
-      </StyledRow>
+      </Row>
 
-      <StyledRow gutter={32}>
+      <Row gutter={24}>
         <Col span={12}>
           <Label>{t("component.protractor.widthpx")}</Label>
-          <StyledInput
+          <TextInputStyled
             size="large"
             value={item.width}
             type="number"
@@ -54,38 +53,40 @@ function Options({ onChange, item, t }) {
         </Col>
         <Col span={12}>
           <Label>{t("component.protractor.heightpx")}</Label>
-          <StyledInput
+          <TextInputStyled
             size="large"
             value={item.height}
             type="number"
             onChange={e => onChange("height", +e.target.value)}
           />
         </Col>
-      </StyledRow>
-      <StyledRow gutter={32} align="middle" type="flex">
+      </Row>
+      <Row gutter={24} type="flex" align="middle">
         <Col span={12}>
           <Label>{t("component.protractor.buttonIcon")}</Label>
-          <FlexContainer>
-            <StyledInput size="large" value={item.image} onChange={e => onChange("image", e.target.value)} />
+          <Row type="flex" justify="space-between">
+            <TextInputStyled
+              width="calc(100% - 110px)"
+              size="large"
+              value={item.image}
+              onChange={e => onChange("image", e.target.value)}
+            />
             <Upload showUploadList={false} customRequest={customRequest}>
-              <Button loading={uploading} size="large">
+              <CustomStyleBtn width="100px" padding="0px 10px" margin="0px" loading={uploading} size="large">
                 {t("component.protractor.browse")}
-              </Button>
+              </CustomStyleBtn>
             </Upload>
-          </FlexContainer>
+          </Row>
         </Col>
-        <Col span={12}>
-          <Label>&nbsp;</Label>
-          <FlexContainer>
-            <Checkbox size="large" checked={item.button} onChange={e => onChange("button", e.target.checked)}>
-              {t("component.protractor.showButton")}
-            </Checkbox>
-            <Checkbox size="large" checked={item.rotate} onChange={e => onChange("rotate", e.target.checked)}>
-              {t("component.protractor.showRotate")}
-            </Checkbox>
-          </FlexContainer>
+        <Col span={12} marginBottom="0px">
+          <CheckboxLabel size="large" checked={item.button} onChange={e => onChange("button", e.target.checked)}>
+            {t("component.protractor.showButton")}
+          </CheckboxLabel>
+          <CheckboxLabel size="large" checked={item.rotate} onChange={e => onChange("rotate", e.target.checked)}>
+            {t("component.protractor.showRotate")}
+          </CheckboxLabel>
         </Col>
-      </StyledRow>
+      </Row>
     </div>
   );
 }

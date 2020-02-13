@@ -1,12 +1,13 @@
 import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
 
-import { EduButton, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
+import { FlexContainer, QuestionNumberLabel } from "@edulastic/common";
 
 import { Wrapper } from "./styled/Wrapper";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import ProtractorImg from "./assets/protractor.svg";
 import Rule from "./Rule";
+import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 const ProtractorView = ({ item, smallSize, showQuestionNumber, qIndex }) => {
   const [show, setShow] = useState(false);
@@ -21,15 +22,15 @@ const ProtractorView = ({ item, smallSize, showQuestionNumber, qIndex }) => {
   return (
     <Wrapper smallSize={smallSize}>
       {item.button && (
-        <EduButton onClick={() => setShow(!show)} size="large">
+        <CustomStyleBtn width="auto" onClick={() => setShow(!show)} size="large">
           <FlexContainer>
-            <img src={item.image ? item.image : ProtractorImg} alt="" width={16} height={16} />
+            <img src={item.image ? item.image : ProtractorImg} alt="" height={16} style={{ marginRight: "10px" }} />
             <QuestionTitleWrapper>
               {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
               <span>{item.label}</span>
             </QuestionTitleWrapper>
           </FlexContainer>
-        </EduButton>
+        </CustomStyleBtn>
       )}
       {renderRule()}
     </Wrapper>

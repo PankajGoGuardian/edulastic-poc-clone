@@ -422,11 +422,7 @@ class Container extends Component {
       <EditorContainer ref={this.innerDiv}>
         <Prompt
           when={!!hasUnsavedChanges}
-          message={loc =>
-            loc.pathname.startsWith("/author/items/") ||
-            loc.pathname.startsWith("/author/questions/") ||
-            "There are unsaved changes. Are you sure you want to leave?"
-          }
+          message={loc => "There are unsaved changes. Are you sure you want to leave?"}
         />
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
           {showModal && (

@@ -333,10 +333,11 @@ class Container extends Component {
                     <IconRulerPencil />
                     Tools
                   </Menu.Item>
-                  <Menu.Item key="other">
+                  {/* implementation is in progress */}
+                  {/* <Menu.Item key="other">
                     <IconMore />
                     Other
-                  </Menu.Item>
+                  </Menu.Item> */}
                 </LeftMenuWrapper>
               </PerfectScrollbar>
             </AffixWrapper>
@@ -441,10 +442,11 @@ class Container extends Component {
                 <IconRulerPencil />
                 Tools
               </Menu.Item>
-              <Menu.Item key="other" onClick={this.toggleCategories}>
+              {/* implementation is in progress */}
+              {/* <Menu.Item key="other" onClick={this.toggleCategories}>
                 <IconMore />
                 Other
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </StyledModalContainer>
         </StyledModal>

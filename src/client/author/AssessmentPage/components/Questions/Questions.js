@@ -489,7 +489,7 @@ class Questions extends React.Component {
               )}
             </PerfectScrollbar>
           </QuestionWidgetWrapper>
-          {!review && (
+          {!review && !testMode && (
             <AddQuestion
               onAddQuestion={this.handleAddQuestion}
               onAddSection={this.handleAddSection}

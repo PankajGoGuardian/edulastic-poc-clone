@@ -347,7 +347,7 @@ class QuestionItem extends React.Component {
           </Draggable>
           {!annotations && <QuestionForm review={review}>{this.renderContent(highlighted)}</QuestionForm>}
 
-          {!review && !pdfPreview && this.renderEditButton()}
+          {!review && !pdfPreview && !testMode && this.renderEditButton()}
           {review &&
             (previewMode !== "clear" || check) &&
             typeof answer !== "undefined" &&

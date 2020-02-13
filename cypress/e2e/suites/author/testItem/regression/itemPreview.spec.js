@@ -229,6 +229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         cy.contains("Share");
       });
       before("Get Test and Go to Add-Items Tab", () => {
+        cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.searchFilters.clearAll();
         testLibraryPage.searchFilters.getAuthoredByMe();
@@ -293,10 +294,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         // itemPreview.verifyItemUrlWhileEdit(testId, itemIds[0]);
         mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
         points[0] = EDITED_POINTS[0];
-
+        testLibraryPage.searchFilters.routeSearch();
         editItemPage.header.saveAndgetId(true).then(itemId => {
           expect(itemId).eq(itemIds[0]);
-          // testAddItemTab.header.clickOnReview();
+          testLibraryPage.searchFilters.waitForSearchResponse();
+          testAddItemTab.header.clickOnReview();
           // testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(itemIds[0]);
           testReviewTab.asesrtPointsByid(itemIds[0], points[0]);
@@ -317,15 +319,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         // Copy automatically include new item in test
         points.push(EDITED_POINTS[0]);
         mcqTrueFalsePage.updatePoints(EDITED_POINTS[0]);
-
-        // editItemPage.verifyItemIdsToBeNotEqual(newItem, itemIds[index]);
-
+        testLibraryPage.searchFilters.routeSearch();
         editItemPage.header.saveAndgetId(true).then(newItem => {
           expect(newItem).not.eq(itemIds[0]);
           cy.saveItemDetailToDelete(newItem);
           itemIds.push(newItem);
-          // testAddItemTab.header.clickOnReview();
-          // testLibraryPage.header.clickOnSaveButton(true);
+
+          testLibraryPage.searchFilters.waitForSearchResponse();
+          testAddItemTab.header.clickOnReview();
           testReviewTab.verifyQustionById(newItem);
           testReviewTab.verifyQustionById(itemIds[0]);
           testReviewTab.getPointsOnQueCardByid(newItem).should("have.value", `${EDITED_POINTS[0]}`);
@@ -336,6 +337,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     });
     context("Verify Delete On Preivew", () => {
       before(`Go To Item Bank and Get Authored by me`, () => {
+        testReviewTab.testheader.clickOnAddItems();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
       });

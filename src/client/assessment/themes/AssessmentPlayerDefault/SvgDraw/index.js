@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useState, useEffect, Fragment } from "react";
+import React, { useRef, useState, useEffect, Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
-import { useDisableDragScroll, measureText } from "@edulastic/common";
+import { useDisableDragScroll, measureText, ScratchPadContext } from "@edulastic/common";
 
 import MathDraw from "./components/MathDraw";
 import CurvedLine from "./components/CurveLine";
@@ -42,6 +42,10 @@ const SvgDraw = ({
   const [newMathItem, setNewMathItem] = useState({});
   const boundedRef = useRef();
   const curvedLineRef = useRef();
+
+  const { getContainer } = useContext(ScratchPadContext);
+
+  const containerRef = getContainer();
 
   useEffect(() => {
     if (history && history.points && history.pathes && history.figures && history.texts) {
@@ -771,6 +775,14 @@ const SvgDraw = ({
       </Fragment>
     );
   };
+
+  useEffect(() => {
+    if (svg.current && containerRef) {
+      const { scrollHeight, scrollWidth } = containerRef;
+      svg.current.style.height = `${scrollHeight}px`;
+      svg.current.style.width = `${scrollWidth}px`;
+    }
+  }, [containerRef, svg.current]);
 
   return (
     <Fragment>

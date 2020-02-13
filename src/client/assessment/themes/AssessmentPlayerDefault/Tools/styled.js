@@ -25,7 +25,7 @@ export const ToolBox = styled(FlexContainer)`
   padding: 0;
   display: ${props => (props.review && !props.testMode ? "none" : "")};
   top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.xs + 30)}px;
-  left: 8px;
+  left: 0px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.md + 30)}px;

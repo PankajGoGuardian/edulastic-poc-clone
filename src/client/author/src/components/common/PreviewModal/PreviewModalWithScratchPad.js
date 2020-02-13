@@ -4,12 +4,11 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
-import { AnswerContext } from "@edulastic/common";
+import { AnswerContext, ScratchPadContext, hexToRGB } from "@edulastic/common";
 import SvgDraw from "../../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
 import Tools from "../../../../../assessment/themes/AssessmentPlayerDefault/Tools";
-import { hexToRGB } from "@edulastic/common";
 import { allThemeVars } from "../../../../../theme";
-import { StyledTools, StyledFlex, StyledInput, StyledRejectionSubmitBtn, StyledFlexContainer } from "./styled";
+import { StyledFlex, StyledInput, StyledRejectionSubmitBtn, StyledFlexContainer } from "./styled";
 
 import { savePreviewRejectAction } from "./previewAttachment.ducks";
 
@@ -35,6 +34,8 @@ const PreviewModalWithScratchPad = ({
   const [history, setHistory] = useState(0);
   const [note, setNote] = useState("");
   const [svgHeight, setSvgHeight] = useState();
+
+  const containerRef = useRef();
 
   useEffect(() => {
     if (scrollContainerRef) {
@@ -87,14 +88,12 @@ const PreviewModalWithScratchPad = ({
 
   const handleSubmit = () => submitReviewFeedback(note, scratchPad);
 
-  const _renderAddRejectNoteSection = () => {
-    return (
-      <StyledFlex style={{ marginTop: "18px" }}>
-        <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={1} />
-        <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
-      </StyledFlex>
-    );
-  };
+  const _renderAddRejectNoteSection = () => (
+    <StyledFlex style={{ marginTop: "18px" }}>
+      <StyledInput placeholder="Type an additional comments here..." value={note} onChange={handleNote} rows={1} />
+      <StyledRejectionSubmitBtn onClick={handleSubmit}>Submit</StyledRejectionSubmitBtn>
+    </StyledFlex>
+  );
 
   return (
     <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -121,28 +120,30 @@ const PreviewModalWithScratchPad = ({
             className="review-scratchpad"
           />
         )}
-        <div style={{ width: "100%", position: "relative", overflow: "auto" }}>
-          <ColumnsContentArea
-            sectionQue={sectionQue}
-            resourceCount={resourceCount}
-            className="scratchpad-wrapper"
-            style={{ position: "relative", minWidth: "1200px" }}
-          >
-            <SvgDraw
-              activeMode={activeMode}
-              scratchPadMode
-              lineColor={currentColor}
-              deleteMode={deleteMode}
-              lineWidth={lineWidth}
-              fillColor={fillColor}
-              saveHistory={saveHistory("scratchpad")}
-              height={!!svgHeight ? `${svgHeight}px` : "100%"}
-              top="0"
-              left="0"
-              position="absolute"
-              history={scratchPad}
-            />
-          </ColumnsContentArea>
+        <div style={{ width: "100%", position: "relative", overflow: "auto" }} ref={containerRef}>
+          <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
+            <ColumnsContentArea
+              sectionQue={sectionQue}
+              resourceCount={resourceCount}
+              className="scratchpad-wrapper"
+              style={{ position: "relative", minWidth: "1200px" }}
+            >
+              <SvgDraw
+                activeMode={activeMode}
+                scratchPadMode
+                lineColor={currentColor}
+                deleteMode={deleteMode}
+                lineWidth={lineWidth}
+                fillColor={fillColor}
+                saveHistory={saveHistory("scratchpad")}
+                height={svgHeight ? `${svgHeight}px` : "100%"}
+                top="0"
+                left="0"
+                position="absolute"
+                history={scratchPad}
+              />
+            </ColumnsContentArea>
+          </ScratchPadContext.Provider>
         </div>
       </StyledFlexContainer>
       {!onlySratchpad && _renderAddRejectNoteSection()}

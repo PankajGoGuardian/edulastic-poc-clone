@@ -1401,7 +1401,7 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
   const optionalFields = {
     depthOfKnowledge: itemGroup.dok,
     authorDifficulty: itemGroup.difficulty,
-    tags: itemGroup.tags.map(tag => tag.tagName)
+    tags: itemGroup.tags?.map(tag => tag.tagName) || []
   };
   Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
   return {

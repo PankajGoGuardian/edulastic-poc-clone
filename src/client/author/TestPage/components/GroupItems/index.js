@@ -396,7 +396,7 @@ const GroupItems = ({
     const optionalFields = {
       depthOfKnowledge: editGroupDetail.dok,
       authorDifficulty: editGroupDetail.difficulty,
-      tags: editGroupDetail.tags.map(tag => tag.tagName)
+      tags: editGroupDetail.tags?.map(tag => tag.tagName) || []
     };
     Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
     const data = {

@@ -266,7 +266,7 @@ const ContentBucketsTable = ({
     {
       dataIndex: "_id",
       render: (id, record) => {
-        if (record.collection.districtId === user.districtId || user.role === roleuser.EDULASTIC_ADMIN)
+        if (record.collection.districtId === user.districtId && user.role !== roleuser.EDULASTIC_ADMIN)
           return <StyledIconPencilEdit color={theme.themeColor} onClick={() => onEditBucket(id)} />;
         return null;
       }
@@ -297,23 +297,29 @@ const ContentBucketsTable = ({
           boxShadow: "none"
         }}
       >
-        <LeftFilterDiv width={89}>
-          <StyledContentBucketSearch placeholder={t("common.searchbyname")} onSearch={handleSearchName} />
+        <LeftFilterDiv width={user.role === roleuser.EDULASTIC_ADMIN ? 100 : 89}>
+          <StyledContentBucketSearch
+            placeholder={t("common.searchbyname")}
+            onSearch={handleSearchName}
+            marginRight={user.role === roleuser.EDULASTIC_ADMIN ? 0 : 20}
+          />
         </LeftFilterDiv>
-        <RightFilterDiv width={12}>
-          <Button
-            type="primary"
-            onClick={toggleCreateBucketModal}
-            style={{
-              width: "100%",
-              textTransform: "uppercase",
-              height: "40px",
-              fontSize: "11px"
-            }}
-          >
-            {t("content.buckets.createBuckets")}
-          </Button>
-        </RightFilterDiv>
+        {user.role !== roleuser.EDULASTIC_ADMIN && (
+          <RightFilterDiv width={12}>
+            <Button
+              type="primary"
+              onClick={toggleCreateBucketModal}
+              style={{
+                width: "100%",
+                textTransform: "uppercase",
+                height: "40px",
+                fontSize: "11px"
+              }}
+            >
+              {t("content.buckets.createBuckets")}
+            </Button>
+          </RightFilterDiv>
+        )}
       </StyledFilterDiv>
       <TableContainer style={{ boxShadow: "none" }}>
         <StyledContentBucketsTable

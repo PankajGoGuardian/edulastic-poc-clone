@@ -15,6 +15,7 @@ import {
 } from "../../ducks";
 import moment from "moment";
 import staticData from "../../staticData";
+import { roleuser } from "@edulastic/constants";
 
 const { roleOptions, permissionLevelOptions } = staticData;
 
@@ -44,8 +45,30 @@ const AddPermissionModal = ({
 
   useEffect(() => {
     if (isEditPermission) {
-      const { districtId, districtName, orgType, orgId, orgName, role, itemBankName } = selectedPermission;
-      setFieldData({ districtId, districtName, orgType, orgId, orgName, role, itemBankName });
+      const {
+        districtId,
+        districtName,
+        orgType,
+        orgId,
+        orgName,
+        role,
+        itemBankName,
+        startDate,
+        endDate,
+        csManager,
+        opportunityId,
+        notes
+      } = selectedPermission;
+      setFieldData({
+        districtId,
+        districtName,
+        orgType,
+        orgId,
+        orgName,
+        role,
+        itemBankName,
+        ...(user.role === roleuser.EDULASTIC_ADMIN ? { startDate, endDate, csManager, opportunityId, notes } : {})
+      });
       if (["SCHOOL", "USER"].includes(orgType)) {
         searchRequest({
           orgType,
@@ -169,7 +192,7 @@ const AddPermissionModal = ({
   return (
     <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
       <ModalBody>
-        {user.role === "edulastic-admin" && (
+        {user.role === roleuser.EDULASTIC_ADMIN && (
           <StyledFieldRow>
             <label>Organization</label>
             <Select

@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "antd";
 import { get } from "lodash";
 import { StyledTable } from "../../styled";
 import { themeColorLight, red } from "@edulastic/colors";
 import { StyledScollBar, StatusText } from "../../styled";
+import { isEqual } from "lodash";
+import { caluculateOffset } from "../../util";
 
 const ContentBucketTable = ({ buckets }) => {
+  const [tableMaxHeight, setTableMaxHeight] = useState(200);
+  const [bucketsTableRef, setBucketsTableRef] = useState(null);
+
+  useEffect(() => {
+    if (bucketsTableRef) {
+      const tableMaxHeight = window.innerHeight - caluculateOffset(bucketsTableRef._container) - 40;
+      setTableMaxHeight(tableMaxHeight);
+    }
+  }, [bucketsTableRef?._container?.offsetTop]);
+
   const columns = [
     {
       title: "Bucket name",
@@ -69,7 +81,12 @@ const ContentBucketTable = ({ buckets }) => {
     value ? <Icon type="check" style={{ color: themeColorLight }} /> : <Icon type="close" style={{ color: red }} />;
 
   return (
-    <StyledScollBar>
+    <StyledScollBar
+      ref={ref => {
+        if (!isEqual(ref, bucketsTableRef)) setBucketsTableRef(ref);
+      }}
+      maxHeight={tableMaxHeight}
+    >
       <StyledTable dataSource={buckets} columns={columns} pagination={false} />
     </StyledScollBar>
   );

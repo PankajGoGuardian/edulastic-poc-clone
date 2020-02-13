@@ -229,17 +229,12 @@ export const StatusText = styled.span`
 `;
 
 export const StyledScollBar = styled(PerfectScrollbar)`
-  max-height: ${({ table }) => (table === "collectionTable" ? "530px" : "475px")};
+  max-height: ${({ maxHeight }) => maxHeight}px;
   margin-right: -15px;
   padding-right: 15px;
-  @media (max-width: ${extraDesktopWidth}) {
-    max-height: ${({ table }) => (table === "collectionTable" ? "400px" : "360px")};
-  }
-  @media (max-width: ${largeDesktopWidth}) {
-    max-height: ${({ table }) => (table === "collectionTable" ? "300px" : "260px")};
-  }
+  overflow: hidden;
   @media (max-width: ${smallDesktopWidth}) {
-    max-height: ${({ table }) => (table === "collectionTable" ? "270px" : "250px")};
+    max-height: 350px;
   }
 `;
 

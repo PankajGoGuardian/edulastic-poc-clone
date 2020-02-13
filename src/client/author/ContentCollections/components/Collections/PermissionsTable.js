@@ -29,6 +29,8 @@ import {
 } from "../../ducks";
 import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
 import { roleuser } from "@edulastic/constants";
+import { isEqual } from "lodash";
+import { caluculateOffset } from "../../util";
 
 const { TabPane } = Tabs;
 
@@ -47,10 +49,19 @@ const PermissionsTable = ({
   const [selectedPermission, setSelectedPermission] = useState(null);
   const [searchPermissionValue, setPermissionSearchValue] = useState("");
   const [filteredPermissionList, setFilteredPermissionList] = useState([]);
+  const [tableMaxHeight, setTableMaxHeight] = useState(200);
+  const [permissionTableRef, setPermissionTableRef] = useState(null);
 
   useEffect(() => {
     fetchPermissionsRequest(selectedCollection.bankId);
   }, [selectedCollection]);
+
+  useEffect(() => {
+    if (permissionTableRef) {
+      const tableMaxHeight = window.innerHeight - caluculateOffset(permissionTableRef._container) - 40;
+      setTableMaxHeight(tableMaxHeight);
+    }
+  }, [permissionTableRef?._container?.offsetTop]);
 
   const columns = [
     {
@@ -171,7 +182,13 @@ const PermissionsTable = ({
               </AddPermissionButton>
             </div>
           </HeadingContainer>
-          <StyledScollBar table="permissionTable">
+          <StyledScollBar
+            table="permissionTable"
+            ref={ref => {
+              if (!isEqual(ref, permissionTableRef)) setPermissionTableRef(ref);
+            }}
+            maxHeight={tableMaxHeight}
+          >
             <StyledTable
               loading={isFetchingPermissions}
               dataSource={searchPermissionValue ? filteredPermissionList : permissions}

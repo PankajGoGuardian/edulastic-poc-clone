@@ -99,7 +99,7 @@ export const StyledSchoolSearch = styled(Input.Search)`
 
 export const StyledContentBucketSearch = styled(Input.Search)`
   max-width: ${props => (props.width ? `${props.width}px` : "auto")};
-  margin-right: 20px;
+  margin-right: ${({ marginRight }) => marginRight}px;
   .ant-input {
     border-radius: ${props => props.theme.manageDistrict.inputFieldBorderRadius};
     background: ${props => props.theme.manageDistrict.inputFieldBgColor};

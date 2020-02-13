@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { Icon } from "antd";
 import {
   CollectionTableContainer,
-  HeadingContainer,
-  TableHeading,
   PermissionsButton,
   StyledScollBar,
   StyledTable,
@@ -22,6 +20,8 @@ import {
 } from "../../ducks";
 import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
 import { roleuser } from "@edulastic/constants";
+import { isEqual } from "lodash";
+import { caluculateOffset } from "../../util";
 
 const CollectionsTable = ({
   selectedCollection,
@@ -36,10 +36,20 @@ const CollectionsTable = ({
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(false);
   const [editCollectionData, setEditCollectionData] = useState(null);
   const [filteredCollectionList, setFilteredCollectionList] = useState([]);
+  const [tableMaxHeight, setTableMaxHeight] = useState(200);
+  const [collectionTableRef, setCollectionTableRef] = useState(null);
 
   useEffect(() => {
     fetchCollectionListRequest();
   }, []);
+
+  useEffect(() => {
+    if (collectionTableRef) {
+      const offsetTopValue = caluculateOffset(collectionTableRef._container);
+      const tableMaxHeight = window.innerHeight - offsetTopValue - 40;
+      setTableMaxHeight(tableMaxHeight);
+    }
+  }, [collectionTableRef?._container?.offsetTop]);
 
   useEffect(() => {
     if (searchValue) {
@@ -154,7 +164,7 @@ const CollectionsTable = ({
             >
               <span>Permissions</span>
             </PermissionsButton>
-            {(userRole === roleuser.EDULASTIC_ADMIN || record.districtId === userDistrictId) && (
+            {userRole !== roleuser.EDULASTIC_ADMIN && record.districtId === userDistrictId && (
               <span
                 onClick={() => {
                   setEditCollectionData(record);
@@ -177,15 +187,14 @@ const CollectionsTable = ({
 
   return (
     <CollectionTableContainer isCollectionSelected={!!selectedCollection}>
-      <HeadingContainer>
-        <div>
-          <TableHeading>Custom Collection</TableHeading>
-        </div>
-      </HeadingContainer>
       <StyledScollBar
         table="collectionTable"
+        maxHeight={tableMaxHeight}
         option={{
           suppressScrollX: true
+        }}
+        ref={ref => {
+          if (!isEqual(ref, collectionTableRef)) setCollectionTableRef(ref);
         }}
       >
         <StyledTable

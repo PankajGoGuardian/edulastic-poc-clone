@@ -190,7 +190,7 @@ class ClassBoard extends Component {
   componentDidUpdate(_, prevState) {
     const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
+    const filterCriteria = activity => activity ?.questionActivities ?.[0] ?._id;
     if (additionalData.testId !== prevState.testId) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
@@ -300,13 +300,11 @@ class ClassBoard extends Component {
     history.push(`${match.url}/create`);
   };
 
-  getTestActivityId = (data, student) => {
-    return (
+  getTestActivityId = (data, student) => (
       (!student
         ? data.find(item => !!item.testActivityId)
         : data.find(item => !!item.testActivityId && item.studentId == student)) || {}
     ).testActivityId;
-  };
 
   resetView = view => {
     this.setState({ selectedTab: view });
@@ -418,7 +416,7 @@ class ClassBoard extends Component {
     this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: false }));
   };
 
-  onStudentReportCardModalOk = () => {};
+  onStudentReportCardModalOk = () => { };
 
   onStudentReportCardModalCancel = () => {
     this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
@@ -441,7 +439,7 @@ class ClassBoard extends Component {
     if (selectedSubmittedStudents.length) {
       return message.warn(
         `${
-          selectedSubmittedStudents.length
+        selectedSubmittedStudents.length
         } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
       );
     }
@@ -638,7 +636,7 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
-    let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
+    const studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
     studentTestActivity.timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
@@ -667,7 +665,7 @@ class ClassBoard extends Component {
         const endDate = additionalData.closedDate || additionalData.endDate;
         if (student.status === "notStarted" && (endDate < Date.now() || additionalData.closed)) {
           return false;
-        } else if (student.status === "notStarted") {
+        } if (student.status === "notStarted") {
           return true;
         }
         return ["inProgress", "redirected"].includes(student.status);
@@ -816,124 +814,123 @@ class ClassBoard extends Component {
                     testActivity={testActivity}
                     testQuestionActivities={testQuestionActivities}
                     onClickHandler={this.onClickBarGraph}
+                    isLoading={isLoading}
                     isBoth
                   />
                 </StyledCard>
               </GraphContainer>
-              {
-                <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
-                  <CheckContainer>
-                    <StyledCheckbox
-                      data-cy="selectAllCheckbox"
-                      checked={unselectedStudents.length === 0}
-                      indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
-                      onChange={this.onSelectAllChange}
-                    >
-                      {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                    </StyledCheckbox>
-                  </CheckContainer>
-                  <ClassBoardFeats>
-                    <RedirectButton
-                      disabled={!isItemsVisible}
-                      first={true}
-                      data-cy="printButton"
-                      target="_blank"
-                      onClick={this.onClickPrint}
-                    >
-                      <ButtonIconWrap>
-                        <IconPrint />
-                      </ButtonIconWrap>
+              <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
+                <CheckContainer>
+                  <StyledCheckbox
+                    data-cy="selectAllCheckbox"
+                    checked={unselectedStudents.length === 0}
+                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                    onChange={this.onSelectAllChange}
+                  >
+                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                  </StyledCheckbox>
+                </CheckContainer>
+                <ClassBoardFeats>
+                  <RedirectButton
+                    disabled={!isItemsVisible}
+                    first
+                    data-cy="printButton"
+                    target="_blank"
+                    onClick={this.onClickPrint}
+                  >
+                    <ButtonIconWrap>
+                      <IconPrint />
+                    </ButtonIconWrap>
                       PRINT
-                    </RedirectButton>
-                    <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
-                      <ButtonIconWrap>
-                        <IconRedirect />
-                      </ButtonIconWrap>
+                  </RedirectButton>
+                  <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
+                    <ButtonIconWrap>
+                      <IconRedirect />
+                    </ButtonIconWrap>
                       REDIRECT
-                    </RedirectButton>
-                    <Dropdown
-                      overlay={
-                        <DropMenu>
-                          <FeaturesSwitch
-                            inputFeatures="LCBmarkAsSubmitted"
-                            key="LCBmarkAsSubmitted"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
+                  </RedirectButton>
+                  <Dropdown
+                    overlay={(
+                      <DropMenu>
+                        <FeaturesSwitch
+                          inputFeatures="LCBmarkAsSubmitted"
+                          key="LCBmarkAsSubmitted"
+                          actionOnInaccessible="hidden"
+                          groupId={classId}
+                        >
+                          <MenuItems
+                            data-cy="markSubmitted"
+                            disabled={disableMarkSubmitted}
+                            onClick={this.handleShowMarkAsSubmittedModal}
                           >
-                            <MenuItems
-                              data-cy="markSubmitted"
-                              disabled={disableMarkSubmitted}
-                              onClick={this.handleShowMarkAsSubmittedModal}
-                            >
-                              <IconMarkAsSubmitted width={12} />
-                              <span>Mark as Submitted</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
-                          <FeaturesSwitch
-                            inputFeatures="LCBmarkAsAbsent"
-                            key="LCBmarkAsAbsent"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
+                            <IconMarkAsSubmitted width={12} />
+                            <span>Mark as Submitted</span>
+                          </MenuItems>
+                        </FeaturesSwitch>
+                        <FeaturesSwitch
+                          inputFeatures="LCBmarkAsAbsent"
+                          key="LCBmarkAsAbsent"
+                          actionOnInaccessible="hidden"
+                          groupId={classId}
+                        >
+                          <MenuItems
+                            data-cy="markAbsent"
+                            disabled={disableMarkAbsent}
+                            onClick={this.handleShowMarkAsAbsentModal}
                           >
-                            <MenuItems
-                              data-cy="markAbsent"
-                              disabled={disableMarkAbsent}
-                              onClick={this.handleShowMarkAsAbsentModal}
-                            >
-                              <IconMarkAsAbsent />
-                              <span>Mark as Absent</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
+                            <IconMarkAsAbsent />
+                            <span>Mark as Absent</span>
+                          </MenuItems>
+                        </FeaturesSwitch>
 
-                          <MenuItems data-cy="addStudents" onClick={this.handleShowAddStudentsPopup}>
-                            <IconAddStudents />
-                            <span>Add Students</span>
+                        <MenuItems data-cy="addStudents" onClick={this.handleShowAddStudentsPopup}>
+                          <IconAddStudents />
+                          <span>Add Students</span>
+                        </MenuItems>
+                        <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
+                          <IconRemove />
+                          <span>Remove Students</span>
+                        </MenuItems>
+                        <MenuItems
+                          data-cy="downloadGrades"
+                          disabled={!enableDownload}
+                          onClick={() => this.handleDownloadGrades(false)}
+                        >
+                          <IconDownload />
+                          <span>Download Grades</span>
+                        </MenuItems>
+                        <MenuItems
+                          data-cy="downloadResponse"
+                          disabled={!enableDownload}
+                          onClick={() => this.handleDownloadGrades(true)}
+                        >
+                          <IconDownload />
+                          <span>Download Response</span>
+                        </MenuItems>
+                        <FeaturesSwitch
+                          inputFeatures="LCBstudentReportCard"
+                          key="LCBstudentReportCard"
+                          actionOnInaccessible="hidden"
+                          groupId={classId}
+                        >
+                          <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
+                            <IconStudentReportCard />
+                            <span>Student Report Cards</span>
                           </MenuItems>
-                          <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
-                            <IconRemove />
-                            <span>Remove Students</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="downloadGrades"
-                            disabled={!enableDownload}
-                            onClick={() => this.handleDownloadGrades(false)}
-                          >
-                            <IconDownload />
-                            <span>Download Grades</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="downloadResponse"
-                            disabled={!enableDownload}
-                            onClick={() => this.handleDownloadGrades(true)}
-                          >
-                            <IconDownload />
-                            <span>Download Response</span>
-                          </MenuItems>
-                          <FeaturesSwitch
-                            inputFeatures="LCBstudentReportCard"
-                            key="LCBstudentReportCard"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
-                              <IconStudentReportCard />
-                              <span>Student Report Cards</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
-                        </DropMenu>
-                      }
-                      placement="bottomRight"
-                    >
-                      <RedirectButton data-cy="moreAction" last={true}>
-                        <ButtonIconWrap>
-                          <IconMoreHorizontal />
-                        </ButtonIconWrap>
+                        </FeaturesSwitch>
+                      </DropMenu>
+                      )}
+                    placement="bottomRight"
+                  >
+                    <RedirectButton data-cy="moreAction" last>
+                      <ButtonIconWrap>
+                        <IconMoreHorizontal />
+                      </ButtonIconWrap>
                         MORE
-                      </RedirectButton>
-                    </Dropdown>
-                  </ClassBoardFeats>
-                </StyledFlexContainer>
-              }
+                    </RedirectButton>
+                  </Dropdown>
+                </ClassBoardFeats>
+              </StyledFlexContainer>
 
               <>
                 {/* Modals */}
@@ -981,7 +978,7 @@ class ClassBoard extends Component {
                 />
               ) : (
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-              )}
+                )}
 
               <RedirectPopup
                 open={redirectPopup}
@@ -1040,6 +1037,7 @@ class ClassBoard extends Component {
                       studentview
                       studentViewFilter={studentViewFilter}
                       studentResponse={studentResponse}
+                      isLoading={isLoading}
                     />
                     <InfoWrapper>
                       {allTestActivitiesForStudent.length > 1 && (
@@ -1069,7 +1067,7 @@ class ClassBoard extends Component {
                             >
                               {`Attempt ${allTestActivitiesForStudent.length - index} ${
                                 testActivityId.status === 2 ? " (Absent)" : ""
-                              }`}
+                                }`}
                             </Select.Option>
                           ))}
                         </Select>
@@ -1100,7 +1098,7 @@ class ClassBoard extends Component {
                               ) || 0}`}
                             </ScoreChangeWrapper>
                             <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
-                              <span>{`Improvement `}</span>
+                              <span>Improvement </span>
                               <span
                                 style={{ marginLeft: "2px" }}
                                 title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
@@ -1126,14 +1124,14 @@ class ClassBoard extends Component {
                           {studentTestActivity.status === 2
                             ? "Absent"
                             : studentTestActivity.status === 1
-                            ? studentTestActivity.graded === "GRADED"
-                              ? "Graded"
-                              : "Submitted"
-                            : "In Progress" || ""}
+                              ? studentTestActivity.graded === "GRADED"
+                                ? "Graded"
+                                : "Submitted"
+                              : "In Progress" || ""}
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
-                        {`SUBMITTED ON : `}
+                        SUBMITTED ON : 
                         <span style={{ color: black }}>
                           {moment(studentTestActivity.endDate).format("MMM DD, YYYY")}
                         </span>
@@ -1221,7 +1219,7 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       labels: getQLabelsSelector(state),
       removedStudents: removedStudentsSelector(state),
-      studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
+      studentViewFilter: state ?.author_classboard_testActivity ?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state)
     }),

@@ -253,7 +253,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.js,!src/client/public/vendors": [
+    "src/**/*.js": [
       "eslint --fix",
       "git add"
     ]

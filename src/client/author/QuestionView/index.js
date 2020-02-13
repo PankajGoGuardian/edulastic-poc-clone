@@ -7,6 +7,7 @@ import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } 
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
 import { ThemeProvider } from "styled-components";
+import { scrollTo, AnswerContext } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
 import {
@@ -26,7 +27,6 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
 import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
-import { scrollTo, AnswerContext } from "@edulastic/common";
 
 /**
  * @param {string} studentId
@@ -102,7 +102,7 @@ class QuestionViewContainer extends Component {
     } = this.props;
     const { loading } = this.state;
 
-    let filteredItems = testItems.filter(item => item.data.questions.some(q => q.id === question.id));
+    let filteredItems = testItems ?.filter(item => item.data.questions.some(q => q.id === question.id));
 
     filteredItems = produce(filteredItems, draft => {
       draft.forEach(item => {
@@ -217,7 +217,7 @@ class QuestionViewContainer extends Component {
                   cursor="pointer"
                   dy={10}
                   onClick={({ index }) => {
-                    const id = data[index].id;
+                    const {id} = data[index];
                     _scrollTo(id);
                   }}
                 />

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { sumBy, round } from "lodash";
-import BarGraph from "../BarGraph/BarGraph";
 import { Tooltip } from "antd";
+import { lightGreen4, themeColor } from "@edulastic/colors";
+import BarGraph from "../BarGraph/BarGraph";
 import {
   StyledProgress,
   StyledDiv,
@@ -12,7 +13,6 @@ import {
   ProgressBarContainer,
   AssignmentTitle
 } from "./styled";
-import { lightGreen4, themeColor } from "@edulastic/colors";
 
 export default class Graph extends Component {
   static propTypes = {
@@ -73,6 +73,7 @@ export default class Graph extends Component {
           testQuestionActivities={testQuestionActivities}
           onClickHandler={onClickHandler}
           isBoth={isBoth}
+          isLoading={this.props.isLoading}
         />
       </StyledDiv>
     );

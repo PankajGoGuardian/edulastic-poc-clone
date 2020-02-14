@@ -29,8 +29,16 @@ const loadAllAttachments = filter =>
     })
     .then(result => result.data.result);
 
+const updateAttachment = data =>
+  api.callApi({
+    url: `${prefix}/`,
+    method: "put",
+    data
+  });
+
 export default {
   loadAttachment,
   saveAttachment,
-  loadAllAttachments
+  loadAllAttachments,
+  updateAttachment
 };

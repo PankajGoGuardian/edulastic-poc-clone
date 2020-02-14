@@ -2,7 +2,7 @@ import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { message } from "antd";
 import { maxBy } from "lodash";
-import { itemsApi, testItemActivityApi } from "@edulastic/api";
+import { itemsApi, testItemActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { assignmentPolicyOptions } from "@edulastic/constants";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
@@ -102,7 +102,7 @@ function* saveUserResponse({ payload }) {
     questions.forEach(question => {
       timesSpent[question] = ts / questions.length;
       itemAnswers[question] = answers[question];
-      //Redirect flow user hasnt selected new answer for this question.
+      // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
       if (
         redirectPolicy === assignmentPolicyOptions.showPreviousAttemptOptions.STUDENT_RESPONSE_AND_FEEDBACK &&
@@ -130,11 +130,35 @@ function* saveUserResponse({ payload }) {
       bookmarked
     };
 
-    if (_userWork) {
-      activity.userWork = { ..._userWork };
+    let userWorkData = { ..._userWork, scratchpad: false };
+    let scratchPadUsed = false;
+    let shouldSaveOrUpdateAttachment = false;
+    if (_userWork?.scratchpad) {
+      scratchPadUsed = Object.keys(_userWork.scratchpad).some(key => _userWork.scratchpad[key].length > 0);
     }
-
+    if (scratchPadUsed) {
+      userWorkData = { ...userWorkData, scratchpad: true };
+      shouldSaveOrUpdateAttachment = true;
+    }
+    activity.userWork = userWorkData;
     yield call(testItemActivityApi.create, activity, autoSave);
+    const userId = yield select(state => state?.user?.user?._id);
+    if (shouldSaveOrUpdateAttachment) {
+      const update = {
+        data: { scratchpad: _userWork.scratchpad },
+        referrerId: userTestActivityId,
+        reviewerId: userId,
+        type: "scratchpad",
+        referrerType: "TestActivityContent",
+        testItemId,
+        status: "published"
+      };
+      const filter = {
+        referrerId: userTestActivityId,
+        testItemId
+      };
+      yield call(attachmentApi.updateAttachment, { update, filter });
+    }
     if (shouldClearUserWork) {
       /**
        * if we have two assignments one for practice and one for class assignment with same questions
@@ -161,7 +185,6 @@ function* loadUserResponse({ payload }) {
     const items = yield select(state => state.test && state.test.items);
     const item = items[itemIndex];
     const { answers } = yield call(itemsApi.getUserResponse, item._id);
-    console.log("answers are", answers);
     yield put({
       type: LOAD_ANSWERS,
       payload: {

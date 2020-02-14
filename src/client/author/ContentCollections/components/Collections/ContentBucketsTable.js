@@ -23,6 +23,7 @@ const ContentBucketTable = ({ buckets }) => {
       title: "Bucket name",
       dataIndex: "name",
       key: "name",
+      width: "190px",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "name", "");
@@ -78,7 +79,11 @@ const ContentBucketTable = ({ buckets }) => {
   ];
 
   const getPermissionCell = value =>
-    value ? <Icon type="check" style={{ color: themeColorLight }} /> : <Icon type="close" style={{ color: red }} />;
+    value ? (
+      <Icon type="check" style={{ color: themeColorLight }} />
+    ) : (
+      <Icon type="close" style={{ color: red }} />
+    );
 
   return (
     <StyledScollBar

@@ -16,14 +16,17 @@ import {
 
 export const CollectionTableContainer = styled.div`
   width: ${({ isCollectionSelected }) => (isCollectionSelected ? "35%" : "100%")};
-  margin-right: ${({ isCollectionSelected }) => (isCollectionSelected ? "10px" : "0px")};
+  margin-right: ${({ isCollectionSelected }) => (isCollectionSelected ? "1%" : "0px")};
   background-color: ${white};
   border-radius: 8px;
   padding: 20px;
+  display: inline-block;
+  float: left;
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
     margin-right: 0px;
     margin-bottom: 20px;
+    display: block;
   }
 `;
 
@@ -171,8 +174,7 @@ export const BackArrowButton = styled.span`
 `;
 
 export const TablesWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: block;
   @media (max-width: ${smallDesktopWidth}) {
     flex-wrap: wrap;
   }
@@ -180,7 +182,8 @@ export const TablesWrapper = styled.div`
 
 export const PermissionTableContainer = styled(CollectionTableContainer)`
   padding-top: 5px;
-  width: 65%;
+  width: 64%;
+  display: inline-block;
   .heading-container {
     > div:nth-child(odd) {
       width: 25%;
@@ -192,6 +195,7 @@ export const PermissionTableContainer = styled(CollectionTableContainer)`
   }
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
+    display: block;
   }
 `;
 

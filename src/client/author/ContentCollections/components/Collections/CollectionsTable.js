@@ -109,6 +109,7 @@ const CollectionsTable = ({
       title: "Collection Name",
       dataIndex: "name",
       key: "name",
+      ...(selectedCollection ? { width: "150px" } : {}),
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
         const prev = get(a, "name", "");

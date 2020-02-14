@@ -42,7 +42,7 @@ import { TestStatus, EdulasticVerified } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
-import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
+import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 
 const sharedTypeMap = {
   0: "PUBLIC",
@@ -156,7 +156,7 @@ class Item extends Component {
         title,
         tags = [],
         analytics,
-        _source,
+        _source = {},
         thumbnail,
         status,
         _id: testId,
@@ -196,7 +196,7 @@ class Item extends Component {
         collectionName = filteredCollections.map(c => c.name).join(", ");
     } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
       collectionName = "Edulastic Certified";
-    } else if (!!sharedType) {
+    } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
       if (!isNaN(+sharedType)) {
         collectionName = sharedTypeMap[+sharedType];
@@ -237,7 +237,7 @@ class Item extends Component {
           isPlaylist={isPlaylist}
           src={isPlaylist ? _source.thumbnail : thumbnail}
           onClick={isPlaylist ? this.moveToItem : this.openModal}
-          title={
+          title={(
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
@@ -263,16 +263,16 @@ class Item extends Component {
                 )}
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
-                getAuthorCollectionMap(false, 30, 30)["edulastic_certified"].icon}
+                getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
               {!!collections.length && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
-          }
+          )}
         >
           <TestInfo isPlaylist={isPlaylist}>
-            <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-            {isPlaylist && (
-              <StyledDesc title={_source.description}>{_source.description}</StyledDesc>
-            )}
+
+            <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
+            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
+
             {isPlaylist && (
               <TagsWrapper>
                 <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
@@ -301,10 +301,10 @@ class Item extends Component {
               <Author isPlaylist={isPlaylist}>
                 <AuthorWrapper>
                   {collections.find(o => o.name === "Edulastic Certified") ? (
-                    getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon
+                    getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                   ) : (
-                    <IconUser color={cardTitleColor} />
-                  )}
+                      <IconUser color={cardTitleColor} />
+                    )}
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>

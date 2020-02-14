@@ -290,7 +290,7 @@ class FeedbackRight extends Component {
               value={
                 activity &&
                 activity.graded === false &&
-                activity.score === 0 &&
+                (activity.score === 0 || isUndefined(activity.score)) &&
                 !score &&
                 !this.state.changed &&
                 !activity.skipped

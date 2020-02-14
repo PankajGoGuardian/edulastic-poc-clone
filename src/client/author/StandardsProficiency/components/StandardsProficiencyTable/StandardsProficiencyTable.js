@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Form, Icon, Radio, Button, message, Row } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -30,7 +30,6 @@ import {
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
 
 import {
-  receiveStandardsProficiencyAction,
   updateStandardsProficiencyAction,
   createStandardsProficiencyAction,
   setScaleDataAction,
@@ -169,7 +168,7 @@ class StandardsProficiencyTable extends React.Component {
     const updateData = {
       orgId: userOrgId,
       scale: dataSource,
-      calcType: calcType,
+      calcType,
       orgType: "district"
     };
 
@@ -215,15 +214,13 @@ class StandardsProficiencyTable extends React.Component {
         dataIndex: "color",
         width: "15%",
         editable: true,
-        render: (text, record) => {
-          return (
-            <StyledScoreDiv>
-              <ScoreColorSpan color={text} />
-              <Icon type="down" />
-              {record.score}
-            </StyledScoreDiv>
-          );
-        }
+        render: (text, record) => (
+          <StyledScoreDiv>
+            <ScoreColorSpan color={text} />
+            <Icon type="down" />
+            {record.score}
+          </StyledScoreDiv>
+          )
       },
       {
         title: "Mastery Level",
@@ -242,9 +239,7 @@ class StandardsProficiencyTable extends React.Component {
         dataIndex: "threshold",
         width: "25%",
         editable: true,
-        render: text => {
-          return <React.Fragment>{text}%</React.Fragment>;
-        }
+        render: text => <React.Fragment>{text}%</React.Fragment>
       },
       {
         title: this.props.readOnly ? null : (
@@ -315,7 +310,7 @@ class StandardsProficiencyTable extends React.Component {
             <StyledDescription>
               Select scale and minimum percentage criteria for standard score
               <br />
-              Note: Teachers can edit the performance threshould while assigning
+              Note: Teachers can edit the performance threshold while assigning
             </StyledDescription>
           </InfoDiv>
           {this.props.readOnly ? null : (
@@ -340,9 +335,9 @@ class StandardsProficiencyTable extends React.Component {
         <StyledMasterDiv>
           <StyledH3>Mastery Calculation Method</StyledH3>
           <StyledUl>
-            <li>Select calcuation method to determine the student's mastery</li>
+            <li>Select calculation method to determine the student's mastery</li>
             <li>Standards based scores persist across classes(they do NOT reset automatically)</li>
-            <li>Mastery score is rounded up when the calcaulated score is at/above mid point between two levels</li>
+            <li>Mastery score is rounded up when the calculated score is at/above mid point between two levels</li>
           </StyledUl>
           <StyledRadioGroup
             disabled={this.props.readOnly}

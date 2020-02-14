@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { List, Button, Row, Col, message, Modal, Input, Icon } from "antd";
+import styled from "styled-components";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 
-import styled from "styled-components";
 
 import {
   CreateProfile,
@@ -51,7 +51,7 @@ const defaultData = {
       shortName: "E",
       threshold: 90,
       masteryLevel: "Exceeds Mastery",
-      color: "#db75c5"
+      color: "#3db04e"
     },
     {
       score: 3,
@@ -65,7 +65,7 @@ const defaultData = {
       shortName: "A",
       threshold: 70,
       masteryLevel: "Almost Mastered",
-      color: "#a1c3ea"
+      color: "#ebdd54"
     },
     {
       score: 1,
@@ -115,7 +115,7 @@ function ProfileRow(props) {
 
       <StyledProfileRow onClick={e => setEditing(index)} type="flex">
         <Col span={12}>
-          {active & !readOnly ? (
+          {active && !readOnly ? (
             <Input
               value={profileName}
               onClick={e => e.stopPropagation()}

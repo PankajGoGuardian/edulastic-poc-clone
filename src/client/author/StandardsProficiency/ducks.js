@@ -1,10 +1,8 @@
-import { createSelector } from "reselect";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { getUserOrgId } from "../src/selectors/user";
-import { get } from "lodash";
 
 const RECEIVE_STANDARDS_PROFICIENCY_REQUEST = "[Standards Proficiency] receive data request";
 const RECEIVE_STANDARDS_PROFICIENCY_SUCCESS = "[Standards Proficiency] receive data success";
@@ -67,7 +65,7 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_STANDARDS_PROFICIENCY_SUCCESS]: (state, { payload }) => {
     state.loading = false;
     state.data = [];
-    for (let el of payload) {
+    for (const el of payload) {
       if (el != null) {
         const { scale, calcType, ...rest } = el;
         const scaleData = [];
@@ -86,7 +84,7 @@ export const reducer = createReducer(initialState, {
           ...rest,
           _id: el._id,
           name: el.name,
-          calcType: calcType,
+          calcType,
           scale: scaleData
         });
       } else {
@@ -97,10 +95,10 @@ export const reducer = createReducer(initialState, {
           calcDecayingAttr: 65,
           calcMovingAvrAttr: 5,
           scale: [
-            { key: 0, color: "#C8EB9B", score: 4, masteryLevel: "Exceeds Mastery", shortName: "E", threshold: 90 },
-            { key: 1, color: "#F3FCCF", score: 3, masteryLevel: "Mastered", shortName: "M", threshold: 80 },
-            { key: 2, color: "#FDFDC8", score: 2, masteryLevel: "Almost Mastered", shortName: "A", threshold: 60 },
-            { key: 3, color: "#FDE2B3", score: 1, masteryLevel: "Not Mastered", shortName: "N", threshold: 0 }
+            { key: 0, color: "#3DB04E", score: 4, masteryLevel: "Exceeds Mastery", shortName: "E", threshold: 90 },
+            { key: 1, color: "#74E27A", score: 3, masteryLevel: "Mastered", shortName: "M", threshold: 80 },
+            { key: 2, color: "#EBDD54", score: 2, masteryLevel: "Almost Mastered", shortName: "A", threshold: 60 },
+            { key: 3, color: "#FEC571", score: 1, masteryLevel: "Not Mastered", shortName: "N", threshold: 0 }
           ]
         });
       }

@@ -42,3 +42,15 @@ export const methods = {
   SET_EVALUATION: "Set Evaluation",
   CHECK_IF_TRUE: "Check if true"
 };
+
+export const DOK = {
+  Recall: "Recall",
+  SkillConcept: "Skill/Concept",
+  ExtendedThinking: "Extended Thinking"
+};
+
+export const DIFFICULTY = {
+  Medium: "Medium",
+  Easy: "Easy",
+  Hard: "Hard"
+};

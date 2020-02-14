@@ -93,7 +93,11 @@
       "quetext": "This is MCQ_MULTI.1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
       "setAns": { "correct": ["right-1", "right-2"], "points": 3, "evaluation": "Partial match" },
-      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1", "partialCorrect": ["right-2"] },
+      "attemptData": {
+        "right": ["right-1", "right-2"],
+        "wrong": "wrong-1",
+        "partialCorrect": ["right-2"]
+      },
       "standards": [
         {
           "subject": "Mathematics",
@@ -107,7 +111,11 @@
       "quetext": "This is MCQ_MULTI.2 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
       "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
-      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1", "partialCorrect": ["right-2"] },
+      "attemptData": {
+        "right": ["right-1", "right-2"],
+        "wrong": "wrong-1",
+        "partialCorrect": ["right-2"]
+      },
       "standards": [
         {
           "subject": "Mathematics",
@@ -121,7 +129,11 @@
       "quetext": "This is MCQ_MULTI.3 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
       "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
-      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1", "partialCorrect": ["right-2", "wrong-1"] },
+      "attemptData": {
+        "right": ["right-1", "right-2"],
+        "wrong": "wrong-1",
+        "partialCorrect": ["right-2", "wrong-1"]
+      },
       "standards": [
         {
           "subject": "Mathematics",
@@ -241,6 +253,57 @@
       ],
       "meta": {
         "collections": "auto collection 1 - auto collection 1 Bucket"
+      }
+    },
+    "7": {
+      "quetext": "This is MCQ_TF.7 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "auto collection 2 - auto collection 2 Bucket"
+      }
+    },
+    "8": {
+      "quetext": "This is MCQ_TF.7 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.2"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "auto collection 2 - auto collection 2 Bucket"
+      }
+    },
+    "9": {
+      "quetext": "This is MCQ_TF.7 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.3"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ],
+      "meta": {
+        "collections": "auto collection 2 - auto collection 2 Bucket"
       }
     }
   },
@@ -577,7 +640,10 @@
     "default": {
       "quetext": ["CLOZE_DROPDOWN.default.1st- ", "INPUT", "2nd - ", "INPUT"],
       "setAns": {
-        "choices": { "INPUT_0": ["1.Choice-1", "1.Choice-2"], "INPUT_1": ["2.Choice-1", "2.Choice-2"] },
+        "choices": {
+          "INPUT_0": ["1.Choice-1", "1.Choice-2"],
+          "INPUT_1": ["2.Choice-1", "2.Choice-2"]
+        },
         "correct": { "INPUT_0": "1.Choice-2", "INPUT_1": "2.Choice-1" },
         "points": 2
       },
@@ -595,7 +661,14 @@
       ]
     },
     "1": {
-      "quetext": ["This is CLOZE_DROPDOWN.1 , 1st - ", "INPUT", " 2nd - ", "INPUT", " 3rd - ", "INPUT"],
+      "quetext": [
+        "This is CLOZE_DROPDOWN.1 , 1st - ",
+        "INPUT",
+        " 2nd - ",
+        "INPUT",
+        " 3rd - ",
+        "INPUT"
+      ],
       "setAns": {
         "choices": {
           "INPUT_0": ["1.Choice-1", "1.Choice-2", "1.Choice-3"],

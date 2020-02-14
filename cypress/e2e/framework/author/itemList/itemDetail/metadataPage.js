@@ -121,6 +121,21 @@ class MetadataPage {
     CypressHelper.selectDropDownByAttribute("collectionsSelect", collection);
     cy.focused().blur(); // de-focus dropdown select
   };
+
+  setTag = tag => {
+    CypressHelper.selectDropDownByAttribute("tagsSelect", tag);
+    cy.focused().blur(); // de-focus dropdown select
+  };
+
+  setDOK = dok => {
+    CypressHelper.selectDropDownByAttribute("dokSelect", dok);
+    cy.focused().blur();
+  };
+
+  setDifficulty = difficulty => {
+    CypressHelper.selectDropDownByAttribute("difficultySelect", difficulty);
+    cy.focused().blur();
+  };
 }
 
 export default MetadataPage;

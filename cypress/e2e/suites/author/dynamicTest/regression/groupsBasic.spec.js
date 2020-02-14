@@ -214,7 +214,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         it(">verify items group page", () => {
           groupItemsPage.verifyNoOfGroups(2);
-          groupItemsPage.getCountOfItemsInGroup(2).should("have.length", GROUPS.GROUP1.length + GROUPS.GROUP2.length);
+          groupItemsPage
+            .getCountOfItemsInGroup(2)
+            .should("have.length", GROUPS.GROUP1.length + GROUPS.GROUP2.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
@@ -343,7 +345,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           addItemTab.clickOnGroupItem();
           groupItemsPage.createDynamicTest(1, filterForAutoselect);
           // TODO : Remove this static wait and verify once you get 2 or 3 results
-          cy.wait(3000);
         });
         it(">verify review tab", () => {
           cy.server();
@@ -352,6 +353,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           cy.wait("@createTest").then(xhr => {
             testLibraryPage.saveTestId(xhr);
           });
+          testLibraryPage.header.clickOnReview(); /* current behaviour */
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
           testReviewTab.verifyItemCoutInPreview(2);
         });
@@ -360,7 +362,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           addItemTab.clickOnGroupItem();
           groupItemsPage.clickOnEditByGroup(1);
           groupItemsPage.selectCollectionByGroupAndCollection(1, "auto collection 2");
-          groupItemsPage.clickOnSaveByGroup(1);
+          groupItemsPage.clickOnSaveByGroup(1, true, 0);
           groupItemsPage.assertNoItemsFoundWarning();
           groupItemsPage.selectCollectionByGroupAndCollection(1, testData.collections);
           groupItemsPage.setItemCountForDeliveryByGroup(1, 3);

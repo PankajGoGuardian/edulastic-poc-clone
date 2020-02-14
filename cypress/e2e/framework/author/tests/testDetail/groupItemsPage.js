@@ -25,7 +25,8 @@ export default class GroupItemsPage {
   uncheckAutoSelectForGroup = group => this.getAutoSelectItemForGroup(group).uncheck();
 
   // question delievery
-  checkDeliverAllItemForGroup = group => cy.get(`[data-cy="check-deliver-all-Group ${group}"]`).check({ force: true });
+  checkDeliverAllItemForGroup = group =>
+    cy.get(`[data-cy="check-deliver-all-Group ${group}"]`).check({ force: true });
 
   checkDeliverCountForGroup = group =>
     cy.get(`[data-cy="check-deliver-bycount-Group ${group}"]`).check({ force: true });
@@ -70,13 +71,14 @@ export default class GroupItemsPage {
       .eq(group - 1)
       .click({ force: true });
 
-  clickOnSaveByGroup = (group, dynamicGroup = false) => {
+  clickOnSaveByGroup = (group, dynamicGroup = false, deliveryCount = 1) => {
     cy.server();
     cy.route("POST", "**/testitem/auto-select/search").as("waitForItems");
     cy.get(`[data-cy="save-Group ${group}"]`).click();
     if (dynamicGroup)
       cy.wait("@waitForItems").then(xhr => {
         expect(xhr.status).to.eq(200);
+        expect(xhr.response.body.result.items.length).to.be.at.least(deliveryCount);
       });
     cy.wait(2000); // waiting for search to retrieve items
   };
@@ -98,7 +100,8 @@ export default class GroupItemsPage {
 
   selectSubject = subject => CypressHelper.selectDropDownByAttribute("subject-Select", subject);
 
-  selectStandardSet = standardSet => CypressHelper.selectDropDownByAttribute("standardSet-Select", standardSet);
+  selectStandardSet = standardSet =>
+    CypressHelper.selectDropDownByAttribute("standardSet-Select", standardSet);
 
   selectGrade = grade => {
     this.clearAllGrades();
@@ -131,28 +134,32 @@ export default class GroupItemsPage {
     this.clickBrowseOnStandardsByGroup(group);
     this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect);
     this.clickOnApply();
-    this.selectCollectionByGroupAndCollection(group, collection);
     if (dok) this.setDOK(group, dok);
     if (difficulty) this.setDifficulty(group, difficulty);
     if (tags) this.setTag(group, tags);
+    this.selectCollectionByGroupAndCollection(group, collection);
     this.setItemCountForDeliveryByGroup(group, deliveryCount);
-    this.clickOnSaveByGroup(group, true);
+    this.clickOnSaveByGroup(group, true, deliveryCount);
   };
   // =========Till Here=======================
 
   assertNoItemsFoundWarning = () =>
-    cy.get(".ant-message").should("contain", "No test items found for current combination of filters");
+    cy
+      .get(".ant-message")
+      .should("contain", "No test items found for current combination of filters");
 
   addItemsToGroup = (itemIds, newTest = true, group = false) => {
     let testID;
     cy.server();
     cy.route("POST", "**api/test").as("createTest");
+    cy.route("GET", /.*default-thumbnail?.*/).as("addItem");
     this.testLibraryPage.testSummary.header.clickOnAddItems();
     this.addItems.searchFilters.clearAll();
     this.addItems.searchFilters.getAuthoredByMe();
     itemIds.forEach((item, index) => {
       if (!group) this.addItems.addItemById(item);
       else this.addItems.addItemByIdByGroup(group, item);
+      cy.wait("@addItem");
       if (index === 0 && newTest === true) {
         cy.wait("@createTest").then(xhr => {
           this.testLibraryPage.saveTestId(xhr);
@@ -160,11 +167,8 @@ export default class GroupItemsPage {
         });
         cy.wait(500);
       }
-      cy.wait(100);
     });
-    return cy.wait(2000).then(() => testID);
-    // GET 200 /api/test/default-thumbnail?subject=Other this is triggering for indefinate numbers
-    // so the wait is
+    return cy.wait(1).then(() => testID);
   };
 
   getItemDeliverySeq = (deliveredItemGroups, groups, shuffle = false) => {
@@ -179,9 +183,10 @@ export default class GroupItemsPage {
       expect(gArray.deliveryType).to.eq(groups[ind + 1].deliverType);
       gArray.items.forEach(itemObj => {
         deliveredGroup[ind + 1].push(itemObj._id);
-        expect(itemObj._id, `Expected item-${itemObj._id} should be part of group-${ind + 1}`).to.be.oneOf(
-          groups[ind + 1].items
-        );
+        expect(
+          itemObj._id,
+          `Expected item-${itemObj._id} should be part of group-${ind + 1}`
+        ).to.be.oneOf(groups[ind + 1].items);
       });
 
       deliveredArray = [...deliveredArray, ...deliveredGroup[Cypress._.keys(deliveredGroup)[ind]]];
@@ -190,7 +195,8 @@ export default class GroupItemsPage {
     deliverTypeAtStudentSide.forEach((type, ind) => {
       switch (type) {
         case deliverType.ALL:
-          if (shuffle === false) CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
+          if (shuffle === false)
+            CypressHelper.checkObjectEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
           else {
             if (!groups[ind + 1].items.length === 1)
               CypressHelper.checkObjectInEquality(deliveredGroup[ind + 1], groups[ind + 1].items);
@@ -204,22 +210,21 @@ export default class GroupItemsPage {
           expect(deliveredGroup[ind + 1].length).to.eq(groups[ind + 1].deliveryCount);
           break;
         default:
-          assert.fail(`Unexpected delivery type of group-${ind + 1}-${type}`); //
+          assert.fail(`Unexpected delivery type of group-${ind + 1}-${type}`);
           break;
       }
     });
     return deliveredArray;
   };
 
-  // setTag = (group, tag) => {
-  //   cy.get('[data-cy="selectTags"]')
-  //     .click().eq(group-1);
-  //   cy.wait(300);
+  setTag = (group, tag) => {
+    cy.get('[data-cy="selectTags"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
 
-  //     .find(".ant-select-dropdown-menu-item")
-  //     .contains(tag)
-  //     .click({ force: true });
-  // };
+    this.selectOptionByAttrByGroup(group, tag);
+  };
 
   setDOK = (group, dok) => {
     cy.get('[data-cy="selectDOK"]')

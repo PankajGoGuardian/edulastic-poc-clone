@@ -64,7 +64,7 @@ export default class SearchFilters {
 
   getSearch = () => cy.get(".ant-input-search");
 
-  getSearchTextBox = () => this.getSearch().find("input");
+  getSearchTextBox = () => cy.get('[placeholder="Search by skills and keywords"]').last();
 
   typeInSearchBox = key => {
     this.routeSearch();

@@ -1,4 +1,4 @@
-import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
+import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
@@ -72,7 +72,6 @@ function* loadTest({ payload }) {
     groupId: groupIdFromUrl,
     isShowStudentWork = false
   } = payload;
-
   try {
     // if the assessment player is loaded for showing student work
     // we shouldn't be removing evaluation and answers from store.
@@ -257,14 +256,17 @@ function* loadTest({ payload }) {
       });
 
       const testItemIds = testItems.map(i => i._id);
+      const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId: testActivityId });
+
+      attachments.forEach(attachment => {
+        scratchPadData[attachment.testItemId] = attachment.data;
+      });
+
       questionActivities.forEach(item => {
         allAnswers = {
           ...allAnswers,
           [item.qid]: item.userResponse
         };
-        if (item.scratchPad) {
-          scratchPadData[item.testItemId] = item.scratchPad;
-        }
         // land on the testItems which is next to testItem that is attempted and has the highest index
         // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
         if (testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId)) {

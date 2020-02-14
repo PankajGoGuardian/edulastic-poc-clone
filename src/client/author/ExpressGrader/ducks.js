@@ -1,9 +1,10 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
-import { testActivityApi } from "@edulastic/api";
-import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
+import { testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { createSelector } from "reselect";
+import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
+import { SAVE_USER_WORK } from "../../assessment/constants/actions";
 
 export const SUBMIT_RESPONSE = "[expressGraderAnswers] submit";
 
@@ -107,10 +108,26 @@ function* submitResponse({ payload }) {
   }
 }
 
-function* scratchPadLoadSaga({ payload: questActivityId }) {
+function* scratchPadLoadSaga({ payload }) {
   try {
-    const { scratchPad, testItemId } = yield call(testActivityApi.getScratchpad, questActivityId);
-    yield put(scratchPadLoadSuccessAction({ scratchPad, testItemId }));
+    const { testActivityId, testItemId, callback } = payload;
+    if (testActivityId && testItemId) {
+      const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+        referrerId: testActivityId,
+        testItemId
+      });
+      const scratchpadData = {};
+      for (const attachment of attachments) {
+        const { data, testItemId: _testItemId } = attachment;
+        scratchpadData[_testItemId] = data;
+      }
+
+      yield put({ type: SAVE_USER_WORK, payload: scratchpadData });
+
+      if (callback) {
+        yield call(callback);
+      }
+    }
   } catch (e) {
     console.error(e);
     yield call(message.error, "Loading scratchPad failed");

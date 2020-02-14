@@ -6,20 +6,20 @@ import styled from "styled-components";
 import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
 import { AnswerContext } from "@edulastic/common";
+import produce from "immer";
+import { Modal, Row, Col } from "antd";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
-import { loadScratchPadAction } from "../../../../assessment/actions/userWork";
+import { loadScratchPadAction, clearUserWorkAction } from "../../../../assessment/actions/userWork";
 
 import AssessmentPlayerModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/ducks";
-import produce from "immer";
-import { Modal, Row, Col } from "antd";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
-function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages }) {
+function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages, isQuestionView, isExpressGrader }) {
   const rows = getRows(item, false);
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
@@ -49,6 +49,8 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
         evaluation={evaluation}
         showStudentWork={showStudentWork}
         passageTestItemID={testItemID}
+        isQuestionView={isQuestionView}
+        isExpressGrader={isExpressGrader}
       />
     </StyledFlexContainer>
   );
@@ -72,32 +74,6 @@ class ClassQuestions extends Component {
   };
 
   static contextType = AnswerContext;
-
-  componentDidMount() {
-    this.loadScratchPadData();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { questionActivities } = this.props;
-    if (prevProps.questionActivities !== questionActivities) {
-      this.loadScratchPadData();
-    }
-  }
-
-  loadScratchPadData = () => {
-    const { loadScratchPad, questionActivities } = this.props;
-    if (!isEmpty(questionActivities)) {
-      const userWork = {};
-      questionActivities.forEach(curr => {
-        if (curr.scratchPad && !userWork[curr.testItemId]) {
-          userWork[curr.testItemId] = curr.scratchPad;
-        }
-      });
-      if (!isEmpty(userWork)) {
-        loadScratchPad(userWork);
-      }
-    }
-  };
 
   // show AssessmentPlayerModal
   showPlayerModal = () => {
@@ -311,31 +287,36 @@ class ClassQuestions extends Component {
       passages = [],
       showTestletPlayer,
       classResponse,
-      testActivity
+      testActivity,
+      userWork,
+      isQuestionView
     } = this.props;
     const testItems = this.getTestItems();
-    const userWork = {};
+    const { expressGrader: isExpressGrader = false } = this.context;
+
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
         acc[curr.qid] = "pending";
       } else {
         acc[curr.qid] = curr.evaluation;
       }
-      // accumulating userwork also here to avoid an extra loops. ummm... another frugal
-      // ride over the looops?
-      //to indicate scratchpadData available
-      if (curr.scratchPadPresent && !userWork[curr.testItemId]) {
-        userWork[curr.testItemId] = {};
-      } else if (curr.scratchPad && !userWork[curr.testItemId]) {
-        userWork[curr.testItemId] = curr.scratchPad;
-      }
+
       return acc;
     }, {});
 
     const { qIndex, currentStudent, testData } = this.props;
 
     const testItemsPreview = testItems.map((item, index) => {
-      let showStudentWork = userWork[item._id] ? () => this.showStudentWork(item) : null;
+      let showStudentWork = null;
+      let scractchPadUsed = userWork[item._id];
+      if (isQuestionView) {
+        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPadPresent || false);
+      } else {
+        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
+      }
+      if (scractchPadUsed) {
+        showStudentWork = () => this.showStudentWork(item);
+      }
       if (testData.isDocBased) {
         showStudentWork = () => this.setState({ showDocBasedPlayer: true });
       }
@@ -348,6 +329,8 @@ class ClassQuestions extends Component {
           qIndex={qIndex || index}
           evaluation={evaluationStatus}
           showStudentWork={showStudentWork}
+          isQuestionView={isQuestionView}
+          isExpressGrader={isExpressGrader}
         />
       );
     });
@@ -430,10 +413,12 @@ export default connect(
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId)
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
+    userWork: get(state, ["userWork", "present"], {})
   }),
   {
-    loadScratchPad: loadScratchPadAction
+    loadScratchPad: loadScratchPadAction,
+    clearUserWork: clearUserWorkAction
   }
 )(ClassQuestions);
 

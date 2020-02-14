@@ -1,8 +1,8 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { takeEvery, put, call, all } from "redux-saga/effects";
+import { takeEvery, put, call, all, fork } from "redux-saga/effects";
 import { keyBy as _keyBy } from "lodash";
-import { reportsApi, testsApi } from "@edulastic/api";
+import { reportsApi, testsApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import {
@@ -14,6 +14,7 @@ import {
 import { receiveTestByIdSuccess, getQuestions } from "../../author/TestPage/ducks";
 import { markQuestionLabel } from "../../assessment/Transformer";
 import { loadQuestionsAction } from "../../author/sharedDucks/questions";
+import { REQUEST_SCRATCH_PAD_SUCCESS } from "../../assessment/reducers/userWork";
 
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
@@ -22,6 +23,24 @@ export const SET_FEEDBACK = "[studentItems] set feedback";
 // actions
 export const loadTestActivityReportAction = createAction(LOAD_TEST_ACTIVITY_REPORT);
 export const setFeedbackReportAction = createAction(SET_FEEDBACK);
+
+function* loadAttachmentsFromServer(filter) {
+  try {
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, filter);
+    for (const attachment of attachments) {
+      const { data: scratchPad, testItemId } = attachment;
+      yield put({ type: REQUEST_SCRATCH_PAD_SUCCESS, payload: { scratchPad, testItemId } });
+    }
+  } catch (error) {
+    console.log("error from attachmentAPI", error);
+  }
+}
+
+function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
+  yield all(
+    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId }))
+  );
+}
 
 function* loadTestActivityReport({ payload }) {
   try {
@@ -47,8 +66,20 @@ function* loadTestActivityReport({ payload }) {
           ...question,
           activity
         };
-      } else return question;
+      } return question;
     });
+    const { questionActivities = [] } = reports;
+    const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
+      if (activity?.scratchPad?.scratchpad || false) {
+        items.push(activity.testItemId);
+      }
+      return items;
+    }, []);
+    yield fork(getAttachmentsForItems, {
+      testActivityId: payload.testActivityId,
+      testItemsIdArray: scratchpadUsedItems
+    });
+
     yield put(loadQuestionsAction(_keyBy(questionsWithActivities, "id")));
     yield put(receiveTestByIdSuccess(test));
     yield put(setTestActivityAction(reports.testActivity));
@@ -56,23 +87,12 @@ function* loadTestActivityReport({ payload }) {
     yield put(setTestItemsAction(testItems));
     yield put(setPassagesDataAction(test.passages || []));
 
-    const { questionActivities = [] } = reports || {};
     let allAnswers = {};
-    const userWork = {};
     questionActivities.forEach(item => {
       allAnswers = {
         ...allAnswers,
         [item.qid]: item.userResponse
       };
-      // accumulate user work
-      if (item.scratchPad) {
-        userWork[item.testItemId] = item.scratchPad;
-      }
-    });
-
-    yield put({
-      type: LOAD_SCRATCH_PAD,
-      payload: userWork
     });
 
     yield put({

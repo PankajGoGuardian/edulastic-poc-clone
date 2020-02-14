@@ -327,6 +327,8 @@ class QuestionWrapper extends Component {
       evaluation,
       scrollContainer,
       loadScratchPad,
+      isQuestionView,
+      isExpressGrader,
       ...restProps
     } = this.props;
     const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
@@ -468,10 +470,17 @@ class QuestionWrapper extends Component {
                       {!!showStudentWork && (
                         <ShowStudentWorkBtn
                           onClick={() => {
-                            if (qid != questionActivityId) {
-                              loadScratchPad(questionActivityId);
+                            if (isQuestionView || isExpressGrader) {
+                              // load the data from server and then show
+                              loadScratchPad({
+                                testActivityId: data.activity.testActivityId,
+                                testItemId: data.activity.testItemId,
+                                callback: () => showStudentWork()
+                              });
+                            } else {
+                              // show the data using store
+                              showStudentWork();
                             }
-                            showStudentWork();
                           }}
                         >
                           {" "}

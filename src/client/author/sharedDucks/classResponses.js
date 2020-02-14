@@ -1,6 +1,6 @@
 import { delay } from "redux-saga";
-import { takeEvery, call, put, all, takeLatest, select } from "redux-saga/effects";
-import { classResponseApi, testActivityApi } from "@edulastic/api";
+import { takeEvery, call, put, all, takeLatest, select, fork } from "redux-saga/effects";
+import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import {
@@ -31,6 +31,7 @@ import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Tra
 import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 import { hasRandomQuestions } from "../ClassBoard/utils";
+import { REQUEST_SCRATCH_PAD_SUCCESS } from "../../assessment/reducers/userWork";
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
 
@@ -56,11 +57,39 @@ function* receiveClassResponseSaga({ payload }) {
   }
 }
 
+function* loadAttachmentsFromServer(filter) {
+  try {
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, filter);
+    for (const attachment of attachments) {
+      const { data: scratchPad, testItemId } = attachment;
+      yield put({ type: REQUEST_SCRATCH_PAD_SUCCESS, payload: { scratchPad, testItemId } });
+    }
+  } catch (error) {
+    console.error("error from attachmentAPI", error);
+  }
+}
+
+function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
+  yield all(
+    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId }))
+  );
+}
+
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
+    const { questionActivities = [] } = studentResponse;
+    const scratchpadUsedItems = questionActivities
+      .filter(activity => activity?.scratchPad?.scratchpad || false)
+      .map(activity => activity.testItemId);
+
+    yield fork(getAttachmentsForItems, {
+      testActivityId: payload.testActivityId,
+      testItemsIdArray: scratchpadUsedItems
+    });
     const originalData = yield select(state => state.author_classboard_testActivity?.data);
-    //AUTOSELECT group will have different questions for every student hence update the items from student response api
+    // AUTOSELECT group will have different questions for every student
+    // hence update the items from student response api
     if (hasRandomQuestions(originalData.test.itemGroups)) {
       const itemGroups = originalData.test.itemGroups.map(group => ({
         ...group,
@@ -117,7 +146,6 @@ function* receiveClassStudentResponseSaga({ payload }) {
         })
       );
     }
-
     yield put({
       type: RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
       payload: classStudentResponse
@@ -180,7 +208,6 @@ function* receiveStudentQuestionSaga({ payload }) {
         yield put(setTeacherEditedScore({ [qid]: score }));
       }
     }
-
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
       payload: feedbackResponse
@@ -224,7 +251,7 @@ function* updateStudentScore({ payload }) {
       testActivityId,
       itemId,
       questionId,
-      score: score,
+      score,
       groupId,
       studentId,
       shouldReceiveStudentResponse = false

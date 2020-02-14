@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { get, debounce } from "lodash";
 import { ActionCreators } from "redux-undo";
-import { hexToRGB, withWindowSizes, ScratchPadContext } from "@edulastic/common";
+import { hexToRGB, withWindowSizes } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Modal, message, Button } from "antd";
@@ -70,7 +70,6 @@ class WorksheetComponent extends React.Component {
   constructor(props) {
     super(props);
     this.pdfRef = React.createRef();
-    this.containerRef = React.createRef();
   }
 
   static propTypes = {
@@ -186,7 +185,9 @@ class WorksheetComponent extends React.Component {
 
     const newAnnotations = [...annotations];
 
-    const annotationIndex = newAnnotations.findIndex(item => item.questionId === question.questionId);
+    const annotationIndex = newAnnotations.findIndex(
+      item => item.questionId === question.questionId
+    );
 
     if (annotationIndex > -1) {
       newAnnotations.splice(annotationIndex, 1);
@@ -265,7 +266,8 @@ class WorksheetComponent extends React.Component {
 
     const newFreeFormNotes = {};
     // TODO some one plis fix this shit.
-    /* Scratchpad component requires an object in this({"1":value,"2":value,"3":value}) format to perform rendering.
+    /* Scratchpad component requires an object in this({"1":value,"2":value,"3":value}) 
+    format to perform rendering.
     As the freeFormNotes is not an array can not perform the shift or splice operations. 
     So found below way to shift items. */
     Object.keys(freeFormNotes).forEach(item => {
@@ -637,7 +639,8 @@ class WorksheetComponent extends React.Component {
       />
     );
 
-    // LEFT THUMBNAILS AREA 200+(15 extra space) IS THE THUMBNAILS AREA WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
+    // LEFT THUMBNAILS AREA 200+(15 extra space) IS THE THUMBNAILS AREA
+    // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
     const leftColumnWidth = minimized ? 0 : windowWidth > 1024 ? 215 : 195;
     // 350+(15 extra space) IS THE TOTAL WIDTH OF RIGHT QUESTION AREA
     const rightColumnWidth = windowWidth > 1024 ? 365 : 295;
@@ -725,55 +728,52 @@ class WorksheetComponent extends React.Component {
               overflowX: "auto",
               paddingLeft: `${!minimized && (testMode || viewMode === "edit") ? "60px" : "20px"}`
             }}
-            ref={this.containerRef}
           >
-            <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
-              <PDFPreview
-                page={selectedPage}
-                currentPage={currentPage + 1}
-                annotations={annotations}
-                onDragStart={this.onDragStart}
-                onDropAnnotation={this.handleAddAnnotation}
-                onHighlightQuestion={this.handleHighlightQuestion}
-                questions={questions}
-                questionsById={questionsById}
-                answersById={answersById}
-                renderExtra={svgContainer}
-                viewMode={viewMode}
-                reportMode={reportMode}
-                isToolBarVisible={isToolBarVisible}
-                pdfWidth={pdfWidth - 100}
-                minimized={minimized}
-                pageChange={this.handleChangePage}
+            <PDFPreview
+              page={selectedPage}
+              currentPage={currentPage + 1}
+              annotations={annotations}
+              onDragStart={this.onDragStart}
+              onDropAnnotation={this.handleAddAnnotation}
+              onHighlightQuestion={this.handleHighlightQuestion}
+              questions={questions}
+              questionsById={questionsById}
+              answersById={answersById}
+              renderExtra={svgContainer}
+              viewMode={viewMode}
+              reportMode={reportMode}
+              isToolBarVisible={isToolBarVisible}
+              pdfWidth={pdfWidth - 100}
+              minimized={minimized}
+              pageChange={this.handleChangePage}
+              testMode={testMode}
+              studentWork={studentWork}
+              highlighted={highlightedQuestion}
+              forwardedRef={this.pdfRef}
+              review={review}
+            />
+            {viewMode !== "report" && isToolBarVisible && (
+              <Tools
+                isWorksheet
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleToolChange}
+                onChangeFont={this.handleChangeFont}
+                currentFont={currentFont}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                onColorChange={this.handleColorChange}
                 testMode={testMode}
-                studentWork={studentWork}
-                highlighted={highlightedQuestion}
-                forwardedRef={this.pdfRef}
                 review={review}
+                lineWidth={lineWidth}
+                onChangeSize={this.handleChangeLineWidth}
+                isToolBarVisible={isToolBarVisible}
+                isDocBased={isDocBased}
               />
-              {viewMode !== "report" && !minimized && isToolBarVisible && (
-                <Tools
-                  isWorksheet
-                  onFillColorChange={this.onFillColorChange}
-                  fillColor={fillColor}
-                  deleteMode={deleteMode}
-                  currentColor={currentColor}
-                  onToolChange={this.handleToolChange}
-                  onChangeFont={this.handleChangeFont}
-                  currentFont={currentFont}
-                  activeMode={activeMode}
-                  undo={this.handleUndo}
-                  redo={this.handleRedo}
-                  onColorChange={this.handleColorChange}
-                  testMode={testMode}
-                  review={review}
-                  lineWidth={lineWidth}
-                  onChangeSize={this.handleChangeLineWidth}
-                  isToolBarVisible={isToolBarVisible}
-                  isDocBased={isDocBased}
-                />
-              )}
-            </ScratchPadContext.Provider>
+            )}
           </div>
         </Fragment>
         <Questions
@@ -828,7 +828,9 @@ const enhance = compose(
       test: getTestEntitySelector(state),
       userWork: get(
         state,
-        `userWork.present[${ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id}]`,
+        `userWork.present[${
+          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
+        }]`,
         {}
       ),
       itemDetail: ownProps.isAssessmentPlayer ? ownProps.item : state.itemDetail.item,

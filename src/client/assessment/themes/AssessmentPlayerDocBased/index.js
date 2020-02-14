@@ -15,7 +15,7 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 import PlayerHeader from "./PlayerHeader";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
-import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
+import WorksheetComponent from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
 
@@ -51,7 +51,6 @@ class AssessmentPlayerDocBased extends React.Component {
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { settings } = props;
     return {
       ...state,
       calculateMode: `${props?.settings?.calcType}_${props?.settings?.calcProvider}`
@@ -102,8 +101,8 @@ class AssessmentPlayerDocBased extends React.Component {
   onChangeTool = toolType => {
     // set all tools to false if only one tool can be active at a time
     this.setState(prevState => {
-      let { currentToolMode } = prevState;
-      let _currentToolMode = { ...currentToolMode };
+      const { currentToolMode } = prevState;
+      const _currentToolMode = { ...currentToolMode };
       _currentToolMode[toolType] = !_currentToolMode[toolType];
       return {
         currentToolMode: _currentToolMode
@@ -134,7 +133,7 @@ class AssessmentPlayerDocBased extends React.Component {
     const item = items[0];
     const dropdownOptions = item.data.questions
       .filter(q => q.type !== questionType.SECTION_LABEL)
-      .map((item, index) => index);
+      .map((_, index) => index);
     const currentItem = answers.filter(answer => !isEmpty(answer)).length - 1;
     const questions = this.assessmentQuestions();
 
@@ -162,7 +161,7 @@ class AssessmentPlayerDocBased extends React.Component {
             onChangeTool={this.onChangeTool}
           />
           {!loading && (
-            <Worksheet
+            <WorksheetComponent
               docUrl={docUrl}
               isAssessmentPlayer
               item={item}

@@ -17,15 +17,14 @@ const toolBoxDimension = {
 export const ToolBox = styled(FlexContainer)`
   width: ${toolBoxDimension.width};
   min-height: ${toolBoxDimension.height};
-  position: fixed;
-  margin-left: ${props => (props.isToolBarVisible ? "-60px" : "0px")};
+  position: ${props => (props.isWorksheet ? "absolute" : "fixed")};
   background: transparent;
   z-index: 500;
   border-radius: 4px;
   padding: 0;
   display: ${props => (props.review && !props.testMode ? "none" : "")};
   top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.xs + 30)}px;
-  left: 0px;
+  left: ${props => (props.isWorksheet ? 12 : 0)}px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.md + 30)}px;

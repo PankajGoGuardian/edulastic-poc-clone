@@ -97,6 +97,7 @@ const QuestionMath = ({ onUpdate, question }) => {
             item={question}
             index={0}
             toggleAdditional={toggleAdditional}
+            style={{ width: "250px" }}
             {...value}
           />
         </FormGroup>

@@ -1,17 +1,18 @@
 /* eslint-disable react/prop-types */
-import React, { useLayoutEffect, useState, useEffect } from "react";
+import React, { useLayoutEffect, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { Document, Page } from "react-pdf";
 import { connect } from "react-redux";
 import { Droppable } from "react-drag-and-drop";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withRouter } from "react-router";
+import { ScratchPadContext } from "@edulastic/common";
 
+import Styled from "styled-components";
 import { getPreviewSelector } from "../../../src/selectors/view";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview, ZoomControlCotainer, PDFZoomControl } from "./styled";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import Styled from "styled-components";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -61,6 +62,8 @@ const PDFPreview = ({
   review
 }) => {
   const [pdfScale, scalePDF] = useState(1);
+
+  const previewContainer = useRef();
 
   const PDFScaleUp = (scale = 0.25) => {
     scalePDF(prevState => (prevState < 3 ? prevState + scale : prevState));
@@ -121,19 +124,21 @@ const PDFPreview = ({
           onDrop={handleDrop(currentPage, onDropAnnotation)}
           style={{ top: 0, display: "block" }}
         >
-          <Preview onClick={handleRemoveHighlight}>
-            {page.URL !== "blank" && (
-              <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-                <Page
-                  pageNumber={page.pageNo}
-                  scale={pdfScale}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  width={pdfWidth}
-                />
-              </Document>
-            )}
-            {renderExtra}
+          <Preview onClick={handleRemoveHighlight} ref={previewContainer}>
+            <ScratchPadContext.Provider value={{ getContainer: () => previewContainer.current }}>
+              {page.URL !== "blank" && (
+                <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
+                  <Page
+                    pageNumber={page.pageNo}
+                    scale={pdfScale}
+                    renderTextLayer={false}
+                    renderAnnotationLayer={false}
+                    width={pdfWidth}
+                  />
+                </Document>
+              )}
+              {renderExtra}
+            </ScratchPadContext.Provider>
           </Preview>
           <AnnotationsContainer className="annotations-container" zoom={pdfScale}>
             {annotations

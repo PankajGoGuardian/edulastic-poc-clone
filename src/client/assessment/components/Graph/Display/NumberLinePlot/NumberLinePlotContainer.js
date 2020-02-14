@@ -18,15 +18,17 @@ import { CONSTANT, Colors } from "../../Builder/config";
 import GraphEditTools from "../../components/GraphEditTools";
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
-import ControlTools from "./ControlTools";
 import { GraphWrapper, JSXBox } from "./styled";
 
-import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
+import {
+  getAdjustedHeightAndWidth,
+  getAdjustedV1AnnotationCoordinatesForRender
+} from "../../common/utils";
 import { Tools } from "../../../../widgets/Charts/components/Tools";
 
 const v1Dimenstions = {
-  v1Height: 390,
-  v1Width: 720
+  v1Height: 432,
+  v1Width: 750
 };
 
 const getColoredElems = (elements, compareResult) => {
@@ -394,8 +396,13 @@ class NumberLinePlotContainer extends PureComponent {
     if (isV1Migrated) {
       _graphData = next(graphData, __graphData => {
         if (__graphData.annotations) {
-          for (let o of __graphData.annotations) {
-            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
+          for (const o of __graphData.annotations) {
+            const co = getAdjustedV1AnnotationCoordinatesForRender(
+              adjustedHeightWidth,
+              layout,
+              o,
+              v1Dimenstions
+            );
             o.position.x = co.x;
             o.position.y = co.y;
             o.size.width = co.width;
@@ -406,9 +413,18 @@ class NumberLinePlotContainer extends PureComponent {
     }
 
     return (
-      <div data-cy="axis-labels-container" ref={this.numberLinePlotRef} style={{ overflowX: "hidden", width: "100%" }}>
+      <div
+        data-cy="axis-labels-container"
+        ref={this.numberLinePlotRef}
+        style={{ overflowX: "hidden", width: "100%" }}
+      >
         {!disableResponse && (
-          <Tools tools={selectedControl} controls={controls} setTool={this.onSelectControl} justifyContent="flex-end" />
+          <Tools
+            tools={selectedControl}
+            controls={controls}
+            setTool={this.onSelectControl}
+            justifyContent="flex-end"
+          />
         )}
         <GraphWrapper>
           <div style={{ position: "relative" }}>

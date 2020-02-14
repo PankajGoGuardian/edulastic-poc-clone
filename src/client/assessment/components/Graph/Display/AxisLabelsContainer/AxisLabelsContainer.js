@@ -23,12 +23,15 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 import Tools from "../../common/Tools";
 import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
-import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
+import {
+  getAdjustedHeightAndWidth,
+  getAdjustedV1AnnotationCoordinatesForRender
+} from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
 
 const v1Dimenstions = {
   v1Height: 390,
-  v1Width: 720
+  v1Width: 740
 };
 
 const getColoredElems = (elements, compareResult) => {
@@ -238,7 +241,7 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     const { disableResponse: prevDisableResponse } = prevProps;
-    if (disableResponse && prevDisableResponse != disableResponse) {
+    if (disableResponse && prevDisableResponse !== disableResponse) {
       // reset the graph when editResponse is disabled
       this._graph.reset();
     }
@@ -376,7 +379,6 @@ class AxisLabelsContainer extends PureComponent {
       setQuestionData,
       list,
       zoomLevel,
-      previewTab,
       theme
     } = this.props;
     const { shouldZoom } = theme;
@@ -397,8 +399,13 @@ class AxisLabelsContainer extends PureComponent {
     if (isV1Migrated) {
       _graphData = next(graphData, __graphData => {
         if (__graphData.annotations) {
-          for (let o of __graphData.annotations) {
-            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
+          for (const o of __graphData.annotations) {
+            const co = getAdjustedV1AnnotationCoordinatesForRender(
+              adjustedHeightWidth,
+              layout,
+              o,
+              v1Dimenstions
+            );
             o.position.x = co.x;
             o.position.y = co.y;
             o.size.width = co.width;
@@ -411,7 +418,10 @@ class AxisLabelsContainer extends PureComponent {
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+          resources={[
+            `${AppConfig.jqueryPath}/jquery.min.js`,
+            `${AppConfig.katexPath}/katex.min.js`
+          ]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
@@ -428,7 +438,10 @@ class AxisLabelsContainer extends PureComponent {
               />
             </StyledToolsContainer>
           )}
-          <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
+          <ContainerWithResponses
+            className="jsxbox-with-response-box"
+            responseBoxPosition={responseBoxPosition}
+          >
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
                 <ResponseBox
@@ -445,7 +458,7 @@ class AxisLabelsContainer extends PureComponent {
                   minHeight={adjustedHeightWidth.height}
                 />
               )}
-              <div style={{ position: "relative", overflow: "auto" }}>
+              <div style={{ position: "relative", overflow: "auto", width: "100%" }}>
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
                 <AnnotationRnd
                   question={_graphData}
@@ -489,7 +502,8 @@ AxisLabelsContainer.propTypes = {
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
-  zoomLevel: PropTypes.number
+  zoomLevel: PropTypes.number,
+  theme: PropTypes.object
 };
 
 AxisLabelsContainer.defaultProps = {
@@ -502,7 +516,8 @@ AxisLabelsContainer.defaultProps = {
   previewTab: CLEAR,
   changePreviewTab: () => {},
   elementsIsCorrect: false,
-  zoomLevel: 1
+  zoomLevel: 1,
+  theme: {}
 };
 
 export default connect(

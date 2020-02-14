@@ -80,7 +80,12 @@ const SvgDraw = ({
   const getSvgRect = () => svg?.current?.getBoundingClientRect() || {};
 
   const calcTextPosition = text => {
-    const { width, height } = measureText(text.value, { fontSize: `${lineWidth * 3}px` }, "svg", "text");
+    const { width, height } = measureText(
+      text.value,
+      { fontSize: `${lineWidth * 3}px` },
+      "svg",
+      "text"
+    );
     const bounded = getSvgRect();
     return produce(text, draft => {
       const xDiff = draft.x + width - bounded.width - 10;
@@ -461,7 +466,9 @@ const SvgDraw = ({
   };
 
   const getPointsForDrawingPath = path =>
-    `M ${path[0].x},${path[0].y} ${path.map((point, i) => (i !== 0 ? `L ${point.x},${point.y}` : "")).join(" ")}`;
+    `M ${path[0].x},${path[0].y} ${path
+      .map((point, i) => (i !== 0 ? `L ${point.x},${point.y}` : ""))
+      .join(" ")}`;
 
   const mouseUpAndDownControl = (flag, index) => e => {
     e.preventDefault();
@@ -666,7 +673,8 @@ const SvgDraw = ({
   const getMouseDownHandler = (mode, index) =>
     activeMode === mode && !deleteMode ? handleDragStart(index) : undefined;
 
-  const getMouseUpHandler = (mode, index) => (activeMode === mode && !deleteMode ? handleDragEnd(index) : undefined);
+  const getMouseUpHandler = (mode, index) =>
+    activeMode === mode && !deleteMode ? handleDragEnd(index) : undefined;
 
   const getOnClickHandler = (mode, index) =>
     deleteMode ? handleDeleteFigure(index) : activeMode === mode ? handleActive(index) : undefined;
@@ -778,9 +786,12 @@ const SvgDraw = ({
 
   useEffect(() => {
     if (svg.current && containerRef) {
-      const { scrollHeight, scrollWidth } = containerRef;
-      svg.current.style.height = `${scrollHeight}px`;
-      svg.current.style.width = `${scrollWidth}px`;
+      // get dimensions of container only after content is loaded
+      setTimeout(() => {
+        const { scrollHeight, scrollWidth } = containerRef;
+        svg.current.style.height = `${scrollHeight}px`;
+        svg.current.style.width = `${scrollWidth}px`;
+      });
     }
   }, [containerRef, svg.current]);
 

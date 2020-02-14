@@ -760,9 +760,8 @@ export const isItemVisibiltySelector = createSelector(
   (state, additionalData, userId, assignedBy) => {
     const assignmentStatus = state?.data?.status;
     const contentVisibility = additionalData?.testContentVisibility;
-    const isPermitted = state?.data?.test?.isPermitted;
-    //For assigned by user content will be always visible. Is permitted will be true for shared test with admin permission.
-    if (userId === assignedBy?._id || isPermitted === true) {
+    //For assigned by user content will be always visible.
+    if (userId === assignedBy?._id) {
       return true;
     }
     //No key called testContentVisibility ?

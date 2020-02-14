@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -10,7 +11,6 @@ import { AnswerContext } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
 import { getOrderedQuestionsAndAnswers } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
-import { getTestAuthorName } from "../dataUtils";
 import { getCollectionsSelector, getUserRole } from "../src/selectors/user";
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants;
@@ -47,7 +47,7 @@ function useTestFetch(testId) {
   return testDetails;
 }
 
-const PrintAssessment = ({ match, collections, userRole }) => {
+const PrintAssessment = ({ match, userRole }) => {
   const { testId } = match.params;
   const test = useTestFetch(testId);
 
@@ -72,16 +72,13 @@ const PrintAssessment = ({ match, collections, userRole }) => {
         <Col>
           <span> {test.title}</span>
         </Col>
-        <Col>
-          <span> Collection: {getTestAuthorName(test, collections)} </span>
-        </Col>
       </Row>
       <span> Created By {test?.createdBy?.name} </span> <br />
       <hr />
       {!isContentHidden ? (
         <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
           {test.questions.map((question, index) => (
-            <>
+            <div style={index !== 0 ? {pageBreakInside: "avoid"} : {}}>
               <QuestionWrapper
                 view="preview"
                 type={question.type}
@@ -92,31 +89,38 @@ const PrintAssessment = ({ match, collections, userRole }) => {
                 isPrintPreview
               />
               <hr />
-            </>
+            </div>
           ))}
-          <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
-            Answer Key of {test.title}
-          </span>
-          {test.answers.map(answer => (
-            <AnswerContainer>
-              <div className="answer-wrapper">
-                {answer.qLabel}. {answer.answer}
-              </div>
-              <hr />
-            </AnswerContainer>
-          ))}
+          <StyledAnswerWrapper>
+            <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
+              Answer Key of {test.title}
+            </span>
+            {test.answers.map(answer => (
+              <AnswerContainer>
+                <div className="answer-wrapper">
+                  {answer.qLabel}. {answer.answer}
+                </div>
+                <hr />
+              </AnswerContainer>
+            ))}
+          </StyledAnswerWrapper>
         </AnswerContext.Provider>
       ) : (
         <div>
           <b>
-            View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to
-            grading"
+            View of Items is restricted by the admin if content visibility is set to &quot;Always hidden&quot; OR &quot;Hide prior to
+            grading&quot;
           </b>
         </div>
       )}
     </PrintAssessmentContainer>
   );
 };
+
+PrintAssessment.propTypes = {
+  match: PropTypes.object,
+  userRole: PropTypes.string
+}
 
 const enhance = compose(
   withRouter,
@@ -130,15 +134,17 @@ export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
   background-color: white;
-  padding: 30px;
 
   .print-assessment-title-container {
     .ant-col {
       flex: 1;
+      font-size: 20px;
+      font-weight: bold;
     }
-    .ant-col:nth-child(2) {
-      text-align: right;
-    }
+  }
+
+  .question-wrapper {
+    max-width: 100% !important;
   }
 `;
 
@@ -146,7 +152,7 @@ const StyledTitle = styled.p`
   font-size: 30px;
   text-align: left;
   font-weight: normal;
-  padding: 15px 0 0 0px;
+  padding: 15px 0 10px 0px;
   margin: 0;
 `;
 
@@ -158,4 +164,9 @@ const AnswerContainer = styled.div`
   .answer-wrapper {
     padding: 5px 30px;
   }
+`;
+
+const StyledAnswerWrapper = styled.div`
+  page-break-before: always;
+  padding-top: 20px;
 `;

@@ -67,7 +67,8 @@ const MatchListPreview = ({
   changePreviewTab,
   changePreview,
   evaluation,
-  isReviewTab
+  isReviewTab,
+  isPrintPreview
 }) => {
   const {
     possibleResponses: posResponses,
@@ -252,7 +253,7 @@ const MatchListPreview = ({
     display: "flex",
     flexDirection: getDirection(listPosition),
     alignItems: horizontallyAligned ? "flex-start" : "center",
-    width: horizontallyAligned ? 1050 : 750,
+    width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750,
     margin: "auto"
   };
 
@@ -260,11 +261,11 @@ const MatchListPreview = ({
     marginRight: listPosition === "right" ? 20 : 0,
     marginLeft: listPosition === "left" ? 20 : 0,
     marginTop: horizontallyAligned ? 14 : 0,
-    width: horizontallyAligned ? 1030 - dragItemMaxWidth : 750
+    width: isPrintPreview ? "100%" : horizontallyAligned ? 1030 - dragItemMaxWidth : 750
   };
 
   const choicesBoxStyle = {
-    width: horizontallyAligned ? dragItemMaxWidth : 750
+    width: isPrintPreview ? "100%" : horizontallyAligned ? dragItemMaxWidth : 750
   };
 
   const choicesBoxDropContainerStyle = {
@@ -287,7 +288,7 @@ const MatchListPreview = ({
   };
 
   const correctAnswerBoxStyle = {
-    width: horizontallyAligned ? 1050 : 750
+    width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
   };
 
   const showEvaluate = (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);

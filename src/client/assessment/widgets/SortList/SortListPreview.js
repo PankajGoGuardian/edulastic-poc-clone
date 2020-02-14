@@ -43,7 +43,8 @@ const SortListPreview = ({
   showQuestionNumber,
   disableResponse,
   changePreviewTab,
-  isReviewTab
+  isReviewTab,
+  isPrintPreview,
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const { expressGrader, isAnswerModifiable } = answerContextConfig;
@@ -207,14 +208,14 @@ const SortListPreview = ({
 
   const contentStyle = {
     minWidth: 580,
-    maxWidth: 980,
+    maxWidth: isPrintPreview ? "100%" : 980,
     margin: "auto",
     overflow: "auto"
   };
 
   const wrapperStyles = {
     marginTop: smallSize ? 0 : 40,
-    width: dragItemMaxWidth * 2 + 180
+    width: isPrintPreview ? "100%" : dragItemMaxWidth * 2 + 180
   };
 
   const dragItemStyle = {

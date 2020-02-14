@@ -267,6 +267,7 @@ class ClozeDragDropDisplay extends Component {
       flowLayout,
       showQuestionNumber,
       isExpressGrader,
+      isPrintPreview,
       question,
       view,
       t
@@ -392,7 +393,7 @@ class ClozeDragDropDisplay extends Component {
 
     const answerContainerStyle = {
       minWidth: dragItemMaxWidth + 62,
-      maxWidth: horizontallyAligned ? 1050 : 750
+      maxWidth: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
     };
 
     const responseBoxStyle = {

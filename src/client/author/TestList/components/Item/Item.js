@@ -133,7 +133,11 @@ class Item extends Component {
       item: { _id: testId },
       approveOrRejectSingleTestRequestAction
     } = this.props;
-    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: newCollections });
+    approveOrRejectSingleTestRequestAction({
+      testId,
+      status: "published",
+      collections: newCollections
+    });
   };
 
   onReject = () => {
@@ -150,7 +154,7 @@ class Item extends Component {
         title,
         tags = [],
         analytics,
-        _source,
+        _source = {},
         thumbnail,
         status,
         _id: testId,
@@ -172,7 +176,9 @@ class Item extends Component {
 
     if (isPlaylist) {
       const standardz =
-        _source?.modules?.map(m => m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)) || [];
+        _source?.modules?.map(m =>
+          m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)
+        ) || [];
       standardz?.forEach(x => x?.forEach(y => y?.forEach(z => standardsIdentifiers?.push([z]))));
     }
 
@@ -183,10 +189,11 @@ class Item extends Component {
     let collectionName = "PRIVATE";
     if (collections?.length > 0 && itemBanks.length > 0) {
       const filteredCollections = collections.filter(c => itemBanks.find(i => i._id === c._id));
-      if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
+      if (filteredCollections.length > 0)
+        collectionName = filteredCollections.map(c => c.name).join(", ");
     } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
       collectionName = "Edulastic Certified";
-    } else if (!!sharedType) {
+    } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
       if (!isNaN(+sharedType)) {
         collectionName = sharedTypeMap[+sharedType];
@@ -217,7 +224,11 @@ class Item extends Component {
           closeTestPreviewModal={this.hidePreviewModal}
         />
         {isDeleteModalOpen ? (
-          <DeleteItemModal isVisible={isDeleteModalOpen} onCancel={this.onDeleteModelCancel} testId={item._id} />
+          <DeleteItemModal
+            isVisible={isDeleteModalOpen}
+            onCancel={this.onDeleteModelCancel}
+            testId={item._id}
+          />
         ) : null}
         <Container
           isPlaylist={isPlaylist}
@@ -249,14 +260,19 @@ class Item extends Component {
                 )}
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
-                getAuthorCollectionMap(false, 30, 30)["edulastic_certified"].icon}
+                getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
               {!!collections.length && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
           }
         >
           <TestInfo isPlaylist={isPlaylist}>
-            <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
+            <StyledLink title={isPlaylist ? _source?.title : title}>
+              {isPlaylist ? _source?.title : title}
+            </StyledLink>
+            {isPlaylist && (
+              <StyledDesc title={_source.description}>{_source.description}</StyledDesc>
+            )}
+
             {isPlaylist && (
               <TagsWrapper>
                 <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
@@ -269,7 +285,9 @@ class Item extends Component {
             <MidRow>
               <Collection>
                 <label>COLLECTIONS</label>
-                <CollectionNameWrapper title={collectionName}>{collectionName}</CollectionNameWrapper>
+                <CollectionNameWrapper title={collectionName}>
+                  {collectionName}
+                </CollectionNameWrapper>
               </Collection>
               <Qcount>
                 <label>TOTAL ITEMS</label>
@@ -283,7 +301,7 @@ class Item extends Component {
               <Author isPlaylist={isPlaylist}>
                 <AuthorWrapper>
                   {collections.find(o => o.name === "Edulastic Certified") ? (
-                    getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon
+                    getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                   ) : (
                     <IconUser color={cardTitleColor} />
                   )}

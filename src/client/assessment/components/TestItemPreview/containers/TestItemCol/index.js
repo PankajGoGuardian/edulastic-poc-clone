@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Tabs, AnswerContext } from "@edulastic/common";
+import { questionType } from "@edulastic/constants";
 
-import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../../constants/others";
+import { MAX_MOBILE_WIDTH } from "../../../../constants/others";
 
 import QuestionWrapper from "../../../QuestionWrapper";
 
@@ -10,7 +11,6 @@ import { Container, WidgetContainer } from "./styled/Container";
 import { MobileRightSide } from "./styled/MobileRightSide";
 import { MobileLeftSide } from "./styled/MobileLeftSide";
 import { IconArrow } from "./styled/IconArrow";
-import { questionType } from "@edulastic/constants";
 
 class TestItemCol extends Component {
   state = {
@@ -25,14 +25,24 @@ class TestItemCol extends Component {
     multiple: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    qIndex: PropTypes.number
+    qIndex: PropTypes.number,
+    LCBPreviewModal: PropTypes.bool.isRequired,
+    evaluation: PropTypes.object,
+    previousQuestionActivity: PropTypes.array,
+    previewTab: PropTypes.string.isRequired,
+    isDocBased: PropTypes.bool,
+    colCount: PropTypes.number.isRequired,
+    colIndex: PropTypes.number.isRequired
   };
 
   static defaultProps = {
     showFeedback: false,
     multiple: false,
     style: {},
-    qIndex: null
+    qIndex: null,
+    previousQuestionActivity: [],
+    isDocBased: false,
+    evaluation: {}
   };
 
   handleTabChange = value => {
@@ -59,10 +69,14 @@ class TestItemCol extends Component {
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const qLabel = questions[widget.reference]?.qLabel;
     // question label for preview mode
+    const { expressGrader = false } = this.context;
     const question =
-      questions[widget.reference]?.qLabel && (!isDocBased || this.context.expressGrader)
+      questions[widget.reference]?.qLabel && (!isDocBased || expressGrader)
         ? questions[widget.reference]
-        : { ...questions[widget.reference], qLabel: qLabel || `Q${questions[widget.reference]?.qIndex || index + 1}` };
+        : {
+            ...questions[widget.reference],
+            qLabel: qLabel || `Q${questions[widget.reference]?.qIndex || index + 1}`
+          };
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;
@@ -74,7 +88,8 @@ class TestItemCol extends Component {
 
     const displayFeedback = true;
 
-    const isResourceWidget = nextWidget.widgetType === "resource";
+    // resources other than passage, should be wrapped after the question.
+    const isResourceWidget = nextWidget.widgetType === "resource" && nextWidget.type !== "passage";
     const resource = questions[nextWidget.reference];
     return (
       <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }}>
@@ -132,12 +147,13 @@ class TestItemCol extends Component {
         : col.dimension || "auto";
     return (
       <Container
-        className={"test-item-col"}
+        className="test-item-col"
         value={value}
         style={style}
         width={width}
         hasCollapseButtons={
-          ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
+          ["studentReport", "studentPlayer"].includes(restProps.viewComponent) &&
+          restProps.showCollapseBtn
         }
       >
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
@@ -168,14 +184,21 @@ class TestItemCol extends Component {
         )}
         <WidgetContainer>
           {col.widgets
-            .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
+            .filter(
+              widget =>
+                widget.type !== questionType.SECTION_LABEL &&
+                (widget.widgetType !== "resource" || widget.type === "passage")
+              // resources other than passage, should be wrapped after the question.
+            )
             .map((widget, i) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
                   value === widget.tabIndex &&
                   this.renderTabContent(widget, col.flowLayout, col.widgets[i + 1])}
-                {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, col.widgets[i + 1], i)}
+                {col.tabs &&
+                  !col.tabs.length &&
+                  this.renderTabContent(widget, col.flowLayout, col.widgets[i + 1], i)}
               </React.Fragment>
             ))}
         </WidgetContainer>

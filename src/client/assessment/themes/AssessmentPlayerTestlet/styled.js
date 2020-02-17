@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Button } from "antd";
 import { boxShadowDefault } from "@edulastic/colors";
 import { Header } from "../common";
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
@@ -55,33 +56,26 @@ export const PlayerTitle = styled.h1`
     white-space: nowrap;
   }
 `;
-export const ActionButton = styled.div`
+export const ActionButton = styled(Button)`
   border-radius: 5px;
-  padding: 12px 14px;
+  height: 40px;
   margin-left: 10px;
   color: #00ad50;
   font-weight: 900;
   font-size: 17px;
   user-select: none;
-  ${props => {
-    const { disable } = props;
-    return `
-      background: ${disable ? "#dfdfdf" : "#fff"};
-      ${
-        disable
-          ? ` cursor: not-allowed;
-              pointer-events: none;
-          `
-          : `cursor: pointer;`
-      }
-    `;
-  }}
+
   span {
     margin: 0px 8px;
   }
 
   svg {
     fill: #00ad50;
+  }
+  &.ant-btn[disabled] {
+    svg {
+      fill: #d9d9d8;
+    }
   }
 `;
 

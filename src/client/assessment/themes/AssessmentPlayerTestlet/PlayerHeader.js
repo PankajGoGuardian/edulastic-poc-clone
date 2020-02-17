@@ -4,7 +4,13 @@ import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/ico
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
 
-import { HeaderPracticePlayer, PlayerTitle, ContainerRight, FlexDisplay, ActionButton } from "./styled";
+import {
+  HeaderPracticePlayer,
+  PlayerTitle,
+  ContainerRight,
+  FlexDisplay,
+  ActionButton
+} from "./styled";
 
 import Logo from "../../assets/ets-log.png";
 
@@ -36,7 +42,7 @@ const PlayerHeader = ({
                       <IconChevronLeft />
                     </ActionButton>
                   )}
-                  <ActionButton onClick={onNextQuestion} title="Next" disable={!unlockNext}>
+                  <ActionButton onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
                     <span>Next</span>
                     <IconGraphRightArrow />
                   </ActionButton>

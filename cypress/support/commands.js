@@ -80,25 +80,30 @@ Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
   });
 });
 
-Cypress.Commands.add("scrollPageAndMatchImageSnapshots", (scrollOffset, pageHeight, pageContext) => {
-  cy.isPageScrollPresent(scrollOffset, pageHeight).then(({ hasScroll, minScrolls, scrollSize }) => {
-    if (hasScroll) {
-      let scrollNum = 1;
-      let scrollInPixel = scrollSize;
-      const testName = FileHelper.getTestFullName();
+Cypress.Commands.add(
+  "scrollPageAndMatchImageSnapshots",
+  (scrollOffset, pageHeight, pageContext) => {
+    cy.isPageScrollPresent(scrollOffset, pageHeight).then(
+      ({ hasScroll, minScrolls, scrollSize }) => {
+        if (hasScroll) {
+          let scrollNum = 1;
+          let scrollInPixel = scrollSize;
+          const testName = FileHelper.getTestFullName();
 
-      while (scrollNum <= minScrolls) {
-        if (pageContext) {
-          cy.wrap(pageContext).scrollTo(0, scrollInPixel);
-        } else cy.scrollTo(0, scrollInPixel);
-        cy.wait(1000);
-        cy.matchImageSnapshotWithSize(`${testName}-scroll-${scrollNum}`);
-        scrollNum += 1;
-        scrollInPixel += scrollSize;
+          while (scrollNum <= minScrolls) {
+            if (pageContext) {
+              cy.wrap(pageContext).scrollTo(0, scrollInPixel);
+            } else cy.scrollTo(0, scrollInPixel);
+            cy.wait(1000);
+            cy.matchImageSnapshotWithSize(`${testName}-scroll-${scrollNum}`);
+            scrollNum += 1;
+            scrollInPixel += scrollSize;
+          }
+        } else cy.log("Page scroll not found, not taking scrolled screenshots");
       }
-    } else cy.log("Page scroll not found, not taking scrolled screenshots");
-  });
-});
+    );
+  }
+);
 
 Cypress.Commands.add("clearToken", () => {
   window.localStorage.clear();

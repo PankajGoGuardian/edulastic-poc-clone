@@ -42,6 +42,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   };
 
   before("Login and create new items", () => {
+    cy.getAllTestsAndDelete(contEditor.email);
+    cy.getAllItemsAndDelete(contEditor.email);
     cy.login("publisher", contEditor.email, contEditor.pass);
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then(id => {

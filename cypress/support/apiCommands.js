@@ -10,6 +10,7 @@ const { _ } = Cypress;
 const fixtureFolderPath = "cypress/fixtures";
 const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData-${ENV}.json`;
 const daCredential = { username: "da.automation@snapwiz.com", password: "automation" };
+const NO_ITEMS_TO_DELETE = 50;
 
 Cypress.Commands.add("createTestData", () => {
   let studentsAttemptJson;
@@ -146,6 +147,20 @@ Cypress.Commands.add("deleteTest", test => {
   });
 });
 
+Cypress.Commands.add("deletePlayList", playListObj => {
+  cy.request({
+    url: `${BASE_URL}/playlists/${playListObj._id}`,
+    method: "DELETE",
+    headers: {
+      Authorization: playListObj.authToken
+    },
+    failOnStatusCode: false
+  }).then(({ status }) => {
+    expect(status).to.eq(200);
+    console.log("PlayList deleted with _id :", playListObj._id);
+  });
+});
+
 Cypress.Commands.add("saveItemDetailToDelete", itemId => {
   if (itemId) {
     cy.readFile(`${deleteTestDataFile}`).then(json => {
@@ -173,6 +188,19 @@ Cypress.Commands.add("saveTestDetailToDelete", testId => {
     });
   }
 });
+Cypress.Commands.add("saveplayListDetailToDelete", playlistId => {
+  if (playlistId) {
+    return cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.playlist) json.playlist = [];
+      const playlistObj = {
+        _id: playlistId,
+        authToken: getAccessToken()
+      };
+      json.playlist.push(playlistObj);
+      return cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
+});
 
 Cypress.Commands.add("deleteTestData", () => {
   cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
@@ -180,6 +208,15 @@ Cypress.Commands.add("deleteTestData", () => {
     if (fileContent !== null) {
       testData = JSON.parse(fileContent);
       console.log("testDataJson in deleteTestData", testData);
+
+      // delete playlist
+
+      if (testData.playlist && testData.playlist.length > 0) {
+        testData.playlist.forEach(playlistObj => {
+          cy.deletePlayList(playlistObj);
+        });
+        delete testData.playlist;
+      }
 
       // delete tests
       if (testData.tests && testData.tests.length > 0) {
@@ -319,4 +356,109 @@ Cypress.Commands.add("saveClassDetailToDelete", classJson => {
       cy.writeFile(`${deleteTestDataFile}`, json);
     });
   }
+});
+
+Cypress.Commands.add("getAllTestsAndDelete", (publisher, password = "snapwiz") => {
+  cy.setToken(publisher, password).then(() => {
+    cy.getAllOwnTests().then(testIds => {
+      console.log("All Assignments = ", testIds);
+      testIds.forEach(testObj => {
+        cy.deleteTest(testObj);
+      });
+    });
+  });
+});
+
+Cypress.Commands.add("getAllItemsAndDelete", (publisher, password = "snapwiz") => {
+  cy.setToken(publisher, password).then(() => {
+    cy.getAllOwnItems().then(itemIds => {
+      itemIds.forEach(itemObj => {
+        cy.deleteItem(itemObj);
+      });
+    });
+  });
+});
+
+Cypress.Commands.add("getAllOwnTests", (access_token = getAccessToken()) => {
+  let testIds = [];
+  return cy
+    .request({
+      url: `${BASE_URL}/search/tests`,
+      method: "POST",
+      body: {
+        search: {
+          questionType: "",
+          depthOfKnowledge: "",
+          authorDifficulty: "",
+          collections: [],
+          curriculumId: "",
+          status: "",
+          standardIds: [],
+          grades: [],
+          subject: "",
+          tags: [],
+          searchString: "",
+          filter: "AUTHORED_BY_ME",
+          createdAt: ""
+        },
+        page: 1,
+        limit: NO_ITEMS_TO_DELETE
+      },
+      headers: {
+        authorization: access_token,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(({ body }) => {
+      const tests = body.result.hits.hits;
+      tests.forEach(testObj => {
+        let test = {};
+        test._id = testObj._id;
+        test.authToken = access_token;
+        testIds.push(test);
+      });
+    })
+    .then(() => testIds);
+});
+
+Cypress.Commands.add("getAllOwnItems", (access_token = getAccessToken()) => {
+  let itemIds = [];
+  return cy
+    .request({
+      url: `${BASE_URL}/search/items`,
+      method: "POST",
+      body: {
+        search: {
+          subject: "",
+          curriculumId: "",
+          standardIds: [],
+          questionType: "",
+          depthOfKnowledge: "",
+          authorDifficulty: "",
+          collections: [],
+          status: "",
+          grades: [],
+          tags: [],
+          authoredByIds: [],
+          filter: "AUTHORED_BY_ME",
+          createdAt: ""
+        },
+        page: 1,
+        limit: NO_ITEMS_TO_DELETE
+      },
+      headers: {
+        authorization: access_token,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(({ body }) => {
+      const tests = body.result.hits.hits;
+      tests.forEach(testObj => {
+        let item = {};
+        item._id = testObj._id;
+        item.authToken = access_token;
+        itemIds.push(item);
+      });
+    })
+    .then(() => itemIds);
 });

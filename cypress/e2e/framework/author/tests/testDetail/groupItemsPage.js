@@ -76,11 +76,12 @@ export default class GroupItemsPage {
     cy.route("POST", "**/testitem/auto-select/search").as("waitForItems");
     cy.get(`[data-cy="save-Group ${group}"]`).click();
     if (dynamicGroup)
-      cy.wait("@waitForItems").then(xhr => {
+      return cy.wait("@waitForItems").then(xhr => {
         expect(xhr.status).to.eq(200);
         expect(xhr.response.body.result.items.length).to.be.at.least(deliveryCount);
+        return xhr.response.body.result.items;
       });
-    cy.wait(2000); // waiting for search to retrieve items
+    // waiting for search to retrieve items
   };
 
   getGroupContainerByGroup = group => cy.get(".ant-collapse-item").eq(group - 1);
@@ -139,7 +140,7 @@ export default class GroupItemsPage {
     if (tags) this.setTag(group, tags);
     this.selectCollectionByGroupAndCollection(group, collection);
     this.setItemCountForDeliveryByGroup(group, deliveryCount);
-    this.clickOnSaveByGroup(group, true, deliveryCount);
+    return cy.wait(1).then(() => this.clickOnSaveByGroup(group, true, deliveryCount));
   };
   // =========Till Here=======================
 

@@ -11,7 +11,7 @@ import { setTestUserWorkAction, saveTestletStateAction } from "../../actions/tes
 import { setUserAnswerAction } from "../../actions/answers";
 
 // components
-import { Container } from "../common";
+import { Container, CalculatorContainer } from "../common";
 import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 
@@ -42,7 +42,8 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   state = {
-    showExitPopup: false
+    showExitPopup: false,
+    currentTool: 0
   };
 
   openExitPopup = () => {
@@ -63,9 +64,13 @@ class AssessmentPlayerTestlet extends React.Component {
     history.push("/home/assignments");
   };
 
+  changeTool = tool => {
+    this.setState({ currentTool: tool });
+  };
+
   render() {
     const { theme, items, currentItem, selectedTheme = "default" } = this.props;
-    const { showExitPopup } = this.state;
+    const { showExitPopup, currentTool } = this.state;
 
     const item = items[currentItem];
     if (!item) {
@@ -79,9 +84,25 @@ class AssessmentPlayerTestlet extends React.Component {
 
     return (
       <ThemeProvider theme={themeToPass}>
-        <Container>
-          <PlayerContent {...this.props} openExitPopup={this.openExitPopup} />
-          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+        <Container scratchPadMode={currentTool}>
+          <PlayerContent
+            {...this.props}
+            currentTool={currentTool}
+            openExitPopup={this.openExitPopup}
+            changeTool={this.changeTool}
+          />
+          <SubmitConfirmation
+            isVisible={showExitPopup}
+            onClose={this.hideExitPopup}
+            finishTest={this.finishTest}
+          />
+          {currentTool === 1 && (
+            <CalculatorContainer
+              changeTool={this.changeTool}
+              calculateMode="SCIENTIFIC_DESMOS"
+              style={{ zIndex: 10, height: "100%", width: "100%", left: 0 }}
+            />
+          )}
         </Container>
       </ThemeProvider>
     );

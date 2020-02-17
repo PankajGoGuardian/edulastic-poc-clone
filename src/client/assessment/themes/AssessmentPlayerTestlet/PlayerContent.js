@@ -1,7 +1,6 @@
-/* eslint-disable no-prototype-builtins */
 /* eslint-disable array-callback-return */
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
 import { isEqual, find, isObject, isArray } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
@@ -33,7 +32,8 @@ const PlayerContent = ({
   LCBPreviewModal,
   previewPlayer,
   location = { state: {} },
-  groupId
+  groupId,
+  ...restProps
 }) => {
   const frameRef = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
@@ -45,13 +45,15 @@ const PlayerContent = ({
   const findItemIdMap = (cPageIds, pageNum) =>
     find(
       testletConfig.mapping,
-      ({ testletItemId, testletPageNum }) => isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
+      ({ testletItemId, testletPageNum }) =>
+        isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
     );
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
     const allResponses = {};
     for (const key in testletResponse) {
+      // eslint-disable-next-line
       if (testletResponse.hasOwnProperty(key) && isObject(testletResponse[key])) {
         Object.assign(allResponses, testletResponse[key]);
       }
@@ -232,7 +234,10 @@ const PlayerContent = ({
           }));
         }
       });
-    } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT || cQuestionType === questionType.SHORT_TEXT) {
+    } else if (
+      cQuestionType === questionType.ESSAY_PLAIN_TEXT ||
+      cQuestionType === questionType.SHORT_TEXT
+    ) {
       currentItem.responses.map(({ responseId }) => {
         data = findTestletValue(responseId);
       });
@@ -290,7 +295,11 @@ const PlayerContent = ({
           }
         }
       }
-      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
+      frameController = new ParentController(
+        testletConfig.testletId,
+        initState,
+        testletState.response
+      );
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -308,7 +317,9 @@ const PlayerContent = ({
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
           if (!LCBPreviewModal) {
-            setTestUserWork({ [testActivityId]: { testletState: { state: itemState, response: itemResponse } } });
+            setTestUserWork({
+              [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
+            });
           }
         }
       });
@@ -339,17 +350,47 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
+        {...restProps}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
           {testletConfig.testletURL && (
-            <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
+            <iframe
+              ref={frameRef}
+              id={testletConfig.testletId}
+              src={testletConfig.testletURL}
+              title="testlet player"
+            />
           )}
         </MainContent>
       </Main>
     </>
   );
+};
+
+PlayerContent.propTypes = {
+  openExitPopup: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  questions: PropTypes.object.isRequired,
+  setUserAnswer: PropTypes.func.isRequired,
+  saveUserAnswer: PropTypes.func.isRequired,
+  saveTestletState: PropTypes.func.isRequired,
+  setTestUserWork: PropTypes.func.isRequired,
+  gotoSummary: PropTypes.func.isRequired,
+  testActivityId: PropTypes.string.isRequired,
+  testletState: PropTypes.object.isRequired,
+  testletConfig: PropTypes.object.isRequired,
+  LCBPreviewModal: PropTypes.bool,
+  previewPlayer: PropTypes.bool,
+  location: PropTypes.object.isRequired,
+  groupId: PropTypes.string.isRequired,
+  changeTool: PropTypes.func.isRequired
+};
+
+PlayerContent.defaultProps = {
+  LCBPreviewModal: false,
+  previewPlayer: false
 };
 
 export default withRouter(PlayerContent);

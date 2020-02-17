@@ -1,6 +1,7 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
+
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
 
@@ -11,6 +12,7 @@ import {
   FlexDisplay,
   ActionButton
 } from "./styled";
+import Tools from "./Tools";
 
 import Logo from "../../assets/ets-log.png";
 
@@ -22,7 +24,9 @@ const PlayerHeader = ({
   onNextQuestion,
   unlockNext,
   onPrevQuestion,
-  onOpenExitPopup
+  onOpenExitPopup,
+  currentTool,
+  changeTool
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -32,6 +36,7 @@ const PlayerHeader = ({
       <HeaderMainMenu skinb="true">
         <FlexContainer>
           <PlayerTitle>{title}</PlayerTitle>
+          <Tools changeTool={changeTool} currentTool={currentTool} />
           <ProgressContainer questions={dropdownOptions} current={currentItem} desktop="true" />
           <ContainerRight>
             <FlexDisplay>
@@ -68,8 +73,24 @@ const PlayerHeader = ({
   </Fragment>
 );
 
+PlayerHeader.propTypes = {
+  title: PropTypes.string.isRequired,
+  previewPlayer: PropTypes.bool,
+  dropdownOptions: PropTypes.array,
+  currentItem: PropTypes.number,
+  currentTool: PropTypes.number.isRequired,
+  onNextQuestion: PropTypes.func.isRequired,
+  unlockNext: PropTypes.bool,
+  onPrevQuestion: PropTypes.func.isRequired,
+  onOpenExitPopup: PropTypes.func.isRequired,
+  changeTool: PropTypes.func.isRequired
+};
+
 PlayerHeader.defaultProps = {
-  onSaveProgress: () => {}
+  previewPlayer: false,
+  unlockNext: false,
+  dropdownOptions: [],
+  currentItem: 0
 };
 
 export default PlayerHeader;

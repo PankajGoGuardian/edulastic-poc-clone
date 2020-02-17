@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { white, inputBorder } from "@edulastic/colors";
 import { MathInput } from "@edulastic/common";
 
 export const MathAnswer = styled(MathInput)`
@@ -11,6 +11,8 @@ export const MathAnswer = styled(MathInput)`
       min-height: 40px;
       height: 40px;
       padding: 10px;
+      background: ${white};
+      border: 1px solid ${inputBorder};
     }
 
     &__absolute {

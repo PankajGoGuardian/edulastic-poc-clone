@@ -13,7 +13,8 @@ import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelect
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { releaseGradeKeys, nonPremiumReleaseGradeKeys } from "../SimpleOptions/SimpleOptions";
-import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
+import { getReleaseScorePremiumSelector, defaultTestTypeProfilesSelector } from "../../../TestPage/ducks";
+import { getDefaultSettings } from "../../../../common/utils/helpers";
 
 const { releaseGradeLabels } = testConst;
 class AdvancedOptons extends React.Component {
@@ -61,7 +62,14 @@ class AdvancedOptons extends React.Component {
   };
 
   onChange = (field, value, groups) => {
-    const { onClassFieldChange, assignment, updateOptions, isReleaseScorePremium, userRole } = this.props;
+    const {
+      onClassFieldChange,
+      assignment,
+      updateOptions,
+      isReleaseScorePremium,
+      userRole,
+      defaultTestProfiles
+    } = this.props;
     if (field === "class") {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, groups);
@@ -92,6 +100,11 @@ class AdvancedOptons extends React.Component {
         }
       }
       if (field === "testType") {
+        const performanceBand = getDefaultSettings({ testType: value, defaultTestProfiles })?.performanceBand;
+        const standardGradingScale = getDefaultSettings({ testType: value, defaultTestProfiles })?.standardProficiency;
+        state.performanceBand = performanceBand;
+        state.standardGradingScale = standardGradingScale;
+
         if (value === testConst.type.ASSESSMENT || value === testConst.type.COMMON) {
           state.releaseScore =
             value === testConst.type.ASSESSMENT && isReleaseScorePremium
@@ -124,7 +137,7 @@ class AdvancedOptons extends React.Component {
   updateStudents = studentList => this.onChange("students", studentList);
 
   render() {
-    const { testSettings = {}, assignment, updateOptions } = this.props;
+    const { testSettings = {}, assignment, updateOptions, defaultTestProfiles = {} } = this.props;
     const { showSettings, classIds, _releaseGradeKeys } = this.state;
     const changeField = curry(this.onChange);
 
@@ -176,5 +189,6 @@ class AdvancedOptons extends React.Component {
 
 export default connect(state => ({
   features: getUserFeatures(state),
-  isReleaseScorePremium: getReleaseScorePremiumSelector(state)
+  isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+  defaultTestProfiles: defaultTestTypeProfilesSelector(state)
 }))(AdvancedOptons);

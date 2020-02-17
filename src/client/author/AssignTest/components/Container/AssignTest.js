@@ -12,7 +12,8 @@ import {
   fetchAssignmentsAction,
   getAssignmentsSelector,
   getTestEntitySelector,
-  getClassListSelector
+  getClassListSelector,
+  updateAssingnmentSettingsAction
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
@@ -39,13 +40,6 @@ import MultipleAssignConfirmation from "./MultipleAssignConfirmation";
 
 const { ASSESSMENT, COMMON } = testConst.type;
 
-const setTime = userRole => {
-  const addDate = userRole !== "teacher" ? 28 : 7;
-  return moment()
-    .add("days", addDate)
-    .set({ hour: 23, minute: 0, second: 0, millisecond: 0 });
-};
-
 const parentMenu = {
   assignments: { title: "Assignments", to: "assignments" },
   playlistLibrary: { title: "Playlist Library", to: "playlists" },
@@ -56,19 +50,8 @@ const parentMenu = {
 class AssignTest extends React.Component {
   constructor(props) {
     super(props);
-    const isAdmin = props.userRole === roleuser.SCHOOL_ADMIN || props.userRole === roleuser.DISTRICT_ADMIN;
-
-    const testTypeDefault = props?.testSettings?.testType || (isAdmin ? COMMON : ASSESSMENT);
     this.state = {
       isAdvancedView: props.userRole !== "teacher" ? true : false,
-      assignment: {
-        startDate: moment(),
-        openPolicy: "Automatically on Start Date",
-        closePolicy: "Automatically on Due Date",
-        class: [],
-        testType: testTypeDefault,
-        endDate: setTime(props.userRole)
-      },
       specificStudents: false
     };
   }
@@ -84,14 +67,13 @@ class AssignTest extends React.Component {
       isPlaylist,
       fetchPlaylistById,
       userRole,
-      getDefaultTestSettings,
-      resetStudents
+      resetStudents,
+      assignmentSettings = {}
     } = this.props;
 
     resetStudents();
 
     const { testId } = match.params;
-    getDefaultTestSettings();
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -106,31 +88,19 @@ class AssignTest extends React.Component {
     const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
-      this.setState(prevState => ({
-        assignment: {
-          ...prevState.assignment,
-          playlistId: match.params.playlistId,
-          playlistModuleId: match.params.moduleId,
-          testId: match.params.testId,
-          openPolicy: isAdmin
-            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : prevState.assignment.openPolicy,
-          closePolicy: isAdmin
-            ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
-            : prevState.assignment.closePolicy,
-          testType: isAdmin ? COMMON : ASSESSMENT
-        }
-      }));
+      this.updateAssignmentNew({
+        playlistId: match.params.playlistId,
+        playlistModuleId: match.params.moduleId,
+        testId: match.params.testId,
+        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy,
+        closePolicy: isAdmin ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN : assignmentSettings.closePolicy,
+        testType: isAdmin ? COMMON : ASSESSMENT
+      });
     } else {
-      this.setState(prevState => ({
-        assignment: {
-          ...prevState.assignment,
-          testType: isAdmin ? COMMON : ASSESSMENT,
-          openPolicy: isAdmin
-            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : prevState.assignment.openPolicy
-        }
-      }));
+      this.updateAssignmentNew({
+        testType: isAdmin ? COMMON : ASSESSMENT,
+        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy
+      });
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);
       }
@@ -140,30 +110,8 @@ class AssignTest extends React.Component {
     }
   }
 
-  static getDerivedStateFromProps(nextProps, nextState) {
-    const { testSettings, userRole } = nextProps;
-    if (
-      testSettings.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
-      isNaN(nextState.assignment.passwordPolicy)
-    ) {
-      return {
-        assignment: {
-          ...nextState.assignment,
-          openPolicy:
-            userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
-              ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-              : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS,
-          passwordPolicy: testSettings.passwordPolicy,
-          passwordExpireIn: testSettings.passwordExpireIn
-        }
-      };
-    }
-    return null;
-  }
-
   handleAssign = () => {
-    const { assignment } = this.state;
-    const { saveAssignment, isAssigning } = this.props;
+    const { saveAssignment, isAssigning, assignmentSettings: assignment } = this.props;
     if (isAssigning) return;
     if (assignment.passwordPolicy !== testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
       delete assignment.passwordExpireIn;
@@ -208,12 +156,9 @@ class AssignTest extends React.Component {
     </AssignButton>
   );
 
-  updateAssignment = assignment => {
-    this.setState({ assignment });
-  };
-
   onClassFieldChange = (value, group) => {
-    const { assignment, specificStudents } = this.state;
+    const { specificStudents } = this.state;
+    const { assignmentSettings: assignment } = this.props;
     const groupById = keyBy(group, "_id");
     const previousGroupData = keyBy(assignment.class, "_id");
     const classData = value.map(_id => {
@@ -244,8 +189,7 @@ class AssignTest extends React.Component {
   };
 
   toggleSpecificStudents = specificStudents => {
-    const { assignment } = this.state;
-    const { classList } = this.props;
+    const { classList, assignmentSettings: assignment } = this.props;
     const groupById = keyBy(classList, "_id");
     const newAssignment = produce(assignment, assignmentCopy => {
       if (assignmentCopy.class.length > 0) {
@@ -259,11 +203,18 @@ class AssignTest extends React.Component {
       }
     });
 
-    this.setState({ specificStudents, assignment: newAssignment });
+    this.setState({ specificStudents });
+    this.updateAssignmentNew(newAssignment);
+  };
+
+  updateAssignmentNew = newSettings => {
+    const { updateAssignmentSettings } = this.props;
+    updateAssignmentSettings(newSettings);
   };
 
   render() {
-    const { isAdvancedView, assignment, specificStudents } = this.state;
+    const { isAdvancedView, specificStudents } = this.state;
+    const { assignmentSettings: assignment } = this.props;
     const {
       classList,
       fetchStudents,
@@ -273,7 +224,8 @@ class AssignTest extends React.Component {
       isPlaylist,
       playlist,
       from,
-      location
+      location,
+      defaultTestProfiles = {}
     } = this.props;
     const { title, _id } = isPlaylist ? playlist : testItem;
     const exactMenu = parentMenu[location?.state?.from || from];
@@ -307,11 +259,12 @@ class AssignTest extends React.Component {
           {isAdvancedView ? (
             <AdvancedOptons
               assignment={assignment}
-              updateOptions={this.updateAssignment}
+              updateOptions={this.updateAssignmentNew}
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
               specificStudents={specificStudents}
               toggleSpecificStudents={this.toggleSpecificStudents}
+              defaultTestProfiles={defaultTestProfiles}
             />
           ) : (
             <SimpleOptions
@@ -320,7 +273,7 @@ class AssignTest extends React.Component {
               assignment={assignment}
               fetchStudents={fetchStudents}
               testSettings={testSettings}
-              updateOptions={this.updateAssignment}
+              updateOptions={this.updateAssignmentNew}
               onClassFieldChange={this.onClassFieldChange}
               specificStudents={specificStudents}
               toggleSpecificStudents={this.toggleSpecificStudents}
@@ -342,7 +295,8 @@ export default connect(
     playlist: getPlaylistSelector(state),
     testItem: getTestSelector(state),
     userRole: getUserRole(state),
-    isAssigning: state.authorTestAssignments.isAssigning
+    isAssigning: state.authorTestAssignments.isAssigning,
+    assignmentSettings: state.assignmentSettings
   }),
   {
     loadClassList: receiveClassListAction,
@@ -352,7 +306,8 @@ export default connect(
     fetchPlaylistById: receivePlaylistByIdAction,
     fetchTestByID: receiveTestByIdAction,
     getDefaultTestSettings: getDefaultTestSettingsAction,
-    resetStudents: resetStudentAction
+    resetStudents: resetStudentAction,
+    updateAssignmentSettings: updateAssingnmentSettingsAction
   }
 )(AssignTest);
 

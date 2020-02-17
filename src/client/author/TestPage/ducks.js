@@ -1,11 +1,12 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { test, roleuser, questionType } from "@edulastic/constants";
+import { test, roleuser, questionType, test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
+import moment from "moment";
 import nanoid from "nanoid";
 import produce from "immer";
 import { helpers } from "@edulastic/common";
@@ -34,6 +35,9 @@ import {
 import { saveUserWorkAction } from "../../assessment/actions/userWork";
 import { isFeatureAccessible } from "../../features/components/FeaturesSwitch";
 import { getCurrentItemSelector } from "../../student/sharedDucks/TestItem";
+import { getDefaultSettings } from "../../common/utils/helpers";
+import { updateAssingnmentSettingsAction } from "../AssignTest/duck";
+
 // constants
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test;
@@ -183,6 +187,7 @@ export const deleteItemsGroupAction = createAction(DELETE_ITEMS_GROUP);
 export const addItemsToAutoselectGroupsRequestAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST);
 export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUP);
 export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
+export const updateTestEntityAction = createAction(SET_TEST_DATA);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -718,6 +723,7 @@ function* receiveTestByIdSaga({ payload }) {
     const questions = getQuestions(entity.itemGroups);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
+    yield put(getDefaultTestSettingsAction(entity));
     yield put(setTestItemsAction(entity.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(item => item._id)));
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
@@ -731,6 +737,34 @@ function* receiveTestByIdSaga({ payload }) {
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
+
+    const setTime = userRole => {
+      const addDate = userRole !== "teacher" ? 28 : 7;
+      return moment()
+        .add("days", addDate)
+        .set({ hour: 23, minute: 0, second: 0, millisecond: 0 });
+    };
+
+    const userRole = yield select(getUserRole);
+
+    const testType = entity?.testType;
+    const { ASSESSMENT, COMMON } = testConst.type;
+
+    const isAdmin = userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN;
+    const testTypeDefault = testType || (isAdmin ? COMMON : ASSESSMENT);
+
+    yield put(
+      updateAssingnmentSettingsAction({
+        startDate: moment(),
+        class: [],
+        testType: testTypeDefault,
+        endDate: setTime(userRole),
+        openPolicy:
+          userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+            : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+      })
+    );
   } catch (err) {
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
@@ -1273,7 +1307,7 @@ function* getAllTagsSaga({ payload }) {
   }
 }
 
-function* getDefaultTestSettingsSaga() {
+function* getDefaultTestSettingsSaga({ payload: testEntity }) {
   try {
     const role = yield select(getUserRole);
     const orgData = yield select(getUserOrgData);
@@ -1291,10 +1325,19 @@ function* getDefaultTestSettingsSaga() {
       };
     }
     const defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload);
-    const { performanceBandProfiles, standardsProficiencyProfiles } = defaultTestSettings;
+    const {
+      performanceBandProfiles,
+      standardsProficiencyProfiles,
+      defaultTestTypeProfiles: defaultTestProfiles
+    } = defaultTestSettings;
     yield put(receivePerformanceBandSuccessAction(performanceBandProfiles));
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles));
     yield put(setDefaultTestTypeProfilesAction(defaultTestSettings));
+    const performanceBand = getDefaultSettings({ testType: testEntity?.testType, defaultTestProfiles })
+      ?.performanceBand;
+    const standardGradingScale = getDefaultSettings({ testType: testEntity?.testType, defaultTestProfiles })
+      ?.standardProficiency;
+    yield put(updateAssingnmentSettingsAction({ performanceBand, standardGradingScale }));
   } catch (e) {
     yield call(message.error("Get default settings failed"));
   }

@@ -1,11 +1,18 @@
 import * as moment from "moment";
 import { get } from "lodash";
 import { createSelector } from "reselect";
+import { createReducer } from "redux-starter-kit";
 
 export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
+export const UPDATE_ASSIGNMENT_SETTINGS = "[assignment settings] update assignment settings";
 
 export const fetchAssignmentsAction = payload => ({
   type: FETCH_ASSIGNMENTS,
+  payload
+});
+
+export const updateAssingnmentSettingsAction = payload => ({
+  type: UPDATE_ASSIGNMENT_SETTINGS,
   payload
 });
 
@@ -59,3 +66,15 @@ export const performanceBandSelector = createSelector(
     return get(performanceBandDistrict, "profiles", []);
   }
 );
+
+// ======================assingnment settings========================//
+
+const initialState = {};
+
+const updateAssignmentSettings = (state, { payload }) => {
+  return { ...state, ...payload };
+};
+
+export const assignmentSettings = createReducer(initialState, {
+  [UPDATE_ASSIGNMENT_SETTINGS]: updateAssignmentSettings
+});

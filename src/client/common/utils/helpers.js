@@ -1,4 +1,4 @@
-import { signUpState } from "@edulastic/constants";
+import { signUpState, test as testConst } from "@edulastic/constants";
 import { isUndefined, last, get, isEmpty } from "lodash";
 import { Partners } from "./static/partnerData";
 import { message, Tooltip as AntDTooltip } from "antd";
@@ -255,4 +255,29 @@ export const nameValidator = name => {
     return false;
   }
   return true;
+};
+
+export const getDefaultSettings = ({ testType = "", defaultTestProfiles = {} }) => {
+  switch (true) {
+    case testType === testConst.type.COMMON:
+      return {
+        performanceBand: { _id: defaultTestProfiles?.performanceBand?.common || "" },
+        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.common || "" }
+      };
+    case testType === testConst.type.ASSESSMENT:
+      return {
+        performanceBand: { _id: defaultTestProfiles?.performanceBand?.class || "" },
+        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.class || "" }
+      };
+    case testType === testConst.type.PRACTICE:
+      return {
+        performanceBand: { _id: defaultTestProfiles?.performanceBand?.practice || "" },
+        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.practice || "" }
+      };
+    default:
+      return {
+        performanceBand: { _id: defaultTestProfiles?.performanceBand?.common || "" },
+        standardProficiency: { _id: defaultTestProfiles?.standardProficiency?.common || "" }
+      };
+  }
 };

@@ -1,12 +1,20 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal, DatePicker, message } from "antd";
+import { Form, Input, Row, Col, Select, DatePicker, message } from "antd";
 import moment from "moment";
-import { debounce, uniqBy } from "lodash";
-const Option = Select.Option;
-import selectsData from "../../../../TestPage/components/common/selectsData";
-const { allGrades, allSubjects } = selectsData;
+import { debounce, uniqBy, uniq } from "lodash";
 import { tagsApi } from "@edulastic/api";
-import { ButtonsContainer, OkButton, CancelButton, ModalFormItem, StyledModal } from "../../../../../common/styled";
+import PropTypes from "prop-types";
+import selectsData from "../../../../TestPage/components/common/selectsData";
+import {
+  ButtonsContainer,
+  OkButton,
+  CancelButton,
+  ModalFormItem,
+  StyledModal
+} from "../../../../../common/styled";
+
+const { Option } = Select;
+const { allGrades, allSubjects } = selectsData;
 class EditClassModal extends Component {
   constructor(props) {
     super(props);
@@ -16,10 +24,12 @@ class EditClassModal extends Component {
   }
 
   onSaveClass = () => {
-    this.props.form.validateFields((err, row) => {
+    const { form } = this.props;
+    form.validateFields((err, row) => {
       const {
         selClassData: { _source: { parent, districtId, standardSets, startDate } = {} } = {},
-        allTagsData
+        allTagsData,
+        saveClass
       } = this.props;
       if (!err) {
         const saveClassData = {
@@ -32,7 +42,8 @@ class EditClassModal extends Component {
           subject: row.subject,
           grades: row.grades,
           tags: row.tags.map(t => allTagsData.find(e => e._id === t)),
-          // not implemented in add model so sending empty if not present i.e. created in da settings
+          // not implemented in add model so sending empty
+          // if not present i.e. created in da settings
           standardSets: standardSets || [],
           courseId: row.courseId
         };
@@ -51,7 +62,7 @@ class EditClassModal extends Component {
           Object.assign(saveClassData, { endDate });
         }
 
-        this.props.saveClass(saveClassData);
+        saveClass(saveClassData);
       }
     });
   };
@@ -64,7 +75,7 @@ class EditClassModal extends Component {
       page: 0,
       limit: 50
     };
-    value &&
+    if (value)
       Object.assign(searchTerms, {
         search: {
           name: { type: "cont", value },
@@ -72,23 +83,29 @@ class EditClassModal extends Component {
           operator: "or"
         }
       });
+
     searchCourseList(searchTerms);
   }, 1000);
 
   onCloseModal = () => {
-    this.props.closeModal();
+    const { closeModal } = this.props;
+    closeModal();
   };
 
   selectTags = async id => {
-    const { setFieldsValue, getFieldValue } = this.props.form;
+    const { form } = this.props;
+    const { setFieldsValue, getFieldValue } = form;
     const { searchValue } = this.state;
     const { allTagsData, addNewTag } = this.props;
     let newTag = {};
+    const tempSearchValue = searchValue;
     if (id === searchValue) {
-      const tempSearchValue = searchValue;
       this.setState({ searchValue: "" });
       try {
-        const { _id, tagName } = await tagsApi.create({ tagName: tempSearchValue, tagType: "group" });
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: "group"
+        });
         newTag = { _id, tagName };
         addNewTag({ tag: newTag, tagType: "group" });
       } catch (e) {
@@ -97,14 +114,15 @@ class EditClassModal extends Component {
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
-    const tagsSelected = getFieldValue("tags");
-    const newTags = [...tagsSelected, newTag._id];
-    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
+    const tagsSelected = getFieldValue("tags") || [];
+    const newTags = uniq([...tagsSelected, newTag._id]);
+    setFieldsValue({ tags: newTags.filter(tag => tag !== tempSearchValue) });
     this.setState({ searchValue: "" });
   };
 
   deselectTags = id => {
-    const { setFieldsValue, getFieldValue } = this.props.form;
+    const { form } = this.props;
+    const { setFieldsValue, getFieldValue } = form;
     const tagsSelected = getFieldValue("tags");
     const newTags = tagsSelected.filter(tag => tag !== id);
     setFieldsValue({ tags: newTags });
@@ -128,7 +146,7 @@ class EditClassModal extends Component {
       coursesForDistrictList = [],
       allTagsData,
       t,
-      institutionDetails = []
+      form
     } = this.props;
     const { searchValue } = this.state;
     const {
@@ -166,7 +184,7 @@ class EditClassModal extends Component {
     const ownersData = owners?.[0]?.id;
     const schoolsOptions = [];
     if (schoolsFinalList.length) {
-      schoolsFinalList.map((row, index) => {
+      schoolsFinalList.forEach(row => {
         schoolsOptions.push(
           <Option key={row._id} value={row._id} title={row.name}>
             {row.name}
@@ -177,7 +195,7 @@ class EditClassModal extends Component {
 
     const teacherOptions = [];
     if (teacherFinalList.length) {
-      teacherFinalList.map(row => {
+      teacherFinalList.forEach(row => {
         const teacherName = row.lastName ? `${row.firstName} ${row.lastName}` : `${row.firstName}`;
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>);
       });
@@ -187,7 +205,7 @@ class EditClassModal extends Component {
 
     const subjects = allSubjects.filter(el => el.value !== "");
 
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = form;
 
     const disabledDate = current => current && current < moment().startOf("day");
 
@@ -204,7 +222,9 @@ class EditClassModal extends Component {
               <CancelButton onClick={this.onCloseModal}>{t("common.cancel")}</CancelButton>
             </Col>
             <Col span={11}>
-              <OkButton onClick={this.onSaveClass}>{t("class.components.addclass.saveclass")}</OkButton>
+              <OkButton onClick={this.onSaveClass}>
+                {t("class.components.addclass.saveclass")}
+              </OkButton>
             </Col>
           </ButtonsContainer>
         ]}
@@ -278,10 +298,10 @@ class EditClassModal extends Component {
                   onFocus={this.fetchCoursesForDistrict}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  {courseFinalList.map(course => (
-                    <Option key={course._id} value={course._id}>{`${course.name}${
-                      course.number ? " - " + course.number : ""
-                    }`}</Option>
+                  {courseFinalList.map(c => (
+                    <Option key={c._id} value={c._id}>
+                      {`${c.name}${c.number ? ` - ${c.number}` : ""}`}
+                    </Option>
                   ))}
                 </Select>
               )}
@@ -308,7 +328,7 @@ class EditClassModal extends Component {
                   }
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                 >
-                  {!!searchValue.trim() ? (
+                  {searchValue.trim() ? (
                     <Select.Option key={0} value={searchValue} title={searchValue}>
                       {`${searchValue} (Create new Tag)`}
                     </Select.Option>
@@ -337,7 +357,10 @@ class EditClassModal extends Component {
                 ],
                 initialValue: ownersData
               })(
-                <Select placeholder="Search by Username" getPopupContainer={triggerNode => triggerNode.parentNode}>
+                <Select
+                  placeholder="Search by Username"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
                   {teacherOptions}
                 </Select>
               )}
@@ -379,6 +402,41 @@ class EditClassModal extends Component {
     );
   }
 }
+
+EditClassModal.propTypes = {
+  form: PropTypes.shape({
+    validateFields: PropTypes.func.isRequired,
+    getFieldValue: PropTypes.func.isRequired,
+    setFieldsValue: PropTypes.func.isRequired,
+    getFieldDecorator: PropTypes.func.isRequired
+  }).isRequired,
+  selClassData: PropTypes.object,
+  modalVisible: PropTypes.bool,
+  saveClass: PropTypes.string,
+  closeModal: PropTypes.string,
+  schoolsData: PropTypes.array,
+  teacherList: PropTypes.array,
+  userOrgId: PropTypes.string,
+  searchCourseList: PropTypes.string,
+  coursesForDistrictList: PropTypes.array,
+  allTagsData: PropTypes.array,
+  addNewTag: PropTypes.string,
+  t: PropTypes.func.isRequired
+};
+
+EditClassModal.defaultProps = {
+  selClassData: {},
+  modalVisible: false,
+  saveClass: "",
+  closeModal: "",
+  schoolsData: [],
+  teacherList: [],
+  userOrgId: "",
+  searchCourseList: "",
+  coursesForDistrictList: [],
+  allTagsData: [],
+  addNewTag: ""
+};
 
 const EditClassModalForm = Form.create()(EditClassModal);
 export default EditClassModalForm;

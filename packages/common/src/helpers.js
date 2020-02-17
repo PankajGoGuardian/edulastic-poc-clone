@@ -36,7 +36,8 @@ export const ALPHABET = [
   "Z"
 ];
 
-const getDisplayName = WrappedComponent => WrappedComponent.displayName || WrappedComponent.name || "Component";
+const getDisplayName = WrappedComponent =>
+  WrappedComponent.displayName || WrappedComponent.name || "Component";
 
 const getPaginationInfo = ({ page, limit, count }) => ({
   from: (page - 1) * limit + 1,
@@ -175,7 +176,10 @@ export const getResponsesCount = element => {
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
-  if (!$(parsedHTML).find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber").length) {
+  if (
+    !$(parsedHTML).find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber")
+      .length
+  ) {
     return htmlStr;
   }
 
@@ -210,22 +214,32 @@ const tagMapping = {
   mathunit: " ",
   mathinput: " ",
   textinput: " ",
-  textdropdown: " "
+  textdropdown: " ",
+  response: " ",
+  br: " "
 };
 
 export const sanitizeForReview = stimulus => {
-  // console.log("what is stimulus", stimulus);
   if (!window.$) return stimulus;
   if (!stimulus) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
   //remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
-  const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
+  const tagsToRemove = [
+    "mathinput",
+    "mathunit",
+    "textinput",
+    "textdropdown",
+    "img",
+    "table",
+    "response",
+    "br",
+    "span"
+  ];
   let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       const elem = $(this).context;
-      // console.log("what is elem", elem);
       // replace if tag is not span
       // span comes when we use italic or bold
       let shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
@@ -238,28 +252,23 @@ export const sanitizeForReview = stimulus => {
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
           $(this).replaceWith(` ${tagMapping[tagToRemove]} `);
-        } else if (["br", "span"].includes(tagToRemove)) {
-          $(this).replaceWith("");
         } else {
-          $(this).replaceWith(` [${tagToRemove}] `);
+          $(this).replaceWith(`  [${tagToRemove}] `);
         }
       }
       tagFound = true;
     });
   });
-
-  //to remove any text after ...
+  // to remove any text after ...
   jqueryEl.find("p").each(function() {
-    const text = $(this)
-      .text()
-      .trim();
-    // console.log("what is text", text);
-    if (!text || text === "...") {
-      $(this).remove();
+    const elem = $(this);
+    const hasMath = elem.find(".input__math").length > 0;
+    const text = elem.text().trim();
+    if ((!text && !hasMath) || text === "...") {
+      elem.remove();
     }
   });
   let splitJquery = jqueryEl.html();
-  // console.log("what is splitJquery initially", splitJquery);
 
   if (tagFound) {
     const firstIndexOf = jqueryEl.html().indexOf("...");
@@ -273,9 +282,7 @@ export const sanitizeForReview = stimulus => {
   // if (splitJquery.includes("</p>")) {
   //   splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} </p>`;
   // }
-  // console.log("what is splitJquery", splitJquery);
   const returnValue = sanitizeSelfClosingTags(splitJquery);
-  // console.log("what is return value", returnValue);
   return returnValue;
 };
 
@@ -347,7 +354,10 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
       if (i === questions.length - 1) {
         questionScore[o.id] = round(maxScore - currentTotal, 2);
       } else {
-        const score = round(get(o, ["validation", "validResponse", "score"], 0) * (maxScore / totalMaxScore), 2);
+        const score = round(
+          get(o, ["validation", "validResponse", "score"], 0) * (maxScore / totalMaxScore),
+          2
+        );
         questionScore[o.id] = score;
         currentTotal += score;
       }
@@ -405,7 +415,9 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     (endContainer && endContainer.parentNode.className === className) ||
     (startContainer && startContainer.parentNode.className === className)
   ) {
-    message.error("You are highlighting already selected text. Please select a distinct text and try again.");
+    message.error(
+      "You are highlighting already selected text. Please select a distinct text and try again."
+    );
     clearSelection();
     return;
   }
@@ -439,9 +451,9 @@ export const decodeHTML = str => {
 export const rgbToHexc = orig => {
   const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
   return rgb && rgb.length === 4
-    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
-        -2
-      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(
+        16
+      )}`.slice(-2)}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
     : orig;
 };
 
@@ -461,7 +473,9 @@ export const hexToRGB = (hex, alpha) => {
 export const getAlpha = color => {
   const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
 
-  return color.match(regexValuesFromRgbaColor) !== null ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100 : 100;
+  return color.match(regexValuesFromRgbaColor) !== null
+    ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100
+    : 100;
 };
 
 export const formatBytes = (bytes = 0, decimals = 2) => {

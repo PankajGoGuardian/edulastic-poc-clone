@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import produce from "immer";
-import AceEditor from "react-ace";
-import { Select } from "antd";
+import { themeColor, white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import produce from "immer";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import AceEditor from "react-ace";
 import { compose } from "redux";
-import "../ace";
-
-import { Subtitle } from "../../../styled/Subtitle";
-import { StyledButton } from "../styled";
-import { StyledCodeEditorWrapper, SubtitleContainer, StyledActionWrapper } from "../styled";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 import { updateVariables } from "../../../utils/variables";
 import { loadModeSpecificfiles } from "../ace";
+import { EditorHeader, StyledCodeEditorWrapper } from "../styled";
 
 const CodeEditor = ({
   item,
@@ -22,7 +19,6 @@ const CodeEditor = ({
   onChangeLang,
   focus,
   style = {},
-  headerStyle = {},
   editorStyle = {},
   renderActions,
   t
@@ -83,15 +79,32 @@ const CodeEditor = ({
     );
   };
 
+  const buttonStyle = {
+    width: "auto",
+    height: "30px",
+    margin: "0px 0px 0px 10px",
+    padding: "0px 15px",
+    display: "inline-block",
+    border: `1px solid ${themeColor} !important`
+  };
+
   const renderButtons = () => {
     if (renderActions) {
       return renderActions();
     }
     return [
-      <CodeStubStyledButton>{t("component.coding.codeStubClearAllBtntext")}</CodeStubStyledButton>,
-      <CodeStubStyledButton>{t("component.coding.codeStubReadOnlyBtnText")}</CodeStubStyledButton>,
-      <CodeStubStyledButton>{t("component.coding.codeStubRunCodeBtnText")}</CodeStubStyledButton>,
-      <CodeStubStyledButton>{t("component.coding.codeStubRunAllTestBtnText")}</CodeStubStyledButton>
+      <CustomStyleBtn style={buttonStyle} bg="transparent" color={themeColor}>
+        {t("component.coding.codeStubClearAllBtntext")}
+      </CustomStyleBtn>,
+      <CustomStyleBtn style={buttonStyle} bg="transparent" color={themeColor}>
+        {t("component.coding.codeStubReadOnlyBtnText")}
+      </CustomStyleBtn>,
+      <CustomStyleBtn style={buttonStyle} bg={themeColor}>
+        {t("component.coding.codeStubRunCodeBtnText")}
+      </CustomStyleBtn>,
+      <CustomStyleBtn style={buttonStyle} bg={themeColor}>
+        {t("component.coding.codeStubRunAllTestBtnText")}
+      </CustomStyleBtn>
     ];
   };
 
@@ -104,27 +117,24 @@ const CodeEditor = ({
 
   return (
     <StyledCodeEditorWrapper style={style}>
-      <SubtitleContainer style={headerStyle}>
-        <Subtitle textStyles={{ margin: "0", width: "100%" }} showIcon={false}>
-          <Select
-            value={selectedLang.label}
-            data-cy="math-keyboard-dropdown"
-            className="keyboard__header__select"
-            size="large"
-            onSelect={onLangChange}
-            style={{
-              width: 200
-            }}
-          >
-            {item.languages.map((lang, index) => (
-              <Select.Option value={lang} key={index} data-cy={`math-keyboard-dropdown-list-${index}`}>
-                {lang.label}
-              </Select.Option>
-            ))}
-          </Select>
-          <StyledActionWrapper>{renderButtons()}</StyledActionWrapper>
-        </Subtitle>
-      </SubtitleContainer>
+      <EditorHeader>
+        <SelectInputStyled
+          value={selectedLang.label}
+          data-cy="math-keyboard-dropdown"
+          className="keyboard__header__select"
+          size="large"
+          onSelect={onLangChange}
+          width="200px"
+          bg={white}
+        >
+          {item.languages.map((lang, index) => (
+            <SelectInputStyled.Option value={lang} key={index} data-cy={`math-keyboard-dropdown-list-${index}`}>
+              {lang.label}
+            </SelectInputStyled.Option>
+          ))}
+        </SelectInputStyled>
+        <div>{renderButtons()}</div>
+      </EditorHeader>
       <AceEditor
         mode={settings.mode.lang}
         theme={settings.theme}
@@ -132,18 +142,18 @@ const CodeEditor = ({
         onChange={value => onEditorChange(settings.mode.label, value)}
         value={codeStubForSpecificLang?.code}
         fontSize={parseInt(settings.fontSize, 10)}
-        showPrintMargin={true}
-        showGutter={true}
-        highlightActiveLine={true}
+        showPrintMargin
+        showGutter
+        highlightActiveLine
         readOnly={settings.readOnly}
         width="100%"
         height="400px"
         debounceChangePeriod={2000}
         enableBasicAutocompletion={settings.autoComplete}
         enableLiveAutocompletion={settings.autoComplete}
-        enableSnippets={true}
+        enableSnippets
         keyboardHandler={settings.keyboardHandler}
-        enableEmmet={true}
+        enableEmmet
         tabSize={parseInt(settings.tabSize, 10)}
         focus={!!focus}
         setOptions={{
@@ -154,11 +164,6 @@ const CodeEditor = ({
     </StyledCodeEditorWrapper>
   );
 };
-
-const CodeStubStyledButton = styled(StyledButton)`
-  margin-left: 5px;
-  float: none;
-`;
 
 CodeEditor.propTypes = {
   item: PropTypes.object,

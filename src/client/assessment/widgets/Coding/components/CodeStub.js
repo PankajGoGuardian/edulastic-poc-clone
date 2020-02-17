@@ -1,22 +1,15 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
+import { themeColor } from "@edulastic/colors";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-
 import { withNamespaces } from "@edulastic/localization";
-
+import PropTypes from "prop-types";
+import React from "react";
+import { compose } from "redux";
 import Question from "../../../components/Question";
-
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { Subtitle } from "../../../styled/Subtitle";
-import { StyledButton } from "../styled";
-import { SubtitleContainer, StyledSectionContainer, StyledTextField, StyledTitle } from "../styled";
+import { Row } from "../../../styled/WidgetOptions/Row";
 import CodeEditor from "./CodeEditor";
 import CodeEvaluatedResponse from "./CodeEvaluatedResponse";
-
-const styles = {
-  padding: 0,
-  background: "none"
-};
 
 const CodeStub = ({ fillSections, cleanSections, item, setQuestionData, t }) => {
   const handleAddNewTestCase = () => {};
@@ -28,30 +21,30 @@ const CodeStub = ({ fillSections, cleanSections, item, setQuestionData, t }) => 
       label={t("component.coding.codeStub")}
       fillSections={fillSections}
       cleanSections={cleanSections}
-      styles={styles}
     >
-      <SubtitleContainer>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeStub")}`)}
-          textStyles={{ margin: "0", width: "100%" }}
-          showIcon={false}
-        >
-          {t("component.coding.codeStub")}
-          <StyledButton onClick={handleAddNewTestCase}>{t("component.coding.codeStubGenerateBtn")}</StyledButton>
-        </Subtitle>
-      </SubtitleContainer>
-      <StyledSectionContainer style={{ paddingLeft: 0, paddingRight: 0 }}>
+      <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeStub")}`)}
+        textStyles={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        showIcon={false}
+      >
+        {t("component.coding.codeStub")}
+        <CustomStyleBtn bg={themeColor} height="30px" width="auto" margin="0px" onClick={handleAddNewTestCase}>
+          {t("component.coding.codeStubGenerateBtn")}
+        </CustomStyleBtn>
+      </Subtitle>
+
+      <Row>
         <CodeEditor type="codeStubs" item={item} setQuestionData={setQuestionData} />
         <CodeEvaluatedResponse dataSource={[]} />
-      </StyledSectionContainer>
+      </Row>
     </Question>
   );
 };
 
 CodeStub.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  fillSections: PropTypes.func.isRequired,
-  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };

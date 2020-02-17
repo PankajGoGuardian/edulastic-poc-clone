@@ -1,20 +1,17 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import produce from "immer";
+import { FroalaEditor } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-
 import { withNamespaces } from "@edulastic/localization";
+import produce from "immer";
+import PropTypes from "prop-types";
+import React from "react";
+import { compose } from "redux";
 import Question from "../../../components/Question";
-
+import { TextInputStyled } from "../../../styled/InputStyles";
 import { Subtitle } from "../../../styled/Subtitle";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Row } from "../../../styled/WidgetOptions/Row";
 import { updateVariables } from "../../../utils/variables";
-import { SubtitleContainer, StyledSectionContainer, StyledTextField, StyledTitle, StyledFroalaEditor } from "../styled";
-
-const styles = {
-  padding: 0,
-  background: "none"
-};
 
 const ComposeQuestion = ({ t, item, toolbarId, fillSections, cleanSections, fontSize, setQuestionData }) => {
   const onChangeQuestionTitle = e => {
@@ -43,37 +40,38 @@ const ComposeQuestion = ({ t, item, toolbarId, fillSections, cleanSections, font
       label={t("component.coding.composeQuestion")}
       fillSections={fillSections}
       cleanSections={cleanSections}
-      styles={styles}
     >
-      <SubtitleContainer>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.coding.composeQuestion")}`)}
-          textStyles={{ margin: "0" }}
-          showIcon={false}
-        >
-          {t("component.coding.composeQuestion")}
-        </Subtitle>
-      </SubtitleContainer>
-      <StyledSectionContainer>
-        <StyledTitle>{t("component.coding.questionTitle")}</StyledTitle>
-        <StyledTextField
-          type="text"
-          name="title"
-          placeholder={t("component.coding.questionTitlePlaceholder")}
-          value={item.stimulus}
-          onChange={onChangeQuestionTitle}
-          disabled={false}
-        />
-        <StyledFroalaEditor
-          tag="textarea"
-          placeholder={t("component.coding.questionPlaceholder")}
-          value={item.stimulusBody}
-          toolbarId={toolbarId}
-          onChange={onChangeQuestion}
-          border="border"
-          fontSize={fontSize}
-        />
-      </StyledSectionContainer>
+      <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.coding.composeQuestion")}`)}
+        textStyles={{ margin: "0" }}
+        showIcon={false}
+      >
+        {t("component.coding.composeQuestion")}
+      </Subtitle>
+      <Row>
+        <Col span={24}>
+          <Label>{t("component.coding.questionTitle")}</Label>
+          <TextInputStyled
+            type="text"
+            name="title"
+            placeholder={t("component.coding.questionTitlePlaceholder")}
+            value={item.stimulus}
+            onChange={onChangeQuestionTitle}
+            disabled={false}
+          />
+        </Col>
+        <Col span={24}>
+          <FroalaEditor
+            tag="textarea"
+            placeholder={t("component.coding.questionPlaceholder")}
+            value={item.stimulusBody}
+            toolbarId={toolbarId}
+            onChange={onChangeQuestion}
+            border="border"
+            fontSize={fontSize}
+          />
+        </Col>
+      </Row>
     </Question>
   );
 };

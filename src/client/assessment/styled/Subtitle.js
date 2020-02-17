@@ -13,6 +13,7 @@ const WidgetTitle = styled.h2`
   border-radius: 4px;
   margin: ${props => props.margin || "0px -20px 20px"};
   font-weight: bold;
+  min-height: 50px;
 `;
 
 export const SubtitleText = styled.div`

@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { TextField, FroalaEditor } from "@edulastic/common";
-import { themeColor, white, borderGrey, black, fadedGrey } from "@edulastic/colors";
+import { TextField } from "@edulastic/common";
+import { themeColor, white, borderGrey, fadedGrey, greyThemeLighter } from "@edulastic/colors";
 import { Button, Table, Tabs, Radio } from "antd";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
@@ -11,13 +11,13 @@ export const SubtitleContainer = styled.div`
   ${({ style }) => style};
 `;
 
-export const StyledFroalaEditor = styled(FroalaEditor)`
-  .froala-wrapper {
-    .fr-element {
-      background: #f8f8fb !important;
-      padding: 20px 20px;
-    }
-  }
+export const EditorHeader = styled.div`
+  width: 100%;
+  background: ${greyThemeLighter};
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 export const StyledSectionContainer = styled.div`
@@ -59,9 +59,9 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledCodeEditorWrapper = styled.div`
-  border: 1px solid ${borderGrey};
+  border: 2px solid ${borderGrey};
   border-bottom: none;
-  border-radius: 4px;
+  border-radius: 4px 4px 0px 0px;
   ${({ style }) => style};
 `;
 
@@ -125,7 +125,7 @@ export const StyledTableHeader = styled.div`
 `;
 
 export const StyledTabs = styled(Tabs)`
-  border: 1px solid ${borderGrey};
+  border: 2px solid ${borderGrey};
   height: 250px;
   .ant-tabs {
     &-bar {

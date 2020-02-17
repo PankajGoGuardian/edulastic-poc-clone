@@ -1,20 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-import produce from "immer";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-
 import { withNamespaces } from "@edulastic/localization";
-
+import produce from "immer";
+import PropTypes from "prop-types";
+import React from "react";
 import Question from "../../../components/Question";
-
+import { RadioLabel, RadioLabelGroup } from "../../../styled/RadioWithLabel";
 import { Subtitle } from "../../../styled/Subtitle";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Row } from "../../../styled/WidgetOptions/Row";
 import { updateVariables } from "../../../utils/variables";
-import { SubtitleContainer, StyledSectionContainer, StyledRadio, StyledRadioGroup } from "../styled";
-
-const styles = {
-  padding: 0,
-  background: "none"
-};
 
 const LayoutDisplayOptions = ({ fillSections, cleanSections, item, setQuestionData, t }) => {
   const onChange = e => {
@@ -33,36 +27,35 @@ const LayoutDisplayOptions = ({ fillSections, cleanSections, item, setQuestionDa
       label={t("component.coding.codeDisplayOptions.title")}
       fillSections={fillSections}
       cleanSections={cleanSections}
-      styles={styles}
       sectionId="codinglayouts"
     >
-      <SubtitleContainer>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeDisplayOptions.title")}`)}
-          textStyles={{ margin: "0", width: "100%" }}
-          showIcon={false}
-        >
-          {t("component.coding.codeDisplayOptions.title")}
-        </Subtitle>
-      </SubtitleContainer>
-      <StyledSectionContainer>
-        <StyledRadioGroup onChange={onChange} value={item.layout}>
-          <StyledRadio value={t("component.coding.codeDisplayOptions.leftright")}>
-            {t("component.coding.codeDisplayOptions.leftright")}
-          </StyledRadio>
-          <StyledRadio value={t("component.coding.codeDisplayOptions.topbottom")}>
-            {t("component.coding.codeDisplayOptions.topbottom")}
-          </StyledRadio>
-        </StyledRadioGroup>
-      </StyledSectionContainer>
+      <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeDisplayOptions.title")}`)}
+        showIcon={false}
+      >
+        {t("component.coding.codeDisplayOptions.title")}
+      </Subtitle>
+
+      <Row>
+        <Col span={24}>
+          <RadioLabelGroup onChange={onChange} value={item.layout}>
+            <RadioLabel value={t("component.coding.codeDisplayOptions.leftright")}>
+              {t("component.coding.codeDisplayOptions.leftright")}
+            </RadioLabel>
+            <RadioLabel value={t("component.coding.codeDisplayOptions.topbottom")}>
+              {t("component.coding.codeDisplayOptions.topbottom")}
+            </RadioLabel>
+          </RadioLabelGroup>
+        </Col>
+      </Row>
     </Question>
   );
 };
 
 LayoutDisplayOptions.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  fillSections: PropTypes.func.isRequired,
-  cleanSections: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };

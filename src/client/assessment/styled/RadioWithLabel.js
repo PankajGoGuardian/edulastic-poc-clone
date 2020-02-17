@@ -10,6 +10,8 @@ import {
 } from "@edulastic/colors";
 import { Radio } from "antd";
 
+export const RadioLabelGroup = Radio.Group;
+
 export const RadioStyle = styled(Radio)`
   width: ${({ width }) => width || "unset"};
   margin-bottom: ${({ mb }) => mb || "0px"};
@@ -61,6 +63,4 @@ export const RadioStyle = styled(Radio)`
   }
 `;
 
-export const RadioLabel = ({ children, ...props }) => {
-  return <RadioStyle {...props}>{children}</RadioStyle>;
-};
+export const RadioLabel = ({ children, ...props }) => <RadioStyle {...props}>{children}</RadioStyle>;

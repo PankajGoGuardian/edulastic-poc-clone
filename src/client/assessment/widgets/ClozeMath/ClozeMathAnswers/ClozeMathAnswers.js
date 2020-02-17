@@ -11,6 +11,8 @@ import InputAnswer from "./ClozeInputAnswer";
 import withPoints from "../../../components/HOC/withPoints";
 import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 
 const { methods } = math;
 
@@ -392,110 +394,129 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
             onChangePoints={_changeAltPoints(correctTab - 1)}
           />
         )}
-        {orderedAnswers.map((answer, index) => {
-          if (answer.type === "inputs") {
-            if (correctTab === 0) {
-              return <InputAnswer key={index} item={item} onChange={_updateInputCorrectAnswer} answers={[answer]} />;
-            }
-            if (isAlt) {
-              const _altInputVlaues = get(item, `validation.altResponses[${correctTab - 1}].textinput.value`, []);
-              const altAnswer = { ...answer, ...find(_altInputVlaues, av => av.id === answer.id) };
-              return (
-                <InputAnswer
-                  item={item}
-                  key={index}
-                  onChange={_changeAltInputMethod(correctTab - 1)}
-                  answers={[altAnswer]}
-                />
-              );
-            }
-          }
-          if (answer.type === "maths") {
-            if (correctTab === 0) {
-              return (
-                <MathFormulaAnswer
-                  item={item}
-                  key={index}
-                  onChange={_changeCorrectMethod}
-                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
-                  onAdd={_addCorrectMethod}
-                  onDelete={_deleteCorrectMethod}
-                  answers={[answer]}
-                  toggleAdditional={toggleAdditional}
-                  onChangeKeypad={onChangeKeypad}
-                />
-              );
-            }
-            if (isAlt) {
-              const _altMathVlaues = get(item, `validation.altResponses[${correctTab - 1}].value`, []);
-              const altAnswer = { ...answer, value: find(_altMathVlaues, av => av[0].id === answer.value[0].id) };
-              return (
-                <MathFormulaAnswer
-                  key={index}
-                  item={item}
-                  onChange={_changeAltMethod(correctTab - 1)}
-                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
-                  onAdd={_addAltMethod(correctTab - 1)}
-                  onDelete={_deleteAltMethod(correctTab - 1)}
-                  answers={[altAnswer]}
-                  onChangePoints={_changeAltPoints(correctTab - 1)}
-                  onChangeKeypad={onChangeKeypad}
-                  toggleAdditional={toggleAdditional}
-                />
-              );
-            }
-          }
-          if (answer.type === "dropDowns") {
-            if (correctTab === 0) {
-              return (
-                <DropDownAnswer key={index} item={item} onChange={_updateDropDownCorrectAnswer} answers={[answer]} />
-              );
-            }
-            if (isAlt) {
-              const _altDropDownsVlaues = get(item, `validation.altResponses[${correctTab - 1}].dropdown.value`, []);
-              const altAnswer = { ...answer, ...find(_altDropDownsVlaues, av => av.id === answer.id) };
-              return (
-                <DropDownAnswer
-                  key={index}
-                  item={item}
-                  onChange={_changeAltDropDownMethod(correctTab - 1)}
-                  answers={[altAnswer]}
-                />
-              );
-            }
-          }
-          if (answer.type === "mathUnits") {
-            if (correctTab === 0) {
-              return (
-                <MathUnitAnswer
-                  key={index}
-                  item={item}
-                  answer={answer}
-                  onChange={_onChangeMathUnitAnswer(null)}
-                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
-                  onChangeKeypad={onChangeKeypad}
-                  toggleAdditional={toggleAdditional}
-                />
-              );
-            }
-            if (isAlt) {
-              const _altMathUnitsVlaues = get(item, `validation.altResponses[${correctTab - 1}].mathUnits.value`, []);
-              const altAnswer = { ...answer, ...find(_altMathUnitsVlaues, av => av.id === answer.id) };
-              return (
-                <MathUnitAnswer
-                  key={index}
-                  item={item}
-                  answer={altAnswer}
-                  onChange={_onChangeMathUnitAnswer(correctTab - 1)}
-                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
-                  onChangeKeypad={onChangeKeypad}
-                  toggleAdditional={toggleAdditional}
-                />
-              );
-            }
-          }
-          return null;
-        })}
+        <Row>
+          <Col span={24}>
+            {orderedAnswers.map((answer, index) => {
+              if (answer.type === "inputs") {
+                if (correctTab === 0) {
+                  return (
+                    <InputAnswer key={index} item={item} onChange={_updateInputCorrectAnswer} answers={[answer]} />
+                  );
+                }
+                if (isAlt) {
+                  const _altInputVlaues = get(item, `validation.altResponses[${correctTab - 1}].textinput.value`, []);
+                  const altAnswer = { ...answer, ...find(_altInputVlaues, av => av.id === answer.id) };
+                  return (
+                    <InputAnswer
+                      item={item}
+                      key={index}
+                      onChange={_changeAltInputMethod(correctTab - 1)}
+                      answers={[altAnswer]}
+                    />
+                  );
+                }
+              }
+              if (answer.type === "maths") {
+                if (correctTab === 0) {
+                  return (
+                    <MathFormulaAnswer
+                      item={item}
+                      key={index}
+                      onChange={_changeCorrectMethod}
+                      onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
+                      onAdd={_addCorrectMethod}
+                      onDelete={_deleteCorrectMethod}
+                      answers={[answer]}
+                      toggleAdditional={toggleAdditional}
+                      onChangeKeypad={onChangeKeypad}
+                    />
+                  );
+                }
+                if (isAlt) {
+                  const _altMathVlaues = get(item, `validation.altResponses[${correctTab - 1}].value`, []);
+                  const altAnswer = { ...answer, value: find(_altMathVlaues, av => av[0].id === answer.value[0].id) };
+                  return (
+                    <MathFormulaAnswer
+                      key={index}
+                      item={item}
+                      onChange={_changeAltMethod(correctTab - 1)}
+                      onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
+                      onAdd={_addAltMethod(correctTab - 1)}
+                      onDelete={_deleteAltMethod(correctTab - 1)}
+                      answers={[altAnswer]}
+                      onChangePoints={_changeAltPoints(correctTab - 1)}
+                      onChangeKeypad={onChangeKeypad}
+                      toggleAdditional={toggleAdditional}
+                    />
+                  );
+                }
+              }
+              if (answer.type === "dropDowns") {
+                if (correctTab === 0) {
+                  return (
+                    <DropDownAnswer
+                      key={index}
+                      item={item}
+                      onChange={_updateDropDownCorrectAnswer}
+                      answers={[answer]}
+                    />
+                  );
+                }
+                if (isAlt) {
+                  const _altDropDownsVlaues = get(
+                    item,
+                    `validation.altResponses[${correctTab - 1}].dropdown.value`,
+                    []
+                  );
+                  const altAnswer = { ...answer, ...find(_altDropDownsVlaues, av => av.id === answer.id) };
+                  return (
+                    <DropDownAnswer
+                      key={index}
+                      item={item}
+                      onChange={_changeAltDropDownMethod(correctTab - 1)}
+                      answers={[altAnswer]}
+                    />
+                  );
+                }
+              }
+              if (answer.type === "mathUnits") {
+                if (correctTab === 0) {
+                  return (
+                    <MathUnitAnswer
+                      key={index}
+                      item={item}
+                      answer={answer}
+                      onChange={_onChangeMathUnitAnswer(null)}
+                      onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
+                      onChangeKeypad={onChangeKeypad}
+                      toggleAdditional={toggleAdditional}
+                    />
+                  );
+                }
+                if (isAlt) {
+                  const _altMathUnitsVlaues = get(
+                    item,
+                    `validation.altResponses[${correctTab - 1}].mathUnits.value`,
+                    []
+                  );
+                  const altAnswer = { ...answer, ...find(_altMathUnitsVlaues, av => av.id === answer.id) };
+                  return (
+                    <MathUnitAnswer
+                      key={index}
+                      item={item}
+                      answer={altAnswer}
+                      onChange={_onChangeMathUnitAnswer(correctTab - 1)}
+                      onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
+                      onChangeKeypad={onChangeKeypad}
+                      toggleAdditional={toggleAdditional}
+                    />
+                  );
+                }
+              }
+              return null;
+            })}
+          </Col>
+        </Row>
       </CorrectAnswerContainer>
       <CheckboxLabel
         onChange={() => handleValidationOptionsChange("ignoreCase", !item.validation.ignoreCase)}

@@ -8,7 +8,9 @@ import {
   red,
   greyishDarker1,
   extraDesktopWidthMax,
-  smallDesktopWidth
+  smallDesktopWidth,
+  inputBorder,
+  whiteSmoke
 } from "@edulastic/colors";
 
 const getBackground = ({ selected, checked, correct }) =>
@@ -41,7 +43,6 @@ export const QuestionOption = styled.span`
   background: ${getBackground};
   cursor: ${({ review, mode }) => (review && mode !== "report" ? "pointer" : "default")};
   border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
-  margin-bottom: 8px;
   &:not(:last-child) {
     margin-right: 4px;
   }
@@ -59,4 +60,9 @@ export const QuestionText = styled.p`
   font-size: 14px;
   padding: 10px 0;
   width: ${({ check }) => (check ? "210px" : "178px")};
+  border: 1px solid ${inputBorder};
+  border-radius: 4px;
+  padding: 4px 11px;
+  background: ${whiteSmoke};
+  color: rgba(0, 0, 0, 0.25); /* TODO: re-visit once mockup is updated */
 `;

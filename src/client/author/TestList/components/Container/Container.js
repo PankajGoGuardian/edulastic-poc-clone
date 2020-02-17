@@ -11,6 +11,7 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile } from "@edulastic/icons";
 import { grey, white, greyish } from "@edulastic/colors";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
   ScrollBox,
   Container,
@@ -88,13 +89,12 @@ import {
   getInterestedGradesSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector
-} from "../../../src/selectors/user";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+, getUserFeatures } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { getUserFeatures } from "../../../src/selectors/user";
+
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 
@@ -200,7 +200,7 @@ class TestList extends Component {
     }
 
     if (mode === "embedded") {
-      let selectedTests = [];
+      const selectedTests = [];
       const { modules } = playlist;
       const { state = {} } = location;
       const { editFlow } = state;
@@ -246,9 +246,9 @@ class TestList extends Component {
     const search = all
       ? { ...searchState }
       : {
-          ...testFilters,
-          [searchState.key]: searchState.value
-        };
+        ...testFilters,
+        [searchState.key]: searchState.value
+      };
     sessionStorage.setItem("filters[testList]", JSON.stringify(search));
     if (all) {
       return updateAllTestFilters(search);
@@ -482,19 +482,19 @@ class TestList extends Component {
       console.error("Test data is missing while adding tests in bulk..");
       return;
     }
+
+    if (item?.status === "draft") {
+      message.warning("Draft tests cannot be added");
+      return;
+    }
+    
     const {
       playlist: { modules }
     } = this.props;
     if (!modules.length) {
       this.setState({ showManageModuleModal: true, moduleModalAdd: true, testAdded: item });
       message.warning("Create atleast 1 module");
-    } else {
-      if (item?.status !== "draft") {
-        this.setState({ showAddTestInModules: true, testAdded: item });
-      } else {
-        message.warning("Draft tests cannot be added");
-      }
-    }
+    } else this.setState({ showAddTestInModules: true, testAdded: item });
   };
 
   handleBulkAddTests = item => {
@@ -665,13 +665,11 @@ class TestList extends Component {
     const markedTestsList = markedTests.map(data => data._id);
     const moduleTitleMap = {};
     const modulesMap =
-      playlist?.modules?.map(module => {
-        return { title: module.title, data: [...module.data.map(it => it.contentId)] };
-      }) || [];
+      playlist?.modules?.map(module => ({ title: module.title, data: [...module.data.map(it => it.contentId)] })) || [];
 
     const testIds = tests?.map(test => test._id) || [];
     testIds.forEach(testId => {
-      for (let obj of modulesMap) {
+      for (const obj of modulesMap) {
         if (obj?.data?.includes(testId)) moduleTitleMap[testId] = obj.title;
       }
     });
@@ -682,7 +680,7 @@ class TestList extends Component {
     if (tests.length < 1) {
       return (
         <NoDataNotification
-          heading={"Tests not available"}
+          heading="Tests not available"
           description={`There are no tests found for this filter. You can create new item by clicking the "AUTHOR TEST" button.`}
         />
       );
@@ -764,7 +762,7 @@ class TestList extends Component {
       };
     }
 
-    updatedKeys["filter"] = filter;
+    updatedKeys.filter = filter;
     this.updateFilterState(updatedKeys, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
@@ -779,7 +777,7 @@ class TestList extends Component {
 
   rejectNumberChecker = tests => {
     let num = 0;
-    for (let o of tests) {
+    for (const o of tests) {
       if (o.status === "inreview") {
         num++;
       }
@@ -789,7 +787,7 @@ class TestList extends Component {
 
   approveNumberChecker = tests => {
     let num = 0;
-    for (let o of tests) {
+    for (const o of tests) {
       if (o.status === "inreview" || o.status === "rejected") {
         num++;
       }
@@ -797,30 +795,28 @@ class TestList extends Component {
     return num;
   };
 
-  renderExtra = () => {
-    return (
-      <>
-        <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
-          <CartButton
-            onClick={() => {
+  renderExtra = () => (
+    <>
+      <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+        <CartButton
+          onClick={() => {
               const { approveOrRejectMultipleTestsRequestAction } = this.props;
               approveOrRejectMultipleTestsRequestAction({ status: "rejected" });
             }}
-            buttonText={"Reject"}
-            numberChecker={this.rejectNumberChecker}
-          />
-          <CartButton
-            onClick={() => {
+          buttonText="Reject"
+          numberChecker={this.rejectNumberChecker}
+        />
+        <CartButton
+          onClick={() => {
               const { approveOrRejectMultipleTestsRequestAction } = this.props;
               approveOrRejectMultipleTestsRequestAction({ status: "published" });
             }}
-            buttonText={"Approve"}
-            numberChecker={this.approveNumberChecker}
-          />
-        </FeaturesSwitch>
-      </>
+          buttonText="Approve"
+          numberChecker={this.approveNumberChecker}
+        />
+      </FeaturesSwitch>
+    </>
     );
-  };
 
   render() {
     const {
@@ -883,9 +879,7 @@ class TestList extends Component {
       });
     });
 
-    const modulesNamesCountMap = counts.map((count, i) => {
-      return { count, mName: playlist?.modules[i]?.title };
-    });
+    const modulesNamesCountMap = counts.map((count, i) => ({ count, mName: playlist?.modules[i]?.title }));
 
     return (
       <>
@@ -1034,7 +1028,7 @@ class TestList extends Component {
                 {mode === "embedded" && (
                   <BtnActionsContainer>
                     <StyledCountText>{markedTests.length} TESTS SELECTED</StyledCountText>
-                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
+                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => { }}>
                       <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
                         <a className="ant-dropdown-link" href="#">
                           Actions

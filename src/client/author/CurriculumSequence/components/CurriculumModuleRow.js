@@ -20,11 +20,11 @@ import {
 } from "@edulastic/colors";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
+import { FaBars } from "react-icons/fa";
 import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
 import Tags from "../../src/components/common/Tags";
-import { FaBars } from "react-icons/fa";
 
 import AssessmentPlayer from "../../../assessment";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
@@ -258,7 +258,7 @@ class ModuleRow extends Component {
                       <Icon type="up" style={{ color: "#707070" }} />
                     ) : (
                       <Icon type="down" style={{ color: "#707070" }} />
-                    )}
+                      )}
                   </CustomIcon>
                   <ModuleTitleAssignedWrapper>
                     <Col span={16}>
@@ -309,9 +309,9 @@ class ModuleRow extends Component {
                           </>
                         ) : (
                           <Tag color={themeColor} onClick={event => event.stopPropagation()}>
-                            NO ASSIGNMENTS
+                              NO ASSIGNMENTS
                           </Tag>
-                        )}
+                          )}
                       </ModulesWrapper>
                     )}
                   </ModuleTitleAssignedWrapper>
@@ -434,7 +434,7 @@ class ModuleRow extends Component {
                                 >
                                   {moduleData.contentTitle}
                                 </ModuleDataName>
-                              )}
+                                )}
                             </AssignmentContent>
                             <AssignmentIconsWrapper expanded={isContentExpanded}>
                               {!hideEditOptions && (
@@ -469,14 +469,14 @@ class ModuleRow extends Component {
 
                                 {((isAssigned && !hideEditOptions) ||
                                   (status === "published" && mode === "embedded")) && (
-                                  <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
-                                    <Button onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
-                                      {currentAssignmentId.includes(moduleData.contentId)
-                                        ? "HIDE ASSIGNMENTS"
-                                        : "SHOW ASSIGNMENTS"}
-                                    </Button>
-                                  </AssignmentButton>
-                                )}
+                                    <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
+                                      <Button onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
+                                        {currentAssignmentId.includes(moduleData.contentId)
+                                          ? "HIDE ASSIGNMENTS"
+                                          : "SHOW ASSIGNMENTS"}
+                                      </Button>
+                                    </AssignmentButton>
+                                  )}
 
                                 {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                   <AssignmentButton assigned={isAssigned}>
@@ -488,7 +488,7 @@ class ModuleRow extends Component {
                                         <IconCheckSmall color={white} />
                                       ) : (
                                         <IconLeftArrow width={13.3} height={9.35} />
-                                      )}
+                                        )}
                                       {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                                     </Button>
                                   </AssignmentButton>
@@ -523,12 +523,12 @@ class ModuleRow extends Component {
                               <AssignmentStatus bg={statusBg[(assignment?.status)]}>
                                 {assignment?.status}
                               </AssignmentStatus>
-                              <Div maxWidth={125} align="left">
+                              {/* <Div maxWidth={125} align="left">
                                 {`Submitted ${assignment?.submittedCount} of ${assignment?.assignedCount}`}
                               </Div>
                               <Div maxWidth={35} align="center">
                                 {(assignment?.submittedCount / assignment?.assignedCount) * 100 || 0} %
-                              </Div>
+                              </Div> */}
                               <Div maxWidth={90} align="left">
                                 {assignment?.gradedNumber} Graded
                               </Div>

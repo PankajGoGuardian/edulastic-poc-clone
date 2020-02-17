@@ -7,13 +7,16 @@ import { cloneDeep } from "lodash";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, TabContainer, Tabs } from "@edulastic/common";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector
+} from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { CorrectAnswersContainer } from "./styled/CorrectAnswers";
 
 import CorrectAnswer from "./CorrectAnswer";
-import { AlternateAnswerLink } from "../../styled/ButtonStyles";
+import { AlternateAnswerLink, AddAlternative } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -139,11 +142,20 @@ class CorrectAnswers extends Component {
     const { value, tabs } = this.state;
     return (
       <div>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
+          )}
+        >
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
-        <CorrectAnswersContainer>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+        <AddAlternative>
+          {this.renderPlusButton()}
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            style={{ marginBottom: 10, marginTop: 20 }}
+          >
             {tabs >= 1 && (
               <Tab
                 type="primary"
@@ -155,18 +167,22 @@ class CorrectAnswers extends Component {
             )}
             {this.renderAltResponses()}
           </Tabs>
+        </AddAlternative>
+        <CorrectAnswersContainer>
           {value === 0 && (
-            <CorrectAnswer
-              uiStyle={uiStyle}
-              response={validation.validResponse}
-              stimulus={stimulus}
-              multipleResponses={multipleResponses}
-              options={options}
-              onUpdateValidationValue={this.updateCorrectValidationAnswers}
-              onUpdatePoints={this.handleUpdateCorrectScore}
-              styleType={styleType}
-              fontSize={fontSize}
-            />
+            <TabContainer>
+              <CorrectAnswer
+                uiStyle={uiStyle}
+                response={validation.validResponse}
+                stimulus={stimulus}
+                multipleResponses={multipleResponses}
+                options={options}
+                onUpdateValidationValue={this.updateCorrectValidationAnswers}
+                onUpdatePoints={this.handleUpdateCorrectScore}
+                styleType={styleType}
+                fontSize={fontSize}
+              />
+            </TabContainer>
           )}
           {validation.altResponses &&
             !!validation.altResponses.length &&
@@ -180,7 +196,9 @@ class CorrectAnswers extends Component {
                       multipleResponses={multipleResponses}
                       stimulus={stimulus}
                       options={options}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                      onUpdateValidationValue={answers =>
+                        this.updateAltCorrectValidationAnswers(answers, i)
+                      }
                       styleType={styleType}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       fontSize={fontSize}
@@ -208,8 +226,8 @@ CorrectAnswers.propTypes = {
   onRemoveAltResponses: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
   styleType: PropTypes.string,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
+  fontSize: PropTypes.any.isRequired,
+  item: PropTypes.object.isRequired,
   correctTab: PropTypes.number.isRequired
 };
 
@@ -217,9 +235,7 @@ CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
   validation: {},
-  styleType: "default",
-  fillSections: () => {},
-  cleanSections: () => {}
+  styleType: "default"
 };
 
 const enhance = compose(

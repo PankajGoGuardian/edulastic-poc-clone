@@ -1,14 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
 import { withNamespaces } from "@edulastic/localization";
-
-import { selectColor } from "@edulastic/colors";
-import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
+import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
-import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -24,7 +20,9 @@ class CorrectAnswer extends Component {
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
-    max: PropTypes.number.isRequired
+    max: PropTypes.number.isRequired,
+    isV1Migrated: PropTypes.bool.isRequired,
+    item: PropTypes.object.isRequired
   };
 
   static contextType = ItemLevelContext;
@@ -76,7 +74,7 @@ class CorrectAnswer extends Component {
         {this.context || (
           <CorrectAnswerHeader mb="15px">
             <Label>{t("component.correctanswers.points")}</Label>
-            <CorrectAnswerPointField
+            <PointsInput
               type="number"
               value={responseScore}
               onChange={this.updateScore}
@@ -85,7 +83,6 @@ class CorrectAnswer extends Component {
               min={0}
               max={max}
               step={0.5}
-              style={{ "font-size": "12px", "font-weight": "600", color: selectColor }}
             />
           </CorrectAnswerHeader>
         )}

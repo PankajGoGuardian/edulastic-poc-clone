@@ -1,10 +1,8 @@
-import { mainTextColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
 
@@ -90,7 +88,7 @@ class CorrectAnswer extends Component {
         {this.context || (
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
-            <CorrectAnswerPointField
+            <PointsInput
               type="number"
               value={responseScore}
               onChange={this.updateScore}
@@ -99,9 +97,6 @@ class CorrectAnswer extends Component {
               min={0}
               step={0.5}
               data-cy="point-field"
-              height="40px"
-              width="auto"
-              style={{ "font-size": "14px", "font-weight": "400", color: mainTextColor }}
             />
           </CorrectAnswerHeader>
         )}

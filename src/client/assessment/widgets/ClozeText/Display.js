@@ -47,7 +47,14 @@ class ClozeTextDisplay extends Component {
 
   getUiStyles = (responseBoxId, responseIndex) => {
     const { uiStyle } = this.props;
-    const { widthpx, heightpx, placeholder, inputtype, stemNumeration, responsecontainerindividuals } = uiStyle;
+    const {
+      widthpx,
+      heightpx,
+      placeholder,
+      inputtype,
+      stemNumeration,
+      responsecontainerindividuals
+    } = uiStyle;
     const fontSize = this.getFontSize(uiStyle.fontsize);
 
     const btnStyle = {
@@ -61,7 +68,8 @@ class ClozeTextDisplay extends Component {
       placeholder
     };
 
-    const responseBoxStyle = find(responsecontainerindividuals, resp => resp.id === responseBoxId) || {};
+    const responseBoxStyle =
+      find(responsecontainerindividuals, resp => resp.id === responseBoxId) || {};
 
     if (responseBoxStyle.widthpx) {
       btnStyle.width = responseBoxStyle.widthpx;
@@ -169,7 +177,8 @@ class ClozeTextDisplay extends Component {
           bindings={{ resProps }}
           showWarnings
           components={{
-            textinput: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
+            textinput:
+              showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ClozeTextInput,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -207,7 +216,9 @@ class ClozeTextDisplay extends Component {
         )}
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          {!!question && <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />}
+          {!!question && (
+            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          )}
           {!question && QuestionContent}
         </QuestionTitleWrapper>
         {question && QuestionContent}
@@ -272,6 +283,7 @@ export default ClozeTextDisplay;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  width: 100%;
 
   iframe {
     max-width: 100%;
@@ -284,7 +296,9 @@ const QuestionTitleWrapper = styled.div`
 const StyledParser = styled.div`
   padding: ${props => (props.view === EDIT ? 15 : 0)}px;
   border: ${props =>
-    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
+    props.view === EDIT
+      ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}`
+      : null};
   border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
   overflow: auto;

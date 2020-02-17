@@ -63,7 +63,10 @@ class AttributesTitle extends Component {
     const changeHandler = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.areaAttributes.global[prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
+          draft.areaAttributes.global[prop] = hexToRGB(
+            obj.color,
+            (obj.alpha ? obj.alpha : 1) / 100
+          );
         })
       );
     };
@@ -102,7 +105,10 @@ class AttributesTitle extends Component {
     const handleLocalColorChange = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.areaAttributes.local[customizeTab - 1][prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
+          draft.areaAttributes.local[customizeTab - 1][prop] = hexToRGB(
+            obj.color,
+            (obj.alpha ? obj.alpha : 1) / 100
+          );
           updateVariables(draft);
         })
       );
@@ -150,11 +156,18 @@ class AttributesTitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.attributesTitle")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.attributesTitle")}`)}
+        >
           {t("component.hotspot.attributesTitle")}
         </Subtitle>
 
-        <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
+        <Tabs
+          style={{ marginBottom: 15 }}
+          value={customizeTab}
+          onChange={setCustomizeTab}
+          extra={renderPlusButton()}
+        >
           <Tab
             style={{ borderRadius: areaAttributes.local <= 1 ? "4px" : "4px 0 0 4px" }}
             label={t("component.hotspot.global")}
@@ -163,9 +176,13 @@ class AttributesTitle extends Component {
           {renderAltResponses()}
         </Tabs>
         {customizeTab === 0 ? (
-          <Row gutter={64}>
-            <Col span={6}>
-              <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
+          <Row gutter={24}>
+            <Col span={12}>
+              <Subtitle
+                fontSize={theme.widgets.hotspot.subtitleFontSize}
+                color={theme.widgets.hotspot.subtitleColor}
+                margin="0px 0px 20px"
+              >
                 {t("component.hotspot.fillColorTitle")}
               </Subtitle>
               <ColorPicker
@@ -175,8 +192,12 @@ class AttributesTitle extends Component {
                 onChange={changeHandler("fill")}
               />
             </Col>
-            <Col span={6}>
-              <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
+            <Col span={12}>
+              <Subtitle
+                fontSize={theme.widgets.hotspot.subtitleFontSize}
+                color={theme.widgets.hotspot.subtitleColor}
+                margin="0px 0px 20px"
+              >
                 {t("component.hotspot.outlineColorTitle")}
               </Subtitle>
               <ColorPicker
@@ -195,7 +216,9 @@ class AttributesTitle extends Component {
             areaIndexes={areas
               .map((area, i) => i)
               .filter(
-                index => !selectedIndexes.includes(index) || index === areaAttributes.local[customizeTab - 1].area
+                index =>
+                  !selectedIndexes.includes(index) ||
+                  index === areaAttributes.local[customizeTab - 1].area
               )}
           />
         )}

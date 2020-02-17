@@ -1,12 +1,9 @@
 import { withNamespaces } from "@edulastic/localization";
-import { Input } from "antd";
 import PropTypes from "prop-types";
 import React, { useContext } from "react";
-import styled from "styled-components";
 import ItemLevelContext from "../../../../author/QuestionEditor/components/Container/QuestionContext";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { CorrectAnswerHeader } from "../../../styled/CorrectAnswerHeader";
-import { greyThemeLight } from "@edulastic/colors";
+import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerHeader";
 
 export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, ...props }) => {
@@ -45,19 +42,3 @@ export default WrappedComponent => {
 
   return withNamespaces("assessment")(hocComponent);
 };
-
-const PointsInput = styled(Input)`
-  &.ant-input {
-    width: 230px;
-    background: #f8f8fb;
-    border: 1px solid ${greyThemeLight};
-    max-height: 40px;
-    min-height: 40px;
-    font-size: 14px;
-    line-height: 38px;
-    padding: 0 15px;
-    margin-right: ${props => props.mr || "0px"};
-    position: relative;
-    z-index: 1;
-  }
-`;

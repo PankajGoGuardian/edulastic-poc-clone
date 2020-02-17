@@ -5,8 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
 
@@ -92,7 +91,7 @@ class CorrectAnswer extends Component {
         {this.context || (
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
-            <CorrectAnswerPointField
+            <PointsInput
               type="number"
               value={responseScore}
               onChange={this.updateScore}
@@ -101,9 +100,6 @@ class CorrectAnswer extends Component {
               min={0}
               step={0.5}
               data-cy="point-field"
-              height="40px"
-              width="auto"
-              style={{ "font-weight": "600", color: "#434B4F" }}
             />
           </CorrectAnswerHeader>
         )}

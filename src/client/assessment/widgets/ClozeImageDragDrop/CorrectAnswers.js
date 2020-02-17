@@ -10,10 +10,14 @@ import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector
+} from "../../../author/QuestionEditor/ducks";
 
 import CorrectAnswer from "./CorrectAnswer";
 import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
+import { AddAlternative } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -137,11 +141,20 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
+          )}
+        >
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
-        <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+        <AddAlternative>
+          {this.renderPlusButton()}
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            style={{ marginBottom: 10, marginTop: 20 }}
+          >
             <Tab
               style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
               label={t("component.correctanswers.correct")}
@@ -150,64 +163,66 @@ class CorrectAnswers extends Component {
             />
             {this.renderAltResponses()}
           </Tabs>
-          {value === 0 && (
-            <TabContainer>
-              <CorrectAnswer
-                key={options}
-                response={validation.validResponse}
-                stimulus={stimulus}
-                options={options}
-                uiStyle={uiStyle}
-                responses={responses}
-                imageUrl={imageUrl}
-                showDashedBorder={showDashedBorder}
-                configureOptions={configureOptions}
-                imageAlterText={imageAlterText}
-                imageWidth={imageWidth}
-                imageHeight={imageHeight}
-                maxRespCount={maxRespCount}
-                onUpdateValidationValue={this.updateCorrectValidationAnswers}
-                onUpdatePoints={this.handleUpdateCorrectScore}
-                backgroundColor={backgroundColor}
-                imageOptions={imageOptions}
-                item={item}
-                setQuestionData={setQuestionData}
-              />
-            </TabContainer>
-          )}
-          {validation.altResponses &&
-            !!validation.altResponses.length &&
-            validation.altResponses.map((alter, i) => {
-              if (i + 1 === value) {
-                return (
-                  <TabContainer key={i}>
-                    <CorrectAnswer
-                      key={options}
-                      response={alter}
-                      stimulus={stimulus}
-                      options={options}
-                      configureOptions={configureOptions}
-                      responses={responses}
-                      imageUrl={imageUrl}
-                      imageAlterText={imageAlterText}
-                      imageWidth={imageWidth}
-                      maxRespCount={maxRespCount}
-                      templateMarkUp={templateMarkUp}
-                      showDashedBorder={showDashedBorder}
-                      uiStyle={uiStyle}
-                      backgroundColor={backgroundColor}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                      imageOptions={imageOptions}
-                      item={item}
-                      setQuestionData={setQuestionData}
-                    />
-                  </TabContainer>
-                );
-              }
-              return null;
-            })}
-        </div>
+        </AddAlternative>
+        {value === 0 && (
+          <TabContainer>
+            <CorrectAnswer
+              key={options}
+              response={validation.validResponse}
+              stimulus={stimulus}
+              options={options}
+              uiStyle={uiStyle}
+              responses={responses}
+              imageUrl={imageUrl}
+              showDashedBorder={showDashedBorder}
+              configureOptions={configureOptions}
+              imageAlterText={imageAlterText}
+              imageWidth={imageWidth}
+              imageHeight={imageHeight}
+              maxRespCount={maxRespCount}
+              onUpdateValidationValue={this.updateCorrectValidationAnswers}
+              onUpdatePoints={this.handleUpdateCorrectScore}
+              backgroundColor={backgroundColor}
+              imageOptions={imageOptions}
+              item={item}
+              setQuestionData={setQuestionData}
+            />
+          </TabContainer>
+        )}
+        {validation.altResponses &&
+          !!validation.altResponses.length &&
+          validation.altResponses.map((alter, i) => {
+            if (i + 1 === value) {
+              return (
+                <TabContainer key={i}>
+                  <CorrectAnswer
+                    key={options}
+                    response={alter}
+                    stimulus={stimulus}
+                    options={options}
+                    configureOptions={configureOptions}
+                    responses={responses}
+                    imageUrl={imageUrl}
+                    imageAlterText={imageAlterText}
+                    imageWidth={imageWidth}
+                    maxRespCount={maxRespCount}
+                    templateMarkUp={templateMarkUp}
+                    showDashedBorder={showDashedBorder}
+                    uiStyle={uiStyle}
+                    backgroundColor={backgroundColor}
+                    onUpdateValidationValue={answers =>
+                      this.updateAltCorrectValidationAnswers(answers, i)
+                    }
+                    onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                    imageOptions={imageOptions}
+                    item={item}
+                    setQuestionData={setQuestionData}
+                  />
+                </TabContainer>
+              );
+            }
+            return null;
+          })}
         {children}
       </div>
     );
@@ -234,7 +249,8 @@ CorrectAnswers.propTypes = {
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   imageOptions: PropTypes.object,
-  item: PropTypes.object
+  item: PropTypes.object,
+  children: PropTypes.any.isRequired
 };
 
 CorrectAnswers.defaultProps = {

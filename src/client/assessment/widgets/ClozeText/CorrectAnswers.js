@@ -10,7 +10,10 @@ import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector
+} from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 
@@ -19,6 +22,7 @@ import MixMatchCorrectAnswer from "./MixMatchCorrectAnswer";
 import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
 
 import { updateVariables } from "../../utils/variables";
+import { AddAlternative } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -99,8 +103,12 @@ class CorrectAnswers extends Component {
     };
     newData.validation.validResponse = updatedValidation.validResponse;
     if (widthpx) {
-      newData.uiStyle.responsecontainerindividuals = newData.uiStyle.responsecontainerindividuals || [];
-      const index = findIndex(newData.uiStyle.responsecontainerindividuals, container => container.id === id);
+      newData.uiStyle.responsecontainerindividuals =
+        newData.uiStyle.responsecontainerindividuals || [];
+      const index = findIndex(
+        newData.uiStyle.responsecontainerindividuals,
+        container => container.id === id
+      );
       if (index === -1) {
         const newIndex = findIndex(newData.responseIds, resp => resp.id === id);
         newData.uiStyle.responsecontainerindividuals.push({ id, widthpx, index: newIndex });
@@ -156,7 +164,7 @@ class CorrectAnswers extends Component {
             altResponse.value[_index].value = value;
             updated = true;
           } else if (_index === -1 && !updated) {
-            const resp = draft.responseIds.find(resp => resp.index === index);
+            const resp = draft.responseIds.find(respItem => respItem.index === index);
             altResponse.value.push({
               id: resp.id,
               index,
@@ -219,11 +227,20 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
+          )}
+        >
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
-        <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+        <AddAlternative>
+          {this.renderPlusButton()}
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            style={{ marginBottom: 10, marginTop: 20 }}
+          >
             <Tab
               label={t("component.correctanswers.correct")}
               style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
@@ -231,66 +248,68 @@ class CorrectAnswers extends Component {
             />
             {this.renderAltResponses()}
           </Tabs>
-          {value === 0 && (
-            <TabContainer>
-              <CorrectAnswer
-                key={options}
-                response={validation.validResponse}
-                stimulus={stimulus}
-                options={options}
-                uiStyle={uiStyle}
-                configureOptions={configureOptions}
-                hasGroupResponses={hasGroupResponses}
-                onUpdateValidationValue={this.updateCorrectValidationAnswers}
-                onUpdatePoints={this.handleUpdateCorrectScore}
-                responseIds={responseIds}
-                view={view}
-                previewTab={previewTab}
-                isV1Migrated={isV1Migrated}
-                item={item}
-              />
-            </TabContainer>
-          )}
-          {validation.altResponses &&
-            !!validation.altResponses.length &&
-            validation.altResponses.map((alter, i) => {
-              if (i + 1 === value) {
-                return (
-                  <TabContainer key={i}>
-                    {validation.mixAndMatch && (
-                      <MixMatchCorrectAnswer
-                        uiStyle={uiStyle}
-                        validResponse={validation.validResponse}
-                        alternateResponse={validation.altResponses}
-                        onUpdateValidationValue={answers => this.updateAltAnswersMixMatch(answers)}
-                        addAltAnswerMixMatch={answer => this.addAltAnswerMixMatch(answer)}
-                      />
-                    )}
-                    {!validation.mixAndMatch && (
-                      <CorrectAnswer
-                        key={options}
-                        response={alter}
-                        stimulus={stimulus}
-                        options={options}
-                        configureOptions={configureOptions}
-                        responseIds={responseIds}
-                        hasGroupResponses={hasGroupResponses}
-                        uiStyle={uiStyle}
-                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                        onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                        view={view}
-                        previewTab={previewTab}
-                        isV1Migrated={isV1Migrated}
-                        max={validation?.validResponse?.score}
-                        item={item}
-                      />
-                    )}
-                  </TabContainer>
-                );
-              }
-              return null;
-            })}
-        </div>
+        </AddAlternative>
+        {value === 0 && (
+          <TabContainer>
+            <CorrectAnswer
+              key={options}
+              response={validation.validResponse}
+              stimulus={stimulus}
+              options={options}
+              uiStyle={uiStyle}
+              configureOptions={configureOptions}
+              hasGroupResponses={hasGroupResponses}
+              onUpdateValidationValue={this.updateCorrectValidationAnswers}
+              onUpdatePoints={this.handleUpdateCorrectScore}
+              responseIds={responseIds}
+              view={view}
+              previewTab={previewTab}
+              isV1Migrated={isV1Migrated}
+              item={item}
+            />
+          </TabContainer>
+        )}
+        {validation.altResponses &&
+          !!validation.altResponses.length &&
+          validation.altResponses.map((alter, i) => {
+            if (i + 1 === value) {
+              return (
+                <TabContainer key={i}>
+                  {validation.mixAndMatch && (
+                    <MixMatchCorrectAnswer
+                      uiStyle={uiStyle}
+                      validResponse={validation.validResponse}
+                      alternateResponse={validation.altResponses}
+                      onUpdateValidationValue={answers => this.updateAltAnswersMixMatch(answers)}
+                      addAltAnswerMixMatch={answer => this.addAltAnswerMixMatch(answer)}
+                    />
+                  )}
+                  {!validation.mixAndMatch && (
+                    <CorrectAnswer
+                      key={options}
+                      response={alter}
+                      stimulus={stimulus}
+                      options={options}
+                      configureOptions={configureOptions}
+                      responseIds={responseIds}
+                      hasGroupResponses={hasGroupResponses}
+                      uiStyle={uiStyle}
+                      onUpdateValidationValue={answers =>
+                        this.updateAltCorrectValidationAnswers(answers, i)
+                      }
+                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      view={view}
+                      previewTab={previewTab}
+                      isV1Migrated={isV1Migrated}
+                      max={validation?.validResponse?.score}
+                      item={item}
+                    />
+                  )}
+                </TabContainer>
+              );
+            }
+            return null;
+          })}
       </div>
     );
   }
@@ -310,7 +329,10 @@ CorrectAnswers.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.bool.isRequired,
   uiStyle: PropTypes.object,
-  responseIds: PropTypes.object
+  responseIds: PropTypes.object,
+  isV1Migrated: PropTypes.bool.isRequired,
+  item: PropTypes.object.isRequired,
+  handleRemoveAltResponsesMixMatch: PropTypes.func.isRequired
 };
 
 CorrectAnswers.defaultProps = {

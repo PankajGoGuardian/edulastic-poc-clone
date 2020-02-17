@@ -1,13 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-
-import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import Display from "./Display";
-import { mainTextColor } from "@edulastic/colors";
+import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
+import Display from "./Display";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -18,7 +15,6 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     hasGroupResponses: PropTypes.bool.isRequired,
-    template: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIDs: PropTypes.array.isRequired,
     uiStyle: PropTypes.object.isRequired,
@@ -71,7 +67,7 @@ class CorrectAnswer extends Component {
         {itemLevelScoring || (
           <CorrectAnswerHeader mb="15px">
             <Label>{t("component.correctanswers.points")}</Label>
-            <CorrectAnswerPointField
+            <PointsInput
               data-cy="points"
               type="number"
               value={responseScore}
@@ -80,9 +76,6 @@ class CorrectAnswer extends Component {
               disabled={false}
               min={0}
               step={0.5}
-              height="40px"
-              width="auto"
-              style={{ "font-size": "14px", "font-weight": "400", color: mainTextColor }}
             />
           </CorrectAnswerHeader>
         )}

@@ -146,7 +146,10 @@ class Display extends Component {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
       }
       return {
-        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
+        userAnswers:
+          nextProps.userSelections && nextProps.userSelections.length
+            ? [...nextProps.userSelections]
+            : [],
         possibleResponses
       };
     }
@@ -214,8 +217,10 @@ class Display extends Component {
 
     for (let i = 0; i < newAnswers.length; i++) {
       if (newAnswers[i] && newAnswers[i].responseBoxID) {
-        // eslint-disable-next-line no-loop-func
-        const duplicated = newAnswers.filter(res => res && res.responseBoxID === newAnswers[i].responseBoxID);
+        const duplicated = newAnswers.filter(
+          // eslint-disable-next-line no-loop-func
+          res => res && res.responseBoxID === newAnswers[i].responseBoxID
+        );
         if (duplicated.length > 1) {
           newAnswers[i].value = data;
         }
@@ -280,7 +285,8 @@ class Display extends Component {
 
     if (typeof fromContainerIndex === "number") {
       newAnswers[fromContainerIndex] = {
-        responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
+        responseBoxID:
+          responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
         value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
         containerIndex: index
       };
@@ -323,7 +329,10 @@ class Display extends Component {
     if (responseContainers.length > 0) {
       const maxTop = maxBy(responseContainers, res => res.top);
       const maxLeft = maxBy(responseContainers, res => res.left);
-      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+      return {
+        responseBoxMaxTop: maxTop.top + maxTop.height,
+        responseBoxMaxLeft: maxLeft.left + maxLeft.width
+      };
     }
 
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
@@ -377,7 +386,13 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
+    const {
+      heightpx,
+      wordwrap,
+      responsecontainerposition,
+      responsecontainerindividuals,
+      stemNumeration
+    } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
@@ -386,7 +401,9 @@ class Display extends Component {
     };
 
     const dragItemStyle = {
-      border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
+      border: `${
+        showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+      }`,
       margin: "0 0 0 3px", // EV-8287
       display: "flex",
       alignItems: "center",
@@ -396,7 +413,12 @@ class Display extends Component {
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
-    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
+    const {
+      imageWidth: imgWidth,
+      imageHeight: imgHeight,
+      imageOriginalWidth,
+      imageOriginalHeight
+    } = item;
     const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
     const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     let canvasHeight = imageHeight + (imageOptions.y || 0);
@@ -467,7 +489,8 @@ class Display extends Component {
                   left: smallSize ? rect.left / 2 : rect.left,
                   border: showDashedBorder ? `dashed 2px` : `solid 1px`,
                   position: "absolute",
-                  background: !showAnswer && !checkAnswer ? backgroundColor : status ? "#d3fea6" : "#fce0e8",
+                  background:
+                    !showAnswer && !checkAnswer ? backgroundColor : status ? "#d3fea6" : "#fce0e8",
                   borderRadius: 5,
                   padding: "8px 30px 8px 20px",
                   zIndex: 40,
@@ -517,7 +540,11 @@ class Display extends Component {
     }, 0);
     const imageOffsetY = get(item, "imageOptions.y", 0);
     // eslint-disable-next-line max-len
-    const computedHeight = Math.max(maxResponseOffsetTop, maxAnnotationsOffsetTop, imageHeight + imageOffsetY);
+    const computedHeight = Math.max(
+      maxResponseOffsetTop,
+      maxAnnotationsOffsetTop,
+      imageHeight + imageOffsetY
+    );
 
     const choiceMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
     const choiceMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
@@ -541,7 +568,12 @@ class Display extends Component {
 
     const previewContainerWidth = canvasWidth > maxWidth ? canvasWidth : maxWidth;
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={computedHeight} maxWidth="100%">
+      <StyledPreviewTemplateBox
+        smallSize={smallSize}
+        fontSize={fontSize}
+        height={computedHeight}
+        maxWidth="100%"
+      >
         <StyledPreviewContainer
           smallSize={smallSize}
           width={previewContainerWidth}
@@ -555,7 +587,9 @@ class Display extends Component {
               return null;
             }
             const dropTargetIndex = index;
-            const responseContainerLeft = smallSize ? responseContainer.left / 2 : responseContainer.left;
+            const responseContainerLeft = smallSize
+              ? responseContainer.left / 2
+              : responseContainer.left;
             const btnStyle = {
               widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
               width: smallSize ? responseContainer.width / 2 : responseContainer.width,
@@ -629,7 +663,10 @@ class Display extends Component {
                       );
                     })}
                 </div>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                <Pointer
+                  className={responseContainer.pointerPosition}
+                  width={responseContainer.width}
+                >
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -670,7 +707,8 @@ class Display extends Component {
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
@@ -691,7 +729,9 @@ class Display extends Component {
     );
 
     const validAnswers = get(item, "validation.validResponse.value", []);
-    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
+    const altAnswers = get(item, "validation.altResponses", []).map(alt =>
+      get(alt, "value", []).map(res => res)
+    );
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
@@ -708,7 +748,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <div style={{ fontSize, margin: "auto", overflow: "auto" }}>
+      <div style={{ fontSize, margin: "auto", overflow: "auto", width: "100%" }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
@@ -734,7 +774,10 @@ class Display extends Component {
             <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </LeftResponseContainer>
-            <LeftTemplateContainer studentReport={studentReport} responseBoxContainerWidth={responseBoxWidth}>
+            <LeftTemplateContainer
+              studentReport={studentReport}
+              responseBoxContainerWidth={responseBoxWidth}
+            >
               {templateBoxLayout}
             </LeftTemplateContainer>
           </LeftContainer>
@@ -749,7 +792,11 @@ class Display extends Component {
               {templateBoxLayout}
             </RightTemplateContainer>
 
-            <RightResponseContainer isReviewTab={isReviewTab} width={responseBoxWidth || null} smallSize={smallSize}>
+            <RightResponseContainer
+              isReviewTab={isReviewTab}
+              width={responseBoxWidth || null}
+              smallSize={smallSize}
+            >
               <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </RightResponseContainer>
           </RightContainer>

@@ -5,7 +5,13 @@ import { cloneDeep, get } from "lodash";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
-import { PreWrapper, helpers, QuestionNumberLabel, HorizontalScrollContext, DragDrop } from "@edulastic/common";
+import {
+  PreWrapper,
+  helpers,
+  QuestionNumberLabel,
+  HorizontalScrollContext,
+  DragDrop
+} from "@edulastic/common";
 import { ChoiceDimensions } from "@edulastic/constants";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
@@ -94,7 +100,11 @@ class ClozeDragDropDisplay extends Component {
         } else {
           for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
             if (newResponses[groupIndex].options[i].value === groupData) {
-              if (userSelections && userSelections[index] !== null && typeof userSelections[index] === "object") {
+              if (
+                userSelections &&
+                userSelections[index] !== null &&
+                typeof userSelections[index] === "object"
+              ) {
                 newResponses[userSelections[index].group].options.push({
                   value: uuid(),
                   label: userSelections[index].data
@@ -179,7 +189,12 @@ class ClozeDragDropDisplay extends Component {
     });
 
   getInitialResponses = props => {
-    const { hasGroupResponses, configureOptions, userSelections: userSelectionsProp, options } = props;
+    const {
+      hasGroupResponses,
+      configureOptions,
+      userSelections: userSelectionsProp,
+      options
+    } = props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const userSelections = userSelectionsProp || [];
 
@@ -300,7 +315,8 @@ class ClozeDragDropDisplay extends Component {
       overflow: "hidden"
     };
 
-    const templateBoxLayout = checkAnswer || showAnswer || isReviewTab ? CheckboxTemplateBoxLayout : TemplateBox;
+    const templateBoxLayout =
+      checkAnswer || showAnswer || isReviewTab ? CheckboxTemplateBoxLayout : TemplateBox;
 
     const resProps = {
       options,
@@ -331,7 +347,9 @@ class ClozeDragDropDisplay extends Component {
         <div
           className={`template_box ${smallSize ? "small" : ""}`}
           style={{
-            fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
+            fontSize: smallSize
+              ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize
+              : fontSize
           }}
         >
           <JsxParser
@@ -389,7 +407,8 @@ class ClozeDragDropDisplay extends Component {
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
-    const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
+    const horizontallyAligned =
+      responsecontainerposition === "left" || responsecontainerposition === "right";
 
     const answerContainerStyle = {
       minWidth: dragItemMaxWidth + 62,
@@ -399,7 +418,11 @@ class ClozeDragDropDisplay extends Component {
     const responseBoxStyle = {
       height: "100%",
       width:
-        showAnswer || isReviewTab ? 0 : horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+        showAnswer || isReviewTab
+          ? 0
+          : horizontallyAligned
+          ? dragItemMaxWidth + 62
+          : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
       flexShrink: 0,
       borderRadius: smallSize ? 0 : 10,
       marginRight: responsecontainerposition === "left" ? 15 : null,
@@ -445,9 +468,13 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <TextWrappedDiv style={{ fontSize }} ref={this.previewWrapperRef}>
-        <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.previewWrapperRef.current }}>
+        <HorizontalScrollContext.Provider
+          value={{ getScrollElement: () => this.previewWrapperRef.current }}
+        >
           <QuestionTitleWrapper>
-            {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+            {showQuestionNumber && !flowLayout ? (
+              <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
+            ) : null}
             {!question && questionContent}
           </QuestionTitleWrapper>
           {question && questionContent}
@@ -485,7 +512,8 @@ ClozeDragDropDisplay.propTypes = {
   view: PropTypes.string,
   responseIDs: PropTypes.array.isRequired,
   changePreview: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  isPrintPreview: PropTypes.bool.isRequired
   // qIndex: PropTypes.number
 };
 
@@ -531,6 +559,7 @@ export default withTheme(ClozeDragDropDisplay);
 const TextWrappedDiv = styled.div`
   word-break: break-word;
   max-width: 100%;
+  width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;

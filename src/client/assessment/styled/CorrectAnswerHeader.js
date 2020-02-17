@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { Input } from "antd";
+import { greyThemeLight } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
   display: flex;
@@ -9,5 +11,21 @@ export const CorrectAnswerHeader = styled.div`
   label {
     margin-bottom: 0px;
     margin-right: 15px;
+  }
+`;
+
+export const PointsInput = styled(Input)`
+  &.ant-input {
+    width: 230px;
+    background: #f8f8fb;
+    border: 1px solid ${greyThemeLight};
+    max-height: 40px;
+    min-height: 40px;
+    font-size: 14px;
+    line-height: 38px;
+    padding: 0 15px;
+    margin-right: ${props => props.mr || "0px"};
+    position: relative;
+    z-index: 1;
   }
 `;

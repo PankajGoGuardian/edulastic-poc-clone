@@ -1,21 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
-import { Input, Col } from "antd";
+import { Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Tabs, Tab, FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
-import { PointsText } from "./styled/PointsText";
 import { Row } from "./styled/Grid";
-import { AlterBtn } from "./styled/AlterBtn";
 
 import { IconClose } from "./styled/IconClose";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { TextInputStyled } from "../../../styled/InputStyles";
-import { CorrectAnswerHeader } from "../../../styled/CorrectAnswerHeader";
+import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerHeader";
 import { AlternateAnswerLink } from "../../../styled/ButtonStyles";
 
 const CorrectAnswers = ({
@@ -47,7 +44,9 @@ const CorrectAnswers = ({
     onCloseTab(index - 1);
   };
 
-  const tabs = new Array(validation.altResponses ? validation.altResponses.length + 1 : 0).fill(true);
+  const tabs = new Array(validation.altResponses ? validation.altResponses.length + 1 : 0).fill(
+    true
+  );
   const isAlt = !isEmpty(validation.altResponses);
 
   return (
@@ -57,7 +56,9 @@ const CorrectAnswers = ({
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+      <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}
+      >
         {t("component.correctanswers.setcorrectanswers")}
       </Subtitle>
 
@@ -65,8 +66,7 @@ const CorrectAnswers = ({
         <Col md={12}>
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
-            <TextInputStyled
-              width="230px"
+            <PointsInput
               type="number"
               value={points}
               onChange={handleChangePoint}
@@ -113,7 +113,8 @@ CorrectAnswers.propTypes = {
   currentTab: PropTypes.number.isRequired,
   chartPreview: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  item: PropTypes.object.isRequired
 };
 
 CorrectAnswers.defaultProps = {

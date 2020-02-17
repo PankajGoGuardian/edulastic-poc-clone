@@ -5,14 +5,17 @@ import PropTypes from "prop-types";
 import { Select } from "antd";
 import { cloneDeep } from "lodash";
 
-import { Checkbox, TabContainer } from "@edulastic/common";
+import { TabContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import CorrectAnswers from "../CorrectAnswers";
 import withPoints from "../HOC/withPoints";
 import GraphDisplay from "./Display/GraphDisplay";
 
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector
+} from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { SelectInputStyled } from "../../styled/InputStyles";
 import { Label } from "../../styled/WidgetOptions/Label";

@@ -4,8 +4,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import styled from "styled-components";
-import { AlternateAnswerLink } from "../../styled/ButtonStyles";
+import { AlternateAnswerLink, AddAlternative } from "../../styled/ButtonStyles";
 import { Subtitle } from "../../styled/Subtitle";
 import { IconClose } from "./styled/IconClose";
 
@@ -86,7 +85,16 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, onTabChange, children, correctTab, options, fillSections, cleanSections, questionType } = this.props;
+    const {
+      t,
+      onTabChange,
+      children,
+      correctTab,
+      options,
+      fillSections,
+      cleanSections,
+      questionType
+    } = this.props;
     const { tabs } = this.state;
 
     return (
@@ -96,12 +104,20 @@ class CorrectAnswers extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${questionType}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(
+            `${questionType}-${t("component.correctanswers.setcorrectanswers")}`
+          )}
+        >
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
         <AddAlternative>
           {this.renderPlusButton()}
-          <Tabs value={correctTab} onChange={onTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
+          <Tabs
+            value={correctTab}
+            onChange={onTabChange}
+            style={{ marginBottom: 10, marginTop: 20 }}
+          >
             {tabs > 1 && (
               <Tab
                 type="primary"
@@ -131,7 +147,8 @@ CorrectAnswers.propTypes = {
   correctTab: PropTypes.number.isRequired,
   options: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  questionType: PropTypes.any.isRequired
 };
 
 CorrectAnswers.defaultProps = {
@@ -142,10 +159,3 @@ CorrectAnswers.defaultProps = {
 };
 
 export default withNamespaces("assessment")(CorrectAnswers);
-
-const AddAlternative = styled.div`
-  width: 100%;
-  float: right;
-  position: relative;
-  z-index: 1;
-`;

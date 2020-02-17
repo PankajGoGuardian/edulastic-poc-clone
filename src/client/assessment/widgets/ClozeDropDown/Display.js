@@ -3,10 +3,10 @@ import React, { Component } from "react";
 import produce from "immer";
 import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
-import DisplayOptions from "./components/DisplayOptions";
 import JsxParser from "react-jsx-parser";
 
 import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import DisplayOptions from "./components/DisplayOptions";
 
 import { EDIT } from "../../constants/constantsForQuestions";
 
@@ -143,7 +143,8 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
-    const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
+    const hasAltAnswers =
+      item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
 
     const answerBox =
       showAnswer || isExpressGrader ? (
@@ -189,8 +190,12 @@ class ClozeDropDownDisplay extends Component {
       showIndex: showAnswer,
       responsecontainerindividuals,
       cAnswers: get(item, "validation.validResponse.value", []),
-      userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
-      evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+      userSelections:
+        item && item.activity && item.activity.userResponse
+          ? item.activity.userResponse
+          : userSelections,
+      evaluation:
+        item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
     const questionContent = (
       <ContentWrapper view={view} fontSize={fontSize}>
@@ -198,7 +203,10 @@ class ClozeDropDownDisplay extends Component {
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
-            textdropdown: showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ChoicesBoxContainer,
+            textdropdown:
+              showAnswer || checkAnswer || isPrint
+                ? CheckboxTemplateBoxLayout
+                : ChoicesBoxContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -211,7 +219,11 @@ class ClozeDropDownDisplay extends Component {
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           {!!question && (
-            <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+            <Stimulus
+              qIndex={qIndex}
+              smallSize={smallSize}
+              dangerouslySetInnerHTML={{ __html: question }}
+            />
           )}
           {!question && questionContent}
         </QuestionTitleWrapper>
@@ -245,7 +257,8 @@ ClozeDropDownDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  isPrint: PropTypes.bool.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -281,6 +294,7 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
+  width: 100%;
 
   iframe {
     max-width: 100%;
@@ -290,7 +304,9 @@ const QuestionTitleWrapper = styled.div`
 const ContentWrapper = styled.div`
   padding: ${props => (props.view === EDIT ? 15 : 0)}px;
   border: ${props =>
-    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
+    props.view === EDIT
+      ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}`
+      : null};
   border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
 

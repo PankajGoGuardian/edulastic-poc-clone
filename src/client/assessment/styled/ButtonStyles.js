@@ -41,6 +41,13 @@ export const CustomStyleBtn = styled(Button)`
   }
 `;
 
+export const AddAlternative = styled.div`
+  width: 100%;
+  float: right;
+  position: relative;
+  z-index: 1;
+`;
+
 export const AlternateAnswerLink = styled(Button)`
   &.ant-btn {
     background: transparent;

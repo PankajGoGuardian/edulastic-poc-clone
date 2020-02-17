@@ -1,27 +1,35 @@
-import React, { Fragment } from "react";
-import { Row, Col, Select } from "antd";
-import ColorPicker from "rc-color-picker";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { withNamespaces } from "@edulastic/localization";
+import { Col, Row, Select } from "antd";
 import PropTypes from "prop-types";
+import ColorPicker from "rc-color-picker";
+import React, { Fragment } from "react";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-
-import { withNamespaces } from "@edulastic/localization";
-
+import { SelectInputStyled } from "../../../styled/InputStyles";
 import { Subtitle } from "../../../styled/Subtitle";
-
 import { getAlpha } from "../helpers";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const { Option } = Select;
 
-const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, handleSelectChange, theme, item }) => (
+const LocalColorPickers = ({
+  t,
+  attributes,
+  onLocalColorChange,
+  areaIndexes,
+  handleSelectChange,
+  theme,
+  item
+}) => (
   <div>
     {areaIndexes.length > 0 && (
       <Fragment>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areaSelectLabel")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areaSelectLabel")}`)}
+        >
           {t("component.hotspot.areaSelectLabel")}
         </Subtitle>
-        <Select
+        <SelectInputStyled
           value={attributes.area}
           onChange={handleSelectChange}
           getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -31,12 +39,16 @@ const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, han
               {index + 1}
             </Option>
           ))}
-        </Select>
+        </SelectInputStyled>
       </Fragment>
     )}
-    <Row gutter={80}>
-      <Col span={5}>
-        <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
+    <Row gutter={24}>
+      <Col span={12}>
+        <Subtitle
+          fontSize={theme.widgets.hotspot.subtitleFontSize}
+          color={theme.widgets.hotspot.subtitleColor}
+          margin="0px 0px 20px"
+        >
           {t("component.hotspot.fillColorTitle")}
         </Subtitle>
         <ColorPicker
@@ -46,8 +58,12 @@ const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, han
           alpha={getAlpha(attributes.fill)}
         />
       </Col>
-      <Col span={5}>
-        <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
+      <Col span={12}>
+        <Subtitle
+          fontSize={theme.widgets.hotspot.subtitleFontSize}
+          color={theme.widgets.hotspot.subtitleColor}
+          margin="0px 0px 20px"
+        >
           {t("component.hotspot.outlineColorTitle")}
         </Subtitle>
         <ColorPicker
@@ -67,7 +83,8 @@ LocalColorPickers.propTypes = {
   onLocalColorChange: PropTypes.func.isRequired,
   areaIndexes: PropTypes.array.isRequired,
   handleSelectChange: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired
 };
 
 const enhance = compose(

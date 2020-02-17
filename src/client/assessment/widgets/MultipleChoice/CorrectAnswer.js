@@ -1,15 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
 import { withNamespaces } from "@edulastic/localization";
-
-import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
-import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
-import { Label } from "../../styled/WidgetOptions/Label";
-
-import Display from "./components/Display";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
-import { TextInputStyled } from "../../styled/InputStyles";
+import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
+import { Label } from "../../styled/WidgetOptions/Label";
+import Display from "./components/Display";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -20,7 +15,9 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     multipleResponses: PropTypes.bool.isRequired,
-    uiStyle: PropTypes.object.isRequired
+    uiStyle: PropTypes.object.isRequired,
+    fontSize: PropTypes.any.isRequired,
+    styleType: PropTypes.string.isRequired
   };
 
   static contextType = ItemLevelContext;
@@ -55,7 +52,16 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus, response, uiStyle, styleType, multipleResponses, fontSize } = this.props;
+    const {
+      t,
+      options,
+      stimulus,
+      response,
+      uiStyle,
+      styleType,
+      multipleResponses,
+      fontSize
+    } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -63,7 +69,7 @@ class CorrectAnswer extends Component {
         {itemLevelScoring || (
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
-            <TextInputStyled
+            <PointsInput
               type="number"
               data-cy="points"
               value={responseScore}
@@ -72,7 +78,6 @@ class CorrectAnswer extends Component {
               disabled={false}
               min={0}
               step={0.5}
-              width={"200px"}
             />
           </CorrectAnswerHeader>
         )}

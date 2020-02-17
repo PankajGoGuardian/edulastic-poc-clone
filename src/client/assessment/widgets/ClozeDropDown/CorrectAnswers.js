@@ -8,10 +8,14 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 import { Subtitle } from "../../styled/Subtitle";
-import { getQuestionDataSelector, setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import {
+  getQuestionDataSelector,
+  setQuestionDataAction
+} from "../../../author/QuestionEditor/ducks";
 
 import CorrectAnswer from "./CorrectAnswer";
 import AddAlternateAnswerButton from "../../components/AddAlternateAnswerButton";
+import { AddAlternative } from "../../styled/ButtonStyles";
 
 class CorrectAnswers extends Component {
   state = {
@@ -100,15 +104,33 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, item, hasGroupResponses, configureOptions, uiStyle } = this.props;
+    const {
+      validation,
+      stimulus,
+      options,
+      t,
+      item,
+      hasGroupResponses,
+      configureOptions,
+      uiStyle
+    } = this.props;
     const { value } = this.state;
     return (
       <div>
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
+          )}
+        >
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
-        <div>
-          <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
+        <AddAlternative>
+          {this.renderPlusButton()}
+          <Tabs
+            value={value}
+            onChange={this.handleTabChange}
+            style={{ marginBottom: 10, marginTop: 20 }}
+          >
             <Tab
               style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
               label={t("component.correctanswers.correct")}
@@ -116,46 +138,48 @@ class CorrectAnswers extends Component {
             />
             {this.renderAltResponses()}
           </Tabs>
-          {value === 0 && (
-            <TabContainer>
-              <CorrectAnswer
-                key={options}
-                response={validation.validResponse}
-                stimulus={stimulus}
-                options={options}
-                uiStyle={uiStyle}
-                item={item}
-                configureOptions={configureOptions}
-                hasGroupResponses={hasGroupResponses}
-                onUpdateValidationValue={this.updateCorrectValidationAnswers}
-                onUpdatePoints={this.handleUpdateCorrectScore}
-              />
-            </TabContainer>
-          )}
-          {validation.altResponses &&
-            !!validation.altResponses.length &&
-            validation.altResponses.map((alter, i) => {
-              if (i + 1 === value) {
-                return (
-                  <TabContainer key={i}>
-                    <CorrectAnswer
-                      key={options}
-                      response={alter}
-                      stimulus={stimulus}
-                      options={options}
-                      item={item}
-                      configureOptions={configureOptions}
-                      hasGroupResponses={hasGroupResponses}
-                      uiStyle={uiStyle}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                    />
-                  </TabContainer>
-                );
-              }
-              return null;
-            })}
-        </div>
+        </AddAlternative>
+        {value === 0 && (
+          <TabContainer>
+            <CorrectAnswer
+              key={options}
+              response={validation.validResponse}
+              stimulus={stimulus}
+              options={options}
+              uiStyle={uiStyle}
+              item={item}
+              configureOptions={configureOptions}
+              hasGroupResponses={hasGroupResponses}
+              onUpdateValidationValue={this.updateCorrectValidationAnswers}
+              onUpdatePoints={this.handleUpdateCorrectScore}
+            />
+          </TabContainer>
+        )}
+        {validation.altResponses &&
+          !!validation.altResponses.length &&
+          validation.altResponses.map((alter, i) => {
+            if (i + 1 === value) {
+              return (
+                <TabContainer key={i}>
+                  <CorrectAnswer
+                    key={options}
+                    response={alter}
+                    stimulus={stimulus}
+                    options={options}
+                    item={item}
+                    configureOptions={configureOptions}
+                    hasGroupResponses={hasGroupResponses}
+                    uiStyle={uiStyle}
+                    onUpdateValidationValue={answers =>
+                      this.updateAltCorrectValidationAnswers(answers, i)
+                    }
+                    onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                  />
+                </TabContainer>
+              );
+            }
+            return null;
+          })}
       </div>
     );
   }
@@ -169,7 +193,6 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
-  template: PropTypes.string,
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
   item: PropTypes.object.isRequired,
@@ -182,7 +205,6 @@ CorrectAnswers.defaultProps = {
   options: [],
   validation: {},
   hasGroupResponses: false,
-  template: "",
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
@@ -190,9 +212,7 @@ CorrectAnswers.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     placeholder: ""
-  },
-  fillSections: () => {},
-  cleanSections: () => {}
+  }
 };
 
 const enhance = compose(

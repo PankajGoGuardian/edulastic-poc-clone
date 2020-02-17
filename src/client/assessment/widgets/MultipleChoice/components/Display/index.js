@@ -23,11 +23,13 @@ const Display = ({
   item = {},
   ...restProps
 }) => (
-  <div>
+  <div style={{ width: "100%", display: "inline-block" }}>
     {!flowLayout && (
       <>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel fontSize={fontSize}>{qLabel}:</QuestionNumberLabel>}
+          {showQuestionNumber && (
+            <QuestionNumberLabel fontSize={fontSize}>{qLabel}:</QuestionNumberLabel>
+          )}
           <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
       </>
@@ -62,6 +64,8 @@ Display.propTypes = {
   view: PropTypes.string.isRequired,
   qIndex: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
+  fontSize: PropTypes.any.isRequired,
+  item: PropTypes.object.isRequired,
   styleType: PropTypes.string,
   multipleResponses: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,

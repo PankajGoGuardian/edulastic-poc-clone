@@ -134,7 +134,10 @@ export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
   background-color: white;
-
+  * {
+    -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
+    color-adjust: exact !important;                 /*Firefox*/
+  }
   .print-assessment-title-container {
     .ant-col {
       flex: 1;

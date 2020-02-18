@@ -5,15 +5,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Popover } from "antd";
-import { MathSpan, measureText } from "@edulastic/common";
-import { response } from "@edulastic/constants";
-
-const convertNumToPixel = val => {
-  if (val.toString().search("px") === -1) {
-    return `${val}px`;
-  }
-  return val;
-};
+import { MathSpan, measureText, Ellipsis } from "@edulastic/common";
 
 const Container = styled.div`
   width: 100%;
@@ -26,11 +18,6 @@ const Container = styled.div`
     width: 100%;
     margin: 0px !important;
     max-width: 100%;
-  }
-  .clipText {
-    white-space: ${({ isWrapText }) => (isWrapText ? "normal" : "nowrap")};
-    height: ${({ containerH, isWrapText }) =>
-      isWrapText ? (containerH ? convertNumToPixel(parseInt(containerH, 10) - 10) : "auto") : "auto"};
   }
 `;
 
@@ -88,11 +75,10 @@ const AnswerContainer = ({ answer, height, width, isWrapText, fontSize }) => {
       <Popover placement="bottomLeft" content={content} visible={isOverText && showPopover}>
         <MathSpan
           style={{ height: "100%", width: "100%", display: "flex", alignItems: "center" }}
-          dangerouslySetInnerHTML={{
-            __html: answer.replace("<p>", "<p class='clipText'>") || ""
-          }}
+          dangerouslySetInnerHTML={{ __html: answer }}
         />
       </Popover>
+      {isOverText && <Ellipsis />}
     </Container>
   );
 };

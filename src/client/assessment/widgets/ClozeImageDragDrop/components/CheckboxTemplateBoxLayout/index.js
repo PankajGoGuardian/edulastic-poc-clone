@@ -110,7 +110,7 @@ const CheckboxTemplateBox = ({
 
   const icons = (checkAnswer || (showAnswer && !lessMinWidth)) && (
     <>
-      <IconWrapper rightPosition={lessMinWidth && 1}>
+      <IconWrapper>
         {isChecked && status === "right" && <RightIcon />}
         {isChecked && status === "wrong" && <WrongIcon />}
       </IconWrapper>
@@ -140,6 +140,15 @@ const CheckboxTemplateBox = ({
     </div>
   );
 
+  const textContainerStyle = checkAnswer
+    ? {
+        borderRadius: 5,
+        justifyContent: lessMinWidth ? "flex-start" : "center",
+        width: responseContainer.width,
+        height: responseContainer.height
+      }
+    : { width: responseContainer.width, height: responseContainer.height };
+
   return (
     <div onMouseEnter={handleHover} onMouseLeave={handleHover}>
       <DropContainer
@@ -150,36 +159,32 @@ const CheckboxTemplateBox = ({
         disableResponse={disableResponse}
       >
         {responseBoxIndex}
-        <TextContainer
-          responseContainer={responseContainer}
-          dropTargetIndex={index}
-          userSelections={userSelections}
-          isSnapFitValues={isSnapFitValues}
-          showAnswer={showAnswer}
-          checkAnswer={checkAnswer}
-          dragItemStyle={dragItemStyle}
-          onDropHandler={onDropHandler}
-          disableResponse={disableResponse}
-          dropContainerWidth={dropContainerStyle.width}
-          indexBoxRef={indexBoxRef}
-          lessMinWidth={lessMinWidth}
-          className={containerClassName}
-          status={status}
-          isChecked={isChecked}
-          contWidth={responseContainer.width}
-          style={
-            checkAnswer
-              ? {
-                  borderRadius: 5,
-                  justifyContent: lessMinWidth ? "flex-start" : "center",
-                  width: responseContainer.width,
-                  height: responseContainer.height
-                }
-              : { width: responseContainer.width, height: responseContainer.height }
-          }
-          isExpressGrader={isExpressGrader}
-        />
-        {isSnapFitValues && icons}
+        <div
+          className="text container"
+          style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: "0px" } : {}}
+        >
+          <TextContainer
+            responseContainer={responseContainer}
+            dropTargetIndex={index}
+            userSelections={userSelections}
+            isSnapFitValues={isSnapFitValues}
+            showAnswer={showAnswer}
+            checkAnswer={checkAnswer}
+            dragItemStyle={dragItemStyle}
+            onDropHandler={onDropHandler}
+            disableResponse={disableResponse}
+            dropContainerWidth={dropContainerStyle.width}
+            indexBoxRef={indexBoxRef}
+            lessMinWidth={lessMinWidth}
+            className={containerClassName}
+            status={status}
+            style={textContainerStyle}
+            isChecked={isChecked}
+            contWidth={responseContainer.width}
+            isExpressGrader={isExpressGrader}
+          />
+          {isSnapFitValues && icons}
+        </div>
       </DropContainer>
     </div>
   );
@@ -228,6 +233,8 @@ CheckboxTemplateBox.propTypes = {
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   showBorder: PropTypes.bool.isRequired,
+  lessMinWidth: PropTypes.bool.isRequired,
+  isExpressGrader: PropTypes.bool.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired
 };
 

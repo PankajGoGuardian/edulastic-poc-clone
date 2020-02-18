@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, Ellipsis, measureText } from "@edulastic/common";
 
 import DragItem from "../DragItem";
 import Container from "./styled/Container";
@@ -11,27 +11,26 @@ const TextContainer = ({
   dropTargetIndex,
   userSelections,
   isSnapFitValues,
-  showAnswer,
   checkAnswer,
   dragItemStyle,
   onDropHandler,
   disableResponse,
   style,
-  contWidth,
   lessMinWidth,
   className,
   status,
   isChecked,
   isExpressGrader
 }) => (
-  <div className="text container" style={showAnswer || checkAnswer ? { ...style, padding: "0px" } : {}}>
+  <>
     {userSelections[dropTargetIndex] &&
       userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
-        const userAnswer =
-          userSelections[dropTargetIndex].responseBoxID && isSnapFitValues
-            ? answer.replace("<p>", "<p class='clipText'>") || ""
-            : "";
+        const userAnswer = userSelections[dropTargetIndex].responseBoxID && isSnapFitValues ? answer : "";
         const content = <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />;
+
+        const { width: contentWidth } = measureText(answer);
+        const isOverContent = style.width < contentWidth;
+
         const popoverContent = (
           <PopoverContent
             index={dropTargetIndex}
@@ -43,39 +42,41 @@ const TextContainer = ({
           />
         );
         return (
-          <div style={{ ...style, width: "100%" }}>
-            <DragItem
-              key={user_select_index}
-              index={user_select_index}
-              data={`${answer}_${dropTargetIndex}_${user_select_index}`}
-              style={dragItemStyle}
-              item={answer}
-              onDrop={onDropHandler}
-              disable={!isSnapFitValues}
-              disableResponse={disableResponse}
-            >
-              <Container _lineHeight={style.height}>
-                <AnswerContent
-                  popoverContent={popoverContent}
-                  userAnswer={userAnswer}
-                  answer={answer}
-                  lessMinWidth={lessMinWidth}
-                  height={style.height}
-                  width={style.width}
-                  isChecked={isChecked}
-                />
-              </Container>
-            </DragItem>
-          </div>
+          <>
+            <div style={{ ...style, width: "100%" }}>
+              <DragItem
+                key={user_select_index}
+                index={user_select_index}
+                data={`${answer}_${dropTargetIndex}_${user_select_index}`}
+                style={dragItemStyle}
+                item={answer}
+                onDrop={onDropHandler}
+                disable={!isSnapFitValues}
+                disableResponse={disableResponse}
+              >
+                <Container _lineHeight={style.height}>
+                  <AnswerContent
+                    popoverContent={popoverContent}
+                    userAnswer={userAnswer}
+                    answer={answer}
+                    lessMinWidth={lessMinWidth}
+                    height={style.height}
+                    isChecked={isChecked}
+                    isOverContent={isOverContent}
+                  />
+                </Container>
+              </DragItem>
+            </div>
+            {isOverContent && <Ellipsis showAnswer />}
+          </>
         );
       })}
-  </div>
+  </>
 );
 TextContainer.propTypes = {
   dropTargetIndex: PropTypes.number.isRequired,
   userSelections: PropTypes.array.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
-  showAnswer: PropTypes.bool.isRequired,
   dragItemStyle: PropTypes.object.isRequired,
   onDropHandler: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool.isRequired,

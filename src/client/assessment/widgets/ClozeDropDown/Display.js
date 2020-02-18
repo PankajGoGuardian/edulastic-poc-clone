@@ -16,7 +16,7 @@ import { getFontSize } from "../../utils/helpers";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-import ChoicesBoxContainer from "./ChoicesBoxContainer";
+import ChoicesBox from "./ChoicesBox";
 
 class ClozeDropDownDisplay extends Component {
   state = {
@@ -84,14 +84,7 @@ class ClozeDropDownDisplay extends Component {
       widthpx: 0,
       heightpx: 0
     };
-    // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-    //   const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
-    //   btnStyle.width = widthpx;
-    //   btnStyle.height = heightpx;
-    //   btnStyle.widthpx = widthpx;
-    //   btnStyle.heightpx = heightpx;
-    //   btnStyle.placeholder = placeholder;
-    // }
+
     if (btnStyle && btnStyle.width === 0) {
       btnStyle.width = responseBtnStyle.widthpx;
     } else {
@@ -171,8 +164,6 @@ class ClozeDropDownDisplay extends Component {
       );
     const resProps = {
       item,
-      qIndex,
-      fontSize,
       btnStyle,
       showAnswer,
       isPrint,
@@ -182,12 +173,9 @@ class ClozeDropDownDisplay extends Component {
       responseBtnStyle,
       options: responses,
       onChange: this.selectChange,
-      uiStyle,
       stemNumeration,
       previewTab,
       changePreviewTab,
-      userAnswers: userSelections || [],
-      showIndex: showAnswer,
       responsecontainerindividuals,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections:
@@ -197,16 +185,16 @@ class ClozeDropDownDisplay extends Component {
       evaluation:
         item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
+
     const questionContent = (
       <ContentWrapper view={view} fontSize={fontSize}>
         <JsxParser
+          disableKeyGeneration
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
             textdropdown:
-              showAnswer || checkAnswer || isPrint
-                ? CheckboxTemplateBoxLayout
-                : ChoicesBoxContainer,
+              showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ChoicesBox,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -243,6 +231,7 @@ ClozeDropDownDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
+  isPrint: PropTypes.bool,
   stimulus: PropTypes.string,
   question: PropTypes.string.isRequired,
   configureOptions: PropTypes.object,
@@ -257,8 +246,7 @@ ClozeDropDownDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object,
-  view: PropTypes.string.isRequired,
-  isPrint: PropTypes.bool.isRequired
+  view: PropTypes.string.isRequired
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -270,6 +258,7 @@ ClozeDropDownDisplay.defaultProps = {
   evaluation: [],
   checkAnswer: false,
   userSelections: [],
+  isPrint: false,
   stimulus: "",
   disableResponse: false,
   smallSize: false,

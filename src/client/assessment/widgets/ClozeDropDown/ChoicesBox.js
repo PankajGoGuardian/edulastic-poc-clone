@@ -7,6 +7,14 @@ import { MathSpan } from "@edulastic/common";
 
 const { Option } = Select;
 
+const minWidthMap = {
+  xs: 100,
+  sm: 100,
+  md: 150,
+  lg: 200,
+  xl: 250
+};
+
 const SelectWrapper = styled.span`
   position: relative;
   margin: 0px 4px 5px 5px;
@@ -14,19 +22,35 @@ const SelectWrapper = styled.span`
   .ant-select-dropdown {
     ${({ dropdownMenuStyle }) => dropdownMenuStyle};
   }
+
   .ant-select-dropdown-menu-item {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     width: 100%;
     display: block;
+    font-size: ${({ theme }) => theme?.fontSize}px;
+    white-space: normal;
+  }
+
+  .ant-select {
+    font-size: ${({ theme }) => theme?.fontSize};
+    min-width: ${({ theme }) => minWidthMap[(theme?.zoomLevel)] || 100}px;
+
+    .ant-select-selection {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-select-selection__rendered {
+      max-width: calc(100% - 32px);
+    }
   }
 `;
 
-const ChoicesBox = ({ style = {}, resprops, id, className }) => {
+const ChoicesBox = ({ style = {}, resprops, id }) => {
   const selectWrapperRef = useRef(null);
   const {
-    userAnswers,
     btnStyle,
     placeholder,
     options,
@@ -35,13 +59,14 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
     disableResponse,
     isReviewTab,
     cAnswers,
-    responsecontainerindividuals
+    responsecontainerindividuals,
+    userSelections
   } = resprops;
 
   if (!id) return null;
   const { responseIds } = item;
   const { index } = find(responseIds, response => response.id === id);
-  let userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
+  let userAnswer = find(userSelections, answer => (answer ? answer.id : "") === id);
   const individualStyle = responsecontainerindividuals[index];
 
   const heightpx = individualStyle && individualStyle.heightpx;
@@ -70,7 +95,7 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
     left: `0px !important`
   };
   return (
-    <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef} className={className}>
+    <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
       <Select
         value={userAnswer?.value}
         style={{
@@ -97,11 +122,13 @@ const ChoicesBox = ({ style = {}, resprops, id, className }) => {
 
 ChoicesBox.propTypes = {
   resprops: PropTypes.object,
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  style: PropTypes.object
 };
 
 ChoicesBox.defaultProps = {
-  resprops: {}
+  resprops: {},
+  style: {}
 };
 
 export default ChoicesBox;

@@ -301,7 +301,7 @@ const StyledParser = styled.div`
       : null};
   border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
-  overflow: auto;
+  /* overflow: auto; */
 
   .jsx-parser {
     p {

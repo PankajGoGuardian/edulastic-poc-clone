@@ -8,7 +8,7 @@ import { cloneDeep, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
-import { Checkbox, WithResources, AnswerContext } from "@edulastic/common";
+import { WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -84,7 +84,9 @@ class ClozeText extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
+          draft.validation.altResponses = draft.validation.altResponses.filter(
+            (response, i) => i !== index
+          );
         }
       })
     );
@@ -132,7 +134,10 @@ class ClozeText extends Component {
               const { id, value, index } = ans;
               const splitWidth = Math.max(value.split("").length * 9, 100);
               const width = Math.min(splitWidth, 400);
-              const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
+              const ind = findIndex(
+                draft.uiStyle.responsecontainerindividuals,
+                container => container.id === id
+              );
               if (ind === -1) {
                 draft.uiStyle.responsecontainerindividuals.push({
                   id,
@@ -222,15 +227,23 @@ class ClozeText extends Component {
       cleanSections,
       fillSections,
       advancedLink,
+      disableResponse,
       ...restProps
     } = this.props;
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const {
+      previewStimulus,
+      previewDisplayOptions,
+      itemForEdit,
+      itemForPreview,
+      uiStyle
+    } = this.getRenderData();
 
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
 
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
 
-    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
+    const allowSingleLetterMistake =
+      item && item.validation ? item.validation.allowSingleLetterMistake : false;
     const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
     const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
@@ -241,11 +254,19 @@ class ClozeText extends Component {
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
     return (
-      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
+      <WithResources
+        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
         {view === "edit" && (
           <ContentArea data-cy="question-area">
             <div className="authoring">
-              <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
+              <Authoring
+                item={itemForEdit}
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+              />
               <Question
                 section="main"
                 label={t("component.correctanswers.setcorrectanswers")}
@@ -282,7 +303,10 @@ class ClozeText extends Component {
 
                   <CheckboxLabel
                     onChange={() =>
-                      this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                      this.handleValidationOptionsChange(
+                        "allowSingleLetterMistake",
+                        !allowSingleLetterMistake
+                      )
                     }
                     checked={!!allowSingleLetterMistake}
                   >
@@ -320,7 +344,10 @@ class ClozeText extends Component {
           </ContentArea>
         )}
         {view === "preview" && (
-          <Wrapper overflowProps={{ maxWidth: "100%", overflowX: "auto" }} paddingProps={{ paddingBottom: "1rem" }}>
+          <Wrapper
+            overflowProps={disableResponse ? { maxWidth: "100%", overflowX: "auto" } : {}}
+            paddingProps={{ paddingBottom: "1rem" }}
+          >
             <Display
               checkAnswer={isCheckAnswer}
               showAnswer={isShowAnswer}
@@ -343,6 +370,7 @@ class ClozeText extends Component {
               validation={itemForPreview.validation}
               key={previewDisplayOptions && previewStimulus && uiStyle}
               isExpressGrader={expressGrader && previewTab === "show"}
+              disableResponse={disableResponse}
               {...restProps}
             />
           </Wrapper>
@@ -359,6 +387,7 @@ ClozeText.propTypes = {
   smallSize: PropTypes.bool,
   history: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,

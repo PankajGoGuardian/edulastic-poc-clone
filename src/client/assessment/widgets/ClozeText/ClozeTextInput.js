@@ -13,10 +13,21 @@ const ClozeTextInput = ({ resprops, id }) => {
   if (!id) {
     return null;
   }
-  const { item, onChange, getUiStyles, userAnswers, disableResponse, isReviewTab, cAnswers } = resprops;
+  const {
+    item,
+    onChange,
+    getUiStyles,
+    userAnswers,
+    disableResponse,
+    isReviewTab,
+    cAnswers
+  } = resprops;
   const ref = useRef();
 
-  let { value, index: responseIndex } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+  let { value, index: responseIndex } = find(
+    userAnswers,
+    answer => (answer ? answer.id : "") === id
+  ) || { value: "" };
 
   if (isReviewTab) {
     const { value: correctValue, index: correctAnswerIndex } = find(
@@ -30,19 +41,17 @@ const ClozeTextInput = ({ resprops, id }) => {
   const { btnStyle } = getUiStyles(id, responseIndex);
 
   const [input, setInput] = useState({ id, value });
-
-  useEffect(() => {
-    setInput({ id, value });
-  }, [value]);
+  const [selection, setSelection] = useState(false);
 
   const _getValue = specialChar => {
     // TODO get input ref ? set cursor postion ?
     if (ref.current) {
       const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
       if (inputElement) {
-        const selection = getInputSelection(inputElement);
+        const _selection = getInputSelection(inputElement);
+        setSelection(_selection);
         const newStr = value.split("");
-        newStr.splice(selection.start, selection.end - selection.start, specialChar);
+        newStr.splice(_selection.start, _selection.end - _selection.start, specialChar);
         return newStr.join("");
       }
     }
@@ -78,6 +87,30 @@ const ClozeTextInput = ({ resprops, id }) => {
     setInput({ value: val, id });
   };
 
+  const insertSpecialChar = (_, char) => {
+    handleInputChange(_getValue(char));
+    ref.current.focus();
+  };
+
+  useEffect(() => {
+    setInput({ id, value });
+  }, [value]);
+
+  useEffect(() => {
+    if (selection && ref.current) {
+      const em = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+      if (em.setSelectionRange) {
+        em.setSelectionRange(selection.start + 1, selection.end + 1);
+      }
+      setSelection(false);
+    }
+  }, [selection]);
+
+  const numberPadContainerStyle = {
+    display: "inline-flex",
+    height: btnStyle.height
+  };
+
   return (
     <CustomInput key={id} style={{ marginBottom: "4px" }}>
       <AutoExpandInput
@@ -97,12 +130,10 @@ const ClozeTextInput = ({ resprops, id }) => {
       {item.characterMap && (
         <NumberPad
           buttonStyle={{ height: "100%", width: 30 }}
-          onChange={(_, val) => {
-            handleInputChange(_getValue(val));
-            ref.current.focus();
-          }}
+          onChange={insertSpecialChar}
           items={[{ value: "á", label: "á" }]}
           characterMapButtons={_makeCharactersMap()}
+          style={numberPadContainerStyle}
         />
       )}
     </CustomInput>
@@ -123,6 +154,6 @@ const CustomInput = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 
   .ant-input {
-    border-radius: 0px 4px 4px 0px;
+    border-radius: 0px;
   }
 `;

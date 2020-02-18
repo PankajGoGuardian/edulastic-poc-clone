@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
@@ -57,7 +59,8 @@ var CompareShapes =
       {
         key: "compare",
         value: function compare(testId, trueId) {
-          var compareTestShapes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+          var compareTestShapes =
+            arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
           var testShape = this.testAnswer.find(function(item) {
             return item.id === testId;
           });
@@ -169,7 +172,11 @@ var CompareShapes =
       {
         key: "compareDragDropValues",
         value: function compareDragDropValues(testValue, trueValue) {
-          if (testValue.x === trueValue.x && testValue.y === trueValue.y && testValue.text === trueValue.text) {
+          if (
+            testValue.x === trueValue.x &&
+            testValue.y === trueValue.y &&
+            testValue.text === trueValue.text
+          ) {
             return {
               id: testValue.id,
               relatedId: trueValue.id,
@@ -448,10 +455,14 @@ var CompareShapes =
           };
           var deltaX = testShapePoints.startX - testShapePoints.endX;
           var deltaY = testShapePoints.startY - testShapePoints.endY;
-          var testCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(_constants.FractionDigits);
+          var testCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(
+            _constants.FractionDigits
+          );
           deltaX = trueShapePoints.startX - trueShapePoints.endX;
           deltaY = trueShapePoints.startY - trueShapePoints.endY;
-          var trueCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(_constants.FractionDigits);
+          var trueCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(
+            _constants.FractionDigits
+          );
 
           if (
             testShapePoints.startX === trueShapePoints.startX &&
@@ -746,7 +757,8 @@ var CompareShapes =
             if (
               testPolygonPoints[i].x === truePolygonPoints[0].x &&
               testPolygonPoints[i].y === truePolygonPoints[0].y &&
-              (this.ignoreLabels || labelsAreEqual(testPolygonPoints[i].label, truePolygonPoints[0].label))
+              (this.ignoreLabels ||
+                labelsAreEqual(testPolygonPoints[i].label, truePolygonPoints[0].label))
             ) {
               startIndex = i;
               break;
@@ -766,7 +778,8 @@ var CompareShapes =
             if (
               testPolygonPoints[_i].x === truePolygonPoints[_i].x &&
               testPolygonPoints[_i].y === truePolygonPoints[_i].y &&
-              (this.ignoreLabels || labelsAreEqual(testPolygonPoints[_i].label, truePolygonPoints[_i].label))
+              (this.ignoreLabels ||
+                labelsAreEqual(testPolygonPoints[_i].label, truePolygonPoints[_i].label))
             ) {
               equalCount++;
             }
@@ -788,7 +801,8 @@ var CompareShapes =
             if (
               testPolygonPoints[_i2].x === truePolygonPoints[_i2].x &&
               testPolygonPoints[_i2].y === truePolygonPoints[_i2].y &&
-              (this.ignoreLabels || labelsAreEqual(testPolygonPoints[_i2].label, truePolygonPoints[_i2].label))
+              (this.ignoreLabels ||
+                labelsAreEqual(testPolygonPoints[_i2].label, truePolygonPoints[_i2].label))
             ) {
               equalCount++;
             }
@@ -1159,7 +1173,10 @@ var CompareShapes =
               }).length;
             });
 
-            if (equalCount === trueShapePoints.length && labelsAreEqual(testShape.label, trueShape.label)) {
+            if (
+              equalCount === trueShapePoints.length &&
+              labelsAreEqual(testShape.label, trueShape.label)
+            ) {
               return positiveResult;
             }
 

@@ -37,7 +37,11 @@ var partialMatchTemplate = function partialMatchTemplate(mainFunction, mainArgum
     rightLen: rightLen
   });
 
-  var _getCalculateScores = (0, _getCalculateScores2["default"])(score, maxScore, mainArguments.validation),
+  var _getCalculateScores = (0, _getCalculateScores2["default"])(
+      score,
+      maxScore,
+      mainArguments.validation
+    ),
     newScore = _getCalculateScores.newScore,
     newMaxScore = _getCalculateScores.newMaxScore;
 

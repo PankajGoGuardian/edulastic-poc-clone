@@ -42,13 +42,13 @@ function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
     if (i % 2) {
-      ownKeys(source, true).forEach(function(key) {
+      ownKeys(Object(source), true).forEach(function(key) {
         (0, _defineProperty2["default"])(target, key, source[key]);
       });
     } else if (Object.getOwnPropertyDescriptors) {
       Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
     } else {
-      ownKeys(source).forEach(function(key) {
+      ownKeys(Object(source)).forEach(function(key) {
         Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
       });
     }
@@ -61,7 +61,11 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
   var evaluation = [];
 
   if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
-    evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(response, answers[rightIndex].value, restOptions);
+    evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(
+      response,
+      answers[rightIndex].value,
+      restOptions
+    );
   } else {
     response.forEach(function(item, i) {
       var ans = answers[rightIndex].value[i];

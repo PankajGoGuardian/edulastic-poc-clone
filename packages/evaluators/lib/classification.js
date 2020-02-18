@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
@@ -68,7 +70,10 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       // check equality in set handles order issue - here order in each row of response doesnt matter.
 
       _answer.forEach(function(row, i) {
-        if (!userResponse[i] || !(0, _isEqual2["default"])(row.slice().sort(), userResponse[i].slice().sort()))
+        if (
+          !userResponse[i] ||
+          !(0, _isEqual2["default"])(row.slice().sort(), userResponse[i].slice().sort())
+        )
           correct = false;
       }); // if muliple set of correct answer matches, give user max among them!
 

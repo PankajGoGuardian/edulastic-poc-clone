@@ -17,7 +17,9 @@ const compareChoice = (answer, response, allowSingleLetterMistake = false, ignor
   // else it should be a an exact match
 
   // eslint-disable-next-line max-len
-  return allowSingleLetterMistake ? levenshteinDistance(answer, response) <= 1 : answer === response;
+  return allowSingleLetterMistake
+    ? levenshteinDistance(answer, response) <= 1
+    : answer === response;
 };
 
 /**
@@ -91,7 +93,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
     const correctAnswerCount = currentEvaluation.filter(elem => elem).length;
     if (validation.scoringType === "partialMatch") {
       currentScore = parseFloat(answer.score * (correctAnswerCount / optionCount)).toFixed(2);
-    } else if (correctAnswerCount === optionCount) {
+    } else if (correctAnswerCount === optionCount && optionCount !== 0) {
       // exact match (all correct)
       currentScore = answer.score;
     }

@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
@@ -58,7 +60,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
     if (method === BY_COUNT_METHOD) {
       currentScore = matches === totalMatches ? totalScore : 0;
     } else {
-      currentScore = userResponse.length === answer.length && matches === totalMatches ? totalScore : 0;
+      currentScore =
+        userResponse.length === answer.length && matches === totalMatches ? totalScore : 0;
     }
 
     score = Math.max(score, currentScore);

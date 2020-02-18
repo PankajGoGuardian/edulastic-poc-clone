@@ -26,7 +26,11 @@ import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { resetDictAlignmentsAction } from "../actions/dictionaries";
 import { PREVIEW, CLEAR } from "../../../assessment/constants/constantsForQuestions";
 
-import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
+import {
+  getQuestionsSelector,
+  CHANGE_CURRENT_QUESTION,
+  getCurrentQuestionSelector
+} from "../../sharedDucks/questions";
 
 function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
   try {
@@ -69,7 +73,12 @@ function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem
     if (!testFlow) {
       yield put(push(`/author/items/${item._id}/item-detail`));
     } else {
-      yield put(push({ pathname: `/author/tests/${testId}/createItem/${item._id}`, state: { fadeSidebar: true } }));
+      yield put(
+        push({
+          pathname: `/author/tests/${testId}/createItem/${item._id}`,
+          state: { fadeSidebar: true }
+        })
+      );
     }
   } catch (err) {
     console.error(err);
@@ -108,36 +117,52 @@ function* evaluateAnswers({ payload }) {
     });
     // User is at the question
     const question = yield select(getCurrentQuestionSelector);
-    if (payload === "question" || (payload?.mode === "show" && question)) {
-      const answers = yield select(state => _get(state, "answers", []));
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, { [question?.id]: question });
-      yield put({
-        type: ADD_ITEM_EVALUATION,
-        payload: {
-          ...evaluation
-        }
-      });
+    const correctAnswers = _get(question, "validation.validResponse.value", []);
+    const altAnswers = _get(question, "validation.altResponses", []).map(
+      altAns => _get(altAns, "value", []).length
+    );
 
-      if (payload?.mode !== "show") {
-        // do not re calculate the score in case show answer is clicked
+    if (payload === "question" || (payload?.mode === "show" && question)) {
+      if ([...altAnswers, ...correctAnswers].length) {
+        const answers = yield select(state => _get(state, "answers", []));
+        const { evaluation, score, maxScore } = yield evaluateItem(answers, {
+          [question?.id]: question
+        });
         yield put({
-          type: SET_ITEM_SCORE,
+          type: ADD_ITEM_EVALUATION,
           payload: {
-            score,
-            maxScore,
-            showScore: true
+            ...evaluation
           }
         });
-        yield call(delay, 1500);
-        yield put({
-          type: RESET_ITEM_SCORE
-        });
+
+        if (payload?.mode !== "show") {
+          // do not re calculate the score in case show answer is clicked
+          yield put({
+            type: SET_ITEM_SCORE,
+            payload: {
+              score,
+              maxScore,
+              showScore: true
+            }
+          });
+          yield call(delay, 1500);
+          yield put({
+            type: RESET_ITEM_SCORE
+          });
+        }
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));
-      const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
+      const { itemLevelScore, itemLevelScoring = false } = yield select(
+        state => state.itemDetail.item
+      );
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
+      const { evaluation, score, maxScore } = yield evaluateItem(
+        answers,
+        questions,
+        itemLevelScoring,
+        itemLevelScore
+      );
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -163,7 +188,8 @@ function* evaluateAnswers({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage =
-      err.message || "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
+      err.message ||
+      "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
     yield call(message.error, errorMessage);
   }
 }

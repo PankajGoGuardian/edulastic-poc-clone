@@ -8,7 +8,12 @@ exports["default"] = void 0;
 var _scoring = require("./const/scoring");
 
 // exact-match evaluator
-var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer, altAnswers, _ref) {
+var exactMatchEvaluator = function exactMatchEvaluator(
+  userResponse,
+  validAnswer,
+  altAnswers,
+  _ref
+) {
   var automarkable = _ref.automarkable,
     minScoreIfAttempted = _ref.minScoreIfAttempted,
     maxScore = _ref.maxScore;
@@ -25,7 +30,11 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer
     score = validScore;
   }
 
-  if (matchingRule === _scoring.ScoringType.CONTAINS && text && text.toLowerCase().includes(validValue.toLowerCase())) {
+  if (
+    matchingRule === _scoring.ScoringType.CONTAINS &&
+    text &&
+    text.toLowerCase().includes(validValue.toLowerCase())
+  ) {
     evaluation = true;
 
     if (score === 0) {
@@ -46,7 +55,11 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, validAnswer
       }
     }
 
-    if (altMatch === _scoring.ScoringType.CONTAINS && text && text.toLowerCase().includes(altValue.toLowerCase())) {
+    if (
+      altMatch === _scoring.ScoringType.CONTAINS &&
+      text &&
+      text.toLowerCase().includes(altValue.toLowerCase())
+    ) {
       evaluation = true;
 
       if (score === 0) {

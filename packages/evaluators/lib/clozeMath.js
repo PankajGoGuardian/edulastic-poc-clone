@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
@@ -70,7 +72,15 @@ var combineUnitAndExpression = function combineUnitAndExpression(expression, uni
 };
 
 var mathEval = function mathEval(_ref) {
-  var userResponse, validation, _validation, _userResponse, validResponses, evaluation, _loop, _i, _Object$keys;
+  var userResponse,
+    validation,
+    _validation,
+    _userResponse,
+    validResponses,
+    evaluation,
+    _loop,
+    _i,
+    _Object$keys;
 
   return _regenerator["default"].async(function mathEval$(_context2) {
     while (1) {
@@ -79,7 +89,10 @@ var mathEval = function mathEval(_ref) {
           (userResponse = _ref.userResponse), (validation = _ref.validation);
           _validation = (0, _cloneDeep2["default"])(validation);
           _userResponse = (0, _cloneDeep2["default"])(userResponse);
-          validResponses = (0, _groupBy2["default"])((0, _flatten2["default"])(_validation.validResponse.value), "id");
+          validResponses = (0, _groupBy2["default"])(
+            (0, _flatten2["default"])(_validation.validResponse.value),
+            "id"
+          );
           evaluation = {}; // parallelize network request!!
 
           _loop = function _loop() {
@@ -235,7 +248,8 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             (_validation$ignoreCas = validation.ignoreCase),
             (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas),
             (_validation$allowSing = validation.allowSingleLetterMistake),
-            (allowSingleLetterMistake = _validation$allowSing === void 0 ? false : _validation$allowSing);
+            (allowSingleLetterMistake =
+              _validation$allowSing === void 0 ? false : _validation$allowSing);
           (_userResponse$inputs = userResponse.inputs),
             (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
             (_userResponse$dropDow = userResponse.dropDowns),
@@ -437,7 +451,10 @@ var mixAndMatchMathEvaluator = function mixAndMatchMathEvaluator(_ref3) {
             ) {
               altResp = _step.value;
               if (altResp.value && Array.isArray(altResp.value))
-                answersArray.push.apply(answersArray, (0, _toConsumableArray2["default"])(altResp.value));
+                answersArray.push.apply(
+                  answersArray,
+                  (0, _toConsumableArray2["default"])(altResp.value)
+                );
             }
 
             _context5.next = 15;
@@ -499,7 +516,10 @@ var mixAndMatchMathEvaluator = function mixAndMatchMathEvaluator(_ref3) {
                         }
 
                         if (_userResponse[id].unit) {
-                          input = combineUnitAndExpression(_userResponse[id].value, _userResponse[id].unit);
+                          input = combineUnitAndExpression(
+                            _userResponse[id].value,
+                            _userResponse[id].unit
+                          );
                         } // removing pattern `<space> after \\`
 
                         return (0, _math.evaluate)({
@@ -612,7 +632,8 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref4) {
             (_validation$ignoreCas2 = validation.ignoreCase),
             (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2),
             (_validation$allowSing2 = validation.allowSingleLetterMistake),
-            (allowSingleLetterMistake = _validation$allowSing2 === void 0 ? false : _validation$allowSing2);
+            (allowSingleLetterMistake =
+              _validation$allowSing2 === void 0 ? false : _validation$allowSing2);
           (_userResponse$inputs2 = userResponse.inputs),
             (inputs = _userResponse$inputs2 === void 0 ? {} : _userResponse$inputs2),
             (_userResponse$dropDow2 = userResponse.dropDowns),

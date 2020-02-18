@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _scoring = require("./const/scoring");
 
@@ -31,20 +33,26 @@ var evaluator = function evaluator(evaluatorType) {
 
     switch (scoringType) {
       case _scoring.ScoringType.EXACT_MATCH:
-        return (0, _exactMatchTemplate["default"])((0, _countExactMatchScores["default"])(evaluatorType), {
-          userResponse: userResponse,
-          answers: answers,
-          validation: validation
-        });
+        return (0, _exactMatchTemplate["default"])(
+          (0, _countExactMatchScores["default"])(evaluatorType),
+          {
+            userResponse: userResponse,
+            answers: answers,
+            validation: validation
+          }
+        );
 
       case _scoring.ScoringType.PARTIAL_MATCH:
       case _scoring.ScoringType.PARTIAL_MATCH_V2:
       default:
-        return (0, _partialMatchTemplate["default"])((0, _countPartialMatchScores["default"])(evaluatorType), {
-          userResponse: userResponse,
-          answers: answers,
-          validation: validation
-        });
+        return (0, _partialMatchTemplate["default"])(
+          (0, _countPartialMatchScores["default"])(evaluatorType),
+          {
+            userResponse: userResponse,
+            answers: answers,
+            validation: validation
+          }
+        );
     }
   };
 };

@@ -40,11 +40,17 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
         return;
       }
 
-      var currentMatchCount = (0, _getMatches["default"])(existingResponse, answer, compareFunction);
+      var currentMatchCount = (0, _getMatches["default"])(
+        existingResponse,
+        answer,
+        compareFunction
+      );
       var matches = currentMatchCount === answer.length;
 
       if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
-        matches = (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions) === answer.length;
+        matches =
+          (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions) ===
+          answer.length;
       }
 
       var currentScore = matches && existingResponse.length === answer.length ? totalScore : 0;
@@ -52,7 +58,10 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
       maxScore = Math.max(maxScore, totalScore);
       matchCount = Math.max(matchCount, currentMatchCount);
 
-      if ((currentScore === score && score !== 0) || (currentMatchCount === matchCount && matchCount !== 0)) {
+      if (
+        (currentScore === score && score !== 0) ||
+        (currentMatchCount === matchCount && matchCount !== 0)
+      ) {
         rightLen = answer.length;
         rightIndex = index;
       }

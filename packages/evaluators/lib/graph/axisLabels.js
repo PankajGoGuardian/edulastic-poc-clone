@@ -7,7 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _scoring = require("../const/scoring");
 
@@ -64,7 +66,11 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, answers) {
   };
 };
 
-var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator(userResponse, answers, penalty) {
+var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator(
+  userResponse,
+  answers,
+  penalty
+) {
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
@@ -92,7 +98,12 @@ var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator
   };
 };
 
-var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers, roundingIsNone, penalty) {
+var partialMatchEvaluator = function partialMatchEvaluator(
+  userResponse,
+  answers,
+  roundingIsNone,
+  penalty
+) {
   var score = 0;
   var maxScore = 1;
   var evaluation = {};

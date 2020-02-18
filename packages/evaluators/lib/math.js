@@ -11,7 +11,9 @@ var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _toConsumableArray2 = _interopRequireDefault(
+  require("@babel/runtime/helpers/toConsumableArray")
+);
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
@@ -52,7 +54,8 @@ function _objectSpread(target) {
   return target;
 }
 
-var url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
+var url =
+  process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
 var evaluate = function evaluate(data) {
   return _axios["default"]
@@ -65,6 +68,7 @@ var evaluate = function evaluate(data) {
         console.error("Error from mathengine", err.response.data);
         return {};
       }
+
       throw err.response.data;
     });
 };
@@ -124,7 +128,10 @@ var getChecks = function getChecks(answer) {
       } else if (key === "allowedUnits") {
         acc += "".concat(key, "=[").concat(fieldVal, "]");
       } else if (key === "syntax") {
-        acc += options.argument === undefined ? fieldVal : "".concat(fieldVal, "=").concat(options.argument);
+        acc +=
+          options.argument === undefined
+            ? fieldVal
+            : "".concat(fieldVal, "=").concat(options.argument);
       } else if (key === "field") {
         acc += "".concat(fieldVal);
       } else if (key === "tolerance") {
@@ -398,7 +405,10 @@ var evaluator = function evaluator(_ref2) {
             (attemptScore = validation.minScoreIfAttempted);
           answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses)); // if its math unit type, derive answer by making into a string.
 
-          if ((0, _typeof2["default"])(userResponse) === "object" && (userResponse.expression || userResponse.unit)) {
+          if (
+            (0, _typeof2["default"])(userResponse) === "object" &&
+            (userResponse.expression || userResponse.unit)
+          ) {
             expression = userResponse.expression || "";
             unit = userResponse.unit || "";
 

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { isObject } from "lodash";
 import { useDrop } from "react-dnd";
 
 const DropContainer = ({ style, drop, children, index, ...rest }) => {
@@ -9,9 +10,14 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
       if (monitor.didDrop()) {
         return;
       }
-
       if (typeof drop === "function") {
-        drop(item.data, index);
+        const itemPos = monitor.getClientOffset();
+        const { data, size } = item;
+        let itemRect = {};
+        if (isObject(size) && isObject(itemPos)) {
+          itemRect = { ...item.size, ...itemPos };
+        }
+        drop({ data, itemRect }, index);
       }
     },
     collect: monitor => ({

@@ -4,7 +4,8 @@ import styled, { withTheme } from "styled-components";
 
 import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
 import { StyledResponseDiv } from "../styled/ResponseBox";
-import { ChoiceItem } from "../styled/ChoiceItem";
+import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
+import { DropContainerTitle } from "../../../components/DropContainerTitle";
 
 const { DragItem, DropContainer } = DragDrop;
 
@@ -33,31 +34,20 @@ const ResponseBoxLayout = ({
     width: horizontallyAligned ? "100%" : null
   };
 
+  const containerStyle = {
+    padding: smallSize ? "5px 10px" : 16,
+    borderRadius: smallSize ? 0 : 10,
+    display: "flex",
+    flexDirection: horizontallyAligned ? "column" : "row",
+    alignItems: horizontallyAligned || hasGroupResponses ? "center" : "flex-start",
+    justifyContent: smallSize ? "space-around" : "flex-start"
+  };
+
   return (
     <DropContainer drop={onDrop}>
-      <StyledResponseDiv
-        className="responses_box"
-        style={{
-          padding: smallSize ? "5px 10px" : 16,
-          borderRadius: smallSize ? 0 : 10,
-          display: "flex",
-          flexDirection: horizontallyAligned ? "column" : "row",
-          alignItems: horizontallyAligned || hasGroupResponses ? "center" : "flex-start",
-          justifyContent: smallSize ? "space-around" : "flex-start"
-        }}
-      >
+      <StyledResponseDiv className="responses_box" style={containerStyle}>
         <FlexContainer flexDirection="column" width={hasGroupResponses ? "100%" : "auto"}>
-          <div
-            style={{
-              margin: "0 auto 1rem 8px",
-              color: theme.textColor,
-              fontWeight: theme.bold,
-              fontSize: theme.smallFontSize,
-              lineHeight: theme.headerLineHeight
-            }}
-          >
-            {getHeading("component.cloze.dragDrop.optionContainerHeading")}
-          </div>
+          <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
           <FlexContainer
             flexDirection={horizontallyAligned ? "column" : "row"}
             flexWrap={horizontallyAligned ? "nowrap" : "wrap"}
@@ -131,12 +121,6 @@ ResponseBoxLayout.defaultProps = {
   dragHandler: false,
   containerPosition: "bottom"
 };
-
-const DragHandler = styled.i.attrs(() => ({
-  className: "fa fa-arrows-alt"
-}))`
-  font-size: ${({ theme }) => theme.widgets.clozeDragDrop.draggableIconFontSize};
-`;
 
 const GroupWrapper = styled.div`
   display: flex;

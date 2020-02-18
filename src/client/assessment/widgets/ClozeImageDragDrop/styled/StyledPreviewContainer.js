@@ -6,4 +6,5 @@ export const StyledPreviewContainer = styled.div`
   left: 0px;
   margin: auto;
   width: ${({ width }) => width}px;
+  height: 100%;
 `;

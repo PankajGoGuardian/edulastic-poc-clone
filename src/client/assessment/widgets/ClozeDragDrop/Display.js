@@ -71,7 +71,7 @@ class ClozeDragDropDisplay extends Component {
     return jQuery(jQuery("<div />").html(stimulus)).find("response").length;
   };
 
-  onDrop = (data, index) => {
+  onDrop = ({ data }, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
     const {
       onChange: changeAnswers,

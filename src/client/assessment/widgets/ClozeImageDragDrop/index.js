@@ -6,10 +6,9 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
-import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv, AnswerContext } from "@edulastic/common";
+import { AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -183,6 +182,7 @@ class ClozeImageDragDrop extends Component {
                   section="main"
                   label={t("component.correctanswers.setcorrectanswers")}
                   fillSections={fillSections}
+                  position="unset" // position should be unset to make sure auto-scroll works
                   cleanSections={cleanSections}
                 >
                   <CorrectAnswers

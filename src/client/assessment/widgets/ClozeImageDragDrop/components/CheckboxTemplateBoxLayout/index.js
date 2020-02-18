@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 import { response } from "@edulastic/constants";
-import DropContainer from "../DropContainer";
+import { DragDrop } from "@edulastic/common";
 import TextContainer from "./TextContainer";
 
 import { Pointer } from "../../../../styled/Pointer";
@@ -15,6 +16,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+const { DropContainer } = DragDrop;
 
 const CheckboxTemplateBox = ({
   index,
@@ -26,7 +28,6 @@ const CheckboxTemplateBox = ({
   userSelections,
   stemNumeration,
   evaluation,
-  drop,
   onDropHandler,
   theme,
   showBorder,
@@ -85,7 +86,9 @@ const CheckboxTemplateBox = ({
   }
 
   const dragItemStyle = {
-    border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
+    border: `${
+      showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+    }`,
     padding: lessMinWidth ? "0px 2px" : "0px 5px",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
@@ -100,13 +103,18 @@ const CheckboxTemplateBox = ({
     ...btnStyle,
     width: responseContainer.width,
     height: responseContainer.height,
-    minWidth: lessMinWidth ? parseInt(responseContainer.width, 10) + 4 : response.minWidthShowAnswer,
+    minWidth: lessMinWidth
+      ? parseInt(responseContainer.width, 10) + 4
+      : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
   };
 
-  let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
-  containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
+  let containerClassName = `imagelabeldragdrop-droppable active ${
+    isChecked ? "check-answer" : "noAnswer"
+  } ${status}`;
+  containerClassName =
+    showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
   const icons = (checkAnswer || (showAnswer && !lessMinWidth)) && (
     <>
@@ -155,7 +163,7 @@ const CheckboxTemplateBox = ({
         index={index}
         style={dropContainerStyle}
         className={containerClassName}
-        drop={drop}
+        drop={onDropHandler}
         disableResponse={disableResponse}
       >
         {responseBoxIndex}
@@ -164,34 +172,45 @@ const CheckboxTemplateBox = ({
           style={showAnswer || checkAnswer ? { ...textContainerStyle, padding: "0px" } : {}}
         >
           <TextContainer
-            responseContainer={responseContainer}
             dropTargetIndex={index}
             userSelections={userSelections}
             isSnapFitValues={isSnapFitValues}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
             dragItemStyle={dragItemStyle}
-            onDropHandler={onDropHandler}
-            disableResponse={disableResponse}
-            dropContainerWidth={dropContainerStyle.width}
-            indexBoxRef={indexBoxRef}
             lessMinWidth={lessMinWidth}
             className={containerClassName}
             status={status}
-            style={textContainerStyle}
             isChecked={isChecked}
-            contWidth={responseContainer.width}
+            style={
+              checkAnswer
+                ? {
+                    borderRadius: 5,
+                    justifyContent: lessMinWidth ? "flex-start" : "center",
+                    width: responseContainer.width,
+                    height: responseContainer.height
+                  }
+                : { width: responseContainer.width, height: responseContainer.height }
+            }
             isExpressGrader={isExpressGrader}
           />
-          {isSnapFitValues && icons}
         </div>
+        {isSnapFitValues && icons}
       </DropContainer>
     </div>
   );
 };
 
 const CheckboxTemplateBoxLayout = props => {
-  const { checkAnswer, responseContainers, annotations, image, snapItems, isSnapFitValues, showDropItemBorder } = props;
+  const {
+    checkAnswer,
+    responseContainers,
+    annotations,
+    image,
+    snapItems,
+    isSnapFitValues,
+    showDropItemBorder
+  } = props;
   const lessMinWidth = responseContainers.some(
     responseContainer => parseInt(responseContainer.width, 10) < response.minWidthShowAnswer
   );
@@ -229,7 +248,6 @@ CheckboxTemplateBox.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
-  drop: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   showBorder: PropTypes.bool.isRequired,

@@ -1,32 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
-import { DropTarget } from "react-dnd";
-import { compose } from "redux";
+import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
+import { StyledResponseDiv } from "../../ClozeDragDrop/styled/ResponseBox";
+import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
+import { DropContainerTitle } from "../../../components/DropContainerTitle";
 
-import { MathSpan, FlexContainer, AnswerContext } from "@edulastic/common";
-
-import DragItem from "./DragItem";
-import { StyledResponseDiv, StyledResponseOption } from "../../ClozeDragDrop/styled/ResponseBox";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowsAlt } from "@fortawesome/free-solid-svg-icons";
-
-const specTarget = {
-  drop: (props, monitor) => {
-    if (monitor.didDrop()) {
-      return;
-    }
-
-    return props.drop(props);
-  }
-};
-
-const collectTarget = (connector, monitor) => ({
-  connectDropTarget: connector.dropTarget(),
-  isOver: monitor.isOver(),
-  isOverCurrent: monitor.isOver({ shallow: true }),
-  canDrop: monitor.canDrop()
-});
+const { DragItem, DropContainer } = DragDrop;
 
 const ResponseBoxLayout = ({
   smallSize,
@@ -34,88 +13,48 @@ const ResponseBoxLayout = ({
   fontSize,
   dragHandler,
   onDrop,
-  disableResponse,
   transparentResponses,
-  connectDropTarget,
-  isOver,
   responseContainerPosition,
   getHeading,
-  choiceStyle,
-  theme
+  choiceStyle
 }) => {
-  const { isAnswerModifiable } = useContext(AnswerContext);
-
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
-  return connectDropTarget(
-    <div>
-      <StyledResponseDiv
-        className="responses_box"
-        data-cy="responses-box"
-        style={{
-          padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16,
-          height: horizontallyAligned && "100%",
-          border: `1px solid ${theme.widgets.clozeDragDrop.correctAnswerBoxBorderColor}`,
-          ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
-        }}
-      >
+  const itemStyle = {
+    ...choiceStyle,
+    fontSize: smallSize ? 10 : fontSize
+  };
+
+  const containerStyle = {
+    height: horizontallyAligned && "100%",
+    padding: smallSize ? "5px 10px" : horizontallyAligned ? 10 : 16
+  };
+
+  return (
+    <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%" }}>
+      <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
         <FlexContainer flexDirection="column">
-          <div
-            style={{
-              margin: "0 auto 1rem 8px",
-              color: theme.textColor,
-              fontWeight: theme.bold,
-              fontSize: theme.smallFontSize,
-              lineHeight: theme.headerLineHeight
-            }}
-          >
-            {getHeading("component.cloze.dragDrop.optionContainerHeading")}
-          </div>
-          <div
-            style={{
-              display: horizontallyAligned && "flex",
-              flexDirection: horizontallyAligned && "column"
-            }}
-          >
+          <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
+          <FlexContainer flexDirection={horizontallyAligned ? "column" : "row"}>
             {responses.map((option = "", index) => (
-              <StyledResponseOption
-                key={index}
-                className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
-                style={{
-                  ...choiceStyle,
-                  fontSize: smallSize ? 10 : fontSize,
-                  transform: "translate3d(0px, 0px, 0px)"
-                }}
+              <DragItem
+                id={`response-item-${index}`}
+                key={`response-item-${index}`}
+                data={{ option, fromRespIndex: index }}
+                size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
               >
-                {!dragHandler && (
-                  <DragItem
-                    style={{ width: "100%" }}
-                    index={index}
-                    onDrop={onDrop}
-                    item={option}
-                    disableResponse={disableResponse || !isAnswerModifiable}
-                    data={`${option}_null_${index}`}
-                  >
-                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-                  </DragItem>
-                )}
-                {dragHandler && (
-                  <DragItem
-                    index={index}
-                    onDrop={onDrop}
-                    item={option}
-                    data={`${option}_null_${index}`}
-                    disableResponse={!isAnswerModifiable}
-                  >
-                    <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />
-                    <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
-                  </DragItem>
-                )}
-              </StyledResponseOption>
+                <ChoiceItem
+                  style={itemStyle}
+                  className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
+                >
+                  {dragHandler && <DragHandler />}
+                  <MathSpan dangerouslySetInnerHTML={{ __html: option }} />
+                </ChoiceItem>
+              </DragItem>
             ))}
-          </div>
+          </FlexContainer>
         </FlexContainer>
       </StyledResponseDiv>
-    </div>
+    </DropContainer>
   );
 };
 
@@ -124,10 +63,10 @@ ResponseBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   choiceStyle: PropTypes.object.isRequired,
   onDrop: PropTypes.func.isRequired,
+  getHeading: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
   transparentResponses: PropTypes.bool,
-  theme: PropTypes.object.isRequired,
   responseContainerPosition: PropTypes.string
 };
 
@@ -140,10 +79,4 @@ ResponseBoxLayout.defaultProps = {
   responseContainerPosition: "bottom"
 };
 
-const enhance = compose(
-  withTheme,
-  React.memo,
-  DropTarget("metal", specTarget, collectTarget)
-);
-
-export default enhance(ResponseBoxLayout);
+export default React.memo(ResponseBoxLayout);

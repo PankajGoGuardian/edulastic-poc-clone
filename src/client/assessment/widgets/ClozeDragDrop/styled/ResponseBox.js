@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledResponseDiv = styled.div`
   background-color: ${props => props.theme.widgets.clozeDragDrop.responseContainerBgColor};
-  // border: 2px dashed ${props => props.theme.widgets.clozeDragDrop.responseContainerBorderColor};
+  border: ${({ theme }) => `1px solid ${theme.widgets.clozeDragDrop.responseContainerBorderColor}`};
 `;
 
 export const StyledResponseOption = styled.div`

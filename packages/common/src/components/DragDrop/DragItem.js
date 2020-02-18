@@ -8,10 +8,10 @@ const getStyles = isDragging => ({
   opacity: isDragging ? 0 : 1
 });
 
-const DragItem = ({ data, children, ...rest }) => {
+const DragItem = ({ data, size, children, ...rest }) => {
   const { isAnswerModifiable } = useContext(AnswerContext);
   const [{ isDragging }, drag, preview] = useDrag({
-    item: { type: "item", data, preview: children },
+    item: { type: "item", data, size, preview: children },
     canDrag() {
       return isAnswerModifiable;
     },
@@ -33,11 +33,13 @@ const DragItem = ({ data, children, ...rest }) => {
 
 DragItem.propTypes = {
   children: PropTypes.node,
+  size: PropTypes.object,
   data: PropTypes.string
 };
 
 DragItem.defaultProps = {
   children: undefined,
+  size: undefined,
   data: ""
 };
 

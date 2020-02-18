@@ -2,34 +2,29 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep, get, maxBy, minBy, uniqBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus, MathSpan, QuestionNumberLabel, measureText } from "@edulastic/common";
-import { response, clozeImage, ChoiceDimensions } from "@edulastic/constants";
-import striptags from "striptags";
+import {
+  Stimulus,
+  QuestionNumberLabel,
+  measureText,
+  HorizontalScrollContext,
+  DragDrop
+} from "@edulastic/common";
+import { clozeImage, ChoiceDimensions } from "@edulastic/constants";
 
-import DropContainer from "./components/DropContainer";
-import DragItem from "./components/DragItem";
-
-import { Pointer } from "../../styled/Pointer";
-import { Point } from "../../styled/Point";
-import { Triangle } from "../../styled/Triangle";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-
+import ResponseContainers from "./components/ResponseContainers";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
+import SnapItemContainers from "./components/SnapItemContainers";
+
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import AnswerContainer from "./AnswerContainer";
-
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
-
-import { IconWrapper } from "./components/CheckboxTemplateBoxLayout/styled/IconWrapper";
-import { RightIcon } from "./components/CheckboxTemplateBoxLayout/styled/RightIcon";
-import { WrongIcon } from "./components/CheckboxTemplateBoxLayout/styled/WrongIcon";
 
 import {
   StyledContainer,
@@ -41,6 +36,7 @@ import {
   RightResponseContainer
 } from "./styled/layout";
 
+const { DragPreview } = DragDrop;
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
 
 const isColliding = (responseContainer, answer) => {
@@ -135,6 +131,8 @@ const getPossibleResps = (snapItems, possibleResps) => {
 
 class Display extends Component {
   previewContainerRef = React.createRef();
+
+  displayWrapperRef = React.createRef();
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState !== undefined) {
@@ -254,12 +252,13 @@ class Display extends Component {
     }
   };
 
-  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex, itemRect }, index) => {
+  onDrop = ({ data: sourceData, itemRect }, index) => {
+    const { option, fromContainerIndex, fromRespIndex } = sourceData;
     const { maxRespCount, onChange, item, preview, responseContainers } = this.props;
     const { userAnswers, possibleResponses } = this.state;
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
     if (!isSnapFitValues && preview) {
-      return this.onDropForSnapFit(sourceData, fromContainerIndex, fromRespIndex, itemRect);
+      return this.onDropForSnapFit(option, fromContainerIndex, fromRespIndex, itemRect);
     }
 
     if (fromContainerIndex === index) {
@@ -269,7 +268,7 @@ class Display extends Component {
     const newAnswers = cloneDeep(userAnswers);
     const newResponses = cloneDeep(possibleResponses);
 
-    const data = Array.isArray(sourceData) ? sourceData : [sourceData];
+    const data = Array.isArray(option) ? option : [option];
 
     newAnswers[index] = {
       responseBoxID: responseContainers[index] && responseContainers[index].id,
@@ -408,10 +407,12 @@ class Display extends Component {
       display: "flex",
       alignItems: "center",
       width: "100%",
+      height: "100%",
       whiteSpace: isWrapText ? "normal" : "nowrap",
       overflow: "hidden",
       textOverflow: "ellipsis"
     };
+
     const { maxHeight, maxWidth } = clozeImage;
     const {
       imageWidth: imgWidth,
@@ -464,71 +465,6 @@ class Display extends Component {
       />
     );
 
-    const drop = data => data;
-
-    const renderSnapItems = () =>
-      !isSnapFitValues &&
-      (preview || showAnswer) && (
-        <DropContainer
-          index={0}
-          drop={drop}
-          data-cy="drop-container"
-          style={{ height: "100%" }}
-          className="imagelabeldragdrop-droppable active"
-        >
-          {userAnswers.map(
-            (userAnswer, index) =>
-              userAnswer &&
-              userAnswer.value &&
-              userAnswer.value.map(answer => {
-                const title = striptags(answer) || null;
-                const { rect } = userAnswer;
-                const status = evaluation[index];
-                const btnStyle = {
-                  top: smallSize ? rect.top / 2 : rect.top,
-                  left: smallSize ? rect.left / 2 : rect.left,
-                  border: showDashedBorder ? `dashed 2px` : `solid 1px`,
-                  position: "absolute",
-                  background:
-                    !showAnswer && !checkAnswer ? backgroundColor : status ? "#d3fea6" : "#fce0e8",
-                  borderRadius: 5,
-                  padding: "8px 30px 8px 20px",
-                  zIndex: 40,
-                  margin: 0,
-                  borderColor:
-                    showAnswer || checkAnswer
-                      ? status
-                        ? "#d3fea6"
-                        : "#fce0e8"
-                      : showDashedBorder
-                      ? theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor
-                      : theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor
-                  // overflow: "hidden"
-                };
-                return (
-                  <DragItem
-                    key={index}
-                    title={title}
-                    showDashedBorder={showDashedBorder}
-                    index={index}
-                    item={answer}
-                    data={`${answer}_${index}_${index}`}
-                    style={{
-                      ...dragItemStyle,
-                      ...btnStyle
-                    }}
-                    onDrop={this.onDrop}
-                  >
-                    <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
-                    {(checkAnswer || showAnswer) && (
-                      <IconWrapper right={10}>{status ? <RightIcon /> : <WrongIcon />}</IconWrapper>
-                    )}
-                  </DragItem>
-                );
-              })
-          )}
-        </DropContainer>
-      );
     const maxResponseOffsetTop = responseContainers.reduce((max, resp) => {
       max = Math.max(max, resp.top + parseInt(resp.height, 10));
       return max;
@@ -553,7 +489,9 @@ class Display extends Component {
     const choiceStyle = {
       minWidth: choiceMinWidth,
       maxWidth: choiceMaxWidth,
-      width: choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth,
+      width: (choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth) + 40,
+      widthpx: (choiceWidth > choiceMaxWidth ? choiceMaxWidth : choiceWidth) + 40,
+      heightpx,
       overflow: "hidden"
     };
 
@@ -565,6 +503,22 @@ class Display extends Component {
       minWidth: choiceMaxWidth,
       maxWidth: responseposition === "left" || responseposition === "right" ? 1050 : 750
     };
+
+    const renderSnapItems = () =>
+      !isSnapFitValues &&
+      (preview || showAnswer) && (
+        <SnapItemContainers
+          userAnswers={userAnswers}
+          evaluation={evaluation}
+          smallSize={smallSize}
+          showDashedBorder={showDashedBorder}
+          showAnswer={showAnswer}
+          checkAnswer={checkAnswer}
+          backgroundColor={backgroundColor}
+          onDrop={this.onDrop}
+          choiceStyle={choiceStyle}
+        />
+      );
 
     const previewContainerWidth = canvasWidth > maxWidth ? canvasWidth : maxWidth;
     const previewTemplateBoxLayout = (
@@ -582,97 +536,22 @@ class Display extends Component {
         >
           {renderAnnotations()}
           {renderImage()}
-          {responseContainers.map((responseContainer, index) => {
-            if (!isSnapFitValues && !showDropItemBorder) {
-              return null;
-            }
-            const dropTargetIndex = index;
-            const responseContainerLeft = smallSize
-              ? responseContainer.left / 2
-              : responseContainer.left;
-            const btnStyle = {
-              widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
-              width: smallSize ? responseContainer.width / 2 : responseContainer.width,
-              top: smallSize ? responseContainer.top / 2 : responseContainer.top,
-              left: responseContainerLeft,
-              height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              heightpx: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDropItemBorder
-                ? showDashedBorder
-                  ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                  : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
-                : 0,
-              position: "absolute",
-              background: transparentBackground ? "transparent" : backgroundColor,
-              borderRadius: 5
-              // overflow: "hidden"
-            };
 
-            return (
-              <DropContainer
-                key={index}
-                index={index}
-                style={{
-                  borderStyle: smallSize ? "dashed" : "solid",
-                  height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
-                  width: responseContainer.width || "auto",
-                  minWidth: response.minWidth || "auto",
-                  maxWidth: response.maxWidth,
-                  transform: "translate3d(0px, 0px, 0px)",
-                  ...btnStyle,
-                  background: transparentBackground
-                    ? "transparent"
-                    : theme.widgets.clozeImageDragDrop.responseBoxBgColor
-                }}
-                disableResponse={disableResponse}
-                className="imagelabeldragdrop-droppable active"
-                drop={drop}
-              >
-                {responseContainer.label && (
-                  <span className="sr-only" role="heading">
-                    Drop target {responseContainer.label}
-                  </span>
-                )}
-                <div className="container" style={{ justifyContent: "center" }}>
-                  {userAnswers[dropTargetIndex] &&
-                    userAnswers[dropTargetIndex].value &&
-                    userAnswers[dropTargetIndex].value.map((answer, item_index) => {
-                      const title = striptags(answer) || null;
-                      return (
-                        <DragItem
-                          title={title}
-                          key={item_index}
-                          showDashedBorder={showDashedBorder}
-                          index={item_index}
-                          item={answer}
-                          data={`${answer}_${dropTargetIndex}_${item_index}`}
-                          style={dragItemStyle}
-                          onDrop={this.onDrop}
-                          disableResponse={disableResponse}
-                        >
-                          {(isSnapFitValues || !preview) && (
-                            <AnswerContainer
-                              height={responseContainer.height || "auto"}
-                              width={responseContainer.width || "auto"}
-                              isWrapText={isWrapText}
-                              fontSize={fontSize}
-                              answer={answer}
-                            />
-                          )}
-                        </DragItem>
-                      );
-                    })}
-                </div>
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </DropContainer>
-            );
-          })}
+          {isSnapFitValues && showDropItemBorder && (
+            <ResponseContainers
+              responseContainers={responseContainers}
+              showDropItemBorder={showDropItemBorder}
+              smallSize={smallSize}
+              isWrapText={isWrapText}
+              transparentBackground={transparentBackground}
+              userAnswers={userAnswers}
+              showDashedBorder={showDashedBorder}
+              dragItemStyle={dragItemStyle}
+              fontSize={fontSize}
+              onDrop={this.onDrop}
+            />
+          )}
+
           {renderSnapItems()}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -697,7 +576,6 @@ class Display extends Component {
             checkAnswer={checkAnswer}
             userSelections={userAnswers}
             evaluation={evaluation}
-            drop={drop}
             isSnapFitValues={isSnapFitValues}
             onDropHandler={this.onDrop}
             showBorder={showBorder}
@@ -713,18 +591,14 @@ class Display extends Component {
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
-        onDrop={!disableResponse ? this.onDrop : () => {}}
-        drop={drop}
-        disableResponse={disableResponse}
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
+        onDrop={!disableResponse ? this.onDrop : () => {}}
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        headingTextColor={theme.textColor}
         choiceStyle={choiceStyle}
-        reponseContainerBgColor={theme.brandLightGrey}
       />
     );
 
@@ -748,60 +622,65 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <div style={{ fontSize, margin: "auto", overflow: "auto", width: "100%" }}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
-        {responseposition === "top" && (
-          <div style={containerStyle}>
-            <StyledContainer>
-              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </StyledContainer>
-            <StyledContainer>{templateBoxLayout}</StyledContainer>
-          </div>
-        )}
-        {responseposition === "bottom" && (
-          <div style={containerStyle}>
-            <StyledContainer>
-              <RelativeContainer>{templateBoxLayout}</RelativeContainer>
-            </StyledContainer>
-            <StyledContainer>{responseBoxLayout}</StyledContainer>
-          </div>
-        )}
-        {responseposition === "left" && (
-          <LeftContainer style={containerStyle}>
-            <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
-              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </LeftResponseContainer>
-            <LeftTemplateContainer
-              studentReport={studentReport}
-              responseBoxContainerWidth={responseBoxWidth}
-            >
-              {templateBoxLayout}
-            </LeftTemplateContainer>
-          </LeftContainer>
-        )}
-        {responseposition === "right" && (
-          <RightContainer smallSize={smallSize} style={containerStyle}>
-            <RightTemplateContainer
-              smallSize={smallSize}
-              studentReport={studentReport}
-              responseBoxContainerWidth={responseBoxWidth}
-            >
-              {templateBoxLayout}
-            </RightTemplateContainer>
+      <div style={{ fontSize, margin: "auto", overflow: "auto" }} ref={this.displayWrapperRef}>
+        <HorizontalScrollContext.Provider
+          value={{ getScrollElement: () => this.displayWrapperRef.current }}
+        >
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          </QuestionTitleWrapper>
+          {responseposition === "top" && (
+            <div style={containerStyle}>
+              <StyledContainer>
+                <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+              </StyledContainer>
+              <StyledContainer>{templateBoxLayout}</StyledContainer>
+            </div>
+          )}
+          {responseposition === "bottom" && (
+            <div style={containerStyle}>
+              <StyledContainer>
+                <RelativeContainer>{templateBoxLayout}</RelativeContainer>
+              </StyledContainer>
+              <StyledContainer>{responseBoxLayout}</StyledContainer>
+            </div>
+          )}
+          {responseposition === "left" && (
+            <LeftContainer style={containerStyle}>
+              <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
+                <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+              </LeftResponseContainer>
+              <LeftTemplateContainer
+                studentReport={studentReport}
+                responseBoxContainerWidth={responseBoxWidth}
+              >
+                {templateBoxLayout}
+              </LeftTemplateContainer>
+            </LeftContainer>
+          )}
+          {responseposition === "right" && (
+            <RightContainer smallSize={smallSize} style={containerStyle}>
+              <RightTemplateContainer
+                smallSize={smallSize}
+                studentReport={studentReport}
+                responseBoxContainerWidth={responseBoxWidth}
+              >
+                {templateBoxLayout}
+              </RightTemplateContainer>
 
-            <RightResponseContainer
-              isReviewTab={isReviewTab}
-              width={responseBoxWidth || null}
-              smallSize={smallSize}
-            >
-              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-            </RightResponseContainer>
-          </RightContainer>
-        )}
-        {answerBox}
+              <RightResponseContainer
+                isReviewTab={isReviewTab}
+                width={responseBoxWidth || null}
+                smallSize={smallSize}
+              >
+                <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+              </RightResponseContainer>
+            </RightContainer>
+          )}
+          {answerBox}
+          <DragPreview />
+        </HorizontalScrollContext.Provider>
       </div>
     );
   }

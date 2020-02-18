@@ -1,16 +1,17 @@
-import React, { memo, useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import { helpers } from "@edulastic/common";
 import { ReviewTableWrapper } from "./styled";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
-import { SortableItem } from "../List/List";
-import { helpers } from "@edulastic/common";
+import ListItem from "../List/ListItem";
 
 const ItemsTable = ({
   items,
@@ -47,7 +48,7 @@ const ItemsTable = ({
       key: "main",
       render: data =>
         expandedRows === data.key ? (
-          <SortableItem
+          <ListItem
             key={data.key}
             metaInfoData={data.meta}
             index={data.key}
@@ -61,7 +62,7 @@ const ItemsTable = ({
             onChangePoints={onChangePoints}
             onPreview={handlePreview}
             selected={selected}
-            collapseView={true}
+            collapseView
             questions={questions}
             mobile={mobile}
             passagesKeyed={passagesKeyed}
@@ -87,11 +88,11 @@ const ItemsTable = ({
   ];
 
   const audioStatus = item => {
-    const questions = get(item, "data.questions", []);
-    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const _questions = get(item, "data.questions", []);
+    const getAllTTS = _questions.filter(ite => ite.tts).map(ite => ite.tts);
     const audio = {};
     if (getAllTTS.length) {
-      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      const ttsSuccess = getAllTTS.filter(ite => ite.taskStatus !== "COMPLETED").length === 0;
       audio.ttsSuccess = ttsSuccess;
     }
     return audio;
@@ -121,7 +122,9 @@ const ItemsTable = ({
       standards: standards[item._id],
       audio: audioStatus(item),
       dok:
-        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
+        item.data &&
+        item.data.questions &&
+        (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {
@@ -156,11 +159,10 @@ const ItemsTable = ({
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
-  types: PropTypes.object.isRequired,
-  isEditable: PropTypes.bool,
-  handlePreview: PropTypes.func,
+  isEditable: PropTypes.bool.isRequired,
+  handlePreview: PropTypes.func.isRequired,
   standards: PropTypes.object.isRequired,
-  gradingRubricsFeature: PropTypes.bool
+  gradingRubricsFeature: PropTypes.bool.isRequired
 };
 
 const enhance = compose(

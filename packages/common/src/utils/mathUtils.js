@@ -13,6 +13,26 @@ const addCustomClassToMath = mathHtml => {
   return node.outerHTML; // get the complete HTML content
 };
 
+const addSpaceDynamicParameters = (latex = "") =>
+  latex.replace(new RegExp("(@.)", "g"), " $1").replace(new RegExp("#", "g"), " \\#");
+
+const addSpaceMatrixFraction = (latex = "") => {
+  let updated = latex;
+  const matrixRegex = /\\begin{[a-z]matrix}(.*?)\\end{[a-z]matrix}/g;
+  const fractionRegex = /(\\frac(.*?)\\\\)/g;
+
+  const addSpace = (str = "") => str.replace(fractionRegex, "$1[0.2em]");
+
+  let match = matrixRegex.exec(updated);
+  while (match != null) {
+    const [, matrixContent] = match;
+    updated = updated.replace(matrixContent, addSpace(matrixContent));
+    match = matrixRegex.exec(updated);
+  }
+
+  return updated;
+};
+
 export const getMathHtml = latex => {
   if (!window.katex) return latex;
 
@@ -21,7 +41,15 @@ export const getMathHtml = latex => {
    * that error occurred when there are some operators
    * so we need to insert spaces between operators and variables.
    */
-  const _latex = latex.replace(new RegExp("(@.)", "g"), " $1").replace(new RegExp("#", "g"), " \\#");
+  let _latex = addSpaceDynamicParameters(latex);
+
+  /**
+   * Vertical spacing between fractions in {matrix} is too tight.
+   * this issue is in the Katex library, the solution is to add \\[0.2em].
+   * this solution doesn't work in mathQuill, so we should add \\[0.2em] in here.
+   * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
+   */
+  _latex = addSpaceMatrixFraction(latex);
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,
@@ -29,7 +57,8 @@ export const getMathHtml = latex => {
   });
   // styles are applied to stimulus in itemBank/testReview(collapsed view)
   // it was affecting math content as well and EV-10152 was caused
-  // we can use this class to omit styles from being applied to math in itemBank/testReview(collapsed view)
+  // we can use this class to omit styles from being applied to math
+  // in itemBank/testReview(collapsed view)
   katexString = addCustomClassToMath(katexString);
   return katexString;
 };
@@ -69,7 +98,8 @@ export const replaceMathHtmlWithLatexes = val => {
 };
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
-  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
+  const escapeRegExp = string =>
+    string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
   const regexTemplate = new RegExp(
     escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
     "g"

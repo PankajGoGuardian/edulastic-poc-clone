@@ -39,7 +39,8 @@ const Option = props => {
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
-    const altResponses = validation.altResponses?.length > 0 ? validation.altResponses?.map(ar => ar.value) : [];
+    const altResponses =
+      validation.altResponses?.length > 0 ? validation.altResponses?.map(ar => ar.value) : [];
     correctAnswers = flatten([validation.validResponse?.value, ...altResponses]);
   }
 
@@ -52,16 +53,21 @@ const Option = props => {
     : userSelections.includes(item.value);
 
   const isCorrect =
-    isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];
+    isReviewTab || testItem
+      ? correct[correctAnswers.indexOf(item.value)]
+      : correct[userSelections.indexOf(item.value)];
 
-  const isCrossAction = crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
+  const isCrossAction =
+    crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
 
   const showIcon = (isSelected && checkAnswer) || showAnswer;
 
   if (showAnswer) {
     let validAnswers = [];
     if (!isEmpty(validation)) {
-      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(_item => _item.value));
+      validAnswers = flatten(
+        [validation.validResponse, ...validation.altResponses].map(_item => _item.value)
+      );
     }
 
     if (validAnswers.includes(item.value)) {
@@ -139,18 +145,26 @@ const Option = props => {
     }
   };
 
-  const getOptionLabel = index => ALPHABET[index].toUpperCase();
+  const getOptionLabel = opIndex => ALPHABET[opIndex].toUpperCase();
 
   const container = (
     <>
-      {uiStyle.type === "block" && uiStyle.choiceLabel && <OptionsLabel>{getLabel(index)}</OptionsLabel>}
+      {uiStyle.type === "block" && uiStyle.choiceLabel && (
+        <OptionsLabel>{getLabel(index)}</OptionsLabel>
+      )}
       <CheckboxContainer
         smallSize={smallSize}
         uiStyle={uiStyle}
         styleType={styleType}
         multipleResponses={multipleResponses}
       >
-        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChangeHandler} />
+        <input
+          type="checkbox"
+          name="mcq_group"
+          value={item.value}
+          checked={isSelected}
+          onChange={onChangeHandler}
+        />
         <span
           className="labelOnly"
           style={{
@@ -179,7 +193,10 @@ const Option = props => {
               hovered={hovered}
               charCount={(item.label || "").length}
             >
-              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay
+                fontSize={fontSize}
+                dangerouslySetInnerHTML={{ __html: item.label }}
+              />
             </MultiChoiceContent>
             {container}
           </FlexContainer>
@@ -188,7 +205,7 @@ const Option = props => {
         return (
           <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
-            <span className="labelOnly">{getOptionLabel(index)}</span>
+            <span className="labelOnly">{getLabel(index)}</span>
             <MultiChoiceContent
               fontSize={fontSize}
               smallSize={smallSize}
@@ -196,7 +213,11 @@ const Option = props => {
               hovered={hovered}
               charCount={(item.label || "").length}
             >
-              <MathFormulaDisplay paddingLeft fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay
+                paddingLeft
+                fontSize={fontSize}
+                dangerouslySetInnerHTML={{ __html: item.label }}
+              />
             </MultiChoiceContent>
           </StyledOptionsContainer>
         );
@@ -213,7 +234,10 @@ const Option = props => {
               hovered={hovered}
               charCount={(item.label || "").length}
             >
-              <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+              <MathFormulaDisplay
+                fontSize={fontSize}
+                dangerouslySetInnerHTML={{ __html: item.label }}
+              />
             </MultiChoiceContent>
           </StyledOptionsContainer>
         );
@@ -302,7 +326,8 @@ Option.propTypes = {
   crossAction: PropTypes.object,
   multipleResponses: PropTypes.bool,
   isReviewTab: PropTypes.bool.isRequired,
-  setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
+  setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+  fontSize: PropTypes.string.isRequired
 };
 
 Option.defaultProps = {

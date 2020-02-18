@@ -4,6 +4,7 @@ import { isEmpty, flatten } from "lodash";
 import produce from "immer";
 import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import styled from "styled-components";
+import { themeColor, white, grey } from "@edulastic/colors";
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
 import { MultiChoiceContent, MultipleChoiceLabelContainer } from "../styled/MultiChoiceContent";
@@ -11,7 +12,6 @@ import { Label, OptionsLabel } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
-import { themeColor, white, grey } from "@edulastic/colors";
 
 const Option = props => {
   const {
@@ -139,9 +139,7 @@ const Option = props => {
     }
   };
 
-  const getOptionLabel = index => {
-    return ALPHABET[index].toUpperCase();
-  };
+  const getOptionLabel = index => ALPHABET[index].toUpperCase();
 
   const container = (
     <>
@@ -227,6 +225,7 @@ const Option = props => {
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
     <Label
+      data-cy="anwer-labels"
       maxWidth={maxWidth}
       smallSize={smallSize}
       className={className}

@@ -672,6 +672,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Redirect`, () => {
     });
 
     it(" > redirect class and verify student cards", () => {
+      teacherSidebar.clickOnDashboard();
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       lcb.uncheckSelectAllCheckboxOfStudent();

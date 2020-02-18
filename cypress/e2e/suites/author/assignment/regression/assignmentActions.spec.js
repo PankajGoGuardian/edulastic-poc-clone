@@ -11,6 +11,7 @@ import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import ReportsPage from "../../../../framework/student/reportsPage";
+import FileHelper from "../../../../framework/util/fileHelper";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -23,7 +24,7 @@ const itemKeysInTest = [];
 ITEMS.forEach(ele => {
   itemKeysInTest.push(ele.split(".")[0]);
 });
-describe(`Verify Actions Button In Author Side Assignments Page`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In Author Side Assignments Page`, () => {
   const testLibraryPage = new TestLibrary();
   const assignmentsPage = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();

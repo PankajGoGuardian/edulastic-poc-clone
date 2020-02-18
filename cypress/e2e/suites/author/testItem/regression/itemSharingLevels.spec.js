@@ -21,7 +21,7 @@ const userData = require("../../../../../fixtures/users");
 
 const { dist0001, dist0002 } = userData.itemSharingLevels;
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
@@ -51,21 +51,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   Author = DIST1_SCHOOL1[TEACHER1];
 
   // Permissions given to Tests are applied to items too
-  context("Sharing School,District and Public Levels", () => {
-    before("Login As Author And Creat Test without publishing", () => {
+  context(">sharing school,district and public levels", () => {
+    before(">login as author and creat test without publishing", () => {
       cy.login("teacher", Author[EMAIL], Author[PASS]);
       testLibrary.createTest(TEST, true).then(id => {
         test_id = id;
         itemIds = testLibrary.items;
       });
     });
-    context("School- Allow Share", () => {
+    context(">school- allow share", () => {
       let clonedItem = [];
 
-      before("Login As Author And Creat Test without publishing", () => {
+      before(">login as author and creat test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
-      before("Sharing At School level", () => {
+      before(">sharing at school level", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -75,7 +75,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.getSchoolRadio().click({ force: true });
         testLibrary.clickSharePop();
       });
-      it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School`, () => {
+      it(`>for ${DIST1_SCHOOL1[TEACHER2][NAME]} from same school`, () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -95,8 +95,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
@@ -106,13 +106,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("School- Remove Share", () => {
+    context(">school- remove share", () => {
       let clonedItem = [];
 
       before("Login", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
-      it("Verify Change", () => {
+      it(">verify change", () => {
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
@@ -125,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Removesharing With School", () => {
+      it(">removesharing with school", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -134,7 +134,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.header.clickOnShare();
         testLibrary.removeShare("School");
       });
-      it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School- Entire Library`, () => {
+      it(`>for ${DIST1_SCHOOL1[TEACHER2][NAME]} from same school- entire library`, () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it(`for ${DIST1_SCHOOL1[TEACHER2][NAME]} From Same School- Shared With Me`, () => {
+      it(`>for ${DIST1_SCHOOL1[TEACHER2][NAME]} from same school- shared with me`, () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -156,14 +156,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("District- Allow share", () => {
+    context(">district- allow share", () => {
       let clonedItem = [];
 
-      before("Login As Author And Creat Test without publishing", () => {
+      before(">login as author and creat test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
 
-      before("Sharing At District Level", () => {
+      before(">sharing at district level", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -174,7 +174,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.clickSharePop();
       });
 
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]} From Other School`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]} from other school`, () => {
         // Verify sharing for techer from different school but from same district
         cy.login("teacher", DIST1_SCHOOL2[TEACHER2][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
@@ -195,8 +195,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
@@ -206,13 +206,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("District- Remove Share", () => {
+    context(">district- remove share", () => {
       let clonedItem = [];
 
       before("Login", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
-      it("Verify Change", () => {
+      it(">verify change", () => {
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
@@ -225,7 +225,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove-sharing With District", () => {
+      it(">remove-sharing with district", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -234,7 +234,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.header.clickOnShare();
         testLibrary.removeShare(Author[DIST]);
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]} From Other School-Entire Library`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]} from other school-entire library`, () => {
         cy.login("teacher", DIST1_SCHOOL2[TEACHER2][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -244,7 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]} From Other School-Shared With Me`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]} from other school-shared with me`, () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -256,14 +256,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("Public- Allow Share", () => {
+    context(">public- allow share", () => {
       let clonedItem1 = [];
       let clonedItem2 = [];
 
       before("Login As Author And Creat Test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
-      before("Sharing At Public Level", () => {
+      before(">sharing at public level", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -274,7 +274,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.getPublicRadio().click({ force: true });
         testLibrary.clickSharePop();
       });
-      it(`for ${DIST2_SCHOOL1[TEACHER1][NAME]} From Other District`, () => {
+      it(`>for ${DIST2_SCHOOL1[TEACHER1][NAME]} from other district`, () => {
         cy.login("teacher", DIST2_SCHOOL1[TEACHER1][EMAIL], DIST2_SCHOOL1[TEACHER1][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -293,15 +293,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem1.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
           itemListPage.getViewItemById(cloned).should("exist");
         });
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]}From Other School`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]}from other school`, () => {
         cy.login("teacher", DIST1_SCHOOL2[TEACHER2][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -321,8 +321,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem2.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
@@ -331,11 +331,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("Public- Remove Share", () => {
+    context(">public- remove share", () => {
       before("Login", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
       });
-      it("Verify Change", () => {
+      it(">verify change", () => {
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
@@ -348,7 +348,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove-sharing With Public", () => {
+      it(">remove-sharing with public", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -357,7 +357,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.header.clickOnShare();
         testLibrary.removeShare("EVERYONE");
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER2][NAME]} From Other District- Entire Library`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER2][NAME]} from other district- entire library`, () => {
         cy.login("teacher", DIST2_SCHOOL1[TEACHER1][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -367,7 +367,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER2][NAME]} From Other District- Shared With Me`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER2][NAME]} from other district- shared with me`, () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -377,7 +377,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]}From Other School- Entire Library`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]}from other school- entire library`, () => {
         cy.login("teacher", DIST1_SCHOOL2[TEACHER1][EMAIL], DIST1_SCHOOL2[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -387,7 +387,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it(`for ${DIST1_SCHOOL2[TEACHER1][NAME]}From Other School- Shared With Me`, () => {
+      it(`>for ${DIST1_SCHOOL2[TEACHER1][NAME]}from other school- shared with me`, () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();

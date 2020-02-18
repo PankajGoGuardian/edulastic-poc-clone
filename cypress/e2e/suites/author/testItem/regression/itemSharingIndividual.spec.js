@@ -21,7 +21,7 @@ const userData = require("../../../../../fixtures/users");
 
 const { dist001, dist002 } = userData.itemSharingIndividual;
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>item sharing`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
@@ -51,16 +51,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
   Author = DIST1_SCHOOL1[TEACHER1];
 
   // Permissions given to Tests are applied to items too
-  context(`Item Sharing with Edit and Viewonly-Individually`, () => {
-    context("With giving edit permission-Individual", () => {
-      before("Login As Author And Creat Test", () => {
+  context(`>item sharing with edit and viewonly-individually`, () => {
+    context(">with giving edit permission-individual", () => {
+      before(">login as author and creat test", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.createTest(TEST, true).then(id => {
           test_id = id;
           itemIds = testLibrary.items;
         });
       });
-      before("Publish and Share the published test", () => {
+      before(">publish and share the published test", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -70,7 +70,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.selectPeopletoshare(DIST1_SCHOOL1[TEACHER2][EMAIL], true);
         cy.wait(2000);
       });
-      it("Assert the shared Test-Published ", () => {
+      it(">assert the shared test-published ", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -88,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Change", () => {
+      it(">verify change", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -102,16 +102,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove share-Published", () => {
+      it(">remove share-published", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testReviewTab.testheader.clickOnShare();
-        testLibrary.removeShare(DIST1_SCHOOL1[TEACHER2][NAME]);
+        testLibrary.removeShare();
       });
-      it("Assert remove share-Published-Entire Library", () => {
+      it(">assert remove share-published-entire library", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -121,7 +121,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it("Assert remove share-Published-Shared With Me", () => {
+      it(">assert remove share-published-shared with me", () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -132,16 +132,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         });
       });
     });
-    context("Without giving edit permission-Individual", () => {
+    context(">without giving edit permission-individual", () => {
       let clonedItem = [];
-      before("Login As Author And Creat Test without publishing", () => {
+      before(">login as author and creat test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.createTest(TEST, true).then(id => {
           test_id = id;
           itemIds = testLibrary.items;
         });
       });
-      before("Share the published test", () => {
+      before(">share the published test", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.selectPeopletoshare(DIST1_SCHOOL1[TEACHER2][EMAIL], false);
         cy.wait(2000);
       });
-      it("Assert the shared Test-Published ", () => {
+      it(">assert the shared test-published ", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -171,15 +171,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
           itemListPage.getViewItemById(cloned).should("exist");
         });
       });
-      it("Verify Change At Author side", () => {
+      it(">verify change at author side", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -193,16 +193,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove share-Published", () => {
+      it(">remove share-published", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
-        testLibrary.removeShare(DIST1_SCHOOL1[TEACHER2][NAME]);
+        testLibrary.removeShare();
       });
-      it("Assert remove share-Published-Entire Library", () => {
+      it(">assert remove share-published-entire library", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -211,7 +211,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it("Assert remove share-Published-Shared With Me", () => {
+      it(">assert remove share-published-shared with me", () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -222,16 +222,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         });
       });
     });
-    context("Without giving edit permission-Individual-User from Other District", () => {
+    context(">without giving edit permission-individual-user from other district", () => {
       let clonedItem = [];
-      before("Login As Author And Creat Test without publishing", () => {
+      before(">login as author and creat test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.createTest(TEST, true).then(id => {
           test_id = id;
           itemIds = testLibrary.items;
         });
       });
-      before("Publish and Share the published test", () => {
+      before(">publish and share the published test", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -241,7 +241,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.selectPeopletoshare(DIST2_SCHOOL1[TEACHER1][EMAIL], false, false);
         cy.wait(2000);
       });
-      it("Assert the shared Test-Published ", () => {
+      it(">assert the shared test-published ", () => {
         cy.login("teacher", DIST2_SCHOOL1[TEACHER1][EMAIL], DIST2_SCHOOL1[TEACHER1][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -261,8 +261,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
@@ -270,7 +270,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         });
         clonedItem.length = 0;
       });
-      it("Verify Change At Author side", () => {
+      it(">verify change at author side", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -284,16 +284,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove share-Published", () => {
+      it(">remove share-published", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
-        testLibrary.removeShare(DIST2_SCHOOL1[TEACHER1][NAME]);
+        testLibrary.removeShare();
       });
-      it("Assert remove share-Entire Library", () => {
+      it(">assert remove share-entire library", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -303,7 +303,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           itemListPage.verifyPresenceOfItemById(itemIds[index]);
         });
       });
-      it("Assert remove share-Published-Shared With Me", () => {
+      it(">assert remove share-published-shared with me", () => {
         // cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         // testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -315,16 +315,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
       });
     });
 
-    context("Multi-Share-Individual", () => {
+    context(">multi-share-individual", () => {
       let clonedItem = [];
-      before("Login As Author And Creat Test without publishing", () => {
+      before(">login as author and creat test without publishing", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.createTest(TEST, true).then(id => {
           test_id = id;
           itemIds = testLibrary.items;
         });
       });
-      before("Share to Multiple People", () => {
+      before(">share to multiple people", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -336,7 +336,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
         testLibrary.selectPeopletoshare(DIST1_SCHOOL1[TEACHER3][EMAIL], true);
         /* Proceeding without updating sharing- it should be updated automatically i.e. published or draft */
       });
-      it("Assert the shared Test-Items For First Person", () => {
+      it(">assert the shared test-items for first person", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER2][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -356,15 +356,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Presence of Cloned Item", () => {
-        itemListPage.searchFilters.getAuthoredByMe();
+      it(">verify presence of cloned item", () => {
+        itemListPage.searchFilters.clearAll();
         clonedItem.forEach(cloned => {
           itemListPage.searchFilters.typeInSearchBox(cloned);
           itemListPage.verifyPresenceOfItemById(cloned);
           itemListPage.getViewItemById(cloned).should("exist");
         });
       });
-      it("Assert the shared Test-Items For Second Person", () => {
+      it(">assert the shared test-items for second person", () => {
         cy.login("teacher", DIST1_SCHOOL1[TEACHER3][EMAIL], DIST1_SCHOOL1[TEACHER2][PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -382,7 +382,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           });
         });
       });
-      it("Verify Change", () => {
+      it(">verify change", () => {
         cy.login("teacher", Author[EMAIL], Author[PASS]);
         testLibrary.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
@@ -396,15 +396,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Item Sharing`, () => {
           mcqTrueFalsePage.header.clickOnPublishItem();
         });
       });
-      it("Remove share-Published", () => {
+      it(">remove share-published", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.clickOnDetailsOfCard();
         testLibrary.header.clickOnShare();
-        testLibrary.removeShare(DIST1_SCHOOL1[TEACHER2][NAME]);
-        testLibrary.removeShare(DIST1_SCHOOL1[TEACHER3][NAME]);
+        testLibrary.removeShare();
+        testLibrary.removeShare();
       });
     });
   });

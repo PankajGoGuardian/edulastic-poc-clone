@@ -99,7 +99,7 @@ const TableList = ({
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
-  //Show first three rows opened in every re-render
+  // Show first three rows opened in every re-render
   useEffect(() => {
     setExpandedRows(["0", "1", "2"]);
   }, []);
@@ -185,7 +185,7 @@ const TableList = ({
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
               <WithDisableMessage
                 disabled={row.hasAutoSelectGroups}
-                errMessage={"This assignment has random items for every student."}
+                errMessage="This assignment has random items for every student."
               >
                 <Tooltip placement="bottom" title="Express Grader">
                   <Link
@@ -252,7 +252,7 @@ const TableList = ({
             <div>
               <TestThumbnail src={row.thumbnail} />
             </div>
-            <AssignmentTD data-cy="assignmentName" showFilter={showFilter}>
+            <AssignmentTD data-cy="assignmentName" data-test={row.testId} showFilter={showFilter}>
               {text}
             </AssignmentTD>
           </FlexContainer>

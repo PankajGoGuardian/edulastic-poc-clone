@@ -300,22 +300,19 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  checkforNonExistanceOfTest = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
+  checkforNonExistanceOfTest = testId =>
+    cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
 
   getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
 
-  removeShare = name => {
+  removeShare = () => {
     cy.server();
     cy.route("DELETE", "**/content-sharing/**").as("removeshare");
     cy.route("GET", "**/content-sharing/**").as("removeshare1");
-    cy.contains("Share with others")
-      .parent()
-      .contains(name)
-      .parent()
-      .parent()
-      .find('[data-cy="share-button-close"]')
-      .click({ force: true });
-    cy.wait("@removeshare");
+    cy.get('[data-cy="share-button-close"]').each(shareClose => {
+      cy.wrap(shareClose).click({ force: true });
+      cy.wait("@removeshare");
+    });
     cy.wait("@removeshare1");
   };
 

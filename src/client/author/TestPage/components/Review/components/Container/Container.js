@@ -84,6 +84,8 @@ class Review extends PureComponent {
 
   containerRef = React.createRef();
 
+  listWrapperRef = React.createRef();
+
   state = {
     isCollapse: true,
     isShowSummary: true,
@@ -91,7 +93,8 @@ class Review extends PureComponent {
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: "",
-    hasStickyHeader: false
+    hasStickyHeader: false,
+    items: []
   };
 
   componentWillUnmount() {
@@ -101,15 +104,23 @@ class Review extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.containerRef.current) {
-      this.containerRef.current.addEventListener("scroll", this.handleScroll);
-    }
-    const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const hasAutoSelectItems = test.itemGroups.some(
-      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
-    );
+    this.containerRef?.current?.addEventListener("scroll", this.handleScroll);
+    const { test, addItemsToAutoselectGroupsRequest, testItems } = this.props;
+    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
     if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
+    }
+    this.setState({ items: testItems.slice(0, 10) });
+  }
+
+  
+  componentDidUpdate(prevProps, prevState) {
+    const element = this.listWrapperRef?.current;
+    const { testItems } = this.props;
+    const { items, isCollapse } = prevState;
+
+    if (element.offsetHeight < window.innerHeight && items.length < testItems.length) {
+      this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
     }
   }
 
@@ -173,9 +184,11 @@ class Review extends PureComponent {
 
   handleCollapse = () => {
     const { isCollapse } = this.state;
-    this.setState({
-      isCollapse: !isCollapse
-    });
+    const { testItems } = this.props;
+    this.setState(prevState => ({
+      isCollapse: !isCollapse,
+      items: prevState.isCollapse ? testItems.slice(0, 3) : testItems.slice(0, 10)
+    }));
   };
 
   toggleSummary = () => {
@@ -287,6 +300,12 @@ class Review extends PureComponent {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
         this.setState({ hasStickyHeader: false });
       }
+
+      const { testItems } = this.props;
+      const { isCollapse, items } = this.state;
+      if (element.scrollHeight - (element.offsetHeight + element.scrollTop) <= 400 && items.length < testItems.length) {
+        this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
+      }
     }
   };
 
@@ -322,7 +341,8 @@ class Review extends PureComponent {
       item,
       isTestPreviewModalVisible,
       currentTestId,
-      hasStickyHeader
+      hasStickyHeader,
+      items
     } = this.state;
 
     // when redirected from other pages, sometimes, test will only be having
@@ -356,6 +376,8 @@ class Review extends PureComponent {
     const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
+    const slicedRows = rows.slice(0, items.length);
+
     return (
       <Content hideOverflow={isModalVisible || isTestPreviewModalVisible} ref={this.containerRef}>
         <ReviewPageContainer>
@@ -391,17 +413,17 @@ class Review extends PureComponent {
           </Row>
           <ReviewContentWrapper>
             <ReviewLeftContainer lg={24} xl={18}>
-              <Paper padding="15px" style={{ overflow: "hidden" }}>
+              <Paper padding="15px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
                 {isCollapse ? (
                   <ItemsTable
-                    items={testItems}
+                    items={items}
                     setSelected={this.setSelected}
                     selected={selected}
                     isEditable={isEditable}
                     owner={owner}
                     scoring={test.scoring}
                     questions={questions}
-                    rows={rows}
+                    rows={slicedRows}
                     mobile={!isSmallSize}
                     onChangePoints={this.handleChangePoints}
                     handlePreview={this.handlePreviewTestItem}
@@ -413,8 +435,8 @@ class Review extends PureComponent {
                   <List
                     onChangePoints={this.handleChangePoints}
                     onPreview={this.handlePreviewTestItem}
-                    testItems={testItems}
-                    rows={rows}
+                    testItems={items}
+                    rows={slicedRows}
                     standards={standards}
                     selected={selected}
                     setSelected={this.setSelected}

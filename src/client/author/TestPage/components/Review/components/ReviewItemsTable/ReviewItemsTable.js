@@ -30,6 +30,7 @@ const ItemsTable = ({
   gradingRubricsFeature
 }) => {
   const [expandedRows, setExpandedRows] = useState(-1);
+
   const handleCheckboxChange = (index, checked) => {
     if (checked) {
       setSelected([...selected, index]);
@@ -38,6 +39,7 @@ const ItemsTable = ({
       setSelected(newSelected);
     }
   };
+
   const columns = [
     {
       title: "Main info",

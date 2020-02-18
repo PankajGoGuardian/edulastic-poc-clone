@@ -9,7 +9,7 @@ const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.fixture("usersVisualRegression").then(allusers => {
-      const { username, password } = allusers.default.teacher;
+      const { username, password } = allusers.teacherPlaylist;
       cy.setToken(username, password); // setting auth token for teacher user
     });
   });
@@ -26,7 +26,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         // cy.wait("@searchTest");
         search.getAuthoredByMe();
         testLibraryPage.clickOnListView();
-        cy.contains("published").should("be.visible");
+        cy.contains("Functions and Relations Practice").should("be.visible");
         search.scrollFiltersToTop();
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });
@@ -34,7 +34,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
       it(`Tile view, when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         testLibraryPage.clickOnTileView();
-        cy.contains("published").should("be.visible");
+        cy.contains("Functions and Relations Practice").should("be.visible");
         search.scrollFiltersToTop();
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
       });

@@ -3,17 +3,13 @@ import { Card } from "@edulastic/common";
 import {
   secondaryTextColor,
   themeColor,
-  fadedGrey,
   lightGrey,
   white,
   greenDark,
-  greyDarken,
   borders,
-  publishStatusColor,
   themeLightGrayColor,
   smallDesktopWidth
 } from "@edulastic/colors";
-import { Status } from "../../../AssessmentPage/components/Header/styled";
 import {
   testStatusBackgroundColor as backgroundColor,
   testStatusTextColor as textColor
@@ -24,6 +20,8 @@ export const ModalTitle = styled.h2`
   color: ${secondaryTextColor};
   font-size: 22px;
   margin: 0px;
+  display: flex;
+  align-items: center;
 `;
 
 export const ModalContainer = styled(Card)`
@@ -47,7 +45,9 @@ export const Image = styled.div`
   height: 150px;
   position: relative;
   background: ${props =>
-    props.src ? `url(${props.src})` : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
+    props.src
+      ? `url(${props.src})`
+      : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -284,7 +284,6 @@ export const TestStatus = styled.span`
   padding: 2px 20px;
   position: relative;
   font-size: 9px;
-  top: -5px;
   color: ${({ status }) => textColor[status]};
   background-color: ${({ status }) => backgroundColor[status]};
   border-radius: 4px;

@@ -68,7 +68,6 @@ import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
 import AddBulkTestModal from "../../../PlaylistPage/components/AddBulkTestModal/AddBulkTestModal";
 import DeleteBulkTestModal from "../../../PlaylistPage/components/DeleteBulkTestModal/DeleteBulkTestModal";
-import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
 import ManageModulesModalBody from "../../../CurriculumSequence/components/ManageModulesModalBody";
 import { StyledButton, BtnActionsContainer } from "../../../TestPage/components/AddItems/styled";
 import {
@@ -88,10 +87,14 @@ import {
   getInterestedSubjectsSelector,
   getInterestedGradesSelector,
   getDefaultGradesSelector,
-  getDefaultSubjectSelector
-, getUserFeatures } from "../../../src/selectors/user";
+  getDefaultSubjectSelector,
+  getUserFeatures
+} from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
+} from "../../../../student/Login/ducks";
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
@@ -128,8 +131,12 @@ class TestList extends Component {
     clearDictStandards: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
-    clearCreatedItems: PropTypes.func,
-    clearSelectedItems: PropTypes.func
+    clearCreatedItems: PropTypes.func.isRequired,
+    clearSelectedItems: PropTypes.func,
+    playlist: PropTypes.object.isRequired,
+    mode: PropTypes.string.isRequired,
+    getAllTags: PropTypes.func.isRequired,
+    testFilters: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -194,8 +201,11 @@ class TestList extends Component {
     let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
     if (Object.keys(searchParams).length) {
-      searchParams.curriculumId = Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = Number(searchParams.standardIds) ? [Number(searchParams.standardIds)] : [];
+      searchParams.curriculumId =
+        Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
+      searchParams.standardIds = Number(searchParams.standardIds)
+        ? [Number(searchParams.standardIds)]
+        : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
@@ -226,7 +236,9 @@ class TestList extends Component {
       this.updateFilterState(searchFilters, true);
       const pageNumber = params.page || page;
       const limitCount = params.limit || limit;
-      const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
+      const queryParams = qs.stringify(
+        pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity)
+      );
       history.push(`/author/tests?${queryParams}`);
       receiveTests({ page: 1, limit, search: searchFilters });
       getAllTags({ type: "test" });
@@ -246,9 +258,9 @@ class TestList extends Component {
     const search = all
       ? { ...searchState }
       : {
-        ...testFilters,
-        [searchState.key]: searchState.value
-      };
+          ...testFilters,
+          [searchState.key]: searchState.value
+        };
     sessionStorage.setItem("filters[testList]", JSON.stringify(search));
     if (all) {
       return updateAllTestFilters(search);
@@ -259,7 +271,9 @@ class TestList extends Component {
   searchTest = debounce(search => {
     const { receiveTests, limit, history, playlistPage, playlist: { _id } = {} } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ search, limit, page: 1 });
   }, 500);
@@ -348,7 +362,9 @@ class TestList extends Component {
     this.updateFilterState(searchFilters, true);
     // update the url to reflect the newly applied filter and get the new results.
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ search: searchFilters, page: 1, limit });
   };
@@ -379,7 +395,9 @@ class TestList extends Component {
     };
 
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ page, limit, search: searchFilters });
   };
@@ -391,7 +409,8 @@ class TestList extends Component {
   handleClearFilter = () => {
     const { history, mode, limit, receiveTests } = this.props;
     this.updateFilterState(emptyFilters, true);
-    if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
+    if (mode !== "embedded")
+      history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
     receiveTests({ page: 1, limit, search: emptyFilters });
   };
 
@@ -487,7 +506,7 @@ class TestList extends Component {
       message.warning("Draft tests cannot be added");
       return;
     }
-    
+
     const {
       playlist: { modules }
     } = this.props;
@@ -582,7 +601,12 @@ class TestList extends Component {
   };
 
   handleBulkTestAdded = index => {
-    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {}, tests = [] } = this.props;
+    const {
+      addTestToModuleInBulk,
+      handleSave,
+      playlist: { modules = [] } = {},
+      tests = []
+    } = this.props;
     const { markedTests, selectedTests } = this.state;
     const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
     const markedIds = markedTests.map(obj => obj._id);
@@ -598,7 +622,9 @@ class TestList extends Component {
     }
 
     // Dont add draft type tests
-    const nonDraftTests = uniqueMarkedTests.filter(x => tests.find(y => y._id === x._id).status !== "draft");
+    const nonDraftTests = uniqueMarkedTests.filter(
+      x => tests.find(y => y._id === x._id).status !== "draft"
+    );
     if (nonDraftTests.length === uniqueMarkedTests.length) {
       this.setState(prevState => ({
         selectedTests: [...selectedTests, ...uniqueMarkedIds],
@@ -614,7 +640,9 @@ class TestList extends Component {
       }));
       addTestToModuleInBulk({ moduleIndex: index, tests: nonDraftTests });
       nonDraftTests.length
-        ? message.warning(`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`)
+        ? message.warning(
+            `${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`
+          )
         : message.warning("Draft test(s) cannot be added");
     }
     if (selectedTests.length === 0) handleSave();
@@ -637,7 +665,8 @@ class TestList extends Component {
     }
   };
 
-  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) =>
+    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   onAddToCart = item => {
     const { addTestToCartAction } = this.props;
@@ -665,7 +694,10 @@ class TestList extends Component {
     const markedTestsList = markedTests.map(data => data._id);
     const moduleTitleMap = {};
     const modulesMap =
-      playlist?.modules?.map(module => ({ title: module.title, data: [...module.data.map(it => it.contentId)] })) || [];
+      playlist?.modules?.map(module => ({
+        title: module.title,
+        data: [...module.data.map(it => it.contentId)]
+      })) || [];
 
     const testIds = tests?.map(test => test._id) || [];
     testIds.forEach(testId => {
@@ -766,7 +798,9 @@ class TestList extends Component {
     this.updateFilterState(updatedKeys, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
-    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage
+      ? `/author/playlists/${_id}/edit`
+      : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({
       page: 1,
@@ -800,23 +834,23 @@ class TestList extends Component {
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
         <CartButton
           onClick={() => {
-              const { approveOrRejectMultipleTestsRequestAction } = this.props;
-              approveOrRejectMultipleTestsRequestAction({ status: "rejected" });
-            }}
+            const { approveOrRejectMultipleTestsRequestAction } = this.props;
+            approveOrRejectMultipleTestsRequestAction({ status: "rejected" });
+          }}
           buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
         <CartButton
           onClick={() => {
-              const { approveOrRejectMultipleTestsRequestAction } = this.props;
-              approveOrRejectMultipleTestsRequestAction({ status: "published" });
-            }}
+            const { approveOrRejectMultipleTestsRequestAction } = this.props;
+            approveOrRejectMultipleTestsRequestAction({ status: "published" });
+          }}
           buttonText="Approve"
           numberChecker={this.approveNumberChecker}
         />
       </FeaturesSwitch>
     </>
-    );
+  );
 
   render() {
     const {
@@ -842,11 +876,12 @@ class TestList extends Component {
       isShowFilter,
       showManageModuleModal,
       showAddTestInModules,
-      showCreateModuleModal,
       showConfirmRemoveModal,
       showAddModules,
       showRemoveModules,
-      markedTests
+      markedTests,
+      moduleModalAdd,
+      testAdded
     } = this.state;
     const search = {
       ...testFilters
@@ -879,7 +914,10 @@ class TestList extends Component {
       });
     });
 
-    const modulesNamesCountMap = counts.map((count, i) => ({ count, mName: playlist?.modules[i]?.title }));
+    const modulesNamesCountMap = counts.map((item, i) => ({
+      count: item,
+      mName: playlist?.modules[i]?.title
+    }));
 
     return (
       <>
@@ -959,9 +997,9 @@ class TestList extends Component {
                 handleAddModule={this.onCloseCreateModule}
                 handleApply={handleSave}
                 onCloseManageModule={this.onCloseManageModule}
-                addState={this.state.moduleModalAdd}
+                addState={moduleModalAdd}
                 handleTestAdded={this.handleTestAdded}
-                testAddedTitle={this.state?.testAdded?.title}
+                testAddedTitle={testAdded?.title}
               />
             </Modal>
           )}
@@ -1027,8 +1065,15 @@ class TestList extends Component {
 
                 {mode === "embedded" && (
                   <BtnActionsContainer>
-                    <StyledCountText>{markedTests.length} TESTS SELECTED</StyledCountText>
-                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => { }}>
+                    <StyledCountText>
+                      {playlist.modules?.flatMap(item => item?.data || [])?.length} TESTS SELECTED
+                    </StyledCountText>
+                    <StyledButton
+                      data-cy="createNewItem"
+                      type="secondary"
+                      size="large"
+                      onClick={() => {}}
+                    >
                       <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
                         <a className="ant-dropdown-link" href="#">
                           Actions

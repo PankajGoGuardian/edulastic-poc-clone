@@ -1,12 +1,12 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, keyBy } from "lodash";
+import { cloneDeep, get, uniq as _uniq, keyBy, set } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
-import { Paper, withWindowSizes, helpers } from "@edulastic/common";
+import { Paper, withWindowSizes } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -49,15 +49,40 @@ class Review extends PureComponent {
     onChangeGrade: PropTypes.func.isRequired,
     onChangeSubjects: PropTypes.func.isRequired,
     rows: PropTypes.array.isRequired,
+    clearEvaluation: PropTypes.func.isRequired,
     setData: PropTypes.func.isRequired,
     standards: PropTypes.object.isRequired,
-    summary: PropTypes.array.isRequired,
     current: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired
+    windowWidth: PropTypes.number.isRequired,
+    addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
+    clearDictAlignment: PropTypes.func.isRequired,
+    owner: PropTypes.bool,
+    onSaveTestId: PropTypes.func,
+    history: PropTypes.any.isRequired,
+    clearAnswer: PropTypes.func.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    showAnswer: PropTypes.func.isRequired,
+    updateDefaultThumbnail: PropTypes.func.isRequired,
+    onChangeCollection: PropTypes.func.isRequired,
+    questions: PropTypes.object.isRequired,
+    itemsSubjectAndGrade: PropTypes.any.isRequired,
+    currentGroupIndex: PropTypes.number.isRequired,
+    isEditable: PropTypes.bool.isRequired,
+    defaultThumbnail: PropTypes.any.isRequired,
+    setTestItems: PropTypes.func.isRequired,
+    showCancelButton: PropTypes.bool.isRequired,
+    userFeatures: PropTypes.object.isRequired,
+    testItems: PropTypes.array.isRequired
+  };
+
+  static defaultProps = {
+    owner: false,
+    onSaveTestId: () => {}
   };
 
   secondHeaderRef = React.createRef();
-  ContainerRef = React.createRef();
+
+  containerRef = React.createRef();
 
   state = {
     isCollapse: true,
@@ -70,13 +95,19 @@ class Review extends PureComponent {
   };
 
   componentWillUnmount() {
-    this.ContainerRef.current.removeEventListener("scroll", this.handleScroll);
+    if (this.containerRef.current) {
+      this.containerRef.current.removeEventListener("scroll", this.handleScroll);
+    }
   }
 
   componentDidMount() {
-    this.ContainerRef?.current?.addEventListener("scroll", this.handleScroll);
+    if (this.containerRef.current) {
+      this.containerRef.current.addEventListener("scroll", this.handleScroll);
+    }
     const { test, addItemsToAutoselectGroupsRequest } = this.props;
-    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
+    const hasAutoSelectItems = test.itemGroups.some(
+      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    );
     if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
     }
@@ -94,6 +125,7 @@ class Review extends PureComponent {
           } else {
             item.selected = false;
           }
+          return null;
         });
     });
     setData(newData);
@@ -111,7 +143,7 @@ class Review extends PureComponent {
   };
 
   handleRemoveSelected = () => {
-    const { test, setData, setTestItems, currentGroupIndex } = this.props;
+    const { test, setData, setTestItems } = this.props;
     const newData = cloneDeep(test);
     const itemsSelected = test.itemGroups
       .flatMap(itemGroup => itemGroup.items || [])
@@ -122,9 +154,7 @@ class Review extends PureComponent {
     }
     newData.itemGroups = newData.itemGroups.map(itemGroup => ({
       ...itemGroup,
-      items: itemGroup.items.filter(testItem => {
-        return !itemsSelected.includes(testItem._id);
-      })
+      items: itemGroup.items.filter(testItem => !itemsSelected.includes(testItem._id))
     }));
 
     newData.scoring.testItems = newData.scoring.testItems.filter(item => {
@@ -171,18 +201,22 @@ class Review extends PureComponent {
     this.moveTestItems({ oldIndex, newIndex });
   };
 
-  handleChangePoints = (testItemId, value) => {
+  handleChangePoints = (testItemId, itemScore, questionLevelScore) => {
     /**
      * prevent zero or less
      */
-    if (!(value > 0)) {
+    if (!(itemScore > 0)) {
       return;
     }
-    const { test, setData, currentGroupIndex } = this.props;
+    const { test, setData } = this.props;
     const newData = cloneDeep(test);
 
     if (!newData.scoring) newData.scoring = {};
-    newData.scoring[testItemId] = value;
+    newData.scoring[testItemId] = itemScore;
+    if (questionLevelScore) {
+      set(newData, `scoring.questionLevel.${testItemId}`, questionLevelScore);
+    }
+
     setData(newData);
   };
 
@@ -215,8 +249,9 @@ class Review extends PureComponent {
   };
 
   closeModal = () => {
+    const { clearEvaluation } = this.props;
     this.setModalVisibility(false);
-    this.props.clearEvaluation();
+    clearEvaluation();
   };
 
   // changing this
@@ -243,11 +278,12 @@ class Review extends PureComponent {
 
   handleScroll = e => {
     const element = e.target;
+    const { hasStickyHeader } = this.state;
     if (this.secondHeaderRef.current) {
-      if (element.scrollTop > 50 && !this.state.hasStickyHeader) {
+      if (element.scrollTop > 50 && !hasStickyHeader) {
         this.secondHeaderRef.current.classList.add("fixed-second-header");
         this.setState({ hasStickyHeader: true });
-      } else if (element.scrollTop <= 50 && this.state.hasStickyHeader) {
+      } else if (element.scrollTop <= 50 && hasStickyHeader) {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
         this.setState({ hasStickyHeader: false });
       }
@@ -289,7 +325,6 @@ class Review extends PureComponent {
       hasStickyHeader
     } = this.state;
 
-    const questionsCount = testItems.length;
     // when redirected from other pages, sometimes, test will only be having
     // ids in its testitems, which could create issues.
     if (test.itemGroups[0].items && test.itemGroups[0].items.some(i => typeof i === "string")) {
@@ -322,13 +357,17 @@ class Review extends PureComponent {
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
     return (
-      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible} ref={this.ContainerRef}>
+      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible} ref={this.containerRef}>
         <ReviewPageContainer>
           <Row>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
-                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                  <Breadcrumb
+                    data={breadcrumbData}
+                    style={{ position: "unset" }}
+                    hasStickyHeader={hasStickyHeader}
+                  />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
                     itemTotal={testItems.length}
@@ -441,34 +480,6 @@ class Review extends PureComponent {
     );
   }
 }
-
-Review.propTypes = {
-  test: PropTypes.object.isRequired,
-  onChangeGrade: PropTypes.func.isRequired,
-  onChangeSubjects: PropTypes.func.isRequired,
-  rows: PropTypes.array.isRequired,
-  setData: PropTypes.func.isRequired,
-  standards: PropTypes.object.isRequired,
-  summary: PropTypes.array.isRequired,
-  clearDictAlignment: PropTypes.func.isRequired,
-  owner: PropTypes.bool,
-  onSaveTestId: PropTypes.func,
-  current: PropTypes.string.isRequired,
-  history: PropTypes.any.isRequired,
-  clearAnswer: PropTypes.func.isRequired,
-  checkAnswer: PropTypes.func.isRequired,
-  showAnswer: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired,
-  itemsSubjectAndGrade: PropTypes.any.isRequired,
-  isEditable: PropTypes.bool.isRequired,
-  defaultThumbnail: PropTypes.any.isRequired
-};
-
-Review.defaultProps = {
-  owner: false,
-  onSaveTestId: () => {}
-};
 
 const enhance = compose(
   withRouter,

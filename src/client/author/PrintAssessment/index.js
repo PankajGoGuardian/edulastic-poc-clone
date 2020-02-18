@@ -62,18 +62,20 @@ const PrintAssessment = ({ match, userRole }) => {
 
   return (
     <PrintAssessmentContainer>
-      <StyledTitle>
-        <b>
-          <Color>Edu</Color>
-        </b>
-        lastic
-      </StyledTitle>
-      <Row type="flex" className="print-assessment-title-container">
-        <Col>
-          <span> {test.title}</span>
-        </Col>
-      </Row>
-      <span> Created By {test?.createdBy?.name} </span> <br />
+      <div style={{padding: "0 20px"}}>
+        <StyledTitle>
+          <b>
+            <Color>Edu</Color>
+          </b>
+          lastic
+        </StyledTitle>
+        <Row type="flex" className="print-assessment-title-container">
+          <Col>
+            <span> {test.title}</span>
+          </Col>
+        </Row>
+        <span> Created By {test?.createdBy?.name} </span> <br />
+      </div>
       <hr />
       {!isContentHidden ? (
         <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -133,6 +135,8 @@ const enhance = compose(
 export default enhance(PrintAssessment);
 
 const PrintAssessmentContainer = styled.div`
+  width: 25cm;
+  margin: auto;
   background-color: white;
   * {
     -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
@@ -148,6 +152,16 @@ const PrintAssessmentContainer = styled.div`
 
   .question-wrapper {
     max-width: 100% !important;
+  }
+  .multiple-choice-wrapper {
+    .multiplechoice-optionlist {
+      div, label {
+        margin-bottom: 0px!important;
+      }
+    }
+  }
+  @page {
+    margin: 10px;
   }
 `;
 

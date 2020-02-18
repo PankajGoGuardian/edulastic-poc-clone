@@ -86,7 +86,7 @@ const Options = ({
   };
 
   return (
-    <OptionsList styleType={styleType} fontSize={fontSize}>
+    <OptionsList styleType={styleType} fontSize={fontSize} className="multiplechoice-optionlist">
       {renderOptionList()}
     </OptionsList>
   );

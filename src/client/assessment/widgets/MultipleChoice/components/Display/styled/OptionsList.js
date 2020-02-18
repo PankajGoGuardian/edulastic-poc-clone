@@ -10,9 +10,4 @@ export const OptionsList = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;
   }
-  @media print {
-    div, label {
-      margin-bottom: 0px!important;
-    }
-  }
 `;

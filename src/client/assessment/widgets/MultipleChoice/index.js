@@ -211,7 +211,7 @@ class MultipleChoice extends Component {
     // const multi_response = this.props.item.multipleResponses;
     return (
       <React.Fragment>
-        <PaddingDiv>
+        <PaddingDiv className="multiple-choice-wrapper">
           {view === EDIT && (
             <ContentArea>
               <Authoring

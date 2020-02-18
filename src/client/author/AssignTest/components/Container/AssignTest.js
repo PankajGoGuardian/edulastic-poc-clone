@@ -89,11 +89,13 @@ class AssignTest extends React.Component {
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.updateAssignmentNew({
+        startDate: moment(),
+        endDate: moment().add("days", 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
         testId: match.params.testId,
-        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy,
-        closePolicy: isAdmin ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN : assignmentSettings.closePolicy,
+        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy || assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
+        closePolicy: isAdmin ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON : ASSESSMENT
       });
     } else {
@@ -267,18 +269,18 @@ class AssignTest extends React.Component {
               defaultTestProfiles={defaultTestProfiles}
             />
           ) : (
-            <SimpleOptions
-              group={classList}
-              students={students}
-              assignment={assignment}
-              fetchStudents={fetchStudents}
-              testSettings={testSettings}
-              updateOptions={this.updateAssignmentNew}
-              onClassFieldChange={this.onClassFieldChange}
-              specificStudents={specificStudents}
-              toggleSpecificStudents={this.toggleSpecificStudents}
-            />
-          )}
+              <SimpleOptions
+                group={classList}
+                students={students}
+                assignment={assignment}
+                fetchStudents={fetchStudents}
+                testSettings={testSettings}
+                updateOptions={this.updateAssignmentNew}
+                onClassFieldChange={this.onClassFieldChange}
+                specificStudents={specificStudents}
+                toggleSpecificStudents={this.toggleSpecificStudents}
+              />
+            )}
         </Container>
       </div>
     );

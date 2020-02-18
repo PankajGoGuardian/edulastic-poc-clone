@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import * as moment from "moment";
-import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
+import { Button, Modal, Input, Cascader, Radio, Icon, Progress } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
@@ -35,7 +35,7 @@ import {
 } from "@edulastic/icons";
 import { RadioInputWrapper } from "../../src/components/common/RadioInput";
 import Curriculum from "./Curriculum";
-import SelectContent from "./SelectContent";
+import SummaryPieChart from "./SummaryPieChart";
 import {
   changeGuideAction,
   setGuideAction,
@@ -344,9 +344,9 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-          value: module.id,
-          label: module.name
-        }))
+        value: module.id,
+        label: module.name
+      }))
       : [];
 
     // TODO: change options2 to something more meaningful
@@ -372,30 +372,53 @@ class CurriculumSequence extends Component {
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
+    // {
+    //   testId,
+    //   playlistModuleId,
+    //   plylistId,
+    //   maxScore,
+    //   timeSpent,
+    //   studentTotalScore,
+    //   correctCount,
+    //   wrongCount,
+
+    // }
+
+    const chartData = [
+      { name: 'Module 1', value: 10, timeSpent: 4080000 },
+      { name: 'Module 2', value: 10, timeSpent: 4000000 },
+      { name: 'Module 3', value: 15, timeSpent: 4380000 },
+      { name: 'Module 4', value: 30, timeSpent: 4180000 },
+      { name: 'Module 5', value: 25, timeSpent: 5680000 },
+      { name: 'Module 6', value: 15, timeSpent: 9080000 },
+      { name: 'Module 7', value: 35, timeSpent: 4011000 }];
+
+    const COLORS = ['#11AB96', '#F74565', '#0078AD', '#00C2FF', '#B701EC', '#496DDB', '#8884d8', '#82ca9d', '#EC0149', '#FFD500', '#00AD50'];
+
     // Module progress
     const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.filter(m => {
-          if (m.data.length === 0) {
+        if (m.data.length === 0) {
+          return false;
+        }
+        for (const test of m.data) {
+          if (!test.assignments || test.assignments.length === 0) {
             return false;
           }
-          for (const test of m.data) {
-            if (!test.assignments || test.assignments.length === 0) {
+          for (const assignment of test.assignments) {
+            if (!assignment.class || assignment.class.length === 0) {
               return false;
             }
-            for (const assignment of test.assignments) {
-              if (!assignment.class || assignment.class.length === 0) {
+            for (const cs of assignment.class) {
+              if (cs.status !== "DONE") {
                 return false;
-              }
-              for (const cs of assignment.class) {
-                if (cs.status !== "DONE") {
-                  return false;
-                }
               }
             }
           }
-          return true;
-        })
+        }
+        return true;
+      })
       : [];
     const modulesCompleted = modulesStatus.length;
     const playlistBreadcrumbData = [
@@ -580,107 +603,115 @@ class CurriculumSequence extends Component {
               </CurriculumHeader>
             </TopBar>
           )}
-          <SubTopBar>
-            <SubTopBarContainer backgroundColor={bgColor} active={isContentExpanded} mode={mode}>
-              <CurriculumSubHeaderRow marginBottom="36px">
-                <SubHeaderTitleContainer>
-                  <SubHeaderTitle textColor={textColor}>{title}</SubHeaderTitle>
-                  <SubHeaderDescription textColor={textColor}>{description}</SubHeaderDescription>
-                </SubHeaderTitleContainer>
-                <SunHeaderInfo>
-                  {grades.length ? (
-                    <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
-                      <GraduationCapIcon color={textColor} />
-                      <SunHeaderInfoCardText textColor={textColor} marginLeft="-3px">
-                        Grade {grades.join(", ")}
-                      </SunHeaderInfoCardText>
-                    </SunHeaderInfoCard>
-                  ) : (
-                    ""
+          <FlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
+            <div style={{ width: "100%" }}>
+              <SubTopBar>
+                <SubTopBarContainer backgroundColor={bgColor} active={isContentExpanded} mode={mode}>
+                  <CurriculumSubHeaderRow marginBottom="36px">
+                    <SubHeaderTitleContainer>
+                      <SubHeaderTitle textColor={textColor}>{title}</SubHeaderTitle>
+                      <SubHeaderDescription textColor={textColor}>{description}</SubHeaderDescription>
+                    </SubHeaderTitleContainer>
+                    <SunHeaderInfo>
+                      {grades.length ? (
+                        <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
+                          <GraduationCapIcon color={textColor} />
+                          <SunHeaderInfoCardText textColor={textColor} marginLeft="-3px">
+                            Grade {grades.join(", ")}
+                          </SunHeaderInfoCardText>
+                        </SunHeaderInfoCard>
+                      ) : (
+                          ""
+                        )}
+                      {subjects.length ? (
+                        <SunHeaderInfoCard marginBottom="13px">
+                          <BookIcon color={textColor} />
+                          <SunHeaderInfoCardText textColor={textColor}>
+                            {subjects.filter(item => !!item).join(", ")}
+                          </SunHeaderInfoCardText>
+                        </SunHeaderInfoCard>
+                      ) : (
+                          ""
+                        )}
+                      {status ? (
+                        <StatusTag style={{ width: "fit-content", color: bgColor || "", background: textColor || "" }}>
+                          {status}
+                        </StatusTag>
+                      ) : null}
+                    </SunHeaderInfo>
+                  </CurriculumSubHeaderRow>
+                  {urlHasUseThis && (
+                    <CurriculumSubHeaderRow>
+                      <ModuleProgressWrapper>
+                        <ModuleProgressLabel>
+                          <ModuleProgressText style={{ color: textColor }}>Module Progress</ModuleProgressText>
+                          <ModuleProgressValuesWrapper>
+                            <ModuleProgressValues style={{ color: textColor }}>
+                              {modulesCompleted}/{totalModules}
+                            </ModuleProgressValues>
+                            <ModuleProgressValuesLabel style={{ color: textColor }}>Completed</ModuleProgressValuesLabel>
+                          </ModuleProgressValuesWrapper>
+                        </ModuleProgressLabel>
+                        <ModuleProgress
+                          textColor={textColor}
+                          modulesCompleted={modulesCompleted}
+                          modules={destinationCurriculumSequence.modules}
+                        />
+                      </ModuleProgressWrapper>
+                    </CurriculumSubHeaderRow>
                   )}
-                  {subjects.length ? (
-                    <SunHeaderInfoCard marginBottom="13px">
-                      <BookIcon color={textColor} />
-                      <SunHeaderInfoCardText textColor={textColor}>
-                        {subjects.filter(item => !!item).join(", ")}
-                      </SunHeaderInfoCardText>
-                    </SunHeaderInfoCard>
-                  ) : (
-                    ""
-                  )}
-                  {status ? (
-                    <StatusTag style={{ width: "fit-content", color: bgColor || "", background: textColor || "" }}>
-                      {status}
-                    </StatusTag>
-                  ) : null}
-                </SunHeaderInfo>
-              </CurriculumSubHeaderRow>
-              {urlHasUseThis && (
-                <CurriculumSubHeaderRow>
-                  <ModuleProgressWrapper>
-                    <ModuleProgressLabel>
-                      <ModuleProgressText style={{ color: textColor }}>Module Progress</ModuleProgressText>
-                      <ModuleProgressValuesWrapper>
-                        <ModuleProgressValues style={{ color: textColor }}>
-                          {modulesCompleted}/{totalModules}
-                        </ModuleProgressValues>
-                        <ModuleProgressValuesLabel style={{ color: textColor }}>Completed</ModuleProgressValuesLabel>
-                      </ModuleProgressValuesWrapper>
-                    </ModuleProgressLabel>
-                    <ModuleProgress
-                      textColor={textColor}
-                      modulesCompleted={modulesCompleted}
-                      modules={destinationCurriculumSequence.modules}
-                    />
-                  </ModuleProgressWrapper>
-                  {/* <SubheaderActions active={isContentExpanded}> 
-                  <AddUnitSubHeaderButtonStyle>
-                    <Button data-cy="openAddUnit" block onClick={this.handleAddUnitOpen}>
-                      <IconPlus color="#1774F0" />
-                      <ButtonText>Add Unit</ButtonText>
-                    </Button>
-                  </AddUnitSubHeaderButtonStyle>
-                  <SelectContentSubHeaderButtonStyle block active={isContentExpanded}>
-                    <Button data-cy="openAddContent" onClick={this.handleSelectContent}>
-                      <IconMoveTo color="#1774F0" />
-                      <ButtonText>Select Content</ButtonText>
-                    </Button>
-                  </SelectContentSubHeaderButtonStyle>
-                  <AddCustomContentSubHeaderButtonStyle>
-                    <Button data-cy="openAddCustomContentButton" block onClick={this.handleAddCustomContent}>
-                      <IconCollapse color="#1774F0" />
-                      <ButtonText>Add Custom Content</ButtonText>
-                    </Button>
-                  </AddCustomContentSubHeaderButtonStyle>
-            </SubheaderActions> */}
-                </CurriculumSubHeaderRow>
-              )}
-            </SubTopBarContainer>
-          </SubTopBar>
-          <Wrapper active={isContentExpanded}>
-            {destinationCurriculumSequence && (
-              <Curriculum
-                mode={mode}
-                history={history}
-                status={status}
-                key={destinationCurriculumSequence._id}
-                padding={selectContent}
-                curriculum={destinationCurriculumSequence}
-                expandedModules={expandedModules}
-                onCollapseExpand={onCollapseExpand}
-                onDrop={onDrop}
-                modulesStatus={modulesStatus}
-                customize={customize}
-                handleRemove={handleRemoveTest}
-                hideEditOptions={!urlHasUseThis}
-                onBeginDrag={onBeginDrag}
-                isReview={current === "review"}
-                onSortEnd={onSortEnd}
-                handleTestsSort={handleTestsSort}
-                urlHasUseThis={urlHasUseThis}
-              />
-            )}
-          </Wrapper>
+                </SubTopBarContainer>
+              </SubTopBar>
+              <Wrapper active={isContentExpanded}>
+                {destinationCurriculumSequence && (
+                  <Curriculum
+                    mode={mode}
+                    history={history}
+                    status={status}
+                    key={destinationCurriculumSequence._id}
+                    padding={selectContent}
+                    curriculum={destinationCurriculumSequence}
+                    expandedModules={expandedModules}
+                    onCollapseExpand={onCollapseExpand}
+                    onDrop={onDrop}
+                    modulesStatus={modulesStatus}
+                    customize={customize}
+                    handleRemove={handleRemoveTest}
+                    hideEditOptions={!urlHasUseThis}
+                    onBeginDrag={onBeginDrag}
+                    isReview={current === "review"}
+                    onSortEnd={onSortEnd}
+                    handleTestsSort={handleTestsSort}
+                    urlHasUseThis={urlHasUseThis}
+                  />
+                )}
+              </Wrapper>
+            </div>
+            <SummaryBlock>
+              <SummaryBlockTitle>Summary</SummaryBlockTitle>
+              <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+              <SummaryPieChart data={chartData} totalTimeSpent={chartData.map(x => x.timeSpent).reduce((a, c) => a + c, 0)} colors={COLORS} />
+              <Hr />
+              <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
+              <div style={{ width: "80%", margin: "20px auto" }}>
+                {
+                  chartData.map((item, i) => (
+                    <div>
+                      <ModuleTitle>{item.name}</ModuleTitle>
+                      <Progress
+                        strokeColor={{
+                          '0%': COLORS[i],
+                          '100%': COLORS[i],
+                        }}
+                        strokeWidth={10}
+                        percent={40}
+                      />
+                    </div>
+                  ))
+                }
+              </div>
+            </SummaryBlock>
+          </FlexContainer>
         </CurriculumSequenceWrapper>
       </>
     );
@@ -736,6 +767,61 @@ const ModuleProgress = ({ modules, modulesCompleted, textColor = { white } }) =>
 ModuleProgress.propTypes = {
   modules: PropTypes.array.isRequired
 };
+
+const ModuleTitle = styled.p`
+  font-size: 11px;
+  color: #434B5D;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  margin-top: 8px;
+`;
+
+const Hr = styled.div`
+  width: 70%;
+  border: 2px dashed transparent;
+  border-bottom: 2px dashed #D2D2D2; 
+  margin: 15px auto 30px auto;
+`;
+
+const SummaryBlock = styled.div`
+  width: 315px;
+  min-width: 315px;
+  min-height: 760px;
+  margin: 20px 40px 40px 0;
+  background: ${white};
+  padding-top: 30px;
+  border-radius: 4px;
+  border: 1px solid #DADAE4;
+
+  .recharts-layer{
+    tspan{
+      text-transform: uppercase;
+      fill: #434B5D;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  }
+`;
+
+const SummaryBlockTitle = styled.div`
+  width: 100%;
+  color: #304050;
+  font-weight: 700;
+  font-size: 22px;
+  text-align: center;
+`;
+
+const SummaryBlockSubTitle = styled.div`
+  width: 100%;
+  color: #8E9AA4;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0;
+`;
+
 
 const TopBar = styled.div`
   display: flex;
@@ -1090,7 +1176,7 @@ const Wrapper = styled.div`
   padding-left: 40px;
   padding-right: 40px;
   box-sizing: border-box;
-  width: ${props => (props.active ? "100%" : "80%")};
+  width: 100%;
   align-self: ${props => (props.active ? "flex-start" : "center")};
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
@@ -1126,11 +1212,12 @@ const CurriculumHeaderButtons = styled(FlexContainer)`
 `;
 
 const SubTopBar = styled.div`
-  width: ${props => (props.active ? "60%" : "80%")};
+  width: ${props => (props.active ? "60%" : "100%")};
   padding-left: 43px;
   padding-right: ${props => (props.active ? "30px" : "43px")};
+  margin: auto;
   @media only screen and (min-width: 1800px) {
-    width: ${props => (props.active ? "60%" : "80%")};
+    width: ${props => (props.active ? "60%" : "100%")};
     margin-left: ${props => (props.active ? "" : "auto")};
     margin-right: ${props => (props.active ? "" : "auto")};
   }
@@ -1343,7 +1430,8 @@ const enhance = compose(
       recentPlaylists: getRecentPlaylistSelector(state),
       collections: getCollectionsSelector(state),
       features: getUserFeatures(state),
-      isPublisherUser: isPublisherUserSelector(state)
+      isPublisherUser: isPublisherUserSelector(state),
+      summaryData: state.curriculumSequence
     }),
     {
       onGuideChange: changeGuideAction,

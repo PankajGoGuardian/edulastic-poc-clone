@@ -748,9 +748,9 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
  */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
-  const id = curriculumSequence._id;
+  const id = curriculumSequence?.[0]._id;
 
-  state.byId[id] = curriculumSequence[0] || curriculumSequence;
+  state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
   // }

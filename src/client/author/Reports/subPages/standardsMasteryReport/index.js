@@ -16,7 +16,7 @@ import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const StandardsMasteryReportContainer = props => {
-  const { gradebookSettings, setSMRSettingsAction } = props;
+  const { gradebookSettings, setSMRSettingsAction, premium } = props;
 
   const firstRender = useRef(true);
 
@@ -61,7 +61,7 @@ const StandardsMasteryReportContainer = props => {
     firstRender.current = false;
 
     const computedChartNavigatorLinks = computeChartNavigationLinks(gradebookSettings.requestFilters);
-    props.updateNavigation(computedChartNavigatorLinks);
+    props.updateNavigation(!premium ? [computedChartNavigatorLinks[1]] : computedChartNavigatorLinks);
   }, [gradebookSettings]);
 
   let computedChartNavigatorLinks;

@@ -66,7 +66,10 @@ const EssayPlainTextPreview = ({
   };
 
   const handleSelect = () => {
-    if (node?.resizableTextArea?.textArea?.selectionStart !== node?.resizableTextArea?.textArea?.selectionEnd) {
+    if (
+      node?.resizableTextArea?.textArea?.selectionStart !==
+      node?.resizableTextArea?.textArea?.selectionEnd
+    ) {
       setSelection({
         start: node.resizableTextArea.textArea.selectionStart,
         end: node.resizableTextArea.textArea.selectionEnd
@@ -104,7 +107,9 @@ const EssayPlainTextPreview = ({
           val = text.slice(0, selection.start) + buffer + text.slice(selection.start);
           setText(val);
         }
-        !disableResponse && saveAnswer(val);
+        if (!disableResponse) {
+          saveAnswer(val);
+        }
         break;
       }
       default:
@@ -131,32 +136,49 @@ const EssayPlainTextPreview = ({
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   return (
-    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <StyledPaperWrapper
+      isV1Multipart={isV1Multipart}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+        {view === PREVIEW && !smallSize && (
+          <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        )}
       </QuestionTitleWrapper>
 
-      <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
-        <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
-          {item.showCopy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
-          {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
-          {item.showPaste && <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>}
-          {Array.isArray(item.characterMap) && (
-            <Character
-              onSelect={char => {
-                setSelection({
-                  start: selection.start + char.length,
-                  end: selection.start + char.length
-                });
-                setText(text.slice(0, selection.start) + char + text.slice(selection.end));
-              }}
-              characters={item.characterMap}
-            />
-          )}
-        </FlexContainer>
-      </Toolbar>
-
+      {!disableResponse && (
+        <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
+          <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
+            {item.showCopy && (
+              <ToolbarItem onClick={handleAction(COPY)}>
+                {t("component.essayText.copy")}
+              </ToolbarItem>
+            )}
+            {item.showCut && (
+              <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>
+            )}
+            {item.showPaste && (
+              <ToolbarItem onClick={handleAction(PASTE)}>
+                {t("component.essayText.paste")}
+              </ToolbarItem>
+            )}
+            {Array.isArray(item.characterMap) && (
+              <Character
+                onSelect={char => {
+                  setSelection({
+                    start: selection.start + char.length,
+                    end: selection.start + char.length
+                  });
+                  setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                }}
+                characters={item.characterMap}
+              />
+            )}
+          </FlexContainer>
+        </Toolbar>
+      )}
       <Input.TextArea
         ref={ref => {
           node = ref;
@@ -212,6 +234,7 @@ EssayPlainTextPreview.propTypes = {
 };
 
 EssayPlainTextPreview.defaultProps = {
+  col: {},
   smallSize: false,
   testItem: false,
   showQuestionNumber: false,

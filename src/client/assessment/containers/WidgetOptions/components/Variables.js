@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { variableTypes, math } from "@edulastic/constants";
 import { MathInput, MathFormulaDisplay } from "@edulastic/common";
 import { mediumDesktopExactWidth } from "@edulastic/colors";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -23,8 +24,6 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
-import { StyledCheckbox } from "../../../components/Common/InputField";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
@@ -66,7 +65,8 @@ class Variables extends Component {
       item = {}
     } = this.props;
     const mathFieldRef = React.createRef();
-    const getMathFormulaTemplate = latex => `<span class="input__math" data-latex="${latex}"></span>`;
+    const getMathFormulaTemplate = latex =>
+      `<span class="input__math" data-latex="${latex}"></span>`;
     const variableEnabled = get(questionData, "variable.enabled", false);
     const variables = get(questionData, "variable.variables", {});
     const variableCombinationCount = get(questionData, "variable.combinationsCount", 25);
@@ -77,14 +77,19 @@ class Variables extends Component {
       title: variableName,
       dataIndex: variableName,
       key: variables[variableName].id,
-      render: latex => <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
+      render: latex => (
+        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
+      )
     }));
 
     const generateExample = variable => {
-      const factor = Math.pow(10, variable.decimal);
+      const factor = 10 ** variable.decimal;
       switch (variable.type) {
         case "NUMBER_RANGE": {
-          return Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor;
+          return (
+            Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) /
+            factor
+          );
         }
         case "NUMBER_SET":
         case "TEXT_SET":
@@ -101,21 +106,6 @@ class Variables extends Component {
       }
     };
 
-    const handleChangeVariable = (param, value) => {
-      const newData = cloneDeep(questionData);
-
-      if (!newData.variable) {
-        newData.variable = {};
-      }
-
-      newData.variable[param] = value;
-      if (param === "enabled" && value === true && newData.variable.variables && !newData.variable.examples) {
-        const examples = generate();
-        newData.variable = { ...newData.variable, examples };
-      }
-      setQuestionData(newData);
-    };
-
     const generateSequenceExamples = (variableName, newVariables) => {
       const changedVariable = newVariables[variableName];
 
@@ -129,7 +119,8 @@ class Variables extends Component {
 
       Object.keys(newVariables).map(key => {
         if (
-          (newVariables[key].type === "NUMBER_SEQUENCE" || newVariables[key].type === "TEXT_SEQUENCE") &&
+          (newVariables[key].type === "NUMBER_SEQUENCE" ||
+            newVariables[key].type === "TEXT_SEQUENCE") &&
           newVariables[key].sequence
         ) {
           const vars = newVariables[key].sequence.split(",").filter(val => !!val.trim());
@@ -163,9 +154,11 @@ class Variables extends Component {
         newData.variable.variables[variableName].type === "NUMBER_SEQUENCE" ||
         newData.variable.variables[variableName].type === "TEXT_SEQUENCE"
       ) {
-        newData.variable.variables = generateSequenceExamples(variableName, newData.variable.variables);
+        newData.variable.variables = generateSequenceExamples(
+          variableName,
+          newData.variable.variables
+        );
       }
-
       setQuestionData(newData);
     };
 
@@ -221,19 +214,26 @@ class Variables extends Component {
 
     const handleCalculateFormula = () => {
       const hasFormula = Object.keys(variables).some(
-        variableName => variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
+        variableName =>
+          variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
       );
       if (hasFormula) {
         calculateFormula({ variables, examples });
       }
     };
 
-    const getCombinations = (available, combinations) => {
+    const getCombinations = (variableName, available, count, values) => {
       available = [...new Set(available)];
-      for (let i = 0; i < combinations.length; i++) {
-        combinations[i] = available[i % available.length];
+      const newValues = [];
+      for (const value of values) {
+        available.forEach(combination => {
+          if (newValues.length === 2 * count) {
+            return;
+          }
+          newValues.push({ ...value, [variableName]: combination });
+        });
       }
-      return combinations;
+      return shuffle(newValues);
     };
 
     const getCombinationsForSequence = combinations => {
@@ -274,7 +274,7 @@ class Variables extends Component {
               const varSeq = sequence.split(",").filter(em => !!em.trim());
               const vars = Array(combinations.length)
                 .fill("")
-                .map((_, index) => varSeq[index % varSeq.length]);
+                .map((_, ind) => varSeq[ind % varSeq.length]);
               combination = {
                 ...combination,
                 [variableName]: vars[index % varSeq.length]
@@ -287,30 +287,37 @@ class Variables extends Component {
     };
 
     const generate = () => {
-      let values = Array.from(Array(variableCombinationCount)).map((_, i) => ({}));
+      let values = Array.from(Array(variableCombinationCount)).map(() => ({}));
       let sequenceCombinationsGenerated = false;
 
       Object.keys(variables).forEach(variableName => {
-        let combinations = new Array(variableCombinationCount).fill("");
         const variable = variables[variableName];
 
         switch (variable.type) {
           case "NUMBER_RANGE": {
-            const factor = Math.pow(10, variable.decimal);
-            combinations = getCombinations(
-              Array.from(Array(variableCombinationCount)).map(
-                (_, i) => Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor
+            const factor = 10 ** variable.decimal;
+            values = getCombinations(
+              variableName,
+              Array.from(Array(variableCombinationCount * 2)).map(
+                () =>
+                  Math.round(
+                    (Math.random() * (variable.max - variable.min) + variable.min) * factor
+                  ) / factor
               ),
-              combinations
+              variableCombinationCount,
+              values
             );
-            values = values.map((val, i) => ({ ...val, [variableName]: combinations[i] }));
             break;
           }
           case "TEXT_SET":
           case "NUMBER_SET": {
             if (variable.set) {
-              combinations = getCombinations(variable.set.split(",").filter(val => !!val.trim()), combinations);
-              values = values.map((val, i) => ({ ...val, [variableName]: combinations[i] }));
+              values = getCombinations(
+                variableName,
+                variable.set.split(",").filter(val => !!val.trim()),
+                variableCombinationCount,
+                values
+              );
             }
             break;
           }
@@ -327,7 +334,7 @@ class Variables extends Component {
         }
       });
       let key = 1;
-      let exampleValues = [];
+      const exampleValues = [];
       values = values
         .map(val => {
           let isValid = true;
@@ -342,11 +349,34 @@ class Variables extends Component {
           exampleValues.push(val);
           return isValid && { key: key++, ...val };
         })
-        .filter(el => !!el);
+        .filter(el => !!el)
+        .slice(0, variableCombinationCount);
       calculateFormula({ examples: values, variables });
       return values;
     };
 
+    const handleChangeVariable = (param, value) => {
+      const newData = cloneDeep(questionData);
+
+      if (!newData.variable) {
+        newData.variable = {};
+      }
+
+      newData.variable[param] = value;
+      if (
+        param === "enabled" &&
+        value === true &&
+        newData.variable.variables &&
+        !newData.variable.examples
+      ) {
+        const updatedExamples = generate();
+        newData.variable = { ...newData.variable, examples: updatedExamples };
+      }
+      setQuestionData(newData);
+    };
+    if (examples.length && Object.keys(examples[0]).some(key => !examples[0][key])) {
+      generate();
+    }
     return (
       <Question
         section="advanced"
@@ -355,7 +385,9 @@ class Variables extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}
+        >
           {t("component.options.dynamicParameters")}
         </Subtitle>
         <Row gutter={24}>
@@ -424,7 +456,9 @@ class Variables extends Component {
                           numberPad={defaultNumberPad}
                           value={variable.formula}
                           showResponse={false}
-                          onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
+                          onInput={latex =>
+                            handleChangeVariableList(variableName, "formula", latex)
+                          }
                           onBlur={handleCalculateFormula}
                         />
                       )}
@@ -435,7 +469,9 @@ class Variables extends Component {
                       <Input
                         data-cy="variableSet"
                         value={variable.set}
-                        onChange={e => handleChangeVariableList(variableName, "set", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(variableName, "set", e.target.value)
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -447,7 +483,9 @@ class Variables extends Component {
                       <Input
                         data-cy="variableNumberSequence"
                         value={variable.sequence}
-                        onChange={e => handleChangeVariableList(variableName, "sequence", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(variableName, "sequence", e.target.value)
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -459,7 +497,9 @@ class Variables extends Component {
                       <Input
                         data-cy="variableTextSequence"
                         value={variable.sequence}
-                        onChange={e => handleChangeVariableList(variableName, "sequence", e.target.value)}
+                        onChange={e =>
+                          handleChangeVariableList(variableName, "sequence", e.target.value)
+                        }
                         onBlur={handleCalculateFormula}
                         size="large"
                         style={{ marginRight: 20 }}
@@ -525,7 +565,9 @@ class Variables extends Component {
                   )}
                   <Col md={6} style={{ paddingTop: 10 }}>
                     <MathFormulaDisplay
-                      dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(variable.exampleValue) }}
+                      dangerouslySetInnerHTML={{
+                        __html: getMathFormulaTemplate(variable.exampleValue)
+                      }}
                     />
                   </Col>
                 </Row>
@@ -557,6 +599,7 @@ class Variables extends Component {
               <Col md={24}>
                 <Table
                   columns={columns}
+                  key={`table-${Math.random(10)}`}
                   dataSource={examples}
                   pagination={{
                     pageSize: 10
@@ -573,6 +616,7 @@ class Variables extends Component {
 
 Variables.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
   calculateFormula: PropTypes.func.isRequired,
   questionData: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,

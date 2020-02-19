@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { smallMobileWidth, mobileWidthLarge, mediumDesktopWidth, themeColor } from "@edulastic/colors";
+import {
+  smallMobileWidth,
+  mobileWidthLarge,
+  mediumDesktopWidth,
+  themeColor
+} from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -27,6 +32,7 @@ export const PreviewBar = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 100%;
+  position: relative;
 
   .ant-btn {
     background: transparent;

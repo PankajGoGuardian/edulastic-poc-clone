@@ -11,6 +11,10 @@ const Wrapper = styled.div`
   align-items: center;
   height: 32px;
   padding: 0px 24px 0px 10px;
+  position: absolute;
+  left: 0%;
+  top: 50%;
+  transform: translate(-100%, -50%);
  
   ${({ scoreType, theme }) => {
     const obj = {};
@@ -42,7 +46,8 @@ const Wrapper = styled.div`
 `;
 
 const ScoreBlock = ({ score, maxScore, showScore }) => {
-  const scoreType = score === 0 ? "incorrect" : score === maxScore ? "allCorrect" : "partiallyCorrect";
+  const scoreType =
+    score === 0 ? "incorrect" : score === maxScore ? "allCorrect" : "partiallyCorrect";
   return showScore ? (
     <Wrapper scoreType={scoreType}>
       <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>

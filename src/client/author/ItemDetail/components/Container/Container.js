@@ -6,11 +6,15 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
-import { questionType as constantsQuestionType } from "@edulastic/constants";
+import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext, Hints } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
+import { Row, Col, Layout, Button, Pagination } from "antd";
+import ItemDetailContext, {
+  COMPACT,
+  DEFAULT
+} from "@edulastic/common/src/contexts/ItemDetailContext";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -48,7 +52,6 @@ import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
 import {
-  Content,
   ItemDetailWrapper,
   PreviewContent,
   ButtonClose,
@@ -65,8 +68,7 @@ import SettingsBar from "../SettingsBar";
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
-import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
-import { questionType } from "@edulastic/constants";
+
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
@@ -198,7 +200,15 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
+    const {
+      match,
+      history,
+      t,
+      changeView,
+      modalItemId,
+      navigateToPickupQuestionType,
+      isTestFlow
+    } = this.props;
     changeView("edit");
 
     if (modalItemId) {
@@ -253,7 +263,7 @@ class Container extends Component {
     }
   };
 
-  handleEditWidget = (widget, rowIndex) => {
+  handleEditWidget = widget => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
     loadQuestion(widget, 0);
@@ -264,6 +274,7 @@ class Container extends Component {
     changeView("edit");
     loadQuestion(widget, rowIndex, true);
   };
+
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
@@ -321,9 +332,10 @@ class Container extends Component {
 
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps, passage, view } = this.props;
+    const { showHints } = this.state;
     const item = itemProps || {};
 
-    let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
+    const allRows = item.passageId ? [passage.structure, ...rows] : rows;
     return (
       <>
         <PreviewContent view={view}>
@@ -337,10 +349,10 @@ class Container extends Component {
             questions={questions}
             item={item}
             isAnswerBtnVisible={false}
-            page={"itemAuthoring"}
+            page="itemAuthoring"
           />
         </PreviewContent>
-        {this.state.showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+        {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
       </>
     );
   };
@@ -358,17 +370,19 @@ class Container extends Component {
       isEditable,
       rows
     } = this.props;
-
+    const { showHints } = this.state;
     let showPublishButton = false;
 
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
         isTestFlow &&
-        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || isEditable);
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) ||
+          isEditable);
     }
     const questionsType = rows && uniq(rows.flatMap(itm => itm.widgets.map(i => i.type)));
-    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
+    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn)
+      .length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
     return (
@@ -380,7 +394,7 @@ class Container extends Component {
         changePreview={changePreview}
         changePreviewTab={this.handleChangePreviewTab}
         handleShowHints={this.toggleHints}
-        showHints={this.state.showHints}
+        showHints={showHints}
         onSave={saveItem}
         saving={updating}
         view={view}
@@ -393,9 +407,16 @@ class Container extends Component {
   };
 
   addItemToPassage = () => {
-    const { passage, isTestFlow, match, setCreatedItemToTest, item: previousItem } = this.props;
+    const {
+      passage,
+      isTestFlow,
+      match,
+      setCreatedItemToTest,
+      item: previousItem,
+      createItem
+    } = this.props;
     const { testId } = match.params;
-    //every test flow add previous item to test and then go for creating new
+    // every test flow add previous item to test and then go for creating new
     if (isTestFlow) setCreatedItemToTest(previousItem);
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
@@ -412,7 +433,7 @@ class Container extends Component {
         resources: []
       };
     });
-    this.props.createItem(item, isTestFlow, testId, true);
+    createItem(item, isTestFlow, testId, true);
   };
 
   handleRemoveItemRequest = () => {
@@ -422,16 +443,16 @@ class Container extends Component {
   };
 
   removeItemAndUpdatePassage = () => {
-    const { item, passage, isTestFlow, match } = this.props;
+    const { item, passage, isTestFlow, match, deleteItem } = this.props;
     const id = item._id;
     const { testItems } = passage;
     const originalIndex = testItems.indexOf(id);
-    const removedArray = [...testItems].filter(x => x != id);
+    const removedArray = [...testItems].filter(x => x !== id);
     const redirectId = removedArray[originalIndex]
       ? removedArray[originalIndex]
       : removedArray[removedArray.length - 1];
     this.closeRemovePassageItemPopup();
-    this.props.deleteItem({ id: item._id, redirectId, isTestFlow, testId: match.params.testId });
+    deleteItem({ id: item._id, redirectId, isTestFlow, testId: match.params.testId });
   };
 
   closeRemovePassageItemPopup = () => {
@@ -442,10 +463,12 @@ class Container extends Component {
 
   goToItem = page => {
     const { passage, history, match, isTestFlow } = this.props;
-    const testId = match.params.testId;
+    const { testId } = match.params;
     const _id = passage.testItems[page - 1];
     history.push({
-      pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
+      pathname: isTestFlow
+        ? `/author/items/${_id}/item-detail/test/${testId}`
+        : `/author/items/${_id}/item-detail`,
       state: { resetView: false }
     });
   };
@@ -456,15 +479,23 @@ class Container extends Component {
     }));
   };
 
-  renderCollapseButtons = i => {
+  renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("left")} left>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.handleCollapse("left")}
+            left
+          >
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("right")} right>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.handleCollapse("right")}
+            right
+          >
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -503,20 +534,23 @@ class Container extends Component {
           )}
           {rows.map((row, i) => (
             <>
-              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
+              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) &&
+                this.renderCollapseButtons()}
               <ItemDetailRow
                 key={passage ? i + 1 : i}
                 row={row}
                 view={view}
                 rowIndex={i}
-                previewTab={"show"}
+                previewTab="show"
                 itemData={item}
                 count={rows.length}
                 onAdd={this.handleAdd}
                 windowWidth={windowWidth}
                 onDeleteWidget={this.handleDeleteWidget(i)}
                 onEditWidget={this.handleEditWidget}
-                onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                onEditTabTitle={(tabIndex, value) =>
+                  updateTabTitle({ rowIndex: i, tabIndex, value })
+                }
                 hideColumn={
                   (collapseLeft && !passageWithQuestions && i === 0) ||
                   (collapseRight && (i === 1 || passageWithQuestions))
@@ -531,9 +565,7 @@ class Container extends Component {
     );
   };
 
-  renderAuditTrailLogs = () => {
-    return <QuestionAuditTrailLogs />;
-  };
+  renderAuditTrailLogs = () => <QuestionAuditTrailLogs />;
 
   render() {
     const { showSettings, showRemovePassageItemPopup } = this.state;
@@ -560,7 +592,8 @@ class Container extends Component {
       saveItem,
       view,
       showPublishButton,
-      hasAuthorPermission
+      hasAuthorPermission,
+      itemDeleting
     } = this.props;
 
     let breadCrumbQType = "";
@@ -572,7 +605,7 @@ class Container extends Component {
 
     const passageTestItems = get(passage, "testItems", []);
 
-    const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
+    const qLength = rows.flatMap(x => x.widgets.filter(y => y.widgetType === "question")).length;
 
     const { testId } = match.params;
     const testPath = `/author/tests/${testId || "create"}`;
@@ -604,7 +637,8 @@ class Container extends Component {
       .some(widgetType => widgetType === questionType.PASSAGE);
 
     // disable saving item has no questions
-    // TODO: if required for passage, will have to handle it differently, since passage doesnt keep it in item rows.
+    // TODO: if required for passage, will have to handle it differently,
+    // since passage doesnt keep it in item rows.
     const disableSave = !item.passageId && item.rows.every(row => row?.widgets?.length === 0);
 
     const layoutType = isPassage ? COMPACT : DEFAULT;
@@ -615,7 +649,7 @@ class Container extends Component {
           visible={showRemovePassageItemPopup}
           title="Remove Item"
           onCancel={this.closeRemovePassageItemPopup}
-          centered={true}
+          centered
           footer={[
             <Button key="cancel" onClick={this.closeRemovePassageItemPopup}>
               No, Cancel
@@ -625,7 +659,10 @@ class Container extends Component {
             </Button>
           ]}
         >
-          <p> You are about to remove the current item from the passage. This action cannot be undone.</p>
+          <p>
+            {" "}
+            You are about to remove the current item from the passage. This action cannot be undone.
+          </p>
         </ConfirmationModal>
         <Layout>
           {showSettings && (
@@ -689,7 +726,10 @@ class Container extends Component {
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  <SecondHeadBar
+                    breadCrumbQType={breadCrumbQType}
+                    breadcrumb={isTestFlow ? breadCrumb : undefined}
+                  >
                     {item.canAddMultipleItems && passage && view !== "metadata" && (
                       <PassageNavigation>
                         {passageTestItems.length > 1 && (
@@ -698,17 +738,20 @@ class Container extends Component {
                             <Pagination
                               total={passageTestItems.length}
                               pageSize={1}
-                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                              defaultCurrent={
+                                passageTestItems.findIndex(i => i === item.versionId) + 1
+                              }
                               onChange={this.goToItem}
                             />
                           </>
                         )}
-                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                        {((!!rows[0] && !!rows[0].widgets.length) ||
+                          passage.testItems.length > 1) && (
                           <AddRemoveButtonWrapper>
-                            <Button disabled={this.props.itemDeleting} onClick={this.handleRemoveItemRequest}>
+                            <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
                               - ITEM
                             </Button>
-                            <Button disabled={this.props.itemDeleting} onClick={this.addItemToPassage}>
+                            <Button disabled={itemDeleting} onClick={this.addItemToPassage}>
                               + ITEM
                             </Button>
                           </AddRemoveButtonWrapper>
@@ -716,7 +759,7 @@ class Container extends Component {
                       </PassageNavigation>
                     )}
                     {view === "preview" && (
-                      <RightActionButtons col={12}>
+                      <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
                         <div>{this.renderButtons()}</div>
                       </RightActionButtons>
                     )}
@@ -744,13 +787,19 @@ Container.propTypes = {
   loading: PropTypes.bool.isRequired,
   item: PropTypes.object,
   preview: PropTypes.string.isRequired,
-  updateItemDetailById: PropTypes.func.isRequired,
   setItemDetailData: PropTypes.func.isRequired,
+  showPublishButton: PropTypes.bool.isRequired,
+  hasAuthorPermission: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
+  deleteItem: PropTypes.func.isRequired,
   updateDimension: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
+  createItem: PropTypes.func.isRequired,
+  deleteWidgetFromPassage: PropTypes.func.isRequired,
   deleteWidget: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  setEditable: PropTypes.func.isRequired,
   updateTabTitle: PropTypes.func.isRequired,
   useFlowLayout: PropTypes.func.isRequired,
   useTabs: PropTypes.func.isRequired,
@@ -758,35 +807,36 @@ Container.propTypes = {
   showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
+  setCreatedItemToTest: PropTypes.func.isRequired,
+  saveItem: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
   questions: PropTypes.object.isRequired,
   changeView: PropTypes.func.isRequired,
   testItemStatus: PropTypes.string,
-  setRedirectTest: PropTypes.func,
   publishTestItem: PropTypes.func,
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
   navigateToPickupQuestionType: PropTypes.func,
   toggleSideBar: PropTypes.func.isRequired,
-  redirectOnEmptyItem: PropTypes.bool,
-  setItemLevelScore: PropTypes.func,
   setItemLevelScoring: PropTypes.func,
   isTestFlow: PropTypes.bool,
   clearAnswers: PropTypes.func.isRequired,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  passage: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
+  view: PropTypes.string.isRequired,
+  addWidgetToPassage: PropTypes.func.isRequired,
+  itemDeleting: PropTypes.any.isRequired
 };
 
 Container.defaultProps = {
   rows: [],
-  setRedirectTest: () => {},
   publishTestItem: () => {},
   item: {},
   modalItemId: undefined,
   onModalClose: () => {},
   navigateToPickupQuestionType: () => {},
-  redirectOnEmptyItem: true,
   testItemStatus: "",
-  setItemLevelScore: () => {},
   setItemLevelScoring: () => {},
   isTestFlow: false
 };

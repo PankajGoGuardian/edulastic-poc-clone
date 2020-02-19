@@ -32,14 +32,20 @@ import {
   proceedPublishingItemAction,
   savePassageAction
 } from "../../../ItemDetail/ducks";
-import { getCurrentQuestionSelector, changeUpdatedFlagAction } from "../../../sharedDucks/questions";
-import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import {
+  getCurrentQuestionSelector,
+  changeUpdatedFlagAction
+} from "../../../sharedDucks/questions";
+import {
+  checkAnswerAction,
+  showAnswerAction,
+  toggleCreateItemModalAction
+} from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink, StyledButton } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
-import { RightActionButton, LabelText } from "../../../src/components/common/ButtonAction/styled_components";
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, "data.questions", []);
@@ -208,8 +214,6 @@ class Container extends Component {
     const {
       question,
       testItemId,
-      navigateToPickupQuestionType,
-      testName,
       testId,
       location,
       toggleModalAction,
@@ -241,7 +245,10 @@ class Container extends Component {
         const title = "MULTIPART ITEM";
         // crumbs[3] not required?
         // links have changed maybe  (EV-10862)
-        crumbs = [...crumbs.slice(0, 3), { title, to: `${testPath}/createItem/${itemFromState._id}` }];
+        crumbs = [
+          ...crumbs.slice(0, 3),
+          { title, to: `${testPath}/createItem/${itemFromState._id}` }
+        ];
       }
       return crumbs;
     }
@@ -315,7 +322,8 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        isTestFlow && ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
+        isTestFlow &&
+        ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
     }
 
     return (
@@ -402,7 +410,15 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth, showWarningModal, proceedSave, hasUnsavedChanges } = this.props;
+    const {
+      view,
+      question,
+      history,
+      windowWidth,
+      showWarningModal,
+      proceedSave,
+      hasUnsavedChanges
+    } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -422,7 +438,7 @@ class Container extends Component {
       <EditorContainer ref={this.innerDiv}>
         <Prompt
           when={!!hasUnsavedChanges}
-          message={loc => "There are unsaved changes. Are you sure you want to leave?"}
+          message={() => "There are unsaved changes. Are you sure you want to leave?"}
         />
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
           {showModal && (
@@ -435,19 +451,21 @@ class Container extends Component {
           </ItemHeader>
 
           <BreadCrumbBar>
-            <Col span={12}>
+            <Col xs={{ span: 8 }} lg={{ span: 12 }}>
               {windowWidth > desktopWidth.replace("px", "") ? (
                 <SecondHeadBar breadcrumb={this.breadcrumb} />
               ) : (
                 <BackLink onClick={history.goBack}>Back to Item List</BackLink>
               )}
             </Col>
-            {view !== "preview" && view != "auditTrail" && (
+            {view !== "preview" && view !== "auditTrail" && (
               <Col span={12}>
-                <StyledButton id={getFormattedAttrId(`${question?.title}-how-to-author`)}>How to author</StyledButton>
+                <StyledButton id={getFormattedAttrId(`${question?.title}-how-to-author`)}>
+                  How to author
+                </StyledButton>
               </Col>
             )}
-            <RightActionButtons span={12}>
+            <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>

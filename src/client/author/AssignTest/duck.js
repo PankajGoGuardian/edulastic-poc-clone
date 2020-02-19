@@ -62,18 +62,17 @@ const statePerformanceBandSelector = state => state.performanceBandReducer;
 
 export const performanceBandSelector = createSelector(
   statePerformanceBandSelector,
-  performanceBandDistrict => {
-    return get(performanceBandDistrict, "profiles", []);
-  }
+  performanceBandDistrict => get(performanceBandDistrict, "profiles", [])
 );
 
 // ======================assingnment settings========================//
 
-const initialState = {};
-
-const updateAssignmentSettings = (state, { payload }) => {
-  return { ...state, ...payload };
+const initialState = {
+  openPolicy: "Automatically on Start Date",
+  closePolicy: "Automatically on Due Date"
 };
+
+const updateAssignmentSettings = (state, { payload }) => ({ ...state, ...payload });
 
 export const assignmentSettings = createReducer(initialState, {
   [UPDATE_ASSIGNMENT_SETTINGS]: updateAssignmentSettings

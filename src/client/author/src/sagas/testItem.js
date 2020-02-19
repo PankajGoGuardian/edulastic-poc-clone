@@ -150,6 +150,9 @@ function* evaluateAnswers({ payload }) {
             type: RESET_ITEM_SCORE
           });
         }
+      } else {
+        const errorMessage = "Correct answer is not set";
+        yield call(message.error, errorMessage);
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));

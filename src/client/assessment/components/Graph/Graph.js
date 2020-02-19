@@ -2,7 +2,12 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { CorrectAnswersContainer, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
+import {
+  CorrectAnswersContainer,
+  Stimulus,
+  QuestionNumberLabel,
+  AnswerContext
+} from "@edulastic/common";
 
 import { compose } from "redux";
 import styled from "styled-components";
@@ -189,9 +194,9 @@ class Graph extends Component {
     const { item, setQuestionData, changeLabel } = this.props;
     const { validation, toolbar } = item;
     let oldValue;
-    const value = item.validation.validResponse.value;
+    const { value } = item.validation.validResponse;
     for (let i = 0; i < value.length; i++) {
-      if (value[i].id == id) {
+      if (value[i].id === id) {
         oldValue = value[i].label;
         value[i].label = labelValue;
         break;
@@ -321,7 +326,9 @@ class Graph extends Component {
     const newItem = cloneDeep(item);
 
     if (newItem.validation.altResponses && newItem.validation.altResponses.length) {
-      newItem.validation.altResponses = newItem.validation.altResponses.filter((response, i) => i !== index);
+      newItem.validation.altResponses = newItem.validation.altResponses.filter(
+        (response, i) => i !== index
+      );
     }
 
     setQuestionData(newItem);
@@ -433,25 +440,32 @@ class Graph extends Component {
 
               {advancedLink}
 
-              {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
-                <Question
-                  section="main"
-                  label="Annotations"
-                  cleanSections={cleanSections}
-                  fillSections={fillSections}
-                  advancedAreOpen
-                >
-                  <Annotations question={item} setQuestionData={setQuestionData} editable />
-                </Question>
-              )}
-              <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
+              {graphType !== "firstQuadrant" &&
+                graphType !== "quadrants" &&
+                graphType !== "numberLinePlot" && (
+                  <Question
+                    section="main"
+                    label="Annotations"
+                    cleanSections={cleanSections}
+                    fillSections={fillSections}
+                    advancedAreOpen
+                  >
+                    <Annotations question={item} setQuestionData={setQuestionData} editable />
+                  </Question>
+                )}
+              <MoreOptionsComponent
+                advancedAreOpen={advancedAreOpen}
+                {...this.getMoreOptionsProps()}
+              />
             </ContentArea>
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
           <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact" : ""}>
             <QuestionTitleWrapper>
-              {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+              {showQuestionNumber && !flowLayout ? (
+                <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
+              ) : null}
               <StyledStimulus
                 data-cy="questionHeader"
                 dangerouslySetInnerHTML={{ __html: stimulus }}
@@ -472,7 +486,10 @@ class Graph extends Component {
             )}
             {previewTab === "show" && item.canvas && item.uiStyle && (
               <Fragment>
-                <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>
+                <CorrectAnswersContainer
+                  minWidth="max-content"
+                  title={t("component.graphing.correctAnswer")}
+                >
                   <GraphDisplay
                     disableResponse
                     graphData={item}
@@ -546,6 +563,7 @@ Graph.propTypes = {
   userAnswer: PropTypes.any,
   saveAnswer: PropTypes.func.isRequired,
   evaluation: PropTypes.any,
+  changeLabel: PropTypes.func.isRequired,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
@@ -587,4 +605,8 @@ export default GraphComponent;
 const StyledStimulus = styled(Stimulus)`
   word-break: break-word;
   white-space: pre-wrap;
+
+  & p {
+    padding-top: 0.1px;
+  }
 `;

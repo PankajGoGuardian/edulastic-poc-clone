@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Button, Input, Select, Radio, Upload, Icon } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
@@ -10,7 +11,9 @@ import {
   white,
   backgroundGrey2,
   borderGrey2,
-  placeholderGray
+  placeholderGray,
+  themeColorTagsBg,
+  green
 } from "@edulastic/colors";
 
 const { Dragger } = Upload;
@@ -61,6 +64,11 @@ const ImportContentModal = ({ visible, handleResponse }) => {
 };
 
 export default ImportContentModal;
+
+ImportContentModal.propTypes = {
+  visible: PropTypes.bool,
+  handleResponse: PropTypes.func
+};
 
 export const StyledModal = styled(ConfirmationModal)`
   min-width: 500px;
@@ -122,6 +130,12 @@ export const FieldRow = styled.div`
       min-height: 35px;
       line-height: 35px;
       font-weight: 500;
+      .ant-select-selection__choice {
+        background: ${themeColorTagsBg};
+        color: ${green};
+        font-size: ${({ theme }) => theme.smallFontSize};
+        font-weight: ${({ theme }) => theme.semiBold};
+      }
     }
   }
   .ant-upload-drag {

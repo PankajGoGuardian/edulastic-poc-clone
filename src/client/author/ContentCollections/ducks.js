@@ -4,7 +4,7 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { collectionsApi } from "@edulastic/api";
 
-//constants
+// constants
 export const CREATE_NEW_COLLECTION_REQUEST = "[collection] create new collection request";
 export const CREATE_NEW_COLLECTION_SUCCESS = "[collection] create new collection success";
 export const CREATE_NEW_COLLECTION_FAILED = "[collection] create new collection failed";
@@ -14,9 +14,7 @@ export const FETCH_COLLECTIONS_LIST_REQUEST = "[collection] fetch collection lis
 export const FETCH_COLLECTIONS_LIST_SUCCESS = "[collection] fetch collection list success";
 export const FETCH_COLLECTIONS_LIST_FAILED = "[collection] fetch collection list failed";
 export const ADD_PERMISSION_REQUEST = "[collection] add permission request";
-export const ADD_PERMISSION_SUCCESS = "[collection] add permission success";
 export const EDIT_PERMISSION_REQUEST = "[collection] edit permission request";
-export const EDIT_PERMISSION_SUCCESS = "[collection] edit permission success";
 export const FETCH_PERMISSIONS_REQUEST = "[collection] fetch permissions request";
 export const FETCH_PERMISSIONS_SUCCESS = "[collection] fetch permissions success";
 export const FETCH_PERMISSIONS_FAILED = "[collection] fetch permissions failed";
@@ -26,7 +24,7 @@ export const SEARCH_ORGANIZATION_FAILED = "[collection] search organization fail
 export const DELETE_PERMISSION_REQUEST = "[collection] delete permission request";
 export const DELETE_PERMISSION_SUCCESS = "[collection] delete permission success";
 
-//actions
+// actions
 export const createCollectionRequestAction = createAction(CREATE_NEW_COLLECTION_REQUEST);
 export const createCollectionSuccessAction = createAction(CREATE_NEW_COLLECTION_SUCCESS);
 export const createCollectionFailedAction = createAction(CREATE_NEW_COLLECTION_FAILED);
@@ -36,9 +34,7 @@ export const fetchCollectionListRequestAction = createAction(FETCH_COLLECTIONS_L
 export const fetchCollectionListSuccessAction = createAction(FETCH_COLLECTIONS_LIST_SUCCESS);
 export const fetchCollectionListFailedAction = createAction(FETCH_COLLECTIONS_LIST_FAILED);
 export const addPermissionRequestAction = createAction(ADD_PERMISSION_REQUEST);
-export const addPermissionSuccessAction = createAction(ADD_PERMISSION_SUCCESS);
 export const editPermissionRequestAction = createAction(EDIT_PERMISSION_REQUEST);
-export const editPermissionSuccessAction = createAction(EDIT_PERMISSION_SUCCESS);
 export const fetchPermissionsRequestAction = createAction(FETCH_PERMISSIONS_REQUEST);
 export const fetchPermissionsSuccessAction = createAction(FETCH_PERMISSIONS_SUCCESS);
 export const fetchPermissionsFailedAction = createAction(FETCH_PERMISSIONS_FAILED);
@@ -60,7 +56,7 @@ const initialState = {
   districts: []
 };
 
-//reducer
+// reducer
 
 export const reducer = createReducer(initialState, {
   [CREATE_NEW_COLLECTION_REQUEST]: state => {
@@ -119,25 +115,12 @@ export const reducer = createReducer(initialState, {
   [SEARCH_ORGANIZATION_FAILED]: state => {
     state.fetchingOrganization = false;
   },
-  [ADD_PERMISSION_SUCCESS]: (state, { payload }) => {
-    state.permissions.push(payload);
-  },
-  [EDIT_PERMISSION_SUCCESS]: (state, { payload }) => {
-    state.permissions = state.permissions.map(p => {
-      if (p._id === payload.id)
-        return {
-          ...p,
-          ...payload.data
-        };
-      return p;
-    });
-  },
   [DELETE_PERMISSION_SUCCESS]: (state, { payload }) => {
     state.permissions = state.permissions.filter(p => p._id !== payload);
   }
 });
 
-//sagas
+// sagas
 
 function* createCollectionRequestSaga({ payload }) {
   try {
@@ -185,10 +168,21 @@ function* fetchCollectionListRequestSaga() {
   }
 }
 
+function* fetchPermissionsRequestSaga({ payload }) {
+  try {
+    const permissions = yield call(collectionsApi.getPermissions, payload);
+    yield put(fetchPermissionsSuccessAction(permissions));
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Unable to get permissions.");
+    yield put(fetchPermissionsFailedAction());
+  }
+}
+
 function* addPermissionRequestSaga({ payload }) {
   try {
-    const permission = yield call(collectionsApi.addPermission, payload);
-    yield put(addPermissionSuccessAction(permission));
+    yield call(collectionsApi.addPermission, payload);
+    yield put(fetchPermissionsRequestAction(payload.bankId));
     yield call(message.success, `Permission added successfully for ${payload.collectionName}.`);
   } catch (err) {
     console.error(err);
@@ -201,22 +195,13 @@ function* addPermissionRequestSaga({ payload }) {
 function* editPermissionRequestSaga({ payload }) {
   try {
     yield call(collectionsApi.editPermission, payload);
-    yield put(editPermissionSuccessAction(payload));
+    yield put(fetchPermissionsRequestAction(payload.bankId));
     yield call(message.success, "Permission edited successfully.");
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Unable to edit Permission.");
-  }
-}
-
-function* fetchPermissionsRequestSaga({ payload }) {
-  try {
-    const permissions = yield call(collectionsApi.getPermissions, payload);
-    yield put(fetchPermissionsSuccessAction(permissions));
-  } catch (err) {
-    console.error(err);
-    yield call(message.error, "Unable to get permissions.");
-    yield put(fetchPermissionsFailedAction());
+    let errorMessage = "Unable to edit Permission.";
+    if ([403, 422].includes(err.data.statusCode)) errorMessage = err.data.message;
+    yield call(message.error, errorMessage);
   }
 }
 
@@ -254,7 +239,7 @@ export function* watcherSaga() {
   ]);
 }
 
-//selectors
+// selectors
 
 export const stateSelector = state => state.collectionsReducer;
 

@@ -11,7 +11,8 @@ import { question, test as testContants } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
-import { getTestItemAuthorName, getQuestionType, getTestItemAuthorIcon } from "../../../dataUtils";
+import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
+import { getTestItemAuthorName, getQuestionType, getTestItemAuthorIcon , hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
 import Stimulus from "./Stimulus";
@@ -52,10 +53,9 @@ import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
-import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
-import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
-import { TestStatus } from "./../../../TestList/components/ListItem/styled";
+
+import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
@@ -203,7 +203,16 @@ class Item extends Component {
   };
 
   handleSelection = async row => {
-    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
+    const {
+      setTestItems,
+      setDataAndSave,
+      selectedRows,
+      test,
+      gotoSummary,
+      setPassageItems,
+      item,
+      page
+    } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
       return message.error("Name field cannot be empty");
@@ -306,12 +315,12 @@ class Item extends Component {
    *  {Bool} value: user wants to select all the items?
    */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, selectedRows = [] } = this.props;
+    const { setAndSavePassageItems, passageItems, selectedRows = [], page } = this.props;
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
       message.success("Item added to cart");
-      return setAndSavePassageItems(passageItems);
+      return setAndSavePassageItems({ passageItems, page });
     }
 
     // open the modal for selecting  testItems manually.
@@ -349,7 +358,8 @@ class Item extends Component {
     const groupName =
       staticGroups.length === 1
         ? "Selected"
-        : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
+        : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName ||
+          "Group";
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
@@ -358,7 +368,7 @@ class Item extends Component {
             <PreviewModal
               isVisible={isShowPreviewModal}
               page={page}
-              showAddPassageItemToTestButton={true}
+              showAddPassageItemToTestButton
               showEvaluationButtons
               onClose={this.closeModal}
               data={{ ...item, id: item._id }}
@@ -390,7 +400,11 @@ class Item extends Component {
             <QuestionContent>
               <Stimulus
                 onClickHandler={isPublisher ? this.redirectToEdit : this.previewItem}
-                stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
+                stimulus={get(
+                  item,
+                  ["data", "questions", 0, "stimulus"],
+                  question.DEFAULT_STIMULUS
+                )}
               />
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
             </QuestionContent>
@@ -400,7 +414,10 @@ class Item extends Component {
                   <ViewButtonStyled data_cy={item._id} onClick={this.previewItem}>
                     <IconEye /> {t("component.item.view")}
                   </ViewButtonStyled>
-                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                  <AddButtonStyled
+                    selectedToCart={selectedToCart}
+                    onClick={this.handleToggleItemToCart(item)}
+                  >
                     {selectedToCart ? "Remove" : <IconPlus />}
                   </AddButtonStyled>
                 </ViewButton>
@@ -457,7 +474,10 @@ class Item extends Component {
                     {t("component.item.view")}
                     <IconEye />
                   </ViewButtonStyled>
-                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                  <AddButtonStyled
+                    selectedToCart={selectedToCart}
+                    onClick={this.handleToggleItemToCart(item)}
+                  >
                     {selectedToCart ? "Remove" : <IconPlus />}
                   </AddButtonStyled>
                 </ViewButton>

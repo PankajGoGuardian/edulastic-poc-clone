@@ -1,11 +1,42 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { test, roleuser, questionType, test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
-import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
+import {
+  test,
+  roleuser,
+  questionType,
+  test as testConst,
+  assignmentPolicyOptions
+} from "@edulastic/constants";
+import {
+  call,
+  put,
+  all,
+  takeEvery,
+  takeLatest,
+  select,
+  actionChannel,
+  take
+} from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy } from "lodash";
-import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
+import {
+  keyBy as _keyBy,
+  omit,
+  get,
+  uniqBy,
+  uniq as _uniq,
+  isEmpty,
+  identity,
+  differenceBy
+} from "lodash";
+import {
+  testsApi,
+  assignmentApi,
+  contentSharingApi,
+  tagsApi,
+  passageApi,
+  testItemsApi
+} from "@edulastic/api";
 import moment from "moment";
 import nanoid from "nanoid";
 import produce from "immer";
@@ -19,7 +50,11 @@ import {
   CHANGE_PREVIEW,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS
 } from "../src/constants/actions";
-import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from "../sharedDucks/questions";
+import {
+  loadQuestionsAction,
+  getQuestionsArraySelector,
+  UPDATE_QUESTION
+} from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
@@ -63,8 +98,7 @@ export const createWidget = ({ id, type, title }) => ({
   tabIndex: 0
 });
 
-export const getStaticGroupItemIds = test => {
-  return (
+export const getStaticGroupItemIds = test => (
     test.itemGroups.flatMap((itemGroup = {}) => {
       if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
         return itemGroup?.items.map(item => item._id) || [];
@@ -72,14 +106,13 @@ export const getStaticGroupItemIds = test => {
       return [];
     }) || []
   ).filter(e => !!e);
-};
 
-const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
-  return produce(itemGroups, itemGroups => {
+const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => produce(itemGroups, itemGroups => {
     for (const itemGroup of itemGroups) {
       if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
-        const isLimitedDeliveryType = itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
-        //For delivery type:LIMITED scoring should be as how item level scoring works
+        const isLimitedDeliveryType =
+          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
+        // For delivery type:LIMITED scoring should be as how item level scoring works
         itemGroup.items = itemGroup.items.map(o => ({
           itemId: o._id,
           maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
@@ -95,7 +128,6 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
       } else itemGroup.items = [];
     }
   });
-};
 
 export const getTestGradeAndSubject = (group, testGrades, testSubjects) => {
   if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
@@ -154,13 +186,16 @@ export const DELETE_ANNOTATION = "[tests] delete annotations from test";
 export const SET_LOADING_TEST_PAGE = "[tests] set loading";
 export const DUPLICATE_TEST_REQUEST = "[tests] duplicate request";
 export const UPDATE_TEST_AND_NAVIGATE = "[tests] update test and navigate";
-export const APPROVE_OR_REJECT_SINGLE_TEST_REQUEST = "[test page] approve or reject single test request";
-export const APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS = "[test page] approve or reject single test success";
+export const APPROVE_OR_REJECT_SINGLE_TEST_REQUEST =
+  "[test page] approve or reject single test request";
+export const APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS =
+  "[test page] approve or reject single test success";
 export const UPDATE_GROUP_DATA = "[tests] update group data";
 export const ADD_NEW_GROUP = "[tests] add new group";
 export const SET_CURRENT_GROUP_INDEX = "[tests] set current group index";
 export const DELETE_ITEMS_GROUP = "[tests] delete items group";
-export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST = "[test] add items to autoselect groups request";
+export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST =
+  "[test] add items to autoselect groups request";
 export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect group";
 export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage create";
 // actions
@@ -178,13 +213,19 @@ export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 export const setTestsLoadingAction = createAction(SET_LOADING_TEST_PAGE);
 export const duplicateTestRequestAction = createAction(DUPLICATE_TEST_REQUEST);
 export const updateTestAndNavigateAction = createAction(UPDATE_TEST_AND_NAVIGATE);
-export const approveOrRejectSingleTestRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST);
-export const approveOrRejectSingleTestSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS);
+export const approveOrRejectSingleTestRequestAction = createAction(
+  APPROVE_OR_REJECT_SINGLE_TEST_REQUEST
+);
+export const approveOrRejectSingleTestSuccessAction = createAction(
+  APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS
+);
 export const updateGroupDataAction = createAction(UPDATE_GROUP_DATA);
 export const addNewGroupAction = createAction(ADD_NEW_GROUP);
 export const setCurrentGroupIndexAction = createAction(SET_CURRENT_GROUP_INDEX);
 export const deleteItemsGroupAction = createAction(DELETE_ITEMS_GROUP);
-export const addItemsToAutoselectGroupsRequestAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST);
+export const addItemsToAutoselectGroupsRequestAction = createAction(
+  ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST
+);
 export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUP);
 export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 export const updateTestEntityAction = createAction(SET_TEST_DATA);
@@ -366,13 +407,20 @@ export const testTypeAsProfileNameType = {
 };
 
 const getDefaultScales = (state, payload) => {
-  const { performanceBandProfiles, standardsProficiencyProfiles, defaultTestTypeProfiles } = payload;
+  const {
+    performanceBandProfiles,
+    standardsProficiencyProfiles,
+    defaultTestTypeProfiles
+  } = payload;
   const testType = testTypeAsProfileNameType[state.entity.testType];
   const bandId =
-    performanceBandProfiles.find(item => item._id === defaultTestTypeProfiles?.performanceBand[testType]) || {};
+    performanceBandProfiles.find(
+      item => item._id === defaultTestTypeProfiles?.performanceBand[testType]
+    ) || {};
   const standardId =
-    standardsProficiencyProfiles.find(item => item._id === defaultTestTypeProfiles?.standardProficiency[testType]) ||
-    {};
+    standardsProficiencyProfiles.find(
+      item => item._id === defaultTestTypeProfiles?.standardProficiency[testType]
+    ) || {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
         name: bandId.name,
@@ -477,7 +525,10 @@ export const reducer = (state = initialState, { type, payload }) => {
     case ADD_NEW_TAG:
       return {
         ...state,
-        tagsList: { ...state.tagsList, [payload.tagType]: [...(state.tagsList[payload.tagType] || []), payload.tag] }
+        tagsList: {
+          ...state.tagsList,
+          [payload.tagType]: [...(state.tagsList[payload.tagType] || []), payload.tag]
+        }
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -700,8 +751,14 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select(state => state.tests);
     const createdItems = yield select(getTestCreatedItemsSelector);
-    const entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
-    entity.passages = [...entity.passages, ...differenceBy(tests.entity.passages, entity.passages, "_id")];
+    const entity = yield call(testsApi.getById, payload.id, {
+      data: true,
+      requestLatest: payload.requestLatest
+    });
+    entity.passages = [
+      ...entity.passages,
+      ...differenceBy(tests.entity.passages, entity.passages, "_id")
+    ];
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     if (entity._id !== payload.id) {
       yield put(
@@ -713,8 +770,9 @@ function* receiveTestByIdSaga({ payload }) {
         })
       );
     }
-    entity.itemGroups[currentGroupIndex].items = entity.itemGroups[currentGroupIndex].items.map(testItem =>
-      createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
+    entity.itemGroups[currentGroupIndex].items = entity.itemGroups[currentGroupIndex].items.map(
+      testItem =>
+        createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
     );
     entity.itemGroups[currentGroupIndex].items = uniqBy(
       [...entity.itemGroups[currentGroupIndex].items, ...createdItems],
@@ -724,10 +782,16 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     yield put(getDefaultTestSettingsAction(entity));
-    yield put(setTestItemsAction(entity.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(item => item._id)));
+    yield put(
+      setTestItemsAction(
+        entity.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(item => item._id)
+      )
+    );
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
-        saveUserWorkAction({ [entity.itemGroups[0].items[0]._id]: { scratchpad: entity.freeFormNotes || {} } })
+        saveUserWorkAction({
+          [entity.itemGroups[0].items[0]._id]: { scratchpad: entity.freeFormNotes || {} }
+        })
       );
     }
     if (entity.thumbnail === defaultImage) {
@@ -769,7 +833,10 @@ function* receiveTestByIdSaga({ payload }) {
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
       yield put(push("/author/tests"));
-      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+      yield call(
+        message.error,
+        "You can no longer use this as sharing access has been revoked by author."
+      );
     } else {
       yield call(message.error, errorMessage);
     }
@@ -964,7 +1031,12 @@ function* updateRegradeDataSaga({ payload }) {
 function* shareTestSaga({ payload }) {
   try {
     yield call(contentSharingApi.shareContent, payload);
-    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.data.contentType }));
+    yield put(
+      receiveSharedWithListAction({
+        contentId: payload.contentId,
+        contentType: payload.data.contentType
+      })
+    );
     yield call(message.success, "Successfully shared");
   } catch (e) {
     console.warn(e);
@@ -1013,7 +1085,10 @@ function* publishTestSaga({ payload }) {
 
     const features = yield select(getUserFeatures);
     if (features.isPublisherAuthor && !assignFlow) {
-      yield call(testsApi.updateTestStatus, { testId: id, status: testItemStatusConstants.INREVIEW });
+      yield call(testsApi.updateTestStatus, {
+        testId: id,
+        status: testItemStatusConstants.INREVIEW
+      });
       yield put(updateTestStatusAction(testItemStatusConstants.INREVIEW));
       yield call(message.success, "Review request is submitted successfully.");
     } else {
@@ -1022,7 +1097,9 @@ function* publishTestSaga({ payload }) {
     }
     if (features.isCurator || features.isPublisherAuthor) {
       yield put(push(`/author/tests?filter=AUTHORED_BY_ME`));
-      return message.success("Test saved successfully. Test not visible? Clear the applied filters.");
+      return message.success(
+        "Test saved successfully. Test not visible? Clear the applied filters."
+      );
     }
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
@@ -1076,7 +1153,12 @@ function* receiveSharedWithListSaga({ payload }) {
 function* deleteSharedUserSaga({ payload }) {
   try {
     const authors = yield call(contentSharingApi.deleteSharedUser, payload);
-    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.contentType }));
+    yield put(
+      receiveSharedWithListAction({
+        contentId: payload.contentId,
+        contentType: payload.contentType
+      })
+    );
   } catch (e) {
     const errorMessage = "delete shared user is failing";
     yield call(message.error, errorMessage);
@@ -1163,12 +1245,15 @@ function* setTestDataAndUpdateSaga(payload) {
 
       let testObj = produce(newTest, draft => {
         draft.itemGroups = transformItemGroupsUIToMongo(draft.itemGroups);
-        if (!testContentVisibility && (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)) {
+        if (
+          !testContentVisibility &&
+          (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)
+        ) {
           draft.testContentVisibility = test.testContentVisibility.ALWAYS;
         }
       });
-      //summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
-      //passages doesnt accepted by BE
+      // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
+      // passages doesnt accepted by BE
       testObj = omit(testObj, ["passages", "summary"]);
       const entity = yield call(testsApi.create, testObj);
 
@@ -1179,7 +1264,7 @@ function* setTestDataAndUpdateSaga(payload) {
         }
       });
 
-      //TODO: is this logic still relevant?
+      // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(replace(`/author/tests/tab/${payload.current}/id/${entity._id}`));
       } else {
@@ -1190,7 +1275,10 @@ function* setTestDataAndUpdateSaga(payload) {
           })
         );
       }
-      yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+      yield call(
+        message.success,
+        `Your work is automatically saved as a draft assessment named ${entity.title}`
+      );
     }
 
     // if item has passage, add the passage to test as well. (review tab requires it)
@@ -1217,14 +1305,24 @@ function* getEvaluation(testItemId, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem;
   const questions = _keyBy(testItem.data.questions, "id");
   const answers = yield select(state => get(state, "answers", {}));
-  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, newScore || itemLevelScore);
+  const evaluation = yield evaluateItem(
+    answers,
+    questions,
+    itemLevelScoring,
+    newScore || itemLevelScore
+  );
   return evaluation;
 }
 function* getEvaluationFromItem(testItem, newScore) {
   const { itemLevelScore, itemLevelScoring = false } = testItem;
   const questions = _keyBy(testItem.data.questions, "id");
   const answers = yield select(state => get(state, "answers", {}));
-  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, newScore || itemLevelScore);
+  const evaluation = yield evaluateItem(
+    answers,
+    questions,
+    itemLevelScoring,
+    newScore || itemLevelScore
+  );
   return evaluation;
 }
 
@@ -1333,10 +1431,14 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     yield put(receivePerformanceBandSuccessAction(performanceBandProfiles));
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles));
     yield put(setDefaultTestTypeProfilesAction(defaultTestSettings));
-    const performanceBand = getDefaultSettings({ testType: testEntity?.testType, defaultTestProfiles })
-      ?.performanceBand;
-    const standardGradingScale = getDefaultSettings({ testType: testEntity?.testType, defaultTestProfiles })
-      ?.standardProficiency;
+    const performanceBand = getDefaultSettings({
+      testType: testEntity?.testType,
+      defaultTestProfiles
+    })?.performanceBand;
+    const standardGradingScale = getDefaultSettings({
+      testType: testEntity?.testType,
+      defaultTestProfiles
+    })?.standardProficiency;
     yield put(updateAssingnmentSettingsAction({ performanceBand, standardGradingScale }));
   } catch (e) {
     yield call(message.error("Get default settings failed"));
@@ -1361,11 +1463,11 @@ function* duplicateTestSaga({ payload }) {
  * add passage items to test.
  * dispatched when user want to add all items of passage to the test.
  */
-function* setAndSavePassageItems({ payload }) {
+function* setAndSavePassageItems({ payload: { passageItems, page } }) {
   try {
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     const test = yield select(getTestSelector);
-    const { passageId } = payload?.[0] || {};
+    const { passageId } = passageItems?.[0] || {};
     const currentPassages = yield select(getCurentTestPassagesSelector);
     const currentPassageIds = currentPassages.map(i => i._id);
     // new payload to update the tests' store's entity.
@@ -1377,8 +1479,13 @@ function* setAndSavePassageItems({ payload }) {
     }
     const testItems = yield select(getSelectedTestItemsSelector);
     newPayload.itemGroups = test.itemGroups;
-    newPayload.itemGroups[currentGroupIndex].items = [...testItems, ...payload];
-    const itemIds = _uniq(newPayload.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(i => i._id));
+    newPayload.itemGroups[currentGroupIndex].items = [...testItems, ...passageItems];
+    const itemIds = _uniq(
+      newPayload.itemGroups.flatMap(itemGroup => itemGroup.items || []).map(i => i._id)
+    );
+    if (!test._id && page !== "itemList") {
+      yield put(createTestAction({ ...test, ...newPayload }));
+    }
     // for weird reason there is another store to show if a testItem should be shown
     // as selected or not in item banks page. Adding test items to there.
     yield put(setTestItemsAction(itemIds));
@@ -1407,7 +1514,9 @@ function* updateTestAndNavigate({ payload }) {
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) {
-      let test = data._id ? yield updateTestSaga({ payload: { data, id: data._id } }) : yield createTest(data);
+      const test = data._id
+        ? yield updateTestSaga({ payload: { data, id: data._id } })
+        : yield createTest(data);
 
       if (!data._id) {
         pathname = pathname.replace("undefined", test._id);
@@ -1432,11 +1541,16 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     }
     yield call(testsApi.updateTestStatus, payload);
     yield put(approveOrRejectSingleTestSuccessAction(payload));
-    message.success(`Test ${payload.status === "published" ? "Approved" : "Rejected"} Successfully.`);
+    message.success(
+      `Test ${payload.status === "published" ? "Approved" : "Rejected"} Successfully.`
+    );
     yield put(push("/author/tests"));
   } catch (error) {
     console.error(error);
-    message.error(error?.data?.message || `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`);
+    message.error(
+      error?.data?.message ||
+        `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`
+    );
   }
 }
 
@@ -1446,7 +1560,9 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
     authorDifficulty: itemGroup.difficulty,
     tags: itemGroup.tags?.map(tag => tag.tagName) || []
   };
-  Object.keys(optionalFields).forEach(key => optionalFields[key] === undefined && delete optionalFields[key]);
+  Object.keys(optionalFields).forEach(
+    key => optionalFields[key] === undefined && delete optionalFields[key]
+  );
   return {
     data:
       itemGroup.type === ITEM_GROUP_TYPES.STATIC
@@ -1468,9 +1584,7 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
 
 function getItemGroupsTransformed(test) {
   const allStaticGroupItemIds = getStaticGroupItemIds(test);
-  return test.itemGroups.map((itemGroup, index) => {
-    return tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds);
-  });
+  return test.itemGroups.map((itemGroup, index) => tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds));
 }
 
 function* addItemsToAutoselectGroupsSaga({ payload: test }) {
@@ -1496,7 +1610,10 @@ export function* addAutoselectGroupItems({ payload: test }) {
     const promises = transformedData.map(({ data, isFetchItems }) => {
       if (isFetchItems) {
         return testItemsApi
-          .getAutoSelectedItems({ ...data, search: { ...data.search, nInItemIds: allStaticGroupItemIds } })
+          .getAutoSelectedItems({
+            ...data,
+            search: { ...data.search, nInItemIds: allStaticGroupItemIds }
+          })
           .then(response => ({ ...response }));
       }
       return Promise.resolve(null);
@@ -1622,10 +1739,11 @@ export const getTestItemsSelector = createSelector(
 export const getDisableAnswerOnPaperSelector = createSelector(
   getTestEntitySelector,
   test =>
-    //disable answer on paper feature for deliveryType:LIMITED_RANDOM or group.type:AUTOSELECT
+    // disable answer on paper feature for deliveryType:LIMITED_RANDOM or group.type:AUTOSELECT
     test.itemGroups.some(
       group =>
-        group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM || group.type === ITEM_GROUP_TYPES.AUTOSELECT
+        group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
+        group.type === ITEM_GROUP_TYPES.AUTOSELECT
     )
 );
 
@@ -1686,8 +1804,7 @@ export const getUserListSelector = createSelector(
 
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
-  state => {
-    return state.itemGroups
+  state => state.itemGroups
       .flatMap(itemGroup => itemGroup.items || [])
       .map(item => {
         if (!item || !item.rows) return [];
@@ -1702,7 +1819,12 @@ export const getTestItemsRowsSelector = createSelector(
               referencePopulate = item.data.questions.find(q => q._id === widget.reference);
             }
 
-            if (!referencePopulate && item.data && item.data.resources && item.data.resources.length) {
+            if (
+              !referencePopulate &&
+              item.data &&
+              item.data.resources &&
+              item.data.resources.length
+            ) {
               referencePopulate = item.data.resources.find(r => r._id === widget.reference);
             }
 
@@ -1712,8 +1834,7 @@ export const getTestItemsRowsSelector = createSelector(
             };
           })
         }));
-      });
-  }
+      })
 );
 
 export const getTestCreatedItemsSelector = createSelector(
@@ -1721,8 +1842,8 @@ export const getTestCreatedItemsSelector = createSelector(
   state => get(state, "createdItems", [])
 );
 
-//created user state here bcz of circular dependency.
-//login ducks update test state for filters.
+// created user state here bcz of circular dependency.
+// login ducks update test state for filters.
 const userStateSelector = state => state.user;
 
 export const getUserFeatures = createSelector(
@@ -1736,11 +1857,11 @@ export const getReleaseScorePremiumSelector = createSelector(
   (entity, features) => {
     const { subjects, grades } = entity;
     return (
-      features["assessmentSuperPowersReleaseScorePremium"] ||
+      features.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
-          features: features,
+          features,
           inputFeatures: "assessmentSuperPowersReleaseScorePremium",
           gradeSubject: { grades, subjects }
         }))

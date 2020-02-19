@@ -3,24 +3,26 @@ import { capitalize } from "lodash";
 import { Button, Table } from "antd";
 import { deleteRed, themeColor } from "@edulastic/colors";
 import { IconPencilEdit } from "@edulastic/icons";
-import { StyledTableButton } from "../../../common/styled";
 import styled from "styled-components";
-import {
-  getCustomReportList,
-  updateCustomReportAction,
-  updatePermissionStatusAction
-} from "../CustomReportContainer/ducks";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { getCustomReportList, updatePermissionStatusAction } from "../CustomReportContainer/ducks";
+import { StyledTableButton } from "../../../common/styled";
 
-const CustomReportTable = ({ customReportData = [], updatePermissionStatusAction, showEditModal }) => {
+const CustomReportTable = ({
+  customReportData = [],
+  updatePermissionStatus,
+  showEditModal,
+  selectedDistrictId
+}) => {
   const onToggle = id => {
     const reportData = customReportData.find(report => report._id === id);
     const { _id, permissions } = reportData;
-    updatePermissionStatusAction({
+    updatePermissionStatus({
       _id,
       enable: !permissions?.[0].enabled,
-      permissionIds: permissions.map(o => o._id)
+      permissionIds: permissions.map(o => o._id),
+      districtId: selectedDistrictId
     });
   };
   const columns = [
@@ -72,7 +74,9 @@ const CustomReportTable = ({ customReportData = [], updatePermissionStatusAction
             <StyledEditButton onClick={() => showEditModal("edit", record._id)} title="Edit">
               <IconPencilEdit color={themeColor} />
             </StyledEditButton>
-            <StyledButton onClick={() => onToggle(record._id)}>{enabled === false ? "ENABLE" : "DISABLE"}</StyledButton>
+            <StyledButton onClick={() => onToggle(record._id)}>
+              {enabled === false ? "ENABLE" : "DISABLE"}
+            </StyledButton>
           </>
         );
       }
@@ -81,7 +85,13 @@ const CustomReportTable = ({ customReportData = [], updatePermissionStatusAction
 
   return (
     <div>
-      <Table rowKey={row => row.id} columns={columns} dataSource={customReportData} pagination={false} bordered />
+      <Table
+        rowKey={row => row.id}
+        columns={columns}
+        dataSource={customReportData}
+        pagination={false}
+        bordered
+      />
     </div>
   );
 };
@@ -92,8 +102,7 @@ const mapStateToProps = state => ({
 const withConnect = connect(
   mapStateToProps,
   {
-    updatePermissionStatusAction,
-    updateCustomReportAction
+    updatePermissionStatus: updatePermissionStatusAction
   }
 );
 

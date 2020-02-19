@@ -1,6 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { Button, Spin } from "antd";
+import styled from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
 import { getDistrictDataSelector } from "../../Upgrade/ducks";
 import {
   createCustomReportAction,
@@ -15,47 +18,33 @@ import {
   updateCustomReportAction
 } from "./ducks";
 import CustomReportTable from "../CustomReportTable";
-import { Button, Spin } from "antd";
-import styled from "styled-components";
 import CustomReportModel from "../CustomReportModal";
 import DistrictSearchForm from "../../Common/Form/DistrictSearchForm";
-import { withNamespaces } from "@edulastic/localization";
 
 class Index extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedDistrictData: {},
-      customReportLoading: false,
-      customReportList: [],
-      isEditModalVisible: false,
-      isCreateModalVisible: false
-    };
-  }
-
   getCustomReportForDistrict = val => {
-    const { getCustomReportAction } = this.props;
-    getCustomReportAction({ id: val._id });
+    const { getCustomReport } = this.props;
+    getCustomReport({ id: val._id });
   };
 
   showModal = (modalType, reportId) => {
-    const { setOpenModalTypeAction, setSelectedReportDataAction, customReportList = [] } = this.props;
-    setSelectedReportDataAction(customReportList.find(o => o._id === reportId));
-    setOpenModalTypeAction(modalType);
+    const { setOpenModalType, setSelectedReportData, customReportList = [] } = this.props;
+    setSelectedReportData(customReportList.find(o => o._id === reportId));
+    setOpenModalType(modalType);
   };
 
   closeModal = () => {
-    const { setOpenModalTypeAction } = this.props;
-    setOpenModalTypeAction("");
+    const { setOpenModalType } = this.props;
+    setOpenModalType("");
   };
 
   submitModal = data => {
-    const { createCustomReportAction, updateCustomReportAction, openModalType } = this.props;
+    const { createCustomReport, updateCustomReport, openModalType } = this.props;
     console.log(`submit called!`);
     if (openModalType === "edit") {
-      updateCustomReportAction(data);
+      updateCustomReport(data);
     } else {
-      createCustomReportAction(data);
+      createCustomReport(data);
     }
   };
 
@@ -68,7 +57,6 @@ class Index extends React.Component {
       reportData,
       t
     } = this.props;
-    console.log(`district ${districtId}`);
     return (
       <>
         <DistrictSearchForm getCustomReport={this.getCustomReportForDistrict} />
@@ -78,10 +66,10 @@ class Index extends React.Component {
           </Button>
         </StyledButtonContainer>
         {customReportLoading ? (
-          <Spin size={"large"} />
+          <Spin size="large" />
         ) : (
           <CustomReportTable
-            selectedDistrict={districtId}
+            selectedDistrictId={districtId}
             customReportData={customReportList}
             showEditModal={this.showModal}
           />
@@ -113,11 +101,11 @@ const mapStateToProps = state => ({
 const withConnect = connect(
   mapStateToProps,
   {
-    getCustomReportAction,
-    createCustomReportAction,
-    updateCustomReportAction,
-    setOpenModalTypeAction,
-    setSelectedReportDataAction
+    getCustomReport: getCustomReportAction,
+    createCustomReport: createCustomReportAction,
+    updateCustomReport: updateCustomReportAction,
+    setOpenModalType: setOpenModalTypeAction,
+    setSelectedReportData: setSelectedReportDataAction
   }
 );
 

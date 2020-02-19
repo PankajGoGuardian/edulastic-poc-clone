@@ -5,12 +5,16 @@ import { adminApi, customReportApi, schoolApi } from "@edulastic/api";
 import { message } from "antd";
 
 const GET_CUSTOM_REPORT_REQUEST = "[custom-reports] get custom reports for district request";
-const GET_CUSTOM_REPORT_REQUEST_SUCCESS = "[custom-reports] get custom reports for district success";
+const GET_CUSTOM_REPORT_REQUEST_SUCCESS =
+  "[custom-reports] get custom reports for district success";
 const GET_CUSTOM_REPORT_REQUEST_ERROR = "[custom-reports] get custom reports for district error";
 
-const UPDATE_PERMISSION_STATUS_REQUEST = "[custom-reports] get custom reports permission status request";
-const UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS = "[custom-reports] get custom reports permission status success";
-const UPDATE_PERMISSION_STATUS_REQUEST_ERROR = "[custom-reports] get custom reports permission status error";
+const UPDATE_PERMISSION_STATUS_REQUEST =
+  "[custom-reports] get custom reports permission status request";
+const UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS =
+  "[custom-reports] get custom reports permission status success";
+const UPDATE_PERMISSION_STATUS_REQUEST_ERROR =
+  "[custom-reports] get custom reports permission status error";
 
 const UPDATE_CUSTOM_REPORT_REQUEST = "[custom-reports] update custom report request";
 const UPDATE_CUSTOM_REPORT_REQUEST_SUCCESS = "[custom-reports] update custom report success";
@@ -122,7 +126,7 @@ const initialState = {
 };
 
 export const customReportReducer = createReducer(initialState, {
-  [GET_CUSTOM_REPORT_REQUEST]: (state, { payload }) => {
+  [GET_CUSTOM_REPORT_REQUEST]: state => {
     state.loading = true;
   },
   [GET_CUSTOM_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -133,7 +137,7 @@ export const customReportReducer = createReducer(initialState, {
     state.loading = false;
     state.error = payload.error;
   },
-  [UPDATE_PERMISSION_STATUS_REQUEST]: (state, { payload }) => {
+  [UPDATE_PERMISSION_STATUS_REQUEST]: state => {
     state.loading = true;
   },
   [UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -144,7 +148,7 @@ export const customReportReducer = createReducer(initialState, {
     state.loading = false;
     state.error = payload.error;
   },
-  [UPDATE_CUSTOM_REPORT_REQUEST]: (state, { payload }) => {
+  [UPDATE_CUSTOM_REPORT_REQUEST]: state => {
     state.loading = true;
   },
   [UPDATE_CUSTOM_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -155,7 +159,7 @@ export const customReportReducer = createReducer(initialState, {
     state.loading = false;
     state.error = payload.error;
   },
-  [CREATE_CUSTOM_REPORT_REQUEST]: (state, { payload }) => {
+  [CREATE_CUSTOM_REPORT_REQUEST]: state => {
     state.loading = true;
   },
   [CREATE_CUSTOM_REPORT_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -169,27 +173,27 @@ export const customReportReducer = createReducer(initialState, {
   [SET_OPEN_MODAL_TYPE]: (state, { payload }) => {
     state.modalType = payload;
   },
-  [GET_DISTRICT_DATA]: (state, { payload }) => {
+  [GET_DISTRICT_DATA]: state => {
     state.loadingDistrict = true;
   },
   [GET_DISTRICT_DATA_SUCCESS]: (state, { payload }) => {
     state.loadingDistrict = false;
     state.districtList = payload;
   },
-  [GET_DISTRICT_DATA_ERROR]: (state, { payload }) => {
+  [GET_DISTRICT_DATA_ERROR]: state => {
     state.loadingDistrict = false;
   },
   [SET_SELECTED_DISTRICT_STATE]: (state, { payload }) => {
     state.selectedDistrict = state.districtList[payload] || {};
   },
-  [SEARCH_SCHOOL_REQUEST]: (state, { payload }) => {
+  [SEARCH_SCHOOL_REQUEST]: state => {
     state.searchingSchool = true;
   },
   [SEARCH_SCHOOL_REQUEST_SUCCESS]: (state, { payload }) => {
     state.searchingSchool = false;
     state.searchedSchool = payload;
   },
-  [SEARCH_SCHOOL_REQUEST_ERROR]: (state, { payload }) => {
+  [SEARCH_SCHOOL_REQUEST_ERROR]: state => {
     state.searchingSchool = false;
   },
   [SET_SELECTED_REPORT_DATA]: (state, { payload }) => {
@@ -212,7 +216,7 @@ function* getCustomReportRequest({ payload }) {
     });
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to fetch custom report for district Please try again...";
+    const msg = "Failed to fetch custom report for district Please try again...";
     yield call(message.error, msg);
     yield put({
       type: GET_CUSTOM_REPORT_REQUEST_ERROR,
@@ -228,9 +232,17 @@ function* updatePermissionStatusRequest({ payload }) {
       type: UPDATE_PERMISSION_STATUS_REQUEST_SUCCESS,
       payload: permissionStatus
     });
+    const customReportList = yield call(customReportApi.getCustomReports, {
+      id: payload.districtId
+    });
+    yield put({
+      type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
+      payload: customReportList
+    });
+    yield call(message.success, "Permission updated successfully");
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to update custom report permission status Please try again...";
+    const msg = "Failed to update custom report permission status Please try again...";
     yield call(message.error, msg);
     yield put({
       type: UPDATE_PERMISSION_STATUS_REQUEST_ERROR,
@@ -246,9 +258,17 @@ function* updateCustomReportRequest({ payload }) {
       type: UPDATE_CUSTOM_REPORT_REQUEST_SUCCESS,
       payload: updatedReport
     });
+    const customReportList = yield call(customReportApi.getCustomReports, {
+      id: payload.districtId
+    });
+    yield put({
+      type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
+      payload: customReportList
+    });
+    yield call(message.success, "Custom Report updated successfully");
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to update custom report Please try again...";
+    const msg = "Failed to update custom report Please try again...";
     yield call(message.error, msg);
     yield put({
       type: UPDATE_CUSTOM_REPORT_REQUEST_ERROR,
@@ -264,9 +284,17 @@ function* createCustomReportRequest({ payload }) {
       type: CREATE_CUSTOM_REPORT_REQUEST_SUCCESS,
       payload: newReport
     });
+    const customReportList = yield call(customReportApi.getCustomReports, {
+      id: payload.districtId
+    });
+    yield put({
+      type: GET_CUSTOM_REPORT_REQUEST_SUCCESS,
+      payload: customReportList
+    });
+    yield call(message.success, "Custom Report created successfully");
   } catch (error) {
     console.log("err", error.stack);
-    let msg = "Failed to create custom report Please try again...";
+    const msg = "Failed to create custom report Please try again...";
     yield call(message.error, msg);
     yield put({
       type: CREATE_CUSTOM_REPORT_REQUEST_ERROR,
@@ -283,6 +311,7 @@ function* getDistrictData({ payload }) {
       payload: districts.data
     });
   } catch (err) {
+    const msg = "Failed to get district info, please try again...";
     yield put({
       type: GET_DISTRICT_DATA_ERROR,
       payload: { error: msg }
@@ -299,6 +328,7 @@ function* searchSchoolRequest({ payload }) {
       payload: schools.data
     });
   } catch (err) {
+    const msg = "School search failed, please try again...";
     yield put({
       type: SEARCH_SCHOOL_REQUEST_ERROR,
       payload: { error: msg }

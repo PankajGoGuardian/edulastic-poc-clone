@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Col, Icon, Row, Select, message } from "antd";
+import { Col, Icon, Row, Select, message, Tooltip } from "antd";
 import moment from "moment";
 import {
   getSortedTestActivitySelector,
@@ -179,13 +179,17 @@ function LCBAssignmentSettings({
               <Col>
                 <SettingsBtn onClick={() => setShowSettings(old => !old)}>
                   TEST LEVEL SETTINGS
-                  <QuestionIcon
-                    customStyle={{ position: "relative", bottom: "8px", marginLeft: "6px" }}
-                    id="test-level-settings"
-                    onClick={event => {
-                      event.stopPropagation();
-                    }}
-                  />
+                  <Tooltip title="Below settings can’t be changed here. To modify edit the test and make changes.">
+                    <span>
+                      <QuestionIcon
+                        customStyle={{ position: "relative", bottom: "8px", marginLeft: "6px" }}
+                        id="test-level-settings"
+                        onClick={event => {
+                          event.stopPropagation();
+                        }}
+                      />
+                    </span>
+                  </Tooltip>
                   {showSettings ? (
                     <Icon style={{ marginLeft: "-12px" }} type="caret-up" />
                   ) : (

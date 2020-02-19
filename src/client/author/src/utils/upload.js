@@ -1,5 +1,6 @@
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
+import AppConfig from "../../../../../app-config";
 
 const s3Folders = Object.values(aws.s3Folders);
 /**
@@ -31,5 +32,10 @@ export const uploadToS3 = async (file, folder, subFolder, progressCallback, canc
     cancelUpload = () => {};
   }
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload);
+
+  // return CDN url for assets in production
+  if (AppConfig.appEnv === "production") {
+    return `${AppConfig.cdnURI}/${fields.key}`;
+  }
   return `${url}/${fields.key}`;
 };

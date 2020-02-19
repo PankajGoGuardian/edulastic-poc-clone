@@ -5,7 +5,7 @@ import { fileApi } from "@edulastic/api";
 import { aws, question, questionType } from "@edulastic/constants";
 import { replaceLatexesWithMathHtml } from "./utils/mathUtils";
 import { message } from "antd";
-import { empty } from "rxjs";
+import AppConfig from "../../../app-config";
 
 export const ALPHABET = [
   "A",
@@ -91,6 +91,11 @@ export const uploadToS3 = async (file, folder) => {
   formData.append("file", file);
 
   await fileApi.uploadBySignedUrl(url, formData);
+
+  // return CDN url for assets in production
+  if (AppConfig.appEnv === "production") {
+    return `${AppConfig.cdnURI}/${fields.key}`;
+  }
   return `${url}/${fields.key}`;
 };
 

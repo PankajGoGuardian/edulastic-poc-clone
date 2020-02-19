@@ -32,16 +32,21 @@ const PUBLISHED = "published";
 const DRAFT = "draft";
 
 // Types
-export const FETCH_CURRICULUM_SEQUENCES = "[curriculum-sequence] fetch list of curriculum sequences";
+export const FETCH_CURRICULUM_SEQUENCES =
+  "[curriculum-sequence] fetch list of curriculum sequences";
 export const UPDATE_CURRICULUM_SEQUENCE = "[curriculum-sequence-ui] update curriculum sequence";
-export const UPDATE_CURRICULUM_SEQUENCE_LIST = "[curriculum-sequence-ui] update curriculum sequence list";
+export const UPDATE_CURRICULUM_SEQUENCE_LIST =
+  "[curriculum-sequence-ui] update curriculum sequence list";
 export const FETCH_CURRICULUM_SEQUENCES_ERROR = "[curriculum-sequence-ui] error no ids provided";
 export const PUT_CURRICULUM_SEQUENCE = "[curriculum-sequence] put curriculum sequence";
 export const SEARCH_CURRICULUM_SEQUENCES = "[curriculum-sequence] search curriculum sequences";
 export const SEARCH_GUIDES = "[curriculum-sequence] search curriculum sequences - guides";
-export const SEARCH_GUIDES_RESULT = "[curriculum-sequence] search curriculum sequences - guides - result";
-export const SEARCH_CONTENT_CURRICULUMS = "[curriculum-sequence] search curriculum sequences - content";
-export const SEARCH_CONTENT_CURRICULUMS_RESULT = "[curriculum-sequence] search curriculum sequences - content - result";
+export const SEARCH_GUIDES_RESULT =
+  "[curriculum-sequence] search curriculum sequences - guides - result";
+export const SEARCH_CONTENT_CURRICULUMS =
+  "[curriculum-sequence] search curriculum sequences - content";
+export const SEARCH_CONTENT_CURRICULUMS_RESULT =
+  "[curriculum-sequence] search curriculum sequences - content - result";
 export const CHANGE_GUIDE = "[curriculum-sequence] change curriculum sequence (guide)";
 export const SET_PUBLISHER = "[curriculum-sequence] set selected publisher";
 export const SET_GUIDE = "[curriculum-sequence] set selected guide";
@@ -53,10 +58,12 @@ export const CREATE_ASSIGNMENT = "[curriculum-sequence] create assignment";
 export const CREATE_ASSIGNMENT_NOW = "[curriculum-sequence] create assignment now";
 export const CREATE_ASSIGNMENT_OK = "[curriculum-sequence] create assignment ok";
 export const SET_SELECTED_ITEMS_FOR_ASSIGN = "[curriculum-sequence] set selected items for assign";
-export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = "[curriculum-sequence] set selected items for assign init";
+export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT =
+  "[curriculum-sequence] set selected items for assign init";
 export const SET_DATA_FOR_ASSIGN_INIT = "[curriculum-sequence] set data for assign init";
 export const SET_DATA_FOR_ASSIGN = "[curriculum-sequence] set data for assign";
-export const ADD_CONTENT_TO_CURRICULUM_RESULT = "[curriculum-sequence] add content to curriculum result";
+export const ADD_CONTENT_TO_CURRICULUM_RESULT =
+  "[curriculum-sequence] add content to curriculum result";
 export const REMOVE_ITEM_FROM_UNIT = "[curriculum-sequence] remove item from unit";
 export const SAVE_CURRICULUM_SEQUENCE = "[curriculum-sequence] save curriculum sequence";
 export const ADD_NEW_UNIT_INIT = "[curriculum-sequence] add new unit init";
@@ -114,8 +121,12 @@ export const getAllCurriculumSequencesAction = ids => {
     payload: ids
   };
 };
-export const approveOrRejectSinglePlaylistRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST);
-export const approveOrRejectSinglePlaylistSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS);
+export const approveOrRejectSinglePlaylistRequestAction = createAction(
+  APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST
+);
+export const approveOrRejectSinglePlaylistSuccessAction = createAction(
+  APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS
+);
 export const setPlaylistDataAction = createAction(SET_PLAYLIST_DATA);
 
 // State getters
@@ -137,11 +148,14 @@ const getSelectedItemsForAssign = state => {
   return state.curriculumSequence.selectedItemsForAssign;
 };
 
-const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
+const getDestinationCurriculumSequence = state =>
+  state.curriculumSequence.destinationCurriculumSequence;
 
 function* makeApiRequest(idsForFetch = []) {
   try {
-    const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
+    const unflattenedItems = yield all(
+      idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id))
+    );
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
@@ -155,7 +169,11 @@ function* makeApiRequest(idsForFetch = []) {
     }
     // Normalize data
     if (idsForFetch.length > 1) {
-      const curriculumSequenceSchema = new schema.Entity("curriculumSequenceList", {}, { idAttribute: "_id" });
+      const curriculumSequenceSchema = new schema.Entity(
+        "curriculumSequenceList",
+        {},
+        { idAttribute: "_id" }
+      );
       const userListSchema = [curriculumSequenceSchema];
 
       const {
@@ -173,7 +191,17 @@ function* makeApiRequest(idsForFetch = []) {
       yield put(updateCurriculumSequenceAction(items));
     }
   } catch (error) {
-    message.warning(`We're sorry, seems to be a problem contacting the server, try again in a few minutes`);
+    if (error.data.message === "permission denied") {
+      yield put(push("/author/playlists"));
+      yield call(
+        message.error,
+        "You can no longer use this as sharing access has been revoked by author."
+      );
+    } else {
+      message.warning(
+        `We're sorry, seems to be a problem contacting the server, try again in a few minutes`
+      );
+    }
   }
 }
 
@@ -195,7 +223,13 @@ function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
 
   try {
-    const dataToSend = omit(curriculumSequence, ["authors", "createdDate", "updatedDate", "sharedWith", "sharedType"]);
+    const dataToSend = omit(curriculumSequence, [
+      "authors",
+      "createdDate",
+      "updatedDate",
+      "sharedWith",
+      "sharedType"
+    ]);
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
 
     message.success(`Successfully saved ${response.title}`);
@@ -208,7 +242,10 @@ function* putCurriculumSequence({ payload }) {
 function* postSearchCurriculumSequence({ payload }) {
   try {
     const { publisher, type } = payload;
-    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher, type });
+    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, {
+      publisher,
+      type
+    });
     const ids = response.map(curriculum => curriculum._id);
     yield call(makeApiRequest, ids);
   } catch (error) {
@@ -219,7 +256,10 @@ function* postSearchCurriculumSequence({ payload }) {
 function* searchGuides({ payload }) {
   try {
     const { publisher, type } = payload;
-    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher, type });
+    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, {
+      publisher,
+      type
+    });
     yield put(searchGuideResultAction(response));
   } catch (error) {
     message.error("Something went wrong, please try again");
@@ -230,7 +270,10 @@ function* searchContent() {
   try {
     const publisher = yield select(getPublisher);
     const type = CURRICULUM_TYPE_CONTENT;
-    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, { publisher, type });
+    const response = yield call(curriculumSequencesApi.searchCurriculumSequences, {
+      publisher,
+      type
+    });
     yield put(searchContentResultAction(response));
   } catch (error) {
     message.error("Something went wrong, please try again");
@@ -332,7 +375,10 @@ function* createAssignmentNow({ payload }) {
   // NOTE: assign count is missing, how to implement it?
   assignData.class.push({ students, _id: userClass });
 
-  const curriculumAssignment = getCurriculumAsssignmentMatch(currentAssignment, destinationCurriculumSequence);
+  const curriculumAssignment = getCurriculumAsssignmentMatch(
+    currentAssignment,
+    destinationCurriculumSequence
+  );
 
   // assignment already in curriculum
   if (!isEmpty(curriculumAssignment)) {
@@ -350,7 +396,8 @@ function* createAssignmentNow({ payload }) {
     const haveMiscUnit = destinationModules.map(m => m.name.toLowerCase()).indexOf("misc") !== -1;
 
     const lastModuleId =
-      destinationModules[destinationModules.length - 1] && destinationModules[destinationModules.length - 1].id;
+      destinationModules[destinationModules.length - 1] &&
+      destinationModules[destinationModules.length - 1].id;
 
     // NOTE: what happens if no modules are present?
     if (!haveMiscUnit) {
@@ -552,7 +599,12 @@ function* useThisPlayListSaga({ payload }) {
     if (onChange && !urlHasUseThis) {
       yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary" } }));
     } else {
-      yield put(push({ pathname: `/author/playlists/${_id}/use-this`, state: { from: "favouritePlaylist" } }));
+      yield put(
+        push({
+          pathname: `/author/playlists/${_id}/use-this`,
+          state: { from: "favouritePlaylist" }
+        })
+      );
     }
   } catch (error) {
     console.error(error);
@@ -733,7 +785,10 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
     state.allCurriculumSequences.splice(state.allCurriculumSequences.indexOf(idForRemoval), 1);
   }
 
-  state.allCurriculumSequences = [...state.allCurriculumSequences, ...payload.allCurriculumSequences];
+  state.allCurriculumSequences = [
+    ...state.allCurriculumSequences,
+    ...payload.allCurriculumSequences
+  ];
   state.byId = { ...state.byId, ...payload.curriculumSequenceListObject };
   state.destinationCurriculumSequence = { ...state.byId[newGuideId] };
   state.selectedGuide = newGuideId;
@@ -976,7 +1031,9 @@ const removeItemFromUnitReducer = (state, { payload }) => {
 
   const moduleIndex = destinationCurriculumSequence.modules.map(m => m.id).indexOf(moduleId);
 
-  const itemIndex = destinationCurriculumSequence.modules[moduleIndex].data.map(d => d.id).indexOf(itemId);
+  const itemIndex = destinationCurriculumSequence.modules[moduleIndex].data
+    .map(d => d.id)
+    .indexOf(itemId);
 
   modules[moduleIndex].data.splice(itemIndex, 1);
 
@@ -1073,7 +1130,9 @@ function approveOrRejectSinglePlaylistReducer(state, { payload }) {
     destinationCurriculumSequence: {
       ...state.destinationCurriculumSequence,
       status: payload.status,
-      collections: payload.collections ? payload.collections : state.destinationCurriculumSequence.collections
+      collections: payload.collections
+        ? payload.collections
+        : state.destinationCurriculumSequence.collections
     }
   };
 }

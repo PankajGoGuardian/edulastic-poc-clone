@@ -7,7 +7,8 @@ import {
   authenticationSaga,
   testActivityReportSaga,
   studentManageClassSaga,
-  signupSaga
+  signupSaga,
+  StudentPlaylistSaga
 } from "./student/sagas";
 import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
@@ -16,7 +17,7 @@ import { default as adminSagas } from "./admin/sagas";
 import { saga as customReportSaga } from "./admin/Components/CustomReportContainer/ducks";
 import publisherSagas from "./publisher/sagas";
 
-export default function*() {
+export default function* () {
   yield all([
     answerSaga(),
     skillReportSaga(),
@@ -30,6 +31,7 @@ export default function*() {
     CurriculumSequenceSaga(),
     signupSaga(),
     ...publisherSagas,
-    customReportSaga
+    customReportSaga,
+    StudentPlaylistSaga()
   ]);
 }

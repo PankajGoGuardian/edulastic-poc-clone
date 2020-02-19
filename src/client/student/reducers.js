@@ -8,6 +8,8 @@ import testFeedback from "./TestAcitivityReport/ducks";
 
 import user from "./Login/ducks";
 import signup from "./Signup/duck";
+import { slice as studentPlaylistSlice } from "./StudentPlaylist/ducks";
+
 
 const studentReducer = {
   ui,
@@ -18,7 +20,8 @@ const studentReducer = {
   studentAssignment: studentAssignmentReducer,
   studentTestItems: testItem,
   studentEnrollClassList: studentEnrollClassReducer,
-  signup
+  signup,
+  studentPlaylist: studentPlaylistSlice.reducer
 };
 
 export default studentReducer;

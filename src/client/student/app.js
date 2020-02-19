@@ -12,7 +12,8 @@ import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
 import { Report } from "./Reports";
-//TODOSidebar
+import { StudentPlaylist } from "./StudentPlaylist";
+// TODOSidebar
 import { ReportList } from "./TestAcitivityReport";
 import { Profile } from "./Profile";
 
@@ -25,7 +26,7 @@ import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 
 const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
-  let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
+  const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
@@ -42,7 +43,7 @@ const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
                 <Route
                   path={`${
                     match.url
-                  }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
+                    }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
                   component={DeepLink}
                 />
                 <Route
@@ -59,6 +60,7 @@ const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
                   component={ReportList}
                 />
                 <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
+                <Route path={`${match.url}/playlist`} component={StudentPlaylist} />
               </Switch>
             </ErrorHandler>
           </Wrapper>

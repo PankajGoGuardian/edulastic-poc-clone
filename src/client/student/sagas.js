@@ -5,3 +5,4 @@ export { authenticationSaga } from "./Login";
 export { testActivityReportSaga } from "./TestAcitivityReport";
 export { signupSaga } from "./Signup";
 export { studentManageClassSaga } from "./ManageClass";
+export { StudentPlaylistSaga } from "./StudentPlaylist"

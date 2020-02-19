@@ -19,7 +19,8 @@ import {
   IconManage,
   IconQuestion,
   IconProfileHighlight,
-  IconSignoutHighlight
+  IconSignoutHighlight,
+  IconPlaylist
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import {
@@ -47,6 +48,11 @@ const menuItems = [
     label: "Grades",
     icon: IconReport,
     path: "home/grades"
+  },
+  {
+    label: "Playlist",
+    icon: IconPlaylist,
+    path: "home/playlist"
   },
   {
     label: "Skill Mastery",

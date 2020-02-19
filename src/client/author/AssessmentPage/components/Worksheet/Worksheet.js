@@ -535,19 +535,15 @@ class WorksheetComponent extends React.Component {
       assessmentId,
       progressCallback: this.handleUploadProgress,
       isAddPdf,
-      cancelUpload: this.setCancelFn
+      cancelUpload: this.setCancelFn,
+      merge: true
     });
   }, 1000);
 
   handleCreateBlankAssessment = event => {
     event.stopPropagation();
-    const { isAddPdf } = this.state;
-    const {
-      createAssessment,
-      test: { _id: assessmentId }
-    } = this.props;
-
-    createAssessment({ assessmentId, isAddPdf });
+    this.handleAppendBlankPage();
+    this.setState({ uploadModal: false });
   };
 
   setCancelFn = _cancelFn => {

@@ -2,8 +2,10 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { call, put, all, takeLatest, select } from "redux-saga/effects";
+import nanoid from "nanoid";
 import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
+import produce from "immer";
 import { get, without, omit } from "lodash";
 
 import { testsApi, testItemsApi, fileApi } from "@edulastic/api";
@@ -14,7 +16,8 @@ import {
   createBlankTest,
   getTestEntitySelector,
   setTestDataAction,
-  getReleaseScorePremiumSelector
+  getReleaseScorePremiumSelector,
+  NewGroup
 } from "../TestPage/ducks";
 import { getUserSelector, getUserRole } from "../src/selectors/user";
 
@@ -99,7 +102,7 @@ const defaultPageStructure = [
 ];
 
 function* createAssessmentSaga({ payload }) {
-  let fileURI = "";
+  let { fileURI = "" } = payload;
   let testItem;
   let amountOfPDFPages = 0;
   let pageStructure = [];
@@ -114,8 +117,6 @@ function* createAssessmentSaga({ payload }) {
         payload.progressCallback,
         payload.cancelUpload
       );
-    } else if (payload.fileURI) {
-      fileURI = payload.fileURI;
     }
   } catch (error) {
     const errorMessage = error.message || "Upload PDF is failing";
@@ -159,14 +160,14 @@ function* createAssessmentSaga({ payload }) {
       const assessmentPageStructure = get(assessment, "pageStructure", [])
         .filter(page => page.URL === "blank" || payload.isAddPdf) // delete old pdf
         .concat(pageStructure)
-        .map((page, index) => ({
+        .map(page => ({
           ...page,
           _id: undefined
         }));
       const newPageStructure = assessmentPageStructure.length ? assessmentPageStructure : defaultPageStructure;
       const updatedAssessment = {
         ...assessment,
-        testItems: [],
+        itemGroups: [],
         isDocBased: true,
         docUrl: fileURI,
         annotations: [],
@@ -182,15 +183,15 @@ function* createAssessmentSaga({ payload }) {
         pageStructure: newPageStructure
       };
 
-      updatedAssessment.testItems =
-        assessment.testItems &&
-        assessment.testItems.map(o => ({
+      updatedAssessment.itemGroups = produce(assessment.itemGroups, itemGroups => {
+        itemGroups[0].items = itemGroups[0].items.map(o => ({
           itemId: o._id,
           maxScore: scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(o, o.data.questions, helpers.getPoints(o), scoring[o._id])
             : {}
         }));
+      });
 
       const updatePayload = {
         id: assessment._id,
@@ -199,7 +200,13 @@ function* createAssessmentSaga({ payload }) {
 
       const newTest = yield call(testsApi.update, updatePayload);
 
-      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure, version: newTest.version }));
+      yield put(
+        setTestDataAction({
+          docUrl: fileURI,
+          pageStructure: newPageStructure,
+          version: newTest.version
+        })
+      );
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     } else {
@@ -225,7 +232,7 @@ function* createAssessmentSaga({ payload }) {
           name
         },
         isDocBased: true,
-        itemGroups: [{ ...initialTestState.itemGroups[0], items: [item] }],
+        itemGroups: [{ ...NewGroup, _id: nanoid(), items: [item] }],
         docUrl: fileURI,
         releaseScore,
         assignments: undefined,
@@ -246,6 +253,7 @@ function* createAssessmentSaga({ payload }) {
       yield put(push(`/author/assessments/${assessment._id}`));
     }
   } catch (error) {
+    console.log(error, "error");
     let errorMessage;
     if (error.code === 1) {
       errorMessage = "Password protected PDF files are not supported";
@@ -259,7 +267,7 @@ function* createAssessmentSaga({ payload }) {
 
 function* uploadToDriveSaga({ payload }) {
   try {
-    //TODO call the new api and create test
+    // TODO call the new api and create test
     const { token, id, name, size, mimeType } = payload;
     const res = yield call(fileApi.uploadFromDrive, { token, id, name, folderName: "doc_based", size, mimeType });
     const fileURI = res.Location;

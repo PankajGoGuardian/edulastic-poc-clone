@@ -1,20 +1,11 @@
 import React, { Component } from "react";
-import { Button } from "antd";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Tabs } from "@edulastic/common";
+import { Tabs, FlexContainer } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
-import {
-  getItemDetailDraggingSelector,
-  useTabsAction,
-  addTabsAction,
-  changeTabTitleAction,
-  removeTabAction
-} from "../../../../ducks";
-import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
 import {
   Content,
@@ -22,15 +13,20 @@ import {
   TabContainer,
   WidgetContainer,
   AddPassageBtnContainer,
-  CollapseBtn,
   PlusIcon,
   AddTabButton,
   GreenPlusIcon
 } from "./styled";
-// src/client/author/ItemDetail/ducks.js
-import { setItemLevelScoreAction } from "../../../../ducks";
-import { FlexContainer } from "@edulastic/common";
 import { CustomStyleBtn } from "../../../../../../assessment/styled/ButtonStyles";
+import {
+  getItemDetailDraggingSelector,
+  addTabsAction,
+  changeTabTitleAction,
+  removeTabAction,
+  setItemLevelScoreAction
+} from "../../../../ducks";
+// src/client/author/ItemDetail/ducks.js
+
 class Container extends Component {
   state = {
     tabIndex: 0
@@ -42,10 +38,18 @@ class Container extends Component {
     dragging: PropTypes.bool.isRequired,
     onDeleteWidget: PropTypes.func.isRequired,
     onEditWidget: PropTypes.func.isRequired,
-    onEditTabTitle: PropTypes.func.isRequired,
     rowIndex: PropTypes.number.isRequired,
-    count: PropTypes.number.isRequired,
-    windowWidth: PropTypes.number.isRequired
+    itemData: PropTypes.object.isRequired,
+    setItemLevelScore: PropTypes.func.isRequired,
+    view: PropTypes.string.isRequired,
+    previewTab: PropTypes.string.isRequired,
+    changeTabTitle: PropTypes.string.isRequired,
+    isPassageQuestion: PropTypes.bool.isRequired,
+    handleAddToPassage: PropTypes.func.isRequired,
+    hideColumn: PropTypes.func.isRequired,
+    addTabs: PropTypes.func.isRequired,
+    isCollapsed: PropTypes.bool.isRequired,
+    removeTab: PropTypes.func.isRequired
   };
 
   handleTabChange = tabIndex => {
@@ -70,18 +74,21 @@ class Container extends Component {
     onAdd(object);
   };
 
-  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => (
-    <ItemDetailWidget
-      widget={widget}
-      onEdit={this.onEditWidgetClick(widget, rowIndex)}
-      onDelete={this.onDeleteWidgetClick(widgetIndex)}
-      widgetIndex={widgetIndex}
-      itemData={this.props.itemData}
-      rowIndex={rowIndex}
-      flowLayout={flowLayout}
-      previewTab={previewTab}
-    />
-  );
+  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => {
+    const { itemData } = this.props;
+    return (
+      <ItemDetailWidget
+        widget={widget}
+        onEdit={this.onEditWidgetClick(widget, rowIndex)}
+        onDelete={this.onDeleteWidgetClick(widgetIndex)}
+        widgetIndex={widgetIndex}
+        itemData={itemData}
+        rowIndex={rowIndex}
+        flowLayout={flowLayout}
+        previewTab={previewTab}
+      />
+    );
+  };
 
   renderWidgets = () => {
     const { row, dragging, rowIndex, itemData, setItemLevelScore, view, previewTab } = this.props;
@@ -90,7 +97,7 @@ class Container extends Component {
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
         {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
-          <FlexContainer justifyContent={"flex-end"} marginBottom={"1em"}>
+          <FlexContainer justifyContent="flex-end" marginBottom="1em">
             <div className="points">Points</div>
             <div>
               <input
@@ -114,9 +121,21 @@ class Container extends Component {
             )}
             {!!row.tabs.length &&
               tabIndex === widget.tabIndex &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
+              this.renderTabContent({
+                widgetIndex: i,
+                widget,
+                rowIndex,
+                flowLayout: row.flowLayout,
+                previewTab
+              })}
             {!row.tabs.length &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
+              this.renderTabContent({
+                widgetIndex: i,
+                widget,
+                rowIndex,
+                flowLayout: row.flowLayout,
+                previewTab
+              })}
           </React.Fragment>
         ))}
       </WidgetContainer>
@@ -148,13 +167,11 @@ class Container extends Component {
       changeTabTitle,
       rowIndex,
       dragging,
-      count,
       isPassageQuestion,
       handleAddToPassage,
       hideColumn,
       addTabs,
       isCollapsed,
-      useTabsLeft,
       removeTab
     } = this.props;
     const { tabIndex } = this.state;
@@ -193,13 +210,13 @@ class Container extends Component {
                       : {
                           textAlign: "center",
                           padding: "5px 15px",
-                          width: "50%"
+                          width: `calc(${100 / row.tabs.length}% - 10px)`
                         }
                   }
                   onChange={e => changeTabTitle(tabIndex, e.target.value)}
                   editable
                   close
-                  onClose={e => removeTab(key)}
+                  onClose={() => removeTab(key)}
                   isAddTab={false}
                   isPassageQuestion
                 />
@@ -207,26 +224,31 @@ class Container extends Component {
               {isPassageQuestion && row.tabs.length < 5 && (
                 <Tabs.Tab
                   key={row.length}
-                  label={"ADD TAB"}
+                  label="ADD TAB"
                   style={{
                     textAlign: "center",
                     padding: "5px 15px"
                   }}
                   addTabs={addTabs}
-                  isAddTab={true}
+                  isAddTab
                 />
               )}
             </Tabs>
           </TabContainer>
         )}
-        {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
+        {!row.widgets.length && dragging && (
+          <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />
+        )}
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
-            <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+            <AddNew
+              isAddFirstPart={isAddFirstPart}
+              onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
+            />
           </AddButtonContainer>
         )}
         {isPassageQuestion && (

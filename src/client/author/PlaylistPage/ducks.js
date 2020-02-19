@@ -3,11 +3,15 @@ import { createAction } from "redux-starter-kit";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get } from "lodash";
+import { omit, get } from "lodash";
 import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
-import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { white, themeColor } from "@edulastic/colors";
+import {
+  SET_MAX_ATTEMPT,
+  UPDATE_TEST_IMAGE,
+  SET_SAFE_BROWSE_PASSWORD
+} from "../src/constants/actions";
 import { getUserFeatures } from "../src/selectors/user";
 
 // constants
@@ -224,7 +228,9 @@ const removeTestFromPlaylistBulk = (playlist, payload) => {
   const { testIds } = payload;
   const newPlaylist = produce(playlist, draft => {
     draft.modules.forEach((obj, key) => {
-      draft.modules[key].data = draft.modules[key].data.filter(content => !testIds.includes(content.contentId));
+      draft.modules[key].data = draft.modules[key].data.filter(
+        content => !testIds.includes(content.contentId)
+      );
     });
   });
   return newPlaylist;
@@ -235,7 +241,7 @@ const moveContentInPlaylist = (playlist, payload) => {
   let newPlaylist;
   if (!toContentIndex) {
     newPlaylist = produce(playlist, draft => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
+      if (toModuleIndex !== 0 && !toModuleIndex) {
         return message.error("Invalid module selected");
       }
       draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
@@ -243,7 +249,7 @@ const moveContentInPlaylist = (playlist, payload) => {
     });
   } else {
     newPlaylist = produce(playlist, draft => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
+      if (toModuleIndex !== 0 && !toModuleIndex) {
         return message.error("Invalid module selected");
       }
       draft.modules[toModuleIndex].data.splice(
@@ -256,6 +262,95 @@ const moveContentInPlaylist = (playlist, payload) => {
   }
   return newPlaylist;
 };
+
+function addModuleToPlaylist(playlist, payload) {
+  const newPlaylist = produce(playlist, draft => {
+    const newModule = createNewModuleState(
+      payload.title || payload.moduleName,
+      payload.description
+    );
+    if (payload.afterModuleIndex !== undefined) {
+      draft.modules.splice(payload.afterModuleIndex, 0, newModule);
+    } else {
+      draft.modules.push(newModule);
+    }
+    return draft;
+  });
+  message.success("Module Added to playlist");
+  return newPlaylist;
+}
+
+function updateModuleInPlaylist(playlist, payload) {
+  const { id, title, description } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    if (payload !== undefined) {
+      if (title) {
+        draft.modules[id].title = title;
+        draft.modules[id].description = description;
+        message.success("Module updated successfully");
+      } else {
+        message.error("Module name cannot be empty");
+      }
+    } else {
+      message.error("Error updating module in playlist");
+    }
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function deleteModuleFromPlaylist(playlist, payload) {
+  const newPlaylist = produce(playlist, draft => {
+    if (payload !== undefined) {
+      draft.modules.splice(payload, 1);
+      message.success("Module Removed from playlist");
+    } else {
+      message.error("Error removing module from playlist");
+    }
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function resequenceModulesInPlaylist(playlist, payload) {
+  const { oldIndex, newIndex } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    const obj = draft.modules.splice(oldIndex, 1);
+    draft.modules.splice(newIndex, 0, obj[0]);
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function resequenceTestsInModule(playlist, payload) {
+  const { oldIndex, newIndex, mIndex } = payload;
+  const newPlaylist = produce(playlist, draft => {
+    const obj = draft.modules[mIndex].data.splice(oldIndex, 1);
+    draft.modules[mIndex].data.splice(newIndex, 0, obj[0]);
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function addTestToModule(entity, payload) {
+  const { testAdded, moduleIndex } = payload;
+  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
+    const newTest = createNewTestInModule(testAdded);
+    draft.data.push(newTest);
+    return draft;
+  });
+  message.success("Test Added in playlist");
+  return entity;
+}
+
+function addTestToModuleInBulk(entity, payload) {
+  const { tests, moduleIndex } = payload;
+  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
+    tests.forEach(test => draft.data.push(createNewTestInModule(test)));
+    return draft;
+  });
+  return entity;
+}
 
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
@@ -313,7 +408,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, entity: payload.updatedModule };
     }
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: produce(state.entity, draft => initialPlaylistState) };
+      return { ...state, entity: { ...initialPlaylistState } };
     case RECEIVE_PLAYLIST_BY_ID_REQUEST:
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:
@@ -335,19 +430,21 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_PLAYLIST_REQUEST:
       return { ...state, creating: true };
     case CREATE_PLAYLIST_SUCCESS:
-    case UPDATE_PLAYLIST_SUCCESS:
+    case UPDATE_PLAYLIST_SUCCESS: {
       const { testItems, ...entity } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...entity },
         creating: false
       };
-    case UPDATE_ENTITY_DATA:
+    }
+    case UPDATE_ENTITY_DATA: {
       const { testItems: items, ...dataRest } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...dataRest }
       };
+    }
     case CREATE_PLAYLIST_ERROR:
     case UPDATE_PLAYLIST_ERROR:
       return { ...state, creating: false, error: payload.error };
@@ -436,260 +533,6 @@ export const reducer = (state = initialState, { type, payload }) => {
   }
 };
 
-/**
- * Return all question of a test.
- * @param {Object} testItems - list of test items
- *
- */
-const getQuestions = (testItems = []) => {
-  const allQuestions = [];
-  for (const item of testItems) {
-    const { questions = [], resources = [] } = item.data || {};
-    allQuestions.push(...questions, ...resources);
-  }
-  return allQuestions;
-};
-
-// saga
-function* receivePlaylistByIdSaga({ payload }) {
-  try {
-    const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
-    yield put(receivePlaylistByIdSuccess(entity));
-  } catch (err) {
-    const errorMessage = "Receive playlist by id is failing";
-    yield call(message.error, errorMessage);
-    yield put(receivePlaylistByIdError(errorMessage));
-  }
-}
-
-function* createPlaylistSaga({ payload }) {
-  const { title } = payload.data;
-  try {
-    if (title !== undefined && !title.trim().length) {
-      return yield call(message.error(" Name field cannot be empty "));
-    }
-    const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate"]);
-
-    const entity = yield call(curriculumSequencesApi.create, { data: dataToSend });
-    const hash = payload.toReview ? "#review" : "";
-    yield put(createPlaylistSuccessAction(entity));
-    yield put(replace(`/author/playlists/${entity._id}/edit${hash}`));
-
-    yield call(message.success, "Playlist created");
-  } catch (err) {
-    const errorMessage = "Failed to create playlist!";
-    yield call(message.error, errorMessage);
-    yield put(createPlaylistErrorAction(errorMessage));
-  }
-}
-
-function* updatePlaylistSaga({ payload }) {
-  try {
-    // remove createdDate and updatedDate
-    const oldId = payload.data._id;
-    const dataToSend = omit(payload.data, [
-      "updatedDate",
-      "createdDate",
-      "sharedWith",
-      "authors",
-      "sharedType",
-      "_id",
-      "__v"
-    ]);
-
-    dataToSend.modules = dataToSend.modules.map(mod => {
-      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
-      return mod;
-    });
-
-    const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
-
-    yield put(updatePlaylistSuccessAction(entity));
-    const newId = entity._id;
-    if (oldId != newId && newId) {
-      yield call(message.success, "Playlist versioned");
-      yield put(push(`/author/playlists/${newId}/versioned/old/${oldId}`));
-    } else {
-      yield call(message.success, "Update Successful");
-    }
-  } catch (err) {
-    const errorMessage = "Update playlist is failing";
-    yield call(message.error, errorMessage);
-    yield put(updatePlaylistErrorAction(errorMessage));
-  }
-}
-
-function* shareTestSaga({ payload }) {
-  try {
-    yield call(contentSharingApi.shareContent, payload);
-    yield put(receiveSharedWithListAction(payload.testId));
-    yield call(message.success, "Successfully shared");
-  } catch (e) {
-    const errorMessage = "Sharing failed";
-    yield call(message.error, errorMessage);
-  }
-}
-
-function* publishPlaylistSaga({ payload }) {
-  try {
-    const { _id: id } = payload;
-    const data = yield select(getPlaylistSelector);
-    const features = yield select(getUserFeatures);
-    if ((features.isCurator || features.isPublisherAuthor) && !get(data, "collections", []).length) {
-      yield call(message.error, "Playlist is not associated with any collection.");
-      return;
-    }
-    const dataToSend = omit(data, ["updatedDate", "createdDate", "sharedWith", "authors", "sharedType", "_id", "__v"]);
-    dataToSend.modules = dataToSend.modules.map(mod => {
-      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
-      return mod;
-    });
-
-    yield call(curriculumSequencesApi.update, { id, data: dataToSend });
-    yield call(message.success, "Update Successful");
-
-    if (features.isPublisherAuthor) {
-      yield call(curriculumSequencesApi.updatePlaylistStatus, {
-        playlistId: id,
-        status: playlistStatusConstants.INREVIEW
-      });
-      yield put(updatePlaylistStatusAction(playlistStatusConstants.INREVIEW));
-      yield call(message.success, "Review request is submitted successfully.");
-    } else {
-      yield call(curriculumSequencesApi.publishPlaylist, id);
-      yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
-      yield call(message.success, "Successfully published");
-    }
-    yield put(push(`/author/playlists/${id}`));
-  } catch (error) {
-    yield call(message.error, error?.data?.message || "publish failed");
-  }
-}
-
-function* receiveSharedWithListSaga({ payload }) {
-  try {
-    const result = yield call(contentSharingApi.getSharedUsersList, payload);
-    const coAuthors = result.map(({ permission, sharedWith, sharedType, _id }) => ({
-      permission,
-      sharedWith,
-      sharedType,
-      sharedId: _id
-    }));
-    yield put(updateSharedWithListAction(coAuthors));
-  } catch (e) {
-    const errorMessage = "receive share with users list is failing";
-    yield call(message.error, errorMessage);
-  }
-}
-
-function* deleteSharedUserSaga({ payload }) {
-  try {
-    const authors = yield call(contentSharingApi.deleteSharedUser, payload);
-    yield put(receiveSharedWithListAction(payload.testId));
-  } catch (e) {
-    const errorMessage = "delete shared user is failing";
-    yield call(message.error, errorMessage);
-  }
-}
-
-function addModuleToPlaylist(playlist, payload) {
-  const newPlaylist = produce(playlist, draft => {
-    const newModule = createNewModuleState(payload.title || payload.moduleName, payload.description);
-    if (payload.afterModuleIndex !== undefined) {
-      draft.modules.splice(payload.afterModuleIndex, 0, newModule);
-    } else {
-      draft.modules.push(newModule);
-    }
-    return draft;
-  });
-  message.success("Module Added to playlist");
-  return newPlaylist;
-}
-
-function updateModuleInPlaylist(playlist, payload) {
-  const { id, title, description } = payload;
-  const newPlaylist = produce(playlist, draft => {
-    if (payload !== undefined) {
-      if (title) {
-        draft.modules[id].title = title;
-        draft.modules[id].description = description;
-        message.success("Module updated successfully");
-      } else {
-        message.error("Module name cannot be empty");
-      }
-    } else {
-      message.error("Error updating module in playlist");
-    }
-    return draft;
-  });
-  return newPlaylist;
-}
-
-function deleteModuleFromPlaylist(playlist, payload) {
-  const newPlaylist = produce(playlist, draft => {
-    if (payload !== undefined) {
-      draft.modules.splice(payload, 1);
-      message.success("Module Removed from playlist");
-    } else {
-      message.error("Error removing module from playlist");
-    }
-    return draft;
-  });
-  return newPlaylist;
-}
-
-function resequenceModulesInPlaylist(playlist, payload) {
-  const { oldIndex, newIndex } = payload;
-  const newPlaylist = produce(playlist, draft => {
-    const obj = draft.modules.splice(oldIndex, 1);
-    draft.modules.splice(newIndex, 0, obj[0]);
-    return draft;
-  });
-  return newPlaylist;
-}
-
-function resequenceTestsInModule(playlist, payload) {
-  const { oldIndex, newIndex, mIndex } = payload;
-  const newPlaylist = produce(playlist, draft => {
-    const obj = draft.modules[mIndex].data.splice(oldIndex, 1);
-    draft.modules[mIndex].data.splice(newIndex, 0, obj[0]);
-    return draft;
-  });
-  return newPlaylist;
-}
-
-function addTestToModule(entity, payload) {
-  const { testAdded, moduleIndex } = payload;
-  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
-    const newTest = createNewTestInModule(testAdded);
-    draft.data.push(newTest);
-    return draft;
-  });
-  message.success("Test Added in playlist");
-  return entity;
-}
-
-function addTestToModuleInBulk(entity, payload) {
-  const { tests, moduleIndex } = payload;
-  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
-    tests.forEach(test => draft.data.push(createNewTestInModule(test)));
-    return draft;
-  });
-  return entity;
-}
-
-export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
-    yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
-    yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
-    yield takeEvery(TEST_SHARE, shareTestSaga),
-    yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
-    yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
-    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
-  ]);
-}
-
 // selectors
 
 export const stateSelector = state => state.playlist;
@@ -762,28 +605,171 @@ export const getUserListSelector = createSelector(
 export const getTestItemsRowsSelector = createSelector(
   getPlaylistSelector,
   state => state
-  // state.testItems.map(item => {
-  //     if (!item || !item.rows) return [];
-  //     return item.rows.map(row => ({
-  //         ...row,
-  //         widgets: row.widgets.map(widget => {
-  //             let referencePopulate = {
-  //                 data: null
-  //             };
-
-  //             if (item.data && item.data.questions && item.data.questions.length) {
-  //                 referencePopulate = item.data.questions.find(q => q._id === widget.reference);
-  //             }
-
-  //             if (!referencePopulate && item.data && item.data.resources && item.data.resources.length) {
-  //                 referencePopulate = item.data.resources.find(r => r._id === widget.reference);
-  //             }
-
-  //             return {
-  //                 ...widget,
-  //                 referencePopulate
-  //             };
-  //         })
-  //     }));
-  // })
 );
+
+// saga
+function* receivePlaylistByIdSaga({ payload }) {
+  try {
+    const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
+    yield put(receivePlaylistByIdSuccess(entity));
+  } catch (err) {
+    const errorMessage = "Receive playlist by id is failing";
+    yield call(message.error, errorMessage);
+    yield put(receivePlaylistByIdError(errorMessage));
+  }
+}
+
+function* createPlaylistSaga({ payload }) {
+  const { title } = payload.data;
+  try {
+    if (title !== undefined && !title.trim().length) {
+      return yield call(message.error(" Name field cannot be empty "));
+    }
+    const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate"]);
+
+    const entity = yield call(curriculumSequencesApi.create, { data: dataToSend });
+    const hash = payload.toReview ? "#review" : "";
+    yield put(createPlaylistSuccessAction(entity));
+    yield put(replace(`/author/playlists/${entity._id}/edit${hash}`));
+
+    yield call(message.success, "Playlist created");
+  } catch (err) {
+    const errorMessage = "Failed to create playlist!";
+    yield call(message.error, errorMessage);
+    yield put(createPlaylistErrorAction(errorMessage));
+  }
+}
+
+function* updatePlaylistSaga({ payload }) {
+  try {
+    // remove createdDate and updatedDate
+    const oldId = payload.data._id;
+    const dataToSend = omit(payload.data, [
+      "updatedDate",
+      "createdDate",
+      "sharedWith",
+      "authors",
+      "sharedType",
+      "_id",
+      "__v"
+    ]);
+
+    dataToSend.modules = dataToSend.modules.map(mod => {
+      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
+      return mod;
+    });
+
+    const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
+
+    yield put(updatePlaylistSuccessAction(entity));
+    const newId = entity._id;
+    if (oldId !== newId && newId) {
+      yield call(message.success, "Playlist versioned");
+      yield put(push(`/author/playlists/${newId}/versioned/old/${oldId}`));
+    } else {
+      yield call(message.success, "Update Successful");
+    }
+  } catch (err) {
+    const errorMessage = "Update playlist is failing";
+    yield call(message.error, errorMessage);
+    yield put(updatePlaylistErrorAction(errorMessage));
+  }
+}
+
+function* shareTestSaga({ payload }) {
+  try {
+    yield call(contentSharingApi.shareContent, payload);
+    yield put(receiveSharedWithListAction(payload.testId));
+    yield call(message.success, "Successfully shared");
+  } catch (e) {
+    const errorMessage = "Sharing failed";
+    yield call(message.error, errorMessage);
+  }
+}
+
+function* publishPlaylistSaga({ payload }) {
+  try {
+    const { _id: id } = payload;
+    const data = yield select(getPlaylistSelector);
+    const features = yield select(getUserFeatures);
+    if (
+      (features.isCurator || features.isPublisherAuthor) &&
+      !get(data, "collections", []).length
+    ) {
+      yield call(message.error, "Playlist is not associated with any collection.");
+      return;
+    }
+    const dataToSend = omit(data, [
+      "updatedDate",
+      "createdDate",
+      "sharedWith",
+      "authors",
+      "sharedType",
+      "_id",
+      "__v"
+    ]);
+    dataToSend.modules = dataToSend.modules.map(mod => {
+      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
+      return mod;
+    });
+
+    const updatedEntityData = yield call(curriculumSequencesApi.update, { id, data: dataToSend });
+    yield put(updatePlaylistSuccessAction(updatedEntityData));
+
+    yield call(message.success, "Update Successful");
+
+    if (features.isPublisherAuthor) {
+      yield call(curriculumSequencesApi.updatePlaylistStatus, {
+        playlistId: id,
+        status: playlistStatusConstants.INREVIEW
+      });
+      yield put(updatePlaylistStatusAction(playlistStatusConstants.INREVIEW));
+      yield call(message.success, "Review request is submitted successfully.");
+    } else {
+      yield call(curriculumSequencesApi.publishPlaylist, id);
+      yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
+      yield call(message.success, "Successfully published");
+    }
+    yield put(push(`/author/playlists/${id}`));
+  } catch (error) {
+    yield call(message.error, error?.data?.message || "publish failed");
+  }
+}
+
+function* receiveSharedWithListSaga({ payload }) {
+  try {
+    const result = yield call(contentSharingApi.getSharedUsersList, payload);
+    const coAuthors = result.map(({ permission, sharedWith, sharedType, _id }) => ({
+      permission,
+      sharedWith,
+      sharedType,
+      sharedId: _id
+    }));
+    yield put(updateSharedWithListAction(coAuthors));
+  } catch (e) {
+    const errorMessage = "receive share with users list is failing";
+    yield call(message.error, errorMessage);
+  }
+}
+
+function* deleteSharedUserSaga({ payload }) {
+  try {
+    yield call(contentSharingApi.deleteSharedUser, payload);
+    yield put(receiveSharedWithListAction(payload.testId));
+  } catch (e) {
+    const errorMessage = "delete shared user is failing";
+    yield call(message.error, errorMessage);
+  }
+}
+
+export function* watcherSaga() {
+  yield all([
+    yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
+    yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
+    yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
+    yield takeEvery(TEST_SHARE, shareTestSaga),
+    yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
+    yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
+    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
+  ]);
+}

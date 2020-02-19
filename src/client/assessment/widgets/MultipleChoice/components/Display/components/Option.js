@@ -145,7 +145,7 @@ const Option = props => {
     }
   };
 
-  const getOptionLabel = opIndex => ALPHABET[opIndex].toUpperCase();
+  const getOptionLabel = i => ALPHABET[i].toUpperCase();
 
   const container = (
     <>
@@ -205,7 +205,7 @@ const Option = props => {
         return (
           <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
             <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
-            <span className="labelOnly">{getLabel(index)}</span>
+            {!uiStyle.choiceLabel && <span className="labelOnly">{getOptionLabel(index)}</span>}
             <MultiChoiceContent
               fontSize={fontSize}
               smallSize={smallSize}

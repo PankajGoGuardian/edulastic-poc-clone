@@ -44,8 +44,8 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
       <SchoolInfo>
         <span>{school.schoolName || school.name}</span>
         <div>
-          {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
-            schoolLocation.state ? schoolLocation.state + ", " : ""
+          {`${schoolLocation.city ? `${schoolLocation.city}, ` : ""} ${
+            schoolLocation.state ? `${schoolLocation.state}, ` : ""
           } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
         </div>
       </SchoolInfo>
@@ -64,14 +64,14 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
 const JoinSchool = ({
   isSearching,
   searchSchool,
-  searchSchoolByDistrictRequestAction,
-  checkDistrictPolicyRequestAction,
+  searchSchoolByDistrict,
+  checkDistrictPolicyAction,
   schools,
   newSchool,
   userInfo,
   joinSchool,
-  createAndJoinSchoolRequestAction,
-  fetchSchoolTeachersRequestAction,
+  createAndJoinSchool,
+  fetchSchoolTeachers,
   updateUserWithSchoolLoading,
   createSchoolRequestPending,
   ipZipCode,
@@ -99,7 +99,7 @@ const JoinSchool = ({
     if (isSignupUsingDaURL) {
       setSchool(_school);
 
-      let teacherSearch = {
+      const teacherSearch = {
         limit: 20,
         page: 1,
         type: "SIGNUP",
@@ -109,15 +109,21 @@ const JoinSchool = ({
         districtId: _school.districtId,
         institutionIds: [_school.schoolId]
       };
-      fetchSchoolTeachersRequestAction(teacherSearch);
+      fetchSchoolTeachers(teacherSearch);
     } else if (!isSignupUsingDaURL && _school) {
       let signOnMethod = "userNameAndPassword";
       signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
       signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
       signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
 
-      checkDistrictPolicyRequestAction({
-        data: { districtId: _school.districtId, email, type: userInfo.role, signOnMethod },
+      checkDistrictPolicyAction({
+        data: {
+          districtId: _school.districtId,
+          email,
+          type: userInfo.role,
+          signOnMethod,
+          institutionId: _school.schoolId
+        },
         error: { message: t("common.policyviolation") }
       });
       setTempSchool(_school);
@@ -134,7 +140,7 @@ const JoinSchool = ({
     } else {
       setSchool(tempSelected);
 
-      let teacherSearch = {
+      const teacherSearch = {
         limit: 20,
         page: 1,
         type: "SIGNUP",
@@ -144,17 +150,16 @@ const JoinSchool = ({
         districtId: tempSelected.districtId,
         institutionIds: [tempSelected.schoolId]
       };
-      fetchSchoolTeachersRequestAction(teacherSearch);
+      fetchSchoolTeachers(teacherSearch);
     }
     setTempSchool(null);
   }
 
   const handleSubmit = () => {
-    const currentSignUpState = "PREFERENCE_NOT_SELECTED";
     const data = {
       institutionIds: [selected.schoolId || selected._id || ""],
       districtId: selected.districtId,
-      currentSignUpState,
+      currentSignUpState: "PREFERENCE_NOT_SELECTED",
       email,
       firstName,
       middleName,
@@ -166,7 +171,7 @@ const JoinSchool = ({
   const fetchSchool = searchText => {
     if (searchText && searchText.length >= 3) {
       if (isSignupUsingDaURL || districtId) {
-        searchSchoolByDistrictRequestAction({
+        searchSchoolByDistrict({
           districtId,
           currentSignUpState,
           search: {
@@ -186,7 +191,7 @@ const JoinSchool = ({
 
   useEffect(() => {
     if (isSignupUsingDaURL || districtId) {
-      searchSchoolByDistrictRequestAction({ districtId, currentSignUpState });
+      searchSchoolByDistrict({ districtId, currentSignUpState });
     } else {
       searchSchool({ ipZipCode, email });
     }
@@ -200,29 +205,28 @@ const JoinSchool = ({
 
   const dropdownSchoolData = useMemo(() => {
     const approvedSchool = schools.filter(school => school.isApproved === true);
-    return approvedSchool.map(item => {
-      return {
-        ...item,
-        title: item.schoolName,
-        key: item.schoolId,
-        zip: get(item, "address.zip", ""),
-        city: get(item, "address.city", "")
-      };
-    });
+    return approvedSchool.map(item => ({
+      ...item,
+      title: item.schoolName,
+      key: item.schoolId,
+      zip: get(item, "address.zip", ""),
+      city: get(item, "address.city", "")
+    }));
   }, [schools]);
 
-  const onClickHomeSchool = event => {
+  const onClickHomeSchool = () => {
     if (createSchoolRequestPending || updateUserWithSchoolLoading) {
       return;
     }
 
-    const schoolAndDistrictNamePrefix = userInfo.firstName + (userInfo.lastName ? userInfo.lastName + " " : " ");
-    const districtName = schoolAndDistrictNamePrefix + "HOME SCHOOL DISTRICT";
-    const schoolName = schoolAndDistrictNamePrefix + "HOME SCHOOL";
+    const schoolAndDistrictNamePrefix =
+      userInfo.firstName + (userInfo.lastName ? `${userInfo.lastName} ` : " ");
+    const districtName = `${schoolAndDistrictNamePrefix}HOME SCHOOL DISTRICT`;
+    const schoolName = `${schoolAndDistrictNamePrefix}HOME SCHOOL`;
 
     const body = {
       name: schoolName,
-      districtName: districtName,
+      districtName,
       location: {
         city: userInfo.firstName,
         state: "Alaska",
@@ -234,16 +238,15 @@ const JoinSchool = ({
       homeSchool: true
     };
 
-    const { firstName, middleName, lastName } = userInfo;
-    createAndJoinSchoolRequestAction({
+    createAndJoinSchool({
       createSchool: body,
       joinSchool: {
         data: {
           currentSignUpState: "PREFERENCE_NOT_SELECTED",
           email: userInfo.email,
-          firstName,
-          middleName,
-          lastName
+          firstName: userInfo.firstName,
+          middleName: userInfo.middleName,
+          lastName: userInfo.lastName
         },
         userId: userInfo._id
       }
@@ -269,15 +272,19 @@ const JoinSchool = ({
                   <SchoolSelected>
                     <SelectedTag>
                       <span>{selected.schoolName || ""}</span>
-                      <IconClose data-cy="removeSelected" color={themeColor} onClick={() => setSchool(null)} />
+                      <IconClose
+                        data-cy="removeSelected"
+                        color={themeColor}
+                        onClick={() => setSchool(null)}
+                      />
                     </SelectedTag>
                   </SchoolSelected>
                 ) : (
                   <StyledRemoteAutocompleteDropDown
-                    by={""}
+                    by=""
                     data={dropdownSchoolData}
                     onSearchTextChange={handleSearch}
-                    iconType={"search"}
+                    iconType="search"
                     rotateIcon={false}
                     placeholder={t("component.signup.teacher.searchschool")}
                     ItemTemplate={SchoolDropDownItemTemplate}
@@ -286,13 +293,16 @@ const JoinSchool = ({
                     filterKeys={["title", "zip", "city"]}
                     isLoading={isSearching}
                     _ref={autoCompleteRef}
-                    disabled={tempSelected ? true : false}
+                    disabled={!!tempSelected}
                   />
                 )}
                 <Actions>
                   <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
                   {!isSignupUsingDaURL && !districtId ? (
-                    <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
+                    <AnchorBtn onClick={toggleModal}>
+                      {" "}
+                      {t("component.signup.teacher.requestnewschool")}
+                    </AnchorBtn>
                   ) : null}
                   {selected && selected.districtName ? (
                     <DistrictName data-cy="districtName">
@@ -306,7 +316,9 @@ const JoinSchool = ({
 
                 {selected && (
                   <>
-                    {schoolTeachers.length > 0 ? <TeacherCarousel teachers={schoolTeachers} /> : null}
+                    {schoolTeachers.length > 0 ? (
+                      <TeacherCarousel teachers={schoolTeachers} />
+                    ) : null}
                     <ProceedBtn
                       data-cy="proceed"
                       onClick={handleSubmit}
@@ -321,7 +333,9 @@ const JoinSchool = ({
           </FlexWrapper>
         </Col>
       </JoinSchoolBody>
-      {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
+      {showModal ? (
+        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
+      ) : null}
     </>
   );
 };
@@ -332,7 +346,11 @@ JoinSchool.propTypes = {
   schools: PropTypes.array.isRequired,
   newSchool: PropTypes.object.isRequired,
   userInfo: PropTypes.object.isRequired,
-  joinSchool: PropTypes.func.isRequired
+  joinSchool: PropTypes.func.isRequired,
+  searchSchoolByDistrict: PropTypes.func.isRequired,
+  createAndJoinSchool: PropTypes.func.isRequired,
+  checkDistrictPolicy: PropTypes.func.isRequired,
+  fetchSchoolTeachers: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -352,11 +370,11 @@ const enhance = compose(
     }),
     {
       searchSchool: searchSchoolRequestAction,
-      searchSchoolByDistrictRequestAction: searchSchoolByDistrictRequestAction,
+      searchSchoolByDistrict: searchSchoolByDistrictRequestAction,
       joinSchool: joinSchoolRequestAction,
-      createAndJoinSchoolRequestAction: createAndJoinSchoolRequestAction,
-      checkDistrictPolicyRequestAction,
-      fetchSchoolTeachersRequestAction
+      createAndJoinSchool: createAndJoinSchoolRequestAction,
+      checkDistrictPolicyAction: checkDistrictPolicyRequestAction,
+      fetchSchoolTeachers: fetchSchoolTeachersRequestAction
     }
   )
 );

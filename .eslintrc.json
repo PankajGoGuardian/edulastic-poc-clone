@@ -46,6 +46,7 @@
     "no-restricted-syntax": [0, "ForInStatement"],
     "comma-dangle": ["warn", "never"],
     "no-await-in-loop": 0,
-    "react/no-find-dom-node": 0
+    "react/no-find-dom-node": 0,
+    "react/prop-types": 0
   }
 }

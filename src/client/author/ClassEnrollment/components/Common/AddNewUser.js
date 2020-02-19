@@ -1,19 +1,16 @@
 import React from "react";
-import moment from "moment";
-import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
-import { Icon, Collapse, Spin, Input, Select, DatePicker, message } from "antd";
+import { get, isEmpty } from "lodash";
+import { Collapse, DatePicker, Icon, Input, Select, Spin } from "antd";
 import { IconUser } from "@edulastic/icons";
-import { userApi, schoolApi } from "@edulastic/api";
+import { schoolApi, userApi } from "@edulastic/api";
 import { isEmailValid, nameValidator } from "../../../../common/utils/helpers";
 
-import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
+import { ActionButton, Field, FooterDiv, Form, PanelHeader, StyledModal, Title } from "./styled";
 
 import keyIcon from "../../../../student/assets/key-icon.svg";
 import hashIcon from "../../../../student/assets/hashtag-icon.svg";
 import userIcon from "../../../../student/assets/user-icon.svg";
 import mailIcon from "../../../../student/assets/mail-icon.svg";
-import { selectColor } from "@edulastic/colors";
-import withRouter from "react-router-dom/withRouter";
 
 const { Option } = Select;
 
@@ -21,7 +18,6 @@ const { Panel } = Collapse;
 class AddNewUserForm extends React.Component {
   state = {
     keys: ["basic"],
-    usernameFieldValue: "",
     role: "student",
     schoolsState: {
       list: [],
@@ -44,15 +40,9 @@ class AddNewUserForm extends React.Component {
     form.resetFields();
   };
 
-  setUsername = val => {
-    this.setState({
-      ...this.state,
-      usernameFieldValue: val
-    });
-  };
-
   confirmPwdCheck = (rule, value, callback) => {
-    const pwd = this.props.form.getFieldValue("password");
+    const { form } = this.props;
+    const pwd = form.getFieldValue("password");
     if (pwd !== value) {
       callback(rule.message);
     } else {
@@ -64,10 +54,15 @@ class AddNewUserForm extends React.Component {
     if (!isEmailValid(rule, value, callback, "both", "Please enter valid username/email")) {
       return;
     }
-    const { userOrgId: districtId, form } = this.props;
+    const {
+      userOrgId: districtId,
+      form,
+      location: { pathname }
+    } = this.props;
 
     const classCode = form.getFieldValue("code") || "";
-
+    // reset pre-populated state data
+    this.resetPrePopulatedDataFromState();
     try {
       const res = await userApi.checkUser({
         username: value,
@@ -95,12 +90,19 @@ class AddNewUserForm extends React.Component {
 
       // student exists in other class
       if (user._id) {
-        this.setState(prevState => ({ ...prevState, isUserExists: true, userInfo: user }));
-        const { username } = user;
-
+        this.setState(prevState => ({
+          ...prevState,
+          isUserExists: true,
+          userInfo: user,
+          role: user.role === "teacher" ? "teacher" : "student"
+        }));
+        if (user.role === "teacher" && pathname.split("/").includes("Class-Enrollment")) {
+          this.prePopulateDataToState();
+        }
+        const { lastName = "", firstName } = user;
         form.setFields({
           fullName: {
-            value: username || ""
+            value: lastName ? `${firstName.trim()} ${lastName.trim()}` : `${firstName.trim()}`
           },
           password: {
             value: ""
@@ -124,15 +126,64 @@ class AddNewUserForm extends React.Component {
     this.setState(prevState => ({ ...prevState, isUserExists: false, userInfo: {} }));
     callback();
   };
-  onRoleChange = role => {
-    this.setState({
-      ...this.state,
-      role
+
+  resetPrePopulatedDataFromState = () => {
+    const { form } = this.props;
+    this.setState(prevState => ({
+      ...prevState,
+      schoolsState: {
+        list: []
+      },
+      selectedSchoolId: "",
+      disabledSchool: false,
+      role: "student"
+    }));
+    form.setFields({
+      fullName: {
+        value: ""
+      },
+      password: {
+        value: ""
+      },
+      confirmPassword: {
+        value: ""
+      }
     });
   };
+
+  prePopulateDataToState = () => {
+    const { validatedClassDetails } = this.props;
+    // pre-populate and disable the school dropdown
+    // populate using class institution
+    const groupInfo = get(validatedClassDetails, "groupInfo", {});
+    this.setState(prevState => ({
+      ...prevState,
+      schoolsState: {
+        list: [
+          {
+            _id: groupInfo.institutionId,
+            _source: {
+              name: groupInfo.institutionName
+            }
+          }
+        ]
+      },
+      selectedSchoolId: groupInfo.institutionId,
+      disabledSchool: true
+    }));
+  };
+
+  onRoleChange = role => {
+    this.setState(prevState => ({
+      ...prevState,
+      role
+    }));
+  };
+
   fetchSchool = async value => {
     const { userOrgId: districtId } = this.props;
-    const schoolsData = { ...this.state.schoolsState };
+    const { schoolsState } = this.state;
+    const schoolsData = { ...schoolsState };
 
     this.setState({
       schoolsState: {
@@ -158,15 +209,17 @@ class AddNewUserForm extends React.Component {
       }
     });
   };
+
   handleChange = value => {
-    this.setState({
-      ...this.state,
+    const { schoolsState } = this.state;
+    this.setState(prevState => ({
+      ...prevState,
       schoolsState: {
-        ...this.state.schoolsState,
+        ...schoolsState,
         fetching: false,
-        value: value
+        value
       }
-    });
+    }));
   };
 
   render() {
@@ -179,7 +232,6 @@ class AddNewUserForm extends React.Component {
       closeModal,
       showModal,
       formTitle,
-      modalData: { _source } = {},
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       addNewUser,
@@ -189,7 +241,7 @@ class AddNewUserForm extends React.Component {
 
     const { isUserExists, userInfo, userExistsInClass } = this.state;
 
-    const { usernameFieldValue, role, schoolsState } = this.state;
+    const { role, schoolsState, selectedSchoolId, disabledSchool } = this.state;
     const isValidClassCode = get(validatedClassDetails, "isValidClassCode", false);
     const _className = get(validatedClassDetails, "groupInfo.name", "");
     const { keys } = this.state;
@@ -218,7 +270,8 @@ class AddNewUserForm extends React.Component {
       </FooterDiv>
     );
 
-    const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);
+    const expandIcon = panelProps =>
+      panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />;
 
     const BasicDetailsHeader = (
       <PanelHeader>
@@ -252,7 +305,12 @@ class AddNewUserForm extends React.Component {
         afterClose={this.resetFormData}
       >
         <Form>
-          <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
+          <Collapse
+            accordion
+            defaultActiveKey={keys}
+            expandIcon={expandIcon}
+            expandIconPosition="right"
+          >
             <Panel header={BasicDetailsHeader} key="basic">
               <Field name="code">
                 <legend>Class Code</legend>
@@ -289,7 +347,7 @@ class AddNewUserForm extends React.Component {
                       data-cy="username"
                       prefix={<img style={iconSize} src={mailIcon} alt="" />}
                       placeholder="Enter Username/email"
-                      onChange={e => this.setUsername(e.target.value)}
+                      disabled={!isValidClassCode}
                     />
                   )}
                   {isUserExists && !userExistsInClass && "User exists and will be enrolled."}
@@ -298,7 +356,7 @@ class AddNewUserForm extends React.Component {
               <Field name="role">
                 <legend>Role</legend>
                 <Form.Item>
-                  {getFieldDecorator("role", { initialValue: "student" })(
+                  {getFieldDecorator("role", { initialValue: role })(
                     <Select
                       disabled={pathname.split("/").includes("Class-Enrollment")}
                       onSelect={this.onRoleChange}
@@ -318,13 +376,16 @@ class AddNewUserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("fullName", {
                     validateTrigger: ["onBlur"],
-                    rules: [{ validator: validateName }, { max: 128, message: "Must less than 128 characters!" }],
+                    rules: [
+                      { validator: validateName },
+                      { max: 128, message: "Must less than 128 characters!" }
+                    ],
                     initialValue: ""
                   })(
                     <Input
                       prefix={<img style={iconSize} src={userIcon} alt="" />}
                       placeholder="Enter the name of user"
-                      disabled={isUserExists || userExistsInClass}
+                      disabled={isUserExists || userExistsInClass || !isValidClassCode}
                     />
                   )}
                 </Form.Item>
@@ -338,7 +399,7 @@ class AddNewUserForm extends React.Component {
                       type="password"
                       placeholder="Enter Password"
                       autoComplete="new-password"
-                      disabled={isUserExists || userExistsInClass}
+                      disabled={isUserExists || userExistsInClass || !isValidClassCode}
                     />
                   )}
                 </Form.Item>
@@ -347,14 +408,16 @@ class AddNewUserForm extends React.Component {
                 <legend>Confirm Password</legend>
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
-                    rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
+                    rules: [
+                      { validator: this.confirmPwdCheck, message: "Retyped password do not match." }
+                    ]
                   })(
                     <Input
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Confirm Password"
                       autoComplete="new-password"
-                      disabled={isUserExists || userExistsInClass}
+                      disabled={isUserExists || userExistsInClass || !isValidClassCode}
                     />
                   )}
                 </Form.Item>
@@ -364,6 +427,7 @@ class AddNewUserForm extends React.Component {
                   <legend>Select School</legend>
                   <Form.Item>
                     {getFieldDecorator("institutionIds", {
+                      initialValue: selectedSchoolId,
                       rules: [
                         {
                           required: true,
@@ -379,6 +443,7 @@ class AddNewUserForm extends React.Component {
                         onSearch={this.fetchSchool}
                         onChange={this.handleChange}
                         getPopupContainer={triggerNode => triggerNode.parentNode}
+                        disabled={disabledSchool || !isValidClassCode}
                       >
                         {schoolsState.list.map(school => (
                           <Option key={school._id} value={school._id}>
@@ -395,13 +460,15 @@ class AddNewUserForm extends React.Component {
               <Field name="sisId">
                 <legend>SIS ID</legend>
                 <Form.Item>
-                  {getFieldDecorator("sisId")(<Input placeholder="Enter SIS ID" disabled={true} />)}
+                  {getFieldDecorator("sisId")(<Input placeholder="Enter SIS ID" disabled />)}
                 </Form.Item>
               </Field>
               <Field name="studentNumber">
                 <legend>Student Number</legend>
                 <Form.Item>
-                  {getFieldDecorator("studentNumber")(<Input placeholder="Enter Student Number" disabled={true} />)}
+                  {getFieldDecorator("studentNumber")(
+                    <Input placeholder="Enter Student Number" disabled />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="frlStatus">
@@ -455,7 +522,9 @@ class AddNewUserForm extends React.Component {
 
               <Field name="dob" optional>
                 <legend>DOB</legend>
-                <Form.Item>{getFieldDecorator("dob")(<DatePicker format="DD MMM, YYYY" />)}</Form.Item>
+                <Form.Item>
+                  {getFieldDecorator("dob")(<DatePicker format="DD MMM, YYYY" />)}
+                </Form.Item>
               </Field>
               <Field name="gender">
                 <legend>Gender</legend>
@@ -471,7 +540,9 @@ class AddNewUserForm extends React.Component {
               </Field>
               <Field name="contactEmails">
                 <legend>Contact</legend>
-                <Form.Item>{getFieldDecorator("contactEmails")(<Input placeholder="Enter Contact" />)}</Form.Item>
+                <Form.Item>
+                  {getFieldDecorator("contactEmails")(<Input placeholder="Enter Contact" />)}
+                </Form.Item>
               </Field>
               <Field name="tts">
                 <legend>Enable Text To Speech</legend>

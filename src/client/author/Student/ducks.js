@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { takeEvery, call, put, all } from "redux-saga/effects";
-import { userApi, groupApi } from "@edulastic/api";
+import { all, call, put, takeEvery } from "redux-saga/effects";
+import { userApi } from "@edulastic/api";
 import { message } from "antd";
 
 import { receiveAdminDataAction } from "../SchoolAdmin/ducks";
@@ -25,7 +25,8 @@ const ADD_MULTI_STUDENTS_ERROR = "[student] add multip students error";
 const SET_STUDENTDETAIL_MODAL_VISIBLE = "[student] set student detail modal visible";
 const SET_STUDENT_SEARCHNAME = "[student] set search name";
 const SET_STUDENT_SETFILTERS = "[student] set filters";
-const SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY = "[student] set visibility of add students to other class modal";
+const SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY =
+  "[student] set visibility of add students to other class modal";
 const ADD_STUDENTS_TO_OTHER_CLASS = "[student] ADD_STUDENTS_TO_OTHER_CLASS";
 const ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS = "[student] ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS";
 const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE";
@@ -33,7 +34,8 @@ const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 const FETCH_CLASS_DETAILS_FAIL = "[student] FETCH_CLASS_DETAILS_FAIL";
 
 const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
-const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE = "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
+const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE =
+  "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
 
 const MOVE_USERS_TO_OTHER_CLASS = "[student] move users to another class";
 const MOVE_USERS_TO_OTHER_CLASS_SUCCESS = "[student] move users to another class success";
@@ -58,7 +60,9 @@ export const addMultiStudentsErrorAction = createAction(ADD_MULTI_STUDENTS_ERROR
 export const setStudentsDetailsModalVisibleAction = createAction(SET_STUDENTDETAIL_MODAL_VISIBLE);
 export const setSearchNameAction = createAction(SET_STUDENT_SEARCHNAME);
 export const setFiltersAction = createAction(SET_STUDENT_SETFILTERS);
-export const setAddStudentsToOtherClassVisiblityAction = createAction(SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY);
+export const setAddStudentsToOtherClassVisiblityAction = createAction(
+  SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY
+);
 export const addStudentsToOtherClassAction = createAction(ADD_STUDENTS_TO_OTHER_CLASS);
 export const addStudentsToOtherClassSuccess = createAction(ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS);
 export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS_USING_CODE);
@@ -66,59 +70,48 @@ export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS
 export const fetchClassDetailsFail = createAction(FETCH_CLASS_DETAILS_FAIL);
 
 export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
-export const resetFetchedClassDetailsAction = createAction(RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE);
+export const resetFetchedClassDetailsAction = createAction(
+  RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE
+);
 
 export const moveUsersToOtherClassAction = createAction(MOVE_USERS_TO_OTHER_CLASS);
 export const moveUsersToOtherClassSuccessAction = createAction(MOVE_USERS_TO_OTHER_CLASS_SUCCESS);
 export const moveUsersToOtherClassFailAction = createAction(MOVE_USERS_TO_OTHER_CLASS_FAIL);
 
-//selectors
+// selectors
 const stateStudentSelector = state => state.studentReducer;
 export const getStudentsListSelector = createSelector(
   stateStudentSelector,
   state => {
-    if (state.data.length > 0) {
-      let searchByNameData = [];
-      if (state.searchName.length > 0) {
-        searchByNameData = state.data.filter(row => {
-          let name = row.firstName + " " + row.lastName;
-          if (name === state.searchName) return row;
-        });
-      } else {
-        searchByNameData = state.data;
+    const {
+      data = [],
+      searchName = "",
+      filtersColumn = "",
+      filtersText = "",
+      filtersValue = ""
+    } = state;
+    if (data.length > 0) {
+      const searchByNameData = searchName
+        ? data.filter(o => `${o.firstName} ${o.lastName}` === searchName)
+        : data;
+      const possibleFilterKey = filtersColumn
+        ? [filtersColumn]
+        : ["firstName", "lastName", "email"];
+      if (filtersText) {
+        return filtersValue === "eq"
+          ? searchByNameData.filter(
+              o => possibleFilterKey.filter(key => o[key] === filtersText).length > 0
+            )
+          : searchByNameData.filter(
+              o =>
+                possibleFilterKey.filter(
+                  key => o[key] && o[key].toString().indexOf(filtersText) !== -1
+                ).length > 0
+            );
       }
-
-      let possibleFilterKey = [];
-
-      if (state.filtersColumn !== "") {
-        possibleFilterKey.push(state.filtersColumn);
-      } else {
-        possibleFilterKey = ["firstName", "lastName", "email"];
-      }
-
-      const filterSource = searchByNameData.filter(row => {
-        if (state.filtersText === "") {
-          return row;
-        } else {
-          if (state.filtersValue === "eq") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key] === state.filtersText) return row;
-            });
-            if (equalKeys.length > 0) return row;
-          } else if (state.filtersValue === "cont" || state.filtersValue === "") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key] !== undefined) {
-                if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
-              }
-            });
-            if (equalKeys.length > 0) return row;
-          }
-        }
-      });
-      return filterSource;
-    } else {
-      return state.data;
+      return searchByNameData;
     }
+    return data;
   }
 );
 
@@ -177,14 +170,10 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_STUDENTLIST_SUCCESS]: (state, { payload }) => {
     const studentsList = [];
     for (let i = 0; i < payload.length; i++) {
-      let studentData = payload[i];
-      studentData.key = i;
-      if (studentData.hasOwnProperty("_source")) {
-        const source = studentData._source;
-        Object.keys(source).map((key, value) => {
-          studentData[key] = source[key];
-        });
-      }
+      const studentData = Object.assign(payload[i], {
+        ...payload[i]._source,
+        key: i
+      });
       delete studentData._source;
       studentsList.push(studentData);
     }
@@ -206,10 +195,13 @@ export const reducer = createReducer(initialState, {
           ...payload
         };
         return { ...student, ...newData };
-      } else return student;
+      }
+      return student;
     });
 
-    (state.update = payload), (state.updating = false), (state.data = studentsList);
+    state.update = payload;
+    state.updating = false;
+    state.data = studentsList;
   },
   [UPDATE_STUDENT_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -241,15 +233,15 @@ export const reducer = createReducer(initialState, {
     state.deleting = true;
   },
   [DELETE_STUDENT_SUCCESS]: (state, { payload }) => {
-    (state.delete = payload),
-      (state.deleting = false),
-      (state.data = state.data.filter(studentData => {
-        let nMatchCount = 0;
-        for (let i = 0; i < payload.length; i++) {
-          if (payload[i].userId === studentData._id) nMatchCount++;
-        }
-        if (nMatchCount == 0) return studentData;
-      }));
+    state.delete = payload;
+    state.deleting = false;
+    state.data = state.data.filter(studentData => {
+      let nMatchCount = 0;
+      for (let i = 0; i < payload.length; i++) {
+        if (payload[i].userId === studentData._id) nMatchCount++;
+      }
+      return nMatchCount === 0;
+    });
   },
   [DELETE_STUDENT_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -300,6 +292,9 @@ export const reducer = createReducer(initialState, {
   },
   [FETCH_CLASS_DETAILS_FAIL]: state => {
     state.addStudentsToOtherClass.loading = false;
+    // when class fetch failed reset earlier fetched class data
+    state.addStudentsToOtherClass.destinationClassData = null;
+    state.addStudentsToOtherClass.successData = null;
   },
   [SET_MULTI_STUDENTS_PROVIDER]: (state, { payload }) => {
     state.mutliStudentsProvider = payload;

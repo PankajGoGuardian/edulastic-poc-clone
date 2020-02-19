@@ -223,9 +223,9 @@ const Reports = ({ premium }) => {
                   <SingleAssessmentReport />
                 </StyledCard>
               </FeaturesSwitch>
-              <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-                <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                  <SubscriptionReport premium={premium} />
+              <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
+                <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
+                  <StudentProfileReport />
                 </StyledCard>
               </FeaturesSwitch>
             </Col>
@@ -239,11 +239,7 @@ const Reports = ({ premium }) => {
             <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
               <StandardsMasteryReport premium={premium} />
             </StyledCard>
-            <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
-              <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
-                <StudentProfileReport />
-              </StyledCard>
-            </FeaturesSwitch>
+
           </Col>
         </Row>
       )}

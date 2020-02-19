@@ -5,6 +5,7 @@ import { message } from "antd";
 import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
@@ -16,7 +17,6 @@ import {
 } from "../../common/utils/helpers";
 import { userPickFields } from "../../common/utils/static/user";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 
@@ -36,6 +36,7 @@ export const FETCH_USER = "[auth] fetch user";
 export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
+export const CHANGE_CHILD = "[parent] change child";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
@@ -115,11 +116,13 @@ export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
 export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_USERS_REQUEST);
 export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
+export const changeChildAction = createAction(CHANGE_CHILD);
 
 const initialState = {
   isAuthenticated: false,
   authenticating: true,
-  signupStatus: 0
+  signupStatus: 0,
+  currentChild: null
 };
 
 const setUser = (state, { payload }) => {
@@ -133,6 +136,10 @@ const setUser = (state, { payload }) => {
   const defaultSubject = getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
+  if (payload.role === "parent" && payload ?.children ?.length > 0) {
+    state.currentChild = payload.children[0]._id;
+    set(state, "user.orgData", payload.children[0].orgData);
+  }
   state.user.middleName = payload.middleName || undefined;
   state.user.lastName = payload.lastName || undefined;
   set(state.user, "orgData.defaultClass", defaultClass);
@@ -159,9 +166,9 @@ const getCurrentPath = () => {
     (path[0] && path[0] === "district")
   ) {
     return "";
-  } else {
+  } 
     return `${location.pathname}${location.search}${location.hash}`;
-  }
+  
 };
 
 export default createReducer(initialState, {
@@ -182,7 +189,7 @@ export default createReducer(initialState, {
     state.user.orgData.selectedSubject = payload;
   },
   [FETCH_USER]: (state, { payload }) => {
-    if (!payload?.background) {
+    if (!payload ?.background) {
       state.authenticating = true;
       state.isAuthenticated = false;
     }
@@ -291,6 +298,10 @@ export default createReducer(initialState, {
   },
   [GET_CURRENT_DISTRICT_USERS_SUCCESS]: (state, { payload }) => {
     state.user.currentDistrictUsers = payload;
+  },
+  [CHANGE_CHILD]: (state, { payload }) => {
+    state.currentChild = payload;
+    set(state, "user.orgData", state.user.children.find(child => child._id === payload).orgData);
   }
 });
 
@@ -324,7 +335,7 @@ export const getCurrentGroupWithAllClasses = createSelector(
   (groupId, assignmentsById, currentAssignmentId, classes) => {
     if (groupId) {
       return groupId;
-    } else if (currentAssignmentId) {
+    } if (currentAssignmentId) {
       const currentAssignment = assignmentsById[currentAssignmentId];
       if (!currentAssignment) {
         return groupId;
@@ -334,9 +345,9 @@ export const getCurrentGroupWithAllClasses = createSelector(
       const assignmentClassId = currentAssignment.class.find(cl => allClassIds.has(cl._id));
 
       return assignmentClassId ? assignmentClassId._id : groupId;
-    } else {
+    } 
       return groupId;
-    }
+    
   }
 );
 
@@ -351,8 +362,8 @@ export const getUserRole = createSelector(
 );
 
 export const getUserId = createSelector(
-  ["user.user._id"],
-  _id => _id
+  ["user.user._id", "user.currentChild"],
+  (_id, currentChild) => _id || currentChild
 );
 
 export const getUserFeatures = createSelector(
@@ -378,7 +389,7 @@ function* login({ payload }) {
     TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
     yield put(
-      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+      updateInitSearchStateAction({ grades: user ?.orgData ?.defaultGrades, subject: user ?.orgData ?.defaultSubjects })
     );
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
@@ -414,9 +425,9 @@ function* login({ payload }) {
 
 const checkEmailPolicy = (policy, role, email) => {
   if (!policy) {
-    return { status: true, message: "", error: "", role: role };
+    return { status: true, message: "", error: "", role };
   }
-  let inputDomain = email.split("@")[1];
+  const inputDomain = email.split("@")[1];
   let allowedDomains;
   if (role === "teacher") {
     allowedDomains = policy.allowedDomainForTeachers
@@ -437,10 +448,10 @@ const checkEmailPolicy = (policy, role, email) => {
       : allowedDomains.includes(inputDomain.toLocaleLowerCase())) ||
     !allowedDomains.length
   ) {
-    return { status: true, message: "", error: "", role: role };
-  } else {
-    return { status: false, message: "This email id is not allowed in your district", error: "domain", role: role };
-  }
+    return { status: true, message: "", error: "", role };
+  } 
+    return { status: false, message: "This email id is not allowed in your district", error: "domain", role };
+  
 };
 
 function* signup({ payload }) {
@@ -455,7 +466,7 @@ function* signup({ payload }) {
   try {
     const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
-    nameList = nameList.filter(item => (item && item.trim() ? true : false));
+    nameList = nameList.filter(item => (!!(item && item.trim())));
     if (!nameList.length) {
       throw { message: "Please provide your full name." };
     }
@@ -520,7 +531,7 @@ function* signup({ payload }) {
   } catch (err) {
     const { role } = payload;
     let errorMessage = "Email already exists. Please sign in to your account.";
-    errorMessage = role === roleuser.STUDENT ? "Username/" + errorMessage : errorMessage;
+    errorMessage = role === roleuser.STUDENT ? `Username/${  errorMessage}` : errorMessage;
     const msg1 = get(err, "data.message", "");
     const msg2 = get(err, "message", "");
     const msg = msg1 || msg2 || errorMessage;
@@ -540,24 +551,24 @@ const getLoggedOutUrl = () => {
   const pathname = window.location.pathname.toLocaleLowerCase();
   if (pathname === "/getstarted") {
     return "/getStarted";
-  } else if (pathname === "/signup") {
+  } if (pathname === "/signup") {
     return "/signup";
-  } else if (pathname === "/studentsignup") {
+  } if (pathname === "/studentsignup") {
     return "/studentsignup";
-  } else if (pathname === "/adminsignup") {
+  } if (pathname === "/adminsignup") {
     return "/adminsignup";
-  } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-    let arr = [...path];
+  } if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+    const arr = [...path];
     arr.shift();
-    let restOfPath = arr.join("/");
-    return "/district/" + restOfPath;
-  } else if (pathname === "/resetpassword") {
+    const restOfPath = arr.join("/");
+    return `/district/${  restOfPath}`;
+  } if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];
-  } else if (pathname === "/inviteteacher") {
+  } if (pathname === "/inviteteacher") {
     return `${location.pathname}${location.search}${location.hash}`;
-  } else {
+  } 
     return "/login";
-  }
+  
 };
 
 export function* fetchUser() {
@@ -572,7 +583,7 @@ export function* fetchUser() {
     }
     const user = yield call(userApi.getUser);
     yield call(segmentApi.analyticsIdentify, { user });
-    const key = localStorage.getItem("defaultTokenKey") + "";
+    const key = `${localStorage.getItem("defaultTokenKey")  }`;
 
     if (key.includes("role:undefined") && user.role) {
       TokenStorage.removeAccessToken(user._id, "undefined");
@@ -582,16 +593,16 @@ export function* fetchUser() {
     TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
     yield put(
-      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+      updateInitSearchStateAction({ grades: user ?.orgData ?.defaultGrades, subject: user ?.orgData ?.defaultSubjects })
     );
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
   } catch (error) {
-    console.log(error);
+    console.log('err', error, error);
     yield call(message.error, "failed loading user data");
-    if (!(error.response && error.response.status === 501)) {
+    if (!(error ?.response && error ?.response ?.status === 501)) {
       if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
         localStorage.setItem("loginRedirectUrl", getCurrentPath());
       }
@@ -616,9 +627,9 @@ export function* fetchV1Redirect({ payload: id }) {
     TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
     yield put(
-      updateInitSearchStateAction({ grades: user?.orgData?.defaultGrades, subject: user?.orgData?.defaultSubjects })
+      updateInitSearchStateAction({ grades: user ?.orgData ?.defaultGrades, subject: user ?.orgData ?.defaultSubjects })
     );
-    let redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
+    const redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
     yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);
@@ -706,7 +717,7 @@ function* googleSSOLogin({ payload }) {
 
   try {
     if (_payload.edulasticRole === "student") {
-      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      const classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
         _payload.classCode = classCode;
       }
@@ -775,7 +786,7 @@ function* msoSSOLogin({ payload }) {
 
   try {
     if (_payload.edulasticRole === "student") {
-      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      const classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
         _payload.classCode = classCode;
       }
@@ -826,10 +837,10 @@ function* cleverSSOLogin({ payload }) {
     const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    if (e?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+    if (e ?.data ?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
       yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
     } else {
-      yield call(message.error, e?.data?.message || "Clever Login failed");
+      yield call(message.error, e ?.data ?.message || "Clever Login failed");
       yield put(push(getSignOutUrl()));
     }
     removeSignOutUrl();
@@ -1058,6 +1069,14 @@ function* getCurrentDistrictUsersSaga({ payload }) {
   }
 }
 
+function* changeChildSaga({ payload }) {
+  try {
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -1086,4 +1105,5 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
   yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
   yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
+  yield takeLatest(CHANGE_CHILD, changeChildSaga);
 }

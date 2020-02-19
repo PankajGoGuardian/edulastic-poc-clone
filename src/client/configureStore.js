@@ -50,3 +50,9 @@ export default () => {
 export function getStore() {
   return store;
 }
+/**
+ * simplest way to make store accessible outside react components.
+ * Particularly to one of the packages.
+ * Since store is anyway global, we can export it to window.
+ */
+window.getStore = getStore;

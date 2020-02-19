@@ -7,6 +7,7 @@ import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { Effects } from "@edulastic/common";
+import { message } from "antd";
 import { getCurrentSchool, fetchUser, getUserRole, getUserId } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -19,7 +20,6 @@ import {
 } from "../sharedDucks/AssignmentModule/ducks";
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
-import { message } from "antd";
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
@@ -167,7 +167,7 @@ function* startAssignment({ payload }) {
       yield put(
         push(
           `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+          testType === COMMON ? ASSESSMENT : testType
           }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
         )
       );
@@ -208,7 +208,7 @@ function* resumeAssignment({ payload }) {
       yield put(
         push(
           `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+          testType === COMMON ? ASSESSMENT : testType
           }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
         )
       );
@@ -391,7 +391,7 @@ export const getAllAssignmentsSelector = createSelector(
     const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
-        //no redirected classes and no class filter or class ID match the filter and student belongs to the class
+        // no redirected classes and no class filter or class ID match the filter and student belongs to the class
         /**
          * And also if assigned to specific students
          * (or when students added later to assignment),
@@ -426,8 +426,8 @@ export const getAssignmentsSelector = createSelector(
 export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   assignments => {
-    let IN_PROGRESS = 0,
-      NOT_STARTED = 0;
+    let IN_PROGRESS = 0;
+      let NOT_STARTED = 0;
     assignments.forEach(assignment => {
       const attempts = (assignment.reports && assignment.reports.length) || 0;
       if (attempts === 0) {

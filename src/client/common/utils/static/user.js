@@ -22,5 +22,6 @@ export const userPickFields = [
   "role",
   "kid",
   "title",
-  "thumbnail"
+  "thumbnail",
+  "children"
 ];

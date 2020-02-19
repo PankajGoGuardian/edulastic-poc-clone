@@ -9,7 +9,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
-import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip, Select } from "antd";
 import {
   IconHeader,
   IconLogoCompact,
@@ -34,7 +34,7 @@ import {
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
-import { logoutAction } from "../Login/ducks";
+import { logoutAction, changeChildAction } from "../Login/ducks";
 import { IPAD_LANDSCAPE_WIDTH } from "../../assessment/constants/others";
 
 const menuItems = [
@@ -160,7 +160,10 @@ class SideMenu extends Component {
       lastName,
       isSidebarCollapsed,
       t,
-      profileThumbnail
+      profileThumbnail,
+      studentChildren,
+      currentChild,
+      changeChild
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
@@ -218,7 +221,7 @@ class SideMenu extends Component {
                     <Col span={3}>
                       <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                     </Col>
-                  ) : null}
+                    ) : null}
                   <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "left" }}>
                     {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
                   </Col>
@@ -226,24 +229,40 @@ class SideMenu extends Component {
                     <Col
                       span={isSidebarCollapsed ? 0 : 6}
                       style={{
-                        textAlign: "center",
-                        color: themeColor
-                      }}
+                          textAlign: "center",
+                          color: themeColor
+                        }}
                     >
                       {!isSidebarCollapsed && (
-                        <AntIcon
-                          className="trigger"
-                          type={isSidebarCollapsed ? "right" : "left"}
-                          onClick={this.toggleMenu}
-                        />
-                      )}
+                      <AntIcon
+                        className="trigger"
+                        type={isSidebarCollapsed ? "right" : "left"}
+                        onClick={this.toggleMenu}
+                      />
+                        )}
                     </Col>
-                  )}
+                    )}
                 </LogoWrapper>
-              )}
+                )}
               <LogoDash />
+
               <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
                 {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
+                {this.props.role === "parent" && (!isSidebarCollapsed) && (
+                  <Select
+                    onChange={(v) => changeChild(v)}
+                    style={{ marginLeft: 20 }}
+                    value={currentChild}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                  >
+                    {studentChildren.map(child => (
+                      <Select.Option key={child._id} value={child._id}>
+                        {child.name}
+                      </Select.Option>
+))
+                    }
+                  </Select>
+                )}
                 <Menu
                   isSidebarCollapsed={isSidebarCollapsed}
                   selectedKeys={[menuIndex.toString()]}
@@ -295,7 +314,7 @@ class SideMenu extends Component {
                           <img src={profileThumbnail} alt="Profile" />
                         ) : (
                           <PseudoDiv>{this.getInitials()}</PseudoDiv>
-                        )}
+                          )}
                         <StyledTooltip title={userName}>
                           <div style={{ paddingLeft: 11, width: "100px" }}>
                             {!isSidebarCollapsed && (
@@ -343,16 +362,20 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: user?.user?.firstName || "",
+      firstName: user ?.user ?.firstName || "",
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed,
       zoomLevel: ui.zoomLevel,
-      profileThumbnail: get(user, "user.thumbnail")
+      profileThumbnail: get(user, "user.thumbnail"),
+      studentChildren: user ?.user ?.children || [],
+      currentChild: user ?.currentChild,
+      role: user ?.user ?.role
     }),
     {
       logout: logoutAction,
-      toggleSideBar: toggleSideBarAction
+      toggleSideBar: toggleSideBarAction,
+      changeChild: changeChildAction
     }
   )
 );
@@ -485,14 +508,14 @@ const SideBar = styled(Layout.Sider)`
     }
 
     ${({ collapsed }) =>
-      collapsed
-        ? `
+    collapsed
+      ? `
       flex: inherit;
       max-width: 245px;
       min-width: 0;
       width: 100%;
     `
-        : ``}
+      : ``}
   }
 `;
 

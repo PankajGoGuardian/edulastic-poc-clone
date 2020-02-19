@@ -4,7 +4,7 @@ import config from "../config";
 import { getAccessToken, getTraceId, initKID, initTID } from "./Storage";
 import AppDetails from "appDetails";
 import semverCompare from "semver-compare";
-
+//import { getStore } from 'reduxStore';
 const getCurrentPath = () => {
   const location = window.location;
   return `${location.pathname}${location.search}${location.hash}`;
@@ -45,6 +45,23 @@ const getLoggedOutUrl = () => {
   }
 };
 
+function getParentsStudentToken(config) {
+  console.log('config url', { url: config.url });
+  try {
+    if (['/user/me', '/logout', '/login', '/signUp'].find(x => config.url ?.includes(x))) {
+      return false;
+    }
+    const currentUserFromRedux = window ?.getStore() ?.getState() ?.user || {};
+    const { currentChild } = currentUserFromRedux;
+    const { role: userRole, children } = currentUserFromRedux ?.user || {};
+    if (userRole === "parent" && currentChild && children ?.length > 0) {
+      return children.find(child => child._id === currentChild) ?.token;
+    }
+  } catch (e) {
+    console.warn('error parentSstudent', e);
+  }
+}
+
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
     this.baseURL = baseURL;
@@ -56,7 +73,8 @@ export default class API {
       }
     });
     this.instance.interceptors.request.use(config => {
-      let token = defaultToken || getAccessToken();
+      let token = getParentsStudentToken(config) || defaultToken || getAccessToken();
+      //let token = defaultToken || getAccessToken();
       if (token) {
         config.headers["Authorization"] = token;
       }
@@ -74,7 +92,7 @@ export default class API {
         // has support since IE8.
         if (window.sessionStorage) {
           // if appVersion sent recieved from api is greater than in the client, then dispatch an event.
-          const appVersion = AppDetails?.version;
+          const appVersion = AppDetails ?.version;
           const apiAppVersion = response.headers["app-version"] || "";
           const refreshRequested = window.sessionStorage["refreshRequested"];
           if (semverCompare(apiAppVersion, appVersion) == 1 && !refreshRequested && apiAppVersion) {

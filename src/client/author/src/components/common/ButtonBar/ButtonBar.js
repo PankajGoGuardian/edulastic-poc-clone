@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Menu, Button } from "antd";
+import { Button } from "antd";
 import { get } from "lodash";
-import { Tooltip } from "../../../../../common/utils/helpers";
 import {
   IconSaveNew,
-  IconSource,
   IconPreview,
-  IconSettings,
   IconPencilEdit,
   IconEye,
   IconCheck,
@@ -21,9 +18,10 @@ import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { Tooltip } from "../../../../../common/utils/helpers";
 import { MAX_TAB_WIDTH } from "../../../constants/others";
-
 import { clearAnswersAction } from "../../../actions/answers";
+import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
 import { ButtonLink } from "..";
 import {
   Container,
@@ -34,22 +32,23 @@ import {
   MobileTopRight,
   MobileBottom,
   MenuList,
-  DropMenuList,
-  RightDropdown,
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
 
 class ButtonBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: "edit"
-    };
-  }
+  handleMenuClick = view => () => {
+    const {
+      onChangeView,
+      clearEvaluation,
+      onSaveScrollTop,
+      view: currentView,
+      changePreviewTab
+    } = this.props;
 
-  handleMenuClick = view => {
-    const { onChangeView, onSaveScrollTop } = this.props;
+    if (currentView === view) {
+      return;
+    }
 
     onChangeView(view);
 
@@ -58,7 +57,11 @@ class ButtonBar extends Component {
     }
 
     if (view === "preview") {
-      this.setClearPreviewTab();
+      changePreviewTab("clear");
+    }
+
+    if (view === "edit") {
+      clearEvaluation();
     }
   };
 
@@ -74,40 +77,22 @@ class ButtonBar extends Component {
       onSave,
       onCancel,
       onPublishTestItem,
-      onShowSource,
-      onShowSettings,
       windowWidth,
       changePreviewTab,
       onEnableEdit,
       showPublishButton,
       view,
-      isTestFlow = false,
-      hasAuthorPermission = true,
+      isTestFlow,
+      hasAuthorPermission,
       itemStatus,
       renderExtra,
       renderRightSide,
       withLabels,
-      disableSave = false,
-      showMetaData = false,
+      disableSave,
+      showMetaData,
       showAuditTrail = false,
       permissions
     } = this.props;
-    const MobileDropMenu = (
-      <DropMenuList>
-        <Menu.Item onClick={onShowSource} key="0">
-          <HeadIcon>
-            <IconSource color={white} width={18} height={16} />
-          </HeadIcon>
-          {withLabels ? "Source" : ""}
-        </Menu.Item>
-        <Menu.Item onClick={onShowSettings} key="1">
-          <HeadIcon>
-            <IconSettings color={white} width={24} height={16} />
-          </HeadIcon>
-          {withLabels ? "Settings" : ""}
-        </Menu.Item>
-      </DropMenuList>
-    );
 
     return (
       <React.Fragment>
@@ -118,7 +103,7 @@ class ButtonBar extends Component {
                 <MenuItem
                   data-cy="editButton"
                   className={view === "edit" && "active"}
-                  onClick={() => this.handleMenuClick("edit")}
+                  onClick={this.handleMenuClick("edit")}
                 >
                   <HeadIcon>
                     <IconPencilEdit color={white} width={18} height={16} />
@@ -129,7 +114,7 @@ class ButtonBar extends Component {
               <MenuItem
                 data-cy="previewButton"
                 className={view === "preview" && "active"}
-                onClick={() => this.handleMenuClick("preview")}
+                onClick={this.handleMenuClick("preview")}
               >
                 <HeadIcon>
                   <IconEye color={white} width={18} height={16} />
@@ -140,7 +125,7 @@ class ButtonBar extends Component {
                 <MenuItem
                   data-cy="metadataButton"
                   className={view === "metadata" && "active"}
-                  onClick={() => this.handleMenuClick("metadata")}
+                  onClick={this.handleMenuClick("metadata")}
                 >
                   <HeadIcon>
                     <IconMetadata color={white} width={18} height={16} />
@@ -152,7 +137,7 @@ class ButtonBar extends Component {
                 <MenuItem
                   data-cy="auditTrailButton"
                   className={view === "auditTrail" && "active"}
-                  onClick={() => this.handleMenuClick("auditTrail")}
+                  onClick={this.handleMenuClick("auditTrail")}
                 >
                   <HeadIcon>
                     <IconPencilEdit color={white} width={18} height={16} />
@@ -244,7 +229,7 @@ class ButtonBar extends Component {
             <MobileBottom>
               <MenuList selectedKeys={[view]}>
                 <MenuItem
-                  onClick={() => this.handleMenuClick("edit")}
+                  onClick={this.handleMenuClick("edit")}
                   className={view === "edit" && "active"}
                   data-cy="editButton"
                 >
@@ -254,7 +239,7 @@ class ButtonBar extends Component {
                   {withLabels ? "Edit Mode" : ""}
                 </MenuItem>
                 <MenuItem
-                  onClick={() => this.handleMenuClick("preview")}
+                  onClick={this.handleMenuClick("preview")}
                   className={view === "preview" && "active"}
                   data-cy="previewButton"
                 >
@@ -267,7 +252,7 @@ class ButtonBar extends Component {
                 <MenuItem
                   data-cy="metadataButton"
                   className={view === "metadata" && "active"}
-                  onClick={() => this.handleMenuClick("metadata")}
+                  onClick={this.handleMenuClick("metadata")}
                 >
                   <HeadIcon>
                     <IconMetadata color={white} width={18} height={16} />
@@ -339,28 +324,38 @@ ButtonBar.propTypes = {
   onChangeView: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  onShowSource: PropTypes.func.isRequired,
-  onShowSettings: PropTypes.func,
+  clearAnswers: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   isTestFlow: PropTypes.bool,
   onEnableEdit: PropTypes.func,
-  clearAnswers: PropTypes.func.isRequired,
+  clearEvaluation: PropTypes.func.isRequired,
   renderExtra: PropTypes.func,
   renderRightSide: PropTypes.func,
   withLabels: PropTypes.bool,
   onSaveScrollTop: PropTypes.func.isRequired,
-  disableSave: PropTypes.func.isRequired // to disable/enable save and publish button
+  disableSave: PropTypes.func,
+  onCancel: PropTypes.func.isRequired,
+  onPublishTestItem: PropTypes.func.isRequired,
+  showPublishButton: PropTypes.bool.isRequired,
+  view: PropTypes.string.isRequired,
+  hasAuthorPermission: PropTypes.bool,
+  itemStatus: PropTypes.any.isRequired,
+  showMetaData: PropTypes.bool,
+  showAuditTrail: PropTypes.bool,
+  permissions: PropTypes.object.isRequired
 };
 
 ButtonBar.defaultProps = {
-  onShowSettings: () => {},
   renderRightSide: () => {},
   onEnableEdit: () => {},
   renderExtra: () => null,
+  disableSave: false,
+  showMetaData: false,
+  showAuditTrail: false,
   isTestFlow: false,
-  withLabels: false
-  // saving: false,
+  withLabels: false,
+  hasAuthorPermission: true
 };
 
 const enhance = compose(
@@ -372,7 +367,8 @@ const enhance = compose(
       permissions: get(state, ["user", "user", "permissions"], [])
     }),
     {
-      clearAnswers: clearAnswersAction
+      clearAnswers: clearAnswersAction,
+      clearEvaluation: clearEvaluationAction
     }
   )
 );

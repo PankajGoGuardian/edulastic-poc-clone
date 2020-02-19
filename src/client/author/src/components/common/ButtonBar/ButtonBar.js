@@ -215,7 +215,12 @@ class ButtonBar extends Component {
                   </Button>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <Button data-cy="editItem" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+                  <Button
+                    data-cy="editItem"
+                    style={{ width: 120 }}
+                    size="large"
+                    onClick={onEnableEdit}
+                  >
                     Edit
                   </Button>
                 )}
@@ -227,7 +232,12 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileTopRight>
-              <CustomButton disabled={disableSave} data-cy="saveButton" onClick={onSave} className="btn-save">
+              <CustomButton
+                disabled={disableSave}
+                data-cy="saveButton"
+                onClick={onSave}
+                className="btn-save"
+              >
                 <IconSaveNew color={white} width={18} height={16} />
               </CustomButton>
             </MobileTopRight>
@@ -359,7 +369,7 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({
-      permissions: get(state, ["user", "user", "permissions"])
+      permissions: get(state, ["user", "user", "permissions"], [])
     }),
     {
       clearAnswers: clearAnswersAction

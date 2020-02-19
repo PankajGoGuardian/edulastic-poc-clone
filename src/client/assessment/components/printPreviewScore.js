@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { someGreyColor1, lightBlue } from "@edulastic/colors";
+import { round } from "lodash";
 
 const PrintPreviewScore = props => {
   const { className, data } = props;
@@ -14,7 +15,7 @@ const PrintPreviewScore = props => {
   return (
     <div className={className}>
       <div className="score-container">
-        <div className="score-div">{score}</div>
+        <div className="score-div">{round(score, 2)}</div>
         <div className="max-score-div">{maxScore}</div>
       </div>
     </div>

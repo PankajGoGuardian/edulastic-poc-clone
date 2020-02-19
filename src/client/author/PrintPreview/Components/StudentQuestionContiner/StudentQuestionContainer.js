@@ -20,6 +20,7 @@ import {
 } from "./styled";
 import { UTAConstantsToLabels, gradingLabels, UTAStatusToConstants } from "../../utils/constants";
 import * as moment from "moment";
+import { round } from "lodash";
 
 class StudentQuestionContainer extends Component {
   render() {
@@ -89,7 +90,7 @@ class StudentQuestionContainer extends Component {
           {testActivity.status !== UTAStatusToConstants.ABSENT ? (
             <ScoreContainer>
               <ScoreLabel>TOTAL SCORE</ScoreLabel>
-              <TotalScore>{score}</TotalScore>
+              <TotalScore>{round(score, 2)}</TotalScore>
               <FractionLine />
               <TotalScore>{maxScore}</TotalScore>
             </ScoreContainer>

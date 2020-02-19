@@ -6,7 +6,7 @@ import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 import { QuestionDiv, Content } from "./styled";
 
-function Preview({ item, passages }) {
+function Preview({ item, passages, evaluation }) {
   const rows = getRows(item);
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
@@ -28,6 +28,7 @@ function Preview({ item, passages }) {
         scrolling={item.scrolling}
         style={{ width: "100%" }}
         isPrintPreview
+        evaluation={evaluation}
       />
     </Content>
   );
@@ -92,7 +93,16 @@ class StudentQuestions extends Component {
   render() {
     const testItems = this.getTestItems();
     const { passages = [] } = this.props.classResponse;
-    let testItemsRender = testItems.map(item => <Preview item={item} passages={passages} />);
+    const evaluationStatus = this.props.questionActivities.reduce((acc, curr) => {
+      if (curr.pendingEvaluation) {
+        acc[curr.qid] = "pending";
+      } else {
+        acc[curr.qid] = curr.evaluation;
+      }
+
+      return acc;
+    }, {});
+    let testItemsRender = testItems.map(item => <Preview item={item} passages={passages} evaluation={evaluationStatus} />);
     return (
       <QuestionDiv
         ref={ref => {

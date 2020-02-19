@@ -63,7 +63,7 @@ class GraphAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const { validation, toolbar } = question;
     for (let i = 0; i < value.length; i++) {
-      if (typeof value[i].label !== "boolean") {
+      if (typeof value[i].label !== "boolean" && typeof value[i].label !== "undefined") {
         value[i].label = value[i].label.replace(/<p>/g, "").replace(/<\/p>/g, "");
       }
     }

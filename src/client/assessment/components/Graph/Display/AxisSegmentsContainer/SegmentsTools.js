@@ -54,9 +54,9 @@ const SegmentsTools = ({
       }
       return "";
     }
-    if (elementsNumber >= responsesAllowed) {
-      return "disabled";
-    }
+    // if (elementsNumber >= responsesAllowed) {
+    //   return "disabled";
+    // }
     if (isActive(uiTool)) {
       return "active";
     }
@@ -67,9 +67,9 @@ const SegmentsTools = ({
     if (serviceTools.includes(uiTool.name)) {
       return () => onSelect(uiTool);
     }
-    if (elementsNumber >= responsesAllowed) {
-      return null;
-    }
+    // if (elementsNumber >= responsesAllowed) {
+    //   return null;
+    // }
     return () => onSelect(uiTool);
   };
 

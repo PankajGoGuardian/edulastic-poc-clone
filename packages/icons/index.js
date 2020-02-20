@@ -40,6 +40,7 @@ export { default as IconList } from "./src/IconList";
 export { default as IconTile } from "./src/IconTile";
 export { default as IconMoveTo } from "./src/IconMoveTo";
 export { default as IconCollapse } from "./src/IconCollapse";
+export { default as IconCollapse2 } from "./src/IconCollapse2";
 export { default as IconPhotoCamera } from "./src/IconPhotoCamera";
 export { default as IconWorldWide } from "./src/IconWorldWide";
 export { default as IconCopy } from "./src/IconCopy";

@@ -5,8 +5,9 @@ import next from "immer";
 import { round, includes, map } from "lodash";
 import { PieChart, Pie, Cell, Tooltip, Label, ResponsiveContainer } from "recharts";
 import { getStudentPerformancePieData, getOverallMasteryPercentage, getMaxScale } from "../../utils/transformers";
-import { StyledCustomChartTooltip as CustomChartTooltip, StyledH3 } from "../../../../../common/styled";
-import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
+import { StyledCustomChartTooltip as CustomChartTooltip } from "../../../../../common/styled";
+import { themeColorLighter, title as pieTitle } from "@edulastic/colors";
+import ScaleInfoLabels from "./ScaleInfoLabels";
 
 const fillColors = (data, selectedMastery) => {
   if (!selectedMastery.length) {
@@ -20,51 +21,84 @@ const fillColors = (data, selectedMastery) => {
   });
 };
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, masteryLabel }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
+const renderCustomizedInnerLabel = props => {
+  const { masteryPercentage } = props;
+  const { cx, cy } = props.viewBox;
   return (
-    <text x={x} y={y} fill="black" textAnchor={x > cx ? "start" : "end"} dominantBaseline="central">
-      {masteryLabel}
-    </text>
+    <>
+      <StyledText
+        x={cx}
+        y={cy - 8}
+        fill={themeColorLighter}
+        textAnchor="middle"
+        dominantBaseline="central"
+        customFont={"35px/47px Open Sans"}
+      >
+        {masteryPercentage}%
+      </StyledText>
+      <StyledText
+        x={cx}
+        y={cy + 18}
+        textAnchor="middle"
+        dominantBaseline="central"
+        customFont={"11px/15px Open Sans"}
+        weight={600}
+        spacing={"0.2px"}
+      >
+        IN MASTERY
+      </StyledText>
+    </>
   );
 };
 
+const getPercentageScaleMap = itemsArray =>
+  itemsArray.reduce((res, ele) => {
+    res[ele.masteryLabel] = ele.percentage;
+    return res;
+  }, {});
+
 const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMastery, getTooltip, title }) => {
+  // process data to fill and label the pie chart
   const pieData = getStudentPerformancePieData(data, scaleInfo);
   const maxScale = getMaxScale(scaleInfo);
   const overallMasteryPercentage = getOverallMasteryPercentage(data, maxScale);
-
   const dataWithColors = fillColors(pieData, selectedMastery);
+
+  // process pieData to get percentage scale info for ScaleInfoLabels
+  const scaleMap = getPercentageScaleMap(pieData);
+  const scaleMapKeys = Object.keys(scaleMap);
+  const percentageScaleInfo = (scaleInfo || []).map(item => {
+    item.percentage = scaleMapKeys.includes(item.masteryLabel) ? scaleMap[item.masteryLabel] : 0;
+    return item;
+  });
 
   return (
     <>
-      <StyledH3>{title}</StyledH3>
-      <ResponsiveContainer width={"100%"} height={400}>
-        <PieChart width={400} height={400}>
+      <StyledTitle>{title}</StyledTitle>
+      <ResponsiveContainer width={"100%"} height={200}>
+        <PieChart width={100} height={100}>
           <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltip} />} />
           <Pie
             data={pieData}
             labelLine={false}
-            outerRadius={150}
-            innerRadius={50}
-            cx={175}
-            cy={200}
+            outerRadius={75}
+            innerRadius={53}
             fill="#8884d8"
             dataKey="count"
-            label={renderCustomizedLabel}
             onClick={onSectionClick}
           >
-            <Label value={`Mastery ${round(overallMasteryPercentage)}%`} position="center" />
+            <Label
+              position="center"
+              content={renderCustomizedInnerLabel}
+              masteryPercentage={round(overallMasteryPercentage)}
+            />
             {dataWithColors.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
         </PieChart>
       </ResponsiveContainer>
+      <ScaleInfoLabels scaleInfo={percentageScaleInfo} />
     </>
   );
 };
@@ -82,7 +116,7 @@ StudentPerformancePie.defaultProps = {
   onSectionClick: () => {},
   getTooltip: () => null,
   selectedMastery: [],
-  title: "Overall Mastery"
+  title: "MASTERY OF ASSESSED"
 };
 
 export default StudentPerformancePie;
@@ -90,4 +124,19 @@ export default StudentPerformancePie;
 const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   min-width: 70px;
   min-height: auto;
+`;
+
+const StyledTitle = styled.span`
+  display: block;
+  text-align: center;
+  font: Bold 14px/19px Open Sans;
+  letter-spacing: 0;
+  color: ${pieTitle};
+`;
+
+const StyledText = styled.text`
+  text-align: center;
+  font: ${props => props.customFont};
+  font-weight: ${props => props.weight || "bold"};
+  letter-spacing: ${props => props.spacing || "0px"};
 `;

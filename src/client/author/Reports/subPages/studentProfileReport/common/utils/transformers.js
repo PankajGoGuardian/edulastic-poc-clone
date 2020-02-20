@@ -81,6 +81,23 @@ export const getOverallMasteryPercentage = (records, maxScale) => {
   return percentage(masteredStandards.length, records.length);
 };
 
+export const getMasterySummary = (masteryScore, scaleInfo) => {
+  let flag = true;
+  const masterySummary = {
+    masteryScore,
+    masteryName: "",
+    color: ""
+  };
+  scaleInfo.forEach(scale => {
+    if (flag && masteryScore >= scale.threshold) {
+      flag = false;
+      masterySummary.masteryName = scale.masteryName;
+      masterySummary.color = scale.color;
+    }
+  });
+  return masterySummary;
+};
+
 export const getOverallMasteryCount = (records, maxScale) => {
   const masteredStandards = filter(records, record => record.scale.masteryName === maxScale.masteryName);
   return masteredStandards.length;
@@ -141,11 +158,14 @@ export const getDomains = (metricInfo = [], scaleInfo = [], studentClassInfo = {
   const domains = map(keys(groupedByDomain), domainId => {
     const standards = groupedByDomain[domainId];
     const { domainName = "", domain = "" } = standards[0] || {};
+    const masteryScore = getOverallMasteryPercentage(standards, maxScale);
+    const masterySummary = getMasterySummary(masteryScore, scaleInfo);
 
     return {
       domainId,
       standards,
-      masteryScore: getOverallMasteryPercentage(standards, maxScale),
+      masteryScore,
+      masterySummary,
       name: domain,
       description: domainName,
       subject: studentClassInfo?.subject,

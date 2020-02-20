@@ -1,9 +1,10 @@
 import React from "react";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
-import { StyledTag } from "../../styled";
+import { StyledTag } from "../../../../../../common/styled";
+import { themeColorLight, greyThemeDark1 } from "@edulastic/colors";
 
-const TooltipTag = ({ standard }) => {
+export const TooltipTag = ({ standard }) => {
   const toolTipText = () => (
     <div>
       <TableTooltipRow title={"Domain : "} value={standard.domain} />
@@ -20,9 +21,33 @@ const TooltipTag = ({ standard }) => {
     <CustomTableTooltip
       placement="top"
       title={toolTipText()}
-      getCellContents={() => <StyledTag color={color}>{standard.standard}</StyledTag>}
+      getCellContents={() => (
+        <StyledTag bgColor={color} textColor={greyThemeDark1} padding={"0px 10px"} fontWeight={"Bold"}>
+          {standard.standard}
+        </StyledTag>
+      )}
     />
   );
 };
 
-export default TooltipTag;
+export const TooltipTagContainer = ({ standards }) => {
+  const toolTipText = standards => (
+    <div>
+      {standards.map(standard => (
+        <TooltipTag standard={standard} />
+      ))}
+    </div>
+  );
+
+  return (
+    <CustomTableTooltip
+      placement="top"
+      title={toolTipText(standards)}
+      getCellContents={() => (
+        <StyledTag bgColor={themeColorLight} textColor={greyThemeDark1} padding={"0px 10px"} fontWeight={"Bold"}>
+          {standards.length}+
+        </StyledTag>
+      )}
+    />
+  );
+};

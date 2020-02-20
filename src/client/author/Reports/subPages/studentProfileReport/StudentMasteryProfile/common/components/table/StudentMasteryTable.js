@@ -4,12 +4,17 @@ import PropTypes from "prop-types";
 import { Row, Col } from "antd";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
-import { StyledCell, StyledH3, StyledCard } from "../../../../../../common/styled";
+import { StyledCell } from "../../../../../../common/styled";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
-import { OnClick, StyledTable } from "../../styled";
+import { StyledTable, ReStyledTag, StyledSpan } from "../../styled";
+import { greyThemeDark1, themeColorLight } from "@edulastic/colors";
 
 const getCol = (text, backgroundColor) => {
-  return <StyledCell style={{ backgroundColor }}>{text}</StyledCell>;
+  return (
+    <StyledCell style={{ backgroundColor }} justify="center">
+      {text}
+    </StyledCell>
+  );
 };
 
 const renderToolTipColumn = columnName => (value, record) => {
@@ -31,11 +36,6 @@ const renderToolTipColumn = columnName => (value, record) => {
 const getColumns = (handleOnClickStandard, filters) => {
   const columns = [
     {
-      title: "Domain",
-      key: "domain",
-      dataIndex: "domain"
-    },
-    {
       title: "Standard",
       key: "standard",
       dataIndex: "standard",
@@ -46,25 +46,39 @@ const getColumns = (handleOnClickStandard, filters) => {
           standardId: record.standardId,
           profileId: filters.standardsProficiencyProfileId
         };
-        return <OnClick onClick={() => handleOnClickStandard(obj, data)}>{data}</OnClick>;
-      }
+        return (
+          <ReStyledTag
+            onClick={() => handleOnClickStandard(obj, data)}
+            bgColor={record.scale.color}
+            textColor={greyThemeDark1}
+            padding={"0px 10px"}
+            fontWeight={"Bold"}
+            cursor={"pointer"}
+          >
+            {data}
+          </ReStyledTag>
+        );
+      },
+      sorter: (a, b) => a.standard.localeCompare(b.standard)
     },
     {
       title: "Description",
       key: "standardName",
       dataIndex: "standardName",
-      width: 300,
+      width: 250,
       render: data => {
         let str = data || "";
         if (str.length > 60) {
           str = str.substring(0, 60) + "...";
         }
-        return <span>{str}</span>;
-      }
+        return <StyledSpan>{str}</StyledSpan>;
+      },
+      sorter: (a, b) => a.standardName.localeCompare(b.standardName)
     },
     {
       title: "Mastery",
       key: "masteryName",
+      align: "center",
       dataIndex: "masteryName",
       render: (data, record) => {
         const obj = {
@@ -73,43 +87,64 @@ const getColumns = (handleOnClickStandard, filters) => {
           standardId: record.standardId,
           profileId: filters.standardsProficiencyProfileId
         };
-        return <OnClick onClick={() => handleOnClickStandard(obj, record.standard)}>{data}</OnClick>;
+        return (
+          <StyledSpan
+            onClick={() => handleOnClickStandard(obj, record.standard)}
+            cursor="pointer"
+            alignment="center"
+            hoverColor={themeColorLight}
+          >
+            {data}
+          </StyledSpan>
+        );
+      },
+      sorter: (a, b) => {
+        if (a.masteryName !== b.masteryName) {
+          return a.masteryName.localeCompare(b.masteryName);
+        } else {
+          return a.scoreFormatted.localeCompare(b.scoreFormatted);
+        }
       }
     },
     {
-      title: "Assessment#",
+      title: "Assessment",
       key: "testCount",
       dataIndex: "testCount",
-      align: "right",
-      render: renderToolTipColumn("Assessment#")
+      align: "center",
+      render: renderToolTipColumn("Assessments"),
+      sorter: (a, b) => a.testCount - b.testCount
     },
     {
       title: "Total Questions",
       key: "questionCount",
       dataIndex: "questionCount",
-      align: "right",
-      render: renderToolTipColumn("Total Questions")
+      align: "center",
+      render: renderToolTipColumn("Total Questions"),
+      sorter: (a, b) => a.questionCount - b.questionCount
     },
     {
       title: "Score",
       key: "totalScore",
       dataIndex: "totalScore",
-      align: "right",
-      render: renderToolTipColumn("Score")
+      align: "center",
+      render: renderToolTipColumn("Score"),
+      sorter: (a, b) => a.totalScore - b.totalScore
     },
     {
       title: "Max Possible Score",
       key: "maxScore",
       dataIndex: "maxScore",
-      align: "right",
-      render: renderToolTipColumn("Max Possible Score")
+      align: "center",
+      render: renderToolTipColumn("Max Possible Score"),
+      sorter: (a, b) => a.maxScore - b.maxScore
     },
     {
       title: "Avg. Score(%)",
       key: "scoreFormatted",
       dataIndex: "scoreFormatted",
-      align: "right",
-      render: renderToolTipColumn("Avg. Score(%)")
+      align: "center",
+      render: renderToolTipColumn("Avg. Score"),
+      sorter: (a, b) => a.scoreFormatted.localeCompare(b.scoreFormatted)
     }
   ];
   return columns;
@@ -130,22 +165,19 @@ const StudentMasteryTable = ({
   const _columns = getColumns(handleOnClickStandard, filters);
 
   return (
-    <StyledCard>
-      <StyledH3>Standard Performance Details</StyledH3>
-      <Row>
-        <Col>
-          <CsvTable
-            dataSource={filteredStandards}
-            columns={_columns}
-            colouredCellsNo={5}
-            tableToRender={StyledTable}
-            onCsvConvert={onCsvConvert}
-            isCsvDownloading={isCsvDownloading}
-            pagination={false}
-          />
-        </Col>
-      </Row>
-    </StyledCard>
+    <Row>
+      <Col>
+        <CsvTable
+          dataSource={filteredStandards}
+          columns={_columns}
+          colouredCellsNo={5}
+          tableToRender={StyledTable}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          pagination={false}
+        />
+      </Col>
+    </Row>
   );
 };
 

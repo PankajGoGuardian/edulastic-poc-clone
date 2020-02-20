@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor, black } from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -12,7 +12,7 @@ export const StyledCell = styled.div`
   padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: ${props => props.justify || "flex-end"};
 `;
 
 export const PrintablePrefix = styled.b`
@@ -184,7 +184,7 @@ export const StyledTable = styled(Table)`
           .normal-text {
             text-transform: none;
           }
-          ,
+
           th {
             padding: 8px;
             text-align: left;
@@ -198,6 +198,7 @@ export const StyledTable = styled(Table)`
               display: inline;
             }
           }
+
           th.ant-table-column-has-actions.ant-table-column-has-sorters {
             padding-bottom: 30px;
 
@@ -484,4 +485,20 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   color: black;
   border: solid 0.5px #bebebe;
   box-shadow: 0 0 8px #c0c0c0;
+`;
+
+export const StyledTag = styled.div`
+  width: ${props => props.width || "auto"};
+  padding: ${props => props.padding || "0px 20px"};
+  margin: ${props => props.margin || "2px"};
+  background: ${props => props.bgColor || themeColor};
+  height: ${props => props.height || "24px"};
+  color: ${props => props.textColor || "#ffffff"};
+  font: ${props => props.fontStyle || "10px/14px Open Sans"};
+  font-weight: ${props => props.fontWeight || "600"};
+  letter-spacing: ${props => props.spacing || "0.2px"};
+  border-radius: ${props => props.borderRadius || "5px"};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

@@ -92,6 +92,13 @@ function onHandler() {
       return;
     }
 
+    for (let i = 1; i < points.length; i++) {
+      if (isStart(points[i].coords.usrCoords, newPoint.coords.usrCoords)) {
+        board.$board.removeObject(newPoint);
+        return;
+      }
+    }
+
     if (points.length >= 3) {
       // wait 3 points
       // handle closing polygon

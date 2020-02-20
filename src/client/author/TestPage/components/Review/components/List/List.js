@@ -58,6 +58,7 @@ const List = SortableContainer(
               type: getQuestionType(testItems[i]),
               isPremium: testItems[i]?.collections?.length,
               item: testItems[i],
+              tags: testItems[i].tags,
               audio: audioStatus(testItems[i]),
               dok:
                 testItems[i].data &&

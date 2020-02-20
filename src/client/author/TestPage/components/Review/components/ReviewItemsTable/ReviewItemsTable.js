@@ -121,6 +121,7 @@ const ItemsTable = ({
       isPremium: item?.collections?.length,
       standards: standards[item._id],
       audio: audioStatus(item),
+      tags: item.tags,
       dok:
         item.data &&
         item.data.questions &&

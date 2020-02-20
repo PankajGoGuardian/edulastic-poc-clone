@@ -1,21 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes, { element } from "prop-types";
+import PropTypes from "prop-types";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 import { get } from "lodash";
-import stripTags from "striptags";
-import { AnswerContext } from "@edulastic/common";
 
 import {
-  Paper,
   Stimulus,
   FlexContainer,
   FroalaEditor,
   MathFormulaDisplay,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  AnswerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import { calculateWordsCount } from "@edulastic/common/src/helpers";
 import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
@@ -24,7 +23,6 @@ import { ValidList, qlToFroalaMapping } from "./constants/validList";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
-import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 const getToolBarButtons = item =>
@@ -48,9 +46,6 @@ const EssayRichTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  qIndex,
-  testItem,
-  location,
   disableResponse,
   previewTab,
   isPrintPreview
@@ -64,8 +59,8 @@ const EssayRichTextPreview = ({
 
   let minHeight = get(item, "uiStyle.minHeight", 200);
   const maxHeight = get(item, "uiStyle.maxHeight", 300);
-  minHeight = minHeight - 1;
-  //minHeight -1 cuz when maxHeight and minHeight is same,
+  minHeight -= 1;
+  // minHeight -1 cuz when maxHeight and minHeight is same,
   // div with maxHeight has border 1px which is parent of div with minHeight,
   // hence parent div  height is shrinked by 1px, hence scroll bar appears
   // border 1px is coming from froala editor default css which is necessary
@@ -163,7 +158,7 @@ const EssayRichTextPreview = ({
               initOnClick={false}
               readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
               quickInsertTags={[]}
-              toolbarButtons={toolbarButtons}
+              buttons={toolbarButtons}
               placeholder={item?.placeholder}
             />
           </FroalaEditorContainer>
@@ -186,14 +181,12 @@ const EssayRichTextPreview = ({
             />
           </FlexContainer>
         )}
-        {item.showWordCount &&
-          (userAnswer || !isReadOnly) &&
-          (isPrintPreview && userAnswer ? true : !isPrintPreview ? true : false) && (
-            <Toolbar borderRadiusOnlyBottom>
-              <FlexContainer />
-              <Item style={wordCountStyle}>{displayWordCount}</Item>
-            </Toolbar>
-          )}
+        {item.showWordCount && (userAnswer || !isReadOnly) && (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
+          <Toolbar borderRadiusOnlyBottom>
+            <FlexContainer />
+            <Item style={wordCountStyle}>{displayWordCount}</Item>
+          </Toolbar>
+        )}
       </div>
     </StyledPaperWrapper>
   ) : null;
@@ -209,18 +202,16 @@ EssayRichTextPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
   showQuestionNumber: PropTypes.bool,
-  location: PropTypes.any.isRequired,
-  testItem: PropTypes.bool,
-  qIndex: PropTypes.number,
+  isPrintPreview: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
   userAnswer: "",
-  testItem: false,
   showQuestionNumber: false,
-  qIndex: null
+  col: {}
 };
 
 const toolbarOptions = options => {

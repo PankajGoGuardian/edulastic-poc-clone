@@ -27,6 +27,8 @@ import {
   deleteSubjectStdMapAction
 } from "./ducks";
 
+import MergeCleverIdsTable from "./MergeCleverIdsTable";
+
 const Tabs = styled(AntdTabs)`
   padding: 15px;
 `;
@@ -63,32 +65,29 @@ const DistrictSpan = styled.span`
   font-size: 20px;
 `;
 
-import MergeCleverIdsTable from "./MergeCleverIdsTable";
-
-const TabPane = Tabs.TabPane;
-const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }) => {
-  return (
-    <DistrictNameDiv justifyContentSpaceBetween>
-      <DistrictSpan>{districtName}</DistrictSpan>
-      <FlexDiv>
-        {SyncTypes.map(item => (
-          <Button
-            style={item.style}
-            key={item.label}
-            onClick={() =>
+const {TabPane} = Tabs;
+const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }) => (
+  <DistrictNameDiv justifyContentSpaceBetween>
+    <DistrictSpan>{districtName}</DistrictSpan>
+    <FlexDiv>
+      {SyncTypes.map(item => (
+        <Button
+          style={item.style}
+          key={item.label}
+          onClick={() =>
               enableDisableSyncAction({
                 syncEnabled: item.value,
-                districtId
+                districtId,
+                districtName
               })
             }
-          >
-            {item.label}
-          </Button>
+        >
+          {item.label}
+        </Button>
         ))}
-      </FlexDiv>
-    </DistrictNameDiv>
+    </FlexDiv>
+  </DistrictNameDiv>
   );
-};
 const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
   ({ form: { getFieldDecorator, validateFields }, searchExistingDataApi }) => {
     function searchExistingData(evt) {
@@ -257,7 +256,6 @@ const withConnect = connect(
     updateSubjectStdMapAction,
     fetchLogsDataAction,
     closeMergeResponse: closeMergeResponseAction,
-    updateSubjectStdMapAction,
     deleteSubjectStdMapAction
   }
 );

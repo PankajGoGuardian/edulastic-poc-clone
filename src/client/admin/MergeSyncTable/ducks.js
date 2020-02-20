@@ -4,6 +4,7 @@ import { put, takeEvery, call, all } from "redux-saga/effects";
 import { message } from "antd";
 import { adminApi } from "@edulastic/api";
 import _get from "lodash.get";
+import {omit} from "lodash";
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
@@ -226,9 +227,15 @@ function* fetchClassNamesSync({ payload }) {
 
 function* fetchEnableDisableSync({ payload }) {
   try {
-    const item = yield call(enableDisableSyncApi, payload);
+    const { syncEnabled, districtName="" } = payload;
+    const newPayload = omit(payload, ["districtName"])
+    const item = yield call(enableDisableSyncApi, newPayload);
     if (item.success) {
-      message.success(item.message);
+      if(syncEnabled){
+        message.success(`Enabled clever sync for ${districtName}`);
+      }else{
+        message.success(`Disabled clever sync for ${districtName}`);
+      }
     } else {
       message.error(item.message);
     }

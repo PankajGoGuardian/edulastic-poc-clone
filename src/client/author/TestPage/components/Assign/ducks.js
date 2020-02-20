@@ -23,7 +23,8 @@ export const DELETE_ASSIGNMENT = "[assignments] delete assignment";
 export const REMOVE_ASSIGNMENT = "[assignments] remove assignment";
 export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignment";
 export const SET_ASSIGNMENT_SAVING = "[assignments] set assignment saving state";
-export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS = "[assignments] toggle confirmation common assignments";
+export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS =
+  "[assignments] toggle confirmation common assignments";
 export const UPDATE_ASSIGN_FAIL_DATA = "[assignments] update error data";
 export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP = "[assignments] toggle duplicate assignmnts popup";
 
@@ -36,9 +37,13 @@ export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS);
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING);
-export const toggleHasCommonAssignmentsPopupAction = createAction(TOGGLE_CONFIRM_COMMON_ASSIGNMENTS);
+export const toggleHasCommonAssignmentsPopupAction = createAction(
+  TOGGLE_CONFIRM_COMMON_ASSIGNMENTS
+);
 export const updateAssignFailDataAction = createAction(UPDATE_ASSIGN_FAIL_DATA);
-export const toggleHasDuplicateAssignmentPopupAction = createAction(TOGGLE_DUPLICATE_ASSIGNMENT_POPUP);
+export const toggleHasDuplicateAssignmentPopupAction = createAction(
+  TOGGLE_DUPLICATE_ASSIGNMENT_POPUP
+);
 
 const initialState = {
   isLoading: false,
@@ -206,15 +211,17 @@ function* saveAssignment({ payload }) {
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 
-    let userRole = yield select(getUserRole);
+    const userRole = yield select(getUserRole);
     const isTestLet = test.testType === testContants.type.TESTLET;
     const testType = isTestLet ? test.testType : get(payload, "testType", test.testType);
-    //teacher can not update test content visibility.
+    // teacher can not update test content visibility.
     const visibility = payload.testContentVisibility &&
       userRole !== roleuser.TEACHER && { testContentVisibility: payload.testContentVisibility };
-    //on teacher assigning common assessments convert it to class assessment.
+    // on teacher assigning common assessments convert it to class assessment.
     const testTypeUpdated =
-      userRole === roleuser.TEACHER && testType === testContants.type.COMMON ? testContants.type.ASSESSMENT : testType;
+      userRole === roleuser.TEACHER && testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType;
     const data = testIds.map(testId =>
       omit(
         {
@@ -223,7 +230,11 @@ function* saveAssignment({ payload }) {
           endDate,
           testType: testTypeUpdated,
           ...visibility,
-          testId
+          testId,
+          releaseScore:
+            isTestLet && !payload.releaseScore
+              ? testContants.releaseGradeLabels.DONT_RELEASE
+              : payload.releaseScore
         },
         [
           "_id",
@@ -267,7 +278,7 @@ function* saveAssignment({ payload }) {
       )
     );
   } catch (err) {
-    //enable button if call fails
+    // enable button if call fails
     yield put(setAssignmentSavingAction(false));
     console.error(err);
     if (err.status === 409) {

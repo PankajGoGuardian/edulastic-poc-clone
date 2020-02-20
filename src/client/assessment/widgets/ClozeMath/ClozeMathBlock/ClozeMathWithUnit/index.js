@@ -1,7 +1,7 @@
-/* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty, get } from "lodash";
+import { Popover } from "antd";
 import styled from "styled-components";
 import { MathKeyboard, AnswerContext } from "@edulastic/common";
 
@@ -23,7 +23,6 @@ class ClozeMathWithUnit extends React.Component {
     super(props);
     this.mathRef = React.createRef();
     this.wrappedRef = React.createRef();
-    this.mathKeyboardRef = React.createRef();
   }
 
   static contextType = AnswerContext;
@@ -32,14 +31,17 @@ class ClozeMathWithUnit extends React.Component {
     const { resprops = {}, id } = this.props;
     const { answers = {}, disableResponse = false } = resprops;
     const { mathUnits: userAnswers = [] } = answers;
+    const { nativeKeyboard } = this.state;
     if (window.MathQuill && this.mathRef.current) {
       const MQ = window.MathQuill.getInterface(2);
       const mQuill = MQ.MathField(this.mathRef.current, window.MathQuill);
       this.mQuill = mQuill;
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
+        textarea.addEventListener("focus", this.showKeyboardModal);
+        textarea.addEventListener("blur", this.closeMathBoard);
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
-        if (!this.state.nativeKeyboard) {
+        if (!nativeKeyboard) {
           textarea.setAttribute("readonly", "readonly");
         }
         textarea.disabled = disableResponse;
@@ -110,6 +112,8 @@ class ClozeMathWithUnit extends React.Component {
       return;
     }
 
+    const jQuery = window.$;
+
     if (target.clientHeight < target.scrollHeight) {
       const scrollBarWidth = target.offsetWidth - target.clientWidth;
       const clickPos = target.scrollWidth - e.offsetX;
@@ -119,10 +123,21 @@ class ClozeMathWithUnit extends React.Component {
     }
 
     if (
+      jQuery(target).hasClass("keyboard") ||
+      jQuery(target).hasClass("num") ||
+      jQuery(target).hasClass("keyboardButton")
+    ) {
+      e.preventDefault();
+    }
+
+    if (
       wrappedRef &&
       !wrappedRef.current.contains(target) &&
-      !$(target).hasClass("ant-select-dropdown-menu-item") &&
-      !$(target).hasClass("ant-select-dropdown-menu")
+      !jQuery(target).hasClass("ant-select-dropdown-menu-item") &&
+      !jQuery(target).hasClass("ant-select-dropdown-menu") &&
+      !jQuery(target).hasClass("keyboard") &&
+      !jQuery(target).hasClass("num") &&
+      !jQuery(target).hasClass("keyboardButton")
     ) {
       this.setState({ showKeyboard: false }, this.saveAnswer);
     }
@@ -139,24 +154,9 @@ class ClozeMathWithUnit extends React.Component {
       currentMathQuill.blur();
       return null;
     }
-    this.setState({ showKeyboard: true }, this.calcKeyPosition);
+    this.setState({ showKeyboard: true });
     currentMathQuill.focus();
   };
-
-  calcKeyPosition() {
-    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
-      return;
-    }
-    const keyboardW = this.mathKeyboardRef.current.offsetWidth;
-    const previewWrapperW = this.wrappedRef.current.offsetParent.offsetWidth; // offsetParent is Preview Container element
-    const mathWrapLeft = this.wrappedRef.current.offsetLeft;
-    const diff = previewWrapperW - mathWrapLeft - keyboardW;
-    if (diff < 0) {
-      this.mathKeyboardRef.current.style.left = `${diff}px`;
-    } else {
-      this.mathKeyboardRef.current.style.left = "0px";
-    }
-  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -257,8 +257,9 @@ class ClozeMathWithUnit extends React.Component {
         nativeKeyboard: !state.nativeKeyboard
       }),
       () => {
+        const { nativeKeyboard } = this.state;
         const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
-        if (this.state.nativeKeyboard) {
+        if (nativeKeyboard) {
           textarea.removeAttribute("readonly");
           textarea.focus();
         } else {
@@ -285,38 +286,58 @@ class ClozeMathWithUnit extends React.Component {
     } else if (window.isMobileDevice) {
       if (!showKeyboard) {
         mathKeyboardVisible = false;
-      } else {
-        if (nativeKeyboard) {
-          mathKeyboardVisible = false;
-        }
+      } else if (nativeKeyboard) {
+        mathKeyboardVisible = false;
       }
     } else {
       mathKeyboardVisible = false;
     }
 
+    const keypad = (
+      <MathKeyboard
+        onInput={this.onInput}
+        onClose={() => {}}
+        symbols={item.symbols}
+        numberPad={item.numberPad}
+        restrictKeys={this.restrictKeys}
+        customKeys={customKeys}
+        showResponse={false}
+      />
+    );
+
     return (
       <OuterWrapper disableResponse={disableResponse} ref={this.wrappedRef}>
         <InnerWrapper>
-          <ClozeMathInputField
-            ref={this.mathRef}
-            onClick={this.showKeyboardModal}
-            style={{
-              ...btnStyle,
-              minWidth: width || "auto",
-              minHeight: height || "auto",
-              padding: "5px 11px",
-              marginRight: 0,
-              borderRight: 0,
-              borderTopRightRadius: 0,
-              borderBottomRightRadius: 0,
-              display: "flex",
-              alignItems: "center"
-            }}
-          />
+          <Popover
+            content={keypad}
+            trigger="click"
+            placement="bottomLeft"
+            visible={mathKeyboardVisible}
+            overlayClassName="math-keyboard-popover"
+          >
+            <span>
+              <ClozeMathInputField
+                ref={this.mathRef}
+                onClick={this.showKeyboardModal}
+                style={{
+                  ...btnStyle,
+                  minWidth: width || "auto",
+                  minHeight: height || "auto",
+                  padding: "5px 11px",
+                  marginRight: 0,
+                  borderRight: 0,
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              />
+            </span>
+          </Popover>
           {window.isMobileDevice && (
             <KeyboardIcon
               onClick={this.toggleNativeKeyBoard}
-              className={this.state.nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
+              className={nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
               aria-hidden="true"
             />
           )}
@@ -329,21 +350,9 @@ class ClozeMathWithUnit extends React.Component {
             onDropdownVisibleChange={this.onDropdownVisibleChange}
             keypadMode={keypadMode}
             dropdownStyle={{ fontSize: btnStyle.fontSize }}
+            getPopupContainer={null}
           />
         </InnerWrapper>
-        {mathKeyboardVisible && (
-          <KeyboardWrapper ref={this.mathKeyboardRef}>
-            <MathKeyboard
-              onInput={this.onInput}
-              onClose={() => {}}
-              symbols={item.symbols}
-              numberPad={item.numberPad}
-              restrictKeys={this.restrictKeys}
-              customKeys={customKeys}
-              showResponse={false}
-            />
-          </KeyboardWrapper>
-        )}
       </OuterWrapper>
     );
   }
@@ -456,10 +465,3 @@ MathWithUnit.propTypes = {
 };
 
 export default MathWithUnit;
-
-const KeyboardWrapper = styled.div`
-  width: fit-content;
-  position: absolute;
-  left: 4px;
-  z-index: 100;
-`;

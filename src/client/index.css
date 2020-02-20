@@ -2166,3 +2166,7 @@ iframe {
   align-items: center;
   justify-content: center;
 }
+
+.math-keyboard-popover .ant-popover-inner-content {
+  padding: 0px;
+}

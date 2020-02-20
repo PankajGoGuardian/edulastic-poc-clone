@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
 import { MathKeyboard } from "@edulastic/common";
-import { response } from "@edulastic/constants";
 
 const { Option } = Select;
 
@@ -18,7 +18,8 @@ const SelectUnit = ({
   width,
   dropdownStyle,
   disabled,
-  forwardedRef
+  forwardedRef,
+  getPopupContainer
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
@@ -47,7 +48,7 @@ const SelectUnit = ({
         value={unit}
         preview={preview}
         height={height}
-        getPopupContainer={trigger => trigger.parentNode}
+        getPopupContainer={getPopupContainer}
         onDropdownVisibleChange={onDropdownVisibleChange}
         dropdownStyle={dropdownStyle}
         ref={forwardedRef}
@@ -70,14 +71,16 @@ SelectUnit.propTypes = {
   customUnits: PropTypes.string,
   height: PropTypes.string,
   preview: PropTypes.bool,
-  dropdownStyle: PropTypes.object
+  dropdownStyle: PropTypes.object,
+  getPopupContainer: PropTypes.func
 };
 
 SelectUnit.defaultProps = {
   height: "",
   customUnits: "",
   preview: false,
-  dropdownStyle: {}
+  dropdownStyle: {},
+  getPopupContainer: trigger => trigger.parentNode
 };
 
 export default SelectUnit;

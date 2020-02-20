@@ -1,7 +1,7 @@
-/* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty, get } from "lodash";
+import { Popover } from "antd";
 import styled from "styled-components";
 import { MathKeyboard, StaticMath, AnswerContext } from "@edulastic/common";
 
@@ -23,7 +23,6 @@ class ClozeMathInput extends React.Component {
     super(props);
     this.mathRef = React.createRef();
     this.wrappedRef = React.createRef();
-    this.mathKeyboardRef = React.createRef();
   }
 
   static contextType = AnswerContext;
@@ -40,6 +39,8 @@ class ClozeMathInput extends React.Component {
       this.mQuill = mQuill;
       this.setState({ currentMathQuill: mQuill }, () => {
         const textarea = mQuill.el().querySelector(".mq-textarea textarea");
+        textarea.addEventListener("focus", this.showKeyboardModal);
+        textarea.addEventListener("blur", this.closeMathBoard);
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         if (!nativeKeyboard) {
           textarea.setAttribute("readonly", "readonly");
@@ -126,6 +127,8 @@ class ClozeMathInput extends React.Component {
       return;
     }
 
+    const jQuery = window.$;
+
     if (target.clientHeight < target.scrollHeight) {
       const scrollBarWidth = target.offsetWidth - target.clientWidth;
       const clickPos = target.scrollWidth - e.offsetX;
@@ -134,7 +137,22 @@ class ClozeMathInput extends React.Component {
       }
     }
 
-    if (wrappedRef && !wrappedRef.current.contains(target) && !$(target).hasClass("ant-select-dropdown-menu-item")) {
+    if (
+      jQuery(target).hasClass("keyboard") ||
+      jQuery(target).hasClass("num") ||
+      jQuery(target).hasClass("keyboardButton")
+    ) {
+      e.preventDefault();
+    }
+
+    if (
+      wrappedRef &&
+      !wrappedRef.current.contains(target) &&
+      !jQuery(target).hasClass("ant-select-dropdown-menu-item") &&
+      !jQuery(target).hasClass("keyboard") &&
+      !jQuery(target).hasClass("num") &&
+      !jQuery(target).hasClass("keyboardButton")
+    ) {
       this.setState({ showKeyboard: false }, this.saveAnswer);
     }
   };
@@ -150,24 +168,9 @@ class ClozeMathInput extends React.Component {
       currentMathQuill.blur();
       return null;
     }
-    this.setState({ showKeyboard: true }, this.calcKeyPosition);
+    this.setState({ showKeyboard: true });
     currentMathQuill.focus();
   };
-
-  calcKeyPosition() {
-    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
-      return;
-    }
-    const keyboardW = this.mathKeyboardRef.current.offsetWidth;
-    const previewWrapperW = this.wrappedRef.current.offsetParent.offsetWidth; // offsetParent is Preview Container element
-    const mathWrapLeft = this.wrappedRef.current.offsetLeft;
-    const diff = previewWrapperW - mathWrapLeft - keyboardW;
-    if (diff < 0) {
-      this.mathKeyboardRef.current.style.left = `${diff}px`;
-    } else {
-      this.mathKeyboardRef.current.style.left = "0px";
-    }
-  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -206,16 +209,18 @@ class ClozeMathInput extends React.Component {
   saveAnswer = () => {
     const { resprops = {}, id } = this.props;
     const { currentMathQuill } = this.state;
-    const { save, item, answers = {} } = resprops;
-    const { maths: _userAnwers = [] } = answers;
-    const latex = currentMathQuill.latex();
-    const {
-      responseIds: { maths }
-    } = item;
-    const { index } = find(maths, res => res.id === id) || {};
+    if (currentMathQuill) {
+      const { save, item, answers = {} } = resprops;
+      const { maths: _userAnwers = [] } = answers;
+      const latex = currentMathQuill.latex();
+      const {
+        responseIds: { maths }
+      } = item;
+      const { index } = find(maths, res => res.id === id) || {};
 
-    if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
-      save({ value: latex, index }, "maths", id);
+      if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+        save({ value: latex, index }, "maths", id);
+      }
     }
   };
 
@@ -243,8 +248,9 @@ class ClozeMathInput extends React.Component {
         nativeKeyboard: !state.nativeKeyboard
       }),
       () => {
+        const { nativeKeyboard } = this.state;
         const textarea = this.mQuill.el().querySelector(".mq-textarea textarea");
-        if (this.state.nativeKeyboard) {
+        if (nativeKeyboard) {
           textarea.removeAttribute("readonly");
           textarea.focus();
         } else {
@@ -258,7 +264,7 @@ class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {} } = this.props;
-    const { height, width, item, uiStyles = {}, isV1Migrated, disableResponse } = resprops;
+    const { height, width, item, uiStyles = {}, disableResponse } = resprops;
     const { showKeyboard, nativeKeyboard } = this.state;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
@@ -269,14 +275,24 @@ class ClozeMathInput extends React.Component {
     } else if (window.isMobileDevice) {
       if (!showKeyboard) {
         mathKeyboardVisible = false;
-      } else {
-        if (nativeKeyboard) {
-          mathKeyboardVisible = false;
-        }
+      } else if (nativeKeyboard) {
+        mathKeyboardVisible = false;
       }
     } else {
       mathKeyboardVisible = false;
     }
+
+    const keypad = (
+      <MathKeyboard
+        onInput={this.onInput}
+        onClose={() => {}}
+        symbols={item.symbols}
+        numberPad={item.numberPad}
+        restrictKeys={this.restrictKeys}
+        customKeys={customKeys}
+        showResponse={false}
+      />
+    );
 
     return (
       <Wrapper
@@ -292,40 +308,34 @@ class ClozeMathInput extends React.Component {
           alignSelf: "flex-start"
         }}
       >
-        <div>
-          <span
-            ref={this.mathRef}
-            className="mathRef"
-            onClick={this.showKeyboardModal}
-            style={{
-              ...btnStyle,
-              minWidth: width,
-              minHeight: height,
-              padding: "5px 11px 4px"
-            }}
-          />
-          {window.isMobileDevice && (
-            <KeyboardIcon
-              onClick={this.toggleNativeKeyBoard}
-              className={this.state.nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
-              aria-hidden="true"
+        <Popover
+          content={keypad}
+          trigger="click"
+          placement="bottomLeft"
+          visible={mathKeyboardVisible}
+          overlayClassName="math-keyboard-popover"
+        >
+          <div>
+            <span
+              ref={this.mathRef}
+              className="mathRef"
+              onClick={this.showKeyboardModal}
+              style={{
+                ...btnStyle,
+                minWidth: width,
+                minHeight: height,
+                padding: "5px 11px 4px"
+              }}
             />
-          )}
-
-          {mathKeyboardVisible && (
-            <KeyboardWrapper ref={this.mathKeyboardRef}>
-              <MathKeyboard
-                onInput={this.onInput}
-                onClose={() => {}}
-                symbols={item.symbols}
-                numberPad={item.numberPad}
-                restrictKeys={this.restrictKeys}
-                customKeys={customKeys}
-                showResponse={false}
+            {window.isMobileDevice && (
+              <KeyboardIcon
+                onClick={this.toggleNativeKeyBoard}
+                className={nativeKeyboard ? "fa fa-calculator" : "fa fa-keyboard-o"}
+                aria-hidden="true"
               />
-            </KeyboardWrapper>
-          )}
-        </div>
+            )}
+          </div>
+        </Popover>
       </Wrapper>
     );
   }
@@ -409,12 +419,12 @@ MathInput.propTypes = {
 
 export default MathInput;
 
-const KeyboardWrapper = styled.div`
-  width: fit-content;
-  left: 4px;
-  position: absolute;
-  z-index: 100;
-`;
+// const KeyboardWrapper = styled.div`
+//   width: fit-content;
+//   left: 4px;
+//   position: absolute;
+//   z-index: 100;
+// `;
 
 const Wrapper = styled.div`
   &:active,
@@ -439,12 +449,7 @@ const Wrapper = styled.div`
     outline: none !important;
     cursor: pointer;
   }
-  span {
-    font-weight: 600;
-    font-style: unset;
-    var {
-      font-weight: 600;
-      font-style: unset;
-    }
+  .mq-math-mode .mq-matrix table {
+    margin: 0px;
   }
 `;

@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 import { isUndefined, get } from "lodash";
 import { ScratchPadContext } from "@edulastic/common";
 import { test as testTypes } from "@edulastic/constants";
@@ -74,7 +74,8 @@ const AssessmentContainer = ({
   test,
   groupId,
   showTools,
-  showScratchPad
+  showScratchPad,
+  savingResponse
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -99,13 +100,11 @@ const AssessmentContainer = ({
   }, [currentItem]);
 
   const gotoQuestion = index => {
-    setCurrentItem(index);
+    //setCurrentItem(index);
 
     if (preview) return;
-
-    history.push(`${url}/qid/${index}`);
     changePreview("clear");
-    saveCurrentAnswer();
+    saveCurrentAnswer({ urlToGo: `${url}/qid/${index}` });
   };
 
   const saveCurrentAnswer = payload => {
@@ -119,8 +118,7 @@ const AssessmentContainer = ({
     }
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent, false, groupId);
-      history.push(`${url}/${"test-summary"}`);
+      await saveUserAnswer(currentItem, timeSpent, false, groupId, { urlToGo: `${url}/${"test-summary"}` });
     }
   };
 
@@ -186,6 +184,14 @@ const AssessmentContainer = ({
     showScratchPad,
     passage
   };
+
+  useEffect(() => {
+    if (savingResponse) {
+      message.loading("submitting response", 0);
+    } else {
+      message.destroy();
+    }
+  }, [savingResponse]);
 
   if (loading) {
     return <Spin />;
@@ -270,7 +276,8 @@ const enhance = compose(
       questionsById: getQuestionsByIdSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
-      loading: testLoadingSelector(state)
+      loading: testLoadingSelector(state),
+      savingResponse: state?.test?.savingResponse
     }),
     {
       saveUserResponse,

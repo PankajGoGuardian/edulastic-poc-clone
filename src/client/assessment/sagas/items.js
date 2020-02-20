@@ -12,6 +12,8 @@ import {
   RECEIVE_ITEMS_SUCCESS,
   RECEIVE_ITEMS_ERROR,
   SAVE_USER_RESPONSE,
+  SAVE_USER_RESPONSE_SUCCESS,
+  SAVE_USER_RESPONSE_ERROR,
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS,
   CLEAR_USER_WORK
@@ -159,6 +161,10 @@ function* saveUserResponse({ payload }) {
       };
       yield call(attachmentApi.updateAttachment, { update, filter });
     }
+    yield put({ type: SAVE_USER_RESPONSE_SUCCESS });
+    if (payload?.urlToGo) {
+      yield put(push(payload.urlToGo));
+    }
     if (shouldClearUserWork) {
       /**
        * if we have two assignments one for practice and one for class assignment with same questions
@@ -170,10 +176,13 @@ function* saveUserResponse({ payload }) {
       });
     }
   } catch (err) {
+    yield put({ type: SAVE_USER_RESPONSE_ERROR });
     console.log(err);
     if (err.status === 403) {
       yield put(push("/home/assignments"));
       yield call(message.error, err.data);
+    } else {
+      yield call(message.error, "Failed saving the Answer");
     }
     // yield call(message.error, "Failed saving the Answer");
   }

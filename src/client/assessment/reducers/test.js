@@ -11,7 +11,10 @@ import {
   TEST_ACTIVITY_LOADING,
   SET_PASSWORD_STATUS_MESSAGE,
   UPDATE_CURRENT_AUDIO_DEATILS,
-  SET_TEST_LOADING_ERROR
+  SET_TEST_LOADING_ERROR,
+  SAVE_USER_RESPONSE,
+  SAVE_USER_RESPONSE_SUCCESS,
+  SAVE_USER_RESPONSE_ERROR
 } from "../constants/actions";
 
 const initialState = {
@@ -28,6 +31,7 @@ const initialState = {
   isPasswordValidated: false,
   loadingTestActivity: true,
   passwordStatusMessage: "",
+  savingResponse: false,
   currentPlayingDetails: {
     qId: ""
   }
@@ -121,6 +125,16 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         passwordStatusMessage: payload
       };
+    case SAVE_USER_RESPONSE:
+      if (!payload.autoSave) {
+        return { ...state, savingResponse: true };
+      } else {
+        return state;
+      }
+    case SAVE_USER_RESPONSE_SUCCESS:
+      return { ...state, savingResponse: false };
+    case SAVE_USER_RESPONSE_ERROR:
+      return { ...state, savingResponse: false };
     case UPDATE_CURRENT_AUDIO_DEATILS:
       return {
         ...state,

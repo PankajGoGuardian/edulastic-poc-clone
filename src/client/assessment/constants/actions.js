@@ -41,6 +41,8 @@ export const RECEIVE_ITEM_ERROR = "[items] receive item error";
 export const CREATE_ITEM_REQUEST = "[items] create item request";
 export const UPDATE_ITEM_REQUEST = "[items] update item request";
 export const SAVE_USER_RESPONSE = "[items] save user response";
+export const SAVE_USER_RESPONSE_SUCCESS = "[items] save user response success";
+export const SAVE_USER_RESPONSE_ERROR = "[items] save user response error";
 export const LOAD_USER_RESPONSE = "[items] load user response";
 export const GOTO_ITEM = "[items] goto a particular item";
 

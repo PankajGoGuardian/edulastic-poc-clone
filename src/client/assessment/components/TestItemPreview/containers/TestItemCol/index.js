@@ -163,7 +163,7 @@ class TestItemCol extends Component {
                 key={tabIndex}
                 label={tab}
                 style={{
-                  width: "50%",
+                  width: `calc(${100 / col.tabs.length}% - 10px)`,
                   textAlign: "center",
                   padding: "5px 15px"
                 }}

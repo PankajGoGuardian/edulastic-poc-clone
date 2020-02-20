@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -11,8 +10,7 @@ import {
   IconPencilEdit,
   IconArrowLeft,
   IconArrowRight,
-  IconCopy,
-  IconRemove
+  IconCopy
 } from "@edulastic/icons";
 import { get } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,7 +39,7 @@ import {
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
-  approveOrRejectSingleItem,
+  approveOrRejectSingleItem as approveOrRejectSingleItemAction,
   submitReviewFeedbackAction,
   loadScratchPadAction
 } from "../../../../ItemList/ducks";
@@ -71,7 +69,7 @@ class AuthorTestItemPreview extends Component {
   scrollContainer = React.createRef();
 
   componentDidMount() {
-    const { item, userId, loadScratchPad, user, attachmentId } = this.props;
+    const { loadScratchPad, attachmentId } = this.props;
     if (attachmentId) {
       loadScratchPad(attachmentId);
     }
@@ -85,7 +83,6 @@ class AuthorTestItemPreview extends Component {
 
   handleDeleteItem = () => {
     const {
-      item,
       item: { _id },
       deleteItem,
       isEditable,
@@ -98,7 +95,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   handleApproveOrRejectSingleItem = value => {
-    const { approveOrRejectSingleItem, item, submitReviewFeedback } = this.props;
+    const { approveOrRejectSingleItem, item } = this.props;
     if (item?._id) {
       approveOrRejectSingleItem({ itemId: item._id, status: value });
     }
@@ -151,8 +148,10 @@ class AuthorTestItemPreview extends Component {
 
   getSubIndex = (colIndex, widget, sectionQue, subCount) => {
     /*
-    sectionQue data format -> [section1,section2] || [[section1.tab1,section1.tab2],[section2.tab1, section2.tab2]]
-    for the current section/tab that is being rendered, add the lengths of previous sections/tab's question length to 
+    sectionQue data format -> 
+    [section1,section2] || [[section1.tab1,section1.tab2],[section2.tab1, section2.tab2]]
+    for the current section/tab that is being rendered, 
+    add the lengths of previous sections/tab's question length to 
     the subCount so that the sub-question count numbering flow remains ie. a-z
     */
     if (colIndex === 0) {
@@ -165,21 +164,20 @@ class AuthorTestItemPreview extends Component {
         (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
         subCount
       );
-    
-      if (Array.isArray(sectionQue[1])) {
-        return (
-          (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
-          sectionQue[1][0] +
-          subCount
-        );
-      } 
-        return (
-          (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
-          sectionQue[1] +
-          subCount
-        );
-      
-    
+
+    if (Array.isArray(sectionQue[1])) {
+      return (
+        (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+        sectionQue[1][0] +
+        subCount
+      );
+    }
+    return (
+      (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+      sectionQue[1] +
+      subCount
+    );
+
   };
 
   renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount, resourceCount) => {
@@ -264,7 +262,8 @@ class AuthorTestItemPreview extends Component {
       userId,
       page,
       userFeatures,
-      onlySratchpad
+      onlySratchpad,
+      deleting
     } = this.props;
 
     const { isRejectMode } = this.state;
@@ -317,7 +316,7 @@ class AuthorTestItemPreview extends Component {
                   }}
                   size="large"
                   onClick={this.handleDeleteItem}
-                  disabled={this.props.deleting}
+                  disabled={deleting}
                 >
                   <StyledFlex>
                     <SyledSpan>
@@ -448,7 +447,7 @@ class AuthorTestItemPreview extends Component {
 
   renderColumns(col, colIndex, sectionQue, resourceCount) {
     const { style, windowWidth, onlySratchpad, ...restProps } = this.props;
-    const { value } = this.state;
+    const { value, isRejectMode } = this.state;
     let subCount = 0;
     const columns = (
       <>
@@ -459,7 +458,7 @@ class AuthorTestItemPreview extends Component {
                 key={tabIndex}
                 label={tab}
                 style={{
-                  width: "50%",
+                  width: `calc(${100 / col.tabs.length}% - 10px)`,
                   textAlign: "center",
                   padding: "5px 15px"
                 }}
@@ -510,7 +509,7 @@ class AuthorTestItemPreview extends Component {
       </>
     );
 
-    if ((this.state.isRejectMode || onlySratchpad) && colIndex === 0) {
+    if ((isRejectMode || onlySratchpad) && colIndex === 0) {
       return <div style={{ paddingLeft: "45px" }}>{columns}</div>;
     }
     return columns;
@@ -584,7 +583,7 @@ class AuthorTestItemPreview extends Component {
 
   renderColumnsContentArea = ({ sectionQue, resourceCount, children = null, ...rest }) => {
     const { cols, page, onlySratchpad } = this.props;
-    const { collapseDirection, isRejectMode } = this.state;
+    const { collapseDirection } = this.state;
 
     return (
       <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
@@ -613,7 +612,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   render() {
-    const { cols, item, onlySratchpad } = this.props;
+    const { cols, onlySratchpad } = this.props;
     const { isRejectMode } = this.state;
     let questionCount = 0;
     let resourceCount = 0;
@@ -656,7 +655,7 @@ const enhance = compose(
     }),
     {
       deleteItem: deleteItemAction,
-      approveOrRejectSingleItem,
+      approveOrRejectSingleItem: approveOrRejectSingleItemAction,
       submitReviewFeedback: submitReviewFeedbackAction,
       loadScratchPad: loadScratchPadAction
     }

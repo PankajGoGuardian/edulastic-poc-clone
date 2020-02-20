@@ -3,16 +3,14 @@ import { connect } from "react-redux";
 import { Col, Icon, Row, Select, message, Tooltip } from "antd";
 import moment from "moment";
 import {
-  getSortedTestActivitySelector,
-  getAdditionalDataSelector,
-  getClassResponseSelector
-} from "../ClassBoard/ducks";
-import { test as testConst, roleuser, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
+  test as testConst,
+  assignmentPolicyOptions,
+  assignmentStatusOptions
+} from "@edulastic/constants";
+import { getAdditionalDataSelector } from "../ClassBoard/ducks";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { slice } from "./ducks";
 import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
-import { getUserRole } from "../src/selectors/user";
-import { ThemeButton } from "../src/components/common/ThemeButton";
 /**
  * Imports from SimpleOptions for re-use
  */
@@ -25,7 +23,6 @@ import {
   StyledRow
 } from "../AssignTest/components/SimpleOptions/styled";
 import DateSelector from "../AssignTest/components/SimpleOptions/DateSelector";
-import TestTypeSelector from "../AssignTest/components/SimpleOptions/TestTypeSelector";
 import Settings from "../AssignTest/components/SimpleOptions/Settings";
 import selectsData from "../TestPage/components/common/selectsData";
 
@@ -49,13 +46,12 @@ function LCBAssignmentSettings({
   history,
   loadAssignment,
   assignment = {},
-  userRole,
   testSettings = {},
   loadTestSettings,
   changeAttrs,
   updateAssignmentSettings
 }) {
-  let { openPolicy, closePolicy } = selectsData;
+  const { openPolicy, closePolicy } = selectsData;
   const { assignmentId, classId } = match.params || {};
   useEffect(() => {
     loadTestActivity(assignmentId, classId);
@@ -67,15 +63,13 @@ function LCBAssignmentSettings({
 
   const { startDate, endDate, status } = assignment?.["class"]?.[0] || {};
   console.log({ startDate, endDate });
-  const changeField = key => {
-    return value => {
-      if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
-        message.info("Please select your prefered start date");
-      } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
-        message.info("Please select your prefered due date");
-      }
-      changeAttrs({ key, value });
-    };
+  const changeField = key => value => {
+    if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
+      message.info("Please select your prefered start date");
+    } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
+      message.info("Please select your prefered due date");
+    }
+    changeAttrs({ key, value });
   };
   const gradeSubject = { grades: assignment?.grades, subjects: assignment?.subjects };
 
@@ -122,7 +116,8 @@ function LCBAssignmentSettings({
                     value={assignment?.openPolicy}
                     onChange={changeField("openPolicy")}
                     disabled={
-                      assignment?.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      assignment?.passwordPolicy ===
+                        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
                       status !== assignmentStatusOptions.NOT_OPEN
                     }
                   >
@@ -202,7 +197,7 @@ function LCBAssignmentSettings({
             {showSettings && (
               <Settings
                 assignmentSettings={assignment}
-                updateAssignmentSettings={options => {}}
+                updateAssignmentSettings={() => {}}
                 forClassLevel
                 changeField={changeField}
                 testSettings={testSettings}
@@ -214,7 +209,11 @@ function LCBAssignmentSettings({
             <Row gutter={0}>
               <Col offset={12}>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <ActionButton secondary style={{ width: "100%" }} onClick={() => resetToDefault()}>
+                  <ActionButton
+                    secondary
+                    style={{ width: "100%" }}
+                    onClick={() => resetToDefault()}
+                  >
                     CANCEL
                   </ActionButton>
                 </Col>
@@ -240,7 +239,6 @@ export default connect(
     additionalData: getAdditionalDataSelector(state),
     assignment: state?.LCBAssignmentSettings?.assignment,
     loading: state?.LCBAssignmentSettings?.loading,
-    userRole: getUserRole(state),
     testSettings: getTestEntitySelector(state)
   }),
   {

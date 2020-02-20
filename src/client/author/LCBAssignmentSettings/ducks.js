@@ -3,7 +3,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { omitBy, isUndefined, isEmpty, invert, set, get } from "lodash";
-import { test as testConst, roleuser, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
+import { assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
 
 const slice = createSlice({
   initialState: {
@@ -39,7 +39,7 @@ const slice = createSlice({
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload;
       if (["startDate", "endDate"].includes(key)) {
-        state.assignment["class"][0][key] = value.valueOf();
+        state.assignment.class[0][key] = value.valueOf();
         state.updateSettings[key] = value.valueOf();
       } else {
         state.assignment[key] = value;
@@ -47,7 +47,10 @@ const slice = createSlice({
         if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
           set(state.assignment, "class[0].startDate", Date.now());
           state.updateSettings.startDate = Date.now();
-        } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
+        } else if (
+          key === "closePolicy" &&
+          value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
+        ) {
           const newDueDate = new Date(
             get(state.assignment, "class[0].startDate", Date.now()) + 1000 * 60 * 60 * 24 * 7
           );
@@ -76,32 +79,32 @@ function* loadAssignmentSaga({ payload }) {
     /**
      * filtering out other classes
      */
-    data["class"] = (data["class"] || []).filter(x => x._id === classId);
+    data.class = (data.class || []).filter(x => x._id === classId);
     /**
      * logic for picking correct status for a class considering redirect
      */
-    const statusKeys = data["class"].map(x => parseInt(assignmentStatusOptionsKeys[x.status]));
+    const statusKeys = data.class.map(x => parseInt(assignmentStatusOptionsKeys[x.status], 10));
     const statusKey = Math.min(statusKeys);
-    if (data["class"][0]) {
-      const { releaseScore } = data["class"][0];
+    if (data.class[0]) {
+      const { releaseScore } = data.class[0];
       if (releaseScore) {
         data.releaseScore = releaseScore;
       }
-      data["class"][0].status = assignmentStatusArray[statusKey];
-      data["class"][0].endDate = Math.max(data["class"].map(x => x.endDate));
-      if (!data["class"][0].startDate) {
-        data["class"][0].startDate = Date.now();
+      data.class[0].status = assignmentStatusArray[statusKey];
+      data.class[0].endDate = Math.max(data.class.map(x => x.endDate));
+      if (!data.class[0].startDate) {
+        data.class[0].startDate = Date.now();
       }
-      if (!data["class"][0].endDate) {
+      if (!data.class[0].endDate) {
         const newEndDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
-        data["class"][0].endDate = newEndDate.setHours(23, 59, 59);
+        data.class[0].endDate = newEndDate.setHours(23, 59, 59);
       }
     }
     /**
      * if class level openPolicy and  closePolicy present,
      * override the top level with class level
      */
-    const { openPolicy, closePolicy } = data["class"][0] || {};
+    const { openPolicy, closePolicy } = data.class[0] || {};
     if (openPolicy) {
       data.openPolicy = openPolicy;
     }
@@ -118,8 +121,18 @@ function* loadAssignmentSaga({ payload }) {
 
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {};
-  const { openPolicy, closePolicy, releaseScore, startDate, endDate } = assignment;
-  return omitBy({ openPolicy, closePolicy, releaseScore, startDate, endDate }, isUndefined);
+  const { openPolicy, closePolicy, releaseScore, startDate, endDate, calcType } = assignment;
+  return omitBy(
+    {
+      openPolicy,
+      closePolicy,
+      releaseScore,
+      startDate,
+      endDate,
+      calcType
+    },
+    isUndefined
+  );
 }
 
 function* updateAssignmentClassSettingsSaga({ payload }) {
@@ -130,10 +143,11 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       yield call(message.error, "no changes to be saved");
       return;
     }
-    const data = yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
+    yield call(assignmentApi.updateClassSettings, { assignmentId, classId, settings });
     yield put(slice.actions.updateAssignmentClassSettingsSucess());
     yield call(message.success, "Settings updated successfully");
   } catch (e) {
+    console.log(e, "------");
     yield put(slice.actions.updateAssignmentClassSettingsError());
     yield call(message.error, e?.data?.message || "Updating assignment settings failed");
     console.warn("error", e, e.stack);

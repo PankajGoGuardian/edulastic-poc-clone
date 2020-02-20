@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Col, Radio, Select, Icon, Checkbox, Input, InputNumber } from "antd";
+import { Col, Radio, Select, Icon, Checkbox, Input, message } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -12,9 +12,7 @@ import {
   SettingsWrapper,
   Password,
   StyledSelect,
-  StyledTable,
   StyledDiv,
-  SpaceDiv,
   CheckBoxWrapper,
   MessageSpan,
   MaxAttemptIInput,
@@ -57,7 +55,6 @@ const Settings = ({
   userRole,
   isDocBased,
   forClassLevel = false,
-  showTestTypeOption = false,
   disableAnswerOnPaper,
   premium
 }) => {
@@ -90,16 +87,14 @@ const Settings = ({
         color: green,
         message: ""
       });
-      
-    } else {
-      let validationMessage = "Password is too short - must be at least 6 characters";
-      if (assignmentPassword.length > 25) validationMessage = "Password is too long";
-      setPasswordStatus({
-        color: red,
-        message: validationMessage
-      });
-      
+      return;
     }
+    let validationMessage = "Password is too short - must be at least 6 characters";
+    if (assignmentPassword.length > 25) validationMessage = "Password is too long";
+    setPasswordStatus({
+      color: red,
+      message: validationMessage
+    });
   };
   const overRideSettings = (key, value) => {
     if ((key === "maxAnswerChecks" || key === "maxAttempts") && value < 0) value = 0;
@@ -129,7 +124,7 @@ const Settings = ({
   const handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
     value *= 60;
-    if (value < 60 || isNaN(value)) {
+    if (value < 60 || Number.isNaN(value)) {
       value = 60;
     } else if (value > 999 * 60) {
       value = 999 * 60;
@@ -359,7 +354,6 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={forClassLevel}
                 value={calcType}
                 onChange={e => overRideSettings("calcType", e.target.value)}
               >
@@ -455,12 +449,19 @@ const Settings = ({
             </Col>
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                The password is entered by you and does not change. Students must enter this password before they can take the assessment.
+                The password is entered by you and does not change. Students must enter this
+                password before they can take the assessment.
               </Col>
             )}
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment.
+                Students must enter a password to take the assessment. The password is
+                auto-generated and revealed only when the assessment is opened. If you select this
+                method, you also need to specify the time in minutes after which the password would
+                automatically expire. Use this method for highly sensitive and secure assessments.
+                If you select this method, the teacher or the proctor must open the assessment
+                manually and announce the password in class when the students are ready to take the
+                assessment.
               </Col>
             )}
           </StyledRowSelect>

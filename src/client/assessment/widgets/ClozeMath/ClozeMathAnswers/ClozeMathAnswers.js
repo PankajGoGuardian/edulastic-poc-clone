@@ -23,16 +23,29 @@ const initialMethod = {
   options: {}
 };
 
-const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, onChangeKeypad, t }) => {
+const ClozeMathAnswers = ({
+  item,
+  setQuestionData,
+  fillSections,
+  cleanSections,
+  onChangeKeypad,
+  t
+}) => {
   const [correctTab, setCorrectTab] = useState(0);
   const isAlt = !isEmpty(item.validation.altResponses);
 
   const _addAnswer = () => {
     const newItem = cloneDeep(item);
     const mathValidAnswers = cloneDeep(get(newItem, "validation.validResponse.value", []));
-    const inputValidAnswers = cloneDeep(get(newItem, "validation.validResponse.textinput.value", []));
-    const dropdownValidAnswers = cloneDeep(get(newItem, "validation.validResponse.dropdown.value", []));
-    const mathUnitValidAnswers = cloneDeep(get(newItem, "validation.validResponse.mathUnits.value", []));
+    const inputValidAnswers = cloneDeep(
+      get(newItem, "validation.validResponse.textinput.value", [])
+    );
+    const dropdownValidAnswers = cloneDeep(
+      get(newItem, "validation.validResponse.dropdown.value", [])
+    );
+    const mathUnitValidAnswers = cloneDeep(
+      get(newItem, "validation.validResponse.mathUnits.value", [])
+    );
 
     if (!newItem.validation.altResponses) {
       newItem.validation.altResponses = [];
@@ -315,7 +328,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     setQuestionData(
       produce(item, draft => {
         if (prop === "value" || prop === "unit" || prop === "options") {
-          draft.validation = updateValidation(draft.validation, altAnswerIndex, answerId, prop, value);
+          draft.validation = updateValidation(
+            draft.validation,
+            altAnswerIndex,
+            answerId,
+            prop,
+            value
+          );
         } else {
           const mathUnitResponses = draft.responseIds.mathUnits;
           forEach(mathUnitResponses, res => {
@@ -323,8 +342,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
               res[prop] = value;
             }
           });
-          if (prop === "keypadMode") {
-            draft.validation = updateValidation(draft.validation, altAnswerIndex, answerId, "unit", "");
+          if (prop === "keypadMode" || prop === "customUnits") {
+            draft.validation = updateValidation(
+              draft.validation,
+              altAnswerIndex,
+              answerId,
+              "unit",
+              ""
+            );
           }
           draft.responseIds.mathUnits = mathUnitResponses;
         }
@@ -400,12 +425,24 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
               if (answer.type === "inputs") {
                 if (correctTab === 0) {
                   return (
-                    <InputAnswer key={index} item={item} onChange={_updateInputCorrectAnswer} answers={[answer]} />
+                    <InputAnswer
+                      key={index}
+                      item={item}
+                      onChange={_updateInputCorrectAnswer}
+                      answers={[answer]}
+                    />
                   );
                 }
                 if (isAlt) {
-                  const _altInputVlaues = get(item, `validation.altResponses[${correctTab - 1}].textinput.value`, []);
-                  const altAnswer = { ...answer, ...find(_altInputVlaues, av => av.id === answer.id) };
+                  const _altInputVlaues = get(
+                    item,
+                    `validation.altResponses[${correctTab - 1}].textinput.value`,
+                    []
+                  );
+                  const altAnswer = {
+                    ...answer,
+                    ...find(_altInputVlaues, av => av.id === answer.id)
+                  };
                   return (
                     <InputAnswer
                       item={item}
@@ -433,8 +470,15 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   );
                 }
                 if (isAlt) {
-                  const _altMathVlaues = get(item, `validation.altResponses[${correctTab - 1}].value`, []);
-                  const altAnswer = { ...answer, value: find(_altMathVlaues, av => av[0].id === answer.value[0].id) };
+                  const _altMathVlaues = get(
+                    item,
+                    `validation.altResponses[${correctTab - 1}].value`,
+                    []
+                  );
+                  const altAnswer = {
+                    ...answer,
+                    value: find(_altMathVlaues, av => av[0].id === answer.value[0].id)
+                  };
                   return (
                     <MathFormulaAnswer
                       key={index}
@@ -468,7 +512,10 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                     `validation.altResponses[${correctTab - 1}].dropdown.value`,
                     []
                   );
-                  const altAnswer = { ...answer, ...find(_altDropDownsVlaues, av => av.id === answer.id) };
+                  const altAnswer = {
+                    ...answer,
+                    ...find(_altDropDownsVlaues, av => av.id === answer.id)
+                  };
                   return (
                     <DropDownAnswer
                       key={index}
@@ -499,7 +546,10 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                     `validation.altResponses[${correctTab - 1}].mathUnits.value`,
                     []
                   );
-                  const altAnswer = { ...answer, ...find(_altMathUnitsVlaues, av => av.id === answer.id) };
+                  const altAnswer = {
+                    ...answer,
+                    ...find(_altMathUnitsVlaues, av => av.id === answer.id)
+                  };
                   return (
                     <MathUnitAnswer
                       key={index}
@@ -526,7 +576,10 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       </CheckboxLabel>
       <CheckboxLabel
         onChange={() =>
-          handleValidationOptionsChange("allowSingleLetterMistake", !item.validation.allowSingleLetterMistake)
+          handleValidationOptionsChange(
+            "allowSingleLetterMistake",
+            !item.validation.allowSingleLetterMistake
+          )
         }
         checked={!!item.validation.allowSingleLetterMistake}
       >

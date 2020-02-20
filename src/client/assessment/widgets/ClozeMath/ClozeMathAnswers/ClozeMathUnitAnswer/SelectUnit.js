@@ -3,7 +3,8 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
-import { MathKeyboard } from "@edulastic/common";
+import { maxBy } from "lodash";
+import { MathKeyboard, measureText } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -22,12 +23,18 @@ const SelectUnit = ({
   getPopupContainer
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
+  let containerWidth = width;
 
   if (keypadMode === "custom") {
     allBtns = customUnits
       .split(",")
       .filter(u => !!u)
       .map(u => ({ label: u.trim(), handler: u.trim() }));
+    const lengthyUnit = maxBy(allBtns, btn => btn.label.length) || {};
+    const { width: maxWidth } = measureText(lengthyUnit.label);
+    if (parseInt(width, 10) < maxWidth) {
+      containerWidth = `${maxWidth + 33}px`;
+    }
   }
 
   const onChangeUnit = v => {
@@ -41,7 +48,13 @@ const SelectUnit = ({
   };
 
   return (
-    <DropDownWrapper ref={dropdownWrapper} menuStyle={menuStyle} preview={preview} height={height} width={width}>
+    <DropDownWrapper
+      ref={dropdownWrapper}
+      menuStyle={menuStyle}
+      preview={preview}
+      height={height}
+      width={containerWidth}
+    >
       <Select
         disabled={disabled}
         onChange={onChangeUnit}
@@ -72,6 +85,9 @@ SelectUnit.propTypes = {
   height: PropTypes.string,
   preview: PropTypes.bool,
   dropdownStyle: PropTypes.object,
+  forwardedRef: PropTypes.object,
+  width: PropTypes.string,
+  disabled: PropTypes.bool.isRequired,
   getPopupContainer: PropTypes.func
 };
 
@@ -80,6 +96,8 @@ SelectUnit.defaultProps = {
   customUnits: "",
   preview: false,
   dropdownStyle: {},
+  forwardedRef: {},
+  width: "120px",
   getPopupContainer: trigger => trigger.parentNode
 };
 

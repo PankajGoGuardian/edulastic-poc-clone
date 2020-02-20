@@ -1,12 +1,21 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from "react";
 import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
+
+import { connect } from "react-redux";
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
 
-import { HeaderPracticePlayer, PlayerTitle, ContainerRight, FlexDisplay, ActionButton } from "./styled";
+import {
+  HeaderPracticePlayer,
+  PlayerTitle,
+  ContainerRight,
+  FlexDisplay,
+  ActionButton
+} from "./styled";
 
 import Logo from "../../assets/ets-log.png";
+import { finishTestAcitivityAction } from "../../actions/test";
 
 const PlayerHeader = ({
   title,
@@ -16,7 +25,11 @@ const PlayerHeader = ({
   onNextQuestion,
   unlockNext,
   onPrevQuestion,
-  onOpenExitPopup
+  onOpenExitPopup,
+  currentTool,
+  changeTool,
+  submitTest,
+  groupId
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -36,10 +49,18 @@ const PlayerHeader = ({
                       <IconChevronLeft />
                     </ActionButton>
                   )}
-                  <ActionButton onClick={onNextQuestion} title="Next" disable={!unlockNext}>
-                    <span>Next</span>
-                    <IconGraphRightArrow />
-                  </ActionButton>
+
+                  {currentItem < dropdownOptions.length ? (
+                    <ActionButton onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
+                      <span>Next</span>
+                      <IconGraphRightArrow />
+                    </ActionButton>
+                  ) : (
+                    <ActionButton onClick={() => submitTest(groupId)} title="Submit">
+                      <span>Submit</span>
+                      <IconGraphRightArrow />
+                    </ActionButton>
+                  )}
                 </>
               )}
               {currentItem <= 1 && (
@@ -66,4 +87,9 @@ PlayerHeader.defaultProps = {
   onSaveProgress: () => {}
 };
 
-export default PlayerHeader;
+export default connect(
+  null,
+  {
+    submitTest: finishTestAcitivityAction
+  }
+)(PlayerHeader);

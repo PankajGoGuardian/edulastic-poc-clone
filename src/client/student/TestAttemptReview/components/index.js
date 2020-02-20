@@ -29,11 +29,15 @@ const SummaryContainer = props => {
     history.push("/home/assignments");
   };
 
-  const groupId = match.params.groupId;
+  const { groupId } = match.params;
   return (
     <ThemeProvider theme={themes.default}>
       <MainContainer>
-        <SubmitConfirmation isVisible={showConfirmationModal} onClose={closeConfirmationModal} finishTest={closeTest} />
+        <SubmitConfirmation
+          isVisible={showConfirmationModal}
+          onClose={closeConfirmationModal}
+          finishTest={closeTest}
+        />
         <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
         <SummaryTest finishTest={() => finishTest(groupId)} />
       </MainContainer>

@@ -45,7 +45,8 @@ const PlayerContent = ({
   const findItemIdMap = (cPageIds, pageNum) =>
     find(
       testletConfig.mapping,
-      ({ testletItemId, testletPageNum }) => isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
+      ({ testletItemId, testletPageNum }) =>
+        isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
     );
 
   const findTestletValue = testletId => {
@@ -232,7 +233,10 @@ const PlayerContent = ({
           }));
         }
       });
-    } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT || cQuestionType === questionType.SHORT_TEXT) {
+    } else if (
+      cQuestionType === questionType.ESSAY_PLAIN_TEXT ||
+      cQuestionType === questionType.SHORT_TEXT
+    ) {
       currentItem.responses.map(({ responseId }) => {
         data = findTestletValue(responseId);
       });
@@ -290,7 +294,11 @@ const PlayerContent = ({
           }
         }
       }
-      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
+      frameController = new ParentController(
+        testletConfig.testletId,
+        initState,
+        testletState.response
+      );
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -308,7 +316,9 @@ const PlayerContent = ({
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
           if (!LCBPreviewModal) {
-            setTestUserWork({ [testActivityId]: { testletState: { state: itemState, response: itemResponse } } });
+            setTestUserWork({
+              [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
+            });
           }
         }
       });
@@ -339,12 +349,19 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
+        groupId={groupId}
+        {...restProps}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
           {testletConfig.testletURL && (
-            <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
+            <iframe
+              ref={frameRef}
+              id={testletConfig.testletId}
+              src={testletConfig.testletURL}
+              title="testlet player"
+            />
           )}
         </MainContent>
       </Main>

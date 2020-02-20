@@ -223,7 +223,7 @@ class App extends Component {
                 component={DistrictRoutes}
                 redirectPath={defaultRoute}
               />
-              {/* <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} /> */}
+              <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
               <LoggedOutRoute
                 exact
                 path="/partnerLogin/:partner/Signup"

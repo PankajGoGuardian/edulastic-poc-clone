@@ -37,8 +37,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
       ) : null}
     </Col>
     <Col span={12} align="right">
-      {/* Hiding for production */}
-      {/* {isSignupUsingDaURL &&
+      {isSignupUsingDaURL &&
       (!isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") &&
         !isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")) ? (
         <div className="teacher-student-restricted-message">
@@ -61,7 +60,6 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
           </Link>
         </>
       )}
-      */}
     </Col>
   </RegistrationHeader>
 );

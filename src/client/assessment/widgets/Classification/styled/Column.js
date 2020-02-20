@@ -14,11 +14,16 @@ export const Column = styled.div`
     rowTitles.length > 0 ? 100 / colCount - 100 / colCount / 5 / colCount : 100 / colCount}%;
 `;
 
-export const ColumnLabel = withMathFormula(styled.div`
+export const ColumnHeader = styled.div`
+  display: flex;
+  align-items: center;
   background-color: ${({ transparent }) => (transparent ? "transparent" : "#ececec")};
+  border: 1px solid #ddd;
+  min-height: 39px;
+`;
+
+export const ColumnLabel = withMathFormula(styled.div`
   font-weight: 600;
   text-align: center;
-  border: 1px solid #ddd;
   padding: 8px;
-  min-height: 39px;
 `);

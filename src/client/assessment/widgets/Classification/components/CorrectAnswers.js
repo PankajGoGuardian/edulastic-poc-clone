@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Subtitle, MathFormulaDisplay } from "@edulastic/common";
+import { Subtitle } from "@edulastic/common";
 import DragItem from "./DragItem";
 import { getStemNumeration } from "../../../utils/helpers";
 import { IndexBox } from "./DragItem/styled/IndexBox";
+import { ColumnHeader, ColumnLabel } from "../styled/Column";
 
 const CorrectAnswers = ({
   answersArr,
@@ -41,12 +42,10 @@ const CorrectAnswers = ({
           <CorrectAnswerContainer multiRow={multiRow} minWidth={boxWidth}>
             {multiRow && <IndexBox style={{ margin: 5 }}>{getStemNumeration(stemNumeration, i)}</IndexBox>}
             {!multiRow && (
-              <ColumnTitle>
-                <IndexBox style={{ marginRight: 16, marginLeft: 4 }}>{getStemNumeration(stemNumeration, i)}</IndexBox>
-                <Subtitle>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: columnTitles[i] }} />
-                </Subtitle>
-              </ColumnTitle>
+              <ColumnHeader>
+                <IndexBox>{getStemNumeration(stemNumeration, i)}</IndexBox>
+                <ColumnLabel dangerouslySetInnerHTML={{ __html: columnTitles[i] }} />
+              </ColumnHeader>
             )}
             <AnswersContainer>
               {answers.map((res, index) => (
@@ -87,7 +86,6 @@ const CorrectAnswerContainer = styled.div`
   display: inline-flex;
   align-items: stretch;
   border: 1px dashed;
-  padding: 4px;
   margin-right: 16px;
   flex-direction: ${({ multiRow }) => (multiRow ? "row" : "column")};
   margin-bottom: ${({ multiRow }) => (multiRow ? "16px" : "40px")};
@@ -102,11 +100,6 @@ const ColWrapper = styled.div`
   align-items: stretch;
   flex-wrap: wrap;
   justify-content: flex-start;
-`;
-
-const ColumnTitle = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const AnswersContainer = styled.div`

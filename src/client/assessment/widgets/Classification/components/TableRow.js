@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useEffect } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get, maxBy } from "lodash";
@@ -8,7 +8,7 @@ import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
 import { getStemNumeration } from "../../../utils/helpers";
 import DragItem from "./DragItem";
-import { ColumnLabel } from "../styled/Column";
+import { ColumnHeader, ColumnLabel } from "../styled/Column";
 import { Rnd } from "../styled/RndWrapper";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
@@ -174,19 +174,21 @@ const TableRow = ({
         {...dragItemSize}
       >
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          <ColumnHeader>
+            {showIndex && hasAnswer && <IndexBox>{renderIndex}</IndexBox>}
+            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          </ColumnHeader>
         ) : null}
         <DropContainer
           style={{
             ...styles.columnContainerStyle,
-            justifyContent: showIndex ? "flex-end" : "center",
+            justifyContent: "center",
             position: "relative"
           }}
           drop={drop}
           index={index}
           flag="column"
         >
-          {showIndex && hasAnswer && <IndexBox style={{ marginTop: 5 }}>{renderIndex}</IndexBox>}
           {hasAnswer &&
             answers[index].map((answerValue, answerIndex) => {
               const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};

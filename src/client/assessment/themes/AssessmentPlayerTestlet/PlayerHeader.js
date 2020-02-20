@@ -2,7 +2,6 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
 
-import { connect } from "react-redux";
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
 
@@ -16,7 +15,6 @@ import {
 import Tools from "./Tools";
 
 import Logo from "../../assets/ets-log.png";
-import { finishTestAcitivityAction } from "../../actions/test";
 
 const PlayerHeader = ({
   title,
@@ -28,9 +26,7 @@ const PlayerHeader = ({
   onPrevQuestion,
   onOpenExitPopup,
   currentTool,
-  changeTool,
-  submitTest,
-  groupId
+  changeTool
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -51,18 +47,10 @@ const PlayerHeader = ({
                       <IconChevronLeft />
                     </ActionButton>
                   )}
-
-                  {currentItem < dropdownOptions.length ? (
-                    <ActionButton onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
-                      <span>Next</span>
-                      <IconGraphRightArrow />
-                    </ActionButton>
-                  ) : (
-                    <ActionButton onClick={() => submitTest(groupId)} title="Submit">
-                      <span>Submit</span>
-                      <IconGraphRightArrow />
-                    </ActionButton>
-                  )}
+                  <ActionButton onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
+                    <span>Next</span>
+                    <IconGraphRightArrow />
+                  </ActionButton>
                 </>
               )}
               {currentItem <= 1 && (
@@ -105,9 +93,4 @@ PlayerHeader.defaultProps = {
   currentItem: 0
 };
 
-export default connect(
-  null,
-  {
-    submitTest: finishTestAcitivityAction
-  }
-)(PlayerHeader);
+export default PlayerHeader;

@@ -187,13 +187,22 @@ class ClassBoard extends Component {
     studentUnselectAll();
   }
 
-  componentDidUpdate(_, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const filterCriteria = activity => activity ?.questionActivities ?.[0] ?._id;
-    if (additionalData.testId !== prevState.testId) {
-      const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
-      getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
+    const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
+    if (additionalData.testId !== prevState.testId || !prevProps.testActivity.length) {
+      const firstStudentId = get(
+        testActivity.filter(x => !!filterCriteria(x)),
+        [0, "studentId"],
+        false
+      );
+      if (firstStudentId)
+        getAllTestActivitiesForStudent({
+          studentId: firstStudentId,
+          assignmentId,
+          groupId: classId
+        });
     }
   }
 
@@ -232,7 +241,11 @@ class ClassBoard extends Component {
       }
     }
 
-    if (testActivity.length && !state.selectedStudentId && props.location.pathname.includes("test-activity")) {
+    if (
+      testActivity.length &&
+      !state.selectedStudentId &&
+      props.location.pathname.includes("test-activity")
+    ) {
       // first load for test-activity page
       const tempArr = props.location.pathname.split("/");
       const testActivityId = tempArr[tempArr.length - 1];
@@ -274,7 +287,9 @@ class ClassBoard extends Component {
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      const selectedAllstudents = allStudents.map(x => x._id).filter(item => !removedStudents.includes(item));
+      const selectedAllstudents = allStudents
+        .map(x => x._id)
+        .filter(item => !removedStudents.includes(item));
       studentSelect(selectedAllstudents);
     } else {
       studentUnselectAll();
@@ -300,7 +315,8 @@ class ClassBoard extends Component {
     history.push(`${match.url}/create`);
   };
 
-  getTestActivityId = (data, student) => (
+  getTestActivityId = (data, student) =>
+    (
       (!student
         ? data.find(item => !!item.testActivityId)
         : data.find(item => !!item.testActivityId && item.studentId == student)) || {}
@@ -321,7 +337,9 @@ class ClassBoard extends Component {
     if (name === "Both") {
       this.props.history.push(`/author/classboard/${assignmentId}/${classId}`);
     } else if (name === "Student") {
-      this.props.history.push(`/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`);
+      this.props.history.push(
+        `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+      );
       setCurrentTestActivityId(testActivityId);
     }
   };
@@ -338,9 +356,21 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
-    if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
-      return message.info("The class has been paused for this assessment.Please resume to continue with redirect.");
+    const {
+      selectedStudents,
+      testActivity,
+      enrollmentStatus,
+      additionalData = {},
+      assignmentStatus
+    } = this.props;
+    if (
+      additionalData.isPaused &&
+      assignmentStatus !== "DONE" &&
+      additionalData.endDate > Date.now()
+    ) {
+      return message.info(
+        "The class has been paused for this assessment.Please resume to continue with redirect."
+      );
     }
 
     const notStartedStudents = testActivity.filter(
@@ -381,8 +411,15 @@ class ClassBoard extends Component {
     const questions = this.getQuestions();
     const index = questions.findIndex(x => x.id === data.qid);
 
-    this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
-    this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${data.qid}`);
+    this.setState({
+      selectedQuestion: index,
+      selectedQid: data.qid,
+      itemId: data.itemId,
+      selectedTab: "questionView"
+    });
+    this.props.history.push(
+      `/author/classboard/${assignmentId}/${classId}/question-activity/${data.qid}`
+    );
   };
 
   handleReleaseScore = () => {
@@ -416,7 +453,7 @@ class ClassBoard extends Component {
     this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: false }));
   };
 
-  onStudentReportCardModalOk = () => { };
+  onStudentReportCardModalOk = () => {};
 
   onStudentReportCardModalCancel = () => {
     this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
@@ -434,12 +471,14 @@ class ClassBoard extends Component {
     }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedSubmittedStudents = selectedStudentKeys.filter(
-      item => mapTestActivityByStudId[item].status === "submitted" || mapTestActivityByStudId[item].status === "graded"
+      item =>
+        mapTestActivityByStudId[item].status === "submitted" ||
+        mapTestActivityByStudId[item].status === "graded"
     );
     if (selectedSubmittedStudents.length) {
       return message.warn(
         `${
-        selectedSubmittedStudents.length
+          selectedSubmittedStudents.length
         } student(s) that you selected have already submitted the assignment, you will not be allowed to submit again.`
       );
     }
@@ -459,7 +498,8 @@ class ClassBoard extends Component {
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
       item =>
-        mapTestActivityByStudId[item].status === "notStarted" || mapTestActivityByStudId[item].status === "redirected"
+        mapTestActivityByStudId[item].status === "notStarted" ||
+        mapTestActivityByStudId[item].status === "redirected"
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
@@ -476,10 +516,16 @@ class ClassBoard extends Component {
     if (!selectedStudentKeys.length) {
       return message.warn("At least one student should be selected to be removed.");
     }
-    const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
-    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    const selectedStudentsEntity = testActivity.filter(item =>
+      selectedStudentKeys.includes(item.studentId)
+    );
+    const isAnyBodyGraded = selectedStudentsEntity.some(
+      item => item.status === "submitted" && item.graded
+    );
     if (isAnyBodyGraded) {
-      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+      return message.warn(
+        "You will not be able to remove selected student(s) as the status is graded"
+      );
     }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
@@ -565,16 +611,21 @@ class ClassBoard extends Component {
     const isPrintable =
       selectedStudentsKeys.length &&
       !selectedStudentsKeys.some(
-        item => studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
+        item =>
+          studentsMap[item].status === "notStarted" || studentsMap[item].status === "inProgress"
       );
 
     if (isPrintable && selectedStudentsKeys.length) {
       const selectedStudentsStr = selectedStudentsKeys.join(",");
-      window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`);
+      window.open(
+        `/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`
+      );
     } else if (!selectedStudentsKeys.length) {
       message.error("At least one student should be selected to print responses.");
     } else {
-      message.error("You can print only after the assignment has been submitted by the student(s).");
+      message.error(
+        "You can print only after the assignment has been submitted by the student(s)."
+      );
     }
   };
 
@@ -651,13 +702,21 @@ class ClassBoard extends Component {
       });
     }
     const selectedStudentsKeys = Object.keys(selectedStudents);
-    const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
-    const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
+    const firstStudentId = get(
+      testActivity.filter(x => !!x.testActivityId),
+      [0, "studentId"],
+      false
+    );
+    const testActivityId = this.getTestActivityId(
+      testActivity,
+      selectedStudentId || firstStudentId
+    );
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
       (assignmentStatus.toLowerCase() == "not open" &&
-        ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
+        ((additionalData.startDate && additionalData.startDate > Date.now()) ||
+          !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     const disabledList = testActivity
@@ -665,7 +724,8 @@ class ClassBoard extends Component {
         const endDate = additionalData.closedDate || additionalData.endDate;
         if (student.status === "notStarted" && (endDate < Date.now() || additionalData.closed)) {
           return false;
-        } if (student.status === "notStarted") {
+        }
+        if (student.status === "notStarted") {
           return true;
         }
         return ["inProgress", "redirected"].includes(student.status);
@@ -732,7 +792,11 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
-        <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
+        <HooksContainer
+          additionalData={additionalData}
+          classId={classId}
+          assignmentId={assignmentId}
+        />
         <ClassHeader
           classId={classId}
           active="classboard"
@@ -776,14 +840,21 @@ class ClassBoard extends Component {
               <WithDisableMessage
                 disabled={hasRandomQuestions || !isItemsVisible}
                 errMessage={
-                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
+                  hasRandomQuestions
+                    ? "This assignment has random items for every student."
+                    : t("common.testHidden")
                 }
               >
                 <QuestionButton
                   active={selectedTab === "questionView"}
                   disabled={!firstStudentId || !isItemsVisible || hasRandomQuestions || isLoading}
                   onClick={() => {
-                    const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
+                    const firstQuestion = get(this.props, [
+                      "testActivity",
+                      0,
+                      "questionActivities",
+                      0
+                    ]);
                     if (!firstQuestion) {
                       console.warn("no question activities");
                       return;
@@ -795,7 +866,9 @@ class ClassBoard extends Component {
                       selectedTab: "questionView"
                     });
                     this.props.history.push(
-                      `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                      `/author/classboard/${assignmentId}/${classId}/question-activity/${
+                        firstQuestion._id
+                      }`
                     );
                   }}
                 >
@@ -824,7 +897,10 @@ class ClassBoard extends Component {
                   <StyledCheckbox
                     data-cy="selectAllCheckbox"
                     checked={unselectedStudents.length === 0}
-                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                    indeterminate={
+                      unselectedStudents.length > 0 &&
+                      unselectedStudents.length < testActivity.length
+                    }
                     onChange={this.onSelectAllChange}
                   >
                     {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
@@ -841,16 +917,16 @@ class ClassBoard extends Component {
                     <ButtonIconWrap>
                       <IconPrint />
                     </ButtonIconWrap>
-                      PRINT
+                    PRINT
                   </RedirectButton>
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
                       <IconRedirect />
                     </ButtonIconWrap>
-                      REDIRECT
+                    REDIRECT
                   </RedirectButton>
                   <Dropdown
-                    overlay={(
+                    overlay={
                       <DropMenu>
                         <FeaturesSwitch
                           inputFeatures="LCBmarkAsSubmitted"
@@ -887,7 +963,10 @@ class ClassBoard extends Component {
                           <IconAddStudents />
                           <span>Add Students</span>
                         </MenuItems>
-                        <MenuItems data-cy="removeStudents" onClick={this.handleShowRemoveStudentsModal}>
+                        <MenuItems
+                          data-cy="removeStudents"
+                          onClick={this.handleShowRemoveStudentsModal}
+                        >
                           <IconRemove />
                           <span>Remove Students</span>
                         </MenuItems>
@@ -913,20 +992,23 @@ class ClassBoard extends Component {
                           actionOnInaccessible="hidden"
                           groupId={classId}
                         >
-                          <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
+                          <MenuItems
+                            data-cy="studentReportCard"
+                            onClick={this.onStudentReportCardsClick}
+                          >
                             <IconStudentReportCard />
                             <span>Student Report Cards</span>
                           </MenuItems>
                         </FeaturesSwitch>
                       </DropMenu>
-                      )}
+                    }
                     placement="bottomRight"
                   >
                     <RedirectButton data-cy="moreAction" last>
                       <ButtonIconWrap>
                         <IconMoreHorizontal />
                       </ButtonIconWrap>
-                        MORE
+                      MORE
                     </RedirectButton>
                   </Dropdown>
                 </ClassBoardFeats>
@@ -970,7 +1052,11 @@ class ClassBoard extends Component {
                     if (!isItemsVisible) {
                       return;
                     }
-                    getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
+                    getAllTestActivitiesForStudent({
+                      studentId: selected,
+                      assignmentId,
+                      groupId: classId
+                    });
                     this.onTabChange(e, "Student", selected, testActivityId);
                   }}
                   isPresentationMode={isPresentationMode}
@@ -978,7 +1064,7 @@ class ClassBoard extends Component {
                 />
               ) : (
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-                )}
+              )}
 
               <RedirectPopup
                 open={redirectPopup}
@@ -1009,79 +1095,83 @@ class ClassBoard extends Component {
             </React.Fragment>
           )}
 
-          {selectedTab === "Student" && selectedStudentId && !isEmpty(testActivity) && !isEmpty(classResponse) && (
-            <React.Fragment>
-              <StudentGrapContainer>
-                <StyledCard bordered={false} paddingTop={15}>
-                  <StudentSelect
-                    data-cy="studentSelect"
-                    style={{ width: "200px" }}
-                    students={testActivity}
-                    selectedStudent={selectedStudentId}
-                    studentResponse={qActivityByStudent}
-                    handleChange={(value, testActivityId) => {
-                      setCurrentTestActivityId(testActivityId);
-                      getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
-                      this.setState({ selectedStudentId: value });
-                      this.props.history.push(
-                        `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
-                      );
-                    }}
-                    isPresentationMode={isPresentationMode}
-                  />
-                  <GraphWrapper style={{ width: "100%", display: "flex" }}>
-                    <BarGraph
-                      gradebook={gradebook}
-                      testActivity={testActivity}
-                      studentId={selectedStudentId}
-                      studentview
-                      studentViewFilter={studentViewFilter}
-                      studentResponse={studentResponse}
-                      isLoading={isLoading}
+          {selectedTab === "Student" &&
+            selectedStudentId &&
+            !isEmpty(testActivity) &&
+            !isEmpty(classResponse) && (
+              <React.Fragment>
+                <StudentGrapContainer>
+                  <StyledCard bordered={false} paddingTop={15}>
+                    <StudentSelect
+                      data-cy="studentSelect"
+                      style={{ width: "200px" }}
+                      students={testActivity}
+                      selectedStudent={selectedStudentId}
+                      studentResponse={qActivityByStudent}
+                      handleChange={(value, testActivityId) => {
+                        setCurrentTestActivityId(testActivityId);
+                        getAllTestActivitiesForStudent({
+                          studentId: value,
+                          assignmentId,
+                          groupId: classId
+                        });
+                        this.setState({ selectedStudentId: value });
+                        this.props.history.push(
+                          `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                        );
+                      }}
+                      isPresentationMode={isPresentationMode}
                     />
-                    <InfoWrapper>
-                      {allTestActivitiesForStudent.length > 1 && (
-                        <Select
-                          data-cy="attemptSelect"
-                          style={{ width: "200px" }}
-                          value={
-                            allTestActivitiesForStudent.some(
-                              ({ _id }) => _id === (currentTestActivityId || testActivityId)
-                            )
-                              ? currentTestActivityId || testActivityId
-                              : ""
-                          }
-                          onChange={testActivityId => {
-                            loadStudentResponses({ testActivityId, groupId: classId, studentId: selectedStudentId });
-                            setCurrentTestActivityId(testActivityId);
-                            this.props.history.push(
-                              `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
-                            );
-                          }}
-                        >
-                          {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
-                            <Select.Option
-                              key={index}
-                              value={testActivityId._id}
-                              disabled={testActivityId.status === 2}
-                            >
-                              {`Attempt ${allTestActivitiesForStudent.length - index} ${
-                                testActivityId.status === 2 ? " (Absent)" : ""
-                                }`}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      )}
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div
-                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
-                        >
-                          <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper data-cy="totalScore">{round(score, 2) || 0}</ScoreWrapper>
-                          <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper data-cy="totalMaxScore">{round(maxScore, 2) || 0}</ScoreWrapper>
-                        </div>
-                        {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
+                    <GraphWrapper style={{ width: "100%", display: "flex" }}>
+                      <BarGraph
+                        gradebook={gradebook}
+                        testActivity={testActivity}
+                        studentId={selectedStudentId}
+                        studentview
+                        studentViewFilter={studentViewFilter}
+                        studentResponse={studentResponse}
+                        isLoading={isLoading}
+                      />
+                      <InfoWrapper>
+                        {allTestActivitiesForStudent.length > 1 && (
+                          <Select
+                            data-cy="attemptSelect"
+                            style={{ width: "200px" }}
+                            value={
+                              allTestActivitiesForStudent.some(
+                                ({ _id }) => _id === (currentTestActivityId || testActivityId)
+                              )
+                                ? currentTestActivityId || testActivityId
+                                : ""
+                            }
+                            onChange={testActivityId => {
+                              loadStudentResponses({
+                                testActivityId,
+                                groupId: classId,
+                                studentId: selectedStudentId
+                              });
+                              setCurrentTestActivityId(testActivityId);
+                              this.props.history.push(
+                                `/author/classboard/${assignmentId}/${classId}/test-activity/${testActivityId}`
+                              );
+                            }}
+                          >
+                            {[...allTestActivitiesForStudent]
+                              .reverse()
+                              .map((testActivityId, index) => (
+                                <Select.Option
+                                  key={index}
+                                  value={testActivityId._id}
+                                  disabled={testActivityId.status === 2}
+                                >
+                                  {`Attempt ${allTestActivitiesForStudent.length - index} ${
+                                    testActivityId.status === 2 ? " (Absent)" : ""
+                                  }`}
+                                </Select.Option>
+                              ))}
+                          </Select>
+                        )}
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <div
                             style={{
                               display: "flex",
@@ -1090,64 +1180,84 @@ class ClassBoard extends Component {
                               alignItems: "center"
                             }}
                           >
-                            <ScoreHeader>SCORE</ScoreHeader>
-                            <ScoreChangeWrapper data-cy="scoreChange" scoreChange={studentTestActivity.scoreChange}>
-                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
-                                studentTestActivity.scoreChange,
-                                2
-                              ) || 0}`}
-                            </ScoreChangeWrapper>
-                            <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
-                              <span>Improvement </span>
-                              <span
-                                style={{ marginLeft: "2px" }}
-                                title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                              >
-                                <IconInfo />
-                              </span>
-                            </ScoreHeader>
+                            <ScoreHeader>TOTAL SCORE</ScoreHeader>
+                            <ScoreWrapper data-cy="totalScore">{round(score, 2) || 0}</ScoreWrapper>
+                            <div style={{ border: "solid 1px black", width: "50px" }} />
+                            <ScoreWrapper data-cy="totalMaxScore">
+                              {round(maxScore, 2) || 0}
+                            </ScoreWrapper>
                           </div>
-                        ) : null}
-                      </div>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        {" "}
-                        {`TIME (min) : `}{" "}
-                        <span style={{ color: black, textTransform: "capitalize" }}>
-                          {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
-                            ""}
-                        </span>
-                      </ScoreHeader>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        {" "}
-                        {`STATUS : `}{" "}
-                        <span style={{ color: black, textTransform: "capitalize" }}>
-                          {studentTestActivity.status === 2
-                            ? "Absent"
-                            : studentTestActivity.status === 1
+                          {allTestActivitiesForStudent.length > 1 && showScoreImporvement ? (
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                padding: "10px",
+                                alignItems: "center"
+                              }}
+                            >
+                              <ScoreHeader>SCORE</ScoreHeader>
+                              <ScoreChangeWrapper
+                                data-cy="scoreChange"
+                                scoreChange={studentTestActivity.scoreChange}
+                              >
+                                {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
+                                  studentTestActivity.scoreChange,
+                                  2
+                                ) || 0}`}
+                              </ScoreChangeWrapper>
+                              <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                                <span>Improvement </span>
+                                <span
+                                  style={{ marginLeft: "2px" }}
+                                  title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                                >
+                                  <IconInfo />
+                                </span>
+                              </ScoreHeader>
+                            </div>
+                          ) : null}
+                        </div>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          {" "}
+                          {`TIME (min) : `}{" "}
+                          <span style={{ color: black, textTransform: "capitalize" }}>
+                            {`${Math.floor(
+                              studentTestActivity.timeSpent / 60
+                            )}:${studentTestActivity.timeSpent % 60}` || ""}
+                          </span>
+                        </ScoreHeader>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          {" "}
+                          {`STATUS : `}{" "}
+                          <span style={{ color: black, textTransform: "capitalize" }}>
+                            {studentTestActivity.status === 2
+                              ? "Absent"
+                              : studentTestActivity.status === 1
                               ? studentTestActivity.graded === "GRADED"
                                 ? "Graded"
                                 : "Submitted"
                               : "In Progress" || ""}
-                        </span>
-                      </ScoreHeader>
-                      <ScoreHeader style={{ fontSize: "12px" }}>
-                        SUBMITTED ON : 
-                        <span style={{ color: black }}>
-                          {moment(studentTestActivity.endDate).format("MMM DD, YYYY")}
-                        </span>
-                      </ScoreHeader>
-                    </InfoWrapper>
-                  </GraphWrapper>
-                </StyledCard>
-              </StudentGrapContainer>
-              <StudentContainer
-                classResponse={classResponse}
-                studentItems={testActivity}
-                selectedStudent={selectedStudentId}
-                isPresentationMode={isPresentationMode}
-              />
-            </React.Fragment>
-          )}
+                          </span>
+                        </ScoreHeader>
+                        <ScoreHeader style={{ fontSize: "12px" }}>
+                          SUBMITTED ON :
+                          <span style={{ color: black }}>
+                            {moment(studentTestActivity.endDate).format("MMM DD, YYYY")}
+                          </span>
+                        </ScoreHeader>
+                      </InfoWrapper>
+                    </GraphWrapper>
+                  </StyledCard>
+                </StudentGrapContainer>
+                <StudentContainer
+                  classResponse={classResponse}
+                  studentItems={testActivity}
+                  selectedStudent={selectedStudentId}
+                  isPresentationMode={isPresentationMode}
+                />
+              </React.Fragment>
+            )}
           {selectedTab === "questionView" &&
             !isEmpty(testActivity) &&
             !isEmpty(classResponse) &&
@@ -1179,8 +1289,14 @@ class ClassBoard extends Component {
                       const { assignmentId, classId } = this.props.match.params;
 
                       const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
-                      this.props.history.push(`/author/classboard/${assignmentId}/${classId}/question-activity/${qid}`);
-                      this.setState({ selectedQuestion: value, selectedQid: qid, itemId: testItemId });
+                      this.props.history.push(
+                        `/author/classboard/${assignmentId}/${classId}/question-activity/${qid}`
+                      );
+                      this.setState({
+                        selectedQuestion: value,
+                        selectedQid: qid,
+                        itemId: testItemId
+                      });
                     }}
                   />
                 </QuestionContainer>
@@ -1219,7 +1335,7 @@ const enhance = compose(
       isItemsVisible: isItemVisibiltySelector(state),
       labels: getQLabelsSelector(state),
       removedStudents: removedStudentsSelector(state),
-      studentViewFilter: state ?.author_classboard_testActivity ?.studentViewFilter,
+      studentViewFilter: state?.author_classboard_testActivity?.studentViewFilter,
       hasRandomQuestions: getHasRandomQuestionselector(state),
       isLoading: testActivtyLoadingSelector(state)
     }),

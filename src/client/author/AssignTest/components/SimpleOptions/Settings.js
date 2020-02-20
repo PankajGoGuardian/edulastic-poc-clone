@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input, InputNumber } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
@@ -29,6 +29,7 @@ import PeformanceBand from "../../../TestPage/components/Setting/components/Main
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
+
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const {
@@ -67,6 +68,15 @@ const Settings = ({
     message: ""
   });
 
+  useEffect(() => {
+    if (!assignmentSettings.releaseScore && assignmentSettings.testType === "testlet") {
+      updateAssignmentSettings({
+        ...assignmentSettings,
+        releaseScore: releaseGradeLabels.DONT_RELEASE
+      });
+    }
+  }, [assignmentSettings.releaseScore]);
+
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {
       setPasswordStatus({
@@ -80,7 +90,7 @@ const Settings = ({
         color: green,
         message: ""
       });
-      return;
+      
     } else {
       let validationMessage = "Password is too short - must be at least 6 characters";
       if (assignmentPassword.length > 25) validationMessage = "Password is too long";
@@ -88,7 +98,7 @@ const Settings = ({
         color: red,
         message: validationMessage
       });
-      return;
+      
     }
   };
   const overRideSettings = (key, value) => {
@@ -118,7 +128,7 @@ const Settings = ({
 
   const handleUpdatePasswordExpireIn = e => {
     let { value = 1 } = e.target;
-    value = value * 60;
+    value *= 60;
     if (value < 60 || isNaN(value)) {
       value = 60;
     } else if (value > 999 * 60) {
@@ -144,7 +154,8 @@ const Settings = ({
     maxAttempts = tempTestSettings.maxAttempts,
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
-    testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
+    testContentVisibility = tempTestSettings.testContentVisibility ||
+      testContentVisibilityOptions.ALWAYS,
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60
   } = assignmentSettings;
 
@@ -194,7 +205,9 @@ const Settings = ({
         {!forClassLevel ? (
           <StyledRowSelect gutter={16}>
             <Col span={12}>
-              <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
+              <Label>
+                RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}
+              </Label>
             </Col>
             <Col span={12}>
               <StyledSelect
@@ -416,7 +429,7 @@ const Settings = ({
                     onChange={e => overRideSettings("assignmentPassword", e.target.value)}
                     size="large"
                     value={assignmentPassword}
-                    type={"text"}
+                    type="text"
                     placeholder="Enter Password"
                     color={passwordStatus.color}
                   />
@@ -442,16 +455,12 @@ const Settings = ({
             </Col>
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                {
-                  "The password is entered by you and does not change. Students must enter this password before they can take the assessment."
-                }
+                The password is entered by you and does not change. Students must enter this password before they can take the assessment.
               </Col>
             )}
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                {
-                  "Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment."
-                }
+                Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment.
               </Col>
             )}
           </StyledRowSelect>
@@ -476,7 +485,7 @@ const Settings = ({
                   onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
                   size="large"
                   value={maxAnswerChecks}
-                  type={"number"}
+                  type="number"
                   min={0}
                   placeholder="Number of tries"
                 />
@@ -517,7 +526,7 @@ const Settings = ({
                     checked={penalty === false}
                     onChange={e => overRideSettings("penalty", !e.target.checked)}
                   >
-                    <Label>{"DON’T PENALIZE FOR INCORRECT SELECTION"}</Label>
+                    <Label>DON’T PENALIZE FOR INCORRECT SELECTION</Label>
                   </Checkbox>
                 </CheckBoxWrapper>
               )}

@@ -44,6 +44,7 @@ import { watcherSaga as lcbAssignmentSettingsSaga } from "../../LCBAssignmentSet
 import { bucketSaga } from "../../ContentBuckets";
 import { collectionsSaga } from "../../ContentCollections";
 import { watcherSaga as subscriptionSaga } from "../../Subscription/ducks";
+import { importTestWatcher as importTestSaga } from "../../ImportTest/ducks";
 
 const authorSagas = [
   itemsSaga(),
@@ -91,7 +92,8 @@ const authorSagas = [
   lcbAssignmentSettingsSaga(),
   bucketSaga(),
   collectionsSaga(),
-  subscriptionSaga()
+  subscriptionSaga(),
+  importTestSaga()
 ];
 
 export default authorSagas;

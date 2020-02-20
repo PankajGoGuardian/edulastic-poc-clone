@@ -5,7 +5,7 @@ const FlexWrapper = styled.div`
   visibility: visible;
   display: flex;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   justify-content: ${props => props.justifyContent || "space-between"};
   margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
 

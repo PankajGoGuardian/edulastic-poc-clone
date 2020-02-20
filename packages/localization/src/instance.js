@@ -44,7 +44,8 @@ i18n
         classBoard: require("./locales/classboard/en"),
         manageDistrict: require("./locales/manageDistrict/en"),
         subscription: require("./locales/subscription/en"),
-        customReports: require("./locales/customReport/en")
+        customReports: require("./locales/customReport/en"),
+        qtiimport: require("./locales/qtiImport/en")
       }
     }
   });

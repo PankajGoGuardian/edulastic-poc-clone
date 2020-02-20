@@ -1,0 +1,24 @@
+{
+  "qtiimport": {
+    "card": {
+      "title": "Import Items to Test",
+      "desctription": "Import Items from WebCT or QTI package and create a test",
+      "buttontext": "Import Test"
+    },
+    "uploadpage": {
+      "title": "UPLOAD WEBCT ZIP FILE TO GET STARTED",
+      "description": "DRAG AND DROP YOUR FILE OR BROWSE AND SELECT YOUR FILE",
+      "input": {
+        "placholder": "Select Tags"
+      },
+      "importbuttontext": "Import"
+    },
+    "importinprogress": {
+      "title": "Your files are successfully uploaded.",
+      "description": "They are being processed and imported into Edulastic. This may take some time. Once done they will be added to your test which would be available as part of your private collection. Till then you can continue using Edulastic as usual"
+    },
+    "done": {
+      "title": "Import and processing of items for test is completed"
+    }
+  }
+}

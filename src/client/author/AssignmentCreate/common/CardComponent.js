@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobileWidthMax, backgrounds } from "@edulastic/colors";
 
 const CardComponent = styled.div`
-  flex-basis: calc(50% - 20px);
+  flex-basis: calc(33.33% - 30px);
   display: flex;
   justify-content: center;
   flex-direction: column;

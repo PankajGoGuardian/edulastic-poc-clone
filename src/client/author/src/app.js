@@ -14,6 +14,7 @@ import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
 import { getUserOrgId, getUserRole } from "./selectors/user";
 import { receiveDistrictPolicyAction } from "../DistrictPolicy/ducks";
+import ImportTest from "../ImportTest";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -467,6 +468,7 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     <Route exact path="/author/Class-Enrollment" component={ClassEnrollment} />
                     <Route exact path="/author/content/buckets" component={ContentBuckets} />
                     <Route exact path="/author/content/collections" component={Collections} />
+                    <Route exact path="/author/import-test" component={ImportTest} />
                   </Switch>
                 </Suspense>
               </ErrorHandler>

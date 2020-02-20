@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
 import { message } from "antd";
 import { ActionCreators } from "redux-undo";
-import get from "lodash/get";
+import { get, keyBy } from "lodash";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
@@ -315,7 +315,8 @@ class AssessmentPlayerDefault extends React.Component {
       closeTestPreviewModal,
       showTools = true,
       showScratchPad,
-      scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode }
+      scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode },
+      passage
     } = this.props;
     const {
       testItemState,
@@ -617,7 +618,7 @@ class AssessmentPlayerDefault extends React.Component {
                     LCBPreviewModal={LCBPreviewModal}
                     cols={itemRows}
                     previousQuestionActivity={previousQuestionActivity}
-                    questions={questions}
+                    questions={passage ? { ...questions, ...keyBy(passage.data, "id") } : questions}
                     showCollapseBtn
                     highlights={highlights}
                     crossAction={crossAction || {}}

@@ -26,7 +26,8 @@ const AssessmentPlayer = ({
   closeTestPreviewModal,
   isShowStudentWork = false,
   showTools,
-  startAssessment
+  startAssessment,  
+  passages
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -65,6 +66,7 @@ const AssessmentPlayer = ({
         preview
         showTools={showTools}
         showScratchPad={isShowStudentWork}
+        passages={passages}
       />
     );
   }
@@ -79,11 +81,13 @@ const AssessmentPlayer = ({
     <Switch>
       <Route
         path={`${match.url}/qid/:qid`}
-        render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} groupId={groupId} />}
+        render={() => <ThemeContainer passages={passages} defaultAP={defaultAP} url={match.url} groupId={groupId} />}
       />
       <Route
         path={`${match.url}`}
-        render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} testletType groupId={groupId} />}
+        render={() => (
+          <ThemeContainer passages={passages} defaultAP={defaultAP} url={match.url} testletType groupId={groupId} />
+        )}
       />
     </Switch>
   );

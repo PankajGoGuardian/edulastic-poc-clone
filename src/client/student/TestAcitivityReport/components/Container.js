@@ -64,6 +64,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
         <TestPreviewModal
           isModalVisible={showModal}
           closeTestPreviewModal={closeModal}
+          passages={passages}
           test={{ itemGroups: [{ items: [item] }] }}
           showScratchPad={hasUserWork && showModal}
           isShowStudentWork

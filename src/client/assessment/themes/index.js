@@ -147,8 +147,9 @@ const AssessmentContainer = ({
   const testItem = items[currentItem] || {};
   let itemRows = testItem.rows;
 
+  let passage = {};
   if (testItem.passageId && passages) {
-    const passage = passages.find(p => p._id === testItem.passageId);
+    passage = passages.find(p => p._id === testItem.passageId);
     itemRows = [passage.structure, ...itemRows];
   }
 
@@ -182,7 +183,8 @@ const AssessmentContainer = ({
     closeTestPreviewModal,
     showTools,
     groupId,
-    showScratchPad
+    showScratchPad,
+    passage
   };
 
   if (loading) {
@@ -253,10 +255,10 @@ AssessmentContainer.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
+    (state, ownProps) => ({
       view: state.view.preview,
       items: state.test.items,
-      passages: state.test.passages,
+      passages: state.test.passages || ownProps.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
       testType: state.test.testType,

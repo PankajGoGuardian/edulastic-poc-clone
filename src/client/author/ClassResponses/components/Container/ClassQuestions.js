@@ -97,7 +97,8 @@ class ClassQuestions extends Component {
       labels = {},
       isQuestionView = false,
       testItemsData,
-      testActivityId
+      testActivityId,
+      passages
     } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
@@ -216,6 +217,12 @@ class ClassQuestions extends Component {
           .filter(x => x);
         if (!questions.length) {
           return false;
+        }
+        if (item.passageId && passages) {
+          const passage = passages.find(p => p._id === item.passageId);
+          if (passage) {
+            questions = [...questions, passage.data?.[0]];
+          }
         }
         const resources = data.resources || [];
         questions = [...questions, ...resources];

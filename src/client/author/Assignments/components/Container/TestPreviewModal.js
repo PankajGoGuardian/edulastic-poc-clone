@@ -13,7 +13,8 @@ const TestPreviewModal = ({
   error,
   closeTestPreviewModal,
   isShowStudentWork = false,
-  isStudentReport
+  isStudentReport,
+  passages
 }) => {
   useEffect(() => {
     if (error) {
@@ -40,6 +41,7 @@ const TestPreviewModal = ({
         LCBPreviewModal={LCBPreviewModal}
         testId={testId}
         test={test}
+        passages={passages}
         preview
         showTools={!isStudentReport}
         isShowStudentWork={isShowStudentWork}

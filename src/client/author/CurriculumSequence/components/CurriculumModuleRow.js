@@ -19,9 +19,19 @@ import {
   themeColor
 } from "@edulastic/colors";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
-import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
+import {
+  IconVerified,
+  IconVisualization,
+  IconCheckSmall,
+  IconMoreVertical,
+  IconLeftArrow
+} from "@edulastic/icons";
 import { FaBars } from "react-icons/fa";
-import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
+import {
+  toggleCheckedUnitItemAction,
+  setSelectedItemsForAssignAction,
+  removeUnitAction
+} from "../ducks";
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
 import Tags from "../../src/components/common/Tags";
@@ -29,7 +39,7 @@ import Tags from "../../src/components/common/Tags";
 import AssessmentPlayer from "../../../assessment";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import AssignmentDragItem from "./AssignmentDragItem";
-import { Tooltip } from "../../../common/utils/helpers.js";
+import { Tooltip } from "../../../common/utils/helpers";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
@@ -54,10 +64,18 @@ import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 const IS_ASSIGNED = "ASSIGNED";
 const NOT_ASSIGNED = "ASSIGN";
 
-const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
+const SortableHOC = sortableContainer(({ children }) => (
+  <div onClick={e => e.stopPropagation()}>{children}</div>
+));
 
-const SortableContainer = props =>
-  props.mode === "embedded" ? <SortableHOC {...props}>{props.children}</SortableHOC> : <div>{props.children}</div>;
+const SortableContainer = props => {
+  const { mode, children } = props;
+  return mode === "embedded" ? (
+    <SortableHOC {...props}>{children}</SortableHOC>
+  ) : (
+    <div>{children}</div>
+  );
+};
 
 const SortableHandle = sortableHandle(() => (
   <DragHandle>
@@ -183,18 +201,15 @@ class ModuleRow extends Component {
       onCollapseExpand,
       collapsed,
       padding,
-      assigned,
       status,
       isContentExpanded,
       module,
       moduleIndex,
       mode,
       dropContent,
-      onBeginDrag,
       hideEditOptions,
       curriculum,
       moduleStatus,
-      handleRemove,
       removeUnit,
       handleTestsSort,
       urlHasUseThis
@@ -204,7 +219,9 @@ class ModuleRow extends Component {
     const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
-    const numberOfAssigned = data.filter(content => content.assignments && content.assignments.length > 0).length;
+    const numberOfAssigned = data.filter(
+      content => content.assignments && content.assignments.length > 0
+    ).length;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
 
     const statusBg = {
@@ -258,11 +275,13 @@ class ModuleRow extends Component {
                       <Icon type="up" style={{ color: "#707070" }} />
                     ) : (
                       <Icon type="down" style={{ color: "#707070" }} />
-                      )}
+                    )}
                   </CustomIcon>
                   <ModuleTitleAssignedWrapper>
                     <Col span={16}>
-                      <ModuleHelperText fontSize="14px">{`Module ${moduleIndex + 1}`}</ModuleHelperText>
+                      <ModuleHelperText fontSize="14px">
+                        {`Module ${moduleIndex + 1}`}
+                      </ModuleHelperText>
                       <ModuleTitleWrapper>
                         <ModuleTitle>{title}</ModuleTitle>
                         <ModuleTitlePrefix>
@@ -297,21 +316,29 @@ class ModuleRow extends Component {
                           <>
                             <ModulesAssigned>
                               Assigned
-                              <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
+                              <NumberOfAssigned data-cy="numberOfAssigned">
+                                {numberOfAssigned}
+                              </NumberOfAssigned>
                               of
                               <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                             </ModulesAssigned>
                             <AssignModuleButton>
-                              <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                                {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
+                              <Button
+                                ghost
+                                data-cy="AssignWholeModule"
+                                onClick={() => assignModule(module)}
+                              >
+                                {numberOfAssigned === totalAssigned
+                                  ? "MODULE ASSIGNED"
+                                  : "ASSIGN MODULE"}
                               </Button>
                             </AssignModuleButton>
                           </>
                         ) : (
                           <Tag color={themeColor} onClick={event => event.stopPropagation()}>
-                              NO ASSIGNMENTS
+                            NO ASSIGNMENTS
                           </Tag>
-                          )}
+                        )}
                       </ModulesWrapper>
                     )}
                   </ModuleTitleAssignedWrapper>
@@ -330,10 +357,12 @@ class ModuleRow extends Component {
                   {data.map((moduleData, index) => {
                     const { standards, assignments = [] } = moduleData;
                     const standardTags = (standards && standards.map(stand => stand.name)) || [];
-                    const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);
+                    const statusList = assignments
+                      .flatMap(item => item.class || [])
+                      .flatMap(item => item.status || []);
                     const contentCompleted =
-                      statusList.filter(_status => _status === "DONE").length === statusList.length &&
-                      statusList.length > 0;
+                      statusList.filter(_status => _status === "DONE").length ===
+                        statusList.length && statusList.length > 0;
                     const isAssigned = assignments.length > 0;
 
                     const assignmentRows = assignments.flatMap(assignment => {
@@ -341,7 +370,7 @@ class ModuleRow extends Component {
                       return assignment.class.map(
                         ({
                           name,
-                          status,
+                          _status,
                           assignedCount,
                           inProgressNumber,
                           inGradingNumber,
@@ -350,7 +379,7 @@ class ModuleRow extends Component {
                           gradedNumber = 0
                         }) => ({
                           name,
-                          status,
+                          status: _status,
                           assignedCount,
                           inProgressNumber,
                           inGradingNumber,
@@ -366,13 +395,17 @@ class ModuleRow extends Component {
 
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
-                        <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>Assign Test</Menu.Item>
+                        <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>
+                          Assign Test
+                        </Menu.Item>
                         {isAssigned && (
                           <Menu.Item>
                             <Link to="/author/assignments">View Assignments</Link>
                           </Menu.Item>
                         )}
-                        <Menu.Item onClick={() => this.viewTest(moduleData.contentId)}>Preview Test</Menu.Item>
+                        <Menu.Item onClick={() => this.viewTest(moduleData.contentId)}>
+                          Preview Test
+                        </Menu.Item>
                         {/* <Menu.Item
                           data-cy="moduleItemMoreMenuItem"
                           onClick={() => handleRemove(moduleIndex, moduleData.contentId)}
@@ -411,8 +444,8 @@ class ModuleRow extends Component {
                           borderRadius="unset"
                           boxShadow="unset"
                           onClick={e => {
-                            e?.preventDefault?.();
-                            e?.stopPropagation?.();
+                            e.preventDefault();
+                            e.stopPropagation();
                           }}
                         >
                           <ModuleFocused />
@@ -430,11 +463,13 @@ class ModuleRow extends Component {
                                 <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
                               ) : (
                                 <ModuleDataName
-                                  onClick={() => message.warning("Test is not yet assigned to any class(es)")}
+                                  onClick={() =>
+                                    message.warning("Test is not yet assigned to any class(es)")
+                                  }
                                 >
                                   {moduleData.contentTitle}
                                 </ModuleDataName>
-                                )}
+                              )}
                             </AssignmentContent>
                             <AssignmentIconsWrapper expanded={isContentExpanded}>
                               {!hideEditOptions && (
@@ -469,16 +504,21 @@ class ModuleRow extends Component {
 
                                 {((isAssigned && !hideEditOptions) ||
                                   (status === "published" && mode === "embedded")) && (
-                                    <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
-                                      <Button onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
-                                        {currentAssignmentId.includes(moduleData.contentId)
-                                          ? "HIDE ASSIGNMENTS"
-                                          : "SHOW ASSIGNMENTS"}
-                                      </Button>
-                                    </AssignmentButton>
-                                  )}
+                                  <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
+                                    <Button
+                                      onClick={() =>
+                                        this.setAssignmentDropdown(moduleData.contentId)
+                                      }
+                                    >
+                                      {currentAssignmentId.includes(moduleData.contentId)
+                                        ? "HIDE ASSIGNMENTS"
+                                        : "SHOW ASSIGNMENTS"}
+                                    </Button>
+                                  </AssignmentButton>
+                                )}
 
-                                {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                                {(!hideEditOptions ||
+                                  (status === "published" && mode === "embedded")) && (
                                   <AssignmentButton assigned={isAssigned}>
                                     <Button
                                       data-cy="assignButton"
@@ -488,7 +528,7 @@ class ModuleRow extends Component {
                                         <IconCheckSmall color={white} />
                                       ) : (
                                         <IconLeftArrow width={13.3} height={9.35} />
-                                        )}
+                                      )}
                                       {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                                     </Button>
                                   </AssignmentButton>
@@ -497,7 +537,11 @@ class ModuleRow extends Component {
                                   (urlHasUseThis && (
                                     <AssignmentIcon>
                                       <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                        <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                                        <CustomIcon
+                                          data-cy="assignmentMoreOptionsIcon"
+                                          marginLeft={25}
+                                          marginRight={1}
+                                        >
                                           <IconMoreVertical color={themeColor} />
                                         </CustomIcon>
                                       </Dropdown>
@@ -514,8 +558,8 @@ class ModuleRow extends Component {
                           }}
                           visible={currentAssignmentId.includes(moduleData.contentId)}
                         >
-                          {assignmentRows?.map((assignment, index) => (
-                            <StyledRow key={index}>
+                          {assignmentRows?.map((assignment, assignmentIndex) => (
+                            <StyledRow key={assignmentIndex}>
                               <Tooltip placement="bottom" title={assignment?.name}>
                                 <ClassName>{assignment?.name}</ClassName>
                               </Tooltip>
@@ -524,10 +568,12 @@ class ModuleRow extends Component {
                                 {assignment?.status}
                               </AssignmentStatus>
                               {/* <Div maxWidth={125} align="left">
-                                {`Submitted ${assignment?.submittedCount} of ${assignment?.assignedCount}`}
-                              </Div>
+                                {`Submitted ${assignment?.submittedCount} 
+                                  of ${assignment?.assignedCount}`}
+                                </Div>
                               <Div maxWidth={35} align="center">
-                                {(assignment?.submittedCount / assignment?.assignedCount) * 100 || 0} %
+                                  {(assignment?.submittedCount / 
+                                  assignment?.assignedCount) * 100 || 0} %
                               </Div> */}
                               <Div maxWidth={90} align="left">
                                 {assignment?.gradedNumber} Graded
@@ -719,7 +765,6 @@ const ModalWrapper = styled(Modal)`
         height: calc(100vh - 62px);
         & > section {
           padding: 0px;
-          min-height: calc(100vh - 100px);
         }
       }
     }
@@ -890,28 +935,6 @@ export const AssignmentContent = styled.div`
   min-width: ${props => (!props.expanded ? "30%" : "45%")};
   @media only screen and (max-width: ${mobileWidth}) {
     width: 80%;
-  }
-`;
-
-const LinkWrapper = styled.div`
-  border: 1px solid ${themeColor};
-  color: ${themeColor};
-  background: ${white};
-  text-align: center;
-  border-radius: 4px;
-  margin-right: 18px;
-  padding: 4px 10px;
-  min-height: 30px;
-  font-size: 12px;
-  display: table-cell;
-  vertical-align: middle;
-  box-sizing: border-box;
-
-  &:hover {
-    background: ${themeColor};
-    a {
-      color: ${white};
-    }
   }
 `;
 

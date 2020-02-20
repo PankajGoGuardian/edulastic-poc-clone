@@ -70,13 +70,13 @@ class TestItemCol extends Component {
     const qLabel = questions[widget.reference]?.qLabel;
     // question label for preview mode
     const { expressGrader = false } = this.context;
-    const question =
-      questions[widget.reference]?.qLabel && (!isDocBased || expressGrader)
-        ? questions[widget.reference]
-        : {
-            ...questions[widget.reference],
-            qLabel: qLabel || `Q${questions[widget.reference]?.qIndex || index + 1}`
-          };
+    const question = questions[widget.reference];
+    // questions[widget.reference]?.qLabel && (!isDocBased || expressGrader)
+    //   ? questions[widget.reference]
+    //   : {
+    //       ...questions[widget.reference],
+    //       qLabel: qLabel || `Q${questions[widget.reference]?.qIndex || index + 1}`
+    // };
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     if (!question) {
       return <div />;

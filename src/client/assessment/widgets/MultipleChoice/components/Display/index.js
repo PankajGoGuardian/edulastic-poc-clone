@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { Stimulus, QuestionNumberLabel, FlexContainer, QuestionSubLabel } from "@edulastic/common";
 
 import Options from "./components/Options";
-import { QuestionTitleWrapper } from "./styled/Label";
+// import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
   qIndex,
@@ -21,31 +21,38 @@ const Display = ({
   qLabel,
   fontSize,
   item = {},
+  qSubLabel,
   ...restProps
 }) => (
-  <div style={{ width: "100%", display: "inline-block" }}>
-    {!flowLayout && (
-      <>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && (
-            <QuestionNumberLabel fontSize={fontSize}>{qLabel}:</QuestionNumberLabel>
-          )}
-          <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
-      </>
-    )}
+  <div style={{ display: "inline-block", width: "100%" }}>
+    <FlexContainer alignItems="baseline" justifyContent="flex-start">
+      {!flowLayout && (
+        <>
+          <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
+            {showQuestionNumber && (
+              <QuestionNumberLabel fontSize={fontSize}>{qLabel}</QuestionNumberLabel>
+            )}
+            {console.log("what is qSubLabel", qSubLabel)}
+            {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
+          </FlexContainer>
 
-    <Options
-      view={view}
-      smallSize={smallSize}
-      question={question}
-      uiStyle={uiStyle}
-      styleType={styleType}
-      multipleResponses={multipleResponses}
-      fontSize={fontSize}
-      item={item}
-      {...restProps}
-    />
+          <FlexContainer width="100%" flexDirection="column" alignItems="flex-start">
+            <StyledStimulus fontSize={fontSize} dangerouslySetInnerHTML={{ __html: question }} />
+            <Options
+              view={view}
+              smallSize={smallSize}
+              question={question}
+              uiStyle={uiStyle}
+              styleType={styleType}
+              multipleResponses={multipleResponses}
+              fontSize={fontSize}
+              item={item}
+              {...restProps}
+            />
+          </FlexContainer>
+        </>
+      )}
+    </FlexContainer>
   </div>
 );
 
@@ -69,7 +76,8 @@ Display.propTypes = {
   styleType: PropTypes.string,
   multipleResponses: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  qSubLabel: PropTypes.string
 };
 
 Display.defaultProps = {
@@ -91,7 +99,8 @@ Display.defaultProps = {
   showQuestionNumber: false,
   flowLayout: false,
   styleType: "default",
-  multipleResponses: false
+  multipleResponses: false,
+  qSubLabel: ""
 };
 
 const StyledStimulus = styled(Stimulus)`

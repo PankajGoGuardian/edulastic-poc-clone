@@ -1,5 +1,3 @@
-// @ts-check
-
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
 /**
@@ -12,15 +10,15 @@ export const markQuestionLabel = _testItemsData => {
       continue;
     }
     if (item.data.questions.length === 1) {
-      item.data.questions[0].qLabel = i + 1;
+      item.data.questions[0].qLabel = "";
       item.data.questions[0].qSubLabel = "";
-      item.data.questions[0].barLabel = `Q${i + 1}`;
+      // item.data.questions[0].barLabel = `Q${i + 1}`;
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,
-        qLabel: qIndex === 0 ? i + 1 : "",
-        qSubLabel: alphabets[qIndex],
-        barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+        qLabel: "",
+        qSubLabel: alphabets[qIndex]
+        // barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
       }));
     }
   }

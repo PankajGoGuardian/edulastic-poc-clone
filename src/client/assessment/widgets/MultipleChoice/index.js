@@ -290,6 +290,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  qSubLabel={item.qSubLabel}
                   testItem={testItem}
                   styleType="primary"
                   fontSize={fontSize}

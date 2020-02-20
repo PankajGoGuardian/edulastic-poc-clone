@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { get } from "lodash";
+import { markQuestionLabel } from "../../../../../assessment/Transformer";
 
 export const SET_QUESTIONS_IN_PASSAGE = "[testItemPreview] set questions to passage";
 export const ADD_PASSAGE = "[testItemPreview] add passage to item";
@@ -19,9 +20,11 @@ export const getPassageSelector = createSelector(
 );
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {
+  console.log("do i come here", { id, page });
   let testItems = [];
   const testItemPreview = get(state, "testItemPreview.item", {});
   if (testItemPreview && testItemPreview.data) {
+    console.log("testItemPreview");
     return get(state, "testItemPreview.item");
   }
   if (page === "addItems" || page === "itemList") {
@@ -32,6 +35,10 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
     console.warn("unknown page type ", page);
   }
   const item = testItems.find(x => x._id === id);
+  console.log("what is item", item);
+  if (item?.multipartItem) {
+    // markQuestionLabel([item]);
+  }
   return item || undefined;
 };
 

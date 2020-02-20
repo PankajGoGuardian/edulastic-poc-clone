@@ -7,8 +7,16 @@ import { ThemeProvider } from "styled-components";
 import { themeColor, white, red } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
-import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconRemove } from "@edulastic/icons";
+import {
+  IconPencilEdit,
+  IconArrowLeft,
+  IconArrowRight,
+  IconCopy,
+  IconRemove
+} from "@edulastic/icons";
 import { get } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
@@ -39,8 +47,6 @@ import {
 } from "../../../../ItemList/ducks";
 import { getUserId, getUserFeatures, getUserSelector } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
 
 class AuthorTestItemPreview extends Component {
@@ -104,7 +110,7 @@ class AuthorTestItemPreview extends Component {
     const { submitReviewFeedback, item, approveOrRejectSingleItem } = this.props;
 
     if (item?._id) {
-      let data = { note };
+      const data = { note };
       if (scratchpad) {
         data.scratchpad = scratchpad;
       }
@@ -155,22 +161,25 @@ class AuthorTestItemPreview extends Component {
     }
 
     if (widget?.tabIndex === 0)
-      return (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + subCount;
-    else {
+      return (
+        (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
+        subCount
+      );
+    
       if (Array.isArray(sectionQue[1])) {
         return (
           (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
           sectionQue[1][0] +
           subCount
         );
-      } else {
+      } 
         return (
           (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
           sectionQue[1] +
           subCount
         );
-      }
-    }
+      
+    
   };
 
   renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount, resourceCount) => {
@@ -198,16 +207,21 @@ class AuthorTestItemPreview extends Component {
     const alphabets = "abcdefghijklmnopqrstuvwxyz";
 
     const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
-    const question =
-      questions[widget.reference] && questions[widget.reference].qLabel
-        ? questions[widget.reference]
-        : {
-            ...questions[widget.reference],
-            // need to remove the resource count fromt the subCount
-            // because resources should not have labels
-            // hence, reduce that many from the question's subCount    (EV-10560)
-            qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
-          };
+    const question = questions[widget.reference];
+    if (isMultiPart || resourceCount > 0) {
+      if (!question.qSubLabel) {
+        question.qSubLabel = alphabets[subIndex - resourceCount];
+      }
+    }
+    // && questions[widget.reference].qLabel
+    //   ? questions[widget.reference]
+    //   : {
+    //       ...questions[widget.reference],
+    //       // need to remove the resource count fromt the subCount
+    //       // because resources should not have labels
+    //       // hence, reduce that many from the question's subCount    (EV-10560)
+    //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
+    //     };
     if (!question) {
       return <div />;
     }
@@ -294,7 +308,13 @@ class AuthorTestItemPreview extends Component {
               (page === "addItems" || page === "itemList") && (
                 <EduButton
                   title="Delete item"
-                  style={{ padding: 0, borderColor: red, fontSize: "16px", color: red, height: "28px" }}
+                  style={{
+                    padding: 0,
+                    borderColor: red,
+                    fontSize: "16px",
+                    color: red,
+                    height: "28px"
+                  }}
                   size="large"
                   onClick={this.handleDeleteItem}
                   disabled={this.props.deleting}
@@ -321,7 +341,9 @@ class AuthorTestItemPreview extends Component {
                       <SyledSpan>
                         <Icon type="stop" color={red} />
                       </SyledSpan>
-                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>Reject</StyledText>
+                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>
+                        Reject
+                      </StyledText>
                     </StyledFlex>
                   </EduButton>
                 ) : null}
@@ -411,7 +433,12 @@ class AuthorTestItemPreview extends Component {
             </EvaluateButton>
           )}
 
-          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
+          <ReportIssueButton
+            title="Report Issue"
+            type="danger"
+            ghost
+            onClick={() => toggleReportIssue()}
+          >
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueButton>
         </ButtonsWrapper>
@@ -457,10 +484,26 @@ class AuthorTestItemPreview extends Component {
               {col.tabs &&
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
+                this.renderTabContent(
+                  widget,
+                  col.flowLayout,
+                  i,
+                  colIndex,
+                  sectionQue,
+                  subCount++,
+                  resourceCount
+                )}
               {col.tabs &&
                 !col.tabs.length &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
+                this.renderTabContent(
+                  widget,
+                  col.flowLayout,
+                  i,
+                  colIndex,
+                  sectionQue,
+                  subCount++,
+                  resourceCount
+                )}
             </React.Fragment>
           ))}
         </WidgetContainer>
@@ -498,10 +541,18 @@ class AuthorTestItemPreview extends Component {
         style={onlySratchpad ? { visibility: "hidden" } : {}}
       >
         <div>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.setCollapseView("left")}
+            left
+          >
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.setCollapseView("right")}
+            right
+          >
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -538,7 +589,8 @@ class AuthorTestItemPreview extends Component {
     return (
       <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
         {cols.map((col, i) => {
-          const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+          const hideColumn =
+            (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           return (
             <>

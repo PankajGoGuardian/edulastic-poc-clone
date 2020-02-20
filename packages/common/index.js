@@ -4,6 +4,7 @@ import * as Effects from "./src/effects";
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
 export { default as QuestionNumberLabel } from "./src/components/QuestionNumberLabel";
+export { default as QuestionSubLabel } from "./src/components/QuestionSubLabel";
 export { default as Progress } from "./src/components/Progress";
 export { default as Pagination } from "./src/components/Pagination";
 export { default as FlexContainer } from "./src/components/FlexContainer";

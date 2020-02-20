@@ -39,12 +39,20 @@ class AddStudentModal extends React.Component {
       selectedClass: { groupInfo = {} },
       orgData,
       loadStudents,
-      handleCancel
+      handleCancel,
+      classDetails
     } = this.props;
-    const { _id: classId } = groupInfo;
-    const { code: classCode } = groupInfo;
+    let { _id: classId = "" } = groupInfo;
+    let { code: classCode = "" } = groupInfo;
     const { districtId } = orgData;
     const userId = this.state.foundUserId;
+
+    // manageClass > manageClass entity
+    if (!classId && !classCode) {
+      classId = classDetails?._id || "";
+      classCode = classDetails?.code || "";
+    }
+
     const data = {
       classCode,
       studentIds: [userId],
@@ -78,7 +86,7 @@ class AddStudentModal extends React.Component {
     } = this.props;
 
     const { keys, isUpdate } = this.state;
-    const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
+    const { getFieldDecorator, getFieldValue, setFields, setFieldsValue, isFieldTouched, getFieldError } = form;
     const std = {};
 
     const title = (
@@ -94,7 +102,12 @@ class AddStudentModal extends React.Component {
           No, Cancel
         </ActionButton>
 
-        <ActionButton data-cy="addButton" onClick={isUpdate ? this.enrollStudent : handleAdd} type="primary">
+        <ActionButton
+          data-cy="addButton"
+          onClick={isUpdate ? this.enrollStudent : handleAdd}
+          type="primary"
+          disabled={isFieldTouched("email") && getFieldError("email")}
+        >
           {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
         </ActionButton>
       </>
@@ -188,7 +201,8 @@ const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal
 export default connect(
   state => ({
     orgData: getUserOrgData(state),
-    selectedClass: getValidatedClassDetails(state) || {}
+    selectedClass: getValidatedClassDetails(state) || {},
+    classDetails: get(state, "manageClass.entity")
   }),
   { loadStudents: fetchStudentsByIdAction }
 )(AddStudentForm);

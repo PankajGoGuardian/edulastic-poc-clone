@@ -28,6 +28,7 @@ const BasicFields = ({
   resetClassDetails = () => {},
   validatedClassDetails,
   t,
+  classDetails,
   ...restProps
 }) => {
   const _className = get(validatedClassDetails, "groupInfo.name", "");
@@ -58,7 +59,7 @@ const BasicFields = ({
   ];
 
   const checkUser = async (rule, value, callback) => {
-    const { code = "" } = get(validatedClassDetails, "groupInfo", {});
+    let { code = "" } = get(validatedClassDetails, "groupInfo", {});
     if (isUpdate) setIsUpdate(!isUpdate);
     if (enroll) {
       setFields({
@@ -67,6 +68,11 @@ const BasicFields = ({
         }
       });
       setEnroll(false);
+    }
+
+    // [manage class entity]
+    if (!code) {
+      code = classDetails?.code;
     }
 
     let result = [];
@@ -90,7 +96,8 @@ const BasicFields = ({
       setFields({
         email: {
           value,
-          errors: [new Error("User already part of this class")]
+          errors: [new Error("User already part of this class")],
+          touched: true
         }
       });
       callback("User already part of this class");
@@ -359,7 +366,8 @@ BasicFields.defaultProps = {
 
 export default connect(state => ({
   students: get(state, "manageClass.studentsList", []),
-  districtId: get(state, "user.user.orgData.districtId", "")
+  districtId: get(state, "user.user.orgData.districtId", ""),
+  classDetails: get(state, "manageClass.entity", {})
 }))(BasicFields);
 
 const FormBody = styled.div`

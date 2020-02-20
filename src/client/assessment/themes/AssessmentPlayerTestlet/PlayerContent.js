@@ -350,6 +350,7 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
+        groupId={groupId}
         {...restProps}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>

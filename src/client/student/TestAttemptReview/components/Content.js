@@ -9,13 +9,19 @@ import { Row, Col, Button } from "antd";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
 import { test as testTypes } from "@edulastic/constants";
+import {
+  largeDesktopWidth,
+  desktopWidth,
+  smallDesktopWidth,
+  tabletWidth,
+  mobileWidthLarge
+} from "@edulastic/colors";
 import { themes } from "../../../theme";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
 import { loadTestAction } from "../../../assessment/actions/test";
-import { largeDesktopWidth, desktopWidth, smallDesktopWidth, tabletWidth, mobileWidthLarge } from "@edulastic/colors";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type;
 class SummaryTest extends Component {
@@ -30,7 +36,11 @@ class SummaryTest extends Component {
   componentDidMount() {
     const { loadTest, history, match, questionList } = this.props;
     const { utaId: testActivityId, id: testId, assessmentType } = match.params;
-    if (assessmentType === ASSESSMENT || assessmentType === PRACTICE || assessmentType === TESTLET) {
+    if (
+      assessmentType === ASSESSMENT ||
+      assessmentType === PRACTICE ||
+      assessmentType === TESTLET
+    ) {
       const { allQids } = questionList;
       if (allQids.length === 0) {
         loadTest({ testId, testActivityId, groupId: match.params.groupId });
@@ -96,85 +106,103 @@ class SummaryTest extends Component {
           <Container>
             <Header>
               <Title>{t("common.headingText")}</Title>
-              <TitleDescription>{t("common.message")}</TitleDescription>
+              {test.testType !== TESTLET && (
+                <TitleDescription>{t("common.message")}</TitleDescription>
+              )}
             </Header>
-            <MainContent>
-              <ColorDescription>
-                <ColorDescriptionRow gutter={32}>
-                  <FlexCol lg={8} md={24}>
-                    <MarkedAnswered />
-                    <SpaceLeft>
-                      <Description>{t("common.markedQuestionLineOne")}</Description>
-                    </SpaceLeft>
-                  </FlexCol>
-                  <FlexCol lg={8} md={24}>
-                    <MarkedSkipped />
-                    <SpaceLeft>
-                      <Description>{t("common.skippedQues")}</Description>
-                    </SpaceLeft>
-                  </FlexCol>
-                  <FlexCol lg={8} md={24}>
-                    <MarkedForReview />
-                    <SpaceLeft>
-                      <Description>{t("common.markedForReview")}</Description>
-                    </SpaceLeft>
-                  </FlexCol>
-                </ColorDescriptionRow>
-              </ColorDescription>
-              <Questions>
-                <Row>
-                  <QuestionText lg={8} md={24}>
-                    {t("common.questionsLabel")}
-                  </QuestionText>
-                  <Col lg={16} md={24}>
-                    <AnsweredTypeButtonContainer>
-                      <StyledButton data-cy="all" onClick={() => this.handlerButton(null)} enabled={buttonIdx === null}>
-                        {t("default:all")}
-                      </StyledButton>
-                      {!isDocBasedFlag && (
+            {test.testType !== TESTLET && (
+              <MainContent>
+                <ColorDescription>
+                  <ColorDescriptionRow gutter={32}>
+                    <FlexCol lg={8} md={24}>
+                      <MarkedAnswered />
+                      <SpaceLeft>
+                        <Description>{t("common.markedQuestionLineOne")}</Description>
+                      </SpaceLeft>
+                    </FlexCol>
+                    <FlexCol lg={8} md={24}>
+                      <MarkedSkipped />
+                      <SpaceLeft>
+                        <Description>{t("common.skippedQues")}</Description>
+                      </SpaceLeft>
+                    </FlexCol>
+                    <FlexCol lg={8} md={24}>
+                      <MarkedForReview />
+                      <SpaceLeft>
+                        <Description>{t("common.markedForReview")}</Description>
+                      </SpaceLeft>
+                    </FlexCol>
+                  </ColorDescriptionRow>
+                </ColorDescription>
+                <Questions>
+                  <Row>
+                    <QuestionText lg={8} md={24}>
+                      {t("common.questionsLabel")}
+                    </QuestionText>
+                    <Col lg={16} md={24}>
+                      <AnsweredTypeButtonContainer>
                         <StyledButton
-                          data-cy="bookmarked"
-                          onClick={() => this.handlerButton(2)}
-                          enabled={buttonIdx === 2}
+                          data-cy="all"
+                          onClick={() => this.handlerButton(null)}
+                          enabled={buttonIdx === null}
                         >
-                          {t("default:bookmarked")}
+                          {t("default:all")}
                         </StyledButton>
-                      )}
-                      <StyledButton data-cy="skipped" onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
-                        {t("default:skipped")}
-                      </StyledButton>
-                    </AnsweredTypeButtonContainer>
-                  </Col>
-                </Row>
-                <QuestionBlock>
-                  {itemIds.map((item, index) => {
-                    let returnObj = itemWiseQids[item].map((q, qIndex) => {
-                      const qInd = isDocBased
-                        ? qIndex + 1
-                        : `${index + 1}${
-                            itemWiseQids[item].length > 1
-                              ? `.${itemWiseQids[item].length <= 26 ? String.fromCharCode(97 + qIndex) : qIndex + 1}`
-                              : ""
-                          }`;
-                      return (
-                        <QuestionColorBlock
-                          data-cy={`Q${qInd}`}
-                          key={index * 100 + qIndex}
-                          type={questionList[q]}
-                          isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                          onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                        {!isDocBasedFlag && (
+                          <StyledButton
+                            data-cy="bookmarked"
+                            onClick={() => this.handlerButton(2)}
+                            enabled={buttonIdx === 2}
+                          >
+                            {t("default:bookmarked")}
+                          </StyledButton>
+                        )}
+                        <StyledButton
+                          data-cy="skipped"
+                          onClick={() => this.handlerButton(0)}
+                          enabled={buttonIdx === 0}
                         >
-                          <span> {qInd} </span>
-                        </QuestionColorBlock>
-                      );
-                    });
-                    return returnObj;
-                  })}
-                </QuestionBlock>
-              </Questions>
-            </MainContent>
+                          {t("default:skipped")}
+                        </StyledButton>
+                      </AnsweredTypeButtonContainer>
+                    </Col>
+                  </Row>
+                  <QuestionBlock>
+                    {itemIds.map((item, index) => {
+                      const returnObj = itemWiseQids[item].map((q, qIndex) => {
+                        const qInd = isDocBased
+                          ? qIndex + 1
+                          : `${index + 1}${
+                              itemWiseQids[item].length > 1
+                                ? `.${
+                                    itemWiseQids[item].length <= 26
+                                      ? String.fromCharCode(97 + qIndex)
+                                      : qIndex + 1
+                                  }`
+                                : ""
+                            }`;
+                        return (
+                          <QuestionColorBlock
+                            data-cy={`Q${qInd}`}
+                            key={index * 100 + qIndex}
+                            type={questionList[q]}
+                            isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                            onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
+                          >
+                            <span> {qInd} </span>
+                          </QuestionColorBlock>
+                        );
+                      });
+                      return returnObj;
+                    })}
+                  </QuestionBlock>
+                </Questions>
+              </MainContent>
+            )}
             <Footer>
-              <ShortDescription>{t("common.nextStep")}</ShortDescription>
+              {test.testType !== TESTLET && (
+                <ShortDescription>{t("common.nextStep")}</ShortDescription>
+              )}
               <SubmitButton type="primary" onClick={this.handlerConfirmationModal}>
                 {t("default:submit")}
               </SubmitButton>

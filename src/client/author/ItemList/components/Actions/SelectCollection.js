@@ -14,6 +14,7 @@ import {
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { getTestEntitySelector } from "../../../TestPage/ducks";
+import { getSelectedPlaylistSelector } from "../../../Playlist/ducks";
 
 const SelectCollectionModal = ({
   isAddCollectionModalVisible,
@@ -23,6 +24,7 @@ const SelectCollectionModal = ({
   contentType,
   selectedItems,
   selectedTests,
+  selectedPlaylists,
   test
 }) => {
   const handleCancel = () => {
@@ -32,10 +34,13 @@ const SelectCollectionModal = ({
   const addedItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
   const itemsKeyed = keyBy(addedItems, "_id");
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    const contentIds =
-      contentType === "TEST"
-        ? selectedTests.map(item => item.versionId)
-        : selectedItems.map(_id => itemsKeyed[_id]?.versionId);
+    let contentIds = selectedItems.map(_id => itemsKeyed[_id]?._id);
+    if (contentType === "PLAYLIST") {
+      contentIds = selectedPlaylists;
+    }
+    if (contentType === "TEST") {
+      contentIds = selectedTests.map(item => item._id);
+    }
     if (!contentIds.length) {
       message.error("Add atleast one item to cart");
       return handleCancel();
@@ -89,6 +94,7 @@ export default connect(
     buckets: getItemBucketsSelector(state),
     selectedItems: getSelectedItemSelector(state),
     selectedTests: getSelectedTestsSelector(state),
+    selectedPlaylists: getSelectedPlaylistSelector(state),
     test: getTestEntitySelector(state)
   }),
   {

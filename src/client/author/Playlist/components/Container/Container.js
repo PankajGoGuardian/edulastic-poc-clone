@@ -44,10 +44,16 @@ import {
   getPlalistFilterSelector,
   updateAllPlaylistSearchFilterAction,
   clearPlaylistFiltersAction,
-  emptyFilters
+  emptyFilters,
+  getSelectedPlaylistSelector,
+  checkPlayListAction
 } from "../../ducks";
 
-import { getTestsCreatingSelector, clearTestDataAction, getAllTagsAction } from "../../../TestPage/ducks";
+import {
+  getTestsCreatingSelector,
+  clearTestDataAction,
+  getAllTagsAction
+} from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
@@ -58,9 +64,14 @@ import {
   getDefaultSubjectSelector,
   getDefaultGradesSelector
 } from "../../../src/selectors/user";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
+} from "../../../../student/Login/ducks";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { filterMenuItems } from "../../../Playlist/ducks";
+import Actions from "../../../ItemList/components/Actions";
+import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 
 class TestList extends Component {
   static propTypes = {
@@ -134,7 +145,9 @@ class TestList extends Component {
     this.updateFilterState(searchFilters);
     const pageNumber = params.page || page;
     const limitCount = params.limit || limit;
-    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
+    const queryParams = qs.stringify(
+      pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity)
+    );
     history.push(`/author/playlists?${queryParams}`);
 
     receivePublishers();
@@ -284,10 +297,18 @@ class TestList extends Component {
     });
   }
 
-  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) =>
+    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
+  handleCheckboxAction = (e, selectedId) => {
+    const { selectedPlayLists, checkPlayList } = this.props;
+    const updatedPlayslist = e.target.checked
+      ? [...selectedPlayLists, selectedId]
+      : selectedPlayLists.filter(_id => _id !== selectedId);
+    checkPlayList(updatedPlayslist);
+  };
   renderCardContent = () => {
-    const { loading, windowWidth, history, match, playlists } = this.props;
+    const { loading, windowWidth, history, match, playlists, selectedPlayLists } = this.props;
     const { blockStyle } = this.state;
     if (loading) {
       return <Spin size="large" />;
@@ -305,7 +326,7 @@ class TestList extends Component {
     const countModular = new Array(GridCountInARow - (playlists.length % GridCountInARow)).fill(1);
     return (
       <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
-        {playlists.map((item, index) => (
+        {playlists.map(item => (
           <CardWrapper
             item={item}
             key={0}
@@ -314,6 +335,8 @@ class TestList extends Component {
             history={history}
             match={match}
             isPlaylist={true}
+            handleCheckboxAction={this.handleCheckboxAction}
+            checked={selectedPlayLists.includes(item._id)}
           />
         ))}
 
@@ -326,7 +349,13 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receivePlaylists, limit, playListFilters, updateAllPlaylistSearchFilter } = this.props;
+    const {
+      history,
+      receivePlaylists,
+      limit,
+      playListFilters,
+      updateAllPlaylistSearchFilter
+    } = this.props;
     let updatedSearch = { ...playListFilters };
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
@@ -363,7 +392,9 @@ class TestList extends Component {
           creating={creating}
           title="Play List Library"
           btnTitle="New Play list"
-          icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+          icon={
+            <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
+          }
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile
@@ -443,6 +474,7 @@ class TestList extends Component {
                 <PaginationInfo>
                   {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
+                {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 30px" }}>
                 <CardContainer type={blockStyle}>
@@ -459,6 +491,7 @@ class TestList extends Component {
               </PerfectScrollbar>
             </Main>
           </FlexContainer>
+          <SelectCollectionModal contentType="PLAYLIST" />
         </Container>
       </>
     );
@@ -481,7 +514,8 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
-      playListFilters: getPlalistFilterSelector(state)
+      playListFilters: getPlalistFilterSelector(state),
+      selectedPlayLists: getSelectedPlaylistSelector(state)
     }),
     {
       receivePlaylists: receivePlaylistsAction,
@@ -492,7 +526,8 @@ const enhance = compose(
       updateDefaultSubject: updateDefaultSubjectAction,
       receiveRecentPlayLists: receiveRecentPlayListsAction,
       updateAllPlaylistSearchFilter: updateAllPlaylistSearchFilterAction,
-      clearPlaylistFilters: clearPlaylistFiltersAction
+      clearPlaylistFilters: clearPlaylistFiltersAction,
+      checkPlayList: checkPlayListAction
     }
   )
 );

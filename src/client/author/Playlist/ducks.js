@@ -31,6 +31,7 @@ export const RECEIVE_LAST_PLAYLIST = "[playlists] receive last playlist";
 export const UPDATE_PLAYLIST_FILTER = "[playlists] update playlist search filter";
 export const UPDATE_ALL_PLAYLIST_FILTERS = "[playlists] update all playlist filters";
 export const CLEAR_PLAYLIST_FILTERS = "[playlists] clear playlist filters";
+export const SELECT_PLAYLIST = "[playlists] check playlist";
 
 // actions
 export const receivePlaylistsAction = createAction(RECEIVE_PLAYLIST_REQUEST);
@@ -47,6 +48,7 @@ export const receiveLastPlayListAction = createAction(RECEIVE_LAST_PLAYLIST);
 export const updatePlaylistSearchFilterAction = createAction(UPDATE_PLAYLIST_FILTER);
 export const updateAllPlaylistSearchFilterAction = createAction(UPDATE_ALL_PLAYLIST_FILTERS);
 export const clearPlaylistFiltersAction = createAction(CLEAR_PLAYLIST_FILTERS);
+export const checkPlayListAction = createAction(SELECT_PLAYLIST);
 
 function* receivePublishersSaga() {
   try {
@@ -133,6 +135,7 @@ const initialState = {
   loading: false,
   recentPlayLists: [],
   lastPlayList: {},
+  selectedPlayLists: [],
   filters: {
     ...emptyFilters
   }
@@ -201,6 +204,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           subject: payload.subject[0] || ""
         }
       };
+    case SELECT_PLAYLIST:
+      return {
+        ...state,
+        selectedPlayLists: payload
+      };
     default:
       return state;
   }
@@ -243,4 +251,9 @@ export const getRecentPlaylistSelector = createSelector(
 export const getPlalistFilterSelector = createSelector(
   stateSelector,
   state => state.filters
+);
+
+export const getSelectedPlaylistSelector = createSelector(
+  stateSelector,
+  state => state.selectedPlayLists
 );

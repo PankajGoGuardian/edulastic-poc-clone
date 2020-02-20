@@ -11,11 +11,12 @@ import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/use
 import { createTestFromCartAction } from "../../ducks";
 import { getSelectedTestsSelector } from "../../../TestList/ducks";
 import { setAddCollectionModalVisibleAction } from "../../../ContentBuckets/ducks";
+import { getSelectedPlaylistSelector } from "../../../Playlist/ducks";
 
-//TODO: Re-use the actions component and SelectCollection component for Playlist add to collection when it is ready.
 const Actions = ({
   selectedItems,
   selectedTests,
+  selectedPlaylists,
   userRole,
   setAddCollectionModalVisible,
   createTestFromCart,
@@ -26,6 +27,9 @@ const Actions = ({
   let numberOfSelectedItems = selectedItems?.length;
   if (type === "TEST") {
     numberOfSelectedItems = selectedTests?.length;
+  }
+  if (type === "PLAYLIST") {
+    numberOfSelectedItems = selectedPlaylists?.length;
   }
 
   //Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
@@ -71,7 +75,8 @@ export default connect(
     selectedItems: getSelectedItemSelector(state),
     userRole: getUserRole(state),
     isPublisherUser: isPublisherUserSelector(state),
-    selectedTests: getSelectedTestsSelector(state)
+    selectedTests: getSelectedTestsSelector(state),
+    selectedPlaylists: getSelectedPlaylistSelector(state)
   }),
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,

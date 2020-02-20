@@ -4,9 +4,18 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { darkGrey, cardTitleColor, themeColor, fadedBlack } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose, IconPlus } from "@edulastic/icons";
+import {
+  IconHeart,
+  IconShare,
+  IconUser,
+  IconId,
+  IconEye,
+  IconClose,
+  IconPlus
+} from "@edulastic/icons";
 import { Col, Checkbox, message } from "antd";
 import { assignmentApi } from "@edulastic/api";
+import { roleuser } from "@edulastic/constants";
 import Tags from "../../../src/components/common/Tags";
 import {
   Container,
@@ -40,11 +49,10 @@ import {
   AddButtonStyled,
   ViewButtonStyled
 } from "../../../ItemList/components/Item/styled";
-import { getSelectedTestsSelector } from "../../ducks";
-import { getUserRole } from "../../../src/selectors/user";
-import { roleuser } from "@edulastic/constants";
-import { approveOrRejectSingleTestRequestAction } from "../../ducks";
-import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
+import { getSelectedTestsSelector , approveOrRejectSingleTestRequestAction } from "../../ducks";
+import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/user";
+
+import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 
 class ListItem extends Component {
   static propTypes = {
@@ -110,7 +118,11 @@ class ListItem extends Component {
       item: { _id: testId },
       approveOrRejectSingleTestRequestAction
     } = this.props;
-    approveOrRejectSingleTestRequestAction({ testId, status: "published", collections: newCollections });
+    approveOrRejectSingleTestRequestAction({
+      testId,
+      status: "published",
+      collections: newCollections
+    });
   };
 
   onReject = () => {
@@ -152,7 +164,8 @@ class ListItem extends Component {
       onRemoveFromCart,
       onAddToCart,
       t,
-      userRole
+      userRole,
+      isPublisherUser
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -179,25 +192,29 @@ class ListItem extends Component {
           testId={currentTestId}
           closeTestPreviewModal={this.hidePreviewModal}
         />
-        <Container onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}>
+        <Container
+          onClick={isPlaylist ? this.moveToItem : mode === "embedded" ? "" : this.openModal}
+        >
           <ContentWrapper>
             <Col span={24}>
               <Outer>
                 <div style={{ display: "flex" }}>
                   <div>
                     <ListCard
-                      title={
+                      title={(
                         <Header src={thumbnailData}>
                           <Stars size="small" />
                         </Header>
-                      }
+                      )}
                     />
                   </div>
 
                   <Inner>
                     <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
                     <Description title={isPlaylist ? _source.description : description}>
-                      <EllipsisWrapper view="list">{isPlaylist ? _source.description : description}</EllipsisWrapper>
+                      <EllipsisWrapper view="list">
+                        {isPlaylist ? _source.description : description}
+                      </EllipsisWrapper>
                     </Description>
                   </Inner>
                 </div>
@@ -206,20 +223,29 @@ class ListItem extends Component {
                   <ViewButtonWrapper span={6}>
                     {!isTestAdded && mode === "embedded" && (
                       <ViewButton
-                        onClick={e => addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })}
+                        onClick={e =>
+                          addTestToPlaylist({ ...item, standardIdentifiers: standardsIdentifiers })
+                        }
                       >
                         ADD
                       </ViewButton>
                     )}
 
                     {!isTestAdded && mode === "embedded" && (
-                      <ViewButton isTestAdded={isTestAdded} onClick={e => this.showPreviewModal(item._id)}>
+                      <ViewButton
+                        isTestAdded={isTestAdded}
+                        onClick={e => this.showPreviewModal(item._id)}
+                      >
                         VIEW
                       </ViewButton>
                     )}
 
                     {isTestAdded && mode === "embedded" && (
-                      <div style={{ cursor: "pointer" }} onClick={e => this.showPreviewModal(item._id)} title="Preview">
+                      <div
+                        style={{ cursor: "pointer" }}
+                        onClick={e => this.showPreviewModal(item._id)}
+                        title="Preview"
+                      >
                         <IconEye color={themeColor} width={60} />
                       </div>
                     )}
@@ -227,7 +253,10 @@ class ListItem extends Component {
                     {isTestAdded && mode === "embedded" && (
                       <StyledModuleName>
                         <span style={{ width: "100%", textAlign: "center" }}>{moduleTitle}</span>
-                        <div style={{ cursor: "pointer" }} onClick={e => removeTestFromPlaylist(item._id)}>
+                        <div
+                          style={{ cursor: "pointer" }}
+                          onClick={e => removeTestFromPlaylist(item._id)}
+                        >
                           <IconClose color={fadedBlack} width={10} />
                         </div>
                       </StyledModuleName>
@@ -239,27 +268,34 @@ class ListItem extends Component {
                     />
                   </ViewButtonWrapper>
                 )}
-                {!isPlaylist && mode !== "embedded" && userRole === roleuser.DISTRICT_ADMIN && (
-                  <ViewButtonContainer>
-                    <ViewButtonStyled
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.showPreviewModal(item._id);
-                      }}
-                    >
-                      <IconEye /> {t("component.item.view")}
-                    </ViewButtonStyled>
-                    <AddButtonStyled
-                      selectedToCart={isInCart}
-                      onClick={e => {
-                        e.stopPropagation();
-                        isInCart ? onRemoveFromCart(item) : onAddToCart(item);
-                      }}
-                    >
-                      {isInCart ? "Remove" : <IconPlus />}
-                    </AddButtonStyled>
-                  </ViewButtonContainer>
+                {isPlaylist && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
+                  <div onClick={e => e.stopPropagation()}>
+                    <Checkbox onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
+                  </div>
                 )}
+                {!isPlaylist &&
+                  mode !== "embedded" &&
+                  (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
+                    <ViewButtonContainer>
+                      <ViewButtonStyled
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.showPreviewModal(item._id);
+                        }}
+                      >
+                        <IconEye /> {t("component.item.view")}
+                      </ViewButtonStyled>
+                      <AddButtonStyled
+                        selectedToCart={isInCart}
+                        onClick={e => {
+                          e.stopPropagation();
+                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                        }}
+                      >
+                        {isInCart ? "Remove" : <IconPlus />}
+                      </AddButtonStyled>
+                    </ViewButtonContainer>
+                  )}
               </Outer>
             </Col>
 
@@ -268,7 +304,11 @@ class ListItem extends Component {
                 {!isPlaylist && (
                   <>
                     <Tags tags={tags} show={1} key="tags" />
-                    {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
+                    {tags.length && standardsIdentifiers.length ? (
+                      <span style={{ marginRight: "10px" }} />
+                    ) : (
+                      ""
+                    )}
                     <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
                   </>
                 )}
@@ -276,7 +316,10 @@ class ListItem extends Component {
                   {({ children, ...rest }) => (
                     <TestStatus
                       style={{
-                        marginLeft: tags.length || (standardsIdentifiers && standardsIdentifiers.length) ? "10px" : 0
+                        marginLeft:
+                          tags.length || (standardsIdentifiers && standardsIdentifiers.length)
+                            ? "10px"
+                            : 0
                       }}
                       {...rest}
                     >
@@ -285,7 +328,7 @@ class ListItem extends Component {
                   )}
                 </TestStatusWrapper>
                 {collections.find(o => o.name === "Edulastic Certified") &&
-                  getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon}
+                  getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
               </TagsWrapper>
 
               <ItemInformation span={12}>
@@ -293,7 +336,7 @@ class ListItem extends Component {
                   {authorName && (
                     <Author>
                       {collections.find(o => o.name === "Edulastic Certified") ? (
-                        getAuthorCollectionMap(true, 30, 30)["edulastic_certified"].icon
+                        getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                       ) : (
                         <IconUser color={cardTitleColor} />
                       )}{" "}
@@ -328,7 +371,8 @@ const enhance = compose(
   connect(
     state => ({
       selectedTests: getSelectedTestsSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      isPublisherUser: isPublisherUserSelector(state)
     }),
     { approveOrRejectSingleTestRequestAction }
   )

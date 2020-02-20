@@ -8,7 +8,7 @@ export const PrintPreviewBack = styled.div`
 
 export const PrintPreviewContainer = styled.div`
   padding: 0;
-  width: 21cm;
+  width: 25cm;
   min-height: 29.7cm;
   margin: 0 auto;
   background-color: #fff;

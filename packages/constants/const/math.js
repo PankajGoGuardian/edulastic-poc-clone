@@ -43,7 +43,10 @@ const mathInputTypes = {
   SUCCESS: "success"
 };
 
-const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
+const units = [
+  { value: "units_us", label: "Units (US)" },
+  { value: "units_si", label: "Units (SI)" }
+];
 
 const symbols = [
   { value: "basic", label: "Basic" },
@@ -102,8 +105,6 @@ const methodOptions = {
     "isMixedFraction",
     "ignoreAlphabeticCharacter",
     "inverseResult",
-    "allowNumericOnly",
-    "allowedVariables",
     "interpretAsSet",
     "interpretAsInterval",
     "interpretAsNumber",
@@ -112,13 +113,19 @@ const methodOptions = {
     "compareSides",
     "unit",
     "setDecimalSeparator",
-    "setThousandsSeparator"
+    "setThousandsSeparator",
+    "allowNumericOnly",
+    "allowedVariables",
+    "tolerance",
+    "significantDecimalPlaces"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
     "ignoreTrailingZeros",
     "ignoreOrder",
     "ignoreCoefficientOfOne",
+    "literalIgnoreLeadingAndTrailingSpaces",
+    "literalTreatMultipleSpacesAsOne",
     "inverseResult",
     "allowedVariables",
     "setDecimalSeparator",
@@ -143,10 +150,30 @@ const methodOptions = {
 
   [methods.SET_EVALUATION]: [],
   [methods.EQUIV_SYNTAX]: ["notExpected", "syntax", "argument", "rule"],
-  [methods.IS_SIMPLIFIED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator"],
-  [methods.IS_FACTORISED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator", "field"],
-  [methods.IS_EXPANDED]: ["notExpected", "significantDecimalPlaces", "setDecimalSeparator", "setThousandsSeparator"],
-  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
+  [methods.IS_SIMPLIFIED]: [
+    "notExpected",
+    "inverseResult",
+    "setDecimalSeparator",
+    "setThousandsSeparator"
+  ],
+  [methods.IS_FACTORISED]: [
+    "notExpected",
+    "inverseResult",
+    "setDecimalSeparator",
+    "setThousandsSeparator",
+    "field"
+  ],
+  [methods.IS_EXPANDED]: [
+    "notExpected",
+    "significantDecimalPlaces",
+    "setDecimalSeparator",
+    "setThousandsSeparator"
+  ],
+  [methods.STRING_MATCH]: [
+    "ariaLabel",
+    "ignoreLeadingAndTrailingSpaces",
+    "treatMultipleSpacesAsOne"
+  ],
   [methods.IS_RATIONALIZED]: ["notExpected"],
   [methods.CHECK_IF_TRUE]: ["notExpected"]
 };

@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { get } from "lodash";
-import styled from "styled-components";
 import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
@@ -10,7 +9,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
-import { WidgetMethods } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
@@ -18,7 +16,6 @@ import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import { AdditionalToggle, AdditionalContainer } from "./styled/Additional";
 import { Container } from "./styled/Container";
-import { ExpectAnswer } from "./styled/ExpectAnswer";
 import { StyledRow } from "./styled/StyledRow";
 import { MathInputWrapper } from "./styled/MathInputWrapper";
 
@@ -40,11 +37,6 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 const { methods: methodsConst, methodOptions: methodOptionsConst } = math;
 
 const methods = Object.keys(methodsConst);
-
-const RuleContainer = styled.div`
-  max-width: 420px;
-  flex: 3;
-`;
 
 const MathFormulaAnswerMethod = ({
   onChange,
@@ -116,7 +108,8 @@ const MathFormulaAnswerMethod = ({
     changeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
   const methodOptions = methodOptionsConst[method];
-  const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
+  const eToLowerCase = label =>
+    label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
   const renderMethodsOptions = () =>
     methodOptions.map(methodOption => {
@@ -201,6 +194,16 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.ignoreLeadingAndTrailingSpaces")}
             />
           );
+        case "literalIgnoreLeadingAndTrailingSpaces":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-leading-and-trailing-spaces"
+              optionKey="literal:ignoreLeadingAndTrailingSpaces"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.literalIgnoreLeadingAndTrailingSpaces")}
+            />
+          );
         case "isDecimal":
           return (
             <CheckOption
@@ -251,6 +254,16 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.treatMultipleSpacesAsOne")}
             />
           );
+        case "literalTreatMultipleSpacesAsOne":
+          return (
+            <CheckOption
+              dataCy="answer-treat-multiple-spaces-as-one"
+              optionKey="literal:treatMultipleSpacesAsOne"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.literalTreatMultipleSpacesAsOne")}
+            />
+          );
         case "inverseResult":
           return (
             <CheckOption
@@ -289,7 +302,12 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedOptions} />;
+          return (
+            <AllowedVariables
+              allowedVariables={allowedVariables}
+              onChange={onChangeAllowedOptions}
+            />
+          );
         case "interpretAsSet":
           return (
             <CheckOption
@@ -345,7 +363,9 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const restrictKeys = allowedVariables
+    ? allowedVariables.split(",").map(segment => segment.trim())
+    : [];
   const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
   const warningFlag =
@@ -384,7 +404,9 @@ const MathFormulaAnswerMethod = ({
       <Row gutter={24}>
         {!methodOptions.includes("notExpected") && (
           <Col span={24}>
-            <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
+            <Label data-cy="answer-math-input">
+              {labelValue || t("component.math.expectedAnswer")}
+            </Label>
             <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
                 <MathInput
@@ -410,7 +432,9 @@ const MathFormulaAnswerMethod = ({
         )}
         {index > 0 ? (
           <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
-            {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
+            {onDelete && (
+              <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />
+            )}
           </div>
         ) : null}
         {item.isUnits && (
@@ -481,7 +505,12 @@ const MathFormulaAnswerMethod = ({
             </Col>
             <Col span={14}>
               {methodOptions.includes("rule") && (
-                <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />
+                <Rule
+                  onChange={changeOptions}
+                  t={t}
+                  syntax={options.syntax}
+                  argument={options.argument}
+                />
               )}
             </Col>
           </Row>
@@ -500,7 +529,10 @@ const MathFormulaAnswerMethod = ({
 
           {/* {index + 1 === answer.length && (
             <AdditionalContainerRule>
-              <AdditionalAddRule onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd} data-cy="add-new-method">
+              <AdditionalAddRule
+                onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd}
+                data-cy="add-new-method"
+              >
                 {`+ ${t("component.math.chainAnotherEvaluationRule")}`}
               </AdditionalAddRule>
             </AdditionalContainerRule>

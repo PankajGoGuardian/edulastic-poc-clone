@@ -813,7 +813,9 @@
       "ariaLabel": "ARIA label",
       "allowedUnits": "Must use these units",
       "ignoreLeadingAndTrailingSpaces": "Ignore leading and trailing spaces",
+      "literalIgnoreLeadingAndTrailingSpaces": "Ignore leading and trailing spaces",
       "treatMultipleSpacesAsOne": "Treat extra spaces as one",
+      "literalTreatMultipleSpacesAsOne": "Treat extra spaces as one",
       "rule": "Rule",
       "argument": "Argument",
       "ignoreOrder": "Ignore order",
@@ -866,7 +868,7 @@
       "isRationalized": "Check if rationalized",
       "setListTypeResponse": "Interpret Response as an Ordered List",
       "setDecimalSeparator": "Set Decimal Separator",
-      "interpretAsInterval": "Interpret as an Interval",
+      "interpretAsInterval": "Interpret As Interval Notation",
       "interpretAsNumber": "Interpret as a Number"
     },
     "matrix": {

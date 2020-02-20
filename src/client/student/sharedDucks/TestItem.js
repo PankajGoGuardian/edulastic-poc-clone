@@ -37,16 +37,15 @@ export const getTestItemQuestions = item => {
   if (item && item.data) {
     const { questions = [], resources = [] } = item.data;
     return [...questions, ...resources];
-  } else {
-    return [];
   }
+  return [];
 };
 // selectors
 const module = "studentTestItems";
 export const getCurrentItemSelector = state => state[module].current;
 export const getItemCountSelector = state => state[module].items.length;
 export const getItemsSelector = state => state[module].items;
-export const getTestFeedbackSelector = state => state["testFeedback"];
+export const getTestFeedbackSelector = state => state.testFeedback;
 
 export const getItemSelector = createSelector(
   getItemsSelector,
@@ -60,8 +59,7 @@ export const itemHasUserWorkSelector = createSelector(
   state => state.userWork,
   (item = {}, userWork) => {
     const itemId = item._id;
-
-    return !!itemId && !!userWork.present[item._id];
+    return !!itemId && !!userWork.present[item._id]?.scratchpad;
   }
 );
 
@@ -74,7 +72,9 @@ export const getMaxScoreFromCurrentItem = state => {
   const currentItem = state?.studentTestItems?.items?.[state?.studentTestItems?.current || 0];
   if (currentItem?.itemLevelScoring) {
     return currentItem?.itemLevelScore;
-  } else {
-    return currentItem?.data?.questions?.reduce((acc, q) => q.validation.validResponse.score + acc, 0);
   }
+  return currentItem?.data?.questions?.reduce(
+    (acc, q) => q.validation.validResponse.score + acc,
+    0
+  );
 };

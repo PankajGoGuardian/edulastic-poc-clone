@@ -32,6 +32,7 @@ import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 import { hasRandomQuestions } from "../ClassBoard/utils";
 import { REQUEST_SCRATCH_PAD_SUCCESS } from "../../assessment/reducers/userWork";
+import { LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
 
@@ -71,7 +72,9 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId }))
+    testItemsIdArray.map(testItemId =>
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId })
+    )
   );
 }
 
@@ -117,8 +120,24 @@ function* receiveStudentResponseSaga({ payload }) {
       },
       true
     );
-    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId)?.questionActivities;
+    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId)
+      ?.questionActivities;
     studentResponse.questionActivities = transformedQuestionActivities;
+
+    const userWork = {};
+
+    transformedQuestionActivities.forEach(item => {
+      if (item.scratchPad) {
+        const newUserWork = { ...item.scratchPad };
+        userWork[item.testItemId] = newUserWork;
+      }
+    });
+    if (Object.keys(userWork).length > 0) {
+      yield put({
+        type: LOAD_SCRATCH_PAD,
+        payload: userWork
+      });
+    }
 
     yield put({
       type: RECEIVE_STUDENT_RESPONSE_SUCCESS,
@@ -168,7 +187,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       itemId,
       studentId,
       questionId,
-      body: { groupId, score, feedback }
+      body: { groupId, feedback }
     } = payload;
 
     const feedbackResponse = yield call(testActivityApi.updateQuestionFeedBack, {
@@ -183,7 +202,10 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
       payload: feedbackResponse
     });
-    yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId, studentId } });
+    yield put({
+      type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+      payload: { testActivityId, groupId, studentId }
+    });
     yield call(message.success("Feedback successully update"));
   } catch (err) {
     console.error(err);
@@ -265,14 +287,29 @@ function* updateStudentScore({ payload }) {
     });
 
     const { questionActivities, testActivity } = scoreRes;
-    for (const { qid: _id, score, maxScore, testActivityId, graded, skipped } of questionActivities) {
-      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore, graded, skipped }]));
+    for (const {
+      qid: _id,
+      score: _score,
+      maxScore,
+      testActivityId: _testActivityId,
+      graded,
+      skipped
+    } of questionActivities) {
+      yield put(
+        gradebookTestItemAddAction([{ _testActivityId, _id, _score, maxScore, graded, skipped }])
+      );
     }
-    yield put({ type: RESPONSE_ENTRY_SCORE_SUCCESS, payload: { questionActivities, testActivity } });
+    yield put({
+      type: RESPONSE_ENTRY_SCORE_SUCCESS,
+      payload: { questionActivities, testActivity }
+    });
 
     // should run only when score gets updated
     if (shouldReceiveStudentResponse) {
-      yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId, studentId } });
+      yield put({
+        type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+        payload: { testActivityId, groupId, studentId }
+      });
     }
 
     yield call(message.success("Score is successfully updated"));

@@ -1,9 +1,8 @@
 import { createAction, createReducer } from "redux-starter-kit";
-import { createSelector } from "reselect";
 import { takeEvery, put, call, all, fork } from "redux-saga/effects";
 import { keyBy as _keyBy } from "lodash";
 import { reportsApi, testsApi, attchmentApi as attachmentApi } from "@edulastic/api";
-import { setTestItemsAction } from "../sharedDucks/TestItem";
+import { setTestItemsAction, SET_CURRENT_ITEM } from "../sharedDucks/TestItem";
 import { setTestActivityAction, setPassagesDataAction } from "../sharedDucks/ReportsModule/ducks";
 import {
   ADD_ITEM_EVALUATION,
@@ -38,7 +37,9 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId }))
+    testItemsIdArray.map(testItemId =>
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId })
+    )
   );
 }
 
@@ -61,12 +62,15 @@ function* loadTestActivityReport({ payload }) {
     const questions = getQuestions(test.itemGroups);
     const questionsWithActivities = questions.map(question => {
       if (!question.activity) {
-        const activity = reports.questionActivities.find(qActivity => qActivity.qid === question.id);
+        const activity = reports.questionActivities.find(
+          qActivity => qActivity.qid === question.id
+        );
         return {
           ...question,
           activity
         };
-      } return question;
+      }
+      return question;
     });
     const { questionActivities = [] } = reports;
     const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
@@ -87,13 +91,26 @@ function* loadTestActivityReport({ payload }) {
     yield put(setTestItemsAction(testItems));
     yield put(setPassagesDataAction(test.passages || []));
 
+    const userWork = {};
     let allAnswers = {};
+
     questionActivities.forEach(item => {
       allAnswers = {
         ...allAnswers,
         [item.qid]: item.userResponse
       };
+      if (item.scratchPad) {
+        const newUserWork = { ...item.scratchPad };
+        userWork[item.testItemId] = newUserWork;
+      }
     });
+
+    if (Object.keys(userWork).length > 0) {
+      yield put({
+        type: LOAD_SCRATCH_PAD,
+        payload: userWork
+      });
+    }
 
     yield put({
       type: ADD_ITEM_EVALUATION,

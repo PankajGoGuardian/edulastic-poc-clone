@@ -41,7 +41,7 @@ class AnnotationsRnd extends Component {
         const oldAnnotations = draft.annotations || [];
         draft.annotations = oldAnnotations.map(annotation => {
           if (annotationIndex === annotation.id) {
-            let _size = annotation.size;
+            const _size = annotation.size;
             if (isV1Migrated && v1Dimenstions) {
               const co = getAdjustedV1AnnotationCoordinatesForDB(
                 adjustedHeightWidth,
@@ -63,22 +63,21 @@ class AnnotationsRnd extends Component {
             modifiedAnnotation.size = _size;
 
             return modifiedAnnotation;
-          } else {
-            if (isV1Migrated && v1Dimenstions) {
-              const co = getAdjustedV1AnnotationCoordinatesForDB(
-                adjustedHeightWidth,
-                layout,
-                annotation,
-                v1Dimenstions
-              );
-              annotation.position.x = co.x;
-              annotation.position.y = co.y;
-              annotation.size.width = co.width;
-              annotation.size.height = co.height;
-            }
-
-            return annotation;
           }
+          if (isV1Migrated && v1Dimenstions) {
+            const co = getAdjustedV1AnnotationCoordinatesForDB(
+              adjustedHeightWidth,
+              layout,
+              annotation,
+              v1Dimenstions
+            );
+            annotation.position.x = co.x;
+            annotation.position.y = co.y;
+            annotation.size.width = co.width;
+            annotation.size.height = co.height;
+          }
+
+          return annotation;
         });
       })
     );
@@ -161,7 +160,7 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, disableDragging, isAbove, bounds } = this.props;
+    const { question, disableDragging, isAbove, bounds, noBorder } = this.props;
     if (!question || !question.annotations) return null;
 
     const annotations = question.annotations || [];
@@ -186,10 +185,12 @@ class AnnotationsRnd extends Component {
                   width
                 }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
-                onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
+                onResizeStop={(e, dir, ref, delta) =>
+                  this.handleAnnotationSize(delta, annotation.id)
+                }
                 style={{
                   zIndex: isAbove ? 20 : 10,
-                  border: disableDragging ? "none" : "1px solid #efefef",
+                  border: noBorder || disableDragging ? "none" : "1px solid #efefef",
                   pointerEvents: disableDragging ? "none" : "auto"
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
@@ -197,7 +198,7 @@ class AnnotationsRnd extends Component {
                 bounds={bounds || "parent"}
                 className="annotation"
               >
-                <FroalaInput {...this.props} isRnd>
+                <FroalaInput noBorder {...this.props} isRnd>
                   <ValueWrapper dangerouslySetInnerHTML={{ __html: value }} />
                 </FroalaInput>
               </StyledRnd>
@@ -212,12 +213,14 @@ AnnotationsRnd.propTypes = {
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   disableDragging: PropTypes.bool,
-  isAbove: PropTypes.bool
+  isAbove: PropTypes.bool,
+  noBorder: PropTypes.bool
 };
 
 AnnotationsRnd.defaultProps = {
   disableDragging: true,
-  isAbove: true
+  isAbove: true,
+  noBorder: false
 };
 
 export default AnnotationsRnd;

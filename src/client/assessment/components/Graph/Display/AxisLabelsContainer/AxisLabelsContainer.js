@@ -130,6 +130,7 @@ class AxisLabelsContainer extends PureComponent {
       view,
       numberlineAxis: { responseBoxPosition }
     } = this.props;
+    // eslint-disable-next-line max-len
     // -2 done to make room for the border when width is an integer but the actual width is slightly less
     this.parentWidth = this.axisLabelsContainerRef?.current?.clientWidth - 2;
     this.parentHeight = this.axisLabelsContainerRef?.current?.clientHeight - 2;
@@ -468,6 +469,7 @@ class AxisLabelsContainer extends PureComponent {
                   layout={layout}
                   bounds={`#${this._graphId}`}
                   v1Dimenstions={v1Dimenstions}
+                  noBorder
                 />
               </div>
             </div>

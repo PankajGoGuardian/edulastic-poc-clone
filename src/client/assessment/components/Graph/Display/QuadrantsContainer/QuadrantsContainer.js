@@ -165,9 +165,16 @@ class GraphContainer extends PureComponent {
     return tools[0];
   }
 
-  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+  handleElementSettingsMenuOpen = elementId =>
+    this.setState({ elementSettingsAreOpened: true, elementId });
 
-  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility, color, notSave = false) => {
+  handleElementSettingsMenuClose = (
+    labelText,
+    labelVisibility,
+    pointVisibility,
+    color,
+    notSave = false
+  ) => {
     this.setState({ elementSettingsAreOpened: false });
 
     if (notSave) {
@@ -363,7 +370,8 @@ class GraphContainer extends PureComponent {
       }
 
       if (
-        JSON.stringify(backgroundShapes.values) !== JSON.stringify(prevProps.backgroundShapes.values) ||
+        JSON.stringify(backgroundShapes.values) !==
+          JSON.stringify(prevProps.backgroundShapes.values) ||
         backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
       ) {
         this._graph.resetBg();
@@ -491,7 +499,14 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, toolbar } = this.props;
+    const {
+      elements,
+      evaluation,
+      disableResponse,
+      elementsIsCorrect,
+      previewTab,
+      toolbar
+    } = this.props;
     const { drawingPrompt } = toolbar;
 
     // correct answers blocks
@@ -631,21 +646,31 @@ class GraphContainer extends PureComponent {
     const { tools, drawingPrompt } = toolbar;
     const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
-      annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
+      annotation &&
+      (annotation.labelTop ||
+        annotation.labelLeft ||
+        annotation.labelRight ||
+        annotation.labelBottom);
 
-    const equations = elements && elements.length ? elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION) : [];
+    const equations =
+      elements && elements.length ? elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION) : [];
 
     return (
       <div data-cy="axis-quadrants-container" style={{ width: "100%" }}>
         <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
+          resources={[
+            `${AppConfig.jqueryPath}/jquery.min.js`,
+            `${AppConfig.katexPath}/katex.min.js`
+          ]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
           <span />
         </WithResources>
         <GraphWrapper>
-          {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
+          {annotation && annotation.title && (
+            <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
+          )}
           {!disableResponse && (
             <StyledToolsContainer>
               <Tools
@@ -714,7 +739,12 @@ class GraphContainer extends PureComponent {
                   />
                 </Fragment>
               )}
-              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+              <AnnotationRnd
+                noBorder
+                question={graphData}
+                setQuestionData={setQuestionData}
+                disableDragging={view !== EDIT}
+              />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
                   showColorPicker={drawingPrompt === "byObjects" && view === "edit" && !bgShapes}

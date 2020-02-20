@@ -1,11 +1,9 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable func-names */
-/* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Popover } from "antd";
 import { MathSpan, measureText, Ellipsis } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 const Container = styled.div`
   width: 100%;
@@ -27,9 +25,9 @@ const AnswerContainer = ({ answer, height, width, isWrapText, fontSize }) => {
 
   const getImageWidth = (index, em) => {
     const img = new Image();
-
+    // eslint-disable-next-line
     img.onload = function() {
-      // eslint-disable-next-line react/no-this-in-sfc
+      // eslint-disable-next-line
       setSize({ width: this.width, height: this.height });
     };
     img.src = $(em).attr("src");

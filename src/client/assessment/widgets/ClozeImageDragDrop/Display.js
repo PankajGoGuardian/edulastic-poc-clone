@@ -500,6 +500,7 @@ class Display extends Component {
     const responseBoxWidth = choiceMaxWidth;
     const containerStyle = {
       margin: "auto",
+      overflow: "auto",
       minWidth: choiceMaxWidth,
       maxWidth: responseposition === "left" || responseposition === "right" ? 1050 : 750
     };
@@ -622,7 +623,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <div style={{ fontSize, margin: "auto", overflow: "auto" }} ref={this.displayWrapperRef}>
+      <div style={{ fontSize }}>
         <HorizontalScrollContext.Provider
           value={{ getScrollElement: () => this.displayWrapperRef.current }}
         >
@@ -631,7 +632,7 @@ class Display extends Component {
             <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
           </QuestionTitleWrapper>
           {responseposition === "top" && (
-            <div style={containerStyle}>
+            <div style={containerStyle} ref={this.displayWrapperRef}>
               <StyledContainer>
                 <RelativeContainer>{responseBoxLayout}</RelativeContainer>
               </StyledContainer>
@@ -639,7 +640,7 @@ class Display extends Component {
             </div>
           )}
           {responseposition === "bottom" && (
-            <div style={containerStyle}>
+            <div style={containerStyle} ref={this.displayWrapperRef}>
               <StyledContainer>
                 <RelativeContainer>{templateBoxLayout}</RelativeContainer>
               </StyledContainer>
@@ -647,7 +648,7 @@ class Display extends Component {
             </div>
           )}
           {responseposition === "left" && (
-            <LeftContainer style={containerStyle}>
+            <LeftContainer style={containerStyle} ref={this.displayWrapperRef}>
               <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
                 <RelativeContainer>{responseBoxLayout}</RelativeContainer>
               </LeftResponseContainer>
@@ -660,7 +661,11 @@ class Display extends Component {
             </LeftContainer>
           )}
           {responseposition === "right" && (
-            <RightContainer smallSize={smallSize} style={containerStyle}>
+            <RightContainer
+              smallSize={smallSize}
+              style={containerStyle}
+              ref={this.displayWrapperRef}
+            >
               <RightTemplateContainer
                 smallSize={smallSize}
                 studentReport={studentReport}

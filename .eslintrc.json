@@ -6,7 +6,8 @@
     "browser": true,
     "node": true,
     "jest": true,
-    "cypress/globals": true
+    "cypress/globals": true,
+    "jquery": true
   },
   "rules": {
     "react/jsx-filename-extension": [

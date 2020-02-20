@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Checkbox, message, Button } from "antd";
+import { message } from "antd";
 
 import { themeColor, white } from "@edulastic/colors";
 import { IconClose, IconMoveTo, IconCollapse, IconEye, IconDescription } from "@edulastic/icons";
@@ -62,7 +62,8 @@ const HeaderBar = ({
           </SelectAllCheckbox>
         </Item>
       ) : (
-        //this empty span can fix some alignment issues when there is no select all button exists. dont remove it.
+        // this empty span can fix some
+        // alignment issues when there is no select all button exists. dont remove it.
         <span />
       )}
       <MobileButtomContainer>
@@ -100,6 +101,7 @@ const HeaderBar = ({
                 style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }}
                 maxValue={itemTotal}
                 onSuccess={handleSuccess}
+                setShowPrompt={setShowPrompt}
               />
             )}
           </ActionButton>
@@ -125,7 +127,13 @@ const HeaderBar = ({
               }}
               onClick={toggleSummary}
               color="primary"
-              icon={<IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />}
+              icon={
+                <IconDescription
+                  color={isShowSummary ? themeColor : white}
+                  width={13}
+                  height={13}
+                />
+              }
             >
               {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
             </ButtonLink>
@@ -141,8 +149,8 @@ HeaderBar.propTypes = {
   onMoveTo: PropTypes.func.isRequired,
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
-  owner: PropTypes.bool,
-  isEditable: PropTypes.bool,
+  owner: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool.isRequired,
   itemTotal: PropTypes.number.isRequired,
   selectedItems: PropTypes.array.isRequired,
   windowWidth: PropTypes.number.isRequired,

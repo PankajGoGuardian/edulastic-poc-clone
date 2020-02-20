@@ -181,6 +181,7 @@ class CorrectAnswers extends Component {
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 styleType={styleType}
                 fontSize={fontSize}
+                title={item?.title}
               />
             </TabContainer>
           )}

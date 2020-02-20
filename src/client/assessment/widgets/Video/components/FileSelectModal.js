@@ -9,6 +9,7 @@ import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 import { TextInputStyled } from "../../../styled/InputStyles";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const FileSelectModal = ({
   onCancel,
@@ -67,7 +68,11 @@ const FileSelectModal = ({
       };
       if (sourceURL)
         thumb = (
-          <Empty description={<span>{t("component.video.caption") + t("component.video.uploadSuccess")}</span>} />
+          <Empty
+            description={
+              <span>{t("component.video.caption") + t("component.video.uploadSuccess")}</span>
+            }
+          />
         );
 
       break;
@@ -79,13 +84,25 @@ const FileSelectModal = ({
         maxSize: 6144
       };
       if (sourceURL)
-        thumb = <Empty description={<span>{t("component.video.video") + t("component.video.uploadSuccess")}</span>} />;
+        thumb = (
+          <Empty
+            description={
+              <span>{t("component.video.video") + t("component.video.uploadSuccess")}</span>
+            }
+          />
+        );
     default:
       break;
   }
 
   return (
-    <ConfirmationModal textAlign="left" title="Select file" visible={true} onCancel={onCancel} onOk={_onOk}>
+    <ConfirmationModal
+      textAlign="left"
+      title="Select file"
+      visible={true}
+      onCancel={onCancel}
+      onOk={_onOk}
+    >
       <Paper>
         <Dropzone
           onDrop={onDrop}
@@ -96,6 +113,7 @@ const FileSelectModal = ({
         >
           {({ getRootProps, getInputProps, isDragActive, rejectedFiles }) => (
             <div
+              id={getFormattedAttrId(`${item?.title}-dropzone-image-container`)}
               data-cy="dropzone-image-container"
               {...getRootProps()}
               className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
@@ -127,8 +145,17 @@ const FileSelectModal = ({
             ")"}
         </Label>
         <FlexContainer>
-          <TextInputStyled size="large" value={sourceURL} onChange={e => setSourceURL(e.target.value)} />
-          <CustomStyleBtn margin="0px" width="auto" disabled={!sourceURL} onClick={() => setSourceURL("")}>
+          <TextInputStyled
+            size="large"
+            value={sourceURL}
+            onChange={e => setSourceURL(e.target.value)}
+          />
+          <CustomStyleBtn
+            margin="0px"
+            width="auto"
+            disabled={!sourceURL}
+            onClick={() => setSourceURL("")}
+          >
             Remove
           </CustomStyleBtn>
         </FlexContainer>

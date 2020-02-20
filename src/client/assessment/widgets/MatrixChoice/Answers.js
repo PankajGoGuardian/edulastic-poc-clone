@@ -10,6 +10,7 @@ import withPoints from "../../components/HOC/withPoints";
 import Question from "../../components/Question";
 
 import Matrix from "./components/Matrix";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const MatrixWithPoints = withPoints(Matrix);
 
@@ -111,7 +112,9 @@ class Answers extends Component {
           draft.multipleResponses = checked;
 
           if (!checked) {
-            draft.validation.validResponse.value = reduceResponse(draft.validation.validResponse.value);
+            draft.validation.validResponse.value = reduceResponse(
+              draft.validation.validResponse.value
+            );
 
             if (draft.validation.altResponses && draft.validation.altResponses.length) {
               draft.validation.altResponses.map(res => {
@@ -136,7 +139,11 @@ class Answers extends Component {
 
     const renderOptions = () => (
       <div>
-        <CheckboxLabel data-cy="multi" onChange={handleChangeMultiple} checked={item.multipleResponses}>
+        <CheckboxLabel
+          data-cy="multi"
+          onChange={handleChangeMultiple}
+          checked={item.multipleResponses}
+        >
           {t("component.matrix.multipleResponses")}
         </CheckboxLabel>
       </div>
@@ -172,6 +179,7 @@ class Answers extends Component {
                   onCheck={handleCheck("validResponse")}
                   points={item.validation.validResponse.score}
                   onChangePoints={points => handleChangeValidPoints(points)}
+                  id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
                   data-cy="points"
                 />
               </div>

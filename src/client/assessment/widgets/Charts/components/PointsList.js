@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -9,16 +8,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
 import { SHOW_ALWAYS, SHOW_BY_HOVER, HIDDEN } from "../const";
 import { FRACTION_FORMATS } from "../../../constants/constantsForQuestions";
-import {
-  Row,
-  ColoredRow,
-  StyledTextField,
-  ColumnLabel,
-  RowLabel,
-  FormatedSelect,
-  Col,
-  AddPointBtn
-} from "../../../styled/Grid";
+import { Row, ColoredRow, StyledTextField, ColumnLabel, RowLabel, Col } from "../../../styled/Grid";
 
 import { CustomInput } from "./Input";
 import { SelectInputStyled } from "../../../styled/InputStyles";
@@ -38,9 +28,18 @@ class PointsList extends Component {
   getFractionFormatSettings = () => {
     const { t } = this.props;
     return [
-      { label: t("component.options.fractionFormatOptions.decimal"), value: FRACTION_FORMATS.decimal },
-      { label: t("component.options.fractionFormatOptions.fraction"), value: FRACTION_FORMATS.fraction },
-      { label: t("component.options.fractionFormatOptions.mixedFraction"), value: FRACTION_FORMATS.mixedFraction }
+      {
+        label: t("component.options.fractionFormatOptions.decimal"),
+        value: FRACTION_FORMATS.decimal
+      },
+      {
+        label: t("component.options.fractionFormatOptions.fraction"),
+        value: FRACTION_FORMATS.fraction
+      },
+      {
+        label: t("component.options.fractionFormatOptions.mixedFraction"),
+        value: FRACTION_FORMATS.mixedFraction
+      }
     ];
   };
 
@@ -57,7 +56,6 @@ class PointsList extends Component {
       item
     } = this.props;
     const isShowFractionField = showFractionFormatSetting;
-
     return (
       <Question
         section="main"
@@ -106,7 +104,12 @@ class PointsList extends Component {
                 />
               </Col>
               <Col md={4}>
-                <CustomInput index={index} type="number" value={dot.y} handleChange={handleChange} />
+                <CustomInput
+                  index={index}
+                  type="number"
+                  value={dot.y}
+                  handleChange={handleChange}
+                />
               </Col>
               <Col md={4}>
                 <SelectInputStyled

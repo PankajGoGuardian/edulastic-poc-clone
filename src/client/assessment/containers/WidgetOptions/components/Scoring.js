@@ -92,7 +92,10 @@ class Scoring extends Component {
         newData.validation = {};
       }
       if (
-        (param === "maxScore" || param === "penalty" || param === "minScoreIfAttempted" || param === "") &&
+        (param === "maxScore" ||
+          param === "penalty" ||
+          param === "minScoreIfAttempted" ||
+          param === "") &&
         value < 0
       ) {
         newData.validation[param] = 0;
@@ -170,14 +173,20 @@ class Scoring extends Component {
                 <Label>{t("component.options.maxScore")}</Label>
                 <FormGroup center>
                   <TextInputStyled
+                    id={getFormattedAttrId(`${questionTitle}-${t("component.options.maxScore")}`)}
                     data-cy="maxscore"
                     type="number"
                     value={maxScore}
                     min={1}
-                    onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
+                    onChange={e =>
+                      handleChangeValidation("validResponse", { score: +e.target.value })
+                    }
                     size="large"
                     style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                    disabled={(!!questionData.rubrics && userFeatures.gradingrubrics) || isGradingCheckboxState}
+                    disabled={
+                      (!!questionData.rubrics && userFeatures.gradingrubrics) ||
+                      isGradingCheckboxState
+                    }
                   />
                 </FormGroup>
               </Col>
@@ -282,7 +291,9 @@ class Scoring extends Component {
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <StyledTag>
-            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
+            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>
+              {questionData.rubrics.name}
+            </span>
             <span onClick={() => dissociateRubricFromQuestion()}>
               <Icon type="close" />
             </span>

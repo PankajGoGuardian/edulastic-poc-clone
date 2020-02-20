@@ -52,7 +52,13 @@ const EditEssayPlainText = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Scoring isSection={false} t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen}>
+        <Scoring
+          isSection={false}
+          t={t}
+          scoringTypes={[]}
+          questionData={item}
+          advancedAreOpen={advancedAreOpen}
+        >
           <WordLimitAndCount
             onChange={handleItemChangeChange}
             selectValue={item.showWordLimit}
@@ -60,6 +66,7 @@ const EditEssayPlainText = ({
             advancedAreOpen={advancedAreOpen}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            title={item?.title}
             showHeading={false}
           />
 

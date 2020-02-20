@@ -71,6 +71,7 @@ const EditEssayRichText = ({
         item={item}
       >
         <WordLimitAndCount
+          title={item?.title}
           withOutTopMargin
           onChange={handleItemChangeChange}
           selectValue={item.showWordLimit}

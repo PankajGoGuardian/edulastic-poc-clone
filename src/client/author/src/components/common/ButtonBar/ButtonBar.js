@@ -35,6 +35,8 @@ import {
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
 
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
@@ -91,7 +93,8 @@ class ButtonBar extends Component {
       disableSave,
       showMetaData,
       showAuditTrail = false,
-      permissions
+      permissions,
+      qTitle
     } = this.props;
 
     return (
@@ -101,6 +104,7 @@ class ButtonBar extends Component {
             <MenuList mode="horizontal" selectedKeys={[view]}>
               {hasAuthorPermission && (
                 <MenuItem
+                  id={getFormattedAttrId(`${qTitle}-edit`)}
                   data-cy="editButton"
                   className={view === "edit" && "active"}
                   onClick={this.handleMenuClick("edit")}
@@ -112,6 +116,7 @@ class ButtonBar extends Component {
                 </MenuItem>
               )}
               <MenuItem
+                id={getFormattedAttrId(`${qTitle}-preview-mode`)}
                 data-cy="previewButton"
                 className={view === "preview" && "active"}
                 onClick={this.handleMenuClick("preview")}
@@ -123,6 +128,7 @@ class ButtonBar extends Component {
               </MenuItem>
               {showMetaData && (
                 <MenuItem
+                  id={getFormattedAttrId(`${qTitle}-metadata`)}
                   data-cy="metadataButton"
                   className={view === "metadata" && "active"}
                   onClick={this.handleMenuClick("metadata")}
@@ -135,6 +141,7 @@ class ButtonBar extends Component {
               )}
               {hasAuthorPermission && showAuditTrail && !!permissions.length && (
                 <MenuItem
+                  id={getFormattedAttrId(`${qTitle}-auditTrail`)}
                   data-cy="auditTrailButton"
                   className={view === "auditTrail" && "active"}
                   onClick={this.handleMenuClick("auditTrail")}
@@ -163,6 +170,7 @@ class ButtonBar extends Component {
                       )}
                       <Tooltip title="Save">
                         <CustomButton
+                          id={getFormattedAttrId(`${qTitle}-save`)}
                           disabled={disableSave}
                           data-cy="saveButton"
                           regrade
@@ -186,7 +194,12 @@ class ButtonBar extends Component {
                           Cancel
                         </CustomButton>
                       )}
-                      <CustomButton disabled={disableSave} data-cy="saveButton" onClick={onSave}>
+                      <CustomButton
+                        disabled={disableSave}
+                        data-cy="saveButton"
+                        onClick={onSave}
+                        id={getFormattedAttrId(`${qTitle}-save`)}
+                      >
                         <HeadIcon>
                           <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                         </HeadIcon>
@@ -218,6 +231,7 @@ class ButtonBar extends Component {
           <MobileContainer>
             <MobileTopRight>
               <CustomButton
+                id={getFormattedAttrId(`${qTitle}-save`)}
                 disabled={disableSave}
                 data-cy="saveButton"
                 onClick={onSave}
@@ -229,7 +243,8 @@ class ButtonBar extends Component {
             <MobileBottom>
               <MenuList selectedKeys={[view]}>
                 <MenuItem
-                  onClick={this.handleMenuClick("edit")}
+                  id={getFormattedAttrId(`${qTitle}-edit`)}
+                  onClick={() => this.handleMenuClick("edit")}
                   className={view === "edit" && "active"}
                   data-cy="editButton"
                 >
@@ -239,7 +254,8 @@ class ButtonBar extends Component {
                   {withLabels ? "Edit Mode" : ""}
                 </MenuItem>
                 <MenuItem
-                  onClick={this.handleMenuClick("preview")}
+                  id={getFormattedAttrId(`${qTitle}-preview-mode`)}
+                  onClick={() => this.handleMenuClick("preview")}
                   className={view === "preview" && "active"}
                   data-cy="previewButton"
                 >
@@ -250,6 +266,7 @@ class ButtonBar extends Component {
                 </MenuItem>
 
                 <MenuItem
+                  id={getFormattedAttrId(`${qTitle}-metadata`)}
                   data-cy="metadataButton"
                   className={view === "metadata" && "active"}
                   onClick={this.handleMenuClick("metadata")}
@@ -364,7 +381,8 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({
-      permissions: get(state, ["user", "user", "permissions"], [])
+      permissions: get(state, ["user", "user", "permissions"], []),
+      qTitle: getCurrentQuestionSelector(state)?.title
     }),
     {
       clearAnswers: clearAnswersAction,

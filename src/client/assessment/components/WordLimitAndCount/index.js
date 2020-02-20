@@ -11,6 +11,7 @@ import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { TextInputStyled, SelectInputStyled } from "../../styled/InputStyles";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const { Option } = Select;
 
@@ -38,7 +39,7 @@ class WordLimitAndCount extends Component {
   }
 
   render() {
-    const { onChange, selectValue, inputValue, t, showHeading } = this.props;
+    const { onChange, selectValue, inputValue, t, showHeading, title } = this.props;
 
     const options = [
       { value: ON_LIMIT, label: t("component.essayText.onLimit") },
@@ -48,11 +49,20 @@ class WordLimitAndCount extends Component {
 
     return (
       <Fragment>
-        {showHeading && <Subtitle>{t("component.essayText.wordsLimitTitle")}</Subtitle>}
+        {showHeading && (
+          <Subtitle id={getFormattedAttrId(`${title}-${t("component.essayText.wordsLimitTitle")}`)}>
+            {t("component.essayText.wordsLimitTitle")}
+          </Subtitle>
+        )}
         <Row gutter={24} type="flex" align="bottom">
           <Col span={12}>
             <Label>{t("component.essayText.wordsLimitTitle")}</Label>
-            <SelectInputStyled size="large" value={selectValue} onChange={val => onChange("showWordLimit", val)}>
+            <SelectInputStyled
+              id={getFormattedAttrId(`${title}-showWordLimit-dropdown`)}
+              size="large"
+              value={selectValue}
+              onChange={val => onChange("showWordLimit", val)}
+            >
               {options.map((item, i) => {
                 const { label, value } = item;
                 return (
@@ -66,6 +76,7 @@ class WordLimitAndCount extends Component {
           <Col span={12}>
             <Row type="flex" justify="start" align="middle">
               <TextInputStyled
+                id={getFormattedAttrId(`${title}-maxWord-input`)}
                 size="large"
                 width="120px"
                 value={inputValue}
@@ -76,7 +87,9 @@ class WordLimitAndCount extends Component {
                   }
                 }}
               />
-              <Label style={{ margin: "0px 0px 0px 15px" }}>{t("component.essayText.wordsLimitTitle")}</Label>
+              <Label style={{ margin: "0px 0px 0px 15px" }}>
+                {t("component.essayText.wordsLimitTitle")}
+              </Label>
             </Row>
           </Col>
         </Row>

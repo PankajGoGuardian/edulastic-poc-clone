@@ -18,7 +18,15 @@ import Question from "../../components/Question";
 
 const OptionsList = withPoints(QuillSortableList);
 
-const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fillSections, cleanSections, t }) => {
+const EditSortList = ({
+  item,
+  setQuestionData,
+  advancedLink,
+  advancedAreOpen,
+  fillSections,
+  cleanSections,
+  t
+}) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleUiStyleChange = (prop, value) => {
@@ -63,7 +71,11 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
+          draft.validation.validResponse.value = arrayMove(
+            draft.validation.validResponse.value,
+            oldIndex,
+            newIndex
+          );
         } else {
           draft.validation.altResponses[correctTab - 1].value = arrayMove(
             draft.validation.altResponses[correctTab - 1].value,
@@ -103,7 +115,9 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
       useDragHandle
       columns={1}
       points={
-        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
+        correctTab === 0
+          ? item.validation.validResponse.score
+          : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
     />
@@ -140,6 +154,7 @@ const EditSortList = ({ item, setQuestionData, advancedLink, advancedAreOpen, fi
             onCloseTab={handleCloseTab}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            questionType={item?.title}
           />
         </Question>
       </Paper>

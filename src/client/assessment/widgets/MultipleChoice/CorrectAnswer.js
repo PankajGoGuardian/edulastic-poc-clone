@@ -5,6 +5,7 @@ import ItemLevelContext from "../../../author/QuestionEditor/components/Containe
 import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./components/Display";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -60,7 +61,8 @@ class CorrectAnswer extends Component {
       uiStyle,
       styleType,
       multipleResponses,
-      fontSize
+      fontSize,
+      title = ""
     } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
@@ -70,6 +72,7 @@ class CorrectAnswer extends Component {
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
             <PointsInput
+              id={getFormattedAttrId(`${title}-${t("component.correctanswers.points")}`)}
               type="number"
               data-cy="points"
               value={responseScore}

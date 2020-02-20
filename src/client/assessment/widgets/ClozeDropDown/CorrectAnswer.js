@@ -6,6 +6,7 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -67,6 +68,7 @@ class CorrectAnswer extends Component {
           <CorrectAnswerHeader mb="15px">
             <Label>{t("component.correctanswers.points")}</Label>
             <PointsInput
+              id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
               type="number"
               value={responseScore}
               onChange={this.updateScore}

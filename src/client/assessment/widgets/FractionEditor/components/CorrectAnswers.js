@@ -69,11 +69,14 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("common.correctAnswers.setCorrectAnswers")}`)}>
+      <Subtitle
+        id={getFormattedAttrId(`${item?.title}-${t("common.correctAnswers.setCorrectAnswers")}`)}
+      >
         {t("common.correctAnswers.setCorrectAnswers")}
       </Subtitle>
       <CorrectAnswerHeader>
         <CustomInput
+          id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
           size="default"
           value={get(item, "validation.validResponse.score", 1)}
           onBlur={handleCorrectAnswerPointsChange}
@@ -102,7 +105,13 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
           />
         </FlexContainer>
         <FlexContainer
-          style={{ overflow: "auto", position: "relative", minWidth: "660px", minHeight: "300px", maxWidth: "100%" }}
+          style={{
+            overflow: "auto",
+            position: "relative",
+            minWidth: "660px",
+            minHeight: "300px",
+            maxWidth: "100%"
+          }}
           justifyContent="center"
           alignItems="flex-start"
           flexWrap="wrap"
@@ -111,7 +120,12 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
             .fill()
             .map((el, index) => {
               return fractionType === "circles" ? (
-                <Circles fractionNumber={index} sectors={sectors} selected={selected} sectorClick={() => {}} />
+                <Circles
+                  fractionNumber={index}
+                  sectors={sectors}
+                  selected={selected}
+                  sectorClick={() => {}}
+                />
               ) : (
                 <Rectangles
                   fractionNumber={index}
@@ -122,7 +136,12 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
                 />
               );
             })}
-          <AnnotationRnd bounds={"window"} question={item} setQuestionData={setQuestionData} disableDragging={false} />
+          <AnnotationRnd
+            bounds={"window"}
+            question={item}
+            setQuestionData={setQuestionData}
+            disableDragging={false}
+          />
         </FlexContainer>
       </FlexContainer>
     </Question>

@@ -33,7 +33,11 @@ function Options({ onChange, item, t }) {
       <Row gutter={24}>
         <Col span={12}>
           <Label>{t("component.protractor.imageAlternativeText")}</Label>
-          <TextInputStyled size="large" value={item.alt} onChange={e => onChange("alt", e.target.value)} />
+          <TextInputStyled
+            size="large"
+            value={item.alt}
+            onChange={e => onChange("alt", e.target.value)}
+          />
         </Col>
         <Col span={12}>
           <Label>{t("component.protractor.label")}</Label>
@@ -72,17 +76,31 @@ function Options({ onChange, item, t }) {
               onChange={e => onChange("image", e.target.value)}
             />
             <Upload showUploadList={false} customRequest={customRequest}>
-              <CustomStyleBtn width="100px" padding="0px 10px" margin="0px" loading={uploading} size="large">
+              <CustomStyleBtn
+                width="100px"
+                padding="0px 10px"
+                margin="0px"
+                loading={uploading}
+                size="large"
+              >
                 {t("component.protractor.browse")}
               </CustomStyleBtn>
             </Upload>
           </Row>
         </Col>
         <Col span={12} marginBottom="0px">
-          <CheckboxLabel size="large" checked={item.button} onChange={e => onChange("button", e.target.checked)}>
+          <CheckboxLabel
+            size="large"
+            checked={item.button}
+            onChange={e => onChange("button", e.target.checked)}
+          >
             {t("component.protractor.showButton")}
           </CheckboxLabel>
-          <CheckboxLabel size="large" checked={item.rotate} onChange={e => onChange("rotate", e.target.checked)}>
+          <CheckboxLabel
+            size="large"
+            checked={item.rotate}
+            onChange={e => onChange("rotate", e.target.checked)}
+          >
             {t("component.protractor.showRotate")}
           </CheckboxLabel>
         </Col>

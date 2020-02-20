@@ -22,7 +22,15 @@ import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   render() {
-    const { item, setQuestionData, t, loading, setLoading, fillSections, cleanSections } = this.props;
+    const {
+      item,
+      setQuestionData,
+      t,
+      loading,
+      setLoading,
+      fillSections,
+      cleanSections
+    } = this.props;
 
     const { image } = item;
     const maxWidth = 700,
@@ -129,7 +137,9 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.composeQuestion")}`)}>
+        <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.composeQuestion")}`)}
+        >
           {t("component.hotspot.composeQuestion")}
         </Subtitle>
 
@@ -157,6 +167,7 @@ class ComposeQuestion extends Component {
         >
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div
+              id={getFormattedAttrId(`${item?.title}-dropzone-image-container`)}
               data-cy="dropzone-image-container"
               {...getRootProps()}
               className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}

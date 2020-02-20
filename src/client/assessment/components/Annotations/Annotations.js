@@ -10,6 +10,7 @@ import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
 import { AnnotationsStyle } from "./styled/styled_components";
 import { Subtitle } from "../../styled/Subtitle";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class Annotations extends Component {
   ref = createRef();
@@ -90,7 +91,7 @@ class Annotations extends Component {
 
     return (
       <AnnotationsStyle ref={this.ref}>
-        <Subtitle>Annotations</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${question?.title}-Annotations`)}>Annotations</Subtitle>
 
         {editable && (
           <EditAnnotationsContainer>

@@ -1,6 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { mediumDesktopExactWidth, smallDesktopWidth, white, themeColor, greyThemeDark1 } from "@edulastic/colors";
+import {
+  mediumDesktopExactWidth,
+  smallDesktopWidth,
+  white,
+  themeColor,
+  greyThemeDark1
+} from "@edulastic/colors";
 import { IconQuestion } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 

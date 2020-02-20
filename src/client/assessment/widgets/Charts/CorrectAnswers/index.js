@@ -67,6 +67,7 @@ const CorrectAnswers = ({
           <CorrectAnswerHeader>
             <Label>{t("component.correctanswers.points")}</Label>
             <PointsInput
+              id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
               type="number"
               value={points}
               onChange={handleChangePoint}

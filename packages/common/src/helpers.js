@@ -221,7 +221,7 @@ const tagMapping = {
 
 export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
-  if (!stimulus) return question.DEFAULT_STIMULUS;
+  if (!stimulus || !stimulus.trim().length) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
   //remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
@@ -279,6 +279,10 @@ export const sanitizeForReview = stimulus => {
       splitJquery = question.DEFAULT_STIMULUS;
     }
   }
+  // TODO: Fix me,
+  // I am trying to get text from first paragraph
+  // but what if there is no text in the first paragraph
+
   // if (splitJquery.includes("</p>")) {
   //   splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} </p>`;
   // }

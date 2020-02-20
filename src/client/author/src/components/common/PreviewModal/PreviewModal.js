@@ -24,13 +24,21 @@ import {
 import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
 import { changePreviewAction, changeViewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
-import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
-import { setTestDataAndUpdateAction, getTestSelector, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
+import {
+  getSelectedItemSelector,
+  setTestItemsAction
+} from "../../../../TestPage/components/AddItems/ducks";
+import {
+  setTestDataAndUpdateAction,
+  getTestSelector,
+  updateTestAndNavigateAction
+} from "../../../../TestPage/ducks";
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import { addItemToCartAction } from "../../../../ItemList/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 import ReportIssue from "./ReportIssue";
+import { allowDuplicateCheck } from "../../../utils/permissionCheck";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -82,7 +90,15 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, testId, history, updateTestAndNavigate, test, match, isTest = !!testId } = this.props;
+    const {
+      data,
+      testId,
+      history,
+      updateTestAndNavigate,
+      test,
+      match,
+      isTest = !!testId
+    } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
@@ -142,7 +158,13 @@ class PreviewModal extends React.Component {
   };
 
   goToItem = page => {
-    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData, passage } = this.props;
+    const {
+      setQuestionsForPassage,
+      setPrevewItem,
+      item,
+      testItemPreviewData,
+      passage
+    } = this.props;
     const itemId = passage.testItems[page - 1];
     if (!(testItemPreviewData && testItemPreviewData.data)) {
       setPrevewItem(item);
@@ -153,7 +175,16 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const { setDataAndSave, selectedRows, addItemToCart, test, gotoSummary, item, setTestItems, page } = this.props;
+    const {
+      setDataAndSave,
+      selectedRows,
+      addItemToCart,
+      test,
+      gotoSummary,
+      item,
+      setTestItems,
+      page
+    } = this.props;
     console.log("page is", page);
     if (page === "itemList") {
       return addItemToCart(item);
@@ -232,9 +263,7 @@ class PreviewModal extends React.Component {
     const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
 
-    const { allowDuplicate } = collections.find(o => item?.collections?.find(_o => _o._id === o._id)) || {
-      allowDuplicate: true
-    };
+    const allowDuplicate = allowDuplicateCheck(item?.collections, collections, "item");
 
     const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
@@ -299,7 +328,7 @@ class PreviewModal extends React.Component {
                   toggleReportIssue={this.toggleReportIssue}
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
-                  /*Giving edit test item functionality to the user who is a curator as curator can edit any test item.*/
+                  /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
                   isEditable={(isEditable && authorHasPermission) || userFeatures.isCurator}
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
@@ -316,7 +345,11 @@ class PreviewModal extends React.Component {
                 />
                 {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
                 {showReportIssueField && (
-                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
+                  <ReportIssue
+                    textareaRows="3"
+                    item={item}
+                    toggleReportIssue={this.toggleReportIssue}
+                  />
                 )}
               </>
             )}
@@ -362,7 +395,9 @@ const enhance = compose(
     (state, ownProps) => {
       const itemId = (ownProps.data || {}).id;
       return {
-        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page) || get(state, "itemDetail.item"),
+        item:
+          getItemDetailSelectorForPreview(state, itemId, ownProps.page) ||
+          get(state, "itemDetail.item"),
         collections: getCollectionsSelector(state),
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),

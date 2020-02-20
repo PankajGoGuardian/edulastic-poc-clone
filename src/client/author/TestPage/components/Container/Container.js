@@ -8,9 +8,8 @@ import { cloneDeep, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { test as testContants, roleuser } from "@edulastic/constants";
-import { testsApi } from "@edulastic/api";
+import { testsApi, assignmentApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
-import { assignmentApi } from "@edulastic/api";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -65,9 +64,10 @@ import Assign from "../Assign";
 import Setting from "../Setting";
 import GroupItems from "../GroupItems";
 
-import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
+import MainWorksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
+import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 
@@ -97,13 +97,54 @@ class Container extends PureComponent {
     clearSelectedItems: PropTypes.func.isRequired,
     saveCurrentEditingTestId: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    currentTab: PropTypes.string
+    currentTab: PropTypes.string,
+    testStatus: PropTypes.string,
+    userId: PropTypes.string,
+    updated: PropTypes.bool,
+    showWarningModal: PropTypes.bool,
+    proceedPublish: PropTypes.func.isRequired,
+    clearTestAssignments: PropTypes.func.isRequired,
+    editAssigned: PropTypes.bool,
+    createdItems: PropTypes.array,
+    setRegradeOldId: PropTypes.func.isRequired,
+    getDefaultTestSettings: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+    userRole: PropTypes.string,
+    isReleaseScorePremium: PropTypes.bool,
+    receiveItemDetailById: PropTypes.func.isRequired,
+    questionsUpdated: PropTypes.bool,
+    getItemsSubjectAndGrade: PropTypes.func.isRequired,
+    itemsSubjectAndGrade: PropTypes.object,
+    orgCollections: PropTypes.array,
+    updateDefaultThumbnail: PropTypes.func.isRequired,
+    questions: PropTypes.array,
+    questionsById: PropTypes.object,
+    updateDocBasedTest: PropTypes.func.isRequired,
+    userFeatures: PropTypes.object.isRequired,
+    publishTest: PropTypes.func.isRequired,
+    duplicateTest: PropTypes.func.isRequired,
+    collections: PropTypes.array,
+    approveOrRejectSingleTestRequest: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     test: null,
-    user: {}
-    // currentTab: "review"
+    user: {},
+    currentTab: "review",
+    testStatus: "",
+    userId: "",
+    updated: false,
+    showWarningModal: false,
+    editAssigned: false,
+    createdItems: [],
+    userRole: "teacher",
+    isReleaseScorePremium: false,
+    questionsUpdated: false,
+    itemsSubjectAndGrade: {},
+    orgCollections: [],
+    questions: [],
+    questionsById: {},
+    collections: []
   };
 
   sebPasswordRef = React.createRef();
@@ -161,11 +202,14 @@ class Container extends PureComponent {
     }
     if (createdItems.length > 0) {
       this.setState({ editEnable: true });
-      if (this.props.location?.state?.showItemAddedMessage) {
+      if (_location?.state?.showItemAddedMessage) {
         message.success(
           <span>
             New item has been created and added to the current test. Click
-            <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
+            <span
+              onClick={() => self.gotoTab("review")}
+              style={{ color: themeColor, cursor: "pointer" }}
+            >
               here
             </span>{" "}
             to see it.
@@ -199,9 +243,8 @@ class Container extends PureComponent {
     } else {
       setRegradeOldId("");
     }
-    window.onbeforeunload = () => {
-      return this.beforeUnload();
-    };
+    window.onbeforeunload = () => this.beforeUnload();
+
     getDefaultTestSettings();
   }
 
@@ -235,22 +278,8 @@ class Container extends PureComponent {
     ) {
       return "";
     }
-    return;
+    return null;
   };
-
-  componentWillUnmount() {
-    const {
-      test,
-      match: { params },
-      userId,
-      testStatus,
-      updated
-    } = this.props;
-    const { authors } = test;
-    const { editEnable } = this.state;
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-  }
 
   handleNavChange = (value, firstFlow) => () => {
     const {
@@ -262,7 +291,7 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, itemGroups = [] } = test;
     const { editEnable } = this.state;
-    if (!this.props.test?.title?.trim()?.length) {
+    if (!test?.title?.trim()?.length) {
       message.warn("Please enter test name.");
       return;
     }
@@ -276,7 +305,12 @@ class Container extends PureComponent {
     this.gotoTab(value);
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-    if (isEditable && itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 && updated && !firstFlow) {
+    if (
+      isEditable &&
+      itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
+      updated &&
+      !firstFlow
+    ) {
       this.handleSave(test);
     }
   };
@@ -302,9 +336,9 @@ class Container extends PureComponent {
     getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
-  handleChangeCollection = (value, options) => {
+  handleChangeCollection = (_, options) => {
     const { setData, test, orgCollections } = this.props;
-    let data = {};
+    const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
         data[o.props._id].push(o.props.value);
@@ -327,7 +361,13 @@ class Container extends PureComponent {
   };
 
   handleChangeSubject = subjects => {
-    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
+    const {
+      setData,
+      getItemsSubjectAndGrade,
+      test,
+      itemsSubjectAndGrade,
+      updateDefaultThumbnail
+    } = this.props;
     setData({ ...test, subjects });
     if (test.thumbnail === defaultImage) {
       getDefaultImage({
@@ -355,7 +395,8 @@ class Container extends PureComponent {
       questions,
       questionsById,
       history,
-      updated
+      updated,
+      currentTab
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -363,7 +404,7 @@ class Container extends PureComponent {
     const { params = {} } = match;
     const { showCancelButton = false } = history.location.state || {};
     const { editEnable, isShowFilter } = this.state;
-    const current = this.props.currentTab;
+    const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
@@ -415,7 +456,7 @@ class Container extends PureComponent {
       case "review":
         return isDocBased ? (
           <Content>
-            <Worksheet key="review" review {...props} viewMode="review" />
+            <MainWorksheet key="review" review {...props} viewMode="review" />
           </Content>
         ) : (
           <Review
@@ -447,7 +488,7 @@ class Container extends PureComponent {
       case "worksheet":
         return (
           <Content>
-            <Worksheet key="worksheet" {...props} viewMode="edit" />
+            <MainWorksheet key="worksheet" {...props} viewMode="edit" />
           </Content>
         );
       case "assign":
@@ -480,21 +521,23 @@ class Container extends PureComponent {
       name
     };
 
-    newTest.scoring.testItems = (itemGroups.flatMap(itemGroup => itemGroup.items || []) || []).map(item => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
-      if (!foundItem) {
-        return {
-          id: item ? item._id : uuidv4(),
-          points: 0
-        };
+    newTest.scoring.testItems = (itemGroups.flatMap(itemGroup => itemGroup.items || []) || []).map(
+      item => {
+        const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
+        if (!foundItem) {
+          return {
+            id: item ? item._id : uuidv4(),
+            points: 0
+          };
+        }
+        return foundItem;
       }
-      return foundItem;
-    });
+    );
     return newTest;
   };
 
   handleSave = () => {
-    const { test = {}, updateTest, createTest, editAssigned } = this.props;
+    const { test = {}, updateTest, createTest, currentTab } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
     }
@@ -507,9 +550,9 @@ class Container extends PureComponent {
       return message.error("Please add a valid password");
     }
     if (test._id) {
-      updateTest(test._id, { ...newTest, currentTab: this.props.currentTab });
+      updateTest(test._id, { ...newTest, currentTab });
     } else {
-      createTest({ ...newTest, currentTab: this.props.currentTab });
+      createTest({ ...newTest, currentTab });
     }
   };
 
@@ -571,7 +614,10 @@ class Container extends PureComponent {
             itemGroup.items.length <= itemGroup.deliverItemsCount
         )
       ) {
-        message.error("Selected items count in a group should be more than the delivered items count.", 3);
+        message.error(
+          "Selected items count in a group should be more than the delivered items count.",
+          3
+        );
         return false;
       }
     }
@@ -590,8 +636,9 @@ class Container extends PureComponent {
   };
 
   onShareModalChange = () => {
+    const { showShareModal } = this.state;
     this.setState({
-      showShareModal: !this.state.showShareModal
+      showShareModal: !showShareModal
     });
   };
 
@@ -615,23 +662,29 @@ class Container extends PureComponent {
   };
 
   handlePublishTest = (assignFlow = false) => {
-    const { publishTest, test, match } = this.props;
+    const { publishTest, test, match, currentTab } = this.props;
     const { _id } = test;
     if (this.validateTest(test)) {
       const newTest = this.modifyTest();
-      publishTest({ _id, oldId: match.params.oldId, test: newTest, assignFlow, currentTab: this.props.currentTab });
+      publishTest({
+        _id,
+        oldId: match.params.oldId,
+        test: newTest,
+        assignFlow,
+        currentTab
+      });
       this.setState({ editEnable: false });
     }
   };
 
   onEnableEdit = () => {
-    const { test, testStatus, userId, duplicateTest } = this.props;
-    const { _id: testId, status, authors, title } = test;
+    const { test, userId, duplicateTest, currentTab } = this.props;
+    const { _id: testId, authors, title } = test;
     const canEdit = authors && authors.some(x => x._id === userId);
     if (canEdit) {
       this.handleSave();
     } else {
-      duplicateTest({ currentTab: this.props.currentTab, title, _id: testId });
+      duplicateTest({ currentTab, title, _id: testId });
     }
 
     this.setState({ editEnable: true });
@@ -667,8 +720,8 @@ class Container extends PureComponent {
   };
 
   onCuratorApproveOrReject = payload => {
-    const { approveOrRejectSingleTestRequestAction } = this.props;
-    approveOrRejectSingleTestRequestAction(payload);
+    const { approveOrRejectSingleTestRequest } = this.props;
+    approveOrRejectSingleTestRequest(payload);
   };
 
   render() {
@@ -684,21 +737,36 @@ class Container extends PureComponent {
       isTestLoading,
       history,
       collections = [],
-      userFeatures
+      userFeatures,
+      currentTab
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
-    const current = this.props.currentTab;
+    const current = currentTab;
     const { showCancelButton = false } = history.location.state || {};
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
-    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
+    const owner =
+      (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
+    const showPublishButton =
+      (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
-    const showDuplicateButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner;
+    const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");
+    const showDuplicateButton =
+      testStatus &&
+      testStatus === statusConstants.PUBLISHED &&
+      !editEnable &&
+      !owner &&
+      allowDuplicate;
     const showEditButton =
-      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
+      testStatus &&
+      testStatus === statusConstants.PUBLISHED &&
+      !editEnable &&
+      owner &&
+      !showCancelButton;
 
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
-    const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
+    const hasPremiumQuestion = !!testItems.find(i =>
+      hasUserGotAccessToPremiumItem(i.collections, collections)
+    );
 
     const gradeSubject = { grades, subjects };
 
@@ -707,7 +775,8 @@ class Container extends PureComponent {
         <Prompt
           when={!!updated}
           message={loc =>
-            loc.pathname.startsWith("/author/tests") || "There are unsaved changes. Are you sure you want to leave?"
+            loc.pathname.startsWith("/author/tests") ||
+            "There are unsaved changes. Are you sure you want to leave?"
           }
         />
         {this.renderModal()}
@@ -801,7 +870,7 @@ const enhance = compose(
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       duplicateTest: duplicateTestRequestAction,
-      approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction
     }
   )
 );

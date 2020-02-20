@@ -5,7 +5,7 @@ import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor } from "@edulastic/colors";
 import {
@@ -34,15 +34,16 @@ import {
   CollectionNameWrapper,
   ThinLine
 } from "./styled";
-import { getOrgDataSelector } from "../../../src/selectors/user";
+import { getOrgDataSelector, getCollectionsSelector } from "../../../src/selectors/user";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { TestStatus, EdulasticVerified } from "../ListItem/styled";
+import { TestStatus } from "../ListItem/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 
 const sharedTypeMap = {
   0: "PUBLIC",
@@ -57,7 +58,15 @@ class Item extends Component {
     history: PropTypes.object.isRequired,
     authorName: PropTypes.string,
     owner: PropTypes.bool,
-    testItemId: PropTypes.string
+    testItemId: PropTypes.string,
+    orgCollections: PropTypes.array.isRequired,
+    currentTestId: PropTypes.string,
+    isPreviewModalVisible: PropTypes.bool,
+    isPlaylist: PropTypes.bool,
+    approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
+    orgData: PropTypes.object.isRequired,
+    windowWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    standards: PropTypes.array
   };
 
   static defaultProps = {
@@ -66,7 +75,8 @@ class Item extends Component {
     owner: false,
     isPreviewModalVisible: false,
     testItemId: "",
-    item: {}
+    isPlaylist: false,
+    standards: []
   };
 
   state = {
@@ -133,9 +143,9 @@ class Item extends Component {
   onApprove = (newCollections = []) => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest
     } = this.props;
-    approveOrRejectSingleTestRequestAction({
+    approveOrRejectSingleTestRequest({
       testId,
       status: "published",
       collections: newCollections
@@ -145,9 +155,9 @@ class Item extends Component {
   onReject = () => {
     const {
       item: { _id: testId },
-      approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest
     } = this.props;
-    approveOrRejectSingleTestRequestAction({ testId, status: "rejected" });
+    approveOrRejectSingleTestRequest({ testId, status: "rejected" });
   };
 
   render() {
@@ -160,11 +170,11 @@ class Item extends Component {
         thumbnail,
         status,
         _id: testId,
-        description,
         collections = [],
         summary = {},
         sharedType
       },
+      orgCollections,
       item,
       authorName,
       owner,
@@ -174,14 +184,20 @@ class Item extends Component {
       standards = [],
       orgData: { itemBanks }
     } = this.props;
-    const standardsIdentifiers = standards.map(item => item.identifier);
+    const standardsIdentifiers = standards.map(i => i.identifier) || [];
 
     if (isPlaylist) {
       const standardz =
         _source?.modules?.map(m =>
           m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)
         ) || [];
-      standardz?.forEach(x => x?.forEach(y => y?.forEach(z => standardsIdentifiers?.push([z]))));
+      (standardz || []).forEach((x = []) => {
+        x.forEach((y = []) => {
+          y.forEach(z => {
+            standardsIdentifiers.push([z]);
+          });
+        });
+      });
     }
 
     const likes = analytics?.[0]?.likes || "0";
@@ -198,12 +214,18 @@ class Item extends Component {
       collectionName = "Edulastic Certified";
     } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
-      if (!isNaN(+sharedType)) {
+      if (!Number.isNaN(+sharedType)) {
         collectionName = sharedTypeMap[+sharedType];
       } else {
         collectionName = sharedType;
       }
     }
+
+    const allowDuplicate = allowDuplicateCheck(
+      collections,
+      orgCollections,
+      isPlaylist ? "playList" : "test"
+    );
     return (
       <>
         <ViewModal
@@ -220,6 +242,7 @@ class Item extends Component {
           assign={this.assignTest}
           isPlaylist={isPlaylist}
           windowWidth={windowWidth}
+          allowDuplicate={allowDuplicate}
         />
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -237,7 +260,7 @@ class Item extends Component {
           isPlaylist={isPlaylist}
           src={isPlaylist ? _source.thumbnail : thumbnail}
           onClick={isPlaylist ? this.moveToItem : this.openModal}
-          title={(
+          title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
@@ -246,7 +269,7 @@ class Item extends Component {
                     Edit
                   </Button>
                 )}
-                {status === "draft" && (
+                {status === "draft" && allowDuplicate && (
                   <Button type="primary" onClick={this.duplicate}>
                     duplicate
                   </Button>
@@ -266,12 +289,15 @@ class Item extends Component {
                 getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
               {!!collections.length && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
-          )}
+          }
         >
           <TestInfo isPlaylist={isPlaylist}>
-
-            <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
-            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
+            <StyledLink title={isPlaylist ? _source?.title : title}>
+              {isPlaylist ? _source?.title : title}
+            </StyledLink>
+            {isPlaylist && (
+              <StyledDesc title={_source.description}>{_source.description}</StyledDesc>
+            )}
 
             {isPlaylist && (
               <TagsWrapper>
@@ -303,8 +329,8 @@ class Item extends Component {
                   {collections.find(o => o.name === "Edulastic Certified") ? (
                     getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                   ) : (
-                      <IconUser color={cardTitleColor} />
-                    )}
+                    <IconUser color={cardTitleColor} />
+                  )}
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>
@@ -350,9 +376,10 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({
-      orgData: getOrgDataSelector(state)
+      orgData: getOrgDataSelector(state),
+      orgCollections: getCollectionsSelector(state)
     }),
-    { approveOrRejectSingleTestRequestAction }
+    { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )
 );
 

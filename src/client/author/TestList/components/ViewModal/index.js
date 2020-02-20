@@ -10,8 +10,7 @@ import {
   IconWorldWide,
   IconCopy,
   IconDescription,
-  IconTrashAlt,
-  IconStop
+  IconTrashAlt
 } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Icon, Select } from "antd";
@@ -35,7 +34,6 @@ import {
   IconText,
   TagGrade,
   ButtonContainer,
-  ButtonComponent,
   SummaryContainer,
   SummaryTitle,
   SummaryCardContainer,
@@ -65,7 +63,7 @@ import { getInterestedStandards } from "../../../dataUtils";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StyledSelect } from "../../../../common/styled";
 import Tags from "../../../src/components/common/Tags";
-import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
+import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
 
 class ViewModal extends React.Component {
   static propTypes = {
@@ -74,7 +72,23 @@ class ViewModal extends React.Component {
     close: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
     onDuplicate: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired
+    item: PropTypes.object.isRequired,
+    isPlaylist: PropTypes.bool.isRequired,
+    onDelete: PropTypes.func.isRequired,
+    onReject: PropTypes.func.isRequired,
+    onApprove: PropTypes.func.isRequired,
+    status: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    interestedCurriculums: PropTypes.array,
+    windowWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    userId: PropTypes.string,
+    collections: PropTypes.array,
+    allowDuplicate: PropTypes.bool.isRequired
+  };
+
+  static defaultProps = {
+    interestedCurriculums: [],
+    userId: "",
+    collections: []
   };
 
   state = {
@@ -104,7 +118,8 @@ class ViewModal extends React.Component {
       interestedCurriculums,
       windowWidth,
       userId,
-      collections
+      collections,
+      allowDuplicate
     } = this.props;
     const {
       title = "",
@@ -115,7 +130,6 @@ class ViewModal extends React.Component {
       thumbnail = "",
       analytics = [],
       itemGroups = [],
-      scoring = {},
       summary = {},
       sharing = [],
       permission,
@@ -137,7 +151,8 @@ class ViewModal extends React.Component {
       }
     };
     const isDeleteAllowed =
-      !!find(authors, o => o._id === userId) || (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
+      !!find(authors, o => o._id === userId) ||
+      (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
 
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
@@ -170,17 +185,20 @@ class ViewModal extends React.Component {
                 </IconWrapper>
                 <span>DETAILS</span>
               </ViewModalButton>
-              <ViewModalButton
-                data-cy="duplicate-button"
-                onClick={() => {
-                  onDuplicate();
-                }}
-              >
-                <IconWrapper>
-                  <IconCopy color={themeColor} />
-                </IconWrapper>
-                <span>CLONE</span>
-              </ViewModalButton>
+              {allowDuplicate && (
+                <ViewModalButton
+                  data-cy="duplicate-button"
+                  onClick={() => {
+                    onDuplicate();
+                  }}
+                >
+                  <IconWrapper>
+                    <IconCopy color={themeColor} />
+                  </IconWrapper>
+                  <span>CLONE</span>
+                </ViewModalButton>
+              )}
+
               {status === "inreview" ? (
                 <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
                   <ViewModalButton
@@ -227,7 +245,7 @@ class ViewModal extends React.Component {
               <ButtonContainer>
                 <ViewModalButton
                   data-cy="edit/assign-button"
-                  size={"large"}
+                  size="large"
                   bgColor={themeColor}
                   onClick={status === "published" ? assign : onEdit}
                 >
@@ -243,9 +261,13 @@ class ViewModal extends React.Component {
                     size="medium"
                     style={{ width: "100%" }}
                     value={
-                      editedCollections !== null ? editedCollections.map(o => o._id) : _collections.map(o => o._id)
+                      editedCollections !== null
+                        ? editedCollections.map(o => o._id)
+                        : _collections.map(o => o._id)
                     }
-                    filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                    filterOption={(input, option) =>
+                      option.props.title.toLowerCase().includes(input.toLowerCase())
+                    }
                     getPopupContainer={() => this.modalRef.current}
                     onChange={this.onCollectionsChange}
                   >
@@ -283,7 +305,11 @@ class ViewModal extends React.Component {
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
                 <IconText>
-                  {sharing[0] ? sharing[0].type : item.status === "draft" ? "Private Library" : "Public Library"}
+                  {sharing[0]
+                    ? sharing[0].type
+                    : item.status === "draft"
+                    ? "Private Library"
+                    : "Public Library"}
                 </IconText>
               </FooterIcon>
               <FooterIcon rotate>
@@ -302,7 +328,9 @@ class ViewModal extends React.Component {
               <SummaryCardContainer>
                 <SummaryCard>
                   <SummaryCardValue>
-                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalItems || 0}
+                    {isPlaylist
+                      ? _source.modules && _source.modules.length
+                      : summary.totalItems || 0}
                   </SummaryCardValue>
                   <SummaryCardLabel>Items</SummaryCardLabel>
                 </SummaryCard>
@@ -317,8 +345,8 @@ class ViewModal extends React.Component {
               {summary?.groupSummary?.length > 1 || itemGroups?.[0]?.type === "AUTOSELECT" ? (
                 summary?.groupSummary?.map((group, i) => {
                   const standards = group?.standards
-                    ?.filter(item => !item.isEquivalentStandard)
-                    ?.map(item => item.identifier);
+                    ?.filter(x => !x.isEquivalentStandard)
+                    ?.map(x => x.identifier);
                   return (
                     <>
                       <GroupName>{itemGroups[i]?.groupName}</GroupName>

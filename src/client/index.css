@@ -1904,6 +1904,7 @@ span.token.active-word {
 
 .katex-display {
   display: inline !important;
+  margin: auto 0px !important;
   text-align: left !important;
 }
 

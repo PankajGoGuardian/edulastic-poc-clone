@@ -91,7 +91,7 @@ const HotspotPreview = ({
 
       {previewTab === "show" && !smallSize && (
         <Fragment>
-          <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
+          <CorrectAnswersContainer title={t("component.graphing.correctAnswer")} minWidth={`${width + 24}px`}>
             <BlockContainer
               data-cy="hotspotMap"
               style={{ maxWidth }}

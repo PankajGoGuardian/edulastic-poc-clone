@@ -47,6 +47,7 @@ export const MultiChoiceContent = styled.div`
         position: absolute;
         right: 0;
         top: 50%;
+        z-index: 1;
       }
 
       &:before {
@@ -61,6 +62,13 @@ export const MultiChoiceContent = styled.div`
     `
     );
   }}
+
+  &:hover {
+    &:before,
+    &:after {
+      opacity: 0.5;
+    }
+  }
 `;
 
 export const MultipleChoiceLabelContainer = styled.div`

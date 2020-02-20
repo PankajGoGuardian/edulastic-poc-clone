@@ -117,12 +117,16 @@ function* evaluateAnswers({ payload }) {
     });
     // User is at the question
     const question = yield select(getCurrentQuestionSelector);
-    const correctAnswers = _get(question, "validation.validResponse.value", []);
+    let correctAnswers = _get(question, "validation.validResponse.value", []);
     const altAnswers = _get(question, "validation.altResponses", []).map(
       altAns => _get(altAns, "value", []).length
     );
-
     if (payload === "question" || (payload?.mode === "show" && question)) {
+      // some question type like fraction editor have correct answer as number
+      // need to convert into array before using spread operator
+      if (typeof correctAnswers === "number") {
+        correctAnswers = [correctAnswers];
+      }
       if ([...altAnswers, ...correctAnswers].length) {
         const answers = yield select(state => _get(state, "answers", []));
         const { evaluation, score, maxScore } = yield evaluateItem(answers, {

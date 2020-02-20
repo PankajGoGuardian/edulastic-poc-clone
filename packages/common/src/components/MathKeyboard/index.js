@@ -10,7 +10,7 @@ import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import Keyboard from "../Keyboard";
 
-import { MathKeyboardStyles, SymbolContainer } from "./styled/MathKeyboardStyles";
+import { MathKeyboardStyles, SymbolContainer, KeyPadButton } from "./styled/MathKeyboardStyles";
 
 const { EMBED_RESPONSE } = math;
 
@@ -55,16 +55,23 @@ class MathKeyboard extends React.PureComponent {
       }
     };
 
-    return btns.map(({ label, labelcy, handler, command = "cmd", name }, i) => (
-      <Button
-        data-cy={`virtual-keyboard-${name || (labelcy || label)}`}
-        key={i}
-        className="num num--type-4"
-        onClick={() => handleClick(handler, command)}
-      >
-        {label}
-      </Button>
-    ));
+    return btns.map(({ label, labelcy, handler, command = "cmd", name }, i) => {
+      let fontRate = 1;
+      if (typeof label === "string" && label.length > 4) {
+        fontRate = 4.5 / label.length;
+      }
+      return (
+        <KeyPadButton
+          data-cy={`virtual-keyboard-${name || (labelcy || label)}`}
+          key={i}
+          className="num num--type-4"
+          onClick={() => handleClick(handler, command)}
+          fontSizeRate={fontRate}
+        >
+          {label}
+        </KeyPadButton>
+      );
+    });
   };
 
   handleClickNumPad = item => {
@@ -146,7 +153,11 @@ class MathKeyboard extends React.PureComponent {
     const numOfBtns = cols * 4;
 
     const dropdownIcon = (
-      <Icon className="keyboard__dropdown-icon" type={dropdownOpened ? "up" : "down"} theme="outlined" />
+      <Icon
+        className="keyboard__dropdown-icon"
+        type={dropdownOpened ? "up" : "down"}
+        theme="outlined"
+      />
     );
 
     return (
@@ -169,7 +180,11 @@ class MathKeyboard extends React.PureComponent {
                     suffixIcon={dropdownIcon}
                   >
                     {this.selectOptions.map(({ value, label }, index) => (
-                      <Select.Option value={value} key={index} data-cy={`math-keyboard-dropdown-list-${index}`}>
+                      <Select.Option
+                        value={value}
+                        key={index}
+                        data-cy={`math-keyboard-dropdown-list-${index}`}
+                      >
                         {label}
                       </Select.Option>
                     ))}

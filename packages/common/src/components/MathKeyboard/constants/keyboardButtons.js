@@ -602,7 +602,15 @@ const BASIC = [
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
-    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "grouping"],
+    types: [
+      "all",
+      "basic",
+      "intermediate",
+      "advanced_matrices",
+      "advanced_trignometry",
+      "algebra",
+      "grouping"
+    ],
     command: "cmd",
     name: "squareBrackets"
   },
@@ -624,7 +632,15 @@ const BASIC = [
     handler: "^",
     labelcy: "super",
     label: <CustomImage src={Group942} role="presentation" />,
-    types: ["all", "basic", "intermediate", "general", "advanced_matrices", "advanced_trignometry", "chemistry"],
+    types: [
+      "all",
+      "basic",
+      "intermediate",
+      "general",
+      "advanced_matrices",
+      "advanced_trignometry",
+      "chemistry"
+    ],
     command: "cmd"
   },
   {
@@ -704,7 +720,7 @@ const INTERMEDIATE = [
   {
     handler: "\\Pi",
     label: "π",
-    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "greek", "greek"],
+    types: ["all", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "greek"],
     command: "cmd"
   },
   {
@@ -949,6 +965,48 @@ const UNITS_US = [
   {
     handler: "gal",
     label: "gal",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "second",
+    label: "second",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "min",
+    label: "min",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "hour",
+    label: "hour",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "sq mi",
+    label: "sq mi",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "yard",
+    label: "yard",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "acre",
+    label: "acre",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "cup",
+    label: "cup",
     types: ["all", "units_us"],
     command: "cmd"
   }

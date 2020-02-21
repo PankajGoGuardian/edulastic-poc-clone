@@ -1,18 +1,17 @@
-import { Radio, Switch } from "antd";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
 import {
-  mobileWidth,
-  tabletWidth,
-  linkColor,
   greyDarken,
   lightGreen1,
+  linkColor,
+  mediumDesktopWidth,
+  mobileWidth,
+  tabletWidth,
   themeColor,
-  white,
-  themeColorLight,
-  mediumDesktopWidth
+  white
 } from "@edulastic/colors";
-import { FlexContainer, Card, Button } from "@edulastic/common";
+import { Button, Card, FlexContainer } from "@edulastic/common";
+import { Radio, Switch } from "antd";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 20px 30px;
@@ -34,15 +33,16 @@ export const AssignButton = styled(Button)`
   min-width: 130px;
   height: 45px;
   color: ${themeColor};
+  border-color: ${themeColor};
   border-radius: 3px;
   background: ${white};
   justify-content: space-around;
   margin-left: 20px;
   &:hover,
   &:focus {
-    background: ${themeColorLight};
+    background: ${themeColor};
     color: ${white};
-    border-color: ${themeColorLight};
+    border-color: ${themeColor};
   }
   [disabled] {
     pointer-events: none;

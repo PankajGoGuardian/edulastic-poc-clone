@@ -63,11 +63,11 @@ export const EdulasticVerified = styled(IconELogo)`
   ${props => {
     if (props.bottom) {
       return `margin-left:10px;`;
-    } else {
+    } 
       return `position: absolute;
       top: 10px;
       right: 10px;`;
-    }
+    
   }};
 `;
 
@@ -121,7 +121,8 @@ export const Header = styled.div`
   height: 65px;
   width: 100%;
   position: relative;
-  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
+  background: url(${props =>
+    props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg"});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -151,12 +152,12 @@ export const StyledLink = styled.a`
   font-size: 16px;
   font-weight: bold;
   text-decoration: none;
-  color: #00ad50;
+  color: ${themeColor};
   cursor: pointer;
   text-align: justify;
 
   :hover {
-    color: #00ad50;
+    color: ${themeColor};
   }
 `;
 
@@ -240,7 +241,7 @@ export const ViewButton = styled.div`
   width: 120px;
   float: right;
   font-size: 12px;
-  color: #00ad50;
+  color: ${themeColor};
   background: white;
   margin-left: 10px;
   padding: 8px;

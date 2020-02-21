@@ -1,29 +1,24 @@
+import { MainHeader } from "@edulastic/common";
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { compose } from "redux";
 import { Link } from "react-router-dom";
-import { white } from "@edulastic/colors";
-// components
-import { Title, IconManageClass, SaveClassBtn, CancelClassBtn, ButtonsWrapper } from "./styled";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
+import { compose } from "redux";
 // ducks
 import { fetchClassListAction } from "../../ducks";
+// components
+import { ButtonsWrapper, CancelClassBtn, IconManageClass, SaveClassBtn } from "./styled";
 
 const Header = () => (
-  <HeaderWrapper>
-    <Title>
-      <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
-    </Title>
+  <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
     <ButtonsWrapper>
-      <Link to={"/author/manageClass"}>
+      <Link to="/author/manageClass">
         <CancelClassBtn data-cy="cancel">Cancel</CancelClassBtn>
       </Link>
       <SaveClassBtn data-cy="saveClass" htmlType="submit">
         Save Class
       </SaveClassBtn>
     </ButtonsWrapper>
-  </HeaderWrapper>
+  </MainHeader>
 );
 
 const enhance = compose(

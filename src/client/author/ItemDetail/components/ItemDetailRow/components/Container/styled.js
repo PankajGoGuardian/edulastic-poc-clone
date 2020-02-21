@@ -37,7 +37,7 @@ export const AddPassageBtnContainer = styled.div`
 `;
 
 export const AddTabButton = styled(Button)`
-  color: #00ad50;
+  color: ${themeColor};
   height: 45px;
   width: 170px;
   font-size: 11px;
@@ -49,11 +49,11 @@ export const AddTabButton = styled(Button)`
   padding: 0px 15px;
   &:focus > span {
     position: unset;
-    color: #00ad50;
+    color: ${themeColor};
   }
   &:active > span {
     position: unset;
-    color: #00ad50;
+    color: ${themeColor};
   }
 `;
 

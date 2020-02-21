@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Modal, Button, Input } from "antd";
-import { lightGrey3, linkColor, grey } from "@edulastic/colors";
+import { lightGrey3, linkColor, grey, themeColor } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -67,6 +67,6 @@ export const BoldText = styled.span`
 `;
 
 export const LightGreenSpan = styled.span`
-  color: ${props => props.theme.header.headerBgColor};
+  color: ${themeColor}
   font-weight: bold;
 `;

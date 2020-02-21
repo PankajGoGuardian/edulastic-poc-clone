@@ -10,7 +10,7 @@ import { Button, Row, Input, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile } from "@edulastic/icons";
-import { grey, white, greyish } from "@edulastic/colors";
+import { greyish, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
   ScrollBox,
@@ -304,8 +304,6 @@ class TestList extends Component {
       getCurriculumStandards,
       updateDefaultGrades,
       updateDefaultSubject,
-      defaultSubject,
-      defaultGrades,
       testFilters,
       playlistPage,
       playlist: { _id } = {}
@@ -385,8 +383,6 @@ class TestList extends Component {
       limit,
       history,
       testFilters,
-      defaultGrades,
-      defaultSubject,
       playlistPage,
       playlist: { _id } = {}
     } = this.props;
@@ -516,7 +512,7 @@ class TestList extends Component {
     } else this.setState({ showAddTestInModules: true, testAdded: item });
   };
 
-  handleBulkAddTests = item => {
+  handleBulkAddTests = () => {
     const { markedTests } = this.state;
     const { playlist: { modules } = {} } = this.props;
     if (modules?.length) {
@@ -530,7 +526,7 @@ class TestList extends Component {
     }
   };
 
-  handleBulkRemoveTests = item => {
+  handleBulkRemoveTests = () => {
     const { markedTests } = this.state;
     const { playlist: { modules } = {} } = this.props;
     if (modules?.length) {
@@ -626,7 +622,7 @@ class TestList extends Component {
       x => tests.find(y => y._id === x._id).status !== "draft"
     );
     if (nonDraftTests.length === uniqueMarkedTests.length) {
-      this.setState(prevState => ({
+      this.setState(() => ({
         selectedTests: [...selectedTests, ...uniqueMarkedIds],
         markedTests: []
       }));
@@ -634,7 +630,7 @@ class TestList extends Component {
       message.success("Tests Added to playlist");
     } else {
       const nonDraftIds = nonDraftTests.map(x => x._id);
-      this.setState(prevState => ({
+      this.setState(() => ({
         selectedTests: [...selectedTests, ...nonDraftIds],
         markedTests: []
       }));
@@ -777,11 +773,7 @@ class TestList extends Component {
       history,
       receiveTests,
       limit,
-      mode,
       testFilters,
-      updateTestFilters,
-      defaultGrades,
-      defaultSubject,
       playlistPage,
       playlist: { _id } = {}
     } = this.props;
@@ -856,10 +848,6 @@ class TestList extends Component {
     const {
       page,
       limit,
-      defaultGrades,
-      interestedGrades,
-      defaultSubject,
-      interestedSubjects,
       count,
       creating,
       mode,
@@ -930,7 +918,7 @@ class TestList extends Component {
           <ListHeader
             onCreate={this.handleCreate}
             creating={creating}
-            title="Test Library"
+            title="common.testLibrary"
             btnTitle="Author Test"
             renderFilter={() => (
               <StyleChangeWrapper>
@@ -939,14 +927,14 @@ class TestList extends Component {
                   onClick={() => this.handleStyleChange("tile")}
                   width={18}
                   height={18}
-                  color={blockStyle === "tile" ? white : grey}
+                  color={blockStyle === "tile" ? greyThemeLight : greyLight1}
                 />
                 <IconList
                   data-cy="listView"
                   onClick={() => this.handleStyleChange("horizontal")}
                   width={18}
                   height={18}
-                  color={blockStyle === "horizontal" ? white : grey}
+                  color={blockStyle === "horizontal" ? greyThemeLight : greyLight1}
                 />
               </StyleChangeWrapper>
             )}

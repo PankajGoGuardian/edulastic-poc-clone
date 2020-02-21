@@ -3,16 +3,9 @@ import { Layout, Spin, Button, Typography } from "antd";
 
 import { white, largeDesktopWidth, mobileWidthMax, green } from "@edulastic/colors";
 
-const { Content, Header } = Layout;
+const { Content } = Layout;
 
 const { Text } = Typography;
-
-export const DistrictProfileHeader = styled(Header)`
-  height: 76px;
-  @media (min-width: 1600px) {
-    height: 96px;
-  }
-`;
 
 export const StyledLayout = styled(Layout)`
   display: flex;

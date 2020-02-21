@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth, mediumDesktopExactWidth } from "@edulastic/colors";
+import { smallDesktopWidth, mediumDesktopExactWidth, themeColor } from "@edulastic/colors";
 
 const Header = styled.div`
   width: 100%;
@@ -12,7 +12,7 @@ const Header = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  background: ${props => props.theme.header.headerBgColor};
+  background: ${themeColor};
   z-index: 50;
 
   @media (max-width: ${mediumDesktopExactWidth}) {

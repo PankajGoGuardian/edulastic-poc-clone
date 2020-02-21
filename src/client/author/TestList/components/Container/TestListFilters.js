@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
+import {
+  themeColor,
+  secondaryTextColor,
+  titleColor,
+  lightGreySecondary,
+  smallDesktopWidth
+} from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
-import moment from "moment";
-import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import { test as testsConstants } from "@edulastic/constants";
+import {
+  getStandardsListSelector,
+  getFormattedCurriculumsSelector
+} from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
 import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
-import { test as testsConstants } from "@edulastic/constants";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
-import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
-import { StyledDatePicker } from "../../../ItemList/components/Search/styled";
+import {
+  getCurrentDistrictUsersSelector,
+  getCurrentDistrictUsersAction
+} from "../../../../student/Login/ducks";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
@@ -39,24 +49,29 @@ const TestListFilters = ({
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
   useEffect(() => {
-    if (userFeatures.isCurator && !currentDistrictUsers?.length) getCurrentDistrictUsers(districtId);
+    if (userFeatures.isCurator && !currentDistrictUsers?.length)
+      getCurrentDistrictUsers(districtId);
   }, []);
 
   const getAuthoredByFilterData = () => {
     if (!userFeatures.isCurator) return [];
-    else {
-      return [
-        {
-          mode: "multiple",
-          title: "Authored By",
-          placeholder: "All Authors",
-          size: "large",
-          filterOption: searchFilterOption,
-          data: [...(currentDistrictUsers || []).map(o => ({ value: o._id, text: `${o.firstName} ${o.lastName}` }))],
-          onChange: "authoredByIds"
-        }
-      ];
-    }
+
+    return [
+      {
+        mode: "multiple",
+        title: "Authored By",
+        placeholder: "All Authors",
+        size: "large",
+        filterOption: searchFilterOption,
+        data: [
+          ...(currentDistrictUsers || []).map(o => ({
+            value: o._id,
+            text: `${o.firstName} ${o.lastName}`
+          }))
+        ],
+        onChange: "authoredByIds"
+      }
+    ];
   };
 
   const getFilters = () => {
@@ -65,7 +80,8 @@ const TestListFilters = ({
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
       const showStatusFilter =
-        (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
+        (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) ||
+        userFeatures.isCurator;
       if (showStatusFilter) {
         filterTitles.push("Status");
       }
@@ -102,10 +118,13 @@ const TestListFilters = ({
       text: item.identifier
     }));
 
-    const standardsPlaceholder = !curriculumId ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
+    const standardsPlaceholder = !curriculumId
+      ? "Available with Curriculum"
+      : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     const showStatusFilter =
-      (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
+      (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) ||
+      userFeatures.isCurator;
     if (!showStatusFilter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
@@ -129,7 +148,6 @@ const TestListFilters = ({
           mode: "multiple",
           placeholder: standardsPlaceholder,
           title: "Standards",
-          filterOption: false,
           disabled: !curriculumId || !formattedStandards.length,
           onChange: "standardIds",
           optionFilterProp: "children",
@@ -178,7 +196,9 @@ const TestListFilters = ({
 
   let mappedfilterData = getFilters();
   if (isPublishers) {
-    const filtersToBeMoved = mappedfilterData.filter(f => ["Status", "Authored By"].includes(f.title));
+    const filtersToBeMoved = mappedfilterData.filter(f =>
+      ["Status", "Authored By"].includes(f.title)
+    );
     mappedfilterData = [
       ...filtersToBeMoved,
       ...mappedfilterData.filter(f => !["Status", "Authored By"].includes(f.title))
@@ -207,7 +227,11 @@ const TestListFilters = ({
         <>
           <FilterItemWrapper key={index}>
             {filterItem.isStandardSelect && (
-              <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
+              <IconExpandStandards
+                className="fa fa-expand"
+                aria-hidden="true"
+                onClick={handleSetShowModal}
+              />
             )}
             <SubTitle>{filterItem.title}</SubTitle>
             <Select
@@ -219,7 +243,11 @@ const TestListFilters = ({
               placeholder={filterItem.placeholder}
               filterOption={filterItem.filterOption}
               optionFilterProp={filterItem.optionFilterProp}
-              defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value}
+              defaultValue={
+                filterItem.mode === "multiple"
+                  ? undefined
+                  : filterItem.data[0] && filterItem.data[0].value
+              }
               value={search[filterItem.onChange]}
               onChange={value => onChange(filterItem.onChange, value)}
               disabled={filterItem.disabled}
@@ -248,14 +276,12 @@ const TestListFilters = ({
 TestListFilters.propTypes = {
   onChange: PropTypes.func,
   clearFilter: PropTypes.func.isRequired,
-  style: PropTypes.object,
   search: PropTypes.object.isRequired,
   filterData: PropTypes.array
 };
 
 TestListFilters.defaultProps = {
   filterData: [],
-  style: {},
   onChange: () => null
 };
 
@@ -357,13 +383,13 @@ export const FilterItemWrapper = styled.div`
 `;
 
 const ClearAll = styled.span`
-  color: #00ad50;
+  color: ${themeColor};
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
   :hover {
-    color: #00ad50;
+    color: ${themeColor};
   }
 `;
 

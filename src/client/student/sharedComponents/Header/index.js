@@ -1,13 +1,12 @@
-import React, { memo } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import { smallDesktopWidth, tabletWidth } from "@edulastic/colors";
+import { MainHeader } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import PropTypes from "prop-types";
+import React, { memo } from "react";
 import { compose } from "redux";
-
-import HeaderWrapper from "./headerWrapper";
+import styled from "styled-components";
 import ClassSelect from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
-import { smallDesktopWidth, tabletWidth } from "@edulastic/colors";
 
 const Header = ({
   t,
@@ -20,15 +19,19 @@ const Header = ({
   isDocBased,
   showAllClassesOption = true
 }) => (
-  <HeaderWrapper isDocBased={isDocBased}>
-    <Wrapper>
-      <AssignmentTitle>{t(titleText)}</AssignmentTitle>
-      {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}
-      {showActiveClass && (
-        <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
-      )}
-    </Wrapper>
-  </HeaderWrapper>
+  <MainHeader headingText={titleText} isDocBased={isDocBased}>
+    {classSelect && (
+      <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />
+    )}
+    {showActiveClass && (
+      <ShowActiveClass
+        t={t}
+        classList={classList}
+        setClassList={setClassList}
+        setShowClass={setShowClass}
+      />
+    )}
+  </MainHeader>
 );
 
 Header.propTypes = {
@@ -44,14 +47,6 @@ const enhance = compose(
 );
 
 export default enhance(Header);
-
-const Wrapper = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 17px;
-`;
 
 export const AssignmentTitle = styled.div`
   font-family: Open Sans;

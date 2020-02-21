@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, white } from "@edulastic/colors";
+import { tabletWidth, greyThemeDark2 } from "@edulastic/colors";
 
 export const MenuIcon = styled(IconMenuOpenClose)`
   display: none;
-  fill: ${white};
+  fill: ${greyThemeDark2};
   width: 18px;
   margin-right: 25px !important;
   pointer-events: all;

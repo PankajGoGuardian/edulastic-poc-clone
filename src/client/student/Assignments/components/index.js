@@ -4,28 +4,28 @@ import styled from "styled-components";
 import { Layout, Spin } from "antd";
 import { isEmpty } from "lodash";
 // components
+import { smallDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 import { changeClassAction, logoutAction } from "../../Login/ducks";
-import { smallDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 const ContentWrapper = styled.div`
-  padding: 0px 40px;
+  padding: 20px 40px;
   @media (max-width: ${smallDesktopWidth}) {
-    padding: 0px 20px 0px 30px;
+    padding: 20px 30px;
   }
   @media (max-width: ${mobileWidthMax}) {
-    padding: 0px 10px;
+    padding: 10px 20px;
   }
 `;
 
-const Assignments = ({ activeClasses, allClasses, loadAllClasses, changeClass, loading, location, logout }) => {
+const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   // location is available as prop when we are navigating through link from student manage class
@@ -49,7 +49,7 @@ const Assignments = ({ activeClasses, allClasses, loadAllClasses, changeClass, l
     <Wrapper>
       <Header
         titleText="common.dashboardTitle"
-        classSelect={true}
+        classSelect
         showActiveClass={false}
         classList={activeEnrolledClasses}
       />

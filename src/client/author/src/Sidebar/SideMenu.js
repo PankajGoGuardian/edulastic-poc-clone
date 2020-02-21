@@ -15,11 +15,20 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
-import { get, remove, cloneDeep } from "lodash";
+import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip, message } from "antd";
+import {
+  Layout,
+  Menu as AntMenu,
+  Row,
+  Col,
+  Dropdown,
+  Icon as AntIcon,
+  Tooltip,
+  message
+} from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -38,14 +47,14 @@ import {
   IconSignoutHighlight
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import { getUserFeatures } from "../../../student/Login/ducks";
 import { isOrganizationDistrictSelector } from "../selectors/user";
-import { roleuser } from "@edulastic/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const menuItems = [
   {
@@ -124,6 +133,7 @@ class SideMenu extends Component {
 
     this.sideMenuRef = React.createRef();
   }
+
   get MenuItems() {
     const { lastPlayList, isSidebarCollapsed, features, isOrganizationDistrict } = this.props;
 
@@ -181,7 +191,7 @@ class SideMenu extends Component {
 
   handleMenu = item => {
     const { history } = this.props;
-    const path = this.MenuItems[item.key].path;
+    const { path } = this.MenuItems[item.key];
     if (path !== undefined) {
       if (path.match(/playlists\/.{24}\/use-this/)) {
         history.push({ pathname: `/${path}`, state: { from: "favouritePlaylist" } });
@@ -204,7 +214,7 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
-  onClickFooterDropDownMenu = ({ item, key, keyPath, domEvent }) => {
+  onClickFooterDropDownMenu = ({ key }) => {
     const { logout } = this.props;
     if (key === "0") {
       // onClickLogout
@@ -229,8 +239,8 @@ class SideMenu extends Component {
   getInitials = () => {
     const { firstName, lastName } = this.props;
     if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
-    else if (firstName) return `${firstName.substr(0, 2)}`;
-    else if (lastName) return `${lastName.substr(0, 2)}`;
+    if (firstName) return `${firstName.substr(0, 2)}`;
+    if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
   componentDidMount() {
@@ -264,7 +274,7 @@ class SideMenu extends Component {
       if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
         return true;
       }
-      return menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false));
+      return menuItem.allowedPathPattern.some(path => !!history.location.pathname.match(path));
     });
 
     const isPublisher = features.isCurator || features.isPublisherAuthor;
@@ -330,12 +340,22 @@ class SideMenu extends Component {
         >
           <PerfectScrollbar>
             {isMobile ? (
-              <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+              <AntIcon
+                className="mobileCloseIcon"
+                type="close"
+                theme="outlined"
+                onClick={this.toggleMenu}
+              />
             ) : (
               <LogoWrapper className="logoWrapper">
                 {broken ? (
                   <Col span={3}>
-                    <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+                    <AntIcon
+                      className="mobileCloseIcon"
+                      type="close"
+                      theme="outlined"
+                      onClick={this.toggleMenu}
+                    />
                   </Col>
                 ) : null}
                 <Col span={isCollapsed ? 24 : 18} style={{ textAlign: "center" }}>
@@ -350,13 +370,16 @@ class SideMenu extends Component {
                     }}
                   >
                     {!isCollapsed && (
-                      <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
+                      <AntIcon
+                        className="trigger"
+                        type={isCollapsed ? "right" : "left"}
+                        onClick={this.toggleMenu}
+                      />
                     )}
                   </Col>
                 )}
               </LogoWrapper>
             )}
-            {!isMobile && <LogoDash />}
             <MenuWrapper>
               {locationState?.fadeSidebar && <Overlay />}
               <Menu
@@ -368,7 +391,7 @@ class SideMenu extends Component {
                   /**
                    * show playlist based on `features` list
                    */
-                  if (menu.label === "PlayList Library" && !features["playlist"]) {
+                  if (menu.label === "PlayList Library" && !features.playlist) {
                     return null;
                   }
                   // to hide Dashboard from side menu if a user is DA or SA.
@@ -378,21 +401,20 @@ class SideMenu extends Component {
                     !features.isCurator
                   )
                     return null;
-                  else {
-                    const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
-                    const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
-                    return (
-                      <MenuItem
-                        data-cy={menu.label}
-                        key={index.toString()}
-                        onClick={this.toggleMenu}
-                        visible={isItemVisible}
-                      >
-                        <MenuIcon />
-                        {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
-                      </MenuItem>
-                    );
-                  }
+
+                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
+                  const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
+                  return (
+                    <MenuItem
+                      data-cy={menu.label}
+                      key={index.toString()}
+                      onClick={this.toggleMenu}
+                      visible={isItemVisible}
+                    >
+                      <MenuIcon />
+                      {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
+                    </MenuItem>
+                  );
                 })}
               </Menu>
               <MenuFooter className="footerBottom">
@@ -430,7 +452,9 @@ class SideMenu extends Component {
                       )}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11, width: "100px" }}>
-                          {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
+                          {!isCollapsed && !isMobile && (
+                            <UserName>{userName || "Anonymous"}</UserName>
+                          )}
                           {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
                         </div>
                       </Tooltip>
@@ -655,14 +679,6 @@ const LogoWrapper = styled(Row)`
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${({ theme }) => theme.HeaderHeight.xl}px;
   }
-`;
-
-const LogoDash = styled.div`
-  width: 100%;
-  height: 0;
-  opacity: 0.61;
-  border-bottom: solid 1px #d9d6d6;
-  margin: 0 auto;
 `;
 
 const MenuWrapper = styled.div`

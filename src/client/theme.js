@@ -6,7 +6,8 @@ import {
   mainTextColor,
   greyThemeLight,
   greyThemeDark2,
-  greyThemeLighter
+  greyThemeLighter,
+  title
 } from "@edulastic/colors";
 
 // all theme variables
@@ -21,7 +22,7 @@ const buttonBackgroundHoverColor = "#F0F0F0";
 const textColor = "#434B5D";
 const textColorActiveColor = "#FFFFFF";
 const textColorGreenBg = "#FFFFFF";
-const actionIconColor = "#00AD50";
+const actionIconColor = themeColor;
 const actionIconActiveColor = "#FFFFFF";
 const sideBarColor = "#FBFAFC";
 const iconColor = "#434B5D";
@@ -53,7 +54,7 @@ const numType6Color = "#fff";
 const numberpadBgColor = "#0EB08D";
 const numberpadBgHoverColor = "#dfdfdf";
 const numberpadBgDisable = "#FFFFFF";
-const iconDeleteColor = "#00AD50";
+const iconDeleteColor = themeColor;
 const iconDeleteHoverColor = "#FF0057";
 const clearIconColor = "#FFFFFF";
 const rightIconColor = "#84cd36";
@@ -122,7 +123,7 @@ const notificationTitle = "18px";
 
 const brandBlue = "#00b0ff";
 const brandGreen = "#1FE3A1";
-const brandDarkGreen = "#00AD50";
+const brandDarkGreen = themeColor;
 const brandRed = "#EE1658";
 const brandYellow = "#FDCC3B";
 const brandDarkGrey = "#434B5D";
@@ -398,8 +399,8 @@ export const defaultTheme = {
     headerLeftButtonBgHoverColor: buttonBackgroundColor
   },
   header: {
-    headerBgColor: themeColor, // greenDark
-    headerTitleTextColor: textColorGreenBg,
+    headerBgColor: white, // greenDark
+    headerTitleTextColor: title,
     headerTitleFontSize: headerTitle,
     headerTitleSecondaryTextSize: titleSecondarySectionFontSize,
     headerButtonColor: textColorGreenBg,
@@ -520,7 +521,6 @@ export const defaultTheme = {
     tableRowColor: "#F8F8F8",
     tableRowTxtSize: "14px",
     tableRowTxtColor: "#434B5D",
-    tableHeaderTxtSize: "12px",
     filterButtonFontSize: "11px",
     filterButtonFontWeight: semiBold,
     filterButtonBgColor: themeColor,

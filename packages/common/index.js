@@ -1,6 +1,7 @@
 import * as StyledComponents from "./src/components/StyledComponents";
 import * as Effects from "./src/effects";
 
+export { default as MainHeader } from "./src/components/MainHeader";
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
 export { default as QuestionNumberLabel } from "./src/components/QuestionNumberLabel";

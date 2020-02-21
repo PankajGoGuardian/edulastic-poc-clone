@@ -6,9 +6,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
 import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
-
 // import { getZoomedTheme } from "./zoomTheme";
-
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
 import { Report } from "./Reports";
@@ -26,8 +24,7 @@ import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 
 const CurriculumContainer = lazy(() => import("../author/CurriculumSequence"));
-
-const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
+const StudentApp = ({ match, selectedTheme }) => {
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
@@ -45,7 +42,7 @@ const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
                 <Route
                   path={`${
                     match.url
-                    }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
+                  }/seb/test/:testId/type/:testType/assignment/:assignmentId/testActivity/:testActivityId`}
                   component={DeepLink}
                 />
                 <Route
@@ -68,7 +65,7 @@ const StudentApp = ({ match, location, selectedTheme, zoomLevel }) => {
                   path={`${match.url}/playlist/:playlistId`}
                   render={props => (
                     <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} urlHasUseThis={true} />
+                      <CurriculumContainer {...props} urlHasUseThis />
                     </Suspense>
                   )}
                 />
@@ -135,8 +132,6 @@ const MainContainer = addThemeBackgroundColor(styled.div`
     padding-left: 0px;
     .fixed-header {
       left: 0;
-      padding-left: 30px;
-      background: #0188d2;
     }
   }
 `);

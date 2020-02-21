@@ -3,7 +3,13 @@ import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { green, extraDesktopWidthMax, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import {
+  green,
+  extraDesktopWidthMax,
+  largeDesktopWidth,
+  mobileWidthMax,
+  themeColor
+} from "@edulastic/colors";
 import { IconFilterClass } from "@edulastic/icons";
 
 import { getCurrentGroup, changeClassAction } from "../Login/ducks";
@@ -13,27 +19,26 @@ const ClassSelector = ({
   classList,
   currentGroup,
   changeClass,
-  archievedClass,
   allClasses,
   showAllClassesOption
 }) => {
   const [isShown, setShown] = useState(false);
   useEffect(() => {
     if (!showAllClassesOption) {
-      /*For skill report we are not showing "All options", so when we route to the skill-report 
+      /* For skill report we are not showing "All options", so when we route to the skill-report 
        page we pick the first class id by default and exit out of useEffect */
       if (!currentGroup && classList.length) changeClass(classList[0]?._id);
     } else {
       if (currentGroup === "" && classList.length === 1) {
-        //all classes. but really only one classes available
+        // all classes. but really only one classes available
         changeClass(classList[0]._id);
       }
-      if (currentGroup != "") {
-        //not all classes
+      if (currentGroup !== "") {
+        // not all classes
 
         const currentGroupInList = classList.find(x => x._id === currentGroup);
         if (!currentGroupInList) {
-          //currently selected class is not in the list. so selecting first available class
+          // currently selected class is not in the list. so selecting first available class
           if (classList.length > 0 && !sessionStorage.temporaryClass) {
             changeClass(classList[0]._id);
           }
@@ -63,11 +68,14 @@ const ClassSelector = ({
           )}
 
           {sessionStorage.getItem("temporaryClass") && (
-            <Select.Option key={sessionStorage.temporaryClass} value={sessionStorage.temporaryClass}>
+            <Select.Option
+              key={sessionStorage.temporaryClass}
+              value={sessionStorage.temporaryClass}
+            >
               {allClasses.find(clazz => clazz._id === sessionStorage.temporaryClass).name}
             </Select.Option>
           )}
-          {classList.map((cl, i) => (
+          {classList.map(cl => (
             <Select.Option key={cl._id} value={cl._id}>
               {cl.name}
             </Select.Option>
@@ -117,6 +125,7 @@ const AssignmentSelectClass = styled.div`
   .ant-select {
     height: 40px;
     width: 190px;
+    border-color: ${themeColor};
 
     @media (min-width: ${extraDesktopWidthMax}) {
       width: 240px;
@@ -132,8 +141,7 @@ const AssignmentSelectClass = styled.div`
     background-color: ${props => props.theme.headerDropdownBgColor};
     color: ${props => props.theme.headerDropdownTextColor};
     font-size: ${props => props.theme.classNameFontSize};
-    border: ${props =>
-      props.theme.headerDropdownBorderColor ? `1px solid ${props.theme.headerDropdownBorderColor}` : "0px"};
+    border-color: ${themeColor};
   }
 
   .ant-select-dropdown-menu-item {

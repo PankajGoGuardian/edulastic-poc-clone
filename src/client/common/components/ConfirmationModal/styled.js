@@ -3,7 +3,7 @@ import { lightBlue, lightGrey, mainTextColor, white, themeColor } from "@edulast
 import { Input, Col, Modal, Button } from "antd";
 
 export const LightGreenSpan = styled.span`
-  color: ${props => props.theme.header.headerBgColor};
+  color: ${themeColor};
   font-weight: bold;
 `;
 
@@ -92,17 +92,17 @@ export const InitOptions = styled.div`
 `;
 
 export const StyledButton = styled(Button)`
-  background-color: ${props => (props.cancel ? white : props.theme.header.headerBgColor)};
-  border-color: ${props => props.theme.header.headerBgColor};
-  color: ${props => (props.cancel ? props.theme.header.headerBgColor : white)};
+  background-color: ${props => (props.cancel ? white : themeColor)};
+  border-color: ${themeColor};
+  color: ${props => (props.cancel ? themeColor : white)};
   padding: 12px 50px;
   margin-right: 30px;
   height: auto;
   &:hover,
   &:focus {
-    background-color: ${props => (props.cancel ? white : props.theme.header.headerBgColor)};
-    border-color: ${props => props.theme.header.headerBgColor};
-    color: ${props => (props.cancel ? props.theme.header.headerBgColor : white)};
+    background-color: ${props => (props.cancel ? white : themeColor)};
+    border-color: ${themeColor};
+    color: ${props => (props.cancel ? themeColor : white)};
   }
 `;
 

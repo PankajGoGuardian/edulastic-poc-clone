@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { get, find, isEmpty } from "lodash";
+import { get, find } from "lodash";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
@@ -53,14 +53,13 @@ import {
   LeftWrapper,
   FixedWrapper
 } from "./styled";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import {
   toggleDeleteAssignmentModalAction,
   getToggleDeleteAssignmentModalState
 } from "../../../sharedDucks/assignments";
-import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import { DeleteAssignmentModal } from "../DeleteAssignmentModal/deleteAssignmentModal";
 
 const initialFilterState = {
   grades: [],
@@ -80,11 +79,18 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
+    const {
+      loadAssignments,
+      loadAssignmentsSummary,
+      districtId,
+      loadFolders,
+      userRole,
+      orgData
+    } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
-    const { showFilter = userRole === roleuser.TEACHER ? false : true } = storedFilters;
+    const { showFilter = userRole !== roleuser.TEACHER } = storedFilters;
     const filters = {
       ...initialFilterState,
       ...storedFilters,
@@ -167,10 +173,11 @@ class Assignments extends Component {
   );
 
   toggleFilter = () => {
+    const { filterState } = this.state;
     this.setState(
       prev => ({ filterState: { ...prev.filterState, showFilter: !prev.filterState.showFilter } }),
       () => {
-        sessionStorage.setItem("filters[Assignments]", JSON.stringify(this.state.filterState));
+        sessionStorage.setItem("filters[Assignments]", JSON.stringify(filterState));
       }
     );
   };
@@ -192,7 +199,6 @@ class Assignments extends Component {
     const {
       assignmentsByTestId,
       tests,
-      t,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
       assignmentsSummary,
@@ -201,7 +207,13 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState
     } = this.props;
-    const { selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
+    const {
+      selectedRows,
+      filterState,
+      isPreviewModalVisible,
+      currentTestId,
+      openEditPopup
+    } = this.state;
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
 
@@ -211,7 +223,7 @@ class Assignments extends Component {
       <div>
         <EditTestModal
           visible={openEditPopup}
-          isUsed={true}
+          isUsed
           onCancel={() => this.toggleEditModal(false, "")}
           onOk={this.onEnableEdit}
         />
@@ -226,8 +238,8 @@ class Assignments extends Component {
         />
         <ListHeader
           onCreate={this.handleCreate}
-          createAssignment={true}
-          title={t("common.assignmentsTitle")}
+          createAssignment
+          title="common.assignmentsTitle"
           btnTitle="AUTHOR TEST"
           isAdvancedView={isAdvancedView}
         />
@@ -252,7 +264,11 @@ class Assignments extends Component {
                     </LeftWrapper>
                   )}
                   <TableWrapper showFilter={showFilter}>
-                    <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
+                    <FilterButton
+                      showFilter={showFilter}
+                      variant="filter"
+                      onClick={this.toggleFilter}
+                    >
                       <IconFilter
                         data-cy="smart-filter"
                         color={showFilter ? white : themeColor}
@@ -316,13 +332,10 @@ Assignments.propTypes = {
   loadFolders: PropTypes.func.isRequired,
   assignmentsByTestId: PropTypes.object.isRequired,
   loadAssignments: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   windowWidth: PropTypes.number.isRequired,
   windowHeight: PropTypes.number.isRequired,
   loadAssignmentById: PropTypes.func.isRequired,
-  updateReleaseScoreSettings: PropTypes.func.isRequired,
-  currentAssignment: PropTypes.object.isRequired,
   toggleReleaseGradePopUp: PropTypes.func.isRequired,
   tests: PropTypes.array.isRequired,
   isShowReleaseSettingsPopup: PropTypes.bool.isRequired,

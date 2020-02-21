@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, desktopWidth, mediumDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { white, desktopWidth, mediumDesktopWidth, greyThemeDark2 } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -33,8 +33,8 @@ export const Link = styled.div`
   height: 40px;
   border-radius: 0;
   background: #0288d1;
-  background: ${props => (props.active === "true" ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
-  color: ${props => (props.active === "true" ? white : "rgba(255, 255, 255, 0.75)")};
+  background: ${props => (props.active === "true" ? "#b3bcc4" : "#f2f3f2")};
+  color: ${props => (props.active === "true" ? white : greyThemeDark2)};
   border-bottom: none;
   white-space: nowrap;
   border-radius: 5px;

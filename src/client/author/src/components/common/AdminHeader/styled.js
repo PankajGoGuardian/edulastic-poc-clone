@@ -6,10 +6,11 @@ import {
   white,
   tabletWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  greyThemeDark2
 } from "@edulastic/colors";
 
-const TabPane = Tabs.TabPane;
+const {TabPane} = Tabs;
 
 export const AdminHeaderWrapper = styled.div`
   position: fixed;
@@ -90,14 +91,14 @@ export const StyledTabs = styled(Tabs)`
           justify-content: center;
           height: 40px;
           border-radius: 0;
-          background: rgba(255, 255, 255, 0.15);
-          color: rgba(255, 255, 255, 0.75);
+          background: #f2f3f2;
+          color: ${greyThemeDark2};
           white-space: nowrap;
           border-radius: 5px;
           margin: 0 3px;
           &-active {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
+            background: #b3bcc4;
+            color: ${white};
           }
 
           @media screen and (max-width: ${mediumDesktopWidth}) {

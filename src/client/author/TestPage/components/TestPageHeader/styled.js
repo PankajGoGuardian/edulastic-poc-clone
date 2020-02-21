@@ -7,56 +7,13 @@ import {
   textColor,
   draftColor,
   publishedColor,
-  mediumDesktopWidth,
   desktopWidth,
-  mobileWidthLarge
+  mobileWidthLarge,
+  tabletWidth
 } from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
 import { Status } from "../../../AssessmentPage/components/Header/styled";
-
-export const MobileHeader = styled.div`
-  height: auto;
-  display: flex;
-  align-items: center;
-  background: ${themeColor};
-  padding: 15px 20px;
-`;
-
-export const MainContainer = styled(FlexContainer)`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-export const Title = styled.h1`
-  font-size: ${props => props.theme.header.headerTitleFontSize};
-  color: ${props => props.theme.header.headerTitleTextColor};
-  font-weight: bold;
-  line-height: normal;
-  margin: 0px;
-  max-width: 250px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  word-break: break-all;
-
-  @media screen and (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
-    max-width: 170px;
-  }
-  @media screen and (max-width: ${mobileWidthLarge}) {
-    max-width: 120px;
-  }
-`;
-
-export const TitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-basis: 20%;
-`;
 
 export const RightFlexContainer = styled(FlexContainer)`
   flex-basis: 30%;
@@ -96,6 +53,10 @@ export const RightWrapper = styled(FlexContainer)`
   flex-basis: 50%;
   justify-content: flex-end;
   margin: 0px;
+
+  @media (max-width: ${tabletWidth}) {
+    flex-basis: auto;
+  }
 `;
 
 export const TestStatus = styled(Status)`

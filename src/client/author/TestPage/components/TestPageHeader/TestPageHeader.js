@@ -1,52 +1,41 @@
-import React, { memo, useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { white, themeColor, desktopWidth } from "@edulastic/colors";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
-import { message } from "antd";
-import { EduButton, MenuIcon } from "@edulastic/common";
-import { test, roleuser } from "@edulastic/constants";
+import { desktopWidth, themeColor, white } from "@edulastic/colors";
+import { EduButton, MainHeader } from "@edulastic/common";
+import { roleuser, test } from "@edulastic/constants";
 import {
   IconAddItems,
-  IconReview,
-  IconSettings,
-  IconShare,
-  IconSource,
-  IconDiskette,
-  IconDescription,
-  IconSend,
-  IconPencilEdit,
   IconCopy,
-  IconPrint
+  IconDescription,
+  IconDiskette,
+  IconPencilEdit,
+  IconPrint,
+  IconReview,
+  IconSend,
+  IconSettings,
+  IconShare
 } from "@edulastic/icons";
-import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
-import {
-  MobileHeader,
-  RightWrapper,
-  MainContainer,
-  ShareIcon,
-  Title,
-  MenuIconWrapper,
-  TestStatus,
-  TitleWrapper,
-  RightFlexContainer,
-  AssignButton,
-  MobileHeaderFilterIcon,
-  SaveBtn
-} from "./styled";
-
-import TestPageNav from "../TestPageNav/TestPageNav";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-
-import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
-import EditTestModal from "../../../src/components/common/EditTestModal";
+import { message } from "antd";
+import PropTypes from "prop-types";
+import React, { memo, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
+import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
+import EditTestModal from "../../../src/components/common/EditTestModal";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
+import { getStatus } from "../../../src/utils/getStatus";
 import { publishForRegradeAction } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
-import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
-import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
-import { getStatus } from "../../../src/utils/getStatus";
+import TestPageNav from "../TestPageNav/TestPageNav";
+import {
+  AssignButton,
+  MobileHeaderFilterIcon,
+  RightFlexContainer,
+  RightWrapper,
+  ShareIcon,
+  TestStatus
+} from "./styled";
 
 const { statusConstants, testContentVisibility: testContentVisibilityOptions } = test;
 
@@ -124,7 +113,6 @@ const TestPageHeader = ({
   buttons,
   isDocBased = false,
   title,
-  creating,
   onShare,
   isUsed = false,
   onPublish,
@@ -132,11 +120,9 @@ const TestPageHeader = ({
   editEnable = false,
   windowWidth,
   onEnableEdit,
-  toggleSideBar,
   showPublishButton,
   showShareButton,
   testStatus,
-  onShowSource,
   isPlaylist,
   owner,
   onAssign,
@@ -159,7 +145,12 @@ const TestPageHeader = ({
   userRole
 }) => {
   let navButtons =
-    buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
+    buttons ||
+    (isPlaylist
+      ? [...playlistNavButtons]
+      : isDocBased
+      ? [...docBasedButtons]
+      : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
@@ -187,12 +178,17 @@ const TestPageHeader = ({
         break;
       case "publish":
         onPublish();
+        break;
       default:
     }
   };
 
   const handlePublish = () => {
-    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
+    if (
+      isUsed &&
+      (updated || test.status !== statusConstants.PUBLISHED) &&
+      testAssignments?.length > 0
+    ) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
@@ -240,7 +236,7 @@ const TestPageHeader = ({
 
   const onClickCuratorApprove = () => {
     const { collections = [], _id: testId } = test;
-    onCuratorApproveOrReject({ testId, status: "published", collections: collections });
+    onCuratorApproveOrReject({ testId, status: "published", collections });
   };
 
   const onClickCuratorReject = () => {
@@ -261,6 +257,12 @@ const TestPageHeader = ({
     }
     window.open(`/author/printAssessment/${test?._id}`, "_blank");
   };
+
+  const HeadingSubContent = (
+    <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
+      {isPlaylist || editEnable ? "DRAFT" : getStatus(testStatus)}
+    </TestStatus>
+  );
 
   return (
     <>
@@ -286,16 +288,12 @@ const TestPageHeader = ({
         onClose={() => setCancelState(false)}
       />
       {windowWidth > parseInt(desktopWidth, 10) ? (
-        <HeaderWrapper>
-          <TitleWrapper>
-            <Title data-cy="title" title={title}>
-              {title || "Untitled Test"}{" "}
-            </Title>
-            <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
-              {isPlaylist || editEnable ? "DRAFT" : getStatus(testStatus)}
-            </TestStatus>
-          </TitleWrapper>
-
+        <MainHeader
+          headingText={title || "Untitled Test"}
+          HeadingSubContent={HeadingSubContent}
+          flexDirection="column"
+          alignItems="flex-start"
+        >
           <TestPageNav
             onChange={onChangeNav}
             current={current}
@@ -420,7 +418,12 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers && (
-                <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
+                <AssignButton
+                  data-cy="assign"
+                  size="large"
+                  disabled={isTestLoading}
+                  onClick={handleAssign}
+                >
                   Assign
                 </AssignButton>
               )}
@@ -430,102 +433,113 @@ const TestPageHeader = ({
               </AssignButton>
             )}
           </RightFlexContainer>
-        </HeaderWrapper>
+        </MainHeader>
       ) : (
-        <MobileHeader>
-          <MainContainer flexDirection="column">
-            <MenuIconWrapper>
-              <MenuIcon className="hamburger" onClick={toggleSideBar} />
-              <Title>{title}</Title>
-            </MenuIconWrapper>
-            <RightWrapper>
-              {current === "addItems" && (
-                <MobileHeaderFilterIcon>
-                  <FilterToggleBtn header="true" isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
-                </MobileHeaderFilterIcon>
-              )}
-              {(owner || features.isCurator) && (
-                <EduButton
-                  data-cy="share"
-                  style={ButtonWithIconStyle}
-                  disabled={isTestLoading}
-                  size="large"
-                  onClick={onShare}
-                >
-                  <ShareIcon color={themeColor} />
-                </EduButton>
-              )}
+        <MainHeader headingText={title} mobileHeaderHeight={120} justifyContent="flex-start">
+          <RightWrapper>
+            {current === "addItems" && (
+              <MobileHeaderFilterIcon>
+                <FilterToggleBtn
+                  header="true"
+                  isShowFilter={isShowFilter}
+                  toggleFilter={toggleFilter}
+                />
+              </MobileHeaderFilterIcon>
+            )}
+            {(owner || features.isCurator) && (
+              <EduButton
+                data-cy="share"
+                style={ButtonWithIconStyle}
+                disabled={isTestLoading}
+                size="large"
+                onClick={onShare}
+              >
+                <ShareIcon color={themeColor} />
+              </EduButton>
+            )}
 
-              {owner && (
+            {owner && (
+              <EduButton
+                title="Save as Draft"
+                data-cy="save"
+                style={ButtonWithIconStyle}
+                size="large"
+                onClick={onSave}
+                disabled={isTestLoading}
+              >
+                <IconDiskette color={themeColor} />
+              </EduButton>
+            )}
+            {showShareButton && owner && showPublishButton && isDirectOwner ? (
+              isPlaylist ? (
                 <EduButton
-                  title="Save as Draft"
-                  data-cy="save"
-                  style={ButtonWithIconStyle}
-                  size="large"
-                  onClick={onSave}
-                  disabled={isTestLoading}
-                >
-                  <IconDiskette color={themeColor} />
-                </EduButton>
-              )}
-              {showShareButton && owner && showPublishButton && isDirectOwner ? (
-                isPlaylist ? (
-                  <EduButton
-                    title="Publish Playlist"
-                    data-cy="publish"
-                    style={{ width: "auto", padding: "0 11px" }}
-                    size="large"
-                    onClick={handlePublish}
-                    disabled={isTestLoading}
-                  >
-                    Publish
-                  </EduButton>
-                ) : (
-                  <EduButton
-                    title="Publish Test"
-                    data-cy="publish"
-                    style={ButtonWithIconStyle}
-                    size="large"
-                    onClick={handlePublish}
-                    disabled={isTestLoading}
-                  >
-                    <IconSend color={themeColor} stroke={themeColor} />
-                  </EduButton>
-                )
-              ) : null}
-              {features.isCurator && testStatus === "inreview" && (
-                <EduButton
-                  title={isPlaylist ? "Reject Playlist" : "Reject Test"}
+                  title="Publish Playlist"
                   data-cy="publish"
                   style={{ width: "auto", padding: "0 11px" }}
                   size="large"
-                  onClick={onClickCuratorReject}
+                  onClick={handlePublish}
                   disabled={isTestLoading}
                 >
-                  Reject
+                  Publish
                 </EduButton>
-              )}
-              {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+              ) : (
                 <EduButton
-                  title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
-                  data-cy="approve"
-                  style={{ width: "auto", padding: "0 11px" }}
+                  title="Publish Test"
+                  data-cy="publish"
+                  style={ButtonWithIconStyle}
                   size="large"
-                  onClick={onClickCuratorApprove}
+                  onClick={handlePublish}
                   disabled={isTestLoading}
                 >
-                  Approve
+                  <IconSend color={themeColor} stroke={themeColor} />
                 </EduButton>
-              )}
-              {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
-                <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
+              )
+            ) : null}
+            {features.isCurator && testStatus === "inreview" && (
+              <EduButton
+                title={isPlaylist ? "Reject Playlist" : "Reject Test"}
+                data-cy="publish"
+                style={{ width: "auto", padding: "0 11px" }}
+                size="large"
+                onClick={onClickCuratorReject}
+                disabled={isTestLoading}
+              >
+                Reject
+              </EduButton>
+            )}
+            {features.isCurator && (testStatus === "inreview" || testStatus === "rejected") && (
+              <EduButton
+                title={isPlaylist ? "Approve Playlist" : "Approve Playlist"}
+                data-cy="approve"
+                style={{ width: "auto", padding: "0 11px" }}
+                size="large"
+                onClick={onClickCuratorApprove}
+                disabled={isTestLoading}
+              >
+                Approve
+              </EduButton>
+            )}
+            {showShareButton &&
+              (owner || testStatus === "published") &&
+              !isPlaylist &&
+              !isPublishers && (
+                <AssignButton
+                  disabled={isTestLoading}
+                  data-cy="assign"
+                  size="large"
+                  onClick={handleAssign}
+                >
                   Assign
                 </AssignButton>
               )}
-            </RightWrapper>
-            <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
-          </MainContainer>
-        </MobileHeader>
+          </RightWrapper>
+          <TestPageNav
+            owner={owner}
+            onChange={onChangeNav}
+            current={current}
+            buttons={navButtons}
+          />
+        </MainHeader>
       )}
     </>
   );
@@ -533,17 +547,14 @@ const TestPageHeader = ({
 
 TestPageHeader.propTypes = {
   onChangeNav: PropTypes.func.isRequired,
-  toggleSideBar: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  creating: PropTypes.bool.isRequired,
   onShare: PropTypes.func.isRequired,
   onEnableEdit: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  onShowSource: PropTypes.func.isRequired,
-  testId: PropTypes.string,
-  editEnable: PropTypes.bool,
+  testId: PropTypes.string.isRequired,
+  editEnable: PropTypes.bool.isRequired,
   onAssign: PropTypes.func.isRequired
 };
 
@@ -559,7 +570,6 @@ const enhance = compose(
       userRole: getUserRole(state)
     }),
     {
-      toggleSideBar: toggleSideBarAction,
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction
     }

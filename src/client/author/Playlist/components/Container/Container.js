@@ -1,75 +1,72 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { debounce, get, has, pickBy, pick, identity } from "lodash";
-import styled from "styled-components";
-import moment from "moment";
-import * as qs from "query-string";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { Button, Row, Input, Spin } from "antd";
-import Modal from "react-responsive-modal";
-import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
-import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
-import { grey, white, themeColor } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import {
-  ScrollBox,
-  Container,
-  ScrollbarWrapper,
-  PaginationInfo,
-  Filter,
-  MobileFilter,
-  Main,
-  FilterButton,
-  SearchModalContainer,
-  CardContainer,
-  PaginationWrapper,
-  AffixWrapper,
-  StyleChangeWrapper,
-  CardBox,
-  ItemsMenu
-} from "../../../TestList/components/Container/styled";
-
-import CardWrapper from "../../../TestList/components/CardWrapper/CardWrapper";
-import {
-  receivePlaylistsAction,
-  getPlaylistsSelector,
-  getPlaylistsLoadingSelector,
-  getPlaylistsCountSelector,
-  getPlaylistsLimitSelector,
-  getPlaylistsPageSelector,
-  receivePublishersAction,
-  receiveRecentPlayListsAction,
-  getPlalistFilterSelector,
-  updateAllPlaylistSearchFilterAction,
-  clearPlaylistFiltersAction,
-  emptyFilters,
-  getSelectedPlaylistSelector,
-  checkPlayListAction
-} from "../../ducks";
-
-import {
-  getTestsCreatingSelector,
-  clearTestDataAction,
-  getAllTagsAction
-} from "../../../TestPage/ducks";
-
-import ListHeader from "../../../src/components/common/ListHeader";
-import TestListFilters from "../../../TestList/components/Container/TestListFilters";
-import {
-  getInterestedCurriculumsSelector,
-  getInterestedSubjectsSelector,
-  getInterestedGradesSelector,
-  getDefaultSubjectSelector,
-  getDefaultGradesSelector
-} from "../../../src/selectors/user";
+import { greyLight1, greyThemeLight, themeColor } from "@edulastic/colors";
+import { FlexContainer, helpers, withWindowSizes } from "@edulastic/common";
+import { IconList, IconPlusCircle, IconTile } from "@edulastic/icons";
+import { Button, Input, Row, Spin } from "antd";
+import { debounce, get, has, identity, pick, pickBy } from "lodash";
+import moment from "moment";
+import PropTypes from "prop-types";
+import * as qs from "query-string";
+import React, { Component } from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { connect } from "react-redux";
+import Modal from "react-responsive-modal";
+import { compose } from "redux";
+import styled from "styled-components";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction
 } from "../../../../student/Login/ducks";
-import NoDataNotification from "../../../../common/components/NoDataNotification";
-import { filterMenuItems } from "../../../Playlist/ducks";
+import ListHeader from "../../../src/components/common/ListHeader";
+import {
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  getInterestedCurriculumsSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector
+} from "../../../src/selectors/user";
+import CardWrapper from "../../../TestList/components/CardWrapper/CardWrapper";
+import {
+  AffixWrapper,
+  CardBox,
+  CardContainer,
+  Container,
+  Filter,
+  FilterButton,
+  ItemsMenu,
+  Main,
+  MobileFilter,
+  PaginationInfo,
+  PaginationWrapper,
+  ScrollbarWrapper,
+  ScrollBox,
+  SearchModalContainer,
+  StyleChangeWrapper
+} from "../../../TestList/components/Container/styled";
+import TestListFilters from "../../../TestList/components/Container/TestListFilters";
+import {
+  clearTestDataAction,
+  getAllTagsAction,
+  getTestsCreatingSelector
+} from "../../../TestPage/ducks";
+import {
+  clearPlaylistFiltersAction,
+  emptyFilters,
+  getPlalistFilterSelector,
+  getPlaylistsCountSelector,
+  getPlaylistsLimitSelector,
+  getPlaylistsLoadingSelector,
+  getPlaylistsPageSelector,
+  getPlaylistsSelector,
+  receivePlaylistsAction,
+  receivePublishersAction,
+  receiveRecentPlayListsAction,
+  updateAllPlaylistSearchFilterAction,
+  filterMenuItems,
+  getSelectedPlaylistSelector,
+  checkPlayListAction
+} from "../../ducks";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 
@@ -87,16 +84,6 @@ class TestList extends Component {
     match: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    curriculums: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        curriculum: PropTypes.string.isRequired,
-        grades: PropTypes.array.isRequired,
-        subject: PropTypes.string.isRequired
-      })
-    ).isRequired,
-    clearDictStandards: PropTypes.func.isRequired,
-    userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
     clearSelectedItems: PropTypes.func
   };
@@ -119,11 +106,7 @@ class TestList extends Component {
       receiveRecentPlayLists,
       limit,
       location,
-      interestedGrades,
       getAllTags,
-      interestedSubjects,
-      defaultGrades = [],
-      defaultSubject = [],
       match: { params = {} },
       playListFilters,
       page,
@@ -272,11 +255,7 @@ class TestList extends Component {
   };
 
   setFilterParams(parsedQueryData) {
-    const {
-      receivePlaylists,
-      match: { params = {} },
-      playListFilters
-    } = this.props;
+    const { receivePlaylists, playListFilters } = this.props;
     // const { search } = this.state;
 
     parsedQueryData = this.typeCheck(parsedQueryData, playListFilters);
@@ -307,6 +286,7 @@ class TestList extends Component {
       : selectedPlayLists.filter(_id => _id !== selectedId);
     checkPlayList(updatedPlayslist);
   };
+
   renderCardContent = () => {
     const { loading, windowWidth, history, match, playlists, selectedPlayLists } = this.props;
     const { blockStyle } = this.state;
@@ -316,7 +296,7 @@ class TestList extends Component {
     if (playlists.length < 1) {
       return (
         <NoDataNotification
-          heading={"Playlists not available"}
+          heading="Playlists not available"
           description={`There are no playlists found for this filter. You can create new playlist by clicking the "NEW PLAYLIST" button.`}
         />
       );
@@ -334,7 +314,7 @@ class TestList extends Component {
             windowWidth={windowWidth}
             history={history}
             match={match}
-            isPlaylist={true}
+            isPlaylist
             handleCheckboxAction={this.handleCheckboxAction}
             checked={selectedPlayLists.includes(item._id)}
           />
@@ -349,13 +329,7 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const {
-      history,
-      receivePlaylists,
-      limit,
-      playListFilters,
-      updateAllPlaylistSearchFilter
-    } = this.props;
+    const { history, receivePlaylists, limit, playListFilters } = this.props;
     let updatedSearch = { ...playListFilters };
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
@@ -390,7 +364,7 @@ class TestList extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
-          title="Play List Library"
+          title="common.playlistLibrary"
           btnTitle="New Play list"
           icon={
             <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
@@ -402,14 +376,14 @@ class TestList extends Component {
                 onClick={() => this.handleStyleChange("tile")}
                 width={18}
                 height={18}
-                color={blockStyle === "tile" ? white : grey}
+                color={blockStyle === "tile" ? greyThemeLight : greyLight1}
               />
               <IconList
                 data-cy="listView"
                 onClick={() => this.handleStyleChange("horizontal")}
                 width={18}
                 height={18}
-                color={blockStyle === "horizontal" ? white : grey}
+                color={blockStyle === "horizontal" ? greyThemeLight : greyLight1}
               />
             </StyleChangeWrapper>
           )}
@@ -431,7 +405,7 @@ class TestList extends Component {
           <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
-                isPlaylist={true}
+                isPlaylist
                 search={playListFilters}
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
@@ -455,7 +429,7 @@ class TestList extends Component {
                         value={searchString}
                       />
                       <TestListFilters
-                        isPlaylist={true}
+                        isPlaylist
                         search={playListFilters}
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}

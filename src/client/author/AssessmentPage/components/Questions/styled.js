@@ -1,14 +1,24 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  mediumDesktopExactWidth,
+  extraDesktopWidthMax,
+  smallDesktopWidth
+} from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
   min-width: 350px;
   max-width: 350px;
   padding: ${props =>
-    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 0 30px 15px"};
+    props.reportMode
+      ? "0px 15px 15px"
+      : props.review && !props.testMode
+      ? "30px 15px 50px"
+      : "30px 0 30px 15px"};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -97,7 +107,7 @@ export const AnswerAction = styled(Button)`
 `;
 
 export const StyledHandleSpan = styled.span`
-  color: #00ad50;
+  color: ${themeColor};
   display: flex;
   align-items: center;
   border: 1px solid #e6e6e6;

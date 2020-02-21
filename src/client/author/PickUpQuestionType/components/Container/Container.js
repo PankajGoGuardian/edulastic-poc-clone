@@ -12,11 +12,9 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   IconClose,
   IconBarChart,
-  IconEdit,
   IconLayout,
   IconLineChart,
   IconMath,
-  IconMolecule,
   IconMore,
   IconNewList,
   IconSelection,
@@ -31,7 +29,10 @@ import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
-import { convertItemToMultipartAction, convertItemToPassageWithQuestionsAction } from "../../../ItemDetail/ducks";
+import {
+  convertItemToMultipartAction,
+  convertItemToPassageWithQuestionsAction
+} from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -178,7 +179,7 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { location, testName, modalItemId, navigateToItemDetail, toggleModalAction, testId, isTestFlow } = this.props;
+    const { testName, toggleModalAction, testId, isTestFlow } = this.props;
 
     if (isTestFlow) {
       const testPath = `/author/tests/${testId || "create"}`;
@@ -222,7 +223,6 @@ class Container extends Component {
       toggleSideBar,
       modalItemId,
       onModalClose,
-      navigateToItemDetail,
       selectedCategory,
       selectedTab
     } = this.props;
@@ -231,8 +231,9 @@ class Container extends Component {
     return (
       <Content showMobileView={mobileViewShow}>
         <Header
-          title={t("component.pickupcomponent.headertitle")}
+          title="common.selectQuestionWidget"
           link={this.link}
+          noEllipsis
           toggleSideBar={toggleSideBar}
           renderExtra={() =>
             modalItemId && (
@@ -260,58 +261,62 @@ class Container extends Component {
             <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
             <AffixWrapper>
               <PerfectScrollbar>
-                <LeftMenuWrapper mode="inline" selectedKeys={[selectedCategory]} onClick={this.handleCategory}>
+                <LeftMenuWrapper
+                  mode="inline"
+                  selectedKeys={[selectedCategory]}
+                  onClick={this.handleCategory}
+                >
                   <Menu.Item key="multiple-choice">
                     <IconNewList />
-                    {"Multiple Choice"}
+                    Multiple Choice
                   </Menu.Item>
                   <Menu.Item key="fill-blanks">
                     <IconSelection />
-                    {"Fill in the Blanks"}
+                    Fill in the Blanks
                   </Menu.Item>
                   <Menu.Item key="classify">
                     <IconLayout />
-                    {"Classify, Match & Order"}
+                    Classify, Match & Order
                   </Menu.Item>
                   <Menu.Item key="edit">
                     <IconWrite />
-                    {"Writing"}
+                    Writing
                   </Menu.Item>
                   <Menu.Item key="read">
                     <IconRead />
-                    {"Reading"}
+                    Reading
                   </Menu.Item>
                   <Menu.Item key="highlight">
                     <IconTarget />
-                    {"Highlight"}
+                    Highlight
                   </Menu.Item>
                   <Menu.Item key="math">
                     <IconMath />
-                    {"Math"}
+                    Math
                   </Menu.Item>
                   <Menu.Item key="graphing">
                     <IconLineChart />
-                    {"Graphing"}
+                    Graphing
                   </Menu.Item>
                   <Menu.Item key="charts">
                     <IconBarChart />
-                    {"Charts"}
+                    Charts
                   </Menu.Item>
                   <Menu.Item key="multipart">
                     <IconMultipart />
-                    {"Multipart"}
+                    Multipart
                   </Menu.Item>
                   <Menu.Item key="instruction">
                     <IconPlay />
-                    {"Instructions"}
+                    Instructions
                   </Menu.Item>
                   <Menu.Item key="rulers-calculators">
                     <IconRulerPencil />
-                    {"Tools"}
+                    Tools
                   </Menu.Item>
                   <Menu.Item key="other">
                     <IconMore />
-                    {"Other"}
+                    Other
                   </Menu.Item>
                 </LeftMenuWrapper>
               </PerfectScrollbar>
@@ -348,7 +353,10 @@ class Container extends Component {
                 minHeight: "calc(100vh - 190px)"
               }}
             >
-              <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
+              <QuestionTypes
+                onSelectQuestionType={this.selectQuestionType}
+                questionType={selectedCategory}
+              />
             </PaddingDiv>
           </RightSide>
         </PickQuestionWrapper>
@@ -374,55 +382,55 @@ class Container extends Component {
             >
               <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
                 <IconNewList />
-                {"Multiple Choice"}
+                Multiple Choice
               </Menu.Item>
               <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
                 <IconSelection />
-                {"Fill in the Blanks"}
+                Fill in the Blanks
               </Menu.Item>
               <Menu.Item key="classify" onClick={this.toggleCategories}>
                 <IconLayout />
-                {"Classify, Match & Order"}
+                Classify, Match & Order
               </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
                 <IconWrite />
-                {"Writing"}
+                Writing
               </Menu.Item>
               <Menu.Item key="read" onClick={this.toggleCategories}>
                 <IconRead />
-                {"Reading"}
+                Reading
               </Menu.Item>
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
                 <IconTarget />
-                {"Highlight"}
+                Highlight
               </Menu.Item>
               <Menu.Item key="math" onClick={this.toggleCategories}>
                 <IconMath />
-                {"Math"}
+                Math
               </Menu.Item>
               <Menu.Item key="graphing" onClick={this.toggleCategories}>
                 <IconLineChart />
-                {"Graphing"}
+                Graphing
               </Menu.Item>
               <Menu.Item key="charts" onClick={this.toggleCategories}>
                 <IconBarChart />
-                {"Charts"}
+                Charts
               </Menu.Item>
               <Menu.Item key="multipart">
                 <IconMultipart />
-                {"Multipart"}
+                Multipart
               </Menu.Item>
               <Menu.Item key="instruction" onClick={this.toggleCategories}>
                 <IconPlay />
-                {"Instructions"}
+                Instructions
               </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <IconRulerPencil />
-                {"Tools"}
+                Tools
               </Menu.Item>
               <Menu.Item key="other" onClick={this.toggleCategories}>
                 <IconMore />
-                {"Other"}
+                Other
               </Menu.Item>
             </Menu>
           </StyledModalContainer>
@@ -468,7 +476,6 @@ Container.propTypes = {
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
   navigateToQuestionEdit: PropTypes.func,
-  navigateToItemDetail: PropTypes.func,
   setCategory: PropTypes.func.isRequired,
   setTab: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string.isRequired,
@@ -482,8 +489,7 @@ Container.propTypes = {
 Container.defaultProps = {
   modalItemId: undefined,
   onModalClose: () => {},
-  navigateToQuestionEdit: () => {},
-  navigateToItemDetail: () => {}
+  navigateToQuestionEdit: () => {}
 };
 
 export default enhance(Container);

@@ -13,7 +13,6 @@ import {
   Container,
   Element,
   ListItems,
-  SpinContainer,
   PaginationContainer,
   MobileFilterIcon,
   ContentWrapper,
@@ -49,7 +48,10 @@ import {
   getAllTagsAction
 } from "../../../TestPage/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from "../../../src/selectors/dictionaries";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
@@ -61,10 +63,12 @@ import {
 } from "../../../src/selectors/user";
 
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import {
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
+} from "../../../../student/Login/ducks";
 import ItemListContainer from "./ItemListContainer";
 import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../ducks";
-import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Actions from "../Actions";
 import SelectCollectionModal from "../Actions/SelectCollection";
@@ -200,7 +204,6 @@ class Contaier extends Component {
       getCurriculumStandards(search.curriculumId, value, "");
     }
     if (fieldName === "subject") {
-      const { clearDictStandards } = this.props;
       clearDictStandards();
       storeInLocalStorage("defaultSubject", value);
       udpateDefaultSubject(value);
@@ -291,7 +294,7 @@ class Contaier extends Component {
 
   rejectNumberChecker = testItems => {
     let count = 0;
-    for (let i of testItems) {
+    for (const i of testItems) {
       if (i.status === "inreview") {
         count++;
       }
@@ -301,7 +304,7 @@ class Contaier extends Component {
 
   approveNumberChecker = testItems => {
     let count = 0;
-    for (let i of testItems) {
+    for (const i of testItems) {
       if (i.status === "inreview" || i.status === "rejected") {
         count++;
       }
@@ -316,7 +319,7 @@ class Contaier extends Component {
           const { createTestFromCart } = this.props;
           createTestFromCart();
         }}
-        buttonText={"Author Test"}
+        buttonText="Author Test"
       />
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
         <CartButton
@@ -324,7 +327,7 @@ class Contaier extends Component {
             const { approveOrRejectMultipleItem } = this.props;
             approveOrRejectMultipleItem({ status: "rejected" });
           }}
-          buttonText={"Reject"}
+          buttonText="Reject"
           numberChecker={this.rejectNumberChecker}
         />
         <CartButton
@@ -332,14 +335,16 @@ class Contaier extends Component {
             const { approveOrRejectMultipleItem } = this.props;
             approveOrRejectMultipleItem({ status: "published" });
           }}
-          buttonText={"Approve"}
+          buttonText="Approve"
           numberChecker={this.approveNumberChecker}
         />
       </FeaturesSwitch>
     </>
   );
 
-  renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
+  renderFilterIcon = isShowFilter => (
+    <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />
+  );
 
   render() {
     const {
@@ -362,7 +367,7 @@ class Contaier extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
-          title={t("component.itemlist.header.itemlist")}
+          title="common.itemBank"
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
         />
@@ -396,8 +401,14 @@ class Contaier extends Component {
                     </ItemsMenu>
 
                     <ScrollbarContainer>
-                      <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
-                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                      <ItemListContainer
+                        history={history}
+                        windowWidth={windowWidth}
+                        search={search}
+                      />
+                      {count > 10 && (
+                        <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                      )}
                     </ScrollbarContainer>
                   </>
                 )}
@@ -411,7 +422,6 @@ class Contaier extends Component {
 }
 
 Contaier.propTypes = {
-  items: PropTypes.array.isRequired,
   limit: PropTypes.number.isRequired,
   page: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
@@ -422,7 +432,6 @@ Contaier.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   creating: PropTypes.bool.isRequired,
   t: PropTypes.func.isRequired,
-  itemTypes: PropTypes.object.isRequired,
   curriculums: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -436,8 +445,7 @@ Contaier.propTypes = {
   curriculumStandards: PropTypes.array.isRequired,
   clearDictStandards: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  setDefaultTestData: PropTypes.func.isRequired,
-  addItemToCart: PropTypes.func.isRequired
+  setDefaultTestData: PropTypes.func.isRequired
 };
 
 const enhance = compose(

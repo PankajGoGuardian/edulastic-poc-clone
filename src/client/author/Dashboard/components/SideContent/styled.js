@@ -2,7 +2,6 @@ import { Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
 import {
-  mediumDesktopWidth,
   white,
   themeColor,
   mediumDesktopExactWidth,
@@ -119,7 +118,7 @@ export const ChatIconContainer = styled.div`
 export const ChatIcon = styled(Icon)`
   padding: 1rem;
   font-size: 20px;
-  background: #00ad50;
+  background: ${themeColor};
   color: white;
   border-radius: 50%;
   align-self: end;

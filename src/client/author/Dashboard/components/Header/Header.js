@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { compose } from "redux";
+import { green, red } from "@edulastic/colors";
+import { FlexContainer, MainHeader } from "@edulastic/common";
+import { Popover } from "antd";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { green, red } from "@edulastic/colors";
-import { FlexContainer, MenuIcon } from "@edulastic/common";
-import {
-  TitleWrapper,
-  ManageClassButton,
-  IconPlus,
-  ButtonText,
-  PopoverWrapper,
-  PopoverTitle,
-  PopoverDetail,
-  PopoverCancel,
-  UpgradeBtn
-} from "./styled";
-import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import { Popover } from "antd";
-import { slice } from "../../../Subscription/ducks.js";
-
+import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
 import IMG from "../../../Subscription/static/6.png";
+import {
+  ButtonText,
+  IconPlus,
+  ManageClassButton,
+  PopoverCancel,
+  PopoverDetail,
+  PopoverTitle,
+  PopoverWrapper,
+  UpgradeBtn
+} from "./styled";
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
   <FlexContainer width="475px" alignItems="flex-start">
-    <img src={IMG} width="165" height="135" />
+    <img src={IMG} width="165" height="135" alt="" />
     <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
       <PopoverTitle>Get Started!</PopoverTitle>
       <PopoverDetail>
-        Get additional reports, options to assist students, collaborate with colleagues, anti-cheating tools and more.
+        Get additional reports, options to assist students, collaborate with colleagues,
+        anti-cheating tools and more.
       </PopoverDetail>
       <FlexContainer padding="15px 0 15px 0" width="100%">
         <PopoverCancel onClick={() => setvisible(false)}> NO, THANKS</PopoverCancel>
@@ -42,7 +38,7 @@ const getContent = ({ setvisible, isSubscriptionExpired }) => (
   </FlexContainer>
 );
 
-const HeaderSection = ({ toggleSideBar, premium, isSubscriptionExpired = false, fetchUserSubscriptionStatus }) => {
+const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscriptionStatus }) => {
   useEffect(() => {
     fetchUserSubscriptionStatus();
   }, []);
@@ -50,11 +46,7 @@ const HeaderSection = ({ toggleSideBar, premium, isSubscriptionExpired = false, 
   const [visible, setvisible] = useState(false);
 
   return (
-    <HeaderWrapper>
-      <FlexContainer style={{ pointerEvents: "none" }}>
-        <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-        <TitleWrapper>Dashboard</TitleWrapper>
-      </FlexContainer>
+    <MainHeader headingText="common.dashboard">
       <FlexContainer>
         {!premium && (
           <PopoverWrapper>
@@ -67,7 +59,12 @@ const HeaderSection = ({ toggleSideBar, premium, isSubscriptionExpired = false, 
               visible={visible}
             >
               <ManageClassButton data-cy="manageClass">
-                <i class={isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"} aria-hidden="true" />
+                <i
+                  className={
+                    isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"
+                  }
+                  aria-hidden="true"
+                />
                 <ButtonText>
                   {isSubscriptionExpired ? (
                     <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
@@ -86,12 +83,14 @@ const HeaderSection = ({ toggleSideBar, premium, isSubscriptionExpired = false, 
           </ManageClassButton>
         </Link>
       </FlexContainer>
-    </HeaderWrapper>
+    </MainHeader>
   );
 };
 
 HeaderSection.propTypes = {
-  toggleSideBar: PropTypes.func.isRequired
+  premium: PropTypes.any.isRequired,
+  isSubscriptionExpired: PropTypes.bool.isRequired,
+  fetchUserSubscriptionStatus: PropTypes.func.isRequired
 };
 
 export default connect(
@@ -100,7 +99,6 @@ export default connect(
     isSubscriptionExpired: state?.subscription?.isSubscriptionExpired
   }),
   {
-    toggleSideBar: toggleSideBarAction,
     fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus
   }
 )(HeaderSection);

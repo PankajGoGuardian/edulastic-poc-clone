@@ -1,19 +1,14 @@
+import { MainHeader } from "@edulastic/common";
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { white } from "@edulastic/colors";
-// components
-import { Title, IconManageClass, SaveClassBtn, CancelClassBtn, ButtonsWrapper } from "./styled";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 // ducks
 import { fetchClassListAction } from "../../ducks";
+// components
+import { ButtonsWrapper, CancelClassBtn, IconManageClass, SaveClassBtn } from "./styled";
 
 const Header = ({ classId }) => (
-  <HeaderWrapper>
-    <Title>
-      <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
-    </Title>
+  <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
     <ButtonsWrapper>
       <Link to={`/author/manageClass/${classId}`}>
         <CancelClassBtn data-cy="cancel">Cancel</CancelClassBtn>
@@ -22,7 +17,7 @@ const Header = ({ classId }) => (
         Update Class
       </SaveClassBtn>
     </ButtonsWrapper>
-  </HeaderWrapper>
+  </MainHeader>
 );
 
 export default connect(

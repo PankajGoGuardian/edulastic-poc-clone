@@ -1,20 +1,22 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { Spin, Button, Modal, Input, Row, Col } from "antd";
+import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
+import { MainHeader } from "@edulastic/common";
 import { IconPlus } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Col, Input, Modal, Row, Spin } from "antd";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { compose } from "redux";
 import styled from "styled-components";
-import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
-import ClassCard from "./CardContainer";
-
-import { NoDataBox } from "../../styled";
 import NoDataIcon from "../../assets/nodata.svg";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
+import { NoDataBox } from "../../styled";
+import ClassCard from "./CardContainer";
 import ManageClassSubHeader from "./SubHeader";
 
 const ClassCards = ({ classList, t }) => {
-  const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
+  const cards = classList.map(classItem => (
+    <ClassCard key={classItem._id} classItem={classItem} t={t} />
+  ));
   return cards;
 };
 
@@ -25,7 +27,6 @@ const ManageClassContainer = ({
   showClass,
   joinClass,
   studentData,
-  classSelect,
   showActiveClass,
   allClassList,
   setClassList,
@@ -47,9 +48,8 @@ const ManageClassContainer = ({
   };
   if (loading) return <Spin />;
   return (
-    <CustomWrapper>
-      <HeaderWrapper>
-        <AssignmentTitle>{t("common.manageClassTitle")}</AssignmentTitle>
+    <>
+      <MainHeader headingText="common.manageClassTitle">
         <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
           <IconPlus width={12} height={12} color="white" stroke="white" />
           <span>{t("common.joinClass")}</span>
@@ -59,16 +59,16 @@ const ManageClassContainer = ({
             visible={isJoinClassModalVisible}
             onCancel={closeModalHandler}
             title={t("common.enterClassCode")}
-            footer={
+            footer={(
               <ButtonWrapper>
                 <StyledButton data-cy="cancelbutton" onClick={closeModalHandler}>
                   {t("common.cancel")}
                 </StyledButton>
-                <StyledButton data-cy="joinbutton" onClick={joinClassHandler} type={"primary"}>
+                <StyledButton data-cy="joinbutton" onClick={joinClassHandler} type="primary">
                   {t("common.join")}
                 </StyledButton>
               </ButtonWrapper>
-            }
+            )}
           >
             <StyledInput
               data-cy="classcodeinput"
@@ -82,7 +82,7 @@ const ManageClassContainer = ({
             ) : null}
           </JoinClassModal>
         )}
-      </HeaderWrapper>
+      </MainHeader>
       <SubHeaderWrapper>
         <Col span={12}>
           <ManageClassSubHeader />
@@ -113,7 +113,7 @@ const ManageClassContainer = ({
           </NoDataBox>
         </NoDataBoxWrapper>
       )}
-    </CustomWrapper>
+    </>
   );
 };
 
@@ -130,49 +130,6 @@ ManageClassContainer.propTypes = {
   loading: PropTypes.bool.isRequired,
   showClass: PropTypes.string.isRequired
 };
-
-const CustomWrapper = styled.div`
-  padding-top: ${props => props.theme.HeaderHeight.xs}px;
-  margin: 0px;
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    padding-top: ${props => props.theme.HeaderHeight.md}px;
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    padding-top: ${props => props.theme.HeaderHeight.xl}px;
-  }
-`;
-
-const HeaderWrapper = styled.div`
-  position: fixed;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  background: ${themeColor};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 40px 0px 140px;
-  height: ${props => props.theme.HeaderHeight.xs}px;
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${props => props.theme.HeaderHeight.md}px;
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${props => props.theme.HeaderHeight.xl}px;
-  }
-`;
-
-const AssignmentTitle = styled.h2`
-  color: ${white};
-  margin: 0px;
-  font-size: 22px;
-  font-weight: bold;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    font-size: 18px;
-  }
-`;
 
 const NoDataBoxWrapper = styled.div`
   height: calc(100vh - 150px);
@@ -275,7 +232,8 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledInput = styled(Input)`
-  border: ${props => (props.classCode && !props.classCode.length ? `1px solid ${themeColor}` : "1px solid red")};
+  border: ${props =>
+    props.classCode && !props.classCode.length ? `1px solid ${themeColor}` : "1px solid red"};
 `;
 export const ErrorMessage = styled.div`
   color: red;

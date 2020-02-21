@@ -74,7 +74,8 @@ export const StyledCard = styled(Card)`
     padding: 19px 22px;
   }
   &:hover {
-    box-shadow: ${props => (props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)")};
+    box-shadow: ${props =>
+      props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)"};
   }
 
   @media (min-width: ${mobileWidth}) and (max-width: 767px) {
@@ -151,7 +152,7 @@ export const CircularDiv = styled.div`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: #00ad50;
+  color: ${themeColor};
   cursor: ${props => (props.isLink ? "pointer" : "default")};
   font-weight: 600;
   line-height: 38px;

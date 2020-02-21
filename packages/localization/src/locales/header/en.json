@@ -1,8 +1,17 @@
 {
   "common": {
+    "dashboard": "Dashboard",
     "dashboardTitle": "Assignments",
-    "classLabel": "Class",
+    "newAssignment": "New Assignment",
+    "playlistLibrary": "Play List Library",
+    "testLibrary": "Test Library",
+    "itemBank": "Item Bank",
+    "reports": "Reports",
     "manageClassTitle": "Manage Class",
+    "newTest": "New Test",
+    "selectQuestionWidget": "Select a Widget (Question or Resource)",
+    "itemDetail": "Item Detail",
+    "classLabel": "Class",
     "showLabel": "Show",
     "reportsTitle": "Grades",
     "playlistTitle": "Playlist",

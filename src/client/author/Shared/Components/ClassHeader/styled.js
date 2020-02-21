@@ -12,7 +12,8 @@ import {
   smallDesktopWidth,
   mobileWidthMax,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  greyThemeDark2
 } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../theme";
@@ -112,7 +113,6 @@ export const DownArrow = styled(Icon)`
 
 export const LinkLabel = styled.div`
   padding: 0px 18px;
-  color: ${props => (props.color ? props.color : white)};
   font-size: 10px;
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -187,22 +187,18 @@ export const StyledAnchor = styled.div`
   font-weight: 600;
   align-items: center;
   justify-content: center;
-  color: ${white};
+  color: ${props => (props.isActive ? white : greyThemeDark2)};
   width: auto;
   padding: 0px 18px;
   text-align: center;
   height: 45px;
   margin: 0 5px;
   border-radius: 4px;
-  background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
+  background-color: ${props => (props.isActive ? "#b3bcc4" : "#f2f3f2")};
   -webkit-transition: background-color 0.3s;
   transition: background-color 0.3s;
-  &:hover {
-    color: ${props => (props.isActive ? white : fadedBlue)};
-    background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
-  }
   a {
-    color: ${props => (props.isActive ? white : fadedBlue)};
+    color: ${props => (props.isActive ? white : greyThemeDark2)};
   }
 
   @media (max-width: ${extraDesktopWidth}) {

@@ -1,23 +1,17 @@
+import { Layout } from "antd";
+import { get, pickBy } from "lodash";
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, pickBy } from "lodash";
-
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import DistrictProfileForm from "../DistrictProfileForm/DistrictProfileForm";
-
-import { StyledLayout, DistrictProfileHeader, SubHeader, Spacer, StyledButton, ButtonText } from "./styled";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { Layout } from "antd";
+import { ButtonText, Spacer, StyledButton, StyledLayout, SubHeader } from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "District Profile", subMenu: "" };
 
 class DistrictProfile extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     isInputEnabled: false
   };
@@ -34,12 +28,28 @@ class DistrictProfile extends Component {
     event.preventDefault();
 
     const { childRefArr } = this.formRef;
-    const { userOrgId, districtProfile, form, createDistrictProfile, updateDistrictProfile } = this.formRef.props;
-    const { logo, pageBackground, name, shortName, city, state, zip, nces, announcement } = districtProfile;
+    const {
+      userOrgId,
+      districtProfile,
+      form,
+      createDistrictProfile,
+      updateDistrictProfile
+    } = this.formRef.props;
+    const {
+      logo,
+      pageBackground,
+      name,
+      shortName,
+      city,
+      state,
+      zip,
+      nces,
+      announcement
+    } = districtProfile;
 
     if (!childRefArr.length) return null;
 
-    form.validateFields((errors, values) => {
+    form.validateFields(errors => {
       if (errors) {
         return null;
       }
@@ -94,15 +104,16 @@ class DistrictProfile extends Component {
     return (
       <FeaturesSwitch inputFeatures="manageDistrict" actionOnInaccessible="hidden">
         <Layout>
-          <DistrictProfileHeader>
-            <AdminHeader title={title} active={menuActive} history={history} />
-          </DistrictProfileHeader>
+          <AdminHeader title={title} active={menuActive} history={history} />
           <SubHeader>
             <Spacer />
             {this.showButtons(isInputEnabled)}
           </SubHeader>
           <StyledLayout>
-            <DistrictProfileForm isInputEnabled={isInputEnabled} wrappedComponentRef={this.saveFormRef} />
+            <DistrictProfileForm
+              isInputEnabled={isInputEnabled}
+              wrappedComponentRef={this.saveFormRef}
+            />
           </StyledLayout>
         </Layout>
       </FeaturesSwitch>

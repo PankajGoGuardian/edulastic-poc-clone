@@ -55,7 +55,13 @@ const Tab = ({
   }
 
   return (
-    <Container active={active} style={style} type={type} borderRadius={borderRadius} onClick={onClick}>
+    <Container
+      active={active}
+      style={style}
+      type={type}
+      borderRadius={borderRadius}
+      onClick={onClick}
+    >
       {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
@@ -168,7 +174,7 @@ const CloseIcon = styled.span`
 `;
 
 export const AddTabButton = styled(Button)`
-  color: #00ad50;
+  color: ${themeColor};
   height: 45px;
   width: 170px;
   font-size: 11px;
@@ -188,7 +194,7 @@ export const AddTabButton = styled(Button)`
     position: unset;
   }
   &:focus {
-    color: #00ad50;
+    color: ${themeColor};
   }
 `;
 

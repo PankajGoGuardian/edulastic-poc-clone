@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { boxShadowDefault } from "@edulastic/colors";
+import { boxShadowDefault, themeColor } from "@edulastic/colors";
 import { Header } from "../common";
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
@@ -60,7 +60,7 @@ export const ActionButton = styled(Button)`
   border-radius: 5px;
   height: 40px;
   margin-left: 10px;
-  color: #00ad50;
+  color: ${themeColor};
   font-weight: 900;
   font-size: 17px;
   user-select: none;
@@ -70,7 +70,7 @@ export const ActionButton = styled(Button)`
   }
 
   svg {
-    fill: #00ad50;
+    fill: ${themeColor};
   }
   &.ant-btn[disabled] {
     svg {
@@ -92,7 +92,7 @@ export const ContainerRight = styled.div`
 `;
 
 export const HeaderPracticePlayer = styled(Header)`
-  background: ${props => props.theme.header.headerBg};
+  background: ${themeColor};
   box-shadow: ${boxShadowDefault};
   height: 70px;
   z-index: 1000;

@@ -1,12 +1,12 @@
+import { themeColor } from "@edulastic/colors";
+import { MainHeader } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
+import { Button, Col, Icon } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Col, Icon } from "antd";
-import { themeColor } from "@edulastic/colors";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import Breadcrumb from "../../../src/components/Breadcrumb";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import Breadcrumb from "../../../src/components/Breadcrumb";
 import HeaderNavigation from "./Header/HeaderNavigation";
-import { IconFilter } from "@edulastic/icons";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -39,17 +39,27 @@ export const CustomizedHeaderWrapper = ({
 
   return (
     <div>
-      <HeaderWrapper>
-        <HeaderTitle>
-          <h1>Reports</h1>
-        </HeaderTitle>
+      <MainHeader
+        mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
+        headingText="common.reports"
+      >
         {navigationItems.length ? (
           activeNavigationKey === "standard-reports" ? (
-            <FeaturesSwitch inputFeatures="customReport" actionOnInaccessible="hidden" key="customReport">
-              <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+            <FeaturesSwitch
+              inputFeatures="customReport"
+              actionOnInaccessible="hidden"
+              key="customReport"
+            >
+              <HeaderNavigation
+                navigationItems={navigationItems}
+                activeItemKey={activeNavigationKey}
+              />
             </FeaturesSwitch>
           ) : (
-            <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
+            <HeaderNavigation
+              navigationItems={navigationItems}
+              activeItemKey={activeNavigationKey}
+            />
           )
         ) : null}
         <StyledCol>
@@ -73,13 +83,15 @@ export const CustomizedHeaderWrapper = ({
             ) : null}
           </FeaturesSwitch>
         </StyledCol>
-      </HeaderWrapper>
+      </MainHeader>
       <SecondaryHeader>
         <HeaderTitle>
-          {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
+          {title !== "Reports" ? (
+            <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} />
+          ) : null}
         </HeaderTitle>
         {onRefineResultsCB ? (
-          <StyledButton display={"flex"} type={"default"} shape="round" onClick={_onRefineResultsCB}>
+          <StyledButton display="flex" type="default" shape="round" onClick={_onRefineResultsCB}>
             <i className="anticon">
               <IconFilter color={themeColor} width={20} height={20} />
             </i>
@@ -102,7 +114,7 @@ const StyledCol = styled(Col)`
 
 const StyledButton = styled(Button)`
   &.ant-btn {
-    display: ${({ display }) => (display ? display : "unset")};
+    display: ${({ display }) => display || "unset"};
     align-items: ${({ display }) => (display === "flex" ? "center" : "unset")};
     margin-left: 5px;
     font-size: 14px;

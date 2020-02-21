@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import {
   themeColor,
-  themeLightGrayBgColor,
   white,
   mediumDesktopExactWidth,
   extraDesktopWidthMax
 } from "@edulastic/colors";
+import { Button } from "antd";
 
 export const Title = styled.h1`
   color: white;
@@ -39,19 +39,22 @@ export const ActionBtnWrapper = styled.div`
   width: 415px;
 `;
 
-export const HeaderActionBtn = styled.button`
+export const HeaderActionBtn = styled(Button)`
   width: ${({ width }) => width};
   height: 42px;
   color: ${themeColor};
+  border-color: ${themeColor};
   background: ${white};
-  border: none;
   outline: none;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
-  &:hover {
-    background: ${themeLightGrayBgColor};
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    color: ${white};
+    border-color: ${themeColor};
   }
 `;

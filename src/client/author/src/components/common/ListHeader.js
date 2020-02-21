@@ -1,33 +1,32 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer, Button, MenuIcon } from "@edulastic/common";
-import { roleuser } from "@edulastic/constants";
-import { get } from "lodash";
 import {
-  mobileWidth,
   desktopWidth,
   mediumDesktopWidth,
-  white,
-  themeColor,
+  mobileWidth,
+  mobileWidthLarge,
   mobileWidthMax,
-  mobileWidthLarge
+  themeColor,
+  white
 } from "@edulastic/colors";
+import { Button, MainHeader } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
 import { IconPlusCircle } from "@edulastic/icons";
-import { connect } from "react-redux";
-import HeaderWrapper from "../../mainContent/headerWrapper";
-import { toggleSideBarAction } from "../../actions/toggleMenu";
-
-import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
-import { getUserOrgId, getUserRole } from "../../selectors/user";
-import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-import UserSubHeader from "./AdminSubHeader/UserSubHeader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { withNamespaces } from "@edulastic/localization";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
+import {
+  addBulkTeacherAdminAction,
+  setTeachersDetailsModalVisibleAction
+} from "../../../SchoolAdmin/ducks";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
+import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import { getUserOrgId, getUserRole } from "../../selectors/user";
 
 const ListHeader = ({
   onCreate,
@@ -35,7 +34,6 @@ const ListHeader = ({
   t,
   title,
   btnTitle,
-  toggleSideBar,
   renderExtra,
   renderFilter,
   renderFilterIcon,
@@ -64,12 +62,7 @@ const ListHeader = ({
   };
 
   return (
-    <Container>
-      <FlexContainer style={{ pointerEvents: "none" }}>
-        <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-        <Title>{title}</Title>
-      </FlexContainer>
-
+    <MainHeader headingText={title}>
       {midTitle && (
         <MidTitleWrapper>
           <Title>{midTitle}</Title>
@@ -90,7 +83,9 @@ const ListHeader = ({
               color="secondary"
               variant="create"
               shadow="none"
-              icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+              icon={
+                <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
+              }
             >
               {btnTitle && btnTitle.length ? btnTitle : "New Item"}
             </CreateButton>
@@ -107,12 +102,19 @@ const ListHeader = ({
                 INVITE TEACHERS
               </TestButton>
             )}
-            <Link to={"/author/assignments/select"}>
+            <Link to="/author/assignments/select">
               <TestButton
                 color="secondary"
                 variant="test"
                 shadow="none"
-                icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+                icon={(
+                  <IconPlusStyled
+                    color={themeColor}
+                    width={20}
+                    height={20}
+                    hoverColor={themeColor}
+                  />
+                )}
               >
                 NEW ASSIGNMENT
               </TestButton>
@@ -138,7 +140,7 @@ const ListHeader = ({
           title="Teacher Details"
         />
       )}
-    </Container>
+    </MainHeader>
   );
 };
 
@@ -147,7 +149,6 @@ ListHeader.propTypes = {
   createAssignment: PropTypes.bool,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  toggleSideBar: PropTypes.func.isRequired,
   btnTitle: PropTypes.string,
   renderExtra: PropTypes.func,
   renderFilter: PropTypes.func,
@@ -180,28 +181,20 @@ const enhance = compose(
         userOrgId: getUserOrgId(state),
         userRole: getUserRole(state),
         firstName: user.firstName || "",
-        teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
+        teacherDetailsModalVisible: get(
+          state,
+          ["schoolAdminReducer", "teacherDetailsModalVisible"],
+          false
+        )
       };
     },
     {
-      toggleSideBar: toggleSideBarAction,
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction
     }
   )
 );
 export default enhance(ListHeader);
-
-const Container = styled(HeaderWrapper)`
-  display: flex;
-  border-radius: 5px;
-  align-items: center;
-  justify-content: space-between;
-  background-color: ${props => props.theme.header.headerBgColor};
-  padding: 0px 15px;
-  height: 62px;
-  z-index: 1;
-`;
 
 export const TestButton = styled(Button)`
   height: 45px;
@@ -210,6 +203,7 @@ export const TestButton = styled(Button)`
   margin-left: 25px;
   background: ${white};
   padding: 5px 30px;
+  border-color: ${props => props.theme.themeColor};
   &:hover,
   &:focus,
   &:active {

@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { MainHeader } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { get } from "lodash";
-import { AdminHeaderContent, StyledTabs, StyledTabPane, AdminHeaderWrapper, Title } from "./styled";
-import { getUserRole, getManageTabLabelSelector } from "../../../selectors/user";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
+import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
 
 class AdminHeader extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    active: PropTypes.object.isRequired,
-    count: PropTypes.number
+    active: PropTypes.object.isRequired
   };
 
-  onHeaderTabClick = (key, e) => {
+  onHeaderTabClick = key => {
     const { history, role } = this.props;
     switch (key) {
       case "District Profile":
@@ -44,12 +44,8 @@ class AdminHeader extends Component {
       case "Settings":
         history.push(`/author/settings/districtpolicies`);
         return;
-      case "Users":
-        history.push(`/author/users/district-admin`);
-        return;
       case "Content":
         history.push(`/author/content/collections`);
-        return;
     }
   };
 
@@ -57,26 +53,30 @@ class AdminHeader extends Component {
     const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
-      <AdminHeaderWrapper>
+      <MainHeader headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>
-          <Title>{manageTabLabel}</Title>
-          <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
+          <StyledTabs
+            type="card"
+            defaultActiveKey={active.mainMenu}
+            onTabClick={this.onHeaderTabClick}
+          >
             {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledTabPane tab="District Profile" key={"District Profile"} />
+              <StyledTabPane tab="District Profile" key="District Profile" />
             ) : null}
-            <StyledTabPane tab={SchoolTabtext} key={"Schools"} />
-            <StyledTabPane tab="Users" key={"Users"} />
-            <StyledTabPane tab="Classes" key={"Classes"} />
-            <StyledTabPane tab="Courses" key={"Courses"} />
-            <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
+            <StyledTabPane tab={SchoolTabtext} key="Schools" />
+            <StyledTabPane tab="Users" key="Users" />
+            <StyledTabPane tab="Classes" key="Classes" />
+            <StyledTabPane tab="Courses" key="Courses" />
+            <StyledTabPane tab="Class Enrollment" key="Class Enrollment" />
             {/* <StyledTabPane tab="Groups" key={"Groups"} /> */}
-            {role === roleuser.DISTRICT_ADMIN && <StyledTabPane tab="Content" key={"Content"} />}
-            {role === roleuser.DISTRICT_ADMIN || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
-              <StyledTabPane tab="Settings" key={"Settings"} />
+            {role === roleuser.DISTRICT_ADMIN && <StyledTabPane tab="Content" key="Content" />}
+            {role === roleuser.DISTRICT_ADMIN ||
+            (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
+              <StyledTabPane tab="Settings" key="Settings" />
             ) : null}
           </StyledTabs>
         </AdminHeaderContent>
-      </AdminHeaderWrapper>
+      </MainHeader>
     );
   }
 }
@@ -84,7 +84,11 @@ class AdminHeader extends Component {
 export default connect(
   state => ({
     role: getUserRole(state),
-    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false),
+    schoolLevelAdminSettings: get(
+      state,
+      "districtPolicyReducer.data.schoolAdminSettingsAccess",
+      false
+    ),
     manageTabLabel: getManageTabLabelSelector(state)
   }),
   {}

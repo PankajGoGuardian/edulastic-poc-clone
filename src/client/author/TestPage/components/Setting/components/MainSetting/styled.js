@@ -64,7 +64,7 @@ export const StyledAnchor = styled(Anchor)`
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: #00ad50;
+      background: ${themeColor};
       content: "";
       position: absolute;
       left: -7px;

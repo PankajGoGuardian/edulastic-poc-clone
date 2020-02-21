@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { extraDesktopWidth, mobileWidthMax, smallDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import * as S from "./styled";
 import StyledTable from "../styled/Table";
@@ -79,7 +79,12 @@ const SkillReportMainContent = ({ skillReport, t }) => {
           <StyledTable columns={summaryColumns} dataSource={sumData} pagination={false} />
         </WrapperContent>
         {sumData.map((summary, index) => (
-          <TableSection summary={summary} dataSource={sumData} skillReport={skillReport} key={index} />
+          <TableSection
+            summary={summary}
+            dataSource={sumData}
+            skillReport={skillReport}
+            key={index}
+          />
         ))}
       </ContentWrapper>
     </React.Fragment>
@@ -96,9 +101,12 @@ const enhance = compose(withNamespaces("reports"));
 export default enhance(SkillReportMainContent);
 
 const ContentWrapper = styled.div`
-  padding: 0px 40px;
+  padding: 20px 40px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 20px 30px;
+  }
   @media (max-width: ${mobileWidthMax}) {
-    padding: 0px 10px;
+    padding: 10px 20px;
   }
 `;
 

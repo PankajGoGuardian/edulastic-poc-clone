@@ -6,7 +6,8 @@ import {
   themeColor,
   fadedGrey,
   desktopWidth,
-  secondaryTextColor
+  secondaryTextColor,
+  greyThemeDark2
 } from "@edulastic/colors";
 import { Button, Menu, Dropdown } from "antd";
 
@@ -27,7 +28,7 @@ export const Container = styled.div`
     width: 100px;
     border-radius: 4px;
     background-color: ${themeColor};
-    border: none;
+    border-color: ${themeColor};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,10 +72,7 @@ export const Container = styled.div`
   }
 `;
 
-export const CustomButton = styled(Button)`
-  color: red;
-  background: yellow;
-`;
+export const CustomButton = styled(Button)``;
 
 export const MobileContainer = styled.div`
   display: flex;
@@ -129,7 +127,7 @@ export const RightSide = styled.div`
     margin-left: 5px;
 
     span {
-      color: #00ad50;
+      color: ${themeColor};
       font-size: 11px;
       text-transform: uppercase;
     }
@@ -243,7 +241,8 @@ export const MenuItem = styled.li`
   height: 45px;
   border-radius: 4px;
   border: none;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: #f2f3f2;
+  color: ${greyThemeDark2};
   margin-right: 5px;
   font-size: 13px;
   font-weight: 600;
@@ -252,7 +251,6 @@ export const MenuItem = styled.li`
   line-height: 1.36;
   letter-spacing: 0.2px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.75);
   white-space: nowrap;
 
   &:last-of-type {
@@ -260,15 +258,15 @@ export const MenuItem = styled.li`
   }
 
   svg {
-    fill: rgba(255, 255, 255, 0.75);
+    fill: ${greyThemeDark2};
   }
 
   &.active {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.3);
+    color: ${white};
+    background-color: #b3bcc4;
 
     svg {
-      fill: #fff;
+      fill: ${white};
     }
   }
 

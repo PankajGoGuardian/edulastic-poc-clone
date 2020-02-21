@@ -1,19 +1,18 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Link } from "react-router-dom";
-import { white, themeColor, extraDesktopWidthMax } from "@edulastic/colors";
-import { GoogleLogin } from "react-google-login";
+import { extraDesktopWidthMax, themeColor, white } from "@edulastic/colors";
+import { MainHeader } from "@edulastic/common";
+import { IconGoogleClassroom } from "@edulastic/icons";
 import { get } from "lodash";
-// components
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
-import { Title, IconManageClass, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
+import PropTypes from "prop-types";
+import React from "react";
+import { GoogleLogin } from "react-google-login";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
 // ducks
 import { fetchClassListAction } from "../../ducks";
-import { IconGoogleClassroom } from "@edulastic/icons";
-import styled from "styled-components";
 import { scopes } from "./ClassCreatePage";
+import { ButtonsWrapper, CreateIcon, IconManageClass, SyncButtons } from "./styled";
 
 const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
@@ -24,10 +23,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
     console.log("error", err);
   };
   return (
-    <HeaderWrapper>
-      <Title>
-        <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
-      </Title>
+    <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
       <ButtonsWrapper>
         {allowGoogleLogin !== false && (
           <GoogleLogin
@@ -46,12 +42,12 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
             responseType="code"
           />
         )}
-        <StyledLink to={`/author/manageClass/createClass`} data-cy="createClass">
+        <StyledLink to="/author/manageClass/createClass" data-cy="createClass">
           <CreateIcon color={themeColor} />
           <p>Create Class</p>
         </StyledLink>
       </ButtonsWrapper>
-    </HeaderWrapper>
+    </MainHeader>
   );
 };
 

@@ -75,6 +75,7 @@ export const RightSide = styled.div`
     padding: 0px;
     display: flex;
     margin-top: 20px;
+    flex: auto;
   }
 `;
 

@@ -27,7 +27,6 @@ export const MainContainer = styled.div`
     padding-left: 0px;
     .fixed-header {
       left: 0;
-      background: #00ad50;
     }
   }
 

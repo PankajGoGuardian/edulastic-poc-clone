@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, Button } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, themeColor } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -130,8 +130,8 @@ export const ActionDescription = styled.div`
   }
 `;
 export const ViewRecommendationsBtn = styled(Button)`
-  background-color: #00ad50;
-  border-color: #00ad50;
+  background-color: ${themeColor};
+  border-color: ${themeColor};
   border-radius: 4px;
   color: #ffffff;
   font-size: 11px;
@@ -140,8 +140,8 @@ export const ViewRecommendationsBtn = styled(Button)`
   padding: 12px 30px;
   height: 40px;
   &:hover {
-    color: #00ad50;
-    border-color: #00ad50;
+    color: ${themeColor};
+    border-color: ${themeColor};
   }
 `;
 

@@ -1,18 +1,10 @@
-import React, { memo } from "react";
+import { MainHeader } from "@edulastic/common";
 import PropTypes from "prop-types";
-import { withNamespaces } from "@edulastic/localization";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React, { memo } from "react";
+import { ActionBtnWrapper, HeaderActionBtn } from "./styled";
 
-import { MenuIcon } from "@edulastic/common";
-import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
-
-import { HeaderWrapper, Title, ActionBtnWrapper, HeaderActionBtn } from "./styled";
-
-const SubscriptionHeader = ({ t, toggleSideBar, openComparePlanModal, openPaymentServiceModal, isSubscribed }) => (
-  <HeaderWrapper borderBottom="none">
-    <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-    <Title>{t("common.subscriptionTitle")}</Title>
+const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isSubscribed }) => (
+  <MainHeader headingText="common.subscriptionTitle">
     {!isSubscribed && (
       <ActionBtnWrapper>
         <HeaderActionBtn onClick={openComparePlanModal} width="195px">
@@ -23,22 +15,13 @@ const SubscriptionHeader = ({ t, toggleSideBar, openComparePlanModal, openPaymen
         </HeaderActionBtn>
       </ActionBtnWrapper>
     )}
-  </HeaderWrapper>
+  </MainHeader>
 );
 
 SubscriptionHeader.propTypes = {
-  t: PropTypes.func.isRequired,
-  toggleSideBar: PropTypes.func.isRequired,
-  openComparePlanModal: PropTypes.func.isRequired
+  openComparePlanModal: PropTypes.func.isRequired,
+  openPaymentServiceModal: PropTypes.func.isRequired,
+  isSubscribed: PropTypes.bool.isRequired
 };
 
-const enhance = compose(
-  memo,
-  withNamespaces("header"),
-  connect(
-    null,
-    { toggleSideBar: toggleSideBarAction }
-  )
-);
-
-export default enhance(SubscriptionHeader);
+export default memo(SubscriptionHeader);

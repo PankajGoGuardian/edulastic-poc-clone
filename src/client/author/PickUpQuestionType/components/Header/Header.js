@@ -1,23 +1,17 @@
-import React from "react";
+import { MainHeader } from "@edulastic/common";
 import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
-import { Title, MenuIcon } from "./styled";
-import HeaderWrapper from "../../../src/mainContent/headerWrapper";
+import React from "react";
 
-const Header = ({ title, toggleSideBar, renderExtra }) => (
-  <HeaderWrapper>
-    <FlexContainer flexWrap="nowrap">
-      <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-      <Title>{title}</Title>
-    </FlexContainer>
+const Header = ({ title, renderExtra, noEllipsis }) => (
+  <MainHeader headingText={title} noEllipsis={noEllipsis}>
     {renderExtra()}
-  </HeaderWrapper>
+  </MainHeader>
 );
 
 Header.propTypes = {
   title: PropTypes.string.isRequired,
-  toggleSideBar: PropTypes.func.isRequired,
-  renderExtra: PropTypes.func
+  renderExtra: PropTypes.func,
+  noEllipsis: PropTypes.bool.isRequired
 };
 
 Header.defaultProps = {

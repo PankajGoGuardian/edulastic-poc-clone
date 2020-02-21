@@ -4,9 +4,8 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { IconTestBank, IconPlaylist } from "@edulastic/icons";
-import { MenuIcon } from "@edulastic/common";
-import HeaderWrapper from "../../src/mainContent/headerWrapper";
-import Title, { AlignMiddle } from "../common/Title";
+import { MainHeader } from "@edulastic/common";
+import { AlignMiddle } from "../common/Title";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
 import ContainerWrapper from "../common/ContainerWrapper";
@@ -23,7 +22,6 @@ import LinkWrapper from "../common/LinkWrapper";
 import FlexWrapper from "../common/FlexWrapper";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
-import { toggleSideBarAction } from "../../src/actions/toggleMenu";
 
 class Container extends Component {
   render() {
@@ -38,7 +36,7 @@ class Container extends Component {
       }
     ];
 
-    const { lastPlayList = {}, toggleSideBar } = this.props;
+    const { lastPlayList = {} } = this.props;
     let toLinkForPlaylist = "/author/playlists";
     let from = "playlistLibrary";
     if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
@@ -48,11 +46,9 @@ class Container extends Component {
 
     return (
       <div>
-        <HeaderWrapper justify="flex-start">
-          <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-          <Title>New Assignment</Title>
+        <MainHeader headingText="common.newAssignment">
           <AlignMiddle>SELECT A TEST</AlignMiddle>
-        </HeaderWrapper>
+        </MainHeader>
         <ContainerWrapper>
           <SecondHeader>
             <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
@@ -65,7 +61,10 @@ class Container extends Component {
                     <IconPlaylist style={{ height: "40px", width: "40px" }} />
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
-                  <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
+                  <TextWrapper>
+                    {" "}
+                    Select pre built tests from the Curriculum aligned assessment play list
+                  </TextWrapper>
                   <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
                     <ButtonComponent type="primary">Play List</ButtonComponent>
                   </Link>
@@ -92,7 +91,7 @@ class Container extends Component {
             </FlexWrapper>
             <FlexWrapper justifyContent="center" marginBottom="0px">
               <Link to="/author/tests/select">
-                <LinkWrapper marginBottom="0px"> Or Author a Test >></LinkWrapper>
+                <LinkWrapper marginBottom="0px"> Or Author a Test &gt;&gt;</LinkWrapper>
               </Link>
             </FlexWrapper>
           </BodyWrapper>
@@ -103,16 +102,13 @@ class Container extends Component {
 }
 
 Container.propTypes = {
-  toggleSideBar: PropTypes.func.isRequired
+  lastPlayList: PropTypes.object.isRequired
 };
 
 const enhance = compose(
   withRouter,
-  connect(
-    state => ({
-      lastPlayList: getLastPlayListSelector(state)
-    }),
-    { toggleSideBar: toggleSideBarAction }
-  )
+  connect(state => ({
+    lastPlayList: getLastPlayListSelector(state)
+  }))
 );
 export default enhance(Container);

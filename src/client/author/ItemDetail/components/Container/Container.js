@@ -68,7 +68,6 @@ import SettingsBar from "../SettingsBar";
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
-
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
@@ -570,7 +569,6 @@ class Container extends Component {
   render() {
     const { showSettings, showRemovePassageItemPopup } = this.state;
     const {
-      t,
       match,
       rows,
       item,
@@ -660,7 +658,6 @@ class Container extends Component {
           ]}
         >
           <p>
-            {" "}
             You are about to remove the current item from the passage. This action cannot be undone.
           </p>
         </ConfirmationModal>
@@ -688,7 +685,7 @@ class Container extends Component {
           )}
           <ItemHeader
             showIcon
-            title={t("component.itemDetail.itemDetail")}
+            title="common.itemDetail"
             reference={match.params._id}
             windowWidth={windowWidth}
             toggleSideBar={toggleSideBar}

@@ -218,8 +218,8 @@ class ClozeDropDownDisplay extends Component {
           {!question && questionContent}
         </QuestionTitleWrapper>
         {question && questionContent}
-        {answerBox}
         {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} responseIds={item.responseIds} style={{marginTop: "50px"}} />}
+        {answerBox}
       </div>
     );
   }

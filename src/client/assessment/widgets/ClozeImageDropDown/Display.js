@@ -339,9 +339,10 @@ class Display extends Component {
         </QuestionTitleWrapper>
         <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
+          {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
           {answerBox}
         </TemplateBoxContainer>
-        {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
+        
       </StyledDisplayContainer>
     );
   }

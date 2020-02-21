@@ -90,7 +90,7 @@ class DragDropValues extends Component {
     });
 
     return (
-      <div style={containerStyle}>
+      <div style={containerStyle} className="drag-drop-values">
         <DragDropTitle>DRAG DROP VALUES</DragDropTitle>
         <SortableList items={this.state.values} onSortEnd={this.onSortEnd} />
       </div>

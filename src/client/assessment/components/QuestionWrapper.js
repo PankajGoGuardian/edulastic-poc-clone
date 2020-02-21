@@ -534,7 +534,7 @@ class QuestionWrapper extends Component {
             {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
               <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
             )}
-            {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
+            {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} className="print-preview-score" />}
             {showFeedback && isPrintPreview && (
               <div data-cy="teacherFeedBack" className="print-preview-feedback">
                 {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}

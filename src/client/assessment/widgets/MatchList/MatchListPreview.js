@@ -287,6 +287,11 @@ const MatchListPreview = ({
     width: `calc(50% - ${smallSize ? 28 : 40}px)`
   };
 
+  if (isPrintPreview) {
+    stemColStyle.maxWidth = stemColStyle.width;
+    stemColStyle.width = "auto";    
+  }
+
   const correctAnswerBoxStyle = {
     width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
   };

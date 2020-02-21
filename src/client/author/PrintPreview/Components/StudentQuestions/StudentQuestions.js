@@ -45,9 +45,9 @@ class StudentQuestions extends Component {
       for (let i = 0; i < textAreas.length; i++) {
         let value = textAreas[i].value;
         let parent = textAreas[i].parentNode;
-        $(parent).append("<div>" + value + "</div>");
+        //$(parent).append("<div>" + value + "</div>");
       }
-    }, 2000);
+    }, 3000);
   }
 
   getTestItems() {

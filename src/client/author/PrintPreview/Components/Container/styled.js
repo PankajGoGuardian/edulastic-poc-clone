@@ -36,6 +36,24 @@ export const PrintPreviewContainer = styled.div`
   .ant-card {
     max-width: 40%;
   }
+  .question-wrapper {
+    width: calc(100% - 120px)!important;
+    max-width: 100%!important;
+    padding: 35px 0;
+  }
+  .print-preview-score {
+    width: 120px;
+  }
+  .drag-drop-values {
+    width: 100px;
+  }
+  @page {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .graph-wrapper, .test-item-preview {
+    overflow: unset!important;
+  }
 `;
 
 export const StyledTitle = styled.p`

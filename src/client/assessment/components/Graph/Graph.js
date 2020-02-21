@@ -461,7 +461,7 @@ class Graph extends Component {
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact" : ""}>
+          <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}>
             <QuestionTitleWrapper>
               {showQuestionNumber && !flowLayout ? (
                 <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>

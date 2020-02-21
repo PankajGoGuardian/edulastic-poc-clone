@@ -203,9 +203,9 @@ class TestList extends Component {
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId =
         Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = Number(searchParams.standardIds)
-        ? [Number(searchParams.standardIds)]
-        : [];
+      searchParams.standardIds = searchParams.standardIds 
+                                ? searchParams.standardIds.map(id => parseInt(id)) 
+                                : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 

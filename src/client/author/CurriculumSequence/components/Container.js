@@ -105,8 +105,9 @@ class CurriculumContainer extends Component {
     // Also - only 6ath grade has both content and guides mapped to testIds
 
     const { match, getAllCurriculumSequences } = this.props;
-    if (match.params.id) {
-      getAllCurriculumSequences([match.params.id]);
+    const playlistId = match.params.id || match.params.playlistId;
+    if (playlistId) {
+      getAllCurriculumSequences([playlistId]);
     }
 
     this.expandAll();

@@ -57,6 +57,7 @@ import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/Remov
 import { getCollectionsSelector, isPublisherUserSelector } from "../../src/selectors/user";
 import { getTestAuthorName } from "../../dataUtils";
 import { getUserFeatures } from "../../../student/Login/ducks";
+import { getUserRole } from "../../src/selectors/user";
 import DropPlaylistModal from "./DropPlaylistModal";
 
 /** @typedef {object} ModuleData
@@ -342,7 +343,8 @@ class CurriculumSequence extends Component {
       collections,
       features,
       urlHasUseThis,
-      isPublisherUser
+      isPublisherUser,
+      isStudent
     } = this.props;
 
     const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -543,7 +545,7 @@ class CurriculumSequence extends Component {
               <Link to="/author/playlists">Go To Library</Link>
             </ModalFooter>
           </Modal>
-          {mode !== "embedded" && (
+          {mode !== "embedded" && !isStudent && (
             <TopBar>
               <CurriculumHeader justifyContent="space-between">
                 <HeaderTitle>
@@ -637,14 +639,14 @@ class CurriculumSequence extends Component {
                       ) : (
                           ""
                         )}
-                      {status ? (
+                      {status && !isStudent && (
                         <StatusTag style={{ width: "fit-content", color: bgColor || "", background: textColor || "" }}>
                           {status}
                         </StatusTag>
-                      ) : null}
+                      )}
                     </SunHeaderInfo>
                   </CurriculumSubHeaderRow>
-                  {urlHasUseThis && (
+                  {urlHasUseThis && !isStudent && (
                     <CurriculumSubHeaderRow>
                       <ModuleProgressWrapper>
                         <ModuleProgressLabel>
@@ -1271,7 +1273,7 @@ const SubTopBarContainer = styled.div`
   background: ${({ backgroundColor }) => backgroundColor || themeColor};
   padding: 28px 43px 36px 45px;
   margin-bottom: 10px;
-  margin-top: ${props => (props.mode ? "0px" : "-15px")};
+  margin-top: ${props => (props.mode ? "0px" : "20px")};
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -1468,6 +1470,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
+      isStudent: (getUserRole(state) === "student"),
       summaryData: state.curriculumSequence
     }),
     {

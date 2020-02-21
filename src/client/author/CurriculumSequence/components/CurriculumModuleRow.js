@@ -27,6 +27,7 @@ import {
   IconLeftArrow
 } from "@edulastic/icons";
 import { FaBars } from "react-icons/fa";
+import { getUserRole } from "../../src/selectors/user";
 import {
   toggleCheckedUnitItemAction,
   setSelectedItemsForAssignAction,
@@ -212,7 +213,8 @@ class ModuleRow extends Component {
       moduleStatus,
       removeUnit,
       handleTestsSort,
-      urlHasUseThis
+      urlHasUseThis,
+      isStudent
     } = this.props;
     const { title, _id, data = [], description = "" } = module;
     const completed = moduleStatus;
@@ -310,7 +312,8 @@ class ModuleRow extends Component {
                         </ModuleCompleted>
                       </React.Fragment>
                     )}
-                    {!completed && !hideEditOptions && (
+
+                    {!completed && !hideEditOptions && !isStudent && (
                       <ModulesWrapper>
                         {totalAssigned ? (
                           <>
@@ -435,7 +438,7 @@ class ModuleRow extends Component {
                       );
                     }
 
-                    return (
+                    return (isAssigned || !isStudent) && (
                       <>
                         <Assignment
                           data-cy="moduleAssignment"
@@ -472,7 +475,7 @@ class ModuleRow extends Component {
                               )}
                             </AssignmentContent>
                             <AssignmentIconsWrapper expanded={isContentExpanded}>
-                              {!hideEditOptions && (
+                              {!hideEditOptions && !isStudent && (
                                 <ModuleAssignedUnit>
                                   {moduleData.assigned && !moduleData.completed && (
                                     <CustomIcon>
@@ -486,68 +489,64 @@ class ModuleRow extends Component {
                                   )}
                                 </ModuleAssignedUnit>
                               )}
+
                               <Tags
                                 tags={moduleData.standardIdentifiers}
                                 completed={!hideEditOptions && contentCompleted}
                                 show={3}
                                 isPlaylist
                               />
-                              <AssignmentIconsHolder>
-                                <AssignmentIcon>
-                                  <CustomIcon>
-                                    <IconVisualization
-                                      color={themeColor}
-                                      onClick={() => this.viewTest(moduleData.contentId)}
-                                    />
-                                  </CustomIcon>
-                                </AssignmentIcon>
 
-                                {((isAssigned && !hideEditOptions) ||
-                                  (status === "published" && mode === "embedded")) && (
-                                  <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
-                                    <Button
-                                      onClick={() =>
-                                        this.setAssignmentDropdown(moduleData.contentId)
-                                      }
-                                    >
-                                      {currentAssignmentId.includes(moduleData.contentId)
-                                        ? "HIDE ASSIGNMENTS"
-                                        : "SHOW ASSIGNMENTS"}
-                                    </Button>
-                                  </AssignmentButton>
-                                )}
+                              { !isStudent && (
+                                <AssignmentIconsHolder>
+                                  <AssignmentIcon>
+                                    <CustomIcon>
+                                      <IconVisualization
+                                        color={themeColor}
+                                        onClick={() => this.viewTest(moduleData.contentId)}
+                                      />
+                                    </CustomIcon>
+                                  </AssignmentIcon>
 
-                                {(!hideEditOptions ||
-                                  (status === "published" && mode === "embedded")) && (
-                                  <AssignmentButton assigned={isAssigned}>
-                                    <Button
-                                      data-cy="assignButton"
-                                      onClick={() => assignTest(_id, moduleData.contentId)}
-                                    >
-                                      {isAssigned ? (
-                                        <IconCheckSmall color={white} />
-                                      ) : (
-                                        <IconLeftArrow width={13.3} height={9.35} />
-                                      )}
-                                      {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                                    </Button>
-                                  </AssignmentButton>
-                                )}
-                                {mode === "embedded" ||
-                                  (urlHasUseThis && (
-                                    <AssignmentIcon>
-                                      <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                        <CustomIcon
-                                          data-cy="assignmentMoreOptionsIcon"
-                                          marginLeft={25}
-                                          marginRight={1}
-                                        >
-                                          <IconMoreVertical color={themeColor} />
-                                        </CustomIcon>
-                                      </Dropdown>
-                                    </AssignmentIcon>
-                                  ))}
-                              </AssignmentIconsHolder>
+                                  {((isAssigned && !hideEditOptions) ||
+                                    (status === "published" && mode === "embedded")) && (
+                                      <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
+                                        <Button onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
+                                          {currentAssignmentId.includes(moduleData.contentId)
+                                            ? "HIDE ASSIGNMENTS"
+                                            : "SHOW ASSIGNMENTS"}
+                                        </Button>
+                                      </AssignmentButton>
+                                    )}
+
+                                  {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                                    <AssignmentButton assigned={isAssigned}>
+                                      <Button
+                                        data-cy="assignButton"
+                                        onClick={() => assignTest(_id, moduleData.contentId)}
+                                      >
+                                        {isAssigned ? (
+                                          <IconCheckSmall color={white} />
+                                        ) : (
+                                          <IconLeftArrow width={13.3} height={9.35} />
+                                          )}
+                                        {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                                      </Button>
+                                    </AssignmentButton>
+                                  )}
+
+                                  {mode === "embedded" ||
+                                    (urlHasUseThis && (
+                                      <AssignmentIcon>
+                                        <Dropdown overlay={moreMenu} trigger={["click"]}>
+                                          <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                                            <IconMoreVertical color={themeColor} />
+                                          </CustomIcon>
+                                        </Dropdown>
+                                      </AssignmentIcon>
+                                    ))}
+                                </AssignmentIconsHolder>
+                              )}
                             </AssignmentIconsWrapper>
                           </AssignmentInnerWrapper>
                         </Assignment>
@@ -556,7 +555,7 @@ class ModuleRow extends Component {
                             e.preventDefault();
                             e.stopPropagation();
                           }}
-                          visible={currentAssignmentId.includes(moduleData.contentId)}
+                          visible={currentAssignmentId.includes(moduleData.contentId) && !isStudent}
                         >
                           {assignmentRows?.map((assignment, assignmentIndex) => (
                             <StyledRow key={assignmentIndex}>
@@ -1201,10 +1200,11 @@ const ModuleHelperText = styled.p`
 const enhance = compose(
   withRouter,
   connect(
-    ({ curriculumSequence }) => ({
+    ({ curriculumSequence, user }) => ({
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
-      assigned: curriculumSequence.assigned
+      assigned: curriculumSequence.assigned,
+      isStudent: (getUserRole({user}) === "student")
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,

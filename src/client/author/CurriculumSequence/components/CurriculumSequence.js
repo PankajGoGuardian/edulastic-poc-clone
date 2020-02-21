@@ -57,6 +57,7 @@ import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/Remov
 import { getCollectionsSelector, isPublisherUserSelector } from "../../src/selectors/user";
 import { getTestAuthorName } from "../../dataUtils";
 import { getUserFeatures } from "../../../student/Login/ducks";
+import DropPlaylistModal from "./DropPlaylistModal";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -165,7 +166,8 @@ class CurriculumSequence extends Component {
       class: []
     },
     showConfirmRemoveModal: false,
-    isPlayListEdited: false
+    isPlayListEdited: false,
+    dropPlaylistModalVisible: false
   };
 
   onChange = evt => {
@@ -303,6 +305,10 @@ class CurriculumSequence extends Component {
     const { _id } = destinationCurriculumSequence;
     onCuratorApproveOrReject({ playlistId: _id, status: "rejected" });
   };
+
+  openDropPlaylistModal = () => this.setState({ dropPlaylistModalVisible: true });
+
+  closeDropPlaylistModal = () => this.setState({ dropPlaylistModalVisible: false });
 
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
@@ -512,13 +518,11 @@ class CurriculumSequence extends Component {
               </ModalSubtitleWrapper>
               <RadioGroupWrapper>
                 <Radio.Group onChange={this.onChange}>
-                  {lastThreeRecentPlaylist.map((recentPlaylist, ind) => {
-                    return (
-                      <Radio checked={ind == 0} value={ind}>
-                        {recentPlaylist.title}
-                      </Radio>
-                    );
-                  })}
+                  {lastThreeRecentPlaylist.map((recentPlaylist, ind) => (
+                    <Radio checked={ind == 0} value={ind}>
+                      {recentPlaylist.title}
+                    </Radio>
+                    ))}
                 </Radio.Group>
               </RadioGroupWrapper>
               <GuidesDropdownWrapper>
@@ -536,7 +540,7 @@ class CurriculumSequence extends Component {
               </GuidesDropdownWrapper>
             </GuideModalBody>
             <ModalFooter>
-              <Link to={`/author/playlists`}>Go To Library</Link>
+              <Link to="/author/playlists">Go To Library</Link>
             </ModalFooter>
           </Modal>
           {mode !== "embedded" && (
@@ -553,35 +557,35 @@ class CurriculumSequence extends Component {
                   )}
                 </HeaderTitle>
                 <CurriculumHeaderButtons>
-                  {(urlHasUseThis || features.isCurator) && (
+                  {/* {(urlHasUseThis || features.isCurator) && (
                     <ShareButtonStyle>
                       <Button type="default" onClick={onShareClick}>
                         <ShareButtonIcon color={greenThird} width={20} height={20} />
                         <ShareButtonText>SHARE</ShareButtonText>
                       </Button>
                     </ShareButtonStyle>
-                  )}
+                  )} */}
                   {customize && urlHasUseThis && (
                     <SaveButtonStyle>
                       <Button
                         data-cy="saveCurriculumSequence"
                         onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
                       >
-                        <SaveButtonText>{"Customize"}</SaveButtonText>
+                        <SaveButtonText>Customize</SaveButtonText>
                       </Button>
                     </SaveButtonStyle>
                   )}
                   {isAuthor && !urlHasUseThis && (
                     <SaveButtonStyle>
                       <Button data-cy="editCurriculumSequence" onClick={handleEditClick}>
-                        <SaveButtonText>{"Edit"}</SaveButtonText>
+                        <SaveButtonText>Edit</SaveButtonText>
                       </Button>
                     </SaveButtonStyle>
                   )}
                   {showUseThisButton && (
                     <SaveButtonStyle windowWidth={windowWidth}>
                       <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>
-                        <SaveButtonText>{"Use This"}</SaveButtonText>
+                        <SaveButtonText>Use This</SaveButtonText>
                       </Button>
                     </SaveButtonStyle>
                   )}
@@ -658,6 +662,18 @@ class CurriculumSequence extends Component {
                           modules={destinationCurriculumSequence.modules}
                         />
                       </ModuleProgressWrapper>
+                      <CurriculumActionsWrapper>
+                        {(urlHasUseThis || features.isCurator) && (
+                          <>
+                            <ShareButtonStyle onClick={onShareClick}>
+                              <IconShare color={greenThird} width={15} height={15} />
+                            </ShareButtonStyle>
+                            <DropPlaylistButton onClick={this.openDropPlaylistModal}>
+                              Drop Playlist
+                            </DropPlaylistButton>
+                          </>
+                        )}
+                      </CurriculumActionsWrapper>
                     </CurriculumSubHeaderRow>
                   )}
                 </SubTopBarContainer>
@@ -701,7 +717,7 @@ class CurriculumSequence extends Component {
                       <Progress
                         strokeColor={{
                           '0%': COLORS[i],
-                          '100%': COLORS[i],
+                          '100%': COLORS[i]
                         }}
                         strokeWidth={10}
                         percent={40}
@@ -713,6 +729,7 @@ class CurriculumSequence extends Component {
             </SummaryBlock>
           </FlexContainer>
         </CurriculumSequenceWrapper>
+        <DropPlaylistModal visible={this.state.dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
       </>
     );
   }
@@ -767,6 +784,13 @@ const ModuleProgress = ({ modules, modulesCompleted, textColor = { white } }) =>
 ModuleProgress.propTypes = {
   modules: PropTypes.array.isRequired
 };
+
+const CurriculumActionsWrapper = styled.div`
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;
 
 const ModuleTitle = styled.p`
   font-size: 11px;
@@ -1064,28 +1088,41 @@ const SelectContentSubHeaderButtonStyle = styled.div`
   }
 `;
 
+const DropPlaylistButton = styled.div`
+  margin-right: 20px !important;
+  min-height: 45px;
+  width: 150px;
+  color: ${themeColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: ${white};
+  border-radius: 6px;
+  border: 1px solid ${themeColor};
+  cursor: pointer;
+  text-transform: uppercase;
+
+  svg{
+    margin: auto;
+  }
+
+`;
+
 const ShareButtonStyle = styled.div`
   margin-right: 20px !important;
-  .ant-btn {
-    padding: 10px 18px;
-    min-height: 45px;
-    min-width: 120px;
-    color: ${greenSecondary};
-    display: flex;
-    align-items: center;
-    @media only screen and (max-width: ${largeDesktopWidth}) {
-      min-width: 60px;
-      padding: 0px;
-    }
-    @media only screen and (max-width: ${mobileWidth}) {
-      min-width: 43px;
-      min-height: 40px;
-      padding: unset;
-      svg {
-        margin-left: unset;
-        margin: auto;
-      }
-    }
+  min-height: 45px;
+  width: 45px;
+  color: ${greenSecondary};
+  display: flex;
+  align-items: center;
+  background: ${white};
+  border-radius: 6px;
+  border: 1px solid ${themeColor};
+  cursor: pointer;
+
+  svg{
+    margin: auto;
   }
 `;
 

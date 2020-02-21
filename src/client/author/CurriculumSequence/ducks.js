@@ -6,7 +6,8 @@ import { flatten, cloneDeep, isEmpty, keyBy, omit } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
-import { curriculumSequencesApi, assignmentApi, userContextApi } from "@edulastic/api";
+import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi } from "@edulastic/api";
+import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
 import { getUserSelector, getUserId } from "../src/selectors/user";
 import {
@@ -23,7 +24,6 @@ import {
   getGroupsSelector
 } from "../sharedDucks/groups";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
-import produce from "immer";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -81,6 +81,9 @@ export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
   "[curriculum-sequence] approve or reject single playlist success";
 export const SET_PLAYLIST_DATA = "[curriculum-sequence] set playlist data";
+export const FETCH_CLASS_AND_STUDENT_LIST = "[curriculum-sequence] fetch class and student list";
+export const FETCH_CLASS_LIST_SUCCESS = "[curriculum-sequence] fetch class list success";
+export const FETCH_STUDENT_LIST_SUCCESS = "[curriculum-sequence] fetch student list success";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -109,6 +112,9 @@ export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST);
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
+export const fetchClassAndStudentListAction = createAction(FETCH_CLASS_AND_STUDENT_LIST);
+export const fetchClassListSuccess = createAction(FETCH_CLASS_LIST_SUCCESS);
+export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -159,7 +165,7 @@ function* makeApiRequest(idsForFetch = []) {
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
-    let items = flatten(unflattenedItems);
+    const items = flatten(unflattenedItems);
     const { authors } = items[0];
     const userId = yield select(getUserId);
     if (authors && authors.map(author => author._id).includes(userId)) {
@@ -630,6 +636,23 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
   }
 }
 
+function* fetchClassAndStudentsList({ payload }) {
+  try {
+    const data = yield call(groupApi.fetchMyGroups);
+    const classList = data.map(x => ({ classId: x._id, className: x.name }));
+    yield put(fetchClassListSuccess({ classList }));
+    const requestPayload = {
+      districtId: payload,
+      groupIds: classList.map(x => x.classId)
+    }
+    const studentList = yield call(groupApi.fetchStudentsByGroupId, requestPayload);
+    yield put(fetchStudentListSuccess({ studentList }));
+  } catch (error) {
+    message.error(error?.data?.message);
+    console.error(error);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -651,7 +674,8 @@ export function* watcherSaga() {
     yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned),
     yield takeLatest(ADD_CONTENT_TO_CURRICULUM_RESULT, moveContentToPlaylistSaga),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga),
-    yield takeLatest(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST, approveOrRejectSinglePlaylistSaga)
+    yield takeLatest(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST, approveOrRejectSinglePlaylistSaga),
+    yield takeLatest(FETCH_CLASS_AND_STUDENT_LIST, fetchClassAndStudentsList)
   ]);
 }
 
@@ -746,7 +770,12 @@ const initialState = {
 
   assigned: [],
 
-  dataForAssign: getDefaultAssignData()
+  dataForAssign: getDefaultAssignData(),
+
+  dropPlaylistSource: {
+    classList: [],
+    studentList: []
+  }
 };
 
 /**
@@ -1097,12 +1126,10 @@ const removeUnitReducer = (state, { payload }) => {
  * @param {Object<String, Object>} param2
  *
  */
-const loadAssignedReducer = (state, { payload }) => {
-  return {
+const loadAssignedReducer = (state, { payload }) => ({
     ...state,
     assigned: payload
-  };
-};
+  });
 
 /**
  * @param {import('./components/CurriculumSequence').ModuleData} unitItem
@@ -1147,6 +1174,26 @@ function setPlaylistDataReducer(state, { payload }) {
   };
 }
 
+function updateClassList(state, { payload }) {
+  return {
+    ...state,
+    dropPlaylistSource: {
+      ...state.dropPlaylistSource,
+      classList: payload.classList
+    }
+  }
+}
+
+function updateStudentList(state, { payload }) {
+  return {
+    ...state,
+    dropPlaylistSource: {
+      ...state.dropPlaylistSource,
+      studentList: payload.studentList
+    }
+  }
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1166,5 +1213,7 @@ export default createReducer(initialState, {
   [UPDATE_ASSIGNMENT]: updateAssignmentReducer,
   [FETCH_ASSIGNED_RESULT]: loadAssignedReducer,
   [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer,
-  [SET_PLAYLIST_DATA]: setPlaylistDataReducer
+  [SET_PLAYLIST_DATA]: setPlaylistDataReducer,
+  [FETCH_CLASS_LIST_SUCCESS]: updateClassList,
+  [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList
 });

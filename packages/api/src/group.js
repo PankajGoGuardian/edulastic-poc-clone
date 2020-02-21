@@ -79,6 +79,15 @@ const archiveGroup = ({ _id, districtId }) => {
   });
 };
 
+const fetchStudentsByGroupId = data =>
+  api
+    .callApi({
+      url: `/search/student`,
+      method: "post",
+      data
+    })
+    .then(({ data }) => data);
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -88,5 +97,6 @@ export default {
   deleteGroup,
   addCoTeacher,
   bulkUpdateClasses,
-  archiveGroup
+  archiveGroup,
+  fetchStudentsByGroupId
 };

@@ -50,7 +50,9 @@ const ClozeMathPreview = ({
   changePreviewTab, // Question level
   changePreview, // Item level,
   isV1Migrated,
-  disableResponse
+  disableResponse,
+  isPrintPreview,
+  allOptions = []
 }) => {
   const [newHtml, setNewHtml] = useState("");
   const { isAnswerModifiable } = useContext(AnswerContext);
@@ -173,7 +175,9 @@ const ClozeMathPreview = ({
             uiStyles,
             responseContainers: item.responseContainers,
             isV1Migrated,
-            disableResponse: disableResponse || !isAnswerModifiable
+            disableResponse: disableResponse || !isAnswerModifiable,
+            isPrintPreview,
+            allOptions
           }
         }}
         showWarnings

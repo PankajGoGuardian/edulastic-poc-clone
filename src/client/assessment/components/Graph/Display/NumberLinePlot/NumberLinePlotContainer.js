@@ -372,7 +372,7 @@ class NumberLinePlotContainer extends PureComponent {
   };
 
   render() {
-    const { layout, disableResponse, view, graphData, setQuestionData } = this.props;
+    const { layout, disableResponse, view, graphData, setQuestionData, isPrintPreview } = this.props;
     const { selectedControl } = this.state;
     const {
       controlbar: { controls = [] },
@@ -418,7 +418,7 @@ class NumberLinePlotContainer extends PureComponent {
         ref={this.numberLinePlotRef}
         style={{ overflowX: "hidden", width: "100%" }}
       >
-        {!disableResponse && (
+        {!disableResponse && !isPrintPreview && (
           <Tools
             tools={selectedControl}
             controls={controls}

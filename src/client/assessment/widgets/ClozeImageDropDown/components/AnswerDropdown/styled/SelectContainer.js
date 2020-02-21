@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { darkBlue } from "@edulastic/colors";
 
 export const SelectContainer = styled.div`
   position: relative;
@@ -48,6 +49,7 @@ export const SelectContainer = styled.div`
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
     max-width: calc(100% - 20px);
     text-overflow: clip;
+    ${({isPrintPreview}) => isPrintPreview ? {color: darkBlue} : {}};
   }
   .anticon-down {
     svg {

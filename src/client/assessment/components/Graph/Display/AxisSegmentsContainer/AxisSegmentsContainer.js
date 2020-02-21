@@ -501,7 +501,7 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, disableResponse, view, graphData, setQuestionData } = this.props;
+    const { layout, canvas, elements, tools, disableResponse, view, graphData, setQuestionData, isPrintPreview } = this.props;
     const { selectedTool } = this.state;
     const vertical = layout.orientation === "vertical";
 
@@ -512,7 +512,7 @@ class AxisSegmentsContainer extends PureComponent {
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
             <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
           </div>
-          {!disableResponse && (
+          {!disableResponse && !isPrintPreview && (
             <SegmentsTools
               tool={selectedTool}
               toolbar={tools}

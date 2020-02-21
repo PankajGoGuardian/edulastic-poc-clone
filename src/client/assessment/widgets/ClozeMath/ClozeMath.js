@@ -2,11 +2,11 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { WithResources, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
+import { WithResources, AnswerContext, QuestionNumberLabel, MathKeyboard } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, find, orderBy } from "lodash";
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
@@ -27,6 +27,7 @@ import { StyledPaperWrapper } from "../../styled/Widget";
 import { StyledClozeMathWrapper } from "./styled/StyledClozeMathWrapper";
 import AppConfig from "../../../../../app-config";
 import Question from "../../components/Question";
+import QuestionOptions from "../ClozeImageDropDown/QuestionOptions";
 
 const ClozeMath = ({
   view,
@@ -45,6 +46,8 @@ const ClozeMath = ({
   flowLayout,
   advancedLink,
   t,
+  isPrint,
+  isPrintPreview,
   ...restProps
 }) => {
   const answerContextConfig = useContext(AnswerContext);
@@ -87,6 +90,29 @@ const ClozeMath = ({
   const itemForPreview = replaceVariables(item);
   const isV1Multipart = get(col, "isV1Multipart", false);
   const { qLabel, isV1Migrated = false } = item;
+  let options = [];
+  let allOptions = [];
+  if (isPrint || isPrintPreview) {
+    const { mathUnits, dropDowns } = item.responseIds;
+    const dropdownOptions = dropDowns?.map(d => ({...d, type: "dropdown"})) || [];
+    const mathunitOptions = mathUnits?.map(m => ({...m, type: "mathunit"})) || [];
+    allOptions = orderBy([...dropdownOptions, ...mathunitOptions], ["index"]);
+    options = allOptions.map(o => {
+      if (o.type === "dropdown") {
+        return item.options[o.id];
+      }
+      const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === o.id) || {};
+      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(b => b.label);
+
+      if (keypadMode === "custom") {
+        otherOptions = customUnits
+          .split(",")
+          .filter(u => !!u);
+      }
+      return otherOptions;
+    });
+  }
+
   return (
     <WithResources
       resources={[
@@ -118,11 +144,14 @@ const ClozeMath = ({
                 userAnswer={userAnswer}
                 evaluation={evaluation}
                 isV1Migrated={isV1Migrated}
+                isPrintPreview={isPrint || isPrintPreview}
+                allOptions={allOptions}
                 {...restProps}
               />
             </StyledPaperWrapper>
           )}
         </QuestionTitleWrapper>
+        {(isPrint || isPrintPreview) && <QuestionOptions options={options} style={{ marginTop: "50px" }} />}
       </StyledClozeMathWrapper>
 
       {view === EDIT && (

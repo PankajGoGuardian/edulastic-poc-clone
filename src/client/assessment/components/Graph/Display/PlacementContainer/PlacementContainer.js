@@ -59,8 +59,8 @@ const valueHeightHashMap = {
 };
 
 const getColoredElems = (elements, compareResult, theme) => {
-  const rightIconColor = theme.widgets.graphPlacement.rightIconColor;
-  const wrongIconColor = theme.widgets.graphPlacement.wrongIconColor;
+  const {rightIconColor} = theme.widgets.graphPlacement;
+  const {wrongIconColor} = theme.widgets.graphPlacement;
 
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
@@ -135,7 +135,7 @@ const getColoredElems = (elements, compareResult, theme) => {
 };
 
 const getCorrectAnswer = (answerArr, theme) => {
-  const rightIconColor = theme.widgets.graphPlacement.rightIconColor;
+  const {rightIconColor} = theme.widgets.graphPlacement;
 
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
@@ -543,7 +543,8 @@ class PlacementContainer extends PureComponent {
       graphData,
       setQuestionData,
       questionId,
-      zoomLevel
+      zoomLevel,
+      isPrintPreview
     } = this.props;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
@@ -568,7 +569,7 @@ class PlacementContainer extends PureComponent {
         </WithResources>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
-          {!disableResponse && (
+          {!disableResponse && !isPrintPreview && (
             <StyledToolsContainer>
               <Tools controls={controls} onSelectControl={this.onSelectControl} fontSize={layout.fontSize} />
             </StyledToolsContainer>

@@ -3,8 +3,11 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
-import { maxBy } from "lodash";
+import { maxBy, indexOf } from "lodash";
 import { MathKeyboard, measureText } from "@edulastic/common";
+import { response } from "@edulastic/constants";
+import { darkBlue } from "@edulastic/colors";
+import { getStemNumeration } from "../../../../utils/helpers";
 
 const { Option } = Select;
 
@@ -20,7 +23,10 @@ const SelectUnit = ({
   dropdownStyle,
   disabled,
   forwardedRef,
-  getPopupContainer
+  getPopupContainer,
+  isPrintPreview,
+  allOptions,
+  id
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
   let containerWidth = width;
@@ -47,6 +53,12 @@ const SelectUnit = ({
     left: `${preview ? 0 : 24}px !important`
   };
 
+  let value = unit;
+  if (isPrintPreview) {
+    const itemIndex = indexOf(allOptions.map(o => o.id), id);
+    value = getStemNumeration("lowercase", itemIndex);
+  }
+
   return (
     <DropDownWrapper
       ref={dropdownWrapper}
@@ -54,11 +66,12 @@ const SelectUnit = ({
       preview={preview}
       height={height}
       width={containerWidth}
+      isPrintPreview={isPrintPreview}
     >
       <Select
         disabled={disabled}
         onChange={onChangeUnit}
-        value={unit}
+        value={value}
         preview={preview}
         height={height}
         getPopupContainer={getPopupContainer}
@@ -135,6 +148,9 @@ const DropDownWrapper = styled.div`
     }
     svg {
       display: inline-block;
+    }
+    .ant-select-selection-selected-value {
+      ${({isPrintPreview}) => isPrintPreview ? {color: darkBlue} : {}};
     }
   }
 `;

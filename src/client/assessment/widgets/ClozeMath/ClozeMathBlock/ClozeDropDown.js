@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, indexOf } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
+import { darkBlue } from "@edulastic/colors";
 import CheckedBlock from "./CheckedBlock";
+import { getStemNumeration } from "../../../utils/helpers";
 
 const { Option } = Select;
 
@@ -19,10 +21,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     onInnerClick,
     showIndex,
     uiStyles,
-    disableResponse
+    disableResponse,
+    isPrintPreview,
+    allOptions
   } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
-  const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
+  let val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
   const {
     responseIds: { dropDowns }
   } = item;
@@ -40,6 +44,10 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const dropDownWrapper = useRef(null);
   const [menuStyle, setMenuStyle] = useState({ top: `${height} !important`, left: `0px !important` });
 
+  if (isPrintPreview) {
+    const itemIndex = indexOf(allOptions.map(o => o.id), id);
+    val = getStemNumeration("lowercase", itemIndex);
+  }
   // TODO
   // make a generic component for dropdown and use it in all questions
   // so that we can have control all dropdowns just by changing one place
@@ -77,7 +85,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <DropdownWrapper ref={dropDownWrapper} width={`${width}px`} height={`${height}px`} menuStyle={menuStyle}>
+    <DropdownWrapper ref={dropDownWrapper} width={`${width}px`} height={`${height}px`} menuStyle={menuStyle} isPrintPreview={isPrintPreview}>
       <Select
         disabled={disableResponse}
         onChange={text => save({ value: text, index }, "dropDowns", id)}
@@ -120,6 +128,9 @@ const DropdownWrapper = styled.span`
 
     .ant-select-selection__rendered {
       line-height: 35px;
+    }
+    .ant-select-selection-selected-value {
+      ${({isPrintPreview}) => isPrintPreview ? { color: darkBlue } : {} }
     }
   }
   .ant-select-dropdown {

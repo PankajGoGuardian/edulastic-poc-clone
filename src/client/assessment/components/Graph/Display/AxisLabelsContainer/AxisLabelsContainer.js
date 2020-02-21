@@ -380,7 +380,8 @@ class AxisLabelsContainer extends PureComponent {
       setQuestionData,
       list,
       zoomLevel,
-      theme
+      theme,
+      isPrintPreview
     } = this.props;
     const { shouldZoom } = theme;
     const { isV1Migrated } = graphData;
@@ -429,7 +430,7 @@ class AxisLabelsContainer extends PureComponent {
           <span />
         </WithResources>
         <GraphWrapper>
-          {!disableResponse && (
+          {!disableResponse && !isPrintPreview && (
             <StyledToolsContainer width={Math.min(adjustedHeightWidth.width, this.parentWidth)}>
               <Tools
                 controls={this.controls}

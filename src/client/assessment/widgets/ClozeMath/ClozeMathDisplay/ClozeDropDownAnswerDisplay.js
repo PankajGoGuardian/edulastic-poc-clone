@@ -3,19 +3,24 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
+import { getStemNumeration } from "../../../utils/helpers";
 
 const { Option } = Select;
 
 const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
-  const { options, answers = {}, item, responseContainers, uiStyles = {} } = resprops;
+  const { options, answers = {}, item, responseContainers, uiStyles = {}, isPrintPreview, allOptions } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
 
-  const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
+  let val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
   const responseContainer = find(responseContainers || [], cont => cont.id === id);
   const width = (responseContainer ? responseContainer.widthpx : item.uiStyle.minWidth) || "auto";
 
   const dropDownWrapper = useRef(null);
   const menuStyle = { top: `${dropDownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
+  if (isPrintPreview) {
+    const itemIndex = indexOf(allOptions.map(o => o.id), id);
+    val = getStemNumeration("lowercase", itemIndex);
+  }
 
   return (
     <SelectWrapper ref={dropDownWrapper} menuStyle={menuStyle}>

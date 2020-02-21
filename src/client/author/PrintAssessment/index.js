@@ -138,6 +138,7 @@ const PrintAssessmentContainer = styled.div`
   width: 25cm;
   margin: auto;
   background-color: white;
+  pointer-events: none;
   * {
     -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
     color-adjust: exact !important;                 /*Firefox*/

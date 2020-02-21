@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import produce from "immer";
-import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
+import { isUndefined, mapValues, cloneDeep, findIndex, find, get, orderBy } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
 import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
-import DisplayOptions from "./components/DisplayOptions";
+import DisplayOptions from "../ClozeImageDropDown/QuestionOptions";
 
 import { EDIT } from "../../constants/constantsForQuestions";
 
@@ -120,7 +120,8 @@ class ClozeDropDownDisplay extends Component {
       previewTab,
       changePreviewTab,
       view,
-      isPrint
+      isPrint,
+      isPrintPreview
     } = this.props;
 
     const { parsedTemplate } = this.state;
@@ -167,6 +168,7 @@ class ClozeDropDownDisplay extends Component {
       btnStyle,
       showAnswer,
       isPrint,
+      isPrintPreview,
       isReviewTab,
       placeholder,
       disableResponse,
@@ -185,7 +187,7 @@ class ClozeDropDownDisplay extends Component {
       evaluation:
         item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
-
+    const displayOptions = orderBy(item.responseIds, ["index"]).map(option => options[option.id]);
     const questionContent = (
       <ContentWrapper view={view} fontSize={fontSize}>
         <JsxParser
@@ -194,7 +196,7 @@ class ClozeDropDownDisplay extends Component {
           showWarnings
           components={{
             textdropdown:
-              showAnswer || checkAnswer || isPrint ? CheckboxTemplateBoxLayout : ChoicesBox,
+              showAnswer || checkAnswer || isPrint || isPrintPreview ? CheckboxTemplateBoxLayout : ChoicesBox,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -217,7 +219,7 @@ class ClozeDropDownDisplay extends Component {
         </QuestionTitleWrapper>
         {question && questionContent}
         {answerBox}
-        {isPrint && <DisplayOptions options={options} responseIds={item.responseIds} />}
+        {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} responseIds={item.responseIds} style={{marginTop: "50px"}} />}
       </div>
     );
   }

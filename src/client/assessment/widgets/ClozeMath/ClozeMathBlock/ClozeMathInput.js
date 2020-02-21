@@ -264,7 +264,7 @@ class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {} } = this.props;
-    const { height, width, item, uiStyles = {}, disableResponse } = resprops;
+    const { height, width, item, uiStyles = {}, disableResponse, isPrintPreview } = resprops;
     const { showKeyboard, nativeKeyboard } = this.state;
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "customKeys", []);
@@ -307,6 +307,7 @@ class ClozeMathInput extends React.Component {
           verticalAlign: "middle",
           alignSelf: "flex-start"
         }}
+        isPrintPreview={isPrintPreview}
       >
         <Popover
           content={keypad}
@@ -436,6 +437,7 @@ const Wrapper = styled.div`
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+      ${({isPrintPreview}) => isPrintPreview && `background: white; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
   }
   .mq-cursor {
     ${({ disableResponse }) => disableResponse && `display: none;`}

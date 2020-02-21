@@ -4,6 +4,7 @@ import { find } from "lodash";
 import { Popover } from "antd";
 import { response } from "@edulastic/constants";
 import { measureText, MathSpan } from "@edulastic/common";
+import { darkBlue } from "@edulastic/colors";
 
 import { getStemNumeration } from "../../../../utils/helpers";
 import { IconWrapper } from "./styled/IconWrapper";
@@ -27,11 +28,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     changePreviewTab,
     previewTab,
     disableResponse,
-    item: { responseIds }
+    item: { responseIds },
+    isPrintPreview
   } = resprops;
   const { index, id: answerId } = find(responseIds, _response => _response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
-  const indexStr = getStemNumeration(stemNumeration, index);
+  const indexStr = getStemNumeration((isPrint || isPrintPreview ? "lowercase" : stemNumeration), index);
   const status = userSelections && evaluation ? (evaluation[answerId] ? "right" : "wrong") : "wrong";
   const userAttempted =
     userSelections.length > 0 && evaluation[answerId] !== undefined ? !!userSelections[index] : null;
@@ -61,6 +63,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     "text-align": "center",
     height: "100%"
   };
+
+  if (isPrint || isPrintPreview) {
+    indexStyle.color = darkBlue;
+  }
   const lessMinWidth = parseInt(btnStyle.width, 10) < response.minWidthShowAnswer;
 
   if (lessMinWidth) {
@@ -81,7 +87,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       onClick={handleClick}
     >
-      {(showAnswer || isPrint) && !lessMinWidth && (
+      {(showAnswer || isPrint || isPrintPreview) && !lessMinWidth && (
         <span className="index" style={indexStyle}>
           {indexStr}
         </span>

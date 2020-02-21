@@ -666,7 +666,7 @@ class GraphDisplay extends Component {
 
   render() {
     const { graphIsValid } = this.state;
-    const { theme, zoomLevel } = this.props;
+    const { theme, zoomLevel, isPrint, isPrintPreview } = this.props;
     const zl = parseFloat(zoomLevel) || 1;
     const GraphContainer = this.getGraphContainer();
 
@@ -676,11 +676,11 @@ class GraphDisplay extends Component {
           <Fragment>
             {/* zoomLevel change css transform: scale() style,
                 after changing this style you need to do full reinit of component with jsxgraph object */}
-            {zl === 1 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
-            {zl === 1.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
-            {zl === 1.75 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
-            {zl === 2.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
-            {zl === 3 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} />}
+            {zl === 1 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
+            {zl === 1.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
+            {zl === 1.75 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
+            {zl === 2.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
+            {zl === 3 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
           </Fragment>
         ) : (
           <div>Wrong parameters</div>

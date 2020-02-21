@@ -273,7 +273,7 @@ class ClozeMathWithUnit extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { item, uiStyles = {}, height, width, disableResponse = false } = resprops;
+    const { item, uiStyles = {}, height, width, disableResponse = false, isPrintPreview, allOptions = [] } = resprops;
     const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
     const { showKeyboard, nativeKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
@@ -346,11 +346,14 @@ class ClozeMathWithUnit extends React.Component {
             preview
             unit={unit}
             customUnits={customUnits}
+            isPrintPreview={isPrintPreview}
             onChange={this.onChangeUnit}
             onDropdownVisibleChange={this.onDropdownVisibleChange}
             keypadMode={keypadMode}
             dropdownStyle={{ fontSize: btnStyle.fontSize }}
             getPopupContainer={null}
+            allOptions={allOptions}
+            id={id}
           />
         </InnerWrapper>
       </OuterWrapper>

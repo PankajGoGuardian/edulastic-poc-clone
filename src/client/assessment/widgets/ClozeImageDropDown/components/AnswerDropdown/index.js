@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import React, { useRef } from "react";
 import { Select } from "antd";
 
-import { SelectContainer } from "./styled/SelectContainer";
 import { MathSpan } from "@edulastic/common";
+import { SelectContainer } from "./styled/SelectContainer";
 
 const AnswerDropdown = ({
   responseIndex,
@@ -15,7 +15,8 @@ const AnswerDropdown = ({
   options,
   defaultValue,
   placeholder,
-  fontSize
+  fontSize,
+  isPrintPreview
 }) => {
   const dropdownContainerRef = useRef(null);
   const menuStyle = {
@@ -29,6 +30,7 @@ const AnswerDropdown = ({
       style={style}
       fontSize={fontSize}
       backgroundColor={backgroundColor}
+      isPrintPreview={isPrintPreview}
     >
       <Select
         style={style}

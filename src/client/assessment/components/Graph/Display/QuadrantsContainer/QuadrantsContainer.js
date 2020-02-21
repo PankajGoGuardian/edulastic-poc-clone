@@ -641,7 +641,8 @@ class GraphContainer extends PureComponent {
       view,
       advancedElementSettings,
       graphData,
-      setQuestionData
+      setQuestionData,
+      isPrintPreview
     } = this.props;
     const { tools, drawingPrompt } = toolbar;
     const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
@@ -671,7 +672,7 @@ class GraphContainer extends PureComponent {
           {annotation && annotation.title && (
             <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />
           )}
-          {!disableResponse && (
+          {!disableResponse && !isPrintPreview && (
             <StyledToolsContainer>
               <Tools
                 canEditTools={view === EDIT && !bgShapes}

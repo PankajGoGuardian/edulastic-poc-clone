@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { shuffle, isUndefined, get, maxBy } from "lodash";
+import { shuffle, isUndefined, get, maxBy, orderBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
@@ -15,10 +15,11 @@ import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import { getFontSize, topAndLeftRatio } from "../../utils/helpers";
+import { getFontSize, topAndLeftRatio, getStemNumeration } from "../../utils/helpers";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
+import QuestionOptions from "./QuestionOptions";
 
 class Display extends Component {
   selectChange = (value, index) => {
@@ -131,7 +132,9 @@ class Display extends Component {
       disableResponse,
       imageOptions,
       isExpressGrader,
-      isReviewTab
+      isReviewTab,
+      isPrint,
+      isPrintPreview
     } = this.props;
     const { shuffleOptions } = configureOptions;
     const { maxHeight, maxWidth } = clozeImage;
@@ -152,7 +155,7 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
-    const cAnswers = get(item, "validation.validResponse.value", []);
+    let cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const placeholder = uiStyle.placeholder || "";
     const imageHeight = this.getHeight();
@@ -172,7 +175,7 @@ class Display extends Component {
     const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
     let containerHeight = 0;
     // calculate the dropdown menu height, its top relative to container, for each responseContainer
-    let tops = [];
+    const tops = [];
     let maxResponseOffsetX = 0;
     responseContainers.map((responseContainer, i) => {
       const delta = parseFloat(responseContainer?.height) + (newOptions?.[i]?.length * 32 || 110);
@@ -184,6 +187,11 @@ class Display extends Component {
     containerHeight = Math.max(canvasHeight, maxHeight, Math.max(...tops));
     const containerWidth = Math.max(maxResponseOffsetX, canvasWidth);
 
+    let userSelectedAnswers = userSelections;
+    if (isPrintPreview || isPrint) {
+      userSelectedAnswers = responseContainers.map((_, i) => getStemNumeration("lowercase", i));
+      cAnswers = responseContainers.map((_, i) => getStemNumeration("lowercase", i));
+    }
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
@@ -250,7 +258,8 @@ class Display extends Component {
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelections[dropTargetIndex]}
+                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelectedAnswers[dropTargetIndex]}
+                      isPrintPreview={isPrint ||isPrintPreview}
                     />
                   )}
                   <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
@@ -321,6 +330,7 @@ class Display extends Component {
     );
 
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
+
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
@@ -331,6 +341,7 @@ class Display extends Component {
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
           {answerBox}
         </TemplateBoxContainer>
+        {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
       </StyledDisplayContainer>
     );
   }

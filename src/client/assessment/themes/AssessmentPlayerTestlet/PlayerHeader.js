@@ -20,7 +20,7 @@ const PlayerHeader = ({
   title,
   previewPlayer,
   dropdownOptions,
-  currentItem,
+  currentPage,
   onNextQuestion,
   unlockNext,
   onPrevQuestion,
@@ -37,10 +37,10 @@ const PlayerHeader = ({
         <FlexContainer>
           <PlayerTitle>{title}</PlayerTitle>
           <Tools changeTool={changeTool} currentTool={currentTool} />
-          <ProgressContainer questions={dropdownOptions} current={currentItem} desktop="true" />
+          <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
           <ContainerRight>
             <FlexDisplay>
-              {currentItem > 1 && (
+              {currentPage > 1 && (
                 <>
                   {previewPlayer && (
                     <ActionButton onClick={onPrevQuestion} title="Prev">
@@ -53,7 +53,7 @@ const PlayerHeader = ({
                   </ActionButton>
                 </>
               )}
-              {currentItem <= 1 && (
+              {currentPage <= 1 && (
                 <ActionButton onClick={onNextQuestion} title="Start">
                   <span>Start</span>
                   <IconGraphRightArrow />
@@ -66,7 +66,7 @@ const PlayerHeader = ({
           </ContainerRight>
         </FlexContainer>
         <Mobile>
-          <ProgressContainer questions={dropdownOptions} current={currentItem + 1} />
+          <ProgressContainer questions={dropdownOptions} current={currentPage + 1} />
         </Mobile>
       </HeaderMainMenu>
     </HeaderPracticePlayer>
@@ -77,7 +77,7 @@ PlayerHeader.propTypes = {
   title: PropTypes.string.isRequired,
   previewPlayer: PropTypes.bool,
   dropdownOptions: PropTypes.array,
-  currentItem: PropTypes.number,
+  currentPage: PropTypes.number,
   currentTool: PropTypes.number.isRequired,
   onNextQuestion: PropTypes.func.isRequired,
   unlockNext: PropTypes.bool,
@@ -90,7 +90,7 @@ PlayerHeader.defaultProps = {
   previewPlayer: false,
   unlockNext: false,
   dropdownOptions: [],
-  currentItem: 0
+  currentPage: 0
 };
 
 export default PlayerHeader;

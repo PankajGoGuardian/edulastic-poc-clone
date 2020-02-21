@@ -344,7 +344,7 @@ const PlayerContent = ({
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}
-        currentItem={currentPage}
+        currentPage={currentPage}
         onOpenExitPopup={openExitPopup}
         onNextQuestion={nextQuestion}
         unlockNext={unlockNext}

@@ -99,35 +99,35 @@ export const createWidget = ({ id, type, title }) => ({
 });
 
 export const getStaticGroupItemIds = test => (
-    test.itemGroups.flatMap((itemGroup = {}) => {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
-        return itemGroup?.items.map(item => item._id) || [];
-      }
-      return [];
-    }) || []
-  ).filter(e => !!e);
+  test.itemGroups.flatMap((itemGroup = {}) => {
+    if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      return itemGroup?.items.map(item => item._id) || [];
+    }
+    return [];
+  }) || []
+).filter(e => !!e);
 
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => produce(itemGroups, itemGroups => {
-    for (const itemGroup of itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
-        const isLimitedDeliveryType =
-          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
-        // For delivery type:LIMITED scoring should be as how item level scoring works
-        itemGroup.items = itemGroup.items.map(o => ({
-          itemId: o._id,
-          maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
-          questions: o.data
-            ? helpers.getQuestionLevelScore(
-                { ...o, isLimitedDeliveryType },
-                o.data.questions,
-                helpers.getPoints(o),
-                scoring[o._id]
-              )
-            : {}
-        }));
-      } else itemGroup.items = [];
-    }
-  });
+  for (const itemGroup of itemGroups) {
+    if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      const isLimitedDeliveryType =
+        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM;
+      // For delivery type:LIMITED scoring should be as how item level scoring works
+      itemGroup.items = itemGroup.items.map(o => ({
+        itemId: o._id,
+        maxScore: isLimitedDeliveryType ? 1 : scoring[o._id] || helpers.getPoints(o),
+        questions: o.data
+          ? helpers.getQuestionLevelScore(
+            { ...o, isLimitedDeliveryType },
+            o.data.questions,
+            helpers.getPoints(o),
+            scoring[o._id]
+          )
+          : {}
+      }));
+    } else itemGroup.items = [];
+  }
+});
 
 export const getTestGradeAndSubject = (group, testGrades, testSubjects) => {
   if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
@@ -423,15 +423,15 @@ const getDefaultScales = (state, payload) => {
     ) || {};
   const performanceBand = isEmpty(state.entity.performanceBand)
     ? {
-        name: bandId.name,
-        _id: bandId._id
-      }
+      name: bandId.name,
+      _id: bandId._id
+    }
     : state.entity.performanceBand;
   const standardGradingScale = isEmpty(state.entity.standardGradingScale)
     ? {
-        name: standardId.name,
-        _id: standardId._id
-      }
+      name: standardId.name,
+      _id: standardId._id
+    }
     : state.entity.standardGradingScale;
   return {
     performanceBand,
@@ -826,7 +826,7 @@ function* receiveTestByIdSaga({ payload }) {
         openPolicy:
           userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
             ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+            : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
       })
     );
   } catch (err) {
@@ -1549,7 +1549,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     console.error(error);
     message.error(
       error?.data?.message ||
-        `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`
+      `Test ${payload.status === "published" ? "Approve" : "Reject"} Failed.`
     );
   }
 }
@@ -1568,14 +1568,14 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
       itemGroup.type === ITEM_GROUP_TYPES.STATIC
         ? null
         : {
-            limit: itemGroup.deliverItemsCount,
-            search: {
-              collectionId: itemGroup.collectionDetails._id,
-              standardId: itemGroup.standardDetails.standardId,
-              nInItemIds: allStaticGroupItemIds,
-              ...optionalFields
-            }
-          },
+          limit: itemGroup.deliverItemsCount,
+          search: {
+            collectionId: itemGroup.collectionDetails._id,
+            standardId: itemGroup.standardDetails.standardId,
+            nInItemIds: allStaticGroupItemIds,
+            ...optionalFields
+          }
+        },
     isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
     groupName: itemGroup.groupName,
     index
@@ -1805,36 +1805,36 @@ export const getUserListSelector = createSelector(
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
   state => state.itemGroups
-      .flatMap(itemGroup => itemGroup.items || [])
-      .map(item => {
-        if (!item || !item.rows) return [];
-        return item.rows.map(row => ({
-          ...row,
-          widgets: row.widgets.map(widget => {
-            let referencePopulate = {
-              data: null
-            };
+    .flatMap(itemGroup => itemGroup.items || [])
+    .map(item => {
+      if (!item || !item.rows) return [];
+      return item.rows.map(row => ({
+        ...row,
+        widgets: row.widgets.map(widget => {
+          let referencePopulate = {
+            data: null
+          };
 
-            if (item.data && item.data.questions && item.data.questions.length) {
-              referencePopulate = item.data.questions.find(q => q._id === widget.reference);
-            }
+          if (item.data && item.data.questions && item.data.questions.length) {
+            referencePopulate = item.data.questions.find(q => q._id === widget.reference);
+          }
 
-            if (
-              !referencePopulate &&
-              item.data &&
-              item.data.resources &&
-              item.data.resources.length
-            ) {
-              referencePopulate = item.data.resources.find(r => r._id === widget.reference);
-            }
+          if (
+            !referencePopulate &&
+            item.data &&
+            item.data.resources &&
+            item.data.resources.length
+          ) {
+            referencePopulate = item.data.resources.find(r => r._id === widget.reference);
+          }
 
-            return {
-              ...widget,
-              referencePopulate
-            };
-          })
-        }));
-      })
+          return {
+            ...widget,
+            referencePopulate
+          };
+        })
+      }));
+    })
 );
 
 export const getTestCreatedItemsSelector = createSelector(

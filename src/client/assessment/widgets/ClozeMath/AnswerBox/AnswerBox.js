@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty } from "lodash";
 import styled from "styled-components";
-import { white, themeColor } from "@edulastic/colors";
+import { white, themeColor, smallDesktopWidth } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
 const AnswerBox = ({
@@ -210,6 +210,10 @@ const Wrapper = styled.div`
 
   .ant-tabs-bar {
     border-bottom: 1px solid #ccc;
+  }
+
+  @media screen and (max-width: ${smallDesktopWidth}) {
+    width: max-content;
   }
 `;
 

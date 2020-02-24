@@ -26,6 +26,12 @@ class PreviewItemPage {
 
     return this;
   };
+
+  getScore = () => cy.get('[data-cy="score"]');
+
+  verifyScore = score => {
+    this.getScore().should("contain.text", `Score ${score}`);
+  };
 }
 
 export default PreviewItemPage;

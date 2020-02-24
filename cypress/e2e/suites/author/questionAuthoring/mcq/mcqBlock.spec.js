@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(
             .click()
             .should("not.have.class", "ant-checkbox-checked");
  */
-      question.selectScoringType(SCORING_TYPE.EXACT);
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(1);
 
@@ -296,9 +296,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          cy.get("body")
-            .children()
-            .should("contain", "score");
+          preview.verifyScore("");
         });
 
       preview.getClear().click();
@@ -497,7 +495,7 @@ describe(`${FileHelper.getSpecName(
             .click()
             .should("not.have.class", "ant-checkbox-checked");
  */
-      question.selectScoringType(SCORING_TYPE.EXACT);
+      question.selectScoringType(SCORING_TYPE.PARTIAL);
 
       question.getPanalty().verifyNumInput(1);
 
@@ -576,9 +574,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          cy.get("body")
-            .children()
-            .should("contain", "score");
+          preview.verifyScore("");
         });
 
       preview.getClear().click();
@@ -703,7 +699,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.verifyScore("1/1");
 
           cy.get("label.wrong").should("have.length", 0);
 
@@ -728,7 +724,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.wrong")
             .should("have.length", 1)
@@ -751,7 +747,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
@@ -797,8 +793,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
-
+          preview.verifyScore("1/1");
           cy.get("label.wrong").should("have.length", 0);
 
           cy.get("label.right")
@@ -822,7 +817,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0.5/1");
+          preview.verifyScore("0.5/1");
 
           cy.get("label.wrong")
             .should("have.length", 1)
@@ -845,7 +840,7 @@ describe(`${FileHelper.getSpecName(
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });

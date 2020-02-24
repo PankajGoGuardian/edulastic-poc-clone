@@ -7,7 +7,11 @@ class MCQStandardPage {
   constructor() {
     this.orientationOption = { Horizontal: "horizontal", Vertical: "vertical" };
 
-    this.styleOptions = { Standard: "standard", Block: "block", "Radio Button Below": "radioBelow" };
+    this.styleOptions = {
+      Standard: "standard",
+      Block: "block",
+      "Radio Button Below": "radioBelow"
+    };
 
     this.labelOption = {
       Numerical: "number",
@@ -71,12 +75,7 @@ class MCQStandardPage {
       .find(".fr-element");
   // .find(".ql-editor");
 
-  getAllAnsChoicesLabel = () =>
-    cy
-      .get('[data-cy="tabs"]')
-      .parent()
-      .parent()
-      .find("label");
+  getAllAnsChoicesLabel = () => cy.get('[data-cy="anwer-labels"]');
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
@@ -253,12 +252,7 @@ class MCQStandardPage {
       .eq(0)
       .should("be.visible");
 
-  getUnscore = () =>
-    cy
-      .contains("Unscored")
-      .children()
-      .eq(0)
-      .should("be.visible");
+  getUnscore = () => cy.get('[data-cy="unscoredChk"]').parent();
 
   getNumofCol = () => cy.get('[data-cy="columns"]');
 

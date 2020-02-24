@@ -19,7 +19,8 @@ import { PREVIEW } from "../../constants/constantsForQuestions";
 import { PreviewContainer } from "./styled/PreviewContainer";
 import { CanvasContainer } from "./styled/CanvasContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
-import DEFAULT_IMAGE from "../../assets/grid.png";
+import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
+import { s3ImageBucketPath } from "../../../config";
 
 import Scratch from "./Scratch";
 
@@ -168,9 +169,11 @@ const HighlightImagePreview = ({
     }
   };
 
+  const CDN_IMAGE_PATH = `${s3ImageBucketPath}/highlight_image_background.svg`;
+
   const renderImage = () => (
     <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
-      <img src={file || DEFAULT_IMAGE} alt={altText} style={{ width, height }} />
+      <img src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE} alt={altText} style={{ width, height }} />
     </div>
   );
 
@@ -200,7 +203,9 @@ const HighlightImagePreview = ({
         >
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
           </QuestionTitleWrapper>
           {renderImage()}
           {enableQuestionLevelScratchPad && (

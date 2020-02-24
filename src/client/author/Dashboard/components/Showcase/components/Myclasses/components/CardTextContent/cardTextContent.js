@@ -1,9 +1,8 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { Row, Col, Tooltip } from "antd";
-import { compose } from "redux";
 import { IconPlusCircle, IconGraphRightArrow } from "@edulastic/icons";
-import { themeColorLight, titleColor, cardTitleColor, themeColor } from "@edulastic/colors";
+import { themeColorLight, cardTitleColor, themeColor } from "@edulastic/colors";
 import {
   CardText,
   Image,
@@ -84,5 +83,4 @@ export const CardTextContent = ({ data, history }) => {
   );
 };
 
-const enhance = compose(withRouter);
-export default enhance(CardTextContent);
+export default withRouter(CardTextContent);

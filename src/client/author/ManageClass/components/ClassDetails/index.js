@@ -1,38 +1,28 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { get, isEmpty } from "lodash";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
 import { themeColor } from "@edulastic/colors";
-import { Spin, Modal, Input, message } from "antd";
-import {
-  fetchStudentsByIdAction,
-  syncClassUsingCodeAction,
-  fetchClassListAction,
-  syncByCodeModalAction
-} from "../../ducks";
-
+import { MainContentWrapper } from "@edulastic/common";
+import { Input, message, Spin } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import BreadCrumb from "../../../src/components/Breadcrumb";
 import { archiveClassAction } from "../../../Classes/ducks";
-
-import Header from "./Header";
-import SubHeader from "./SubHeader";
-import ActionContainer from "./ActionContainer";
-import StudentsList from "./StudentsList";
-import MainInfo from "./MainInfo";
 import {
-  Container,
-  StyledDivider,
-  ButtonWrapper,
-  ButtonRightWrapper,
-  StyledButton,
-  GoogleClassSyncModal
-} from "./styled";
-import BreadCrumb from "../../../../author/src/components/Breadcrumb";
+  fetchClassListAction,
+  fetchStudentsByIdAction,
+  syncByCodeModalAction,
+  syncClassUsingCodeAction
+} from "../../ducks";
+import ActionContainer from "./ActionContainer";
+import Header from "./Header";
+import MainInfo from "./MainInfo";
+import StudentsList from "./StudentsList";
+import { ButtonWrapper, GoogleClassSyncModal, StyledButton } from "./styled";
 
 const ClassDetails = ({
   selectedClass,
-  dataLoaded,
   loadStudents,
   fetchClassList,
   isUserGoogleLoggedIn,
@@ -47,7 +37,7 @@ const ClassDetails = ({
 }) => {
   const { _id, name, cleverId } = selectedClass;
   const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
-  let googleCode = React.createRef();
+  const googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
   useEffect(() => {
     if (!fetchClassListLoading) setOpenGCModal(true);
@@ -72,7 +62,10 @@ const ClassDetails = ({
 
   const handleSyncGC = () => {
     if (googleCode.current.state.value) {
-      syncClassUsingCode({ googleCode: googleCode.current.state.value, groupId: selectedClass._id });
+      syncClassUsingCode({
+        googleCode: googleCode.current.state.value,
+        groupId: selectedClass._id
+      });
     } else {
       message.error("Enter valid google classroom code");
     }
@@ -119,7 +112,7 @@ const ClassDetails = ({
                 </StyledButton>
                 <div>
                   <StyledButton onClick={closeGoogleSyncModal}>Cancel</StyledButton>
-                  <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type={"primary"}>
+                  <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type="primary">
                     Sync
                   </StyledButton>
                 </div>
@@ -129,11 +122,11 @@ const ClassDetails = ({
             <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
           </GoogleClassSyncModal>
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
-          <Container>
+          <MainContentWrapper>
             <BreadCrumb
               ellipsis="calc(100% - 200px)"
               data={breadCrumbData}
-              style={{ position: "unset", margin: "10px 0px" }}
+              style={{ position: "unset" }}
             />
 
             <MainInfo
@@ -149,7 +142,7 @@ const ClassDetails = ({
             <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
 
             <StudentsList selectStudent selectedClass={selectedClass} />
-          </Container>
+          </MainContentWrapper>
         </>
       )}
     </>
@@ -171,7 +164,6 @@ const enhance = compose(
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       syncClassLoading: get(state, "manageClass.syncClassLoading"),
-      dataLoaded: get(state, "manageClass.dataLoaded"),
       classLoaded: get(state, "manageClass.classLoaded")
     }),
     {

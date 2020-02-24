@@ -10,9 +10,9 @@ const CardComponent = styled.div`
   padding: 30px;
   background-color: ${props => props.theme.brandLightGrey};
   border-radius: 10px;
-  width: 414px;
   height: 446px;
   background-color: ${backgrounds.default};
+  margin-left: ${props => props.ml || "0px"};
 
   @media (max-width: ${mobileWidthMax}) {
     min-height: unset;

@@ -62,7 +62,6 @@ import {
   getUserFeatures
 } from "../../../src/selectors/user";
 
-import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction
@@ -72,6 +71,7 @@ import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../duc
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Actions from "../Actions";
 import SelectCollectionModal from "../Actions/SelectCollection";
+import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -396,7 +396,9 @@ class Contaier extends Component {
                 {!loading && (
                   <>
                     <ItemsMenu>
-                      <QuestionsFound>{count} questions found</QuestionsFound>
+                      <PaginationInfo>
+                        <span>{count}</span> QUESTIONS FOUND
+                      </PaginationInfo>
                       <Actions type="TESTITEM" />
                     </ItemsMenu>
 

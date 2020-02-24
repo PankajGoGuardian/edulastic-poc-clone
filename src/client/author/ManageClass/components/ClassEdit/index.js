@@ -7,13 +7,15 @@ import { withRouter } from "react-router-dom";
 import { isEmpty, find, get } from "lodash";
 import { Form, Spin, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { updateClassAction, fetchStudentsByIdAction, setSubjectAction } from "../../ducks";
 
 // selectors
-import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import {
+  getCurriculumsListSelector,
+  getFormattedCurriculumsSelector
+} from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction } from "../../../Courses/ducks";
 
@@ -56,7 +58,14 @@ class ClassEdit extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums, selctedClass, loadStudents, match, getAllTags } = this.props;
+    const {
+      curriculums,
+      getCurriculums,
+      selctedClass,
+      loadStudents,
+      match,
+      getAllTags
+    } = this.props;
     if (isEmpty(selctedClass)) {
       const { classId } = match.params;
       loadStudents({ classId });
@@ -116,7 +125,7 @@ class ClassEdit extends React.Component {
       districtId
     };
     if (key) {
-      searchTerms["search"] = {
+      searchTerms.search = {
         name: [{ type: "cont", value: key }],
         number: [{ type: "eq", value: key }],
         operator: "or"
@@ -175,47 +184,45 @@ class ClassEdit extends React.Component {
         <Header classId={classId} />
         <Spin spinning={updating}>
           <Container>
-            <Paper padding="40px">
-              <FormTitle>Class Details</FormTitle>
-              <Row gutter={36}>
-                <LeftContainer xs={8}>
-                  <LeftFields
-                    getFieldDecorator={getFieldDecorator}
-                    getFieldValue={getFieldValue}
-                    thumbnailUri={thumbnail}
-                    setFieldsValue={setFieldsValue}
-                  />
-                </LeftContainer>
-                <RightContainer xs={16}>
-                  <RightFields
-                    defaultName={name}
-                    defaultStartDate={startDate}
-                    defaultEndDate={endDate}
-                    defaultGrade={grades}
-                    defaultSubject={subject}
-                    defaultStandardSets={standardSets}
-                    defaultCourse={course || undefined}
-                    defaultSchool={institutionId}
-                    schoolList={schools}
-                    curriculums={curriculums}
-                    getFieldDecorator={getFieldDecorator}
-                    getFieldValue={getFieldValue}
-                    courseList={courseList}
-                    searchCourse={this.searchCourse}
-                    isSearching={isSearching}
-                    clearStandards={this.clearStandards}
-                    filteredCurriculums={filteredCurriculums}
-                    setSubject={setSubject}
-                    subject={selectedSubject}
-                    cleverId={cleverId}
-                    tags={tags}
-                    setFieldsValue={setFieldsValue}
-                    allTagsData={allTagsData}
-                    addNewTag={addNewTag}
-                  />
-                </RightContainer>
-              </Row>
-            </Paper>
+            <FormTitle>Class Details</FormTitle>
+            <Row gutter={36}>
+              <LeftContainer xs={8}>
+                <LeftFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  thumbnailUri={thumbnail}
+                  setFieldsValue={setFieldsValue}
+                />
+              </LeftContainer>
+              <RightContainer xs={16}>
+                <RightFields
+                  defaultName={name}
+                  defaultStartDate={startDate}
+                  defaultEndDate={endDate}
+                  defaultGrade={grades}
+                  defaultSubject={subject}
+                  defaultStandardSets={standardSets}
+                  defaultCourse={course || undefined}
+                  defaultSchool={institutionId}
+                  schoolList={schools}
+                  curriculums={curriculums}
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  courseList={courseList}
+                  searchCourse={this.searchCourse}
+                  isSearching={isSearching}
+                  clearStandards={this.clearStandards}
+                  filteredCurriculums={filteredCurriculums}
+                  setSubject={setSubject}
+                  subject={selectedSubject}
+                  cleverId={cleverId}
+                  tags={tags}
+                  setFieldsValue={setFieldsValue}
+                  allTagsData={allTagsData}
+                  addNewTag={addNewTag}
+                />
+              </RightContainer>
+            </Row>
           </Container>
         </Spin>
       </Form>

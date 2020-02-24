@@ -5,12 +5,12 @@ import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
 import { ThemeProvider } from "styled-components";
 import _ from "lodash";
+import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
 import { Subtitle } from "../../styled/Subtitle";
 import { themes } from "../../../theme";
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
-  addNewAlignmentAction,
   removeExistedAlignmentAction,
   updateDictAlignmentAction
 } from "../../../author/src/actions/dictionaries";
@@ -45,23 +45,17 @@ import {
   getUserFeatures,
   getItemBucketsSelector
 } from "../../../author/src/selectors/user";
-import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
-import { withMathFormula } from "@edulastic/common/src/HOC/withMathFormula";
-
-const getNewAlignmentState = () => ({
-  curriculum: "",
-  curriculumId: "",
-  subject: "",
-  grades: [],
-  domains: []
-});
+import {
+  getAllTagsAction,
+  getAllTagsSelector,
+  addNewTagAction
+} from "../../../author/TestPage/ducks";
 
 const QuestionMetadata = ({
   t,
   alignment,
   questionData,
   setQuestionData,
-  addAlignment,
   curriculumStandards,
   getCurriculumStandards,
   curriculums,
@@ -115,7 +109,7 @@ const QuestionMetadata = ({
   };
 
   const handleCollectionsSelect = (value, options) => {
-    let data = {};
+    const data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
         data[o.props._id].push(o.props.value);
@@ -134,8 +128,8 @@ const QuestionMetadata = ({
 
     const orgCollectionIds = orgCollections.map(o => o._id);
 
-    /****** here were extracting out the collection which are not of current user district (if any) so that 
-          while saving, collections array contains these extra collections also ******/
+    /** **** here were extracting out the collection which are not of current user district (if any) so that 
+          while saving, collections array contains these extra collections also ***** */
     const extraCollections = collections.filter(c => !orgCollectionIds.includes(c._id));
     setCollections([...collectionArray, ...extraCollections]);
   };
@@ -147,7 +141,9 @@ const QuestionMetadata = ({
   };
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
-    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
+    const newAlignments = (questionData.alignment || []).map((c, i) =>
+      i === index ? alignment : c
+    );
     if (!newAlignments.length) {
       newAlignments.push(alignment);
     }
@@ -175,7 +171,7 @@ const QuestionMetadata = ({
     <ThemeProvider theme={themes.default}>
       <div>
         <Container padding="20px">
-          <Subtitle>{t("component.options.addSkillsForQuestion")}</Subtitle>
+          <Subtitle margin="0px">{t("component.options.addSkillsForQuestion")}</Subtitle>
 
           <ShowAlignmentRowsContainer>
             {alignment.map((el, index) => (
@@ -257,7 +253,6 @@ QuestionMetadata.propTypes = {
     authorDifficulty: PropTypes.string
   }).isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
-  addAlignment: PropTypes.func.isRequired,
   removeAlignment: PropTypes.func.isRequired,
   editAlignment: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
@@ -288,7 +283,6 @@ const enhance = compose(
       setQuestionAlignmentAddRow: setQuestionAlignmentAddRowAction,
       setQuestionAlignmentRemoveRow: setQuestionAlignmentRemoveRowAction,
       setQuestionData: setQuestionDataAction,
-      addAlignment: addNewAlignmentAction,
       removeAlignment: removeExistedAlignmentAction,
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,

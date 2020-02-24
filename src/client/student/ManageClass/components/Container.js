@@ -59,7 +59,7 @@ const ManageClassContainer = ({
             visible={isJoinClassModalVisible}
             onCancel={closeModalHandler}
             title={t("common.enterClassCode")}
-            footer={(
+            footer={
               <ButtonWrapper>
                 <StyledButton data-cy="cancelbutton" onClick={closeModalHandler}>
                   {t("common.cancel")}
@@ -68,7 +68,7 @@ const ManageClassContainer = ({
                   {t("common.join")}
                 </StyledButton>
               </ButtonWrapper>
-            )}
+            }
           >
             <StyledInput
               data-cy="classcodeinput"

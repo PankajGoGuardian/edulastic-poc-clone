@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, find } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Tooltip, Spin } from "antd";
-import { find } from "lodash";
+import { Tooltip } from "antd";
+
+import { MainContentWrapper } from "@edulastic/common";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable, Tags, SubHeader } from "./styled";
-import { fetchStudentsByIdAction, fetchClassListAction } from "../../ducks";
+import { fetchClassListAction } from "../../ducks";
 import GoogleBanner from "./GoogleBanner";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
@@ -22,7 +23,6 @@ const { allGrades, allSubjects } = selectsData;
 const ClassList = ({
   groups,
   archiveGroups,
-  loadStudents,
   setShowDetails,
   syncClassLoading,
   showBanner,
@@ -33,9 +33,11 @@ const ClassList = ({
   setAssignmentFilters
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
-  const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
+  const findGrade = (_grade = []) =>
+    allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
-  const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
+  const findSubject = _subject =>
+    find(allSubjects, item => item.value === _subject) || { text: _subject };
   const findTags = row =>
     get(row, "tags", [])
       .map(_o => _o.tagName)
@@ -96,7 +98,6 @@ const ClassList = ({
       },
       render: (_, row) => {
         const grades = findGrade(row.grades);
-        const gradeValue = grades.value || grades.text;
         return (
           <Tooltip title={` ${grades}`} placement="bottom">
             {` ${grades}`}
@@ -159,7 +160,11 @@ const ClassList = ({
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => Number(a.assignmentCount) - Number(b.assignmentCount),
       render: (assignmentCount = 0, record) => (
-        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={assignmentCount} placement="bottom">
+        <Tooltip
+          onClick={getAssignmentsByClass(record?._id)}
+          title={assignmentCount}
+          placement="bottom"
+        >
           {assignmentCount}
         </Tooltip>
       )
@@ -186,43 +191,48 @@ const ClassList = ({
   return (
     <>
       <Header groups={groups} setShowDetails={setShowDetails} archiveGroups={archiveGroups} />
-      <SubHeader>
-        <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
-        <ClassSelector
-          groups={groups}
-          archiveGroups={archiveGroups}
-          setClassGroups={setClassGroups}
-          filterClass={filterClass}
-          setFilterClass={setFilterClass}
-        />
-      </SubHeader>
-      <TableWrapper>
-        <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
-        {classGroups.length > 0 ? (
-          <ClassListTable
-            columns={columns}
-            dataSource={classGroups}
-            rowKey={rowKey}
-            onRow={onRow}
-            pagination={classGroups.length > 10}
-          />
-        ) : (
-          <ClassCreatePage
+      <MainContentWrapper>
+        <SubHeader>
+          <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
+          <ClassSelector
+            groups={groups}
+            archiveGroups={archiveGroups}
+            setClassGroups={setClassGroups}
             filterClass={filterClass}
-            recentInstitute={recentInstitute}
-            user={user}
-            fetchClassList={fetchClassList}
+            setFilterClass={setFilterClass}
           />
-        )}
-      </TableWrapper>
+        </SubHeader>
+        <TableWrapper>
+          <GoogleBanner
+            syncClassLoading={syncClassLoading}
+            showBanner={showBanner}
+            setShowDetails={setShowDetails}
+          />
+          {classGroups.length > 0 ? (
+            <ClassListTable
+              columns={columns}
+              dataSource={classGroups}
+              rowKey={rowKey}
+              onRow={onRow}
+              pagination={classGroups.length > 10}
+            />
+          ) : (
+            <ClassCreatePage
+              filterClass={filterClass}
+              recentInstitute={recentInstitute}
+              user={user}
+              fetchClassList={fetchClassList}
+            />
+          )}
+        </TableWrapper>
+      </MainContentWrapper>
     </>
   );
 };
 
 ClassList.propTypes = {
   groups: PropTypes.array.isRequired,
-  archiveGroups: PropTypes.array.isRequired,
-  loadStudents: PropTypes.func.isRequired
+  archiveGroups: PropTypes.array.isRequired
 };
 
 const enhance = compose(
@@ -233,7 +243,6 @@ const enhance = compose(
       user: getUserDetails(state)
     }),
     {
-      loadStudents: fetchStudentsByIdAction,
       fetchClassList: fetchClassListAction,
       setAssignmentFilters: setAssignmentFiltersAction
     }

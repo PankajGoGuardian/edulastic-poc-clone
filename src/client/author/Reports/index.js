@@ -1,36 +1,37 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { Col, Row } from "antd";
+import { pullAllBy } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
-import { Row, Col } from "antd";
-import { pullAllBy } from "lodash";
-
-import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
+import FeaturesSwitch from "../../features/components/FeaturesSwitch";
+import { CustomizedHeaderWrapper } from "./common/components/header";
+import navigation from "./common/static/json/navigation.json";
+import {
+  PrintableScreen,
+  StyledCard,
+  StyledContainer,
+  StyledReportsContentContainer
+} from "./common/styled";
+import CustomReports from "./components/customReport";
+import CustomReportIframe from "./components/customReport/customReportIframe";
+import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
+import { SingleAssessmentReport } from "./components/singleAssessmentReport";
+import { StandardsMasteryReport } from "./components/standardsMasteryReport";
+import { StudentProfileReport } from "./components/studentProfileReport";
+import { SubscriptionReport } from "./components/subscriptionReport";
+import {
+  getCsvDownloadingState,
+  getPrintingState,
+  setCsvDownloadingStateAction,
+  setPrintingStateAction
+} from "./ducks";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
+import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
 import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 
-import { StyledContainer, StyledCard, PrintableScreen, StyledReportsContentContainer } from "./common/styled";
-
-import { SingleAssessmentReport } from "./components/singleAssessmentReport";
-import { SubscriptionReport } from "./components/subscriptionReport";
-import { StudentProfileReport } from "./components/studentProfileReport";
-import { StandardsMasteryReport } from "./components/standardsMasteryReport";
-import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
-import { CustomizedHeaderWrapper } from "./common/components/header";
-
-import navigation from "./common/static/json/navigation.json";
-import FeaturesSwitch from "../../features/components/FeaturesSwitch";
-
-import {
-  getPrintingState,
-  setPrintingStateAction,
-  setCsvDownloadingStateAction,
-  getCsvDownloadingState
-} from "./ducks";
-import CustomReports from "./components/customReport";
-import CustomReportIframe from "./components/customReport/customReportIframe";
-
 const Container = props => {
+  const { isCsvDownloading, isPrinting, match } = props;
   const [showFilter, setShowFilter] = useState(false);
   const reportType = props?.match?.params?.reportType || "standard-reports";
   const groupName = navigation.locToData[reportType].group;
@@ -62,17 +63,17 @@ const Container = props => {
   };
 
   useEffect(() => {
-    if (props.isCsvDownloading) {
+    if (isCsvDownloading) {
       props.setCsvDownloadingStateAction(false);
     }
-  }, [props.isCsvDownloading]);
+  }, [isCsvDownloading]);
 
   useEffect(() => {
-    if (props.isPrinting) {
+    if (isPrinting) {
       window.print();
       props.setPrintingStateAction(false);
     }
-  }, [props.isPrinting]);
+  }, [isPrinting]);
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
@@ -82,7 +83,8 @@ const Container = props => {
       loc = !loc ? reportType : loc;
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb;
       if (loc === "custom-reports" && dynamicBreadcrumb) {
-        const isCustomReportLoading = props.location.pathname.split("custom-reports")[1].length > 1 || false;
+        const isCustomReportLoading =
+          props.location.pathname.split("custom-reports")[1].length > 1 || false;
         if (isCustomReportLoading) {
           pullAllBy(breadcrumbInfo, [{ to: "" }], "to");
           breadcrumbInfo.push({
@@ -94,28 +96,27 @@ const Container = props => {
         }
       }
       return {
-        loc: loc,
+        loc,
         group: navigation.locToData[loc].group,
         title: navigation.locToData[loc].title,
         breadcrumbData: breadcrumbInfo,
         navigationItems
       };
-    } else {
-      return {
-        loc: loc,
-        group: navigation.locToData[loc].group,
-        title: navigation.locToData[loc].title,
-        onShareClickCB: onShareClickCB,
-        onPrintClickCB: onPrintClickCB,
-        onDownloadCSVClickCB: onDownloadCSVClickCB,
-        onRefineResultsCB: onRefineResultsCB,
-        breadcrumbData: navigation.locToData[loc].breadcrumb,
-        navigationItems
-      };
     }
+    return {
+      loc,
+      group: navigation.locToData[loc].group,
+      title: navigation.locToData[loc].title,
+      onShareClickCB,
+      onPrintClickCB,
+      onDownloadCSVClickCB,
+      onRefineResultsCB,
+      breadcrumbData: navigation.locToData[loc].breadcrumb,
+      navigationItems
+    };
   });
 
-  const expandFilter = showFilter || props.isPrinting;
+  const expandFilter = showFilter || isPrinting;
 
   return (
     <PrintableScreen>
@@ -133,11 +134,13 @@ const Container = props => {
         {reportType === "custom-reports" ? (
           <Route
             exact
-            path={props.match.path}
-            render={_props => <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
+            path={match.path}
+            render={_props => (
+              <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />
+            )}
           />
         ) : reportType === "standard-reports" ? (
-          <Route exact path={props.match.path} component={() => <Reports premium={props.premium} />} />
+          <Route exact path={match.path} component={() => <Reports premium={props.premium} />} />
         ) : null}
         <Route
           path={[
@@ -203,65 +206,64 @@ const Container = props => {
           )}
         />
         <Route
-          path={`/author/reports/custom-reports/:id`}
-          render={_props => <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
+          path="/author/reports/custom-reports/:id"
+          render={_props => (
+            <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />
+          )}
         />
       </StyledReportsContentContainer>
     </PrintableScreen>
   );
 };
 
-const Reports = ({ premium }) => {
-  return (
-    <StyledContainer>
-      {premium && (
-        <Row gutter={20}>
-          <FeaturesSwitch
-            inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
-            operation="OR"
-            actionOnInaccessible="hidden"
-          >
-            <Col md={12} xs={24}>
-              <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
-                <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-                  <SingleAssessmentReport />
-                </StyledCard>
-              </FeaturesSwitch>
-              <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
-                <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
-                  <StudentProfileReport />
-                </StyledCard>
-              </FeaturesSwitch>
-            </Col>
-          </FeaturesSwitch>
+const Reports = ({ premium }) => (
+  <StyledContainer>
+    {premium && (
+      <Row gutter={60}>
+        <FeaturesSwitch
+          inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
+          operation="OR"
+          actionOnInaccessible="hidden"
+        >
           <Col md={12} xs={24}>
-            <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
-              <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
-                <MultipleAssessmentReport />
+            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
+              <StyledCard className="single-assessment-reports report">
+                <SingleAssessmentReport />
               </StyledCard>
             </FeaturesSwitch>
-            <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-              <StandardsMasteryReport premium={premium} />
-            </StyledCard>
-
+            <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
+              <StyledCard className="student-profile-reports report">
+                <StudentProfileReport />
+              </StyledCard>
+            </FeaturesSwitch>
           </Col>
-        </Row>
-      )}
-      {!premium && (
-        <Row>
-          <Col md={24} xs={24}>
-            <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
-              <StandardsMasteryReport premium={premium} />
+        </FeaturesSwitch>
+        <Col md={12} xs={24}>
+          <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
+            <StyledCard className="multiple-assessment-reports report">
+              <MultipleAssessmentReport />
             </StyledCard>
-            <StyledCard margin="0px 0px 20px" className="upgrade subscription report">
-              <SubscriptionReport premium={premium} />
-            </StyledCard>
-          </Col>
-        </Row>
-      )}
-    </StyledContainer>
-  );
-};
+          </FeaturesSwitch>
+          <StyledCard className="standards-mastery-reports report">
+            <StandardsMasteryReport premium={premium} />
+          </StyledCard>
+        </Col>
+      </Row>
+    )}
+    {!premium && (
+      <Row>
+        <Col md={24} xs={24}>
+          <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
+            <StandardsMasteryReport premium={premium} />
+          </StyledCard>
+          <StyledCard margin="0px 0px 20px" className="upgrade subscription report">
+            <SubscriptionReport premium={premium} />
+          </StyledCard>
+        </Col>
+      </Row>
+    )}
+  </StyledContainer>
+);
 
 const enhance = connect(
   state => ({

@@ -10,7 +10,9 @@ import {
   mobileWidthLarge,
   themeColor,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  greyThemeLighter,
+  greyThemeLight
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
@@ -73,10 +75,10 @@ export const Backdrop = styled.div`
 `;
 
 export const FixedFilters = styled.div`
-  padding: 25px 29px 0px;
+  padding: 20px 30px 0px;
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    padding: 25px 50px 0px;
+    padding: 20px 50px 0px;
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -101,6 +103,8 @@ export const HeaderRow = styled(Row)`
 
 export const SearchInput = styled(Input.Search)`
   .ant-input {
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
     font-size: ${props => props.theme.smallFontSize};
 
     @media (max-width: ${mediumDesktopExactWidth}) {

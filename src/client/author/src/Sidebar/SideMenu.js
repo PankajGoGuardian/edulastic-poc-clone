@@ -580,7 +580,7 @@ const SideBar = styled(Layout.Sider)`
   width: 245px;
   max-width: 245px;
   min-width: 245px;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  border-right: 1px solid #dddddd;
   background-color: #fbfafc;
   z-index: 22;
   padding-bottom: 0;

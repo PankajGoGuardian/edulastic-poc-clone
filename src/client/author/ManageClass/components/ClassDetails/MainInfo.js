@@ -1,27 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
 import { find } from "lodash";
 import * as moment from "moment";
-import {
-  MainContainer,
-  LeftWrapper,
-  MidWrapper,
-  RightWrapper,
-  Image,
-  FieldValue,
-  FieldLabel,
-  StyledDivider,
-  ImageContainer,
-  ClassInfoContainer,
-  FlexDiv
-} from "./styled";
+import PropTypes from "prop-types";
+import React from "react";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import {
+  ClassInfoContainer,
+  FieldValue,
+  FlexDiv,
+  Image,
+  ImageContainer,
+  MainContainer,
+  MidWrapper,
+  RightWrapper,
+  StyledDivider
+} from "./styled";
 import SubHeader from "./SubHeader";
-import { Tag, Row, Col } from "antd";
-import { themeColor, white } from "@edulastic/colors";
-import { fetchClassListAction } from "../../ducks";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -37,7 +32,6 @@ const MainInfo = ({
   // eslint-disable-next-line max-len
   const {
     thumbnail,
-    tags = [],
     grades = [],
     subject,
     googleId,
@@ -50,7 +44,8 @@ const MainInfo = ({
     owners = [],
     parent
   } = entity;
-  const _grade = allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
+  const _grade =
+    allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
@@ -95,7 +90,11 @@ const MainInfo = ({
                 <span>Other</span>
               )}
             </FieldValue>
-            <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+            <FeaturesSwitch
+              inputFeatures="selectCourse"
+              actionOnInaccessible="hidden"
+              key="selectCourse"
+            >
               <FieldValue>
                 <div>Course</div>
                 <span>{course && course.name}</span>

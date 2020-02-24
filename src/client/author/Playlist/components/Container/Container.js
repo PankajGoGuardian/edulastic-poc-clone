@@ -358,7 +358,6 @@ class TestList extends Component {
     const { blockStyle, isShowFilter } = this.state;
     const { searchString } = playListFilters;
 
-    const { from, to } = helpers.getPaginationInfo({ page, limit, count });
     return (
       <>
         <ListHeader
@@ -444,13 +443,13 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main>
-              <ItemsMenu justifyContent="space-between" style={{ marginBottom: 10 }}>
+              <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
-                  {count ? from : 0} to {to} of <i>{count}</i>
+                  <span>{count}</span> PLAYLISTS FOUND
                 </PaginationInfo>
                 {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: "0 30px" }}>
+              <PerfectScrollbar style={{ padding: "0 20px" }}>
                 <CardContainer type={blockStyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper

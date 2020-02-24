@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
-import { white, red, mediumDesktopWidth, themeColor, title, themeColorLight } from "@edulastic/colors";
+import { white, red, mediumDesktopWidth, themeColor, title } from "@edulastic/colors";
 import { Button, Col, Row } from "antd";
 import { IconManage } from "@edulastic/icons";
+import { MainContentWrapper } from "@edulastic/common";
 
 export const StyledFlexContainer = styled(Row)`
   .ant-select-selection__placeholder {
@@ -42,27 +43,27 @@ const ShareButtonStyle = css`
 export const SaveClassBtn = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
-  border: none;
+  background: ${themeColor};
   color: ${white};
-  background: ${themeColorLight};
+  border-color: ${themeColor};
   margin-left: 20px;
   &:hover,
   &:focus {
     color: ${white};
-    background: ${themeColorLight};
+    background: ${themeColor};
   }
 `;
 
 export const CancelClassBtn = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
-  border: none;
-  color: ${themeColorLight};
   background: ${white};
+  color: ${themeColor};
+  border-color: ${themeColor};
   &:hover,
   &:focus {
-    color: ${white};
-    background: ${themeColorLight};
+    color: ${themeColor};
+    background: ${white};
   }
 `;
 
@@ -73,9 +74,7 @@ export const ButtonsWrapper = styled.div`
 
 // main content
 
-export const Container = styled.div`
-  padding: 30px;
-
+export const Container = styled(MainContentWrapper)`
   .ant-form-item-control {
     line-height: normal;
     .ant-input,

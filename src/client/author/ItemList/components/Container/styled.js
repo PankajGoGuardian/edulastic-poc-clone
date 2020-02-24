@@ -1,16 +1,14 @@
 import {
-  mobileWidth,
-  white,
-  largeDesktopWidth,
   desktopWidth,
-  mobileWidthLarge,
+  extraDesktopWidthMax,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  mobileWidth,
+  mobileWidthLarge,
+  white
 } from "@edulastic/colors";
-import styled from "styled-components";
-import { Button } from "antd";
 import { Paper } from "@edulastic/common";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 0;
@@ -20,7 +18,6 @@ export const Container = styled.div`
   overflow: hidden;
   display: flex;
   position: relative;
-  background: #f3f3f8;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {

@@ -203,9 +203,9 @@ class TestList extends Component {
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId =
         Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = searchParams.standardIds 
-                                ? searchParams.standardIds.map(id => parseInt(id)) 
-                                : [];
+      searchParams.standardIds = searchParams.standardIds
+        ? searchParams.standardIds.map(id => parseInt(id))
+        : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
@@ -879,7 +879,6 @@ class TestList extends Component {
     if (playlist) {
       modulesList = playlist.modules;
     }
-    const { from, to } = helpers.getPaginationInfo({ page, limit, count });
 
     const menu = (
       <Menu>
@@ -1046,9 +1045,9 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main>
-              <ItemsMenu justifyContent="space-between" style={{ marginBottom: 10 }}>
+              <ItemsMenu justifyContent="space-between">
                 <PaginationInfo>
-                  {count ? from : 0} to {to} of <i>{count}</i>
+                  <span>{count}</span> TESTS FOUND
                 </PaginationInfo>
 
                 {mode === "embedded" && (
@@ -1080,7 +1079,7 @@ class TestList extends Component {
                 )}
                 {mode !== "embedded" && blockStyle === "horizontal" && <Actions type="TEST" />}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: "0 30px" }}>
+              <PerfectScrollbar style={{ padding: "0 20px" }}>
                 <CardContainer type={blockStyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper

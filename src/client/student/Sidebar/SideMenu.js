@@ -448,7 +448,7 @@ const FixedSidebar = styled.div`
 const SideBar = styled(Layout.Sider)`
   height: 100%;
   width: 245px;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  border-right: 1px solid #dddddd;
   background-color: ${props => props.theme.sideMenu.sidebarBgColor};
   z-index: 22;
   padding-bottom: 0;
@@ -467,10 +467,6 @@ const SideBar = styled(Layout.Sider)`
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
-
-    @media (max-width: ${largeDesktopWidth}) {
-      width: 90px;
-    }
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;

@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { debounce } from "lodash";
 import qs from "query-string";
-import { MainHeader } from "@edulastic/common";
+import { MainHeader, MainContentWrapper } from "@edulastic/common";
 
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import CreationOptions from "../CreationOptions/CreationOptions";
@@ -21,7 +21,6 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction
 } from "../../ducks";
-import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
 
 const breadcrumbStyle = {
   position: "static"
@@ -149,7 +148,7 @@ class Container extends React.Component {
           />
         )}
         <MainHeader headingText="common.newTest" />
-        <ContainerWrapper>
+        <MainContentWrapper padding="20px 30px">
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
           {!method && <CreationOptions />}
           {method === creationMethods.PDF && (
@@ -164,7 +163,7 @@ class Container extends React.Component {
               uploadToDrive={uploadToDrive}
             />
           )}
-        </ContainerWrapper>
+        </MainContentWrapper>
       </>
     );
   }

@@ -1,50 +1,45 @@
+import { enrollmentApi } from "@edulastic/api";
+import {
+  IconCircle,
+  IconNoVolume,
+  IconPencilEdit,
+  IconPlus,
+  IconPlusCircle,
+  IconPrint,
+  IconRemove,
+  IconVolumeUp
+} from "@edulastic/icons";
+import { Dropdown, message } from "antd";
+import { get, identity, isEmpty, pick, pickBy, split, unset } from "lodash";
+import * as moment from "moment";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
-import PropTypes from "prop-types";
-import { Menu, Dropdown, Tooltip, message, Icon, Modal, Table, Spin } from "antd";
-import * as moment from "moment";
-import AddStudentModal from "./AddStudent/AddStudentModal";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
 import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
-import ResetPwd from "./ResetPwd/ResetPwd";
-import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
-import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-
 import {
   addStudentRequestAction,
-  updateStudentRequestAction,
   changeTTSRequestAction,
-  selectStudentAction
+  selectStudentAction,
+  updateStudentRequestAction
 } from "../../ducks";
-import { enrollmentApi } from "@edulastic/api";
-import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { getUserFeatures } from "../../../../student/Login/ducks";
+import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
-
+import AddStudentModal from "./AddStudent/AddStudentModal";
+import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
+import ResetPwd from "./ResetPwd/ResetPwd";
 import {
-  ButtonsWrapper,
   AddStudentDivider,
-  RedirectButton,
   ButtonIconWrap,
+  ButtonsWrapper,
+  CaretUp,
+  CustomRedirectButton,
   DropMenu,
   MenuItems,
-  CaretUp,
-  CustomRedirectButton
+  RedirectButton
 } from "./styled";
-import {
-  IconPrint,
-  IconPlusCircle,
-  IconRemove,
-  IconVolumeUp,
-  IconNoVolume,
-  IconCircle,
-  IconPencilEdit,
-  IconPlus
-} from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 
 const modalStatus = {};
 
@@ -57,8 +52,6 @@ const ActionContainer = ({
   studentsList,
   submitted,
   added,
-  printPreview,
-  studentLoaded,
   selectedStudent,
   changeTTS,
   loadStudents,
@@ -78,7 +71,7 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
-  const { studentSettings, addCoTeacher, textToSpeech } = features;
+  const { addCoTeacher, textToSpeech } = features;
 
   const { _id: classId, active } = selectedClass;
   let formRef = null;
@@ -101,7 +94,10 @@ const ActionContainer = ({
   };
   const sendInviteStudent = async inviteStudentList => {
     setIsAddMultipleStudentsModal(false);
-    const result = await enrollmentApi.addEnrolMultiStudents({ classId: selectedClass._id, data: inviteStudentList });
+    const result = await enrollmentApi.addEnrolMultiStudents({
+      classId: selectedClass._id,
+      data: inviteStudentList
+    });
     setInfoModalData(result.data.result);
     setinfoModelVisible(true);
     loadStudents({ classId });
@@ -140,7 +136,7 @@ const ActionContainer = ({
             ]);
             // contactEmails field in backend is of array type with one value
             const contactEmails = get(stdData, "contactEmails", []);
-            //no need to have length check, as it is already handled in form validator
+            // no need to have length check, as it is already handled in form validator
             if (contactEmails?.[0]) {
               stdData.contactEmails = [contactEmails];
             } else {
@@ -201,7 +197,10 @@ const ActionContainer = ({
         if (changeTTS) {
           const isEnabled = selectedStudent.find(std => std.tts === "yes");
           if (isEnabled) {
-            return showMessage("error", "Atleast one of the selected student(s) is already enabled");
+            return showMessage(
+              "error",
+              "Atleast one of the selected student(s) is already enabled"
+            );
           }
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
@@ -296,7 +295,7 @@ const ActionContainer = ({
       <AddStudentDivider>
         <ButtonsWrapper>
           {active && !cleverId ? (
-            <RedirectButton first={true} data-cy="addStudent" onClick={() => toggleModal("add")}>
+            <RedirectButton first data-cy="addStudent" onClick={() => toggleModal("add")}>
               <ButtonIconWrap>
                 <IconPlusCircle />
               </ButtonIconWrap>
@@ -305,7 +304,7 @@ const ActionContainer = ({
           ) : null}
 
           <RedirectButton
-            first={true}
+            first
             data-cy="printRoster"
             onClick={() => history.push(`/author/manageClass/printPreview`)}
           >
@@ -357,11 +356,11 @@ const ActionContainer = ({
             }
             placement="bottomRight"
           >
-            <RedirectButton last={true}>ACTIONS</RedirectButton>
+            <RedirectButton last>ACTIONS</RedirectButton>
           </Dropdown>
 
           {active && !cleverId ? (
-            <CustomRedirectButton first={true} data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+            <CustomRedirectButton first data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
             </CustomRedirectButton>
           ) : null}
@@ -394,7 +393,6 @@ ActionContainer.propTypes = {
   selectedClass: PropTypes.object.isRequired,
   orgData: PropTypes.object.isRequired,
   submitted: PropTypes.bool.isRequired,
-  studentLoaded: PropTypes.bool.isRequired,
   added: PropTypes.any.isRequired,
   selectedStudent: PropTypes.array.isRequired,
   changeTTS: PropTypes.func.isRequired
@@ -409,7 +407,6 @@ export default connect(
     selectedClass: get(state, "manageClass.entity"),
     submitted: get(state, "manageClass.submitted"),
     added: get(state, "manageClass.added"),
-    studentLoaded: get(state, "manageClass.loaded"),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
     studentsList: get(state, "manageClass.studentsList", []),
     features: getUserFeatures(state),

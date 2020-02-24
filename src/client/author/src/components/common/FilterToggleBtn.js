@@ -33,7 +33,7 @@ const MobileLeftFilterButton = styled(Button)`
   border-radius: 3px;
   position: fixed;
   margin-left: -20px;
-  margin-top: 26px;
+  margin-top: 20px;
   z-index: 100;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${props => (props.header ? white : props.isShowFilter ? themeColor : white)};

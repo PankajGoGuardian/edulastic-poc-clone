@@ -13,18 +13,18 @@ import {
   themeColorTagsBg,
   themeColorLighter,
   tabGrey,
-  smallDesktopWidth
+  smallDesktopWidth,
+  greyThemeLighter,
+  greyThemeLight
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
 export const FilterContainer = styled.div`
   .ant-select-selection {
-    background: ${white};
-    border: none;
-    border-radius: 0px;
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
     padding: 2px 3px;
-    border-radius: 4px;
-    box-shadow: 0px 0px 5px 1px ${fadedGrey};
+    border-radius: 2px;
   }
   .ant-select,
   .ant-input,

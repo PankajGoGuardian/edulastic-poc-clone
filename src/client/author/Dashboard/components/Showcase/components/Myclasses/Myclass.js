@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { get } from "lodash";
 import { title } from "@edulastic/colors";
-import { Row, Col, Spin } from "antd";
-import { TextWrapper } from "../../../styledComponents";
-import { Container, CardBox } from "./styled";
-import CardImage from "./components/CardImage/cardImage";
-import CardTextContent from "./components/CardTextContent/cardTextContent";
-import { receiveTeacherDashboardAction } from "../../../../duck";
-import CreateClassPage from "./components/CreateClassPage/createClassPage";
+import { MainContentWrapper } from "@edulastic/common";
+import { Col, Row, Spin } from "antd";
+import { get } from "lodash";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
 import { fetchClassListAction } from "../../../../../ManageClass/ducks";
 import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
-import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
+import { receiveTeacherDashboardAction } from "../../../../duck";
+import { TextWrapper } from "../../../styledComponents";
+import CardImage from "./components/CardImage/cardImage";
+import CardTextContent from "./components/CardTextContent/cardTextContent";
+import CreateClassPage from "./components/CreateClassPage/createClassPage";
+import { CardBox } from "./styled";
 
-const Card = ({ data }) => {
-  return (
-    <CardBox data-cy={data.name}>
-      <Row>
-        <CardImage data={data} />
-      </Row>
-      <Row>
-        <CardTextContent data={data} />
-      </Row>
-    </CardBox>
+const Card = ({ data }) => (
+  <CardBox data-cy={data.name}>
+    <Row>
+      <CardImage data={data} />
+    </Row>
+    <Row>
+      <CardTextContent data={data} />
+    </Row>
+  </CardBox>
   );
-};
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -40,8 +39,6 @@ const MyClasses = ({
   districtId,
   allowGoogleLogin
 }) => {
-  const [showAllCards, setShowAllCards] = useState(false);
-
   useEffect(() => {
     getTeacherDashboard();
     getDictCurriculums();
@@ -51,7 +48,9 @@ const MyClasses = ({
   const sortableClasses = classData
     .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate);
-  const unSortableClasses = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
+  const unSortableClasses = classData.filter(
+    d => d.asgnStartDate === null || d.asgnStartDate === undefined
+  );
 
   const allClasses = [...sortableClasses, ...unSortableClasses];
   const allActiveClasses = allClasses.filter(c => c.active === 1);
@@ -62,7 +61,7 @@ const MyClasses = ({
   ));
 
   return (
-    <Container>
+    <MainContentWrapper>
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
       </TextWrapper>
@@ -78,7 +77,7 @@ const MyClasses = ({
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
       )}
-    </Container>
+    </MainContentWrapper>
   );
 };
 

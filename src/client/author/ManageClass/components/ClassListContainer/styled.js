@@ -3,8 +3,6 @@ import styled, { css } from "styled-components";
 import {
   white,
   themeColor,
-  boxShadowDefault,
-  themeColorLight,
   mediumDesktopWidth,
   mobileWidthMax,
   lightGreySecondary,
@@ -129,20 +127,22 @@ const ShareButtonStyle = css`
 export const CreateClassButton = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
-  border: none;
+  border-color: ${themeColor};
   text-transform: uppercase;
   color: ${themeColor};
   background: ${white};
   display: flex;
   align-items: center;
   &:hover {
-    background: ${themeColorLight};
-    color: ${themeColor};
+    background: ${themeColor};
+    color: ${white};
   }
 `;
 
 const ResponsiveButton = styled(Button)`
   height: 36px;
+  border-color: ${themeColor};
+  box-shadow: none;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: 40px;
@@ -161,7 +161,6 @@ export const ClassStatusButton = styled(ResponsiveButton)`
   align-items: center;
   justify-content: space-between;
   font-weight: 600;
-  border: none;
   svg {
     fill: ${themeColor};
   }
@@ -177,7 +176,6 @@ export const SyncButtons = styled(ResponsiveButton)`
   display:flex;
   align-items:center;
   justify:space-between;
-  border:none;
   &:hover, &:focus {
     color: ${themeColor};
   }
@@ -194,10 +192,6 @@ export const ButtonsWrapper = styled.div`
 
 export const TableWrapper = styled.div`
   background: ${white};
-  margin: 12px 30px 30px;
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: ${boxShadowDefault};
 `;
 
 // class select
@@ -258,7 +252,6 @@ export const ClassListTable = styled(Table)`
     }
     &-tbody {
       & > tr {
-        background: ${lightGreySecondary};
         font-family: Open Sans, SemiBold;
         letter-spacing: 0.26px;
         color: ${secondaryTextColor};
@@ -274,6 +267,9 @@ export const ClassListTable = styled(Table)`
         }
         & > :nth-last-of-type(-n + 2) {
           text-align: center;
+        }
+        &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+          background: #f2f3f2;
         }
 
         @media (max-width: ${smallDesktopWidth}) {
@@ -314,7 +310,6 @@ export const SubHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 30px 0px;
 `;
 
 export const GoogleClassroomModal = styled(ConfirmationModal)`

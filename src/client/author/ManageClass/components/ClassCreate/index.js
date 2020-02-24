@@ -7,12 +7,14 @@ import { withRouter } from "react-router-dom";
 import { isEmpty, find, get, pickBy, identity } from "lodash";
 import { Form, Spin, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { createClassAction, getSelectedSubject, setSubjectAction } from "../../ducks";
 // selectors
-import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import {
+  getCurriculumsListSelector,
+  getFormattedCurriculumsSelector
+} from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 
@@ -117,8 +119,8 @@ class ClassCreate extends React.Component {
   searchCourse = keyword => {
     const { searchCourseList, userOrgData } = this.props;
     const { districtId } = userOrgData;
-    let searchTerms,
-      key = keyword.trim();
+    let searchTerms;
+    const key = keyword.trim();
     if (keyword == "") {
       searchTerms = {
         districtId
@@ -165,41 +167,39 @@ class ClassCreate extends React.Component {
         <Header />
         <Spin spinning={creating}>
           <Container>
-            <Paper padding="40px">
-              <FormTitle>Class Details</FormTitle>
-              <Row gutter={36}>
-                <LeftContainer xs={8}>
-                  <LeftFields
-                    getFieldDecorator={getFieldDecorator}
-                    getFieldValue={getFieldValue}
-                    tags={tags}
-                    setFieldsValue={setFieldsValue}
-                    allTagsData={allTagsData}
-                    addNewTag={addNewTag}
-                  />
-                </LeftContainer>
-                <RightContainer xs={16}>
-                  <RightFields
-                    selectedSubject={selectedSubject}
-                    filteredCurriculums={filteredCurriculums}
-                    getFieldDecorator={getFieldDecorator}
-                    getFieldValue={getFieldValue}
-                    defaultSchool={defaultSchool}
-                    courseList={courseList}
-                    schoolList={schools}
-                    searchCourse={this.searchCourse}
-                    isSearching={isSearching}
-                    setSubject={setSubject}
-                    userOrgData={userOrgData}
-                    clearStandards={this.clearStandards}
-                    tags={tags}
-                    setFieldsValue={setFieldsValue}
-                    allTagsData={allTagsData}
-                    addNewTag={addNewTag}
-                  />
-                </RightContainer>
-              </Row>
-            </Paper>
+            <FormTitle>Class Details</FormTitle>
+            <Row gutter={36}>
+              <LeftContainer xs={8}>
+                <LeftFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  tags={tags}
+                  setFieldsValue={setFieldsValue}
+                  allTagsData={allTagsData}
+                  addNewTag={addNewTag}
+                />
+              </LeftContainer>
+              <RightContainer xs={16}>
+                <RightFields
+                  selectedSubject={selectedSubject}
+                  filteredCurriculums={filteredCurriculums}
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  defaultSchool={defaultSchool}
+                  courseList={courseList}
+                  schoolList={schools}
+                  searchCourse={this.searchCourse}
+                  isSearching={isSearching}
+                  setSubject={setSubject}
+                  userOrgData={userOrgData}
+                  clearStandards={this.clearStandards}
+                  tags={tags}
+                  setFieldsValue={setFieldsValue}
+                  allTagsData={allTagsData}
+                  addNewTag={addNewTag}
+                />
+              </RightContainer>
+            </Row>
           </Container>
         </Spin>
       </Form>

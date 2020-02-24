@@ -1,8 +1,15 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
-import { Row, Col, Button, Slider } from "antd";
-import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
+import { Col, Button, Slider, Table } from "antd";
+
+import {
+  darkGrey,
+  grey,
+  fadedBlack,
+  fadedGrey,
+  lightGreySecondary,
+  themeColor
+} from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -94,7 +101,7 @@ export const StyledFilterWrapper = styled.div`
 `;
 
 export const StyledReportsContentContainer = styled.div`
-  padding: 0px 20px;
+  padding: 0px 30px;
 `;
 
 export const DropDownContainer = styled.div`
@@ -107,56 +114,15 @@ export const DropDownContainer = styled.div`
 `;
 
 export const StyledCard = styled(Card)`
-  // when u change this u have to change "StyledCard" in "src/client/common/styled.js" to make every css in sync
-  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
-  // Import this and add USE CASE SPECIFIC CSS
-  margin: ${props => (props.margin ? props.margin : "8px")};
-
+  box-shadow: none;
+  margin-bottom: 30px;
   .ant-card-body {
-    padding: 18px;
-  }
-
-  @media only screen and (min-width: 1px) and (max-width: 600px) {
-    .ant-card-body {
-      padding: 12px;
-    }
-  }
-
-  @media only screen and (min-width: 601px) and (max-width: 767px) {
-    .ant-card-body {
-      padding: 15px;
-    }
-  }
-
-  @media only screen and (min-width: 768px) and (max-width: 991px) {
-    .ant-card-body {
-      padding: 18px;
-    }
-  }
-
-  @media only screen and (min-width: 992px) and (max-width: 1199px) {
-    .ant-card-body {
-      padding: 18px;
-    }
-  }
-
-  @media only screen and (min-width: 1200px) {
-    .ant-card-body {
-      padding: 18px;
-    }
-  }
-
-  @media print {
-    box-shadow: none !important;
-
-    .ant-card-body {
-      padding: 0px !important;
-    }
+    padding: 0px;
   }
 `;
 
 export const StyledContainer = styled.div`
-  padding: 30px;
+  padding: 0px;
 `;
 
 export const StyledTable = styled(Table)`
@@ -319,7 +285,7 @@ export const StyledH3 = styled.h3`
   color: ${fadedBlack};
   font-size: 14px;
   margin: 0px 0px 10px;
-  text-align: ${({ textAlign }) => (textAlign ? textAlign : "left")};
+  text-align: ${({ textAlign }) => textAlign || "left"};
 `;
 
 export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
@@ -414,7 +380,7 @@ export const StyledSignedBarContainer = styled.div`
 `;
 
 export const StyledDropDownContainer = styled(Col)`
-  padding: ${({ padding }) => (padding ? padding : "unset")};
+  padding: ${({ padding }) => padding || "unset"};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { withRouter, Prompt } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { ContentWrapper, withWindowSizes, Hints } from "@edulastic/common";
+import { withWindowSizes, Hints } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
@@ -43,7 +43,7 @@ import {
 } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import { BackLink, StyledButton } from "./styled";
+import { BackLink, StyledButton, QuestionContentWrapper } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
@@ -469,7 +469,9 @@ class Container extends Component {
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>
-          <ContentWrapper ref={this.scrollContainer}>{this.renderQuestion()}</ContentWrapper>
+          <QuestionContentWrapper ref={this.scrollContainer}>
+            {this.renderQuestion()}
+          </QuestionContentWrapper>
           <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
         </ScrollContext.Provider>
       </EditorContainer>

@@ -100,7 +100,7 @@ export const TableData = styled(Table)`
     .ant-table-thead > tr {
       & > th {
         background: ${white};
-        padding: 10px 15px 20px;
+        padding: 5px 0px 15px;
         border-bottom: none;
         font-weight: bold;
         text-transform: uppercase;
@@ -108,9 +108,6 @@ export const TableData = styled(Table)`
         white-space: nowrap;
         text-align: center;
         font-size: ${props => props.theme.headerFilterFontSize};
-        &.ant-table-selection-column {
-          padding-left: 25px;
-        }
 
         @media (min-width: ${mediumDesktopExactWidth}) {
           font-size: ${props => props.theme.linkFontSize};
@@ -118,13 +115,9 @@ export const TableData = styled(Table)`
         @media (min-width: ${extraDesktopWidthMax}) {
           font-size: ${props => props.theme.smallFontSize};
         }
-        @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
-          padding: 8px 15px;
-        }
 
         &.assignment-name {
           text-align: left !important;
-          padding-left: 0;
         }
         &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
         & .ant-table-header-column .ant-table-column-sorters::before {
@@ -166,7 +159,7 @@ export const TableData = styled(Table)`
   .ant-table-tbody {
     text-align: center;
     & > tr:hover:not(.ant-table-expanded-row) > td {
-      background: ${themeColor}15;
+      background: #f2f3f2;
     }
     .ant-table-expanded-row > td {
       text-align: center;
@@ -174,20 +167,15 @@ export const TableData = styled(Table)`
     }
 
     td {
-      padding: 8px 0;
+      padding: 5px 0;
       font-weight: 600;
-
-      &.ant-table-selection-column {
-        padding: 10px 15px 10px 25px;
-      }
-
-      @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
-        padding: 7px 0;
-      }
     }
   }
 
   .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #f2f3f2;
+  }
+  .ant-table-tbody > tr.ant-table-expanded-row td {
     border-bottom: none;
   }
 
@@ -285,7 +273,11 @@ export const TypeIcon = styled.span`
   height: 18px;
   max-width: 18px;
   background: ${props =>
-    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
+    props.type === "p"
+      ? testTypeColor.practice
+      : props.type === "c"
+      ? testTypeColor.common
+      : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;

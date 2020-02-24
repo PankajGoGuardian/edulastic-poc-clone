@@ -1,40 +1,32 @@
-import styled, { css } from "styled-components";
-import { Link } from "react-router-dom";
 import {
-  white,
-  themeColorLight,
-  themeColor,
-  greyDarken,
-  textColor,
-  greenDark,
-  darkGrey,
-  titleColor,
-  mediumDesktopWidth,
-  extraDesktopWidthMax,
-  desktopWidth,
-  mobileWidthLarge,
-  tabGrey,
-  mainTextColor,
-  title,
   cardTitleColor,
-  lightGreySecondary,
+  desktopWidth,
+  extraDesktopWidthMax,
+  greyDarken,
+  mainTextColor,
+  mediumDesktopExactWidth,
+  mediumDesktopWidth,
+  mobileWidthLarge,
   secondaryTextColor,
-  boxShadowDefault,
-  themeColorLighter,
   smallDesktopWidth,
-  mediumDesktopExactWidth
+  textColor,
+  themeColor,
+  themeColorLighter,
+  title,
+  titleColor,
+  white
 } from "@edulastic/colors";
-import { Button, Icon, Divider, Menu, Checkbox, Table, Modal } from "antd";
-import { IconManage } from "@edulastic/icons";
-
 import { Paper } from "@edulastic/common";
+import { IconManage } from "@edulastic/icons";
 import IconArchive from "@edulastic/icons/src/IconArchive";
+import { Button, Divider, Icon, Menu, Modal, Table } from "antd";
+import { Link } from "react-router-dom";
+import styled, { css } from "styled-components";
 
 export const TableWrapper = styled.div`
   background: ${white};
-  padding: 10px 30px;
+  padding: 10px 0px;
   border-radius: 10px;
-  box-shadow: ${boxShadowDefault};
   margin-bottom: 30px;
 `;
 
@@ -83,7 +75,6 @@ export const StudentsTable = styled(Table)`
     }
     &-tbody {
       & > tr {
-        background: ${lightGreySecondary};
         letter-spacing: 0.26px;
         color: ${secondaryTextColor};
         font-size: 14px;
@@ -100,6 +91,9 @@ export const StudentsTable = styled(Table)`
         }
         & > :nth-last-of-type(-n + 3) {
           text-align: center;
+        }
+        &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+          background: #f2f3f2;
         }
       }
     }
@@ -153,9 +147,9 @@ const ShareButtonStyle = css`
 export const EditButton = styled(Button)`
   width: 135px;
   padding: 0px 1px;
-  border: none;
   color: ${themeColor};
   background: ${white};
+  border-color: ${themeColor};
   font-weight: 600;
   font-size: 11px;
   height: 36px;
@@ -163,7 +157,7 @@ export const EditButton = styled(Button)`
   &:hover,
   &:focus {
     color: ${white};
-    background: ${themeColorLight};
+    background: ${themeColor};
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
@@ -288,7 +282,7 @@ export const MainContainer = styled.div`
   display: flex;
   justify-content: space-between;
   max-height: 260px;
-  padding: 20px;
+  padding: 20px 0px;
   background: white;
   border-radius: 10px;
 `;
@@ -425,23 +419,22 @@ export const StyledButton = styled(Button)`
 `;
 
 const StyledTabButton = styled.a`
-  height: 28px;
+  height: 30px;
   padding: 6px 35px;
   font-size: 10px;
   font-weight: 600;
   background-color: ${white};
   color: ${themeColor};
+  border: 1px solid ${themeColor};
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
     background-color: ${themeColor};
     color: ${white};
   }
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 6px 30px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    padding: 6px 15px;
-  }
   @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
     text-align: center;
@@ -451,13 +444,11 @@ const StyledTabButton = styled.a`
 
 export const RedirectButton = styled(StyledTabButton)`
   border-radius: 4px;
-  display: flex;
   width: 150px;
   color: ${themeColor};
   margin-right: 10px;
   position: relative;
-  justify-content: center;
-  box-shadow: ${boxShadowDefault};
+
   &:nth-last-child(1) {
     margin-right: 0px;
   }

@@ -1,25 +1,34 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor, red, cardTitleColor, titleColor } from "@edulastic/colors";
+import {
+  darkGrey,
+  lightGrey,
+  themeColor,
+  red,
+  cardTitleColor,
+  titleColor
+} from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
-  box-shadow: ${props => (props.isPlaylist ? "none" : "0px 2px 5px #0000001a")};
+  border: ${props => (props.isPlaylist ? "none" : "1px solid #dfdfdf")};
+  box-shadow: none;
   cursor: pointer;
   border-radius: ${props => (props.isPlaylist ? "4px" : "10px")};
-  border: none;
-  .ant-card-body {
-    padding: 16px;
-    box-shadow: ${props => (props.isPlaylist ? "0px 4px 8px 0px #0000005c" : "none")};
-    border-radius: 10px;
-    min-height: 185px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  &.ant-card {
+    .ant-card-body {
+      padding: 16px;
+      border: ${props => (props.isPlaylist ? "1px solid #dfdfdf" : "none")};
+      border-radius: ${props => (props.isPlaylist ? "10px" : "0px")};
+      min-height: 185px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
   }
 
   .ant-card-head {
-    padding: ${props => (props.isPlaylist ? "16px" : "0px")};
+    padding: ${props => (props.isPlaylist ? "15px 8px" : "0px")};
     border: 0;
     overflow: hidden;
     position: relative;
@@ -35,7 +44,11 @@ export const Container = styled(Card)`
         border-radius: 4px;
         opacity: 0.3;
         background: url(${props =>
-          props.isPlaylist ? (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg") : ""});
+          props.isPlaylist
+            ? props.src
+              ? props.src
+              : "https://cdn2.edulastic.com/default/default-test-1.jpg"
+            : ""});
       }
     }
   }
@@ -241,7 +254,8 @@ export const Header = styled.div`
   height: 100px;
   padding: 10px 15px;
   position: relative;
-  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
+  background: url(${props =>
+    props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg"});
   background-repeat: no-repeat;
   background-size: cover;
   &:hover {

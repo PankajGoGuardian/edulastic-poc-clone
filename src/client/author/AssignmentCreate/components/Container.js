@@ -4,11 +4,10 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { IconTestBank, IconPlaylist } from "@edulastic/icons";
-import { MainHeader } from "@edulastic/common";
+import { MainHeader, MainContentWrapper } from "@edulastic/common";
 import { AlignMiddle } from "../common/Title";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
-import ContainerWrapper from "../common/ContainerWrapper";
 import BodyWrapper from "../common/BodyWrapper";
 import CardComponent from "../common/CardComponent";
 import TitleWrapper from "../common/TitleWrapper";
@@ -49,7 +48,7 @@ class Container extends Component {
         <MainHeader headingText="common.newAssignment">
           <AlignMiddle>SELECT A TEST</AlignMiddle>
         </MainHeader>
-        <ContainerWrapper>
+        <MainContentWrapper padding="20px 30px">
           <SecondHeader>
             <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
           </SecondHeader>
@@ -62,7 +61,6 @@ class Container extends Component {
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
                   <TextWrapper>
-                    {" "}
                     Select pre built tests from the Curriculum aligned assessment play list
                   </TextWrapper>
                   <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
@@ -73,7 +71,7 @@ class Container extends Component {
                   <TextWrapperBold>Pre-built Assessment in Play List</TextWrapperBold>
                 </CardComponent>
               </FeaturesSwitch>
-              <CardComponent>
+              <CardComponent ml="25px">
                 <IconWrapper marginBottom="0px">
                   <IconTestBank style={{ height: "40px", width: "40px" }} />
                 </IconWrapper>
@@ -95,7 +93,7 @@ class Container extends Component {
               </Link>
             </FlexWrapper>
           </BodyWrapper>
-        </ContainerWrapper>
+        </MainContentWrapper>
       </div>
     );
   }

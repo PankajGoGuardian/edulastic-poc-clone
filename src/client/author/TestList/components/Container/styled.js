@@ -1,17 +1,16 @@
-import styled from "styled-components";
-import { Pagination, Affix } from "antd";
-
 import {
-  themeColor,
   desktopWidth,
-  textColor,
-  grey,
-  mediumDesktopExactWidth,
   extraDesktopWidthMax,
+  greyThemeDark1,
+  greyThemeLight,
+  mediumDesktopExactWidth,
   placeholderGray,
-  lightGreySecondary
+  textColor,
+  themeColor
 } from "@edulastic/colors";
 import { Card, FlexContainer } from "@edulastic/common";
+import { Affix, Pagination } from "antd";
+import styled from "styled-components";
 
 export const ScrollBox = styled.div`
   padding-right: 30px;
@@ -54,17 +53,17 @@ export const Container = styled.div`
 
   .scrollbar-container {
     overflow: auto !important;
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 40}px)`};
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
 
     ::-webkit-scrollbar {
       display: none;
     }
 
     @media (min-width: ${mediumDesktopExactWidth}) {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 40}px)`};
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
     }
     @media (min-width: ${extraDesktopWidthMax}) {
-      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 40}px)`};
+      height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
     }
   }
 
@@ -74,11 +73,6 @@ export const Container = styled.div`
 `;
 
 export const ScrollbarWrapper = styled.div``;
-
-export const PaginationInfo = styled.span`
-  font-weight: 600;
-  font-size: 13px;
-`;
 
 export const Filter = styled.div`
   width: 250px;
@@ -113,7 +107,6 @@ export const MobileFilter = styled.div`
 export const Main = styled.div`
   flex: 1;
   background: white;
-  box-shadow: -1px 0px 5px 1px ${grey};
   width: calc(100% - 250px);
   overflow: hidden;
   height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
@@ -192,12 +185,23 @@ export const StyledCountText = styled.div`
 `;
 
 export const ItemsMenu = styled(FlexContainer)`
-  background: ${lightGreySecondary};
   align-items: space-between;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 20px;
 
-  @media screen and (max-width: 993px) {
-    padding: 8px 15px;
+  @media screen and (max-width: ${desktopWidth}) {
+    padding: 15px;
+  }
+`;
+
+export const PaginationInfo = styled.div`
+  font-weight: 600;
+  font-size: 13px;
+  span {
+    background: ${greyThemeLight};
+    padding: 2px 25px;
+    border-radius: 15px;
+    color: ${greyThemeDark1};
+    margin-right: 5px;
   }
 `;

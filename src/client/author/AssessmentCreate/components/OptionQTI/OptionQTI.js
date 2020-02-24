@@ -47,7 +47,7 @@ const OptionQti = ({ t, history: { push } }) => {
   };
 
   return (
-    <CardComponent>
+    <CardComponent ml="25px">
       <IconWrapper>
         <IconUpload style={{ height: "43px", width: "34px" }} />
       </IconWrapper>

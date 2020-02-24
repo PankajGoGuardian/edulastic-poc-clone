@@ -68,10 +68,10 @@ export default enhance(Header);
 
 const StyledLink = styled(Link)`
   padding: 5px 20px;
-  border: none;
   text-transform: uppercase;
   color: ${themeColor};
   background: ${white};
+  border: 1px solid ${themeColor};
   display: flex;
   align-items: center;
   font-weight: 600;

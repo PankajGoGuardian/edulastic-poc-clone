@@ -38,22 +38,20 @@ const links = [
   }
 ];
 
-export const SingleAssessmentReport = props => {
-  return (
-    <div>
-      <BoxHeading heading={"Single Assessment Report"} iconType={"bar-chart"} />
-      <StyledP>
-        View deep analysis of a single assessment. Compare class level performance, view item analysis, diagnose
-        difficult items and areas of misunderstanding.
-      </StyledP>
-      <LinksWrapper>
-        {links.map((data, index) => {
-          return <LinkItem key={data.title} data={data} />;
-        })}
-      </LinksWrapper>
-    </div>
-  );
-};
+export const SingleAssessmentReport = () => (
+  <div>
+    <BoxHeading heading="Single Assessment Report" iconType="bar-chart" />
+    <StyledP>
+      View deep analysis of a single assessment. Compare class level performance, view item
+      analysis, diagnose difficult items and areas of misunderstanding.
+    </StyledP>
+    <LinksWrapper>
+      {links.map(data => (
+        <LinkItem key={data.title} data={data} />
+      ))}
+    </LinksWrapper>
+  </div>
+);
 
 const LinksWrapper = styled.ul`
   padding: 0px;

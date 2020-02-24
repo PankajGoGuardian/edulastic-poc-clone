@@ -5,10 +5,14 @@ import {
   title,
   themeColor,
   smallDesktopWidth,
-  greyThemeLight
+  greyThemeLight,
+  mainBgColor
 } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
+  .ant-layout {
+    background: ${mainBgColor};
+  }
   padding-left: ${props => {
     if (props.isPrintPreview) {
       return "0";
@@ -108,8 +112,7 @@ export const MainContainer = styled.div`
       letter-spacing: normal;
     }
     li {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-      border: none;
+      border: 1px solid ${greyThemeLight};
     }
     .ant-pagination {
       &-prev,
@@ -124,9 +127,7 @@ export const MainContainer = styled.div`
         }
       }
       &-item {
-        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-        border: none;
-        line-height: 35px;
+        line-height: 30px;
         background: white;
         a {
           color: ${title};
@@ -140,7 +141,7 @@ export const MainContainer = styled.div`
           }
         }
         &-active {
-          border: none;
+          border: 1px solid ${themeColor};
           opacity: 0.75;
           background: ${props => props.theme.themeColor};
           border-color: ${props => props.theme.themeColor};
@@ -171,8 +172,8 @@ export const MainContainer = styled.div`
 
   .ant-table-thead > tr > th.ant-table-selection-column,
   .ant-table-tbody > tr > td.ant-table-selection-column {
-    width: 50px;
-    max-width: 50px;
+    width: 35px;
+    max-width: 35px;
   }
 
   .ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
@@ -180,9 +181,6 @@ export const MainContainer = styled.div`
   }
 
   .ant-select-selection {
-    &__rendered {
-      // margin-left: 0;
-    }
     &__choice {
       height: 24px !important;
       border-radius: 5px;

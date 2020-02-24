@@ -1,23 +1,21 @@
-import React, { memo } from "react";
-import compose from "redux";
 import PropTypes from "prop-types";
+import React, { memo } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
+import Search from "../Search/Search";
 import {
-  Container,
   Backdrop,
-  CloseIcon,
-  Title,
   Clear,
+  CloseIcon,
+  Container,
   FixedFilters,
-  SearchWrapper,
   HeaderRow,
   MainFilter,
   MainFilterHeader,
-  AffixContainer,
-  SearchInput
+  SearchInput,
+  SearchWrapper,
+  Title
 } from "./styled";
-import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
-import Search from "../Search/Search";
 
 const ItemFilter = ({
   onClearSearch,
@@ -89,10 +87,7 @@ ItemFilter.propTypes = {
   ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   onSearchInputChange: PropTypes.func.isRequired,
-  onSearch: PropTypes.func.isRequired,
   onClearSearch: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired,
-  getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired
 };

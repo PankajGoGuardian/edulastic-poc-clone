@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
 import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
@@ -14,8 +13,8 @@ const descriptionBottom = `
   Upload your assessment in PDF format and proceed to create an Edulastic Assessment
 `;
 
-const OptionPDF = ({ onClick }) => (
-  <CardComponent>
+const OptionPDF = () => (
+  <CardComponent ml="25px">
     <IconWrapper>
       <SnapQuiz>
         <span>Snap</span>Quiz
@@ -24,16 +23,12 @@ const OptionPDF = ({ onClick }) => (
     <TitleWrapper>Create from PDF</TitleWrapper>
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
-    <Link to={"/author/tests/snapquiz"}>
+    <Link to="/author/tests/snapquiz">
       <ButtonComponent type="primary" block>
         Upload PDF
       </ButtonComponent>
     </Link>
   </CardComponent>
 );
-
-OptionPDF.propTypes = {
-  onClick: PropTypes.func.isRequired
-};
 
 export default OptionPDF;

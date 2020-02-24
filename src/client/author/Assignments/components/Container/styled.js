@@ -6,23 +6,18 @@ import {
   tabletWidth,
   white,
   themeColor,
-  desktopWidth,
   smallDesktopWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  mediumDesktopWidth
+  extraDesktopWidthMax
 } from "@edulastic/colors";
-import { FlexContainer, Card, Button } from "@edulastic/common";
+import { FlexContainer, Card, Button, MainContentWrapper } from "@edulastic/common";
 
-export const Container = styled.div`
-  padding: 30px;
-  left: 0;
-  right: 0;
-  height: 100%;
+export const Container = styled(MainContentWrapper)`
   overflow: auto;
 
   .scrollbar-container {
-    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
+    height: ${props =>
+      `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
     width: 100%;
     padding-right: 30px;
     padding-left: 2px;
@@ -38,23 +33,19 @@ export const Container = styled.div`
       height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
     }
   }
-  @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
-    padding: 30px 30px 10px;
-  }
   @media (max-width: ${tabletWidth}) {
     .scrollbar-container {
       height: calc(100vh - 90px);
     }
   }
   @media (max-width: ${mobileWidth}) {
-    padding: 0 26px 45px 26px;
+    padding: 20px 26px 45px 26px;
   }
 `;
 
 export const LeftWrapper = styled.div`
   min-width: 230px;
   max-width: 230px;
-  margin-top: 10px;
 
   @media (max-width: ${smallDesktopWidth}) {
     position: fixed;
@@ -100,20 +91,10 @@ export const DRadio = styled(Radio)``;
 
 export const StyledCard = styled(Card)`
   overflow-x: auto;
-
+  box-shadow: none;
+  border-radius: 0;
   .ant-card-body {
-    padding: 20px 0px 60px;
-    min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
-
-    @media (min-width: ${mediumDesktopExactWidth}) {
-      min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.md + 60}px)`};
-    }
-    @media (min-width: ${extraDesktopWidthMax}) {
-      min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xl + 60}px)`};
-    }
-    @media (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
-      padding-top: 10px;
-    }
+    padding: 0px 0px 60px;
   }
 `;
 
@@ -184,8 +165,8 @@ export const FilterButton = styled(Button)`
   padding-top: 5px;
   border-radius: 3px;
   position: fixed;
-  margin-left: -20px;
-  margin-top: 34px;
+  margin-left: ${props => (props.showFilter ? "-65px" : "-20px")};
+  margin-top: -20px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${props => (props.showFilter ? themeColor : white)} !important;

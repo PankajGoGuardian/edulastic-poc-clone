@@ -55,13 +55,15 @@ const AssessmentDetails = ({
           <Tooltip title={title}>
             <AssignmentTitle data-cy="testTitle">{title}</AssignmentTitle>
           </Tooltip>
-          <TestType data-cy="testType" type={testType}>
-            {testType === PRACTICE
-              ? t("common.practice")
-              : testType === ASSESSMENT
-              ? t("common.assessment")
-              : t("common.common")}
-          </TestType>
+          <Tooltip title={t(`common.toolTip.${testType}`)}>
+            <TestType data-cy="testType" type={testType}>
+              {testType === PRACTICE
+                ? t("common.practice")
+                : testType === ASSESSMENT
+                ? t("common.assessment")
+                : t("common.common")}
+            </TestType>
+          </Tooltip>
         </CardTitle>
         {!!(endDate || dueDate) && (
           <CardDate>
@@ -80,7 +82,11 @@ const AssessmentDetails = ({
         <StatusWrapper>
           {type === "assignment" ? (
             <React.Fragment>
-              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
+              <StatusButton
+                isPaused={isPaused}
+                isSubmitted={started || resume}
+                assignment={type === "assignment"}
+              >
                 <span data-cy="status">{status}</span>
               </StatusButton>
               {safeBrowser && (
@@ -104,15 +110,10 @@ const AssessmentDetails = ({
 };
 
 AssessmentDetails.propTypes = {
-  test: PropTypes.object,
   theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   dueDate: PropTypes.string.isRequired,
   started: PropTypes.bool.isRequired
-};
-
-AssessmentDetails.defaultProps = {
-  test: {}
 };
 
 export default AssessmentDetails;
@@ -120,27 +121,25 @@ const getStatusBgColor = (props, type) => {
   if (props.assignment) {
     if (props.isSubmitted) {
       return props.theme.assignment[`cardInProgressLabel${type}Color`];
-    } else {
-      return props.theme.assignment[`cardNotStartedLabel${type}Color`];
+    }
+    return props.theme.assignment[`cardNotStartedLabel${type}Color`];
+  }
+  if (props.absent) {
+    return props.theme.assignment[`cardAbsentLabel${type}Color`];
+  }
+  if (props.isSubmitted) {
+    switch (props.graded) {
+      case assignmentStatus.GRADE_HELD:
+        return props.theme.assignment[`cardGradeHeldLabel${type}Color`];
+      case assignmentStatus.NOT_GRADED:
+        return props.theme.assignment[`cardNotGradedLabel${type}Color`];
+      case assignmentStatus.GRADED:
+        return props.theme.assignment[`cardGradedLabel${type}Color`];
+      default:
+        return props.theme.assignment[`cardSubmitedLabel${type}Color`];
     }
   } else {
-    if (props.absent) {
-      return props.theme.assignment[`cardAbsentLabel${type}Color`];
-    }
-    if (props.isSubmitted) {
-      switch (props.graded) {
-        case assignmentStatus.GRADE_HELD:
-          return props.theme.assignment[`cardGradeHeldLabel${type}Color`];
-        case assignmentStatus.NOT_GRADED:
-          return props.theme.assignment[`cardNotGradedLabel${type}Color`];
-        case assignmentStatus.GRADED:
-          return props.theme.assignment[`cardGradedLabel${type}Color`];
-        default:
-          return props.theme.assignment[`cardSubmitedLabel${type}Color`];
-      }
-    } else {
-      return props.theme.assignment[`cardAbsentLabel${type}Color`];
-    }
+    return props.theme.assignment[`cardAbsentLabel${type}Color`];
   }
 };
 

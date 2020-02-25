@@ -5,6 +5,12 @@
     "assessment": "A",
     "practice": "P",
     "common": "C",
+    "toolTip": {
+      "assessment": "Class Assignment",
+      "practice": "Practice Assignment",
+      "common assessment": "Common Assignment",
+      "testlet": "testlet"
+    },
     "opensIn": "Opens in",
     "submittedTag": "SUBMITTED",
     "notStartedTag": "NOT STARTED",

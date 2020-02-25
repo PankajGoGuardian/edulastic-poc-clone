@@ -71,12 +71,14 @@ export default class TestAddItemTab {
     cy.wait("@browseStandards");
   };
 
-  removeGroupItemById = itemId =>
-    cy
-      .get(`[data-cy="${itemId}"]`)
+  removeGroupItemById = itemId => {
+    cy.server();
+    cy.route("GET", /.*default-thumbnail?.*/).as("removeItem");
+    cy.get(`[data-cy="${itemId}"]`)
       // .contains("Selected")
       .click({ force: true });
-
+    cy.wait("@removeItem");
+  };
   addItemByIdByGroup = (group, itemId) => {
     this.addItemById(itemId);
     cy.get('[class^="SelectGroupModal"]')

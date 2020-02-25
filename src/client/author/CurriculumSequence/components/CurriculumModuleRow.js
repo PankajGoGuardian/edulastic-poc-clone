@@ -258,7 +258,7 @@ class ModuleRow extends Component {
           <AssessmentPlayer testId={selectedTest} preview closeTestPreviewModal={this.closeModal} />
         </ModalWrapper>
         <ModuleWrapper
-          data-cy="curriculumModuleRow"
+          data-cy={`row-module-${moduleIndex + 1}`}
           key={`${data.length}-${module.id}`}
           padding={padding}
           onClick={() => onCollapseExpand(moduleIndex)}
@@ -285,7 +285,7 @@ class ModuleRow extends Component {
                         {`Module ${moduleIndex + 1}`}
                       </ModuleHelperText>
                       <ModuleTitleWrapper>
-                        <ModuleTitle>{title}</ModuleTitle>
+                        <ModuleTitle data-cy="module-name">{title}</ModuleTitle>
                         <ModuleTitlePrefix>
                           {!hideEditOptions && (
                             <Icon
@@ -406,7 +406,10 @@ class ModuleRow extends Component {
                             <Link to="/author/assignments">View Assignments</Link>
                           </Menu.Item>
                         )}
-                        <Menu.Item onClick={() => this.viewTest(moduleData.contentId)}>
+                        <Menu.Item
+                          data-cy="view test"
+                          onClick={() => this.viewTest(moduleData.contentId)}
+                        >
                           Preview Test
                         </Menu.Item>
                         {/* <Menu.Item
@@ -513,6 +516,7 @@ class ModuleRow extends Component {
                                       (status === "published" && mode === "embedded")) && (
                                       <AssignmentButton assigned={!isAssigned} margin="0 15px 0 0">
                                         <Button
+                                          data-cy="show-assignments"
                                           onClick={() =>
                                             this.setAssignmentDropdown(moduleData.contentId)
                                           }
@@ -590,7 +594,7 @@ class ModuleRow extends Component {
                                   {assignment?.gradedNumber} Graded
                                 </Div>
 
-                                <ActionsWrapper>
+                                <ActionsWrapper data-cy="PresentationIcon">
                                   <Tooltip placement="bottom" title="LCB">
                                     <BtnContainer
                                       onClick={e =>

@@ -105,7 +105,7 @@ class AssignmentDragItem extends Component {
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
-                <IconVisualization color={themeColor} onClick={() => viewTest(moduleData.contentId)} />
+                <IconVisualization color={themeColor} data-cy="view-test" onClick={() => viewTest(moduleData.contentId)} />
               </CustomIcon>
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
@@ -115,7 +115,7 @@ class AssignmentDragItem extends Component {
                     <IconCheckSmall color={white} />
                   ) : (
                     <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
-                  )}
+                    )}
                   {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                 </Button>
               </AssignmentButton>

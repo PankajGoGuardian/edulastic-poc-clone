@@ -22,19 +22,19 @@ const DeleteBulkTestModal = props => {
   return (
     <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={onClose} title="Remove" center>
       <h2>Remove</h2>
-      <ModuleWrapper>
+      <ModuleWrapper data-cy="remove-count">
         {modulesNamesCountMap.length
           ? modulesNamesCountMap.map(({ count, mName }, i) => (
-              <h3>
-                <StyledSpan>{count}</StyledSpan> of the selected {count > 1 ? "tests" : "test"} will be removed from{" "}
-                <StyledSpan>{mName}</StyledSpan>
-              </h3>
-            ))
+            <h3>
+              <StyledSpan>{count}</StyledSpan> of the selected {count > 1 ? "tests" : "test"} will be removed from{" "}
+              <StyledSpan>{mName}</StyledSpan>
+            </h3>
+          ))
           : "The selected tests are not associated with any modules yet."}
       </ModuleWrapper>
       <FooterWrapper>
         <CancelBtn onClick={onClose}>No, Cancel</CancelBtn>
-        <RemoveBtn onClick={onRemoveClick}>{modulesNamesCountMap.length ? "Yes, Remove" : "Clear Selected"}</RemoveBtn>
+        <RemoveBtn data-cy="bulk-remove" onClick={onRemoveClick}>{modulesNamesCountMap.length ? "Yes, Remove" : "Clear Selected"}</RemoveBtn>
       </FooterWrapper>
     </Modal>
   );

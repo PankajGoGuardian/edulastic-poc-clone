@@ -595,7 +595,7 @@ class CurriculumSequence extends Component {
                 {customize && urlHasUseThis && (
                   <SaveButtonStyle>
                     <Button
-                      data-cy="saveCurriculumSequence"
+                      data-cy="save"
                       onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
                     >
                       <SaveButtonText>Customize</SaveButtonText>
@@ -604,14 +604,14 @@ class CurriculumSequence extends Component {
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <SaveButtonStyle>
-                    <Button data-cy="editCurriculumSequence" onClick={handleEditClick}>
+                    <Button data-cy="edit-playlist" onClick={handleEditClick}>
                       <SaveButtonText>Edit</SaveButtonText>
                     </Button>
                   </SaveButtonStyle>
                 )}
                 {showUseThisButton && (
                   <SaveButtonStyle windowWidth={windowWidth}>
-                    <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>
+                    <Button data-cy="use-this" onClick={handleUseThisClick}>
                       <SaveButtonText>Use This</SaveButtonText>
                     </Button>
                   </SaveButtonStyle>
@@ -650,7 +650,11 @@ class CurriculumSequence extends Component {
                     </SubHeaderTitleContainer>
                     <SunHeaderInfo>
                       {grades.length ? (
-                        <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
+                        <SunHeaderInfoCard
+                          data-cy="playlist-grade"
+                          marginBottom="13px"
+                          marginLeft="-3px"
+                        >
                           <GraduationCapIcon color={textColor} />
                           <SunHeaderInfoCardText textColor={textColor} marginLeft="-3px">
                             Grade {grades.join(", ")}
@@ -660,7 +664,7 @@ class CurriculumSequence extends Component {
                           ""
                         )}
                       {subjects.length ? (
-                        <SunHeaderInfoCard marginBottom="13px">
+                        <SunHeaderInfoCard data-cy="playlist-sub" marginBottom="13px">
                           <BookIcon color={textColor} />
                           <SunHeaderInfoCardText textColor={textColor}>
                             {subjects.filter(item => !!item).join(", ")}
@@ -684,7 +688,7 @@ class CurriculumSequence extends Component {
                   </CurriculumSubHeaderRow>
                   {urlHasUseThis && !isStudent && (
                     <CurriculumSubHeaderRow>
-                      <ModuleProgressWrapper>
+                      <ModuleProgressWrapper data-cy="moduleProgress">
                         <ModuleProgressLabel>
                           <ModuleProgressText style={{ color: textColor }}>
                             Module Progress
@@ -707,7 +711,7 @@ class CurriculumSequence extends Component {
                       <CurriculumActionsWrapper>
                         {(urlHasUseThis || features.isCurator) && (
                           <>
-                            <ShareButtonStyle onClick={onShareClick}>
+                            <ShareButtonStyle data-cy="share" onClick={onShareClick}>
                               <IconShare color={greenThird} width={15} height={15} />
                             </ShareButtonStyle>
                             <DropPlaylistButton onClick={this.openDropPlaylistModal}>

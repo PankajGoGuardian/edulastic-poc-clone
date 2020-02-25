@@ -17,7 +17,12 @@ export default class TestSummayTab {
 
   getTestTagsSelect = () => cy.get('[data-cy="tagsSelect"]');
 
-  selectGrade = grade => {
+  selectGrade = (grade, clear = false) => {
+    if (clear) {
+      this.getTestGradeSelect().then($ele => {
+        if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
+      });
+    }
     this.getTestGradeSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(grade)
@@ -41,7 +46,12 @@ export default class TestSummayTab {
       .type(testname);
   };
 
-  selectSubject = subject => {
+  selectSubject = (subject, clear = false) => {
+    if (clear) {
+      this.getTestSubjectSelect().then($ele => {
+        if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
+      });
+    }
     this.getTestSubjectSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(subject)

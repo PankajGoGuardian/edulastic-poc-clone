@@ -5,8 +5,8 @@ import { Button, Input, message } from "antd";
 import { desktopWidth, themeColor, white, lightGreySecondary, fadedGrey, darkGrey, greyish } from "@edulastic/colors";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { IconPlusCircle, IconTrash, IconSave } from "@edulastic/icons";
-import { ThemeButton } from "../../src/components/common/ThemeButton";
 import { FaBars } from "react-icons/fa";
+import { ThemeButton } from "../../src/components/common/ThemeButton";
 
 /*
  *
@@ -54,7 +54,7 @@ const ModuleItem = SortableElement(props => {
     <>
       <EditModuleContainer>
         <QLabel>{mIndex || id + 1}.</QLabel>
-        <div>
+        <div data-cy={`module-${id + 1}`}>
           <Title>Module Name</Title>
           <Input
             placeholder="Enter module name"
@@ -78,7 +78,7 @@ const ModuleItem = SortableElement(props => {
       </EditModuleContainer>
     </>
   ) : (
-    <ModuleContainer dragging={dragging}>
+    <ModuleContainer dragging={dragging} data-cy={`module-${mIndex || id + 1}`}>
       <ModuleResequenceHandle />
       <ModuleContent>
         <ModuleTitle>
@@ -92,7 +92,7 @@ const ModuleItem = SortableElement(props => {
       <ModuleActions>
         <ThemeButton key="submit" type="primary" onClick={handleModuleEdit}>
           <StyledSpan width={70} fSize={12}>
-            EDIT
+              EDIT
           </StyledSpan>
         </ThemeButton>
         <Button
@@ -107,7 +107,7 @@ const ModuleItem = SortableElement(props => {
         </Button>
       </ModuleActions>
     </ModuleContainer>
-  );
+    );
 });
 
 const Label = styled.span`
@@ -139,7 +139,7 @@ const ModuleContainer = styled.div`
   z-index: 1001;
   box-shadow: 0 0 10px 0 ${fadedGrey};
   border-radius: 4px;
-  border: ${({ dragging }) => dragging && "1px solid " + themeColor};
+  border: ${({ dragging }) => dragging && `1px solid ${  themeColor}`};
 `;
 
 const DragHandle = styled.div`
@@ -282,7 +282,7 @@ const ManageModulesModalBody = props => {
           <>
             <AddNewModuleContainer>
               <QLabel>{modulesList.length + 1}.</QLabel>
-              <div>
+              <div data-cy={`module-${modulesList.length + 1}`}>
                 <Title>Module Name</Title>
                 <Input
                   placeholder="Enter module name"
@@ -309,7 +309,7 @@ const ManageModulesModalBody = props => {
 
         {
           <div style={{ marginLeft: "20px" }}>
-            <ThemeButton key="submit" type="primary" onClick={() => toggleAddState(true)}>
+            <ThemeButton key="submit" type="primary" data-cy="addModule" onClick={() => toggleAddState(true)}>
               <IconPlusCircle color={white} width={15} height={15} />
               <StyledSpan width={122} fSize={12} marginL={20}>
                 ADD MODULE
@@ -322,7 +322,7 @@ const ManageModulesModalBody = props => {
         <Button data-cy="manageModuleCancel" type="primary" ghost key="back" onClick={onCloseManageModule}>
           CANCEL
         </Button>
-        <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={applyHandler}>
+        <ThemeButton data-cy="done-module" key="submit" type="primary" onClick={applyHandler}>
           DONE
         </ThemeButton>
       </ModalFooter>

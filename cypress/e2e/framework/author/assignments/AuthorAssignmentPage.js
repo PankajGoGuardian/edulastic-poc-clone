@@ -6,6 +6,8 @@ class AuthorAssignmentPage {
     this.smartFilter = new SmartFilters();
   }
 
+  getAssignmentRowById = id => cy.get(`[data-test=${id}]`);
+
   selectCheckBoxByTestName = testName => {
     cy.get('[data-cy="assignmentName"]')
       .contains(testName)
@@ -40,10 +42,11 @@ class AuthorAssignmentPage {
       .click({ force: true });
   }
 
-  clcikOnPresenatationIconByIndex = index => {
+  clcikOnPresenatationIconByIndex = (index, assignmentNum = 0) => {
     cy.server();
     cy.route("GET", "**/assignments/**").as("assignment");
     cy.get("[data-cy=PresentationIcon]")
+      .eq(assignmentNum)
       .children()
       .eq(index)
       .click();

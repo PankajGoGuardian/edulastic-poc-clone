@@ -308,4 +308,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       expect(xhr.status, `verify api requests for updating response for the question type - ${questionType}`).to.eq(200)
     );
   };
+
+  verifyClassAndAssignmntId = (classId, assignmnetId) =>
+    cy.url().then(url => cy.wrap(url).should("include", `author/expressgrader/${assignmnetId}/${classId}`));
 }

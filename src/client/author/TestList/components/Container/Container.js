@@ -882,10 +882,10 @@ class TestList extends Component {
 
     const menu = (
       <Menu>
-        <Menu.Item key="0" onClick={this.handleBulkAddTests}>
+        <Menu.Item key="0" data-cy="addToModule" onClick={this.handleBulkAddTests}>
           Add to Module
         </Menu.Item>
-        <Menu.Item key="1" onClick={this.handleBulkRemoveTests}>
+        <Menu.Item key="1" data-cy="removeFromModule" onClick={this.handleBulkRemoveTests}>
           Remove from Modules
         </Menu.Item>
       </Menu>
@@ -1062,7 +1062,7 @@ class TestList extends Component {
                       onClick={() => {}}
                     >
                       <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
-                        <a className="ant-dropdown-link" href="#">
+                        <a data-cy="moduleActions" className="ant-dropdown-link" href="#">
                           Actions
                         </a>
                       </Dropdown>

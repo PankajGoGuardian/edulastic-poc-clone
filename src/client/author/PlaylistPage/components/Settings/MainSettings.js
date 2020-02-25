@@ -2,6 +2,8 @@ import React from "react";
 import { Row, Col, Anchor, Switch } from "antd";
 
 import { playlists } from "@edulastic/constants";
+import styled from "styled-components";
+import { themeColor } from "@edulastic/colors";
 import {
   StyledAnchor,
   Body,
@@ -10,8 +12,6 @@ import {
   Description,
   Container
 } from "../../../TestPage/components/Setting/components/MainSetting/styled";
-import styled from "styled-components";
-import { themeColor } from "@edulastic/colors";
 
 const { settingCategories } = playlists;
 
@@ -36,11 +36,9 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
           <StyledBlock id="user-customization" smallSize={isSmallSize}>
             <Title>User Customization</Title>
             <Body smallSize={isSmallSize}>
-              <Switch defaultChecked={customize} onChange={handleUserCustomize} />
+              <Switch data-cy="customization" defaultChecked={customize} onChange={handleUserCustomize} />
               <Description>
-                {
-                  "If set to ON (default), the playlist can be customized by the users i.e, users can add/remove the items in the playlist"
-                }
+                If set to ON (default), the playlist can be customized by the users i.e, users can add/remove the items in the playlist
               </Description>
             </Body>
           </StyledBlock>

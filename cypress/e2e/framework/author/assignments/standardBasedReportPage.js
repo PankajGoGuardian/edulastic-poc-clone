@@ -182,4 +182,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
   getTableHeader = () => cy.get(".ant-table-thead").eq(0);
 
   getTableHeaderElements = () => this.getTableHeader().find("th");
+
+  verifyClassAndAssignmntId = (classId, assignmnetId) =>
+    cy.url().then(url => cy.wrap(url).should("include", `/author/standardsBasedReport/${assignmnetId}/${classId}`));
 }

@@ -52,7 +52,7 @@ class AddTestModal extends React.Component {
         <ModuleWrapper>
           {modulesList &&
             modulesList.map(({ title }, index) => (
-              <ModuleList onClick={e => this.onModuleClick(index)}>
+              <ModuleList data-cy={`module-${index + 1}`} onClick={e => this.onModuleClick(index)}>
                 <TitleWrapper>{title}</TitleWrapper>
               </ModuleList>
             ))}

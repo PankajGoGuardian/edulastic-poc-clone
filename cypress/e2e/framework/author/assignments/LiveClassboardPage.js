@@ -508,6 +508,15 @@ class LiveClassboardPage {
   };
 
   copyPassword = () => cy.get('[data-cy="password"]').invoke("text");
+
+  closePassWord = () =>
+    cy
+      .get("button")
+      .find(".ant-modal-close-icon")
+      .click();
+
+  verifyClassAndAssignmntId = (classId, assignmnetId) =>
+    cy.url().then(url => cy.wrap(url).should("include", `/author/classboard/${assignmnetId}/${classId}`));
 }
 
 export default LiveClassboardPage;

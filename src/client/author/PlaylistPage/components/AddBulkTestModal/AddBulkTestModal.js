@@ -27,7 +27,7 @@ const AddBulkTestModal = props => {
       <ModuleWrapper>
         {modulesList &&
           modulesList.map(({ title }, index) => (
-            <ModuleList onClick={e => onModuleClick(index)}>
+            <ModuleList data-cy={`module-${index + 1}`} onClick={e => onModuleClick(index)}>
               <TitleWrapper>{title}</TitleWrapper>
             </ModuleList>
           ))}

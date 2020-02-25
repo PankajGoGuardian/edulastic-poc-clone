@@ -2180,3 +2180,7 @@ iframe {
 .math-keyboard-popover .ant-popover-inner-content {
   padding: 0px;
 }
+
+div[class*="_pendo"] button {
+  cursor: pointer;
+}

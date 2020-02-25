@@ -3,10 +3,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
-import { Button, message } from "antd";
+import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round, isEmpty } from "lodash";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidthMax, smallDesktopWidth, themeColor, borderGrey2 } from "@edulastic/colors";
@@ -60,8 +62,6 @@ import FeedBackContainer from "./FeedBackContainer";
 import { PrintPreviewScore } from "./printPreviewScore";
 import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
 import { Coding } from "../widgets/Coding";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -320,7 +320,6 @@ class QuestionWrapper extends Component {
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
-      zoomLevel = "1",
       selectedTheme = "default",
       displayFeedback = true,
       isPrintPreview = false,
@@ -329,12 +328,17 @@ class QuestionWrapper extends Component {
       loadScratchPad,
       isQuestionView,
       isExpressGrader,
+      theme,
       ...restProps
     } = this.props;
-    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
+    const {
+      score: prevScore,
+      maxScore: prevMaxScore,
+      feedback: prevFeedback,
+      correct
+    } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
-    const questionActivityId = get(data, "activity._id", null);
-    const qid = get(data, "activity.qid", undefined);
+
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
@@ -362,7 +366,8 @@ class QuestionWrapper extends Component {
       userAnswerProps.key = data.id;
     }
     const canShowPlayer =
-      ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
+      ((showUserTTS === "yes" && userRole === "student") ||
+        (userRole === "teacher" && !!LCBPreviewModal)) &&
       data.tts &&
       data.tts.taskStatus === "COMPLETED";
 
@@ -370,9 +375,10 @@ class QuestionWrapper extends Component {
 
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
-    const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+    const studentReportFeedbackVisible =
+      isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
-    let themeToPass = themes[selectedTheme] || themes.default;
+    const themeToPass = themes[selectedTheme] || themes.default;
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
@@ -380,7 +386,11 @@ class QuestionWrapper extends Component {
 
     const advancedLink =
       !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom />
+        <AdvancedOptionsLink
+          handleAdvancedOpen={handleAdvancedOpen}
+          advancedAreOpen={advancedAreOpen}
+          bottom
+        />
       ) : null;
 
     const { rubrics: rubricDetails } = data;
@@ -435,16 +445,20 @@ class QuestionWrapper extends Component {
                     ? "calc(100% - 265px)"
                     : "100%"
                 }`,
-                maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
+                maxWidth:
+                  ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) &&
+                  "calc(100% - 250px)",
                 display: "flex",
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
-              twoColLayout={showCollapseBtn ? null : this.props.theme?.twoColLayout}
+              twoColLayout={showCollapseBtn ? null : theme?.twoColLayout}
             >
               <StyledFlexContainer>
-                {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
+                {evaluation === "pending" && (
+                  <EvaluationMessage> Evaluation is pending </EvaluationMessage>
+                )}
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}
@@ -498,7 +512,11 @@ class QuestionWrapper extends Component {
                 {rubricDetails && studentReportFeedbackVisible && (
                   <RubricTableWrapper>
                     <span>Graded Rubric</span>
-                    <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled={true} />
+                    <PreviewRubricTable
+                      data={rubricDetails}
+                      rubricFeedback={rubricFeedback}
+                      isDisabled
+                    />
                   </RubricTableWrapper>
                 )}
               </StyledFlexContainer>
@@ -535,10 +553,14 @@ class QuestionWrapper extends Component {
             {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
               <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
             )}
-            {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} className="print-preview-score" />}
+            {showFeedback && isPrintPreview && (
+              <PrintPreviewScore disabled={disabled} data={data} className="print-preview-score" />
+            )}
             {showFeedback && isPrintPreview && (
               <div data-cy="teacherFeedBack" className="print-preview-feedback">
-                {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
+                {data?.activity?.feedback?.text ? (
+                  <div>Teacher Feedback: {data.activity.feedback.text}</div>
+                ) : null}
               </div>
             )}
           </QuestionContainer>

@@ -86,6 +86,8 @@ export const FETCH_CLASS_LIST_SUCCESS = "[drop-playlist] fetch class list succes
 export const FETCH_STUDENT_LIST_BY_GROUP_ID = "[drop-playlist] fetch student list by group id";
 export const FETCH_STUDENT_LIST_SUCCESS = "[drop-playlist] fetch student list success";
 export const DROP_PLAYLIST_ACTION = "[drop-playlist] drop playlist - grant/revoke access";
+export const FETCH_PLAYLIST_ACCESS_LIST = "[drop-playlist] fetch playlist access list";
+export const UPDATE_DROPPED_ACCESS_LIST = "[drop-playlist] update playlist access list";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -119,6 +121,8 @@ export const fetchClassListSuccess = createAction(FETCH_CLASS_LIST_SUCCESS);
 export const fetchStudentListAction = createAction(FETCH_STUDENT_LIST_BY_GROUP_ID);
 export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
 export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);
+export const fetchPlaylistDroppedAccessList = createAction(FETCH_PLAYLIST_ACCESS_LIST);
+export const updateDroppedAccessList = createAction(UPDATE_DROPPED_ACCESS_LIST);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -681,6 +685,20 @@ function* dropPlaylist({ payload }) {
   }
 }
 
+function* fetchPlaylistAccessList({ payload }) {
+  try {
+    if (payload) {
+      const result = yield call(groupApi.fetchPlaylistAccess, payload);
+      if (result) {
+        yield put(updateDroppedAccessList(result));
+      }
+    }
+  } catch (error) {
+    message.error("DropPlaylist is failing");
+    console.error(error);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -705,7 +723,8 @@ export function* watcherSaga() {
     yield takeLatest(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST, approveOrRejectSinglePlaylistSaga),
     yield takeLatest(FETCH_CLASS_LIST_BY_DISTRICT_ID, fetchClassListByDistrictId),
     yield takeLatest(FETCH_STUDENT_LIST_BY_GROUP_ID, fetchStudentListByGroupId),
-    yield takeLatest(DROP_PLAYLIST_ACTION, dropPlaylist)
+    yield takeLatest(DROP_PLAYLIST_ACTION, dropPlaylist),
+    yield takeLatest(FETCH_PLAYLIST_ACCESS_LIST, fetchPlaylistAccessList)
   ]);
 }
 
@@ -803,8 +822,14 @@ const initialState = {
   dataForAssign: getDefaultAssignData(),
 
   dropPlaylistSource: {
-    classList: [],
-    studentList: []
+    searchSource: {
+      classList: [],
+      studentList: []
+    },
+    droppedAccess: {
+      classList: [],
+      studentList: []
+    }
   }
 };
 
@@ -1209,7 +1234,10 @@ function updateClassList(state, { payload }) {
     ...state,
     dropPlaylistSource: {
       ...state.dropPlaylistSource,
-      classList: payload.classList
+      searchSource: {
+        ...state.dropPlaylistSource.searchSource,
+        classList: payload.classList
+      }
     }
   }
 }
@@ -1219,7 +1247,23 @@ function updateStudentList(state, { payload }) {
     ...state,
     dropPlaylistSource: {
       ...state.dropPlaylistSource,
-      studentList: state?.dropPlaylistSource?.studentList.concat(payload.studentList)
+      searchSource: {
+        ...state.dropPlaylistSource.searchSource,
+        studentList: state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList)
+      }
+    }
+  }
+}
+
+function updatePlaylistDroppedAccessList(state, { payload }) {
+  return {
+    ...state,
+    dropPlaylistSource: {
+      ...state.dropPlaylistSource,
+      droppedAccess: {
+        classList: payload.classList,
+        studentList: payload.studentList
+      }
     }
   }
 }
@@ -1245,5 +1289,6 @@ export default createReducer(initialState, {
   [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer,
   [SET_PLAYLIST_DATA]: setPlaylistDataReducer,
   [FETCH_CLASS_LIST_SUCCESS]: updateClassList,
-  [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList
+  [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList,
+  [UPDATE_DROPPED_ACCESS_LIST]: updatePlaylistDroppedAccessList
 });

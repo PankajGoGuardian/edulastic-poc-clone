@@ -634,7 +634,11 @@ class CurriculumSequence extends Component {
             </MainHeader>
           )}
           <FlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-            <div style={{ width: "100%" }}>
+            <div style={{
+              width: urlHasUseThis || isStudent ? "100%" : "calc(100% - 200px)",
+              margin: "auto"
+            }}
+            >
               <SubTopBar>
                 <SubTopBarContainer
                   backgroundColor={bgColor}
@@ -749,32 +753,33 @@ class CurriculumSequence extends Component {
                 )}
               </Wrapper>
             </div>
-            <SummaryBlock>
-              <SummaryBlockTitle>Summary</SummaryBlockTitle>
-              <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
-              <SummaryPieChart
-                data={chartData}
-                totalTimeSpent={chartData.map(x => x.timeSpent).reduce((a, c) => a + c, 0)}
-                colors={COLORS}
-              />
-              <Hr />
-              <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
-              <div style={{ width: "80%", margin: "20px auto" }}>
-                {chartData.map((item, i) => (
-                  <div>
-                    <ModuleTitle>{item.name}</ModuleTitle>
-                    <Progress
-                      strokeColor={{
-                        "0%": COLORS[i],
-                        "100%": COLORS[i]
-                      }}
-                      strokeWidth={10}
-                      percent={40}
-                    />
-                  </div>
-                ))}
-              </div>
-            </SummaryBlock>
+            {urlHasUseThis && isAuthor && (
+              <SummaryBlock>
+                <SummaryBlockTitle>Summary</SummaryBlockTitle>
+                <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+                <SummaryPieChart
+                  data={chartData}
+                  totalTimeSpent={chartData.map(x => x.timeSpent).reduce((a, c) => a + c, 0)}
+                  colors={COLORS}
+                />
+                <Hr />
+                <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
+                <div style={{ width: "80%", margin: "20px auto" }}>
+                  {chartData.map((item, i) => (
+                    <div>
+                      <ModuleTitle>{item.name}</ModuleTitle>
+                      <Progress
+                        strokeColor={{
+                          "0%": COLORS[i],
+                          "100%": COLORS[i]
+                        }}
+                        strokeWidth={10}
+                        percent={40}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </SummaryBlock>)}
           </FlexContainer>
         </CurriculumSequenceWrapper>
         <DropPlaylistModal

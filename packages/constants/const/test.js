@@ -7,6 +7,7 @@ module.exports = {
   },
   settingCategories: [
     { id: "test-type", title: "Test Type" },
+    { id: "player-skin-type", title: "Student Player Skin" },
     { id: "maximum-attempts-allowed", title: "Maximum Attempts Allowed" },
     { id: "mark-as-done", title: "Mark as Done" },
     { id: "release-scores", title: "Release Scores" },
@@ -30,6 +31,7 @@ module.exports = {
   ],
   settingCategoriesFeatureMap: {
     "test-type": "selectTestType",
+    "player-skin-type": "selectPlayerSkinType",
     "maximum-attempts-allowed": "maxAttemptAllowed",
     "mark-as-done": "assessmentSuperPowersMarkAsDone",
     "release-scores": "releaseScore",
@@ -164,5 +166,10 @@ module.exports = {
     LIMITED: "LIMITED",
     ALL_RANDOM: "ALL_RANDOM",
     LIMITED_RANDOM: "LIMITED_RANDOM"
+  },
+  playerSkinTypes: {
+    edulastic: "Edulastic",
+    parcc: "PARCC",
+    sbac: "SBAC"
   }
 };

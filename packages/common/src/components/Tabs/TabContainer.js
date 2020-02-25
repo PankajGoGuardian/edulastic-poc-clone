@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const TabContainer = ({ children, style, padding }) => {
+const TabContainer = ({ children, style, padding, className }) => {
   return (
-    <Container padding={padding} style={style}>
+    <Container padding={padding} style={style} className={className}>
       {children}
     </Container>
   );

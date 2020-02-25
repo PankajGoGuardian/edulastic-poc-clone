@@ -5,6 +5,7 @@ import { Col, Icon, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
+import * as moment from "moment";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
@@ -22,12 +23,13 @@ import {
 import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
-import * as moment from "moment";
 import TestTypeSelector from "./TestTypeSelector";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch"
+
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
+import PlayerSkinSelector from "./PlayerSkinSelector";
+
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
@@ -68,11 +70,11 @@ class SimpleOptions extends React.Component {
       return {
         _releaseGradeKeys: releaseGradeKeys
       };
-    } else {
+    } 
       return {
         _releaseGradeKeys: nonPremiumReleaseGradeKeys
       };
-    }
+    
   }
 
   toggleSettings = () => {
@@ -107,7 +109,7 @@ class SimpleOptions extends React.Component {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, group);
         const nextAssignment = produce(assignment, state => {
-          state["class"] = classData;
+          state.class = classData;
           if (termId) state.termId = termId;
         });
         updateOptions(nextAssignment);
@@ -182,7 +184,7 @@ class SimpleOptions extends React.Component {
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
         termId: get(groupById, `${_id}.termId`, ""),
-        specificStudents: specificStudents
+        specificStudents
       };
     });
     this.setState(
@@ -228,8 +230,8 @@ class SimpleOptions extends React.Component {
       specificStudents
     } = this.props;
     const changeField = curry(this.onChange);
-    let openPolicy = selectsData.openPolicy;
-    let closePolicy = selectsData.closePolicy;
+    let {openPolicy} = selectsData;
+    let {closePolicy} = selectsData;
     if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
       openPolicy = selectsData.openPolicyForAdmin;
       closePolicy = selectsData.closePolicyForAdmin;
@@ -320,6 +322,18 @@ class SimpleOptions extends React.Component {
               userRole={userRole}
               testType={assignment.testType || testSettings.testType}
               onAssignmentTypeChange={changeField("testType")}
+            />
+          </FeaturesSwitch>
+          <FeaturesSwitch
+            inputFeatures="selectPlayerSkinType"
+            actionOnInaccessible="hidden"
+            key="selectPlayerSkin"
+            gradeSubject={gradeSubject}
+          >
+            <PlayerSkinSelector
+              userRole={userRole}
+              playerSkinType={assignment.playerSkinType || testSettings.playerSkinType}
+              onAssignmentTypeChange={changeField("playerSkinType")}
             />
           </FeaturesSwitch>
           <StyledRowButton gutter={32}>

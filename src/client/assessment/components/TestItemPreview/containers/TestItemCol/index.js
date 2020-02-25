@@ -92,7 +92,7 @@ class TestItemCol extends Component {
     const isResourceWidget = nextWidget.widgetType === "resource" && nextWidget.type !== "passage";
     const resource = questions[nextWidget.reference];
     return (
-      <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }}>
+      <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }} className="question-tab-container">
         <QuestionWrapper
           showFeedback={showFeedback}
           evaluation={evaluation}

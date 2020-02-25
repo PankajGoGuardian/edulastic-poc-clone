@@ -68,7 +68,8 @@ class AssignTest extends React.Component {
       fetchPlaylistById,
       userRole,
       resetStudents,
-      assignmentSettings = {}
+      assignmentSettings = {},
+      testSettings
     } = this.props;
 
     resetStudents();
@@ -96,12 +97,14 @@ class AssignTest extends React.Component {
         testId: match.params.testId,
         openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy || assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
         closePolicy: isAdmin ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-        testType: isAdmin ? COMMON : ASSESSMENT
+        testType: isAdmin ? COMMON : ASSESSMENT,
+        playerSkinType: testSettings.playerSkinType
       });
     } else {
       this.updateAssignmentNew({
         testType: isAdmin ? COMMON : ASSESSMENT,
-        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy
+        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy,
+        playerSkinType: testSettings.playerSkinType
       });
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);

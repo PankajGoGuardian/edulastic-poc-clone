@@ -57,7 +57,8 @@
     "test": {
       "checkanswer": "Check Answer",
       "hint": "hint",
-      "bookmark": "bookmark"
+      "bookmark": "bookmark",
+      "review": "review"
     }
   },
   "component": {

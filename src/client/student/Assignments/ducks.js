@@ -251,7 +251,6 @@ function* launchAssignment({ payload }) {
       const userId = yield select(getCurrentUserId);
       const classIds = yield select(getClassIds);
       assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
-
       const lastActivity = _maxBy(testActivities, "createdAt");
       const { testId, testType = "assessment" } = assignment;
 

@@ -44,6 +44,7 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         items: payload.items,
         testType: payload.testType,
+        playerSkinType: payload.playerSkinType,
         testletConfig: payload.testletConfig,
         passages: payload.passages,
         title: payload.title,

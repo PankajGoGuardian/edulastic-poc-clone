@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import { IconLogoCompact } from "@edulastic/icons";
-import { MAX_MOBILE_WIDTH, IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 import { Tooltip } from "antd";
+import { MAX_MOBILE_WIDTH, IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
-const LogoCompact = ({ isMobile, buttons, title }) => (
+const LogoCompact = ({ isMobile, buttons, title, fillColor }) => (
   <LogoCompactContainer>
-    <LogoCompactIcon marginRight="12px" />
+    <LogoCompactIcon marginRight="12px" color={fillColor} />
     {isMobile && buttons}
     {title && (
       <Tooltip title={title}>
@@ -22,13 +22,15 @@ const LogoCompact = ({ isMobile, buttons, title }) => (
 LogoCompact.propTypes = {
   isMobile: PropTypes.bool,
   buttons: PropTypes.any,
-  title: PropTypes.string
+  title: PropTypes.string,
+  fillColor: PropTypes.string
 };
 
 LogoCompact.defaultProps = {
   isMobile: false,
   buttons: null,
-  title: null
+  title: null,
+  fillColor: white
 };
 
 const LogoCompactContainer = styled(FlexContainer)`
@@ -39,13 +41,13 @@ const LogoCompactContainer = styled(FlexContainer)`
 `;
 
 const LogoCompactIcon = styled(IconLogoCompact)`
-  fill: ${white};
+  fill: ${({color}) => color};
   width: 21px;
   height: 21px;
   margin-right: ${({ marginRight }) => marginRight};
 
   &:hover {
-    fill: ${white};
+    fill: ${({color}) => color};
   }
 `;
 

@@ -2502,5 +2502,51 @@ export const themes = {
       NoDataArchiveTextSize: `${theme.size2}px`,
       NoDataArchiveSubTextSize: `${theme.size3}px`
     }
-  })
+  }),
+  playerSkin: {
+    parcc: {
+      header: {
+        background: "white",
+        logoColor: themeColor
+      },
+      defaultButton: {
+        background: "#EEEEEE",
+        color: "#7A7A7A",
+        active: {
+          background: "#7A7A7A",
+          color: "#ffffff"
+        }
+      },
+      navigationButtons: {
+        background: "#0564CC",
+        color: "#ffffff",
+        fontSize: "11px"
+      },
+      menuItem: {
+        hover: {
+          background: "#0564CC",
+          color: "white"
+        }
+      },
+      breadcrumb: {
+        background: "#666666",
+        color: "white",
+        fontSize: "11px"
+      },
+      tools: {
+        color: "#EEEEEE",
+        svgColor: "#7A7A7A",
+        active: {
+          color: "#4A4A4A",
+          svgColor: "white",
+          background: "#4A4A4A"
+        }
+      },
+      review: {
+        card: {
+          background: "lightgrey"
+        }
+      }
+    }
+  }
 };

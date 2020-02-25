@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { Hints, ScrollContext } from "@edulastic/common";
+import { test } from "@edulastic/constants";
 import TestItemPreview from "../../components/TestItemPreview";
 import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
@@ -31,28 +32,16 @@ const PlayerContentArea = ({
   setHighlights,
   setCrossAction,
   crossAction,
-  previousQuestionActivities
+  previousQuestionActivities,
+  playerSkinType = test.playerSkinTypes.edulastic,
+  isSidebarVisible = true
 }) => {
-  const [isSidebarVisible, setSidebarVisible] = useState(true);
   const scrollContainerRef = useRef();
   const item = items[currentItem];
 
-  const toggleSideBar = () => {
-    setSidebarVisible(!isSidebarVisible);
-  };
   const previousQuestionActivity = previousQuestionActivities[item._id];
   return (
     <Main skinB="true">
-      <Sidebar isVisible={isSidebarVisible}>
-        <SidebarQuestionList
-          questions={dropdownOptions}
-          selectedQuestion={currentItem}
-          gotoQuestion={gotoQuestion}
-          toggleSideBar={toggleSideBar}
-          isSidebarVisible={isSidebarVisible}
-          theme={theme}
-        />
-      </Sidebar>
       <MainWrapper isSidebarVisible={isSidebarVisible} ref={scrollContainerRef}>
         {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
             Also, will use ScrollContext for auto-scroll on mobile */}
@@ -83,6 +72,7 @@ const PlayerContentArea = ({
             {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
           </MainContent>
         </ScrollContext.Provider>
+        {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && (
         <PlayerFooter
           isLast={isLast}
           isFirst={isFirst}
@@ -92,6 +82,7 @@ const PlayerContentArea = ({
           t={t}
           unansweredQuestionCount={unansweredQuestionCount}
         />
+)}
       </MainWrapper>
     </Main>
   );
@@ -132,7 +123,6 @@ const MainContent = styled.div`
   border-radius: 10px;
   font-size: 18px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin: 40px 40px 0 40px;
   border-radius: 10px;
   display: flex;
   overflow: hidden;
@@ -154,7 +144,7 @@ const MainContent = styled.div`
 
 const MainWrapper = styled.div`
   position: relative;
-  width: ${({ isSidebarVisible }) => (isSidebarVisible ? "calc(100% - 220px)" : "calc(100% - 65px)")};
+  width: 100%;
   margin-top: 60px;
   height: calc(100vh - 150px);
   display: flex;

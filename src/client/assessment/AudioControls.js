@@ -45,7 +45,8 @@ const AudioControls = ({
   audioSrc,
   qId,
   currentPlayingDetails,
-  setCurrentPlayingDetails
+  setCurrentPlayingDetails,
+  className,
 }) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
@@ -160,7 +161,7 @@ const AudioControls = ({
     ? "Pause"
     : "Play";
   return (
-    <AudioButtonsWrapper>
+    <AudioButtonsWrapper className={className}>
       <div style={{ display: showAudioControls ? "none" : "block" }}>
         <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
           {currentPlayingDetails.qId === qId ? (

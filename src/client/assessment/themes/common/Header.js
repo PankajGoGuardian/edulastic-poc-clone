@@ -14,7 +14,6 @@ const Header = styled.div`
   right: 0;
   background: ${themeColor};
   z-index: 50;
-
   @media (max-width: ${mediumDesktopExactWidth}) {
     padding: 0 30px;
   }

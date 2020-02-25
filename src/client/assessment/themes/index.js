@@ -75,7 +75,8 @@ const AssessmentContainer = ({
   groupId,
   showTools,
   showScratchPad,
-  savingResponse
+  savingResponse,
+  playerSkinType
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -182,7 +183,9 @@ const AssessmentContainer = ({
     showTools,
     groupId,
     showScratchPad,
-    passage
+    passage,
+    defaultAP,
+    playerSkinType
   };
 
   useEffect(() => {
@@ -248,7 +251,8 @@ AssessmentContainer.propTypes = {
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
   testletConfig: PropTypes.object,
-  test: PropTypes.object
+  test: PropTypes.object,
+  playerSkinType: PropTypes.string
 };
 
 AssessmentContainer.defaultProps = {
@@ -268,6 +272,7 @@ const enhance = compose(
       title: state.test.title,
       docUrl: state.test.docUrl,
       testType: state.test.testType,
+      playerSkinType: state.test.playerSkinType,
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),

@@ -10,7 +10,6 @@ import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
@@ -56,6 +55,7 @@ import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
 import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
+import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -187,7 +187,7 @@ class AssessmentPlayerDefault extends React.Component {
   handleScratchToolChange = value => () => {
     const { scratchpadData, updateScratchPad } = this.props;
     const { activeMode, deleteMode } = scratchpadData;
-    let data = {};
+    const data = {};
 
     if (value === "deleteMode") {
       data.deleteMode = !deleteMode;
@@ -316,7 +316,9 @@ class AssessmentPlayerDefault extends React.Component {
       showTools = true,
       showScratchPad,
       scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode },
-      passage
+      passage,
+      defaultAP,
+      playerSkinType
     } = this.props;
     const {
       testItemState,
@@ -435,7 +437,48 @@ class AssessmentPlayerDefault extends React.Component {
        */
       <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel, twoColLayout: {} }}>
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
-          {scratchPadMode && (!previewPlayer || showTools) && (
+          <AssessmentPlayerSkinWrapper
+            title={this.props.title}
+            LCBPreviewModal={LCBPreviewModal}
+            headerHeight={headerHeight}
+            isMobile={isMobile}
+            key={currentItem}
+            currentItem={currentItem}
+            gotoQuestion={gotoQuestion}
+            options={dropdownOptions}
+            bookmarks={bookmarksInOrder}
+            skipped={skippedInOrder}
+            dropdownStyle={navZoomStyle}
+            zoomLevel={headerZoom}
+            overlayStyle={navZoomStyle}
+            disabled={isFirst()}
+            moveToPrev={moveToPrev}
+            moveToNext={moveToNext}
+            showSettingIcon={showSettingIcon}
+            answerChecksUsedForItem={answerChecksUsedForItem}
+            settings={settings}
+            items={items}
+            isNonAutoGradable={isNonAutoGradable}
+            checkAnswer={() => this.changeTabItemState("check")}
+            toggleBookmark={() => toggleBookmark(item._id)}
+            isBookmarked={isBookmarked}
+            handletoggleHints={this.showHideHints}
+            onClickSetting={() => {
+              this.setState({ isToolbarModalVisible: true });
+            }}
+            calcBrands={calcBrands}
+            tool={currentToolMode}
+            changeCaculateMode={this.handleModeCaculate}
+            changeTool={this.changeTool}
+            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            previewPlayer={previewPlayer}
+            headerStyleWidthZoom={headerStyleWidthZoom}
+            playerSkinType={playerSkinType}
+            defaultAP={defaultAP}
+            previewPlayer={previewPlayer}
+            finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
+          >
+            {scratchPadMode && (!previewPlayer || showTools) && (
             <Tools
               onFillColorChange={this.onFillColorChange}
               fillColor={fillColor}
@@ -452,168 +495,59 @@ class AssessmentPlayerDefault extends React.Component {
               currentFont={currentFont}
             />
           )}
-          <FeaturesSwitch
-            inputFeatures="studentSettings"
-            actionOnInaccessible="hidden"
-            key="studentSettings"
-            groupId={currentGroupId}
-          >
-            <ToolbarModal
-              isVisible={isToolbarModalVisible}
-              onClose={() => this.closeToolbarModal()}
-              checkAnswer={() => this.changeTabItemState("check")}
-              windowWidth={windowWidth}
-              answerChecksUsedForItem={answerChecksUsedForItem}
-              settings={settings}
-              items={items}
-              currentItem={currentItem}
-              isNonAutoGradable={isNonAutoGradable}
-              toggleBookmark={() => toggleBookmark(item._id)}
-              isBookmarked={isBookmarked}
-              handletoggleHints={this.showHideHints}
-              changeTool={this.changeTool}
-            />
-          </FeaturesSwitch>
-          {!previewPlayer && (
+            <FeaturesSwitch
+              inputFeatures="studentSettings"
+              actionOnInaccessible="hidden"
+              key="studentSettings"
+              groupId={currentGroupId}
+            >
+              <ToolbarModal
+                isVisible={isToolbarModalVisible}
+                onClose={() => this.closeToolbarModal()}
+                checkAnswer={() => this.changeTabItemState("check")}
+                windowWidth={windowWidth}
+                answerChecksUsedForItem={answerChecksUsedForItem}
+                settings={settings}
+                items={items}
+                currentItem={currentItem}
+                isNonAutoGradable={isNonAutoGradable}
+                toggleBookmark={() => toggleBookmark(item._id)}
+                isBookmarked={isBookmarked}
+                handletoggleHints={this.showHideHints}
+                changeTool={this.changeTool}
+              />
+            </FeaturesSwitch>
+            {!previewPlayer && (
             <SavePauseModalMobile
               isVisible={isSavePauseModalVisible}
               onClose={this.closeSavePauseModal}
               onExitClick={this.openSubmitConfirmation}
             />
           )}
-          {!previewPlayer && (
+            {!previewPlayer && (
             <SubmitConfirmation
               isVisible={isSubmitConfirmationVisible}
               onClose={() => this.closeSubmitConfirmation()}
               finishTest={this.finishTest}
             />
           )}
-          <CustomAffix>
-            <Header LCBPreviewModal={LCBPreviewModal}>
-              <HeaderMainMenu skin style={{ height: headerHeight }}>
-                <FlexContainer style={headerStyleWidthZoom}>
-                  <HeaderWrapper justifyContent="space-between">
-                    <MainActionWrapper>
-                      <LogoCompact isMobile={isMobile} buttons={rightButtons} />
-                      {!LCBPreviewModal && (
-                        <>
-                          <QuestionSelectDropdown
-                            key={currentItem}
-                            currentItem={currentItem}
-                            gotoQuestion={gotoQuestion}
-                            options={dropdownOptions}
-                            bookmarks={bookmarksInOrder}
-                            skipped={skippedInOrder}
-                            dropdownStyle={navZoomStyle}
-                            zoomLevel={headerZoom}
-                          />
-                          <Tooltip placement="top" title="Previous" overlayStyle={navZoomStyle}>
-                            <ControlBtn.Back
-                              prev
-                              skin
-                              data-cy="prev"
-                              type="primary"
-                              icon="left"
-                              disabled={isFirst()}
-                              onClick={e => {
-                                moveToPrev();
-                                e.target.blur();
-                              }}
-                            />
-                          </Tooltip>
-                          <Tooltip placement="top" title="Next" overlayStyle={navZoomStyle}>
-                            <ControlBtn.Next
-                              next
-                              skin
-                              type="primary"
-                              data-cy="next"
-                              icon="right"
-                              onClick={e => {
-                                moveToNext();
-                                e.target.blur();
-                              }}
-                            >
-                              Next
-                            </ControlBtn.Next>
-                          </Tooltip>
-                        </>
-                      )}
-                    </MainActionWrapper>
-                    <MainActionWrapper>
-                      {!LCBPreviewModal && (
-                        <ToolTipContainer>
-                          {showSettingIcon && (
-                            <Tooltip placement="top" title="Tool" overlayStyle={navZoomStyle}>
-                              <ToolButton
-                                next
-                                skin
-                                size="large"
-                                type="primary"
-                                icon="tool"
-                                data-cy="setting"
-                                onClick={() => {
-                                  this.setState({ isToolbarModalVisible: true });
-                                }}
-                              />
-                            </Tooltip>
-                          )}
-                          {!showSettingIcon && (
-                            <TestButton
-                              answerChecksUsedForItem={answerChecksUsedForItem}
-                              settings={settings}
-                              items={items}
-                              currentItem={currentItem}
-                              isNonAutoGradable={isNonAutoGradable}
-                              checkAnswer={() => this.changeTabItemState("check")}
-                              toggleBookmark={() => toggleBookmark(item._id)}
-                              isBookmarked={isBookmarked}
-                              handletoggleHints={this.showHideHints}
-                            />
-                          )}
-                          {!showSettingIcon && (
-                            <ToolBar
-                              settings={settings}
-                              calcBrands={calcBrands}
-                              tool={currentToolMode}
-                              changeCaculateMode={this.handleModeCaculate}
-                              changeTool={this.changeTool}
-                              qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-                            />
-                          )}
-                        </ToolTipContainer>
-                      )}
-                    </MainActionWrapper>
-                    {!isMobile && rightButtons}
-                  </HeaderWrapper>
-                </FlexContainer>
-              </HeaderMainMenu>
-            </Header>
-          </CustomAffix>
-          <Main
-            skin
-            zoomed={isZoomApplied}
-            zoomLevel={zoomLevel}
-            headerHeight={headerHeight}
-            ref={this.scrollContainer}
-          >
-            {currentItem > 0 && (
-              <Nav.BackArrow onClick={moveToPrev}>
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </Nav.BackArrow>
-            )}
-            <Nav.NextArrow onClick={moveToNext}>
-              <FontAwesomeIcon icon={faAngleRight} />
-            </Nav.NextArrow>
-            {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
+            <Main
+              skin
+              zoomed={isZoomApplied}
+              zoomLevel={zoomLevel}
+              headerHeight={headerHeight}
+              ref={this.scrollContainer}
+            >
+              {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
                 Also, will use ScrollContext for auto-scroll on mobile */}
-            <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-              <SettingsModal />
-              <MainWrapper
-                responsiveWidth={responsiveWidth}
-                zoomLevel={zoomLevel}
-                hasCollapseButtons={hasCollapseButtons}
-              >
-                {testItemState === "" && (
+              <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
+                <SettingsModal />
+                <MainWrapper
+                  responsiveWidth={responsiveWidth}
+                  zoomLevel={zoomLevel}
+                  hasCollapseButtons={hasCollapseButtons}
+                >
+                  {testItemState === "" && (
                   <TestItemPreview
                     LCBPreviewModal={LCBPreviewModal}
                     cols={itemRows}
@@ -636,7 +570,7 @@ class AssessmentPlayerDefault extends React.Component {
                     history={scratchPad}
                   />
                 )}
-                {testItemState === "check" && (
+                  {testItemState === "check" && (
                   <TestItemPreview
                     cols={itemRows}
                     previewTab="check"
@@ -664,20 +598,21 @@ class AssessmentPlayerDefault extends React.Component {
                     history={scratchPad}
                   />
                 )}
-                {showHints && (
+                  {showHints && (
                   <StyledPaddingDiv>
                     <Hints questions={get(item, [`data`, `questions`], [])} />
                   </StyledPaddingDiv>
                 )}
-              </MainWrapper>
-            </ScrollContext.Provider>
-          </Main>
+                </MainWrapper>
+              </ScrollContext.Provider>
+            </Main>
 
-          <ReportIssuePopover item={item} />
+            <ReportIssuePopover item={item} />
 
-          {currentToolMode.indexOf(2) !== -1 && (
+            {currentToolMode.indexOf(2) !== -1 && (
             <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
           )}
+          </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
     );

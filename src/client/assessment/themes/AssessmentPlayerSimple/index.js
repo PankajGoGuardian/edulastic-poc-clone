@@ -30,6 +30,7 @@ import { saveUserWorkAction } from "../../actions/userWork";
 import { changePreviewAction } from "../../../author/src/actions/view";
 
 import { setUserAnswerAction } from "../../actions/answers";
+import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -257,11 +258,26 @@ class AssessmentPlayerSimple extends React.Component {
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
 
     const headerHeight = this.headerRef.current?.clientHeight || 0;
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
           <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
-            {scratchPadMode && !previewPlayer && (
+            <AssessmentPlayerSkinWrapper
+              {...this.props}
+              headerRef={this.headerRef}
+              theme={themeToPass}
+              dropdownOptions={dropdownOptions}
+              onOpenExitPopup={this.openExitPopup}
+              onshowHideHints={this.showHideHints}
+              checkAnswer={() => this.changeTabItemState("check")}
+              toggleToolsOpenStatus={this.toggleToolsOpenStatus}
+              toolsOpenStatus={toolsOpenStatus}
+              t={t}
+              previewPlayer={previewPlayer}
+              finishTest={this.openExitPopup}
+            >
+              {scratchPadMode && !previewPlayer && (
               <Tools
                 onFillColorChange={this.onFillColorChange}
                 fillColor={fillColor}
@@ -274,53 +290,42 @@ class AssessmentPlayerSimple extends React.Component {
                 onColorChange={this.handleColorChange}
               />
             )}
-            <SvgDraw
-              activeMode={activeMode}
-              scratchPadMode={scratchPadMode}
-              lineColor={currentColor}
-              deleteMode={deleteMode}
-              lineWidth={lineWidth}
-              fillColor={fillColor}
-              saveHistory={this.saveHistory("scratchpad")}
-              history={scratchPad}
-              height={`calc(100% - ${headerHeight}px)`}
-              top={`${headerHeight}px`}
-              position="fixed"
-            />
-            <PlayerHeader
-              headerRef={this.headerRef}
-              {...this.props}
-              theme={themeToPass}
-              dropdownOptions={dropdownOptions}
-              onOpenExitPopup={this.openExitPopup}
-              onshowHideHints={this.showHideHints}
-              checkAnswer={() => this.changeTabItemState("check")}
-              toggleToolsOpenStatus={this.toggleToolsOpenStatus}
-              toolsOpenStatus={toolsOpenStatus}
-              t={t}
-              previewPlayer={previewPlayer}
-            />
-            {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
-              <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
+              <SvgDraw
+                activeMode={activeMode}
+                scratchPadMode={scratchPadMode}
+                lineColor={currentColor}
+                deleteMode={deleteMode}
+                lineWidth={lineWidth}
+                fillColor={fillColor}
+                saveHistory={this.saveHistory("scratchpad")}
+                history={scratchPad}
+                height={`calc(100% - ${headerHeight}px)`}
+                top={`${headerHeight}px`}
+                position="fixed"
+              />
+            
+              {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
+                <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
             ) : null}
-            <PlayerMainContentArea
-              {...this.props}
-              theme={themeToPass}
-              previewTab={previewTab}
-              dropdownOptions={dropdownOptions}
-              items={items}
-              showHints={showHints}
-              settings={settings}
-              testItemState={testItemState}
-              t={t}
-              enableCrossAction={enableCrossAction}
-              unansweredQuestionCount={unansweredQuestionCount}
-              setHighlights={this.saveHistory("resourceId")}
-              setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
-              crossAction={crossAction || {}}
-              previousQuestionActivities={previousQuestionActivities}
-            />
-            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+              <PlayerMainContentArea
+                {...this.props}
+                theme={themeToPass}
+                previewTab={previewTab}
+                dropdownOptions={dropdownOptions}
+                items={items}
+                showHints={showHints}
+                settings={settings}
+                testItemState={testItemState}
+                t={t}
+                enableCrossAction={enableCrossAction}
+                unansweredQuestionCount={unansweredQuestionCount}
+                setHighlights={this.saveHistory("resourceId")}
+                setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
+                crossAction={crossAction || {}}
+                previousQuestionActivities={previousQuestionActivities}
+              />
+              <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+            </AssessmentPlayerSkinWrapper>
           </ScratchPadContext.Provider>
         </Container>
       </ThemeProvider>

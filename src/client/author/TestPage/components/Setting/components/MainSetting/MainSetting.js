@@ -46,6 +46,7 @@ import { getUserFeatures, getUserRole } from "../../../../../../student/Login/du
 import StandardProficiencyTable from "./StandardProficiencyTable";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 import PeformanceBand from "./PeformanceBand";
+import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
 
 const {
   settingCategories,
@@ -65,7 +66,8 @@ const {
   testContentVisibility: testContentVisibilityOptions,
   testContentVisibilityTypes,
   passwordPolicy: passwordPolicyValues,
-  passwordPolicyOptions
+  passwordPolicyOptions,
+  playerSkinTypes
 } = testContants;
 
 const { Option } = Select;
@@ -286,7 +288,8 @@ class MainSetting extends Component {
       subjects,
       performanceBand,
       standardGradingScale,
-      testContentVisibility = testContentVisibilityOptions.ALWAYS
+      testContentVisibility = testContentVisibilityOptions.ALWAYS,
+      playerSkinType
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -388,6 +391,28 @@ class MainSetting extends Component {
                         </Option>
                       ))}
                     </StyledSelect>
+                  </Body>
+                </Row>
+              </Block>
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("selectPlayerSkinType") ? (
+              <Block id="test-type" smallSize={isSmallSize}>
+                <Row>
+                  <Title>Student Player Skin</Title>
+                  <Body smallSize={isSmallSize}>
+                    <SelectInputStyled
+                      value={playerSkinType || playerSkinTypes.edulastic}
+                      disabled={!owner || !isEditable}
+                      onChange={this.updateTestData("playerSkinType")}
+                    >
+                      {Object.keys(playerSkinTypes).map(key => (
+                        <Option key={key} value={key}>
+                          {playerSkinTypes[key]}
+                        </Option>
+                      ))}
+                    </SelectInputStyled>
                   </Body>
                 </Row>
               </Block>

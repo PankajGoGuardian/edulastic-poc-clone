@@ -18,6 +18,7 @@ import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import WorksheetComponent from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
+import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 
 const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
 
@@ -144,7 +145,7 @@ class AssessmentPlayerDocBased extends React.Component {
     return (
       <ThemeProvider theme={themeToPass}>
         <Container style={{ paddingTop: "70px" }}>
-          <PlayerHeader
+          <AssessmentPlayerSkinWrapper
             {...this.props}
             theme={themeToPass}
             dropdownOptions={dropdownOptions}
@@ -159,8 +160,9 @@ class AssessmentPlayerDocBased extends React.Component {
             settings={settings}
             currentToolMode={currentToolMode}
             onChangeTool={this.onChangeTool}
-          />
-          {!loading && (
+            finishTest={this.openExitPopup}
+          >
+            {!loading && (
             <WorksheetComponent
               docUrl={docUrl}
               isAssessmentPlayer
@@ -176,14 +178,15 @@ class AssessmentPlayerDocBased extends React.Component {
               testMode
             />
           )}
-          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
-          {currentToolMode.calculator ? (
-            <CalculatorContainer
-              changeTool={() => this.onChangeTool("calculator")}
-              calculateMode={calculateMode}
-              calcBrands={calcBrands}
-            />
+            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+            {currentToolMode.calculator ? (
+              <CalculatorContainer
+                changeTool={() => this.onChangeTool("calculator")}
+                calculateMode={calculateMode}
+                calcBrands={calcBrands}
+              />
           ) : null}
+          </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
     );

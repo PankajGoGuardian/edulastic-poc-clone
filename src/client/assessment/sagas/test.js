@@ -188,8 +188,11 @@ function* loadTest({ payload }) {
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       passwordPolicy:
         testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE"
+      showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
+      testType: testActivity?.assignmentSettings?.testType,
+      playerSkinType: testActivity?.assignmentSettings?.playerSkinType
     };
+
     const answerCheckByItemId = {};
     (testActivity.questionActivities || []).map(item => {
       answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
@@ -328,13 +331,15 @@ function* loadTest({ payload }) {
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
+
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
         passages,
         items: testItems,
         title: test.title,
-        testType: test.testType,
+        testType: settings.testType || test.testType,
+        playerSkinType: settings.playerSkinType || test.playerSkinType,
         testletConfig: test.testletConfig,
         annotations: test.annotations,
         docUrl: test.docUrl,

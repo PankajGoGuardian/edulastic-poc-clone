@@ -401,6 +401,7 @@ class QuestionWrapper extends Component {
               item={data}
               qId={data.id}
               audioSrc={data.tts.titleAudioURL}
+              className="question-audio-controller"
             />
           ) : (
             ""

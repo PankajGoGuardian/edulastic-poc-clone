@@ -26,6 +26,7 @@ import PeformanceBand from "../../../TestPage/components/Setting/components/Main
 
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
+import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
@@ -158,14 +159,23 @@ const Settings = ({
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
         {forClassLevel ? (
-          <TestTypeSelector
-            userRole={userRole}
-            testType={assignmentSettings?.testType}
-            disabled
-            onAssignmentTypeChange={changeField("testType")}
-            fullwidth
-            showTestTypeOption
-          />
+          <>
+            <TestTypeSelector
+              userRole={userRole}
+              testType={assignmentSettings?.testType}
+              disabled
+              onAssignmentTypeChange={changeField("testType")}
+              fullwidth
+              showTestTypeOption
+            />
+            <PlayerSkinSelector
+              userRole={userRole}
+              playerSkinType={assignmentSettings?.playerSkinType}
+              disabled
+              onAssignmentTypeChange={changeField("playerSkinType")}
+              fullwidth
+            />
+          </>
         ) : null}
 
         {/* Mark as done */}
@@ -270,13 +280,13 @@ const Settings = ({
               {safeBrowser && (
                 <Password
                   disabled={forClassLevel}
-                  suffix={
+                  suffix={(
                     <Icon
                       type={showPassword ? "eye-invisible" : "eye"}
                       theme="filled"
                       onClick={() => setShowSebPassword(prevState => !prevState)}
                     />
-                  }
+                  )}
                   onChange={e => overRideSettings("sebPassword", e.target.value)}
                   size="large"
                   value={sebPassword}

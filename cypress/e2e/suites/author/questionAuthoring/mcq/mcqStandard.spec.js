@@ -10,7 +10,9 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
+describe(`${FileHelper.getSpecName(
+  Cypress.spec.name
+)} >> Author "Multiple choice - standard" type question`, () => {
   const queData = {
     group: "Multiple Choice",
     queType: "Multiple choice - standard",
@@ -293,9 +295,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          cy.get("body")
-            .children()
-            .should("contain", "score");
+          preview.verifyScore("");
         });
 
       preview.getClear().click();
@@ -581,9 +581,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          cy.get("body")
-            .children()
-            .should("contain", "score");
+          preview.verifyScore("");
         });
 
       preview.getClear().click();
@@ -673,7 +671,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.verifyScore("1/1");
 
           cy.get("label.wrong").should("have.length", 0);
 
@@ -696,7 +694,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.wrong")
             .should("have.length", 1)
@@ -717,7 +715,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
@@ -779,7 +777,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.verifyScore("1/1");
 
           cy.get("label.wrong").should("have.length", 0);
 
@@ -804,7 +802,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.wrong")
             .should("have.length", 1)
@@ -827,7 +825,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
@@ -879,7 +877,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.verifyScore("1/1");
 
           cy.get("label.wrong").should("have.length", 0);
 
@@ -904,7 +902,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0.5/1");
+          preview.verifyScore("0.5/1");
 
           cy.get("label.wrong")
             .should("have.length", 1)
@@ -927,7 +925,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.right,label.wrong").should("have.length", 0);
         });
@@ -1011,7 +1009,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.verifyScore("1/1");
         });
 
       preview
@@ -1028,7 +1026,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+          preview.verifyScore("0/1");
 
           cy.get("label.wrong").should("have.length", 1);
 
@@ -1191,7 +1189,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 2/8");
+          preview.verifyScore("2/8");
 
           cy.get("label.wrong").should("have.length", 1);
 

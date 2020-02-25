@@ -88,6 +88,15 @@ const fetchStudentsByGroupId = data =>
     })
     .then(({ data }) => data);
 
+const dropPlaylist = data =>
+  api
+    .callApi({
+      url: `/user-playlist-activity/drop-playlist`,
+      method: "post",
+      data
+    })
+    .then(({ data }) => data);
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -98,5 +107,6 @@ export default {
   addCoTeacher,
   bulkUpdateClasses,
   archiveGroup,
-  fetchStudentsByGroupId
+  fetchStudentsByGroupId,
+  dropPlaylist
 };

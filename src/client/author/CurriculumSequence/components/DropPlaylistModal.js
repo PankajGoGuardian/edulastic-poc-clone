@@ -1,32 +1,32 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Modal, Button, Radio, Select } from "antd";
+import { Modal, Button, Radio, Select, message } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 import { lightGreySecondary, black, white, secondaryTextColor, titleColor, greyishBorder, themeColor } from "@edulastic/colors";
-import { fetchClassAndStudentListAction } from "../ducks";
+import { fetchClassListAction, fetchStudentListAction, dropPlaylistAction } from "../ducks";
 
 
-const getFooterComponent = props => (
+const getFooterComponent = ({ dropPlaylist }) => (
   <FlexContainer width="450px">
-    <ThemeButton onClick={() => { }} inverse>
-            DONE
+    <ThemeButton onClick={dropPlaylist} inverse>
+      DONE
     </ThemeButton>
   </FlexContainer>
 );
 
 const DroppedItem = ({ onDelete, item }) => (
   <FlexContainer justifyContent="space-between" height="28px">
-    <ItemName>{item.value}</ItemName>
+    <ItemName>{item.name}</ItemName>
     <ActionWrapper>
       {
-                item.type === "class" ?
-                    (<IconWrapper fontSize="13"><i className="fa fa-users" aria-hidden="true" /></IconWrapper>) :
-                    (<IconWrapper fontSize="13"> <i className="fa fa-user" aria-hidden="true" /></IconWrapper>)
-            }
+        item.type === "class" ?
+          (<IconWrapper fontSize="13" title="CLASS LEVEL ACCESS"><i className="fa fa-users" aria-hidden="true" /></IconWrapper>) :
+          (<IconWrapper fontSize="13" title="STUDENT LEVEL ACCESS"> <i className="fa fa-user" aria-hidden="true" /></IconWrapper>)
+      }
       <IconWrapper
         fontSize="16"
         onClick={() => onDelete(item)}
@@ -41,122 +41,148 @@ const DroppedItem = ({ onDelete, item }) => (
 
 const DropPlaylistModal = props => {
 
-    const {
-        visible = false,
-        closeModal,
-        dropPlaylistSource: { classList = [], studentList = [] } = {},
-        districtId,
-        fetchClassAndStudentListAction
-    } = props;
+  const {
+    visible = false,
+    closeModal,
+    dropPlaylistSource: {
+      classList = [],
+      studentList = []
+    } = {},
+    districtId,
+    fetchClassListAction,
+    fetchStudentListAction,
+    dropPlaylistAction,
+    destinationCurriculumSequence: {
+      _id,
+      title,
+      description
+    } = {}
+  } = props;
 
-    useEffect(() => {
-        if (isEmpty(classList) || isEmpty(studentList)) fetchClassAndStudentListAction(districtId);
-    }, []);
+  useEffect(() => {
+    if (isEmpty(classList)) fetchClassListAction(districtId);
+  }, []);
 
-    const [searchSource, setSearchSource] = useState("byClass");
-    const [addedStudent, setAddedStudent] = useState([]);
-    const [removedStudent, setRemovedStudent] = useState([]);
-    const [addedClass, setAddedClass] = useState([]);
-    const [removedClass, setRemovedClass] = useState([]);
+  const [searchSource, setSearchSource] = useState("byClass");
+  const [addedStudent, setAddedStudent] = useState([]);
+  const [removedStudent, setRemovedStudent] = useState([]);
+  const [addedClass, setAddedClass] = useState([]);
+  const [removedClass, setRemovedClass] = useState([]);
 
-    const changeSearchSource = e => setSearchSource(e.target.value);
+  const changeSearchSource = e => setSearchSource(e.target.value);
 
-    const addedClassIds = addedClass.map(y => y.id);
-    const addedStudentIds = addedStudent.map(y => y.id);
 
-    const OPTIONS = searchSource === "byClass" ? classList.filter(x => !addedClassIds.includes(x.classId)) : studentList.filter(x => !addedStudentIds.includes(x.studentId));
-
-    const addedData = [...addedClass, ...addedStudent];
-
-    const handleSearchChange = (value, option) => {
-        if (searchSource === "byClass") {
-            setAddedClass(prev => prev.concat({ id: option[0].key, value, type: "class" }));
-            setRemovedClass(prev => prev.filter(x => x.id !== option[0].key));
-        } else {
-            setAddedStudent(prev => prev.concat({ id: option[0].key, value, type: "student" }));
-            setRemovedStudent(prev => prev.filter(x => x.id !== option[0].key));
-        }
+  const handleSearchChange = (value, option) => {
+    if (searchSource === "byClass") {
+      const studentIds = value.map(x => studentList.find(y => y.classId === x)?.id);
+      setAddedStudent(prev => prev.filter(x => !studentIds.includes(x.id)));
+      setRemovedClass(prev => addedClass.length > 0 && addedClass.length !== option.length ? prev.concat(addedClass[addedClass.length - 1]?.id) : prev);
+      setAddedClass(option.map(x => ({ id: x.key, name: x?.props?.children, type: "class" })));
+    } else {
+      const classIds = value.map(x => studentList.find(y => y.id === x)?.classId);
+      setAddedClass(prev => prev.filter(x => !classIds.includes(x.id)));
+      setRemovedStudent(prev => addedStudent.length > 0 && addedStudent.length !== option.length ? prev.concat(addedStudent[addedStudent.length - 1]?.id) : prev);
+      setAddedStudent(option.map(x => ({ id: x.key, name: x?.props?.children, type: "student", classId: x?.props?.classId })));
     }
+  }
 
-    const onItemDelete = item => {
-        if (item.type === "class") {
-            setAddedClass(prev => prev.filter(x => x.id !== item.id));
-            setRemovedClass(prev => prev.concat(item));
-        } else {
-            setAddedStudent(prev => prev.filter(x => x.id !== item.id));
-            setRemovedStudent(prev => prev.concat(item));
-        }
+  const onItemDelete = item => {
+    if (item.type === "class") {
+      setAddedClass(prev => prev.filter(x => x.id !== item.id));
+      setRemovedClass(prev => prev.concat(item.id));
+    } else {
+      setAddedStudent(prev => prev.filter(x => x.id !== item.id));
+      setRemovedStudent(prev => prev.concat(item.id));
     }
+  }
 
-    return (
-      <StyledPurchaseLicenseModal
-        visible={visible}
-        title={<h3 style={{ fontWeight: 700 }}>DropPlaylist</h3>}
-        onCancel={closeModal}
-        footer={[getFooterComponent()]}
-        centered
-      >
-        <>
-          <p>Dropping a playlist will let other teachers/students see the playlist and follow along.</p>
+  const dropPlaylist = () => {
+    const payload = {
+      playlistId: _id,
+      title,
+      description,
+      grantAccess: {
+        classList: addedClass,
+        studentList: addedStudent
+      },
+      revokeAccess: {
+        classList: removedClass,
+        studentList: removedStudent
+      }
+    }
+    if (dropPlaylistAction(payload)) {
+      message.success("DropPlaylist Successful");
+      closeModal();
+    }
+  }
 
-          <br />
-          <Title>CLASS/STUDENT</Title>
-          <Select
-            mode="multiple"
-            placeholder="Search by name"
-            value={[]}
-            onChange={(value, option) => handleSearchChange(value, option)}
-            getPopupContainer={node => node.parentNode}
-            style={{
-                        width: "100%",
-                        height: "40px",
-                        background: lightGreySecondary,
-                        border: `1px solid ${greyishBorder}`,
-                        lineHeight: "40px"
-                    }}
-            filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
-          >
-            {OPTIONS.map(item => (
-              <Select.Option
-                key={searchSource === "byClass" ? item.classId : item.studentId}
-                value={searchSource === "byClass" ? item.className : `${item.firstName || ""} ${item.lastName || ""}`}
-              >
-                {searchSource === "byClass" ? item.className : `${item.firstName || ""} ${item.lastName || ""}`}
-              </Select.Option>
-                    ))}
+  const addedSource = (searchSource === "byClass" ? addedClass : addedStudent);
+  const source = searchSource === "byClass" ? classList : studentList;
+  const addedData = [...addedClass, ...addedStudent];
 
-          </Select>
+  return (
+    <StyledPurchaseLicenseModal
+      visible={visible}
+      title={<h3 style={{ fontWeight: 700 }}>DropPlaylist</h3>}
+      onCancel={closeModal}
+      footer={[getFooterComponent({ dropPlaylist })]}
+      centered
+    >
+      <>
+        <p>Dropping a playlist will let other teachers/students see the playlist and follow along.</p>
 
-          <br /><br />
+        <br />
+        <Title>CLASS/STUDENT</Title>
+        <Select
+          placeholder={searchSource === "byClass" ? "SEARCH BY CLASS NAME" : "SEARCH BY STUDENT NAME"}
+          style={{ width: "100%" }}
+          mode="multiple"
+          cache="false"
+          value={addedSource.map(x => x.id)}
+          onChange={(value, option) => handleSearchChange(value, option)}
+          onSelect={classId => fetchStudentListAction({ districtId, classId })}
+          getPopupContainer={node => node.parentNode}
+          filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
+        >
+          {source.map(data => (
+            <Select.Option key={data.id} value={data.id} classId={data?.classId}>
+              {data.name}
+            </Select.Option>
+          ))}
+        </Select>
 
-          <Radio.Group onChange={changeSearchSource} value={searchSource}>
-            <Radio value="byClass">By Class</Radio>
-            <Radio value="byStudent">By Student</Radio>
-          </Radio.Group>
+        <br /><br />
 
+        <Radio.Group onChange={changeSearchSource} value={searchSource}>
+          <Radio value="byClass">By Class</Radio>
+          <Radio value="byStudent">By Student</Radio>
+        </Radio.Group>
 
-          <br /><br />
+        <br /><br />
 
-          <Title>WHO HAS DROP ACCESS</Title>
-          <DroppedList>
-            {
-                        addedData.map(x => <DroppedItem key={x.id} onDelete={onItemDelete} item={x} />)
-                    }
-          </DroppedList>
-        </>
+        <Title>WHO HAS DROP ACCESS</Title>
+        <DroppedList>
+          {
+            addedData.map(x => <DroppedItem key={x.id} onDelete={onItemDelete} item={x} />)
+          }
+        </DroppedList>
+      </>
 
-      </StyledPurchaseLicenseModal>
-    );
+    </StyledPurchaseLicenseModal>
+  );
 };
 
 export default connect(
-    state => ({
-        districtId: state?.user?.user?.districtId,
-        dropPlaylistSource: state?.curriculumSequence?.dropPlaylistSource
-    }),
-    {
-        fetchClassAndStudentListAction
-    }
+  state => ({
+    districtId: state?.user?.user?.districtId,
+    dropPlaylistSource: state?.curriculumSequence?.dropPlaylistSource,
+    destinationCurriculumSequence: state?.curriculumSequence?.destinationCurriculumSequence
+  }),
+  {
+    fetchClassListAction,
+    fetchStudentListAction,
+    dropPlaylistAction
+  }
 )(DropPlaylistModal);
 
 
@@ -206,6 +232,17 @@ const StyledPurchaseLicenseModal = styled(Modal)`
   .anticon, 
   .anticon-check, 
   .ant-select-selected-icon{
+    display: none;
+  }
+
+  .ant-modal-close-icon{
+    display: block;
+    margin-right: 30px;
+    margin-top: 25px;
+    transform: scale(1.2);
+  }
+  
+  .ant-select-selection__choice{
     display: none;
   }
 `;

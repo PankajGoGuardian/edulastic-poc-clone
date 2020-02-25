@@ -81,9 +81,11 @@ export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
   "[curriculum-sequence] approve or reject single playlist success";
 export const SET_PLAYLIST_DATA = "[curriculum-sequence] set playlist data";
-export const FETCH_CLASS_AND_STUDENT_LIST = "[curriculum-sequence] fetch class and student list";
-export const FETCH_CLASS_LIST_SUCCESS = "[curriculum-sequence] fetch class list success";
-export const FETCH_STUDENT_LIST_SUCCESS = "[curriculum-sequence] fetch student list success";
+export const FETCH_CLASS_LIST_BY_DISTRICT_ID = "[drop-playlist] fetch class list by district id";
+export const FETCH_CLASS_LIST_SUCCESS = "[drop-playlist] fetch class list success";
+export const FETCH_STUDENT_LIST_BY_GROUP_ID = "[drop-playlist] fetch student list by group id";
+export const FETCH_STUDENT_LIST_SUCCESS = "[drop-playlist] fetch student list success";
+export const DROP_PLAYLIST_ACTION = "[drop-playlist] drop playlist - grant/revoke access";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -112,9 +114,11 @@ export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST);
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
-export const fetchClassAndStudentListAction = createAction(FETCH_CLASS_AND_STUDENT_LIST);
+export const fetchClassListAction = createAction(FETCH_CLASS_LIST_BY_DISTRICT_ID);
 export const fetchClassListSuccess = createAction(FETCH_CLASS_LIST_SUCCESS);
+export const fetchStudentListAction = createAction(FETCH_STUDENT_LIST_BY_GROUP_ID);
 export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
+export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -636,19 +640,43 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
   }
 }
 
-function* fetchClassAndStudentsList({ payload }) {
+function* fetchClassListByDistrictId({ payload }) {
   try {
     const data = yield call(groupApi.fetchMyGroups);
     const classList = data.map(x => ({ classId: x._id, className: x.name }));
-    yield put(fetchClassListSuccess({ classList }));
-    const requestPayload = {
-      districtId: payload,
-      groupIds: classList.map(x => x.classId)
-    }
-    const studentList = yield call(groupApi.fetchStudentsByGroupId, requestPayload);
-    yield put(fetchStudentListSuccess({ studentList }));
+    yield put(fetchClassListSuccess({ classList: classList.map(x => ({ id: x.classId, name: x.className, type: "class" })) }));
   } catch (error) {
     message.error(error?.data?.message);
+    console.error(error);
+  }
+}
+
+function* fetchStudentListByGroupId({ payload }) {
+  try {
+    const requestPayload = {
+      districtId: payload.districtId,
+      groupIds: [payload.classId]
+    }
+    const studentList = yield call(groupApi.fetchStudentsByGroupId, requestPayload);
+    yield put(fetchStudentListSuccess({
+      studentList: studentList.map(x => ({
+        id: x.studentId, name: `${x?.firstName || ""} ${x?.lastName || ""}`,
+        type: "student",
+        classId: payload.classId
+      }))
+    }));
+  } catch (error) {
+    message.error(error?.data?.message);
+    console.error(error);
+  }
+}
+
+function* dropPlaylist({ payload }) {
+  try {
+    const result = yield call(groupApi.dropPlaylist, payload);
+    return result;
+  } catch (error) {
+    message.error("DropPlaylist is failing");
     console.error(error);
   }
 }
@@ -675,7 +703,9 @@ export function* watcherSaga() {
     yield takeLatest(ADD_CONTENT_TO_CURRICULUM_RESULT, moveContentToPlaylistSaga),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga),
     yield takeLatest(APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST, approveOrRejectSinglePlaylistSaga),
-    yield takeLatest(FETCH_CLASS_AND_STUDENT_LIST, fetchClassAndStudentsList)
+    yield takeLatest(FETCH_CLASS_LIST_BY_DISTRICT_ID, fetchClassListByDistrictId),
+    yield takeLatest(FETCH_STUDENT_LIST_BY_GROUP_ID, fetchStudentListByGroupId),
+    yield takeLatest(DROP_PLAYLIST_ACTION, dropPlaylist)
   ]);
 }
 
@@ -1127,9 +1157,9 @@ const removeUnitReducer = (state, { payload }) => {
  *
  */
 const loadAssignedReducer = (state, { payload }) => ({
-    ...state,
-    assigned: payload
-  });
+  ...state,
+  assigned: payload
+});
 
 /**
  * @param {import('./components/CurriculumSequence').ModuleData} unitItem
@@ -1189,7 +1219,7 @@ function updateStudentList(state, { payload }) {
     ...state,
     dropPlaylistSource: {
       ...state.dropPlaylistSource,
-      studentList: payload.studentList
+      studentList: state?.dropPlaylistSource?.studentList.concat(payload.studentList)
     }
   }
 }

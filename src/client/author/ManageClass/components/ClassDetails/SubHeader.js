@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { message } from "antd";
-import { Tooltip } from "../../../../common/utils/helpers";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import { TypeToConfirmModal } from "@edulastic/common";
-import { ContainerHeader, RightContent, AnchorLink, ClassCode, IconArchiveClass, ClassLink } from "./styled";
-import { scopes } from "../ClassListContainer/ClassCreatePage";
 import connect from "react-redux/lib/connect/connect";
-import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import withRouter from "react-router-dom/withRouter";
 import { compose } from "redux";
+import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
+import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import { scopes } from "../ClassListContainer/ClassCreatePage";
+import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink } from "./styled";
+import { Tooltip } from "../../../../common/utils/helpers";
 
 const SubHeader = ({
   name,
-  districtName,
-  institutionName,
   code,
   _id,
   active,
@@ -30,7 +29,6 @@ const SubHeader = ({
   history
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [modalInputVal, setModalInputVal] = useState("");
 
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });
@@ -47,9 +45,6 @@ const SubHeader = ({
   };
   const handleArchiveClassCancel = () => {
     setShowModal(false);
-  };
-  const handleModalInput = e => {
-    setModalInputVal(e.target.value);
   };
 
   // get assignments related to class
@@ -73,7 +68,7 @@ const SubHeader = ({
           (isUserGoogleLoggedIn ? (
             <i
               style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
-              title={"Sync with Google Classroom"}
+              title="Sync with Google Classroom"
               onClick={syncGCModal}
             >
               <IconGoogleClassroom width={22} height={22} />
@@ -84,7 +79,7 @@ const SubHeader = ({
               render={renderProps => (
                 <i
                   style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
-                  title={"Sync with Google Classroom"}
+                  title="Sync with Google Classroom"
                   onClick={renderProps.onClick}
                 >
                   <IconGoogleClassroom width={22} height={22} />
@@ -98,9 +93,9 @@ const SubHeader = ({
             />
           ) : null)}
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
-        {/* <StyledIcon type="user" fill={greenDark} />*/}
+        {/* <StyledIcon type="user" fill={greenDark} /> */}
         {active === 1 && !cleverId && (
-          <Tooltip placement="top" title={"Archive Class"}>
+          <Tooltip placement="top" title="Archive Class">
             <span onClick={() => setShowModal(true)}>
               <IconArchiveClass width={20} height={20} />
             </span>
@@ -110,10 +105,15 @@ const SubHeader = ({
         {showModal && (
           <TypeToConfirmModal
             modalVisible={showModal}
-            title="Archive Class(es)"
+            title="Archive Class"
             handleOnOkClick={handleArchiveClass}
             wordToBeTyped="ARCHIVE"
-            primaryLabel="Are you sure want to archive the following class(es)?"
+            primaryLabel="Are you sure want to archive the following class?"
+            secondaryLabel={
+              <p style={{ margin: "5px 0" }}>
+                <LightGreenSpan>{name}</LightGreenSpan>
+              </p>
+            }
             closeModal={handleArchiveClassCancel}
             okButtonText="Archive"
           />
@@ -128,15 +128,11 @@ const SubHeader = ({
 
 SubHeader.propTypes = {
   name: PropTypes.string,
-  institutionName: PropTypes.string,
-  districtName: PropTypes.string,
   code: PropTypes.string
 };
 
 SubHeader.defaultProps = {
   name: "",
-  institutionName: "",
-  districtName: "",
   code: ""
 };
 

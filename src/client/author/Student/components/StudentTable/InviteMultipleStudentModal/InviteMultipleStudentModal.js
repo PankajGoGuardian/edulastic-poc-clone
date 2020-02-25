@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Form, Row, Col, Select, Tabs, Input } from "antd";
+import { Form, Row, Col, Select } from "antd";
 import { get } from "lodash";
 import { userApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
+import { IconClose, IconCorrect } from "@edulastic/icons";
+import { withNamespaces } from "react-i18next";
+import { compose } from "redux";
 import {
   StyledTextArea,
   PlaceHolderText,
@@ -25,11 +28,7 @@ import {
   AddBulkUserPrimaryTextContainer,
   IconSwap
 } from "./styled";
-import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 import { ModalFormItem } from "../AddStudentModal/styled";
-import { IconClose, IconCorrect } from "@edulastic/icons";
-import { withNamespaces } from "react-i18next";
-import { compose } from "redux";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
@@ -37,7 +36,10 @@ const Item = ({ item, moveItem, isEnrolled }) => {
   };
 
   return (
-    <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
+    <ItemDiv
+      style={{ cursor: !isEnrolled && "pointer" }}
+      onClick={!isEnrolled ? handleClick : null}
+    >
       <Text>
         {item.firstName} {item.lastName}
       </Text>
@@ -52,7 +54,7 @@ const Item = ({ item, moveItem, isEnrolled }) => {
 };
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 class InviteMultipleStudentModal extends Component {
   constructor(props) {
@@ -70,12 +72,15 @@ class InviteMultipleStudentModal extends Component {
   }
 
   onInviteStudents = () => {
-    this.props.form.validateFields((err, row) => {
+    const { form, inviteStudents } = this.props;
+    form.validateFields((err, row) => {
       if (!err) {
         const { curSel } = this.state;
-        const studentsList = row.students ? row.students.split(/;|\n/).filter(_o => _o.trim().length) : [];
+        const studentsList = row.students
+          ? row.students.split(/;|\n/).filter(_o => _o.trim().length)
+          : [];
         if (studentsList.length) {
-          this.props.inviteStudents({
+          inviteStudents({
             userDetails: studentsList,
             institutionId: row.institutionId,
             provider: curSel
@@ -104,21 +109,19 @@ class InviteMultipleStudentModal extends Component {
 
     if (isValidate) {
       callback();
-      return;
-    } else {
-      if (curSel === "google" || curSel === "mso") {
-        callback("Username should be in email format");
-      }
+    } else if (curSel === "google" || curSel === "mso") {
+      callback("Username should be in email format");
     }
   };
 
-  checkValidEmail(strEmail) {
-    var re1 = /^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/;
+  checkValidEmail = strEmail => {
+    const re1 = /^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/;
     return re1.test(String(strEmail).toLowerCase());
-  }
+  };
 
   onCloseModal = () => {
-    this.props.closeModal();
+    const { closeModal } = this.props;
+    closeModal();
   };
 
   handleChangeTextArea = e => {
@@ -127,22 +130,22 @@ class InviteMultipleStudentModal extends Component {
   };
 
   handleChange = value => {
-    const { setProvider } = this.props;
+    const { setProvider, form } = this.props;
     this.setState({ curSel: value });
     setProvider && setProvider(value);
     /**
      * when the type of provider changes we need to update their validation also
      */
-    const textValue = this.props.form.getFieldValue("students") || "";
+    const textValue = form.getFieldValue("students") || "";
     if (textValue.length) {
-      this.props.form.setFieldsValue({ students: this.props.form.getFieldValue("students") }, () => {
-        this.props.form.validateFields(["students"], { force: true });
+      form.setFieldsValue({ students: form.getFieldValue("students") }, () => {
+        form.validateFields(["students"], { force: true });
       });
     } else {
       /**
        * to remove the require field validator on provider type change
        */
-      this.props.form.setFields({
+      form.setFields({
         students: {
           error: null
         }
@@ -151,10 +154,10 @@ class InviteMultipleStudentModal extends Component {
   };
 
   handleSearch = async e => {
-    const districtId = this.props.userOrgId;
+    const { userOrgId } = this.props;
     const searchKey = e.target.value.trim();
     const searchData = {
-      districtId,
+      districtId: userOrgId,
       limit: 1000,
       page: 1,
       role: "student"
@@ -177,20 +180,18 @@ class InviteMultipleStudentModal extends Component {
   };
 
   moveItem = item => {
-    const email = item._source.email;
+    const { email } = item._source;
     const { allStudents, studentsToEnroll } = this.state;
     const inAllStudentsBox = allStudents.filter(std => std._source.email === email).length > 0;
     if (inAllStudentsBox) {
       const newAllStudents = allStudents.filter(std => std._source.email !== email);
       this.setState({
-        ...this.state,
         allStudents: newAllStudents,
         studentsToEnroll: [item, ...studentsToEnroll]
       });
     } else {
       const newStudentsToEnroll = studentsToEnroll.filter(std => std._source.email !== email);
       this.setState({
-        ...this.state,
         allStudents: [item, ...allStudents],
         studentsToEnroll: newStudentsToEnroll
       });
@@ -227,43 +228,48 @@ class InviteMultipleStudentModal extends Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     const {
       modalVisible,
-      setIsAddMultipleStudentsModal,
-      setinfoModelVisible,
-      setInfoModalData,
       orgData,
       studentsList,
       selectedClass,
-      loadStudents,
-      features,
       role,
       policy,
-      t
+      t,
+      form
     } = this.props;
-    const { googleUsernames = true, office365Usernames = true, firstNameAndLastName = true } = policy;
-    const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
-    const { classList = [], searchAndAddStudents = false, schools = [] } = orgData || {};
-    const isPremium = isFeatureAccessible({
-      features,
-      inputFeatures: "searchAndAddStudent",
-      groupId: selectedClass ? selectedClass._id : "",
-      groupList: classList
-    });
+    const { getFieldDecorator } = form;
+    const {
+      googleUsernames = true,
+      office365Usernames = true,
+      firstNameAndLastName = true
+    } = policy;
+    const {
+      placeHolderVisible,
+      curSel,
+      allStudents,
+      studentsToEnroll,
+      searchViewVisible
+    } = this.state;
+    const { searchAndAddStudents = false, schools = [] } = orgData || {};
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
             const isEnrolled =
-              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
-                .length > 0;
-            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
+              studentsList.filter(
+                student => student.email === item._source.email && student.enrollmentStatus == 1
+              ).length > 0;
+            return (
+              <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />
+            );
           })
         : null;
 
     const toEnrollLists =
       studentsToEnroll.length > 0
-        ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />)
+        ? studentsToEnroll.map(item => (
+          <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />
+          ))
         : null;
 
     let placeHolderComponent;
@@ -327,7 +333,7 @@ class InviteMultipleStudentModal extends Component {
         closable={false}
         centered
       >
-        <Row type={"flex"} justify={"space-between"}>
+        <Row type="flex" justify="space-between">
           {searchAndAddStudents && (
             <Col span={13}>
               <SearchTabButton
@@ -368,13 +374,13 @@ class InviteMultipleStudentModal extends Component {
             {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
               <Row type="flex" justify="space-between" align="middle">
                 <ColWrapper span={11}>
-                  <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
+                  <PerfectScrollbar>{allLists || <div />}</PerfectScrollbar>
                 </ColWrapper>
                 <Col span={2}>
                   <IconSwap type="swap" />
                 </Col>
                 <ColWrapper span={11}>
-                  <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
+                  <PerfectScrollbar>{toEnrollLists || <div />}</PerfectScrollbar>
                 </ColWrapper>
               </Row>
             )}
@@ -387,16 +393,20 @@ class InviteMultipleStudentModal extends Component {
               </AddBulkUserPrimaryTextContainer>
             </Row>
             <SelUserKindDiv>
-              <Col span={11}>{t("users.student.invitestudents.byname")}</Col>
-              <Col span={13}>
+              <Col span={8}>{t("users.student.invitestudents.byname")}</Col>
+              <Col span={16}>
                 <Select
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                   data-cy="studentType"
                   onChange={this.handleChange}
                   defaultValue="google"
                 >
-                  {googleUsernames && <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>}
-                  {office365Usernames && <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>}
+                  {googleUsernames && (
+                    <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>
+                  )}
+                  {office365Usernames && (
+                    <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>
+                  )}
                   {firstNameAndLastName && [
                     <Option value="fl">{t("users.student.invitestudents.fl")}</Option>,
                     <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
@@ -442,7 +452,10 @@ class InviteMultipleStudentModal extends Component {
                       ],
                       initialValue: defaultSchoolId
                     })(
-                      <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
+                      <Select
+                        getPopupContainer={triggerNode => triggerNode.parentNode}
+                        placeholder="Select school"
+                      >
                         {schools.map(school => (
                           <Option key={school._id} value={school._id}>
                             {school.name}
@@ -459,7 +472,9 @@ class InviteMultipleStudentModal extends Component {
 
         <ButtonsContainer gutter={5}>
           <Col span={7}>
-            <CancelButton onClick={this.onCloseModal}>{t("users.student.invitestudents.nocancel")}</CancelButton>
+            <CancelButton onClick={this.onCloseModal}>
+              {t("users.student.invitestudents.nocancel")}
+            </CancelButton>
           </Col>
           <Col span={7}>
             <OkButton

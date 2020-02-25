@@ -349,9 +349,9 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-          value: module.id,
-          label: module.name
-        }))
+        value: module.id,
+        label: module.name
+      }))
       : [];
 
     // TODO: change options2 to something more meaningful
@@ -420,26 +420,26 @@ class CurriculumSequence extends Component {
       : 0;
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.filter(m => {
-          if (m.data.length === 0) {
+        if (m.data.length === 0) {
+          return false;
+        }
+        for (const test of m.data) {
+          if (!test.assignments || test.assignments.length === 0) {
             return false;
           }
-          for (const test of m.data) {
-            if (!test.assignments || test.assignments.length === 0) {
+          for (const assignment of test.assignments) {
+            if (!assignment.class || assignment.class.length === 0) {
               return false;
             }
-            for (const assignment of test.assignments) {
-              if (!assignment.class || assignment.class.length === 0) {
+            for (const cs of assignment.class) {
+              if (cs.status !== "DONE") {
                 return false;
-              }
-              for (const cs of assignment.class) {
-                if (cs.status !== "DONE") {
-                  return false;
-                }
               }
             }
           }
-          return true;
-        })
+        }
+        return true;
+      }).map(x => x._id)
       : [];
     const modulesCompleted = modulesStatus.length;
     const playlistBreadcrumbData = [
@@ -657,8 +657,8 @@ class CurriculumSequence extends Component {
                           </SunHeaderInfoCardText>
                         </SunHeaderInfoCard>
                       ) : (
-                        ""
-                      )}
+                          ""
+                        )}
                       {subjects.length ? (
                         <SunHeaderInfoCard marginBottom="13px">
                           <BookIcon color={textColor} />
@@ -667,8 +667,8 @@ class CurriculumSequence extends Component {
                           </SunHeaderInfoCardText>
                         </SunHeaderInfoCard>
                       ) : (
-                        ""
-                      )}
+                          ""
+                        )}
                       {status && !isStudent && (
                         <StatusTag
                           style={{

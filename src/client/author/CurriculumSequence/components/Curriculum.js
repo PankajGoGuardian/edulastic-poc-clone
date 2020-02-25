@@ -64,7 +64,7 @@ const SortableItem = sortableElement(props => {
           module={moduleItem}
           moduleIndex={id}
           history={history}
-          moduleStatus={modulesStatus[id]}
+          moduleStatus={modulesStatus.includes(moduleItem._id)}
           padding={padding}
           onBeginDrag={onBeginDrag}
           handleRemove={handleRemove}

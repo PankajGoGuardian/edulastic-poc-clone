@@ -1,3 +1,4 @@
+/* eslint-disable import/no-duplicates */
 import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -10,7 +11,12 @@ import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext, Hints } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
+import { Row, Col, Layout, Button, Pagination } from "antd";
+import ItemDetailContext, {
+  COMPACT,
+  DEFAULT
+} from "@edulastic/common/src/contexts/ItemDetailContext";
+import { questionType } from "@edulastic/constants";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -48,7 +54,6 @@ import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
 import {
-  Content,
   ItemDetailWrapper,
   PreviewContent,
   ButtonClose,
@@ -65,8 +70,6 @@ import SettingsBar from "../SettingsBar";
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
-import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
-import { questionType } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
@@ -198,13 +201,27 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
+    const {
+      match,
+      history,
+      t,
+      changeView,
+      modalItemId,
+      navigateToPickupQuestionType,
+      isTestFlow,
+      rows
+    } = this.props;
+
     changeView("edit");
 
     if (modalItemId) {
       navigateToPickupQuestionType();
       return;
     }
+    const { widgets = [] } = rows[rowIndex];
+    const columnHasResource =
+      widgets.length > 0 && widgets.some(widget => widget.widgetType === "resource");
+
     history.push({
       pathname: isTestFlow
         ? `/author/tests/${match.params.testId}/createItem/${match.params.id}/pickup-questiontype`
@@ -214,7 +231,8 @@ class Container extends Component {
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: isTestFlow ? match.params.itemId : match.params.id
+        testItemId: isTestFlow ? match.params.itemId : match.params.id,
+        columnHasResource: rows.length > 1 && rowIndex === 0 && columnHasResource
       }
     });
   };
@@ -253,7 +271,7 @@ class Container extends Component {
     }
   };
 
-  handleEditWidget = (widget, rowIndex) => {
+  handleEditWidget = widget => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
     loadQuestion(widget, 0);
@@ -264,6 +282,7 @@ class Container extends Component {
     changeView("edit");
     loadQuestion(widget, rowIndex, true);
   };
+
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
@@ -323,7 +342,8 @@ class Container extends Component {
     const { rows, preview, questions, item: itemProps, passage, view } = this.props;
     const item = itemProps || {};
 
-    let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
+    // eslint-disable-next-line no-extra-boolean-cast
+    const allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
       <>
         <PreviewContent view={view}>
@@ -337,7 +357,7 @@ class Container extends Component {
             questions={questions}
             item={item}
             isAnswerBtnVisible={false}
-            page={"itemAuthoring"}
+            page="itemAuthoring"
           />
         </PreviewContent>
         {this.state.showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
@@ -365,10 +385,12 @@ class Container extends Component {
       const { _id: testItemId } = item;
       showPublishButton =
         isTestFlow &&
-        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || isEditable);
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) ||
+          isEditable);
     }
     const questionsType = rows && uniq(rows.flatMap(itm => itm.widgets.map(i => i.type)));
-    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
+    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn)
+      .length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
     return (
@@ -445,7 +467,9 @@ class Container extends Component {
     const testId = match.params.testId;
     const _id = passage.testItems[page - 1];
     history.push({
-      pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
+      pathname: isTestFlow
+        ? `/author/items/${_id}/item-detail/test/${testId}`
+        : `/author/items/${_id}/item-detail`,
       state: { resetView: false }
     });
   };
@@ -461,10 +485,18 @@ class Container extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("left")} left>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.handleCollapse("left")}
+            left
+          >
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("right")} right>
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.handleCollapse("right")}
+            right
+          >
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -503,7 +535,8 @@ class Container extends Component {
           )}
           {rows.map((row, i) => (
             <>
-              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
+              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) &&
+                this.renderCollapseButtons()}
               <ItemDetailRow
                 key={passage ? i + 1 : i}
                 row={row}
@@ -516,7 +549,9 @@ class Container extends Component {
                 windowWidth={windowWidth}
                 onDeleteWidget={this.handleDeleteWidget(i)}
                 onEditWidget={this.handleEditWidget}
-                onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                onEditTabTitle={(tabIndex, value) =>
+                  updateTabTitle({ rowIndex: i, tabIndex, value })
+                }
                 hideColumn={
                   (collapseLeft && !passageWithQuestions && i === 0) ||
                   (collapseRight && (i === 1 || passageWithQuestions))
@@ -625,7 +660,10 @@ class Container extends Component {
             </Button>
           ]}
         >
-          <p> You are about to remove the current item from the passage. This action cannot be undone.</p>
+          <p>
+            {" "}
+            You are about to remove the current item from the passage. This action cannot be undone.
+          </p>
         </ConfirmationModal>
         <Layout>
           {showSettings && (
@@ -689,7 +727,10 @@ class Container extends Component {
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  <SecondHeadBar
+                    breadCrumbQType={breadCrumbQType}
+                    breadcrumb={isTestFlow ? breadCrumb : undefined}
+                  >
                     {item.canAddMultipleItems && passage && view !== "metadata" && (
                       <PassageNavigation>
                         {passageTestItems.length > 1 && (
@@ -698,17 +739,26 @@ class Container extends Component {
                             <Pagination
                               total={passageTestItems.length}
                               pageSize={1}
-                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                              defaultCurrent={
+                                passageTestItems.findIndex(i => i === item.versionId) + 1
+                              }
                               onChange={this.goToItem}
                             />
                           </>
                         )}
-                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                        {((!!rows[0] && !!rows[0].widgets.length) ||
+                          passage.testItems.length > 1) && (
                           <AddRemoveButtonWrapper>
-                            <Button disabled={this.props.itemDeleting} onClick={this.handleRemoveItemRequest}>
+                            <Button
+                              disabled={this.props.itemDeleting}
+                              onClick={this.handleRemoveItemRequest}
+                            >
                               - ITEM
                             </Button>
-                            <Button disabled={this.props.itemDeleting} onClick={this.addItemToPassage}>
+                            <Button
+                              disabled={this.props.itemDeleting}
+                              onClick={this.addItemToPassage}
+                            >
                               + ITEM
                             </Button>
                           </AddRemoveButtonWrapper>

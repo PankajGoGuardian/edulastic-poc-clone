@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -31,7 +31,10 @@ import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
-import { convertItemToMultipartAction, convertItemToPassageWithQuestionsAction } from "../../../ItemDetail/ducks";
+import {
+  convertItemToMultipartAction,
+  convertItemToPassageWithQuestionsAction
+} from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -72,8 +75,18 @@ class Container extends Component {
       modalItemId,
       navigateToQuestionEdit,
       isTestFlow,
-      convertToPassageWithQuestions
+      convertToPassageWithQuestions,
+      selectedCategory
     } = this.props;
+
+    const { columnHasResource = false } = history.location?.state || {};
+
+    if (columnHasResource && !["rulers-calculators", "instruction"].includes(selectedCategory)) {
+      message.warning(
+        ` Please add instructions on the left and all the associated questions on the right.`
+      );
+      return;
+    }
 
     const { testId, itemId, id } = match.params;
 
@@ -178,7 +191,15 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { location, testName, modalItemId, navigateToItemDetail, toggleModalAction, testId, isTestFlow } = this.props;
+    const {
+      location,
+      testName,
+      modalItemId,
+      navigateToItemDetail,
+      toggleModalAction,
+      testId,
+      isTestFlow
+    } = this.props;
 
     if (isTestFlow) {
       const testPath = `/author/tests/${testId || "create"}`;
@@ -260,7 +281,11 @@ class Container extends Component {
             <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
             <AffixWrapper>
               <PerfectScrollbar>
-                <LeftMenuWrapper mode="inline" selectedKeys={[selectedCategory]} onClick={this.handleCategory}>
+                <LeftMenuWrapper
+                  mode="inline"
+                  selectedKeys={[selectedCategory]}
+                  onClick={this.handleCategory}
+                >
                   <Menu.Item key="multiple-choice">
                     <IconNewList />
                     {"Multiple Choice"}
@@ -349,7 +374,10 @@ class Container extends Component {
                 minHeight: "calc(100vh - 190px)"
               }}
             >
-              <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
+              <QuestionTypes
+                onSelectQuestionType={this.selectQuestionType}
+                questionType={selectedCategory}
+              />
             </PaddingDiv>
           </RightSide>
         </PickQuestionWrapper>

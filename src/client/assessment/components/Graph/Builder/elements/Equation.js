@@ -116,10 +116,11 @@ class LinkedList {
 }
 
 class Point {
-  constructor(x, y, lineTo) {
+  constructor(x, y, lineTo, test = false) {
     this.x = x;
     this.y = y;
     this.lineTo = lineTo;
+    this.test = test;
   }
 
   equals = p => equals(this.x, p.x, 1e-6) && equals(this.y, p.y, 1e-6);
@@ -251,24 +252,21 @@ class Implicit {
     let p = 0;
     let n = 0;
     let k = true;
+    let fin = true;
     for (let i = 0; i < 4; i++) {
-      if (!Number.isFinite(r.eval[i]) || Number.isNaN(r.eval[i])) {
-        k = false;
-        break;
+      if (!isFinite(r.eval[i])) {
+        fin = false;
       }
       if (r.eval[i] < 0.0) n++;
       else if (r.eval[i] > 0.0) p++;
       else z++;
     }
-    r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4 };
+    r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4, fin: fin };
   };
 
   interpolate = (p1, p2, fa, fb) => {
     const r = -fb / (fa - fb);
-    if (r >= 0 && r <= 1) {
-      return r * (p1 - p2) + p2;
-    }
-    return (p1 + p2) * 0.5;
+    return r * (p1 - p2) + p2;
   };
 
   createLine = (x1, y1, x2, y2) => {
@@ -280,10 +278,11 @@ class Implicit {
   oppSign = (x, y) => x * y < 0.0;
 
   abortList = () => {
+    console.log(this.openList);
     for (let i = 0; i < this.openList.length; i++) {
       this.segments.push(this.openList[i].start);
       this.segments = this.segments.concat(this.openList[i].points.toArray());
-      this.segments.push(this.openList[i].end);
+      //this.segments.push(this.openList[i].end);
     }
     this.openList = [];
   };
@@ -293,76 +292,188 @@ class Implicit {
     const zer = r.status.zero;
     const { neg } = r.status;
     const { pos } = r.status;
+    const { fin } = r.status;
     if (((zer + 1) | neg | pos) >= 4) {
       return EMPTY;
     }
 
-    const x1 = r.x1();
-    const x2 = r.x2();
-    const y1 = r.y1();
-    const y2 = r.y2();
+    let x1 = r.x1();
+    let x2 = r.x2();
+    let y1 = r.y1();
+    let y2 = r.y2();
     const tl = r.eval[0];
     const tr = r.eval[1];
     const br = r.eval[2];
     const bl = r.eval[3];
     let k = 0;
 
+    if (!isFinite(tl) || !isFinite(tr) || !isFinite(bl) || !isFinite(br)) {
+      if (
+        !isNaN(this.func(10, 10)) &&
+        !isNaN(this.func(-10, 10)) &&
+        !isNaN(this.func(10, -10)) &&
+        !isNaN(this.func(-10, -10))
+      ) {
+        return EMPTY;
+      }
+    }
+
+    var sign;
+    if (
+      !isNaN(this.func(10, 10)) &&
+      !isNaN(this.func(-10, 10)) &&
+      !isNaN(this.func(10, -10)) &&
+      !isNaN(this.func(-10, -10))
+    ) {
+      let value = this.func(10, 10) + this.func(-10, 10) + this.func(10, -10) + this.func(-10, -10);
+
+      if (this.oppSign(tl, tr) && Math.abs(this.func(this.interpolate(x1, x2, tl, tr), y1)) > 1) {
+        if ((y1 + y2) / 2 < 0) {
+          sign = -1;
+        } else if ((y1 + y2) / 2 > 0) {
+          sign = 1;
+        } else {
+          sign = 0;
+        }
+        if (this.func(10, 10) > 0) {
+          y1 = sign * 12;
+        } else {
+          y1 = (value * y1) / 3;
+        }
+      }
+
+      if (this.oppSign(br, bl) && Math.abs(this.func(this.interpolate(x1, x2, bl, br), y2)) > 1) {
+        if ((y1 + y2) / 2 < 0) {
+          sign = -1;
+        } else if ((y1 + y2) / 2 > 0) {
+          sign = 1;
+        } else {
+          sign = 0;
+        }
+
+        if (this.func(10, 10) > 0) {
+          y2 = sign * 12;
+        } else {
+          y2 = (value * y2) / 3;
+        }
+      }
+
+      if (this.oppSign(tr, br) && Math.abs(this.func(x2, this.interpolate(y1, y2, tr, br))) > 1) {
+        if (x1 + x2 < 0) {
+          sign = -1;
+        } else if (x1 + x2 > 0) {
+          sign = 1;
+        } else {
+          sign = 0;
+        }
+
+        if (this.func(10, 10) > 0) {
+          x2 = this.func(x2 * sign, y1 - y2) * sign;
+        } else {
+          x2 = (value * x2) / 3;
+        }
+      }
+
+      if (this.oppSign(bl, tl) && Math.abs(this.func(x1, this.interpolate(y1, y2, tl, bl))) > 1) {
+        if (x1 + x2 < 0) {
+          sign = -1;
+        } else if (x1 + x2 > 0) {
+          sign = 1;
+        } else {
+          sign = 0;
+        }
+
+        if (this.func(10, 10) > 0) {
+          x1 = this.func(x1 * sign, y1 - y2) * sign;
+        } else {
+          x1 = (value * x1) / 3;
+        }
+      }
+    } else {
+      var test;
+      if (this.oppSign(tl, tr)) test = this.func(this.interpolate(x1, x2, tl, tr), y1);
+      if (this.oppSign(tr, br)) test = this.func(x2, this.interpolate(y1, y2, tr, br));
+      if (this.oppSign(br, bl)) test = this.func(this.interpolate(x1, x2, bl, br), y2);
+      if (this.oppSign(bl, tl)) test = this.func(x1, this.interpolate(y1, y2, tl, bl));
+
+      if (test > 0.5 || test < -0.5) {
+        return EMPTY;
+      }
+    }
+
     switch (zer) {
       case 0:
-        //if (neg === pos && !this.oppSign(tl, br)) return T0101;
-
-        if (neg === pos && tl > 10) return T0101;
-        if (neg === pos && tr > 10) return T0101;
-        if (neg === pos && br > 10) return T0101;
-        if (neg === pos && bl > 10) return T0101;
-
-        if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0);
-        if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0);
-        if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0);
-        if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0);
-        return VALID;
-      case 1:
-        if (neg === 3 || pos === 3) {
-          if (tl === 0.0) return this.createLine(x1, y1, x1, y1);
-          if (tr === 0.0) return this.createLine(x2, y1, x2, y1);
-          if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
-          if (br === 0.0) return this.createLine(x2, y2, x2, y2);
-        }
-        if (tl === 0.0) {
-          if (this.oppSign(bl, br)) return this.createLine(x1, y1, this.interpolate(x1, x2, bl, br), y2);
-          if (this.oppSign(tr, br)) return this.createLine(x1, y1, x2, this.interpolate(y1, y1, tr, br));
-          return EMPTY;
-        }
-        if (tr === 0.0) {
-          if (this.oppSign(bl, br)) return this.createLine(this.interpolate(x1, x2, bl, br), y2, x2, y1);
-          if (this.oppSign(bl, tl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y1);
-          return EMPTY;
-        }
-        if (br === 0.0) {
-          if (this.oppSign(tl, tr)) return this.createLine(this.interpolate(x1, x2, tl, tr), y1, x2, y2);
-          if (this.oppSign(tl, bl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y2);
-          return EMPTY;
-        }
-        if (bl === 0.0) {
-          if (this.oppSign(tl, tr)) return this.createLine(x1, y2, this.interpolate(x1, x2, tl, tr), y1);
-          if (this.oppSign(tr, br)) return this.createLine(x1, y2, x2, this.interpolate(y1, y2, tr, br));
-          return EMPTY;
-        }
-        return EMPTY;
       case 2:
-        if (pos === 2 || neg === 2) {
-          if (tl === 0.0) {
-            if (tr === 0.0) return this.createLine(x1, y1, x2, y1);
-            if (bl === 0.0) return this.createLine(x1, y1, x1, y2);
-          } else if (br === 0.0) {
-            if (tr === 0.0) return this.createLine(x2, y1, x2, y2);
-            if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
+        if (sign == undefined) {
+          if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0);
+          if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0);
+          if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0);
+          if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0);
+          if (zer == 2) {
+            if (isNaN(tl) || isNaN(tr) || isNaN(bl) || isNaN(br)) {
+              const const1 = this.func(12, 12);
+              const const2 = this.func(-12, 12);
+              const const3 = this.func(12, -12);
+
+              let sign2;
+              if (const1 != const2 && const1 != const3) {
+                if (isNaN(const3)) {
+                  if (const1.toFixed(0) == const2.toFixed(0)) return EMPTY;
+                  if ((x1 + x2) / 2 > 0) sign2 = 1;
+                  else sign2 = -1;
+                  this.pts[k++] = new Point(sign2 * (12 + sign2 * br), (y1 + y2) / 2, k !== 0);
+                  this.pts[k++] = new Point(sign2 * (12 + sign2 * bl), (y1 + y2) / 2, k !== 0);
+                } else if (isNaN(const2)) {
+                  if (const1.toFixed(0) == const3.toFixed(0)) return EMPTY;
+                  if ((y1 + y2) / 2 > 0) sign2 = 1;
+                  else sign2 = -1;
+                  this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + sign2 * tr), k !== 0);
+                  this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + sign2 * br), k !== 0);
+                }
+              } else {
+                if (!isNaN(const2)) {
+                  if ((x1 + x2) / 2 > 0) sign2 = 1;
+                  else sign2 = -1;
+                  this.pts[k++] = new Point(sign2 * (12 + br), (y1 + y2) / 2, k !== 0);
+                  this.pts[k++] = new Point(sign2 * (12 + bl), (y1 + y2) / 2, k !== 0);
+                } else {
+                  if ((y1 + y2) / 2 > 0) sign2 = 1;
+                  else sign2 = -1;
+                  this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + tr), k !== 0);
+                  this.pts[k++] = new Point((x1 + x2) / 2, sign2 * (12 + br), k !== 0);
+                }
+              }
+              return VALID;
+            } else {
+              if (pos === 2 || neg === 2) {
+                if (tl === 0.0) {
+                  if (tr === 0.0) return this.createLine(x1, y1, x2, y1);
+                  if (bl === 0.0) return this.createLine(x1, y1, x1, y2);
+                } else if (br === 0.0) {
+                  if (tr === 0.0) return this.createLine(x2, y1, x2, y2);
+                  if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
+                }
+              } else {
+                if (tr === 0.0 && bl === 0.0) return this.createLine(x1, y2, x2, y1);
+                if (tl === 0.0 && br === 0.0) return this.createLine(x1, y1, x2, y2);
+              }
+              return EMPTY;
+            }
           }
+          return VALID;
         } else {
-          if (tr === 0.0 && bl === 0.0) return this.createLine(x1, y2, x2, y1);
-          if (tl === 0.0 && br === 0.0) return this.createLine(x1, y1, x2, y2);
+          if (isNaN(y1) || !isFinite(y1) || isNaN(y2) || !isFinite(y2)) {
+            return EMPTY;
+          }
+          if (isNaN(x1) || !isFinite(x1) || isNaN(x2) || !isFinite(x2)) {
+            return EMPTY;
+          }
+          if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0, true);
+          if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0, true);
+          if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0, true);
+          if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0, true);
         }
-        return EMPTY;
+        return VALID;
       default:
         return EMPTY;
     }
@@ -403,33 +514,20 @@ class Implicit {
       } else {
         this.openList.push(new PointList(this.pts[0], this.pts[1]));
       }
-      if (this.openList.length > this.listThreshold) {
-        this.abortList();
-      }
+      // if (this.openList.length > this.listThreshold) {
+      //   this.abortList();
+      // }
     }
     return cfg;
   };
 
   update = (x1, y1, x2, y2, px, py, fast) => {
-    x1 -= (0.25 * Math.PI) / px;
     if (fast) {
       this.sw = 8;
       this.sh = 8;
     } else {
-      let valW = Math.max(Math.abs(Math.round(x1)), Math.abs(Math.round(x2)));
-      let valH = Math.max(Math.abs(Math.round(y1)), Math.abs(Math.round(y2)));
-
-      let valW2 = Math.ceil(valW / 5);
-      let valH2 = Math.ceil(valH / 5);
-
-      let valW3 = Math.pow(2, 4 + valW2);
-      let valH3 = Math.pow(2, 4 + valH2);
-
-      valW3 = valW3 > 1000 ? 1000 : valW3;
-      valH3 = valH3 > 1000 ? 1000 : valH3;
-
-      this.sw = valH3;
-      this.sh = valW3;
+      this.sw = 128;
+      this.sh = 128;
     }
     if (this.sw === 0 || this.sh === 0) {
       return;
@@ -536,14 +634,12 @@ class Implicit {
       return;
     }
     this.buildStatus(r);
-    if (!r.status.empty) {
-      if (d >= this.plotDepth) {
-        if (this.append(r, d === MAX_DEPTH) === T0101 && d < MAX_DEPTH) {
-          this.makeTree(r, d + 1);
-        }
-      } else {
+    if (d >= 3) {
+      if (this.append(r) === T0101 && d < 5) {
         this.makeTree(r, d + 1);
       }
+    } else {
+      this.makeTree(r, d + 1);
     }
   };
 }

@@ -95,9 +95,6 @@ class Equations extends Component {
   handleAddEquation = () => {
     const { eqs, changedEqs, newEquation } = this.state;
 
-    console.log("newEquation");
-    console.log(newEquation);
-
     if (!newEquation) {
       return;
     }

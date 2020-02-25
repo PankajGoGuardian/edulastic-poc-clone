@@ -6,7 +6,13 @@ import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
-import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionCheckbox } from "./styled";
+import {
+  TestItemWrapper,
+  PreviewButton,
+  PointsInput,
+  PointsLabel,
+  QuestionCheckbox
+} from "./styled";
 import { getQuestionType } from "../../../../../dataUtils";
 
 const transformItemRow = ([row], qid) => [
@@ -51,18 +57,33 @@ export const SortableItem = ({
   /**
    * @type {{item:Object,question:Object}[]}
    */
-  let items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
+
+  let _questions = { ...questions };
+  const items = testItem.itemLevelScoring ? [{ item }] : [{ item: testItem.rows }];
+  // splitItems(item, testItem);
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
+    const passage = passagesKeyed[testItem.passageId];
+    if (passage) {
+      _questions = { ...questions, ...{ [passage.data[0].id]: passage.data[0] } };
+    }
   }
+
   return (
     <TestItemWrapper data-cy={metaInfoData.id}>
       {mobile ? (
         <FlexContainer flexDirection="column" alignItems="flex-start">
-          <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
+          <FlexContainer
+            justifyContent="space-between"
+            style={{ width: "100%", marginBottom: "15px" }}
+          >
             {isEditable && !collapseView && (
               <FlexContainer flexDirection="column" justifyContent="center">
-                <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
+                <QuestionCheckbox
+                  data-cy="queCheckbox"
+                  checked={selected.includes(indx)}
+                  onChange={handleCheck}
+                />
               </FlexContainer>
             )}
             <FlexContainer>
@@ -85,7 +106,13 @@ export const SortableItem = ({
           <FlexContainer maxWidth="100%">
             <AnswerContext.Provider value={{ isAnswerModifiable: false, hideAnswers: true }}>
               <TestItemPreview
-                style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", maxWidth: "100%" }}
+                style={{
+                  marginTop: -10,
+                  padding: 0,
+                  boxShadow: "none",
+                  display: "flex",
+                  maxWidth: "100%"
+                }}
                 cols={item}
                 metaData={metaInfoData.id}
                 preview="show"
@@ -109,8 +136,14 @@ export const SortableItem = ({
           >
             <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
               {isEditable && !collapseView && (
-                <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
-                  {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
+                <FlexContainer
+                  style={{ marginTop: 20, width: "5%" }}
+                  flexDirection="column"
+                  justifyContent="center"
+                >
+                  {isEditable && (
+                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                  )}
                 </FlexContainer>
               )}
               <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
@@ -127,7 +160,7 @@ export const SortableItem = ({
                   disableResponse
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
-                  questions={questions}
+                  questions={_questions}
                   windowWidth="100%"
                   isReviewTab
                   testItem
@@ -145,7 +178,9 @@ export const SortableItem = ({
                   onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                 />
               </FlexContainer>
-              {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+              {index === 0 && (
+                <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
+              )}
             </FlexContainer>
           </FlexContainer>
         ))

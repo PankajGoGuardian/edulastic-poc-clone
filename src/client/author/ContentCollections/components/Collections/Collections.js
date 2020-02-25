@@ -5,12 +5,13 @@ import ContentSubHeader from "../../../src/components/common/AdminSubHeader/Cont
 import { CollectionsTable } from "./CollectionsTable";
 import { PermissionsTable } from "./PermissionsTable";
 import { MainContainer, SubHeaderWrapper } from "../../../../common/styled";
-import { ImportButton, TablesWrapper } from "../../styled";
+import { ImportButton, TablesWrapper , StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import ImportContentModal from "../Modals/ImportContentModal";
 import AddCollectionModal from "../Modals/AddCollectionModal";
-import { StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
+
 import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
+
 const menuActive = { mainMenu: "Content", subMenu: "Collections" };
 
 const Collections = ({ history, user, manageTabLabel }) => {
@@ -63,7 +64,7 @@ const Collections = ({ history, user, manageTabLabel }) => {
         />
         {!!selectedCollection && <PermissionsTable selectedCollection={selectedCollection} />}
       </TablesWrapper>
-      {showImportModal && <ImportContentModal visible={showImportModal} handleResponse={handleImportModalResponse} />}
+      <ImportContentModal visible={showImportModal} handleResponse={handleImportModalResponse} />
       {showAddCollectionModal && (
         <AddCollectionModal
           visible={showAddCollectionModal}

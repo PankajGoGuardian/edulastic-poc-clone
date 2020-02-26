@@ -16,6 +16,7 @@ import {
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import memoizeOne from "memoize-one";
 import { scrollTo } from "@edulastic/common";
+import { message } from "antd";
 import { themes } from "../../../../student/themes";
 import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
@@ -31,7 +32,7 @@ const _scrollTo = qid => {
   // the position of all the elements changes when sticky bar is made sticky
   scrollTo(
     document.querySelector(`.question-container-id-${qid}`),
-    (document.querySelector(".lcb-student-sticky-bar") ?.offsetHeight + 10) * 2 || 0
+    (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0
   );
 };
 const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
@@ -111,9 +112,10 @@ class BarGraph extends Component {
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
       const filtered = _getAggregateByQuestion(testActivity, studentId);
-      const selectedTestActivityId = testActivity.find(x => x.studentId === studentId) ?.testActivityId;
+      const selectedTestActivityId = testActivity.find(x => x.studentId === studentId)?.testActivityId;
       if (filtered) {
-        if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse ?.testActivity ?._id) {
+        if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse?.testActivity?._id) {
+          // eslint-disable-next-line  prefer-destructuring
           itemsSummary = filtered.itemsSummary;
         } else {
           itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
@@ -123,17 +125,20 @@ class BarGraph extends Component {
           itemsSummary = itemsSummary.filter(x => {
             if (studentViewFilter === "correct" && x.correctNum > 0) {
               return true;
-            } if (studentViewFilter === "wrong" && x.wrongNum > 0) {
+            }
+            if (studentViewFilter === "wrong" && x.wrongNum > 0) {
               return true;
-            } if (studentViewFilter === "partial" && x.partialNum > 0) {
+            }
+            if (studentViewFilter === "partial" && x.partialNum > 0) {
               return true;
-            } if (studentViewFilter === "skipped" && x.skippedNum > 0) {
+            }
+            if (studentViewFilter === "skipped" && x.skippedNum > 0) {
               return true;
-            } if (studentViewFilter === "notGraded" && x.manualGradedNum > 0) {
+            }
+            if (studentViewFilter === "notGraded" && x.manualGradedNum > 0) {
               return true;
-            } 
-              return false;
-            
+            }
+            return false;
           });
         }
       }
@@ -144,7 +149,7 @@ class BarGraph extends Component {
     let maxAttemps = 0;
     let maxTimeSpent = 0;
     if (itemsSummary.length) {
-      chartData = itemsSummary.map((item, index) => {
+      chartData = itemsSummary.map(item => {
         if (item.attemptsNum > maxAttemps) {
           maxAttemps = item.attemptsNum;
         }
@@ -245,10 +250,11 @@ class BarGraph extends Component {
   };
 
   handleClick = (data, index) => {
-    if (this.props.isLoading) {
+    const { isLoading, studentview } = this.props;
+    if (isLoading) {
       return;
     }
-    if (this.props.studentview) {
+    if (studentview) {
       const { qid } = data;
       return _scrollTo(qid);
     }
@@ -293,6 +299,7 @@ class BarGraph extends Component {
           }}
         />
         <StyledChartNavButton
+          data-cy="lcbnextButton"
           type="primary"
           shape="circle"
           icon="caret-right"
@@ -322,32 +329,32 @@ class BarGraph extends Component {
                 padding={{ left: 20, right: 20 }}
                 cursor="pointer"
                 onClick={({ index }) => {
-                      this.handleClick(renderData[index], index);
-                    }}
+                  this.handleClick(renderData[index], index);
+                }}
               />
               <YAxis
                 domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}
                 yAxisId="left"
                 allowDecimals={false}
                 label={{
-                      value: "ATTEMPTS",
-                      dx: -10,
-                      angle: -90,
-                      fill: dropZoneTitleColor,
-                      fontSize: "10px"
-                    }}
+                  value: "ATTEMPTS",
+                  dx: -10,
+                  angle: -90,
+                  fill: dropZoneTitleColor,
+                  fontSize: "10px"
+                }}
               />
               <YAxis
                 yAxisId="right"
                 domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
                 allowDecimals={false}
                 label={{
-                      value: "AVG TIME (SECONDS)",
-                      angle: -90,
-                      dx: 20,
-                      fill: dropZoneTitleColor,
-                      fontSize: "10px"
-                    }}
+                  value: "AVG TIME (SECONDS)",
+                  angle: -90,
+                  dx: 20,
+                  fill: dropZoneTitleColor,
+                  fontSize: "10px"
+                }}
                 orientation="right"
                 ticks={ticks(0, maxTimeSpent + 10000, 10)}
                 tickFormatter={val => Math.round(val / 1000)}
@@ -410,7 +417,7 @@ class BarGraph extends Component {
 
               <Tooltip content={<StyledCustomTooltip />} cursor={false} />
             </ComposedChart>
-              )}
+          )}
         </ResponsiveContainer>
       </MainDiv>
     );

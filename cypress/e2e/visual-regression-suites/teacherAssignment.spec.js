@@ -31,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context("lcb page", () => {
-    const pageURL = "author/classboard/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
+    const pageURL = "author/classboard/5e4be3c32bf8c60007b637bf/5e4a9616823e850007661f3b";
 
     SCREEN_SIZES.forEach(size => {
       it(`'card view' when resolution is '${size}'`, () => {
@@ -48,6 +48,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.isPageScrollPresent().then(({ hasScroll }) => {
           if (hasScroll) cy.scrollPageAndMatchImageSnapshots();
         });
+      });
+
+      it(`'card view with next button' when resolution is '${size}'`, () => {
+        cy.setResolution(size); // set the screen resolution
+        cy.visit(`/${pageURL}`); // go to the required page usign url
+        cy.wait("@testdetail");
+        cy.get('[data-cy="lcbnextButton"]').click();
+        cy.matchImageSnapshotWithSize();
       });
 
       it(`'student view' when resolution is '${size}'`, () => {
@@ -71,6 +79,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         });
       });
 
+      it(`'student view with next button' when resolution is '${size}'`, () => {
+        cy.setResolution(size); // set the screen resolution
+        cy.visit(`/${pageURL}`); // go to the required page usign url
+        cy.wait("@testdetail");
+        cy.get('[data-cy="studentStatus"]')
+          .contains("Graded")
+          .should("be.visible")
+          .and("have.length.greaterThan", 0);
+
+        liveClassboardPage.clickOnStudentsTab();
+
+        cy.wait("@testactivity");
+        cy.get('[data-cy="lcbnextButton"]').click();
+        cy.matchImageSnapshotWithSize();
+      });
+
       it(`'question view' when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
@@ -82,7 +106,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
           .and("have.length.greaterThan", 0);
 
         liveClassboardPage.clickonQuestionsTab();
-        cy.wait("@item");
         cy.wait(500); // wait for the dom elements to render
         cy.matchImageSnapshotWithSize(); // take screenshot and compare
 
@@ -95,7 +118,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context("express grader page", () => {
-    const pageURL = "author/expressgrader/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
+    const pageURL = "author/expressgrader/5e4be3c32bf8c60007b637bf/5e4a9616823e850007661f3b";
 
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {
@@ -112,7 +135,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   });
 
   context("standard performance page", () => {
-    const pageURL = "author/standardsBasedReport/5de797a8ac526100084fc2f5/5de78c65d0a3db000774c1f6";
+    const pageURL = "author/standardsBasedReport/5e4be3c32bf8c60007b637bf/5e4a9616823e850007661f3b";
 
     SCREEN_SIZES.forEach(size => {
       it(`when resolution is '${size}'`, () => {

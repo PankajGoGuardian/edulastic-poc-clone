@@ -151,7 +151,7 @@ function* startAssignment({ payload }) {
     const assignmentsById = yield select(assignmentsSelector);
     const assignment = assignmentsById[assignmentId];
     const classIds = yield select(getClassIds);
-    const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
+    // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
@@ -200,7 +200,7 @@ function* resumeAssignment({ payload }) {
     const assignmentsById = yield select(assignmentsSelector);
     const assignment = assignmentsById[assignmentId];
     const classIds = yield select(getClassIds);
-    const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
+    // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));

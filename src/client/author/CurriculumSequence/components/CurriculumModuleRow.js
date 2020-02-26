@@ -7,6 +7,7 @@ import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Button, Menu, Dropdown, Icon, Modal, Row as AntRow, Col, message, Progress } from "antd";
+import { FaBars } from "react-icons/fa";
 import {
   mobileWidth,
   white,
@@ -30,7 +31,7 @@ import {
   IconMoreVertical,
   IconLeftArrow
 } from "@edulastic/icons";
-import { FaBars } from "react-icons/fa";
+import { testActivityStatus } from "@edulastic/constants";
 import { getUserRole } from "../../src/selectors/user";
 import {
   toggleCheckedUnitItemAction,
@@ -41,6 +42,8 @@ import Tags from "../../src/components/common/Tags";
 
 import AssessmentPlayer from "../../../assessment";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
+import { getClasses, getCurrentGroup } from "../../../student/Login/ducks";
+import { startAssignmentAction, resumeAssignmentAction } from "../../../student/Assignments/ducks";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { Tooltip } from "../../../common/utils/helpers";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
@@ -196,6 +199,29 @@ class ModuleRow extends Component {
       this.setState({ currentAssignmentId: newAssignmentIds });
     }
   };
+
+  processStudentAssignmentAction = (moduleData, assignmentRows) => {
+    let uta = moduleData.userTestActivities || {};
+    if (assignmentRows.length) {
+      const {classId: groupId, classList, startAssignment, resumeAssignment} = this.props;
+      const classIds = classList.map(item => item._id);
+      const { classId, testType, assignmentId } = assignmentRows.filter(ass => (ass.classId === groupId || classIds.includes(ass.classId)))[0];
+      const testId = uta.testId || moduleData.contentId;
+      
+      uta = { testId, classId, testType, assignmentId, taStatus: uta.status, testActivityId: uta._id };
+      
+      if (uta.taStatus === testActivityStatus.SUBMITTED) {
+        uta.text = "REVIEW";
+      } else if (uta.testActivityId) {
+        uta.text = "RESUME ASSIGNMENT";
+        uta.action = () => resumeAssignment({...uta});
+      } else {
+        uta.text = "START ASSIGNMENT";
+        uta.action = () => startAssignment({...uta});
+      }
+    }   
+    return uta;
+  }
 
   render() {
     const {
@@ -476,6 +502,9 @@ class ModuleRow extends Component {
                       );
                     });
 
+                    // process user test activity to get student assignment actions
+                    const uta = this.processStudentAssignmentAction(moduleData, assignmentRows);
+
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item onClick={() => assignTest(_id, moduleData.contentId)}>
@@ -680,14 +709,20 @@ class ModuleRow extends Component {
                                 </StyledCol>
                               ) : (
                                 <StyledCol span={6} justify="flex-end">
-                                  <AssignmentButton assigned={false}>
-                                    <Button
-                                      onClick={() => {/* TODO: Assign apt function based on the status shown */}}
-                                    >
-                                      {/* TODO: Status for Students => Graded / Not started / In progress / Review */}
-                                      {dummyData.moduleData.statusForStudent}
-                                    </Button>
-                                  </AssignmentButton>
+                                  { uta.taStatus === testActivityStatus.SUBMITTED ? (
+                                    <StyledLink to={`/home/class/${uta.classId}/test/${uta.testId}/testActivityReport/${uta.testActivityId}`}>
+                                      {uta.text}
+                                    </StyledLink>
+                                  ) : (
+                                    <AssignmentButton assigned={false}>
+                                      <Button
+                                        onClick={uta.action}
+                                      >
+                                        {uta.text}
+                                      </Button>
+                                    </AssignmentButton>
+                                  )}
+                                  
                                 </StyledCol>
                               )}
                             </AntRow>
@@ -712,6 +747,7 @@ class ModuleRow extends Component {
                                     {assignment?.name}
                                   </StyledLabel>
                                 </Tooltip>
+
                                 <StyledTag
                                   textColor={greenDark}
                                   bgColor={lightGreen6}
@@ -722,6 +758,7 @@ class ModuleRow extends Component {
                                 >
                                   {assignment?.testType.toUpperCase()}
                                 </StyledTag>
+
                                 { assignment?.status && (
                                   <StyledTag
                                     textColor={white}
@@ -733,15 +770,12 @@ class ModuleRow extends Component {
                                   </StyledTag>
                                 )}
 
-                                {/* TODO: Fix the count data shown for each assignment row */}
-                                {assignment?.submittedCount && (
-                                  <StyledLabel
-                                    fontStyle="14px/19px Open Sans"
-                                    textColor={titleColor}
-                                  >
-                                    {`Submitted ${assignment?.submittedCount} of ${assignment?.assignedCount}`}
-                                  </StyledLabel>
-                                )}
+                                <StyledLabel
+                                  fontStyle="14px/19px Open Sans"
+                                  textColor={titleColor}
+                                >
+                                  {`Submitted ${assignment?.submittedCount || 0} of ${assignment?.assignedCount || 0}`}
+                                </StyledLabel>
                                 
                                 {/* TODO: Display percentage completion for each assignment row */}
                                 {assignment?.percentage && (
@@ -1029,16 +1063,35 @@ const ModuleTitleWrapper = styled.div`
   }
 `;
 
+const StyledLink = styled(Link)`
+  min-width: 121px;
+  border-radius: 4px;
+  height: 24px;
+  color: ${lightGreen5};
+  border: 1px solid ${lightGreen5};
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 9px/13px Open Sans;
+  letter-spacing: 0.17px;
+  font-weight: 600;
+  &:hover {
+    background-color: ${lightGreen5};
+    color: white;
+    fill: white;
+  }
+`;
+
 export const AssignmentButton = styled.div`
   min-width: 121px;
   .ant-btn {
     color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-    border-color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
+    border: 1px solid ${lightGreen5};
     background-color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
     min-width: 121px;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(201, 208, 219, 0.5);
     margin: ${({ margin }) => margin};
 
     svg {
@@ -1179,13 +1232,17 @@ const enhance = compose(
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
-      isStudent: getUserRole({ user }) === "student"
+      isStudent: getUserRole({ user }) === "student",
+      classId: getCurrentGroup({ user }),
+      classList: getClasses({ user })
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
       removeItemFromUnit: removeTestFromModuleAction,
-      removeUnit: removeUnitAction
+      removeUnit: removeUnitAction,
+      startAssignment: startAssignmentAction,
+      resumeAssignment: resumeAssignmentAction
     }
   )
 );

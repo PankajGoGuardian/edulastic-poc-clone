@@ -117,7 +117,7 @@ Curriculum.propTypes = {
 const ModuleWrapper = styled.div`
   flex-grow: 1;
   width: 60%;
-  z-index: 1;
+  z-index: 0;
   margin-top: -1px;
 `;
 

@@ -599,21 +599,18 @@ class CurriculumSequence extends Component {
               <CurriculumHeaderButtons>
                 {(urlHasUseThis || features.isCurator) && !isStudent && (
                   <>
-                    <ShareButtonStyle data-cy="share" onClick={onShareClick}>
+                    <StyledButton
+                      width="45px"
+                      margin="0px 10px 0px 0px"
+                      data-cy="share"
+                      onClick={onShareClick}
+                    >
                       <IconShare color={lightGreen5} width={15} height={15} />
-                    </ShareButtonStyle>
+                    </StyledButton>
                     <HeaderButton onClick={this.openDropPlaylistModal}>
                       Drop Playlist
                     </HeaderButton>
                   </>
-                )}
-                {customize && urlHasUseThis && (
-                  <HeaderButton
-                    data-cy="save"
-                    onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
-                  >
-                    Customize
-                  </HeaderButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <HeaderButton data-cy="edit-playlist" onClick={handleEditClick}>
@@ -639,7 +636,7 @@ class CurriculumSequence extends Component {
             </MainHeader>
           )}
           <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-            <ContentContainer isStudent={isStudent}>
+            <ContentContainer urlHasUseThis={urlHasUseThis}>
               <SubTopBar>
                 <SubTopBarContainer active={isContentExpanded} mode={mode}>
                   <CurriculumSubHeaderRow>
@@ -661,6 +658,15 @@ class CurriculumSequence extends Component {
                           {subjects.filter(item => !!item).join(", ")}
                         </SubHeaderInfoCardText>
                       </SubHeaderInfoCard>
+                    )}
+                    {customize && urlHasUseThis && !isStudent && (
+                      <StyledButton
+                        width="135px"
+                        data-cy="save"
+                        onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
+                      >
+                        Customize
+                      </StyledButton>
                     )}
                   </CurriculumSubHeaderRow>
                 </SubTopBarContainer>
@@ -690,7 +696,7 @@ class CurriculumSequence extends Component {
                 )}
               </Wrapper>
             </ContentContainer>
-            {urlHasUseThis && isAuthor && (
+            {urlHasUseThis && (isAuthor || isStudent) && (
               <SummaryBlock>
                 <SummaryBlockTitle>Summary</SummaryBlockTitle>
                 <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
@@ -892,17 +898,21 @@ const HeaderButton = styled.div`
   }
 `;
 
-const ShareButtonStyle = styled.div`
-  margin-right: 10px !important;
-  height: 45px;
-  width: 45px;
+const StyledButton = styled.div`
+  margin: ${props => props.margin || "0px"};
+  height: ${props => props.height || "45px"};
+  min-width: ${props => props.width || "auto"};
   color: ${lightGreen5};
   display: flex;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
   align-items: center;
+  justify-content: center;
   background: white;
   border-radius: 4px;
   border: 1px solid ${lightGreen5};
   cursor: pointer;
+  text-transform: uppercase;
   svg {
     margin: auto;
   }
@@ -1036,7 +1046,6 @@ const SubTopBarContainer = styled.div`
   padding: 30px 45px;
   margin-bottom: 10px;
   margin-top: ${props => (props.mode ? "0px" : "20px")};
-  z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -1124,7 +1133,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 const ContentContainer = styled.div`
-  width: ${({ isStudent }) => (isStudent ? "100%" : "calc(100% - 335px)")};
+  width: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100% - 335px)" : "100%")};
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
   }

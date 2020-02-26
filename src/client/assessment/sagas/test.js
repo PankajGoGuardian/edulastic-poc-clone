@@ -1,4 +1,9 @@
-import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
+import {
+  testActivityApi,
+  testsApi,
+  assignmentApi,
+  attchmentApi as attachmentApi
+} from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
@@ -38,16 +43,18 @@ import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 
 const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
-const modifyTestDataForPreview = test => {
-  return produce(test, draft => {
+const modifyTestDataForPreview = test =>
+  produce(test, draft => {
     const { itemGroups } = draft;
     for (const group of itemGroups) {
-      if (group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && group.deliverItemsCount) {
+      if (
+        group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        group.deliverItemsCount
+      ) {
         group.items = group.items.filter((_, i) => i < group.deliverItemsCount);
       }
     }
   });
-};
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -105,21 +112,25 @@ function* loadTest({ payload }) {
     const groupId = groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses));
 
     // if !preivew, need to load previous responses as well!
-    const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
+    const getTestActivity = !preview
+      ? call(testActivityApi.getById, testActivityId, groupId)
+      : false;
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
           data: true,
           groupId,
           testActivityId
-        }) //when preview(author side) use normal non cached api
+        }) // when preview(author side) use normal non cached api
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
-      const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
+      const isFromSummary = yield select(state =>
+        get(state, "router.location.state.fromSummary", false)
+      );
       let passwordValidated =
-        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary;
+        testActivity.assignmentSettings.passwordPolicy ===
+          testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
@@ -129,10 +140,10 @@ function* loadTest({ payload }) {
       });
       while (!passwordValidated) {
         try {
-          const { payload } = yield take(GET_ASSIGNMENT_PASSWORD);
+          const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD);
           const response = yield call(assignmentApi.validateAssignmentPassword, {
             assignmentId: testActivity.testActivity.assignmentId,
-            password: payload,
+            password: _payload,
             groupId
           });
           if (response === "successful") {
@@ -158,13 +169,19 @@ function* loadTest({ payload }) {
     if (
       preview &&
       test.itemGroups.some(
-        (group = {}) => (group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT) & !group.items?.length
+        (group = {}) =>
+          group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT && !group.items?.length
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview });
     }
-    if (preview && test.itemGroups?.some(group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM)) {
-      //for all limited random group update items as per number of delivery items count
+    if (
+      preview &&
+      test.itemGroups?.some(
+        group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      )
+    ) {
+      // for all limited random group update items as per number of delivery items count
       test = modifyTestDataForPreview(test);
     }
     test.testItems = test.itemGroups.flatMap(itemGroup => itemGroup.items || []);
@@ -173,9 +190,12 @@ function* loadTest({ payload }) {
         testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
       testActivity.itemsToBeExcluded?.length
     ) {
-      //mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
-      test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
+      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      test.testItems = test.testItems.filter(
+        item => !testActivity.itemsToBeExcluded.includes(item._id)
+      );
     }
+    // eslint-disable-next-line prefer-const
     let { testItems, passages, testType } = test;
     const settings = {
       // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
@@ -184,17 +204,19 @@ function* loadTest({ payload }) {
         test.calcType === testContants.calculatorTypes.GRAPHING
           ? "DESMOS"
           : testActivity?.calculatorProvider,
-      calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
+      calcType:
+        testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+        testActivity?.assignmentSettings?.passwordPolicy ||
+        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
       showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
       testType: testActivity?.assignmentSettings?.testType,
       playerSkinType: testActivity?.assignmentSettings?.playerSkinType
     };
 
     const answerCheckByItemId = {};
-    (testActivity.questionActivities || []).map(item => {
+    (testActivity.questionActivities || []).forEach(item => {
       answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
     });
 
@@ -204,7 +226,11 @@ function* loadTest({ payload }) {
       let allPrevAnswers = {};
       let allEvaluation = {};
 
-      const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
+      const {
+        testActivity: activity,
+        questionActivities = [],
+        previousQuestionActivities = []
+      } = testActivity;
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
       const bookmarks = {};
@@ -259,7 +285,9 @@ function* loadTest({ payload }) {
       });
 
       const testItemIds = testItems.map(i => i._id);
-      const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId: testActivityId });
+      const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+        referrerId: testActivityId
+      });
 
       attachments.forEach(attachment => {
         scratchPadData[attachment.testItemId] = attachment.data;
@@ -270,9 +298,18 @@ function* loadTest({ payload }) {
           ...allAnswers,
           [item.qid]: item.userResponse
         };
+        if (item.scratchPad) {
+          scratchPadData[item.testItemId] = {
+            ...item.scratchPad,
+            ...scratchPadData[item.testItemId]
+          };
+        }
         // land on the testItems which is next to testItem that is attempted and has the highest index
         // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
-        if (testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId)) {
+        if (
+          testItemIds.indexOf(item.testItemId) >
+          testItemIds.indexOf(lastAttemptedQuestion.testItemId)
+        ) {
           lastAttemptedQuestion = item;
         }
       });
@@ -358,7 +395,10 @@ function* loadTest({ payload }) {
     });
   } catch (err) {
     if (err.status === 403 && preview) {
-      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+      yield call(
+        message.error,
+        "You can no longer use this as sharing access has been revoked by author."
+      );
       Modal.destroyAll();
     }
     yield put({

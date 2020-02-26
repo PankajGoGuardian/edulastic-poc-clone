@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import { Col, Row } from "antd";
-import { SummarySelect } from "../../../Summary/common/SummaryForm";
-import { MainTitle } from "../../../Summary/components/Sidebar/styled";
-
 import { Paper } from "@edulastic/common";
 import {
   lightGreySecondary,
@@ -13,9 +10,12 @@ import {
   extraDesktopWidth,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
+import { SummarySelect } from "../../../Summary/common/SummaryForm";
+import { MainTitle } from "../../../Summary/components/Sidebar/styled";
+
 
 export const Container = styled(Paper)`
-  padding: 16px;
+  padding: 15px 0px;
 
   @media (max-width: 1199px) {
     display: flex;

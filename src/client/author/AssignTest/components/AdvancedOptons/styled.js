@@ -15,9 +15,8 @@ export const OptionConationer = styled.div`
 
 export const InitOptions = styled.div`
   background: ${white};
-  box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 54px 50px;
+  padding: 40px;
 `;
 
 export const StyledRow = styled(Row)`

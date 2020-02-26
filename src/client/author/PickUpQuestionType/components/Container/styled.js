@@ -2,16 +2,18 @@ import styled from "styled-components";
 import {
   mobileWidth,
   desktopWidth,
-  mediumDesktopWidth,
   mobileWidthLarge,
   themeColor,
   textColor,
   boxShadowDefault,
-  white
+  white,
+  extraDesktopWidthMax,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
 import { Menu, Affix } from "antd";
+import { MainContentWrapper } from "@edulastic/common";
 
 export const Content = styled.div`
   display: flex;
@@ -26,23 +28,20 @@ export const Content = styled.div`
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 280px;
-  top: 140px;
-  padding: 20px 0px;
+  top: 96px;
+  padding: 30px 0px 10px;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    top: 96px;
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    top: 110px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    top: 140px;
   }
 `;
 
-export const PickQuestionWrapper = styled.div`
-  width: 100%;
+export const PickQuestionWrapper = styled(MainContentWrapper)`
   display: flex;
   justify-content: space-between;
-  padding: 126px 30px 30px;
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding-top: 80px;
-  }
 `;
 
 export const LeftSide = styled.div`
@@ -128,7 +127,6 @@ export const RightSide = styled.div`
   position: relative;
   width: calc(100% - 280px);
   margin-left: auto;
-  background: #f3f3f8;
   margin: 0px;
 
   .ant-breadcrumb {

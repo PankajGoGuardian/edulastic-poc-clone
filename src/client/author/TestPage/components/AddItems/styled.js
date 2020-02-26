@@ -5,7 +5,6 @@ import {
   secondaryTextColor,
   tabletWidth,
   white,
-  lightGreySecondary,
   themeColor
 } from "@edulastic/colors";
 import { Select } from "antd/lib/index";
@@ -34,10 +33,10 @@ export const QuestionsFound = styled.span`
 `;
 
 export const ItemsMenu = styled(FlexContainer)`
-  background: ${lightGreySecondary};
+  background: ${white};
   align-items: space-between;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 15px 30px;
 
   @media screen and (max-width: 993px) {
     padding: 8px 15px;

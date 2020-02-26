@@ -106,14 +106,15 @@ class Review extends PureComponent {
   componentDidMount() {
     this.containerRef?.current?.addEventListener("scroll", this.handleScroll);
     const { test, addItemsToAutoselectGroupsRequest, testItems } = this.props;
-    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
+    const hasAutoSelectItems = test.itemGroups.some(
+      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    );
     if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
     }
     this.setState({ items: testItems.slice(0, 10) });
   }
 
-  
   componentDidUpdate(prevProps, prevState) {
     const element = this.listWrapperRef?.current;
     const { testItems } = this.props;
@@ -303,7 +304,10 @@ class Review extends PureComponent {
 
       const { testItems } = this.props;
       const { isCollapse, items } = this.state;
-      if (element.scrollHeight - (element.offsetHeight + element.scrollTop) <= 400 && items.length < testItems.length) {
+      if (
+        element.scrollHeight - (element.offsetHeight + element.scrollTop) <= 400 &&
+        items.length < testItems.length
+      ) {
         this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
       }
     }
@@ -411,9 +415,9 @@ class Review extends PureComponent {
               </div>
             </Col>
           </Row>
-          <ReviewContentWrapper>
+          <ReviewContentWrapper gutter={30}>
             <ReviewLeftContainer lg={24} xl={18}>
-              <Paper padding="15px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
+              <Paper padding="15px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
                 {isCollapse ? (
                   <ItemsTable
                     items={items}

@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import {
   mainBgColor,
-  mobileWidthMax,
   tabletWidth,
   desktopWidth,
   smallDesktopWidth,
@@ -62,8 +61,6 @@ export const ReviewLeftContainer = styled(Col)`
 `;
 
 export const ReviewSummaryWrapper = styled(Col)`
-  padding-left: 20px;
-
   @media (max-width: 1199px) {
     order: 1;
     width: 100%;

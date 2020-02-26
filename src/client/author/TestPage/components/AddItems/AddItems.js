@@ -10,9 +10,11 @@ import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import { StyledButton, ItemsMenu, QuestionsFound, ItemsPagination } from "./styled";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import { getCreateItemModalVisibleSelector } from "../../../src/selectors/testItem";
+import { StyledButton, ItemsPagination } from "./styled";
+import {
+  getCurriculumsListSelector,
+  getStandardsListSelector
+} from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
@@ -49,16 +51,20 @@ import {
   Container,
   ListItems,
   Element,
-  SpinContainer,
   PaginationContainer,
   ContentWrapper,
   ScrollbarContainer,
   MobileFilterIcon
 } from "../../../ItemList/components/Container/styled";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import { getInterestedCurriculumsSelector, getUserId, getUserFeatures } from "../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getUserId,
+  getUserFeatures
+} from "../../../src/selectors/user";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
+import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -66,7 +72,6 @@ class AddItems extends PureComponent {
     loading: PropTypes.bool.isRequired,
     receiveTestItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    isEditable: PropTypes.bool,
     windowWidth: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -85,16 +90,7 @@ class AddItems extends PureComponent {
     clearDictStandards: PropTypes.func.isRequired,
     onSaveTestId: PropTypes.func.isRequired,
     createTestItem: PropTypes.func.isRequired,
-    createTestItemModalVisible: PropTypes.bool,
     gotoSummary: PropTypes.func.isRequired
-  };
-
-  static defaultProps = {
-    createTestItemModalVisible: false
-  };
-
-  state = {
-    questionCreateType: "Duplicate"
   };
 
   componentDidMount() {
@@ -119,7 +115,9 @@ class AddItems extends PureComponent {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
-      subject: selectedSubjects.length ? selectedSubjects[0] : sessionFilters?.subject || initSearch.subject,
+      subject: selectedSubjects.length
+        ? selectedSubjects[0]
+        : sessionFilters?.subject || initSearch.subject,
       grades: selectedGrades.length
         ? selectedGrades
         : sessionFilters?.grades?.length
@@ -232,7 +230,7 @@ class AddItems extends PureComponent {
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
-    } else if (fieldName === "subject") {
+    } if (fieldName === "subject") {
       clearDictStandards();
       updatedKeys = {
         ...search,
@@ -301,15 +299,15 @@ class AddItems extends PureComponent {
       selectedRows,
       gotoSummary,
       search,
-      setCurrentGroupIndex
+      setCurrentGroupIndex,
+      current
     } = this.props;
     if (items.length < 1) {
       return (
         <NoDataNotification
-          heading={"Items Not Available"}
-          description={
-            'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
-          }
+          heading="Items Not Available"
+          description='There are currently no items available for this filter. 
+          You can create new item by clicking the "CREATE ITEM" button.'
         />
       );
     }
@@ -328,12 +326,12 @@ class AddItems extends PureComponent {
         search={search}
         test={test}
         testItemsList={testItemsList}
-        current={this.props.current}
+        current={current}
         setDataAndSave={setDataAndSave}
         setTestItems={setTestItems}
         selectedRows={selectedRows}
         gotoSummary={gotoSummary}
-        page={"addItems"}
+        page="addItems"
         setCurrentGroupIndex={setCurrentGroupIndex}
       />
     ));
@@ -384,7 +382,9 @@ class AddItems extends PureComponent {
             <ContentWrapper borderRadius="0px" padding="0px">
               {loading && <Spin size="large" />}
               <ItemsMenu>
-                <QuestionsFound>{count} questions found</QuestionsFound>
+                <PaginationInfo>
+                  <span>{count}</span> QUESTIONS FOUND
+                </PaginationInfo>
                 <FlexContainer alignItems="center" justifyContent="space-between">
                   <span style={{ fontSize: "12px" }}>
                     {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
@@ -399,7 +399,12 @@ class AddItems extends PureComponent {
                     <span>Create new Item</span>
                   </StyledButton>
                   {(features.isCurator || features.isPublisherAuthor) && (
-                    <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
+                    <StyledButton
+                      data-cy="groupItem"
+                      type="secondary"
+                      size="large"
+                      onClick={gotoGroupItems}
+                    >
                       <IconItemGroup color={themeColor} width={15} height={15} />
                       <span>Group Items</span>
                     </StyledButton>
@@ -410,7 +415,9 @@ class AddItems extends PureComponent {
               {!loading && (
                 <ScrollbarContainer>
                   {this.renderItems()}
-                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
+                  {count > 10 && (
+                    <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+                  )}
                 </ScrollbarContainer>
               )}
             </ContentWrapper>
@@ -434,7 +441,6 @@ const enhance = compose(
       count: getTestsItemsCountSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: getUserId(state),
       testItemsList: getTestItemsSelector(state),

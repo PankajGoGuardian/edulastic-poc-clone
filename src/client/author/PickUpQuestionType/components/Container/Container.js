@@ -38,7 +38,6 @@ import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 import { setQuestionCategory, setQuestionTab } from "../../../src/actions/pickUpQuestion";
 import {
-  Content,
   LeftSide,
   RightSide,
   MenuTitle,
@@ -96,7 +95,8 @@ class Container extends Component {
     }
 
     // FIXME: Weird! connect not working properly. setQuestion not available as a prop
-    // TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
+    // TODO: found the issue because of an indirect circular dependency. Found all the
+    // possible locations and eventually need to be fixed all the circular dependency issues
 
     const question = {
       id: uuid(),
@@ -229,7 +229,7 @@ class Container extends Component {
     const { mobileViewShow, isShowCategories } = this.state;
 
     return (
-      <Content showMobileView={mobileViewShow}>
+      <div showMobileView={mobileViewShow}>
         <Header
           title="common.selectQuestionWidget"
           link={this.link}
@@ -347,9 +347,6 @@ class Container extends Component {
                 overflow: "auto",
                 height: "auto",
                 background: "#fff",
-                borderRadius: "10px",
-                padding: windowWidth > SMALL_DESKTOP_WIDTH ? "34px 25px" : "20px 15px 10px",
-                boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
                 minHeight: "calc(100vh - 190px)"
               }}
             >
@@ -435,7 +432,7 @@ class Container extends Component {
             </Menu>
           </StyledModalContainer>
         </StyledModal>
-      </Content>
+      </div>
     );
   }
 }

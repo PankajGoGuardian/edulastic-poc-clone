@@ -187,7 +187,7 @@ export const StyledCountText = styled.div`
 export const ItemsMenu = styled(FlexContainer)`
   align-items: space-between;
   justify-content: space-between;
-  padding: 20px;
+  padding: 20px 30px;
 
   @media screen and (max-width: ${desktopWidth}) {
     padding: 15px;

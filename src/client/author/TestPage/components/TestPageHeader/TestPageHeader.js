@@ -258,7 +258,7 @@ const TestPageHeader = ({
     window.open(`/author/printAssessment/${test?._id}`, "_blank");
   };
 
-  const HeadingSubContent = (
+  const headingSubContent = (
     <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
       {isPlaylist || editEnable ? "DRAFT" : getStatus(testStatus)}
     </TestStatus>
@@ -290,7 +290,7 @@ const TestPageHeader = ({
       {windowWidth > parseInt(desktopWidth, 10) ? (
         <MainHeader
           headingText={title || "Untitled Test"}
-          HeadingSubContent={HeadingSubContent}
+          headingSubContent={headingSubContent}
           flexDirection="column"
           alignItems="flex-start"
         >
@@ -553,7 +553,6 @@ TestPageHeader.propTypes = {
   onShare: PropTypes.func.isRequired,
   onEnableEdit: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  testId: PropTypes.string.isRequired,
   editEnable: PropTypes.bool.isRequired,
   onAssign: PropTypes.func.isRequired
 };

@@ -1,27 +1,37 @@
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { uniqueId } from "lodash";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import * as moment from "moment";
+
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
-  desktopWidth,
   greenSecondary,
-  greenThird,
-  largeDesktopWidth,
   mobileWidth,
   tabletWidth,
   themeColor,
-  white
+  white,
+  smallDesktopWidth,
+  desktopWidth,
+  largeDesktopWidth,
+  titleColor,
+  textColor as descriptionColor,
+  lightGreen5
 } from "@edulastic/colors";
+import {
+  IconShare,
+  IconGraduationCap,
+  IconBook,
+  IconTile
+} from "@edulastic/icons";
 import { FlexContainer, MainHeader } from "@edulastic/common";
-import { IconBook, IconGraduationCap, IconShare } from "@edulastic/icons";
-import { Button, Cascader, Icon, Input, Modal, Progress, Radio } from "antd";
-import { uniqueId } from "lodash";
-import * as moment from "moment";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
+import { Button, Cascader, Input, Modal, Progress, Radio } from "antd";
+
 import { getUserFeatures } from "../../../student/Login/ducks";
-import { getTestAuthorName } from "../../dataUtils";
+// import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
@@ -570,162 +580,89 @@ class CurriculumSequence extends Component {
               <Link to="/author/playlists">Go To Library</Link>
             </ModalFooter>
           </Modal>
-          {mode !== "embedded" && !isStudent && (
+          
+          { mode !== "embedded" && (
             <MainHeader
-              headingText={getTestAuthorName(destinationCurriculumSequence, collections)}
-              height={100}
-              justify="flex-start"
-            >
-              {!isPublisherUser && (
-                <Icon
-                  style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
-                  type={curriculumGuide ? "up" : "down"}
+              headingText={title}
+              headingSubContent={!isPublisherUser && (
+                <IconTile
+                  style={{ cursor: "pointer", marginLeft: "18px" }}
                   onClick={this.handleGuidePopup}
+                  width={18}
+                  height={18}
+                  color={themeColor}
                 />
               )}
+              titleMinWidth="100px"
+              justify="flex-start"
+            >
               <CurriculumHeaderButtons>
-                {/* {(urlHasUseThis || features.isCurator) && (
-                  <ShareButtonStyle>
-                    <Button type="default" onClick={onShareClick}>
-                      <ShareButtonIcon color={greenThird} width={20} height={20} />
-                      <ShareButtonText>SHARE</ShareButtonText>
-                    </Button>
-                  </ShareButtonStyle>
-                )} */}
+                {(urlHasUseThis || features.isCurator) && !isStudent && (
+                  <>
+                    <ShareButtonStyle data-cy="share" onClick={onShareClick}>
+                      <IconShare color={lightGreen5} width={15} height={15} />
+                    </ShareButtonStyle>
+                    <HeaderButton onClick={this.openDropPlaylistModal}>
+                      Drop Playlist
+                    </HeaderButton>
+                  </>
+                )}
                 {customize && urlHasUseThis && (
-                  <SaveButtonStyle>
-                    <Button
-                      data-cy="save"
-                      onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
-                    >
-                      <SaveButtonText>Customize</SaveButtonText>
-                    </Button>
-                  </SaveButtonStyle>
+                  <HeaderButton
+                    data-cy="save"
+                    onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
+                  >
+                    Customize
+                  </HeaderButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
-                  <SaveButtonStyle>
-                    <Button data-cy="edit-playlist" onClick={handleEditClick}>
-                      <SaveButtonText>Edit</SaveButtonText>
-                    </Button>
-                  </SaveButtonStyle>
+                  <HeaderButton data-cy="edit-playlist" onClick={handleEditClick}>
+                    Edit
+                  </HeaderButton>
                 )}
                 {showUseThisButton && (
-                  <SaveButtonStyle windowWidth={windowWidth}>
-                    <Button data-cy="use-this" onClick={handleUseThisClick}>
-                      <SaveButtonText>Use This</SaveButtonText>
-                    </Button>
-                  </SaveButtonStyle>
+                  <HeaderButton data-cy="use-this" onClick={handleUseThisClick}>
+                    Use This
+                  </HeaderButton>
                 )}
                 {features.isCurator && (status === "inreview" || status === "rejected") && (
-                  <ApproveButtonStyle>
-                    <Button type="default" onClick={this.onApproveClick}>
-                      <ShareButtonText>APPROVE</ShareButtonText>
-                    </Button>
-                  </ApproveButtonStyle>
+                  <HeaderButton onClick={this.onApproveClick}>
+                    Approve
+                  </HeaderButton>
                 )}
                 {features.isCurator && status === "inreview" && (
-                  <RejectButtonStyle>
-                    <Button type="default" onClick={this.onRejectClick}>
-                      <ShareButtonText>REJECT</ShareButtonText>
-                    </Button>
-                  </RejectButtonStyle>
+                  <HeaderButton onClick={this.onRejectClick}>
+                    Reject
+                  </HeaderButton>
                 )}
               </CurriculumHeaderButtons>
             </MainHeader>
           )}
-          <FlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-            <div style={{
-              width: urlHasUseThis || isStudent ? "100%" : "calc(100% - 200px)",
-              margin: "auto"
-            }}
-            >
+          <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
+            <ContentContainer isStudent={isStudent}>
               <SubTopBar>
-                <SubTopBarContainer
-                  backgroundColor={bgColor}
-                  active={isContentExpanded}
-                  mode={mode}
-                >
-                  <CurriculumSubHeaderRow marginBottom="36px">
+                <SubTopBarContainer active={isContentExpanded} mode={mode}>
+                  <CurriculumSubHeaderRow>
                     <SubHeaderTitleContainer>
-                      <SubHeaderTitle textColor={textColor}>{title}</SubHeaderTitle>
-                      <SubHeaderDescription textColor={textColor}>
-                        {description}
-                      </SubHeaderDescription>
+                      <SubHeaderDescription>{description}</SubHeaderDescription>
                     </SubHeaderTitleContainer>
-                    <SunHeaderInfo>
-                      {grades.length ? (
-                        <SunHeaderInfoCard
-                          data-cy="playlist-grade"
-                          marginBottom="13px"
-                          marginLeft="-3px"
-                        >
-                          <GraduationCapIcon color={textColor} />
-                          <SunHeaderInfoCardText textColor={textColor} marginLeft="-3px">
-                            Grade {grades.join(", ")}
-                          </SunHeaderInfoCardText>
-                        </SunHeaderInfoCard>
-                      ) : (
-                          ""
-                        )}
-                      {subjects.length ? (
-                        <SunHeaderInfoCard data-cy="playlist-sub" marginBottom="13px">
-                          <BookIcon color={textColor} />
-                          <SunHeaderInfoCardText textColor={textColor}>
-                            {subjects.filter(item => !!item).join(", ")}
-                          </SunHeaderInfoCardText>
-                        </SunHeaderInfoCard>
-                      ) : (
-                          ""
-                        )}
-                      {status && !isStudent && (
-                        <StatusTag
-                          style={{
-                            width: "fit-content",
-                            color: bgColor || "",
-                            background: textColor || ""
-                          }}
-                        >
-                          {status}
-                        </StatusTag>
-                      )}
-                    </SunHeaderInfo>
+                    {grades.length && (
+                      <SubHeaderInfoCard data-cy="playlist-grade">
+                        <IconGraduationCap color="grey" />
+                        <SubHeaderInfoCardText>
+                          Grade {grades.join(", ")}
+                        </SubHeaderInfoCardText>
+                      </SubHeaderInfoCard>
+                    )}
+                    {subjects.length && (
+                      <SubHeaderInfoCard data-cy="playlist-sub">
+                        <IconBook color="grey" />
+                        <SubHeaderInfoCardText>
+                          {subjects.filter(item => !!item).join(", ")}
+                        </SubHeaderInfoCardText>
+                      </SubHeaderInfoCard>
+                    )}
                   </CurriculumSubHeaderRow>
-                  {urlHasUseThis && !isStudent && (
-                    <CurriculumSubHeaderRow>
-                      <ModuleProgressWrapper data-cy="moduleProgress">
-                        <ModuleProgressLabel>
-                          <ModuleProgressText style={{ color: textColor }}>
-                            Module Progress
-                          </ModuleProgressText>
-                          <ModuleProgressValuesWrapper>
-                            <ModuleProgressValues style={{ color: textColor }}>
-                              {modulesCompleted}/{totalModules}
-                            </ModuleProgressValues>
-                            <ModuleProgressValuesLabel style={{ color: textColor }}>
-                              Completed
-                            </ModuleProgressValuesLabel>
-                          </ModuleProgressValuesWrapper>
-                        </ModuleProgressLabel>
-                        <ModuleProgress
-                          textColor={textColor}
-                          modulesCompleted={modulesCompleted}
-                          modules={destinationCurriculumSequence.modules}
-                        />
-                      </ModuleProgressWrapper>
-                      <CurriculumActionsWrapper>
-                        {(urlHasUseThis || features.isCurator) && (
-                          <>
-                            <ShareButtonStyle data-cy="share" onClick={onShareClick}>
-                              <IconShare color={greenThird} width={15} height={15} />
-                            </ShareButtonStyle>
-                            <DropPlaylistButton onClick={this.openDropPlaylistModal}>
-                              Drop Playlist
-                            </DropPlaylistButton>
-                          </>
-                        )}
-                      </CurriculumActionsWrapper>
-                    </CurriculumSubHeaderRow>
-                  )}
                 </SubTopBarContainer>
               </SubTopBar>
               <Wrapper active={isContentExpanded}>
@@ -752,7 +689,7 @@ class CurriculumSequence extends Component {
                   />
                 )}
               </Wrapper>
-            </div>
+            </ContentContainer>
             {urlHasUseThis && isAuthor && (
               <SummaryBlock>
                 <SummaryBlockTitle>Summary</SummaryBlockTitle>
@@ -780,7 +717,7 @@ class CurriculumSequence extends Component {
                   ))}
                 </div>
               </SummaryBlock>)}
-          </FlexContainer>
+          </StyledFlexContainer>
         </CurriculumSequenceWrapper>
         <DropPlaylistModal
           visible={this.state.dropPlaylistModalVisible}
@@ -828,29 +765,6 @@ CurriculumSequence.defaultProps = {
   curriculumGuides: []
 };
 
-const ModuleProgress = ({ modules, modulesCompleted, textColor = { white } }) => (
-  <ModuleProgressBars>
-    {modules &&
-      modules.map((m, index) => (
-        <ModuleProgressBar
-          backgroundColor={textColor}
-          completed={index < modulesCompleted}
-          key={index}
-        />
-      ))}
-  </ModuleProgressBars>
-);
-ModuleProgress.propTypes = {
-  modules: PropTypes.array.isRequired
-};
-
-const CurriculumActionsWrapper = styled.div`
-  width: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-`;
-
 const ModuleTitle = styled.p`
   font-size: 11px;
   color: #434b5d;
@@ -885,11 +799,15 @@ const SummaryBlock = styled.div`
       font-weight: 600;
     }
   }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    margin: 20px 40px 40px 40px;
+  }
 `;
 
 const SummaryBlockTitle = styled.div`
   width: 100%;
-  color: #304050;
+  color: ${titleColor};
   font-weight: 700;
   font-size: 22px;
   text-align: center;
@@ -903,66 +821,6 @@ const SummaryBlockSubTitle = styled.div`
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
-`;
-
-const ModuleProgressBar = styled.div`
-  border-radius: 2px;
-  width: 42px;
-  height: 7px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  background: ${({ backgroundColor }) => backgroundColor || white};
-  opacity: ${({ completed }) => (completed ? 1 : 0.5)};
-`;
-
-const ModuleProgressLabel = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding-bottom: 4px;
-`;
-
-const ModuleProgressBars = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const ModuleProgressWrapper = styled.div`
-  z-index: 100;
-  justify-self: flex-start;
-  width: 100%;
-  align-items: center;
-  /* @media only screen and (min-width: ${desktopWidth}) {
-    width: 60%;
-  } */
-`;
-ModuleProgressWrapper.displayName = "ModuleProgressWrapper";
-
-const ModuleProgressText = styled.div`
-  color: #949494;
-  text-align: left;
-  font-size: 14px;
-`;
-
-const ModuleProgressValuesWrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const ModuleProgressValues = styled.div`
-  color: #434b5d;
-  margin-right: 8px;
-  font-size: 22px;
-  font-weight: 600;
-  font-family: "Open Sans, Bold";
-`;
-
-const ModuleProgressValuesLabel = styled.div`
-  font-family: "Open Sans, Semibold";
-  font-size: 16px;
-  font-weight: 500;
-  color: #434b5d;
 `;
 
 const GuidesDropdownWrapper = styled.div`
@@ -1008,20 +866,26 @@ const GuideModalBody = styled.div`
   }
 `;
 
-const DropPlaylistButton = styled.div`
-  margin-right: 20px !important;
-  min-height: 45px;
-  width: 150px;
-  color: ${themeColor};
+const HeaderButton = styled.div`
+  margin-right: 10px !important;
+  height: 45px;
+  width: 135px;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  font: 11px/15px Open Sans;
   font-weight: 600;
-  background: ${white};
-  border-radius: 6px;
-  border: 1px solid ${themeColor};
+  letter-spacing: 0.2px;
+  background: ${lightGreen5};
+  border-radius: 4px;
+  border: 1px solid ${lightGreen5};
   cursor: pointer;
   text-transform: uppercase;
+
+  &:hover {
+    box-shadow: 0px 0px 1px ${lightGreen5}
+  }
 
   svg {
     margin: auto;
@@ -1029,19 +893,26 @@ const DropPlaylistButton = styled.div`
 `;
 
 const ShareButtonStyle = styled.div`
-  margin-right: 20px !important;
-  min-height: 45px;
+  margin-right: 10px !important;
+  height: 45px;
   width: 45px;
-  color: ${greenSecondary};
+  color: ${lightGreen5};
   display: flex;
   align-items: center;
-  background: ${white};
-  border-radius: 6px;
-  border: 1px solid ${themeColor};
+  background: white;
+  border-radius: 4px;
+  border: 1px solid ${lightGreen5};
   cursor: pointer;
-
   svg {
     margin: auto;
+  }
+  &:hover {
+    background: ${lightGreen5};
+    color: white;
+    box-shadow: 0px 0px 1px ${lightGreen5};
+    svg {
+      fill: white;
+    }
   }
 `;
 
@@ -1065,14 +936,6 @@ const SaveButtonStyle = styled.div`
       }
     }
   }
-`;
-
-const RejectButtonStyle = styled(SaveButtonStyle)`
-  margin-left: 20px;
-`;
-
-const ApproveButtonStyle = styled(SaveButtonStyle)`
-  margin-left: 20px;
 `;
 
 const ModalInputWrapper = styled.div`
@@ -1151,11 +1014,9 @@ const CurriculumHeaderButtons = styled(FlexContainer)`
 
 const SubTopBar = styled.div`
   width: ${props => (props.active ? "60%" : "100%")};
-  padding-left: 43px;
-  padding-right: ${props => (props.active ? "30px" : "43px")};
+  padding: 0px 30px;
   margin: auto;
   position: relative;
-  z-index: 999;
   @media only screen and (min-width: 1800px) {
     width: ${props => (props.active ? "60%" : "100%")};
     margin-left: ${props => (props.active ? "" : "auto")};
@@ -1171,8 +1032,8 @@ const SubTopBar = styled.div`
 `;
 
 const SubTopBarContainer = styled.div`
-  background: ${({ backgroundColor }) => backgroundColor || themeColor};
-  padding: 28px 43px 36px 45px;
+  background: white;
+  padding: 30px 45px;
   margin-bottom: 10px;
   margin-top: ${props => (props.mode ? "0px" : "20px")};
   z-index: 1;
@@ -1184,7 +1045,7 @@ const SubTopBarContainer = styled.div`
   margin-left: ${props => (props.active ? "" : "auto")};
   margin-right: ${props => (props.active ? "" : "auto")};
   border-radius: 5px;
-  box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.1);
+  border: 1px solid #DADAE4;
 
   @media only screen and (max-width: 1366px) {
     flex-direction: column;
@@ -1203,33 +1064,8 @@ const SubTopBarContainer = styled.div`
 
 SubTopBarContainer.displayName = "SubTopBarContainer";
 
-const ShareButtonText = styled.div`
-  text-transform: uppercase;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  @media only screen and (max-width: ${desktopWidth}) {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-  @media only screen and (max-width: ${tabletWidth}) {
-    display: none;
-  }
-`;
-
-const SaveButtonText = styled.div`
-  text-transform: uppercase;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  @media only screen and (max-width: ${tabletWidth}) {
-    display: none;
-  }
-`;
-
 const CurriculumSequenceWrapper = styled.div`
+  background: white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1251,75 +1087,51 @@ const CurriculumSubHeaderRow = styled.div`
 `;
 
 const SubHeaderTitleContainer = styled.div`
-  max-width: 55%;
+  max-width: 40%;
   word-break: break-word;
   @media only screen and (max-width: ${tabletWidth}) {
     max-width: 100%;
   }
 `;
 
-const SubHeaderTitle = styled.h2`
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 7px;
-  color: ${({ textColor }) => textColor || white};
-`;
 const SubHeaderDescription = styled.p`
-  color: #848993;
+  color: ${descriptionColor};
   font-size: 14px;
-  color: ${({ textColor }) => textColor || white};
+  text-align: justify;
 `;
 
-const SunHeaderInfo = styled.div`
+const SubHeaderInfoCard = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: baseline;
+  margin-left: 20px;
   @media only screen and (max-width: ${tabletWidth}) {
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: baseline;
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-left: 0px;
   }
 `;
 
-const SunHeaderInfoCard = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${props => props.marginBottom || "0px"};
-  margin-left: ${props => props.marginLeft || "0px"};
-  @media only screen and (max-width: ${tabletWidth}) {
-    margin-left: ${props => !props.marginLeft && "15px"};
-  }
-`;
-
-const GraduationCapIcon = styled(IconGraduationCap)`
-  margin-right: 9.5px;
-`;
-
-const BookIcon = styled(IconBook)`
-  margin-right: 9.5px;
-`;
-
-const SunHeaderInfoCardText = styled.div`
-  margin-left: ${props => props.marginLeft || "0px"};
-  font-family: Open Sans, Bold;
+const SubHeaderInfoCardText = styled.div`
+  font-family: Open Sans;
   font-weight: 600;
-  color: ${({ textColor }) => textColor || white};
+  padding-left: 10px;
+  color: ${titleColor};
+`;
+
+const StyledFlexContainer = styled(FlexContainer)`
+@media (max-width: ${smallDesktopWidth}) {
+  flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
+}
+`;
+
+const ContentContainer = styled.div`
+  width: ${({ isStudent }) => (isStudent ? "100%" : "calc(100% - 335px)")};
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 100%;
+  }
 `;
 
 const BreadCrumbWrapper = styled.div`
   padding: 20px 40px;
-`;
-
-const StatusTag = styled.span`
-  background: #e8f2ff;
-  color: #798ca8;
-  font-size: 9px;
-  font-weight: bold;
-  padding: 4px 19px;
-  border-radius: 5px;
-  line-height: 13px;
-  text-transform: uppercase;
 `;
 
 const enhance = compose(

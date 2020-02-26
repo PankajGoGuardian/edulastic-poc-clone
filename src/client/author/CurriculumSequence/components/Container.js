@@ -200,6 +200,7 @@ class CurriculumContainer extends Component {
   handleShare = () => {
     this.setState({ showShareModal: true });
   };
+
   onShareModalChange = () => {
     this.setState({
       showShareModal: !this.state.showShareModal
@@ -263,7 +264,7 @@ class CurriculumContainer extends Component {
           isVisible={showShareModal}
           isPublished={destinationCurriculumSequence.status === statusConstants.PUBLISHED}
           testId={destinationCurriculumSequence._id}
-          isPlaylist={true}
+          isPlaylist
           onClose={onShareModalChange}
           gradeSubject={gradeSubject}
         />
@@ -271,7 +272,7 @@ class CurriculumContainer extends Component {
           isVisible={showSelectCollectionsModal}
           onOk={this.onOkCollectionsSelectModal}
           onCancel={this.onCancelCollectionsSelectModal}
-          title={"Collections"}
+          title="Collections"
           onChange={this.onCollectionsSelectChange}
           selectedCollections={selectedCollections}
           okText="APPROVE"

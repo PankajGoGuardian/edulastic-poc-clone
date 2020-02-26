@@ -11,7 +11,7 @@ import { EditButton } from "./styled";
 const Header = ({ onEdit, activeClass, selectedClass }) => {
   const { name, institutionName = "", districtName = "" } = selectedClass;
 
-  const HeadingSubContent = (
+  const headingSubContent = (
     <span>
       {districtName ? `${districtName}, ` : ""}
       {institutionName}
@@ -21,7 +21,7 @@ const Header = ({ onEdit, activeClass, selectedClass }) => {
   return (
     <MainHeader
       headingText={name}
-      HeadingSubContent={HeadingSubContent}
+      headingSubContent={headingSubContent}
       flexDirection="column"
       alignItems="flex-start"
     >

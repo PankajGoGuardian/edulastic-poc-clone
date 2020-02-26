@@ -468,3 +468,14 @@ export const StyledTag = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const StyledLabel = styled.div`
+  display: flex;
+  align-items: center;
+  padding: ${props => props.padding || "0px"};
+  font: ${props => props.fontStyle || "11px/15px Open Sans"};
+  font-weight: ${props => props.fontWeight || "600"};
+  letter-spacing: ${props => props.spacing || "0.2px"};
+  color: ${props => props.textColor || "grey"};
+  text-align: ${props => props.textAlign || "left"};
+`;

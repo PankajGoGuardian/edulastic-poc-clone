@@ -37,7 +37,7 @@ const MainHeader = ({
               {t(headingText)}
             </TitleWrapper>
           )}
-          {restProps.HeadingSubContent}
+          {restProps.headingSubContent}
         </FlexWrap>
         {children}
       </Container>
@@ -122,7 +122,7 @@ export const TitleWrapper = styled.h1`
   color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   line-height: normal;
-  min-width: 200px;
+  min-width: ${props => props.titleMinWidth || "200px"};
   margin: 0px;
   white-space: nowrap;
   max-width: ${props => (props.noEllipsis ? "unset" : "300px")};

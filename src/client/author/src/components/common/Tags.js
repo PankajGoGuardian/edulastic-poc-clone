@@ -1,10 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
+import { darkBlue, lightBlue, greenDark, lightGreen, white, grey, lightGreen6 } from "@edulastic/colors";
 import { Dropdown, Tag } from "antd";
 
-const Tags = ({ tags = [], labelStyle, type, show, isStandards, isPlaylist = false, completed = false }) => {
+const Tags = ({
+  tags = [],
+  labelStyle,
+  type,
+  show,
+  isStandards,
+  isPlaylist = false,
+  completed = false,
+  margin 
+}) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);
@@ -21,7 +30,7 @@ const Tags = ({ tags = [], labelStyle, type, show, isStandards, isPlaylist = fal
   );
 
   return (
-    <Labels completed={completed} isPlaylist={isPlaylist}>
+    <Labels completed={completed} isPlaylist={isPlaylist} margin={margin}>
       {visibleTags.map((tag, i) => (
         <Label style={labelStyle} key={i} type={type}>
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
@@ -62,8 +71,8 @@ const getLabelStyle = type => {
       `;
     case "primary":
       return `
-      color: #4aac8b;
-      background: #d7faee;
+      color: ${greenDark};
+      background: ${lightGreen6};
     `;
     default:
       return `
@@ -79,7 +88,7 @@ const Labels = styled.div`
   align-items: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   justify-content: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   width: ${({ isPlaylist }) => isPlaylist && "100%"};
-  margin: 4px 0 4px ${({ completed, isPlaylist }) => (isPlaylist ? (completed ? "8px" : "56px") : 0)};
+  margin: ${({margin, completed, isPlaylist}) => margin || `4px 0px 4px ${(isPlaylist ? (completed ? "8px" : "56px") : 0)}`};
 `;
 
 const PopupContainer = styled.div`

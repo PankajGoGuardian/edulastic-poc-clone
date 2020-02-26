@@ -32,7 +32,6 @@ const Display = ({
             {showQuestionNumber && (
               <QuestionNumberLabel fontSize={fontSize}>{qLabel}</QuestionNumberLabel>
             )}
-            {console.log("what is qSubLabel", qSubLabel)}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </FlexContainer>
 

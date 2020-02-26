@@ -12,6 +12,7 @@ import { IPAD_LANDSCAPE_WIDTH } from "../constants/others";
 import { FlexContainer } from "@edulastic/common";
 import { Nav } from "./common"
 import { isUndefined } from "lodash";
+import SbacHeader from "./skins/Sbac/PlayerHeader";
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -27,7 +28,9 @@ const AssessmentPlayerSkinWrapper = ({
   const { moveToNext, moveToPrev, currentItem } = restProps;
   const header = () => {
     if (playerSkinType === "parcc") {
-      return <ParccHeader {...restProps} options={restProps.options || restProps.dropdownOptions} />
+      return <ParccHeader {...restProps} options={restProps.options || restProps.dropdownOptions} />;
+    } else if (playerSkinType == "sbac") {
+      return <SbacHeader {...restProps} options={restProps.options || restProps.dropdownOptions} />;
     } else if (!isUndefined(docUrl)){
       return <DocBasedPlayerHeader {...restProps} />;
     } else if (defaultAP) {
@@ -71,6 +74,12 @@ const AssessmentPlayerSkinWrapper = ({
         paddingRight: 0,
         marginTop: defaultAP ? "82px" : "47px"
       }
+    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
+      return {
+        paddingLeft: 0,
+        paddingRight: 0,
+        marginTop: defaultAP ? "48px" : "47px"
+      }
     }
     return {};
   }
@@ -84,7 +93,8 @@ const AssessmentPlayerSkinWrapper = ({
           width: "calc(100% - 220px)"
         };
       }
-    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase()) {
+    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
+      playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
       return {
         width: "100%"
       }
@@ -132,12 +142,16 @@ const Sidebar = styled.div`
 const StyledMainContainer = styled.div`
   main {
     ${({mainContainerStyle}) => mainContainerStyle};
+    @media (max-width: 768px) {
+      padding: 58px 0 0;
+    }
   }
-  ${({playerSkin}) => playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ? `
+  ${({playerSkin}) => playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() || playerSkin.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase() ? `
     .question-tab-container {
       padding-top: 0!important;
     }
     .question-audio-controller {
+      display: ${playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ? "block" : "none!important"};
       z-index: 1;
       position: fixed;
       top: 50%;

@@ -165,13 +165,13 @@ const AudioControls = ({
       <div style={{ display: showAudioControls ? "none" : "block" }}>
         <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
           {currentPlayingDetails.qId === qId ? (
-            <IconAudioPause color={white} />
+            <IconAudioPause color={white} className="audio-pause" />
           ) : (
-            !loading && <IconPlayFilled color={white} />
+            !loading && <IconPlayFilled color={white} className="audio-play" />
           )}
         </ControlButtons>
         <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
-          <IconStop color={white} />
+          <IconStop color={white} className="audio-stop" />
         </ControlButtons>
       </div>
     </AudioButtonsWrapper>

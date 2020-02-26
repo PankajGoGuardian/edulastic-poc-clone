@@ -2547,6 +2547,34 @@ export const themes = {
           background: "lightgrey"
         }
       }
+    },
+    sbac: {
+      header: {
+        borderColor: "#DADAE4",
+        background: "white",
+        logoColor: themeColor,
+        topMenu: {
+          background: "#F2FBFF"
+        }
+      },
+      navigationButtons: {
+        background: "white",
+        color: "#00AD50",
+        hover: {
+          background: "#00AD50",
+          color: "white"
+        }
+      },
+      defaultButton: {
+        color: "#434B5D",
+        disabledColor: "#d9d9d9",
+        hover: {
+          background: "#00AD50",
+          color: "white"
+        },
+        audioPauseColor: "#ff9900",
+        questionMarkColor: "#00AD50"
+      }
     }
   }
 };

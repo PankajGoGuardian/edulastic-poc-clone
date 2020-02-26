@@ -51,7 +51,8 @@ const PlayerHeader = ({
   tool,
   calcBrands,
   changeCaculateMode,
-  finishTest
+  finishTest,
+  qType,
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -123,6 +124,7 @@ const PlayerHeader = ({
                   tool={tool}
                   calcBrands={calcBrands}
                   changeCaculateMode={changeCaculateMode}
+                  qType={qType}
                 />
                </FlexContainer>
               <FlexContainer>

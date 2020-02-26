@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -49,7 +48,6 @@ const AssessmentContainer = ({
   finishTest,
   history,
   changePreview,
-  startAssessment,
   saveUserResponse: saveUserAnswer,
   evaluateAnswer: evaluate,
   match,
@@ -100,26 +98,34 @@ const AssessmentContainer = ({
     gotoItem(currentItem);
   }, [currentItem]);
 
-  const gotoQuestion = index => {
-    //setCurrentItem(index);
-
-    if (preview) return;
-    changePreview("clear");
-    saveCurrentAnswer({ urlToGo: `${url}/qid/${index}` });
-  };
-
   const saveCurrentAnswer = payload => {
     const timeSpent = Date.now() - lastTime.current;
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload);
+  };
+
+  const gotoQuestion = index => {
+    if (preview) {
+      setCurrentItem(index);
+    } else {
+      changePreview("clear");
+      saveCurrentAnswer({ urlToGo: `${url}/qid/${index}` });
+    }
   };
 
   const moveToNext = async () => {
     if (!isLast()) {
       gotoQuestion(Number(currentItem) + 1);
     }
+
+    if (isLast() && preview) {
+      closeTestPreviewModal();
+    }
+
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent, false, groupId, { urlToGo: `${url}/${"test-summary"}` });
+      await saveUserAnswer(currentItem, timeSpent, false, groupId, {
+        urlToGo: `${url}/${"test-summary"}`
+      });
     }
   };
 
@@ -129,9 +135,6 @@ const AssessmentContainer = ({
   };
 
   const gotoSummary = async () => {
-    if (preview && closeTestPreviewModal) {
-      return closeTestPreviewModal();
-    }
     if (!testletType) {
       const timeSpent = Date.now() - lastTime.current;
       await saveUserAnswer(currentItem, timeSpent, false, groupId);
@@ -228,13 +231,14 @@ const AssessmentContainer = ({
     );
   }
 
+  /**
+   * at student side only scratchPad should be enabled,
+   * highlight image default pen should be disabled
+   */
   return (
-    <>
-      {/* at student side only scratchPad should be enabled, highlight image default pen should be disabled */}
-      <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
-      </ScratchPadContext.Provider>
-    </>
+    <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
+      {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
+    </ScratchPadContext.Provider>
   );
 };
 
@@ -275,7 +279,11 @@ const enhance = compose(
       playerSkinType: state.test.playerSkinType,
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
-      testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
+      testletState: get(
+        state,
+        `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`,
+        {}
+      ),
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),

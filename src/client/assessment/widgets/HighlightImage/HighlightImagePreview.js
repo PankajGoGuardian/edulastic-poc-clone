@@ -2,6 +2,7 @@
 import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { isNaN } from "lodash";
+import { compose } from "redux";
 
 import {
   Stimulus,
@@ -11,6 +12,8 @@ import {
   isMobileDevice,
   AnswerContext
 } from "@edulastic/common";
+
+import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { canvasDimensions } from "@edulastic/constants";
 
@@ -172,7 +175,7 @@ const HighlightImagePreview = ({
   const CDN_IMAGE_PATH = `${s3ImageBucketPath}/highlight_image_background.svg`;
 
   const renderImage = () => (
-    <div style={{ width: "100%", height: "100%", zoom: theme.widgets.highlightImage.imageZoom }}>
+    <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
       <img src={file || CDN_IMAGE_PATH || DEFAULT_IMAGE} alt={altText} style={{ width, height }} />
     </div>
   );
@@ -247,4 +250,10 @@ HighlightImagePreview.defaultProps = {
   disableResponse: false
 };
 
-export default withWindowSizes(withNamespaces("assessment")(HighlightImagePreview));
+const enhance = compose(
+  withWindowSizes,
+  withNamespaces("assessment"),
+  withTheme
+);
+
+export default enhance(HighlightImagePreview);

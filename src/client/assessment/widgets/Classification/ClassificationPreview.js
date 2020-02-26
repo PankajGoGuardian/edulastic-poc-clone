@@ -2,8 +2,17 @@ import React, { useState, useEffect, Fragment, useContext } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq, maxBy } from "lodash";
 import "core-js/features/array/flat";
-import { FlexContainer, Stimulus, Subtitle, QuestionNumberLabel, measureText, AnswerContext } from "@edulastic/common";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import {
+  FlexContainer,
+  Stimulus,
+  Subtitle,
+  QuestionNumberLabel,
+  measureText,
+  AnswerContext,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -105,7 +114,9 @@ const ClassificationPreview = ({
   const possibleResponses =
     editCorrectAnswers.length > 0
       ? posResp.filter(
-          ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
+          ite =>
+            ite &&
+            editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
         )
       : posResp;
 
@@ -135,7 +146,9 @@ const ClassificationPreview = ({
    * it also follows similar schema as of validation.value
    */
   const initialAnswers =
-    !disableResponse && editCorrectAnswers.length > 0 ? editCorrectAnswers : getInitialUserAnswers();
+    !disableResponse && editCorrectAnswers.length > 0
+      ? editCorrectAnswers
+      : getInitialUserAnswers();
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [dragItems, setDragItems] = useState(possibleResponses);
@@ -146,7 +159,9 @@ const ClassificationPreview = ({
    */
   const updateDragItems = () => {
     setAnswers(initialAnswers);
-    setDragItems(possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id))));
+    setDragItems(
+      possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id)))
+    );
   };
 
   useEffect(() => {
@@ -239,13 +254,16 @@ const ClassificationPreview = ({
    */
   const flattenAnswers = answers.flat();
   const verifiedGroupDragItems = duplicateResponses
-    ? possibleResponseGroups.map(group => (shuffleOptions ? shuffle(group.responses) : group.responses))
+    ? possibleResponseGroups.map(group =>
+        shuffleOptions ? shuffle(group.responses) : group.responses
+      )
     : possibleResponseGroups.map(group => {
         const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
         return shuffleOptions ? shuffle(responses) : responses;
       });
 
-  const choiceWidth = maxBy(posResp.map(op => measureText(op?.value || "")), obj => obj?.width)?.width;
+  const choiceWidth = maxBy(posResp.map(op => measureText(op?.value || "")), obj => obj?.width)
+    ?.width;
 
   const dragItemSize = {
     maxWidth: dragItemMaxWidth,
@@ -331,6 +349,7 @@ const ClassificationPreview = ({
   const widthArr = posResp.map(op => {
     const respWidth = measureText(op?.value || "");
     minResponseWidth = Math.min(respWidth, minResponseWidth);
+    return { width: respWidth };
   });
   dragItemProps.padding = minResponseWidth < 35 ? "0px 0px 0px 5px" : "0px 0px 0px 10px";
 
@@ -341,119 +360,133 @@ const ClassificationPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      {!smallSize && view === PREVIEW && (
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-        </QuestionTitleWrapper>
-      )}
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
 
-      <div style={{ overflow: "auto", width: "100%" }}>
-        <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
-          <ResponseContainer
-            direction={direction}
-            imageOptions={imageOptions}
-            imageUrl={imageUrl}
-            disableResponse={disableResponse}
-          >
-            {tableContent}
-          </ResponseContainer>
-          {!disableResponse && (
-            <ChoiceContainer
-              direction={direction}
-              choiceWidth={dragItemMaxWidth}
-              title={t("component.classification.dragItemsTitle")}
-            >
-              <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
-                <FlexContainer
-                  style={{ width: "100%" }}
-                  flexDirection="column"
-                  alignItems="stretch"
-                  justifyContent="center"
-                  maxWidth="100%"
-                >
-                  {groupPossibleResponses ? (
-                    verifiedGroupDragItems.map((i, index) => (
-                      <Fragment key={index}>
-                        <FlexContainer
-                          style={{ flex: 1 }}
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="flex-start"
-                          maxWidth="100%"
-                        >
-                          <Subtitle>{get(item, `possibleResponseGroups[${index}].title`, "")}</Subtitle>
-                          <FlexContainer className="choice-items-wrapper">
-                            {i.map((ite, ind) => (
-                              <DragItem
-                                {...dragItemProps}
-                                renderIndex={getStemNumeration(stemNumeration, ind)}
-                                item={ite.value}
-                                key={ite.id}
-                              />
-                            ))}
-                          </FlexContainer>
-                        </FlexContainer>
-                        {index !== possibleResponseGroups.length - 1 && <Separator />}
-                      </Fragment>
-                    ))
-                  ) : (
-                    <Fragment>
-                      <FlexContainer
-                        style={{ flex: 1 }}
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="flex-start"
-                        maxWidth="100%"
-                      >
-                        <FlexContainer className="choice-items-wrapper">
-                          {verifiedDragItems.map(ite => (
-                            <DragItem
-                              {...dragItemProps}
-                              width={maxBy(widthArr, obj => obj?.width)?.width}
-                              key={ite.id}
-                              item={ite.value}
-                              renderIndex={possibleResponses.indexOf(ite)}
-                              disableResponse={disableResponse || !isAnswerModifiable}
-                            />
-                          ))}
-                        </FlexContainer>
-                      </FlexContainer>
-                    </Fragment>
-                  )}
-                </FlexContainer>
-              </DropContainer>
-            </ChoiceContainer>
+        <QuestionContentWrapper>
+          {!smallSize && view === PREVIEW && (
+            <QuestionTitleWrapper>
+              <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
+            </QuestionTitleWrapper>
           )}
-        </div>
-      </div>
-      {previewTab === SHOW || isReviewTab ? (
-        <ChoiceContainer>
-          <CorrectAnswers
-            colCount={colCount}
-            possibleResponse={posResp}
-            answersArr={validArray}
-            columnTitles={colTitles}
-            stemNumeration={stemNumeration}
-            dragItemProps={dragItemProps}
-            title={t("component.classification.correctAnswers")}
-            multiRow={rowCount > 1}
-          />
-          {altArrays.map((altArray, ind) => (
-            <CorrectAnswers
-              colCount={colCount}
-              possibleResponse={posResp}
-              answersArr={altArray}
-              columnTitles={colTitles}
-              stemNumeration={stemNumeration}
-              dragItemProps={dragItemProps}
-              multiRow={rowCount > 1}
-              key={`alt-answer-${ind}`}
-              title={`${t("component.classification.alternateAnswer")} ${ind + 1}`}
-            />
-          ))}
-        </ChoiceContainer>
-      ) : null}
+          <div style={{ overflow: "auto", width: "100%" }}>
+            <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
+              <ResponseContainer
+                direction={direction}
+                imageOptions={imageOptions}
+                imageUrl={imageUrl}
+                disableResponse={disableResponse}
+              >
+                {tableContent}
+              </ResponseContainer>
+              {!disableResponse && (
+                <ChoiceContainer
+                  direction={direction}
+                  choiceWidth={dragItemMaxWidth}
+                  title={t("component.classification.dragItemsTitle")}
+                >
+                  <DropContainer
+                    flag="dragItems"
+                    drop={drop}
+                    style={styles.dragItemsContainerStyle}
+                    noBorder
+                  >
+                    <FlexContainer
+                      style={{ width: "100%" }}
+                      flexDirection="column"
+                      alignItems="stretch"
+                      justifyContent="center"
+                      maxWidth="100%"
+                    >
+                      {groupPossibleResponses ? (
+                        verifiedGroupDragItems.map((i, index) => (
+                          <Fragment key={index}>
+                            <FlexContainer
+                              style={{ flex: 1 }}
+                              flexDirection="column"
+                              alignItems="center"
+                              justifyContent="flex-start"
+                              maxWidth="100%"
+                            >
+                              <Subtitle>
+                                {get(item, `possibleResponseGroups[${index}].title`, "")}
+                              </Subtitle>
+                              <FlexContainer className="choice-items-wrapper">
+                                {i.map((ite, ind) => (
+                                  <DragItem
+                                    {...dragItemProps}
+                                    renderIndex={getStemNumeration(stemNumeration, ind)}
+                                    item={ite.value}
+                                    key={ite.id}
+                                  />
+                                ))}
+                              </FlexContainer>
+                            </FlexContainer>
+                            {index !== possibleResponseGroups.length - 1 && <Separator />}
+                          </Fragment>
+                        ))
+                      ) : (
+                        <Fragment>
+                          <FlexContainer
+                            style={{ flex: 1 }}
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                            maxWidth="100%"
+                          >
+                            <FlexContainer className="choice-items-wrapper">
+                              {verifiedDragItems.map(ite => (
+                                <DragItem
+                                  {...dragItemProps}
+                                  width={maxBy(widthArr, obj => obj?.width)?.width}
+                                  key={ite.id}
+                                  item={ite.value}
+                                  renderIndex={possibleResponses.indexOf(ite)}
+                                  disableResponse={disableResponse || !isAnswerModifiable}
+                                />
+                              ))}
+                            </FlexContainer>
+                          </FlexContainer>
+                        </Fragment>
+                      )}
+                    </FlexContainer>
+                  </DropContainer>
+                </ChoiceContainer>
+              )}
+            </div>
+          </div>
+          {previewTab === SHOW || isReviewTab ? (
+            <ChoiceContainer>
+              <CorrectAnswers
+                colCount={colCount}
+                possibleResponse={posResp}
+                answersArr={validArray}
+                columnTitles={colTitles}
+                stemNumeration={stemNumeration}
+                dragItemProps={dragItemProps}
+                title={t("component.classification.correctAnswers")}
+                multiRow={rowCount > 1}
+              />
+              {altArrays.map((altArray, ind) => (
+                <CorrectAnswers
+                  colCount={colCount}
+                  possibleResponse={posResp}
+                  answersArr={altArray}
+                  columnTitles={colTitles}
+                  stemNumeration={stemNumeration}
+                  dragItemProps={dragItemProps}
+                  multiRow={rowCount > 1}
+                  key={`alt-answer-${ind}`}
+                  title={`${t("component.classification.alternateAnswer")} ${ind + 1}`}
+                />
+              ))}
+            </ChoiceContainer>
+          ) : null}
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

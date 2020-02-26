@@ -8,10 +8,19 @@ import { AnswerBox } from "./styled/AnswerBox";
 import { IndexBox } from "./styled/IndexBox";
 import { AnswerContent } from "./styled/AnswerContent";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnsIndex, stemNumeration, t }) => (
-  <CorrectAnswerBox fontSize={fontSize}>
+const CorrectAnswerBoxLayout = ({
+  fontSize,
+  userAnswers,
+  altAnsIndex,
+  stemNumeration,
+  t,
+  width
+}) => (
+  <CorrectAnswerBox width={width} fontSize={fontSize}>
     <CorrectAnswerTitle>
-      {altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
+      {altAnsIndex
+        ? `${t("component.cloze.altAnswers")} ${altAnsIndex}`
+        : t("component.cloze.correctAnswer")}
     </CorrectAnswerTitle>
     <div>
       {userAnswers.map((answer, index) => (
@@ -29,14 +38,16 @@ CorrectAnswerBoxLayout.propTypes = {
   userAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
   altAnsIndex: PropTypes.number,
-  stemNumeration: PropTypes.string
+  stemNumeration: PropTypes.string,
+  width: PropTypes.string
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   userAnswers: [],
   altAnsIndex: 0,
-  stemNumeration: "numerical"
+  stemNumeration: "numerical",
+  width: "100%"
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

@@ -8,7 +8,16 @@ import { get, isEmpty } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { CorrectAnswersContainer, QuestionNumberLabel, AnswerContext, ScrollContext } from "@edulastic/common";
+import {
+  CorrectAnswersContainer,
+  QuestionNumberLabel,
+  AnswerContext,
+  ScrollContext,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -98,7 +107,11 @@ const OrderList = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
+          draft.validation.validResponse.value = arrayMove(
+            draft.validation.validResponse.value,
+            oldIndex,
+            newIndex
+          );
         } else {
           draft.validation.altResponses[correctTab - 1].value = arrayMove(
             draft.validation.altResponses[correctTab - 1].value,
@@ -212,10 +225,12 @@ const OrderList = ({
   if (answerContext.expressGrader) {
     initialAnswers = disableResponse ? correctAnswers : userAnswer;
   } else {
-    initialAnswers = userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
+    initialAnswers =
+      userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
   }
 
-  const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
+  const evaluationForCheckAnswer =
+    evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
 
   const previewProps = {
     smallSize,
@@ -276,52 +291,63 @@ const OrderList = ({
       )}
       {view === PREVIEW && scrollContainer && (
         <Wrapper>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            <QuestionHeader
-              qIndex={qIndex}
-              smallSize={smallSize}
-              padding="0px"
-              dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
-            />
-          </QuestionTitleWrapper>
+          <FlexContainer justifyContent="flex-start" alignItems="baseline">
+            <QuestionLabelWrapper>
+              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            </QuestionLabelWrapper>
 
-          {previewTab === CLEAR && (
-            <OrderListPreview
-              {...previewProps}
-              questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
-            />
-          )}
-
-          {(previewTab === CHECK || previewTab === SHOW) && (
-            <OrderListPreview
-              {...previewProps}
-              evaluation={evaluationForCheckAnswer}
-              questions={userAnswer.map(index => itemForPreview.list[index])}
-            />
-          )}
-
-          {previewTab === SHOW || isReviewTab ? (
-            <Fragment>
-              <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
+            <QuestionContentWrapper>
+              <QuestionTitleWrapper>
+                <QuestionHeader
+                  qIndex={qIndex}
+                  smallSize={smallSize}
+                  padding="0px"
+                  dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
+                />
+              </QuestionTitleWrapper>
+              {previewTab === CLEAR && (
                 <OrderListPreview
                   {...previewProps}
-                  showAnswer
-                  questions={correctAnswers.map(index => itemForPreview.list[index])}
+                  questions={initialAnswers.map(
+                    index => itemForPreview.list && itemForPreview.list[index]
+                  )}
                 />
-              </CorrectAnswersContainer>
-
-              {hasAltAnswers && (
-                <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
-                  <OrderListPreview
-                    {...previewProps}
-                    showAnswer
-                    questions={Object.keys(alternateAnswers).map(key => alternateAnswers[key].join(", "))}
-                  />
-                </CorrectAnswersContainer>
               )}
-            </Fragment>
-          ) : null}
+
+              {(previewTab === CHECK || previewTab === SHOW) && (
+                <OrderListPreview
+                  {...previewProps}
+                  evaluation={evaluationForCheckAnswer}
+                  questions={userAnswer.map(index => itemForPreview.list[index])}
+                />
+              )}
+
+              {previewTab === SHOW || isReviewTab ? (
+                <Fragment>
+                  <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
+                    <OrderListPreview
+                      {...previewProps}
+                      showAnswer
+                      questions={correctAnswers.map(index => itemForPreview.list[index])}
+                    />
+                  </CorrectAnswersContainer>
+
+                  {hasAltAnswers && (
+                    <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
+                      <OrderListPreview
+                        {...previewProps}
+                        showAnswer
+                        questions={Object.keys(alternateAnswers).map(key =>
+                          alternateAnswers[key].join(", ")
+                        )}
+                      />
+                    </CorrectAnswersContainer>
+                  )}
+                </Fragment>
+              ) : null}
+            </QuestionContentWrapper>
+          </FlexContainer>
         </Wrapper>
       )}
     </Fragment>

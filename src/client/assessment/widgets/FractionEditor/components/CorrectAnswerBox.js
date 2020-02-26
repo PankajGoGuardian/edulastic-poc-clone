@@ -20,19 +20,19 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     return obj;
   }, {});
   return (
-    <StyledCorrectAnswerbox width="100%">
+    <StyledCorrectAnswerbox width="max-content">
       <CorrectAnswerTitle>Correct Answer</CorrectAnswerTitle>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {Array(count)
           .fill()
-          .map((_, index) => {
-            return fractionType === "circles" ? (
+          .map((_, index) =>
+            fractionType === "circles" ? (
               <Circles
                 fractionNumber={index}
                 sectors={sectors}
                 selected={selected}
                 sectorClick={() => {}}
-                previewTab={"show"}
+                previewTab="show"
                 isExpressGrader={false}
                 isAnswerModifiable={false}
                 evaluation={evaluation}
@@ -45,14 +45,14 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
                 columns={columns}
                 selected={selected}
                 onSelect={() => {}}
-                previewTab={"show"}
+                previewTab="show"
                 isExpressGrader={false}
                 isAnswerModifiable={false}
                 evaluation={evaluation}
                 isReviewTab={false}
               />
-            );
-          })}
+            )
+          )}
       </FlexContainer>
     </StyledCorrectAnswerbox>
   );

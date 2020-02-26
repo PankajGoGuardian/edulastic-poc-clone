@@ -5,7 +5,16 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
-import { Stimulus, CorrectAnswersContainer, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Stimulus,
+  CorrectAnswersContainer,
+  AnswerContext,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 
@@ -185,87 +194,102 @@ const ChartPreview = ({
   );
 
   const getPreviewData = () =>
-    data.map(({ x, y, ...rest }, index) => (answerIsActual() ? { ...userAnswer[index], ...rest } : { x, y, ...rest }));
+    data.map(({ x, y, ...rest }, index) =>
+      answerIsActual() ? { ...userAnswer[index], ...rest } : { x, y, ...rest }
+    );
 
   return (
     <>
-      {view === PREVIEW && (
-        <Fragment>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            <Stimulus style={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          </QuestionTitleWrapper>
-        </Fragment>
-      )}
-      {!disableResponse && renderTools()}
-      <StyledPaperWrapper
-        className="chart-wrapper"
-        style={{ fontSize }}
-        padding={smallSize}
-        boxShadow={smallSize ? "none" : ""}
-      >
-        <ChartContainer preview={view === EDIT}>
-          <CurrentChart
-            name={name}
-            data={getPreviewData()}
-            gridParams={calculatedParams}
-            deleteMode={tool === "delete"}
-            view={view}
-            disableResponse={disableResponse}
-            previewTab={previewTab}
-            saveAnswer={saveAnswerHandler}
-            correct={correct}
-            item={item}
-            setQuestionData={setQuestionData}
-            showAnswer={previewTab === CHECK || (previewTab === SHOW && !isReviewTab)}
-          />
-          {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
-        </ChartContainer>
-        {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-          <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
-            <ChartContainer>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+
+        <QuestionContentWrapper>
+          {view === PREVIEW && (
+            <Fragment>
+              <QuestionTitleWrapper>
+                <Stimulus
+                  style={{ maxWidth: "100%" }}
+                  dangerouslySetInnerHTML={{ __html: item.stimulus }}
+                />
+              </QuestionTitleWrapper>
+            </Fragment>
+          )}
+          {!disableResponse && renderTools()}
+          <StyledPaperWrapper
+            className="chart-wrapper"
+            style={{ fontSize }}
+            padding={smallSize}
+            boxShadow={smallSize ? "none" : ""}
+          >
+            <ChartContainer preview={view === EDIT}>
               <CurrentChart
                 name={name}
-                data={answerData}
+                data={getPreviewData()}
                 gridParams={calculatedParams}
                 deleteMode={tool === "delete"}
                 view={view}
-                disableResponse
+                disableResponse={disableResponse}
                 previewTab={previewTab}
                 saveAnswer={saveAnswerHandler}
-                correct={answerCorrect}
+                correct={correct}
                 item={item}
                 setQuestionData={setQuestionData}
-                showAnswer
+                showAnswer={previewTab === CHECK || (previewTab === SHOW && !isReviewTab)}
               />
+              {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
             </ChartContainer>
-          </CorrectAnswersContainer>
-        )}
+            {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
+              <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
+                <ChartContainer>
+                  <CurrentChart
+                    name={name}
+                    data={answerData}
+                    gridParams={calculatedParams}
+                    deleteMode={tool === "delete"}
+                    view={view}
+                    disableResponse
+                    previewTab={previewTab}
+                    saveAnswer={saveAnswerHandler}
+                    correct={answerCorrect}
+                    item={item}
+                    setQuestionData={setQuestionData}
+                    showAnswer
+                  />
+                </ChartContainer>
+              </CorrectAnswersContainer>
+            )}
 
-        {view === PREVIEW &&
-          previewTab === SHOW &&
-          altAnswerData.length > 0 &&
-          altAnswerData.map((ans, index) => (
-            <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
-              <ChartContainer>
-                <CurrentChart
-                  name={name}
-                  data={ans.value}
-                  gridParams={calculatedParams}
-                  deleteMode={tool === "delete"}
-                  view={view}
-                  disableResponse
-                  previewTab={previewTab}
-                  saveAnswer={saveAnswerHandler}
-                  correct={altAnswerCorrect[index]}
-                  item={item}
-                  setQuestionData={setQuestionData}
-                  showAnswer
-                />
-              </ChartContainer>
-            </CorrectAnswersContainer>
-          ))}
-      </StyledPaperWrapper>
+            {view === PREVIEW &&
+              previewTab === SHOW &&
+              altAnswerData.length > 0 &&
+              altAnswerData.map((ans, index) => (
+                <CorrectAnswersContainer
+                  title={`${t("component.chart.alternateAnswer")} ${index + 1}`}
+                >
+                  <ChartContainer>
+                    <CurrentChart
+                      name={name}
+                      data={ans.value}
+                      gridParams={calculatedParams}
+                      deleteMode={tool === "delete"}
+                      view={view}
+                      disableResponse
+                      previewTab={previewTab}
+                      saveAnswer={saveAnswerHandler}
+                      correct={altAnswerCorrect[index]}
+                      item={item}
+                      setQuestionData={setQuestionData}
+                      showAnswer
+                    />
+                  </ChartContainer>
+                </CorrectAnswersContainer>
+              ))}
+          </StyledPaperWrapper>
+        </QuestionContentWrapper>
+      </FlexContainer>
     </>
   );
 };

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledToolsContainer = styled.div`
   zoom: ${({ theme }) => theme?.widgets?.chart?.chartZoom};
-  width: ${props => props.width && `${props.width}px`};
+  width: ${props => (props.width && `${props.width}px`) || "100%"};
 `;
 
 export const GraphWrapper = styled.div`
@@ -39,11 +39,13 @@ export const JSXBox = styled.div`
 
 export const ContainerWithResponses = styled.div`
   overflow: auto;
+  width: 100%;
   .mark {
     color: ${props => props.theme.widgets.chart.labelStrokeColor};
     border-color: ${props => props.theme.widgets.chart.labelStrokeColor};
     &.mounted::after {
-      border-color: ${props => props.theme.widgets.chart.labelStrokeColor} transparent transparent transparent;
+      border-color: ${props => props.theme.widgets.chart.labelStrokeColor} transparent transparent
+        transparent;
     }
   }
   display: flex;

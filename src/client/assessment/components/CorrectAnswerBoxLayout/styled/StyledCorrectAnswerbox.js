@@ -5,5 +5,5 @@ export const StyledCorrectAnswerbox = styled.div.attrs({
 })`
   padding: 16px;
   font-size: ${props => props.fontSize}px;
-  width: ${({ width }) => width};
+  width: ${({ width }) => width || "100%"};
 `;

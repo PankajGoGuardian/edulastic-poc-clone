@@ -10,7 +10,11 @@ import {
   ScratchPadContext,
   QuestionNumberLabel,
   isMobileDevice,
-  AnswerContext
+  AnswerContext,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
 } from "@edulastic/common";
 
 import { withTheme } from "styled-components";
@@ -21,7 +25,6 @@ import { PREVIEW } from "../../constants/constantsForQuestions";
 
 import { PreviewContainer } from "./styled/PreviewContainer";
 import { CanvasContainer } from "./styled/CanvasContainer";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
 import { s3ImageBucketPath } from "../../../config";
 
@@ -204,24 +207,29 @@ const HighlightImagePreview = ({
           minHeight={canvasDimensions.maxHeight}
           width={disableDrawing ? "auto" : `${canvasContainerWidth}px`}
         >
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            {view === PREVIEW && !smallSize && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-            )}
-          </QuestionTitleWrapper>
-          {renderImage()}
-          {enableQuestionLevelScratchPad && (
-            <canvas
-              onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
-              onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
-              onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
-              onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
-              onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-              onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-              ref={canvas}
-            />
-          )}
+          <FlexContainer justifyContent="flex-start" alignItems="baseline">
+            <QuestionLabelWrapper>
+              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            </QuestionLabelWrapper>
+            <QuestionContentWrapper>
+              {view === PREVIEW && !smallSize && (
+                <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+              )}
+              {renderImage()}
+              {enableQuestionLevelScratchPad && (
+                <canvas
+                  onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
+                  onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
+                  onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
+                  onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
+                  onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+                  onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+                  ref={canvas}
+                />
+              )}
+            </QuestionContentWrapper>
+          </FlexContainer>
         </CanvasContainer>
         {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
           <Scratch clearClicked={clearClicked} />

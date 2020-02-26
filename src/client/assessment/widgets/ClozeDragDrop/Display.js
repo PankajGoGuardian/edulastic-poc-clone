@@ -10,7 +10,11 @@ import {
   helpers,
   QuestionNumberLabel,
   HorizontalScrollContext,
-  DragDrop
+  DragDrop,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
 } from "@edulastic/common";
 import { ChoiceDimensions } from "@edulastic/constants";
 
@@ -471,15 +475,21 @@ class ClozeDragDropDisplay extends Component {
         <HorizontalScrollContext.Provider
           value={{ getScrollElement: () => this.previewWrapperRef.current }}
         >
-          <QuestionTitleWrapper>
-            {showQuestionNumber && !flowLayout ? (
-              <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
-            ) : null}
-            {!question && questionContent}
-          </QuestionTitleWrapper>
-          {question && questionContent}
-          {answerBox}
-          <DragPreview />
+          <FlexContainer justifyContent="flex-start" alignItems="baseline">
+            <QuestionLabelWrapper>
+              {showQuestionNumber && !flowLayout ? (
+                <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+              ) : null}
+              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            </QuestionLabelWrapper>
+
+            <QuestionContentWrapper>
+              <QuestionTitleWrapper>{!question && questionContent}</QuestionTitleWrapper>
+              {question && questionContent}
+              {answerBox}
+              <DragPreview />
+            </QuestionContentWrapper>
+          </FlexContainer>
         </HorizontalScrollContext.Provider>
       </TextWrappedDiv>
     );

@@ -7,4 +7,5 @@ export const TemplateBoxContainer = styled.div`
   margin: ${props => (props.smallSize ? "-30px -40px" : "0px")};
   overflow-x: auto;
   overflow-y: hidden;
+  width: 100%;
 `;

@@ -3,7 +3,7 @@ import { WithMathFormula } from "@edulastic/common";
 
 export const Container = styled.div`
   position: relative;
-  width: ${props => props.width}px;
+  width: 100%;
   background-color: ${props => props.theme.widgets.axisLabels.responseBoxBgColor};
 `;
 

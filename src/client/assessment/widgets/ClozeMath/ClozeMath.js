@@ -2,7 +2,16 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { WithResources, AnswerContext, QuestionNumberLabel, MathKeyboard } from "@edulastic/common";
+import {
+  WithResources,
+  AnswerContext,
+  QuestionNumberLabel,
+  MathKeyboard,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -16,7 +25,6 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { ContentArea } from "../../styled/ContentArea";
-import { QuestionTitleWrapper } from "./styled/Label";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -89,25 +97,26 @@ const ClozeMath = ({
 
   const itemForPreview = replaceVariables(item);
   const isV1Multipart = get(col, "isV1Multipart", false);
-  const { qLabel, isV1Migrated = false } = item;
+  const { qLabel, isV1Migrated = false, qSubLabel } = item;
   let options = [];
   let allOptions = [];
   if (isPrint || isPrintPreview) {
     const { mathUnits, dropDowns } = item.responseIds;
-    const dropdownOptions = dropDowns?.map(d => ({...d, type: "dropdown"})) || [];
-    const mathunitOptions = mathUnits?.map(m => ({...m, type: "mathunit"})) || [];
+    const dropdownOptions = dropDowns?.map(d => ({ ...d, type: "dropdown" })) || [];
+    const mathunitOptions = mathUnits?.map(m => ({ ...m, type: "mathunit" })) || [];
     allOptions = orderBy([...dropdownOptions, ...mathunitOptions], ["index"]);
     options = allOptions.map(o => {
       if (o.type === "dropdown") {
         return item.options[o.id];
       }
-      const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === o.id) || {};
-      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(b => b.label);
+      const { keypadMode, customUnits } =
+        find(item.responseIds.mathUnits, res => res.id === o.id) || {};
+      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn =>
+        btn.types.includes(keypadMode)
+      ).map(b => b.label);
 
       if (keypadMode === "custom") {
-        otherOptions = customUnits
-          .split(",")
-          .filter(u => !!u);
+        otherOptions = customUnits.split(",").filter(u => !!u);
       }
       return otherOptions;
     });
@@ -124,81 +133,98 @@ const ClozeMath = ({
       onLoaded={() => {}}
     >
       <StyledClozeMathWrapper>
-        <QuestionTitleWrapper>
-          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+          <QuestionLabelWrapper>
+            {!flowLayout
+              ? showQuestionNumber && <QuestionNumberLabel>{qLabel}</QuestionNumberLabel>
+              : null}
+            {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
+          <QuestionContentWrapper>
+            {view === PREVIEW && (
+              <StyledPaperWrapper
+                isV1Multipart={isV1Multipart}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  overflow: "auto",
+                  "max-width": "100%",
+                  flex: "auto"
+                }}
+              >
+                <ClozeMathPreview
+                  type={actualPreviewMode}
+                  isExpressGrader={answerContextConfig.expressGrader}
+                  item={itemForPreview}
+                  stimulus={itemForPreview.stimulus}
+                  options={itemForPreview.options || {}}
+                  responseIds={item.responseIds}
+                  saveAnswer={saveAnswer}
+                  check={checkAnswer}
+                  userAnswer={userAnswer}
+                  evaluation={evaluation}
+                  isV1Migrated={isV1Migrated}
+                  isPrintPreview={isPrint || isPrintPreview}
+                  allOptions={allOptions}
+                  {...restProps}
+                />
+              </StyledPaperWrapper>
+            )}
+            {(isPrint || isPrintPreview) && (
+              <QuestionOptions options={options} style={{ marginTop: "50px" }} />
+            )}
+            {view === EDIT && (
+              <ContentArea data-cy="question-area">
+                <Template
+                  item={item}
+                  setQuestionData={_setQuestionData}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
 
-          {view === PREVIEW && (
-            <StyledPaperWrapper
-              isV1Multipart={isV1Multipart}
-              style={{ height: "100%", overflow: "auto", "max-width": "100%", flex: "auto" }}
-            >
-              <ClozeMathPreview
-                type={actualPreviewMode}
-                isExpressGrader={answerContextConfig.expressGrader}
-                item={itemForPreview}
-                stimulus={itemForPreview.stimulus}
-                options={itemForPreview.options || {}}
-                responseIds={item.responseIds}
-                saveAnswer={saveAnswer}
-                check={checkAnswer}
-                userAnswer={userAnswer}
-                evaluation={evaluation}
-                isV1Migrated={isV1Migrated}
-                isPrintPreview={isPrint || isPrintPreview}
-                allOptions={allOptions}
-                {...restProps}
-              />
-            </StyledPaperWrapper>
-          )}
-        </QuestionTitleWrapper>
-        {(isPrint || isPrintPreview) && <QuestionOptions options={options} style={{ marginTop: "50px" }} />}
+                <Question
+                  section="main"
+                  label={t("component.math.correctAnswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
+                  <ClozeMathAnswers
+                    id="answers"
+                    item={item}
+                    setQuestionData={_setQuestionData}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                    onChangeKeypad={handleKeypadMode}
+                    t={t}
+                  />
+                </Question>
+
+                <ChoicesForDropDown
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
+
+                {advancedLink}
+
+                <MathFormulaOptions
+                  onChange={_itemChange}
+                  uiStyle={item.uiStyle}
+                  item={item}
+                  responseContainers={item.responseContainers}
+                  customKeys={item.customKeys}
+                  stimulusReview={item.stimulusReview}
+                  metadata={item.metadata}
+                  advancedAreOpen={advancedAreOpen}
+                  showResponseBoxes
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
+              </ContentArea>
+            )}
+          </QuestionContentWrapper>
+        </FlexContainer>
       </StyledClozeMathWrapper>
-
-      {view === EDIT && (
-        <ContentArea data-cy="question-area">
-          <Template
-            item={item}
-            setQuestionData={_setQuestionData}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
-
-          <Question
-            section="main"
-            label={t("component.math.correctAnswers")}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          >
-            <ClozeMathAnswers
-              id="answers"
-              item={item}
-              setQuestionData={_setQuestionData}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-              onChangeKeypad={handleKeypadMode}
-              t={t}
-            />
-          </Question>
-
-          <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
-
-          {advancedLink}
-
-          <MathFormulaOptions
-            onChange={_itemChange}
-            uiStyle={item.uiStyle}
-            item={item}
-            responseContainers={item.responseContainers}
-            customKeys={item.customKeys}
-            stimulusReview={item.stimulusReview}
-            metadata={item.metadata}
-            advancedAreOpen={advancedAreOpen}
-            showResponseBoxes
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
-        </ContentArea>
-      )}
     </WithResources>
   );
 };

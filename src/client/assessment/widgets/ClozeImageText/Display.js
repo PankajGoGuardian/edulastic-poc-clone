@@ -2,7 +2,16 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined, get, maxBy } from "lodash";
-import { helpers, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
+import {
+  helpers,
+  Stimulus,
+  QuestionNumberLabel,
+  AnswerContext,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionContentWrapper,
+  QuestionSubLabel
+} from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
@@ -17,7 +26,6 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import { Pointer } from "../../styled/Pointer";
@@ -46,7 +54,10 @@ class Display extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       this.setState({
-        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : []
+        userAnswers:
+          nextProps.userSelections && nextProps.userSelections.length
+            ? [...nextProps.userSelections]
+            : []
       });
     }
   }
@@ -130,7 +141,10 @@ class Display extends Component {
     if (responseContainers.length > 0) {
       const maxTop = maxBy(responseContainers, res => res.top);
       const maxLeft = maxBy(responseContainers, res => res.left);
-      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+      return {
+        responseBoxMaxTop: maxTop.top + maxTop.height,
+        responseBoxMaxLeft: maxLeft.left + maxLeft.width
+      };
     }
 
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
@@ -196,7 +210,11 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
-        <StyledPreviewContainer data-cy="image-text-answer-board" width={canvasWidth} height={canvasHeight}>
+        <StyledPreviewContainer
+          data-cy="image-text-answer-board"
+          width={canvasWidth}
+          height={canvasHeight}
+        >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -241,7 +259,10 @@ class Display extends Component {
                 }
                 style={{ ...btnStyle }}
               >
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                <Pointer
+                  className={responseContainer.pointerPosition}
+                  width={responseContainer.width}
+                >
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -292,7 +313,8 @@ class Display extends Component {
         isExpressGrader={isExpressGrader}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altResponses = validation.altResponses || [];
     const correctAnswerBoxLayout = (
       <React.Fragment>
@@ -300,6 +322,7 @@ class Display extends Component {
           fontSize={fontSize}
           userAnswers={validation.validResponse && validation.validResponse.value}
           stemNumeration={stemNumeration}
+          width="100%"
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout
@@ -307,6 +330,7 @@ class Display extends Component {
             userAnswers={altResponse.value}
             altAnsIndex={index + 1}
             stemNumeration={stemNumeration}
+            width="100%"
           />
         ))}
       </React.Fragment>
@@ -314,14 +338,21 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
-        <TemplateBoxContainer flexDirection="column">
-          <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
-          {answerBox}
-        </TemplateBoxContainer>
+        <FlexContainer alignItems="baseline" justifyContent="flex-start">
+          <QuestionLabelWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
+
+          <QuestionContentWrapper>
+            <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
+
+            <TemplateBoxContainer flexDirection="column">
+              <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
+            </TemplateBoxContainer>
+            {answerBox}
+          </QuestionContentWrapper>
+        </FlexContainer>
       </StyledDisplayContainer>
     );
   }

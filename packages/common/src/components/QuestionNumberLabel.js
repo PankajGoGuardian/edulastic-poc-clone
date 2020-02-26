@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { white } from "@edulastic/colors";
 
 const QuestionNumberLabel = styled.section`
-  background: ${({ theme }) => "#8ed863" || theme.themeColor};
+  background: ${({ theme }) => theme.themeColor};
   color: ${white};
-  font-size: ${props => `1rem` || props.fontSize || props.theme.fontSize + "px"};
+  font-size: ${({ fontSize, theme }) =>
+    fontSize || (theme.fontSize && `${theme.fontSize}px`) || `1rem`};
   font-weight: 700;
   margin-right: 1rem;
   width: auto;

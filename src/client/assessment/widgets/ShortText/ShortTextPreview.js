@@ -5,10 +5,18 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isEmpty } from "lodash";
 
-import { Paper, Stimulus, CorrectAnswersContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Stimulus,
+  CorrectAnswersContainer,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { CHECK, SHOW, PREVIEW, CLEAR, CONTAINS } from "../../constants/constantsForQuestions";
+import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
 
 import { SmallContainer } from "./styled/SmallContainer";
 import { SmallStim } from "./styled/SmallStim";
@@ -30,7 +38,6 @@ const ShortTextPreview = ({
   theme,
   disableResponse,
   showQuestionNumber,
-  qIndex,
   evaluation
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
@@ -90,66 +97,74 @@ const ShortTextPreview = ({
 
   return (
     <StyledPaperWrapper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
+          </QuestionTitleWrapper>
+          {smallSize && (
+            <SmallContainer>
+              <SmallStim bold>{t("component.shortText.smallSizeTitle")}</SmallStim>
 
-      {smallSize && (
-        <SmallContainer>
-          <SmallStim bold>{t("component.shortText.smallSizeTitle")}</SmallStim>
-
-          <SmallStim>{t("component.shortText.smallSizePar")}</SmallStim>
-        </SmallContainer>
-      )}
-
-      <InputWrapper>
-        <Input
-          style={style}
-          value={text}
-          disabled={disableResponse}
-          onChange={handleTextChange}
-          onSelect={handleSelect}
-          placeholder={item.placeholder || ""}
-          type={get(item, "uiStyle.input_type", "text")}
-          size="large"
-          {...getSpellCheckAttributes(item.spellcheck)}
-        />
-        {isCharacterMap && <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>}
-        {isCharacterMap && showCharacterMap && (
-          <CharacterMap
-            characters={item.characterMap}
-            onSelect={char => {
-              setSelection({
-                start: selection.start + char.length,
-                end: selection.start + char.length
-              });
-              setText(text.slice(0, selection.start) + char + text.slice(selection.end));
-            }}
-            style={{ position: "absolute", right: 0 }}
-          />
-        )}
-      </InputWrapper>
-
-      {previewTab === SHOW && (
-        <>
-          <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
-            {item?.validation?.validResponse?.value}
-          </CorrectAnswersContainer>
-          {!isEmpty(item.validation?.altResponses) && (
-            <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
-              {item.validation.altResponses.map((altAnswer, i) => {
-                return (
-                  <div key={i}>
-                    <span>Alternate Answer {i + 1} : </span>
-                    {altAnswer.value}
-                  </div>
-                );
-              })}
-            </CorrectAnswersContainer>
+              <SmallStim>{t("component.shortText.smallSizePar")}</SmallStim>
+            </SmallContainer>
           )}
-        </>
-      )}
+
+          <InputWrapper>
+            <Input
+              style={style}
+              value={text}
+              disabled={disableResponse}
+              onChange={handleTextChange}
+              onSelect={handleSelect}
+              placeholder={item.placeholder || ""}
+              type={get(item, "uiStyle.input_type", "text")}
+              size="large"
+              {...getSpellCheckAttributes(item.spellcheck)}
+            />
+            {isCharacterMap && (
+              <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>
+            )}
+            {isCharacterMap && showCharacterMap && (
+              <CharacterMap
+                characters={item.characterMap}
+                onSelect={char => {
+                  setSelection({
+                    start: selection.start + char.length,
+                    end: selection.start + char.length
+                  });
+                  setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                }}
+                style={{ position: "absolute", right: 0 }}
+              />
+            )}
+          </InputWrapper>
+
+          {previewTab === SHOW && (
+            <>
+              <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
+                {item?.validation?.validResponse?.value}
+              </CorrectAnswersContainer>
+              {!isEmpty(item.validation?.altResponses) && (
+                <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
+                  {item.validation.altResponses.map((altAnswer, i) => (
+                    <div key={i}>
+                      <span>Alternate Answer {i + 1} : </span>
+                      {altAnswer.value}
+                    </div>
+                  ))}
+                </CorrectAnswersContainer>
+              )}
+            </>
+          )}
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

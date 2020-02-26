@@ -6,13 +6,15 @@ import produce from "immer";
 import styled, { withTheme } from "styled-components";
 
 import {
-  Paper,
   Stimulus,
-  InstructorStimulus,
   MathSpan,
   CorrectAnswersContainer,
   QuestionNumberLabel,
-  AnswerContext
+  AnswerContext,
+  FlexContainer,
+  QuestionSubLabel,
+  QuestionContentWrapper,
+  QuestionLabelWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -126,7 +128,9 @@ const TokenHighlightPreview = ({
       if (answers.filter(answer => answer.selected).length !== 0) {
         setAnswers([
           ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
-          ...answers.filter((answer, i) => answer.selected && validArray[i].selected !== answer.selected)
+          ...answers.filter(
+            (answer, i) => answer.selected && validArray[i].selected !== answer.selected
+          )
         ]);
       }
     } else if (previewTab === CLEAR && !isCheck) {
@@ -181,7 +185,8 @@ const TokenHighlightPreview = ({
   };
 
   const getClass = index =>
-    answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
+    answers.find(elem => elem.index === index) &&
+    answers.find(elem => elem.index === index).selected
       ? "active-word token answer"
       : "token answer";
 
@@ -192,7 +197,8 @@ const TokenHighlightPreview = ({
   const getStyles = (index, correctAnswers = []) => {
     const _answers = correctAnswers.length > 0 ? correctAnswers : answers;
     const condition =
-      _answers.find(elem => elem.index === index) && _answers.find(elem => elem.index === index).selected;
+      _answers.find(elem => elem.index === index) &&
+      _answers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -278,68 +284,88 @@ const TokenHighlightPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <div>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-        </QuestionTitleWrapper>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
+          </QuestionTitleWrapper>
+          <div>
+            {!isExpressGrader &&
+              tokenList.map((el, i) =>
+                el.active ? (
+                  <MathSpan
+                    onClick={!disableResponse ? handleSelect(i) : () => {}}
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    style={preview || disableResponse ? getStyles(i, userAnswer) : {}}
+                    key={i}
+                    className={getClass(i)}
+                  />
+                ) : (
+                  <MathSpan
+                    className="token without-cursor"
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    key={i}
+                  />
+                )
+              )}
 
-        {!isExpressGrader &&
-          tokenList.map((el, i) =>
-            el.active ? (
-              <MathSpan
-                onClick={!disableResponse ? handleSelect(i) : () => {}}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                style={preview || disableResponse ? getStyles(i, userAnswer) : {}}
-                key={i}
-                className={getClass(i)}
-              />
-            ) : (
-              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-            )
-          )}
+            {isExpressGrader &&
+              tokenList.map((el, i) =>
+                el.active ? (
+                  <MathSpan
+                    onClick={isAnswerModifiable ? handleSelectForExpressGrader(i) : () => {}}
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    style={getStylesForExpressGrader(i)}
+                    key={i}
+                    className={getClassNameForExpressGrader(i)}
+                  />
+                ) : (
+                  <MathSpan
+                    className="token without-cursor"
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    key={i}
+                  />
+                )
+              )}
+          </div>
 
-        {isExpressGrader &&
-          tokenList.map((el, i) =>
-            el.active ? (
-              <MathSpan
-                onClick={isAnswerModifiable ? handleSelectForExpressGrader(i) : () => {}}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                style={getStylesForExpressGrader(i)}
-                key={i}
-                className={getClassNameForExpressGrader(i)}
-              />
-            ) : (
-              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-            )
-          )}
-      </div>
-
-      {previewTab === SHOW &&
-        allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
-          const title =
-            correctGroupIndex === 0
-              ? t("component.sortList.correctAnswers")
-              : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
-          return (
-            <div>
-              <CorrectAnswersContainer key={correctGroupIndex} title={title}>
-                {correctAnswers.map((el, i) =>
-                  el.selected ? (
-                    <MathSpan
-                      onClick={() => {}}
-                      dangerouslySetInnerHTML={{ __html: el.value }}
-                      style={getStyles(i, correctAnswers)}
-                      key={i}
-                    />
-                  ) : (
-                    <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-                  )
-                )}
-              </CorrectAnswersContainer>
-            </div>
-          );
-        })}
+          {previewTab === SHOW &&
+            allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
+              const title =
+                correctGroupIndex === 0
+                  ? t("component.sortList.correctAnswers")
+                  : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
+              return (
+                <div style={{ width: "100%" }}>
+                  <CorrectAnswersContainer key={correctGroupIndex} title={title}>
+                    {correctAnswers.map((el, i) =>
+                      el.selected ? (
+                        <MathSpan
+                          onClick={() => {}}
+                          dangerouslySetInnerHTML={{ __html: el.value }}
+                          style={getStyles(i, correctAnswers)}
+                          key={i}
+                        />
+                      ) : (
+                        <MathSpan
+                          className="token without-cursor"
+                          dangerouslySetInnerHTML={{ __html: el.value }}
+                          key={i}
+                        />
+                      )
+                    )}
+                  </CorrectAnswersContainer>
+                </div>
+              );
+            })}
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

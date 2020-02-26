@@ -12,9 +12,11 @@ import {
   Subtitle,
   CorItem,
   MathFormulaDisplay,
-  Checkbox,
   QuestionNumberLabel,
-  AnswerContext
+  AnswerContext,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
@@ -110,7 +112,9 @@ const MatchListPreview = ({
   const [dragItems, setDragItems] = useState(
     duplicatedResponses
       ? getPossibleResponses()
-      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value))
+      : getPossibleResponses().filter(
+          answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value)
+        )
   );
 
   useEffect(() => {
@@ -237,7 +241,10 @@ const MatchListPreview = ({
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border: showBorder && correct !== undefined ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
+    border:
+      showBorder && correct !== undefined
+        ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}`
+        : "unset",
     cursor: "pointer",
     alignSelf: "stretch",
     borderRadius: 4,
@@ -289,14 +296,15 @@ const MatchListPreview = ({
 
   if (isPrintPreview) {
     stemColStyle.maxWidth = stemColStyle.width;
-    stemColStyle.width = "auto";    
+    stemColStyle.width = "auto";
   }
 
   const correctAnswerBoxStyle = {
     width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
   };
 
-  const showEvaluate = (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
+  const showEvaluate =
+    (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
 
   /**
    * scroll element
@@ -311,242 +319,271 @@ const MatchListPreview = ({
       ref={previewWrapperRef}
       boxShadow={smallSize ? "none" : ""}
     >
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
-      </QuestionTitleWrapper>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
 
-      <div data-cy="previewWrapper" style={wrapperStyle}>
-        <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
-          {list.map((ite, i) => (
-            <AnswerItem
-              key={i}
-              style={styles.listItemContainerStyle}
-              alignItems="center"
-              childMarginRight={smallSize ? 13 : 45}
-            >
-              <ListItem smallSize={smallSize} style={stemColStyle}>
-                <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
-              </ListItem>
-              <Separator smallSize={smallSize} />
-              <DropContainer
-                noBorder={!!ans[i]}
-                borderNone={showEvaluate && !!ans[i]}
-                index={i}
-                drop={drop}
-                flag="ans"
-                style={choiceColStyle}
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {!smallSize && view === PREVIEW && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
+            )}
+          </QuestionTitleWrapper>
+          <div data-cy="previewWrapper" style={wrapperStyle}>
+            <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
+              {list.map((ite, i) => (
+                <AnswerItem
+                  key={i}
+                  style={styles.listItemContainerStyle}
+                  alignItems="center"
+                  childMarginRight={smallSize ? 13 : 45}
+                >
+                  <ListItem smallSize={smallSize} style={stemColStyle}>
+                    <StyledMathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                  </ListItem>
+                  <Separator smallSize={smallSize} />
+                  <DropContainer
+                    noBorder={!!ans[i]}
+                    borderNone={showEvaluate && !!ans[i]}
+                    index={i}
+                    drop={drop}
+                    flag="ans"
+                    style={choiceColStyle}
+                  >
+                    <DragItem
+                      preview={showEvaluate}
+                      correct={evaluation[i]}
+                      flag="ans"
+                      renderIndex={i}
+                      displayIndex={getStemNumeration(stemNumeration, i)}
+                      onDrop={onDrop}
+                      item={(ans[i] && allItemsById[ans[i]]) || null}
+                      width="100%"
+                      centerContent
+                      getStyles={getStyles}
+                      disableResponse={disableResponse || !isAnswerModifiable}
+                      showAnswer={previewTab === SHOW}
+                      changePreviewTab={changePreviewTab}
+                    />
+                  </DropContainer>
+                </AnswerItem>
+              ))}
+            </FlexContainer>
+
+            {!disableResponse && (
+              <StyledCorrectAnswersContainer
+                style={choicesBoxStyle}
+                title={t("component.matchList.dragItemsTitle")}
               >
-                <DragItem
-                  preview={showEvaluate}
-                  correct={evaluation[i]}
-                  flag="ans"
-                  renderIndex={i}
-                  displayIndex={getStemNumeration(stemNumeration, i)}
-                  onDrop={onDrop}
-                  item={(ans[i] && allItemsById[ans[i]]) || null}
-                  width="100%"
-                  centerContent
-                  getStyles={getStyles}
-                  disableResponse={disableResponse || !isAnswerModifiable}
-                  showAnswer={previewTab === SHOW}
-                  changePreviewTab={changePreviewTab}
-                />
-              </DropContainer>
-            </AnswerItem>
-          ))}
-        </FlexContainer>
-
-        {!disableResponse && (
-          <StyledCorrectAnswersContainer style={choicesBoxStyle} title={t("component.matchList.dragItemsTitle")}>
-            <DropContainer drop={drop} flag="dragItems" style={choicesBoxDropContainerStyle} noBorder>
-              <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" maxWidth="100%">
-                {groupPossibleResponses ? (
-                  possibleResponseGroups.map((i, index) => (
-                    <Fragment key={index}>
-                      <FlexContainer
-                        style={{ flex: 1 }}
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="flex-start"
-                        maxWidth="100%"
-                      >
-                        <Subtitle
-                          style={{
-                            color: theme.widgets.matchList.previewSubtitleColor
-                          }}
-                        >
-                          {i.title}
-                        </Subtitle>
-                        <FlexContainer
-                          maxWidth="100%"
-                          justifyContent="center"
-                          flexWrap="wrap"
-                          display={horizontallyAligned ? "inline-flex" : "flex"}
-                          flexDirection={horizontallyAligned ? "column" : "row"}
-                        >
-                          {!shuffleOptions
-                            ? i.responses.map(
-                                (ite, ind) =>
-                                  dragItems.includes(ite) && ( // Here we should shuffle in place
-                                    <DragItem
-                                      flag="dragItems"
-                                      onDrop={onDrop}
-                                      key={ind}
-                                      item={ite}
-                                      getStyles={getStyles}
-                                      disableResponse={disableResponse || !isAnswerModifiable}
-                                    />
+                <DropContainer
+                  drop={drop}
+                  flag="dragItems"
+                  style={choicesBoxDropContainerStyle}
+                  noBorder
+                >
+                  <FlexContainer
+                    alignItems="stretch"
+                    justifyContent="center"
+                    flexWrap="wrap"
+                    maxWidth="100%"
+                  >
+                    {groupPossibleResponses ? (
+                      possibleResponseGroups.map((i, index) => (
+                        <Fragment key={index}>
+                          <FlexContainer
+                            style={{ flex: 1 }}
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="flex-start"
+                            maxWidth="100%"
+                          >
+                            <Subtitle
+                              style={{
+                                color: theme.widgets.matchList.previewSubtitleColor
+                              }}
+                            >
+                              {i.title}
+                            </Subtitle>
+                            <FlexContainer
+                              maxWidth="100%"
+                              justifyContent="center"
+                              flexWrap="wrap"
+                              display={horizontallyAligned ? "inline-flex" : "flex"}
+                              flexDirection={horizontallyAligned ? "column" : "row"}
+                            >
+                              {!shuffleOptions
+                                ? i.responses.map(
+                                    (ite, ind) =>
+                                      dragItems.includes(ite) && ( // Here we should shuffle in place
+                                        <DragItem
+                                          flag="dragItems"
+                                          onDrop={onDrop}
+                                          key={ind}
+                                          item={ite}
+                                          getStyles={getStyles}
+                                          disableResponse={disableResponse || !isAnswerModifiable}
+                                        />
+                                      )
                                   )
-                              )
-                            : shuffle(
-                                i.responses.map(
+                                : shuffle(
+                                    i.responses.map(
+                                      (ite, ind) =>
+                                        dragItems.includes(ite) && ( // Here we should shuffle in place
+                                          <DragItem
+                                            flag="dragItems"
+                                            onDrop={onDrop}
+                                            key={ind}
+                                            item={ite}
+                                            getStyles={getStyles}
+                                            disableResponse={disableResponse || !isAnswerModifiable}
+                                          />
+                                        )
+                                    )
+                                  )}
+                            </FlexContainer>
+                          </FlexContainer>
+                          {index !== possibleResponseGroups.length - 1 && (
+                            <GroupsSeparator horizontallyAligned={horizontallyAligned} />
+                          )}
+                        </Fragment>
+                      ))
+                    ) : (
+                      <Fragment>
+                        <FlexContainer
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="flex-start"
+                          maxWidth="100%"
+                        >
+                          <FlexContainer
+                            maxWidth="100%"
+                            flexWrap="wrap"
+                            justifyContent="center"
+                            display={horizontallyAligned ? "inline-flex" : "flex"}
+                            flexDirection={horizontallyAligned ? "column" : "row"}
+                            alignItems={horizontallyAligned ? "baseline" : "center"}
+                          >
+                            {!shuffleOptions
+                              ? dragItems.map(
+                                  // Here we should shuffle in place
                                   (ite, ind) =>
-                                    dragItems.includes(ite) && ( // Here we should shuffle in place
+                                    dragItems.includes(ite) && (
                                       <DragItem
                                         flag="dragItems"
                                         onDrop={onDrop}
                                         key={ind}
+                                        renderIndex={ind}
                                         item={ite}
                                         getStyles={getStyles}
                                         disableResponse={disableResponse || !isAnswerModifiable}
+                                        changePreviewTab={changePreviewTab}
                                       />
                                     )
                                 )
-                              )}
-                        </FlexContainer>
-                      </FlexContainer>
-                      {index !== possibleResponseGroups.length - 1 && (
-                        <GroupsSeparator horizontallyAligned={horizontallyAligned} />
-                      )}
-                    </Fragment>
-                  ))
-                ) : (
-                  <Fragment>
-                    <FlexContainer
-                      flexDirection="column"
-                      alignItems="center"
-                      justifyContent="flex-start"
-                      maxWidth="100%"
-                    >
-                      <FlexContainer
-                        maxWidth="100%"
-                        flexWrap="wrap"
-                        justifyContent="center"
-                        display={horizontallyAligned ? "inline-flex" : "flex"}
-                        flexDirection={horizontallyAligned ? "column" : "row"}
-                        alignItems={horizontallyAligned ? "baseline" : "center"}
-                      >
-                        {!shuffleOptions
-                          ? dragItems.map(
-                              // Here we should shuffle in place
-                              (ite, ind) =>
-                                dragItems.includes(ite) && (
-                                  <DragItem
-                                    flag="dragItems"
-                                    onDrop={onDrop}
-                                    key={ind}
-                                    renderIndex={ind}
-                                    item={ite}
-                                    getStyles={getStyles}
-                                    disableResponse={disableResponse || !isAnswerModifiable}
-                                    changePreviewTab={changePreviewTab}
-                                  />
-                                )
-                            )
-                          : shuffle(
-                              dragItems.map(
-                                // Here we should shuffle in place
-                                (ite, ind) =>
-                                  dragItems.includes(ite) && (
-                                    <DragItem
-                                      flag="dragItems"
-                                      onDrop={onDrop}
-                                      key={ind}
-                                      renderIndex={ind}
-                                      item={ite}
-                                      getStyles={getStyles}
-                                      disableResponse={disableResponse || !isAnswerModifiable}
-                                      changePreviewTab={changePreviewTab}
-                                    />
+                              : shuffle(
+                                  dragItems.map(
+                                    // Here we should shuffle in place
+                                    (ite, ind) =>
+                                      dragItems.includes(ite) && (
+                                        <DragItem
+                                          flag="dragItems"
+                                          onDrop={onDrop}
+                                          key={ind}
+                                          renderIndex={ind}
+                                          item={ite}
+                                          getStyles={getStyles}
+                                          disableResponse={disableResponse || !isAnswerModifiable}
+                                          changePreviewTab={changePreviewTab}
+                                        />
+                                      )
                                   )
-                              )
-                            )}
-                      </FlexContainer>
-                    </FlexContainer>
-                  </Fragment>
-                )}
-              </FlexContainer>
-            </DropContainer>
-          </StyledCorrectAnswersContainer>
-        )}
-      </div>
-      {view === "edit" && (
-        <React.Fragment>
-          <CheckboxLabel
-            className="additional-options"
-            key={`shuffleOptions_${item.shuffleOptions}`}
-            onChange={handleShuffleChange}
-            checked={item.shuffleOptions}
-          >
-            {t("component.cloze.dragDrop.shuffleoptions")}
-          </CheckboxLabel>
-          <CheckboxLabel
-            className="additional-options"
-            key="duplicatedResponses"
-            onChange={handleDuplicatedResponsesChange}
-            checked={!!item.duplicatedResponses}
-          >
-            {t("component.matchList.duplicatedResponses")}
-          </CheckboxLabel>
-        </React.Fragment>
-      )}
-      {previewTab === SHOW || isReviewTab ? (
-        <Fragment>
-          <StyledCorrectAnswersContainer title={t("component.matchList.correctAnswers")} style={correctAnswerBoxStyle}>
-            {list.map((ite, i) => (
-              <FlexContainer key={i} marginBottom="10px" alignItems="center">
-                <CorTitle>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
-                </CorTitle>
-                <Separator smallSize={smallSize} correctAnswer />
-                <CorItem>
-                  <Index preview correctAnswer>
-                    {getStemNumeration(stemNumeration, i)}
-                  </Index>
-                  <MathFormulaDisplay
-                    choice
-                    dangerouslySetInnerHTML={{ __html: allItemsById?.[validArray?.[i]]?.label || "" }}
-                  />
-                </CorItem>
-              </FlexContainer>
-            ))}
-          </StyledCorrectAnswersContainer>
-
-          {hasAlternateAnswers && (
-            <StyledCorrectAnswersContainer
-              title={t("component.matchList.alternateAnswers")}
-              style={correctAnswerBoxStyle}
-            >
-              {Object.keys(alternateAnswers).map((key, i) => (
-                <FlexContainer key={i} marginBottom="10px" alignItems="center">
-                  <CorTitle>
-                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
-                  </CorTitle>
-                  <Separator smallSize={smallSize} correctAnswer />
-                  <CorItem>
-                    <Index preview correctAnswer>
-                      {getStemNumeration(stemNumeration, i)}
-                    </Index>
-                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
-                  </CorItem>
-                </FlexContainer>
-              ))}
-            </StyledCorrectAnswersContainer>
+                                )}
+                          </FlexContainer>
+                        </FlexContainer>
+                      </Fragment>
+                    )}
+                  </FlexContainer>
+                </DropContainer>
+              </StyledCorrectAnswersContainer>
+            )}
+          </div>
+          {view === "edit" && (
+            <React.Fragment>
+              <CheckboxLabel
+                className="additional-options"
+                key={`shuffleOptions_${item.shuffleOptions}`}
+                onChange={handleShuffleChange}
+                checked={item.shuffleOptions}
+              >
+                {t("component.cloze.dragDrop.shuffleoptions")}
+              </CheckboxLabel>
+              <CheckboxLabel
+                className="additional-options"
+                key="duplicatedResponses"
+                onChange={handleDuplicatedResponsesChange}
+                checked={!!item.duplicatedResponses}
+              >
+                {t("component.matchList.duplicatedResponses")}
+              </CheckboxLabel>
+            </React.Fragment>
           )}
-        </Fragment>
-      ) : null}
-      <HorizontalScrollContainer scrollWrraper={previewWrapperRef.current} />
+          {previewTab === SHOW || isReviewTab ? (
+            <Fragment>
+              <StyledCorrectAnswersContainer
+                title={t("component.matchList.correctAnswers")}
+                style={correctAnswerBoxStyle}
+              >
+                {list.map((ite, i) => (
+                  <FlexContainer key={i} marginBottom="10px" alignItems="center">
+                    <CorTitle>
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                    </CorTitle>
+                    <Separator smallSize={smallSize} correctAnswer />
+                    <CorItem>
+                      <Index preview correctAnswer>
+                        {getStemNumeration(stemNumeration, i)}
+                      </Index>
+                      <MathFormulaDisplay
+                        choice
+                        dangerouslySetInnerHTML={{
+                          __html: allItemsById?.[validArray?.[i]]?.label || ""
+                        }}
+                      />
+                    </CorItem>
+                  </FlexContainer>
+                ))}
+              </StyledCorrectAnswersContainer>
+
+              {hasAlternateAnswers && (
+                <StyledCorrectAnswersContainer
+                  title={t("component.matchList.alternateAnswers")}
+                  style={correctAnswerBoxStyle}
+                >
+                  {Object.keys(alternateAnswers).map((key, i) => (
+                    <FlexContainer key={i} marginBottom="10px" alignItems="center">
+                      <CorTitle>
+                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: list[i] }} />
+                      </CorTitle>
+                      <Separator smallSize={smallSize} correctAnswer />
+                      <CorItem>
+                        <Index preview correctAnswer>
+                          {getStemNumeration(stemNumeration, i)}
+                        </Index>
+                        <MathFormulaDisplay
+                          dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
+                        />
+                      </CorItem>
+                    </FlexContainer>
+                  ))}
+                </StyledCorrectAnswersContainer>
+              )}
+            </Fragment>
+          ) : null}
+          <HorizontalScrollContainer scrollWrraper={previewWrapperRef.current} />
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

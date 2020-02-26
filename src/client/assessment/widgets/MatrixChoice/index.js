@@ -7,7 +7,15 @@ import produce from "immer";
 import { withRouter } from "react-router-dom";
 
 import { withNamespaces } from "@edulastic/localization";
-import { CorrectAnswersContainer, MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
+import {
+  CorrectAnswersContainer,
+  MathFormulaDisplay,
+  QuestionNumberLabel,
+  QuestionSubLabel,
+  FlexContainer,
+  QuestionContentWrapper,
+  QuestionLabelWrapper
+} from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { replaceVariables, updateVariables } from "../../utils/variables";
@@ -28,11 +36,6 @@ import { StyledPaperWrapper } from "../../styled/Widget";
 const EmptyWrapper = styled.div`
   max-width: 100%;
   width: auto;
-`;
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-  align-items: baseline;
 `;
 
 const MatrixChoice = ({
@@ -140,37 +143,48 @@ const MatrixChoice = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-            <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          </QuestionTitleWrapper>
-          {previewTab === CLEAR ? (
-            <Preview
-              smallSize={smallSize}
-              saveAnswer={!disableResponse ? saveAnswer : () => {}}
-              userAnswer={answer}
-              item={itemForPreview}
-              feedbackAttempts={feedbackAttempts}
-              onCheckAnswer={_checkAnswer}
-              previewTab={previewTab}
-              disableResponse={disableResponse}
-              changeView={changeView}
-              {...restProps}
-            />
-          ) : (
-            <Preview
-              saveAnswer={!disableResponse ? saveAnswer : () => {}}
-              userAnswer={answer}
-              item={itemForPreview}
-              feedbackAttempts={feedbackAttempts}
-              onCheckAnswer={_checkAnswer}
-              previewTab={previewTab}
-              disableResponse={disableResponse}
-              changeView={changeView}
-              evaluation={evaluation}
-              {...restProps}
-            />
-          )}
+          <FlexContainer alignItems="baseline" justifyContent="flex-start">
+            <QuestionLabelWrapper>
+              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+            </QuestionLabelWrapper>
+
+            <QuestionContentWrapper>
+              <MathFormulaDisplay
+                style={{ marginBottom: 20 }}
+                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+              />
+              <div style={{ width: "100%" }}>
+                {previewTab === CLEAR ? (
+                  <Preview
+                    smallSize={smallSize}
+                    saveAnswer={!disableResponse ? saveAnswer : () => {}}
+                    userAnswer={answer}
+                    item={itemForPreview}
+                    feedbackAttempts={feedbackAttempts}
+                    onCheckAnswer={_checkAnswer}
+                    previewTab={previewTab}
+                    disableResponse={disableResponse}
+                    changeView={changeView}
+                    {...restProps}
+                  />
+                ) : (
+                  <Preview
+                    saveAnswer={!disableResponse ? saveAnswer : () => {}}
+                    userAnswer={answer}
+                    item={itemForPreview}
+                    feedbackAttempts={feedbackAttempts}
+                    onCheckAnswer={_checkAnswer}
+                    previewTab={previewTab}
+                    disableResponse={disableResponse}
+                    changeView={changeView}
+                    evaluation={evaluation}
+                    {...restProps}
+                  />
+                )}
+              </div>
+            </QuestionContentWrapper>
+          </FlexContainer>
 
           {(previewTab === SHOW || isReviewTab) && (
             <Fragment>
@@ -191,7 +205,9 @@ const MatrixChoice = ({
 
               {altResponses &&
                 altResponses.map((altAnswer, i) => (
-                  <CorrectAnswersContainer title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}>
+                  <CorrectAnswersContainer
+                    title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}
+                  >
                     <Preview
                       saveAnswer={() => {}}
                       userAnswer={altAnswer}

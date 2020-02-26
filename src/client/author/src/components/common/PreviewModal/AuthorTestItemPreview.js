@@ -6,12 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { themeColor, white, red } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
-import {
-  IconPencilEdit,
-  IconArrowLeft,
-  IconArrowRight,
-  IconCopy
-} from "@edulastic/icons";
+import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 import { get } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
@@ -177,10 +172,13 @@ class AuthorTestItemPreview extends Component {
       sectionQue[1] +
       subCount
     );
-
   };
 
-  renderTabContent = (widget, flowLayout, index, colIndex, sectionQue, subCount, resourceCount) => {
+  renderTabContent = (
+    widget,
+    flowLayout
+    // , index, colIndex, sectionQue, subCount, resourceCount
+  ) => {
     const {
       preview,
       LCBPreviewModal,
@@ -196,21 +194,21 @@ class AuthorTestItemPreview extends Component {
       cols,
       ...restProps
     } = this.props;
-    const questionCount = get(item, ["data", "questions"], []).length;
+    // const questionCount = get(item, ["data", "questions"], []).length;
     // TODO
     // make resources and questions consistent
     // resources are not saving as a part of item.data.resources
-    const isMultiPart = questionCount > 1;
+    // const isMultiPart = questionCount > 1;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
-    const alphabets = "abcdefghijklmnopqrstuvwxyz";
+    // const alphabets = "abcdefghijklmnopqrstuvwxyz";
 
-    const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
+    // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
     const question = questions[widget.reference];
-    if (isMultiPart || resourceCount > 0) {
-      if (!question.qSubLabel) {
-        question.qSubLabel = alphabets[subIndex - resourceCount];
-      }
-    }
+    // if (isMultiPart || resourceCount > 0) {
+    //   if (!question.qSubLabel) {
+    //     question.qSubLabel = alphabets[subIndex - resourceCount];
+    //   }
+    // }
     // && questions[widget.reference].qLabel
     //   ? questions[widget.reference]
     //   : {

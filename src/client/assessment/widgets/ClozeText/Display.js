@@ -5,7 +5,16 @@ import produce from "immer";
 import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
-import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import {
+  InstructorStimulus,
+  helpers,
+  Stimulus,
+  QuestionNumberLabel,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper,
+  FlexContainer
+} from "@edulastic/common";
 import { EDIT } from "../../constants/constantsForQuestions";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
@@ -214,15 +223,23 @@ class ClozeTextDisplay extends Component {
         {instructorStimulus && instructorStimulus !== "<p><br></p>" && (
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          {!!question && (
-            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-          )}
-          {!question && QuestionContent}
-        </QuestionTitleWrapper>
-        {question && QuestionContent}
-        {answerBox}
+        <FlexContainer alignItems="baseline" justifyContent="flex-start" width="100%">
+          <QuestionLabelWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
+
+          <QuestionContentWrapper>
+            <QuestionTitleWrapper>
+              {!!question && (
+                <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+              )}
+              {!question && QuestionContent}
+            </QuestionTitleWrapper>
+            {question && QuestionContent}
+            {answerBox}
+          </QuestionContentWrapper>
+        </FlexContainer>
       </div>
     );
   }

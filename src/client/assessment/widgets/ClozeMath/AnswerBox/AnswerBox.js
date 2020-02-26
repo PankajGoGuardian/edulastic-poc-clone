@@ -207,7 +207,7 @@ const Wrapper = styled.div`
   border-radius: 10px;
   padding: 8px 24px 24px;
   margin-top: 16px;
-
+  width: 100%;
   .ant-tabs-bar {
     border-bottom: 1px solid #ccc;
   }

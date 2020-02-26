@@ -5,7 +5,15 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find, get, orderBy } from
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import {
+  helpers,
+  Stimulus,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionContentWrapper,
+  QuestionSubLabel
+} from "@edulastic/common";
 import DisplayOptions from "../ClozeImageDropDown/QuestionOptions";
 
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -196,7 +204,9 @@ class ClozeDropDownDisplay extends Component {
           showWarnings
           components={{
             textdropdown:
-              showAnswer || checkAnswer || isPrint || isPrintPreview ? CheckboxTemplateBoxLayout : ChoicesBox,
+              showAnswer || checkAnswer || isPrint || isPrintPreview
+                ? CheckboxTemplateBoxLayout
+                : ChoicesBox,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -205,22 +215,34 @@ class ClozeDropDownDisplay extends Component {
     );
 
     return (
-      <div>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          {!!question && (
-            <Stimulus
-              qIndex={qIndex}
-              smallSize={smallSize}
-              dangerouslySetInnerHTML={{ __html: question }}
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {!!question && (
+              <Stimulus
+                qIndex={qIndex}
+                smallSize={smallSize}
+                dangerouslySetInnerHTML={{ __html: question }}
+              />
+            )}
+            {!question && questionContent}
+          </QuestionTitleWrapper>
+          {question && questionContent}
+          {(isPrint || isPrintPreview) && (
+            <DisplayOptions
+              options={displayOptions}
+              responseIds={item.responseIds}
+              style={{ marginTop: "50px" }}
             />
           )}
-          {!question && questionContent}
-        </QuestionTitleWrapper>
-        {question && questionContent}
-        {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} responseIds={item.responseIds} style={{marginTop: "50px"}} />}
-        {answerBox}
-      </div>
+          {answerBox}
+        </QuestionContentWrapper>
+      </FlexContainer>
     );
   }
 }

@@ -1,9 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { shuffle, isUndefined, get, maxBy, orderBy } from "lodash";
+import { shuffle, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Stimulus,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionSubLabel,
+  QuestionLabelWrapper,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBox";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -92,7 +99,10 @@ class Display extends Component {
     if (responseContainers.length > 0) {
       const maxTop = maxBy(responseContainers, res => res.top);
       const maxLeft = maxBy(responseContainers, res => res.left);
-      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+      return {
+        responseBoxMaxTop: maxTop.top + maxTop.height,
+        responseBoxMaxLeft: maxLeft.left + maxLeft.width
+      };
     }
 
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
@@ -172,12 +182,15 @@ class Display extends Component {
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
     }
-    const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
+    const largestResponseWidth = responseContainers.reduce(
+      (acc, resp) => Math.max(acc, resp.width),
+      0
+    );
     let containerHeight = 0;
     // calculate the dropdown menu height, its top relative to container, for each responseContainer
     const tops = [];
     let maxResponseOffsetX = 0;
-    responseContainers.map((responseContainer, i) => {
+    responseContainers.forEach((responseContainer, i) => {
       const delta = parseFloat(responseContainer?.height) + (newOptions?.[i]?.length * 32 || 110);
       tops.push(topAndLeftRatio(responseContainer?.top, imagescale, fontsize, smallSize) + delta);
       const respOffset = responseContainer.left || 0 + responseContainer.width || 0;
@@ -199,7 +212,11 @@ class Display extends Component {
         fontSize={fontSize}
         height={containerHeight}
       >
-        <StyledPreviewContainer width={containerWidth} smallSize={smallSize} height={containerHeight}>
+        <StyledPreviewContainer
+          width={containerWidth}
+          smallSize={smallSize}
+          height={containerHeight}
+        >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -215,10 +232,14 @@ class Display extends Component {
           />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
-              const { height: individualHeight = 0, width: individualWidth = 0 } = responseContainer;
+              const {
+                height: individualHeight = 0,
+                width: individualWidth = 0
+              } = responseContainer;
               const { heightpx: globalHeight = 0, widthpx: globalWidth = 0 } = uiStyle;
               const { minWidth, minHeight } = response;
-              const height = parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
+              const height =
+                parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
               const width = parseInt(individualWidth, 10) || parseInt(globalWidth, 10) || minWidth;
               const dropTargetIndex = index;
               const btnStyle = {
@@ -228,8 +249,12 @@ class Display extends Component {
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
                 border: showDropItemBorder
                   ? showDashedBorder
-                    ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                    : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                    ? `dashed 2px ${
+                        theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
+                      }`
+                    : `solid 1px ${
+                        theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
+                      }`
                   : 0,
                 position: "absolute",
                 borderRadius: 5
@@ -256,13 +281,23 @@ class Display extends Component {
                       dropdownStyle={{ zoom: theme.widgets.clozeImageDropDown.imageZoom }}
                       disabled={disableResponse}
                       backgroundColor={backgroundColor}
-                      options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
+                      options={(newOptions[dropTargetIndex] || []).map(op => ({
+                        value: op,
+                        label: op
+                      }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelectedAnswers[dropTargetIndex]}
-                      isPrintPreview={isPrint ||isPrintPreview}
+                      defaultValue={
+                        isReviewTab
+                          ? cAnswers[dropTargetIndex]
+                          : userSelectedAnswers[dropTargetIndex]
+                      }
+                      isPrintPreview={isPrint || isPrintPreview}
                     />
                   )}
-                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                  <Pointer
+                    className={responseContainer.pointerPosition}
+                    width={responseContainer.width}
+                  >
                     <Point />
                     <Triangle theme={theme} />
                   </Pointer>
@@ -299,9 +334,13 @@ class Display extends Component {
         minWidthShowAnswer={response.minWidthShowAnswer}
         minHeight={response.minHeight}
         userSelections={
-          item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections
+          item && item.activity && item.activity.userResponse
+            ? item.activity.userResponse
+            : userSelections
         }
-        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
+        evaluation={
+          item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+        }
         imageOptions={imageOptions}
         onClickHandler={this.onClickCheckboxHandler}
         largestResponseWidth={largestResponseWidth}
@@ -309,7 +348,8 @@ class Display extends Component {
         item={item}
       />
     );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout =
+      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altAnswers = get(validation, "altResponses", []);
     const correctAnswerBoxLayout = (
       <React.Fragment>
@@ -333,16 +373,26 @@ class Display extends Component {
 
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
-        <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
-          <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
-          {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
-          {answerBox}
-        </TemplateBoxContainer>
-        
+        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+          <QuestionLabelWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
+
+          <QuestionContentWrapper>
+            <QuestionTitleWrapper>
+              <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+            </QuestionTitleWrapper>
+
+            <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
+              <TemplateBoxLayoutContainer smallSize={smallSize}>
+                {templateBoxLayout}
+              </TemplateBoxLayoutContainer>
+              {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
+              {answerBox}
+            </TemplateBoxContainer>
+          </QuestionContentWrapper>
+        </FlexContainer>
       </StyledDisplayContainer>
     );
   }

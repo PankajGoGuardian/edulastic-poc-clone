@@ -11,9 +11,11 @@ import { IndexBox } from "../styled/IndexBox";
 import { AnswerContent } from "../styled/AnswerContent";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altIndex, stemNumeration, t }) => (
-  <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
+  <div className="correctanswer-box" style={{ padding: 16, fontSize, width: "100%" }}>
     <CorrectAnswerTitle>
-      {altIndex ? `${t("component.cloze.altAnswers")} ${altIndex}` : t("component.cloze.correctAnswer")}
+      {altIndex
+        ? `${t("component.cloze.altAnswers")} ${altIndex}`
+        : t("component.cloze.correctAnswer")}
     </CorrectAnswerTitle>
     <Answers>
       {userAnswers

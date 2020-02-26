@@ -1,4 +1,5 @@
-//@ts-check
+/* eslint-disable no-unused-vars */
+// @ts-check
 import { keyBy, groupBy, get, values, flatten } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
@@ -17,7 +18,7 @@ export const markQuestionLabel = testItems => {
       continue;
     }
     if (item.data.questions.length === 1) {
-      item.data.questions[0].qLabel = `Q${i + 1}`;
+      item.data.questions[0].qLabel = i + 1;
       item.data.questions[0].barLabel = `Q${i + 1}`;
     } else if (item.isDocBased) {
       item.data.questions = item.data.questions
@@ -30,7 +31,8 @@ export const markQuestionLabel = testItems => {
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,
-        qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+        qLabel: qIndex === 0 ? i + 1 : null,
+        qSubLabel: alphabets[qIndex],
         barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
       }));
     }
@@ -42,8 +44,9 @@ export const markQuestionLabel = testItems => {
  */
 export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
-  for (let testItemId of testItemIds) {
-    let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
+  for (const testItemId of testItemIds) {
+    const questions =
+      (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
     if (!questions.length) {
       qids = [
         ...qids,
@@ -61,14 +64,14 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       qids = [
         ...qids,
         ...questions
-          //.filter(x => !x.scoringDisabled)
+          // .filter(x => !x.scoringDisabled)
           .map((x, index) => ({
             id: x.id,
             maxScore: index === 0 ? testItemsDataKeyed[testItemId].itemLevelScore : undefined,
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
-            qids: questions.map(x => x.id),
+            qids: questions.map(_x => _x.id),
             qLabel: x.qLabel,
             barLabel: x.barLabel
           }))
@@ -111,7 +114,7 @@ export const getQuestionLabels = (testItemsData = []) => {
       continue;
     }
     if (item.data.questions.length === 1) {
-      result[item.data.questions[0].id] = { qLabel: `Q${i + 1}`, barLabel: `Q${i + 1}` };
+      result[item.data.questions[0].id] = { qLabel: i + 1, barLabel: `Q${i + 1}` };
     } else {
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex];
@@ -122,7 +125,8 @@ export const getQuestionLabels = (testItemsData = []) => {
           };
         } else {
           result[q.id] = {
-            qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+            qLabel: qIndex === 0 ? i + 1 : null,
+            qSubLabel: alphabets[qIndex],
             barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
           };
         }
@@ -154,9 +158,9 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
   if (!qid) {
     return qActivityMaxScore || 1;
   }
-  for (let testItem of testItemsData) {
-    let questions = get(testItem, ["data", "questions"], []);
-    let questionNeeded = questions.find(x => x.id === qid);
+  for (const testItem of testItemsData) {
+    const questions = get(testItem, ["data", "questions"], []);
+    const questionNeeded = questions.find(x => x.id === qid);
 
     if (questionNeeded) {
       return getMaxScoreFromQuestion(questionNeeded);
@@ -166,14 +170,19 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
   return 0;
 };
 
-const getSkippedStatusOfQuestion = (testItemId, questionActivitiesMap, testItems, questionActivityId) => {
+const getSkippedStatusOfQuestion = (
+  testItemId,
+  questionActivitiesMap,
+  testItems,
+  questionActivityId
+) => {
   const questionActivities = Object.values(questionActivitiesMap);
   const questions = questionActivities.filter(o => o.testItemId === testItemId);
   const item = testItems.find(o => o._id === testItemId);
 
   let skipCount = 0;
   if (item && item.itemLevelScoring) {
-    for (let q of questions) {
+    for (const q of questions) {
       if (q.skipped === true) {
         skipCount++;
       }
@@ -214,10 +223,9 @@ export const getAvatarName = studentName => {
   const parts = studentName.split(" ");
   if (parts.length > 1) {
     return `${parts[0].trim().charAt(0)}${parts[1].trim().charAt(0)}`.toUpperCase();
-  } else {
-    const part = parts[0].trim();
-    return `${part.charAt(0)}${part.charAt(1)}`.toUpperCase();
   }
+  const part = parts[0].trim();
+  return `${part.charAt(0)}${part.charAt(1)}`.toUpperCase();
 };
 
 export const getFirstName = studentName => {
@@ -231,7 +239,7 @@ export const getFirstName = studentName => {
 export const transformTestItems = ({ passageData, testItemsData }) => {
   const passagesKeyed = keyBy(passageData, "_id");
 
-  for (let x of testItemsData) {
+  for (const x of testItemsData) {
     if (x.passageId && passagesKeyed[x.passageId]) {
       x.rows.unshift(passagesKeyed[x.passageId].structure);
     }
@@ -256,7 +264,9 @@ export const transformGradeBookResponse = (
    */
   testItemsData = testItemsData.map(testItem => {
     if (testItem.data) {
-      testItem.data.questions = testItem.data.questions.filter(q => q.type !== questionType.SECTION_LABEL);
+      testItem.data.questions = testItem.data.questions.filter(
+        q => q.type !== questionType.SECTION_LABEL
+      );
       testItem.rows = testItem.rows.map(row => {
         row.widgets = row.widgets.filter(w => w.type !== questionType.SECTION_LABEL);
         return row;
@@ -274,7 +284,9 @@ export const transformGradeBookResponse = (
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
 
   for (const itemId of Object.keys(questionActivitiesGrouped)) {
-    const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(x => x.graded === false);
+    const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(
+      x => x.graded === false
+    );
 
     const { itemLevelScoring } = testItemsDataKeyed[itemId];
     if (itemLevelScoring) {
@@ -291,10 +303,10 @@ export const transformGradeBookResponse = (
   testQuestionActivities = flatten(values(questionActivitiesGrouped));
 
   const studentTestActivities = keyBy(testActivities, "userId");
-  let testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
-  //testActivityQuestionActivities = mapValues(testActivityQuestionActivities, v => keyBy(v, "qid"));
+  const testActivityQuestionActivities = groupBy(testQuestionActivities, "userId");
+  // testActivityQuestionActivities = mapValues(testActivityQuestionActivities, v => keyBy(v, "qid"));
 
-  //for students who hasn't even started the test
+  // for students who hasn't even started the test
   const emptyQuestionActivities = qids.map(x => ({
     _id: x.id,
     weight: x.weight,
@@ -330,7 +342,7 @@ export const transformGradeBookResponse = (
             fakeName,
             icon,
             color: fakeFirstName,
-            present: isAbsent ? false : true,
+            present: !isAbsent,
             status: isAbsent ? "absent" : "notStarted",
             maxScore: testMaxScore,
             questionActivities: emptyQuestionActivities.map(qact => ({
@@ -357,30 +369,46 @@ export const transformGradeBookResponse = (
           };
         }
 
-        //TODO: for now always present
+        // TODO: for now always present
         const present = true;
-        //TODO: no graded status now. using submitted as a substitute for graded
-        const graded = testActivity.graded;
+        // TODO: no graded status now. using submitted as a substitute for graded
+        const { graded } = testActivity;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
         const { _id: testActivityId, groupId, previouslyRedirected: redirected } = testActivity;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
-        const score = (questionActivitiesRaw && questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) || 0;
+        const score =
+          (questionActivitiesRaw &&
+            questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) ||
+          0;
 
-        const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
+        const questionActivitiesIndexed =
+          (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
         const questionActivitiesKeyedByItemId =
           (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.testItemId)) || {};
 
         const questionActivities = qids.map(
-          ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel, _id: qActId }, index) => {
+          (
+            {
+              id: el,
+              weight,
+              qids: _qids,
+              disabled,
+              testItemId,
+              maxScore,
+              barLabel,
+              qLabel,
+              _id: qActId
+            },
+            index
+          ) => {
             const _id = el;
             const currentQuestionActivity =
               questionActivitiesIndexed[el] || questionActivitiesKeyedByItemId[testItemId];
-            const questionMaxScore = maxScore
-              ? maxScore
-              : getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
+            const questionMaxScore =
+              maxScore || getMaxScoreOfQid(_id, testItemsData, currentQuestionActivity?.maxScore);
 
             if (!currentQuestionActivity) {
               return {
@@ -401,17 +429,22 @@ export const transformGradeBookResponse = (
                   : { notStarted: true, score: 0, maxScore: questionMaxScore })
               };
             }
-            let {
-              skipped,
-              correct,
-              partiallyCorrect: partialCorrect,
+            let { skipped, correct, partiallyCorrect: partialCorrect } = currentQuestionActivity;
+            const {
               timeSpent,
+              // eslint-disable-next-line no-shadow
               score,
+              // eslint-disable-next-line no-shadow
               graded,
               pendingEvaluation,
               ...remainingProps
             } = currentQuestionActivity;
-            skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
+            skipped = getSkippedStatusOfQuestion(
+              testItemId,
+              questionActivitiesIndexed,
+              testItemsData,
+              el
+            );
 
             if (score > 0 && skipped) {
               skipped = false;

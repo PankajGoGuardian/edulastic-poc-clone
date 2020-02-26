@@ -6,7 +6,14 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get, isString } from "lodash";
 
-import { Stimulus, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Stimulus,
+  FlexContainer,
+  QuestionNumberLabel,
+  QuestionSubLabel,
+  QuestionLabelWrapper,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
@@ -141,79 +148,93 @@ const EssayPlainTextPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && (
-          <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        )}
-      </QuestionTitleWrapper>
+      <FlexContainer justifyContent="flex-start" alignItems="baseline">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
 
-      {!disableResponse && (
-        <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
-          <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
-            {item.showCopy && (
-              <ToolbarItem onClick={handleAction(COPY)}>
-                {t("component.essayText.copy")}
-              </ToolbarItem>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}
-            {item.showCut && (
-              <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>
-            )}
-            {item.showPaste && (
-              <ToolbarItem onClick={handleAction(PASTE)}>
-                {t("component.essayText.paste")}
-              </ToolbarItem>
-            )}
-            {Array.isArray(item.characterMap) && (
-              <Character
-                onSelect={char => {
-                  setSelection({
-                    start: selection.start + char.length,
-                    end: selection.start + char.length
-                  });
-                  setText(text.slice(0, selection.start) + char + text.slice(selection.end));
-                }}
-                characters={item.characterMap}
-              />
-            )}
-          </FlexContainer>
-        </Toolbar>
-      )}
-      <Input.TextArea
-        ref={ref => {
-          node = ref;
-        }}
-        style={{
-          borderRadius: 0,
-          fontSize,
-          color: theme.widgets.essayPlainText.textInputColor,
-          borderColor: theme.widgets.essayPlainText.textInputBorderColor,
-          background:
-            item.maxWord < wordCount
-              ? theme.widgets.essayPlainText.textInputLimitedBgColor
-              : theme.widgets.essayPlainText.textInputBgColor
-        }}
-        rows={numberOfRows} // textarea number of rows
-        onSelect={handleSelect}
-        value={smallSize ? t("component.essayText.plain.templateText") : text}
-        onChange={handleTextChange}
-        size="large"
-        onPaste={preventEvent}
-        readOnly={disableResponse}
-        onCopy={preventEvent}
-        onCut={preventEvent}
-        placeholder={item.placeholder || ""}
-        disabled={reviewTab}
-        {...getSpellCheckAttributes(item.spellcheck)}
-      />
+          </QuestionTitleWrapper>
 
-      {!reviewTab && item.showWordCount && (
-        <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
-          <FlexContainer alignItems="stretch" justifyContent="space-between" />
+          {!disableResponse && (
+            <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
+              <FlexContainer
+                childMarginRight={0}
+                alignItems="stretch"
+                justifyContent="space-between"
+              >
+                {item.showCopy && (
+                  <ToolbarItem onClick={handleAction(COPY)}>
+                    {t("component.essayText.copy")}
+                  </ToolbarItem>
+                )}
+                {item.showCut && (
+                  <ToolbarItem onClick={handleAction(CUT)}>
+                    {t("component.essayText.cut")}
+                  </ToolbarItem>
+                )}
+                {item.showPaste && (
+                  <ToolbarItem onClick={handleAction(PASTE)}>
+                    {t("component.essayText.paste")}
+                  </ToolbarItem>
+                )}
+                {Array.isArray(item.characterMap) && (
+                  <Character
+                    onSelect={char => {
+                      setSelection({
+                        start: selection.start + char.length,
+                        end: selection.start + char.length
+                      });
+                      setText(text.slice(0, selection.start) + char + text.slice(selection.end));
+                    }}
+                    characters={item.characterMap}
+                  />
+                )}
+              </FlexContainer>
+            </Toolbar>
+          )}
+          <Input.TextArea
+            ref={ref => {
+              node = ref;
+            }}
+            style={{
+              borderRadius: 0,
+              fontSize,
+              color: theme.widgets.essayPlainText.textInputColor,
+              borderColor: theme.widgets.essayPlainText.textInputBorderColor,
+              background:
+                item.maxWord < wordCount
+                  ? theme.widgets.essayPlainText.textInputLimitedBgColor
+                  : theme.widgets.essayPlainText.textInputBgColor
+            }}
+            rows={numberOfRows} // textarea number of rows
+            onSelect={handleSelect}
+            value={smallSize ? t("component.essayText.plain.templateText") : text}
+            onChange={handleTextChange}
+            size="large"
+            onPaste={preventEvent}
+            readOnly={disableResponse}
+            onCopy={preventEvent}
+            onCut={preventEvent}
+            placeholder={item.placeholder || ""}
+            disabled={reviewTab}
+            {...getSpellCheckAttributes(item.spellcheck)}
+          />
 
-          <Item style={wordCountStyle}>{displayWordCount}</Item>
-        </Toolbar>
-      )}
+          {!reviewTab && item.showWordCount && (
+            <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
+              <FlexContainer alignItems="stretch" justifyContent="space-between" />
+
+              <Item style={wordCountStyle}>{displayWordCount}</Item>
+            </Toolbar>
+          )}
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

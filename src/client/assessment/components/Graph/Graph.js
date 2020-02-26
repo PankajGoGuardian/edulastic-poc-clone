@@ -6,7 +6,11 @@ import {
   CorrectAnswersContainer,
   Stimulus,
   QuestionNumberLabel,
-  AnswerContext
+  AnswerContext,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionContentWrapper,
+  QuestionSubLabel
 } from "@edulastic/common";
 
 import { compose } from "redux";
@@ -461,67 +465,78 @@ class Graph extends Component {
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}>
-            <QuestionTitleWrapper>
-              {showQuestionNumber && !flowLayout ? (
-                <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
-              ) : null}
-              <StyledStimulus
-                data-cy="questionHeader"
-                dangerouslySetInnerHTML={{ __html: stimulus }}
-                fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
-              />
-            </QuestionTitleWrapper>
-            {item.canvas && item.uiStyle && (
-              <GraphDisplay
-                disableResponse={disableResponse}
-                graphData={item}
-                view={view}
-                previewTab={previewTab}
-                onChange={this.handleAddAnswer}
-                elements={userAnswer}
-                evaluation={evaluation}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && item.canvas && item.uiStyle && (
-              <Fragment>
-                <CorrectAnswersContainer
-                  minWidth="max-content"
-                  title={t("component.graphing.correctAnswer")}
-                >
+          <Wrapper
+            style={{ overflow: "auto" }}
+            className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}
+          >
+            <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+              <QuestionLabelWrapper>
+                {showQuestionNumber && !flowLayout ? (
+                  <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+                ) : null}
+                {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+              </QuestionLabelWrapper>
+
+              <QuestionContentWrapper>
+                <QuestionTitleWrapper>
+                  <StyledStimulus
+                    data-cy="questionHeader"
+                    dangerouslySetInnerHTML={{ __html: stimulus }}
+                    fontSize={getFontSize(mapFontName[item.uiStyle.currentFontSize])}
+                  />
+                </QuestionTitleWrapper>
+                {item.canvas && item.uiStyle && (
                   <GraphDisplay
-                    disableResponse
+                    disableResponse={disableResponse}
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
-                    elements={validation.validResponse.value}
+                    onChange={this.handleAddAnswer}
+                    elements={userAnswer}
                     evaluation={evaluation}
-                    elementsIsCorrect
                     {...restProps}
                   />
-                </CorrectAnswersContainer>
-
-                {validation.altResponses &&
-                  validation.altResponses.map((altAnswer, i) => (
+                )}
+                {previewTab === "show" && item.canvas && item.uiStyle && (
+                  <Fragment>
                     <CorrectAnswersContainer
                       minWidth="max-content"
-                      title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                      title={t("component.graphing.correctAnswer")}
                     >
                       <GraphDisplay
                         disableResponse
                         graphData={item}
                         view={view}
                         previewTab={previewTab}
-                        elements={altAnswer.value}
+                        elements={validation.validResponse.value}
                         evaluation={evaluation}
                         elementsIsCorrect
                         {...restProps}
                       />
                     </CorrectAnswersContainer>
-                  ))}
-              </Fragment>
-            )}
+
+                    {validation.altResponses &&
+                      validation.altResponses.map((altAnswer, i) => (
+                        <CorrectAnswersContainer
+                          minWidth="max-content"
+                          title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                        >
+                          <GraphDisplay
+                            disableResponse
+                            graphData={item}
+                            view={view}
+                            previewTab={previewTab}
+                            elements={altAnswer.value}
+                            evaluation={evaluation}
+                            elementsIsCorrect
+                            {...restProps}
+                          />
+                        </CorrectAnswersContainer>
+                      ))}
+                  </Fragment>
+                )}
+              </QuestionContentWrapper>
+            </FlexContainer>
           </Wrapper>
         )}
         {view === "preview" && smallSize && (

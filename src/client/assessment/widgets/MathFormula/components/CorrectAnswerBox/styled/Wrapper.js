@@ -5,4 +5,5 @@ export const Wrapper = styled.div`
   background: lightgray;
   border-radius: 5px;
   margin: 15px 0;
+  width: 100%;
 `;

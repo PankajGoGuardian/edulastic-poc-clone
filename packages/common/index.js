@@ -47,6 +47,9 @@ export { default as ErrorHandler } from "./src/components/ErrorHandler";
 export { default as OfflineNotifier } from "./src/components/OfflineNotifier";
 export { default as Ellipsis } from "./src/components/Ellipsis";
 export { default as FontPicker } from "./src/components/FontPicker";
+export { default as QuestionLabelWrapper } from "./src/components/QuestionLabelWrapper";
+export { default as QuestionContentWrapper } from "./src/components/QuestionContentWrapper";
+
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { default as withWindowScroll } from "./src/HOC/withWindowScroll";

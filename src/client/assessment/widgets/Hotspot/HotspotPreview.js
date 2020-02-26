@@ -2,7 +2,15 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 
-import { Stimulus, InstructorStimulus, CorrectAnswersContainer, QuestionNumberLabel } from "@edulastic/common";
+import {
+  Stimulus,
+  CorrectAnswersContainer,
+  QuestionNumberLabel,
+  FlexContainer,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -63,62 +71,53 @@ const HotspotPreview = ({
   });
 
   return (
-    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && (
-          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        )}
-      </QuestionTitleWrapper>
+    <StyledPaperWrapper
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
+          </QuestionTitleWrapper>
 
-      <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} width={+width} height={+height} justifyContent="center">
-        <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
-        <Svg data-cy="answer-container" width={+width} height={+height}>
-          {areas &&
-            areas.map((area, i) => (
-              <Polygon
-                key={i}
-                showAnswer={previewTab !== CLEAR && userAnswer.includes(i)}
-                onClick={!disableResponse ? handleClick(i) : () => {}}
-                points={area.map(point => `${point.x},${point.y}`).join(" ")}
-                selected={userAnswer.includes(i)}
-                correct={evaluation[userAnswer.findIndex(val => i === val)]}
-                {...getStyles(i)}
-              />
-            ))}
-        </Svg>
-      </BlockContainer>
+          <BlockContainer
+            data-cy="hotspotMap"
+            style={{ maxWidth }}
+            width={+width}
+            height={+height}
+            justifyContent="center"
+          >
+            <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
+            <Svg data-cy="answer-container" width={+width} height={+height}>
+              {areas &&
+                areas.map((area, i) => (
+                  <Polygon
+                    key={i}
+                    showAnswer={previewTab !== CLEAR && userAnswer.includes(i)}
+                    onClick={!disableResponse ? handleClick(i) : () => {}}
+                    points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                    selected={userAnswer.includes(i)}
+                    correct={evaluation[userAnswer.findIndex(val => i === val)]}
+                    {...getStyles(i)}
+                  />
+                ))}
+            </Svg>
+          </BlockContainer>
 
-      {previewTab === "show" && !smallSize && (
-        <Fragment>
-          <CorrectAnswersContainer title={t("component.graphing.correctAnswer")} minWidth={`${width + 24}px`}>
-            <BlockContainer
-              data-cy="hotspotMap"
-              style={{ maxWidth }}
-              width={+width}
-              height={+height}
-              justifyContent="center"
-            >
-              <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
-              <Svg data-cy="answer-container" width={+width} height={+height}>
-                {areas &&
-                  areas.map((area, i) => (
-                    <Polygon
-                      key={i}
-                      showAnswer={validAnswer.includes(i)}
-                      onClick={() => {}}
-                      points={area.map(point => `${point.x},${point.y}`).join(" ")}
-                      selected={validAnswer.includes(i)}
-                      correct
-                      {...getStyles(i)}
-                    />
-                  ))}
-              </Svg>
-            </BlockContainer>
-          </CorrectAnswersContainer>
-          {altAnswers &&
-            altAnswers.map((altAnswer, i) => (
-              <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
+          {previewTab === "show" && !smallSize && (
+            <Fragment>
+              <CorrectAnswersContainer
+                title={t("component.graphing.correctAnswer")}
+                minWidth={`${width + 24}px`}
+              >
                 <BlockContainer
                   data-cy="hotspotMap"
                   style={{ maxWidth }}
@@ -129,39 +128,76 @@ const HotspotPreview = ({
                   <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                   <Svg data-cy="answer-container" width={+width} height={+height}>
                     {areas &&
-                      areas.map((area, altIndex) => (
+                      areas.map((area, i) => (
                         <Polygon
                           key={i}
-                          showAnswer={altAnswer.value.includes(altIndex)}
+                          showAnswer={validAnswer.includes(i)}
                           onClick={() => {}}
                           points={area.map(point => `${point.x},${point.y}`).join(" ")}
-                          selected={altAnswer.value.includes(altIndex)}
+                          selected={validAnswer.includes(i)}
                           correct
-                          {...getStyles(altIndex)}
+                          {...getStyles(i)}
                         />
                       ))}
                   </Svg>
                 </BlockContainer>
               </CorrectAnswersContainer>
-            ))}
-        </Fragment>
-      )}
-      {smallSize && (
-        <BlockContainer width={320} height={170} justifyContent="center">
-          <ImageContainer src={source} width={320} height={170} left={0} top={0} />
-          <Svg data-cy="answer-container" width={320} height={170}>
-            {previewAreas.map((areaPreviewPoints, i) => (
-              <Polygon
-                key={i}
-                onClick={handleClick(i)}
-                points={areaPreviewPoints.map(point => `${point.x},${point.y}`).join(" ")}
-                fill={areaAttributes.global.fill}
-                stroke={areaAttributes.global.stroke}
-              />
-            ))}
-          </Svg>
-        </BlockContainer>
-      )}
+              {altAnswers &&
+                altAnswers.map((altAnswer, i) => (
+                  <CorrectAnswersContainer
+                    title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
+                  >
+                    <BlockContainer
+                      data-cy="hotspotMap"
+                      style={{ maxWidth }}
+                      width={+width}
+                      height={+height}
+                      justifyContent="center"
+                    >
+                      <ImageContainer
+                        src={source}
+                        width={+width}
+                        height={+height}
+                        left={0}
+                        top={0}
+                      />
+                      <Svg data-cy="answer-container" width={+width} height={+height}>
+                        {areas &&
+                          areas.map((area, altIndex) => (
+                            <Polygon
+                              key={i}
+                              showAnswer={altAnswer.value.includes(altIndex)}
+                              onClick={() => {}}
+                              points={area.map(point => `${point.x},${point.y}`).join(" ")}
+                              selected={altAnswer.value.includes(altIndex)}
+                              correct
+                              {...getStyles(altIndex)}
+                            />
+                          ))}
+                      </Svg>
+                    </BlockContainer>
+                  </CorrectAnswersContainer>
+                ))}
+            </Fragment>
+          )}
+          {smallSize && (
+            <BlockContainer width={320} height={170} justifyContent="center">
+              <ImageContainer src={source} width={320} height={170} left={0} top={0} />
+              <Svg data-cy="answer-container" width={320} height={170}>
+                {previewAreas.map((areaPreviewPoints, i) => (
+                  <Polygon
+                    key={i}
+                    onClick={handleClick(i)}
+                    points={areaPreviewPoints.map(point => `${point.x},${point.y}`).join(" ")}
+                    fill={areaAttributes.global.fill}
+                    stroke={areaAttributes.global.stroke}
+                  />
+                ))}
+              </Svg>
+            </BlockContainer>
+          )}
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   );
 };

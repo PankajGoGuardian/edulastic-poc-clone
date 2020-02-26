@@ -10,7 +10,10 @@ import {
   FroalaEditor,
   MathFormulaDisplay,
   QuestionNumberLabel,
-  AnswerContext
+  AnswerContext,
+  QuestionSubLabel,
+  QuestionLabelWrapper,
+  QuestionContentWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -120,74 +123,93 @@ const EssayRichTextPreview = ({
   /**
    * if answerContextConfig comes from LCB/EG pages
    */
-  const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
+  const isReadOnly =
+    (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
   return item.id ? (
-    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
+    <StyledPaperWrapper
+      isV1Multipart={isV1Multipart}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
+      <FlexContainer justifyContent="flex-start" alignItems="baseline">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
 
-      <div style={{ position: "relative" }}>
-        <div style={{ position: "relative" }}>
-          {!!characterMap.length && <Addon onClick={() => setShowCharacters(!showCharacters)}>a</Addon>}
-          {showCharacters && (
-            <CharacterMap
-              style={{ position: "absolute", right: 0, top: 38, zIndex: 1000 }}
-              characters={characterMap}
-              onSelect={handleCharacterSelect}
-            />
-          )}
-        </div>
-        {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
-          <FroalaEditorContainer>
-            <FroalaEditor
-              backgroundColor={
-                item.maxWord < wordCount
-                  ? theme.widgets.essayRichText.quillLimitedBgColor
-                  : theme.widgets.essayRichText.quillBgColor
-              }
-              heightMin={minHeight}
-              heightMax={maxHeight}
-              onChange={handleTextChange}
-              value={userAnswer}
-              spellcheck={!!item.spellcheck}
-              toolbarInline={false}
-              toolbarSticky={false}
-              initOnClick={false}
-              readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
-              quickInsertTags={[]}
-              buttons={toolbarButtons}
-              placeholder={item?.placeholder}
-            />
-          </FroalaEditorContainer>
-        )}
-        {((!Array.isArray(userAnswer) && isReadOnly) || (!Array.isArray(userAnswer) && isPrintPreview)) && (
-          <FlexContainer
-            alignItems="flex-start"
-            justifyContent="flex-start"
-            style={{
-              minHeight: "150px",
-              borderRadius: "10px",
-              border: "1px solid",
-              paddingLeft: "6px"
-            }}
-          >
-            <MathFormulaDisplay
-              dangerouslySetInnerHTML={{
-                __html: userAnswer || ""
-              }}
-            />
-          </FlexContainer>
-        )}
-        {item.showWordCount && (userAnswer || !isReadOnly) && (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
-          <Toolbar borderRadiusOnlyBottom>
-            <FlexContainer />
-            <Item style={wordCountStyle}>{displayWordCount}</Item>
-          </Toolbar>
-        )}
-      </div>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
+          </QuestionTitleWrapper>
+          <div style={{ position: "relative", width: "100%" }}>
+            <div style={{ position: "relative" }}>
+              {!!characterMap.length && (
+                <Addon onClick={() => setShowCharacters(!showCharacters)}>a</Addon>
+              )}
+              {showCharacters && (
+                <CharacterMap
+                  style={{ position: "absolute", right: 0, top: 38, zIndex: 1000 }}
+                  characters={characterMap}
+                  onSelect={handleCharacterSelect}
+                />
+              )}
+            </div>
+            {!Array.isArray(userAnswer) && !isReadOnly && !isPrintPreview && (
+              <FroalaEditorContainer>
+                <FroalaEditor
+                  backgroundColor={
+                    item.maxWord < wordCount
+                      ? theme.widgets.essayRichText.quillLimitedBgColor
+                      : theme.widgets.essayRichText.quillBgColor
+                  }
+                  heightMin={minHeight}
+                  heightMax={maxHeight}
+                  onChange={handleTextChange}
+                  value={userAnswer}
+                  spellcheck={!!item.spellcheck}
+                  toolbarInline={false}
+                  toolbarSticky={false}
+                  initOnClick={false}
+                  readOnly={!answerContextConfig.isAnswerModifiable || disableResponse}
+                  quickInsertTags={[]}
+                  buttons={toolbarButtons}
+                  placeholder={item?.placeholder}
+                />
+              </FroalaEditorContainer>
+            )}
+            {((!Array.isArray(userAnswer) && isReadOnly) ||
+              (!Array.isArray(userAnswer) && isPrintPreview)) && (
+              <FlexContainer
+                alignItems="flex-start"
+                justifyContent="flex-start"
+                style={{
+                  minHeight: "150px",
+                  borderRadius: "10px",
+                  border: "1px solid",
+                  paddingLeft: "6px"
+                }}
+              >
+                <MathFormulaDisplay
+                  dangerouslySetInnerHTML={{
+                    __html: userAnswer || ""
+                  }}
+                />
+              </FlexContainer>
+            )}
+            {item.showWordCount &&
+              (userAnswer || !isReadOnly) &&
+              (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
+                <Toolbar borderRadiusOnlyBottom>
+                  <FlexContainer />
+                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                </Toolbar>
+              )}
+          </div>
+        </QuestionContentWrapper>
+      </FlexContainer>
     </StyledPaperWrapper>
   ) : null;
 };

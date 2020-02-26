@@ -1,20 +1,20 @@
 import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
-import { Select, Input } from "antd";
+import { Select } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import {
-  Paper,
   Stimulus,
   FlexContainer,
-  InstructorStimulus,
   CorrectAnswersContainer,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
 } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import { AdaptiveSelect } from "./styled/AdaptiveSelect";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import {
   PREVIEW,
@@ -99,7 +99,9 @@ const ShadingPreview = ({
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer);
 
-    const indexOfSameShade = newUserAnswer.findIndex(shade => shade[0] === rowNumber && shade[1] === colNumber);
+    const indexOfSameShade = newUserAnswer.findIndex(
+      shade => shade[0] === rowNumber && shade[1] === colNumber
+    );
 
     if (indexOfSameShade === -1) {
       newUserAnswer.push([rowNumber, colNumber]);
@@ -137,102 +139,113 @@ const ShadingPreview = ({
   ).filter((value, i) => evaluation && evaluation[i]);
 
   return (
-    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-        {view === PREVIEW && !smallSize && (
-          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-        )}
-      </QuestionTitleWrapper>
+    <StyledPaperWrapper
+      style={{ fontSize }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
+      <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+        <QuestionLabelWrapper>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+          {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+        </QuestionLabelWrapper>
+        <QuestionContentWrapper>
+          <QuestionTitleWrapper>
+            {view === PREVIEW && !smallSize && (
+              <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+            )}
+          </QuestionTitleWrapper>
+          <FlexContainer alignItems="flex-start" flexDirection="column" padding="15px">
+            {view === EDIT && (
+              <Fragment>
+                <Subtitle
+                  id={getFormattedAttrId(`${item?.title}-${t("component.shading.methodSubtitle")}`)}
+                  fontSize={theme.widgets.shading.subtitleFontSize}
+                  color={theme.widgets.shading.subtitleColor}
+                  margin="0"
+                >
+                  {t("component.shading.methodSubtitle")}
+                </Subtitle>
+                <SelectInputStyled
+                  width="140px"
+                  margin="15px 0px"
+                  value={method}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  onChange={handleSelectMethod}
+                >
+                  <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
+                  <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
+                </SelectInputStyled>
 
-      <FlexContainer alignItems="flex-start" flexDirection="column" padding="15px">
-        {view === EDIT && (
-          <Fragment>
-            <Subtitle
-              id={getFormattedAttrId(`${item?.title}-${t("component.shading.methodSubtitle")}`)}
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-              margin="0"
-            >
-              {t("component.shading.methodSubtitle")}
-            </Subtitle>
-            <SelectInputStyled
-              width="140px"
-              margin="15px 0px"
-              value={method}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-              onChange={handleSelectMethod}
-            >
-              <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
-              <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
-            </SelectInputStyled>
+                {method === BY_LOCATION_METHOD ? (
+                  <ShadesView
+                    {...renderProps}
+                    onCellClick={handleCellClick}
+                    shaded={Array.isArray(userAnswer) ? userAnswer : []}
+                    lockedCells={read_only_author_cells ? shaded : undefined}
+                  />
+                ) : (
+                  <TextInputStyled
+                    size="large"
+                    type="number"
+                    width="320px"
+                    value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
+                    onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
+                  />
+                )}
+              </Fragment>
+            )}
 
-            {method === BY_LOCATION_METHOD ? (
+            {view === PREVIEW && (
               <ShadesView
                 {...renderProps}
-                onCellClick={handleCellClick}
+                checkAnswers={isCheck}
+                correctAnswers={correctAnswers}
+                onCellClick={disableResponse ? () => {} : handleCellClick}
                 shaded={Array.isArray(userAnswer) ? userAnswer : []}
                 lockedCells={read_only_author_cells ? shaded : undefined}
               />
-            ) : (
-              <TextInputStyled
-                size="large"
-                type="number"
-                width="320px"
-                value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
-                onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
-              />
             )}
-          </Fragment>
-        )}
+          </FlexContainer>
+          {previewTab === SHOW && (
+            <Fragment>
+              <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
+                {validation.validResponse.value.method === BY_LOCATION_METHOD ? (
+                  <ShadesView
+                    {...renderProps}
+                    correctAnswers={validation.validResponse.value.value}
+                    showAnswers
+                    onCellClick={() => {}}
+                    shaded={[]}
+                    lockedCells={read_only_author_cells ? shaded : undefined}
+                  />
+                ) : (
+                  <Fragment>Any {validation.validResponse.value.value} cells</Fragment>
+                )}
+              </CorrectAnswersContainer>
 
-        {view === PREVIEW && (
-          <ShadesView
-            {...renderProps}
-            checkAnswers={isCheck}
-            correctAnswers={correctAnswers}
-            onCellClick={disableResponse ? () => {} : handleCellClick}
-            shaded={Array.isArray(userAnswer) ? userAnswer : []}
-            lockedCells={read_only_author_cells ? shaded : undefined}
-          />
-        )}
-
-        {previewTab === SHOW && (
-          <Fragment>
-            <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
-              {validation.validResponse.value.method === BY_LOCATION_METHOD ? (
-                <ShadesView
-                  {...renderProps}
-                  correctAnswers={validation.validResponse.value.value}
-                  showAnswers
-                  onCellClick={() => {}}
-                  shaded={[]}
-                  lockedCells={read_only_author_cells ? shaded : undefined}
-                />
-              ) : (
-                <Fragment>Any {validation.validResponse.value.value} cells</Fragment>
-              )}
-            </CorrectAnswersContainer>
-
-            {validation.altResponses &&
-              validation.altResponses.map((altAnswer, i) => (
-                <CorrectAnswersContainer title={`${t("component.shading.alternateAnswer")} ${i + 1}`}>
-                  {altAnswer.value.method === BY_LOCATION_METHOD ? (
-                    <ShadesView
-                      {...renderProps}
-                      correctAnswers={altAnswer.value.value}
-                      showAnswers
-                      onCellClick={() => {}}
-                      shaded={[]}
-                      lockedCells={read_only_author_cells ? shaded : undefined}
-                    />
-                  ) : (
-                    <Fragment>Any {altAnswer.value.value} cells</Fragment>
-                  )}
-                </CorrectAnswersContainer>
-              ))}
-          </Fragment>
-        )}
+              {validation.altResponses &&
+                validation.altResponses.map((altAnswer, i) => (
+                  <CorrectAnswersContainer
+                    title={`${t("component.shading.alternateAnswer")} ${i + 1}`}
+                  >
+                    {altAnswer.value.method === BY_LOCATION_METHOD ? (
+                      <ShadesView
+                        {...renderProps}
+                        correctAnswers={altAnswer.value.value}
+                        showAnswers
+                        onCellClick={() => {}}
+                        shaded={[]}
+                        lockedCells={read_only_author_cells ? shaded : undefined}
+                      />
+                    ) : (
+                      <Fragment>Any {altAnswer.value.value} cells</Fragment>
+                    )}
+                  </CorrectAnswersContainer>
+                ))}
+            </Fragment>
+          )}
+        </QuestionContentWrapper>
       </FlexContainer>
     </StyledPaperWrapper>
   );

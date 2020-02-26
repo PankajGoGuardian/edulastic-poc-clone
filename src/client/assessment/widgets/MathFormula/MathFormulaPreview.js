@@ -10,7 +10,10 @@ import {
   MathDisplay,
   FlexContainer,
   QuestionNumberLabel,
-  getInnerValuesForStatic
+  getInnerValuesForStatic,
+  QuestionLabelWrapper,
+  QuestionSubLabel,
+  QuestionContentWrapper
 } from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
@@ -168,7 +171,8 @@ class MathFormulaPreview extends Component {
     }
 
     const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+    const isArrowOrShift =
+      (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
 
     if (!isSpecialChar || isArrowOrShift) {
       return false;
@@ -186,7 +190,14 @@ class MathFormulaPreview extends Component {
   }
 
   selectUnitFromDropdown = unit => {
-    const { userAnswer, saveAnswer, type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
+    const {
+      userAnswer,
+      saveAnswer,
+      type: previewType,
+      changePreview,
+      changePreviewTab,
+      disableResponse
+    } = this.props;
     saveAnswer({ ...userAnswer, unit });
     if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
       changePreview(CLEAR); // Item level
@@ -230,7 +241,10 @@ class MathFormulaPreview extends Component {
     const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
-      item && item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
+      item &&
+      item.validation &&
+      item.validation.altResponses &&
+      item.validation.altResponses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
     let answerContainerStyle = {};
     let statusColor = theme.widgets.mathFormula.inputColor;
@@ -272,9 +286,11 @@ class MathFormulaPreview extends Component {
       correctUnit = `\\text{${correctUnit}}`;
     }
 
-    let statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-      <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-    );
+    let statusIcon = latex &&
+      !isEmpty(evaluation) &&
+      (previewType === SHOW || previewType === CHECK) && (
+        <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+      );
 
     if (expressGrader && isAnswerModifiable) {
       statusIcon = null;
@@ -282,129 +298,154 @@ class MathFormulaPreview extends Component {
 
     return (
       <div>
-        <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
-          <MathFormulaDisplay
-            data-cy="preview-header"
-            style={{ marginBottom: 15 }}
-            dangerouslySetInnerHTML={{ __html: item.stimulus }}
-          />
-        </QuestionTitleWrapper>
+        <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
+          <QuestionLabelWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+            {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+          </QuestionLabelWrapper>
 
-        {testItem && (
-          <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-            <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
-            {item.isUnits && item.showDropdown && (
-              <UnitsDropdown
-                preview
-                disabled
-                item={item}
-                selected={this.selectedUnit}
-                onChange={this.selectUnitFromDropdown}
+          <QuestionContentWrapper>
+            <QuestionTitleWrapper>
+              <MathFormulaDisplay
+                data-cy="preview-header"
+                style={{ marginBottom: 15 }}
+                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+              />
+            </QuestionTitleWrapper>
+            {testItem && (
+              <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+                <MathDisplay
+                  styles={cssStyles}
+                  template="\MathQuillMathField{}"
+                  innerValues={testItemCorrectValues}
+                />
+                {item.isUnits && item.showDropdown && (
+                  <UnitsDropdown
+                    preview
+                    disabled
+                    item={item}
+                    selected={this.selectedUnit}
+                    onChange={this.selectUnitFromDropdown}
+                  />
+                )}
+              </FlexContainer>
+            )}
+
+            {!testItem && (
+              <FlexContainer
+                alignItems="flex-start"
+                justifyContent="flex-start"
+                style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
+              >
+                <MathInputWrapper
+                  width={cssStyles.width}
+                  style={{ background: statusColor, borderRadius: "5px" }}
+                >
+                  {this.isStatic() && !disableResponse && (
+                    <StaticMath
+                      symbols={item.symbols}
+                      restrictKeys={this.restrictKeys}
+                      allowNumericOnly={allowNumericOnly}
+                      customKeys={customKeys}
+                      numberPad={item.numberPad}
+                      hideKeypad={item.isUnits && item.showDropdown}
+                      onInput={latexv => this.onUserResponse(latexv)}
+                      onBlur={latexv => this.onBlur(latexv)}
+                      style={{ background: statusColor, ...cssStyles }}
+                      latex={studentTemplate}
+                      innerValues={innerValues}
+                      onInnerFieldClick={() => this.onInnerFieldClick()}
+                    />
+                  )}
+                  {this.isStatic() && disableResponse && (
+                    <MathInputSpan style={{ background: statusColor }}>
+                      <MathSpanWrapper latex={userAnswer || ""} />
+                    </MathInputSpan>
+                  )}
+                  {!this.isStatic() && !disableResponse && (
+                    <MathInput
+                      symbols={item.symbols}
+                      restrictKeys={this.restrictKeys}
+                      allowNumericOnly={allowNumericOnly}
+                      customKeys={customKeys}
+                      numberPad={item.numberPad}
+                      hideKeypad={item.isUnits && item.showDropdown}
+                      value={
+                        latex && !Array.isArray(latex)
+                          ? latex.replace("\\MathQuillMathField{}", "")
+                          : ""
+                      }
+                      onInput={latexv => this.onUserResponse(latexv)}
+                      onBlur={latexv => this.onBlur(latexv)}
+                      disabled={evaluation && !evaluation.some(ie => ie)}
+                      onInnerFieldClick={() => this.onInnerFieldClick()}
+                      style={{ background: statusColor, ...cssStyles }}
+                    />
+                  )}
+                  {!this.isStatic() && disableResponse && (
+                    <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                      <MathSpanWrapper
+                        latex={
+                          latex && !Array.isArray(latex)
+                            ? latex.replace("\\MathQuillMathField{}", "")
+                            : ""
+                        }
+                      />
+                    </MathInputSpan>
+                  )}
+                  {!item.showDropdown && statusIcon}
+                </MathInputWrapper>
+                {item.isUnits && item.showDropdown && (
+                  <>
+                    <UnitsDropdown
+                      item={item}
+                      preview
+                      onChange={this.selectUnitFromDropdown}
+                      selected={this.selectedUnit}
+                      disabled={disableResponse}
+                      statusColor={statusColor}
+                    />
+                    {statusIcon}
+                  </>
+                )}
+              </FlexContainer>
+            )}
+
+            {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
+              <CorrectAnswerBox
+                answer={
+                  item.isUnits && item.showDropdown
+                    ? item.validation.validResponse.value[0].value.search("=") === -1
+                      ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
+                      : item.validation.validResponse.value[0].value.replace(
+                          /=/gm,
+                          `\\ ${correctUnit}=`
+                        )
+                    : item.validation.validResponse.value[0].value
+                }
               />
             )}
-          </FlexContainer>
-        )}
-
-        {!testItem && (
-          <FlexContainer
-            alignItems="flex-start"
-            justifyContent="flex-start"
-            style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
-          >
-            <MathInputWrapper width={cssStyles.width} style={{ background: statusColor, borderRadius: "5px" }}>
-              {this.isStatic() && !disableResponse && (
-                <StaticMath
-                  symbols={item.symbols}
-                  restrictKeys={this.restrictKeys}
-                  allowNumericOnly={allowNumericOnly}
-                  customKeys={customKeys}
-                  numberPad={item.numberPad}
-                  hideKeypad={item.isUnits && item.showDropdown}
-                  onInput={latexv => this.onUserResponse(latexv)}
-                  onBlur={latexv => this.onBlur(latexv)}
-                  style={{ background: statusColor, ...cssStyles }}
-                  latex={studentTemplate}
-                  innerValues={innerValues}
-                  onInnerFieldClick={() => this.onInnerFieldClick()}
-                />
-              )}
-              {this.isStatic() && disableResponse && (
-                <MathInputSpan style={{ background: statusColor }}>
-                  <MathSpanWrapper latex={userAnswer || ""} />
-                </MathInputSpan>
-              )}
-              {!this.isStatic() && !disableResponse && (
-                <MathInput
-                  symbols={item.symbols}
-                  restrictKeys={this.restrictKeys}
-                  allowNumericOnly={allowNumericOnly}
-                  customKeys={customKeys}
-                  numberPad={item.numberPad}
-                  hideKeypad={item.isUnits && item.showDropdown}
-                  value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-                  onInput={latexv => this.onUserResponse(latexv)}
-                  onBlur={latexv => this.onBlur(latexv)}
-                  disabled={evaluation && !evaluation.some(ie => ie)}
-                  onInnerFieldClick={() => this.onInnerFieldClick()}
-                  style={{ background: statusColor, ...cssStyles }}
-                />
-              )}
-              {!this.isStatic() && disableResponse && (
-                <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
-                  <MathSpanWrapper
-                    latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-                  />
-                </MathInputSpan>
-              )}
-              {!item.showDropdown && statusIcon}
-            </MathInputWrapper>
-            {item.isUnits && item.showDropdown && (
-              <>
-                <UnitsDropdown
-                  item={item}
-                  preview
-                  onChange={this.selectUnitFromDropdown}
-                  selected={this.selectedUnit}
-                  disabled={disableResponse}
-                  statusColor={statusColor}
-                />
-                {statusIcon}
-              </>
+            {hasAltAnswers && previewType === SHOW && (
+              <CorrectAnswerBox
+                altAnswers
+                answer={item.validation.altResponses
+                  .map(ans => {
+                    if (item.isUnits && item.showDropdown) {
+                      let altUnit = get(ans, "value[0].options.unit", "");
+                      if (altUnit.search("f") !== -1 || altUnit.search(/\s/g) !== -1) {
+                        altUnit = `\\text{${altUnit}}`;
+                      }
+                      return ans.value[0].value.search("=") === -1
+                        ? `${ans.value[0].value} ${altUnit}`
+                        : ans.value[0].value.replace(/=/gm, `\\ ${altUnit}=`);
+                    }
+                    return ans.value[0].value;
+                  })
+                  .join(", ")}
+              />
             )}
-          </FlexContainer>
-        )}
-
-        {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
-          <CorrectAnswerBox
-            answer={
-              item.isUnits && item.showDropdown
-                ? item.validation.validResponse.value[0].value.search("=") === -1
-                  ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
-                  : item.validation.validResponse.value[0].value.replace(/=/gm, `\\ ${correctUnit}=`)
-                : item.validation.validResponse.value[0].value
-            }
-          />
-        )}
-        {hasAltAnswers && previewType === SHOW && (
-          <CorrectAnswerBox
-            altAnswers
-            answer={item.validation.altResponses
-              .map(ans => {
-                if (item.isUnits && item.showDropdown) {
-                  let altUnit = get(ans, "value[0].options.unit", "");
-                  if (altUnit.search("f") !== -1 || altUnit.search(/\s/g) !== -1) {
-                    altUnit = `\\text{${altUnit}}`;
-                  }
-                  return ans.value[0].value.search("=") === -1
-                    ? `${ans.value[0].value} ${altUnit}`
-                    : ans.value[0].value.replace(/=/gm, `\\ ${altUnit}=`);
-                }
-                return ans.value[0].value;
-              })
-              .join(", ")}
-          />
-        )}
+          </QuestionContentWrapper>
+        </FlexContainer>
       </div>
     );
   }

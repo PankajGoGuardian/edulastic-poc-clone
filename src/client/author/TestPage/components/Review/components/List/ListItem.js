@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
@@ -55,7 +55,12 @@ const ListItem = ({
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
   }
+
   let points = 0;
+  let allWidgets = questions;
+  if (passagesKeyed[testItem.passageId] && passagesKeyed[testItem.passageId].data) {
+    allWidgets = { ...questions, ...keyBy(passagesKeyed[testItem.passageId].data, "id") };
+  }
 
   const itemLevelScoring = helpers.getPoints(testItem);
   const questionLevelScoring = helpers.getQuestionLevelScore(
@@ -138,7 +143,7 @@ const ListItem = ({
                 verticalDivider={item.verticalDivider}
                 disableResponse
                 scrolling={item.scrolling}
-                questions={questions}
+                questions={allWidgets}
                 windowWidth="100%"
                 isReviewTab
                 testItem
@@ -179,7 +184,7 @@ const ListItem = ({
                   disableResponse
                   verticalDivider={get(_item, "[0].verticalDivider")}
                   scrolling={get(_item, "[0].scrolling")}
-                  questions={questions}
+                  questions={allWidgets}
                   windowWidth="100%"
                   isReviewTab
                   testItem

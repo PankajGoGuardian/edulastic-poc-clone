@@ -688,13 +688,18 @@ function* dropPlaylist({ payload }) {
 function* fetchPlaylistAccessList({ payload }) {
   try {
     if (payload) {
-      const result = yield call(groupApi.fetchPlaylistAccess, payload);
+      const { districtId, playlistId } = payload;
+      const result = yield call(groupApi.fetchPlaylistAccess, playlistId);
       if (result) {
         yield put(updateDroppedAccessList(result));
+        const classIds = [...result?.classList?.map(x => x?._id), ...result?.studentList?.map(x => x?.groupId)];
+        if (classIds?.length) {
+          yield all(classIds.map(classId => put(fetchStudentListAction({ districtId, classId }))));
+        }
       }
     }
   } catch (error) {
-    message.error("DropPlaylist is failing");
+    message.error("Fetching Class/Student List is Failing...");
     console.error(error);
   }
 }

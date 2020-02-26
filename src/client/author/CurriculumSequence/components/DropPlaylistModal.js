@@ -74,7 +74,7 @@ const DropPlaylistModal = props => {
 
   useEffect(() => {
     if (visible) {
-      fetchPlaylistDroppedAccessList(playlistId);
+      fetchPlaylistDroppedAccessList({ districtId, playlistId });
     }
   }, [visible]);
 

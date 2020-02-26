@@ -27,6 +27,7 @@ const getGroups = body =>
       data: body
     })
     .then(({ data: { result } }) => result.data.hits);
+
 const editGroup = ({ groupId, body }) =>
   api
     .callApi({

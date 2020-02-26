@@ -6,18 +6,17 @@ import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
 export const Main = styled.main`
   background-color: ${props => props.theme.mainBgColor};
-  padding: 96px 0px 32px;
+  padding: 70px 0px 0px;
   display: flex;
   flex-direction: row;
   min-height: ${({ LCBPreviewModal }) => (LCBPreviewModal ? "calc(100vh - 56px)" : "100vh")};
   box-sizing: border-box;
-  margin: 0px 32px;
+  margin: 0px;
 `;
 
 export const MainContent = styled.div`
   background-color: ${props => props.theme.mainContentBgColor};
   color: ${props => props.theme.mainContentTextColor};
-  border-radius: 10px;
   flex: 1;
   text-align: left;
   font-size: 18px;

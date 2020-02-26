@@ -135,6 +135,7 @@ class Container extends Component {
       isSingleQuestion = false,
       isMultipart
     } = this.props;
+    const singleLayout = type === layouts[0].value;
 
     const multipleItemsSettings = () => (
       <>
@@ -163,12 +164,14 @@ class Container extends Component {
           onChangeRight={this.handleChangeRightTab}
           checkedLeft={useTabsLeft}
           checkedRight={useTabsRight}
+          disableRight={singleLayout}
         />
         <SettingsFlowLayout
           onChangeLeft={this.handleChangeLeftFlowLayout}
           onChangeRight={this.handleChangeRightFlowLayout}
           checkedLeft={useFlowLayoutLeft}
           checkedRight={useFlowLayoutRight}
+          disableRight={singleLayout}
         />
         {questionsCount > 1 && (
           <Row
@@ -208,7 +211,11 @@ class Container extends Component {
           </Row>
         )}
         <Checkboxes>
-          <Checkbox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
+          <Checkbox
+            style={{ marginBottom: 20 }}
+            checked={verticalDivider}
+            onChange={onVerticalDividerChange}
+          >
             {t("author:component.settingsBar.showVerticalDivider")}
           </Checkbox>
           <Checkbox checked={scrolling} onChange={onScrollingChange}>

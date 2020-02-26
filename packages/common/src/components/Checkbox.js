@@ -1,22 +1,49 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import { themeColor, white, grey, secondaryTextColor } from "@edulastic/colors";
+import styled, { css } from "styled-components";
+import { themeColor, white, grey, secondaryTextColor, darkGrey } from "@edulastic/colors";
 
-const Checkbox = ({ onChange, checked, label, style, className, labelFontSize, textTransform }) => (
-  <Container data-cy="multi" onClick={onChange} style={style} className={className}>
-    <Input type="checkbox" checked={checked} onChange={() => {}} />
-    <span />
-    {label && (
-      <span
-        style={{ fontSize: labelFontSize, fontWeight: 600, color: secondaryTextColor, textTransform }}
-        className="label"
-      >
-        {label}
-      </span>
-    )}
-  </Container>
-);
+const Checkbox = ({
+  onChange,
+  checked,
+  label,
+  style,
+  className,
+  labelFontSize,
+  textTransform,
+  disabled
+}) => {
+  const onClickHandler = () => {
+    if (!disabled) {
+      onChange();
+    }
+  };
+  return (
+    <Container
+      data-cy="multi"
+      onClick={onClickHandler}
+      style={style}
+      className={className}
+      disabled={disabled}
+    >
+      <Input type="checkbox" checked={checked} onChange={() => {}} />
+      <span />
+      {label && (
+        <span
+          style={{
+            fontSize: labelFontSize,
+            fontWeight: 600,
+            color: disabled ? darkGrey : secondaryTextColor,
+            textTransform
+          }}
+          className="label"
+        >
+          {label}
+        </span>
+      )}
+    </Container>
+  );
+};
 
 Checkbox.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -25,7 +52,8 @@ Checkbox.propTypes = {
   style: PropTypes.object,
   className: PropTypes.string,
   labelFontSize: PropTypes.string,
-  textTransform: PropTypes.string
+  textTransform: PropTypes.string,
+  disabled: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
@@ -34,7 +62,8 @@ Checkbox.defaultProps = {
   className: "",
   checked: false,
   labelFontSize: "13px",
-  textTransform: null
+  textTransform: null,
+  disabled: false
 };
 
 export default Checkbox;
@@ -51,7 +80,6 @@ const Input = styled.input`
     vertical-align: middle;
     background: ${white} left top no-repeat;
     border: solid 1px ${grey};
-    cursor: pointer;
     margin-right: 10px;
   }
 
@@ -76,6 +104,12 @@ const Input = styled.input`
   }
 `;
 
+const disabledStyle = css`
+  cursor: not-allowed;
+`;
+
 const Container = styled.span`
   cursor: pointer;
+  user-select: none;
+  ${({ disabled }) => (disabled ? disabledStyle : ``)}
 `;

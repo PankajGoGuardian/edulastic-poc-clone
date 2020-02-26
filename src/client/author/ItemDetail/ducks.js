@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
 import {
@@ -11,12 +12,11 @@ import {
   uniq,
   isEmpty
 } from "lodash";
-import { testItemsApi, passageApi, itemsApi, attchmentApi } from "@edulastic/api";
+import { testItemsApi, passageApi, attchmentApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
-import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
-import { getFromLocalStorage, storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
@@ -26,17 +26,14 @@ import {
   loadQuestionsAction,
   addItemsQuestionAction,
   deleteQuestionAction,
-  SET_QUESTION_SCORE,
   changeCurrentQuestionAction,
   UPDATE_QUESTION,
-  changeUpdatedFlagAction
-, addQuestionAction, getCurrentQuestionSelector } from "../sharedDucks/questions";
+  changeUpdatedFlagAction,
+  addQuestionAction,
+  getCurrentQuestionSelector
+} from "../sharedDucks/questions";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
-import {
-  isIncompleteQuestion,
-  isRichTextFieldEmpty,
-  hasImproperDynamicParamsConfig
-} from "../questionUtils";
+import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -45,8 +42,7 @@ import {
   setCreatedItemToTestAction,
   setTestPassageAction
 } from "../TestPage/ducks";
-import { toggleCreateItemModalAction } from "../src/actions/testItem";
-import changeViewAction from "../src/actions/view";
+import { changeViewAction } from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 
@@ -469,7 +465,8 @@ const initialState = {
   loadingAuditLogs: false
 };
 
-const deleteWidget = (state, { rowIndex, widgetIndex }) => produce(state, newState => {
+const deleteWidget = (state, { rowIndex, widgetIndex }) =>
+  produce(state, newState => {
     if (newState.item.itemLevelScoring) {
       if (newState.qids.length === 1) {
         newState.item.itemLevelScore = 0;
@@ -520,7 +517,8 @@ const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
   return newState;
 };
 
-const useTabs = (state, { rowIndex, isUseTabs }) => produce(state, newState => {
+const useTabs = (state, { rowIndex, isUseTabs }) =>
+  produce(state, newState => {
     const { item, passage } = newState;
     if (item.passageId) {
       if (rowIndex === 0) {
@@ -528,13 +526,14 @@ const useTabs = (state, { rowIndex, isUseTabs }) => produce(state, newState => {
       } else {
         item.rows[0].tabs = isUseTabs ? ["Tab 1", "Tab 2"] : [];
       }
-    } else {
+    } else if (newState.item.rows[rowIndex]) {
       newState.item.rows[rowIndex].tabs = isUseTabs ? ["Tab 1", "Tab 2"] : [];
     }
     return newState;
   });
 
-const addTabs = state => produce(state, newState => {
+const addTabs = state =>
+  produce(state, newState => {
     const { passage } = newState;
     if (passage.structure.tabs.length === 0) {
       passage.structure.tabs = ["Tab 1", "Tab 2"];
@@ -544,7 +543,8 @@ const addTabs = state => produce(state, newState => {
     return newState;
   });
 
-const removeTab = (state, payload) => produce(state, newState => {
+const removeTab = (state, payload) =>
+  produce(state, newState => {
     const { passage } = newState;
     if (passage.structure.tabs.length === 2) {
       passage.structure.tabs = [];
@@ -567,11 +567,14 @@ const changeTabTitle = (state, payload) => {
 
 const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
   const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].flowLayout = isUseFlowLayout;
+  if (newState.item.rows[rowIndex]) {
+    newState.item.rows[rowIndex].flowLayout = isUseFlowLayout;
+  }
   return newState;
 };
 
-const moveWidget = (state, { from, to }) => produce(state, newState => {
+const moveWidget = (state, { from, to }) =>
+  produce(state, newState => {
     const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
     movedWidget.tabIndex = to.tabIndex || 0;
     newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
@@ -633,9 +636,8 @@ export function reducer(state = initialState, { type, payload }) {
       }
       if (itemLevelScoring && canUpdateItemLevelScore) {
         return { ...state, item: { ...state.item, itemLevelScore: updatingScore } };
-      } 
-        return state;
-      
+      }
+      return state;
 
     case ADD_QUESTION:
       if (!payload.validation) return state; // do not set itemLevelScore for resources
@@ -930,10 +932,9 @@ export function* updateItemSaga({ payload }) {
           delete q.variable.examples;
         }
         if (index === 0) return q;
-        
-          q.scoringDisabled = !!itemLevelScoring;
-          return q;
-        
+
+        q.scoringDisabled = !!itemLevelScoring;
+        return q;
       });
     });
 
@@ -1153,7 +1154,7 @@ function* saveTestItemSaga() {
   ).filter(i => testItemWidgets.includes(i.id));
   let questions = widgets.filter(item => !resourceTypes.includes(item.type));
   const resources = widgets.filter(item => resourceTypes.includes(item.type));
-  questions = produce(questions, draft => {
+  questions = produce(questions, () => {
     for (const [ind, q] of questions.entries()) {
       if (ind === 0) {
         continue;
@@ -1234,7 +1235,8 @@ function* publishTestItemSaga({ payload }) {
     ) {
       yield call(testItemsApi.publishTestItem, payload);
 
-      let successMessage; let testItemStatus;
+      let successMessage;
+      let testItemStatus;
       if (payload.status === "published") {
         successMessage = "Item saved successfully. Item not visible? Clear the applied filters.";
         testItemStatus = testItemStatusConstants.PUBLISHED;

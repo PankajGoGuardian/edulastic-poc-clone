@@ -169,9 +169,9 @@ const chartTickColor = "#434b5d";
 const chartStockColor = "#42d184";
 
 const HeaderHeight = {
-  xs: 60,
-  md: 76,
-  xl: 96
+  xs: 62,
+  md: 62,
+  xl: 62
 };
 
 const ThemeZoomMap = {

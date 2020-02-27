@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import * as Storage from './utils/Storage';
 
 const api = new API();
 const prefix = "/user";
@@ -228,6 +229,20 @@ const removeSchool = data =>
     data
   });
 
+
+const sendParentCode = code =>
+  api.callApi({
+    method: 'post',
+    url: `${prefix}/parent-code/${code}`,
+    data: {},
+  }).then(result => {
+    if (result ?.data ?.result ?.token) {
+      Storage.storeAccessToken(result ?.data ?.result ?.token, result ?.data ?.result ?.userId, 'parent');
+      Storage.selectAccessToken(result ?.data ?.result ?.userId, 'parent');
+    }
+    return result.data.result;
+  });
+
 const fetchUsersFromDistrict = districtId =>
   api
     .callApi({
@@ -264,5 +279,6 @@ export default {
   moveUsersToOtherClass,
   deleteAccount,
   removeSchool,
-  fetchUsersFromDistrict
+  fetchUsersFromDistrict,
+  sendParentCode
 };

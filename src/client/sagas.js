@@ -16,6 +16,7 @@ import { CurriculumSequenceSaga } from "./author/CurriculumSequence";
 import { default as adminSagas } from "./admin/sagas";
 import { saga as customReportSaga } from "./admin/Components/CustomReportContainer/ducks";
 import publisherSagas from "./publisher/sagas";
+import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks';
 
 export default function* () {
   yield all([
@@ -32,6 +33,7 @@ export default function* () {
     signupSaga(),
     ...publisherSagas,
     customReportSaga,
-    StudentPlaylistSaga()
+    StudentPlaylistSaga(),
+    resetPasswordSaga()
   ]);
 }

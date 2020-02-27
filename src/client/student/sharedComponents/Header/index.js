@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import React, { memo } from "react";
 import { compose } from "redux";
 import styled from "styled-components";
-import ClassSelect from "../ClassSelector";
+import ClassSelect, { StudentSlectCommon } from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
 
 const Header = ({
@@ -19,20 +19,21 @@ const Header = ({
   isDocBased,
   showAllClassesOption = true
 }) => (
-  <MainHeader headingText={titleText} isDocBased={isDocBased}>
-    {classSelect && (
-      <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />
-    )}
-    {showActiveClass && (
-      <ShowActiveClass
-        t={t}
-        classList={classList}
-        setClassList={setClassList}
-        setShowClass={setShowClass}
-      />
-    )}
-  </MainHeader>
-);
+    <MainHeader headingText={titleText} isDocBased={isDocBased}>
+      <StudentSlectCommon />
+      {classSelect && (
+        <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />
+      )}
+      {showActiveClass && (
+        <ShowActiveClass
+          t={t}
+          classList={classList}
+          setClassList={setClassList}
+          setShowClass={setShowClass}
+        />
+      )}
+    </MainHeader>
+  );
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,

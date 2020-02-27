@@ -3,8 +3,24 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { Form } from "antd";
-import { Field } from "./styled";
 import { userApi } from "@edulastic/api";
+import { Field } from "./styled";
+
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+
+function validateEmailCommaSeparated(rule, value, callback) {
+  const emails = value.split(",").map(x => x.trim());
+  const invalidEmail = emails.find(email => !validateEmail(email));
+  if (invalidEmail) {
+    callback(rule.message);
+  } else {
+    callback();
+  }
+}
 
 // eslint-disable-next-line max-len
 const CustomField = ({
@@ -36,23 +52,23 @@ const CustomField = ({
       }
     });
     const result = await userApi.checkUser({
-      districtId: districtId,
+      districtId,
       username: value
     });
     let errorMsg = "";
     let isSameClass = false;
     if (result.length > 0) {
-      let foundUser = result[0];
+      const foundUser = result[0];
       students.forEach(student => {
         if (student._id == foundUser._id) {
           isSameClass = true;
-          return;
+          
         }
       });
       if (isSameClass) {
         errorMsg = "User already part of this class section";
       } else {
-        let isSameDistrict = foundUser.districtId == districtId;
+        const isSameDistrict = foundUser.districtId == districtId;
         if (isSameDistrict) {
           if (foundUser.role == "teacher")
             errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
@@ -109,7 +125,7 @@ const CustomField = ({
     dob: [],
     gender: [],
     contactEmails: [
-      { type: "email", message: "Please provide a valid Email Id" },
+      { validator: validateEmailCommaSeparated, message: "Please provide a valid Email Id in comma separated form" },
       { max: 256, message: "Must less than 256 characters!" }
     ]
   };

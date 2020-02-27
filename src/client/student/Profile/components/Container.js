@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Layout, Form, Input, Button, Icon } from "antd";
+import { Layout, Form, Input, Button, Icon, Table, Tag } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -155,11 +155,49 @@ class ProfileContainer extends React.Component {
                 </FormButtonWrapper>
               </FormWrapper>
             )}
+            {user.role === 'parent' && (<div style={{ paddingTop: 25 }}>
+              <Title>Children details</Title>
+              <ChildrenTable childs={user.children} />
+            </div>)}
           </ProfileContentWrapper>
         </ProfileWrapper>
       </LayoutContent>
     );
   }
+}
+
+
+function ChildrenTable({ childs }) {
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: text => <a>{text}</a>,
+    },
+    {
+      title: 'Grade',
+      dataIndex: 'orgData',
+      key: 'grades',
+      render: orgData => (orgData ?.classList ?.flatMap(x => x.grades) || []).join(',')
+    },
+    {
+      title: 'School',
+      dataIndex: 'orgData',
+      key: 'schools',
+      render: orgData => (orgData ?.schools.map(x => <Tag key={x._id}> {x.name}</Tag>))
+    },
+
+    {
+      title: 'District',
+      dataIndex: 'orgData',
+      key: 'district',
+      render: orgData => (orgData ?.districtName)
+    },
+  ];
+
+
+  return <Table dataSource={childs} pagination={false} columns={columns} />
 }
 
 const enhance = compose(

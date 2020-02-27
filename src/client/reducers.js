@@ -9,6 +9,7 @@ import adminReducers from "./admin/reducers";
 import publisherReducer from "./publisher/reducers";
 import { customReportReducer } from "./admin/Components/CustomReportContainer/ducks";
 import commonReducers from "./common/ducks";
+import { slice as resetPasswordSlice } from './SetParentPassword/ducks';
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   curriculumSequence: curriculumSequenceReducers,
   ...publisherReducer,
   customReportReducer,
-  ...commonReducers
+  ...commonReducers,
+  resetPassword: resetPasswordSlice.reducer
 });
 
 export default rootReducer;

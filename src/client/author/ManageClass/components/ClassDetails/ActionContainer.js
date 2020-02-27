@@ -10,14 +10,12 @@ import {
   IconVolumeUp
 } from "@edulastic/icons";
 import { Dropdown, message } from "antd";
-import { get, identity, isEmpty, pick, pickBy, split, unset } from "lodash";
-import * as moment from "moment";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { getUserFeatures } from "../../../../student/Login/ducks";
-import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
-import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
+import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
+import PropTypes from "prop-types";
+import * as moment from "moment";
+import AddStudentModal from "./AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
 import {
   addStudentRequestAction,
@@ -25,9 +23,9 @@ import {
   selectStudentAction,
   updateStudentRequestAction
 } from "../../ducks";
-import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
-import AddStudentModal from "./AddStudent/AddStudentModal";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import ResetPwd from "./ResetPwd/ResetPwd";
 import {
@@ -40,6 +38,8 @@ import {
   MenuItems,
   RedirectButton
 } from "./styled";
+import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 
 const modalStatus = {};
 
@@ -134,11 +134,12 @@ const ActionContainer = ({
               "username",
               "contactEmails"
             ]);
-            // contactEmails field in backend is of array type with one value
-            const contactEmails = get(stdData, "contactEmails", []);
+            // contactEmails field is in csv of multiple emails
+            const contactEmailsString = get(stdData, "contactEmails", "");
+            const contactEmails = contactEmailsString ? contactEmailsString.split(",").map(x => x.trim()) : [];
             // no need to have length check, as it is already handled in form validator
             if (contactEmails?.[0]) {
-              stdData.contactEmails = [contactEmails];
+              stdData.contactEmails = contactEmails;
             } else {
               stdData.contactEmails = [];
             }
@@ -161,7 +162,8 @@ const ActionContainer = ({
 
             const contactEmails = get(values, "contactEmails");
             if (contactEmails) {
-              values.contactEmails = [contactEmails];
+              // contactEmails is comma seperated emails
+              values.contactEmails = contactEmails.split(",").map(x => x.trim());
             }
 
             if (values.dob) {
@@ -197,16 +199,13 @@ const ActionContainer = ({
         if (changeTTS) {
           const isEnabled = selectedStudent.find(std => std.tts === "yes");
           if (isEnabled) {
-            return showMessage(
-              "error",
-              "Atleast one of the selected student(s) is already enabled"
-            );
+            return showMessage("error", "Atleast one of the selected student(s) is already enabled");
           }
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
         }
         break;
-      case "disableSpeech":
+      case "disableSpeech": {
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to disable text to speech");
         }
@@ -219,6 +218,7 @@ const ActionContainer = ({
           changeTTS({ userId: stdIds, ttsStatus: "no" });
         }
         break;
+      }
       case "deleteStudent":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to remove");
@@ -303,11 +303,7 @@ const ActionContainer = ({
             </RedirectButton>
           ) : null}
 
-          <RedirectButton
-            first
-            data-cy="printRoster"
-            onClick={() => history.push(`/author/manageClass/printPreview`)}
-          >
+          <RedirectButton first data-cy="printRoster" onClick={() => history.push(`/author/manageClass/printPreview`)}>
             <ButtonIconWrap>
               <IconPrint />
             </ButtonIconWrap>

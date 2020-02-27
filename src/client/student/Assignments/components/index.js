@@ -25,13 +25,13 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location }) => {
+const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, currentChild }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   // location is available as prop when we are navigating through link from student manage class
   useEffect(() => {
     loadAllClasses();
-  }, []);
+  }, [currentChild]);
 
   if (loading) return <Spin />;
   const { classItem = {} } = location;
@@ -65,7 +65,8 @@ export default connect(
   state => ({
     allClasses: state.studentEnrollClassList.allClasses,
     activeClasses: state.studentEnrollClassList.filteredClasses,
-    loading: state.studentEnrollClassList.loading
+    loading: state.studentEnrollClassList.loading,
+    currentChild: state ?.user ?.currentChild,
   }),
   {
     loadAllClasses: getEnrollClassAction,

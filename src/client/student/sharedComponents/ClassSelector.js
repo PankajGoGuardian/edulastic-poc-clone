@@ -12,7 +12,7 @@ import {
 } from "@edulastic/colors";
 import { IconFilterClass } from "@edulastic/icons";
 
-import { getCurrentGroup, changeClassAction } from "../Login/ducks";
+import { getCurrentGroup, changeClassAction, changeChildAction } from "../Login/ducks";
 
 const ClassSelector = ({
   t,
@@ -27,7 +27,7 @@ const ClassSelector = ({
     if (!showAllClassesOption) {
       /* For skill report we are not showing "All options", so when we route to the skill-report 
        page we pick the first class id by default and exit out of useEffect */
-      if (!currentGroup && classList.length) changeClass(classList[0]?._id);
+      if (!currentGroup && classList.length) changeClass(classList[0] ?._id);
     } else {
       if (currentGroup === "" && classList.length === 1) {
         // all classes. but really only one classes available
@@ -86,6 +86,8 @@ const ClassSelector = ({
   );
 };
 
+
+
 ClassSelector.propTypes = {
   t: PropTypes.func.isRequired
 };
@@ -98,6 +100,35 @@ export default connect(
   stateToProps,
   { changeClass: changeClassAction }
 )(ClassSelector);
+
+function StudentSelect({ changeChild, childs, currentChild }) {
+  if ((childs || []).length <= 1) {
+    return null;
+  }
+  return (<AssignmentSelectClass id="class-dropdown-wrapper">
+    <ClassLabel>student</ClassLabel>
+    <Select
+      value={currentChild}
+      getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
+      onChange={value => {
+        changeChild(value);
+      }}
+    >
+      {childs.map(cl => (
+        <Select.Option key={cl._id} value={cl._id}>
+          {cl.name}
+        </Select.Option>
+      ))}
+    </Select>
+  </AssignmentSelectClass>)
+}
+
+export const StudentSlectCommon = connect(state => ({
+  childs: state ?.user ?.user ?.children,
+  currentChild: state ?.user ?.currentChild,
+}), {
+  changeChild: changeChildAction
+})(StudentSelect)
 
 const ClassLabel = styled.span`
   display: flex;

@@ -26,20 +26,21 @@ const SkillReportContainer = ({
   loadAllClasses,
   activeClasses,
   userClasses,
-  loading
+  loading,
+  currentChild
 }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   useEffect(() => {
     loadAllClasses();
-  }, []);
+  }, [currentChild]);
 
   useEffect(() => {
     if (classId) {
       const curriculumId = (userClasses.find(c => c._id === classId).standardSets[0] || {})._id;
       fetchSkillReport({ classId, curriculumId });
     }
-  }, [classId]);
+  }, [classId, currentChild]);
 
   return (
     <MainContainer flag={flag}>
@@ -60,8 +61,8 @@ const SkillReportContainer = ({
           <NoDataNotification heading={"No Skill Mastery"} description={"You don't have any Skill Mastery."} />
         </LoaderConainer>
       ) : (
-        <SkillReportMainContent skillReport={skillReport} />
-      )}
+            <SkillReportMainContent skillReport={skillReport} />
+          )}
     </MainContainer>
   );
 };
@@ -74,7 +75,8 @@ export default connect(
     allClasses: getAllClassesSelector(state),
     activeClasses: getFilteredClassesSelector(state),
     loading: getSkillReportLoaderSelector(state),
-    userClasses: getClasses(state)
+    userClasses: getClasses(state),
+    currentChild: state ?.user ?.currentChild,
   }),
   {
     fetchSkillReport: fetchSkillReportAction,

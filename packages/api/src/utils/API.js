@@ -46,9 +46,12 @@ const getLoggedOutUrl = () => {
 };
 
 function getParentsStudentToken(config) {
-  console.log('config url', { url: config.url });
   try {
-    if (['/user/me', '/logout', '/login', '/signUp'].find(x => config.url ?.includes(x))) {
+    if (config.method !== "get") {
+      return false;
+    }
+
+    if (['/user/me', '/logout', '/login', '/signUp', '/user/parent-code'].find(x => config.url ?.includes(x))) {
       return false;
     }
     const currentUserFromRedux = window ?.getStore() ?.getState() ?.user || {};

@@ -74,8 +74,8 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
           <Option value="other">Other</Option>
         </Select>
       </Field>
-      <Field label="Contact" {...restProps} fiedlName="contactEmails" initialValue={contactEmails}>
-        <Input placeholder="Enter Contact" />
+      <Field label="Parents/Guardians" {...restProps} fiedlName="contactEmails" initialValue={contactEmails}>
+        <Input placeholder="Enter email comma separated..." />
       </Field>
 
       {showTtsField && (

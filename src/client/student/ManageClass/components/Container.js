@@ -6,9 +6,11 @@ import { Button, Col, Input, Modal, Row, Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { compose } from "redux";
+import { connect } from 'react-redux';
 import styled from "styled-components";
 import NoDataIcon from "../../assets/nodata.svg";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
+import { StudentSlectCommon } from '../../sharedComponents/ClassSelector';
 import { NoDataBox } from "../../styled";
 import ClassCard from "./CardContainer";
 import ManageClassSubHeader from "./SubHeader";
@@ -30,7 +32,9 @@ const ManageClassContainer = ({
   showActiveClass,
   allClassList,
   setClassList,
-  setShowClass
+  setShowClass,
+  userRole,
+  currentChild,
 }) => {
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
   const [classCode, setClassCode] = useState(null);
@@ -50,10 +54,12 @@ const ManageClassContainer = ({
   return (
     <>
       <MainHeader headingText="common.manageClassTitle">
-        <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
-          <IconPlus width={12} height={12} color="white" stroke="white" />
-          <span>{t("common.joinClass")}</span>
-        </JoinClassBtn>
+        {userRole === 'parent' ?
+          <StudentSlectCommon /> :
+          (<JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
+            <IconPlus width={12} height={12} color="white" stroke="white" />
+            <span>{t("common.joinClass")}</span>
+          </JoinClassBtn>)}
         {isJoinClassModalVisible && (
           <JoinClassModal
             visible={isJoinClassModalVisible}
@@ -105,14 +111,14 @@ const ManageClassContainer = ({
           <ClassCards classList={classList} t={t} />
         </ClassCardWrapper>
       ) : (
-        <NoDataBoxWrapper>
-          <NoDataBox>
-            <img src={NoDataIcon} alt="noData" />
-            <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
-            <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
-          </NoDataBox>
-        </NoDataBoxWrapper>
-      )}
+          <NoDataBoxWrapper>
+            <NoDataBox>
+              <img src={NoDataIcon} alt="noData" />
+              <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
+              <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
+            </NoDataBox>
+          </NoDataBoxWrapper>
+        )}
     </>
   );
 };

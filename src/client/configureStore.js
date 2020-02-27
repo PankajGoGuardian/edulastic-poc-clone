@@ -31,7 +31,7 @@ export default () => {
      * composeWithDevTools({ trace: true, traceLimit: 15 })(applyMiddleware(...middleware), reduxReset())
      */
 
-    composeWithDevTools(applyMiddleware(...middleware), reduxReset())
+    composeWithDevTools({ trace: true, traceLimit: 15 })(applyMiddleware(...middleware), reduxReset())
   );
 
   sagaMiddleware.run(rootSaga);

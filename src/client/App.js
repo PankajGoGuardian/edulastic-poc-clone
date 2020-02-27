@@ -50,6 +50,7 @@ const Admin = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/app"));
 const RedirectToTest = lazy(() => import(/* webpackChunkName: "RedirecToTest" */ "./author/RedirectToTest"));
 const DistrictRoutes = lazy(() => import("./districtRoutes/index"));
 const ResetPassword = lazy(() => import("./resetPassword/index"));
+const SetParentPassword = lazy(() => import("./SetParentPassword"));
 
 const Loading = () => (
   <div>
@@ -224,6 +225,11 @@ class App extends Component {
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
               <Route exact path="/kid" render={props => <Kid {...props} redirectPath={defaultRoute} />} />
               <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />
+              <Route
+                exact
+                path="/public/parentInvitation/:code"
+                render={() => <SetParentPassword parentInvitation />} redirectPath={defaultRoute}
+              />
               <LoggedOutRoute
                 path="/district/:districtShortName"
                 component={DistrictRoutes}

@@ -20,10 +20,10 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList, joinClass, studentData }) => {
+const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList, joinClass, studentData, userRole, currentChild }) => {
   useEffect(() => {
     loadAllClasses();
-  }, []);
+  }, [currentChild]);
   const [showClass, setShowClass] = useState(true);
   if (loading) return <Spin />;
   return (
@@ -40,6 +40,8 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
           allClassList={allClasses}
           setClassList={setClassList}
           setShowClass={setShowClass}
+          userRole={userRole}
+          currentChild={currentChild}
         />
       </ContentWrapper>
     </Wrapper>
@@ -51,7 +53,9 @@ export default connect(
     allClasses: state.studentEnrollClassList.allClasses,
     filterClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading,
-    studentData: getUser(state)
+    studentData: getUser(state),
+    userRole: state ?.user ?.user ?.role,
+    currentChild: state ?.user ?.currentChild
   }),
   {
     loadAllClasses: getEnrollClassAction,

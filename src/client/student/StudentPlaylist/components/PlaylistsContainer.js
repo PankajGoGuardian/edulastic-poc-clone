@@ -9,37 +9,38 @@ import { slice } from "../ducks";
 import PlaylistCard from "./PlaylistCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 
-const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isLoading }) => {
+const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isLoading, currentChild }) => {
 
-    useEffect(() => {
-        fetchPlaylists();
-    }, []);
+  useEffect(() => {
+    fetchPlaylists();
+  }, [currentChild]);
 
-    if (isLoading) return <Spin size="large" />;
+  if (isLoading) return <Spin size="large" />;
 
-    return (
-      <LayoutContent>
-        <Wrapper>
-          {playlists.length < 1 ? (
-            <NoDataNotification heading="No Playlists" description={"You don't have any playlists assigned to you yet."} />
-                ) : (
-                        playlists.map(item => (
-                          <PlaylistCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} />
-                        ))
-                    )}
-        </Wrapper>
-      </LayoutContent>
-    );
+  return (
+    <LayoutContent>
+      <Wrapper>
+        {playlists.length < 1 ? (
+          <NoDataNotification heading="No Playlists" description={"You don't have any playlists assigned to you yet."} />
+        ) : (
+            playlists.map(item => (
+              <PlaylistCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} />
+            ))
+          )}
+      </Wrapper>
+    </LayoutContent>
+  );
 };
 
 export default connect(
-    state => ({
-        isLoading: state?.studentPlaylist?.isLoading,
-        playlists: state?.studentPlaylist?.playlists
-    }),
-    {
-        fetchPlaylists: slice.actions.fetchStudentPlaylist
-    }
+  state => ({
+    isLoading: state ?.studentPlaylist ?.isLoading,
+    playlists: state ?.studentPlaylist ?.playlists,
+    currentChild: state ?.user ?.currentChild,
+  }),
+  {
+    fetchPlaylists: slice.actions.fetchStudentPlaylist
+  }
 )(PlaylistsContainer);
 
 const LayoutContent = styled(Layout.Content)`

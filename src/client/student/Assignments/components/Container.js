@@ -74,11 +74,12 @@ const Content = ({
   isLoading,
   rerenderAssignments,
   allAssignments,
-  removeAssignment
+  removeAssignment,
+  currentChild
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
-  }, []);
+  }, [currentChild]);
 
   const topics = [
     `student_assignment:user:${userId}`,
@@ -145,7 +146,8 @@ export default connect(
     allAssignments: values(assignmentsSelector(state)),
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
-    isLoading: get(state, "studentAssignment.isLoading")
+    isLoading: get(state, "studentAssignment.isLoading"),
+    currentChild: state ?.user ?.currentChild,
   }),
   {
     fetchAssignments: fetchAssignmentsAction,

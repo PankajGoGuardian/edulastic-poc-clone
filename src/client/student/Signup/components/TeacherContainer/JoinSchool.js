@@ -211,7 +211,7 @@ const JoinSchool = ({
   }, [newSchool]);
 
   const dropdownSchoolData = useMemo(() => {
-    const approvedSchool = schools.filter(school => !school.isApproved);
+    const approvedSchool = schools.filter(school => school.isApproved === true);
     return approvedSchool.map(item => ({
       ...item,
       title: item.schoolName,
@@ -226,8 +226,7 @@ const JoinSchool = ({
       return;
     }
 
-    const schoolAndDistrictNamePrefix =
-      userInfo.firstName + (userInfo.lastName ? `${userInfo.lastName} ` : " ");
+    const schoolAndDistrictNamePrefix = userInfo.firstName + (userInfo.lastName ? `${userInfo.lastName} ` : " ");
     const districtName = `${schoolAndDistrictNamePrefix}HOME SCHOOL DISTRICT`;
     const schoolName = `${schoolAndDistrictNamePrefix}HOME SCHOOL`;
 
@@ -279,11 +278,7 @@ const JoinSchool = ({
                   <SchoolSelected>
                     <SelectedTag>
                       <span>{selected.schoolName || ""}</span>
-                      <IconClose
-                        data-cy="removeSelected"
-                        color={themeColor}
-                        onClick={() => setSchool(null)}
-                      />
+                      <IconClose data-cy="removeSelected" color={themeColor} onClick={() => setSchool(null)} />
                     </SelectedTag>
                   </SchoolSelected>
                 ) : (
@@ -306,10 +301,7 @@ const JoinSchool = ({
                 <Actions>
                   <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
                   {!isSignupUsingDaURL && !districtId ? (
-                    <AnchorBtn onClick={toggleModal}>
-                      {" "}
-                      {t("component.signup.teacher.requestnewschool")}
-                    </AnchorBtn>
+                    <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
                   ) : null}
                   {selected && selected.districtName ? (
                     <DistrictName data-cy="districtName">
@@ -323,9 +315,7 @@ const JoinSchool = ({
 
                 {selected && (
                   <>
-                    {schoolTeachers.length > 0 ? (
-                      <TeacherCarousel teachers={schoolTeachers} />
-                    ) : null}
+                    {schoolTeachers.length > 0 ? <TeacherCarousel teachers={schoolTeachers} /> : null}
                     <ProceedBtn
                       data-cy="proceed"
                       onClick={handleSubmit}
@@ -340,9 +330,7 @@ const JoinSchool = ({
           </FlexWrapper>
         </Col>
       </JoinSchoolBody>
-      {showModal ? (
-        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
-      ) : null}
+      {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
     </>
   );
 };

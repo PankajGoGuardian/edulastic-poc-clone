@@ -74,7 +74,7 @@ const PlayerHeader = ({
     }
   }
 
-  const breadcrumbData = [{ title: "Assessments", to: "/home/assignments" }, { title: title }];
+  const breadcrumbData = [{ title: "Assignments", to: "/home/assignments" }, { title: title }];
 
   return (
     <FlexContainer>

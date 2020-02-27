@@ -22,13 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
 
   const standard = "K.CC.A.1";
   const testToCreate = "search_1";
-  const testIds = [
-    "5e53a7621d64f4000861f526",
-    "5e53a77d1d64f4000861f528",
-    "5e53a793762d2400084f8235",
-    "5e53a7a81d64f4000861f52c"
-  ];
-  const classId = "5e465f04bac0010007e1ca97";
+  const testIds = [];
   const playListData = {
     name: "Play List",
     grade: "Grade 10",
@@ -49,20 +43,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
 
   before("create test", () => {
     cy.login("teacher", teacher.email, teacher.pass);
-    // testLibrary.createTest(testToCreate).then(id => {
-    //   testIds.push(id);
-    //   cy.contains("Share With Others");
-    //   for (let k = 0; k < 3; k++) {
-    //     testLibrary.sidebar.clickOnTestLibrary();
-    //     testLibrary.searchFilters.clearAll();
-    //     testLibrary.clickOnTestCardById(testIds[0]);
-    //     testLibrary.clickOnDuplicate();
-    //     testLibrary.header.clickOnPublishButton().then(newId => {
-    //       testIds.push(newId);
-    //       cy.contains("Share With Others");
-    //     });
-    //   }
-    // });
+    testLibrary.createTest(testToCreate).then(id => {
+      testIds.push(id);
+      cy.contains("Share With Others");
+      for (let k = 0; k < 3; k++) {
+        testLibrary.sidebar.clickOnTestLibrary();
+        testLibrary.searchFilters.clearAll();
+        testLibrary.clickOnTestCardById(testIds[0]);
+        testLibrary.clickOnDuplicate();
+        testLibrary.header.clickOnPublishButton().then(newId => {
+          testIds.push(newId);
+          cy.contains("Share With Others");
+        });
+      }
+    });
   });
   before("create play list", () => {
     tests = testIds.slice(0, 2);

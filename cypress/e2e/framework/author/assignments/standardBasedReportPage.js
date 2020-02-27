@@ -184,5 +184,5 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
   getTableHeaderElements = () => this.getTableHeader().find("th");
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
-    cy.url().then(url => cy.wrap(url).should("include", `/author/standardsBasedReport/${assignmnetId}/${classId}`));
+    cy.url().should("include", `/author/standardsBasedReport/${assignmnetId}/${classId}`);
 }

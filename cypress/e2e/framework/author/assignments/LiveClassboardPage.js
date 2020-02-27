@@ -516,7 +516,7 @@ class LiveClassboardPage {
       .click();
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
-    cy.url().then(url => cy.wrap(url).should("include", `/author/classboard/${assignmnetId}/${classId}`));
+    cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
 }
 
 export default LiveClassboardPage;

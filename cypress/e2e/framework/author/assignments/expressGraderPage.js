@@ -310,5 +310,5 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   };
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
-    cy.url().then(url => cy.wrap(url).should("include", `author/expressgrader/${assignmnetId}/${classId}`));
+    cy.url().should("include", `author/expressgrader/${assignmnetId}/${classId}`);
 }

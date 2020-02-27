@@ -222,7 +222,15 @@ const TableList = ({
       }
     });
 
-    return <ExpandedTable columns={columns} dataSource={expandTableList} pagination={false} class="expandTable" />;
+    return (
+      <ExpandedTable
+        data-cy={parentData.testId}
+        columns={columns}
+        dataSource={expandTableList}
+        pagination={false}
+        class="expandTable"
+      />
+    );
   };
 
   const enableExtend = () => setdetails(false);
@@ -252,7 +260,7 @@ const TableList = ({
             <div>
               <TestThumbnail src={row.thumbnail} />
             </div>
-            <AssignmentTD data-cy="assignmentName" data-test={row.testId} showFilter={showFilter}>
+            <AssignmentTD data-cy="assignmentName" showFilter={showFilter}>
               {text}
             </AssignmentTD>
           </FlexContainer>
@@ -384,8 +392,8 @@ const TableList = ({
   if (data.length < 1) {
     return (
       <NoDataNotification
-        heading={"Assignments not available"}
-        description={"There are no assignments found for this filter."}
+        heading="Assignments not available"
+        description="There are no assignments found for this filter."
       />
     );
   }

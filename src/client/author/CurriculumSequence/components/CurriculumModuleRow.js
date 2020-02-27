@@ -411,6 +411,7 @@ class ModuleRow extends Component {
                 completed ? (
                   <StyledCol span={7} justify="flex-end">
                     <StyledLabel
+                      data-cy="module-complete"
                       textColor={themeColorLighter}
                       fontWeight="Bold"
                     >
@@ -516,7 +517,7 @@ class ModuleRow extends Component {
                           </Menu.Item>
                         )}
                         <Menu.Item
-                          data-cy="view test"
+                          data-cy="view-test"
                           onClick={() => this.viewTest(moduleData.contentId)}
                         >
                           Preview Test

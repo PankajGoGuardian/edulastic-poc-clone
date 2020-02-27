@@ -17,6 +17,7 @@
     "community": "community",
     "district": "District",
     "proceed": "Proceed",
+    "importCanvasClasses": "Continue and import Canvas classes",
     "policyviolation": "Enrollment for your school district is restricted. Please contact your administrator for assistance.",
     "forgotpassworderror": "Please provide registered Username or Email.",
     "validation": {

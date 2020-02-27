@@ -27,7 +27,9 @@ const MainInfo = ({
   isUserGoogleLoggedIn,
   allowGoogleLogin,
   syncGCModal,
-  archiveClass
+  archiveClass,
+  allowCanvasLogin,
+  syncCanvasModal
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -42,7 +44,9 @@ const MainInfo = ({
     endDate,
     googleCode,
     owners = [],
-    parent
+    parent,
+    canvasCourseName = "",
+    canvasCourseSectionName = ""
   } = entity;
   const _grade =
     allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
@@ -69,6 +73,8 @@ const MainInfo = ({
             allowGoogleLogin={allowGoogleLogin}
             syncGCModal={syncGCModal}
             archiveClass={archiveClass}
+            allowCanvasLogin={allowCanvasLogin}
+            syncCanvasModal={syncCanvasModal}
           />
         </FlexDiv>
         <StyledDivider orientation="left" />
@@ -136,6 +142,25 @@ const MainInfo = ({
                   <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
                 </FieldValue>
               </>
+            )}
+
+            {!!canvasCourseName && (
+              <FieldValue>
+                <div>Canvas Course</div>
+                <span>{canvasCourseName}</span>
+              </FieldValue>
+            )}
+            {!!canvasCourseSectionName && (
+              <FieldValue>
+                <div>Canvas Section</div>
+                <span>{canvasCourseSectionName}</span>
+              </FieldValue>
+            )}
+            {!!lastSyncDate && (
+              <FieldValue>
+                <div>Last Sync</div>
+                <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
+              </FieldValue>
             )}
           </RightWrapper>
         </FlexDiv>

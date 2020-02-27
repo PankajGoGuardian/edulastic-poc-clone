@@ -81,7 +81,8 @@ const JoinSchool = ({
   isSignupUsingDaURL,
   schoolTeachers,
   setPreviousAutoSuggestSchoolsContent,
-  t
+  t,
+  allowCanvas
 }) => {
   const { email, firstName, middleName, lastName, currentSignUpState } = userInfo;
   const [selected, setSchool] = useState(null);
@@ -210,7 +211,7 @@ const JoinSchool = ({
   }, [newSchool]);
 
   const dropdownSchoolData = useMemo(() => {
-    const approvedSchool = schools.filter(school => school.isApproved === true);
+    const approvedSchool = schools.filter(school => !school.isApproved);
     return approvedSchool.map(item => ({
       ...item,
       title: item.schoolName,
@@ -330,7 +331,7 @@ const JoinSchool = ({
                       onClick={handleSubmit}
                       disabled={createSchoolRequestPending || updateUserWithSchoolLoading}
                     >
-                      {t("common.proceed")}
+                      {t(!allowCanvas ? "common.proceed" : "common.importCanvasClasses")}
                     </ProceedBtn>
                   </>
                 )}

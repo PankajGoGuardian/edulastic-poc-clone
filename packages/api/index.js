@@ -1,4 +1,5 @@
 import * as TokenStorage from "./src/utils/Storage";
+
 export { default as itemsApi } from "./src/items";
 export { default as questionsApi } from "./src/questions";
 export { default as assessmentApi } from "./src/assessment";
@@ -47,3 +48,4 @@ export { default as paymentApi } from "./src/payment";
 export { default as attchmentApi } from "./src/attachment";
 export { default as studentPlaylistApi } from "./src/studentPlaylist";
 export { default as contentImportApi } from "./src/contentImport";
+export { default as canvasApi } from "./src/canvas";

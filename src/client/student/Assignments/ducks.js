@@ -75,7 +75,9 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   groupId = getAssignmentClassId(assignment, groupId, classIds);
   const redirects = classes.filter(
     x =>
-      x.redirect && ((x.specificStudents && x.students.includes(userId)) || (!x.specificStudents && x._id === groupId))
+      x.redirect &&
+      ((x.specificStudents && x.students.includes(userId)) ||
+        (!x.specificStudents && x._id === groupId))
   );
 
   if (redirects.length === 0) {
@@ -83,7 +85,7 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   }
   const attempts = redirects.length;
 
-  const dueDate = Math.max.apply(Math, redirects.map(x => x.endDate));
+  const dueDate = Math.max(...redirects.map(x => x.endDate));
 
   return { attempts, dueDate };
 };
@@ -100,197 +102,6 @@ export const transformAssignmentForRedirect = (groupId, userId, classIds, assign
   maxAttempts += redirect.attempts;
   return { ...assignment, endDate, maxAttempts, redir: true };
 };
-
-// sagas
-// fetch and load assignments and reports for the student
-function* fetchAssignments({ payload }) {
-  try {
-    yield put(setAssignmentsLoadingAction());
-    const groupId = yield select(getCurrentGroup);
-    const userId = yield select(getCurrentUserId);
-    const classIds = yield select(getClassIds);
-    const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, payload),
-      call(reportsApi.fetchReports, groupId)
-    ]);
-    // transform to handle redirect
-    const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
-    const assignmentsProcessed = assignments.map(transformFn);
-
-    // normalize reports
-    const {
-      result: allReports,
-      entities: { reports: reportsObj }
-    } = normalize(reports, [reportSchema]);
-
-    yield put(setReportsAction({ allReports, reportsObj }));
-    // normalize assignments
-    const {
-      result: allAssignments,
-      entities: { assignments: assignmentObj }
-    } = normalize(assignmentsProcessed, [assignmentSchema]);
-
-    yield put(setAssignmentsAction({ allAssignments, assignmentObj }));
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-/*
- * start assingment
- */
-function* startAssignment({ payload }) {
-  try {
-    const { assignmentId, testId, testType, classId } = payload;
-    if (!assignmentId || !testId) {
-      throw new Error("insufficient data");
-    }
-
-    yield put(setActiveAssignmentAction(assignmentId));
-    const groupId = yield select(getCurrentGroup);
-    const assignmentsById = yield select(assignmentsSelector);
-    const assignment = assignmentsById[assignmentId];
-    const classIds = yield select(getClassIds);
-    // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
-
-    const institutionId = yield select(getCurrentSchool);
-    const groupType = "class";
-    const { _id: testActivityId } = yield testActivityApi.create({
-      assignmentId,
-      groupId: classId,
-      institutionId,
-      groupType,
-      testId
-    });
-    // set Activity id
-    if (testType !== TESTLET) {
-      yield put(
-        push(
-          `/student/${
-          testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
-        )
-      );
-    } else {
-      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
-    }
-
-    // TODO:load previous responses if resume!!
-  } catch (err) {
-    const { status, data = {} } = err;
-    console.error(err);
-    if (status === 403 && data.message) {
-      yield call(message.error, data.message, 3);
-    }
-  }
-}
-
-/*
- * resume assignment
- */
-function* resumeAssignment({ payload }) {
-  try {
-    const { assignmentId, testActivityId, testId, testType, classId } = payload;
-    if (!assignmentId || !testId || !testActivityId) {
-      throw new Error("insufficient data");
-    }
-
-    // get the class id for the assignment
-    const groupId = yield select(getCurrentGroup);
-    const assignmentsById = yield select(assignmentsSelector);
-    const assignment = assignmentsById[assignmentId];
-    const classIds = yield select(getClassIds);
-    // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
-
-    yield put(setActiveAssignmentAction(assignmentId));
-    yield put(setResumeAssignment(true));
-    if (testType !== TESTLET) {
-      yield put(
-        push(
-          `/student/${
-          testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
-        )
-      );
-    } else {
-      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-/**
- * for loading deeplinking assessment created for SEB. But can be used for others
- * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string,testType:string}}} param
- */
-function* bootstrapAssesment({ payload }) {
-  try {
-    const { testType, assignmentId, testActivityId, testId } = payload;
-    yield fetchUser();
-    if (testActivityId) {
-      yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId }));
-    } else {
-      yield put(startAssignmentAction({ testType, assignmentId, testId }));
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// launch assignment
-function* launchAssignment({ payload }) {
-  try {
-    const role = yield select(getUserRole);
-    const { assignmentId, groupId } = payload;
-    if (role === "student") {
-      let [assignment, testActivities] = yield Promise.all([
-        assignmentApi.getById(assignmentId),
-        assignmentApi.fetchTestActivities(assignmentId, groupId)
-      ]);
-      const userId = yield select(getCurrentUserId);
-      const classIds = yield select(getClassIds);
-      assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
-      const lastActivity = _maxBy(testActivities, "createdAt");
-      const { testId, testType = "assessment" } = assignment;
-
-      if (lastActivity && lastActivity.status === 0) {
-        yield put(
-          resumeAssignmentAction({ testId, testType, assignmentId, testActivityId: lastActivity._id, classId: groupId })
-        );
-      } else {
-        let maxAttempt;
-        if (assignment.maxAttempts) {
-          maxAttempt = assignment.maxAttempts;
-        } else {
-          const test = yield call(testsApi.getByIdMinimal, testId);
-          maxAttempt = test.maxAttempts;
-        }
-
-        if (maxAttempt > testActivities.length) {
-          yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));
-        } else {
-          yield put(push(`/home/grades`));
-        }
-      }
-    } else {
-      yield put(push(`/author/classboard/${assignmentId}/${groupId}`));
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// set actions watcherss
-export function* watcherSaga() {
-  yield all([
-    yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
-    yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
-    yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
-    yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
-    yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment)
-  ]);
-}
 
 // selectors
 export const assignmentsSelector = state => state.studentAssignment.byId;
@@ -317,17 +128,28 @@ export const isLiveAssignment = (assignment, classIds) => {
   const maxAttempts = (assignment && assignment.maxAttempts) || 1;
   const attempts = (assignment.reports && assignment.reports.length) || 0;
   const lastAttempt = last(assignment.reports) || {};
+  // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment;
   // when attempts over no need to check for any other condition to hide assignment from assignments page
-  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
+  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2))
+    return false;
   if (!endDate) {
-    endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
-      .endDate;
+    endDate = (
+      _maxBy(
+        groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [],
+        "endDate"
+      ) || {}
+    ).endDate;
     const currentClass =
-      groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
+      groups.find(cl =>
+        currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id)
+      ) || {};
     if (!endDate) {
       // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
-      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
+      if (
+        assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE &&
+        assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE
+      ) {
         return !currentClass.closed;
       }
       // IF MANUAL OPEN AND AUTO CLOSE
@@ -338,7 +160,8 @@ export const isLiveAssignment = (assignment, classIds) => {
       // IF MANUAL CLOSE AND AUTO OPEN
       if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive =
-          currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
+          currentClass.startDate < Date.now() &&
+          (!currentClass.closed || currentClass.closedDate > Date.now());
         return isLive;
       }
     }
@@ -387,7 +210,10 @@ export const getAllAssignmentsSelector = createSelector(
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, currentUserId) => {
     // group reports by assignmentsID
-    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
+    const groupedReports = groupBy(
+      values(reportsObj),
+      item => `${item.assignmentId}_${item.groupId}`
+    );
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
@@ -426,7 +252,7 @@ export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   assignments => {
     let IN_PROGRESS = 0;
-      let NOT_STARTED = 0;
+    let NOT_STARTED = 0;
     assignments.forEach(assignment => {
       const attempts = (assignment.reports && assignment.reports.length) || 0;
       if (attempts === 0) {
@@ -442,3 +268,191 @@ export const assignmentsCountByFilerNameSelector = createSelector(
     };
   }
 );
+
+// sagas
+// fetch and load assignments and reports for the student
+function* fetchAssignments({ payload }) {
+  try {
+    yield put(setAssignmentsLoadingAction());
+    const groupId = yield select(getCurrentGroup);
+    const userId = yield select(getCurrentUserId);
+    const classIds = yield select(getClassIds);
+    const [assignments, reports] = yield all([
+      call(assignmentApi.fetchAssigned, payload),
+      call(reportsApi.fetchReports, groupId)
+    ]);
+    // transform to handle redirect
+    const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
+    const assignmentsProcessed = assignments.map(transformFn);
+
+    // normalize reports
+    const {
+      result: allReports,
+      entities: { reports: reportsObj }
+    } = normalize(reports, [reportSchema]);
+
+    yield put(setReportsAction({ allReports, reportsObj }));
+    // normalize assignments
+    const {
+      result: allAssignments,
+      entities: { assignments: assignmentObj }
+    } = normalize(assignmentsProcessed, [assignmentSchema]);
+
+    yield put(setAssignmentsAction({ allAssignments, assignmentObj }));
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/*
+ * start assingment
+ */
+function* startAssignment({ payload }) {
+  try {
+    const { assignmentId, testId, testType, classId } = payload;
+    if (!assignmentId || !testId) {
+      throw new Error("insufficient data");
+    }
+
+    yield put(setActiveAssignmentAction(assignmentId));
+
+    const institutionId = yield select(getCurrentSchool);
+    const groupType = "class";
+    const { _id: testActivityId } = yield testActivityApi.create({
+      assignmentId,
+      groupId: classId,
+      institutionId,
+      groupType,
+      testId
+    });
+    // set Activity id
+    if (testType !== TESTLET) {
+      yield put(
+        push(
+          `/student/${
+            testType === COMMON ? ASSESSMENT : testType
+          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+        )
+      );
+    } else {
+      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
+    }
+
+    // TODO:load previous responses if resume!!
+  } catch (err) {
+    const { status, data = {} } = err;
+    console.error(err);
+    if (status === 403 && data.message) {
+      yield call(message.error, data.message, 3);
+    }
+  }
+}
+
+/*
+ * resume assignment
+ */
+function* resumeAssignment({ payload }) {
+  try {
+    const { assignmentId, testActivityId, testId, testType, classId } = payload;
+    if (!assignmentId || !testId || !testActivityId) {
+      throw new Error("insufficient data");
+    }
+
+    // get the class id for the assignment
+
+    yield put(setActiveAssignmentAction(assignmentId));
+    yield put(setResumeAssignment(true));
+    if (testType !== TESTLET) {
+      yield put(
+        push(
+          `/student/${
+            testType === COMMON ? ASSESSMENT : testType
+          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+        )
+      );
+    } else {
+      yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
+ * for loading deeplinking assessment created for SEB. But can be used for others
+ * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string,testType:string}}} param
+ */
+function* bootstrapAssesment({ payload }) {
+  try {
+    const { testType, assignmentId, testActivityId, testId } = payload;
+    yield fetchUser();
+    if (testActivityId) {
+      yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId }));
+    } else {
+      yield put(startAssignmentAction({ testType, assignmentId, testId }));
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+// launch assignment
+function* launchAssignment({ payload }) {
+  try {
+    const role = yield select(getUserRole);
+    const { assignmentId, groupId } = payload;
+    if (role === "student") {
+      // eslint-disable-next-line
+      let [assignment, testActivities] = yield Promise.all([
+        assignmentApi.getById(assignmentId),
+        assignmentApi.fetchTestActivities(assignmentId, groupId)
+      ]);
+      const userId = yield select(getCurrentUserId);
+      const classIds = yield select(getClassIds);
+      assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
+      const lastActivity = _maxBy(testActivities, "createdAt");
+      const { testId, testType = "assessment" } = assignment;
+
+      if (lastActivity && lastActivity.status === 0) {
+        yield put(
+          resumeAssignmentAction({
+            testId,
+            testType,
+            assignmentId,
+            testActivityId: lastActivity._id,
+            classId: groupId
+          })
+        );
+      } else {
+        let maxAttempt;
+        if (assignment.maxAttempts) {
+          maxAttempt = assignment.maxAttempts;
+        } else {
+          const test = yield call(testsApi.getByIdMinimal, testId);
+          maxAttempt = test.maxAttempts;
+        }
+
+        if (maxAttempt > testActivities.length) {
+          yield put(startAssignmentAction({ testId, assignmentId, testType, classId: groupId }));
+        } else {
+          yield put(push(`/home/grades`));
+        }
+      }
+    } else {
+      yield put(push(`/author/classboard/${assignmentId}/${groupId}`));
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+// set actions watcherss
+export function* watcherSaga() {
+  yield all([
+    yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
+    yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
+    yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
+    yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
+    yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment)
+  ]);
+}

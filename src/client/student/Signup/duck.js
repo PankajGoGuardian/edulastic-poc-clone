@@ -1,10 +1,10 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { get, pick } from "lodash";
 import { message } from "antd";
-import { takeLatest, call, put, select } from "redux-saga/effects";
-import { schoolApi, userApi, settingsApi, TokenStorage } from "@edulastic/api";
-import { push } from "connected-react-router";
 import produce from "immer";
+import { push } from "connected-react-router";
+import { takeLatest, call, put, select } from "redux-saga/effects";
+import { schoolApi, userApi, settingsApi, TokenStorage, canvasApi } from "@edulastic/api";
 import { signupSuccessAction } from "../Login/ducks";
 import { getUser } from "../../author/src/selectors/user";
 
@@ -54,6 +54,9 @@ const FETCH_SCHOOL_TEACHERS_FAILED = "[signup] fetch school teachers failed";
 
 const SET_AUTO_SUGGEST_SCHOOLS = "[singup] set auto suggest schools";
 const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS = "[signup] set previous auto suggest schools";
+
+const BULK_SYNC_CANVAS_CLASS = "[signup] bulk sync canvas class";
+const SET_BULK_SYNC_CANVAS_STATE = "[signup] set bulk sync canvas state";
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -110,6 +113,9 @@ export const fetchSchoolTeachersRequestAction = createAction(FETCH_SCHOOL_TEACHE
 export const setAutoSuggestSchools = createAction(SET_AUTO_SUGGEST_SCHOOLS);
 export const setPreviousAutoSuggestSchools = createAction(SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS);
 
+export const bulkSyncCanvasClassAction = createAction(BULK_SYNC_CANVAS_CLASS);
+export const setBulkSyncCanvasStateAction = createAction(SET_BULK_SYNC_CANVAS_STATE);
+
 // Reducers
 const initialState = {
   isSearching: false,
@@ -121,7 +127,8 @@ const initialState = {
   createSchoolRequestPending: false,
   checkingPolicy: false,
   checkDistrictPolicy: true,
-  autoSuggestSchools: []
+  autoSuggestSchools: [],
+  bulkSyncingCanvas: false
 };
 
 const searchSchool = state => {
@@ -204,6 +211,10 @@ const createSchoolSuccess = (state, { payload }) => {
   state.createSchoolRequestPending = false;
 };
 
+const setBulkSyncingState = (state, { payload }) => {
+  state.bulkSyncingCanvas = payload;
+};
+
 export default createReducer(initialState, {
   [SEARCH_SCHOOL_REQUEST]: searchSchool,
   [SEARCH_SCHOOL_SUCCESS]: receivedSchools,
@@ -277,7 +288,11 @@ export default createReducer(initialState, {
   [SET_AUTO_SUGGEST_SCHOOLS]: setAutoSuggestData,
   [SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS]: state => {
     state.schools = [...state.autoSuggestSchools];
-  }
+  },
+  [BULK_SYNC_CANVAS_CLASS]: state => {
+    state.bulkSyncingCanvas = true;
+  },
+  [SET_BULK_SYNC_CANVAS_STATE]: setBulkSyncingState
 });
 
 // Sagas
@@ -490,6 +505,26 @@ function* fetchSchoolTeachersSaga({ payload }) {
   }
 }
 
+function* bulkSyncCanvasClassSaga({ payload }) {
+  try {
+    const result = yield call(canvasApi.bulkSync, payload);
+    if (result.failedCourseSections.length === payload.length) {
+      yield call(message.error, "Bulk sync failed.");
+    } else {
+      const user = yield select(getUser);
+      const newUser = produce(user, draft => {
+        delete draft.currentSignUpState;
+        return draft;
+      });
+      // setting user in store to put orgData in store
+      yield put(signupSuccessAction(newUser));
+    }
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Bulk sync failed.");
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolSaga);
   yield takeLatest(SEARCH_SCHOOL_BY_DISTRICT_REQUEST, searchSchoolByDistricySaga);
@@ -504,4 +539,5 @@ export function* watcherSaga() {
   );
   yield takeLatest(CHECK_DISTRICT_POLICY_REQUEST, checkDistrictPolicyRequestSaga);
   yield takeLatest(FETCH_SCHOOL_TEACHERS_REQUEST, fetchSchoolTeachersSaga);
+  yield takeLatest(BULK_SYNC_CANVAS_CLASS, bulkSyncCanvasClassSaga);
 }

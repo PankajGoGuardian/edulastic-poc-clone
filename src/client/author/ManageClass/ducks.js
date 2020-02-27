@@ -4,10 +4,10 @@ import { all, takeEvery, call, put, select, takeLatest } from "redux-saga/effect
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
-import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
+import { googleApi, groupApi, enrollmentApi, userApi, canvasApi } from "@edulastic/api";
 
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
-import produce from "immer";
+
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 
 // selectors
@@ -81,6 +81,12 @@ export const SYNC_BY_CODE_MODAL = "[manageClass] sync by code modal";
 export const SET_SUBJECT = "[manageClass] set subject";
 export const SET_GROUP_SYNC_DETAILS = "[manageClass] sync google class response";
 
+export const GET_CANVAS_COURSE_LIST_REQUEST = "[manageClass] get canvas course list requst";
+export const GET_CANVAS_COURSE_LIST_SUCCESS = "[manageClass] get canvas course list success";
+export const GET_CANVAS_SECTION_LIST_REQUEST = "[manageClass] get canvas section list request";
+export const GET_CANVAS_SECTION_LIST_SUCCESS = "[manageClass] get canvas section list success";
+export const SYNC_CLASS_WITH_CANVAS = "[manageClass] sync class with canvas";
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
@@ -131,6 +137,12 @@ export const syncByCodeModalAction = createAction(SYNC_BY_CODE_MODAL);
 export const setSyncClassLoadingAction = createAction(SYNC_CLASS_LOADING);
 export const setSubjectAction = createAction(SET_SUBJECT);
 export const setGroupSyncDataAction = createAction(SET_GROUP_SYNC_DETAILS);
+
+export const getCanvasCourseListRequestAction = createAction(GET_CANVAS_COURSE_LIST_REQUEST);
+export const getCanvasCourseListSuccessAction = createAction(GET_CANVAS_COURSE_LIST_SUCCESS);
+export const getCanvasSectionListRequestAction = createAction(GET_CANVAS_SECTION_LIST_REQUEST);
+export const getCanvasSectionListSuccessAction = createAction(GET_CANVAS_SECTION_LIST_SUCCESS);
+export const syncClassWithCanvasAction = createAction(SYNC_CLASS_WITH_CANVAS);
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -146,7 +158,9 @@ const initialState = {
   added: false,
   syncClassResponse: {},
   selectedSubject: "",
-  classLoaded: false
+  classLoaded: false,
+  canvasCourseList: [],
+  canvasSectionList: []
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -158,17 +172,12 @@ const setGoogleCourseList = (state, { payload }) => {
 
 const updateGoogleCourseList = (state, { payload }) => {
   const { index, key, value } = payload;
-  const googleCourseList = state.googleCourseList;
-  const newGoogleCourseList = produce(googleCourseList, draft => {
-    draft =
-      draft &&
-      draft.map((googleCourse, ind) => {
-        if (ind === index) {
-          googleCourse[key] = value;
-        }
-      });
+  const { googleCourseList } = state;
+  googleCourseList.forEach((googleCourse, ind) => {
+    if (ind === index) {
+      googleCourse[key] = value;
+    }
   });
-  state.googleCourseList = newGoogleCourseList;
   state.showModal = true;
 };
 // toggle modal
@@ -257,7 +266,10 @@ const updateStudent = state => {
 
 const updateStudentSuccess = (state, { payload }) => {
   const stdList = state.studentsList;
-  const updatedIndex = findIndex(stdList, std => std._id === payload._id || std.userId === payload._id);
+  const updatedIndex = findIndex(
+    stdList,
+    std => std._id === payload._id || std.userId === payload._id
+  );
   if (updatedIndex !== -1) {
     state.studentsList.splice(updatedIndex, 1, payload);
   }
@@ -303,6 +315,14 @@ const setFetchClassRequest = (state, { payload }) => {
 const setGroupSyncDetails = (state, { payload }) => {
   state.syncClassResponse = payload;
 };
+
+const setCanvasCourseList = (state, { payload }) => {
+  state.canvasCourseList = payload;
+};
+
+const setCanvasSectionList = (state, { payload }) => {
+  state.canvasSectionList = payload;
+};
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -331,7 +351,9 @@ export default createReducer(initialState, {
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
   [SET_SUBJECT]: setSubject,
   [SET_GROUP_SYNC_DETAILS]: setGroupSyncDetails,
-  [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
+  [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange,
+  [GET_CANVAS_COURSE_LIST_SUCCESS]: setCanvasCourseList,
+  [GET_CANVAS_SECTION_LIST_SUCCESS]: setCanvasSectionList
 });
 
 function* fetchClassList({ payload }) {
@@ -365,7 +387,9 @@ function* fetchStudentsByClassId({ payload }) {
 function* receiveCreateClassRequest({ payload }) {
   try {
     const result = yield call(groupApi.createGroup, payload);
-    message.success(`${result.name} is created. Please add students to your class and begin using Edulastic.`);
+    message.success(
+      `${result.name} is created. Please add students to your class and begin using Edulastic.`
+    );
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
   } catch ({ data: { message: errorMessage } }) {
@@ -430,7 +454,9 @@ function* changeUserTTSRequest({ payload }) {
     yield put(userTTSRequestSuccessAction(newStdList));
     message.success(msg);
   } catch (error) {
-    message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
+    message.error(
+      "Error occurred while enabling/disabling text to speech. Please contact customer support."
+    );
   }
 }
 
@@ -482,11 +508,11 @@ function* syncClass({ payload }) {
       return yield call(message.error, "Class name is missing for one of the selected class");
     }
     yield put(setSyncClassLoadingAction(true));
-    let response = yield call(googleApi.syncClass, { classList: payload });
+    const response = yield call(googleApi.syncClass, { classList: payload });
     if (response) {
       Object.keys(response).forEach(gCode => {
         const group = payload.find(o => o.enrollmentCode === gCode);
-        response[gCode]["groupName"] = group.name;
+        response[gCode].groupName = group.name;
       });
       yield put(setGroupSyncDataAction(response));
     }
@@ -506,7 +532,10 @@ function* syncClassUsingCode({ payload }) {
     const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
     yield put(setSyncClassLoadingAction(false));
     if (resp.status === 403) {
-      return yield call(message.error, `Google Classroom ${payload.googleCode} is already synced in another group`);
+      return yield call(
+        message.error,
+        `Google Classroom ${payload.googleCode} is already synced in another group`
+      );
     }
     yield put(fetchStudentsByIdAction({ classId }));
     yield call(message.success, "Google Class import is Complete");
@@ -514,6 +543,43 @@ function* syncClassUsingCode({ payload }) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");
     console.log(e);
+  }
+}
+
+function* getCanvasCourseListRequestSaga() {
+  try {
+    const courseList = yield call(canvasApi.fetchCourseList);
+    console.log({ courseList });
+    yield put(getCanvasCourseListSuccessAction(courseList));
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to get course list.");
+  }
+}
+
+function* getCanvasSectionListRequestSaga({ payload }) {
+  try {
+    const sectionList = yield call(canvasApi.fetchCourseSectionList, payload);
+    console.log({ sectionList });
+    yield put(getCanvasSectionListSuccessAction(sectionList));
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to get course section list.");
+  }
+}
+
+function* syncClassWithCanvasSaga({ payload }) {
+  try {
+    const { groupId: classId } = payload;
+    yield put(setSyncClassLoadingAction(true));
+    yield call(canvasApi.canvasSync, payload);
+    yield put(setSyncClassLoadingAction(false));
+    yield put(fetchStudentsByIdAction({ classId }));
+    yield call(message.success, "Sync with Canavs is Complete.");
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Class sync with Canvas failed");
+    yield put(setSyncClassLoadingAction(false));
   }
 }
 
@@ -530,6 +596,9 @@ export function* watcherSaga() {
     yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
     yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
-    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest)
+    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
+    yield takeLatest(GET_CANVAS_COURSE_LIST_REQUEST, getCanvasCourseListRequestSaga),
+    yield takeLatest(GET_CANVAS_SECTION_LIST_REQUEST, getCanvasSectionListRequestSaga),
+    yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga)
   ]);
 }

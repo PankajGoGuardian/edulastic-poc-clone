@@ -26,7 +26,9 @@ const StudentsList = ({
   features,
   groupList,
   selectedClass,
-  updating
+  updating,
+  allowGoogleLogin,
+  allowCanvasLogin
 }) => {
   const { groupId, active } = selectedClass;
   const [showCurrentStudents, setShowCurrentStudents] = useState(true);
@@ -80,21 +82,45 @@ const StudentsList = ({
       ),
       width: 150
     },
-    {
-      title: "Google User",
-      dataIndex: "lastSigninSSO",
-      defaultSortOrder: "descend",
-      render: (lastSigninSSO, { openIdProvider }) => (
-        <span>
-          {[lastSigninSSO, openIdProvider].includes("google") ? (
-            <IconCorrect />
-          ) : (
-            <IconClose color="#ff99bb" width="10px" height="10px" />
-          )}
-        </span>
-      ),
-      width: 150
-    },
+    ...(allowGoogleLogin
+      ? [
+          {
+            title: "Google User",
+            dataIndex: "lastSigninSSO",
+            defaultSortOrder: "descend",
+            render: (lastSigninSSO, { openIdProvider }) => (
+              <span>
+                {[lastSigninSSO, openIdProvider].includes("google") ? (
+                  <IconCorrect />
+                ) : (
+                  <IconClose color="#ff99bb" width="10px" height="10px" />
+                )}
+              </span>
+            ),
+            width: 150
+          }
+        ]
+      : []),
+
+    ...(allowCanvasLogin
+      ? [
+          {
+            title: "Canvas User",
+            dataIndex: "canvasId",
+            defaultSortOrder: "descend",
+            render: (canvasId, { openIdProvider }) => (
+              <span>
+                {openIdProvider === "canvas" && canvasId ? (
+                  <IconCorrect />
+                ) : (
+                  <IconClose color="#ff99bb" width="10px" height="10px" />
+                )}
+              </span>
+            ),
+            width: 150
+          }
+        ]
+      : []),
     {
       title: "Status",
       dataIndex: "enrollmentStatus",

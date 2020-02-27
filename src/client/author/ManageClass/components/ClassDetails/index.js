@@ -1,4 +1,3 @@
-import { themeColor } from "@edulastic/colors";
 import { MainContentWrapper } from "@edulastic/common";
 import { Input, message, Spin } from "antd";
 import { get } from "lodash";
@@ -7,19 +6,25 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { themeColor } from "@edulastic/colors";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { archiveClassAction } from "../../../Classes/ducks";
 import {
   fetchClassListAction,
   fetchStudentsByIdAction,
   syncByCodeModalAction,
-  syncClassUsingCodeAction
+  syncClassUsingCodeAction,
+  getCanvasCourseListRequestAction,
+  getCanvasSectionListRequestAction,
+  syncClassWithCanvasAction
 } from "../../ducks";
+
 import ActionContainer from "./ActionContainer";
 import Header from "./Header";
 import MainInfo from "./MainInfo";
 import StudentsList from "./StudentsList";
 import { ButtonWrapper, GoogleClassSyncModal, StyledButton } from "./styled";
+import CanvasSyncModal from "./CanvasSyncModal";
 
 const ClassDetails = ({
   selectedClass,
@@ -33,10 +38,18 @@ const ClassDetails = ({
   classLoaded,
   match,
   syncClassUsingCode,
-  archiveClass
+  archiveClass,
+  allowCanvasLogin,
+  getCanvasCourseListRequest,
+  getCanvasSectionListRequest,
+  canvasCourseList,
+  canvasSectionList,
+  syncClassWithCanvas,
+  user
 }) => {
   const { _id, name, cleverId } = selectedClass;
   const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
+  const [showCanvasSyncModal, setCanvasSyncModalVisibility] = useState(false);
   const googleCode = React.createRef();
   const [openGCModal, setOpenGCModal] = useState(false);
   useEffect(() => {
@@ -44,8 +57,9 @@ const ClassDetails = ({
   }, [fetchClassListLoading]);
 
   useEffect(() => {
-    if (!syncClassLoading && openGCModal) {
-      setOpenGCModal(false);
+    if (!syncClassLoading) {
+      if (openGCModal) setOpenGCModal(false);
+      if (showCanvasSyncModal) setCanvasSyncModalVisibility(false);
     }
   }, [syncClassLoading]);
 
@@ -90,6 +104,10 @@ const ClassDetails = ({
 
   const viewAssessmentHandler = () => {};
 
+  const syncCanvasModal = () => {
+    setCanvasSyncModalVisibility(true);
+  };
+
   return (
     <>
       {!classLoaded ? (
@@ -121,6 +139,22 @@ const ClassDetails = ({
           >
             <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
           </GoogleClassSyncModal>
+          {showCanvasSyncModal && (
+            <CanvasSyncModal
+              visible={showCanvasSyncModal}
+              handleCancel={() => setCanvasSyncModalVisibility(false)}
+              syncClassLoading={syncClassLoading}
+              getCanvasCourseListRequest={getCanvasCourseListRequest}
+              getCanvasSectionListRequest={getCanvasSectionListRequest}
+              canvasCourseList={canvasCourseList}
+              canvasSectionList={canvasSectionList}
+              syncClassWithCanvas={syncClassWithCanvas}
+              canvasCode={+selectedClass.canvasCode || null}
+              canvasCourseSectionCode={+selectedClass.canvasCourseSectionCode || null}
+              user={user}
+              groupId={selectedClass._id}
+            />
+          )}
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
           <MainContentWrapper>
             <BreadCrumb
@@ -137,11 +171,18 @@ const ClassDetails = ({
               allowGoogleLogin={allowGoogleLogin}
               syncGCModal={() => setOpenGCModal(true)}
               archiveClass={archiveClass}
+              allowCanvasLogin={allowCanvasLogin}
+              syncCanvasModal={syncCanvasModal}
             />
 
             <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
 
-            <StudentsList selectStudent selectedClass={selectedClass} />
+            <StudentsList
+              selectStudent
+              selectedClass={selectedClass}
+              allowGoogleLogin={allowGoogleLogin}
+              allowCanvasLogin={allowCanvasLogin}
+            />
           </MainContentWrapper>
         </>
       )}
@@ -163,15 +204,22 @@ const enhance = compose(
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      allowCanvasLogin: get(state, "user.user.orgData.allowCanvas", false),
       syncClassLoading: get(state, "manageClass.syncClassLoading"),
-      classLoaded: get(state, "manageClass.classLoaded")
+      classLoaded: get(state, "manageClass.classLoaded"),
+      canvasCourseList: get(state, "manageClass.canvasCourseList", []),
+      canvasSectionList: get(state, "manageClass.canvasSectionList", []),
+      user: get(state, "user.user", {})
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
       fetchClassList: fetchClassListAction,
       syncByCodeModal: syncByCodeModalAction,
       loadStudents: fetchStudentsByIdAction,
-      archiveClass: archiveClassAction
+      archiveClass: archiveClassAction,
+      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
+      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
+      syncClassWithCanvas: syncClassWithCanvasAction
     }
   )
 );

@@ -1,17 +1,19 @@
 import React, { useState } from "react";
+import withRouter from "react-router-dom/withRouter";
+import { compose } from "redux";
+import connect from "react-redux/lib/connect/connect";
 import PropTypes from "prop-types";
 import { message } from "antd";
+import { canvasApi } from "@edulastic/api";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
 import { TypeToConfirmModal } from "@edulastic/common";
-import connect from "react-redux/lib/connect/connect";
-import withRouter from "react-router-dom/withRouter";
-import { compose } from "redux";
 import { LightGreenSpan } from "@edulastic/common/src/components/TypeToConfirmModal/styled";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
 import { scopes } from "../ClassListContainer/ClassCreatePage";
 import { ContainerHeader, RightContent, ClassCode, IconArchiveClass, ClassLink } from "./styled";
 import { Tooltip } from "../../../../common/utils/helpers";
+import authorizeCanvas from "../../../../common/utils/CanavsAuthorizationModule";
 
 const SubHeader = ({
   name,
@@ -26,7 +28,10 @@ const SubHeader = ({
   archiveClass,
   cleverId,
   setAssignmentFilters,
-  history
+  history,
+  allowCanvasLogin,
+  syncCanvasModal,
+  user
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -57,6 +62,29 @@ const SubHeader = ({
     };
     history.push("/author/assignments");
     setAssignmentFilters(filter);
+  };
+
+  const handleSyncWithCanvas = async () => {
+    try {
+      const result = await canvasApi.getCanvasAuthURI();
+      if (!result.userAuthenticated) {
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username ||
+          user.email ||
+          ""}`;
+        authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
+          .then(res => {
+            syncCanvasModal(res);
+          })
+          .catch(err => {
+            console.error("Error while authorizing", err);
+            message.error("Error occured while authorizing");
+          });
+      } else {
+        syncCanvasModal();
+      }
+    } catch (err) {
+      message.error("Error while getting Auth URI");
+    }
   };
 
   return (
@@ -92,6 +120,21 @@ const SubHeader = ({
               responseType="code"
             />
           ) : null)}
+
+        {allowCanvasLogin && active === 1 && (
+          <i
+            style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+            title="Sync with Canvas Classroom"
+            onClick={handleSyncWithCanvas}
+          >
+            <img
+              alt="Canvas"
+              src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+              width={22}
+              height={22}
+            />
+          </i>
+        )}
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
         {/* <StyledIcon type="user" fill={greenDark} /> */}
         {active === 1 && !cleverId && (
@@ -139,7 +182,7 @@ SubHeader.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    null,
+    state => ({ user: state?.user?.user }),
     {
       setAssignmentFilters: setAssignmentFiltersAction
     }

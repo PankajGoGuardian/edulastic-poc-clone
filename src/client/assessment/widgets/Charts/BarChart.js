@@ -136,7 +136,7 @@ const BarChart = ({
       ref={targetRef}
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
-        <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+        <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} active={active} />
 
         <HorizontalLines
           paddingTop={20}

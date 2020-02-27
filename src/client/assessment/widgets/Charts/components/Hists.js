@@ -8,6 +8,7 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 
 import { Bar, ActiveBar, Text, VxText } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
+import { SHOW_ALWAYS, SHOW_BY_HOVER } from "../const";
 
 const Hists = ({
   item,
@@ -92,6 +93,11 @@ const Hists = ({
     return null;
   };
 
+  const labelIsVisible = index =>
+    data[index] &&
+    ((data[index].labelVisibility === SHOW_BY_HOVER && hoveredIndex === index) ||
+      (data[index].labelVisibility === SHOW_ALWAYS || !data[index].labelVisibility));
+
   const isRenderIcons = !!(correct && correct.length);
 
   return (
@@ -126,7 +132,7 @@ const Hists = ({
               height={isHovered(index) ? 5 : 1}
             />
           )}
-          <VxText
+          {labelIsVisible(index) && <VxText
             textAnchor="middle"
             verticalAnchor="start"
             x={getCenterX(index) + (step - 2) / 2}
@@ -134,7 +140,7 @@ const Hists = ({
             width={70}
           >
             {dot.x}
-          </VxText>
+          </VxText>}
         </Fragment>
       ))}
     </Fragment>

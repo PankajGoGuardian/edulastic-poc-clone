@@ -65,9 +65,12 @@ const Bars = ({
         <Fragment key={`bar-${index}`}>
           {showAnswer && isRenderIcons && renderValidationIcons(index)}
           <Bar
-            onClick={deleteMode ? () => saveAnswer(index) : () => {}}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            onMouseEnter={handleMouse(index)}
+            onMouseLeave={handleMouse(null)}
+            onMouseDown={onMouseDown(index)}
+            onClick={handleMouse(index)}
+            onTouchEnd={handleMouse(null)}
+            onTouchStart={onMouseDown(index)}
             x={getCenterX(index)}
             y={getCenterY(dot)}
             width={step * 0.8}

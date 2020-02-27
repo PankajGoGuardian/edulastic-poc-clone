@@ -150,7 +150,12 @@ const LineChart = ({
       ref={targetRef}
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
-        <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+        <VerticalLines
+          lines={data}
+          gridParams={gridParams}
+          displayGridlines={displayVerticalLines(showGridlines)}
+          active={active}
+        />
 
         <HorizontalLines
           gridParams={gridParams}

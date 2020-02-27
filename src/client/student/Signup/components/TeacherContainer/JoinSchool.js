@@ -30,7 +30,8 @@ import {
   updateUserWithSchoolLoadingSelector,
   checkDistrictPolicyRequestAction,
   createAndJoinSchoolRequestAction,
-  fetchSchoolTeachersRequestAction
+  fetchSchoolTeachersRequestAction,
+  setPreviousAutoSuggestSchools
 } from "../../duck";
 import { getUserIPZipCode, getUserOrgId } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
@@ -79,6 +80,7 @@ const JoinSchool = ({
   districtId,
   isSignupUsingDaURL,
   schoolTeachers,
+  setPreviousAutoSuggestSchoolsContent,
   t
 }) => {
   const { email, firstName, middleName, lastName, currentSignUpState } = userInfo;
@@ -177,13 +179,17 @@ const JoinSchool = ({
           search: {
             name: [{ type: "cont", value: searchText }],
             city: [{ type: "cont", value: searchText }],
-            zip: [{ type: "cont", value: searchText }]
+            zip: [{ type: "cont", value: searchText }],
+            isApproved: [true]
           },
           searchKeysSearchType: "or"
         });
       } else {
-        searchSchool({ ipZipCode, email, searchText });
+        searchSchool({ ipZipCode, email, searchText, isApproved: true });
       }
+    } else {
+      // set the auto suggest schools
+      setPreviousAutoSuggestSchoolsContent();
     }
   };
 
@@ -191,9 +197,9 @@ const JoinSchool = ({
 
   useEffect(() => {
     if (isSignupUsingDaURL || districtId) {
-      searchSchoolByDistrict({ districtId, currentSignUpState });
+      searchSchoolByDistrict({ districtId, currentSignUpState, search: { isApproved: [true] } });
     } else {
-      searchSchool({ ipZipCode, email });
+      searchSchool({ ipZipCode, email, isApproved: true });
     }
   }, []);
 
@@ -350,7 +356,8 @@ JoinSchool.propTypes = {
   searchSchoolByDistrict: PropTypes.func.isRequired,
   createAndJoinSchool: PropTypes.func.isRequired,
   checkDistrictPolicy: PropTypes.func.isRequired,
-  fetchSchoolTeachers: PropTypes.func.isRequired
+  fetchSchoolTeachers: PropTypes.func.isRequired,
+  setPreviousAutoSuggestSchoolsContent: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -374,7 +381,8 @@ const enhance = compose(
       joinSchool: joinSchoolRequestAction,
       createAndJoinSchool: createAndJoinSchoolRequestAction,
       checkDistrictPolicyAction: checkDistrictPolicyRequestAction,
-      fetchSchoolTeachers: fetchSchoolTeachersRequestAction
+      fetchSchoolTeachers: fetchSchoolTeachersRequestAction,
+      setPreviousAutoSuggestSchoolsContent: setPreviousAutoSuggestSchools
     }
   )
 );

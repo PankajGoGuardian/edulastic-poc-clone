@@ -3,10 +3,10 @@ import { get, pick } from "lodash";
 import { message } from "antd";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { schoolApi, userApi, settingsApi, TokenStorage } from "@edulastic/api";
-import { signupSuccessAction } from "../Login/ducks";
 import { push } from "connected-react-router";
-import { getUser } from "../../author/src/selectors/user";
 import produce from "immer";
+import { signupSuccessAction } from "../Login/ducks";
+import { getUser } from "../../author/src/selectors/user";
 
 import { userPickFields } from "../../common/utils/static/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
@@ -32,7 +32,6 @@ const JOIN_SCHOOL_REQUEST = "[signup] update with school request";
 const JOIN_SCHOOL_FAILED = "[signup] update with school failed";
 
 const SAVE_SUBJECTGRADE_REQUEST = "[signup] save with subject and grade request";
-const SAVE_SUBJECTGRADE_SUCCESS = "[signup] save with subject and grade success";
 const SAVE_SUBJECTGRADE_FAILED = "[signup] save with subject and grade failed";
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = "[signup] create and join school request";
@@ -52,6 +51,9 @@ const CHECK_DISTRICT_POLICY_FAILED = "[signup] check district policy failed";
 const FETCH_SCHOOL_TEACHERS_REQUEST = "[signup] fetch school teachers request";
 const FETCH_SCHOOL_TEACHERS_SUCCESS = "[signup] fetch school teachers success";
 const FETCH_SCHOOL_TEACHERS_FAILED = "[signup] fetch school teachers failed";
+
+const SET_AUTO_SUGGEST_SCHOOLS = "[singup] set auto suggest schools";
+const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS = "[signup] set previous auto suggest schools";
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -96,13 +98,17 @@ export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 
 export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
-export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
+export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(
+  GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST
+);
 
 export const checkDistrictPolicyRequestAction = createAction(CHECK_DISTRICT_POLICY_REQUEST);
 export const checkDistrictPolicySuccessAction = createAction(CHECK_DISTRICT_POLICY_SUCCESS);
 export const checkDistrictPolicyFailedAction = createAction(CHECK_DISTRICT_POLICY_FAILED);
 
 export const fetchSchoolTeachersRequestAction = createAction(FETCH_SCHOOL_TEACHERS_REQUEST);
+export const setAutoSuggestSchools = createAction(SET_AUTO_SUGGEST_SCHOOLS);
+export const setPreviousAutoSuggestSchools = createAction(SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS);
 
 // Reducers
 const initialState = {
@@ -114,7 +120,8 @@ const initialState = {
   updateUserWithSchoolLoading: false,
   createSchoolRequestPending: false,
   checkingPolicy: false,
-  checkDistrictPolicy: true
+  checkDistrictPolicy: true,
+  autoSuggestSchools: []
 };
 
 const searchSchool = state => {
@@ -134,21 +141,31 @@ const searchSchoolsByDistrict = state => {
   state.isSearching = true;
 };
 
+const formatSearchedSchoolData = payload => {
+  if (payload?.data) {
+    return payload.data.map(item => ({
+      schoolId: item._id,
+      schoolName: item._source.name,
+      districtName: get(item, "_source.district.name", ""),
+      districtId: item._source.districtId || get(item, "_source.district._id", ""),
+      address: get(item, "_source.location", {}),
+      isApproved: get(item, "_source.isApproved", false)
+    }));
+  }
+  if (payload?.length) {
+    return payload;
+  }
+  return [];
+};
+
 const receivedSchoolsByDistrict = (state, { payload }) => {
   state.isSearching = false;
-  if (payload && payload.data) {
-    state.schools = payload.data.map(item => {
-      return {
-        schoolId: item._id,
-        schoolName: item._source.name,
-        districtName: get(item, "_source.district.name", ""),
-        districtId: item._source.districtId || get(item, "_source.district._id", ""),
-        address: get(item, "_source.location", {})
-      };
-    });
-  } else {
-    state.schools = [];
-  }
+  state.schools = formatSearchedSchoolData(payload);
+};
+
+const setAutoSuggestData = (state, { payload }) => {
+  state.isSearching = false;
+  state.autoSuggestSchools = formatSearchedSchoolData(payload);
 };
 
 const failedSchoolsByDistrict = state => {
@@ -197,29 +214,29 @@ export default createReducer(initialState, {
   [SEARCH_DISTRICTS_REQUEST]: searchDistricts,
   [SEARCH_DISTRICTS_SUCCESS]: receivedDistricts,
   [SEARCH_DISTRICTS_FAILED]: failedDistricts,
-  [CREATE_AND_JOIN_SCHOOL_REQUEST]: (state, { payload }) => {
+  [CREATE_AND_JOIN_SCHOOL_REQUEST]: state => {
     state.createSchoolRequestPending = true;
   },
-  [CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST]: (state, { payload }) => {
+  [CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST]: state => {
     state.updateUserWithSchoolLoading = true;
   },
-  [CREATE_SCHOOL_REQUEST]: (state, { payload }) => {
+  [CREATE_SCHOOL_REQUEST]: state => {
     state.createSchoolRequestPending = true;
   },
   [CREATE_SCHOOL_SUCCESS]: createSchoolSuccess,
-  [CREATE_SCHOOL_FAILED]: (state, { payload }) => {
+  [CREATE_SCHOOL_FAILED]: state => {
     state.createSchoolRequestPending = false;
   },
-  [SAVE_SUBJECTGRADE_REQUEST]: (state, { payload }) => {
+  [SAVE_SUBJECTGRADE_REQUEST]: state => {
     state.saveSubjectGradeloading = true;
   },
-  [SAVE_SUBJECTGRADE_FAILED]: (state, { payload }) => {
+  [SAVE_SUBJECTGRADE_FAILED]: state => {
     state.saveSubjectGradeloading = false;
   },
-  [JOIN_SCHOOL_REQUEST]: (state, { payload }) => {
+  [JOIN_SCHOOL_REQUEST]: state => {
     state.updateUserWithSchoolLoading = true;
   },
-  [JOIN_SCHOOL_FAILED]: (state, { payload }) => {
+  [JOIN_SCHOOL_FAILED]: state => {
     state.updateUserWithSchoolLoading = false;
   },
   [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST]: state => {
@@ -237,14 +254,14 @@ export default createReducer(initialState, {
     state.generalSettings = undefined;
     state.districtPolicy = undefined;
   },
-  [CHECK_DISTRICT_POLICY_REQUEST]: (state, { payload }) => {
+  [CHECK_DISTRICT_POLICY_REQUEST]: state => {
     state.checkingPolicy = true;
   },
   [CHECK_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.checkingPolicy = false;
     state.checkDistrictPolicy = payload;
   },
-  [CHECK_DISTRICT_POLICY_FAILED]: (state, { payload }) => {
+  [CHECK_DISTRICT_POLICY_FAILED]: state => {
     state.checkingPolicy = false;
     state.checkDistrictPolicy = {};
   },
@@ -254,8 +271,12 @@ export default createReducer(initialState, {
   [FETCH_SCHOOL_TEACHERS_SUCCESS]: (state, { payload }) => {
     state.schoolTeachers = get(payload, "result.data", []);
   },
-  [FETCH_SCHOOL_TEACHERS_FAILED]: (state, { payload }) => {
+  [FETCH_SCHOOL_TEACHERS_FAILED]: state => {
     state.schoolTeachers = [];
+  },
+  [SET_AUTO_SUGGEST_SCHOOLS]: setAutoSuggestData,
+  [SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS]: state => {
+    state.schools = [...state.autoSuggestSchools];
   }
 });
 
@@ -264,6 +285,11 @@ function* searchSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(schoolApi.searchSchool, payload);
     yield put(searchSchoolSuccessAction(result));
+    // check if no search text is passed
+    // consider the result as auto suggest content
+    if (!payload?.searchText) {
+      yield put(setAutoSuggestSchools(result));
+    }
   } catch (err) {
     console.error(err);
     yield put(searchSchoolFailedAction());
@@ -274,6 +300,11 @@ function* searchSchoolByDistricySaga({ payload = {} }) {
   try {
     const result = yield call(schoolApi.getSchools, payload);
     yield put(searchSchoolByDistrictSuccessAction(result));
+    // check if no search text is passed
+    // consider the result as auto suggest content
+    if (!payload?.search?.name) {
+      yield put(setAutoSuggestSchools(result));
+    }
   } catch (err) {
     console.error(err);
     yield put(searchSchoolByDistrictFailedAction());
@@ -467,7 +498,10 @@ export function* watcherSaga() {
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
   yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
-  yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getOrgDetailsByShortNameAndOrgTypeSaga);
+  yield takeLatest(
+    GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST,
+    getOrgDetailsByShortNameAndOrgTypeSaga
+  );
   yield takeLatest(CHECK_DISTRICT_POLICY_REQUEST, checkDistrictPolicyRequestSaga);
   yield takeLatest(FETCH_SCHOOL_TEACHERS_REQUEST, fetchSchoolTeachersSaga);
 }

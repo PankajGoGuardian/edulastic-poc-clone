@@ -30,7 +30,7 @@ const UploadTest = ({ t, uploadTest }) => {
     if (fileList.every(({ status }) => status === "done")) {
       // make an action call here
       console.log("all done");
-      uploadTest();
+      uploadTest(fileList);
     }
   };
 
@@ -42,7 +42,7 @@ const UploadTest = ({ t, uploadTest }) => {
   const props = {
     name: "file",
     customRequest,
-    accept: ".pdf",
+    accept: ".zip",
     onChange,
     multiple: true,
     beforeUpload,

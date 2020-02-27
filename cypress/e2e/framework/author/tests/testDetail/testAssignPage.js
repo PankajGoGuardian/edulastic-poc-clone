@@ -98,11 +98,14 @@ export default class TestAssignPage {
       cy.wait("@assigned").then(xhr => {
         assert(
           xhr.status === 200,
-          `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
+          `assigning the assignment - ${
+            xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)
+          }`
         );
       });
-      if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) return cy.contains("Success!");
-      else return cy.wait(1);
+      if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) {
+        return cy.contains("Success!");
+      } else return cy.wait(1);
     } else return cy.wait(1);
   };
 
@@ -134,18 +137,19 @@ export default class TestAssignPage {
 
   clickOnTypesOfReleaseScores = () => cy.get('[data-cy="selectRelaseScore"]').click();
 
-  setReleaseScoreAndResponse = () => {
+  setReleasePolicy = text => {
     this.clickOnTypesOfReleaseScores();
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains("Release scores and student responses")
-      .click();
+    this.clickOnDropDownOptionByText(text);
   };
 
-  getShuffleQue = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
+  getShuffleQue = () =>
+    cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
 
-  getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
+  getShuffleChoices = () =>
+    cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
 
-  getAnswerOnPaper = () => cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
+  getAnswerOnPaper = () =>
+    cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
 
   selectAnswerOnPaper = () =>
     this.getAnswerOnPaper().then($swich => {
@@ -196,6 +200,13 @@ export default class TestAssignPage {
     this.clickOnPassTypeDropDown();
     cy.get(".ant-select-dropdown-menu-item")
       .contains("Static Password")
+      .click();
+  };
+
+  clickDynamicPassword = () => {
+    this.clickOnPassTypeDropDown();
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains("Dynamic Password")
       .click();
   };
 

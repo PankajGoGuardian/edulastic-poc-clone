@@ -11,6 +11,7 @@ import Regrade from "../../../../framework/author/tests/testDetail/regrade";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import MCQTrueFalsePage from "../../../../framework/author/itemList/questionType/mcq/mcqTrueFalsePage";
+import { openPolicyTypes } from "../../../../framework/constants/assignmentStatus";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Without Regrade`, () => {
   const testLibraryPage = new TestLibrary();
@@ -55,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     pass: "snapwiz"
   };
 
-  before("Get Data Of test and its itemns", () => {
+  before(">get data of test and its itemns", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.fixture("testAuthoring").then(testData => {
       testName = testData[TEST].name;
@@ -73,7 +74,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     });
   });
 
-  before("login and create new items and test", () => {
+  before(">login and create new items and test", () => {
     cy.login("teacher", Teacher.email, Teacher.pass);
     testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
@@ -81,12 +82,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       [item1, item2, item3, item4] = testLibraryPage.items;
     });
   });
-  context("Edit assigned Tests without Regrading", () => {
+  context(">edit assigned tests without regrading", () => {
     before("Assign the test", () => {
       testLibraryPage.clickOnAssign();
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
       testAssignPage.clickOnEntireClass();
+      testAssignPage.selectOpenPolicy(openPolicyTypes.AUTO);
       testAssignPage.clickOnAssign();
     });
 
@@ -97,15 +99,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       studentTestPage.clickOnExitTest();
     });
 
-    it("Edit the name , grade , subject and verify", () => {
+    it(">edit the name , grade , subject and verify", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       const [testname, grade, subject] = ["editedTest", "Grade 8", "ELA"];
       // Get the  test and convert it to draft
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -124,14 +122,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       });
     });
 
-    it("Edit question text from Review tab", () => {
+    it(">edit question text from review tab", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get Test Card and Draft It
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -154,14 +148,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       });
     });
 
-    it("Remove one question from review tab and verify test", () => {
+    it(">remove one question from review tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -180,17 +170,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       });
     });
 
-    it("Add a precreated item and verify test", () => {
+    it(">add a precreated item and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Create A New Item
       item.createItem(newItemKey).then(id => {
         newItemId = id;
         // Get Test and Draft It
-        testLibraryPage.sidebar.clickOnTestLibrary();
-        testLibraryPage.searchFilters.clearAll();
-        testLibraryPage.searchFilters.getAuthoredByMe();
-        testLibraryPage.clickOnTestCardById(OriginalTestId);
-        testLibraryPage.clickOnDetailsOfCard();
+        testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
         testLibraryPage.publishedToDraftAssigned();
         testLibraryPage.getVersionedTestID().then(id => {
           newTestId = id;
@@ -215,14 +201,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       });
     });
 
-    it("Remove one question from add item tab and verify test", () => {
+    it(">remove one question from add item tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
 
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -243,14 +225,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       });
     });
 
-    it("Update points from review tab and verify test", () => {
+    it(">update points from review tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
 
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;

@@ -41,13 +41,7 @@ class ClozeDropDownPage {
       .next()
       .find("label");
 
-  getPoints = () =>
-    cy
-      .get('[data-cy="tabs"]')
-      .parent()
-      .next()
-      .find("input")
-      .eq(0);
+  getPoints = () => cy.get("#cloze-with-drop-down-points");
 
   // advance options
   clickOnAdvancedOptions() {

@@ -7,19 +7,20 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true });
 
-  clickOnPlayList = () =>
-    cy
-      .get('[data-cy="PlayList Library"]')
-      .click({ force: true })
-      .click({ force: true });
+  clickOnPlayListLibrary = () => {
+    cy.server();
+    cy.route("POST", "**/playlists/search/").as("playListSearch");
+    cy.get('[data-cy="PlayList Library"]').dblclick({ force: true });
+    cy.wait("@playListSearch");
+  };
 
-  clickOnAssignment = () => {
+  clickOnAssignment = (fromLcb = false) => {
     cy.server();
     cy.route("GET", /assignments/).as("assignment");
     cy.get('[data-cy="Assignments"]')
       .click({ force: true })
       .click({ force: true });
-    cy.wait("@assignment");
+    if (!fromLcb) cy.wait("@assignment");
   };
 
   clickOnReport = () =>
@@ -50,5 +51,9 @@ export default class TeacherSideBar {
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     cy.get('[data-cy="Test Library"]').dblclick({ force: true });
     cy.wait("@searchTest");
+  };
+
+  clickOnPlayListByName = name => {
+    cy.get(`[data-cy="${name}"]`).dblclick({ force: true });
   };
 }

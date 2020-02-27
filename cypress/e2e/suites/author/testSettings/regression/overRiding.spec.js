@@ -8,7 +8,10 @@ import TestSettings from "../../../../framework/author/tests/testDetail/testSett
 import { CALCULATOR, attemptTypes } from "../../../../framework/constants/questionTypes";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ReportsPage from "../../../../framework/student/reportsPage";
-import { teacherSide, studentSide } from "../../../../framework/constants/assignmentStatus";
+import {
+  studentSide,
+  releaseGradeTypesDropDown as releaseType
+} from "../../../../framework/constants/assignmentStatus";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 
@@ -17,7 +20,7 @@ const testData = require("../../../../../fixtures/testAuthoring");
 const TestName = "TEST_SETTING_OVERRIDE";
 const itemsInTest = testData[TestName].itemKeys;
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Setting`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test setting`, () => {
   const testLibraryPage = new TestLibrary();
   const assignmentsPage = new AssignmentsPage();
   const studentTestPage = new StudentTestPage();
@@ -46,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
   let quesType = [];
   let attempt = [];
   const evalMethods = ["ALL_OR_NOTHING", "PARTIAL_CREDIT", "PENALIZE"];
-  before("login and create new items and test", () => {
+  before(">login and create new items and test", () => {
     cy.deleteAllAssignments(Student1.email, Teacher.email);
     cy.login("teacher", Teacher.email, Teacher.pass);
     testLibraryPage.createTest(TestName, false).then(id => {
@@ -63,8 +66,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
     });
   });
 
-  context(`Over Riding Test Settings`, () => {
-    it("Edit Settings From Settings Tab And Publish", () => {
+  context(`>over riding test settings`, () => {
+    it(">edit settings from settings tab and publish", () => {
       /* Editing Settings At Test Level */
       testReviewTab.testheader.clickOnSettings();
       /* Set Max Attempts to 3 */
@@ -88,13 +91,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
       cy.contains("Share With Others");
     });
 
-    it("Over Ride Settings From Test Assign Page", () => {
+    it(">over ride settings from test assign page", () => {
       testLibraryPage.clickOnAssign();
       testAssignPage.showOverRideSetting();
       /* Over-ride Max-Attempt to 1 */
       testAssignPage.setMaxAttempt("1");
       /* Over-ride Release Policy To Release Score and Responses */
-      testAssignPage.setReleaseScoreAndResponse();
+      testAssignPage.setReleasePolicy(releaseType.DONT_RELEASE);
       /* De-Select the Shuffle questions and choices */
       testAssignPage.deselectShuffleChoices();
       testAssignPage.deselectShuffleQuestions();
@@ -109,14 +112,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
       testAssignPage.clickOnEvalByType(evalMethods[0]);
     });
 
-    it("Assign The Test", () => {
+    it(">assign the test", () => {
       testAssignPage.selectClass("Class");
       testAssignPage.selectTestType("Class Assessment");
       testAssignPage.clickOnEntireClass();
       testAssignPage.clickOnAssign();
     });
-    context("Verifying At Student Side- Over Ridden settings", () => {
-      it("Password And Calculator", () => {
+    context(">verifying at student side- over ridden settings", () => {
+      it(">password and calculator", () => {
         cy.login("student", Student1.email, Student1.pass);
 
         /* Verifying Static Password */
@@ -126,7 +129,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
         /* Verifying Calculator Type */
         studentTestPage.assertCalcType(CALCULATOR.GRAPH);
       });
-      it("Shuffle Ques,Choices And Check Ans Button", () => {
+      it(">shuffle ques,choices and check ans button", () => {
         /* Verifying No Shuffle Questions */
         itemsInTest.forEach((item, ind) => {
           studentTestPage.getQuestionText().should("contain", quesText[ind]);
@@ -143,13 +146,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
           );
           /* Verifying No Check Ans */
           studentTestPage.getCheckAns().should("not.exist");
-          studentTestPage.attemptQuestion(quesType[ind], attemptTypes.PARTIAL_CORRECT, attempt[ind]);
+          studentTestPage.attemptQuestion(
+            quesType[ind],
+            attemptTypes.PARTIAL_CORRECT,
+            attempt[ind]
+          );
           studentTestPage.clickOnNext();
         });
 
         studentTestPage.submitTest();
       });
-      it("Release Policy, Evaluation And Max Attempts", () => {
+      it(">release policy, evaluation and max attempts", () => {
         /* Verifying Release Score Policy */
         assignmentsPage.reviewSubmittedTestById(OriginalTestId);
 
@@ -165,8 +172,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
         assignmentsPage.verifyAbsenceOfTest(OriginalTestId);
       });
     });
-    context("verify answer on paper", () => {
-      it("Assign test with answer on paper", () => {
+    context(">verify answer on paper", () => {
+      it(">assign test with answer on paper", () => {
         cy.deleteAllAssignments("", Teacher.email);
         cy.login("teacher", Teacher.email, Teacher.pass);
         testAssignPage.visitAssignPageById(OriginalTestId);
@@ -177,7 +184,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
         testAssignPage.clickOnEntireClass();
         testAssignPage.clickOnAssign();
       });
-      it("navigate to LCB and verfy student status after closing the test", () => {
+      it(">navigate to lcb and verfy student status after closing the test", () => {
         testAssignPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
         liveClassBoardPage.header.clickOnClose();
@@ -186,15 +193,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Over Riding Test Settin
           cy.wrap(ele).should("contain.text", studentSide.IN_GRADING);
         });
       });
-      it("Verify performance after giving the score", () => {
+      it(">verify performance after giving the score", () => {
         liveClassBoardPage.clickonQuestionsTab();
         itemsInTest.forEach((element, i) => {
           liveClassBoardPage.questionResponsePage.selectQuestion(`Q${i + 1}`);
-          liveClassBoardPage.questionResponsePage.getQuestionContainerByStudent(Student1.name).as("studentQuesCard");
+          liveClassBoardPage.questionResponsePage
+            .getQuestionContainerByStudent(Student1.name)
+            .as("studentQuesCard");
           liveClassBoardPage.questionResponsePage
             .getScoreInput(cy.get("@studentQuesCard"))
             .should("have.attr", "value", ``);
-          liveClassBoardPage.questionResponsePage.updateScoreAndFeedbackForStudent(Student1.name, "2");
+          liveClassBoardPage.questionResponsePage.updateScoreAndFeedbackForStudent(
+            Student1.name,
+            "2"
+          );
         });
         liveClassBoardPage.clickOnCardViewTab();
         liveClassBoardPage.getStudentPerformanceByIndex(0).should("have.text", `100%`);

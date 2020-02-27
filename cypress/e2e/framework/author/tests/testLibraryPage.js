@@ -346,42 +346,6 @@ export default class TestLibrary {
 
   getPublicRadio = () => cy.get('[value="PUBLIC"]');
 
-  verifySharedTest = (email, test_id) => {
-    cy.login("teacher", email, "snapwiz");
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.sharedWithMe();
-    this.searchFilters.typeInSearchBox(test_id);
-    this.clickOnTestCardById(test_id);
-    this.assertTestPublishedNoEdit(test_id);
-  };
-
-  verifyRemovedShareTest = (email, test_id) => {
-    cy.login("teacher", email, "snapwiz");
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.sharedWithMe();
-    this.searchFilters.typeInSearchBox(test_id);
-    this.checkforNonExistanceOfTest(test_id);
-  };
-
-  verifySharedTestPublic = (email, test_id) => {
-    cy.login("teacher", email, "snapwiz");
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.typeInSearchBox(test_id);
-    this.clickOnTestCardById(test_id);
-    this.assertTestPublishedNoEdit(test_id);
-  };
-
-  verifyRemovedsharedTestPublic = (email, test_id) => {
-    cy.login("teacher", email, "snapwiz");
-    this.sidebar.clickOnTestLibrary();
-    this.searchFilters.clearAll();
-    this.searchFilters.typeInSearchBox(test_id);
-    this.checkforNonExistanceOfTest(test_id);
-  };
-
   assertUrl = testId => {
     cy.url()
       .then(url => url.split("/").reverse()[0])
@@ -417,5 +381,19 @@ export default class TestLibrary {
     if (grade) this.testSummary.selectGrade(grade);
     if (subject) this.testSummary.selectSubject(subject);
     if (collections) this.testSummary.selectCollection(collections);
+  };
+
+  seachTestAndGotoReviewById = id => {
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.searchFilters.getAuthoredByMe();
+    this.clickOnTestCardById(id);
+    this.clickOnDetailsOfCard();
+  };
+
+  searchByCollection = collection => {
+    this.sidebar.clickOnTestLibrary();
+    this.searchFilters.clearAll();
+    this.searchFilters.setCollection(collection);
   };
 }

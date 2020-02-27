@@ -89,13 +89,6 @@ class MCQStandardPage {
 
   getPoints = () => cy.get('[data-cy="points"]');
 
-  getCorrectAnsOptions = () =>
-    cy
-      .contains("div", "Set Correct Answer(s)")
-      .next()
-      .children()
-      .contains("label");
-
   addAlternate() {
     cy.get("body")
       .contains("Alternative Answer")

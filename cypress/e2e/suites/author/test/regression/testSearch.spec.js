@@ -10,7 +10,7 @@ const testData = require("../../../../../fixtures/testAuthoring");
 
 const { search_1, search_2, search_3 } = testData;
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags,Tittle and Standards`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
   const techersidebar = new TeacherSideBar();
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
@@ -30,8 +30,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
   const standardToTest = {};
   let test_ids = [];
 
-  context("Searching in Draft State", () => {
-    before("Login As Author and Create Tests in Draft-State", () => {
+  context(">searching in draft state", () => {
+    before(">login as author and create tests in draft-state", () => {
       cy.login("teacher", Author.email, Author.pass);
       tests.forEach((test, i) => {
         testLibrary.createTest(testToCreate[i], false).then(id => {
@@ -65,9 +65,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
     });
-    context("Searching In Authored By Me", () => {
+    context(">searching in authored by me", () => {
       // Searched Draft Tests should Be visible in Authored By Me
-      it("Search By standards in Draft-State", () => {
+      it(">search by standards in draft-state", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By tags in Draft-State", () => {
+      it(">search by tags in draft-state", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
@@ -90,7 +90,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By name in Draft-State", () => {
+      it(">search by name in draft-state", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -99,7 +99,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it("Search By id in Draft-State", () => {
+      it(">search by id in draft-state", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -109,9 +109,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
     });
-    context("Searching In Entire Library", () => {
+    context(">searching in entire library", () => {
       // Searched Draft Tests should Not Be visible in Entire Library
-      it("Search By standards in Draft-State", () => {
+      it(">search by standards in draft-state", () => {
         searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -121,7 +121,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By tags in Draft-State", () => {
+      it(">search by tags in draft-state", () => {
         // techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
@@ -132,7 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By name in Draft-State", () => {
+      it(">search by name in draft-state", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -140,33 +140,28 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           testLibrary.checkforNonExistanceOfTest(id);
         });
       });
-      it("Search By id in Draft-State", () => {
+      it(">search by id in draft-state", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
           searchFilters.typeInSearchBox(id);
           testLibrary.checkforNonExistanceOfTest(id);
         });
-        techersidebar.clickOnPlayList();
       });
     });
   });
-  context("Searching In Published State", () => {
-    context("Searching In Entire Library", () => {
+  context(">searching in published state", () => {
+    context(">searching in entire library", () => {
       // Searched Published Tests should be visible in Entire Library
       before("Publish all the tests", () => {
-        searchFilters.clearAll();
+        techersidebar.clickOnPlayListLibrary();
         test_ids.forEach(id => {
-          techersidebar.clickOnTestLibrary();
-          searchFilters.clearAll();
-          searchFilters.getAuthoredByMe();
-          testLibrary.clickOnTestCardById(id);
-          testLibrary.clickOnDetailsOfCard();
+          testLibrary.seachTestAndGotoReviewById(id);
           testLibrary.header.clickOnPublishButton();
         });
       });
 
-      it("Search By Standards-Published", () => {
+      it(">search by standards-published", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
@@ -177,7 +172,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By tags-Published", () => {
+      it(">search by tags-published", () => {
         searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -187,7 +182,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By name-Published", () => {
+      it(">search by name-published", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -195,7 +190,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it("Search By id-Published", () => {
+      it(">search by id-published", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -205,9 +200,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
         });
       });
     });
-    context("Searching In Authored By Me", () => {
+    context(">searching in authored by me", () => {
       // Searched Draft Tests should Be visible in Authored By Me
-      it("Search By standards in Published-State", () => {
+      it(">search by standards in published-state", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(standardToTest).forEach(ele => {
@@ -218,7 +213,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By tags in Published-State", () => {
+      it(">search by tags in published-state", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
@@ -229,7 +224,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           });
         });
       });
-      it("Search By name in Published-State", () => {
+      it(">search by name in published-state", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach((id, i) => {
@@ -238,7 +233,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Searching Tests Using Tags
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it("Search By id in Published-State", () => {
+      it(">search by id in published-state", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {

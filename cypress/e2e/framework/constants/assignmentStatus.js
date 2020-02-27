@@ -82,3 +82,10 @@ export const questionDeliveryType = {
   All: "All",
   SKIPPED_AND_WRONG: "Skipped and Wrong"
 };
+
+export const releaseGradeTypesDropDown = {
+  DONT_RELEASE: "Do not release scores or responses",
+  SCORE_ONLY: "Release scores only",
+  WITH_RESPONSE: "Release scores and student responses",
+  WITH_ANSWERS: "Release scores,student responses and correct answers"
+};

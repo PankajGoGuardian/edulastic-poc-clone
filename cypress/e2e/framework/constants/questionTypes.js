@@ -87,6 +87,13 @@ export const CALCULATOR = {
   GRAPH: "GRAPHING"
 };
 
+export const COLLECTION = {
+  school: "School Library",
+  district: "District Library",
+  private: "Private Library",
+  public: "Public Library"
+};
+
 export const questionTypeMap = {
   "Multiple Choice": [
     "Multiple choice - standard",

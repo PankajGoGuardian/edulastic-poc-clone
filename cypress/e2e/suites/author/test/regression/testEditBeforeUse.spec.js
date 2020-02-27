@@ -38,11 +38,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
   it(" > edit the name , grade , subject and verify", () => {
     const { testname, grade, subject } = testData.edit1;
     // Get the  test and convert it to draft
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     testLibraryPage.publishedToDraft();
     testLibraryPage.header.clickOnDescription();
     // update the test in Description
@@ -52,11 +48,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     // Save the Test
     testSummayTab.header.clickOnSaveButton(true);
     testLibraryPage.assertUrl(testId);
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     // Verify the test In Review
     testReviewTab.testheader.verifyNameInTitle(testname);
     testReviewTab.verifyGradeSubject(grade, subject);
@@ -69,22 +61,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     const { grade } = testData.edit2;
     // Login Again and Edit the Test
     cy.login("teacher", Teacher.email, Teacher.pass);
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     testLibraryPage.publishedToDraft();
     // update the test review and save
     testReviewTab.selectGrade(grade);
     testReviewTab.testheader.clickOnSaveButton(true);
     // Get Test Card
     testLibraryPage.assertUrl(testId);
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     //verify in summary and Publish
     testSummayTab.header.clickOnDescription();
     testSummayTab.verifyGrade(grade);
@@ -96,11 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     const [item1, item2] = testLibraryPage.items;
     const { point, question } = testData.edit4;
     // Get and Convert To Draft
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     testLibraryPage.publishedToDraft();
     // Remove 1 item From Review Tab
     testReviewTab.testheader.clickOnReview();
@@ -115,11 +95,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     // Publish
     testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     //Verify In Review
     testReviewTab.getQueCardByItemIdInCollapsed(item2).should("have.length", 0);
     testReviewTab.verifySummary(question, point);
@@ -131,11 +107,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     item.createItem(newItemKey, false, true).then(id => {
       newItemId = id;
       //Get Test and Draft It
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(testId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(testId);
       testLibraryPage.publishedToDraft();
       // Add created Item using add item tab
       testReviewTab.testheader.clickOnAddItems();
@@ -152,11 +124,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
       testSummayTab.header.clickOnPublishButton();
       testLibraryPage.assertUrl(testId);
       //verify
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(testId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(testId);
       testSummayTab.header.clickOnReview();
       testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
       testReviewTab.verifySummary(question, point);
@@ -167,11 +135,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     const [item1, item2] = testLibraryPage.items;
     const { point, question } = testData.edit5;
     //Get Test Card and Draft It
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     testLibraryPage.publishedToDraft();
     testReviewTab.testheader.clickOnAddItems();
     // remove 1 item
@@ -182,11 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     // Publish
     testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);
-    testLibraryPage.sidebar.clickOnTestLibrary();
-    testLibraryPage.searchFilters.clearAll();
-    testLibraryPage.searchFilters.getAuthoredByMe();
-    testLibraryPage.clickOnTestCardById(testId);
-    testLibraryPage.clickOnDetailsOfCard();
+    testLibraryPage.seachTestAndGotoReviewById(testId);
     // verify review tab and Summary
     testSummayTab.header.clickOnReview();
     testReviewTab.getQueCardByItemIdInCollapsed(item1).should("have.length", 0);

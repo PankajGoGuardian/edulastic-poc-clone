@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
   const questionType = [];
   const attemptData = [];
 
-  before("Get Data Of test and its itemns", () => {
+  before(">get data of test and its items", () => {
     cy.fixture("questionAuthoring").then(quesData => {
       ITEMS.forEach(element => {
         [qType, num] = element.split(".");
@@ -56,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
       });
     });
   });
-  before("Login And Create Test", () => {
+  before(">login and create test", () => {
     cy.login("teacher", "teacher.test.review@snapwiz.com", "snapwiz");
     testLibraryPage.createTest(TEST).then(id => {
       OriginalTestId = id;
@@ -64,23 +64,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
     });
   });
 
-  context("Review Test in different Parts Of Review Tab", () => {
-    context("Verifying items In expanded and Collapsed Rows,", () => {
-      it(`Get Test Card-${testName} and Go-To Review`, () => {
-        testLibraryPage.sidebar.clickOnTestLibrary();
-        testLibraryPage.searchFilters.clearAll();
-        testLibraryPage.searchFilters.getAuthoredByMe();
-        testLibraryPage.clickOnTestCardById(OriginalTestId);
-        testLibraryPage.clickOnDetailsOfCard();
+  context(">review test in different parts of review tab", () => {
+    context(">verifying items in expanded and collapsed rows,", () => {
+      it(`>get test card-${testName} and go-to review`, () => {
+        testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       });
       itemsInTest.forEach((item, index) => {
-        it(`Verify  ${item}-${index + 1}In The Review Tabs-Collapsed Mode`, () => {
+        it(`verify  ${item}-${index + 1}in the review tabs-collapsed mode`, () => {
           // Verify All questions' presence
           testReviewTab.verifyQustionById(itemIds[index]);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
         });
 
-        it(`Verify  ${item}-${index + 1} In The Review Tabs-Expanded Mode`, () => {
+        it(`verify  ${item}-${index + 1} in the review tabs-expanded mode`, () => {
           testReviewTab.clickOnExpandCollapseRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
@@ -91,12 +87,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
         });
       });
     });
-    it("Verify Test Summary In Review Tab", () => {
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+    it(">verify test summary in review tab", () => {
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       // Verify Test in summary panel
       testReviewTab.verifySummary(points.length, points.reduce((a, b) => a + b, 0));
       subjects.forEach((sub, index) => {
@@ -104,29 +96,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
       });
     });
 
-    it("Verify Test In- View as Student", () => {
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+    it(">verify test in- view as student", () => {
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testReviewTab.clickOnViewAsStudent();
       studentTestPage.verifyNoOfQuestions(itemIds.length);
       studentTestPage.getQuestionByIndex(0);
       itemIds.forEach((val, index) => {
         // studentTestPage.verifyQuestionText(index, questText[index]);
-        studentTestPage.getQuestionByIndex(index);
         studentTestPage.attemptQuestion(itemsInTest[index], attemptTypes.RIGHT, attemptData[index]);
         studentTestPage.clickOnNext(true);
       });
       studentTestPage.clickOnExitTest(true);
     });
-    it("Verify Test-Items Order Using Move-To Option", () => {
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+    it(">verify test-items order using move-to option", () => {
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraft();
       itemIds.forEach((item, index, totalItems) => {
         testReviewTab.clickOnCheckBoxByItemId(item);
@@ -138,17 +121,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
       });
       testReviewTab.testheader.clickOnPublishButton();
     });
-    context("Preview Test items", () => {
-      context("Verify Show Ans On Preivew", () => {
+    context(">preview test items", () => {
+      context(">verify show ans on preivew", () => {
         it(`Get Test Card-"${testName}" and Go-To Review`, () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.searchFilters.clearAll();
-          testLibraryPage.searchFilters.getAuthoredByMe();
-          testLibraryPage.clickOnTestCardById(OriginalTestId);
-          testLibraryPage.clickOnDetailsOfCard();
+          testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
         });
         itemsInTest.forEach((item, index) => {
-          it(`Verify Show Ans for "${item}-${index + 1} "`, () => {
+          it(`>verify show ans for "${item}-${index + 1} "`, () => {
             testReviewTab.previewQuestById(itemIds[index]);
             itemPreview.clickOnShowAnsOnPreview();
             itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
@@ -156,16 +135,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
           });
         });
       });
-      context("Verify Check Ans On Preivew", () => {
+      context(">verify check ans on preivew", () => {
         it(`Get Test Card-${testName} and Go-To Review`, () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.searchFilters.clearAll();
-          testLibraryPage.searchFilters.getAuthoredByMe();
-          testLibraryPage.clickOnTestCardById(OriginalTestId);
-          testLibraryPage.clickOnDetailsOfCard();
+          testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
         });
         itemsInTest.forEach((item, index) => {
-          it(`Verify Right Ans for "${item}-${index + 1} "`, () => {
+          it(`>verify right ans for "${item}-${index + 1} "`, () => {
             // Correct ans should have green bg-color
             testReviewTab.previewQuestById(itemIds[index]);
             // testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
@@ -180,7 +155,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
             itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
             itemPreview.closePreiview();
           });
-          it(`Verify Wrong Ans for "${item}-${index + 1} "`, () => {
+          it(`>verify wrong ans for "${item}-${index + 1} "`, () => {
             // Wrong ans should have red bg-color
             testReviewTab.previewQuestById(itemIds[index]);
             // testReviewTab.attemptQuestion(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
@@ -198,17 +173,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
         });
       });
 
-      context("Verify Edit On Preview", () => {
-        it(`Get Test Card-${testName} and Go-To Review`, () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.searchFilters.clearAll();
-          testLibraryPage.searchFilters.getAuthoredByMe();
-          testLibraryPage.clickOnTestCardById(OriginalTestId);
-          testLibraryPage.clickOnDetailsOfCard();
+      context(">verify edit on preview", () => {
+        it(`>get test card-${testName} and go-to review`, () => {
+          testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
           testLibraryPage.publishedToDraft();
         });
 
-        it(`Verify Edit`, () => {
+        it(`>verify edit`, () => {
           testReviewTab.previewQuestById(itemIds[0]);
           itemPreview.clickEditOnPreview();
           mcqTrueFalsePage.updatePoints(EDITED_POINTS[3]);
@@ -222,23 +193,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
             testReviewTab.asesrtPointsByid(itemIds[0], points[0]);
           });
         });
-        it("Verify Summary After Edit", () => {
+        it(">verify summary after edit", () => {
           testReviewTab.verifySummary(points.length, points.reduce((a, b) => a + b, 0));
           testReviewTab.testheader.clickOnPublishButton();
         });
       });
 
-      context("Verify Copy On Preivew", () => {
+      context(">verify copy on preivew", () => {
         it(`Get Test Card-${testName} and Go-To Review`, () => {
-          testLibraryPage.sidebar.clickOnTestLibrary();
-          testLibraryPage.searchFilters.clearAll();
-          testLibraryPage.searchFilters.getAuthoredByMe();
-          testLibraryPage.clickOnTestCardById(OriginalTestId);
-          testLibraryPage.clickOnDetailsOfCard();
+          testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
           testLibraryPage.publishedToDraft();
         });
 
-        it(`Verify Copy for"`, () => {
+        it(`>verify copy for`, () => {
           testReviewTab.previewQuestById(itemIds[1]);
           itemPreview.clickOnCopyItemOnPreview();
           // Copy automatically include new item in test
@@ -256,7 +223,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
           });
         });
         // Verify summary again as more items are added....
-        it("Verify Summary After Copy", () => {
+        it(">verify summary after copy", () => {
           testReviewTab.verifySummary(points.length, points.reduce((a, b) => a + b, 0));
           testReviewTab.testheader.clickOnPublishButton();
         });

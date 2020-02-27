@@ -45,7 +45,7 @@ export default class LCBHeader {
     cy.server();
     cy.route("PUT", /open/i).as("open");
     cy.get('[data-cy="openButton"]').click();
-    cy.wait("@open").then(xhr => assert(xhr.status === 200, `verify open request ${xhr.status}`));
+    return cy.wait("@open").then(xhr => assert(xhr.status === 200, `verify open request ${xhr.status}`));
   };
 
   // DROPDOWN

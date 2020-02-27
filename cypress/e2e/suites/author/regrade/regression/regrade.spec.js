@@ -91,7 +91,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
     testAssignPage.clickOnEntireClass();
     testAssignPage.clickOnAssign();
   });
-  before("Attempt The Test by 2 Students", () => {
+  before(">attempt the test by 2 students", () => {
     //Partial Attempt
     cy.login("student", Student1.email, Student1.pass);
     sidebarPage.clickOnAssignment();
@@ -105,16 +105,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
     studentTestPage.submitTest();
   });
 
-  context("Remove One Question From Review Tab and Verify Test", () => {
-    it("Remove One Question From Review Tab", () => {
+  context(">remove one question from review tab and verify test", () => {
+    it(">remove one question from review tab", () => {
       const [item1, item2, item3] = testLibraryPage.items;
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(newTest => {
         newTestId = newTest;
@@ -134,7 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       });
     });
 
-    it("Verifying At Student Side- Removed Question", () => {
+    it(">verifying at student side- removed question", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
@@ -146,13 +142,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       reportsPage.verifyNoOfQuesInReview(itemsInTest.length);
     });
 
-    context("verify teacher side LCB", () => {
+    context(">verify teacher side lcb", () => {
       before("login as teacher", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         teacherSidebar.clickOnAssignment();
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       });
-      it("verif lcb card view", () => {
+      it(">verif lcb card view", () => {
         Object.keys(students).forEach((student, i) => {
           // verify total score of all students ;
           lcb.getStudentScoreByIndex(i).should("contain.text", "/ 4");
@@ -164,7 +160,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         });
       });
 
-      it("verify student centric view", () => {
+      it(">verify student centric view", () => {
         lcb.clickOnStudentsTab();
         // verify total scoresc
         // student1
@@ -177,7 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         lcb.questionResponsePage.getTotalScore().should("have.text", "4");
         lcb.questionResponsePage.getMaxScore().should("have.text", "4");
       });
-      it("verify Question centric view", () => {
+      it(">verify Question centric view", () => {
         // verify count of questions
         lcb.clickonQuestionsTab();
         lcb.questionResponsePage.getDropDown().click({ force: true });
@@ -186,7 +182,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         });
       });
 
-      it("verify express grader view", () => {
+      it(">verify express grader view", () => {
         lcb.header.clickOnExpressGraderTab();
         // verify total scores
         // student1
@@ -202,16 +198,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
     });
   });
 
-  context("Update Points Of An Item and Verify Test", () => {
-    it("Update Points Of An Item", () => {
+  context(">update points of an item and verify test", () => {
+    it(">update points of an item", () => {
       const [item1, item2] = testLibraryPage.items;
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get Test Card and Draft It
-      testLibraryPage.sidebar.clickOnTestLibrary();
-      testLibraryPage.searchFilters.clearAll();
-      testLibraryPage.searchFilters.getAuthoredByMe();
-      testLibraryPage.clickOnTestCardById(OriginalTestId);
-      testLibraryPage.clickOnDetailsOfCard();
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(newTest => {
         newTestId = newTest;
@@ -224,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         OriginalTestId = newTestId;
       });
     });
-    it("Verifying At Student Side- Update Points", () => {
+    it(">verifying at student side- update points", () => {
       cy.login("student", Student1.email, Student1.pass);
       assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
@@ -239,13 +231,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
     });
 
-    context("verify teacher side LCB", () => {
+    context(">verify teacher side LCB", () => {
       before("login as teacher", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         teacherSidebar.clickOnAssignment();
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       });
-      it("verif lcb card view", () => {
+      it(">verif lcb card view", () => {
         Object.keys(students).forEach((student, i) => {
           // verify total score of all students ;
           lcb.getStudentScoreByIndex(i).should("contain.text", "/ 8");
@@ -257,7 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         });
       });
 
-      it("verify student centric view", () => {
+      it(">verify student centric view", () => {
         lcb.clickOnStudentsTab();
         // verify total scores
         // student1
@@ -271,7 +263,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         lcb.questionResponsePage.getMaxScore().should("have.text", "8");
       });
 
-      it("verify Question centric view", () => {
+      it(">verify Question centric view", () => {
         // verify updated points
         lcb.clickonQuestionsTab();
 
@@ -284,7 +276,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         });
       });
 
-      it("verify express grader view", () => {
+      it(">verify express grader view", () => {
         lcb.header.clickOnExpressGraderTab();
         // verify total scores
         // student1

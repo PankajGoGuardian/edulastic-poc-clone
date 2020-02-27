@@ -106,7 +106,11 @@ class AssignmentsPage {
       this.enterPassword(pass);
       this.clickOnStartAfterPassword();
     }
-    return cy.wait("@gettest").then(xhr => xhr.response.body.result.itemGroups);
+
+    return cy.wait("@gettest").then(xhr => {
+      cy.get('[data-cy="next"]'); // waiting for page rendering
+      return cy.wait(1).then(() => xhr.response.body.result.itemGroups);
+    });
   };
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType = "A") {
@@ -164,10 +168,10 @@ class AssignmentsPage {
   verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
 
   reviewSubmittedTestById = id => {
-    this.getAssignmentByTestId(id)
-      .find('[data-cy="reviewButton"]')
-      .click({ force: true });
+    this.getReviewButtonById(id).click({ force: true });
   };
+
+  getReviewButtonById = id => this.getAssignmentByTestId(id).find('[data-cy="reviewButton"]');
 
   clickOnReviewButton = () => {
     this.getReviewButton().click({ force: true });

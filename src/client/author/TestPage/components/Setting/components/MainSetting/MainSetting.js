@@ -6,8 +6,9 @@ import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox, message } fro
 
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
-import { red, green, blueBorder } from "@edulastic/colors";
+import { red, green, blueBorder, themeColor } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
+import { IconCaretDown } from "@edulastic/icons";
 import {
   setTestDataAction,
   getTestEntitySelector,
@@ -40,7 +41,8 @@ import {
   MaxAnswerChecksInput,
   CompletionTypeRadio,
   MessageSpan,
-  NavigationMenu
+  NavigationMenu,
+  AdvancedButton
 } from "./styled";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import StandardProficiencyTable from "./StandardProficiencyTable";
@@ -289,7 +291,7 @@ class MainSetting extends Component {
       performanceBand,
       standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
-      playerSkinType
+      playerSkinType = playerSkinTypes.edulastic.toLowerCase()
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -328,6 +330,12 @@ class MainSetting extends Component {
         return settingCategoriesFeatureMap[category.id];
       }
     });
+
+    const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ?  "Test" : "Practice"}`;
+    const skinTypes = {
+      ...playerSkinTypes,
+      edulastic
+    };
     return (
       <Container padding="30px" marginTop="10px">
         <Row style={{ padding: 0 }}>
@@ -336,7 +344,7 @@ class MainSetting extends Component {
               <StyledAnchor affix={false} offsetTop={125}>
                 {settingCategories
                   .filter(item => (item.adminFeature ? userRole !== roleuser.TEACHER : true))
-                  .slice(0, -5)
+                  .slice(0, -6)
                   .map(category => {
                     if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
                       return (
@@ -350,13 +358,13 @@ class MainSetting extends Component {
                   })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
-              {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+              <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
                 {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                 <IconCaretDown color={themeColor} width={11} height={6} />
               </AdvancedButton>
               {showAdvancedOption && (
                 <StyledAnchor affix={false} offsetTop={125}>
-                  {settingCategories.slice(-5).map(category => (
+                  {settingCategories.slice(-6, -5).map(category => (
                     <Anchor.Link
                       key={category.id}
                       href={`${history.location.pathname}#${category.id}`}
@@ -364,7 +372,7 @@ class MainSetting extends Component {
                     />
                   ))}
                 </StyledAnchor>
-              )} */}
+              )}
             </NavigationMenu>
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
@@ -391,28 +399,6 @@ class MainSetting extends Component {
                         </Option>
                       ))}
                     </StyledSelect>
-                  </Body>
-                </Row>
-              </Block>
-            ) : (
-              ""
-            )}
-            {availableFeatures.includes("selectPlayerSkinType") ? (
-              <Block id="test-type" smallSize={isSmallSize}>
-                <Row>
-                  <Title>Student Player Skin</Title>
-                  <Body smallSize={isSmallSize}>
-                    <SelectInputStyled
-                      value={playerSkinType || playerSkinTypes.edulastic}
-                      disabled={!owner || !isEditable}
-                      onChange={this.updateTestData("playerSkinType")}
-                    >
-                      {Object.keys(playerSkinTypes).map(key => (
-                        <Option key={key} value={key}>
-                          {playerSkinTypes[key]}
-                        </Option>
-                      ))}
-                    </SelectInputStyled>
                   </Body>
                 </Row>
               </Block>
@@ -762,27 +748,28 @@ class MainSetting extends Component {
               />
             </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
-              <Block id="title" smallSize={isSmallSize}>
-                <Title>Title</Title>
-                <Body smallSize={isSmallSize}>
-                  <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
-                    <Radio style={{ display: "block", marginBottom: "24px" }} value>
-                      Enable
-                    </Radio>
-                    <Radio style={{ display: "block", marginBottom: "24px" }} value={false}>
-                      Disable
-                    </Radio>
-                  </RadioGroup>
-                  <Row gutter={28}>
-                    <Col span={12}>
-                      <InputTitle>Activity Title</InputTitle>
-                      <ActivityInput disabled={!owner || !isEditable} placeholder="Title of activity" />
-                    </Col>
+              {availableFeatures.includes("selectPlayerSkinType") && testType !== "testlet" && (
+                <Block id="player-skin-type" smallSize={isSmallSize}>
+                  <Row>
+                    <Title>Student Player Skin</Title>
+                    <Body smallSize={isSmallSize}>
+                      <SelectInputStyled
+                        value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
+                        disabled={!owner || !isEditable}
+                        onChange={this.updateTestData("playerSkinType")}
+                      >
+                        {Object.keys(skinTypes).map(key => (
+                          <Option key={key} value={key}>
+                            {skinTypes[key]}
+                          </Option>
+                        ))}
+                      </SelectInputStyled>
+                    </Body>
                   </Row>
-                </Body>
-              </Block>
+                </Block>
+              )}
 
-              <Block id="navigations" smallSize={isSmallSize}>
+              {/* <Block id="navigations" smallSize={isSmallSize}>
                 <Title>Navigation / Control</Title>
                 <RadioWrapper style={{ marginTop: "29px" }}>
                   {navigations.map(navigation => (
@@ -910,7 +897,7 @@ class MainSetting extends Component {
                     </Col>
                   </Row>
                 </RadioWrapper>
-              </Block>
+              </Block> */}
             </AdvancedSettings>
           </Col>
         </Row>

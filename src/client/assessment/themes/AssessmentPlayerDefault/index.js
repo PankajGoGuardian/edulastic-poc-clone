@@ -493,6 +493,7 @@ class AssessmentPlayerDefault extends React.Component {
               onColorChange={this.handleColorChange}
               onChangeFont={this.handleChangeFont}
               currentFont={currentFont}
+              className="scratchpad-tools"
             />
           )}
             <FeaturesSwitch

@@ -238,6 +238,8 @@ class SimpleOptions extends React.Component {
     }
     const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     const studentOfSelectedClass = getListOfStudents(students, classIds);
+    const playerSkinType = assignment.playerSkinType || testSettings.playerSkinType;
+
     return (
       <OptionConationer>
         <InitOptions>
@@ -324,7 +326,7 @@ class SimpleOptions extends React.Component {
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>
-          <FeaturesSwitch
+          {(assignment.testType || testSettings.testType) !== "testlet" && <FeaturesSwitch
             inputFeatures="selectPlayerSkinType"
             actionOnInaccessible="hidden"
             key="selectPlayerSkin"
@@ -332,10 +334,11 @@ class SimpleOptions extends React.Component {
           >
             <PlayerSkinSelector
               userRole={userRole}
-              playerSkinType={assignment.playerSkinType || testSettings.playerSkinType}
+              playerSkinType={playerSkinType}
               onAssignmentTypeChange={changeField("playerSkinType")}
+              testType={assignment.testType || testSettings.testType}
             />
-          </FeaturesSwitch>
+          </FeaturesSwitch>}
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

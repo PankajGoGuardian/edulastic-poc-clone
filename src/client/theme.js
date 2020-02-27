@@ -2526,7 +2526,8 @@ export const themes = {
         hover: {
           background: "#0564CC",
           color: "white"
-        }
+        },
+        activeColor: "#ff9900"
       },
       breadcrumb: {
         background: "#666666",

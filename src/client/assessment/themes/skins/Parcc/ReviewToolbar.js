@@ -44,7 +44,7 @@ const ReviewToolbar = ({
 
   const content = <StyledWrapper>
     <StyledMenu style={{height: "250px", overflow: "auto"}} onClick={handleQuestionCLick}>
-      {getOptions().map(option => <Menu.Item key={option} style={!skipped[option] && {paddingLeft: "33px"}}>{skipped[option] && <FontAwesomeIcon icon={faCircle} aria-hidden="true" />}Question {option + 1}</Menu.Item>)}
+      {getOptions().map(option => <Menu.Item key={option} style={!skipped[option] && {paddingLeft: "33px"}}>{skipped[option] && <FontAwesomeIcon icon={faCircle} aria-hidden="true" color={parcc.menuItem.activeColor} />}Question {option + 1}</Menu.Item>)}
     </StyledMenu>
     <FlexContainer style={{marginTop: "20px"}}>
       <Card style={selectedCard === "all" ? cardStyle : {}} onClick={() => handleCardClick("all")}>

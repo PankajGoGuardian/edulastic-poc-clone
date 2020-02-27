@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -38,8 +38,6 @@ const PlayerHeader = ({
   currentItem,
   gotoQuestion,
   settings,
-  toggleBookmark,
-  isBookmarked,
   headerRef,
   isMobile,
   moveToPrev,
@@ -47,8 +45,8 @@ const PlayerHeader = ({
   overlayStyle,
   options,
   skipped = [],
-  bookmarks = [],
   changeTool,
+  toggleToolsOpenStatus,
   tool,
   calcBrands,
   changeCaculateMode,
@@ -59,8 +57,15 @@ const PlayerHeader = ({
   items,
   qType,
   setZoomLevel,
-  zoomLevel
+  zoomLevel,
+  defaultAP,
+  isDocbased,
+  toolsOpenStatus
 }) => {
+  useEffect(() => {
+    return () => setZoomLevel(1);
+  }, []);
+
   const totalQuestions = options.length;
   const totalAnswered = skipped.filter(s => !s).length;
   const isFirst = () => currentItem === 0;
@@ -69,20 +74,21 @@ const PlayerHeader = ({
     borderBottom: `1px solid ${header.borderColor}`,
     background: header.background,
     flexDirection: "column",
-    padding: "0"
+    padding: "0",
+    zIndex: 505
   };
 
   const data = items[currentItem]?.data?.questions[0];
   const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
   const canShowPlayer =
     ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
-    data.tts &&
+    data?.tts &&
     data?.tts?.taskStatus === "COMPLETED";
 
   return (
     <StyledFlexContainer>
       <Header ref={headerRef} style={headerStyle}>
-        <HeaderTopMenu style={{display: "flex", justifyContent: "space-between", fontWeight: 600}}>
+        {!isDocbased && <HeaderTopMenu style={{display: "flex", justifyContent: "space-between", fontWeight: 600}}>
           <FlexContainer>
             <QuestionList options={options} currentItem={currentItem} gotoQuestion={gotoQuestion} />
             <div style={{ width: 136, display: "flex" }}>
@@ -91,13 +97,14 @@ const PlayerHeader = ({
             <StyledTitle>{title}</StyledTitle>
           </FlexContainer>
           <StyledQuestionMark type="question-circle" theme="filled"/>
-        </HeaderTopMenu>
+        </HeaderTopMenu>}
         <HeaderMainMenu style={{padding: "0 20px"}}>
            <HeaderSbacPlayer>
              <HeaderWrapper justifyContent="space-between">
                <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
-                <MainActionWrapper>
+                {isDocbased && <StyledTitle>{title}</StyledTitle>}
+                {!isDocbased && <MainActionWrapper>
                   <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                     <ControlBtn
                       data-cy="prev"
@@ -120,7 +127,7 @@ const PlayerHeader = ({
                       style={{marginLeft: "5px"}}
                     />
                   </Tooltip>
-                </MainActionWrapper>
+                </MainActionWrapper>}
                 <FlexContainer style={{marginLeft: "28px"}}>
                   <Tooltip placement="top" title="Save & Exit">
                     <StyledButton onClick={finishTest}>
@@ -138,14 +145,15 @@ const PlayerHeader = ({
                 </FlexContainer>
                </FlexContainer>
                <ToolBar
-                changeTool={changeTool}
+                changeTool={changeTool || toggleToolsOpenStatus}
                 settings={settings}
-                tool={tool}
+                tool={tool || toolsOpenStatus}
                 calcBrands={calcBrands}
                 changeCaculateMode={changeCaculateMode}
                 qType={qType}
                 setZoomLevel={setZoomLevel}
                 zoomLevel={zoomLevel}
+                isDocbased={isDocbased}
               />
              </HeaderWrapper>
            </HeaderSbacPlayer>

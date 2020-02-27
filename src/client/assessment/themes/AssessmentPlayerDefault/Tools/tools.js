@@ -95,7 +95,7 @@ ActiveTool.propTypes = {
   activeMode: PropTypes.string.isRequired
 };
 
-const DrawingTools = ({ onChange, isTestMode }) => {
+const DrawingTools = ({ onChange, isTestMode, className }) => {
   const [active, setActive] = useState(null);
   const availableBtns = isTestMode ? buttonsList.filter(obj => obj.mode !== "none") : buttonsList;
 

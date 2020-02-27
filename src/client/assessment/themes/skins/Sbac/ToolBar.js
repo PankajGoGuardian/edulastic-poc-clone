@@ -17,7 +17,8 @@ const ToolBar = ({
   changeTool,
   qType,
   setZoomLevel,
-  zoomLevel
+  zoomLevel,
+  isDocbased
 }) => {
   const [zoom, setZoom] = useState(0);
   const toolbarHandler = value => changeTool(value);
@@ -53,7 +54,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      <Tooltip
+      {!isDocbased && <Tooltip
         placement="top"
         title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
       >
@@ -64,23 +65,23 @@ const ToolBar = ({
         >
           <CloseIcon />
         </StyledButton>
-      </Tooltip>
+      </Tooltip>}
 
-      <Tooltip placement="top" title="Scratch Pad">
+      {!isDocbased && <Tooltip placement="top" title="Scratch Pad">
         <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
           <ScratchPadIcon />
         </StyledButton>
-      </Tooltip>
-      <Tooltip placement="top" title="Zoom out">
+      </Tooltip>}
+      {!isDocbased && <Tooltip placement="top" title="Zoom in">
         <StyledButton onClick={handleZoomIn}>
           <StyledIcon type="zoom-in" />
         </StyledButton>
-      </Tooltip>
-      <Tooltip placement="top" title="Zoom in">
+      </Tooltip>}
+      {!isDocbased && <Tooltip placement="top" title="Zoom out">
         <StyledButton onClick={handleZoomOut}>
           <StyledIcon type="zoom-out" />
         </StyledButton>
-      </Tooltip>
+      </Tooltip>}
     </Container>
   );
 }

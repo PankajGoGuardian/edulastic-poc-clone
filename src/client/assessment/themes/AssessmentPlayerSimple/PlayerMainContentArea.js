@@ -34,19 +34,21 @@ const PlayerContentArea = ({
   crossAction,
   previousQuestionActivities,
   playerSkinType = test.playerSkinTypes.edulastic,
-  isSidebarVisible = true
+  isSidebarVisible = true,
+  zoomLevel,
+  windowWidth
 }) => {
   const scrollContainerRef = useRef();
   const item = items[currentItem];
-
+  const isZoomApplied = zoomLevel > 1;
   const previousQuestionActivity = previousQuestionActivities[item._id];
   return (
-    <Main skinB="true">
+    <Main>
       <MainWrapper isSidebarVisible={isSidebarVisible} ref={scrollContainerRef}>
         {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
             Also, will use ScrollContext for auto-scroll on mobile */}
         <ScrollContext.Provider value={{ getScrollElement: () => scrollContainerRef.current }}>
-          <MainContent>
+          <MainContent skin zoomed={isZoomApplied} zoomLevel={zoomLevel} responsiveWidth={windowWidth - 70}>
             {testItemState === "" && (
               <TestItemPreview
                 crossAction={crossAction}
@@ -128,6 +130,30 @@ const MainContent = styled.div`
   overflow: hidden;
   width: 100%;
   flex-direction: column;
+  padding: ${({ zoomed, zoomLevel, skin }) => {
+    if (zoomed) {
+      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+        return "30px 50px 20px";
+      }
+      if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+        return "35px 50px 20px";
+      }
+      if (zoomLevel >= 2.5) {
+        return "35px 50px 20px";
+      }
+      return "0";
+    }
+  }};
+  ${({ zoomLevel, responsiveWidth }) => {
+    const zoomed = zoomLevel > 1 && zoomLevel !== undefined;
+    return `
+      width: ${zoomed ? `${responsiveWidth}px` : "100%"};
+      height: ${zoomed ? `${100 / zoomLevel}%` : "100%"};
+      transform: ${zoomed ? `scale(${zoomLevel})` : ""};
+      transform-origin: ${zoomed ? `top left` : ""};
+      margin: ${!zoomed ? "auto" : ""};
+    `;
+  }};
   & * {
     -webkit-touch-callout: none;
     user-select: none;

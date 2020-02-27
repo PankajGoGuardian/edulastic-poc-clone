@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
+import { compose } from "redux";
 import { connect } from "react-redux";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
 import { message } from "antd";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { hexToRGB, ScratchPadContext } from "@edulastic/common";
+import { hexToRGB, ScratchPadContext, withWindowSizes } from "@edulastic/common";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -15,7 +16,6 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 // components
 
 import { Container, CalculatorContainer } from "../common";
-import PlayerHeader from "./PlayerHeader";
 import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
@@ -23,7 +23,8 @@ import SubmitConfirmation from "../common/SubmitConfirmation";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
-import { toggleBookmarkAction } from "../../sharedDucks/bookmark";
+import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
+import { getSkippedAnswerSelector } from "../../selectors/answers";
 import Tools from "../AssessmentPlayerDefault/Tools";
 import SvgDraw from "../AssessmentPlayerDefault/SvgDraw";
 import { saveUserWorkAction } from "../../actions/userWork";
@@ -228,7 +229,12 @@ class AssessmentPlayerSimple extends React.Component {
       previewPlayer,
       scratchPad,
       crossAction,
-      previousQuestionActivities
+      previousQuestionActivities,
+      bookmarksInOrder,
+      skippedInOrder,
+      zoomLevel,
+      windowWidth,
+      playerSkinType
     } = this.props;
     const {
       showExitPopup,
@@ -276,6 +282,11 @@ class AssessmentPlayerSimple extends React.Component {
               t={t}
               previewPlayer={previewPlayer}
               finishTest={this.openExitPopup}
+              setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
+              crossAction={crossAction || {}}
+              bookmarks={bookmarksInOrder}
+              skipped={skippedInOrder}
+              qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
             >
               {scratchPadMode && !previewPlayer && (
               <Tools
@@ -288,6 +299,7 @@ class AssessmentPlayerSimple extends React.Component {
                 undo={this.handleUndo}
                 redo={this.handleRedo}
                 onColorChange={this.handleColorChange}
+                className="scratchpad-tools"
               />
             )}
               <SvgDraw
@@ -323,6 +335,8 @@ class AssessmentPlayerSimple extends React.Component {
                 setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
                 crossAction={crossAction || {}}
                 previousQuestionActivities={previousQuestionActivities}
+                zoomLevel={playerSkinType !== "edulastic" ? zoomLevel : 0}
+                windowWidth={windowWidth}
               />
               <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
             </AssessmentPlayerSkinWrapper>
@@ -333,31 +347,38 @@ class AssessmentPlayerSimple extends React.Component {
   }
 }
 
-export default connect(
-  (state, ownProps) => ({
-    evaluation: state.evaluation,
-    preview: state.view.preview,
-    questions: state.assessmentplayerQuestions.byId,
-    settings: state.test.settings,
-    answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
-    zoomLevel: state.ui.zoomLevel,
-    selectedTheme: state.ui.selectedTheme,
-    unansweredQuestionCount: unansweredQuestionCountSelector(state),
-    userAnswers: state.answers,
-    isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
-    scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
-    highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
-    crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
-    userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
-    previousQuestionActivities: get(state, "previousQuestionActivity", {})
-  }),
-  {
-    checkAnswer: checkAnswerEvaluation,
-    toggleBookmark: toggleBookmarkAction,
-    saveUserWork: saveUserWorkAction,
-    changePreview: changePreviewAction,
-    undoScratchPad: ActionCreators.undo,
-    redoScratchPad: ActionCreators.redo,
-    setUserAnswer: setUserAnswerAction
-  }
-)(withNamespaces("common")(AssessmentPlayerSimple));
+const enhance = compose(
+  withWindowSizes,
+  withNamespaces("common"),
+  connect(
+    (state, ownProps) => ({
+      evaluation: state.evaluation,
+      preview: state.view.preview,
+      questions: state.assessmentplayerQuestions.byId,
+      settings: state.test.settings,
+      answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+      zoomLevel: state.ui.zoomLevel,
+      selectedTheme: state.ui.selectedTheme,
+      unansweredQuestionCount: unansweredQuestionCountSelector(state),
+      userAnswers: state.answers,
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
+      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
+      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
+      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
+      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
+      previousQuestionActivities: get(state, "previousQuestionActivity", {}),
+      bookmarksInOrder: bookmarksByIndexSelector(state),
+      skippedInOrder: getSkippedAnswerSelector(state)
+    }),
+    {
+      checkAnswer: checkAnswerEvaluation,
+      toggleBookmark: toggleBookmarkAction,
+      saveUserWork: saveUserWorkAction,
+      changePreview: changePreviewAction,
+      undoScratchPad: ActionCreators.undo,
+      redoScratchPad: ActionCreators.redo,
+      setUserAnswer: setUserAnswerAction
+    }
+  )
+)
+export default enhance(AssessmentPlayerSimple);

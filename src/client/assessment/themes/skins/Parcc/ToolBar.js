@@ -18,7 +18,8 @@ const ToolBar = ({
   tool = [],
   changeCaculateMode,
   changeTool,
-  qType
+  qType,
+  isDocbased = false
 }) => {
   const toolbarHandler = value => changeTool(value);
 
@@ -40,7 +41,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      <Tooltip
+      {!isDocbased && <Tooltip
         placement="top"
         title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
       >
@@ -51,13 +52,13 @@ const ToolBar = ({
         >
           <CloseIcon />
         </StyledButton>
-      </Tooltip>
+      </Tooltip>}
 
-      <Tooltip placement="top" title="Scratch Pad">
+      {!isDocbased && <Tooltip placement="top" title="Scratch Pad">
         <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
           <ScratchPadIcon />
         </StyledButton>
-      </Tooltip>
+      </Tooltip>}
     </Container>
   );
 }
@@ -78,20 +79,18 @@ export const StyledButton = styled(Button)`
   border-radius: 5px;
   height: 40px;
   width: 40px;
-  ${props => props.hidden && "display:none"}
-  ${({ theme, active }) => `
-    background: ${active ? tools.active.color : tools.color};
+  ${props => props.hidden && "display:none"};
+  background: ${({active}) => active ? tools.active.background : tools.color}!important;
 
-    svg {
-      top: 50%;
-      left: 50%;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      fill: ${active ? tools.active.svgColor : tools.svgColor};
-    }
-  `}
+  svg {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    fill: ${({active}) => active ? tools.active.svgColor : tools.svgColor};
+  }
   &:hover {
-    background: ${tools.active.background};
+    background: ${tools.active.background}!important;
     svg {
       fill: ${white};
     }

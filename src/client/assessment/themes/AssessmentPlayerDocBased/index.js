@@ -128,7 +128,8 @@ class AssessmentPlayerDocBased extends React.Component {
       gotoSummary,
       selectedTheme,
       previewPlayer,
-      settings
+      settings,
+      playerSkinType
     } = this.props;
 
     const item = items[0];
@@ -141,10 +142,11 @@ class AssessmentPlayerDocBased extends React.Component {
     let themeToPass = theme[selectedTheme] || theme.default;
 
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
+    const extraPaddingTop = playerSkinType === "parcc" ? 35 : 0;
 
     return (
       <ThemeProvider theme={themeToPass}>
-        <Container style={{ paddingTop: "70px" }}>
+        <Container style={{ paddingTop: 70 + extraPaddingTop }}>
           <AssessmentPlayerSkinWrapper
             {...this.props}
             theme={themeToPass}
@@ -176,6 +178,7 @@ class AssessmentPlayerDocBased extends React.Component {
               viewMode="review"
               noCheck
               testMode
+              extraPaddingTop={extraPaddingTop}
             />
           )}
             <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />

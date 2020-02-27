@@ -9,16 +9,25 @@ const { playerSkinTypes } = test;
 const PlayerSkinSelector = ({
   playerSkinType = playerSkinTypes.edulastic,
   onAssignmentTypeChange,
-  userRole,
+  testType,
   isAdvanceView,
   disabled = false,
   fullwidth = false
 }) => {
+  const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ?  "Test" : "Practice"}`;
+  const types = {
+    ...playerSkinTypes,
+    edulastic
+  };
+
   const SelectOption = (
-    <StyledSelect data-cy="playerSkinType" onChange={onAssignmentTypeChange} value={playerSkinType} disabled={disabled}>
-      {Object.keys(playerSkinTypes).map(key => (
+    <StyledSelect data-cy="playerSkinType"
+      onChange={onAssignmentTypeChange}
+      value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
+      disabled={disabled}>
+      {Object.keys(types).map(key => (
         <Select.Option key={key} value={key}>
-          {playerSkinTypes[key]}
+          {types[key]}
         </Select.Option>
       ))}
     </StyledSelect>

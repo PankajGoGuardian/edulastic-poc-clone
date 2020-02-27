@@ -48,11 +48,16 @@ const PlayerHeader = ({
   skipped = [],
   bookmarks = [],
   changeTool,
+  toggleToolsOpenStatus,
   tool,
   calcBrands,
   changeCaculateMode,
   finishTest,
   qType,
+  defaultAP,
+  isDocbased,
+  items,
+  toolsOpenStatus
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -69,17 +74,17 @@ const PlayerHeader = ({
     }
   }
 
-  const breadcrumbData = [{ title: "Assessments", to: "/home/assessments" }, { title: title }];
+  const breadcrumbData = [{ title: "Assessments", to: "/home/assignments" }, { title: title }];
 
   return (
     <FlexContainer>
-       <Header ref={headerRef} style={{background: header.background, flexDirection: "column", padding: "0"}}>
+       <Header ref={headerRef} style={{background: header.background, flexDirection: "column", padding: "0", zIndex: 505}}>
          <HeaderMainMenu style={{padding: "0 40px"}}>
            <HeaderPracticePlayer>
              <HeaderWrapper justifyContent="space-between">
                <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
-                <MainActionWrapper>
+                {!isDocbased && <MainActionWrapper>
                   <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                     <ControlBtn
                       data-cy="prev"
@@ -112,19 +117,20 @@ const PlayerHeader = ({
                       skipped={skipped}
                       bookmarks={bookmarks}
                     />
-                    <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+                    <StyledButton onClick={defaultAP ? toggleBookmark : () => toggleBookmark(items[currentItem]?._id)} active={isBookmarked}>
                       <StyledIconBookmark />
                       <span>{t("common.test.bookmark")}</span>
                     </StyledButton>
                   </Container>
-                </MainActionWrapper>
+                </MainActionWrapper>}
                 <ToolBar
-                  changeTool={changeTool}
+                  changeTool={changeTool || toggleToolsOpenStatus}
                   settings={settings}
-                  tool={tool}
+                  tool={tool || toolsOpenStatus}
                   calcBrands={calcBrands}
                   changeCaculateMode={changeCaculateMode}
                   qType={qType}
+                  isDocbased={isDocbased}
                 />
                </FlexContainer>
               <FlexContainer>

@@ -589,7 +589,8 @@ class WorksheetComponent extends React.Component {
       testMode = false,
       studentWorkAnswersById,
       studentWork,
-      isAssessmentPlayer
+      isAssessmentPlayer,
+      extraPaddingTop
     } = this.props;
 
     const {
@@ -644,7 +645,7 @@ class WorksheetComponent extends React.Component {
     const reportMode = viewMode && viewMode === "report";
 
     return (
-      <WorksheetWrapper reportMode={reportMode} testMode={testMode}>
+      <WorksheetWrapper reportMode={reportMode} testMode={testMode} extraPaddingTop={extraPaddingTop}>
         <Modal
           visible={deleteConfirmation}
           title="Confirm Page Deletion"

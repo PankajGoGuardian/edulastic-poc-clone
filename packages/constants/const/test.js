@@ -7,7 +7,6 @@ module.exports = {
   },
   settingCategories: [
     { id: "test-type", title: "Test Type" },
-    { id: "player-skin-type", title: "Student Player Skin" },
     { id: "maximum-attempts-allowed", title: "Maximum Attempts Allowed" },
     { id: "mark-as-done", title: "Mark as Done" },
     { id: "release-scores", title: "Release Scores" },
@@ -23,6 +22,7 @@ module.exports = {
     { id: "test-content-visibility", title: "Item content visibility to Teachers", adminFeature: true },
     { id: "performance-bands", title: "Performance Bands" },
     { id: "standards-proficiency", title: "Standards Proficiency" },
+    { id: "player-skin-type", title: "Student Player Skin" },
     { id: "title", title: "Title" },
     { id: "navigations", title: "Navigations / Control" },
     { id: "accessibility", title: "Accessibility" },

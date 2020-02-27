@@ -68,7 +68,7 @@ const PlayerHeader = ({
 
   const totalQuestions = options.length;
   const totalAnswered = skipped.filter(s => !s).length;
-  const isFirst = () => currentItem === 0;
+  const isFirst = () => isDocbased ? true : currentItem === 0;
 
   const headerStyle = {
     borderBottom: `1px solid ${header.borderColor}`,
@@ -88,23 +88,22 @@ const PlayerHeader = ({
   return (
     <StyledFlexContainer>
       <Header ref={headerRef} style={headerStyle}>
-        {!isDocbased && <HeaderTopMenu style={{display: "flex", justifyContent: "space-between", fontWeight: 600}}>
+        <HeaderTopMenu style={{display: "flex", justifyContent: "space-between", fontWeight: 600}}>
           <FlexContainer>
-            <QuestionList options={options} currentItem={currentItem} gotoQuestion={gotoQuestion} />
+          {!isDocbased && <><QuestionList options={options} currentItem={currentItem} gotoQuestion={gotoQuestion} />
             <div style={{ width: 136, display: "flex" }}>
               <StyledProgress percent={round(totalAnswered/totalQuestions * 100)} size="small" strokeColor="#1B5392"/>
-            </div>
+            </div></>}
             <StyledTitle>{title}</StyledTitle>
           </FlexContainer>
           <StyledQuestionMark type="question-circle" theme="filled"/>
-        </HeaderTopMenu>}
+        </HeaderTopMenu>
         <HeaderMainMenu style={{padding: "0 20px"}}>
            <HeaderSbacPlayer>
              <HeaderWrapper justifyContent="space-between">
                <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
-                {isDocbased && <StyledTitle>{title}</StyledTitle>}
-                {!isDocbased && <MainActionWrapper>
+                <MainActionWrapper>
                   <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                     <ControlBtn
                       data-cy="prev"
@@ -127,7 +126,7 @@ const PlayerHeader = ({
                       style={{marginLeft: "5px"}}
                     />
                   </Tooltip>
-                </MainActionWrapper>}
+                </MainActionWrapper>
                 <FlexContainer style={{marginLeft: "28px"}}>
                   <Tooltip placement="top" title="Save & Exit">
                     <StyledButton onClick={finishTest}>

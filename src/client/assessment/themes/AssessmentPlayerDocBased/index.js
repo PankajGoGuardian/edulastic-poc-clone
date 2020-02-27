@@ -142,7 +142,7 @@ class AssessmentPlayerDocBased extends React.Component {
     let themeToPass = theme[selectedTheme] || theme.default;
 
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
-    const extraPaddingTop = playerSkinType === "parcc" ? 35 : 0;
+    const extraPaddingTop = playerSkinType === "parcc" ? 35 : playerSkinType === "sbac" ? 29 : 0;
 
     return (
       <ThemeProvider theme={themeToPass}>

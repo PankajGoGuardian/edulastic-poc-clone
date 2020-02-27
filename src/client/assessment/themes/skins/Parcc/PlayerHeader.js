@@ -67,7 +67,7 @@ const PlayerHeader = ({
     totalBookmarks: totalBookmarks > 0 ? ("0" + totalBookmarks).slice(-2) : totalBookmarks,
     totalUnanswered: totalUnanswered > 0 ? ("0" + totalUnanswered).slice(-2) : totalUnanswered
   }
-  const isFirst = () => currentItem === 0;
+  const isFirst = () => isDocbased ? true : currentItem === 0;
   const onSettingsChange = (e) => {
     if (e.key === "save") {
       finishTest();
@@ -84,7 +84,7 @@ const PlayerHeader = ({
              <HeaderWrapper justifyContent="space-between">
                <FlexContainer>
                 <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
-                {!isDocbased && <MainActionWrapper>
+                <MainActionWrapper>
                   <Tooltip placement="top" title="Previous" overlayStyle={overlayStyle}>
                     <ControlBtn
                       data-cy="prev"
@@ -107,7 +107,7 @@ const PlayerHeader = ({
                       style={{marginLeft: "5px"}}
                     />
                   </Tooltip>
-                  <Container>
+                  {!isDocbased && <Container>
                     <ReviewToolbar
                       options={options}
                       filterData={filterData}
@@ -121,8 +121,8 @@ const PlayerHeader = ({
                       <StyledIconBookmark />
                       <span>{t("common.test.bookmark")}</span>
                     </StyledButton>
-                  </Container>
-                </MainActionWrapper>}
+                  </Container>}
+                </MainActionWrapper>
                 <ToolBar
                   changeTool={changeTool || toggleToolsOpenStatus}
                   settings={settings}

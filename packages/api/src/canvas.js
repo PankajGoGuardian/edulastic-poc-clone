@@ -1,4 +1,3 @@
-import qs from "qs";
 import API from "./utils/API";
 
 const api = new API();
@@ -23,7 +22,7 @@ const fetchCourseList = () =>
 const fetchCourseSectionList = courseIds =>
   api
     .callApi({
-      url: `${prefix}/course-section-list?${qs.stringify({ courseIds })}`,
+      url: `${prefix}/course-section-list?courseIds=${courseIds.toString()}`,
       method: "get"
     })
     .then(result => result.data.result);

@@ -6,13 +6,15 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import { questionType } from "@edulastic/constants";
-import { Checkbox } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
+import {
+  setQuestionDataAction,
+  getQuestionDataSelector
+} from "../../../../author/QuestionEditor/ducks";
 import Question from "../../../components/Question";
 import PointStyleOption from "./PointStyle";
 import MulticolorBarsOption from "./MulticolorBarsOption";
@@ -135,7 +137,7 @@ class LayoutsComponent extends Component {
           t={t}
           name="snapToGrid"
           value={uiStyle.snapToGrid}
-          onChange={() => changeUIStyle("snapToGrid", !uiStyle.drawLabelZero)}
+          onChange={() => changeUIStyle("snapToGrid", !uiStyle.snapToGrid)}
         />
       );
 

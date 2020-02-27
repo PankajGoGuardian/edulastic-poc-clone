@@ -9,7 +9,8 @@ import {
   QuestionNumberLabel,
   AnswerContext,
   QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionContentWrapper,
+  QuestionLabelWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
@@ -127,9 +128,7 @@ const SortListPreview = ({
       }
 
       if (active) {
-        saveAnswer(
-          draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null))
-        );
+        saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
 
@@ -196,9 +195,7 @@ const SortListPreview = ({
   let altRespCorrect = [...validRespCorrect];
 
   altResponses.forEach(ob => {
-    const alt = selected.filter(
-      (selectedItem, i) => selectedItem && selectedItem === source[ob.value[i]]
-    );
+    const alt = selected.filter((selectedItem, i) => selectedItem && selectedItem === source[ob.value[i]]);
     if (alt.length > altRespCorrect.length) {
       altRespCorrect = [...alt];
     }
@@ -254,10 +251,10 @@ const SortListPreview = ({
   return (
     <StyledPaperWrapper data-cy="sortListPreview" style={paperStyle}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
-        <QuestionTitleWrapper>
+        <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-        </QuestionTitleWrapper>
+        </QuestionLabelWrapper>
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
@@ -273,11 +270,7 @@ const SortListPreview = ({
               flexWrap="nowrap"
             >
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && (
-                  <Title smallSize={smallSize}>
-                    {t("component.sortList.containerSourcePreview")}
-                  </Title>
-                )}
+                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}
                 {items.map((draggableItem, i) => (
                   <DropContainer
                     key={i}
@@ -304,42 +297,22 @@ const SortListPreview = ({
                 ))}
               </FullWidthContainer>
 
-              <FlexWithMargins
-                smallSize={smallSize}
-                flexDirection={flexDirection}
-                flexWrap="nowrap"
-              >
+              <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection} flexWrap="nowrap">
                 {isVertical ? (
                   <>
-                    <IconUp
-                      smallSize={smallSize}
-                      onClick={!disableResponse ? onRightLeftClick : () => {}}
-                    />
-                    <IconDown
-                      smallSize={smallSize}
-                      onClick={!disableResponse ? onRightLeftClick : () => {}}
-                    />
+                    <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                    <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
                   </>
                 ) : (
                   <>
-                    <IconLeft
-                      smallSize={smallSize}
-                      onClick={!disableResponse ? onRightLeftClick : () => {}}
-                    />
-                    <IconRight
-                      smallSize={smallSize}
-                      onClick={!disableResponse ? onRightLeftClick : () => {}}
-                    />
+                    <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+                    <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
                   </>
                 )}
               </FlexWithMargins>
 
               <FullWidthContainer isVertical={isVertical}>
-                {!smallSize && (
-                  <Title smallSize={smallSize}>
-                    {t("component.sortList.containerTargetPreview")}
-                  </Title>
-                )}
+                {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerTargetPreview")}</Title>}
                 {selected.map((selectedItem, i) => (
                   <DropContainer
                     key={i}
@@ -377,14 +350,8 @@ const SortListPreview = ({
               </FullWidthContainer>
 
               <FlexCol smallSize={smallSize}>
-                <IconUp
-                  smallSize={smallSize}
-                  onClick={!disableResponse ? onUpDownClick("Up") : () => {}}
-                />
-                <IconDown
-                  smallSize={smallSize}
-                  onClick={!disableResponse ? onUpDownClick("Down") : () => {}}
-                />
+                <IconUp smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Up") : () => {}} />
+                <IconDown smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Down") : () => {}} />
               </FlexCol>
             </FlexContainer>
           </Container>

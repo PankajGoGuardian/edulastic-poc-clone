@@ -181,9 +181,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
 
   context(">autoselect- filters", () => {
     context(">dok + tags + difficulty", () => {
-      before("login", () => {
-        cy.deleteTests(contEditor.email);
-      });
       before("create test", () => {
         testLibraryPage.createNewTestAndFillDetails(testData);
         testLibraryPage.testSummary.header.clickOnAddItems();
@@ -191,11 +188,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
       });
       itemsToCreate.forEach((itemId, index) => {
         it(`>create dynamic group-${index + 1}`, () => {
-          groupItemsPage
-            .createDynamicTest(index + 1, filterForAutoselect_1[index])
-            .then(itemsObj => {
-              expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
-            });
+          groupItemsPage.createDynamicTest(index + 1, filterForAutoselect_1[index]).then(itemsObj => {
+            expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
+          });
           if (!(index === Cypress._.keys(groups).length - 1)) groupItemsPage.clickOnAddGroup();
           else {
             cy.server();
@@ -218,11 +213,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
       });
       itemsToCreate.forEach((itemId, index) => {
         it(`>create dynamic group-${index + 1}`, () => {
-          groupItemsPage
-            .createDynamicTest(index + 1, filterForAutoselect_2[index])
-            .then(itemsObj => {
-              expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
-            });
+          groupItemsPage.createDynamicTest(index + 1, filterForAutoselect_2[index]).then(itemsObj => {
+            expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
+          });
           if (!(index === Cypress._.keys(groups).length - 1)) groupItemsPage.clickOnAddGroup();
           else {
             cy.server();
@@ -245,11 +238,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
       });
       itemsToCreate.forEach((itemId, index) => {
         it(`>create dynamic group-${index + 1}`, () => {
-          groupItemsPage
-            .createDynamicTest(index + 1, filterForAutoselect_3[index])
-            .then(itemsObj => {
-              expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
-            });
+          groupItemsPage.createDynamicTest(index + 1, filterForAutoselect_3[index]).then(itemsObj => {
+            expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
+          });
           if (!(index === Cypress._.keys(groups).length - 1)) groupItemsPage.clickOnAddGroup();
           else {
             cy.server();
@@ -272,11 +263,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups filters`, 
       });
       itemsToCreate.forEach((itemId, index) => {
         it(`>create dynamic group-${index + 1}`, () => {
-          groupItemsPage
-            .createDynamicTest(index + 1, filterForAutoselect_4[index])
-            .then(itemsObj => {
-              expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
-            });
+          groupItemsPage.createDynamicTest(index + 1, filterForAutoselect_4[index]).then(itemsObj => {
+            expect(itemsObj[0]._id).to.eq(groups[`${index + 1}`].items[0]);
+          });
           if (!(index === Cypress._.keys(groups).length - 1)) groupItemsPage.clickOnAddGroup();
           else {
             cy.server();

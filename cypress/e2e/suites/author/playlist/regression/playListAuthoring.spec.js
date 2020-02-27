@@ -4,7 +4,7 @@ import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
-import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
+import PlayListAssign from "../../../../framework/author/playlist/playListAssignPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () => {
@@ -13,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
   const studentTestPage = new StudentTestPage();
   const assignmentsPage = new AssignmentsPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
-  const testAssignPage = new TestAssignPage();
+  const playListAssign = new PlayListAssign();
   const lcb = new LiveClassboardPage();
 
   let playlistId;
@@ -245,17 +245,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
       it(">assign the playlist", () => {
         playListLibrary.reviewTab.clickOnAssignButtonByModule(1);
-        testAssignPage.selectClass("Class");
+        playListAssign.selectClass("Class");
         // TODO: remove below once it is fixed
-        testAssignPage.selectOpenPolicy("Automatically on Start Date");
-        testAssignPage.clickOnAssign();
+        playListAssign.selectOpenPolicy("Automatically on Start Date");
+        playListAssign.clickOnAssign();
       });
       it(">playlist progress verification", () => {
         playListLibrary.getPlayListAndClickOnUseThisById(playlistId);
         playListLibrary.reviewTab.verifyModuleProgress(0, 1);
       });
       it(">author assignments verification and closing", () => {
-        testAssignPage.sidebar.clickOnAssignment();
+        playListAssign.sidebar.clickOnAssignment();
         authorAssignmentPage.getStatus().should("have.length", 2);
         for (let i = 0; i < 2; i++) {
           authorAssignmentPage.clcikOnPresenatationIconByIndex(0, i);
@@ -297,17 +297,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
       it(">assign the playlist", () => {
         playListLibrary.reviewTab.clickOnAssignButtonByModule(1);
-        testAssignPage.selectClass("Class");
+        playListAssign.selectClass("Class");
         // TODO: remove below line once its default behaviour is fixed fixed
-        testAssignPage.selectOpenPolicy("Automatically on Start Date");
-        testAssignPage.clickOnAssign();
+        playListAssign.selectOpenPolicy("Automatically on Start Date");
+        playListAssign.clickOnAssign();
       });
       it(">playlist progress verification", () => {
         playListLibrary.getPlayListAndClickOnUseThisById(playlistId);
         playListLibrary.reviewTab.verifyModuleProgress(0, 1);
       });
       it(">author assignments verification and closing", () => {
-        testAssignPage.sidebar.clickOnAssignment();
+        playListAssign.sidebar.clickOnAssignment();
         authorAssignmentPage.getStatus().should("have.length", 1);
 
         authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
@@ -347,9 +347,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playListLibrary.header.clickOnPublish();
       playListLibrary.header.clickOnUseThis();
       playListLibrary.reviewTab.clickOnAssignButtonByModule(1);
-      testAssignPage.selectClass("Class");
-      testAssignPage.selectOpenPolicy("Automatically on Start Date");
-      testAssignPage.clickOnAssign();
+      playListAssign.selectClass("Class");
+      playListAssign.selectOpenPolicy("Automatically on Start Date");
+      playListAssign.clickOnAssign();
     });
     it(">verify teacher side-'original playlist'", () => {
       playListLibrary.seachAndClickPlayListById(playlistId);
@@ -367,7 +367,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">verify teacher side-'assignments page'", () => {
       playListLibrary.sidebar.clickOnAssignment();
       [testIds[0], testIds[3]].forEach(id => {
-        authorAssignmentPage.getAssignmentRowById(id).should("exist");
+        authorAssignmentPage.getTestRowByTestId(id).should("exist");
       });
     });
     it(">verify student side", () => {

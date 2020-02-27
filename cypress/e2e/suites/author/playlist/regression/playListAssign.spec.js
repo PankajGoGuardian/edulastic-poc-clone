@@ -83,7 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
         playListLibrary.sidebar.clickOnAssignment();
         authorAssignmentPage.getStatus().should("have.length", testCount);
         originalTestIds.forEach(id => {
-          authorAssignmentPage.getAssignmentRowsById(id).should("exist");
+          authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
         });
         playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
         // playListLibrary.reviewTab.verifyAssignedByModule(1);
@@ -131,7 +131,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       it(">teacher side verification", () => {
         playListLibrary.sidebar.clickOnAssignment();
         authorAssignmentPage.getStatus().should("have.length", testCount);
-        authorAssignmentPage.getAssignmentRowsById(originalTestIds[0]).should("exist");
+        authorAssignmentPage.getAssignmentRowsTestById(originalTestIds[0]).should("exist");
 
         playListLibrary.sidebar.clickOnPlayListLibrary();
         playListLibrary.searchFilter.clearAll();
@@ -163,7 +163,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
         authorAssignmentPage.getStatus().should("have.length", testCount);
         originalTestIds.forEach(id => {
           id === originalTestIds[0] ? (length = 2) : (length = 1);
-          authorAssignmentPage.getAssignmentRowsById(id).should("have.length", length);
+          authorAssignmentPage.getAssignmentRowsTestById(id).should("have.length", length);
         });
         playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
         //   playListLibrary.reviewTab.verifyAssignedByModule(1);
@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
         authorAssignmentPage.getStatus().should("have.length", testCount);
         originalTestIds.forEach(id => {
           id === originalTestIds[1] ? (length = 2) : (length = 1);
-          authorAssignmentPage.getAssignmentRowsById(id).should("have.length", length);
+          authorAssignmentPage.getAssignmentRowsTestById(id).should("have.length", length);
         });
         playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
         // playListLibrary.reviewTab.verifyAssignedByModule(1);
@@ -236,7 +236,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       playListLibrary.sidebar.clickOnAssignment();
       authorAssignmentPage.getStatus().should("have.length", testCount);
       originalTestIds.forEach(id => {
-        authorAssignmentPage.getAssignmentRowsById(id).should("exist");
+        authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
       playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
       //  playListLibrary.reviewTab.verifyModuleProgress(0, 1);
@@ -246,7 +246,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       playListLibrary.sidebar.clickOnAssignment();
       authorAssignmentPage.getStatus().should("have.length", testCount);
       originalTestIds.forEach(id => {
-        authorAssignmentPage.getAssignmentRowsById(id).should("exist");
+        authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
       playListLibrary.searchByCollection();
       playListLibrary.clickOnPlayListCardById(playListId);

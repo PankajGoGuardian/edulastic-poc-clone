@@ -36,9 +36,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     deliveryCount: 2
   };
 
-  const GROUPS = {
-    GROUP1: [],
-    GROUP2: []
+  const groups = {
+    group1: [],
+    group2: []
   };
 
   before("Login and create new items", () => {
@@ -48,8 +48,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
     items.forEach((itemToCreate, index) => {
       item.createItem(itemToCreate, index).then(id => {
         itemIds.push(id);
-        let group = Object.keys(GROUPS)[index % 2];
-        GROUPS[group].push(id);
+        let group = Object.keys(groups)[index % 2];
+        groups[group].push(id);
       });
     });
   });
@@ -63,7 +63,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">add items", () => {
           cy.server();
           cy.route("POST", "**api/test").as("createTest");
-          GROUPS.GROUP1.forEach((item, index) => {
+          groups.group1.forEach((item, index) => {
             testReviewTab.testheader.clickOnAddItems();
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
@@ -81,16 +81,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         it(">verify items group page", () => {
           groupItemsPage.verifyNoOfGroups(1);
-          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", GROUPS.GROUP1.length);
+          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", groups.group1.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
-          testReviewTab.verifyNoOfItemsInGroupByNo(1, GROUPS.GROUP1.length);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP1.length);
+          testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
         });
         it(">remove items and verify group page", () => {
-          itemCount = GROUPS.GROUP1.length;
-          GROUPS.GROUP1.forEach(item => {
+          itemCount = groups.group1.length;
+          groups.group1.forEach(item => {
             testReviewTab.testheader.clickOnAddItems();
             addItemTab.searchFilters.clearAll();
             addItemTab.removeGroupItemById(item);
@@ -115,11 +115,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">add items", () => {
           cy.server();
           cy.route("POST", "**api/test").as("createTest");
-          GROUPS.GROUP2.forEach((item, index) => {
+          groups.group2.forEach((item, index) => {
             groupItemsPage.clickSelectItemsForGroupByNo(1);
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
-
             addItemTab.addItemById(item);
             if (index === 0) {
               cy.wait("@createTest").then(xhr => {
@@ -133,16 +132,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         it(">verify items group page", () => {
           groupItemsPage.verifyNoOfGroups(1);
-          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", GROUPS.GROUP2.length);
+          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", groups.group2.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
-          testReviewTab.verifyNoOfItemsInGroupByNo(1, GROUPS.GROUP1.length);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP1.length);
+          testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
         });
         it(">remove items and verify group page", () => {
-          itemCount = GROUPS.GROUP2.length;
-          GROUPS.GROUP2.forEach(item => {
+          itemCount = groups.group2.length;
+          groups.group2.forEach(item => {
             testReviewTab.testheader.clickOnAddItems();
             addItemTab.searchFilters.clearAll();
             addItemTab.removeGroupItemById(item);
@@ -171,7 +170,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">add items from 'add item tab' ", () => {
           cy.server();
           cy.route("POST", "**api/test").as("createTest");
-          GROUPS.GROUP1.forEach((item, index) => {
+          groups.group1.forEach((item, index) => {
             testReviewTab.testheader.clickOnAddItems();
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
@@ -189,12 +188,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         it(">verify items group page", () => {
           groupItemsPage.verifyNoOfGroups(2);
-          groupItemsPage.getCountOfItemsInGroup(2).should("have.length", GROUPS.GROUP1.length);
+          groupItemsPage.getCountOfItemsInGroup(2).should("have.length", groups.group1.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
-          testReviewTab.verifyNoOfItemsInGroupByNo(2, GROUPS.GROUP2.length);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP2.length);
+          testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group2.length);
         });
       });
       context(">add item to group from 'items group page'", () => {
@@ -204,7 +203,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         // TODO: Adding from item group should not open group list pop-up, Change below once it is  fixed
         it(">add items from 'items groups page' ", () => {
-          GROUPS.GROUP2.forEach((item, index) => {
+          groups.group2.forEach((item, index) => {
             groupItemsPage.clickSelectItemsForGroupByNo(2);
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
@@ -216,20 +215,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
         it(">verify items group page", () => {
           groupItemsPage.verifyNoOfGroups(2);
-          groupItemsPage
-            .getCountOfItemsInGroup(2)
-            .should("have.length", GROUPS.GROUP1.length + GROUPS.GROUP2.length);
+          groupItemsPage.getCountOfItemsInGroup(2).should("have.length", groups.group1.length + groups.group2.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
-          testReviewTab.verifyNoOfItemsInGroupByNo(2, GROUPS.GROUP2.length + GROUPS.GROUP1.length);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP2.length + GROUPS.GROUP1.length);
+          testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length + groups.group1.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
         });
       });
       context(">remove items", () => {
         it(">remove", () => {
-          itemCount = GROUPS.GROUP2.length + GROUPS.GROUP2.length;
-          [...GROUPS.GROUP2, ...GROUPS.GROUP1].forEach(item => {
+          itemCount = groups.group2.length + groups.group2.length;
+          [...groups.group2, ...groups.group1].forEach(item => {
             testReviewTab.testheader.clickOnAddItems();
             addItemTab.searchFilters.clearAll();
             addItemTab.removeGroupItemById(item);
@@ -255,7 +252,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
       it(">adding items 2 groups simultaneously from add item tab", () => {
         cy.server();
         cy.route("POST", "**api/test").as("createTest");
-        [...GROUPS.GROUP1, ...GROUPS.GROUP2].forEach((item, index) => {
+        [...groups.group1, ...groups.group2].forEach((item, index) => {
           testReviewTab.testheader.clickOnAddItems();
           addItemTab.searchFilters.clearAll();
           addItemTab.searchFilters.getAuthoredByMe();
@@ -272,21 +269,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         });
       });
       it(">verify item count", () => {
-        groupItemsPage.getCountOfItemsInGroup(1).should("have.length", GROUPS.GROUP1.length);
-        groupItemsPage.getCountOfItemsInGroup(1).should("have.length", GROUPS.GROUP2.length);
+        groupItemsPage.getCountOfItemsInGroup(1).should("have.length", groups.group1.length);
+        groupItemsPage.getCountOfItemsInGroup(1).should("have.length", groups.group2.length);
       });
       it(">verify review tab", () => {
         addItemTab.header.clickOnReview();
-        testReviewTab.verifyNoOfItemsInGroupByNo(2, GROUPS.GROUP2.length);
-        testReviewTab.verifyNoOfItemsInGroupByNo(1, GROUPS.GROUP1.length);
-        testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP2.length + GROUPS.GROUP1.length);
+        testReviewTab.verifyNoOfItemsInGroupByNo(2, groups.group2.length);
+        testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
+        testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
       });
       it(">remove item and verify review tab", () => {
-        itemCount = GROUPS.GROUP2.length + GROUPS.GROUP2.length;
-        let itemCount1 = GROUPS.GROUP2.length;
-        let itemCount2 = GROUPS.GROUP2.length;
+        itemCount = groups.group2.length + groups.group2.length;
+        let itemCount1 = groups.group2.length;
+        let itemCount2 = groups.group2.length;
 
-        [...GROUPS.GROUP2, ...GROUPS.GROUP1].forEach((item, index) => {
+        [...groups.group2, ...groups.group1].forEach((item, index) => {
           itemCount = index % 2 === 0 ? --itemCount1 : --itemCount2;
           testReviewTab.testheader.clickOnAddItems();
           addItemTab.searchFilters.clearAll();
@@ -311,7 +308,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           testReviewTab.testheader.clickOnAddItems();
           cy.server();
           cy.route("POST", "**api/test").as("createTest");
-          [...GROUPS.GROUP1, ...GROUPS.GROUP2].forEach((item, index) => {
+          [...groups.group1, ...groups.group2].forEach((item, index) => {
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
             addItemTab.addItemById(item);
@@ -335,7 +332,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
           testReviewTab.verifyNoOfItemsInGroupByNo(1, 2);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP2.length + GROUPS.GROUP1.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group2.length + groups.group1.length);
         });
       });
       context(">auto select", () => {
@@ -384,7 +381,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           testReviewTab.testheader.clickOnAddItems();
           cy.server();
           cy.route("POST", "**api/test").as("createTest");
-          GROUPS.GROUP1.forEach((item, index) => {
+          groups.group1.forEach((item, index) => {
             addItemTab.searchFilters.clearAll();
             addItemTab.searchFilters.getAuthoredByMe();
             addItemTab.addItemById(item);
@@ -399,12 +396,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
         it(">verify items group page", () => {
           addItemTab.clickOnGroupItem();
           groupItemsPage.verifyNoOfGroups(1);
-          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", GROUPS.GROUP1.length);
+          groupItemsPage.getCountOfItemsInGroup(1).should("have.length", groups.group1.length);
         });
         it(">verify review tab", () => {
           addItemTab.header.clickOnReview();
-          testReviewTab.verifyNoOfItemsInGroupByNo(1, GROUPS.GROUP1.length);
-          testReviewTab.verifyItemCoutInPreview(GROUPS.GROUP1.length);
+          testReviewTab.verifyNoOfItemsInGroupByNo(1, groups.group1.length);
+          testReviewTab.verifyItemCoutInPreview(groups.group1.length);
         });
         it(">edit group", () => {
           testReviewTab.testheader.clickOnAddItems();

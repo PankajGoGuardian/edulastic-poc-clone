@@ -6,9 +6,9 @@ class AuthorAssignmentPage {
     this.smartFilter = new SmartFilters();
   }
 
-  getTestRowById = id => cy.get(`[data-test=${id}]`);
+  getTestRowByTestId = id => cy.get(`[data-test=${id}]`);
 
-  getAssignmentRowsById = id => cy.get(`[data-cy=${id}]`).find(".ant-table-row-level-0");
+  getAssignmentRowsTestById = id => cy.get(`[data-cy=${id}]`).find(".ant-table-row-level-0");
 
   selectCheckBoxByTestName = testName => {
     cy.get('[data-cy="assignmentName"]')

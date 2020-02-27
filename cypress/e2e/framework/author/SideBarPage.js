@@ -14,13 +14,13 @@ export default class TeacherSideBar {
     cy.wait("@playListSearch");
   };
 
-  clickOnAssignment = (fromLcb = false) => {
+  clickOnAssignment = () => {
     cy.server();
     cy.route("GET", /assignments/).as("assignment");
     cy.get('[data-cy="Assignments"]')
       .click({ force: true })
       .click({ force: true });
-    if (!fromLcb) cy.wait("@assignment");
+    cy.wait("@assignment");
   };
 
   clickOnReport = () =>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input, message } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
@@ -65,15 +65,6 @@ const Settings = ({
     color: blueBorder,
     message: ""
   });
-
-  useEffect(() => {
-    if (!assignmentSettings.releaseScore && assignmentSettings.testType === "testlet") {
-      updateAssignmentSettings({
-        ...assignmentSettings,
-        releaseScore: releaseGradeLabels.DONT_RELEASE
-      });
-    }
-  }, [assignmentSettings.releaseScore]);
 
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {

@@ -230,11 +230,7 @@ function* saveAssignment({ payload }) {
           endDate,
           testType: testTypeUpdated,
           ...visibility,
-          testId,
-          releaseScore:
-            isTestLet && !payload.releaseScore
-              ? testContants.releaseGradeLabels.DONT_RELEASE
-              : payload.releaseScore
+          testId
         },
         [
           "_id",

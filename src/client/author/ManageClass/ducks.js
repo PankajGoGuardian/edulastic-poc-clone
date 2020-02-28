@@ -83,8 +83,10 @@ export const SET_GROUP_SYNC_DETAILS = "[manageClass] sync google class response"
 
 export const GET_CANVAS_COURSE_LIST_REQUEST = "[manageClass] get canvas course list requst";
 export const GET_CANVAS_COURSE_LIST_SUCCESS = "[manageClass] get canvas course list success";
+export const GET_CANVAS_COURSE_LIST_FAILED = "[manageClass] get canvas course list failed";
 export const GET_CANVAS_SECTION_LIST_REQUEST = "[manageClass] get canvas section list request";
 export const GET_CANVAS_SECTION_LIST_SUCCESS = "[manageClass] get canvas section list success";
+export const GET_CANVAS_SECTION_LIST_FAILED = "[manageClass] get canvas section list failed";
 export const SYNC_CLASS_WITH_CANVAS = "[manageClass] sync class with canvas";
 
 // action creators
@@ -140,8 +142,10 @@ export const setGroupSyncDataAction = createAction(SET_GROUP_SYNC_DETAILS);
 
 export const getCanvasCourseListRequestAction = createAction(GET_CANVAS_COURSE_LIST_REQUEST);
 export const getCanvasCourseListSuccessAction = createAction(GET_CANVAS_COURSE_LIST_SUCCESS);
+export const getCanvasCourseListFailedAction = createAction(GET_CANVAS_COURSE_LIST_FAILED);
 export const getCanvasSectionListRequestAction = createAction(GET_CANVAS_SECTION_LIST_REQUEST);
 export const getCanvasSectionListSuccessAction = createAction(GET_CANVAS_SECTION_LIST_SUCCESS);
+export const getCanvasSectionListFailedAction = createAction(GET_CANVAS_SECTION_LIST_FAILED);
 export const syncClassWithCanvasAction = createAction(SYNC_CLASS_WITH_CANVAS);
 // initial State
 const initialState = {
@@ -160,7 +164,8 @@ const initialState = {
   selectedSubject: "",
   classLoaded: false,
   canvasCourseList: [],
-  canvasSectionList: []
+  canvasSectionList: [],
+  isFetchingCanvasData: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -319,6 +324,7 @@ const setCanvasCourseList = (state, { payload }) => {
 
 const setCanvasSectionList = (state, { payload }) => {
   state.canvasSectionList = payload;
+  state.isFetchingCanvasData = false;
 };
 // main reducer
 export default createReducer(initialState, {
@@ -349,8 +355,22 @@ export default createReducer(initialState, {
   [SET_SUBJECT]: setSubject,
   [SET_GROUP_SYNC_DETAILS]: setGroupSyncDetails,
   [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange,
+  [GET_CANVAS_COURSE_LIST_REQUEST]: state => {
+    state.isFetchingCanvasData = true;
+  },
   [GET_CANVAS_COURSE_LIST_SUCCESS]: setCanvasCourseList,
-  [GET_CANVAS_SECTION_LIST_SUCCESS]: setCanvasSectionList
+  [GET_CANVAS_COURSE_LIST_FAILED]: state => {
+    state.isFetchingCanvasData = false;
+    state.canvasCourseList = [];
+  },
+  [GET_CANVAS_SECTION_LIST_REQUEST]: state => {
+    state.isFetchingCanvasData = true;
+  },
+  [GET_CANVAS_SECTION_LIST_SUCCESS]: setCanvasSectionList,
+  [GET_CANVAS_SECTION_LIST_FAILED]: state => {
+    state.isFetchingCanvasData = false;
+    state.canvasSectionList = [];
+  }
 });
 
 function* fetchClassList({ payload }) {
@@ -539,10 +559,15 @@ function* syncClassUsingCode({ payload }) {
 function* getCanvasCourseListRequestSaga() {
   try {
     const courseList = yield call(canvasApi.fetchCourseList);
-    console.log({ courseList });
-    yield put(getCanvasCourseListSuccessAction(courseList));
+    if (courseList.length === 0) {
+      yield call(message.info, "No course found in your Canvas account.");
+      yield put(getCanvasCourseListFailedAction());
+    } else {
+      yield put(getCanvasCourseListSuccessAction(courseList));
+    }
   } catch (err) {
     console.error(err);
+    yield put(getCanvasCourseListFailedAction());
     yield call(message.error, "Failed to get course list.");
   }
 }
@@ -550,10 +575,13 @@ function* getCanvasCourseListRequestSaga() {
 function* getCanvasSectionListRequestSaga({ payload }) {
   try {
     const sectionList = yield call(canvasApi.fetchCourseSectionList, payload);
-    console.log({ sectionList });
     yield put(getCanvasSectionListSuccessAction(sectionList));
+    if (sectionList.length === 0) {
+      yield call(message.info, "No course section found in your Canvas account.");
+    }
   } catch (err) {
     console.error(err);
+    yield put(getCanvasSectionListFailedAction());
     yield call(message.error, "Failed to get course section list.");
   }
 }

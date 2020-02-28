@@ -13,6 +13,7 @@ import { MainHeader } from "@edulastic/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { TitleWrapper } from "@edulastic/common/src/components/MainHeader";
+import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
 
 import {
   StyledLink,
@@ -47,7 +48,8 @@ import {
   closeAssignmentAction,
   togglePauseAssignmentAction,
   receiveTestActivitydAction,
-  toggleViewPasswordAction
+  toggleViewPasswordAction,
+  canvasSyncGradesAction
 } from "../../../src/actions/classBoard";
 import {
   showScoreSelector,
@@ -156,9 +158,7 @@ class ClassHeader extends Component {
       additionalData.testType === "common assessment" &&
       userRole === "teacher"
     ) {
-      return message.warn(`You can open the assessment once the Open time ${moment(
-        additionalData.endDate
-      )} has passed.
+      return message.warn(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
     `);
     }
     openAssignment(assignmentId, classId);
@@ -239,7 +239,7 @@ class ClassHeader extends Component {
       canOpen,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
-      toggleDeleteAssignmentModalAction,
+      toggleDeleteAssignmentModal,
       notStartedStudents,
       inProgressStudents,
       isItemsVisible,
@@ -247,32 +247,27 @@ class ClassHeader extends Component {
       match,
       showPasswordButton,
       isViewPassword,
-      hasRandomQuestions
+      hasRandomQuestions,
+      orgClasses,
+      orgData,
+      canvasSyncGrades
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const {
-      endDate,
-      startDate,
-      releaseScore,
-      isPaused = false,
-      open,
-      closed,
-      canCloseClass
-    } = additionalData;
+    const { endDate, startDate, releaseScore, isPaused = false, open, closed, canCloseClass } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { assignmentId, classId } = match.params;
     const canPause =
-      (startDate || open) &&
-      !closed &&
-      (endDate > Date.now() || !endDate) &&
-      canCloseClass.includes(classId);
+      (startDate || open) && !closed && (endDate > Date.now() || !endDate) && canCloseClass.includes(classId);
     const assignmentStatusForDisplay =
       assignmentStatus === "NOT OPEN" && startDate && startDate < moment()
         ? "IN PROGRESS"
         : closed
         ? "DONE"
         : assignmentStatus;
+
+    const { canvasCode, canvasCourseSectionCode } = orgClasses.find(({ _id }) => _id === classId) || {};
+    const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -285,9 +280,7 @@ class ClassHeader extends Component {
           canPause && (
             <OpenCloseButton
               data-cy="openPauseButton"
-              onClick={() =>
-                isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true)
-              }
+              onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
             >
               {isPaused ? "OPEN" : "PAUSE"}
             </OpenCloseButton>
@@ -306,11 +299,7 @@ class ClassHeader extends Component {
     const actionsMenu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersMarkAsDone"
-          actionOnInaccessible="hidden"
-          groupId={classId}
-        >
+        <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden" groupId={classId}>
           <MenuItems
             data-cy="markAsDone"
             key="key1"
@@ -324,11 +313,7 @@ class ClassHeader extends Component {
           Release Score
         </MenuItems>
         {window.innerWidth <= desktopWidth && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
-        <MenuItems
-          data-cy="unAssign"
-          key="key4"
-          onClick={() => toggleDeleteAssignmentModalAction(true)}
-        >
+        <MenuItems data-cy="unAssign" key="key4" onClick={() => toggleDeleteAssignmentModal(true)}>
           Unassign
         </MenuItems>
         {/* TODO temp hiding for UAT */}
@@ -340,6 +325,11 @@ class ClassHeader extends Component {
             View Password
           </MenuItems>
         )}
+        {showSyncGradesWithCanvasOption && (
+          <MenuItems key="key6" onClick={() => canvasSyncGrades({ assignmentId, groupId: classId })}>
+            Canvas Grade Sync
+          </MenuItems>
+        )}
       </DropMenu>
     );
 
@@ -347,9 +337,7 @@ class ClassHeader extends Component {
       <ClassDropMenu selectedKeys={classId}>
         {classesList.map(item => (
           <MenuItems key={item._id} onClick={() => this.switchClass(item._id)}>
-            <Link
-              to={`/author/${classViewRoutesByActiveTabName[active]}/${assignmentId}/${item._id}`}
-            >
+            <Link to={`/author/${classViewRoutesByActiveTabName[active]}/${assignmentId}/${item._id}`}>
               {item.name}
             </Link>
           </MenuItems>
@@ -368,10 +356,7 @@ class ClassHeader extends Component {
                 placement="bottomLeft"
               >
                 <div style={{ position: "relative" }}>
-                  <StyledParaFirst
-                    data-cy="CurrentClassName"
-                    title={additionalData.className || "loading..."}
-                  >
+                  <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
                     {additionalData.className || "loading..."}
                   </StyledParaFirst>
                   <DownArrow type="down" />
@@ -379,10 +364,7 @@ class ClassHeader extends Component {
               </Dropdown>
             ) : (
               <div style={{ position: "relative" }}>
-                <StyledParaFirst
-                  data-cy="CurrentClassName"
-                  title={additionalData.className || "loading..."}
-                >
+                <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
                   {additionalData.className || "loading..."}
                 </StyledParaFirst>
               </div>
@@ -390,34 +372,23 @@ class ClassHeader extends Component {
             <StyledParaSecond data-cy="assignmentStatusForDisplay">
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-              <div>
-                {!!additionalData.endDate && `(Due on ${moment(dueDate).format("MMM DD, YYYY")})`}
-              </div>
+              <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("MMM DD, YYYY")})`}</div>
             </StyledParaSecond>
           </div>
         </TitleWrapper>
         <StyledTabContainer>
           <StyledTabs>
-            <StyledLink
-              to={`/author/classboard/${assignmentId}/${classId}`}
-              data-cy="LiveClassBoard"
-            >
+            <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
               <StyledAnchor isActive={active === "classboard"}>
                 <IconDeskTopMonitor left={0} />
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeaturesSwitch
-              inputFeatures="expressGrader"
-              actionOnInaccessible="hidden"
-              groupId={classId}
-            >
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
               <WithDisableMessage
                 disabled={hasRandomQuestions || !isItemsVisible}
                 errMessage={
-                  hasRandomQuestions
-                    ? "This assignment has random items for every student."
-                    : t("common.testHidden")
+                  hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
                 }
               >
                 <StyledLink
@@ -433,11 +404,7 @@ class ClassHeader extends Component {
               </WithDisableMessage>
             </FeaturesSwitch>
 
-            <FeaturesSwitch
-              inputFeatures="standardBasedReport"
-              actionOnInaccessible="hidden"
-              groupId={classId}
-            >
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
               <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
                 <StyledLink
                   disabled={!isItemsVisible}
@@ -451,10 +418,7 @@ class ClassHeader extends Component {
                 </StyledLink>
               </WithDisableMessage>
             </FeaturesSwitch>
-            <StyledLink
-              to={`/author/lcb/settings/${assignmentId}/${classId}`}
-              data-cy="LCBAssignmentSettings"
-            >
+            <StyledLink to={`/author/lcb/settings/${assignmentId}/${classId}`} data-cy="LCBAssignmentSettings">
               <StyledAnchor isActive={active === "settings"}>
                 <IconSettings left={0} />
                 <LinkLabel>{t("common.settings")}</LinkLabel>
@@ -520,7 +484,7 @@ class ClassHeader extends Component {
               onInputChange={this.handleValidateInput}
               expectedVal="CLOSE"
               bodyStyle={{ padding: "60px 20px" }}
-              bodyText={(
+              bodyText={
                 <div>
                   <StudentStatusDetails>
                     {notStartedStudents.length ? (
@@ -537,7 +501,7 @@ class ClassHeader extends Component {
                   <p>Are you sure you want to close ?</p>
                   <p>Once closed, no student would be able to answer the assessment</p>
                 </div>
-              )}
+              }
               okText="Yes, Close"
               canUndone
             />
@@ -580,7 +544,9 @@ const enhance = compose(
       passwordPolicy: getPasswordPolicySelector(state),
       showPasswordButton: showPasswordButonSelector(state),
       isViewPassword: getViewPasswordSelector(state),
-      hasRandomQuestions: getHasRandomQuestionselector(state)
+      hasRandomQuestions: getHasRandomQuestionselector(state),
+      orgClasses: getGroupList(state),
+      orgData: getOrgDataSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -591,8 +557,9 @@ const enhance = compose(
       closeAssignment: closeAssignmentAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       studentUnselectAll: gradebookUnSelectAllAction,
-      toggleDeleteAssignmentModalAction,
-      toggleViewPassword: toggleViewPasswordAction
+      toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
+      toggleViewPassword: toggleViewPasswordAction,
+      canvasSyncGrades: canvasSyncGradesAction
     }
   )
 );

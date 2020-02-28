@@ -1,15 +1,16 @@
 /* eslint-disable */
 import React, { Component, Suspense, lazy } from "react";
-import { get, isUndefined } from "lodash";
+import { get, isUndefined, isEmpty } from "lodash";
+import qs from "qs";
 import queryString from "query-string";
 import PropTypes from "prop-types";
-import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router-dom";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { DndProvider } from "react-dnd";
 import TouchBackend from "react-dnd-touch-backend";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
-import { Spin, Modal } from "antd";
+import { Spin, Modal, message } from "antd";
 import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
 import { isMobileDevice, OfflineNotifier } from "@edulastic/common";
@@ -64,6 +65,25 @@ if (query.token && query.userId && query.role) {
   TokenStorage.selectAccessToken(query.userId, query.role);
 } else if (query.userId && query.role) {
   TokenStorage.selectAccessToken(query.userId, query.role);
+}
+
+/**
+ *  In case of redirection from canvas we might get errorDescription as query param which
+ *  we have to display as error message and remove it from the url.
+ */
+const { search } = window.location;
+if (search) {
+  const { errorDescription, ...rest } = qs.parse(search, { ignoreQueryPrefix: true });
+  if (errorDescription) {
+    let errorMessage = errorDescription.split("_").join(" ");
+    errorMessage = `${errorMessage[0].toUpperCase()}${errorMessage.substr(1, errorMessage.length)}`;
+    sessionStorage.setItem("errorMessage", errorMessage);
+    if (isEmpty(rest)) {
+      window.location.href = window.location.href.split("?")[0];
+    } else {
+      window.location.href = `${window.location.href.split("?")[0]}?${qs.stringify(rest)}`;
+    }
+  }
 }
 
 const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap"];
@@ -195,6 +215,15 @@ class App extends Component {
         }
         redirectRoute = "/login";
       }
+    }
+
+    /**
+     * If error message is stored in the session storage, than we will display it
+     * and remove it from the session storage.
+     */
+    if (sessionStorage.getItem("errorMessage")) {
+      message.error(sessionStorage.getItem("errorMessage"));
+      sessionStorage.removeItem("errorMessage");
     }
 
     // signup routes hidden till org reference is not done

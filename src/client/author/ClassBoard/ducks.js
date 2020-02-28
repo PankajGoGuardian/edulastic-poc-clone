@@ -1,12 +1,13 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi, classResponseApi, canvasApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 import { push } from "connected-react-router";
 
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy, sumBy } from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from "lodash";
 
 import { test, testActivity, assignmentPolicyOptions, roleuser } from "@edulastic/constants";
+import { isNullOrUndefined } from "util";
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -21,8 +22,7 @@ import {
   updateSubmittedStudentsAction,
   receiveTestActivitydAction,
   redirectToAssignmentsAction,
-  updatePasswordDetailsAction,
-  getAllTestActivitiesForStudentAction
+  updatePasswordDetailsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData, hasRandomQuestions } from "./utils";
@@ -51,9 +51,10 @@ import {
   DOWNLOAD_GRADES_RESPONSES,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
   REDIRECT_TO_ASSIGNMENTS,
-  REGENERATE_PASSWORD
+  REGENERATE_PASSWORD,
+  CANVAS_SYNC_GRADES
 } from "../src/constants/actions";
-import { isNullOrUndefined } from "util";
+
 import { downloadCSV } from "../Reports/common/util";
 import { getUserNameSelector } from "../src/selectors/user";
 import { getAllQids } from "../SummaryBoard/Transformer";
@@ -117,7 +118,7 @@ export function* receiveTestActivitySaga({ payload }) {
 
     let entities = [];
     if (autoselectItemsCount) {
-      //students can have different test items so generating student data for each student with its testItems
+      // students can have different test items so generating student data for each student with its testItems
       const studentsDataWithTestItems = students.map(student => {
         const activity = gradebookData.testActivities.find(activity => activity.userId === student._id);
         let allItems = [];
@@ -287,7 +288,7 @@ function* togglePauseAssignment({ payload }) {
     if (e?.data?.message === "Assignment does not exist anymore") {
       yield put(redirectToAssignmentsAction(""));
     }
-    yield call(message.error, err.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`);
+    yield call(message.error, e.data.message || `${payload.value ? "Pause" : "Resume"} assignment failed`);
   }
 }
 
@@ -372,6 +373,16 @@ function* regeneratePasswordSaga({ payload }) {
   }
 }
 
+function* canvasSyncGradesSaga({ payload }) {
+  try {
+    yield call(canvasApi.canvasGradesSync, payload);
+    yield call(message.success, "Grades synced with canvas successfully.");
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, "Failed to sync grades with canvas.");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -390,7 +401,8 @@ export function* watcherSaga() {
     yield takeEvery(ADD_STUDENTS, addStudentsSaga),
     yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
     yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
-    yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga)
+    yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
+    yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga)
   ]);
 }
 
@@ -482,25 +494,21 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
       _id,
       notStarted,
       skipped,
-      correct,
       timeSpent,
-      partialCorrect: partiallyCorrect,
       testItemId,
-      disabled,
       score,
       maxScore,
       graded,
       qLabel,
       barLabel,
-      qid,
       pendingEvaluation
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
-          qLabel: qLabel,
-          barLabel: barLabel,
+          qLabel,
+          barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,
@@ -520,12 +528,10 @@ export const getItemSummary = (entities, questionsOrder, itemsSummary, originalQ
       }
       if (!notStarted) {
         questionMap[_id].attemptsNum += 1;
+      } else if (score > 0) {
+        notStarted = false;
       } else {
-        if (score > 0) {
-          notStarted = false;
-        } else {
-          questionMap[_id].notStartedNum += 1;
-        }
+        questionMap[_id].notStartedNum += 1;
       }
 
       if (skipped && score === 0) {
@@ -561,7 +567,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     return {};
   }
   const total = entities.length;
-  let submittedEntities = entities.filter(x => x.status === "submitted");
+  const submittedEntities = entities.filter(x => x.status === "submitted");
   const activeEntities = entities.filter(
     x => x.status === "inProgress" || x.status === "submitted" || x.status === "graded"
   );
@@ -628,10 +634,10 @@ export const getSortedTestActivitySelector = createSelector(
   getTestQuestionActivitiesSelector,
   getHasRandomQuestionselector,
   getTotalPoints,
-  (state, tqa, hasRandomQuestions, totalPoints) => {
+  (state, tqa, hasRandomQuest, totalPoints) => {
     const sortedTestActivities =
       state?.sort((a, b) => (a?.studentName?.toUpperCase() > b?.studentName?.toUpperCase() ? 1 : -1)) || [];
-    if (hasRandomQuestions) {
+    if (hasRandomQuest) {
       const qActivityByUser = groupBy(tqa, "userId");
       return sortedTestActivities.map(activity => ({
         ...activity,
@@ -650,9 +656,9 @@ export const getGradeBookSelector = createSelector(
   removedStudentsSelector,
   getHasRandomQuestionselector,
   getSortedTestActivitySelector,
-  (state, removedStudents, hasRandomQuestions, sortedTestActivities) => {
+  (state, removedStudents, hasRandomQuest, sortedTestActivities) => {
     const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
-    if (hasRandomQuestions) {
+    if (hasRandomQuest) {
       return {
         ...getAggregateByQuestion(sortedTestActivities),
         questionsOrder: {},
@@ -760,11 +766,11 @@ export const isItemVisibiltySelector = createSelector(
   (state, additionalData, userId, assignedBy) => {
     const assignmentStatus = state?.data?.status;
     const contentVisibility = additionalData?.testContentVisibility;
-    //For assigned by user content will be always visible.
+    // For assigned by user content will be always visible.
     if (userId === assignedBy?._id) {
       return true;
     }
-    //No key called testContentVisibility ?
+    // No key called testContentVisibility ?
     if (!additionalData?.hasOwnProperty("testContentVisibility")) {
       return true;
     }

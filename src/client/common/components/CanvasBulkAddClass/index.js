@@ -30,11 +30,14 @@ const CanvasBulkAddClass = ({
   canvasSectionList,
   user,
   bulkSyncCanvasClass,
-  isBulkSyncingCanvas
+  isBulkSyncingCanvas,
+  courseList,
+  isFetchingCanvasData
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [classes, setClasses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getDictCurriculums();
@@ -55,6 +58,7 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     if (canvasCourseList.length && canvasSectionList.length) {
+      setIsLoading(true);
       const sectionsGroupedByCourseId = groupBy(canvasSectionList, "course_id");
       const allClasses = Object.keys(sectionsGroupedByCourseId).flatMap(courseId => {
         const sectionList = sectionsGroupedByCourseId[courseId];
@@ -70,6 +74,7 @@ const CanvasBulkAddClass = ({
             parent: { id: user._id },
             standardSets: [],
             subject: "",
+            courseId: "",
             thumbnail,
             type: "class",
             canvasCode: course.id,
@@ -82,6 +87,7 @@ const CanvasBulkAddClass = ({
         return sectionClasses;
       });
       setClasses(allClasses);
+      setIsLoading(false);
     }
   }, [canvasCourseList, canvasSectionList]);
 
@@ -139,7 +145,7 @@ const CanvasBulkAddClass = ({
       title: <b>GRADE</b>,
       dataIndex: "grades",
       key: "grades",
-      width: "400px",
+      width: "350px",
       render: (_, row, index) => (
         <Select
           style={{ width: "100%" }}
@@ -215,6 +221,33 @@ const CanvasBulkAddClass = ({
           </Select>
         );
       }
+    },
+    {
+      title: <b>COURSE</b>,
+      key: "course",
+      width: "20%",
+      dataIndex: "course",
+      align: "center",
+      render: (_, row, ind) => (
+        <Select
+          showSearch
+          filterOption={(input, option) =>
+            option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+          style={{ width: "100%" }}
+          value={row.courseId || ""}
+          placeholder="Select Course"
+          onChange={val => handleChange(ind, "courseId", val)}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
+        >
+          {courseList &&
+            courseList.map(course => (
+              <Select.Option value={course._id} key={course._id}>
+                {course.name}
+              </Select.Option>
+            ))}
+        </Select>
+      )
     }
   ];
 
@@ -238,19 +271,13 @@ const CanvasBulkAddClass = ({
         rowSelection={rowSelection}
         pagination={false}
         bordered
+        loading={isFetchingCanvasData || isLoading}
       />
       <ButtonContainer>
         <Button onClick={handleFinish}>Finish</Button>
       </ButtonContainer>
       {showModal && (
-        <StyledModal
-          visible={showModal}
-          onCancel={() => setShowModal(false)}
-          title={<h3>TITLE</h3>}
-          footer={null}
-          centered
-          maskClosable={false}
-        >
+        <StyledModal visible={showModal} footer={null} centered maskClosable={false}>
           <h4>Syncing with Canvas Course...</h4>
         </StyledModal>
       )}
@@ -262,7 +289,8 @@ export default connect(
   state => ({
     state,
     courseList: get(state, "coursesReducer.searchResult"),
-    isBulkSyncingCanvas: get(state, "signup.bulkSyncingCanvas", false)
+    isBulkSyncingCanvas: get(state, "signup.bulkSyncingCanvas", false),
+    isFetchingCanvasData: get(state, "manageClass.isFetchingCanvasData", false)
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,

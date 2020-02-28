@@ -184,6 +184,8 @@ export const TOGGLE_VIEW_PASSWORD_MODAL = "[gradebook] toggle view password moda
 export const REGENERATE_PASSWORD = "[gradebook] regenerate password action";
 export const UPDATE_PASSWORD_DETAILS = "[gradebook] update password details action";
 
+export const CANVAS_SYNC_GRADES = "[gradebook] sync grades with canvas";
+
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";
 export const RECEIVE_TESTACTIVITY_ERROR = "[testActivity] receive list error";

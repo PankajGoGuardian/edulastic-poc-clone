@@ -1,3 +1,5 @@
+import { createAction } from "redux-starter-kit";
+
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_STUDENT_RESPONSE_REQUEST,
@@ -38,9 +40,9 @@ import {
   REDIRECT_TO_ASSIGNMENTS,
   TOGGLE_VIEW_PASSWORD_MODAL,
   REGENERATE_PASSWORD,
-  UPDATE_PASSWORD_DETAILS
+  UPDATE_PASSWORD_DETAILS,
+  CANVAS_SYNC_GRADES
 } from "../constants/actions";
-import { createAction } from "redux-starter-kit";
 
 export const receiveClassResponseAction = data => ({
   type: RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -203,3 +205,4 @@ export const redirectToAssignmentsAction = createAction(REDIRECT_TO_ASSIGNMENTS)
 export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL);
 export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD);
 export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS);
+export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES);

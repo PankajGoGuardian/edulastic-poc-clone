@@ -115,6 +115,7 @@ const JoinSchool = ({
       fetchSchoolTeachers(teacherSearch);
     } else if (!isSignupUsingDaURL && _school) {
       let signOnMethod = "userNameAndPassword";
+      signOnMethod = allowCanvas ? "canvasSignOn" : signOnMethod;
       signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
       signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
       signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
@@ -135,7 +136,7 @@ const JoinSchool = ({
 
   if (prevCheckDistrictPolicy !== checkDistrictPolicy) {
     setPrevCheckDistrictPolicy(checkDistrictPolicy);
-    if (!Object.keys(checkDistrictPolicy).length) {
+    if (!Object.keys(checkDistrictPolicy).length && !!userInfo.email && !allowCanvas) {
       if (autoCompleteRef.current) {
         autoCompleteRef.current.wipeSelected();
       }
@@ -163,7 +164,7 @@ const JoinSchool = ({
       institutionIds: [selected.schoolId || selected._id || ""],
       districtId: selected.districtId,
       currentSignUpState: "PREFERENCE_NOT_SELECTED",
-      email,
+      email: email || "",
       firstName,
       middleName,
       lastName

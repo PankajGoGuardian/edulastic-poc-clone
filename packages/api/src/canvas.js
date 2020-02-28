@@ -45,10 +45,20 @@ const canvasSync = data =>
     })
     .then(result => result.data.result);
 
+const canvasGradesSync = data =>
+  api
+    .callApi({
+      url: `${prefix}/sync-grades-manually`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   getCanvasAuthURI,
   fetchCourseList,
   fetchCourseSectionList,
   bulkSync,
-  canvasSync
+  canvasSync,
+  canvasGradesSync
 };

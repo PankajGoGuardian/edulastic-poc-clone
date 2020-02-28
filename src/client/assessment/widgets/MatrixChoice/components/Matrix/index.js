@@ -77,10 +77,7 @@ const Matrix = props => {
 
   const optionsData = options.map((option, i) => ({
     title: (
-      <StyledHeader
-        style={{ color: mainTextColor }}
-        dangerouslySetInnerHTML={{ __html: isTable ? option : "" }}
-      />
+      <StyledHeader style={{ color: mainTextColor }} dangerouslySetInnerHTML={{ __html: isTable ? option : "" }} />
     ),
     dataIndex: `${i}`,
     width: uiStyle.optionWidth || "auto",
@@ -92,9 +89,7 @@ const Matrix = props => {
   const hasStemTitle = !helpers.isEmpty(uiStyle.stemTitle);
 
   const stemTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle || "" }} />;
-  const optionRowTitle = (
-    <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || "" }} />
-  );
+  const optionRowTitle = <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle || "" }} />;
 
   let columns = [
     {

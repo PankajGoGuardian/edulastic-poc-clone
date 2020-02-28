@@ -602,9 +602,9 @@ function* fetchAssigned() {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    const { _id, title, onChange } = payload;
-    yield call(userContextApi.setLastUsedPlayList, { _id, title });
-    yield call(userContextApi.setRecentUsedPlayLists, { _id, title });
+    const { _id, title, grades, subjects, onChange } = payload;
+    yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
+    yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
     yield put(receiveLastPlayListAction());
     yield put(receiveRecentPlayListsAction());
     yield put(getAllCurriculumSequencesAction([_id]));

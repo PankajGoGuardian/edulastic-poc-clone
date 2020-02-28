@@ -155,10 +155,12 @@ class ProfileContainer extends React.Component {
                 </FormButtonWrapper>
               </FormWrapper>
             )}
-            {user.role === 'parent' && (<div style={{ paddingTop: 25 }}>
-              <Title>Children details</Title>
-              <ChildrenTable childs={user.children} />
-            </div>)}
+            {user.role === "parent" && (
+              <div style={{ paddingTop: 25 }}>
+                <Title>Children details</Title>
+                <ChildrenTable childs={user.children} />
+              </div>
+            )}
           </ProfileContentWrapper>
         </ProfileWrapper>
       </LayoutContent>
@@ -166,38 +168,36 @@ class ProfileContainer extends React.Component {
   }
 }
 
-
 function ChildrenTable({ childs }) {
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: text => <a>{text}</a>,
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: text => <a>{text}</a>
     },
     {
-      title: 'Grade',
-      dataIndex: 'orgData',
-      key: 'grades',
-      render: orgData => (orgData ?.classList ?.flatMap(x => x.grades) || []).join(',')
+      title: "Grade",
+      dataIndex: "orgData",
+      key: "grades",
+      render: orgData => (orgData?.classList?.flatMap(x => x.grades) || []).join(",")
     },
     {
-      title: 'School',
-      dataIndex: 'orgData',
-      key: 'schools',
-      render: orgData => (orgData ?.schools.map(x => <Tag key={x._id}> {x.name}</Tag>))
+      title: "School",
+      dataIndex: "orgData",
+      key: "schools",
+      render: orgData => orgData?.schools.map(x => <Tag key={x._id}> {x.name}</Tag>)
     },
 
     {
-      title: 'District',
-      dataIndex: 'orgData',
-      key: 'district',
-      render: orgData => (orgData ?.districtName)
-    },
+      title: "District",
+      dataIndex: "orgData",
+      key: "district",
+      render: orgData => orgData?.districtName
+    }
   ];
 
-
-  return <Table dataSource={childs} pagination={false} columns={columns} />
+  return <Table dataSource={childs} pagination={false} columns={columns} />;
 }
 
 const enhance = compose(

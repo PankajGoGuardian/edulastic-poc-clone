@@ -65,9 +65,7 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
                   <InstitutionInfo>
                     {institutionName}, {districtName}
                   </InstitutionInfo>
-                  <VisitClassButton onClick={handleVisitClass}>
-                    {t("common.visitClass")}
-                  </VisitClassButton>
+                  <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
                 </EllipsisContainer>
               </Row>
             </Col>
@@ -229,9 +227,7 @@ const ClassStatus = styled(Col)`
   text-transform: uppercase;
   text-align: right;
   color: ${props =>
-    props.info
-      ? props.theme.classCard.cardInfoContentColor
-      : props.theme.classCard.cardUserInfoContentColor};
+    props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardUserInfoContentColor};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -242,13 +238,10 @@ const ClassStatus = styled(Col)`
     display: inline-block;
     text-align: center;
     border-radius: 5px;
-    background-color: ${props =>
-      props.status == "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor};
+    background-color: ${props => (props.status == "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor)};
     padding: ${props => (props.status == "0" ? "5px 10px" : "5px 24px")};
     color: ${props =>
-      props.info
-        ? props.theme.classCard.cardInfoContentColor
-        : props.theme.classCard.cardActiveStatusTextColor};
+      props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};
   }
 

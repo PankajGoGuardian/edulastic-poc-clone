@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -12,25 +12,20 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FlexContainer } from "@edulastic/common";
 import { themes } from "../../../../theme";
 
-const { playerSkin: { parcc } } = themes;
+const {
+  playerSkin: { parcc }
+} = themes;
 
-const ReviewToolbar = ({
-  t,
-  options,
-  filterData = {},
-  gotoQuestion,
-  skipped = [],
-  bookmarks
-}) => {
+const ReviewToolbar = ({ t, options, filterData = {}, gotoQuestion, skipped = [], bookmarks }) => {
   const [selectedCard, setSelectedCard] = useState("all");
   const handleCardClick = cardType => setSelectedCard(cardType);
   const { totalQuestions, totalBookmarks, totalUnanswered } = filterData;
   const cardStyle = {
     background: parcc.review.card.background
-  }
+  };
 
   const getOptions = () => {
-    switch(selectedCard) {
+    switch (selectedCard) {
       case "notAnswered":
         return options.filter((o, i) => skipped[i]);
       case "bookmarks":
@@ -38,33 +33,42 @@ const ReviewToolbar = ({
       default:
         return options;
     }
-  }
+  };
 
   const handleQuestionCLick = e => gotoQuestion(options[parseInt(e.key, 10)]);
 
-  const content = <StyledWrapper>
-    <StyledMenu style={{height: "250px", overflow: "auto"}} onClick={handleQuestionCLick}>
-      {getOptions().map(option => <Menu.Item key={option} style={!skipped[option] && {paddingLeft: "33px"}}>{skipped[option] && <FontAwesomeIcon icon={faCircle} aria-hidden="true" color={parcc.menuItem.activeColor} />}Question {option + 1}</Menu.Item>)}
-    </StyledMenu>
-    <FlexContainer style={{marginTop: "20px"}}>
-      <Card style={selectedCard === "all" ? cardStyle : {}} onClick={() => handleCardClick("all")}>
-        <StyledCounter>{totalQuestions}</StyledCounter>
-        <div>All questions</div>
-      </Card>
-      <Card style={selectedCard === "notAnswered" ? cardStyle : {}} onClick={() => handleCardClick("notAnswered")}>
-        <StyledCounter>{totalUnanswered}</StyledCounter>
-        <div>Not answered</div>
-      </Card>
-      <Card style={selectedCard === "bookmarks" ? cardStyle : {}} onClick={() => handleCardClick("bookmarks")}>
-        <StyledCounter>{totalBookmarks}</StyledCounter>
-        <div>Bookmarks</div>
-      </Card>
-    </FlexContainer>
-  </StyledWrapper>;
+  const content = (
+    <StyledWrapper>
+      <StyledMenu style={{ height: "250px", overflow: "auto" }} onClick={handleQuestionCLick}>
+        {getOptions().map(option => (
+          <Menu.Item key={option} style={!skipped[option] && { paddingLeft: "33px" }}>
+            {skipped[option] && (
+              <FontAwesomeIcon icon={faCircle} aria-hidden="true" color={parcc.menuItem.activeColor} />
+            )}
+            Question {option + 1}
+          </Menu.Item>
+        ))}
+      </StyledMenu>
+      <FlexContainer style={{ marginTop: "20px" }}>
+        <Card style={selectedCard === "all" ? cardStyle : {}} onClick={() => handleCardClick("all")}>
+          <StyledCounter>{totalQuestions}</StyledCounter>
+          <div>All questions</div>
+        </Card>
+        <Card style={selectedCard === "notAnswered" ? cardStyle : {}} onClick={() => handleCardClick("notAnswered")}>
+          <StyledCounter>{totalUnanswered}</StyledCounter>
+          <div>Not answered</div>
+        </Card>
+        <Card style={selectedCard === "bookmarks" ? cardStyle : {}} onClick={() => handleCardClick("bookmarks")}>
+          <StyledCounter>{totalBookmarks}</StyledCounter>
+          <div>Bookmarks</div>
+        </Card>
+      </FlexContainer>
+    </StyledWrapper>
+  );
 
   return (
     <Container>
-      <StyledPopover placement="bottom" content={content} getPopupContainer={(triggerNode) => triggerNode.parentNode}>
+      <StyledPopover placement="bottom" content={content} getPopupContainer={triggerNode => triggerNode.parentNode}>
         <StyledButton>
           <StyledIconList />
           <span>{t("common.test.review")}</span>
@@ -129,5 +133,4 @@ const StyledIconList = styled(IconDescription)`
   `}
 `;
 
-const StyledWrapper = styled.div`
-`;
+const StyledWrapper = styled.div``;

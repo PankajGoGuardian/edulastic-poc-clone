@@ -7,7 +7,7 @@ import { isEmpty } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 import { lightGreySecondary, black, white, secondaryTextColor, titleColor, greyishBorder, themeColor } from "@edulastic/colors";
-import { fetchClassListAction, fetchStudentListAction, dropPlaylistAction, fetchPlaylistDroppedAccessList } from "../ducks";
+import { fetchClassListAction, fetchStudentListAction, dropPlaylistAction, fetchPlaylistDroppedAccessList } from "../../ducks";
 
 
 const getFooterComponent = ({ dropPlaylist }) => (

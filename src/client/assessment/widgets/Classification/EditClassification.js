@@ -208,9 +208,7 @@ const EditClassification = ({
             arr.filter(respID => respID !== responseID)
           );
           draft.validation.altResponses.forEach(alt_response => {
-            alt_response.value = alt_response.value.map(arr =>
-              arr.filter(respID => respID !== responseID)
-            );
+            alt_response.value = alt_response.value.map(arr => arr.filter(respID => respID !== responseID));
           });
         });
         draft.possibleResponseGroups.splice(index, 1);
@@ -231,10 +229,7 @@ const EditClassification = ({
   const onRemoveInner = groupIndex => respIndex => {
     setQuestionData(
       produce(item, draft => {
-        const response = get(
-          draft,
-          `possibleResponseGroups[${groupIndex}][responses][${respIndex}]`
-        );
+        const response = get(draft, `possibleResponseGroups[${groupIndex}][responses][${respIndex}]`);
         if (response) {
           draft.validation.validResponse.value = draft.validation.validResponse.value.map(resp => {
             if (resp.includes(response.id)) {
@@ -316,11 +311,7 @@ const EditClassification = ({
             break;
 
           case actions.SORTEND:
-            draft.possibleResponses = arrayMove(
-              item.possibleResponses,
-              restProp.oldIndex,
-              restProp.newIndex
-            );
+            draft.possibleResponses = arrayMove(item.possibleResponses, restProp.oldIndex, restProp.newIndex);
             break;
 
           default:
@@ -387,11 +378,7 @@ const EditClassification = ({
           if (draft.validation && draft.validation.validResponse) {
             draft.validation.validResponse.value = answer;
           }
-        } else if (
-          draft.validation &&
-          draft.validation.altResponses &&
-          draft.validation.altResponses[correctTab - 1]
-        )
+        } else if (draft.validation && draft.validation.altResponses && draft.validation.altResponses[correctTab - 1])
           draft.validation.altResponses[correctTab - 1].value = answer;
 
         updateVariables(draft);
@@ -426,16 +413,12 @@ const EditClassification = ({
     <OptionsList
       item={item}
       points={
-        correctTab === 0
-          ? item.validation.validResponse.score
-          : item.validation.altResponses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0
-          ? item.validation.validResponse.value
-          : item.validation.altResponses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       setQuestionData={setQuestionData}
       view={EDIT}
@@ -453,15 +436,10 @@ const EditClassification = ({
   };
 
   const handleResize = (e, direction, ref, delta, position) => {
-    const width =
-      typeof ref.style.width === "number"
-        ? ref.style.width
-        : parseInt(ref.style.width.split("px")[0], 10);
+    const width = typeof ref.style.width === "number" ? ref.style.width : parseInt(ref.style.width.split("px")[0], 10);
 
     const height =
-      typeof ref.style.height === "number"
-        ? ref.style.height
-        : parseInt(ref.style.height.split("px")[0], 10);
+      typeof ref.style.height === "number" ? ref.style.height : parseInt(ref.style.height.split("px")[0], 10);
 
     setDragItem({
       width: width >= 700 ? 700 : width,
@@ -493,9 +471,7 @@ const EditClassification = ({
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       setImageDimensions(imageUrl, true);
       // handleItemChangeChange("imageUrl", imageUrl);
-      message.success(
-        `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`
-      );
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
@@ -519,12 +495,7 @@ const EditClassification = ({
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-        <Question
-          section="main"
-          label="Background"
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        >
+        <Question section="main" label="Background" fillSections={fillSections} cleanSections={cleanSections}>
           {item.imageUrl ? (
             <FlexContainer flexDirection="column">
               <DropContainer>
@@ -546,9 +517,7 @@ const EditClassification = ({
                   bounds="parent"
                 />
               </DropContainer>
-              <CustomStyleBtn onClick={deleteBgImg}>
-                {t("component.classification.deleteBackImage")}
-              </CustomStyleBtn>
+              <CustomStyleBtn onClick={deleteBgImg}>{t("component.classification.deleteBackImage")}</CustomStyleBtn>
             </FlexContainer>
           ) : (
             <Dragger
@@ -557,11 +526,7 @@ const EditClassification = ({
               style={{ padding: 0, margin: 0, background: "transparent" }}
               showUploadList={false}
             >
-              <CustomStyleBtn
-                id={getFormattedAttrId(
-                  `${item?.title}-${t("component.classification.addBackImage")}`
-                )}
-              >
+              <CustomStyleBtn id={getFormattedAttrId(`${item?.title}-${t("component.classification.addBackImage")}`)}>
                 {t("component.classification.addBackImage")}
               </CustomStyleBtn>
             </Dragger>
@@ -596,15 +561,11 @@ const EditClassification = ({
             onAddInner={onAddInner}
             onTitleChange={onGroupTitleChange}
             onAdd={item.groupPossibleResponses ? handleGroupAdd : handleMainPossible(actions.ADD)}
-            onSortEnd={
-              item.groupPossibleResponses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)
-            }
+            onSortEnd={item.groupPossibleResponses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
             firstFocus={firstMount}
             onChange={item.groupPossibleResponses ? handleGroupChange : handleChangePossible()}
             onRemoveInner={onRemoveInner}
-            onRemove={
-              item.groupPossibleResponses ? handleGroupRemove : handleMainPossible(actions.REMOVE)
-            }
+            onRemove={item.groupPossibleResponses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
             fillSections={fillSections}
             cleanSections={cleanSections}
             t={t}
@@ -636,21 +597,14 @@ const EditClassification = ({
               </CheckboxLabel>
               <CheckboxLabel
                 className="additional-options"
-                onChange={() =>
-                  handleItemChangeChange(
-                    "transparentPossibleResponses",
-                    !transparentPossibleResponses
-                  )
-                }
+                onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
                 checked={!!transparentPossibleResponses}
               >
                 {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
               </CheckboxLabel>
               <CheckboxLabel
                 className="additional-options"
-                onChange={() =>
-                  handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)
-                }
+                onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
                 checked={!!transparentBackgroundImage}
               >
                 {t("component.cloze.imageDragDrop.transparentbackgroundimage")}

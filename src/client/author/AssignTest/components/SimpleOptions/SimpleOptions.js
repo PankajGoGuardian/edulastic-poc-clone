@@ -24,7 +24,7 @@ import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
-import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch"
+import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
@@ -70,11 +70,10 @@ class SimpleOptions extends React.Component {
       return {
         _releaseGradeKeys: releaseGradeKeys
       };
-    } 
-      return {
-        _releaseGradeKeys: nonPremiumReleaseGradeKeys
-      };
-    
+    }
+    return {
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
+    };
   }
 
   toggleSettings = () => {
@@ -230,8 +229,8 @@ class SimpleOptions extends React.Component {
       specificStudents
     } = this.props;
     const changeField = curry(this.onChange);
-    let {openPolicy} = selectsData;
-    let {closePolicy} = selectsData;
+    let { openPolicy } = selectsData;
+    let { closePolicy } = selectsData;
     if (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) {
       openPolicy = selectsData.openPolicyForAdmin;
       closePolicy = selectsData.closePolicyForAdmin;
@@ -326,19 +325,21 @@ class SimpleOptions extends React.Component {
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>
-          {(assignment.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && <FeaturesSwitch
-            inputFeatures="selectPlayerSkinType"
-            actionOnInaccessible="hidden"
-            key="selectPlayerSkin"
-            gradeSubject={gradeSubject}
-          >
-            <PlayerSkinSelector
-              userRole={userRole}
-              playerSkinType={playerSkinType}
-              onAssignmentTypeChange={changeField("playerSkinType")}
-              testType={assignment.testType || testSettings.testType}
-            />
-          </FeaturesSwitch>}
+          {(assignment.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
+            <FeaturesSwitch
+              inputFeatures="selectPlayerSkinType"
+              actionOnInaccessible="hidden"
+              key="selectPlayerSkin"
+              gradeSubject={gradeSubject}
+            >
+              <PlayerSkinSelector
+                userRole={userRole}
+                playerSkinType={playerSkinType}
+                onAssignmentTypeChange={changeField("playerSkinType")}
+                testType={assignment.testType || testSettings.testType}
+              />
+            </FeaturesSwitch>
+          )}
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

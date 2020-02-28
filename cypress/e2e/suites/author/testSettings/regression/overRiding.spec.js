@@ -146,11 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
           );
           /* Verifying No Check Ans */
           studentTestPage.getCheckAns().should("not.exist");
-          studentTestPage.attemptQuestion(
-            quesType[ind],
-            attemptTypes.PARTIAL_CORRECT,
-            attempt[ind]
-          );
+          studentTestPage.attemptQuestion(quesType[ind], attemptTypes.PARTIAL_CORRECT, attempt[ind]);
           studentTestPage.clickOnNext();
         });
 
@@ -197,16 +193,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
         liveClassBoardPage.clickonQuestionsTab();
         itemsInTest.forEach((element, i) => {
           liveClassBoardPage.questionResponsePage.selectQuestion(`Q${i + 1}`);
-          liveClassBoardPage.questionResponsePage
-            .getQuestionContainerByStudent(Student1.name)
-            .as("studentQuesCard");
+          liveClassBoardPage.questionResponsePage.getQuestionContainerByStudent(Student1.name).as("studentQuesCard");
           liveClassBoardPage.questionResponsePage
             .getScoreInput(cy.get("@studentQuesCard"))
             .should("have.attr", "value", ``);
-          liveClassBoardPage.questionResponsePage.updateScoreAndFeedbackForStudent(
-            Student1.name,
-            "2"
-          );
+          liveClassBoardPage.questionResponsePage.updateScoreAndFeedbackForStudent(Student1.name, "2");
         });
         liveClassBoardPage.clickOnCardViewTab();
         liveClassBoardPage.getStudentPerformanceByIndex(0).should("have.text", `100%`);

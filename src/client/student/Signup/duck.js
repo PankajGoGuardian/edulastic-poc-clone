@@ -101,9 +101,7 @@ export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 
 export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
-export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(
-  GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST
-);
+export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
 
 export const checkDistrictPolicyRequestAction = createAction(CHECK_DISTRICT_POLICY_REQUEST);
 export const checkDistrictPolicySuccessAction = createAction(CHECK_DISTRICT_POLICY_SUCCESS);
@@ -533,10 +531,7 @@ export function* watcherSaga() {
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
   yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
-  yield takeLatest(
-    GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST,
-    getOrgDetailsByShortNameAndOrgTypeSaga
-  );
+  yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getOrgDetailsByShortNameAndOrgTypeSaga);
   yield takeLatest(CHECK_DISTRICT_POLICY_REQUEST, checkDistrictPolicyRequestSaga);
   yield takeLatest(FETCH_SCHOOL_TEACHERS_REQUEST, fetchSchoolTeachersSaga);
   yield takeLatest(BULK_SYNC_CANVAS_CLASS, bulkSyncCanvasClassSaga);

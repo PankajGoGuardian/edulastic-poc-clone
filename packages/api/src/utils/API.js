@@ -51,17 +51,17 @@ function getParentsStudentToken(config) {
       return false;
     }
 
-    if (['/user/me', '/logout', '/login', '/signUp', '/user/parent-code'].find(x => config.url ?.includes(x))) {
+    if (["/user/me", "/logout", "/login", "/signUp", "/user/parent-code"].find(x => config.url?.includes(x))) {
       return false;
     }
-    const currentUserFromRedux = window ?.getStore() ?.getState() ?.user || {};
+    const currentUserFromRedux = window?.getStore()?.getState()?.user || {};
     const { currentChild } = currentUserFromRedux;
-    const { role: userRole, children } = currentUserFromRedux ?.user || {};
-    if (userRole === "parent" && currentChild && children ?.length > 0) {
-      return children.find(child => child._id === currentChild) ?.token;
+    const { role: userRole, children } = currentUserFromRedux?.user || {};
+    if (userRole === "parent" && currentChild && children?.length > 0) {
+      return children.find(child => child._id === currentChild)?.token;
     }
   } catch (e) {
-    console.warn('error parentSstudent', e);
+    console.warn("error parentSstudent", e);
   }
 }
 
@@ -95,7 +95,7 @@ export default class API {
         // has support since IE8.
         if (window.sessionStorage) {
           // if appVersion sent recieved from api is greater than in the client, then dispatch an event.
-          const appVersion = AppDetails ?.version;
+          const appVersion = AppDetails?.version;
           const apiAppVersion = response.headers["app-version"] || "";
           const refreshRequested = window.sessionStorage["refreshRequested"];
           if (semverCompare(apiAppVersion, appVersion) == 1 && !refreshRequested && apiAppVersion) {

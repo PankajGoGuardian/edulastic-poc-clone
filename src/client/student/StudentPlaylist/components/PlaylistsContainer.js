@@ -10,7 +10,6 @@ import PlaylistCard from "./PlaylistCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 
 const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isLoading, currentChild }) => {
-
   useEffect(() => {
     fetchPlaylists();
   }, [currentChild]);
@@ -21,12 +20,13 @@ const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isL
     <LayoutContent>
       <Wrapper>
         {playlists.length < 1 ? (
-          <NoDataNotification heading="No Playlists" description={"You don't have any playlists assigned to you yet."} />
+          <NoDataNotification
+            heading="No Playlists"
+            description={"You don't have any playlists assigned to you yet."}
+          />
         ) : (
-            playlists.map(item => (
-              <PlaylistCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} />
-            ))
-          )}
+          playlists.map(item => <PlaylistCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} />)
+        )}
       </Wrapper>
     </LayoutContent>
   );
@@ -34,9 +34,9 @@ const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isL
 
 export default connect(
   state => ({
-    isLoading: state ?.studentPlaylist ?.isLoading,
-    playlists: state ?.studentPlaylist ?.playlists,
-    currentChild: state ?.user ?.currentChild,
+    isLoading: state?.studentPlaylist?.isLoading,
+    playlists: state?.studentPlaylist?.playlists,
+    currentChild: state?.user?.currentChild
   }),
   {
     fetchPlaylists: slice.actions.fetchStudentPlaylist
@@ -56,7 +56,7 @@ const Wrapper = styled.div`
   background-color: ${({ theme }) => theme.assignment.cardContainerBgColor};
   padding: 5px 15px;
   position: relative;
-  
+
   @media (max-width: ${smallDesktopWidth}) {
     padding: 5px;
   }

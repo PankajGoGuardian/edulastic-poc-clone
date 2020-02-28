@@ -97,8 +97,7 @@ class ClozeMathInput extends React.Component {
     const {
       responseIds: { maths = [] }
     } = item;
-    const isArrowOrShift =
-      (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
     const { allowNumericOnly } = find(maths, res => res.id === id) || {};
     if (allowNumericOnly && !isArrowOrShift) {
       if (!e.key.match(/[0-9+-./%^]/g)) {
@@ -351,23 +350,13 @@ const KeyboardIcon = styled.i`
 `;
 
 const MathInput = ({ resprops = {}, id, responseindex }) => {
-  const {
-    responseContainers,
-    item,
-    answers = {},
-    evaluation = [],
-    checked,
-    onInnerClick,
-    showIndex,
-    save
-  } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex, save } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const individualWidth = response?.widthpx || 0;
   const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } =
-    item.uiStyle || {};
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));
@@ -448,8 +437,7 @@ const Wrapper = styled.div`
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
-    ${({ isPrintPreview }) =>
-      isPrintPreview && `background: white; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+    ${({ isPrintPreview }) => isPrintPreview && `background: white; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
   }
   .mq-cursor {
     ${({ disableResponse }) => disableResponse && `display: none;`}

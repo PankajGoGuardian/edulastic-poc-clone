@@ -293,19 +293,19 @@ class AssessmentPlayerSimple extends React.Component {
               qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
             >
               {scratchPadMode && !previewPlayer && (
-              <Tools
-                onFillColorChange={this.onFillColorChange}
-                fillColor={fillColor}
-                deleteMode={deleteMode}
-                currentColor={currentColor}
-                onToolChange={this.handleToolChange}
-                activeMode={activeMode}
-                undo={this.handleUndo}
-                redo={this.handleRedo}
-                onColorChange={this.handleColorChange}
-                className="scratchpad-tools"
-              />
-            )}
+                <Tools
+                  onFillColorChange={this.onFillColorChange}
+                  fillColor={fillColor}
+                  deleteMode={deleteMode}
+                  currentColor={currentColor}
+                  onToolChange={this.handleToolChange}
+                  activeMode={activeMode}
+                  undo={this.handleUndo}
+                  redo={this.handleRedo}
+                  onColorChange={this.handleColorChange}
+                  className="scratchpad-tools"
+                />
+              )}
               <SvgDraw
                 activeMode={activeMode}
                 scratchPadMode={scratchPadMode}
@@ -321,8 +321,11 @@ class AssessmentPlayerSimple extends React.Component {
               />
 
               {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
-                <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} changeTool={this.toggleToolsOpenStatus} />
-            ) : null}
+                <CalculatorContainer
+                  calculateMode={`${settings.calcType}_${settings.calcProvider}`}
+                  changeTool={this.toggleToolsOpenStatus}
+                />
+              ) : null}
               <PlayerMainContentArea
                 {...this.props}
                 theme={themeToPass}
@@ -384,5 +387,5 @@ const enhance = compose(
       setUserAnswer: setUserAnswerAction
     }
   )
-)
+);
 export default enhance(AssessmentPlayerSimple);

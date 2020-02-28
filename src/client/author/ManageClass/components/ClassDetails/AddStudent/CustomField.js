@@ -11,7 +11,6 @@ function validateEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
-
 function validateEmailCommaSeparated(rule, value, callback) {
   const emails = value.split(",").map(x => x.trim());
   const invalidEmail = emails.find(email => !validateEmail(email));
@@ -62,7 +61,6 @@ const CustomField = ({
       students.forEach(student => {
         if (student._id == foundUser._id) {
           isSameClass = true;
-          
         }
       });
       if (isSameClass) {

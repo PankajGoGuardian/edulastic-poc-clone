@@ -348,8 +348,8 @@ const mapDispatchToProps = dispatch => ({
   moveContentInPlaylist(payload) {
     dispatch(addContentToCurriculumSequenceAction(payload));
   },
-  useThisPlayList(_id, title) {
-    dispatch(useThisPlayListAction({ _id, title }));
+  useThisPlayList(_id, title, grades, subjects) {
+    dispatch(useThisPlayListAction({ _id, title, grades, subjects }));
   },
   approveOrRejectSinglePlaylistRequest(payload) {
     dispatch(approveOrRejectSinglePlaylistRequestAction(payload));

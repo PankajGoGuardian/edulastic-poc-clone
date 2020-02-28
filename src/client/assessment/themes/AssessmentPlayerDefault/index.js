@@ -414,9 +414,9 @@ class AssessmentPlayerDefault extends React.Component {
             ? "11px"
             : "11px 5px"
           : windowWidth >= LARGE_DESKTOP_WIDTH
-            ? "9px 0px"
-            : "11px 0px"
-        }`,
+          ? "9px 0px"
+          : "11px 0px"
+      }`,
       justifyContent: "space-between"
     };
 
@@ -483,24 +483,23 @@ class AssessmentPlayerDefault extends React.Component {
             finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
-
-            <Tools
-              onFillColorChange={this.onFillColorChange}
-              fillColor={fillColor}
-              deleteMode={deleteMode}
-              currentColor={currentColor}
-              onToolChange={this.handleScratchToolChange}
-              activeMode={activeMode}
-              undo={this.handleUndo}
-              redo={this.handleRedo}
-              lineWidth={lineWidth}
-              onChangeSize={this.handleLineWidthChange}
-              onColorChange={this.handleColorChange}
-              onChangeFont={this.handleChangeFont}
-              currentFont={currentFont}
-              className="scratchpad-tools"
-            />
-          )}
+              <Tools
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleScratchToolChange}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                lineWidth={lineWidth}
+                onChangeSize={this.handleLineWidthChange}
+                onColorChange={this.handleColorChange}
+                onChangeFont={this.handleChangeFont}
+                currentFont={currentFont}
+                className="scratchpad-tools"
+              />
+            )}
 
             <FeaturesSwitch
               inputFeatures="studentSettings"

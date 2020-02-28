@@ -6,7 +6,7 @@ import { desktopWidth, themeColor, white, lightGreySecondary, fadedGrey, darkGre
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { IconPlusCircle, IconTrash, IconSave } from "@edulastic/icons";
 import { FaBars } from "react-icons/fa";
-import { ThemeButton } from "../../src/components/common/ThemeButton";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 /*
  *

@@ -55,10 +55,11 @@ import {
   useThisPlayListAction
 } from "../ducks";
 /* eslint-enable */
-import AddUnitModalBody from "./AddUnitModalBody";
 import Curriculum from "./Curriculum";
 import SummaryPieChart from "./SummaryPieChart";
-import DropPlaylistModal from "./DropPlaylistModal";
+import AddUnitModalBody from "./modals/AddUnitModalBody";
+import DropPlaylistModal from "./modals/DropPlaylistModal";
+import ChangePlaylistModal from "./modals/ChangePlaylistModal";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -171,13 +172,13 @@ class CurriculumSequence extends Component {
     dropPlaylistModalVisible: false
   };
 
-  onChange = evt => {
-    const playlistIndex = evt.target.value;
-    const { recentPlaylists, useThisPlayList } = this.props;
+  handlePlaylistChange = ({ _id, title, grades, subjects }) => {
+    const { useThisPlayList } = this.props;
     this.handleGuideCancel();
-    const playlistChange = recentPlaylists[playlistIndex];
-    useThisPlayList({ _id: playlistChange._id, title: playlistChange.title, onChange: true });
+    useThisPlayList({ _id, title, grades, subjects, onChange: true });
   };
+
+  onExplorePlaylists = () => this.props.history.push("/author/playlists");
 
   handleSaveClick = evt => {
     const { saveCurriculumSequence } = this.props;
@@ -205,8 +206,8 @@ class CurriculumSequence extends Component {
         params: { id: _id }
       }
     } = this.props;
-    const { title } = destinationCurriculumSequence;
-    useThisPlayList({ _id, title });
+    const { title, grades, subjects } = destinationCurriculumSequence;
+    useThisPlayList({ _id, title, grades, subjects });
   };
 
   handleAddUnitOpen = () => {
@@ -354,7 +355,7 @@ class CurriculumSequence extends Component {
       isStudent
     } = this.props;
 
-    const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
+    const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
@@ -451,7 +452,6 @@ class CurriculumSequence extends Component {
         return true;
       }).map(x => x._id)
       : [];
-    const modulesCompleted = modulesStatus.length;
     const playlistBreadcrumbData = [
       {
         title: "PLAY LIST",
@@ -537,51 +537,19 @@ class CurriculumSequence extends Component {
             </ModalFooter>
           </Modal>
 
-          <Modal
+          <ChangePlaylistModal
+            isStudent={isStudent}
+            playlists={slicedRecentPlaylists}
+            onChange={this.handlePlaylistChange}
+            onExplorePlaylists={this.onExplorePlaylists}
+            activePlaylistId={destinationCurriculumSequence._id}
             visible={curriculumGuide}
+            footer={null}
             onOk={this.handleGuideSave}
             onCancel={this.handleGuideCancel}
-            footer={null}
-            style={
-              windowWidth > desktopWidthValue
-                ? { minWidth: "640px", padding: "20px" }
-                : { padding: "20px" }
-            }
-          >
-            <ModalHeader />
-            <GuideModalBody>
-              <ModalSubtitleWrapper>
-                <div>Select a playlist from below to change:</div>
-              </ModalSubtitleWrapper>
-              <RadioGroupWrapper>
-                <Radio.Group onChange={this.onChange}>
-                  {lastThreeRecentPlaylist.map((recentPlaylist, ind) => (
-                    <Radio checked={ind === 0} value={ind}>
-                      {recentPlaylist.title}
-                    </Radio>
-                  ))}
-                </Radio.Group>
-              </RadioGroupWrapper>
-              <GuidesDropdownWrapper>
-                {guidesDropdownOptions.length > 0 && (
-                  <Input.Group compact>
-                    <Cascader
-                      key={guide}
-                      onChange={onGuideChange}
-                      defaultValue={[guide]}
-                      style={{ width: "100%" }}
-                      options={guidesDropdownOptions}
-                    />
-                  </Input.Group>
-                )}
-              </GuidesDropdownWrapper>
-            </GuideModalBody>
-            <ModalFooter>
-              <Link to="/author/playlists">Go To Library</Link>
-            </ModalFooter>
-          </Modal>
+          />
 
-          {mode !== "embedded" && (
+          { mode !== "embedded" && (
             <MainHeader
               headingText={title}
               headingSubContent={!isPublisherUser && (

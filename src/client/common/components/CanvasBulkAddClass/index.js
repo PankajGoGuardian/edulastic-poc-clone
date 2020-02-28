@@ -118,9 +118,7 @@ const CanvasBulkAddClass = ({
   };
 
   const handleFinish = () => {
-    const selectedClasses = classes.filter(c =>
-      selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`)
-    );
+    const selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
     bulkSyncCanvasClass(selectedClasses);
     setShowModal(true);
   };
@@ -199,8 +197,7 @@ const CanvasBulkAddClass = ({
             showSearch
             style={{ width: "100%" }}
             filterOption={(input, option) =>
-              option.props.children &&
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
             mode="multiple"
             value={row.standardSets.map(s => s._id) || []}
@@ -211,11 +208,7 @@ const CanvasBulkAddClass = ({
             getPopupContainer={triggerNode => triggerNode.parentNode}
           >
             {standardsList.map(standard => (
-              <Select.Option
-                value={standard.value}
-                key={standard.value}
-                disabled={standard.disabled}
-              >
+              <Select.Option value={standard.value} key={standard.value} disabled={standard.disabled}>
                 {standard.text}
               </Select.Option>
             ))}
@@ -235,8 +228,7 @@ const CanvasBulkAddClass = ({
       </HeadingWrapper>
       <div>
         <p>
-          Following classes are imported from your canvas account. Please select Course to create
-          class in Edulastic.
+          Following classes are imported from your canvas account. Please select Course to create class in Edulastic.
         </p>
       </div>
       <CanvasClassTable

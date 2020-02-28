@@ -7,10 +7,7 @@ import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulas
 import { roleuser } from "@edulastic/constants";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
-import {
-  receiveLastPlayListAction,
-  receiveRecentPlayListsAction
-} from "../../author/Playlist/ducks";
+import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
   getWordsInURLPathName,
   getDistrictSignOutUrl,
@@ -57,8 +54,7 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
-export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST =
-  "[auth] student signup check classcode request";
+export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
 export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
 export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
@@ -104,14 +100,10 @@ export const changeClassAction = createAction(CHANGE_CLASS);
 export const setUserGoogleLoggedInAction = createAction(SET_USER_GOOGLE_LOGGED_IN);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUEST);
-export const requestNewPasswordResetControlAction = createAction(
-  REQUEST_NEW_PASSWORD_RESET_CONTROL
-);
+export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PASSWORD_RESET_CONTROL);
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
-export const studentSignupCheckClasscodeAction = createAction(
-  STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST
-);
+export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
@@ -120,17 +112,11 @@ export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
 export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
-export const updateInterestedCurriculumsAction = createAction(
-  UPDATE_INTERESTED_CURRICULUMS_REQUEST
-);
+export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
 export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
-export const removeInterestedCurriculumsAction = createAction(
-  REMOVE_INTERESTED_CURRICULUMS_REQUEST
-);
+export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_USERS_REQUEST);
-export const getCurrentDistrictUsersSuccessAction = createAction(
-  GET_CURRENT_DISTRICT_USERS_SUCCESS
-);
+export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
 export const changeChildAction = createAction(CHANGE_CHILD);
 
 const initialState = {
@@ -149,8 +135,7 @@ const setUser = (state, { payload }) => {
       : null;
 
   const defaultSubject = getFromLocalStorage("defaultSubject");
-  const defaultClass =
-    get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
+  const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
   if (payload.role === "parent" && payload?.children?.length > 0) {
     state.currentChild = payload.children[0]._id;
@@ -873,13 +858,8 @@ function* cleverSSOLogin({ payload }) {
     const res = yield call(authApi.cleverSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    if (
-      e?.data?.message ===
-      "User not yet authorized to use Edulastic. Please contact your district administrator!"
-    ) {
-      yield put(
-        push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" })
-      );
+    if (e?.data?.message === "User not yet authorized to use Edulastic. Please contact your district administrator!") {
+      yield put(push({ pathname: getSignOutUrl(), state: { showCleverUnauthorized: true }, hash: "#login" }));
     } else {
       yield call(message.error, e?.data?.message || "Clever Login failed");
       yield put(push(getSignOutUrl()));

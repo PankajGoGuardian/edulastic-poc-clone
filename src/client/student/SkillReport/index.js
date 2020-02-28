@@ -61,8 +61,8 @@ const SkillReportContainer = ({
           <NoDataNotification heading={"No Skill Mastery"} description={"You don't have any Skill Mastery."} />
         </LoaderConainer>
       ) : (
-            <SkillReportMainContent skillReport={skillReport} />
-          )}
+        <SkillReportMainContent skillReport={skillReport} />
+      )}
     </MainContainer>
   );
 };
@@ -76,7 +76,7 @@ export default connect(
     activeClasses: getFilteredClassesSelector(state),
     loading: getSkillReportLoaderSelector(state),
     userClasses: getClasses(state),
-    currentChild: state ?.user ?.currentChild,
+    currentChild: state?.user?.currentChild
   }),
   {
     fetchSkillReport: fetchSkillReportAction,

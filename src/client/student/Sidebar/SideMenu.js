@@ -9,16 +9,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
-import {
-  Layout,
-  Menu as AntMenu,
-  Row,
-  Col,
-  Icon as AntIcon,
-  Dropdown,
-  Tooltip,
-  Select
-} from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip, Select } from "antd";
 import {
   IconHeader,
   IconLogoCompact,
@@ -230,51 +221,39 @@ class SideMenu extends Component {
           >
             <PerfectScrollbar>
               {isMobile ? (
-                <AntIcon
-                  className="mobileCloseIcon"
-                  type="close"
-                  theme="outlined"
-                  onClick={this.toggleMenu}
-                />
+                <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
               ) : (
-                  <LogoWrapper className="logoWrapper">
-                    {broken ? (
-                      <Col span={3}>
+                <LogoWrapper className="logoWrapper">
+                  {broken ? (
+                    <Col span={3}>
+                      <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
+                    </Col>
+                  ) : null}
+                  <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "left" }}>
+                    {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
+                  </Col>
+                  {broken ? null : (
+                    <Col
+                      span={isSidebarCollapsed ? 0 : 6}
+                      style={{
+                        textAlign: "center",
+                        color: themeColor
+                      }}
+                    >
+                      {!isSidebarCollapsed && (
                         <AntIcon
-                          className="mobileCloseIcon"
-                          type="close"
-                          theme="outlined"
+                          className="trigger"
+                          type={isSidebarCollapsed ? "right" : "left"}
                           onClick={this.toggleMenu}
                         />
-                      </Col>
-                    ) : null}
-                    <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "left" }}>
-                      {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
+                      )}
                     </Col>
-                    {broken ? null : (
-                      <Col
-                        span={isSidebarCollapsed ? 0 : 6}
-                        style={{
-                          textAlign: "center",
-                          color: themeColor
-                        }}
-                      >
-                        {!isSidebarCollapsed && (
-                          <AntIcon
-                            className="trigger"
-                            type={isSidebarCollapsed ? "right" : "left"}
-                            onClick={this.toggleMenu}
-                          />
-                        )}
-                      </Col>
-                    )}
-                  </LogoWrapper>
-                )}
+                  )}
+                </LogoWrapper>
+              )}
 
               <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
-                {isMobile && isSidebarCollapsed ? (
-                  <IconBars type="bars" onClick={this.toggleMenu} />
-                ) : null}
+                {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
                 <Menu
                   isSidebarCollapsed={isSidebarCollapsed}
                   selectedKeys={[menuIndex.toString()]}
@@ -284,11 +263,7 @@ class SideMenu extends Component {
                   {menuItems.map((menu, index) => {
                     const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                     return (
-                      <MenuItem
-                        key={index.toString()}
-                        data-cy={menu.label}
-                        onClick={this.toggleMenu}
-                      >
+                      <MenuItem key={index.toString()} data-cy={menu.label} onClick={this.toggleMenu}>
                         <MenuIcon />
                         {!isSidebarCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                       </MenuItem>
@@ -300,9 +275,7 @@ class SideMenu extends Component {
                     <IconContainer className={isSidebarCollapsed ? "active" : ""}>
                       <HelpIcon />
                     </IconContainer>
-                    {isSidebarCollapsed || isMobile ? null : (
-                      <span>{t("common.helpButtonText")}</span>
-                    )}
+                    {isSidebarCollapsed || isMobile ? null : <span>{t("common.helpButtonText")}</span>}
                   </QuestionButton>
 
                   <UserInfoButton
@@ -331,14 +304,12 @@ class SideMenu extends Component {
                         {profileThumbnail ? (
                           <img src={profileThumbnail} alt="Profile" />
                         ) : (
-                            <PseudoDiv>{this.getInitials()}</PseudoDiv>
-                          )}
+                          <PseudoDiv>{this.getInitials()}</PseudoDiv>
+                        )}
                         <StyledTooltip title={userName}>
                           <div style={{ paddingLeft: 11, width: "100px" }}>
                             {!isSidebarCollapsed && (
-                              <UserName>
-                                {userName.replace(/\s/g, "").length ? userName : "Anonymous"}
-                              </UserName>
+                              <UserName>{userName.replace(/\s/g, "").length ? userName : "Anonymous"}</UserName>
                             )}
                             {!isSidebarCollapsed && (
                               <UserType>{role === "parent" ? "parent" : t("common.userRoleStudent")}</UserType>
@@ -384,15 +355,15 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: user ?.user ?.firstName || "",
+      firstName: user?.user?.firstName || "",
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed,
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),
-      studentChildren: user ?.user ?.children || [],
-      currentChild: user ?.currentChild,
-      role: user ?.user ?.role
+      studentChildren: user?.user?.children || [],
+      currentChild: user?.currentChild,
+      role: user?.user?.role
     }),
     {
       logout: logoutAction,
@@ -526,14 +497,14 @@ const SideBar = styled(Layout.Sider)`
     }
 
     ${({ collapsed }) =>
-    collapsed
-      ? `
+      collapsed
+        ? `
       flex: inherit;
       max-width: 245px;
       min-width: 0;
       width: 100%;
     `
-      : ``}
+        : ``}
   }
 `;
 

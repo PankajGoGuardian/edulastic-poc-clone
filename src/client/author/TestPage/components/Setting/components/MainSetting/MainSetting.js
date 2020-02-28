@@ -331,7 +331,7 @@ class MainSetting extends Component {
       }
     });
 
-    const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ?  "Test" : "Practice"}`;
+    const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
     const skinTypes = {
       ...playerSkinTypes,
       edulastic
@@ -358,10 +358,12 @@ class MainSetting extends Component {
                   })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
-              {!isDocBased && <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
-                {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-                <IconCaretDown color={themeColor} width={11} height={6} />
-              </AdvancedButton>}
+              {!isDocBased && (
+                <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+                  {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+                  <IconCaretDown color={themeColor} width={11} height={6} />
+                </AdvancedButton>
+              )}
               {showAdvancedOption && (
                 <StyledAnchor affix={false} offsetTop={125}>
                   {settingCategories.slice(-6, -5).map(category => (

@@ -9,18 +9,13 @@ import { extraDesktopWidthMax, white } from "@edulastic/colors";
 import { Container } from "./styled";
 import { themes } from "../../../../theme";
 
-const { playerSkin: { parcc } } = themes;
+const {
+  playerSkin: { parcc }
+} = themes;
 const { tools } = parcc;
 
 const { calculatorTypes } = test;
-const ToolBar = ({
-  settings = {},
-  tool = [],
-  changeCaculateMode,
-  changeTool,
-  qType,
-  isDocbased = false
-}) => {
+const ToolBar = ({ settings = {}, tool = [], changeCaculateMode, changeTool, qType, isDocbased = false }) => {
   const toolbarHandler = value => changeTool(value);
 
   const handleCalculateMode = value => {
@@ -41,27 +36,27 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && <Tooltip
-        placement="top"
-        title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
-      >
-        <StyledButton
-          active={tool.indexOf(3) !== -1}
-          disabled={isDisableCrossBtn}
-          onClick={() => toolbarHandler(3)}
+      {!isDocbased && (
+        <Tooltip
+          placement="top"
+          title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
         >
-          <CloseIcon />
-        </StyledButton>
-      </Tooltip>}
+          <StyledButton active={tool.indexOf(3) !== -1} disabled={isDisableCrossBtn} onClick={() => toolbarHandler(3)}>
+            <CloseIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
 
-      {!isDocbased && <Tooltip placement="top" title="Scratch Pad">
-        <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
-          <ScratchPadIcon />
-        </StyledButton>
-      </Tooltip>}
+      {!isDocbased && (
+        <Tooltip placement="top" title="Scratch Pad">
+          <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
+            <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
     </Container>
   );
-}
+};
 
 ToolBar.propTypes = {
   changeCaculateMode: PropTypes.func.isRequired,
@@ -80,14 +75,14 @@ export const StyledButton = styled(Button)`
   height: 40px;
   width: 40px;
   ${props => props.hidden && "display:none"};
-  background: ${({active}) => active ? tools.active.background : tools.color}!important;
+  background: ${({ active }) => (active ? tools.active.background : tools.color)}!important;
 
   svg {
     top: 50%;
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
-    fill: ${({active}) => active ? tools.active.svgColor : tools.svgColor};
+    fill: ${({ active }) => (active ? tools.active.svgColor : tools.svgColor)};
   }
   &:hover {
     background: ${tools.active.background}!important;

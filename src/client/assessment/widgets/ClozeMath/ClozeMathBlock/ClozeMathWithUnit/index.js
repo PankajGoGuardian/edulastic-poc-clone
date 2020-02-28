@@ -94,8 +94,7 @@ class ClozeMathWithUnit extends React.Component {
     const {
       responseIds: { mathUnits = [] }
     } = item;
-    const isArrowOrShift =
-      (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
     const { allowNumericOnly } = find(mathUnits, res => res.id === id) || {};
     if (allowNumericOnly && !isArrowOrShift) {
       if (!e.key.match(/[0-9+-./%^]/g)) {
@@ -288,17 +287,8 @@ class ClozeMathWithUnit extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const {
-      item,
-      uiStyles = {},
-      height,
-      width,
-      disableResponse = false,
-      isPrintPreview,
-      allOptions = []
-    } = resprops;
-    const { keypadMode, customUnits } =
-      find(item.responseIds.mathUnits, res => res.id === id) || {};
+    const { item, uiStyles = {}, height, width, disableResponse = false, isPrintPreview, allOptions = [] } = resprops;
+    const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
     const { showKeyboard, nativeKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
     const btnStyle = this.getStyles(uiStyles);
@@ -456,23 +446,14 @@ const ClozeMathInputField = styled.span`
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const {
-    responseContainers,
-    item,
-    answers = {},
-    evaluation = [],
-    checked,
-    onInnerClick,
-    showIndex
-  } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const individualWidth = response?.widthpx || 0;
   const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } =
-    item.uiStyle || {};
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));

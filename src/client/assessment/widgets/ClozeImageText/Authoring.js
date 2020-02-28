@@ -286,23 +286,13 @@ class Authoring extends Component {
 
   changeImageDimensions = (prop, value) => {
     const { item } = this.props;
-    const {
-      imageOriginalWidth,
-      imageOriginalHeight,
-      imageWidth,
-      imageHeight,
-      keepAspectRatio
-    } = item;
+    const { imageOriginalWidth, imageOriginalHeight, imageWidth, imageHeight, keepAspectRatio } = item;
     const { maxWidth, maxHeight } = clozeImage;
 
     if (isUndefined(imageOriginalWidth) || isUndefined(imageOriginalHeight)) return;
 
-    let newWidth =
-      prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
-    let newHeight =
-      prop !== "width" && value > 0
-        ? value
-        : imageHeight || Math.min(imageOriginalHeight, maxHeight);
+    let newWidth = prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
+    let newHeight = prop !== "width" && value > 0 ? value : imageHeight || Math.min(imageOriginalHeight, maxHeight);
 
     if (keepAspectRatio) {
       [newWidth, newHeight] =
@@ -360,9 +350,7 @@ class Authoring extends Component {
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
-      message.success(
-        `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`
-      );
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
@@ -538,12 +526,7 @@ class Authoring extends Component {
       showUploadList: false
     };
 
-    const {
-      imageWidth: imgWidth,
-      imageHeight: imgHeight,
-      imageOriginalWidth,
-      imageOriginalHeight
-    } = item;
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
     const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
     const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     const imageTop = this.getTop();
@@ -578,11 +561,7 @@ class Authoring extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
           >
-            <Subtitle
-              id={getFormattedAttrId(
-                `${item?.title}-${t("component.cloze.imageText.composequestion")}`
-              )}
-            >
+            <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.composequestion")}`)}>
               {t("component.cloze.imageText.composequestion")}
             </Subtitle>
 
@@ -619,22 +598,14 @@ class Authoring extends Component {
                 </Label>
               </FieldWrapper>
               <FieldWrapper>
-                <ImageWidthInput
-                  data-cy="image-left-input"
-                  value={imageLeft}
-                  onChange={this.changeImageLeft}
-                />
+                <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
                 <Label top={6} left={20}>
                   {t("component.cloze.imageText.positionX")}
                 </Label>
               </FieldWrapper>
 
               <FieldWrapper>
-                <ImageWidthInput
-                  data-cy="image-top-input"
-                  value={imageTop}
-                  onChange={this.chnageImageTop}
-                />
+                <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
                 <Label top={6} left={20}>
                   {t("component.cloze.imageText.positionY")}
                 </Label>
@@ -681,10 +652,7 @@ class Authoring extends Component {
                 trigger={["click"]}
               >
                 <FieldWrapper>
-                  <ColorBox
-                    data-cy="image-text-box-color-picker"
-                    style={{ backgroundColor: background }}
-                  />
+                  <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
                   <Label top={6} left={20}>
                     {t("component.cloze.imageDragDrop.fillcolor")}
                   </Label>

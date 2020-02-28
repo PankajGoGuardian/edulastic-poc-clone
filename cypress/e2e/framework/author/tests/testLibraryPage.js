@@ -300,8 +300,7 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  checkforNonExistanceOfTest = testId =>
-    cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
+  checkforNonExistanceOfTest = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
 
   getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
 

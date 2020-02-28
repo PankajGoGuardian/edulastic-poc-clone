@@ -147,7 +147,7 @@ export default connect(
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
     isLoading: get(state, "studentAssignment.isLoading"),
-    currentChild: state ?.user ?.currentChild,
+    currentChild: state?.user?.currentChild
   }),
   {
     fetchAssignments: fetchAssignmentsAction,

@@ -68,9 +68,7 @@ const SubHeader = ({
     try {
       const result = await canvasApi.getCanvasAuthURI();
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username ||
-          user.email ||
-          ""}`;
+        const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then(res => {
             syncCanvasModal(res);

@@ -48,8 +48,7 @@ const MainInfo = ({
     canvasCourseName = "",
     canvasCourseSectionName = ""
   } = entity;
-  const _grade =
-    allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
+  const _grade = allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
@@ -96,11 +95,7 @@ const MainInfo = ({
                 <span>Other</span>
               )}
             </FieldValue>
-            <FeaturesSwitch
-              inputFeatures="selectCourse"
-              actionOnInaccessible="hidden"
-              key="selectCourse"
-            >
+            <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
               <FieldValue>
                 <div>Course</div>
                 <span>{course && course.name}</span>

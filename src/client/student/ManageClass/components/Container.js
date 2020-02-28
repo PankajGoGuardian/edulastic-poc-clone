@@ -6,19 +6,17 @@ import { Button, Col, Input, Modal, Row, Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { compose } from "redux";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import styled from "styled-components";
 import NoDataIcon from "../../assets/nodata.svg";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
-import { StudentSlectCommon } from '../../sharedComponents/ClassSelector';
+import { StudentSlectCommon } from "../../sharedComponents/ClassSelector";
 import { NoDataBox } from "../../styled";
 import ClassCard from "./CardContainer";
 import ManageClassSubHeader from "./SubHeader";
 
 const ClassCards = ({ classList, t }) => {
-  const cards = classList.map(classItem => (
-    <ClassCard key={classItem._id} classItem={classItem} t={t} />
-  ));
+  const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
   return cards;
 };
 
@@ -34,7 +32,7 @@ const ManageClassContainer = ({
   setClassList,
   setShowClass,
   userRole,
-  currentChild,
+  currentChild
 }) => {
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
   const [classCode, setClassCode] = useState(null);
@@ -54,12 +52,14 @@ const ManageClassContainer = ({
   return (
     <>
       <MainHeader headingText="common.manageClassTitle">
-        {userRole === 'parent' ?
-          <StudentSlectCommon /> :
-          (<JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
+        {userRole === "parent" ? (
+          <StudentSlectCommon />
+        ) : (
+          <JoinClassBtn data-cy="joinclass" onClick={() => setJoinClassModal(true)}>
             <IconPlus width={12} height={12} color="white" stroke="white" />
             <span>{t("common.joinClass")}</span>
-          </JoinClassBtn>)}
+          </JoinClassBtn>
+        )}
         {isJoinClassModalVisible && (
           <JoinClassModal
             visible={isJoinClassModalVisible}
@@ -111,14 +111,14 @@ const ManageClassContainer = ({
           <ClassCards classList={classList} t={t} />
         </ClassCardWrapper>
       ) : (
-          <NoDataBoxWrapper>
-            <NoDataBox>
-              <img src={NoDataIcon} alt="noData" />
-              <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
-              <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
-            </NoDataBox>
-          </NoDataBoxWrapper>
-        )}
+        <NoDataBoxWrapper>
+          <NoDataBox>
+            <img src={NoDataIcon} alt="noData" />
+            <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
+            <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
+          </NoDataBox>
+        </NoDataBoxWrapper>
+      )}
     </>
   );
 };
@@ -238,8 +238,7 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledInput = styled(Input)`
-  border: ${props =>
-    props.classCode && !props.classCode.length ? `1px solid ${themeColor}` : "1px solid red"};
+  border: ${props => (props.classCode && !props.classCode.length ? `1px solid ${themeColor}` : "1px solid red")};
 `;
 export const ErrorMessage = styled.div`
   color: red;

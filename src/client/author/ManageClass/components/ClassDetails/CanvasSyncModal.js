@@ -49,9 +49,7 @@ const CanvasSyncModal = ({
     }
 
     console.log();
-    const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(
-      ({ id }) => id === course
-    );
+    const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);
 
     const { id: sectionId, name: sectionName, students: studentList } = canvasSectionList.find(
       ({ id }) => id === section

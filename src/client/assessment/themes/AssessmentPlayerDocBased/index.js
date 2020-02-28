@@ -165,22 +165,22 @@ class AssessmentPlayerDocBased extends React.Component {
             finishTest={this.openExitPopup}
           >
             {!loading && (
-            <WorksheetComponent
-              docUrl={docUrl}
-              isAssessmentPlayer
-              item={item}
-              annotations={annotations}
-              questions={questions}
-              freeFormNotes={freeFormNotes}
-              questionsById={questionsById}
-              pageStructure={pageStructure}
-              answersById={answersById}
-              viewMode="review"
-              noCheck
-              testMode
-              extraPaddingTop={extraPaddingTop}
-            />
-          )}
+              <WorksheetComponent
+                docUrl={docUrl}
+                isAssessmentPlayer
+                item={item}
+                annotations={annotations}
+                questions={questions}
+                freeFormNotes={freeFormNotes}
+                questionsById={questionsById}
+                pageStructure={pageStructure}
+                answersById={answersById}
+                viewMode="review"
+                noCheck
+                testMode
+                extraPaddingTop={extraPaddingTop}
+              />
+            )}
             <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
             {currentToolMode.calculator ? (
               <CalculatorContainer
@@ -188,7 +188,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 calculateMode={calculateMode}
                 calcBrands={calcBrands}
               />
-          ) : null}
+            ) : null}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

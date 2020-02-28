@@ -40,13 +40,7 @@ import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
 
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
-    const {
-      onChangeView,
-      clearEvaluation,
-      onSaveScrollTop,
-      view: currentView,
-      changePreviewTab
-    } = this.props;
+    const { onChangeView, clearEvaluation, onSaveScrollTop, view: currentView, changePreviewTab } = this.props;
 
     if (currentView === view) {
       return;
@@ -213,12 +207,7 @@ class ButtonBar extends Component {
                   </Button>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <Button
-                    data-cy="editItem"
-                    style={{ width: 120 }}
-                    size="large"
-                    onClick={onEnableEdit}
-                  >
+                  <Button data-cy="editItem" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
                     Edit
                   </Button>
                 )}
@@ -386,11 +375,7 @@ const enhance = compose(
         ["itemDetail", "item"],
         {}
       );
-      const isMultipart =
-        multipartItem ||
-        isPassageWithQuestions ||
-        canAddMultipleItems ||
-        data.questions?.length > 1;
+      const isMultipart = multipartItem || isPassageWithQuestions || canAddMultipleItems || data.questions?.length > 1;
       return {
         permissions: get(state, ["user", "user", "permissions"], []),
         qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title

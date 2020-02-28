@@ -45,9 +45,9 @@ const Container = ({
   const handleAuthorization = async () => {
     const result = await canvasApi.getCanvasAuthURI();
     if (!result.userAuthenticated) {
-      const subscriptionTopic = `canvas:${userInfo.districtId}_${
-        userInfo._id
-      }_${userInfo.username || userInfo.email || ""}`;
+      const subscriptionTopic = `canvas:${userInfo.districtId}_${userInfo._id}_${userInfo.username ||
+        userInfo.email ||
+        ""}`;
       authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
         .then(() => {
           setIsAuthorized(true);
@@ -61,8 +61,7 @@ const Container = ({
   };
 
   useEffect(() => {
-    if (signupStatus === 2 && !isAuthorized && userInfo?.orgData?.allowCanvas)
-      handleAuthorization();
+    if (signupStatus === 2 && !isAuthorized && userInfo?.orgData?.allowCanvas) handleAuthorization();
   }, [signupStatus, userInfo?.orgData?.allowCanvas]);
 
   if (!isAuthenticated) {
@@ -104,10 +103,7 @@ const Container = ({
         />
       )}
       {signupStatus === 2 && !userInfo.orgData.allowCanvas && (
-        <SubjectGradeForm
-          userInfo={userInfo}
-          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
-        />
+        <SubjectGradeForm userInfo={userInfo} districtId={isSignupUsingDaURL ? generalSettings.orgId : false} />
       )}
       {signupStatus === 2 && userInfo.orgData.allowCanvas && isAuthorized && (
         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>

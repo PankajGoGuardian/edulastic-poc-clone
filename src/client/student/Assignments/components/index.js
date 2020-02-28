@@ -23,7 +23,6 @@ const ContentWrapper = styled.div`
   }
 `;
 
-
 const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, currentChild }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
@@ -35,12 +34,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
 
   return (
     <Wrapper>
-      <Header
-        titleText="common.dashboardTitle"
-        classSelect
-        showActiveClass={false}
-        classList={activeEnrolledClasses}
-      />
+      <Header titleText="common.dashboardTitle" classSelect showActiveClass={false} classList={activeEnrolledClasses} />
       <ContentWrapper>
         <SubHeader />
         <AssignmentContainer />
@@ -54,7 +48,7 @@ export default connect(
     allClasses: state.studentEnrollClassList.allClasses,
     activeClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading,
-    currentChild: state ?.user ?.currentChild,
+    currentChild: state?.user?.currentChild
   }),
   {
     loadAllClasses: getEnrollClassAction,

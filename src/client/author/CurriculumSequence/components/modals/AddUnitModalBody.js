@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Input, Cascader, message } from "antd";
 import { desktopWidth } from "@edulastic/colors";
-import { ThemeButton } from "../../src/components/common/ThemeButton";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 /**
  * @typedef {object} Module

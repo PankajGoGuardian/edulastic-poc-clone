@@ -3,7 +3,7 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/user-context";
 
-const setLastUsedPlayList = ({ _id, title }) =>
+const setLastUsedPlayList = ({ _id, title, grades, subjects }) =>
   api.callApi({
     method: "post",
     url: `${prefix}`,
@@ -11,7 +11,9 @@ const setLastUsedPlayList = ({ _id, title }) =>
       name: "LAST_ACCESSED_PLAYLIST",
       value: {
         _id,
-        title
+        title,
+        grades,
+        subjects
       }
     }
   });

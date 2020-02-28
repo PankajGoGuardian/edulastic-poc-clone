@@ -185,9 +185,7 @@ class WorksheetComponent extends React.Component {
 
     const newAnnotations = [...annotations];
 
-    const annotationIndex = newAnnotations.findIndex(
-      item => item.questionId === question.questionId
-    );
+    const annotationIndex = newAnnotations.findIndex(item => item.questionId === question.questionId);
 
     if (annotationIndex > -1) {
       newAnnotations.splice(annotationIndex, 1);
@@ -825,9 +823,7 @@ const enhance = compose(
       test: getTestEntitySelector(state),
       userWork: get(
         state,
-        `userWork.present[${
-          ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id
-        }]`,
+        `userWork.present[${ownProps.isAssessmentPlayer ? ownProps.item?._id : state.itemDetail?.item?._id}]`,
         {}
       ),
       itemDetail: ownProps.isAssessmentPlayer ? ownProps.item : state.itemDetail.item,

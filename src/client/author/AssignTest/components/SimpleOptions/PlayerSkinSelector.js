@@ -1,5 +1,5 @@
 import React from "react";
-import { Select , Col, Row } from "antd";
+import { Select, Col, Row } from "antd";
 
 import { test, roleuser } from "@edulastic/constants";
 import { ColLabel, Label, StyledSelect, StyledRow, StyledRowSelect } from "./styled";
@@ -14,17 +14,19 @@ const PlayerSkinSelector = ({
   disabled = false,
   fullwidth = false
 }) => {
-  const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ?  "Test" : "Practice"}`;
+  const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
   const types = {
     ...playerSkinTypes,
     edulastic
   };
 
   const SelectOption = (
-    <StyledSelect data-cy="playerSkinType"
+    <StyledSelect
+      data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
       value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
-      disabled={disabled}>
+      disabled={disabled}
+    >
       {Object.keys(types).map(key => (
         <Select.Option key={key} value={key}>
           {types[key]}

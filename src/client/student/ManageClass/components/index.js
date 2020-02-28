@@ -20,7 +20,17 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList, joinClass, studentData, userRole, currentChild }) => {
+const ManageClass = ({
+  allClasses,
+  filterClasses,
+  loadAllClasses,
+  loading,
+  setClassList,
+  joinClass,
+  studentData,
+  userRole,
+  currentChild
+}) => {
   useEffect(() => {
     loadAllClasses();
   }, [currentChild]);
@@ -54,8 +64,8 @@ export default connect(
     filterClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading,
     studentData: getUser(state),
-    userRole: state ?.user ?.user ?.role,
-    currentChild: state ?.user ?.currentChild
+    userRole: state?.user?.user?.role,
+    currentChild: state?.user?.currentChild
   }),
   {
     loadAllClasses: getEnrollClassAction,

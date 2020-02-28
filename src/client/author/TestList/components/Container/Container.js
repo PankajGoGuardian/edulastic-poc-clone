@@ -68,7 +68,7 @@ import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
 import AddBulkTestModal from "../../../PlaylistPage/components/AddBulkTestModal/AddBulkTestModal";
 import DeleteBulkTestModal from "../../../PlaylistPage/components/DeleteBulkTestModal/DeleteBulkTestModal";
-import ManageModulesModalBody from "../../../CurriculumSequence/components/ManageModulesModalBody";
+import ManageModulesModalBody from "../../../CurriculumSequence/components/modals/ManageModulesModalBody";
 import { StyledButton, BtnActionsContainer } from "../../../TestPage/components/AddItems/styled";
 import {
   createNewModuleAction,

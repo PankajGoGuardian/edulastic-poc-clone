@@ -5,14 +5,7 @@ import { Spin, Switch } from "antd";
 import { get, isEmpty, pullAt } from "lodash";
 import { lightBlue3 } from "@edulastic/colors";
 import { IconClose, IconCorrect } from "@edulastic/icons";
-import {
-  NoStudents,
-  NoConentDesc,
-  StyledIcon,
-  StudentsTable,
-  TableWrapper,
-  SwitchBox
-} from "./styled";
+import { NoStudents, NoConentDesc, StyledIcon, StudentsTable, TableWrapper, SwitchBox } from "./styled";
 import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
@@ -56,9 +49,7 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       sorter: (a, b) => a.firstName > b.firstName,
       render: (_, { firstName, lastName }) => (
-        <span>
-          {`${firstName === "Anonymous" || firstName === "" ? "-" : firstName} ${lastName || ""}`}
-        </span>
+        <span>{`${firstName === "Anonymous" || firstName === "" ? "-" : firstName} ${lastName || ""}`}</span>
       )
     },
     {
@@ -72,13 +63,7 @@ const StudentsList = ({
       title: "TTS Enabled",
       dataIndex: "tts",
       render: tts => (
-        <span>
-          {tts === "yes" ? (
-            <IconCorrect />
-          ) : (
-            <IconClose color="#ff99bb" width="10px" height="10px" />
-          )}
-        </span>
+        <span>{tts === "yes" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}</span>
       ),
       width: 150
     },
@@ -126,9 +111,7 @@ const StudentsList = ({
       dataIndex: "enrollmentStatus",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
-      render: enrollmentStatus => (
-        <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
-      )
+      render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
     }
   ];
 

@@ -139,7 +139,7 @@ class App extends Component {
       return <Loading />;
     }
 
-    const features = user ?.user ?.features || {};
+    const features = user?.user?.features || {};
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
@@ -216,9 +216,9 @@ class App extends Component {
           >
             <Switch>
               {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-                redirectRoute !== "" ? (
-                  <Redirect exact to={redirectRoute} />
-                ) : null}
+              redirectRoute !== "" ? (
+                <Redirect exact to={redirectRoute} />
+              ) : null}
               <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
@@ -228,7 +228,8 @@ class App extends Component {
               <Route
                 exact
                 path="/public/parentInvitation/:code"
-                render={() => <SetParentPassword parentInvitation />} redirectPath={defaultRoute}
+                render={() => <SetParentPassword parentInvitation />}
+                redirectPath={defaultRoute}
               />
               <LoggedOutRoute
                 path="/district/:districtShortName"

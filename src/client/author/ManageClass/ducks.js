@@ -266,10 +266,7 @@ const updateStudent = state => {
 
 const updateStudentSuccess = (state, { payload }) => {
   const stdList = state.studentsList;
-  const updatedIndex = findIndex(
-    stdList,
-    std => std._id === payload._id || std.userId === payload._id
-  );
+  const updatedIndex = findIndex(stdList, std => std._id === payload._id || std.userId === payload._id);
   if (updatedIndex !== -1) {
     state.studentsList.splice(updatedIndex, 1, payload);
   }
@@ -387,9 +384,7 @@ function* fetchStudentsByClassId({ payload }) {
 function* receiveCreateClassRequest({ payload }) {
   try {
     const result = yield call(groupApi.createGroup, payload);
-    message.success(
-      `${result.name} is created. Please add students to your class and begin using Edulastic.`
-    );
+    message.success(`${result.name} is created. Please add students to your class and begin using Edulastic.`);
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
   } catch ({ data: { message: errorMessage } }) {
@@ -454,9 +449,7 @@ function* changeUserTTSRequest({ payload }) {
     yield put(userTTSRequestSuccessAction(newStdList));
     message.success(msg);
   } catch (error) {
-    message.error(
-      "Error occurred while enabling/disabling text to speech. Please contact customer support."
-    );
+    message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
   }
 }
 
@@ -532,10 +525,7 @@ function* syncClassUsingCode({ payload }) {
     const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
     yield put(setSyncClassLoadingAction(false));
     if (resp.status === 403) {
-      return yield call(
-        message.error,
-        `Google Classroom ${payload.googleCode} is already synced in another group`
-      );
+      return yield call(message.error, `Google Classroom ${payload.googleCode} is already synced in another group`);
     }
     yield put(fetchStudentsByIdAction({ classId }));
     yield call(message.success, "Google Class import is Complete");

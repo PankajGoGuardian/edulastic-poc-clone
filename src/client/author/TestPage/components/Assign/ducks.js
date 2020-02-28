@@ -23,8 +23,7 @@ export const DELETE_ASSIGNMENT = "[assignments] delete assignment";
 export const REMOVE_ASSIGNMENT = "[assignments] remove assignment";
 export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignment";
 export const SET_ASSIGNMENT_SAVING = "[assignments] set assignment saving state";
-export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS =
-  "[assignments] toggle confirmation common assignments";
+export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS = "[assignments] toggle confirmation common assignments";
 export const UPDATE_ASSIGN_FAIL_DATA = "[assignments] update error data";
 export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP = "[assignments] toggle duplicate assignmnts popup";
 
@@ -37,13 +36,9 @@ export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS);
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
 export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING);
-export const toggleHasCommonAssignmentsPopupAction = createAction(
-  TOGGLE_CONFIRM_COMMON_ASSIGNMENTS
-);
+export const toggleHasCommonAssignmentsPopupAction = createAction(TOGGLE_CONFIRM_COMMON_ASSIGNMENTS);
 export const updateAssignFailDataAction = createAction(UPDATE_ASSIGN_FAIL_DATA);
-export const toggleHasDuplicateAssignmentPopupAction = createAction(
-  TOGGLE_DUPLICATE_ASSIGNMENT_POPUP
-);
+export const toggleHasDuplicateAssignmentPopupAction = createAction(TOGGLE_DUPLICATE_ASSIGNMENT_POPUP);
 
 const initialState = {
   isLoading: false,
@@ -219,9 +214,7 @@ function* saveAssignment({ payload }) {
       userRole !== roleuser.TEACHER && { testContentVisibility: payload.testContentVisibility };
     // on teacher assigning common assessments convert it to class assessment.
     const testTypeUpdated =
-      userRole === roleuser.TEACHER && testType === testContants.type.COMMON
-        ? testContants.type.ASSESSMENT
-        : testType;
+      userRole === roleuser.TEACHER && testType === testContants.type.COMMON ? testContants.type.ASSESSMENT : testType;
     const data = testIds.map(testId =>
       omit(
         {

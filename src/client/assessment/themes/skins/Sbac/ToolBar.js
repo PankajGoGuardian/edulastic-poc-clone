@@ -42,7 +42,7 @@ const ToolBar = ({
       setZoomLevel(zoomIndex[zoom - 1]);
       setZoom(zoom - 1);
     }
-  }
+  };
 
   return (
     <Container className="sbac-toolbar">
@@ -54,37 +54,41 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && <Tooltip
-        placement="top"
-        title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
-      >
-        <StyledButton
-          active={tool.indexOf(3) !== -1}
-          disabled={isDisableCrossBtn}
-          onClick={() => toolbarHandler(3)}
+      {!isDocbased && (
+        <Tooltip
+          placement="top"
+          title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
         >
-          <CloseIcon />
-        </StyledButton>
-      </Tooltip>}
+          <StyledButton active={tool.indexOf(3) !== -1} disabled={isDisableCrossBtn} onClick={() => toolbarHandler(3)}>
+            <CloseIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
 
-      {!isDocbased && <Tooltip placement="top" title="Scratch Pad">
-        <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
-          <ScratchPadIcon />
-        </StyledButton>
-      </Tooltip>}
-      {!isDocbased && <Tooltip placement="top" title="Zoom in">
-        <StyledButton onClick={handleZoomIn}>
-          <StyledIcon type="zoom-in" />
-        </StyledButton>
-      </Tooltip>}
-      {!isDocbased && <Tooltip placement="top" title="Zoom out">
-        <StyledButton onClick={handleZoomOut}>
-          <StyledIcon type="zoom-out" />
-        </StyledButton>
-      </Tooltip>}
+      {!isDocbased && (
+        <Tooltip placement="top" title="Scratch Pad">
+          <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
+            <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {!isDocbased && (
+        <Tooltip placement="top" title="Zoom in">
+          <StyledButton onClick={handleZoomIn}>
+            <StyledIcon type="zoom-in" />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {!isDocbased && (
+        <Tooltip placement="top" title="Zoom out">
+          <StyledButton onClick={handleZoomOut}>
+            <StyledIcon type="zoom-out" />
+          </StyledButton>
+        </Tooltip>
+      )}
     </Container>
   );
-}
+};
 
 ToolBar.propTypes = {
   changeCaculateMode: PropTypes.func.isRequired,

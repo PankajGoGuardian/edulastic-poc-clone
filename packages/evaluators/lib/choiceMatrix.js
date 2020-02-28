@@ -11,9 +11,7 @@ var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/sli
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _toConsumableArray2 = _interopRequireDefault(
-  require("@babel/runtime/helpers/toConsumableArray")
-);
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -160,9 +158,7 @@ var evaluator = function evaluator(_ref) {
     scoringType = validation.scoringType,
     _validation$penalty = validation.penalty,
     penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
-  var allAnswers = [_objectSpread({}, validResponse)].concat(
-    (0, _toConsumableArray2["default"])(altResponses)
-  );
+  var allAnswers = [_objectSpread({}, validResponse)].concat((0, _toConsumableArray2["default"])(altResponses));
   var score = 0; // initial score
 
   var maxScore = getMaxScore(allAnswers);

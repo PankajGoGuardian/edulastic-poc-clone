@@ -19,21 +19,14 @@ const Header = ({
   isDocBased,
   showAllClassesOption = true
 }) => (
-    <MainHeader headingText={titleText} isDocBased={isDocBased}>
-      <StudentSlectCommon />
-      {classSelect && (
-        <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />
-      )}
-      {showActiveClass && (
-        <ShowActiveClass
-          t={t}
-          classList={classList}
-          setClassList={setClassList}
-          setShowClass={setShowClass}
-        />
-      )}
-    </MainHeader>
-  );
+  <MainHeader headingText={titleText} isDocBased={isDocBased}>
+    <StudentSlectCommon />
+    {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}
+    {showActiveClass && (
+      <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
+    )}
+  </MainHeader>
+);
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,

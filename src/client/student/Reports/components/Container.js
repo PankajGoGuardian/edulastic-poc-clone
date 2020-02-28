@@ -28,10 +28,10 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading,
         {assignments.length < 1 ? (
           <NoDataNotification heading={"No Grades "} description={"You don't have any completed assignment."} />
         ) : (
-            assignments.map(item => (
-              <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="reports" />
-            ))
-          )}
+          assignments.map(item => (
+            <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="reports" />
+          ))
+        )}
       </Wrapper>
     </LayoutContent>
   );
@@ -43,7 +43,7 @@ export default connect(
     currentGroup: getCurrentGroup(state),
     isLoading: get(state, "studentAssignment.isLoading"),
     assignments: getAssignmentsSelector(state),
-    currentChild: state ?.user ?.currentChild,
+    currentChild: state?.user?.currentChild
   }),
   {
     fetchAssignments: fetchAssignmentsAction

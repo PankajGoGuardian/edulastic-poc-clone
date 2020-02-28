@@ -11,10 +11,7 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import Question from "../../../components/Question";
 import PointStyleOption from "./PointStyle";
 import MulticolorBarsOption from "./MulticolorBarsOption";

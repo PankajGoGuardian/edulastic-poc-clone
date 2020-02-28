@@ -157,11 +157,7 @@ const ClassDetails = ({
           )}
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
           <MainContentWrapper>
-            <BreadCrumb
-              ellipsis="calc(100% - 200px)"
-              data={breadCrumbData}
-              style={{ position: "unset" }}
-            />
+            <BreadCrumb ellipsis="calc(100% - 200px)" data={breadCrumbData} style={{ position: "unset" }} />
 
             <MainInfo
               entity={selectedClass}

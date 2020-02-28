@@ -8,19 +8,31 @@ export const WorksheetWrapper = styled.div`
   overflow: auto;
   height: ${props =>
     `calc(100vh - ${
-      props.testMode ? `${70 + props.extraPaddingTop}` : props.reportMode ? props.theme.HeaderHeight.xs + 41 + props.extraPaddingTop : props.theme.HeaderHeight.xs + props.extraPaddingTop
+      props.testMode
+        ? `${70 + props.extraPaddingTop}`
+        : props.reportMode
+        ? props.theme.HeaderHeight.xs + 41 + props.extraPaddingTop
+        : props.theme.HeaderHeight.xs + props.extraPaddingTop
     }px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${props =>
       `calc(100vh - ${
-        props.testMode ? `${70 + props.extraPaddingTop}` : props.reportMode ? props.theme.HeaderHeight.md + 41 + props.extraPaddingTop : props.theme.HeaderHeight.md + props.extraPaddingTop
+        props.testMode
+          ? `${70 + props.extraPaddingTop}`
+          : props.reportMode
+          ? props.theme.HeaderHeight.md + 41 + props.extraPaddingTop
+          : props.theme.HeaderHeight.md + props.extraPaddingTop
       }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${props =>
       `calc(100vh - ${
-        props.testMode ? `${70 + props.extraPaddingTop}` : props.reportMode ? props.theme.HeaderHeight.xl + 41 + props.extraPaddingTop : props.theme.HeaderHeight.xl + props.extraPaddingTop
+        props.testMode
+          ? `${70 + props.extraPaddingTop}`
+          : props.reportMode
+          ? props.theme.HeaderHeight.xl + 41 + props.extraPaddingTop
+          : props.theme.HeaderHeight.xl + props.extraPaddingTop
       }px)`};
   }
 `;

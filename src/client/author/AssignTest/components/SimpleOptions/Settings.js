@@ -141,8 +141,7 @@ const Settings = ({
     maxAttempts = tempTestSettings.maxAttempts,
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
-    testContentVisibility = tempTestSettings.testContentVisibility ||
-      testContentVisibilityOptions.ALWAYS,
+    testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60
   } = assignmentSettings;
 
@@ -201,9 +200,7 @@ const Settings = ({
         {!forClassLevel ? (
           <StyledRowSelect gutter={16}>
             <Col span={12}>
-              <Label>
-                RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}
-              </Label>
+              <Label>RELEASE SCORES {releaseScore === releaseGradeLabels.DONT_RELEASE ? "[OFF]" : "[ON]"}</Label>
             </Col>
             <Col span={12}>
               <StyledSelect
@@ -271,13 +268,13 @@ const Settings = ({
               {safeBrowser && (
                 <Password
                   disabled={forClassLevel}
-                  suffix={(
+                  suffix={
                     <Icon
                       type={showPassword ? "eye-invisible" : "eye"}
                       theme="filled"
                       onClick={() => setShowSebPassword(prevState => !prevState)}
                     />
-                  )}
+                  }
                   onChange={e => overRideSettings("sebPassword", e.target.value)}
                   size="large"
                   value={sebPassword}
@@ -354,10 +351,7 @@ const Settings = ({
               <Label>SHOW CALCULATOR</Label>
             </Col>
             <Col span={12}>
-              <AlignRight
-                value={calcType}
-                onChange={e => overRideSettings("calcType", e.target.value)}
-              >
+              <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
                 {calculatorKeys.map(item => (
                   <Radio data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
@@ -450,19 +444,17 @@ const Settings = ({
             </Col>
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                The password is entered by you and does not change. Students must enter this
-                password before they can take the assessment.
+                The password is entered by you and does not change. Students must enter this password before they can
+                take the assessment.
               </Col>
             )}
             {passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
               <Col span={24} style={{ marginTop: "10px" }}>
-                Students must enter a password to take the assessment. The password is
-                auto-generated and revealed only when the assessment is opened. If you select this
-                method, you also need to specify the time in minutes after which the password would
-                automatically expire. Use this method for highly sensitive and secure assessments.
-                If you select this method, the teacher or the proctor must open the assessment
-                manually and announce the password in class when the students are ready to take the
-                assessment.
+                Students must enter a password to take the assessment. The password is auto-generated and revealed only
+                when the assessment is opened. If you select this method, you also need to specify the time in minutes
+                after which the password would automatically expire. Use this method for highly sensitive and secure
+                assessments. If you select this method, the teacher or the proctor must open the assessment manually and
+                announce the password in class when the students are ready to take the assessment.
               </Col>
             )}
           </StyledRowSelect>

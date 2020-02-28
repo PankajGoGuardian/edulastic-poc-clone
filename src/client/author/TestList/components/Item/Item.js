@@ -172,7 +172,8 @@ class Item extends Component {
         _id: testId,
         collections = [],
         summary = {},
-        sharedType
+        sharedType,
+        isDocBased
       },
       orgCollections,
       item,
@@ -188,9 +189,7 @@ class Item extends Component {
 
     if (isPlaylist) {
       const standardz =
-        _source?.modules?.map(m =>
-          m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)
-        ) || [];
+        _source?.modules?.map(m => m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)) || [];
       (standardz || []).forEach((x = []) => {
         x.forEach((y = []) => {
           y.forEach(z => {
@@ -208,8 +207,7 @@ class Item extends Component {
     if (collections?.length > 0 && itemBanks.length > 0) {
       let filteredCollections = itemBanks.filter(c => collections.find(i => i._id === c._id));
       filteredCollections = uniqBy(filteredCollections, "_id");
-      if (filteredCollections.length > 0)
-        collectionName = filteredCollections.map(c => c.name).join(", ");
+      if (filteredCollections.length > 0) collectionName = filteredCollections.map(c => c.name).join(", ");
     } else if (collections?.length && collections.find(o => o.name === "Edulastic Certified")) {
       collectionName = "Edulastic Certified";
     } else if (sharedType) {
@@ -221,11 +219,7 @@ class Item extends Component {
       }
     }
 
-    const allowDuplicate = allowDuplicateCheck(
-      collections,
-      orgCollections,
-      isPlaylist ? "playList" : "test"
-    );
+    const allowDuplicate = allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test");
     return (
       <>
         <ViewModal
@@ -250,11 +244,7 @@ class Item extends Component {
           closeTestPreviewModal={this.hidePreviewModal}
         />
         {isDeleteModalOpen ? (
-          <DeleteItemModal
-            isVisible={isDeleteModalOpen}
-            onCancel={this.onDeleteModelCancel}
-            testId={item._id}
-          />
+          <DeleteItemModal isVisible={isDeleteModalOpen} onCancel={this.onDeleteModelCancel} testId={item._id} />
         ) : null}
         <Container
           isPlaylist={isPlaylist}
@@ -292,12 +282,8 @@ class Item extends Component {
           }
         >
           <TestInfo isPlaylist={isPlaylist}>
-            <StyledLink title={isPlaylist ? _source?.title : title}>
-              {isPlaylist ? _source?.title : title}
-            </StyledLink>
-            {isPlaylist && (
-              <StyledDesc title={_source.description}>{_source.description}</StyledDesc>
-            )}
+            <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
+            {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
 
             {isPlaylist && (
               <TagsWrapper>
@@ -311,13 +297,15 @@ class Item extends Component {
             <MidRow>
               <Collection>
                 <label>COLLECTIONS</label>
-                <CollectionNameWrapper title={collectionName}>
-                  {collectionName}
-                </CollectionNameWrapper>
+                <CollectionNameWrapper title={collectionName}>{collectionName}</CollectionNameWrapper>
               </Collection>
               <Qcount>
                 <label>TOTAL ITEMS</label>
-                <div>{summary.totalItems}</div>
+                {/**
+                 * For doc based wee need to consider
+                 *  total number questions and toal number of items
+                 *  */}
+                <div>{isDocBased ? summary.totalQuestions : summary.totalItems}</div>
               </Qcount>
             </MidRow>
           )}

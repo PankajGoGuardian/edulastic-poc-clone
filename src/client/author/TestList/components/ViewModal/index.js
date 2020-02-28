@@ -4,14 +4,7 @@ import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
 import { find } from "lodash";
 import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
-import {
-  IconHeart,
-  IconShare,
-  IconWorldWide,
-  IconCopy,
-  IconDescription,
-  IconTrashAlt
-} from "@edulastic/icons";
+import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Icon, Select } from "antd";
 import {
@@ -136,7 +129,8 @@ class ViewModal extends React.Component {
       _source,
       authors,
       sharedWith,
-      collections: _collections = []
+      collections: _collections = [],
+      isDocBased
     } = item;
 
     const { editedCollections } = this.state;
@@ -151,8 +145,7 @@ class ViewModal extends React.Component {
       }
     };
     const isDeleteAllowed =
-      !!find(authors, o => o._id === userId) ||
-      (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
+      !!find(authors, o => o._id === userId) || (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
 
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
@@ -261,13 +254,9 @@ class ViewModal extends React.Component {
                     size="medium"
                     style={{ width: "100%" }}
                     value={
-                      editedCollections !== null
-                        ? editedCollections.map(o => o._id)
-                        : _collections.map(o => o._id)
+                      editedCollections !== null ? editedCollections.map(o => o._id) : _collections.map(o => o._id)
                     }
-                    filterOption={(input, option) =>
-                      option.props.title.toLowerCase().includes(input.toLowerCase())
-                    }
+                    filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
                     getPopupContainer={() => this.modalRef.current}
                     onChange={this.onCollectionsChange}
                   >
@@ -305,11 +294,7 @@ class ViewModal extends React.Component {
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} />
                 <IconText>
-                  {sharing[0]
-                    ? sharing[0].type
-                    : item.status === "draft"
-                    ? "Private Library"
-                    : "Public Library"}
+                  {sharing[0] ? sharing[0].type : item.status === "draft" ? "Private Library" : "Public Library"}
                 </IconText>
               </FooterIcon>
               <FooterIcon rotate>
@@ -330,7 +315,10 @@ class ViewModal extends React.Component {
                   <SummaryCardValue>
                     {isPlaylist
                       ? _source.modules && _source.modules.length
-                      : summary.totalItems || 0}
+                      : /**
+                         * for doc based, we need to consider questions as items
+                         */
+                        (isDocBased ? summary.totalQuestions : summary.totalItems) || 0}
                   </SummaryCardValue>
                   <SummaryCardLabel>Items</SummaryCardLabel>
                 </SummaryCard>
@@ -344,9 +332,7 @@ class ViewModal extends React.Component {
               {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
               {summary?.groupSummary?.length > 1 || itemGroups?.[0]?.type === "AUTOSELECT" ? (
                 summary?.groupSummary?.map((group, i) => {
-                  const standards = group?.standards
-                    ?.filter(x => !x.isEquivalentStandard)
-                    ?.map(x => x.identifier);
+                  const standards = group?.standards?.filter(x => !x.isEquivalentStandard)?.map(x => x.identifier);
                   return (
                     <>
                       <GroupName>{itemGroups[i]?.groupName}</GroupName>

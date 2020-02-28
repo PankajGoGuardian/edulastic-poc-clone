@@ -205,7 +205,7 @@ const HighlightImagePreview = ({
         <CanvasContainer
           ref={canvasContainerRef}
           minHeight={canvasDimensions.maxHeight}
-          width={disableDrawing ? "auto" : `${canvasContainerWidth}px`}
+          width={`${canvasContainerWidth}px`}
         >
           <FlexContainer justifyContent="flex-start" alignItems="baseline">
             <QuestionLabelWrapper>
@@ -213,9 +213,7 @@ const HighlightImagePreview = ({
               {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
             </QuestionLabelWrapper>
             <QuestionContentWrapper>
-              {view === PREVIEW && !smallSize && (
-                <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-              )}
+              {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
               {renderImage()}
               {enableQuestionLevelScratchPad && (
                 <canvas

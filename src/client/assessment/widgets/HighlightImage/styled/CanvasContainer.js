@@ -7,7 +7,6 @@ export const CanvasContainer = styled.div`
   min-height: ${({ minHeight }) => (!minHeight ? null : `${minHeight}px`)};
   border-radius: 10px;
   margin-left: 40px;
-  margin: 0px auto;
   img {
     user-select: none;
   }

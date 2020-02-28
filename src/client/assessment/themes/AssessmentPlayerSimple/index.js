@@ -321,8 +321,8 @@ class AssessmentPlayerSimple extends React.Component {
               />
 
               {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
-                <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
-              ) : null}
+                <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} changeTool={this.toggleToolsOpenStatus} />
+            ) : null}
               <PlayerMainContentArea
                 {...this.props}
                 theme={themeToPass}

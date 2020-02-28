@@ -10,7 +10,7 @@ import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 
 const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQuestionCount, isSidebarVisible }) => (
-  <MainFooter isSidebarVisible={isSidebarVisible}>
+  <MainFooter isSidebarVisible={isSidebarVisible} className="practice-player-footer">
     <FlexContainer>
       <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
         <FontAwesomeIcon icon={faAngleLeft} />

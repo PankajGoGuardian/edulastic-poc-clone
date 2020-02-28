@@ -105,7 +105,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, style }) => {
   }, [calculateMode]);
 
   return (
-    <Container style={style}>
+    <Container style={{...style, zIndex: 510}}>
       {calculateMode === "GRAPHING_DESMOS" && (
         <RndWrapper
           default={defaultRndPros.graphingDesmos}

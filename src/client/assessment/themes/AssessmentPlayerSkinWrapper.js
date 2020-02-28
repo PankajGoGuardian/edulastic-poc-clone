@@ -90,7 +90,8 @@ const AssessmentPlayerSkinWrapper = ({
         return { width: "100%" };
       } else {
         return {
-          width: "calc(100% - 220px)"
+          width: isSidebarVisible ? "calc(100% - 220px)" : "calc(100%)",
+          background: restProps.theme.widgets.assessmentPlayers.mainBgColor
         };
       }
     } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
@@ -120,7 +121,7 @@ const AssessmentPlayerSkinWrapper = ({
       {header()}
       <FlexContainer>
         {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
-        <StyledMainContainer mainContainerStyle={getMainContainerStyle()} style={getStyle()} playerSkin={playerSkinType}>
+        <StyledMainContainer mainContainerStyle={getMainContainerStyle()} style={getStyle()} playerSkin={playerSkinType} isSidebarVisible={isSidebarVisible}>
           {children}
         </StyledMainContainer>
         {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && defaultAP && navigationBtns()}
@@ -133,7 +134,8 @@ const Sidebar = styled.div`
   width: ${({ isVisible }) => (isVisible ? 220 : 65)}px;
   background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  padding-top: 35px;
+  padding-top: ${({ isVisible }) => (isVisible ? "35px" : "68px")};
+  height: ${({ isVisible }) => (isVisible ? "auto" : "100vh")};
   @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
     display: none;
   }
@@ -144,6 +146,9 @@ const StyledMainContainer = styled.div`
     ${({mainContainerStyle}) => mainContainerStyle};
     @media (max-width: 768px) {
       padding: 58px 0 0;
+    }
+    .practice-player-footer {
+      left: ${({isSidebarVisible}) => isSidebarVisible ? "220px" : "65px"};
     }
   }
   ${({playerSkin}) => playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() || playerSkin.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase() ? `

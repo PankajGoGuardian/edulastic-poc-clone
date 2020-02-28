@@ -54,7 +54,7 @@ const SafeBrowserButton = ({
   } else if (process.env.POI_APP_API_URI.startsWith("//")) {
     url = `${window.location.protocol.replace("http", "seb")}${
       process.env.POI_APP_API_URI
-      }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`;
+    }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`;
   } else {
     console.warn(`** can't figure out where to put seb protocol **`);
   }
@@ -63,7 +63,7 @@ const SafeBrowserButton = ({
     url += `/testActivity/${testActivityId}`;
   }
 
-  url += `/token/${token}/settings.seb`;
+  url += `/token/${token}/settings.seb?classId=${classId}`;
   return (
     <SafeStartAssignButton href={url} assessment>
       {startButtonText}
@@ -121,8 +121,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     ).closedDate;
   }
 
-  const lastAttempt =
-    maxBy(reports, o => parseInt(o.createdAt)) || {};
+  const lastAttempt = maxBy(reports, o => parseInt(o.createdAt)) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
   const absent = lastAttempt.status == 2;
@@ -155,7 +154,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   };
 
   const { activityReview = true } = data;
-  let {releaseScore} = data.class.find(item => item._id === classId) || {};
+  let { releaseScore } = data.class.find(item => item._id === classId) || {};
 
   if (!releaseScore) {
     releaseScore = data.releaseScore;
@@ -164,38 +163,38 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   const showReviewButton =
     releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
   const StartButtonContainer =
-    type === "assignment" ? (userRole !== "parent" && (
-      safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
-        <SafeBrowserButton
-          data-cy="start"
-          testId={testId}
-          testType={testType}
-          testActivityId={lastAttempt._id}
-          assignmentId={assignmentId}
-          btnName={t("common.startAssignment")}
-          startDate={startDate}
-          t={t}
-          startTest={startTest}
-          attempted={attempted}
-          resume={resume}
-          classId={classId}
-        />
-      ) : (
-        <StartButton
-          assessment
-          data-cy="start"
-          safeBrowser={safeBrowser}
-          startDate={startDate}
-          t={t}
-          isPaused={isPaused}
-          startTest={startTest}
-          attempted={attempted}
-          resume={resume}
-          classId={classId}
-        />
+    type === "assignment"
+      ? userRole !== "parent" &&
+        (safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
+          <SafeBrowserButton
+            data-cy="start"
+            testId={testId}
+            testType={testType}
+            testActivityId={lastAttempt._id}
+            assignmentId={assignmentId}
+            btnName={t("common.startAssignment")}
+            startDate={startDate}
+            t={t}
+            startTest={startTest}
+            attempted={attempted}
+            resume={resume}
+            classId={classId}
+          />
+        ) : (
+          <StartButton
+            assessment
+            data-cy="start"
+            safeBrowser={safeBrowser}
+            startDate={startDate}
+            t={t}
+            isPaused={isPaused}
+            startTest={startTest}
+            attempted={attempted}
+            resume={resume}
+            classId={classId}
+          />
         ))
-    ) : (
-        showReviewButton &&
+      : showReviewButton &&
         !absent && (
           <ReviewButton
             data-cy="review"
@@ -208,8 +207,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
             attempted={attempted}
             classId={classId}
           />
-        )
-      );
+        );
 
   const isValidAttempt = attempted;
 
@@ -323,8 +321,8 @@ const enhance = compose(
   withRouter,
   withNamespaces("assignmentCard"),
   connect(
-    (state) => ({
-      userRole: state ?.user ?.user ?.role
+    state => ({
+      userRole: state?.user?.user?.role
     }),
     {
       startAssignment: startAssignmentAction,

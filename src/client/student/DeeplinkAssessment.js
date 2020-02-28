@@ -12,8 +12,8 @@ const DeepLink = ({ bootstrap, match }) => {
   useEffect(() => {
     const { testType, assignmentId, testActivityId, testId } = match.params;
     //alert("rendering deeplink inside effect");
-
-    bootstrap({ testType, assignmentId, testActivityId, testId });
+    const query = queryString.parse(window.location.search);
+    bootstrap({ testType, assignmentId, testActivityId, testId, classId: query.groupId });
   }, []);
   return <h2>Redirecting...</h2>;
 };

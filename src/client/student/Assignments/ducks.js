@@ -75,9 +75,7 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   groupId = getAssignmentClassId(assignment, groupId, classIds);
   const redirects = classes.filter(
     x =>
-      x.redirect &&
-      ((x.specificStudents && x.students.includes(userId)) ||
-        (!x.specificStudents && x._id === groupId))
+      x.redirect && ((x.specificStudents && x.students.includes(userId)) || (!x.specificStudents && x._id === groupId))
   );
 
   if (redirects.length === 0) {
@@ -131,25 +129,15 @@ export const isLiveAssignment = (assignment, classIds) => {
   // eslint-disable-next-line
   let { endDate, class: groups = [], classId: currentGroup } = assignment;
   // when attempts over no need to check for any other condition to hide assignment from assignments page
-  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2))
-    return false;
+  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
   if (!endDate) {
-    endDate = (
-      _maxBy(
-        groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [],
-        "endDate"
-      ) || {}
-    ).endDate;
+    endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
+      .endDate;
     const currentClass =
-      groups.find(cl =>
-        currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id)
-      ) || {};
+      groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
     if (!endDate) {
       // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
-      if (
-        assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE &&
-        assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE
-      ) {
+      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
         return !currentClass.closed;
       }
       // IF MANUAL OPEN AND AUTO CLOSE
@@ -160,8 +148,7 @@ export const isLiveAssignment = (assignment, classIds) => {
       // IF MANUAL CLOSE AND AUTO OPEN
       if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive =
-          currentClass.startDate < Date.now() &&
-          (!currentClass.closed || currentClass.closedDate > Date.now());
+          currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
         return isLive;
       }
     }
@@ -210,10 +197,7 @@ export const getAllAssignmentsSelector = createSelector(
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, currentUserId) => {
     // group reports by assignmentsID
-    const groupedReports = groupBy(
-      values(reportsObj),
-      item => `${item.assignmentId}_${item.groupId}`
-    );
+    const groupedReports = groupBy(values(reportsObj), item => `${item.assignmentId}_${item.groupId}`);
     const assignments = values(assignmentsObj)
       .flatMap(assignment => {
         // no redirected classes and no class filter or class ID match the filter and student belongs to the class
@@ -312,7 +296,7 @@ function* startAssignment({ payload }) {
     const { assignmentId, testId, testType, classId, isPlaylist = false } = payload;
 
     if (!isPlaylist) {
-      if (!assignmentId || !testId) throw new Error("insufficient data")
+      if (!assignmentId || !testId) throw new Error("insufficient data");
     } else if (!testId) throw new Error("insufficient data");
 
     if (assignmentId) yield put(setActiveAssignmentAction(assignmentId));
@@ -322,7 +306,6 @@ function* startAssignment({ payload }) {
     // const assignment = assignmentsById[assignmentId];
     // const classIds = yield select(getClassIds);
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
-
 
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
@@ -353,23 +336,27 @@ function* startAssignment({ payload }) {
 
     // set Activity id
     if (testType !== TESTLET) {
-
       if (isPlaylist) {
-        yield put(push({
-          pathname: `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+        yield put(
+          push({
+            pathname: `/student/${
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
-          state: {
-            playlistAssignmentFlow: true,
-            playlistId: isPlaylist.playlistId
-          }
-        }));
+            state: {
+              playlistAssignmentFlow: true,
+              playlistId: isPlaylist.playlistId
+            }
+          })
+        );
       } else {
-        yield put(push(`/student/${
-          testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`));
+        yield put(
+          push(
+            `/student/${
+              testType === COMMON ? ASSESSMENT : testType
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+          )
+        );
       }
-
     } else {
       yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
     }
@@ -407,25 +394,28 @@ function* resumeAssignment({ payload }) {
     // const classIds = yield select(getClassIds);
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
-
     if (testType !== TESTLET) {
-
       if (isPlaylist) {
-        yield put(push({
-          pathname: `/student/${
-            testType === COMMON ? ASSESSMENT : testType
+        yield put(
+          push({
+            pathname: `/student/${
+              testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
-          state: {
-            playlistAssignmentFlow: true,
-            playlistId: isPlaylist.playlistId
-          }
-        }));
+            state: {
+              playlistAssignmentFlow: true,
+              playlistId: isPlaylist.playlistId
+            }
+          })
+        );
       } else {
-        yield put(push(`/student/${
-          testType === COMMON ? ASSESSMENT : testType
-          }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`));
+        yield put(
+          push(
+            `/student/${
+              testType === COMMON ? ASSESSMENT : testType
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+          )
+        );
       }
-
     } else {
       yield put(push(`/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`));
     }
@@ -436,16 +426,16 @@ function* resumeAssignment({ payload }) {
 
 /**
  * for loading deeplinking assessment created for SEB. But can be used for others
- * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string,testType:string}}} param
+ * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string,testType:string, groupId: string}}} param
  */
 function* bootstrapAssesment({ payload }) {
   try {
-    const { testType, assignmentId, testActivityId, testId } = payload;
+    const { testType, assignmentId, testActivityId, testId, classId } = payload;
     yield fetchUser();
     if (testActivityId) {
-      yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId }));
+      yield put(resumeAssignmentAction({ testType, assignmentId, testActivityId, testId, classId }));
     } else {
-      yield put(startAssignmentAction({ testType, assignmentId, testId }));
+      yield put(startAssignmentAction({ testType, assignmentId, testId, classId }));
     }
   } catch (e) {
     console.log(e);

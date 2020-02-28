@@ -1,10 +1,10 @@
 {
   "common": {
-    "headingText": "Congratulations, You reached to end of the test!",
-    "message": "If you need to review your answers, select the question number you wish to review. A flag icon appears for any questions that you marked for review.",
+    "headingText": "Congratulations, You have finished!",
+    "message": "If you need to review your answers, select the question number you wish to review.",
     "markedQuestionLineOne": "You have answered these questions.",
     "skippedQues": "Please review your skipped questions before submitting the test",
-    "markedForReview": "You have marked for review these questions. Review them before submitting the test.",
+    "markedForReview": "You have bookmarked these questions. Review them before submitting the test.",
     "nextStep": "Next Step: When you are done reviewing your answers, select Submit test. You cannot change your answers after you submit the test",
     "questionsLabel": "Questions"
   },

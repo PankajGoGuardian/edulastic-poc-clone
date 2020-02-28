@@ -37,7 +37,7 @@ const standards = {
 const group = {
   thumbnail: "https://cdn.edulastic.com/images/classThumbnails/learning-7.jpg-3.jpg",
   startDate: `${new Date().getTime()}`,
-  endDate: "1613134799000",
+  endDate: "1614191400000",
   grades: [],
   subject: "Mathematics",
   standardSets: [
@@ -53,20 +53,18 @@ const group = {
 };
 
 const suiteName = "";
-const teacherCount = 1;
 const classPerTeacherCount = 2;
-const studentsPerClassCount = 10;
-const domain = "v2demodata3";
-let studentNumber = 1; // 137;
-let teacherNumber = 1;
+const studentsPerClassCount = 4;
+const domain = "v2demo";
+let studentNumber = 401; // 137;
+let teacherNumber = 51;
+const teacherCount = teacherNumber + 99;
 
 function getUser(classs, role, i) {
   const user = {};
   user.firstName = role;
   user.lastName = `${role === "teacher" ? "t" : "s"}${i < 10 ? "00" : i < 100 ? "0" : ""}${i}`;
-  user.email = `${role === "teacher" ? "t" : "s"}${
-    i < 10 ? "00" : i < 100 ? "0" : ""
-  }${i}@${domain}.com`.toLowerCase();
+  user.email = `${role === "teacher" ? "t" : "s"}${i < 10 ? "00" : i < 100 ? "0" : ""}${i}@${domain}.com`.toLowerCase();
   user.password = "edulastic";
   user.role = `${role}`;
   return user;
@@ -119,9 +117,9 @@ const groupUpdate = {
   type: "class"
 };
 
-const teachers = ["t001@v2demo.com"];
+// const teachers = ["t001@v2demo.com"];
 
-describe.skip("create-test-data", () => {
+describe("create-test-data", () => {
   it("create data", () => {
     window.localStorage.clear();
     window.sessionStorage.clear();
@@ -186,9 +184,7 @@ describe.skip("create-test-data", () => {
                 cy.wait(100).then(() => {
                   console.log("classNumber", classNumber);
                   // CREATE CLASS
-                  group.name = `${teacher.lastName}c${
-                    classNumber < 10 ? "00" : "0"
-                  }${classNumber}${domain}`;
+                  group.name = `${teacher.lastName}c${classNumber < 10 ? "00" : "0"}${classNumber}`;
                   group.parent = {
                     id: user._id
                   };
@@ -233,7 +229,7 @@ describe.skip("create-test-data", () => {
     }
   });
 
-  teachers.forEach(teausername => {
+  /* teachers.forEach(teausername => {
     it(`fix class - ${teausername}`, () => {
       cy.request({
         url: `${BASE_URL}/auth/login`,
@@ -267,5 +263,5 @@ describe.skip("create-test-data", () => {
         });
       });
     });
-  });
+  }); */
 });

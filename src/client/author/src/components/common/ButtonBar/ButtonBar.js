@@ -18,6 +18,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Tooltip } from "../../../../../common/utils/helpers";
 import { MAX_TAB_WIDTH } from "../../../constants/others";
 import { clearAnswersAction } from "../../../actions/answers";
@@ -35,7 +36,6 @@ import {
   MobileSecondContainer,
   CustomButton
 } from "./styled_components";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
 
 class ButtonBar extends Component {
@@ -380,10 +380,22 @@ const enhance = compose(
   withWindowSizes,
   withNamespaces("author"),
   connect(
-    state => ({
-      permissions: get(state, ["user", "user", "permissions"], []),
-      qTitle: getCurrentQuestionSelector(state)?.title
-    }),
+    state => {
+      const { multipartItem, isPassageWithQuestions, canAddMultipleItems, data = {} } = get(
+        state,
+        ["itemDetail", "item"],
+        {}
+      );
+      const isMultipart =
+        multipartItem ||
+        isPassageWithQuestions ||
+        canAddMultipleItems ||
+        data.questions?.length > 1;
+      return {
+        permissions: get(state, ["user", "user", "permissions"], []),
+        qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title
+      };
+    },
     {
       clearAnswers: clearAnswersAction,
       clearEvaluation: clearEvaluationAction

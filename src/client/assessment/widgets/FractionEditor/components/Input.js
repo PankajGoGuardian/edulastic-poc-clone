@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { TextInputStyled } from "../../../styled/InputStyles";
 
-const CustomInput = ({ size, type, value, placeholder, onBlur, style }) => {
+const CustomInput = ({ size, type, value, placeholder, onBlur, style, id = "defaultId" }) => {
   const [inputValue, changeInputValue] = useState(value);
 
   const handleInputChange = event => {
@@ -14,6 +14,7 @@ const CustomInput = ({ size, type, value, placeholder, onBlur, style }) => {
 
   return (
     <TextInputStyled
+      id={id}
       size={size}
       type={type}
       onChange={handleInputChange}

@@ -358,10 +358,10 @@ class MainSetting extends Component {
                   })}
               </StyledAnchor>
               {/* Hiding temporarly for deploying */}
-              <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+              {!isDocBased && <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
                 {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
                 <IconCaretDown color={themeColor} width={11} height={6} />
-              </AdvancedButton>
+              </AdvancedButton>}
               {showAdvancedOption && (
                 <StyledAnchor affix={false} offsetTop={125}>
                   {settingCategories.slice(-6, -5).map(category => (
@@ -748,7 +748,7 @@ class MainSetting extends Component {
               />
             </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
-              {availableFeatures.includes("selectPlayerSkinType") && testType !== "testlet" && (
+              {availableFeatures.includes("selectPlayerSkinType") && testType !== "testlet" && !isDocBased && (
                 <Block id="player-skin-type" smallSize={isSmallSize}>
                   <Row>
                     <Title>Student Player Skin</Title>

@@ -326,7 +326,7 @@ class SimpleOptions extends React.Component {
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>
-          {(assignment.testType || testSettings.testType) !== "testlet" && <FeaturesSwitch
+          {(assignment.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && <FeaturesSwitch
             inputFeatures="selectPlayerSkinType"
             actionOnInaccessible="hidden"
             key="selectPlayerSkin"

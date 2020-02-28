@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { Select } from "antd";
 import { connect } from "react-redux";
+import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import {
@@ -46,7 +47,8 @@ const ClassSelector = ({
       }
     }
   }, [classList, currentGroup, showAllClassesOption]);
-
+  const temporaryClassId = sessionStorage.getItem("temporaryClass");
+  const tempClass = allClasses.find(clazz => clazz._id === temporaryClassId) || {};
   return (
     <Fragment>
       <AssignmentMobileButton onClick={() => setShown(!isShown)}>
@@ -67,19 +69,19 @@ const ClassSelector = ({
             </Select.Option>
           )}
 
-          {sessionStorage.getItem("temporaryClass") && (
-            <Select.Option
-              key={sessionStorage.temporaryClass}
-              value={sessionStorage.temporaryClass}
-            >
-              {allClasses.find(clazz => clazz._id === sessionStorage.temporaryClass).name}
+          {!isEmpty(tempClass) && (
+            <Select.Option key={tempClass._id} value={tempClass._id}>
+              {tempClass.name}
             </Select.Option>
           )}
-          {classList.map(cl => (
-            <Select.Option key={cl._id} value={cl._id}>
-              {cl.name}
-            </Select.Option>
-          ))}
+          {classList.map(
+            cl =>
+              temporaryClassId !== cl._id && (
+                <Select.Option key={cl._id} value={cl._id}>
+                  {cl.name}
+                </Select.Option>
+              )
+          )}
         </Select>
       </AssignmentSelectClass>
     </Fragment>

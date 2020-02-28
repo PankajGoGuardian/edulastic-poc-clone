@@ -52,7 +52,7 @@ const setAssignments = (state, { payload }) => {
   if (payload.assignmentObj) {
     state.byId = payload.assignmentObj;
   }
-  if (payload.allIds) {
+  if (payload.allAssignments) {
     state.allIds = payload.allAssignments;
   }
   state.isLoading = false;

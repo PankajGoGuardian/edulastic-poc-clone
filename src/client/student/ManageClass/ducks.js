@@ -35,7 +35,7 @@ const setEnrollClassListSuccess = (state, { payload }) => {
   state.loading = false;
 };
 
-const setEnrollClassListFail = (state, { payload }) => {
+const setEnrollClassListFail = state => {
   state.allClasses = [];
   state.loading = false;
 };
@@ -86,7 +86,6 @@ function* joinClass({ payload }) {
     if (student) {
       const newStudent = {
         ...student,
-        _id: student.userId,
         enrollmentStatus: 1
       };
       yield put(joinClassSuccessAction(newStudent));

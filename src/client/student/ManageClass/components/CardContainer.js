@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Row, Col, Button, Tooltip, Collapse } from "antd";
 import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
-import { tabletWidth, desktopWidth, largeDesktopWidth, smallDesktopWidth, themeColor } from "@edulastic/colors";
+import { smallDesktopWidth, themeColor } from "@edulastic/colors";
 import { changeClassAction } from "../../Login/ducks";
 
 const ClassCard = ({ t, classItem, history, changeClass, key }) => {
@@ -30,9 +30,14 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
   const allgrades = grades && grades.join(", ").replace(/O/i, " Other ");
   const allStandardSets = standardSets && standardSets.map(std => std.name).join(",");
   const handleVisitClass = () => {
+    changeClass(classItem._id);
     sessionStorage.setItem("temporaryClass", classItem._id);
-    history.push("/home/grades");
-    changeClass(sessionStorage.temporaryClass);
+    if (active === 1) {
+      return history.push("/home/assignments");
+    }
+    if (active === 0) {
+      return history.push("/home/grades");
+    }
   };
 
   const { Panel } = Collapse;
@@ -41,9 +46,9 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
     <CollapsibleCard defaultActiveKey={key} expandIconPosition="right">
       <Panel
         header={
-          <Row type={"flex"} justify={"space-between"} align={"center"}>
+          <Row type="flex" justify="space-between" align="center">
             <Col span={12}>
-              <Row type={"flex"} justify={"start"}>
+              <Row type="flex" justify="start">
                 <EllipsisContainer status={status}>
                   <Tooltip placement="bottomLeft" title={name}>
                     <CardTitle>{name}</CardTitle>
@@ -55,21 +60,14 @@ const ClassCard = ({ t, classItem, history, changeClass, key }) => {
               </Row>
             </Col>
             <Col span={12}>
-              <Row type={"flex"} justify={"end"} align={"center"}>
+              <Row type="flex" justify="end" align="center">
                 <EllipsisContainer>
                   <InstitutionInfo>
                     {institutionName}, {districtName}
                   </InstitutionInfo>
-
-                  {active === 1 && (
-                    <VisitLink to={{ pathname: "/home/assignments", classItem }}>
-                      <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
-                    </VisitLink>
-                  )}
-
-                  {active === 0 && (
-                    <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>
-                  )}
+                  <VisitClassButton onClick={handleVisitClass}>
+                    {t("common.visitClass")}
+                  </VisitClassButton>
                 </EllipsisContainer>
               </Row>
             </Col>
@@ -231,7 +229,9 @@ const ClassStatus = styled(Col)`
   text-transform: uppercase;
   text-align: right;
   color: ${props =>
-    props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardUserInfoContentColor};
+    props.info
+      ? props.theme.classCard.cardInfoContentColor
+      : props.theme.classCard.cardUserInfoContentColor};
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -242,10 +242,13 @@ const ClassStatus = styled(Col)`
     display: inline-block;
     text-align: center;
     border-radius: 5px;
-    background-color: ${props => (props.status == "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor)};
+    background-color: ${props =>
+      props.status == "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor};
     padding: ${props => (props.status == "0" ? "5px 10px" : "5px 24px")};
     color: ${props =>
-      props.info ? props.theme.classCard.cardInfoContentColor : props.theme.classCard.cardActiveStatusTextColor};
+      props.info
+        ? props.theme.classCard.cardInfoContentColor
+        : props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};
   }
 
@@ -313,9 +316,4 @@ const InstitutionInfo = styled.h3`
   @media (max-width: ${smallDesktopWidth}) {
     line-height: 28px;
   }
-`;
-
-const VisitLink = styled(Link)`
-  display: inline-block;
-  position: relative;
 `;

@@ -42,6 +42,7 @@ const PlayerContentArea = ({
   const item = items[currentItem];
   const isZoomApplied = zoomLevel > 1;
   const previousQuestionActivity = previousQuestionActivities[item._id];
+
   return (
     <Main>
       <MainWrapper isSidebarVisible={isSidebarVisible} ref={scrollContainerRef}>
@@ -74,17 +75,17 @@ const PlayerContentArea = ({
             {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
           </MainContent>
         </ScrollContext.Provider>
-        {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && (
-        <PlayerFooter
-          isLast={isLast}
-          isFirst={isFirst}
-          moveToNext={moveToNext}
-          moveToPrev={moveToPrev}
-          isSidebarVisible={isSidebarVisible}
-          t={t}
-          unansweredQuestionCount={unansweredQuestionCount}
-        />
-)}
+        {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && (
+          <PlayerFooter
+            isLast={isLast}
+            isFirst={isFirst}
+            moveToNext={moveToNext}
+            moveToPrev={moveToPrev}
+            isSidebarVisible={isSidebarVisible}
+            t={t}
+            unansweredQuestionCount={unansweredQuestionCount}
+          />
+        )}
       </MainWrapper>
     </Main>
   );

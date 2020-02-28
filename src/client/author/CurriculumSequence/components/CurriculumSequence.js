@@ -25,6 +25,7 @@ import { IconShare, IconGraduationCap, IconBook, IconTile } from "@edulastic/ico
 import { FlexContainer, MainHeader } from "@edulastic/common";
 import { Button, Cascader, Input, Modal, Progress, Radio } from "antd";
 
+import { getProgressColor } from "../util";
 import { getUserFeatures } from "../../../student/Login/ducks";
 // import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
@@ -389,7 +390,7 @@ class CurriculumSequence extends Component {
       const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
       const timeSpent = metricModule?.reduce((a, c) => a + (c?.timeSpent || 0), 0);
       const assignments = data?.flatMap(x => x?.assignments) || [];
-      const classes = assignments?.reduce((a, c) => a + (c.length || 0), 0) || "-";
+      const classes = assignments?.reduce((a, c) => a + (c?.length || 0), 0) || "-";
       const submitted =
         metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
         "-";
@@ -653,8 +654,8 @@ class CurriculumSequence extends Component {
                       <ModuleTitle>{item.name}</ModuleTitle>
                       <Progress
                         strokeColor={{
-                          "0%": COLORS[i],
-                          "100%": COLORS[i]
+                          "0%": getProgressColor(item.value),
+                          "100%": getProgressColor(item.value)
                         }}
                         strokeWidth={10}
                         percent={item.value}

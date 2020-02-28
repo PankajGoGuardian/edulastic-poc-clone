@@ -6,6 +6,7 @@ import { isArray, isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import { Stimulus, highlightSelectedText, WithResources, decodeHTML, RefContext } from "@edulastic/common";
+import { highlightColors } from "@edulastic/colors";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
@@ -37,43 +38,66 @@ const PassageView = ({
   // use the userWork in author mode
   const _highlights = setHighlights ? highlights : userWork;
 
+  const getPostionOfEelement = em => {
+    let deltaTop = 0;
+    let deltaLeft = 0;
+    if (
+      jQuery(em)
+        .parent()
+        .prop("tagName") === "TD"
+    ) {
+      jQuery(em).css("position", "relative");
+    }
+
+    jQuery(em)
+      .parents()
+      .each((i, parent) => {
+        if (jQuery(parent).attr("id") === "passage-wrapper") {
+          return false;
+        }
+        const p = jQuery(parent).css("position");
+        if (p === "relative") {
+          const offest = jQuery(parent).position();
+          deltaTop += offest.top;
+          deltaLeft += offest.left;
+        }
+      });
+
+    // top and left will be used to set position of color picker
+    const top = em.offsetTop + deltaTop + em.offsetHeight + 1; // 1px is for the arrow point
+    const left = em.offsetLeft + deltaLeft;
+    return { top, left };
+  };
+
+  const save = () => {
+    let { innerHTML: highlightContent = "" } = mainContentsRef.current;
+
+    if (highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, "g")) === -1) {
+      highlightContent = null;
+    } else {
+      highlightContent = highlightContent.replace(/input__math/g, "");
+    }
+
+    if (setHighlights) {
+      // this is available only at student side
+      setHighlights(highlightContent);
+    } else {
+      // saving the highlights at author side
+      // setHighlights is not available at author side
+      saveUserWork({ [passageTestItemID]: { resourceId: highlightContent } });
+    }
+  };
+
   const everyHeighlight = (_, em) => {
     const jQuery = window.$;
-    jQuery(em).on("click", function(e) {
+    jQuery(em).on("mouseenter", function(e) {
       e.preventDefault();
       if (e?.stopPropagation) {
         e.stopPropagation();
       }
       if (!selected && !startedSelectingText) {
-        let deltaTop = 0;
-        let deltaLeft = 0;
-
-        if (
-          jQuery(em)
-            .parent()
-            .prop("tagName") === "TD"
-        ) {
-          jQuery(em).css("position", "relative");
-        }
-
-        jQuery(em)
-          .parents()
-          .each((i, parent) => {
-            if (jQuery(parent).attr("id") === "passage-wrapper") {
-              return false;
-            }
-            const p = jQuery(parent).css("position");
-            if (p === "relative") {
-              const offest = jQuery(parent).position();
-              deltaTop += offest.top;
-              deltaLeft += offest.left;
-            }
-          });
-
-        // top and left will be used to set position of color picker
-        const top = em.offsetTop + deltaTop + em.offsetHeight + 1; // 1px is for the arrow point
-        const left = em.offsetLeft + deltaLeft;
-        toggleColorPicker({ top, left, em });
+        const pos = getPostionOfEelement(em);
+        toggleColorPicker({ ...pos, em });
       }
     });
   };
@@ -87,7 +111,8 @@ const PassageView = ({
 
   const handleHighlight = () => {
     startedSelectingText = false;
-    highlightSelectedText("selected-text-heighlight", highlightTag);
+    const { blue } = highlightColors;
+    highlightSelectedText("selected-text-heighlight", highlightTag, { background: blue });
     addEventToSelectedText();
   };
 
@@ -100,26 +125,14 @@ const PassageView = ({
       } else {
         element.css("background-color", color);
       }
-
-      let { innerHTML: highlightContent } = mainContentsRef.current;
-
-      if (highlightContent.search(new RegExp(`<${highlightTag}(.*?)>`, "g")) === -1) {
-        highlightContent = null;
-      } else {
-        highlightContent = highlightContent.replace(/input__math/g, "");
-      }
-
-      if (setHighlights) {
-        // this is available only at student side
-        setHighlights(highlightContent);
-      } else {
-        // saving the highlights at author side
-        // setHighlights is not available at author side
-        saveUserWork({ [passageTestItemID]: { resourceId: highlightContent } });
-      }
-
+      save();
       toggleColorPicker(null);
     }
+  };
+
+  const closeColorPicker = () => {
+    save();
+    toggleColorPicker(null);
   };
 
   const handleMouseDown = () => {
@@ -205,7 +218,7 @@ const PassageView = ({
           <ColorPickerContainer style={{ ...selected }}>
             <ColorPicker selectColor={clickHighligter} bg={selected.bg} />
           </ColorPickerContainer>
-          <Overlay onClick={() => toggleColorPicker(null)} />
+          <Overlay onClick={closeColorPicker} />
         </>
       )}
     </WithResources>

@@ -36,8 +36,7 @@ export const ALPHABET = [
   "Z"
 ];
 
-const getDisplayName = WrappedComponent =>
-  WrappedComponent.displayName || WrappedComponent.name || "Component";
+const getDisplayName = WrappedComponent => WrappedComponent.displayName || WrappedComponent.name || "Component";
 
 const getPaginationInfo = ({ page, limit, count }) => ({
   from: (page - 1) * limit + 1,
@@ -181,10 +180,7 @@ export const getResponsesCount = element => {
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
-  if (
-    !$(parsedHTML).find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber")
-      .length
-  ) {
+  if (!$(parsedHTML).find("textinput, mathinput, mathunit, textdropdown, response, paragraphnumber").length) {
     return htmlStr;
   }
 
@@ -230,17 +226,7 @@ export const sanitizeForReview = stimulus => {
   const jqueryEl = $("<p>").append(stimulus);
   //remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
-  const tagsToRemove = [
-    "mathinput",
-    "mathunit",
-    "textinput",
-    "textdropdown",
-    "img",
-    "table",
-    "response",
-    "br",
-    "span"
-  ];
+  const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
@@ -363,10 +349,7 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
       if (i === questions.length - 1) {
         questionScore[o.id] = round(maxScore - currentTotal, 2);
       } else {
-        const score = round(
-          get(o, ["validation", "validResponse", "score"], 0) * (maxScore / totalMaxScore),
-          2
-        );
+        const score = round(get(o, ["validation", "validResponse", "score"], 0) * (maxScore / totalMaxScore), 2);
         questionScore[o.id] = score;
         currentTotal += score;
       }
@@ -401,7 +384,7 @@ export const clearSelection = () => {
  * @param {string} tag new element tag name, default is span
  * @returns {boolean}
  */
-export const highlightSelectedText = (className = "token active-word", tag = "span") => {
+export const highlightSelectedText = (className = "token active-word", tag = "span", style) => {
   const selection = getSelection();
   if (!selection.rangeCount) {
     console.log("Unable to find a native DOM range from the current selection.");
@@ -424,9 +407,7 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     (endContainer && endContainer.parentNode.className === className) ||
     (startContainer && startContainer.parentNode.className === className)
   ) {
-    message.error(
-      "You are highlighting already selected text. Please select a distinct text and try again."
-    );
+    message.error("You are highlighting already selected text. Please select a distinct text and try again.");
     clearSelection();
     return;
   }
@@ -436,11 +417,15 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
     const fragment = range.extractContents();
 
     node.setAttribute("class", className);
+    if (style && style.background) {
+      node.style.background = style.background;
+    }
+
     node.appendChild(fragment);
     range.insertNode(node);
 
     clearSelection();
-    return true;
+    return node;
   } catch (err) {
     message.error("Something went wrong. Please select a text and try again.");
     clearSelection();
@@ -460,9 +445,9 @@ export const decodeHTML = str => {
 export const rgbToHexc = orig => {
   const rgb = orig.replace(/\s/g, "").match(/^rgba?\((\d+),(\d+),(\d+)/i);
   return rgb && rgb.length === 4
-    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(
-        16
-      )}`.slice(-2)}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
+    ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(rgb[2], 10).toString(16)}`.slice(
+        -2
+      )}${`0${parseInt(rgb[3], 10).toString(16)}`.slice(-2)}`
     : orig;
 };
 
@@ -482,9 +467,7 @@ export const hexToRGB = (hex, alpha) => {
 export const getAlpha = color => {
   const regexValuesFromRgbaColor = /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/;
 
-  return color.match(regexValuesFromRgbaColor) !== null
-    ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100
-    : 100;
+  return color.match(regexValuesFromRgbaColor) !== null ? +color.match(regexValuesFromRgbaColor).slice(-1) * 100 : 100;
 };
 
 export const formatBytes = (bytes = 0, decimals = 2) => {

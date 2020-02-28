@@ -1,3 +1,4 @@
+/* eslint-disable react/no-this-in-sfc */
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
@@ -487,7 +488,7 @@ const EditClassification = ({
       }
       const canUpload = beforeUpload(file);
       if (!canUpload) {
-        throw new Error("file upload failed");
+        return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       setImageDimensions(imageUrl, true);

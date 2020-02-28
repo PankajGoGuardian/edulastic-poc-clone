@@ -633,7 +633,11 @@ class ModuleRow extends Component {
                             {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
                               (isAssigned ? (
                                 <AssignmentButton assigned={isAssigned}>
-                                  <Button onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
+                                  <Button  
+                                   data-cy= {currentAssignmentId.includes(moduleData.contentId)
+                                     ? "hide-assignment"
+                                     : "show-assignment"} 
+                                    onClick={() => this.setAssignmentDropdown(moduleData.contentId)}>
                                     <IconCheckSmall color={white} />
                                     &nbsp;&nbsp;
                                     {currentAssignmentId.includes(moduleData.contentId)

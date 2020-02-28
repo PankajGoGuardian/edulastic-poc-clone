@@ -77,8 +77,7 @@ export default class PlayListLibrary {
   searchByCollection = collection => {
     this.sidebar.clickOnPlayListLibrary();
     this.searchFilter.clearAll();
-    if (collection) this.searchFilter.setCollection(collection);
-    else this.searchFilter.sharedWithMe();
+    this.searchFilter.setCollection(collection);
   };
 
   createPlayList = (playListData, NoOfModules = 1) => {

@@ -86,10 +86,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
           authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
         });
         playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+        // TODO: Fix this once it is fixed
         // playListLibrary.reviewTab.verifyAssignedByModule(1);
       });
-      // TODO: remove skip once it is clarified
-      it.skip(">verify lcb,express grader and reports button", () => {
+
+      it(">verify lcb,express grader and reports button", () => {
         cy.server();
         cy.route("GET", "**/playlists/*").as("goToPlayList");
         for (let k = 0; k < 3; k++) {
@@ -232,26 +233,34 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       playListAssign.selectClass("Class");
       playListAssign.clickOnAssign();
     });
-    it(">verify progress-'teacher-1'", () => {
+    it(">verify assignments page-'teacher-1'", () => {
       playListLibrary.sidebar.clickOnAssignment();
       authorAssignmentPage.getStatus().should("have.length", testCount);
       originalTestIds.forEach(id => {
         authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
-      playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
-      //  playListLibrary.reviewTab.verifyModuleProgress(0, 1);
     });
-    it(">verify progress-'teacher-2'", () => {
+    it.skip(">verify progress-'teacher-1'", () => {
+      playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+      // TODO: unskip and fix this once progress starts appearing
+      playListLibrary.reviewTab.verifyModuleProgress(0, 1);
+    });
+    it(">verify assignments page-'teacher-2'", () => {
       cy.login("teacher", teacher2.email, teacher2.pass);
       playListLibrary.sidebar.clickOnAssignment();
       authorAssignmentPage.getStatus().should("have.length", testCount);
       originalTestIds.forEach(id => {
         authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
-      playListLibrary.searchByCollection();
+    });
+    it.skip(">verify progress-'teacher-2'", () => {
+      playListLibrary.sidebar.clickOnPlayListLibrary();
+      playListLibrary.searchFilter.clearAll();
+      playListLibrary.searchFilter.sharedWithMe();
       playListLibrary.clickOnPlayListCardById(playListId);
       playListLibrary.header.clickOnUseThis();
-      // playListLibrary.reviewTab.verifyModuleProgress(0, 1);
+      // TODO: unskip and fix this once progress starts appearing
+      playListLibrary.reviewTab.verifyModuleProgress(0, 1);
     });
   });
 });

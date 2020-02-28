@@ -24,7 +24,10 @@ export default class PlayListReview {
   getStandardsContainerByTestbyModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[class^="Tags_"]');
 
   getShowAssignmentByTestByModule = (mod, test) =>
-    this.getTestByTestByModule(mod, test).find('[data-cy="show-assignments"]');
+    this.getTestByTestByModule(mod, test).find('[data-cy="show-assignment"]');
+
+  getHideAssignmentByTestByModule = (mod, test) =>
+    this.getTestByTestByModule(mod, test).find('[data-cy="hide-assignment"]');
 
   getPresentationIconByTestByModule = (mod, test) =>
     this.getTestByTestByModule(mod, test)
@@ -38,6 +41,8 @@ export default class PlayListReview {
   getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
 
   clickShowAssignmentByTestByModule = (mod, test) => this.getShowAssignmentByTestByModule(mod, test).click();
+
+  clickHideAssignmentByTestByModule = (mod, test) => this.getHideAssignmentByTestByModule(mod, test).click();
 
   clickLcbIconByTestByIndex = (mod, test, index) => {
     cy.server();

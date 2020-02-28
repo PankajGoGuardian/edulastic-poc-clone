@@ -85,6 +85,7 @@ export default class TestAssignPage {
   };
 
   clickOnAssign = (duplicate = {}) => {
+    let assignmentIdObj = {};
     cy.wait(1000);
     cy.server();
     cy.route("POST", "**/assignments").as("assigned");
@@ -98,14 +99,16 @@ export default class TestAssignPage {
       cy.wait("@assigned").then(xhr => {
         assert(
           xhr.status === 200,
-          `assigning the assignment - ${
-            xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)
-          }`
+          `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
         );
+        // TODO: will be fixed as per requirement(class id can be included)
+        xhr.response.body.result.forEach(obj => {
+          assignmentIdObj[obj.testId] = obj._id;
+        });
       });
       if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) {
-        return cy.contains("Success!");
-      } else return cy.wait(1);
+        return cy.contains("Success!").then(() => assignmentIdObj);
+      } else return cy.wait(1).then(() => assignmentIdObj);
     } else return cy.wait(1);
   };
 
@@ -142,14 +145,11 @@ export default class TestAssignPage {
     this.clickOnDropDownOptionByText(text);
   };
 
-  getShuffleQue = () =>
-    cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
+  getShuffleQue = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
 
-  getShuffleChoices = () =>
-    cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
+  getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
 
-  getAnswerOnPaper = () =>
-    cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
+  getAnswerOnPaper = () => cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
 
   selectAnswerOnPaper = () =>
     this.getAnswerOnPaper().then($swich => {

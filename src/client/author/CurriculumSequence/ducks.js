@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
 import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
-import { flatten, cloneDeep, isEmpty, keyBy, omit } from "lodash";
+import { flatten, cloneDeep, isEmpty, omit } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -245,7 +245,13 @@ function* putCurriculumSequence({ payload }) {
       "sharedType"
     ]);
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
-
+    const { authors } = response;
+    const userId = yield select(getUserId);
+    if (authors && authors.map(author => author._id).includes(userId)) {
+      response.isAuthor = true;
+    } else {
+      response.isAuthor = false;
+    }
     message.success(`Successfully saved ${response.title}`);
     yield put(updateCurriculumSequenceAction(response));
   } catch (error) {
@@ -892,7 +898,7 @@ const setCurriculumSequencesReducer = (state, { payload }) => {
  */
 const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
-  const id = curriculumSequence?.[0]._id;
+  const id = curriculumSequence?.[0] && curriculumSequence[0]._id || curriculumSequence._id;
 
   state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {

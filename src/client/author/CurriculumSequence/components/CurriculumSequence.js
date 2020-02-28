@@ -611,7 +611,7 @@ class CurriculumSequence extends Component {
                     <SubHeaderTitleContainer>
                       <SubHeaderDescription>{description}</SubHeaderDescription>
                     </SubHeaderTitleContainer>
-                    {grades.length && (
+                    {!!grades.length && (
                       <SubHeaderInfoCard data-cy="playlist-grade">
                         <IconGraduationCap color="grey" />
                         <SubHeaderInfoCardText>
@@ -619,7 +619,7 @@ class CurriculumSequence extends Component {
                         </SubHeaderInfoCardText>
                       </SubHeaderInfoCard>
                     )}
-                    {subjects.length && (
+                    {!!subjects.length && (
                       <SubHeaderInfoCard data-cy="playlist-sub">
                         <IconBook color="grey" />
                         <SubHeaderInfoCardText>

@@ -9,7 +9,7 @@ import { withWindowSizes } from "@edulastic/common";
 
 import { themeColor, white } from "@edulastic/colors";
 import { Content } from "../../../TestPage/components/Container/styled";
-import { get } from "lodash";
+import { get, omit } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
   createPlaylistAction,
@@ -233,6 +233,12 @@ class Container extends PureComponent {
 
   renderContent = () => {
     const { playlist, setData, rows, isTestLoading, match, history, userId } = this.props;
+    const modules = playlist.modules.map(m => {
+      const data = m.data.map(d => omit(d, ["hidden"]));
+      m.data = data;
+      return omit(m, ["hidden"]);
+    });
+    playlist.modules = modules;
     const { authors, _id, bgColor = "", textColor = "" } = playlist;
     const owner = (authors && authors.some(x => x._id === userId)) || !_id;
     if (isTestLoading) {

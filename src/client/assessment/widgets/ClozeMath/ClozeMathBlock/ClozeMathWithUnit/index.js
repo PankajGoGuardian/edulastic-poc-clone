@@ -46,7 +46,7 @@ class ClozeMathWithUnit extends React.Component {
         }
         textarea.disabled = disableResponse;
         if (!disableResponse) {
-          textarea.addEventListener("keyup", this.handleKeypress);
+          textarea.addEventListener("keydown", this.handleKeypress);
         }
       });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
@@ -89,10 +89,25 @@ class ClozeMathWithUnit extends React.Component {
   // TODO
   // debounce if keypress is exhaustive
   handleKeypress = e => {
+    const { resprops = {}, id } = this.props;
+    const { item } = resprops;
+    const {
+      responseIds: { mathUnits = [] }
+    } = item;
+    const isArrowOrShift =
+      (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+    const { allowNumericOnly } = find(mathUnits, res => res.id === id) || {};
+    if (allowNumericOnly && !isArrowOrShift) {
+      if (!e.key.match(/[0-9+-./%^]/g)) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    }
+
     const { restrictKeys } = this;
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
       if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
         const isValidKey = restrictKeys.includes(e.key);
         if (!isValidKey) {
@@ -273,8 +288,17 @@ class ClozeMathWithUnit extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { item, uiStyles = {}, height, width, disableResponse = false, isPrintPreview, allOptions = [] } = resprops;
-    const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
+    const {
+      item,
+      uiStyles = {},
+      height,
+      width,
+      disableResponse = false,
+      isPrintPreview,
+      allOptions = []
+    } = resprops;
+    const { keypadMode, customUnits } =
+      find(item.responseIds.mathUnits, res => res.id === id) || {};
     const { showKeyboard, nativeKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
     const btnStyle = this.getStyles(uiStyles);
@@ -432,14 +456,23 @@ const ClozeMathInputField = styled.span`
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
+  const {
+    responseContainers,
+    item,
+    answers = {},
+    evaluation = [],
+    checked,
+    onInnerClick,
+    showIndex
+  } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const individualWidth = response?.widthpx || 0;
   const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } =
+    item.uiStyle || {};
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));

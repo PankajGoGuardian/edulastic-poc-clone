@@ -17,7 +17,8 @@ import {
   useThisPlayListAction,
   addContentToCurriculumSequenceAction,
   approveOrRejectSinglePlaylistRequestAction,
-  setPlaylistDataAction
+  setPlaylistDataAction,
+  receiveCurrentPlaylistMetrics
 } from "../ducks";
 import ShareModal from "../../src/components/common/ShareModal";
 import { CollectionsSelectModal } from "../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal";
@@ -104,10 +105,22 @@ class CurriculumContainer extends Component {
     // What we would need is an API to set it on the user and get it with the user object
     // Also - only 6ath grade has both content and guides mapped to testIds
 
-    const { match, getAllCurriculumSequences } = this.props;
+    const {
+      match,
+      getAllCurriculumSequences,
+      getCurrentPlaylistMetrics,
+      isStudent = false,
+      history: { location } = {}
+    } = this.props;
+
     const playlistId = match.params.id || match.params.playlistId;
     if (playlistId) {
       getAllCurriculumSequences([playlistId]);
+      if (isStudent) {
+        getCurrentPlaylistMetrics({ groupId: location?.state?.currentGroupId, playlistId });
+      } else {
+        getCurrentPlaylistMetrics({ playlistId });
+      }
     }
 
     this.expandAll();
@@ -356,6 +369,9 @@ const mapDispatchToProps = dispatch => ({
   },
   setPlaylistData(payload) {
     dispatch(setPlaylistDataAction(payload));
+  },
+  getCurrentPlaylistMetrics(payload) {
+    dispatch(receiveCurrentPlaylistMetrics(payload));
   }
 });
 
@@ -363,10 +379,11 @@ const enhance = compose(
   withWindowSizes,
   withNamespaces("author"),
   connect(
-    ({ curriculumSequence }) => ({
+    ({ curriculumSequence, user }) => ({
       curriculumSequences: curriculumSequence,
-      isContentExpanded: curriculumSequence.isContentExpanded,
-      destinationCurriculumSequence: curriculumSequence.destinationCurriculumSequence
+      isContentExpanded: curriculumSequence?.isContentExpanded,
+      destinationCurriculumSequence: curriculumSequence?.destinationCurriculumSequence,
+      isStudent: user?.user?.role === "student"
     }),
     mapDispatchToProps
   )

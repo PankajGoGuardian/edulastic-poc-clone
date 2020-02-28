@@ -1,5 +1,6 @@
 import API from "./utils/API";
 import moment from "moment";
+import qs from "qs";
 
 const api = new API();
 const prefix = "/playlists";
@@ -93,6 +94,16 @@ const duplicatePlayList = ({ _id, title }) =>
     })
     .then(res => res.data.result);
 
+const fetchPlaylistMetrics = data => {
+  const queryString = qs.stringify(data);
+  return api
+    .callApi({
+      method: "get",
+      url: `/report/playlist-metrics?${queryString}`
+    })
+    .then(result => result.data.result);
+};
+
 export default {
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
@@ -102,5 +113,6 @@ export default {
   publishPlaylist,
   updatePlaylistStatus,
   update,
-  duplicatePlayList
+  duplicatePlayList,
+  fetchPlaylistMetrics
 };

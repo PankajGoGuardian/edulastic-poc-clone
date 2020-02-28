@@ -2,14 +2,7 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Col, Button, Slider, Table } from "antd";
 
-import {
-  darkGrey,
-  grey,
-  fadedBlack,
-  fadedGrey,
-  lightGreySecondary,
-  themeColor
-} from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -472,6 +465,7 @@ export const StyledTag = styled.div`
 export const StyledLabel = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: ${props => props.padding || "0px"};
   font: ${props => props.fontStyle || "11px/15px Open Sans"};
   font-weight: ${props => props.fontWeight || "600"};

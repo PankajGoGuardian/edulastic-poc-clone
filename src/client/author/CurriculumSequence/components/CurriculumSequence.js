@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniqueId } from "lodash";
+import { uniqueId, round } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -21,12 +21,7 @@ import {
   textColor as descriptionColor,
   lightGreen5
 } from "@edulastic/colors";
-import {
-  IconShare,
-  IconGraduationCap,
-  IconBook,
-  IconTile
-} from "@edulastic/icons";
+import { IconShare, IconGraduationCap, IconBook, IconTile } from "@edulastic/icons";
 import { FlexContainer, MainHeader } from "@edulastic/common";
 import { Button, Cascader, Input, Modal, Progress, Radio } from "antd";
 
@@ -37,11 +32,7 @@ import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/Remov
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import BreadCrumb from "../../src/components/Breadcrumb";
 import { RadioInputWrapper } from "../../src/components/common/RadioInput";
-import {
-  getCollectionsSelector,
-  isPublisherUserSelector,
-  getUserRole
-} from "../../src/selectors/user";
+import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../src/selectors/user";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import {
   addNewUnitAction,
@@ -285,9 +276,7 @@ class CurriculumSequence extends Component {
     if (editFlow) {
       this.setState({ removeModuleIndex, removeTestId, showConfirmRemoveModal: true });
     } else {
-      this.setState({ removeModuleIndex, removeTestId }, () =>
-        removeTestFromPlaylist(removeModuleIndex, removeTestId)
-      );
+      this.setState({ removeModuleIndex, removeTestId }, () => removeTestFromPlaylist(removeModuleIndex, removeTestId));
     }
   };
 
@@ -316,12 +305,7 @@ class CurriculumSequence extends Component {
 
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
-    const {
-      onGuideChange,
-      handleRemoveTest,
-      removeTestFromPlaylist,
-      onCloseConfirmRemoveModal
-    } = this;
+    const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
     const {
       addUnit,
       addCustomContent,
@@ -352,7 +336,8 @@ class CurriculumSequence extends Component {
       features,
       urlHasUseThis,
       isPublisherUser,
-      isStudent
+      isStudent,
+      playlistMetricsList
     } = this.props;
 
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -360,16 +345,13 @@ class CurriculumSequence extends Component {
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
-        value: module.id,
-        label: module.name
-      }))
+          value: module.id,
+          label: module.name
+        }))
       : [];
 
     // TODO: change options2 to something more meaningful
-    const options2 = [
-      { value: "Lesson", label: "Lesson" },
-      { value: "Lesson 2", label: "Lesson 2" }
-    ];
+    const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
 
     // Dropdown options for guides
     const guidesDropdownOptions = curriculumGuides.map(item => ({
@@ -386,30 +368,39 @@ class CurriculumSequence extends Component {
       customize = true,
       isAuthor = false,
       bgColor = themeColor || "",
-      textColor = white || ""
+      textColor = white || "",
+      modules
     } = destinationCurriculumSequence;
 
-    // {
-    //   testId,
-    //   playlistModuleId,
-    //   plylistId,
-    //   maxScore,
-    //   timeSpent,
-    //   studentTotalScore,
-    //   correctCount,
-    //   wrongCount,
+    const getplaylistMetrics = () => {
+      const temp = {};
+      modules?.forEach(({ _id: moduleId }) => {
+        temp[moduleId] = playlistMetricsList.filter(x => x.playlistModuleId === moduleId);
+      });
+      return temp;
+    };
 
-    // }
+    const playlistMetrics = getplaylistMetrics();
 
-    const chartData = [
-      { name: "Module 1", value: 10, timeSpent: 4080000 },
-      { name: "Module 2", value: 10, timeSpent: 4000000 },
-      { name: "Module 3", value: 15, timeSpent: 4380000 },
-      { name: "Module 4", value: 30, timeSpent: 4180000 },
-      { name: "Module 5", value: 25, timeSpent: 5680000 },
-      { name: "Module 6", value: 15, timeSpent: 9080000 },
-      { name: "Module 7", value: 35, timeSpent: 4011000 }
-    ];
+    const summaryData = modules?.map((mod, i) => {
+      const { _id = "", data = {} } = mod;
+      const metricModule = playlistMetrics[_id] || {};
+      const name = `Module ${i + 1}`;
+      const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
+      const timeSpent = metricModule?.reduce((a, c) => a + (c?.timeSpent || 0), 0);
+      const assignments = data?.flatMap(x => x?.assignments) || [];
+      const classes = assignments?.reduce((a, c) => a + (c.length || 0), 0) || "-";
+      const submitted =
+        metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
+        "-";
+      return {
+        name,
+        value,
+        timeSpent,
+        classes,
+        submitted
+      };
+    });
 
     const COLORS = [
       "#11AB96",
@@ -426,31 +417,31 @@ class CurriculumSequence extends Component {
     ];
 
     // Module progress
-    const totalModules = destinationCurriculumSequence.modules
-      ? destinationCurriculumSequence.modules.length
-      : 0;
+    const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
     const modulesStatus = destinationCurriculumSequence.modules
-      ? destinationCurriculumSequence.modules.filter(m => {
-        if (m.data.length === 0) {
-          return false;
-        }
-        for (const test of m.data) {
-          if (!test.assignments || test.assignments.length === 0) {
-            return false;
-          }
-          for (const assignment of test.assignments) {
-            if (!assignment.class || assignment.class.length === 0) {
+      ? destinationCurriculumSequence.modules
+          .filter(m => {
+            if (m.data.length === 0) {
               return false;
             }
-            for (const cs of assignment.class) {
-              if (cs.status !== "DONE") {
+            for (const test of m.data) {
+              if (!test.assignments || test.assignments.length === 0) {
                 return false;
               }
+              for (const assignment of test.assignments) {
+                if (!assignment.class || assignment.class.length === 0) {
+                  return false;
+                }
+                for (const cs of assignment.class) {
+                  if (cs.status !== "DONE") {
+                    return false;
+                  }
+                }
+              }
             }
-          }
-        }
-        return true;
-      }).map(x => x._id)
+            return true;
+          })
+          .map(x => x._id)
       : [];
     const playlistBreadcrumbData = [
       {
@@ -485,11 +476,7 @@ class CurriculumSequence extends Component {
             onOk={this.handleAddUnit}
             onCancel={this.handleAddUnit}
             footer={null}
-            style={
-              windowWidth > desktopWidthValue
-                ? { minWidth: "640px", padding: "20px" }
-                : { padding: "20px" }
-            }
+            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
           >
             <AddUnitModalBody
               destinationCurriculumSequence={destinationCurriculumSequence}
@@ -505,11 +492,7 @@ class CurriculumSequence extends Component {
             onOk={this.handleAddCustomContent}
             onCancel={this.handleAddCustomContent}
             footer={null}
-            style={
-              windowWidth > desktopWidthValue
-                ? { minWidth: "640px", padding: "20px" }
-                : { padding: "20px" }
-            }
+            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
           >
             <ModalBody>
               <ModalLabelWrapper>
@@ -549,35 +532,30 @@ class CurriculumSequence extends Component {
             onCancel={this.handleGuideCancel}
           />
 
-          { mode !== "embedded" && (
+          {mode !== "embedded" && (
             <MainHeader
               headingText={title}
-              headingSubContent={!isPublisherUser && (
-                <IconTile
-                  style={{ cursor: "pointer", marginLeft: "18px" }}
-                  onClick={this.handleGuidePopup}
-                  width={18}
-                  height={18}
-                  color={themeColor}
-                />
-              )}
+              headingSubContent={
+                !isPublisherUser && (
+                  <IconTile
+                    style={{ cursor: "pointer", marginLeft: "18px" }}
+                    onClick={this.handleGuidePopup}
+                    width={18}
+                    height={18}
+                    color={themeColor}
+                  />
+                )
+              }
               titleMinWidth="100px"
               justify="flex-start"
             >
               <CurriculumHeaderButtons>
                 {(urlHasUseThis || features.isCurator) && !isStudent && (
                   <>
-                    <StyledButton
-                      width="45px"
-                      margin="0px 10px 0px 0px"
-                      data-cy="share"
-                      onClick={onShareClick}
-                    >
+                    <StyledButton width="45px" margin="0px 10px 0px 0px" data-cy="share" onClick={onShareClick}>
                       <IconShare color={lightGreen5} width={15} height={15} />
                     </StyledButton>
-                    <HeaderButton onClick={this.openDropPlaylistModal}>
-                      Drop Playlist
-                    </HeaderButton>
+                    <HeaderButton onClick={this.openDropPlaylistModal}>Drop Playlist</HeaderButton>
                   </>
                 )}
                 {isAuthor && !urlHasUseThis && (
@@ -591,14 +569,10 @@ class CurriculumSequence extends Component {
                   </HeaderButton>
                 )}
                 {features.isCurator && (status === "inreview" || status === "rejected") && (
-                  <HeaderButton onClick={this.onApproveClick}>
-                    Approve
-                  </HeaderButton>
+                  <HeaderButton onClick={this.onApproveClick}>Approve</HeaderButton>
                 )}
                 {features.isCurator && status === "inreview" && (
-                  <HeaderButton onClick={this.onRejectClick}>
-                    Reject
-                  </HeaderButton>
+                  <HeaderButton onClick={this.onRejectClick}>Reject</HeaderButton>
                 )}
               </CurriculumHeaderButtons>
             </MainHeader>
@@ -614,17 +588,13 @@ class CurriculumSequence extends Component {
                     {!!grades.length && (
                       <SubHeaderInfoCard data-cy="playlist-grade">
                         <IconGraduationCap color="grey" />
-                        <SubHeaderInfoCardText>
-                          Grade {grades.join(", ")}
-                        </SubHeaderInfoCardText>
+                        <SubHeaderInfoCardText>Grade {grades.join(", ")}</SubHeaderInfoCardText>
                       </SubHeaderInfoCard>
                     )}
                     {!!subjects.length && (
                       <SubHeaderInfoCard data-cy="playlist-sub">
                         <IconBook color="grey" />
-                        <SubHeaderInfoCardText>
-                          {subjects.filter(item => !!item).join(", ")}
-                        </SubHeaderInfoCardText>
+                        <SubHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SubHeaderInfoCardText>
                       </SubHeaderInfoCard>
                     )}
                     {customize && urlHasUseThis && !isStudent && (
@@ -660,6 +630,8 @@ class CurriculumSequence extends Component {
                     onSortEnd={onSortEnd}
                     handleTestsSort={handleTestsSort}
                     urlHasUseThis={urlHasUseThis}
+                    summaryData={summaryData}
+                    playlistMetrics={playlistMetrics}
                   />
                 )}
               </Wrapper>
@@ -669,14 +641,14 @@ class CurriculumSequence extends Component {
                 <SummaryBlockTitle>Summary</SummaryBlockTitle>
                 <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
                 <SummaryPieChart
-                  data={chartData}
-                  totalTimeSpent={chartData.map(x => x.timeSpent).reduce((a, c) => a + c, 0)}
+                  data={summaryData}
+                  totalTimeSpent={summaryData?.map(x => x?.timeSpent)?.reduce((a, c) => a + c, 0)}
                   colors={COLORS}
                 />
                 <Hr />
                 <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
                 <div style={{ width: "80%", margin: "20px auto" }}>
-                  {chartData.map((item, i) => (
+                  {summaryData?.map((item, i) => (
                     <div>
                       <ModuleTitle>{item.name}</ModuleTitle>
                       <Progress
@@ -685,18 +657,17 @@ class CurriculumSequence extends Component {
                           "100%": COLORS[i]
                         }}
                         strokeWidth={10}
-                        percent={40}
+                        percent={item.value}
+                        size="small"
                       />
                     </div>
                   ))}
                 </div>
-              </SummaryBlock>)}
+              </SummaryBlock>
+            )}
           </StyledFlexContainer>
         </CurriculumSequenceWrapper>
-        <DropPlaylistModal
-          visible={this.state.dropPlaylistModalVisible}
-          closeModal={this.closeDropPlaylistModal}
-        />
+        <DropPlaylistModal visible={this.state.dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
       </>
     );
   }
@@ -858,7 +829,7 @@ const HeaderButton = styled.div`
   text-transform: uppercase;
 
   &:hover {
-    box-shadow: 0px 0px 1px ${lightGreen5}
+    box-shadow: 0px 0px 1px ${lightGreen5};
   }
 
   svg {
@@ -1095,9 +1066,9 @@ const SubHeaderInfoCardText = styled.div`
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`
-@media (max-width: ${smallDesktopWidth}) {
-  flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
-}
+  @media (max-width: ${smallDesktopWidth}) {
+    flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -1125,7 +1096,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
       isStudent: getUserRole(state) === "student",
-      summaryData: state.curriculumSequence
+      playlistMetricsList: state?.curriculumSequence?.playlistMetrics
     }),
     {
       onGuideChange: changeGuideAction,

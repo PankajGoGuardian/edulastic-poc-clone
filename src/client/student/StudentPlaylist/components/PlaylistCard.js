@@ -7,31 +7,31 @@ import { themeColor, white } from "@edulastic/colors";
 
 const PlaylistCard = props => {
 
-    const { history, data = {} } = props;
+  const { history, data = {} } = props;
 
-    const handleViewPlaylist = () => history?.push?.(`/home/playlist/${data?.playlistId}`);
+  const handleViewPlaylist = () => history?.push?.({ pathname: `/home/playlist/${data?.playlistId}`, state: { currentGroupId: data?.groupId } });
 
-    return (
-      <ListContainer>
-        <FlexContainer width="100%" alignItems="flex-start">
-          <FlexContainer width="210px" justifyContent="center">
-            <img width="150" height="100" src="https://cdn2.edulastic.com/default/default-test-1.jpg" />
-          </FlexContainer>
-
-          <FlexContainer flexDirection="column" width="100%" marginBottom="20px" justifyContent="flex-start" padding="2px 2px 2px 15px">
-            <Link to={`/home/playlist/${data?.playlistId}`}><Title title="Playlist Title">{data?.title}</Title></Link>
-            <Description>{data?.description}</Description>
-          </FlexContainer>
-
-          <FlexContainer width="200px">
-            <ViewPlaylist onClick={handleViewPlaylist}>
-              <i className="fa fa-eye" />View
-            </ViewPlaylist>
-          </FlexContainer>
-
+  return (
+    <ListContainer>
+      <FlexContainer width="100%" alignItems="flex-start">
+        <FlexContainer width="210px" justifyContent="center">
+          <img width="150" height="100" src="https://cdn2.edulastic.com/default/default-test-1.jpg" />
         </FlexContainer>
-      </ListContainer>
-    );
+
+        <FlexContainer flexDirection="column" width="100%" marginBottom="20px" justifyContent="flex-start" padding="2px 2px 2px 15px">
+          <Link to={{ pathname: `/home/playlist/${data?.playlistId}`, state: { currentGroupId: data?.groupId } }}><Title title="Playlist Title">{data?.title}</Title></Link>
+          <Description>{data?.description}</Description>
+        </FlexContainer>
+
+        <FlexContainer width="200px">
+          <ViewPlaylist onClick={handleViewPlaylist}>
+            <i className="fa fa-eye" />View
+          </ViewPlaylist>
+        </FlexContainer>
+
+      </FlexContainer>
+    </ListContainer>
+  );
 };
 
 export default withRouter(PlaylistCard);

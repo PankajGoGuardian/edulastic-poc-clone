@@ -126,7 +126,11 @@ class AssessmentPlayerSimple extends React.Component {
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
     saveCurrentAnswer({ shouldClearUserWork: true });
-    history.push("/home/assignments");
+    if (history?.location?.state?.playlistAssignmentFlow) {
+      history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
+    } else {
+      history.push("/home/assignments");
+    }
   };
 
   showHideHints = () => {
@@ -315,10 +319,10 @@ class AssessmentPlayerSimple extends React.Component {
                 top={`${headerHeight}px`}
                 position="fixed"
               />
-            
+
               {this.state.toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
                 <CalculatorContainer calculateMode={`${settings.calcType}_${settings.calcProvider}`} />
-            ) : null}
+              ) : null}
               <PlayerMainContentArea
                 {...this.props}
                 theme={themeToPass}

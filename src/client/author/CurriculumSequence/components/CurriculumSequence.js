@@ -580,8 +580,8 @@ class CurriculumSequence extends Component {
               <Link to="/author/playlists">Go To Library</Link>
             </ModalFooter>
           </Modal>
-          
-          { mode !== "embedded" && (
+
+          {mode !== "embedded" && (
             <MainHeader
               headingText={title}
               headingSubContent={!isPublisherUser && (

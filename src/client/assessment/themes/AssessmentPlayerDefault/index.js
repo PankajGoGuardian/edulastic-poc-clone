@@ -172,7 +172,11 @@ class AssessmentPlayerDefault extends React.Component {
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
     saveCurrentAnswer({ shouldClearUserWork: true });
-    history.push("/home/assignments");
+    if (history?.location?.state?.playlistAssignmentFlow) {
+      history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
+    } else {
+      history.push("/home/assignments");
+    }
   };
 
   onFillColorChange = obj =>
@@ -410,9 +414,9 @@ class AssessmentPlayerDefault extends React.Component {
             ? "11px"
             : "11px 5px"
           : windowWidth >= LARGE_DESKTOP_WIDTH
-          ? "9px 0px"
-          : "11px 0px"
-      }`,
+            ? "9px 0px"
+            : "11px 0px"
+        }`,
       justifyContent: "space-between"
     };
 
@@ -479,6 +483,7 @@ class AssessmentPlayerDefault extends React.Component {
             finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
+
             <Tools
               onFillColorChange={this.onFillColorChange}
               fillColor={fillColor}
@@ -496,6 +501,7 @@ class AssessmentPlayerDefault extends React.Component {
               className="scratchpad-tools"
             />
           )}
+
             <FeaturesSwitch
               inputFeatures="studentSettings"
               actionOnInaccessible="hidden"
@@ -519,19 +525,19 @@ class AssessmentPlayerDefault extends React.Component {
               />
             </FeaturesSwitch>
             {!previewPlayer && (
-            <SavePauseModalMobile
-              isVisible={isSavePauseModalVisible}
-              onClose={this.closeSavePauseModal}
-              onExitClick={this.openSubmitConfirmation}
-            />
-          )}
+              <SavePauseModalMobile
+                isVisible={isSavePauseModalVisible}
+                onClose={this.closeSavePauseModal}
+                onExitClick={this.openSubmitConfirmation}
+              />
+            )}
             {!previewPlayer && (
-            <SubmitConfirmation
-              isVisible={isSubmitConfirmationVisible}
-              onClose={() => this.closeSubmitConfirmation()}
-              finishTest={this.finishTest}
-            />
-          )}
+              <SubmitConfirmation
+                isVisible={isSubmitConfirmationVisible}
+                onClose={() => this.closeSubmitConfirmation()}
+                finishTest={this.finishTest}
+              />
+            )}
             <Main
               skin
               zoomed={isZoomApplied}
@@ -549,61 +555,61 @@ class AssessmentPlayerDefault extends React.Component {
                   hasCollapseButtons={hasCollapseButtons}
                 >
                   {testItemState === "" && (
-                  <TestItemPreview
-                    LCBPreviewModal={LCBPreviewModal}
-                    cols={itemRows}
-                    previousQuestionActivity={previousQuestionActivity}
-                    questions={passage ? { ...questions, ...keyBy(passage.data, "id") } : questions}
-                    showCollapseBtn
-                    highlights={highlights}
-                    crossAction={crossAction || {}}
-                    viewComponent="studentPlayer"
-                    setHighlights={this.saveHistory("resourceId")}
-                    setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
-                    activeMode={activeMode}
-                    scratchPadMode={scratchPadMode}
-                    lineColor={currentColor}
-                    deleteMode={deleteMode}
-                    lineWidth={lineWidth}
-                    fillColor={fillColor}
-                    fontFamily={currentFont}
-                    saveHistory={this.saveHistory("scratchpad")}
-                    history={scratchPad}
-                  />
-                )}
+                    <TestItemPreview
+                      LCBPreviewModal={LCBPreviewModal}
+                      cols={itemRows}
+                      previousQuestionActivity={previousQuestionActivity}
+                      questions={passage ? { ...questions, ...keyBy(passage.data, "id") } : questions}
+                      showCollapseBtn
+                      highlights={highlights}
+                      crossAction={crossAction || {}}
+                      viewComponent="studentPlayer"
+                      setHighlights={this.saveHistory("resourceId")}
+                      setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
+                      activeMode={activeMode}
+                      scratchPadMode={scratchPadMode}
+                      lineColor={currentColor}
+                      deleteMode={deleteMode}
+                      lineWidth={lineWidth}
+                      fillColor={fillColor}
+                      fontFamily={currentFont}
+                      saveHistory={this.saveHistory("scratchpad")}
+                      history={scratchPad}
+                    />
+                  )}
                   {testItemState === "check" && (
-                  <TestItemPreview
-                    cols={itemRows}
-                    previewTab="check"
-                    preview={preview}
-                    previousQuestionActivity={previousQuestionActivity}
-                    evaluation={evaluation}
-                    verticalDivider={item.verticalDivider}
-                    scrolling={item.scrolling}
-                    questions={questions}
-                    LCBPreviewModal={LCBPreviewModal}
-                    highlights={highlights}
-                    crossAction={crossAction || {}}
-                    showCollapseBtn
-                    viewComponent="studentPlayer"
-                    setHighlights={this.saveHistory("resourceId")} // this needs only for passage type
-                    setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
-                    activeMode={activeMode}
-                    scratchPadMode={scratchPadMode}
-                    lineColor={currentColor}
-                    deleteMode={deleteMode}
-                    lineWidth={lineWidth}
-                    fillColor={fillColor}
-                    fontFamily={currentFont}
-                    saveHistory={this.saveHistory("scratchpad")}
-                    history={scratchPad}
-                  />
-                )}
+                    <TestItemPreview
+                      cols={itemRows}
+                      previewTab="check"
+                      preview={preview}
+                      previousQuestionActivity={previousQuestionActivity}
+                      evaluation={evaluation}
+                      verticalDivider={item.verticalDivider}
+                      scrolling={item.scrolling}
+                      questions={questions}
+                      LCBPreviewModal={LCBPreviewModal}
+                      highlights={highlights}
+                      crossAction={crossAction || {}}
+                      showCollapseBtn
+                      viewComponent="studentPlayer"
+                      setHighlights={this.saveHistory("resourceId")} // this needs only for passage type
+                      setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false} // this needs only for MCQ and MSQ
+                      activeMode={activeMode}
+                      scratchPadMode={scratchPadMode}
+                      lineColor={currentColor}
+                      deleteMode={deleteMode}
+                      lineWidth={lineWidth}
+                      fillColor={fillColor}
+                      fontFamily={currentFont}
+                      saveHistory={this.saveHistory("scratchpad")}
+                      history={scratchPad}
+                    />
+                  )}
                   {showHints && (
-                  <StyledPaddingDiv>
-                    <Hints questions={get(item, [`data`, `questions`], [])} />
-                  </StyledPaddingDiv>
-                )}
+                    <StyledPaddingDiv>
+                      <Hints questions={get(item, [`data`, `questions`], [])} />
+                    </StyledPaddingDiv>
+                  )}
                 </MainWrapper>
               </ScrollContext.Provider>
             </Main>
@@ -611,8 +617,8 @@ class AssessmentPlayerDefault extends React.Component {
             <ReportIssuePopover item={item} />
 
             {currentToolMode.indexOf(2) !== -1 && (
-            <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
-          )}
+              <CalculatorContainer changeTool={this.changeTool} calculateMode={calculateMode} calcBrands={calcBrands} />
+            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

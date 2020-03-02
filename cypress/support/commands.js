@@ -143,9 +143,9 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.clearToken();
   // FIXME: sometimgs app fails to load to login page
   if (Cypress.$(".footerDropdown").length > 0) {
-    cy.get(".footerDropdown").click({ force: true });
-    cy.get('[data-cy="footer-dropdown"]').click({ force: true });
-    cy.get('[data-cy="signout"]').click({ force: true });
+    Cypress.$(".footerDropdown").click();
+    Cypress.$('[data-cy="footer-dropdown"]').click();
+    Cypress.$('[data-cy="signout"]').click();
   }
 
   const login = new LoginPage();

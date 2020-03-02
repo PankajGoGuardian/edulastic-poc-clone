@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import moment from "moment";
 import { PieChart, Pie, Sector, Cell } from "recharts";
 
 const renderActiveShape = props => {
@@ -10,18 +11,19 @@ const renderActiveShape = props => {
     startAngle,
     endAngle,
     fill,
-    timeSpent = 0,
+    tSpent = 0,
     totalTimeSpent = 0,
     showTotalTime
   } = props;
 
-  const getFormattedTime = timeSpent => {
-    const minutes = Math.floor((timeSpent / (1000 * 60)) % 60);
-    const hours = Math.floor((timeSpent / (1000 * 60 * 60)) % 24);
-    return [`${hours} Hr`, `${minutes} MINS`];
+  const getFormattedTime = timeInMillis => {
+    const duration = moment.duration(timeInMillis);
+    const minutes = duration.minutes();
+    const hours = duration.hours();
+    return [`${hours} hr`, `${minutes} MINS`];
   };
 
-  const formattedTime = showTotalTime ? getFormattedTime(totalTimeSpent) : getFormattedTime(timeSpent);
+  const formattedTime = showTotalTime ? getFormattedTime(totalTimeSpent) : getFormattedTime(tSpent);
 
   return (
     <g>
@@ -53,7 +55,12 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors }) => {
     setActiveIndex(index);
   };
 
-  const chartData = data?.filter(x => x?.timeSpent !== 0);
+  const chartData = data
+    ?.filter(x => x?.tSpent !== 0)
+    ?.map(x => ({
+      ...x,
+      value: x?.tSpent
+    }));
 
   return (
     <PieChart width={315} height={250}>
@@ -71,7 +78,7 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors }) => {
         onMouseLeave={() => setDefaultTimeSpent(true)}
         showTotalTime={showTotalTime}
       >
-        {chartData?.map((e, index) => <Cell fill={colors[index % colors.length]} />)}
+        {chartData?.map(m => <Cell fill={colors[m.index % colors.length]} />)}
       </Pie>
     </PieChart>
   );

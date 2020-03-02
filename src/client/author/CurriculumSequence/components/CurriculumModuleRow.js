@@ -7,6 +7,7 @@ import { round } from "lodash";
 import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import moment from "moment";
 import { omit } from "lodash";
 import produce from "immer";
 import { Button, Menu, Dropdown, Icon, Modal, Row as AntRow, Col, message, Progress, Avatar } from "antd";
@@ -334,25 +335,6 @@ class ModuleRow extends Component {
       DONE: themeColor
     };
 
-    // TODO: Backend & Frontend changes for replacing dummyData
-    const dummyData = {
-      color: module.color || "red",
-      percentage: 60,
-      scores: "120/240",
-      timeSpent: "3 hr 9 mins",
-      classes: 3,
-      submitted: 80,
-      moduleData: {
-        color: "yellow",
-        percentage: 70,
-        submitted: 40,
-        scores: "36/40",
-        classes: 1,
-        timeSpent: "1 hr 20 mins",
-        statusForStudent: "IN PROGRESS"
-      }
-    };
-
     const menu = (
       <Menu data-cy="addContentMenu">
         {curriculum.modules.map(moduleItem => (
@@ -532,12 +514,18 @@ class ModuleRow extends Component {
                       totalAssigned = 0,
                       totalScore = 0,
                       maxScore = 0,
-                      timeSpent = 0
+                      timeSpent: tSpent = 0
                     } = data;
                     const submitted = assignmentId ? round((gradedCount / totalAssigned) * 100, 0) : 0;
                     const progress = round((totalScore / maxScore) * 100, 0) || 0;
                     const classes = assignments?.[0]?.["class"]?.length || 0;
                     const scores = 0;
+
+                    const duration = moment.duration(tSpent);
+                    const h = duration.minutes();
+                    const m = duration.hours();
+
+                    const timeSpent = h > 0 ? `${h}H ${m}mins` : `${m}min`;
 
                     return {
                       submitted,

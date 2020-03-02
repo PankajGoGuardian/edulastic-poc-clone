@@ -383,26 +383,36 @@ class CurriculumSequence extends Component {
 
     const playlistMetrics = getplaylistMetrics();
 
-    const summaryData = modules?.map((mod, i) => {
+    const summaryData = modules?.map((mod, index) => {
       const { _id = "", data = {} } = mod;
       const metricModule = playlistMetrics[_id] || {};
-      const name = `Module ${i + 1}`;
+      const name = `Module ${index + 1}`;
       const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
-      const timeSpent = metricModule?.reduce((a, c) => a + (c?.timeSpent || 0), 0);
+      const tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
       const assignments = data?.flatMap(x => x?.assignments) || [];
       const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
       const submitted =
         metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
         "-";
+
+      const duration = moment.duration(tSpent);
+      const h = duration.hours();
+      const m = duration.minutes();
+
+      const timeSpent = h > 0 ? `${h}H ${m}mins` : `${m}min`;
+
       return {
         name,
         value,
         timeSpent,
         classes,
-        submitted
+        submitted,
+        tSpent,
+        index
       };
     });
 
+    // CURRENT LIMIT on MODULE COLORS is - 11
     const COLORS = [
       "#11AB96",
       "#F74565",
@@ -643,19 +653,19 @@ class CurriculumSequence extends Component {
                 <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
                 <SummaryPieChart
                   data={summaryData}
-                  totalTimeSpent={summaryData?.map(x => x?.timeSpent)?.reduce((a, c) => a + c, 0)}
+                  totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
                   colors={COLORS}
                 />
                 <Hr />
                 <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
                 <div style={{ width: "80%", margin: "20px auto" }}>
-                  {summaryData?.map((item, i) => (
+                  {summaryData?.map(item => (
                     <div>
                       <ModuleTitle>{item.name}</ModuleTitle>
                       <Progress
                         strokeColor={{
-                          "0%": getProgressColor(item.value),
-                          "100%": getProgressColor(item.value)
+                          "0%": getProgressColor(item?.value),
+                          "100%": getProgressColor(item?.value)
                         }}
                         strokeWidth={10}
                         percent={item.value}

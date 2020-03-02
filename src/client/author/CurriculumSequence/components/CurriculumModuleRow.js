@@ -257,11 +257,16 @@ class ModuleRow extends Component {
     const dataToUpdate = produce(curriculum, draftState => {
       const currentModule = draftState.modules.find(el => el._id === module._id);
       currentModule.hidden = !module.hidden;
+      currentModule.data = currentModule.data.map(test => {
+        return {
+          ...omit(test, ["standards", "alignment", "assignments"]),
+          hidden: !module.hidden
+        };
+      });
       draftState.modules = draftState.modules.map(mod => {
         mod.data = mod.data.map(test => {
           return {
-            ...omit(test, ["standards", "alignment", "assignments"]),
-            hidden: !module.hidden
+            ...omit(test, ["standards", "alignment", "assignments"])
           };
         });
         return mod;

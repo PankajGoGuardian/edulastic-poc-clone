@@ -263,17 +263,9 @@ class ModuleRow extends Component {
       currentModule.hidden = !module.hidden;
       currentModule.data = currentModule.data.map(test => {
         return {
-          ...omit(test, ["standards", "alignment", "assignments"]),
+          ...test,
           hidden: !module.hidden
         };
-      });
-      draftState.modules = draftState.modules.map(mod => {
-        mod.data = mod.data.map(test => {
-          return {
-            ...omit(test, ["standards", "alignment", "assignments"])
-          };
-        });
-        return mod;
       });
       if ((this.props.collapsed && !currentModule.hidden) || (!this.props.collapsed && currentModule.hidden)) {
         this.props.onCollapseExpand(moduleIndex);
@@ -297,10 +289,6 @@ class ModuleRow extends Component {
       } else {
         module.hidden = false;
       }
-      draftState.modules = draftState.modules.map(mod => {
-        mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
-        return mod;
-      });
     });
 
     updateCurriculumSequence({

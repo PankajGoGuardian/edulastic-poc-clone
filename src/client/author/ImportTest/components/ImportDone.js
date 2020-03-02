@@ -1,12 +1,15 @@
 import React from "react";
-import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
-
+import { connect } from "react-redux";
 import { List } from "antd";
+import { withNamespaces } from "@edulastic/localization";
+
 import { FlexContainer, StyledButton } from "./styled";
 import TitleWrapper from "../../AssignmentCreate/common/TitleWrapper";
+import { getCompletedJobsByStatus, getJobsDataSelector } from "../ducks";
 
-const ImportDone = ({ t }) => {
+// eslint-disable-next-line
+const ImportDone = ({ t, jobsByStatus, jobsData }) => {
   const ContinueBtn = (
     <div
       style={{
@@ -21,6 +24,7 @@ const ImportDone = ({ t }) => {
       </StyledButton>
     </div>
   );
+
   return (
     <FlexContainer flexDirection="column" width="65%">
       <TitleWrapper>{t("qtiimport.done.title")}</TitleWrapper>
@@ -49,7 +53,14 @@ const ImportDone = ({ t }) => {
 };
 
 ImportDone.propTypes = {
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  jobsByStatus: PropTypes.object.isRequired,
+  jobsData: PropTypes.object.isRequired
 };
 
-export default withNamespaces("qtiimport")(ImportDone);
+export default withNamespaces("qtiimport")(
+  connect(state => ({
+    jobsByStatus: getCompletedJobsByStatus(state),
+    jobsData: getJobsDataSelector(state)
+  }))(ImportDone)
+);

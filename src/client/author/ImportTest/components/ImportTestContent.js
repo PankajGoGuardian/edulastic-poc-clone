@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -9,8 +9,31 @@ import { ContentWrapper, StyledContent } from "./styled";
 import UploadTest from "./UploadTest";
 import ImportInprogress from "./ImportInProgress";
 import ImportDone from "./ImportDone";
+import {
+  uploadTestStatusAction,
+  setJobIdsAction,
+  qtiImportProgressAction,
+  UPLOAD_STATUS
+} from "../ducks";
 
-const ImportTestContent = ({ importTestDetails = {} }) => {
+const ImportTestContent = ({ uploadTestStatus, setJobIds, jobIds, status, qtiImportProgress }) => {
+  const [isLoading, setisLoading] = useState(false);
+  useEffect(() => {
+    const currentStatus = sessionStorage.getItem("testUploadStatus");
+    const sessionJobs = sessionStorage.getItem("jobIds");
+    if (currentStatus) {
+      uploadTestStatus(currentStatus);
+      setJobIds(sessionJobs ? JSON.parse(sessionJobs) : []);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status !== UPLOAD_STATUS.STANDBY && jobIds.length && !isLoading) {
+      qtiImportProgress(jobIds);
+      setisLoading(true);
+    }
+  }, [jobIds, status]);
+
   const breadcrumbData = [
     {
       title: "RECENT ASSIGNMENTS",
@@ -22,20 +45,18 @@ const ImportTestContent = ({ importTestDetails = {} }) => {
     }
   ];
 
-  const getComponentBySatus = status => {
+  const getComponentBySatus = () => {
     switch (true) {
-      case status === "STANDBY":
+      case status === UPLOAD_STATUS.STANDBY:
         return <UploadTest />;
-      case status === "INITIATE":
+      case status === UPLOAD_STATUS.INITIATE:
         return <ImportInprogress />;
-      case status === "DONE":
+      case status === UPLOAD_STATUS.DONE:
         return <ImportDone />;
       default:
         return <UploadTest />;
     }
   };
-
-  const { status } = importTestDetails;
 
   return (
     <ContentWrapper>
@@ -47,17 +68,30 @@ const ImportTestContent = ({ importTestDetails = {} }) => {
         }}
       />
 
-      <StyledContent status={status}>{getComponentBySatus(status)}</StyledContent>
+      <StyledContent status={status}>{getComponentBySatus()}</StyledContent>
     </ContentWrapper>
   );
 };
 
 ImportTestContent.propTypes = {
-  importTestDetails: PropTypes.object.isRequired
+  status: PropTypes.string.isRequired,
+  jobIds: PropTypes.array.isRequired
 };
 
 const mapStateToProps = ({ admin: { importTest } }) => ({
-  importTestDetails: importTest
+  status: importTest.status,
+  jobIds: importTest.jobIds
 });
 
-export default withNamespaces("qtiimport")(withRouter(connect(mapStateToProps)(ImportTestContent)));
+export default withNamespaces("qtiimport")(
+  withRouter(
+    connect(
+      mapStateToProps,
+      {
+        uploadTestStatus: uploadTestStatusAction,
+        setJobIds: setJobIdsAction,
+        qtiImportProgress: qtiImportProgressAction
+      }
+    )(ImportTestContent)
+  )
+);

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
-import { Select } from "antd";
+import { Select, message } from "antd";
 import { get, groupBy } from "lodash";
 import {
   CanvasClassTable,
@@ -127,6 +127,9 @@ const CanvasBulkAddClass = ({
   };
 
   const handleFinish = () => {
+    if (!selectedRows.length) {
+      return message.error("Please select atleast one canvas course section to sync.");
+    }
     const selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
     bulkSyncCanvasClass(selectedClasses);
     setShowModal(true);
@@ -137,6 +140,8 @@ const CanvasBulkAddClass = ({
     setShowModal(false);
     signupSuccess(rest);
   };
+  
+  const activeCourseList = useMemo(() => courseList.filter(c => +c.active === 1), [courseList]);
 
   const columns = [
     {
@@ -249,8 +254,8 @@ const CanvasBulkAddClass = ({
           onChange={val => handleChange(ind, "courseId", val)}
           getPopupContainer={triggerNode => triggerNode.parentNode}
         >
-          {courseList &&
-            courseList.map(course => (
+          {activeCourseList &&
+            activeCourseList.map(course => (
               <Select.Option value={course._id} key={course._id}>
                 {course.name}
               </Select.Option>

@@ -429,7 +429,6 @@ class CurriculumSequence extends Component {
     ];
 
     // Module progress
-    const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
     const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules
           .filter(m => {
@@ -455,6 +454,7 @@ class CurriculumSequence extends Component {
           })
           .map(x => x._id)
       : [];
+
     const playlistBreadcrumbData = [
       {
         title: "PLAY LIST",
@@ -465,6 +465,7 @@ class CurriculumSequence extends Component {
         to: ""
       }
     ];
+
     const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
     return (

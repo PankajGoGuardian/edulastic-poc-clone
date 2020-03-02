@@ -6,9 +6,21 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
-import { lightGreySecondary, black, white, secondaryTextColor, titleColor, greyishBorder, themeColor } from "@edulastic/colors";
-import { fetchClassListAction, fetchStudentListAction, dropPlaylistAction, fetchPlaylistDroppedAccessList } from "../../ducks";
-
+import {
+  lightGreySecondary,
+  black,
+  white,
+  secondaryTextColor,
+  titleColor,
+  greyishBorder,
+  themeColor
+} from "@edulastic/colors";
+import {
+  fetchClassListAction,
+  fetchStudentListAction,
+  dropPlaylistAction,
+  fetchPlaylistDroppedAccessList
+} from "../../ducks";
 
 const getFooterComponent = ({ dropPlaylist }) => (
   <FlexContainer width="450px">
@@ -22,11 +34,16 @@ const DroppedItem = ({ onDelete, item }) => (
   <FlexContainer justifyContent="space-between" height="28px">
     <ItemName>{item.name}</ItemName>
     <ActionWrapper>
-      {
-        item.type === "class" ?
-          (<IconWrapper fontSize="13" title="CLASS LEVEL ACCESS"><i className="fa fa-users" aria-hidden="true" /></IconWrapper>) :
-          (<IconWrapper fontSize="13" title="STUDENT LEVEL ACCESS"> <i className="fa fa-user" aria-hidden="true" /></IconWrapper>)
-      }
+      {item.type === "class" ? (
+        <IconWrapper fontSize="13" title="CLASS LEVEL ACCESS">
+          <i className="fa fa-users" aria-hidden="true" />
+        </IconWrapper>
+      ) : (
+        <IconWrapper fontSize="13" title="STUDENT LEVEL ACCESS">
+          {" "}
+          <i className="fa fa-user" aria-hidden="true" />
+        </IconWrapper>
+      )}
       <IconWrapper
         fontSize="16"
         onClick={() => onDelete(item)}
@@ -40,25 +57,17 @@ const DroppedItem = ({ onDelete, item }) => (
 );
 
 const DropPlaylistModal = props => {
-
   const {
     visible = false,
     closeModal,
-    dropPlaylistSource: {
-      classList = [],
-      studentList = []
-    } = {},
+    dropPlaylistSource: { classList = [], studentList = [] } = {},
     droppedAccessData,
     districtId,
     fetchClassListAction,
     fetchPlaylistDroppedAccessList,
     fetchStudentListAction,
     dropPlaylistAction,
-    destinationCurriculumSequence: {
-      _id: playlistId,
-      title,
-      description
-    } = {},
+    destinationCurriculumSequence: { _id: playlistId, title, description } = {},
     classListFetching,
     studentListFetching
   } = props;
@@ -81,18 +90,22 @@ const DropPlaylistModal = props => {
   }, [visible]);
 
   useEffect(() => {
-    setAddedClass(droppedAccessData?.classList?.map(x => ({
-      id: x?._id,
-      name: x?.name,
-      type: "class"
-    })));
+    setAddedClass(
+      droppedAccessData?.classList?.map(x => ({
+        id: x?._id,
+        name: x?.name,
+        type: "class"
+      }))
+    );
 
-    setAddedStudent(droppedAccessData?.studentList?.map(x => ({
-      id: x?._id,
-      name: x?.name,
-      classId: x?.groupId,
-      type: "student"
-    })));
+    setAddedStudent(
+      droppedAccessData?.studentList?.map(x => ({
+        id: x?._id,
+        name: x?.name,
+        classId: x?.groupId,
+        type: "student"
+      }))
+    );
   }, [droppedAccessData]);
 
   useEffect(() => {
@@ -118,9 +131,11 @@ const DropPlaylistModal = props => {
     } else {
       const classIds = value.flatMap(x => studentList?.filter(y => y?.id === x.key)?.map(z => z?.classId));
       setAddedClass(prev => prev.filter(x => !classIds?.includes(x?.id)));
-      setAddedStudent(value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId })));
+      setAddedStudent(
+        value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId }))
+      );
     }
-  }
+  };
 
   const onItemDelete = item => {
     setMode("delete");
@@ -131,7 +146,7 @@ const DropPlaylistModal = props => {
       setAddedStudent(prev => prev.filter(x => x?.id !== item?.id));
       setRemovedStudent(prev => prev.concat(item?.id));
     }
-  }
+  };
 
   const dropPlaylist = () => {
     const payload = {
@@ -146,20 +161,20 @@ const DropPlaylistModal = props => {
         classList: removedClass,
         studentList: removedStudent
       }
-    }
+    };
     if (dropPlaylistAction(payload)) {
       message.success("DropPlaylist Successful");
       closeModal();
     }
-  }
+  };
 
   const fetchStudents = ({ key }) => {
     if (searchBy === "byClass" && !studentList.some(x => x.classId === key)) {
       fetchStudentListAction({ districtId, classId: key });
     }
-  }
+  };
 
-  const addedSource = (searchBy === "byClass" ? addedClass : addedStudent);
+  const addedSource = searchBy === "byClass" ? addedClass : addedStudent;
   const source = searchBy === "byClass" ? classList : studentList;
   const addedData = [...addedClass, ...addedStudent];
   const isLoading = searchBy === "byClass" ? classListFetching : studentListFetching;
@@ -196,23 +211,28 @@ const DropPlaylistModal = props => {
           ))}
         </Select>
 
-        <br /><br />
+        <br />
+        <br />
 
-        <Radio.Group onChange={changeSearchSource} value={searchBy}>
-          <Radio value="byClass">By Class</Radio>
-          <Radio value="byStudent">By Student</Radio>
+        <Radio.Group style={{ display: "flex" }} onChange={changeSearchSource} value={searchBy}>
+          <Radio style={{ width: "50%" }} value="byClass">
+            <label style={{ paddingLeft: "15px", fontWeight: "600" }}>BY CLASS</label>
+          </Radio>
+          <Radio style={{ width: "100%" }} value="byStudent">
+            <label style={{ paddingLeft: "15px", fontWeight: "600" }}>SPECIFIC STUDENTS</label>
+          </Radio>
         </Radio.Group>
 
-        <br /><br />
+        <br />
+        <br />
 
         <Title>WHO HAS DROP ACCESS</Title>
         <DroppedList>
-          {
-            addedData.map(x => <DroppedItem key={x.id} onDelete={onItemDelete} item={x} />)
-          }
+          {addedData.map(x => (
+            <DroppedItem key={x.id} onDelete={onItemDelete} item={x} />
+          ))}
         </DroppedList>
       </>
-
     </StyledPurchaseLicenseModal>
   );
 };
@@ -233,7 +253,6 @@ export default connect(
     fetchPlaylistDroppedAccessList
   }
 )(DropPlaylistModal);
-
 
 const StyledPurchaseLicenseModal = styled(Modal)`
   width: 560px !important;
@@ -267,7 +286,7 @@ const StyledPurchaseLicenseModal = styled(Modal)`
     padding: 22px 10px;
   }
 
-  .ant-modal-close-x{
+  .ant-modal-close-x {
     right: 100px;
   }
 
@@ -278,27 +297,27 @@ const StyledPurchaseLicenseModal = styled(Modal)`
     right: 30px;
   }
 
-  .anticon, 
-  .anticon-check, 
-  .ant-select-selected-icon{
+  .anticon,
+  .anticon-check,
+  .ant-select-selected-icon {
     display: none;
   }
 
-  .ant-modal-close-icon{
+  .ant-modal-close-icon {
     display: block;
     margin-right: 30px;
     margin-top: 25px;
     transform: scale(1.2);
   }
-  
-  .ant-select-selection__choice{
+
+  .ant-select-selection__choice {
     display: none;
   }
   .ant-select-selection__placeholder {
-    display: block!important;
+    display: block !important;
   }
 
-  .ant-select-dropdown{
+  .ant-select-dropdown {
     min-height: 40px;
   }
 `;
@@ -336,32 +355,32 @@ export const ThemeButton = styled(Button)`
 `;
 
 const DroppedList = styled(PerfectScrollbar)`
-    width: 100%;
-    height: 200px;
-    overflow: auto;
-    background: ${lightGreySecondary};
-    border: 1px solid ${greyishBorder}; 
-    margin: auto;
-    padding: 10px;
+  width: 100%;
+  height: 200px;
+  overflow: auto;
+  background: ${lightGreySecondary};
+  border: 1px solid ${greyishBorder};
+  margin: auto;
+  padding: 10px;
 `;
 
 const ItemName = styled.div`
-    color: #444;
-    font-weight: 600;
-    font-size: 12px;
+  color: #444;
+  font-weight: 600;
+  font-size: 12px;
 `;
 
 const ActionWrapper = styled.div`
-    margin: 8px;
-    display: flex;
+  margin: 8px;
+  display: flex;
 `;
 
 const IconWrapper = styled.div`
-    margin: 2px 10px;
-    cursor: ${({ show }) => show && "pointer"};
+  margin: 2px 10px;
+  cursor: ${({ show }) => show && "pointer"};
 
-    i{
-        color: ${({ show }) => show ? themeColor : greyishBorder}; 
-        font-size: ${({ fontSize }) => fontSize}px;
-    }
+  i {
+    color: ${({ show }) => (show ? themeColor : greyishBorder)};
+    font-size: ${({ fontSize }) => fontSize}px;
+  }
 `;

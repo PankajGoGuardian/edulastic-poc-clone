@@ -310,9 +310,7 @@ function* startAssignment({ payload }) {
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
     let testActivityId = null;
-    console.log("assignmentId", assignmentId, isPlaylist);
     if (isPlaylist && !assignmentId) {
-      console.log("WE HERE ?");
       const { _id } = yield testActivityApi.create({
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
@@ -323,7 +321,6 @@ function* startAssignment({ payload }) {
       });
       testActivityId = _id;
     } else {
-      console.log("WE HERE else ?");
       const { _id } = yield testActivityApi.create({
         assignmentId,
         groupId: classId,

@@ -536,7 +536,7 @@ class ModuleRow extends Component {
                     } = data;
                     const submitted = assignmentId ? round((gradedCount / totalAssigned) * 100, 0) : 0;
                     const progress = round((totalScore / maxScore) * 100, 0) || 0;
-                    const classes = assignments?.[0]?.classList?.length || 0;
+                    const classes = assignments?.[0]?.["class"]?.length || 0;
                     const scores = 0;
 
                     return {

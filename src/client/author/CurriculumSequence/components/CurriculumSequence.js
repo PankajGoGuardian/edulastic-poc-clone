@@ -390,7 +390,7 @@ class CurriculumSequence extends Component {
       const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
       const timeSpent = metricModule?.reduce((a, c) => a + (c?.timeSpent || 0), 0);
       const assignments = data?.flatMap(x => x?.assignments) || [];
-      const classes = assignments?.reduce((a, c) => a + (c?.length || 0), 0) || "-";
+      const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
       const submitted =
         metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
         "-";

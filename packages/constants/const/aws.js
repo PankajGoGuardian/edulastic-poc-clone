@@ -4,6 +4,7 @@ module.exports = {
     COURSE: "course",
     DEFAULT: "default",
     BUBBLE_SHEET: "bubble",
-    USER: "user"
+    USER: "user",
+    QTI_IMPORT: "qtiImports"
   }
 };

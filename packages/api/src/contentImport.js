@@ -1,7 +1,7 @@
 import API from "./utils/API";
 
 const api = new API();
-const prefix = "/content";
+const prefix = "/file";
 
 const qtiImport = data => {
   return api

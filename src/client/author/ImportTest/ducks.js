@@ -37,8 +37,9 @@ export const reducers = createReducer(initialState, {
 export function* uploadTestStaga({ payload = [] }) {
   const files = [];
   for (const file of payload) {
-    files.push(yield call(uploadToS3, file.originFileObj, "default"));
+    files.push(yield call(uploadToS3, file.originFileObj, "qtiImports"));
   }
+  console.log("files", files);
   yield call(contentImportApi.qtiImport, { files });
 }
 

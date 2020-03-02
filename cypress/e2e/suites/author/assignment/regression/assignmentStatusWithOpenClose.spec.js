@@ -161,25 +161,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
       cy.login("teacher", teacher, password);
       cy.visit(`/author/assignments/${testId}`);
       cy.wait("@assignment");
-      cy.wait(2000);
-      // assign to specific students
-      testLibrary.assignPage.selectClass(className);
-      testLibrary.assignPage.clickOnSpecificStudent();
-      testLibrary.assignPage.selectStudent(students[1].stuName);
+      cy.wait(2000).then(() => {
+        // assign to specific students
+        testLibrary.assignPage.selectClass(className);
+        testLibrary.assignPage.clickOnSpecificStudent();
+        testLibrary.assignPage.selectStudent(students[1].stuName);
 
-      let start = new Date();
-      start.setMinutes(start.getMinutes() + 10);
-      testLibrary.assignPage.setStartDate(start);
-      testLibrary.assignPage.clickOnAssign();
-      cy.contains("Success!");
-      teacherSidebar.clickOnAssignment();
-      authorAssignmentPage.verifyStatus(`${teacherSide.NOT_OPEN}`);
+        let start = new Date();
+        start.setMinutes(start.getMinutes() + 10);
+        testLibrary.assignPage.setStartDate(start);
+        testLibrary.assignPage.clickOnAssign();
+        cy.contains("Success!");
+        teacherSidebar.clickOnAssignment();
+        authorAssignmentPage.verifyStatus(`${teacherSide.NOT_OPEN}`);
 
-      // open manually
-      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-      lcb.header.clickOnOpen();
-      teacherSidebar.clickOnAssignment();
-      authorAssignmentPage.verifyStatus(`${teacherSide.IN_PROGRESS}`);
+        // open manually
+        authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+        lcb.header.clickOnOpen();
+        teacherSidebar.clickOnAssignment();
+        authorAssignmentPage.verifyStatus(`${teacherSide.IN_PROGRESS}`);
+      });
     });
     // EV-11241-> This will be done manually as it takes longer time
     /*   it(` > due date over, should be ${teacherSide.DONE} `, () => {

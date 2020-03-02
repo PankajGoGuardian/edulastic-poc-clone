@@ -114,10 +114,13 @@ class ClozeDropDownPage {
       const { quetext, setAns } = authoringData[questionTypeKey.CLOZE_DROP_DOWN][queKey];
       const ans = setAns.correct;
       if (quetext) {
-        this.getQuestionEditor().clear({ force: true });
+        this.getQuestionEditor()
+          .clear({ force: true })
+          .as("questionContent");
+        cy.get("@questionContent").type(`Q${queIndex + 1} - `, { force: true });
         quetext.forEach(element => {
           if (element === "INPUT") cy.get('[data-cmd="textdropdown"]').click({ force: true });
-          else this.getQuestionEditor().type(element, { force: true });
+          else cy.get("@questionContent").type(element, { force: true });
         });
       }
 

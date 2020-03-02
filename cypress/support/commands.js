@@ -80,30 +80,25 @@ Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10, pageHeight) => {
   });
 });
 
-Cypress.Commands.add(
-  "scrollPageAndMatchImageSnapshots",
-  (scrollOffset, pageHeight, pageContext) => {
-    cy.isPageScrollPresent(scrollOffset, pageHeight).then(
-      ({ hasScroll, minScrolls, scrollSize }) => {
-        if (hasScroll) {
-          let scrollNum = 1;
-          let scrollInPixel = scrollSize;
-          const testName = FileHelper.getTestFullName();
+Cypress.Commands.add("scrollPageAndMatchImageSnapshots", (scrollOffset, pageHeight, pageContext) => {
+  cy.isPageScrollPresent(scrollOffset, pageHeight).then(({ hasScroll, minScrolls, scrollSize }) => {
+    if (hasScroll) {
+      let scrollNum = 1;
+      let scrollInPixel = scrollSize;
+      const testName = FileHelper.getTestFullName();
 
-          while (scrollNum <= minScrolls) {
-            if (pageContext) {
-              cy.wrap(pageContext).scrollTo(0, scrollInPixel);
-            } else cy.scrollTo(0, scrollInPixel);
-            cy.wait(1000);
-            cy.matchImageSnapshotWithSize(`${testName}-scroll-${scrollNum}`);
-            scrollNum += 1;
-            scrollInPixel += scrollSize;
-          }
-        } else cy.log("Page scroll not found, not taking scrolled screenshots");
+      while (scrollNum <= minScrolls) {
+        if (pageContext) {
+          cy.wrap(pageContext).scrollTo(0, scrollInPixel);
+        } else cy.scrollTo(0, scrollInPixel);
+        cy.wait(1000);
+        cy.matchImageSnapshotWithSize(`${testName}-scroll-${scrollNum}`);
+        scrollNum += 1;
+        scrollInPixel += scrollSize;
       }
-    );
-  }
-);
+    } else cy.log("Page scroll not found, not taking scrolled screenshots");
+  });
+});
 
 Cypress.Commands.add("clearToken", () => {
   window.localStorage.clear();
@@ -147,13 +142,14 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   postData.password = password;
   cy.clearToken();
   // FIXME: sometimgs app fails to load to login page
-  if (Cypress.$('[data-cy="footer-dropdown"]').length > 0) {
-    Cypress.$('[data-cy="footer-dropdown"]').click();
-    Cypress.$('[data-cy="signout"]').click();
+  if (Cypress.$(".footerDropdown").length > 0) {
+    cy.get(".footerDropdown").click({ force: true });
+    cy.get('[data-cy="footer-dropdown"]').click({ force: true });
+    cy.get('[data-cy="signout"]').click({ force: true });
   }
 
   const login = new LoginPage();
-  cy.visit("/");
+  cy.visit("/login");
   cy.server();
   cy.route("GET", "**/test-activity/**").as("testActivity");
   cy.route("GET", "**curriculum**").as("apiLoad");
@@ -181,6 +177,10 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
       break;
     default:
       break;
+  }
+  // conditionally closing pendo guide if pops up
+  if (Cypress.$("._pendo-close-guide").length > 0) {
+    Cypress.$("._pendo-close-guide").click();
   }
 });
 

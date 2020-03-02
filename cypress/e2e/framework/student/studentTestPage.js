@@ -649,7 +649,7 @@ class StudentTestPage {
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
   verifySideBar = qIndex => {
-    cy.get(`[data-cy="queCircle-${qIndex + 1}"]`).should("have.css", "background-color", queColor.GREEN_1);
+    cy.get(`[data-cy="queCircle-${qIndex + 1}"]`).should("have.css", "background-color", queColor.GREY);
   };
 
   verifyTopProgress = (qIndex, total) => {

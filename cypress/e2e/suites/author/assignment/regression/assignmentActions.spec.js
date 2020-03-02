@@ -119,7 +119,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
           studentTestPage.attemptQuestion(questionType[index], attemptTypes.RIGHT, attempt[index]);
           studentTestPage.clickOnNext(true);
         });
-        studentTestPage.clickOnExitTest(true);
+        // studentTestPage.clickOnExitTest(true); // preview assessment player automatically gets closed by last next button click
       });
     });
     context("View Details", () => {

@@ -1,42 +1,44 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
+import { themeColor, white } from "@edulastic/colors";
+import { HeaderTabs, withWindowSizes } from "@edulastic/common";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
+import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import {
+  IconCheck,
+  IconClose,
+  IconEraseText,
+  IconEye,
+  IconMetadata,
+  IconPencilEdit,
+  IconPreview,
+  IconSaveNew
+} from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
 import { Button } from "antd";
 import { get } from "lodash";
-import {
-  IconSaveNew,
-  IconPreview,
-  IconPencilEdit,
-  IconEye,
-  IconCheck,
-  IconEraseText,
-  IconMetadata,
-  IconClose
-} from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { withWindowSizes } from "@edulastic/common";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { Tooltip } from "../../../../../common/utils/helpers";
-import { MAX_TAB_WIDTH } from "../../../constants/others";
-import { clearAnswersAction } from "../../../actions/answers";
-import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
 import { ButtonLink } from "..";
+import { clearEvaluationAction } from "../../../../../assessment/actions/evaluation";
+import { Tooltip } from "../../../../../common/utils/helpers";
+import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
+import { clearAnswersAction } from "../../../actions/answers";
+import { MAX_TAB_WIDTH } from "../../../constants/others";
 import {
   Container,
-  RightSide,
+  CustomButton,
   HeadIcon,
   MenuItem,
-  MobileContainer,
-  MobileTopRight,
-  MobileBottom,
   MenuList,
+  MobileBottom,
+  MobileContainer,
   MobileSecondContainer,
-  CustomButton
+  MobileTopRight,
+  RightSide
 } from "./styled_components";
-import { getCurrentQuestionSelector } from "../../../../sharedDucks/questions";
 
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
@@ -95,58 +97,48 @@ class ButtonBar extends Component {
       <React.Fragment>
         {windowWidth > MAX_TAB_WIDTH ? (
           <Container>
-            <MenuList mode="horizontal" selectedKeys={[view]}>
-              {hasAuthorPermission && (
-                <MenuItem
-                  id={getFormattedAttrId(`${qTitle}-edit`)}
-                  data-cy="editButton"
-                  className={view === "edit" && "active"}
-                  onClick={this.handleMenuClick("edit")}
-                >
-                  <HeadIcon>
-                    <IconPencilEdit color={white} width={18} height={16} />
-                  </HeadIcon>
-                  Edit Mode
-                </MenuItem>
-              )}
-              <MenuItem
-                id={getFormattedAttrId(`${qTitle}-preview-mode`)}
-                data-cy="previewButton"
-                className={view === "preview" && "active"}
-                onClick={this.handleMenuClick("preview")}
-              >
-                <HeadIcon>
-                  <IconEye color={white} width={18} height={16} />
-                </HeadIcon>
-                Preview mode
-              </MenuItem>
-              {showMetaData && (
-                <MenuItem
-                  id={getFormattedAttrId(`${qTitle}-metadata`)}
-                  data-cy="metadataButton"
-                  className={view === "metadata" && "active"}
-                  onClick={this.handleMenuClick("metadata")}
-                >
-                  <HeadIcon>
-                    <IconMetadata color={white} width={18} height={16} />
-                  </HeadIcon>
-                  Meta data
-                </MenuItem>
-              )}
-              {hasAuthorPermission && showAuditTrail && !!permissions.length && (
-                <MenuItem
-                  id={getFormattedAttrId(`${qTitle}-auditTrail`)}
-                  data-cy="auditTrailButton"
-                  className={view === "auditTrail" && "active"}
-                  onClick={this.handleMenuClick("auditTrail")}
-                >
-                  <HeadIcon>
-                    <IconPencilEdit color={white} width={18} height={16} />
-                  </HeadIcon>
-                  Audit trail
-                </MenuItem>
-              )}
-            </MenuList>
+            <HeaderMidContainer style={{ width: "100%" }}>
+              <StyledTabs selectedKeys={[view]}>
+                {hasAuthorPermission && (
+                  <HeaderTabs
+                    id={getFormattedAttrId(`${qTitle}-edit`)}
+                    dataCy="editButton"
+                    isActive={view === "edit"}
+                    icon={<IconPencilEdit color={white} width={18} height={16} />}
+                    linkLabel="Edit Mode"
+                    onClickHandler={this.handleMenuClick("edit")}
+                  />
+                )}
+                <HeaderTabs
+                  id={getFormattedAttrId(`${qTitle}-preview-mode`)}
+                  dataCy="previewButton"
+                  isActive={view === "preview"}
+                  icon={<IconEye color={white} width={18} height={16} />}
+                  linkLabel="Preview mode"
+                  onClickHandler={this.handleMenuClick("preview")}
+                />
+                {showMetaData && (
+                  <HeaderTabs
+                    id={getFormattedAttrId(`${qTitle}-metadata`)}
+                    dataCy="metadataButton"
+                    isActive={view === "metadata"}
+                    icon={<IconMetadata color={white} width={18} height={16} />}
+                    linkLabel="Meta data"
+                    onClickHandler={this.handleMenuClick("metadata")}
+                  />
+                )}
+                {hasAuthorPermission && showAuditTrail && !!permissions.length && (
+                  <HeaderTabs
+                    id={getFormattedAttrId(`${qTitle}-auditTrail`)}
+                    dataCy="auditTrailButton"
+                    isActive={view === "auditTrail"}
+                    icon={<IconPencilEdit color={white} width={18} height={16} />}
+                    linkLabel="Audit trail"
+                    onClickHandler={this.handleMenuClick("auditTrail")}
+                  />
+                )}
+              </StyledTabs>
+            </HeaderMidContainer>
 
             {hasAuthorPermission && (
               <RightSide>

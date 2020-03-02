@@ -1,39 +1,33 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { uniqueId, round } from "lodash";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import * as moment from "moment";
-
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
-  greenSecondary,
-  mobileWidth,
-  tabletWidth,
-  themeColor,
-  white,
-  smallDesktopWidth,
   desktopWidth,
   largeDesktopWidth,
-  titleColor,
+  lightGreen5,
+  smallDesktopWidth,
+  tabletWidth,
   textColor as descriptionColor,
-  lightGreen5
+  themeColor,
+  titleColor,
+  white
 } from "@edulastic/colors";
-import { IconShare, IconGraduationCap, IconBook, IconTile } from "@edulastic/icons";
 import { FlexContainer, MainHeader } from "@edulastic/common";
-import { Button, Cascader, Input, Modal, Progress, Radio } from "antd";
-
-import { getProgressColor } from "../util";
+import { IconBook, IconGraduationCap, IconShare, IconTile } from "@edulastic/icons";
+import { Button, Cascader, Input, Modal, Progress } from "antd";
+import { round, uniqueId } from "lodash";
+import * as moment from "moment";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
 import { getUserFeatures } from "../../../student/Login/ducks";
 // import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import BreadCrumb from "../../src/components/Breadcrumb";
-import { RadioInputWrapper } from "../../src/components/common/RadioInput";
-import { getCollectionsSelector, isPublisherUserSelector, getUserRole } from "../../src/selectors/user";
+import { getCollectionsSelector, getUserRole, isPublisherUserSelector } from "../../src/selectors/user";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import {
   addNewUnitAction,
@@ -46,12 +40,13 @@ import {
   setSelectedItemsForAssignAction,
   useThisPlayListAction
 } from "../ducks";
+import { getProgressColor } from "../util";
 /* eslint-enable */
 import Curriculum from "./Curriculum";
-import SummaryPieChart from "./SummaryPieChart";
 import AddUnitModalBody from "./modals/AddUnitModalBody";
-import DropPlaylistModal from "./modals/DropPlaylistModal";
 import ChangePlaylistModal from "./modals/ChangePlaylistModal";
+import DropPlaylistModal from "./modals/DropPlaylistModal";
+import SummaryPieChart from "./SummaryPieChart";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -170,7 +165,10 @@ class CurriculumSequence extends Component {
     useThisPlayList({ _id, title, grades, subjects, groupId, onChange: true, isStudent });
   };
 
-  onExplorePlaylists = () => this.props.history.push("/author/playlists");
+  onExplorePlaylists = () => {
+    const { history } = this.props;
+    history.push("/author/playlists");
+  };
 
   handleSaveClick = evt => {
     const { saveCurriculumSequence } = this.props;
@@ -313,7 +311,8 @@ class CurriculumSequence extends Component {
       curriculumGuide,
       newUnit,
       isPlayListEdited,
-      showConfirmRemoveModal
+      showConfirmRemoveModal,
+      dropPlaylistModalVisible
     } = this.state;
     const {
       expandedModules,
@@ -669,7 +668,7 @@ class CurriculumSequence extends Component {
             )}
           </StyledFlexContainer>
         </CurriculumSequenceWrapper>
-        <DropPlaylistModal visible={this.state.dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
+        <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
       </>
     );
   }
@@ -699,8 +698,7 @@ CurriculumSequence.propTypes = {
   saveGuideAlignment: PropTypes.func.isRequired,
   selectedItemsForAssign: PropTypes.array.isRequired,
   setSelectedItemsForAssign: PropTypes.func.isRequired,
-  sourceCurriculumSequence: PropTypes.object.isRequired,
-  onSourceCurriculumSequenceChange: PropTypes.func.isRequired
+  sourceCurriculumSequence: PropTypes.object.isRequired
 };
 
 CurriculumSequence.defaultProps = {
@@ -770,49 +768,6 @@ const SummaryBlockSubTitle = styled.div`
   letter-spacing: 0;
 `;
 
-const GuidesDropdownWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 18px;
-`;
-
-const RadioGroupWrapper = styled(RadioInputWrapper)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const ModalSubtitleWrapper = styled.div`
-  text-align: center;
-  width: 100%;
-  padding-bottom: 40px;
-`;
-
-const GuideModalBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 40px;
-  padding-top: 40px;
-  .ant-input:not(.ant-cascader-input) {
-    margin-bottom: 20px;
-  }
-  .ant-input-group {
-    width: 48%;
-  }
-  label {
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-`;
-
 const HeaderButton = styled.div`
   margin-right: 10px !important;
   height: 45px;
@@ -863,28 +818,6 @@ const StyledButton = styled.div`
     box-shadow: 0px 0px 1px ${lightGreen5};
     svg {
       fill: white;
-    }
-  }
-`;
-
-const SaveButtonStyle = styled.div`
-  .ant-btn {
-    padding: 10px 18px;
-    min-height: 45px;
-    min-width: 120px;
-    color: ${greenSecondary};
-    display: flex;
-    align-items: center;
-    @media only screen and (max-width: ${largeDesktopWidth}) {
-      min-width: 60px;
-    }
-    @media only screen and (max-width: ${mobileWidth}) {
-      padding: unset;
-      min-width: 43px;
-      min-height: 40px;
-      svg {
-        margin: auto;
-      }
     }
   }
 `;

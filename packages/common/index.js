@@ -17,6 +17,7 @@ export { default as EduButton } from "./src/components/EduButton";
 export { default as Checkbox } from "./src/components/Checkbox";
 export { default as Card } from "./src/components/Card";
 export { default as MainContentWrapper } from "./src/components/MainContentWrapper";
+export { default as HeaderTabs } from "./src/components/HeaderTabs";
 export { default as CustomQuillComponent } from "./src/components/CustomQuillComponent";
 export { default as CorrectAnswersContainer } from "./src/components/CorrectAnswersContainer";
 export { default as MathKeyboard } from "./src/components/MathKeyboard";

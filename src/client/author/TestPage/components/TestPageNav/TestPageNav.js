@@ -1,34 +1,34 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
-import { Container, Link } from "./styled";
+import { HeaderTabs } from "@edulastic/common";
+import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 
 function TestPageNav({ onChange, current, buttons, showPublishButton = true, owner = false }) {
   return (
-    <Container>
-      {buttons.map(({ value, text, icon }, index) => (
-        <Link
-          data-cy={value}
-          style={!showPublishButton && owner && index <= 1 ? { cursor: "not-allowed" } : {}}
-          key={value}
-          active={(current === value).toString()}
-          onClick={!showPublishButton && owner && index <= 1 ? "" : onChange(value)}
-        >
-          <FlexContainer>
-            {icon}
-            <div>{text}</div>
-          </FlexContainer>
-        </Link>
-      ))}
-    </Container>
+    <HeaderMidContainer>
+      <StyledTabs>
+        {buttons.map(({ value, text, icon }, index) => (
+          <HeaderTabs
+            style={!showPublishButton && owner && index <= 1 ? { cursor: "not-allowed" } : {}}
+            dataCy={value}
+            isActive={current === value}
+            icon={icon}
+            linkLabel={text}
+            key={value}
+            onClickHandler={!showPublishButton && owner && index <= 1 ? "" : onChange(value)}
+          />
+        ))}
+      </StyledTabs>
+    </HeaderMidContainer>
   );
 }
 
 TestPageNav.propTypes = {
   onChange: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
-  owner: PropTypes.bool,
-  showPublishButton: PropTypes.bool,
+  owner: PropTypes.bool.isRequired,
+  showPublishButton: PropTypes.bool.isRequired,
   buttons: PropTypes.array.isRequired
 };
 

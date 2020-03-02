@@ -145,12 +145,7 @@ const TestPageHeader = ({
   userRole
 }) => {
   let navButtons =
-    buttons ||
-    (isPlaylist
-      ? [...playlistNavButtons]
-      : isDocBased
-      ? [...docBasedButtons]
-      : [...navButtonsTest]);
+    buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");
@@ -184,11 +179,7 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-    if (
-      isUsed &&
-      (updated || test.status !== statusConstants.PUBLISHED) &&
-      testAssignments?.length > 0
-    ) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
@@ -418,12 +409,7 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers && (
-                <AssignButton
-                  data-cy="assign"
-                  size="large"
-                  disabled={isTestLoading}
-                  onClick={handleAssign}
-                >
+                <AssignButton data-cy="assign" size="large" disabled={isTestLoading} onClick={handleAssign}>
                   Assign
                 </AssignButton>
               )}
@@ -439,11 +425,7 @@ const TestPageHeader = ({
           <RightWrapper>
             {current === "addItems" && (
               <MobileHeaderFilterIcon>
-                <FilterToggleBtn
-                  header="true"
-                  isShowFilter={isShowFilter}
-                  toggleFilter={toggleFilter}
-                />
+                <FilterToggleBtn header="true" isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
               </MobileHeaderFilterIcon>
             )}
             {(owner || features.isCurator) && (
@@ -519,26 +501,13 @@ const TestPageHeader = ({
                 Approve
               </EduButton>
             )}
-            {showShareButton &&
-              (owner || testStatus === "published") &&
-              !isPlaylist &&
-              !isPublishers && (
-                <AssignButton
-                  disabled={isTestLoading}
-                  data-cy="assign"
-                  size="large"
-                  onClick={handleAssign}
-                >
-                  Assign
-                </AssignButton>
-              )}
+            {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
+              <AssignButton disabled={isTestLoading} data-cy="assign" size="large" onClick={handleAssign}>
+                Assign
+              </AssignButton>
+            )}
           </RightWrapper>
-          <TestPageNav
-            owner={owner}
-            onChange={onChangeNav}
-            current={current}
-            buttons={navButtons}
-          />
+          <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
         </MainHeader>
       )}
     </>

@@ -80,16 +80,6 @@ export const StyledTitle = styled.h1`
   }
 `;
 
-export const StyledLink = styled(Link)`
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-
-  @media (max-width: ${mobileWidthMax}) {
-    flex-basis: 100%;
-  }
-`;
-
 export const StyledParaFirst = styled.p`
   max-width: 200px;
   text-overflow: ellipsis;
@@ -106,18 +96,10 @@ export const StyledParaFirst = styled.p`
 
 export const DownArrow = styled(Icon)`
   position: absolute;
-  top: 12px;
   font-size: 12px;
-  right: 0;
-`;
-
-export const LinkLabel = styled.div`
-  padding: 0px 18px;
-  font-size: 10px;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 0px 10px;
-  }
+  top: 7px;
+  right: 5px;
+  color: ${themeColor};
 `;
 
 export const StyledParaSecond = styled.p`
@@ -156,64 +138,6 @@ export const StyledDiv = styled.div`
     position: absolute;
     right: 5px;
     top: 5px;
-  }
-`;
-
-export const StyledTabContainer = styled.div`
-  @media (max-width: ${mobileWidthMax}) {
-    order: 3;
-    flex-basis: 100%;
-  }
-`;
-
-export const StyledTabs = styled.div`
-  min-width: 750px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    min-width: 480px;
-  }
-  @media (max-width: ${largeDesktopWidth}) {
-    min-width: 300px;
-    padding-left: 20px;
-  }
-`;
-
-export const StyledAnchor = styled.div`
-  display: flex;
-  font-size: 11px;
-  font-weight: 600;
-  align-items: center;
-  justify-content: center;
-  color: ${props => (props.isActive ? white : greyThemeDark2)};
-  width: auto;
-  padding: 0px 18px;
-  text-align: center;
-  height: 45px;
-  margin: 0 5px;
-  border-radius: 4px;
-  background-color: ${props => (props.isActive ? "#b3bcc4" : "#f2f3f2")};
-  -webkit-transition: background-color 0.3s;
-  transition: background-color 0.3s;
-  a {
-    color: ${props => (props.isActive ? white : greyThemeDark2)};
-  }
-
-  @media (max-width: ${extraDesktopWidth}) {
-    font-size: 10px;
-  }
-  @media (max-width: ${mediumDesktopWidth}) {
-    padding: 0px;
-    margin: 0px 2px;
-    height: 36px;
-    svg {
-      display: none;
-    }
-  }
-  @media (max-width: ${mobileWidthMax}) {
-    flex-basis: 100%;
   }
 `;
 
@@ -359,6 +283,9 @@ export const DropMenu = styled(Menu)`
 
 export const ClassDropMenu = styled(DropMenu)`
   margin-top: 0px;
+  max-width: 300px;
+  max-height: calc(100vh - 100px);
+  overflow: auto;
 
   .ant-dropdown-menu-item-selected {
     a {

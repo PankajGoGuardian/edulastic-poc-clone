@@ -4,7 +4,6 @@ import {
   mediumDesktopWidth,
   white,
   themeColor,
-  fadedGrey,
   desktopWidth,
   secondaryTextColor,
   greyThemeDark2
@@ -15,7 +14,6 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-wrap: wrap;
   width: 100%;
 
   .ant-menu-item {
@@ -39,36 +37,6 @@ export const Container = styled.div`
       color: ${white};
       letter-spacing: 0.2px;
     }
-  }
-
-  .ant-menu-horizontal {
-    background: transparent;
-    border-bottom: none;
-    display: flex;
-    flex: 1;
-  }
-
-  .ant-menu-item {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: ${fadedGrey};
-    padding-top: 7px;
-  }
-
-  .ant-menu-item-active {
-    letter-spacing: 0.2px !important;
-    font-weight: 600 !important;
-    color: ${white} !important;
-    border-bottom: solid 4px #c9c9c9 !important;
-  }
-
-  .ant-menu-horizontal > .ant-menu-item-selected {
-    background: ${themeColor};
-    border-bottom: solid 4px #c9c9c9;
-    letter-spacing: 0.2px;
-    font-weight: 600;
-    color: ${white};
   }
 `;
 

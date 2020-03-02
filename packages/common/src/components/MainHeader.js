@@ -5,7 +5,8 @@ import {
   title,
   mediumDesktopWidth,
   tabletWidth,
-  smallDesktopWidth
+  smallDesktopWidth,
+  mobileWidthMax
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -17,28 +18,18 @@ import { compose } from "redux";
 import styled from "styled-components";
 import { toggleSideBarAction } from "../../../../src/client/author/src/actions/toggleMenu";
 
-const MainHeader = ({
-  children,
-  headingText,
-  Icon,
-  t,
-  toggleSideBar,
-  windowWidth,
-  ...restProps
-}) => (
+const MainHeader = ({ children, headingText, Icon, t, toggleSideBar, ...restProps }) => (
   <HeaderWrapper {...restProps}>
     <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container {...restProps}>
-        <FlexWrap headingText={headingText} {...restProps}>
+        <HeaderLeftContainer headingText={headingText} {...restProps}>
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {Icon && <Icon color={title} width={20} height={20} />}
-          {!restProps.isLCB && (
-            <TitleWrapper {...restProps} title={t(headingText)} data-cy="title">
-              {t(headingText)}
-            </TitleWrapper>
-          )}
+          <TitleWrapper {...restProps} title={t(headingText)} data-cy="title">
+            {t(headingText)}
+          </TitleWrapper>
           {restProps.headingSubContent}
-        </FlexWrap>
+        </HeaderLeftContainer>
         {children}
       </Container>
     </Affix>
@@ -104,7 +95,7 @@ const Container = styled.div`
   }
 `;
 
-const FlexWrap = styled.div`
+export const HeaderLeftContainer = styled.div`
   display: ${props => props.display || "flex"};
   align-items: ${props => props.alignItems || "center"};
   justify-content: ${props => props.justifyContent || "space-evenly"};
@@ -137,5 +128,12 @@ export const TitleWrapper = styled.h1`
   @media (max-width: ${smallDesktopWidth}) {
     max-width: ${props => (props.noEllipsis ? "unset" : "200px")};
     min-width: auto;
+  }
+`;
+
+export const HeaderMidContainer = styled.div`
+  @media (max-width: ${mobileWidthMax}) {
+    order: 3;
+    flex-basis: 100%;
   }
 `;

@@ -6,11 +6,10 @@ import {
   white,
   tabletWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  greyThemeDark2
+  extraDesktopWidthMax
 } from "@edulastic/colors";
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 export const AdminHeaderWrapper = styled.div`
   position: fixed;
@@ -68,9 +67,14 @@ export const StyledTitle = styled.h1`
 export const StyledTabs = styled(Tabs)`
   width: 100%;
   &.ant-tabs {
+    height: 51px;
+    margin-bottom: -13px;
     &.ant-tabs-card {
       .ant-tabs-card-bar {
         border: none;
+        .ant-tabs-nav-container {
+          height: 50px;
+        }
         .ant-tabs-nav {
           div {
             display: flex;
@@ -79,30 +83,29 @@ export const StyledTabs = styled(Tabs)`
         }
         .ant-tabs-tab {
           cursor: pointer;
-          color: ${white};
           padding: 0 20px;
           text-transform: uppercase;
           font-size: 11px;
           font-weight: 600;
           display: flex;
-          border: none;
           box-shadow: none;
           align-items: center;
           justify-content: center;
-          height: 40px;
+          height: 50px;
           border-radius: 0;
-          background: #f2f3f2;
-          color: ${greyThemeDark2};
+          background: #e5e5e5;
+          color: #87929b;
           white-space: nowrap;
-          border-radius: 5px;
+          border-radius: 4px 4px 0px 0px;
           margin: 0 3px;
+          border: 1px solid #e5e5e5;
           &-active {
-            background: #b3bcc4;
-            color: ${white};
-          }
-
-          @media screen and (max-width: ${mediumDesktopWidth}) {
-            height: 36px;
+            background: ${white};
+            color: #2f4151;
+            height: 51px;
+            margin-bottom: -1px;
+            border: 1px solid #b3bfc7;
+            border-bottom-color: ${white};
           }
         }
       }

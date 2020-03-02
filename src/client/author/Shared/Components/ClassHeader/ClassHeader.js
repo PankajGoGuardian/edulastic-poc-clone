@@ -1,77 +1,70 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { Link, withRouter } from "react-router-dom";
-import { message, Dropdown } from "antd";
-import moment from "moment";
-import { get } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
-import { IconDeskTopMonitor, IconBookMarkButton, IconNotes, IconSettings } from "@edulastic/icons";
+import { HeaderTabs, MainHeader } from "@edulastic/common";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
+import { HeaderMidContainer, TitleWrapper } from "@edulastic/common/src/components/MainHeader";
 import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
-import { MainHeader } from "@edulastic/common";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconBookMarkButton, IconDeskTopMonitor, IconNotes, IconSettings } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { TitleWrapper } from "@edulastic/common/src/components/MainHeader";
-import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
-
-import {
-  StyledLink,
-  StyledParaFirst,
-  DownArrow,
-  LinkLabel,
-  StyledParaSecond,
-  StyledPopconfirm,
-  StyledDiv,
-  StyledTabContainer,
-  StyledTabs,
-  StyledAnchor,
-  OpenCloseButton,
-  HeaderMenuIcon,
-  RightSideButtonWrapper,
-  DropMenu,
-  ClassDropMenu,
-  MenuItems,
-  CaretUp,
-  StudentStatusDetails,
-  OpenCloseWrapper
-} from "./styled";
-
-import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
-import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown, message } from "antd";
+import { get } from "lodash";
+import moment from "moment";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
+import { compose } from "redux";
+import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-
+import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
+import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import {
-  releaseScoreAction,
-  markAsDoneAction,
-  openAssignmentAction,
-  closeAssignmentAction,
-  togglePauseAssignmentAction,
-  receiveTestActivitydAction,
-  toggleViewPasswordAction,
-  canvasSyncGradesAction
-} from "../../../src/actions/classBoard";
-import {
-  showScoreSelector,
-  getMarkAsDoneEnableSelector,
-  notStartedStudentsSelector,
-  inProgressStudentsSelector,
-  isItemVisibiltySelector,
   classListSelector,
   getCanCloseAssignmentSelector,
   getCanOpenAssignmentSelector,
-  getViewPasswordSelector,
+  getHasRandomQuestionselector,
+  getMarkAsDoneEnableSelector,
   getPasswordPolicySelector,
+  getViewPasswordSelector,
+  inProgressStudentsSelector,
+  isItemVisibiltySelector,
+  notStartedStudentsSelector,
   showPasswordButonSelector,
-  getHasRandomQuestionselector
+  showScoreSelector
 } from "../../../ClassBoard/ducks";
-import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
-import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
-import ConfirmationModal from "../../../../common/components/ConfirmationModal";
-import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import ViewPasswordModal from "./ViewPasswordModal";
+import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
+import {
+  canvasSyncGradesAction,
+  closeAssignmentAction,
+  markAsDoneAction,
+  openAssignmentAction,
+  receiveTestActivitydAction,
+  releaseScoreAction,
+  togglePauseAssignmentAction,
+  toggleViewPasswordAction
+} from "../../../src/actions/classBoard";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
+import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
+import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
+import {
+  CaretUp,
+  ClassDropMenu,
+  DownArrow,
+  DropMenu,
+  HeaderMenuIcon,
+  MenuItems,
+  OpenCloseButton,
+  OpenCloseWrapper,
+  RightSideButtonWrapper,
+  StudentStatusDetails,
+  StyledDiv,
+  StyledParaFirst,
+  StyledParaSecond,
+  StyledPopconfirm
+} from "./styled";
+import ViewPasswordModal from "./ViewPasswordModal";
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 const desktopWidth = 992;
@@ -347,7 +340,7 @@ class ClassHeader extends Component {
 
     return (
       <MainHeader mobileHeaderHeight={100}>
-        <TitleWrapper>
+        <TitleWrapper titleMinWidth="unset">
           <div>
             {classesList.length > 1 ? (
               <Dropdown
@@ -376,14 +369,15 @@ class ClassHeader extends Component {
             </StyledParaSecond>
           </div>
         </TitleWrapper>
-        <StyledTabContainer>
+        <HeaderMidContainer>
           <StyledTabs>
-            <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
-              <StyledAnchor isActive={active === "classboard"}>
-                <IconDeskTopMonitor left={0} />
-                <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
-              </StyledAnchor>
-            </StyledLink>
+            <HeaderTabs
+              to={`/author/classboard/${assignmentId}/${classId}`}
+              dataCy="LiveClassBoard"
+              isActive={active === "classboard"}
+              icon={<IconDeskTopMonitor left={0} />}
+              linkLabel={t("common.liveClassBoard")}
+            />
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
               <WithDisableMessage
                 disabled={hasRandomQuestions || !isItemsVisible}
@@ -391,41 +385,38 @@ class ClassHeader extends Component {
                   hasRandomQuestions ? "This assignment has random items for every student." : t("common.testHidden")
                 }
               >
-                <StyledLink
+                <HeaderTabs
                   to={`/author/expressgrader/${assignmentId}/${classId}`}
                   disabled={!isItemsVisible || hasRandomQuestions}
-                  data-cy="Expressgrader"
-                >
-                  <StyledAnchor isActive={active === "expressgrader"}>
-                    <IconBookMarkButton left={0} />
-                    <LinkLabel>{t("common.expressGrader")}</LinkLabel>
-                  </StyledAnchor>
-                </StyledLink>
+                  dataCy="Expressgrader"
+                  isActive={active === "expressgrader"}
+                  icon={<IconBookMarkButton left={0} />}
+                  linkLabel={t("common.expressGrader")}
+                />
               </WithDisableMessage>
             </FeaturesSwitch>
 
             <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
               <WithDisableMessage disabled={!isItemsVisible} errMessage={t("common.testHidden")}>
-                <StyledLink
-                  disabled={!isItemsVisible}
+                <HeaderTabs
                   to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
-                  data-cy="StandardsBasedReport"
-                >
-                  <StyledAnchor isActive={active === "standard_report"}>
-                    <IconNotes left={0} />
-                    <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
-                  </StyledAnchor>
-                </StyledLink>
+                  disabled={!isItemsVisible}
+                  dataCy="StandardsBasedReport"
+                  isActive={active === "standard_report"}
+                  icon={<IconNotes left={0} />}
+                  linkLabel={t("common.standardBasedReports")}
+                />
               </WithDisableMessage>
             </FeaturesSwitch>
-            <StyledLink to={`/author/lcb/settings/${assignmentId}/${classId}`} data-cy="LCBAssignmentSettings">
-              <StyledAnchor isActive={active === "settings"}>
-                <IconSettings left={0} />
-                <LinkLabel>{t("common.settings")}</LinkLabel>
-              </StyledAnchor>
-            </StyledLink>
+            <HeaderTabs
+              to={`/author/lcb/settings/${assignmentId}/${classId}`}
+              dataCy="LCBAssignmentSettings"
+              isActive={active === "settings"}
+              icon={<IconSettings left={0} />}
+              linkLabel={t("common.settings")}
+            />
           </StyledTabs>
-        </StyledTabContainer>
+        </HeaderMidContainer>
         <RightSideButtonWrapper>
           {window.innerWidth > desktopWidth && renderOpenClose}
           <Dropdown

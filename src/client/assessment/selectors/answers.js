@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { values, get } from "lodash";
+import { values } from "lodash";
 
 export const getAnswersListSelector = state => state.answers;
 export const getPreviousAnswersListSelector = state => state.previousAnswers;
@@ -13,12 +13,14 @@ export const getAnswerByQuestionIdSelector = questionId => answers => (questionI
 
 const getActivityFromPropsSelector = (state, props) => props.activity;
 
+// eslint-disable-next-line no-unused-vars
 const isReviewTabSelector = (state, props) => !!props.isReviewTab;
 const getQuestionIdFromPropsSelector = (state, props) => {
   const id = props?.data?.id;
   const questionId = props?.questionId;
   return questionId || id;
 };
+// eslint-disable-next-line no-unused-vars
 const getQuestionSelector = (state, props) => {
   const { data } = props;
   return data;
@@ -52,7 +54,7 @@ export const getUserPrevAnswerSelector = createSelector(
   }
 );
 
-const getEvaluationSelector = (state, props) => props.evaluation || state.evaluation;
+export const getEvaluationSelector = (state, props) => props.evaluation || state.evaluation;
 
 export const getEvaluationByIdSelector = createSelector(
   [getEvaluationSelector, getQuestionIdFromPropsSelector],

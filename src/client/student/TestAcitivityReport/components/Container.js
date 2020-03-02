@@ -11,9 +11,19 @@ import TestItemPreview from "../../../assessment/components/TestItemPreview";
 import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/TestItem";
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
 import { getQuestionsSelector } from "../../../author/sharedDucks/questions";
+import { getEvaluationSelector } from "../../../assessment/selectors/answers";
+
 const { releaseGradeLabels } = testConstants;
 
-const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, passages = [], questions }) => {
+const ReportListContent = ({
+  item = {},
+  flag,
+  testActivityById,
+  hasUserWork,
+  passages = [],
+  questions,
+  evaluation
+}) => {
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
   const resources = keyBy(get(item, "data.resources", []), "id");
@@ -34,7 +44,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
   const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "check";
   const closeModal = () => setModal(false);
   const hasCollapseButtons =
-    itemRows.length > 1 && itemRows.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
+    itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -50,11 +60,12 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, pas
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
               releaseScore={releaseScore}
-              showFeedback={true}
+              showFeedback
               showCollapseBtn
               disableResponse
               isStudentReport
               viewComponent="studentReport"
+              evaluation={evaluation}
             />
             <PaddingDiv>
               <Hints questions={get(item, [`data`, `questions`], [])} />
@@ -81,7 +92,8 @@ export default connect(
     questions: getQuestionsSelector(state),
     passages: state.studentReport.passages,
     hasUserWork: itemHasUserWorkSelector(state),
-    testActivityById: get(state, `[studentReport][testActivity]`, {})
+    testActivityById: get(state, `[studentReport][testActivity]`, {}),
+    evaluation: getEvaluationSelector(state, {})
   }),
   null
 )(ReportListContent);

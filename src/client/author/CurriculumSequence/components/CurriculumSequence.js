@@ -549,7 +549,8 @@ class CurriculumSequence extends Component {
             <MainHeader
               headingText={title}
               headingSubContent={
-                !isPublisherUser && (
+                !isPublisherUser &&
+                (isStudent ? studentPlaylists?.length : slicedRecentPlaylists?.length) > 0 && (
                   <IconTile
                     style={{ cursor: "pointer", marginLeft: "18px" }}
                     onClick={this.handleGuidePopup}
@@ -680,7 +681,9 @@ class CurriculumSequence extends Component {
             )}
           </StyledFlexContainer>
         </CurriculumSequenceWrapper>
-        {dropPlaylistModalVisible && <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />}
+        {dropPlaylistModalVisible && (
+          <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
+        )}
       </>
     );
   }

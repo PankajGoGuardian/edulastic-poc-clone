@@ -83,7 +83,7 @@ function* saveUserResponse({ payload }) {
     }
     if (endDate && endDate < Date.now()) {
       yield call(message.error, "Test time ended");
-      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist.playlistId}`));
+      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       return yield put(push("/home/assignments"));
     }
     const items = yield select(state => state.test && state.test.items);
@@ -180,7 +180,8 @@ function* saveUserResponse({ payload }) {
     yield put({ type: SAVE_USER_RESPONSE_ERROR });
     console.log(err);
     if (err.status === 403) {
-      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist.playlistId}`));
+      const { isPlaylist = false } = payload;
+      if (isPlaylist) return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`));
       yield put(push("/home/assignments"));
       yield call(message.error, err.data);
     } else {

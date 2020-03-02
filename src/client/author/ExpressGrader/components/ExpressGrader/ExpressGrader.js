@@ -64,8 +64,8 @@ class ExpressGrader extends Component {
     }
   }
 
-  componentWillUnmount(props) {
-    const { clearEgAnswers } = props;
+  componentWillUnmount() {
+    const { clearEgAnswers } = this.props;
     clearEgAnswers();
   }
 

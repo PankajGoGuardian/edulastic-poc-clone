@@ -332,12 +332,7 @@ class QuestionWrapper extends Component {
       isLCBView,
       ...restProps
     } = this.props;
-    const {
-      score: prevScore,
-      maxScore: prevMaxScore,
-      feedback: prevFeedback,
-      correct
-    } = prevQActivityForQuestion;
+    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
 
     const timeSpent = get(data, "activity.timeSpent", false);
@@ -367,17 +362,15 @@ class QuestionWrapper extends Component {
       userAnswerProps.key = data.id;
     }
     const canShowPlayer =
-      ((showUserTTS === "yes" && userRole === "student") ||
-        (userRole === "teacher" && !!LCBPreviewModal)) &&
+      ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
       data.tts &&
       data.tts.taskStatus === "COMPLETED";
 
     const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
 
-    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
+    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO, questionType.TEXT].includes(data.type);
 
-    const studentReportFeedbackVisible =
-      isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+    const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
 
     const themeToPass = themes[selectedTheme] || themes.default;
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
@@ -387,11 +380,7 @@ class QuestionWrapper extends Component {
 
     const advancedLink =
       !showQuestionMenu && advanced.length > 0 ? (
-        <AdvancedOptionsLink
-          handleAdvancedOpen={handleAdvancedOpen}
-          advancedAreOpen={advancedAreOpen}
-          bottom
-        />
+        <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} bottom />
       ) : null;
 
     const { rubrics: rubricDetails } = data;
@@ -446,9 +435,7 @@ class QuestionWrapper extends Component {
                     ? "calc(100% - 265px)"
                     : "100%"
                 }`,
-                maxWidth:
-                  ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) &&
-                  "calc(100% - 250px)",
+                maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
                 display: "flex",
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null,
@@ -459,9 +446,7 @@ class QuestionWrapper extends Component {
               twoColLayout={showCollapseBtn ? null : theme?.twoColLayout}
             >
               <StyledFlexContainer>
-                {evaluation === "pending" && (
-                  <EvaluationMessage> Evaluation is pending </EvaluationMessage>
-                )}
+                {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}
@@ -515,11 +500,7 @@ class QuestionWrapper extends Component {
                 {rubricDetails && studentReportFeedbackVisible && (
                   <RubricTableWrapper>
                     <span>Graded Rubric</span>
-                    <PreviewRubricTable
-                      data={rubricDetails}
-                      rubricFeedback={rubricFeedback}
-                      isDisabled
-                    />
+                    <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
               </StyledFlexContainer>
@@ -561,9 +542,7 @@ class QuestionWrapper extends Component {
             )}
             {showFeedback && isPrintPreview && (
               <div data-cy="teacherFeedBack" className="print-preview-feedback">
-                {data?.activity?.feedback?.text ? (
-                  <div>Teacher Feedback: {data.activity.feedback.text}</div>
-                ) : null}
+                {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
               </div>
             )}
           </QuestionContainer>

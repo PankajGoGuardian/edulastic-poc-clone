@@ -215,10 +215,14 @@ class ModuleRow extends Component {
         isPlaylist: {
           moduleId,
           playlistId
-        }
+        },
+        redirect: uta.redirect
       };
-
-      if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
+      const isRedirected = assignmentRows.find(el => el.redirect);
+      if (isRedirected && uta.redirect) {
+        uta.text = "RETAKE";
+        uta.action = () => startAssignment(uta);
+      } else if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
         uta.text = "REVIEW";
       } else if (uta.testActivityId && uta.utaAssignmentId) {
         // In case previous uta was derived from practice flow then check for assignment ID and proceed
@@ -557,7 +561,8 @@ class ModuleRow extends Component {
                         inGradingNumber,
                         autoSubmitPicked,
                         _id: classId,
-                        gradedNumber = 0
+                        gradedNumber = 0,
+                        redirect = false
                       }) => ({
                         name,
                         status: _status,
@@ -569,7 +574,8 @@ class ModuleRow extends Component {
                         assignmentId,
                         classId,
                         gradedNumber,
-                        submittedCount: inGradingNumber + autoSubmitPicked + gradedNumber
+                        submittedCount: inGradingNumber + autoSubmitPicked + gradedNumber,
+                        redirect
                       })
                     );
                   });

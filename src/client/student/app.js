@@ -5,7 +5,7 @@ import { Progress, ErrorHandler } from "@edulastic/common";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
-import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
+import { tabletWidth } from "@edulastic/colors";
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from "./Sidebar/SideMenu";
 import { Assignment } from "./Assignments";
@@ -89,7 +89,7 @@ StudentApp.propTypes = {
 };
 
 const MainContainer = addThemeBackgroundColor(styled.div`
-  padding-left: 100px;
+  padding-left: 80px;
   width: 100%;
 
   /* &.zoom1 {
@@ -116,23 +116,8 @@ const MainContainer = addThemeBackgroundColor(styled.div`
     zoom: 200%;
   } */
 
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 100px;
-    z-index: 1;
-  }
-
-  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
-    padding-left: 90px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
-    .fixed-header {
-      left: 0;
-    }
   }
 `);
 

@@ -2066,18 +2066,8 @@ span.token.active-word {
   background-color: #4ab495;
 }
 
-.ant-table-thead
-  > tr
-  > th
-  .ant-table-column-sorter
-  .ant-table-column-sorter-inner
-  .ant-table-column-sorter-down.on,
-.ant-table-thead
-  > tr
-  > th
-  .ant-table-column-sorter
-  .ant-table-column-sorter-inner
-  .ant-table-column-sorter-up.on {
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on,
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on {
   color: #4ab495;
 }
 
@@ -2183,4 +2173,8 @@ iframe {
 
 div[class*="_pendo"] button {
   cursor: pointer;
+}
+
+.ant-menu-inline-collapsed-tooltip {
+  display: none !important;
 }

@@ -17,21 +17,12 @@ export const MainContainer = styled.div`
     if (props.isPrintPreview) {
       return "0";
     }
-    return "100px";
+    return "80px";
   }};
   width: 100%;
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 100px;
-    z-index: 999;
-  }
+
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
-    .fixed-header {
-      left: 0;
-    }
   }
 
   .ant-btn {

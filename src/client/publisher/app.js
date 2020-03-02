@@ -1,22 +1,19 @@
-import React, { lazy, Suspense, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
+import { tabletWidth } from "@edulastic/colors";
+import { ErrorHandler } from "@edulastic/common";
+import { Layout } from "antd";
+import React from "react";
 import { connect } from "react-redux";
+import { Route, Switch } from "react-router-dom";
 import styled, { ThemeProvider } from "styled-components";
-import { Layout, Spin } from "antd";
-
-import { Progress, ErrorHandler } from "@edulastic/common";
-import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
-
-import { themes as globalThemes } from "../theme";
-import { addThemeBackgroundColor } from "../common/utils/helpers";
-import SideMenu from "../author/src/Sidebar/SideMenu";
-import { Dashboard } from "./pages/Dashboard/dashboard";
 import { getUserOrgId, getUserRole } from "../author/src/selectors/user";
+import SideMenu from "../author/src/Sidebar/SideMenu";
+import { addThemeBackgroundColor } from "../common/utils/helpers";
+import { themes as globalThemes } from "../theme";
+import { Dashboard } from "./pages/Dashboard/dashboard";
 
 const Publisher = props => {
   const { match, selectedTheme } = props;
-
-  let themeToPass = globalThemes[selectedTheme] || globalThemes.default;
+  const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
 
   return (
     <ThemeProvider theme={themeToPass}>
@@ -45,7 +42,7 @@ export default connect(
 )(Publisher);
 
 const MainContainer = addThemeBackgroundColor(styled.div`
-  padding-left: 100px;
+  padding-left: 80px;
   width: 100%;
 
   /* &.zoom1 {
@@ -72,25 +69,8 @@ const MainContainer = addThemeBackgroundColor(styled.div`
     zoom: 200%;
   } */
 
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 100px;
-    z-index: 1;
-  }
-
-  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
-    padding-left: 90px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: ${tabletWidth}) {
     padding-left: 0px;
-    .fixed-header {
-      left: 0;
-      padding-left: 30px;
-      background: #0188d2;
-    }
   }
 `);
 

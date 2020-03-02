@@ -9,7 +9,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
-import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip, Select } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
 import {
   IconHeader,
   IconLogoCompact,
@@ -35,9 +35,7 @@ import {
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
-import { logoutAction, changeChildAction, getUserFeatures } from "../Login/ducks";
-import { IPAD_LANDSCAPE_WIDTH } from "../../assessment/constants/others";
-// import FeaturesSwitch from "../../features/components/FeaturesSwitch";
+import { logoutAction } from "../Login/ducks";
 
 const menuItems = [
   {
@@ -168,9 +166,6 @@ class SideMenu extends Component {
       isSidebarCollapsed,
       t,
       profileThumbnail,
-      studentChildren,
-      currentChild,
-      changeChild,
       role,
       features
     } = this.props;
@@ -217,7 +212,7 @@ class SideMenu extends Component {
             breakpoint="md"
             onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
             width="245"
-            collapsedWidth={broken ? "0" : windowWidth <= IPAD_LANDSCAPE_WIDTH ? "90" : "100"}
+            collapsedWidth={broken ? "0" : "80"}
             className="sideBarwrapper"
             data-cy="side-wrapper"
           >
@@ -268,7 +263,12 @@ class SideMenu extends Component {
                       return null;
                     }
                     return (
-                      <MenuItem key={index.toString()} data-cy={menu.label} onClick={this.toggleMenu}>
+                      <MenuItem
+                        key={index.toString()}
+                        data-cy={menu.label}
+                        onClick={this.toggleMenu}
+                        title={isSidebarCollapsed ? menu.label : ""}
+                      >
                         <MenuIcon />
                         {!isSidebarCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                       </MenuItem>
@@ -293,7 +293,7 @@ class SideMenu extends Component {
                       onClick={this.toggleDropdown}
                       overlayStyle={{
                         position: "fixed",
-                        minWidth: isSidebarCollapsed ? "60px" : "198px",
+                        minWidth: isSidebarCollapsed ? "60px" : "203px",
                         maxWidth: isSidebarCollapsed ? "60px" : "0px"
                       }}
                       className="footerDropdown"
@@ -303,11 +303,11 @@ class SideMenu extends Component {
                       isVisible={isVisible}
                       isSidebarCollapsed={isSidebarCollapsed}
                       onVisibleChange={this.handleVisibleChange}
-                      getPopupContainer={() => this.sideMenuRef.current}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
                     >
                       <div>
                         {profileThumbnail ? (
-                          <img src={profileThumbnail} alt="Profile" />
+                          <UserImg src={profileThumbnail} alt="Profile" />
                         ) : (
                           <PseudoDiv>{this.getInitials()}</PseudoDiv>
                         )}
@@ -366,15 +366,12 @@ const enhance = compose(
       isSidebarCollapsed: ui.isSidebarCollapsed,
       zoomLevel: ui.zoomLevel,
       profileThumbnail: get(user, "user.thumbnail"),
-      studentChildren: user?.user?.children || [],
-      currentChild: user?.currentChild,
       role: user?.user?.role,
       features: user?.user?.features
     }),
     {
       logout: logoutAction,
-      toggleSideBar: toggleSideBarAction,
-      changeChild: changeChildAction
+      toggleSideBar: toggleSideBarAction
     }
   )
 );
@@ -395,12 +392,6 @@ const FixedSidebar = styled.div`
   z-index: 1000;
   cursor: ${props => (props.isSidebarCollapsed ? "pointer" : "initial")};
 
-  .scrollbar-container {
-    > * {
-      pointer-events: ${props => (props.isSidebarCollapsed ? "none" : "all")};
-    }
-  }
-
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
     max-width: 245px;
@@ -411,8 +402,7 @@ const FixedSidebar = styled.div`
 const SideBar = styled(Layout.Sider)`
   height: 100%;
   width: 245px;
-  border-right: 1px solid #dddddd;
-  background-color: ${props => props.theme.sideMenu.sidebarBgColor};
+  background-color: #304151;
   z-index: 22;
   padding-bottom: 0;
 
@@ -429,7 +419,7 @@ const SideBar = styled(Layout.Sider)`
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
-    width: 100px;
+    width: 80px;
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -478,11 +468,10 @@ const SideBar = styled(Layout.Sider)`
   }
 
   @media (max-width: ${tabletWidth}) {
-    flex: 0 0 0px;
-    max-width: 0px;
-    min-width: 0px;
-    width: 0px;
-    background-color: rgba(251, 250, 252, 0.94);
+    &.ant-layout-sider-collapsed {
+      min-width: 0px !important;
+      max-width: 0px !important;
+    }
 
     .mobileCloseIcon {
       position: absolute;
@@ -498,7 +487,7 @@ const SideBar = styled(Layout.Sider)`
       svg {
         width: 20px !important;
         height: 20px !important;
-        fill: #434b5d;
+        fill: #7c93a7;
       }
     }
 
@@ -614,49 +603,40 @@ const Menu = styled(AntMenu)`
     
   }
   &.ant-menu-inline-collapsed {
-    width: 100px;
-    
-    @media(max-width: ${largeDesktopWidth}) {
-      width: 90px;
-    }
+    width: 80px;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
     text-align: center;
     justify-content: center;
-    margin: 10px 0px;
-    padding: 5px 18px !important;
-    height: 38px;
+    margin: 5px 0px;
+    padding: 5px 15px !important;
+    height: 40px;
     width: 100%;
   }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 15px 0px;
+      margin: 10px 0px;
     }
   }
   .ant-menu-item {
     position: relative;
-    background: ${props => props.theme.sideMenu.menuItemBgColor};
+    background: transparent;
     
     &:before {
       content: '';
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 18px;
-      right: 18px;
+      left: 15px;
+      right: 15px;
       border-radius: 4px;
       background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
-      
-      @media (max-width: ${largeDesktopWidth}) {
-        left: 13px;
-        right: 13px;
-      }
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -859,8 +839,23 @@ const FooterDropDown = styled.div`
   }
 `;
 
+const UserImg = styled.div`
+  width: 62px;
+  height: 62px;
+  background: url(${props => props.src});
+  background-position: center center;
+  background-size: cover;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  position: absolute;
+  left: 0;
+  margin-bottom: -1px;
+  margin-left: -1px;
+`;
+
 const UserInfoButton = styled.div`
   cursor: pointer;
+  position: relative;
 
   &.active {
     padding: 0;
@@ -879,18 +874,8 @@ const UserInfoButton = styled.div`
     }
   }
 
-  img {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    left: 0;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-
-    @media (max-width: ${tabletWidth}) {
-      height: 60px;
-      width: 60px;
-    }
+  .ant-dropdown {
+    left: 21px !important;
   }
 
   .ant-select-selection {
@@ -937,7 +922,7 @@ const DropdownBtn = styled(Dropdown)`
   width: auto;
   height: 60px;
   border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
   display: flex;
   align-items: center;
@@ -973,6 +958,9 @@ const DropdownBtn = styled(Dropdown)`
 const Logo = styled(IconHeader)`
   width: 100%;
   height: 21px;
+  path.b {
+    fill: ${white};
+  }
 `;
 
 const LogoCompact = styled(IconLogoCompact)`

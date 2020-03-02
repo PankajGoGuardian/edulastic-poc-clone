@@ -19,16 +19,7 @@ import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import {
-  Layout,
-  Menu as AntMenu,
-  Row,
-  Col,
-  Dropdown,
-  Icon as AntIcon,
-  Tooltip,
-  message
-} from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip, message } from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -201,7 +192,7 @@ class SideMenu extends Component {
     }
   };
 
-  toggleMenu = () => {
+  toggleMenu = e => {
     const { toggleSideBar } = this.props;
     toggleSideBar();
   };
@@ -269,7 +260,7 @@ class SideMenu extends Component {
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;
-    const isMobile = windowWidth < 769;
+    const isMobile = windowWidth <= parseFloat(tabletWidth);
     const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => {
       if (menuItem.customSelection && menuItem.condtition && locationState?.[menuItem.condtition]) {
         return true;
@@ -335,27 +326,17 @@ class SideMenu extends Component {
           breakpoint="md"
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width="245"
-          collapsedWidth={broken ? "0" : "100"}
+          collapsedWidth={broken ? "0" : "80"}
           className="sideBarwrapper"
         >
           <PerfectScrollbar>
             {isMobile ? (
-              <AntIcon
-                className="mobileCloseIcon"
-                type="close"
-                theme="outlined"
-                onClick={this.toggleMenu}
-              />
+              <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
             ) : (
               <LogoWrapper className="logoWrapper">
                 {broken ? (
                   <Col span={3}>
-                    <AntIcon
-                      className="mobileCloseIcon"
-                      type="close"
-                      theme="outlined"
-                      onClick={this.toggleMenu}
-                    />
+                    <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                   </Col>
                 ) : null}
                 <Col span={isCollapsed ? 24 : 18} style={{ textAlign: "center" }}>
@@ -370,11 +351,7 @@ class SideMenu extends Component {
                     }}
                   >
                     {!isCollapsed && (
-                      <AntIcon
-                        className="trigger"
-                        type={isCollapsed ? "right" : "left"}
-                        onClick={this.toggleMenu}
-                      />
+                      <AntIcon className="trigger" type={isCollapsed ? "right" : "left"} onClick={this.toggleMenu} />
                     )}
                   </Col>
                 )}
@@ -410,6 +387,7 @@ class SideMenu extends Component {
                       key={index.toString()}
                       onClick={this.toggleMenu}
                       visible={isItemVisible}
+                      title={isCollapsed ? menu.label : ""}
                     >
                       <MenuIcon />
                       {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
@@ -433,7 +411,7 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: "fixed",
-                      minWidth: isCollapsed ? "60px" : "198px",
+                      minWidth: isCollapsed ? "60px" : "203px",
                       maxWidth: isCollapsed ? "60px" : "0px"
                     }}
                     className="footerDropdown"
@@ -442,7 +420,7 @@ class SideMenu extends Component {
                     placement="topCenter"
                     isVisible={isVisible}
                     onVisibleChange={this.handleVisibleChange}
-                    getPopupContainer={() => this.sideMenuRef.current}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
                   >
                     <div>
                       {profileThumbnail ? (
@@ -452,9 +430,7 @@ class SideMenu extends Component {
                       )}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11, width: "100px" }}>
-                          {!isCollapsed && !isMobile && (
-                            <UserName>{userName || "Anonymous"}</UserName>
-                          )}
+                          {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
                           {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
                         </div>
                       </Tooltip>
@@ -560,11 +536,6 @@ const FixedSidebar = styled.div`
   bottom: 0px;
   z-index: 1002;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
-  .scrollbar-container {
-    > * {
-      pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
-    }
-  }
 
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
@@ -580,14 +551,13 @@ const SideBar = styled(Layout.Sider)`
   width: 245px;
   max-width: 245px;
   min-width: 245px;
-  border-right: 1px solid #dddddd;
-  background-color: #fbfafc;
+  background-color: #304151;
   z-index: 22;
   padding-bottom: 0;
 
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
-    width: 100px;
+    width: 80px;
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -628,11 +598,10 @@ const SideBar = styled(Layout.Sider)`
     width: 125px;
   }
   @media (max-width: ${tabletWidth}) {
-    flex: 0 0 0px;
-    max-width: 0px;
-    min-width: 0px;
-    width: 0px;
-    background-color: rgba(251, 250, 252, 0.99);
+    &.ant-layout-sider-collapsed {
+      min-width: 0px !important;
+      max-width: 0px !important;
+    }
 
     .mobileCloseIcon {
       position: absolute;
@@ -648,7 +617,7 @@ const SideBar = styled(Layout.Sider)`
       svg {
         width: 20px !important;
         height: 20px !important;
-        fill: #434b5d;
+        fill: #7c93a7;
       }
     }
 
@@ -761,34 +730,34 @@ const Menu = styled(AntMenu)`
     
   }
   &.ant-menu-inline-collapsed {
-    width: 100px;
+    width: 80px;
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
     text-align: center;
     justify-content: center;
-    margin: 10px 0px;
-    padding: 5px 18px !important;
-    height: 35px;
+    margin: 5px 0px;
+    padding: 5px 15px !important;
+    height: 40px;
     width: 100%;
   }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 15px 0px;
+      margin: 10px 0px;
     }
   }
   .ant-menu-item {
     position: relative;
-    background: ${props => props.theme.sideMenu.menuItemBgColor};
+    background: transparent;
     
     &:before {
       content: '';
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 18px;
-      right: 18px;
+      left: 15px;
+      right: 15px;
       border-radius: 4px;
       background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
@@ -984,8 +953,8 @@ const QuestionButton = styled.div`
 `;
 
 const UserImg = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 62px;
+  height: 62px;
   background: url(${props => props.src});
   background-position: center center;
   background-size: cover;
@@ -993,10 +962,13 @@ const UserImg = styled.div`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   position: absolute;
   left: 0;
+  margin-bottom: -1px;
+  margin-left: -1px;
 `;
 
 const UserInfoButton = styled.div`
   cursor: pointer;
+  position: relative;
 
   &.active {
     padding: 0;
@@ -1009,6 +981,10 @@ const UserInfoButton = styled.div`
     img {
       box-shadow: none;
     }
+  }
+
+  .ant-dropdown {
+    left: 21px !important;
   }
 
   .footerDropdown {
@@ -1079,6 +1055,9 @@ const PseudoDiv = styled.div`
 const Logo = styled(IconHeader)`
   width: 100%;
   height: 21px;
+  path.b {
+    fill: ${white};
+  }
 `;
 
 const LogoCompact = styled(IconLogoCompact)`

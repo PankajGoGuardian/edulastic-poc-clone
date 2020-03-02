@@ -59,6 +59,19 @@ export default enhance(MainHeader);
 const HeaderWrapper = styled.div`
   padding-top: ${props => props.height || props.theme.HeaderHeight.xs}px;
 
+  .fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 80px;
+    z-index: 999;
+  }
+  @media (max-width: ${tabletWidth}) {
+    .fixed-header {
+      left: 0;
+    }
+  }
+
   @media (min-width: ${mediumDesktopExactWidth}) {
     padding-top: ${props => props.height || props.theme.HeaderHeight.md}px;
   }

@@ -19,6 +19,7 @@ import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/d
 import { receiveSearchCourseAction } from "../../../author/Courses/ducks";
 import { getThumbnail } from "../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade";
 import { bulkSyncCanvasClassAction } from "../../../student/Signup/duck";
+import { signupSuccessAction } from "../../../student/Login/ducks";
 
 const CanvasBulkAddClass = ({
   receiveSearchCourse,
@@ -30,9 +31,10 @@ const CanvasBulkAddClass = ({
   canvasSectionList,
   user,
   bulkSyncCanvasClass,
-  isBulkSyncingCanvas,
+  bulkSyncCanvasStatus,
   courseList,
-  isFetchingCanvasData
+  isFetchingCanvasData,
+  signupSuccess
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -53,8 +55,9 @@ const CanvasBulkAddClass = ({
   }, [canvasCourseList]);
 
   useEffect(() => {
-    if (isBulkSyncingCanvas) setShowModal(true);
-  }, [isBulkSyncingCanvas]);
+    if (bulkSyncCanvasStatus === "INPROGRESS") setShowModal(true);
+    else if (bulkSyncCanvasStatus === "FAILED") setShowModal(false);
+  }, [bulkSyncCanvasStatus]);
 
   useEffect(() => {
     if (canvasCourseList.length && canvasSectionList.length) {
@@ -129,6 +132,12 @@ const CanvasBulkAddClass = ({
     setShowModal(true);
   };
 
+  const handleClose = () => {
+    const { currentSignUpState, ...rest } = user;
+    setShowModal(false);
+    signupSuccess(rest);
+  };
+
   const columns = [
     {
       title: <b>CANVAS CLASS SECTION</b>,
@@ -172,7 +181,7 @@ const CanvasBulkAddClass = ({
       render: (_, row, ind) => (
         <Select
           style={{ width: "100%" }}
-          value={row.subject || null}
+          value={row.subject || undefined}
           placeholder="Select Subject"
           onChange={val => {
             handleChange(ind, "subject", val);
@@ -235,7 +244,7 @@ const CanvasBulkAddClass = ({
             option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           style={{ width: "100%" }}
-          value={row.courseId || ""}
+          value={row.courseId || undefined}
           placeholder="Select Course"
           onChange={val => handleChange(ind, "courseId", val)}
           getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -277,8 +286,18 @@ const CanvasBulkAddClass = ({
         <Button onClick={handleFinish}>Finish</Button>
       </ButtonContainer>
       {showModal && (
-        <StyledModal visible={showModal} footer={null} centered maskClosable={false}>
-          <h4>Syncing with Canvas Course...</h4>
+        <StyledModal
+          title={bulkSyncCanvasStatus === "SUCCESS" ? <h4>Success</h4> : null}
+          visible={showModal}
+          footer={bulkSyncCanvasStatus === "SUCCESS" ? [<Button onClick={handleClose}>Close</Button>] : null}
+          centered
+          maskClosable={false}
+        >
+          <h4>
+            {bulkSyncCanvasStatus === "INPROGRESS"
+              ? "Syncing with Canvas Course..."
+              : "Class successfully synced with Canvas Course."}
+          </h4>
         </StyledModal>
       )}
     </Container>
@@ -289,12 +308,13 @@ export default connect(
   state => ({
     state,
     courseList: get(state, "coursesReducer.searchResult"),
-    isBulkSyncingCanvas: get(state, "signup.bulkSyncingCanvas", false),
+    bulkSyncCanvasStatus: get(state, "signup.bulkSyncCanvasStatus", false),
     isFetchingCanvasData: get(state, "manageClass.isFetchingCanvasData", false)
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,
     receiveSearchCourse: receiveSearchCourseAction,
-    bulkSyncCanvasClass: bulkSyncCanvasClassAction
+    bulkSyncCanvasClass: bulkSyncCanvasClassAction,
+    signupSuccess: signupSuccessAction
   }
 )(CanvasBulkAddClass);

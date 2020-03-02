@@ -56,7 +56,7 @@ const SET_AUTO_SUGGEST_SCHOOLS = "[singup] set auto suggest schools";
 const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS = "[signup] set previous auto suggest schools";
 
 const BULK_SYNC_CANVAS_CLASS = "[signup] bulk sync canvas class";
-const SET_BULK_SYNC_CANVAS_STATE = "[signup] set bulk sync canvas state";
+const SET_BULK_SYNC_CANVAS_STATUS = "[signup] set bulk sync canvas status";
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -112,7 +112,7 @@ export const setAutoSuggestSchools = createAction(SET_AUTO_SUGGEST_SCHOOLS);
 export const setPreviousAutoSuggestSchools = createAction(SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS);
 
 export const bulkSyncCanvasClassAction = createAction(BULK_SYNC_CANVAS_CLASS);
-export const setBulkSyncCanvasStateAction = createAction(SET_BULK_SYNC_CANVAS_STATE);
+export const setBulkSyncCanvasStateAction = createAction(SET_BULK_SYNC_CANVAS_STATUS);
 
 // Reducers
 const initialState = {
@@ -126,7 +126,7 @@ const initialState = {
   checkingPolicy: false,
   checkDistrictPolicy: true,
   autoSuggestSchools: [],
-  bulkSyncingCanvas: false
+  bulkSyncCanvasStatus: ""
 };
 
 const searchSchool = state => {
@@ -209,8 +209,8 @@ const createSchoolSuccess = (state, { payload }) => {
   state.createSchoolRequestPending = false;
 };
 
-const setBulkSyncingState = (state, { payload }) => {
-  state.bulkSyncingCanvas = payload;
+const setBulkSyncingStatus = (state, { payload }) => {
+  state.bulkSyncCanvasStatus = payload;
 };
 
 export default createReducer(initialState, {
@@ -287,10 +287,7 @@ export default createReducer(initialState, {
   [SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS]: state => {
     state.schools = [...state.autoSuggestSchools];
   },
-  [BULK_SYNC_CANVAS_CLASS]: state => {
-    state.bulkSyncingCanvas = true;
-  },
-  [SET_BULK_SYNC_CANVAS_STATE]: setBulkSyncingState
+  [SET_BULK_SYNC_CANVAS_STATUS]: setBulkSyncingStatus
 });
 
 // Sagas
@@ -505,21 +502,18 @@ function* fetchSchoolTeachersSaga({ payload }) {
 
 function* bulkSyncCanvasClassSaga({ payload }) {
   try {
+    yield put(setBulkSyncCanvasStateAction("INPROGRESS"));
     const result = yield call(canvasApi.bulkSync, payload);
     if (result.failedCourseSections.length === payload.length) {
       yield call(message.error, "Bulk sync failed.");
+      yield put(setBulkSyncCanvasStateAction("FAILED"));
     } else {
-      const user = yield select(getUser);
-      const newUser = produce(user, draft => {
-        delete draft.currentSignUpState;
-        return draft;
-      });
-      // setting user in store to put orgData in store
-      yield put(signupSuccessAction(newUser));
+      yield put(setBulkSyncCanvasStateAction("SUCCESS"));
     }
   } catch (err) {
     console.error(err);
     yield call(message.error, "Bulk sync failed.");
+    yield put(setBulkSyncCanvasStateAction("FAILED"));
   }
 }
 

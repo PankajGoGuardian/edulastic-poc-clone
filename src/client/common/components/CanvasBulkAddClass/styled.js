@@ -52,7 +52,7 @@ export const Button = styled.span`
 export const StyledModal = styled(Modal)`
   .ant-modal-content {
     background: ${backgroundGrey};
-    padding: 20px;
+    padding: 10px 20px;
     .ant-modal-header {
       background: transparent;
       padding: 0px;

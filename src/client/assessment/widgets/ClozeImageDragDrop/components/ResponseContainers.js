@@ -34,20 +34,28 @@ const ResponseContainers = ({
       maxWidth: response.maxWidth,
       width: container.width || response.minWidth,
       height: isWrapText ? "auto" : container.height || "auto",
-      background: transparentBackground ? "transparent" : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
+      background: transparentBackground
+        ? "transparent"
+        : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
       border: showDropItemBorder
         ? showDashedBorder
           ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
           : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
         : 0,
-      borderRadius: 5
+      borderRadius: 5,
+      overflow: "hidden"
     };
 
     return btnStyle;
   };
 
   return responseContainers.map((container, index) => (
-    <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>
+    <DropContainer
+      key={container.id}
+      style={getContainerStyle(container)}
+      drop={onDrop}
+      index={index}
+    >
       {container.label && (
         <span className="sr-only" role="heading">
           Drop target {container.label}

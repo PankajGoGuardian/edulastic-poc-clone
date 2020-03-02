@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
 import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
-import { flatten, cloneDeep, isEmpty, omit } from "lodash";
+import { flatten, cloneDeep, isEmpty, omit, uniqBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -840,7 +840,9 @@ const initialState = {
     }
   },
 
-  playlistMetrics: []
+  playlistMetrics: [],
+  classListFetching: false,
+  studentListFetching: false
 };
 
 /**
@@ -1241,7 +1243,8 @@ function updateClassList(state, { payload }) {
         ...state.dropPlaylistSource.searchSource,
         classList: payload.classList
       }
-    }
+    },
+    classListFetching: false
   };
 }
 
@@ -1252,9 +1255,10 @@ function updateStudentList(state, { payload }) {
       ...state.dropPlaylistSource,
       searchSource: {
         ...state.dropPlaylistSource.searchSource,
-        studentList: state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList)
+        studentList: uniqBy(state?.dropPlaylistSource?.searchSource?.studentList.concat(payload.studentList), "id")
       }
-    }
+    },
+    studentListFetching: false
   };
 }
 
@@ -1298,7 +1302,9 @@ export default createReducer(initialState, {
   [FETCH_ASSIGNED_RESULT]: loadAssignedReducer,
   [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer,
   [SET_PLAYLIST_DATA]: setPlaylistDataReducer,
+  [FETCH_CLASS_LIST_BY_DISTRICT_ID]: state => ({...state, classListFetching: true}),
   [FETCH_CLASS_LIST_SUCCESS]: updateClassList,
+  [FETCH_STUDENT_LIST_BY_GROUP_ID]: (state) => ({...state, studentListFetching: true}),
   [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList,
   [UPDATE_DROPPED_ACCESS_LIST]: updatePlaylistDroppedAccessList,
   [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList

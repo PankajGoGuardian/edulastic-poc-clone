@@ -58,7 +58,9 @@ const DropPlaylistModal = props => {
       _id: playlistId,
       title,
       description
-    } = {}
+    } = {},
+    classListFetching,
+    studentListFetching
   } = props;
 
   const [mode, setMode] = useState("");
@@ -160,7 +162,7 @@ const DropPlaylistModal = props => {
   const addedSource = (searchBy === "byClass" ? addedClass : addedStudent);
   const source = searchBy === "byClass" ? classList : studentList;
   const addedData = [...addedClass, ...addedStudent];
-  const isLoading = searchBy === "byClass" ? isEmpty(classList) : isEmpty(studentList);
+  const isLoading = searchBy === "byClass" ? classListFetching : studentListFetching;
 
   return (
     <StyledPurchaseLicenseModal
@@ -184,7 +186,7 @@ const DropPlaylistModal = props => {
           onSelect={fetchStudents}
           getPopupContainer={node => node.parentNode}
           filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
-          notFoundContent={isLoading ? <Spin /> : null}
+          notFoundContent={isLoading ? <Spin /> : "Not found"}
           labelInValue
         >
           {source.map(data => (
@@ -220,7 +222,9 @@ export default connect(
     districtId: state?.user?.user?.districtId,
     dropPlaylistSource: state?.curriculumSequence?.dropPlaylistSource?.searchSource,
     droppedAccessData: state?.curriculumSequence?.dropPlaylistSource?.droppedAccess,
-    destinationCurriculumSequence: state?.curriculumSequence?.destinationCurriculumSequence
+    destinationCurriculumSequence: state?.curriculumSequence?.destinationCurriculumSequence,
+    classListFetching: state?.curriculumSequence?.classListFetching,
+    studentListFetching: state?.curriculumSequence?.studentListFetching
   }),
   {
     fetchClassListAction,
@@ -289,6 +293,9 @@ const StyledPurchaseLicenseModal = styled(Modal)`
   
   .ant-select-selection__choice{
     display: none;
+  }
+  .ant-select-selection__placeholder {
+    display: block!important;
   }
 
   .ant-select-dropdown{

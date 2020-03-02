@@ -16,8 +16,8 @@ const PlayerFooter = ({ isFirst, isLast, moveToPrev, moveToNext, t, unansweredQu
         <FontAwesomeIcon icon={faAngleLeft} />
       </PrevButton>
       <NextButton data-cy="next" onClick={moveToNext}>
-        <FontAwesomeIcon icon={faAngleRight} />
         <span>{isLast() ? t("pagination.submit") : t("pagination.next")}</span>
+        <FontAwesomeIcon icon={faAngleRight} />
       </NextButton>
     </FlexContainer>
     <StyledFlexContainer>
@@ -91,6 +91,17 @@ const PrevButton = styled(ControlBtn)`
 `;
 
 const NextButton = styled(ControlBtn)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  span {
+    margin-right: 10px;
+  }
+  svg {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
   @media (max-width: ${IPAD_PORTRAIT_WIDTH}px) {
     width: 50px;
   }

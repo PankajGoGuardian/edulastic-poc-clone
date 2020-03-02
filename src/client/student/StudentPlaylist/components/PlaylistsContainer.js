@@ -1,32 +1,46 @@
 import React, { useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Layout, Spin } from "antd";
 
 import { smallDesktopWidth } from "@edulastic/colors";
 import { slice } from "../ducks";
+import { getLastPlayListSelector } from "../../../author/Playlist/ducks";
 
-import PlaylistCard from "./PlaylistCard";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 
-const PlaylistsContainer = ({ flag, playlists, fetchPlaylists, currentGroup, isLoading, currentChild }) => {
+const PlaylistsContainer = ({
+  flag,
+  playlists,
+  lastPlaylist,
+  fetchPlaylists,
+  currentGroup,
+  isLoading,
+  currentChild
+}) => {
   useEffect(() => {
     fetchPlaylists();
   }, [currentChild]);
 
   if (isLoading) return <Spin size="large" />;
 
-  return (
+  const playlist = lastPlaylist?.value?._id
+    ? playlists.find(playlist => playlist.playlistId === lastPlaylist.value._id)
+    : null;
+
+  return playlists && playlists.length ? (
+    // if playlists are found, switch to the last playlist
+    <Redirect
+      to={{
+        pathname: `/home/playlist/${playlist?.playlistId || playlists[0].playlistId}`,
+        state: { currentGroupId: playlist?.groupId || playlists[0].groupId }
+      }}
+    />
+  ) : (
     <LayoutContent>
       <Wrapper>
-        {playlists.length < 1 ? (
-          <NoDataNotification
-            heading="No Playlists"
-            description={"You don't have any playlists assigned to you yet."}
-          />
-        ) : (
-          playlists.map(item => <PlaylistCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} />)
-        )}
+        <NoDataNotification heading="No Playlists" description={"You don't have any playlists assigned to you yet."} />
       </Wrapper>
     </LayoutContent>
   );
@@ -36,6 +50,7 @@ export default connect(
   state => ({
     isLoading: state?.studentPlaylist?.isLoading,
     playlists: state?.studentPlaylist?.playlists,
+    lastPlaylist: getLastPlayListSelector(state),
     currentChild: state?.user?.currentChild
   }),
   {

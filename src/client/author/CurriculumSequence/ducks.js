@@ -579,15 +579,19 @@ function* fetchAssigned() {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    const { _id, title, grades, subjects, onChange } = payload;
+    const { _id, title, grades, subjects, groupId, onChange, isStudent } = payload;
     yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
     yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
     yield put(receiveLastPlayListAction());
-    yield put(receiveRecentPlayListsAction());
+    if (!isStudent) {
+      yield put(receiveRecentPlayListsAction());
+    }
     yield put(getAllCurriculumSequencesAction([_id]));
     const location = yield select(state => state.router.location.pathname);
     const urlHasUseThis = location.match(/use-this/g);
-    if (onChange && !urlHasUseThis) {
+    if (isStudent && onChange) {
+      yield put(push({ pathname: `/home/playlist/${_id}`, state: { currentGroupId: groupId } }));
+    } else if (onChange && !urlHasUseThis) {
       yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary" } }));
     } else {
       yield put(

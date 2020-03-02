@@ -65,7 +65,7 @@ const StudentApp = ({ match, selectedTheme }) => {
                   path={`${match.url}/playlist/:playlistId`}
                   render={props => (
                     <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} urlHasUseThis />
+                      <CurriculumContainer {...props} urlHasUseThis="true" />
                     </Suspense>
                   )}
                 />

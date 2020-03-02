@@ -124,7 +124,6 @@ const Content = ({
 
   const showLoader = () => <Spin size="small" />;
 
-  console.log("assignments are", assignments);
   return (
     <LayoutContent flag={flag}>
       <Wrapper>

@@ -397,8 +397,8 @@ function* login({ payload }) {
         subject: user?.orgData?.defaultSubjects
       })
     );
+    yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {
-      yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
 
@@ -613,8 +613,8 @@ export function* fetchUser() {
         subject: user?.orgData?.defaultSubjects
       })
     );
+    yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {
-      yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
   } catch (error) {
@@ -877,8 +877,8 @@ function* getUserData({ payload: res }) {
     TokenStorage.selectAccessToken(user._id, user.role);
     TokenStorage.updateKID(user.kid);
     yield put(setUserAction(user));
+    yield put(receiveLastPlayListAction());
     if (user.role !== roleuser.STUDENT) {
-      yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
     const redirectUrl = getFromLocalStorage("loginRedirectUrl");

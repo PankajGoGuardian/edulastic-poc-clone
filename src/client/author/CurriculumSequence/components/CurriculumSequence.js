@@ -164,10 +164,10 @@ class CurriculumSequence extends Component {
     dropPlaylistModalVisible: false
   };
 
-  handlePlaylistChange = ({ _id, title, grades, subjects }) => {
-    const { useThisPlayList } = this.props;
+  handlePlaylistChange = ({ _id, title, grades, subjects, groupId }) => {
+    const { useThisPlayList, isStudent } = this.props;
     this.handleGuideCancel();
-    useThisPlayList({ _id, title, grades, subjects, onChange: true });
+    useThisPlayList({ _id, title, grades, subjects, groupId, onChange: true, isStudent });
   };
 
   onExplorePlaylists = () => this.props.history.push("/author/playlists");
@@ -338,7 +338,8 @@ class CurriculumSequence extends Component {
       urlHasUseThis,
       isPublisherUser,
       isStudent,
-      playlistMetricsList
+      playlistMetricsList,
+      studentPlaylists
     } = this.props;
 
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -523,7 +524,7 @@ class CurriculumSequence extends Component {
 
           <ChangePlaylistModal
             isStudent={isStudent}
-            playlists={slicedRecentPlaylists}
+            playlists={isStudent ? studentPlaylists : slicedRecentPlaylists}
             onChange={this.handlePlaylistChange}
             onExplorePlaylists={this.onExplorePlaylists}
             activePlaylistId={destinationCurriculumSequence._id}
@@ -1097,7 +1098,8 @@ const enhance = compose(
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
       isStudent: getUserRole(state) === "student",
-      playlistMetricsList: state?.curriculumSequence?.playlistMetrics
+      playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
+      studentPlaylists: state?.studentPlaylist?.playlists
     }),
     {
       onGuideChange: changeGuideAction,

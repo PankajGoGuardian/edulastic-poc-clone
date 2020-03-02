@@ -7,9 +7,11 @@ import { StyledRow, ColLabel, StyledSelect, Label } from "./styled";
 const Selector = ({ onChange, onSelect, value, options, onDeselect, placeholder, mode, isLoading, label, dataCy }) => (
   <React.Fragment>
     <StyledRow gutter={32}>
-      {label && <ColLabel span={24}>
-        <Label>{label}</Label>
-      </ColLabel>}
+      {label && (
+        <ColLabel span={24}>
+          <Label>{label}</Label>
+        </ColLabel>
+      )}
       <Col span={24}>
         <StyledSelect
           showArrow
@@ -57,5 +59,5 @@ Selector.defaultProps = {
   value: [],
   isLoading: false,
   placeholder: "Search by name"
-}
+};
 export default Selector;

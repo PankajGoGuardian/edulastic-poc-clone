@@ -256,7 +256,10 @@ class ModuleRow extends Component {
     return uta;
   };
 
-  toggleModulue = (module, moduleIndex) => {
+  toggleModulue = (event, module, moduleIndex) => {
+    // prevent the toggling of parent div
+    event.preventDefault();
+    event.stopPropagation();
     const { updateCurriculumSequence, playlistId, curriculum } = this.props;
     const dataToUpdate = produce(curriculum, draftState => {
       const currentModule = draftState.modules.find(el => el._id === module._id);
@@ -404,7 +407,7 @@ class ModuleRow extends Component {
                       "100%": getProgressColor(summaryData[moduleIndex]?.value)
                     }}
                     strokeWidth={10}
-                    showInfo={summaryData[moduleIndex]?.value}
+                    show={summaryData[moduleIndex]?.value}
                     percent={summaryData[moduleIndex]?.value}
                   />
                 </Col>
@@ -423,7 +426,7 @@ class ModuleRow extends Component {
                     <StyledLabel>&nbsp;</StyledLabel>
                     <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans" padding="4px 0px">
                       {/* TODO: Method to find sum of scores */}
-                      {summaryData[moduleIndex]?.scores}
+                      {summaryData[moduleIndex]?.scores ? summaryData[moduleIndex]?.scores : "-"}
                     </StyledLabel>
                   </Col>
                 )}
@@ -461,7 +464,7 @@ class ModuleRow extends Component {
                           fontStyle="9px/13px Open Sans"
                           fontWeight="Bold"
                           padding="10px 20px 10px 0px"
-                          onClick={e => this.toggleModulue(module, moduleIndex)}
+                          onClick={event => this.toggleModulue(event, module, moduleIndex)}
                         >
                           {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
                         </StyledLabel>
@@ -640,27 +643,28 @@ class ModuleRow extends Component {
                                   }
                                 >
                                   <span style={{ width: "100%" }}>{moduleData.contentTitle}</span>
-                                  <CustomIcon marginLeft={10} marginRight={5}>
-                                    {!isAssigned || moduleData.assignments[0].testType === "practice" ? (
-                                      <Avatar
-                                        size={18}
-                                        style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}
-                                      >
-                                        {" "}
-                                        P{" "}
-                                      </Avatar>
-                                    ) : (
-                                      <Avatar
-                                        size={18}
-                                        style={{
-                                          backgroundColor: testTypeColor[moduleData.assignments[0].testType],
-                                          fontSize: "13px"
-                                        }}
-                                      >
-                                        {moduleData.assignments[0].testType[0].toUpperCase()}
-                                      </Avatar>
-                                    )}
-                                  </CustomIcon>
+                                  {urlHasUseThis && (
+                                    <CustomIcon marginLeft={10} marginRight={5}>
+                                      {!isAssigned || moduleData.assignments[0].testType === "practice" ? (
+                                        <Avatar
+                                          size={18}
+                                          style={{ backgroundColor: testTypeColor.practice, fontSize: "13px" }}
+                                        >
+                                          {" P "}
+                                        </Avatar>
+                                      ) : (
+                                        <Avatar
+                                          size={18}
+                                          style={{
+                                            backgroundColor: testTypeColor[moduleData.assignments[0].testType],
+                                            fontSize: "13px"
+                                          }}
+                                        >
+                                          {moduleData.assignments[0].testType[0].toUpperCase()}
+                                        </Avatar>
+                                      )}
+                                    </CustomIcon>
+                                  )}
                                 </ModuleDataName>
                                 <Tags
                                   margin="5px 0px 0px 0px"
@@ -678,7 +682,7 @@ class ModuleRow extends Component {
                                   "0%": getProgressColor(progressData?.progress),
                                   "100%": getProgressColor(progressData?.progress)
                                 }}
-                                showInfo={progressData?.progress}
+                                show={progressData?.progress}
                                 strokeWidth={10}
                                 percent={progressData?.progress}
                               />
@@ -687,14 +691,14 @@ class ModuleRow extends Component {
                               <StyledCol span={3} style={rowInlineStyle}>
                                 <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
                                   {/* TODO: Method to find submissions for each assignment */}
-                                  {progressData?.submitted}%
+                                  {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
                                 </StyledLabel>
                               </StyledCol>
                             ) : (
                               <StyledCol span={2} style={rowInlineStyle}>
                                 <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
                                   {/* TODO: Method to find sum of scores for each assignment */}
-                                  {progressData?.scores}
+                                  {progressData?.scores || "-"}
                                 </StyledLabel>
                               </StyledCol>
                             )}
@@ -702,7 +706,7 @@ class ModuleRow extends Component {
                               <StyledCol span={2} style={rowInlineStyle}>
                                 <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
                                   {/* TODO: Method to find classes for each assignment */}
-                                  {progressData?.classes}
+                                  {progressData?.classes || "-"}
                                 </StyledLabel>
                               </StyledCol>
                             ) : (
@@ -745,7 +749,7 @@ class ModuleRow extends Component {
                                       </Button>
                                     </AssignmentButton>
                                   ) : (
-                                    <AssignmentButton assigned={!isAssigned} style={rowInlineStyle}>
+                                    <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
                                       <Button
                                         data-cy="assignButton"
                                         onClick={() => assignTest(_id, moduleData.contentId)}
@@ -1005,7 +1009,7 @@ const ModalWrapper = styled(Modal)`
 const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
-  justify-content: ${props => props.justify || "center"};
+  justify-content: ${props => props.justify || "flex-start"};
 `;
 
 const ModuleHeader = styled.div`
@@ -1052,6 +1056,7 @@ export const EllipsisContainer = styled.div`
 
 const StyledProgress = styled(Progress)`
   .ant-progress-text {
+    display: ${props => !props.show && "none"};
     font: 12px/17px Open Sans;
     color: ${greyThemeDark1};
     letter-spacing: 0.2px;

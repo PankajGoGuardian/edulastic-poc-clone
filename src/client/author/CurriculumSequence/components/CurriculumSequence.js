@@ -11,8 +11,8 @@ import {
   white
 } from "@edulastic/colors";
 import { FlexContainer, MainHeader } from "@edulastic/common";
-import { IconBook, IconGraduationCap, IconShare, IconTile } from "@edulastic/icons";
-import { Button, Cascader, Input, Modal, Progress } from "antd";
+import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit } from "@edulastic/icons";
+import { Button, Cascader, Input, Modal, Progress, Tooltip } from "antd";
 import { round, uniqueId } from "lodash";
 import * as moment from "moment";
 import PropTypes from "prop-types";
@@ -385,9 +385,9 @@ class CurriculumSequence extends Component {
     const playlistMetrics = getplaylistMetrics();
 
     const summaryData = modules?.map((mod, index) => {
-      const { _id = "", data = {} } = mod;
+      const { _id = "", title, data = {} } = mod;
       const metricModule = playlistMetrics[_id] || {};
-      const name = mod.title;
+      const name = `Module ${index + 1}`;
       const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
       const tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
       const assignments = data?.flatMap(x => x?.assignments) || [];
@@ -403,6 +403,7 @@ class CurriculumSequence extends Component {
       const timeSpent = h > 0 ? `${h}H ${m}mins` : `${m}min`;
 
       return {
+        title,
         name,
         value,
         timeSpent,
@@ -549,8 +550,9 @@ class CurriculumSequence extends Component {
             <MainHeader
               headingText={title}
               headingSubContent={
+                urlHasUseThis &&
                 !isPublisherUser &&
-                (isStudent ? studentPlaylists?.length : slicedRecentPlaylists?.length) > 0 && (
+                (isStudent ? studentPlaylists?.length : slicedRecentPlaylists?.length) > 1 && (
                   <IconTile
                     style={{ cursor: "pointer", marginLeft: "18px" }}
                     onClick={this.handleGuidePopup}
@@ -564,7 +566,7 @@ class CurriculumSequence extends Component {
               justify="flex-start"
             >
               <CurriculumHeaderButtons>
-                {(urlHasUseThis || features.isCurator) && !isStudent && (
+                {(showUseThisButton || urlHasUseThis || features.isCurator) && !isStudent && (
                   <StyledButton width="45px" margin="0px 10px 0px 0px" data-cy="share" onClick={onShareClick}>
                     <IconShare color={lightGreen5} width={15} height={15} />
                   </StyledButton>
@@ -573,9 +575,16 @@ class CurriculumSequence extends Component {
                   <HeaderButton onClick={this.openDropPlaylistModal}>Drop Playlist</HeaderButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
-                  <HeaderButton data-cy="edit-playlist" onClick={handleEditClick}>
-                    Edit
-                  </HeaderButton>
+                  <Tooltip placement="bottom" title="EDIT">
+                    <StyledButton
+                      width="45px"
+                      margin="0px 10px 0px 0px"
+                      data-cy="edit-playlist"
+                      onClick={handleEditClick}
+                    >
+                      <IconPencilEdit color={lightGreen5} width={15} height={15} />
+                    </StyledButton>
+                  </Tooltip>
                 )}
                 {showUseThisButton && (
                   <HeaderButton data-cy="use-this" onClick={handleUseThisClick}>
@@ -660,11 +669,13 @@ class CurriculumSequence extends Component {
                   colors={COLORS}
                 />
                 <Hr />
-                <SummaryBlockSubTitle>module proficiency</SummaryBlockSubTitle>
+                <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
                 <div style={{ width: "80%", margin: "20px auto" }}>
                   {summaryData?.map(item => (
                     <div>
-                      <ModuleTitle>{item.name}</ModuleTitle>
+                      <Tooltip placement="topLeft" title={item.title || item.name}>
+                        <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                      </Tooltip>
                       <Progress
                         strokeColor={{
                           "0%": getProgressColor(item?.value),
@@ -730,6 +741,9 @@ const ModuleTitle = styled.p`
   color: #434b5d;
   font-weight: 600;
   text-transform: uppercase;
+  padding-right: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   letter-spacing: 0.2px;
   margin-top: 8px;
 `;

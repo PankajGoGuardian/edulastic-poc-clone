@@ -140,7 +140,7 @@ const CanvasBulkAddClass = ({
     setShowModal(false);
     signupSuccess(rest);
   };
-  
+
   const activeCourseList = useMemo(() => courseList.filter(c => +c.active === 1), [courseList]);
 
   const columns = [

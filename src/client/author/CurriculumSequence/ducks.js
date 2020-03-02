@@ -1306,9 +1306,9 @@ export default createReducer(initialState, {
   [FETCH_ASSIGNED_RESULT]: loadAssignedReducer,
   [APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS]: approveOrRejectSinglePlaylistReducer,
   [SET_PLAYLIST_DATA]: setPlaylistDataReducer,
-  [FETCH_CLASS_LIST_BY_DISTRICT_ID]: state => ({...state, classListFetching: true}),
+  [FETCH_CLASS_LIST_BY_DISTRICT_ID]: state => ({ ...state, classListFetching: true }),
   [FETCH_CLASS_LIST_SUCCESS]: updateClassList,
-  [FETCH_STUDENT_LIST_BY_GROUP_ID]: (state) => ({...state, studentListFetching: true}),
+  [FETCH_STUDENT_LIST_BY_GROUP_ID]: state => ({ ...state, studentListFetching: true }),
   [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList,
   [UPDATE_DROPPED_ACCESS_LIST]: updatePlaylistDroppedAccessList,
   [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList

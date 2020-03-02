@@ -19,9 +19,7 @@ const ImportDone = ({ t, jobsByStatus, jobsData }) => {
         lineHeight: "32px"
       }}
     >
-      <StyledButton onClick={() => alert("reset the status and redirect as required")}>
-        Continue
-      </StyledButton>
+      <StyledButton onClick={() => alert("reset the status and redirect as required")}>Continue</StyledButton>
     </div>
   );
 

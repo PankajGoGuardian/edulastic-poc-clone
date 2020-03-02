@@ -9,12 +9,7 @@ import { ContentWrapper, StyledContent } from "./styled";
 import UploadTest from "./UploadTest";
 import ImportInprogress from "./ImportInProgress";
 import ImportDone from "./ImportDone";
-import {
-  uploadTestStatusAction,
-  setJobIdsAction,
-  qtiImportProgressAction,
-  UPLOAD_STATUS
-} from "../ducks";
+import { uploadTestStatusAction, setJobIdsAction, qtiImportProgressAction, UPLOAD_STATUS } from "../ducks";
 
 const ImportTestContent = ({ uploadTestStatus, setJobIds, jobIds, status, qtiImportProgress }) => {
   const [isLoading, setisLoading] = useState(false);

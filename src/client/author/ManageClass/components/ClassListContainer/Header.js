@@ -58,7 +58,8 @@ Header.propTypes = {
 const enhance = compose(
   connect(
     state => ({
-      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn")
+      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom")
     }),
     { fetchClassList: fetchClassListAction }
   )

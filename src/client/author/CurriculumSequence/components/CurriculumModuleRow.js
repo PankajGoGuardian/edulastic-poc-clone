@@ -643,7 +643,10 @@ class ModuleRow extends Component {
                               <ModuleDataWrapper>
                                 <ModuleDataName
                                   onClick={() =>
-                                    isAssigned && message.warning("Test is not yet assigned to any class(es)")
+                                    !isStudent &&
+                                    (isAssigned
+                                      ? this.setAssignmentDropdown(moduleData?.contentId)
+                                      : message.warning("Test is not yet assigned to any class(es)"))
                                   }
                                 >
                                   <span style={{ width: "100%" }}>{moduleData.contentTitle}</span>

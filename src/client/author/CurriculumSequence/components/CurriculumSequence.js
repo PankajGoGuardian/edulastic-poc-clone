@@ -337,6 +337,7 @@ class CurriculumSequence extends Component {
       urlHasUseThis,
       isPublisherUser,
       isStudent,
+      isTeacher,
       playlistMetricsList,
       studentPlaylists
     } = this.props;
@@ -562,12 +563,12 @@ class CurriculumSequence extends Component {
             >
               <CurriculumHeaderButtons>
                 {(urlHasUseThis || features.isCurator) && !isStudent && (
-                  <>
-                    <StyledButton width="45px" margin="0px 10px 0px 0px" data-cy="share" onClick={onShareClick}>
-                      <IconShare color={lightGreen5} width={15} height={15} />
-                    </StyledButton>
-                    <HeaderButton onClick={this.openDropPlaylistModal}>Drop Playlist</HeaderButton>
-                  </>
+                  <StyledButton width="45px" margin="0px 10px 0px 0px" data-cy="share" onClick={onShareClick}>
+                    <IconShare color={lightGreen5} width={15} height={15} />
+                  </StyledButton>
+                )}
+                {urlHasUseThis && isTeacher && !isPublisherUser && (
+                  <HeaderButton onClick={this.openDropPlaylistModal}>Drop Playlist</HeaderButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <HeaderButton data-cy="edit-playlist" onClick={handleEditClick}>
@@ -1041,6 +1042,7 @@ const enhance = compose(
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
       isStudent: getUserRole(state) === "student",
+      isTeacher: getUserRole(state) === "teacher",
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
       studentPlaylists: state?.studentPlaylist?.playlists
     }),

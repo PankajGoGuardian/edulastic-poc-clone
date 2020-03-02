@@ -35,8 +35,9 @@ import {
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
-import { logoutAction, changeChildAction } from "../Login/ducks";
+import { logoutAction, changeChildAction, getUserFeatures } from "../Login/ducks";
 import { IPAD_LANDSCAPE_WIDTH } from "../../assessment/constants/others";
+// import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
 const menuItems = [
   {
@@ -170,7 +171,8 @@ class SideMenu extends Component {
       studentChildren,
       currentChild,
       changeChild,
-      role
+      role,
+      features
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
@@ -262,6 +264,9 @@ class SideMenu extends Component {
                 >
                   {menuItems.map((menu, index) => {
                     const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
+                    if (menu.label === "Playlist" && !features.playlist) {
+                      return null;
+                    }
                     return (
                       <MenuItem key={index.toString()} data-cy={menu.label} onClick={this.toggleMenu}>
                         <MenuIcon />
@@ -363,7 +368,8 @@ const enhance = compose(
       profileThumbnail: get(user, "user.thumbnail"),
       studentChildren: user?.user?.children || [],
       currentChild: user?.currentChild,
-      role: user?.user?.role
+      role: user?.user?.role,
+      features: user?.user?.features
     }),
     {
       logout: logoutAction,

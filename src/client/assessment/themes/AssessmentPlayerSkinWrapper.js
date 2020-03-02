@@ -55,7 +55,7 @@ const AssessmentPlayerSkinWrapper = ({
   };
 
   const leftSideBar = () => {
-    if (!defaultAP) {
+    if (!defaultAP && isUndefined(docUrl)) {
       return (
         <Sidebar isVisible={isSidebarVisible}>
           <SidebarQuestionList

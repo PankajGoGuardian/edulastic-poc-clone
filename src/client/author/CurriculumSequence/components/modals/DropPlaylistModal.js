@@ -1,26 +1,15 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Modal, Button, Radio, Select, message, Spin } from "antd";
+import { Modal, Button, Radio, message } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
-import {
-  lightGreySecondary,
-  black,
-  white,
-  secondaryTextColor,
-  titleColor,
-  greyishBorder,
-  themeColor
-} from "@edulastic/colors";
-import {
-  fetchClassListAction,
-  fetchStudentListAction,
-  dropPlaylistAction,
-  fetchPlaylistDroppedAccessList
-} from "../../ducks";
+import { lightGreySecondary, black, white, secondaryTextColor, titleColor, greyishBorder, themeColor } from "@edulastic/colors";
+import { fetchClassListAction, fetchStudentListAction, dropPlaylistAction, fetchPlaylistDroppedAccessList } from "../../ducks";
+import Selector from "./Selector";
+import { StyledRadioGroup } from "./styled";
 
 const getFooterComponent = ({ dropPlaylist }) => (
   <FlexContainer width="450px">
@@ -32,18 +21,15 @@ const getFooterComponent = ({ dropPlaylist }) => (
 
 const DroppedItem = ({ onDelete, item }) => (
   <FlexContainer justifyContent="space-between" height="28px">
-    <ItemName>{item.name}</ItemName>
+    <FlexContainer style={{textTransform: "uppercase"}}>
+      {
+      item.type === "class" ?
+        (<IconWrapper fontSize="13" title="CLASS LEVEL ACCESS"><i className="fa fa-users" aria-hidden="true" /></IconWrapper>) :
+        (<IconWrapper fontSize="13" title="STUDENT LEVEL ACCESS"> <i className="fa fa-user" aria-hidden="true" /></IconWrapper>)
+      }
+      <ItemName>{item.name}</ItemName>
+    </FlexContainer>
     <ActionWrapper>
-      {item.type === "class" ? (
-        <IconWrapper fontSize="13" title="CLASS LEVEL ACCESS">
-          <i className="fa fa-users" aria-hidden="true" />
-        </IconWrapper>
-      ) : (
-        <IconWrapper fontSize="13" title="STUDENT LEVEL ACCESS">
-          {" "}
-          <i className="fa fa-user" aria-hidden="true" />
-        </IconWrapper>
-      )}
       <IconWrapper
         fontSize="16"
         onClick={() => onDelete(item)}
@@ -122,20 +108,19 @@ const DropPlaylistModal = props => {
 
   const changeSearchSource = e => setSearchSource(e.target.value);
 
-  const handleSearchChange = (value, option) => {
+  const handleClassChange = (value, option) => {
     setMode("edit");
-    if (searchBy === "byClass") {
-      const studentIds = value.flatMap(x => studentList?.filter(y => y?.classId === x?.key)?.map(z => z?.id));
-      setAddedStudent(prev => prev.filter(x => !studentIds?.includes(x?.id)));
-      setAddedClass(value.map(x => ({ id: x?.key, name: x?.label, type: "class" })));
-    } else {
-      const classIds = value.flatMap(x => studentList?.filter(y => y?.id === x.key)?.map(z => z?.classId));
-      setAddedClass(prev => prev.filter(x => !classIds?.includes(x?.id)));
-      setAddedStudent(
-        value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId }))
-      );
-    }
-  };
+    const studentIds = value.flatMap(x => studentList?.filter(y => y?.classId === x?.key)?.map(z => z?.id));
+    setAddedStudent(prev => prev.filter(x => !studentIds?.includes(x?.id)));
+    setAddedClass(value.map(x => ({ id: x?.key, name: x?.label, type: "class" })));
+  }
+
+  const handleStudentChange = (value, option) => {
+    setMode("edit");
+    const classIds = value.flatMap(x => studentList?.filter(y => y?.id === x.key)?.map(z => z?.classId));
+    setAddedClass(prev => prev.filter(x => !classIds?.includes(x?.id)));
+    setAddedStudent(value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId })));
+  }
 
   const onItemDelete = item => {
     setMode("delete");
@@ -174,10 +159,7 @@ const DropPlaylistModal = props => {
     }
   };
 
-  const addedSource = searchBy === "byClass" ? addedClass : addedStudent;
-  const source = searchBy === "byClass" ? classList : studentList;
   const addedData = [...addedClass, ...addedStudent];
-  const isLoading = searchBy === "byClass" ? classListFetching : studentListFetching;
 
   return (
     <StyledPurchaseLicenseModal
@@ -188,44 +170,29 @@ const DropPlaylistModal = props => {
       centered
     >
       <>
-        <p>Dropping a playlist will let other teachers/students see the playlist and follow along.</p>
-
-        <br />
-        <Title>CLASS/STUDENT</Title>
-        <Select
-          placeholder={searchBy === "byClass" ? "SEARCH BY CLASS NAME" : "SEARCH BY STUDENT NAME"}
-          style={{ width: "100%" }}
-          mode="multiple"
-          value={addedSource.map(x => ({ key: x.id, label: x.name }))}
-          onChange={(value, option) => handleSearchChange(value, option)}
+        <p style={{marginBottom: "21px"}}>Dropping a playlist will let other teachers/students see the playlist and follow along.</p>
+        <Selector
+          onChange={handleClassChange}
           onSelect={fetchStudents}
-          getPopupContainer={node => node.parentNode}
-          filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
-          notFoundContent={isLoading ? <Spin /> : "Not found"}
-          labelInValue
-        >
-          {source.map(data => (
-            <Select.Option key={data.id} value={data.id} classId={data?.classId}>
-              {data.name}
-            </Select.Option>
-          ))}
-        </Select>
-
-        <br />
-        <br />
-
-        <Radio.Group style={{ display: "flex" }} onChange={changeSearchSource} value={searchBy}>
-          <Radio style={{ width: "50%" }} value="byClass">
-            <label style={{ paddingLeft: "15px", fontWeight: "600" }}>BY CLASS</label>
-          </Radio>
-          <Radio style={{ width: "100%" }} value="byStudent">
-            <label style={{ paddingLeft: "15px", fontWeight: "600" }}>SPECIFIC STUDENTS</label>
-          </Radio>
-        </Radio.Group>
-
-        <br />
-        <br />
-
+          value={addedClass.map(x => ({ key: x.id, label: x.name }))}
+          options={classList}
+          isLoading={classListFetching}
+          label="CLASS"
+          dataCy="selectClass"
+        />
+        <StyledRadioGroup onChange={changeSearchSource} value={searchBy} style={{marginBottom: "32px", fontSize: "12px"}}>
+          <Radio value="byClass">BY CLASS</Radio>
+          <Radio value="byStudent">SPECIFIC STUDENT</Radio>
+        </StyledRadioGroup>
+        {searchBy !== "byClass" && <Selector
+          onChange={handleStudentChange}
+          onSelect={fetchStudents}
+          value={addedStudent.map(x => ({ key: x.id, label: x.name }))}
+          options={studentList}
+          isLoading={studentListFetching}
+          label="STUDENT"
+          dataCy="selectStudent"
+        />}
         <Title>WHO HAS DROP ACCESS</Title>
         <DroppedList>
           {addedData.map(x => (
@@ -297,30 +264,27 @@ const StyledPurchaseLicenseModal = styled(Modal)`
     right: 30px;
   }
 
-  .anticon,
-  .anticon-check,
-  .ant-select-selected-icon {
-    display: none;
-  }
-
-  .ant-modal-close-icon {
+  .ant-modal-close-icon{
     display: block;
     margin-right: 30px;
     margin-top: 25px;
     transform: scale(1.2);
   }
 
-  .ant-select-selection__choice {
-    display: none;
+  .ant-select-arrow {
+    top: 20px;
   }
-  .ant-select-selection__placeholder {
-    display: block !important;
-  }
-
-  .ant-select-dropdown {
+  .ant-select-dropdown{
     min-height: 40px;
+    .ant-select-selection--multiple .ant-select-arrow {
+      top: 20px;
+    }
+    .anticon, 
+    .anticon-check{
+      display: none;
+    }
   }
-`;
+  `;
 
 const Title = styled.h5`
   color: ${secondaryTextColor};
@@ -365,9 +329,9 @@ const DroppedList = styled(PerfectScrollbar)`
 `;
 
 const ItemName = styled.div`
-  color: #444;
-  font-weight: 600;
-  font-size: 12px;
+    color: #444;
+    font-weight: 600;
+    font-size: 10px;
 `;
 
 const ActionWrapper = styled.div`

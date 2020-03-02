@@ -680,7 +680,7 @@ class CurriculumSequence extends Component {
             )}
           </StyledFlexContainer>
         </CurriculumSequenceWrapper>
-        <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
+        {dropPlaylistModalVisible && <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />}
       </>
     );
   }

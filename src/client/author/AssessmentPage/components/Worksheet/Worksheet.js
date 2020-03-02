@@ -111,7 +111,8 @@ class WorksheetComponent extends React.Component {
     minimized: false,
     lineWidth: 6,
     isToolBarVisible: true,
-    fromFreeFormNotes: {}
+    fromFreeFormNotes: {},
+    pageZoom: 1
   };
 
   componentDidMount() {
@@ -567,6 +568,8 @@ class WorksheetComponent extends React.Component {
     updateQuestionNumber(data);
   };
 
+  setZoom = zoom => this.setState({ pageZoom: zoom });
+
   // setup for scratchpad ends
   render() {
     const {
@@ -628,6 +631,7 @@ class WorksheetComponent extends React.Component {
         history={userHistory}
         height="100%"
         top={0}
+        zoom={this.state.pageZoom}
         position="absolute"
         fontFamily={currentFont}
         fromFreeFormNotes={isAssessmentPlayer ? fromFreeFormNotes : {}}
@@ -735,6 +739,7 @@ class WorksheetComponent extends React.Component {
               questionsById={questionsById}
               answersById={answersById}
               renderExtra={svgContainer}
+              setZoom={this.setZoom}
               viewMode={viewMode}
               reportMode={reportMode}
               isToolBarVisible={isToolBarVisible}

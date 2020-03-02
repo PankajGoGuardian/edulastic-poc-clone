@@ -59,18 +59,23 @@ const PDFPreview = ({
   highlighted,
   forwardedRef,
   onDragStart,
-  review
+  review,
+  setZoom
 }) => {
   const [pdfScale, scalePDF] = useState(1);
 
   const previewContainer = useRef();
 
   const PDFScaleUp = (scale = 0.25) => {
-    scalePDF(prevState => (prevState < 3 ? prevState + scale : prevState));
+    const zoom = pdfScale < 3 ? pdfScale + scale : pdfScale;
+    scalePDF(zoom);
+    setZoom(zoom);
   };
 
   const PDFScaleDown = (scale = 0.25) => {
-    scalePDF(prevState => (prevState > 0.5 ? prevState - scale : prevState));
+    const zoom = pdfScale > 0.5 ? pdfScale - scale : pdfScale;
+    scalePDF(zoom);
+    setZoom(zoom);
   };
 
   useLayoutEffect(() => {

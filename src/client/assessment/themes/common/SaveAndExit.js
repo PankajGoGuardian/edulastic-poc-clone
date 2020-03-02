@@ -15,11 +15,7 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
         <IconContrast />
       </StyledButton>
     )}
-    {onSubmit && (
-      <StyledButton onClick={onSubmit}>
-        <IconSend />
-      </StyledButton>
-    )}
+
     {previewPlayer ? (
       <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
         <IconCircleLogout />
@@ -30,6 +26,11 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
         <IconCircleLogout />
         SAVE & EXIT
       </SaveAndExitButton>
+    )}
+    {onSubmit && (
+      <StyledButton onClick={onSubmit}>
+        <IconSend />
+      </StyledButton>
     )}
   </FlexContainer>
 );

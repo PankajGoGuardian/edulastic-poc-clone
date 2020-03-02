@@ -88,7 +88,7 @@ const Container = styled.div`
   display: ${props => props.display || "flex"};
   justify-content: ${props => props.justify || "space-between"};
   align-items: ${props => props.align || "center"};
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dadae4;
   height: ${props => props.height || props.theme.HeaderHeight.xs}px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {

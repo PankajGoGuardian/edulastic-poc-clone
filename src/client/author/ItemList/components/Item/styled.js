@@ -67,7 +67,7 @@ export const Link = styled.a`
 
 export const Container = styled.div`
   padding: 25px 0px;
-  border-bottom: 1px solid ${lightGreySecondary};
+  border-bottom: 1px solid #dadae4;
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;

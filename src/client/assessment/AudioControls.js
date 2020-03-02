@@ -46,7 +46,7 @@ const AudioControls = ({
   qId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
-  className,
+  className
 }) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
@@ -66,7 +66,7 @@ const AudioControls = ({
         reject({ id, e, url });
       });
     });
-  //Playing audio
+  // Playing audio
   const audioPlayResolve = _howl =>
     new Promise(resolve => {
       _howl.play();
@@ -75,7 +75,7 @@ const AudioControls = ({
       });
       setCurrentHowl(_howl);
     });
-  //Stop all audios
+  // Stop all audios
   const stopAllAudios = () => {
     const findAllPlayingHowls = Howler._howls.filter(item => item.playing());
     if (findAllPlayingHowls.length) {
@@ -134,7 +134,7 @@ const AudioControls = ({
     audioPlayResolve(stimulusHowl).then(() => {
       if (questionData.type === "multipleChoice") {
         const { options } = questionData;
-        let mapOptById = options.map(item => item.value);
+        const mapOptById = options.map(item => item.value);
         const asyncPlay = async () => {
           for (const i in mapOptById) {
             const item = mapOptById[i];
@@ -170,7 +170,7 @@ const AudioControls = ({
             !loading && <IconPlayFilled color={white} className="audio-play" />
           )}
         </ControlButtons>
-        <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
+        <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
           <IconStop color={white} className="audio-stop" />
         </ControlButtons>
       </div>
@@ -188,7 +188,6 @@ export default connect(
 )(AudioControls);
 
 const AudioButtonsWrapper = styled.div`
-  position: absolute;
   top: 0px;
   height: 40px;
   padding: 0px 20px;

@@ -166,7 +166,7 @@ class ClassCreate extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Header />
         <Spin spinning={creating}>
-          <Container>
+          <Container padding="30px">
             <FormTitle>Class Details</FormTitle>
             <Row gutter={36}>
               <LeftContainer xs={8}>

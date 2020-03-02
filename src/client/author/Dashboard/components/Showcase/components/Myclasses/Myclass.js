@@ -25,7 +25,7 @@ const Card = ({ data }) => (
       <CardTextContent data={data} />
     </Row>
   </CardBox>
-  );
+);
 
 const MyClasses = ({
   getTeacherDashboard,
@@ -48,9 +48,7 @@ const MyClasses = ({
   const sortableClasses = classData
     .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate);
-  const unSortableClasses = classData.filter(
-    d => d.asgnStartDate === null || d.asgnStartDate === undefined
-  );
+  const unSortableClasses = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
   const allClasses = [...sortableClasses, ...unSortableClasses];
   const allActiveClasses = allClasses.filter(c => c.active === 1);
@@ -61,7 +59,7 @@ const MyClasses = ({
   ));
 
   return (
-    <MainContentWrapper>
+    <MainContentWrapper padding="30px">
       <TextWrapper size="20px" color={title} style={{ marginBottom: "1rem" }}>
         My Classes
       </TextWrapper>

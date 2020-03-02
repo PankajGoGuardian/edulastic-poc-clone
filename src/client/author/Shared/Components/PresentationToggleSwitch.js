@@ -11,15 +11,21 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, 
   const toggleCurrentMode = () => {
     togglePresentationMode();
     if (!isPresentationMode)
-      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
+      message.info(
+        "Presentation mode is ON. You can present assessment data without revealing student identity."
+      );
   };
 
   const title = !isPresentationMode
     ? "Presentation Mode will anonymize the names of students"
     : " Presentation Mode will get OFF";
   return (
-    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
-      <SwitchBox style={{ fontSize: "10px" }}>
+    <FeaturesSwitch
+      inputFeatures="presentationMode"
+      actionOnInaccessible="hidden"
+      groupId={groupId}
+    >
+      <SwitchBox>
         {isPresentationMode ? "RESET" : "PRESENT"}{" "}
         <Switch checked={isPresentationMode} title={title} onClick={toggleCurrentMode} />
       </SwitchBox>
@@ -37,11 +43,13 @@ export default connect(
 )(PresentationToggleSwitch);
 
 const SwitchBox = styled.span`
-  font-size: 10px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
   .ant-switch {
     min-width: 32px;
     height: 16px;
-    margin: 0px 0px 0px 5px;
+    margin-left: 10px;
     &:after {
       width: 12px;
       height: 12px;

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { findIndex, isUndefined, get, keyBy } from "lodash";
-import produce, { setAutoFreeze } from "immer";
+import { findIndex, isUndefined, get } from "lodash";
+import { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
 import { Modal, Button, Input, Tooltip } from "antd";
 import { ThemeProvider } from "styled-components";
@@ -38,7 +38,6 @@ import {
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getStudentResponseSelector,
-  getDynamicVariablesSetIdForViewResponse,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector
 } from "../ClassBoard/ducks";
@@ -53,13 +52,15 @@ class StudentViewContainer extends Component {
   state = { showFeedbackPopup: false, showTestletPlayer: false, hasStickyHeader: false };
 
   feedbackRef = React.createRef();
+
   questionsContainerRef = React.createRef();
 
-  handleScroll = e => {
+  handleScroll = () => {
+    const { hasStickyHeader } = this.state;
     const elementTop = this.questionsContainerRef.current?.getBoundingClientRect().top || 0;
-    if (elementTop < 100 && !this.state.hasStickyHeader) {
+    if (elementTop < 100 && !hasStickyHeader) {
       this.setState({ hasStickyHeader: true });
-    } else if (elementTop > 100 && this.state.hasStickyHeader) {
+    } else if (elementTop > 100 && hasStickyHeader) {
       this.setState({ hasStickyHeader: false });
     }
   };
@@ -107,7 +108,12 @@ class StudentViewContainer extends Component {
   };
 
   handleApply = () => {
-    const { saveOverallFeedback, assignmentIdClassId, studentResponse, updateOverallFeedback } = this.props;
+    const {
+      saveOverallFeedback,
+      assignmentIdClassId,
+      studentResponse,
+      updateOverallFeedback
+    } = this.props;
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const testActivityId = studentTestActivity && studentTestActivity._id;
     const feedback = this.feedbackRef.current.state.value;
@@ -130,8 +136,7 @@ class StudentViewContainer extends Component {
       selectedStudent,
       isPresentationMode,
       testItemsOrder,
-      filter,
-      setFilter
+      filter
     } = this.props;
 
     const { loading, showFeedbackPopup, showTestletPlayer, hasStickyHeader } = this.state;
@@ -152,9 +157,12 @@ class StudentViewContainer extends Component {
 
     const correctNumber = activeQuestions.filter(x => x.score === x.maxScore && x.score > 0).length;
 
-    const wrongNumber = activeQuestions.filter(x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped).length;
+    const wrongNumber = activeQuestions.filter(
+      x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
+    ).length;
 
-    const partiallyCorrectNumber = activeQuestions.filter(x => x.score > 0 && x.score < x.maxScore).length;
+    const partiallyCorrectNumber = activeQuestions.filter(x => x.score > 0 && x.score < x.maxScore)
+      .length;
 
     const skippedNumber = activeQuestions.filter(x => x.skipped && x.score === 0).length;
 
@@ -162,7 +170,8 @@ class StudentViewContainer extends Component {
 
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
-      (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
+      (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) ||
+      "";
     const feedbackButtonToolTip = (
       <div>
         <p>
@@ -182,7 +191,11 @@ class StudentViewContainer extends Component {
             title="Give Overall Feedback"
             onCancel={() => this.handleShowFeedbackPopup(false)}
             footer={[
-              <Button data-cy="cancel" key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
+              <Button
+                data-cy="cancel"
+                key="back"
+                onClick={() => this.handleShowFeedbackPopup(false)}
+              >
                 Cancel
               </Button>,
               <Button data-cy="submit" key="submit" type="primary" onClick={this.handleApply}>
@@ -212,7 +225,10 @@ class StudentViewContainer extends Component {
               <AllButton active={filter === null} onClick={() => this.onClickTab(null)}>
                 ALL ({totalNumber})
               </AllButton>
-              <CorrectButton active={filter === "correct"} onClick={() => this.onClickTab("correct")}>
+              <CorrectButton
+                active={filter === "correct"}
+                onClick={() => this.onClickTab("correct")}
+              >
                 CORRECT ({correctNumber})
               </CorrectButton>
               <WrongButton active={filter === "wrong"} onClick={() => this.onClickTab("wrong")}>
@@ -224,7 +240,10 @@ class StudentViewContainer extends Component {
               <WrongButton active={filter === "skipped"} onClick={() => this.onClickTab("skipped")}>
                 SKIPPED ({skippedNumber})
               </WrongButton>
-              <PartiallyCorrectButton active={filter === "notGraded"} onClick={() => this.onClickTab("notGraded")}>
+              <PartiallyCorrectButton
+                active={filter === "notGraded"}
+                onClick={() => this.onClickTab("notGraded")}
+              >
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
@@ -238,12 +257,14 @@ class StudentViewContainer extends Component {
             data-cy="overallFeedback"
             onClick={() => this.handleShowFeedbackPopup(true)}
             active
-            style={{ width: "25%" }}
           >
             <IconFeedback color={white} />
             {initFeedbackValue.length ? (
               <Tooltip title={feedbackButtonToolTip} placement={hasStickyHeader ? "bottom" : "top"}>
-                <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
+                <span>
+                  {`${initFeedbackValue.slice(0, 30)}
+                    ${initFeedbackValue.length > 30 ? "....." : ""}`}
+                </span>
               </Tooltip>
             ) : (
               "GIVE OVERALL FEEDBACK"
@@ -253,9 +274,16 @@ class StudentViewContainer extends Component {
 
         <div ref={this.questionsContainerRef}>
           {!loading && (
-            <AnswerContext.Provider value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}>
+            <AnswerContext.Provider
+              value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}
+            >
               <ThemeProvider
-                theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
+                theme={{
+                  twoColLayout: {
+                    first: "calc(100% - 265px) !important",
+                    second: "250px !important"
+                  }
+                }}
               >
                 <ClassQuestions
                   currentStudent={currentStudent || {}}
@@ -268,6 +296,7 @@ class StudentViewContainer extends Component {
                   isPresentationMode={isPresentationMode}
                   showTestletPlayer={showTestletPlayer}
                   closeTestletPlayer={() => this.setState({ showTestletPlayer: false })}
+                  isLCBView
                 />
               </ThemeProvider>
             </AnswerContext.Provider>
@@ -287,7 +316,7 @@ class StudentViewContainer extends Component {
 
 const enhance = compose(
   connect(
-    (state, ownProps) => ({
+    state => ({
       classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
@@ -317,7 +346,6 @@ StudentViewContainer.propTypes = {
   saveOverallFeedback: PropTypes.func.isRequired,
   updateOverallFeedback: PropTypes.func.isRequired,
   assignmentIdClassId: PropTypes.array.isRequired,
-  variableSetIds: PropTypes.array.isRequired,
   testItemsOrder: PropTypes.any.isRequired
 };
 StudentViewContainer.defaultProps = {

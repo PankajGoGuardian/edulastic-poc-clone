@@ -1,33 +1,28 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Row, Col, Form, Input, Button, Checkbox } from "antd";
-import styled from "styled-components";
-import { compose } from "redux";
-import { trim } from "lodash";
-import { withNamespaces } from "@edulastic/localization";
 import {
-  themeColor,
-  themeColorLighter,
-  tabletWidth,
-  mediumDesktopWidth,
-  middleMobileWidth,
-  grey,
-  smallDesktopWidth,
   extraDesktopWidthMax,
-  secondaryTextColor,
+  grey,
   mediumDesktopExactWidth,
-  white
+  middleMobileWidth,
+  secondaryTextColor,
+  smallDesktopWidth,
+  tabletWidth,
+  themeColor
 } from "@edulastic/colors";
+import { IconLock, IconMail } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Checkbox, Col, Form, Input, Row } from "antd";
+import { trim } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
 import { connect } from "react-redux";
-import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
+import { compose } from "redux";
+import styled from "styled-components";
 import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
-import { ForgotPasswordPopup } from "./forgotPasswordPopup";
-
+import cleverIcon from "../../assets/clever-icon.svg";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
-import cleverIcon from "../../assets/clever-icon.svg";
-
-import { IconLock, IconMail } from "@edulastic/icons";
+import { cleverLoginAction, googleLoginAction, loginAction, msoLoginAction } from "../ducks";
+import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
 const FormItem = Form.Item;
 
@@ -90,12 +85,13 @@ class LoginContainer extends React.Component {
       Partners,
       isSignupUsingDaURL,
       districtPolicy,
-      districtShortName,
       generalSettings,
       googleLogin,
       cleverLogin,
       msoLogin
     } = this.props;
+
+    const { forgotPasswordVisible } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -164,8 +160,11 @@ class LoginContainer extends React.Component {
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
-                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                !isSignupUsingDaURL ? (
+                {isDistrictPolicyAllowed(
+                  isSignupUsingDaURL,
+                  districtPolicy,
+                  "userNameAndPassword"
+                ) || !isSignupUsingDaURL ? (
                   <FormBody>
                     <Col span={20} offset={2}>
                       <h5 align="center">{t("common.formboxheading")}</h5>
@@ -188,7 +187,13 @@ class LoginContainer extends React.Component {
                               },
                               {
                                 validator: (rule, value, callback) =>
-                                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
+                                  isEmailValid(
+                                    rule,
+                                    value,
+                                    callback,
+                                    "both",
+                                    t("common.validation.validemail")
+                                  )
                               }
                             ]
                           })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
@@ -201,7 +206,13 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptypassword")
                               }
                             ]
-                          })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
+                          })(
+                            <Input
+                              data-cy="password"
+                              prefix={<IconLock color={themeColor} />}
+                              type="password"
+                            />
+                          )}
                         </FormItem>
                         <FormItem>
                           {getFieldDecorator("remember", {
@@ -230,9 +241,9 @@ class LoginContainer extends React.Component {
         <Copyright>
           <Col span={24}>{t("common.copyright")}</Col>
         </Copyright>
-        {this.state.forgotPasswordVisible ? (
+        {forgotPasswordVisible ? (
           <ForgotPasswordPopup
-            visible={this.state.forgotPasswordVisible}
+            visible={forgotPasswordVisible}
             onCancel={this.onForgotPasswordCancel}
             onOk={this.onForgotPasswordOk}
           />
@@ -419,9 +430,9 @@ const FormBody = styled(Row)`
 
 const ForgetPassword = styled("a")`
   float: right;
-  color: ${themeColorLighter};
+  color: ${themeColor};
   &:hover {
-    color: ${themeColorLighter};
+    color: ${themeColor};
     border-bottom: 1px ${themeColor} solid;
   }
   font-size: 10px;

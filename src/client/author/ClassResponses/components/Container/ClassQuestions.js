@@ -19,7 +19,17 @@ import { getDynamicVariablesSetIdForViewResponse } from "../../../ClassBoard/duc
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
-function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passages, isQuestionView, isExpressGrader }) {
+function Preview({
+  item,
+  qIndex,
+  studentId,
+  evaluation,
+  showStudentWork,
+  passages,
+  isQuestionView,
+  isExpressGrader,
+  isLCBView
+}) {
   const rows = getRows(item, false);
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
@@ -51,6 +61,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork, passage
         passageTestItemID={testItemID}
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
+        isLCBView={isLCBView}
       />
     </StyledFlexContainer>
   );
@@ -105,9 +116,10 @@ class ClassQuestions extends Component {
     }
 
     let {
-      classResponse: { testItems },
-      variableSetIds
+      classResponse: { testItems }
     } = this.props;
+
+    const { variableSetIds } = this.props;
 
     const { expressGrader } = this.context;
     if (!expressGrader && testItems && !isQuestionView) {
@@ -135,11 +147,17 @@ class ClassQuestions extends Component {
               return false;
             }
 
-            if (filter === "wrong" && (firstQAct.score > 0 || firstQAct.skipped || firstQAct.graded === false)) {
+            if (
+              filter === "wrong" &&
+              (firstQAct.score > 0 || firstQAct.skipped || firstQAct.graded === false)
+            ) {
               return false;
             }
 
-            if (filter === "partial" && !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)) {
+            if (
+              filter === "partial" &&
+              !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)
+            ) {
               return false;
             }
             if (filter === "skipped" && !(firstQAct.skipped && firstQAct.score === 0)) {
@@ -154,7 +172,9 @@ class ClassQuestions extends Component {
         let questions = data.questions
           .map(question => {
             const { id } = question;
-            let qActivities = questionActivities.filter(({ qid, id: altId }) => qid === id || altId === id);
+            let qActivities = questionActivities.filter(
+              ({ qid, id: altId }) => qid === id || altId === id
+            );
             if (qActivities.length > 1) {
               /**
                * taking latest qActivity for a qid
@@ -180,7 +200,9 @@ class ClassQuestions extends Component {
 
               if (
                 filter === "wrong" &&
-                (qActivities[0].score > 0 || qActivities[0].skipped || qActivities[0].graded === false)
+                (qActivities[0].score > 0 ||
+                  qActivities[0].skipped ||
+                  qActivities[0].graded === false)
               ) {
                 return false;
               }
@@ -280,23 +302,28 @@ class ClassQuestions extends Component {
             continue;
           }
           for (const variable of Object.keys(variables)) {
-            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue = example[variable];
+            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
+              example[variable];
           }
         }
       }
     });
 
   render() {
-    const { showPlayerModal, selectedTestItem } = this.state;
+    const { showPlayerModal, selectedTestItem, showDocBasedPlayer } = this.state;
     const {
       questionActivities,
-      currentStudent: _currentStudent,
+      currentStudent,
       passages = [],
       showTestletPlayer,
       classResponse,
       testActivity,
       userWork,
-      isQuestionView
+      isQuestionView,
+      isLCBView,
+      testItemsData,
+      testData,
+      qIndex
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -311,15 +338,17 @@ class ClassQuestions extends Component {
       return acc;
     }, {});
 
-    const { qIndex, currentStudent, testData } = this.props;
-
     const testItemsPreview = testItems.map((item, index) => {
       let showStudentWork = null;
       let scractchPadUsed = userWork[item._id];
       if (isQuestionView) {
-        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPadPresent || false);
+        scractchPadUsed = item.data.questions.some(
+          question => question?.activity?.scratchPadPresent || false
+        );
       } else {
-        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
+        scractchPadUsed = item.data.questions.some(
+          question => question?.activity?.scratchPad?.scratchpad
+        );
       }
       if (scractchPadUsed) {
         showStudentWork = () => this.showStudentWork(item);
@@ -338,6 +367,7 @@ class ClassQuestions extends Component {
           showStudentWork={showStudentWork}
           isQuestionView={isQuestionView}
           isExpressGrader={isExpressGrader}
+          isLCBView={isLCBView}
         />
       );
     });
@@ -356,7 +386,7 @@ class ClassQuestions extends Component {
       const { isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = testData;
       const questionActivitiesById = _keyBy(questionActivities, "qid");
 
-      const questions = (this.props.testItemsData?.[0]?.data?.questions || []).map(q => ({
+      const questions = (testItemsData?.[0]?.data?.questions || []).map(q => ({
         ...q,
         activity: questionActivitiesById[q.id]
       }));
@@ -392,7 +422,7 @@ class ClassQuestions extends Component {
         />
         {testData.isDocBased ? (
           <StyledModal
-            visible={this.state.showDocBasedPlayer}
+            visible={showDocBasedPlayer}
             onCancel={() => this.setState({ showDocBasedPlayer: false })}
             footer={null}
           >
@@ -420,7 +450,10 @@ export default connect(
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(
+      state,
+      ownProps.currentStudent.studentId
+    ),
     userWork: get(state, ["userWork", "present"], {})
   }),
   {

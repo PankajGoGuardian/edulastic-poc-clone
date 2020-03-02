@@ -1,13 +1,6 @@
 import styled from "styled-components";
 import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col } from "antd";
-import {
-  white,
-  secondaryTextColor,
-  themeColor,
-  themeColorLight,
-  red,
-  largeDesktopWidth
-} from "@edulastic/colors";
+import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -20,7 +13,8 @@ export const OptionConationer = styled.div`
 
 export const InitOptions = styled.div`
   background: ${white};
-  border-radius: 8px;
+  border: 1px solid #dadae4;
+  border-radius: 10px;
   padding: 40px;
   width: 1000px;
 

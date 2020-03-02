@@ -1,42 +1,25 @@
-import React, { Fragment, Component } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { withRouter } from "react-router-dom";
-import { get, isUndefined, toNumber, round, maxBy, sumBy, isEqual } from "lodash";
-import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import PreviewRubricModal from "../../author/GradingRubric/Components/common/PreviewRubricModal";
-
-import { withWindowSizes, AnswerContext } from "@edulastic/common";
+import { desktopWidth, mobileWidthMax, tabGrey, themeColor, themeColorTagsBg, white } from "@edulastic/colors";
+import { AnswerContext, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import {
-  mobileWidthMax,
-  desktopWidth,
-  mediumDesktopWidth,
-  themeColor,
-  themeColorTagsBg,
-  tabGrey,
-  white
-} from "@edulastic/colors";
-
-import { getUserSelector } from "../../author/src/selectors/user";
-import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
-import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
-import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../author/src/selectors/feedback";
+import { Avatar, Card, Input, message } from "antd";
+import { get, isEqual, isUndefined, maxBy, round, sumBy, toNumber } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
 import { setTeacherEditedScore } from "../../author/ExpressGrader/ducks";
+import PreviewRubricModal from "../../author/GradingRubric/Components/common/PreviewRubricModal";
+import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
+import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
+import { getErrorResponse, getStatus } from "../../author/src/selectors/feedback";
+import { getUserSelector } from "../../author/src/selectors/user";
 
 const { TextArea } = Input;
 
 const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
 
-const showNotification = (type, msg) => {
-  message.open({ type, content: msg });
-  return {
-    submitted: false,
-    changed: false
-  };
-};
 class FeedbackRight extends Component {
   constructor(props) {
     super(props);
@@ -51,6 +34,7 @@ class FeedbackRight extends Component {
 
     this.scoreInput = React.createRef();
   }
+
   static contextType = AnswerContext;
 
   componentDidMount() {
@@ -124,7 +108,7 @@ class FeedbackRight extends Component {
     this.props.setTeacherEditedScore({ [id]: rubricResponse ? rubricResponse.score : _score });
 
     const payload = {
-      score: rubricResponse ? rubricResponse : { score: _score },
+      score: rubricResponse || { score: _score },
       testActivityId,
       questionId: id,
       itemId: testItemId,
@@ -181,6 +165,7 @@ class FeedbackRight extends Component {
       this.setState({ submitted: true }, this.onScoreSubmit);
     }
   };
+
   onChangeScore = e => {
     const value = e.target.value;
     if (!window.isNaN(value) || value === ".") {
@@ -246,9 +231,10 @@ class FeedbackRight extends Component {
       twoColLayout,
       showCollapseBtn,
       rubricDetails,
-      user
+      user,
+      disabled
     } = this.props;
-    const { score, maxScore, feedback, submitted, showPreviewRubric } = this.state;
+    const { score, maxScore, feedback, showPreviewRubric, changed } = this.state;
     let rubricMaxScore = 0;
     if (rubricDetails) rubricMaxScore = sumBy(rubricDetails.criteria, c => maxBy(c.ratings, "points").points);
     const { rubricFeedback } = activity || {};
@@ -277,7 +263,7 @@ class FeedbackRight extends Component {
       <StyledCardTwo
         twoColLayout={twoColLayout}
         bordered={isStudentName}
-        disabled={this.props.disabled}
+        disabled={disabled}
         showCollapseBtn={showCollapseBtn}
         title={title}
       >
@@ -292,7 +278,7 @@ class FeedbackRight extends Component {
                 activity.graded === false &&
                 (activity.score === 0 || isUndefined(activity.score)) &&
                 !score &&
-                !this.state.changed &&
+                !changed &&
                 !activity.skipped
                   ? ""
                   : adaptiveRound(score || 0)
@@ -383,7 +369,7 @@ export default enhance(FeedbackRight);
 const StyledCardTwo = styled(Card)`
   display: ${props => (props.disabled ? "none" : "flex")};
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dadae4;
   flex-direction: column;
   flex: 3;
   margin: 0px 0px 0px 15px;
@@ -478,23 +464,6 @@ const FeedbackInput = styled(TextArea)`
   border-radius: 2px;
   display: inline-block;
   background: #f8f8f8;
-`;
-
-const UpdateButton = styled(Button)`
-  font-size: 11px;
-  margin: 20px 0px 0px;
-  width: 100%;
-  height: 32px;
-  font-weight: 600;
-  color: ${themeColor};
-  background-color: #ffffff;
-  border: 1px solid ${themeColor};
-  text-transform: uppercase;
-  &:hover {
-    color: #ffffff;
-    background-color: ${themeColor};
-    border-color: ${themeColor};
-  }
 `;
 
 const UserAvatar = styled(Avatar)`

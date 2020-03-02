@@ -5,7 +5,14 @@ import PropTypes from "prop-types";
 import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
+import {
+  dropZoneTitleColor,
+  greyGraphstroke,
+  incorrect,
+  yellow1,
+  white,
+  themeColor
+} from "@edulastic/colors";
 import { ThemeProvider } from "styled-components";
 import { scrollTo, AnswerContext } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
@@ -26,16 +33,21 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 // actions
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
-import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
+import {
+  getAssignmentClassIdSelector,
+  getClassQuestionSelector,
+  getQLabelsSelector
+} from "../ClassBoard/ducks";
 
 /**
  * @param {string} studentId
  */
-const _scrollTo = studentId => scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
+const _scrollTo = studentId =>
+  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
 
 const green = "#5eb500";
 
-const CustomTooltip = ({ label = "", payload, ...rest }) => {
+const CustomTooltip = ({ payload }) => {
   const firstItem = head(payload) || {};
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
   const fullName = get(firstItem, "payload.name");
@@ -48,18 +60,20 @@ const CustomTooltip = ({ label = "", payload, ...rest }) => {
 };
 
 CustomTooltip.propTypes = {
-  label: PropTypes.string,
   payload: PropTypes.object
 };
 
 CustomTooltip.defaultProps = {
-  label: "",
   payload: {}
 };
 
 class QuestionViewContainer extends Component {
   static getDerivedStateFromProps(nextProps, preState) {
-    const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
+    const {
+      loadClassQuestionResponses,
+      assignmentIdClassId: { assignmentId, classId } = {},
+      question
+    } = nextProps;
     const { question: _question = {} } = preState || {};
     if (question.id !== _question.id) {
       loadClassQuestionResponses(assignmentId, classId, question.id, nextProps.itemId);
@@ -98,11 +112,14 @@ class QuestionViewContainer extends Component {
       children,
       qIndex,
       isQuestionView = false,
-      isPresentationMode
+      isPresentationMode,
+      labels
     } = this.props;
     const { loading } = this.state;
 
-    let filteredItems = testItems ?.filter(item => item.data.questions.some(q => q.id === question.id));
+    let filteredItems = testItems?.filter(item =>
+      item.data.questions.some(q => q.id === question.id)
+    );
 
     filteredItems = produce(filteredItems, draft => {
       draft.forEach(item => {
@@ -135,7 +152,10 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
+        .filter(
+          student =>
+            (student.status != "notStarted" || student.redirect) && student.status != "absent"
+        )
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName;
           const stData = {
@@ -143,7 +163,9 @@ class QuestionViewContainer extends Component {
             id: st.studentId,
             avatarName: getAvatarName(name),
 
-            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
+            avgTimeSpent: this.calcTimeSpentAsSec(
+              st.questionActivities.filter(x => x._id === question.id)
+            ),
             attempts: st.questionActivities.length,
             correct: 0,
             wrong: 0,
@@ -154,24 +176,22 @@ class QuestionViewContainer extends Component {
           };
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(
-              ({ correct, partialCorrect, skipped, manuallyGraded, graded, score, maxScore, evaluation, ...rest }) => {
-                if (skipped) {
-                  stData.skipped += 1;
-                } else if (graded === false) {
-                  stData.manuallyGraded += 1;
-                } else if (score === maxScore && score > 0) {
-                  stData.correct += 1;
-                } else if (score > 0 && score < maxScore) {
-                  stData.pCorrect += 1;
-                } else if (score === 0) {
-                  stData.wrong += 1;
-                }
-                stData.score = score;
-
-                return null;
+            .forEach(({ skipped, graded, score, maxScore }) => {
+              if (skipped) {
+                stData.skipped += 1;
+              } else if (graded === false) {
+                stData.manuallyGraded += 1;
+              } else if (score === maxScore && score > 0) {
+                stData.correct += 1;
+              } else if (score > 0 && score < maxScore) {
+                stData.pCorrect += 1;
+              } else if (score === 0) {
+                stData.wrong += 1;
               }
-            );
+              stData.score = score;
+
+              return null;
+            });
           return stData;
         });
     }
@@ -217,7 +237,7 @@ class QuestionViewContainer extends Component {
                   cursor="pointer"
                   dy={10}
                   onClick={({ index }) => {
-                    const {id} = data[index];
+                    const { id } = data[index];
                     _scrollTo(id);
                   }}
                 />
@@ -317,7 +337,12 @@ class QuestionViewContainer extends Component {
             }
             return (
               <ThemeProvider
-                theme={{ twoColLayout: { first: "calc(100% - 265px) !important", second: "250px !important" } }}
+                theme={{
+                  twoColLayout: {
+                    first: "calc(100% - 265px) !important",
+                    second: "250px !important"
+                  }
+                }}
               >
                 <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                   <ClassQuestions
@@ -326,9 +351,12 @@ class QuestionViewContainer extends Component {
                     qIndex={qIndex}
                     currentStudent={student}
                     classResponse={{ testItems: filteredItems, ...others }}
-                    questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
+                    questionActivities={classQuestion.filter(
+                      ({ userId }) => userId === student.studentId
+                    )}
                     isPresentationMode={isPresentationMode}
-                    labels={this.props.labels}
+                    labels={labels}
+                    isLCBView
                   />
                 </AnswerContext.Provider>
               </ThemeProvider>
@@ -358,7 +386,6 @@ QuestionViewContainer.propTypes = {
   question: PropTypes.object.isRequired,
   testActivity: PropTypes.array.isRequired,
   classQuestion: PropTypes.array,
-  isQuestionView: PropTypes.bool,
   children: PropTypes.node,
   qIndex: PropTypes.number
 };

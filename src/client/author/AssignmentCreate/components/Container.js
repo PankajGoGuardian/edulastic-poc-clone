@@ -48,7 +48,7 @@ class Container extends Component {
         <MainHeader headingText="common.newAssignment">
           <AlignMiddle>SELECT A TEST</AlignMiddle>
         </MainHeader>
-        <MainContentWrapper padding="20px 30px">
+        <MainContentWrapper>
           <SecondHeader>
             <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
           </SecondHeader>

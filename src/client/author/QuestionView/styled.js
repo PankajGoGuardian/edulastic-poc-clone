@@ -27,8 +27,8 @@ export const LabelContainer = styled.div`
 export const StyledCard = styled(Card)`
   width: 100%;
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
+  border: 1px solid #dadae4;
+  margin-bottom: 20px;
   .ant-card-body {
     padding: 20px 30px;
   }
@@ -50,7 +50,7 @@ export const StyledTitle = styled.p`
 export const ResponseCard = styled(Card)`
   width: 100%;
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dadae4;
   .ant-card-body {
     padding: 7px 35px;
     display: flex;
@@ -110,7 +110,7 @@ export const FeedBackCard = styled(Card)`
   display: flex;
   height: 550px;
   border-radius: 10px;
-  box-shadow: 3px 2px 7px lightgray;
+  border: 1px solid #dadae4;
 `;
 
 export const OptionDiv = styled.div`
@@ -169,6 +169,7 @@ export const LegendLabel = styled.div`
 `;
 
 export const TooltipContainer = styled(Card)`
+  border: 1px solid #dadae4;
   .ant-card-head {
     min-height: 40px;
     padding: 0px 16px;
@@ -183,5 +184,4 @@ export const TooltipContainer = styled(Card)`
   .ant-card-body {
     padding: 15px 16px;
   }
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
 `;

@@ -1,41 +1,41 @@
-import React, { useState, useEffect, useMemo } from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { get, filter } from "lodash";
-import { Row, Col, Avatar, Button } from "antd";
-import { StyledCard } from "../../../common/styled";
+import { secondaryTextColor, themeColor, themeColorLighter } from "@edulastic/colors";
 import { IconCollapse2 } from "@edulastic/icons";
-import { themeColor, themeColorLighter, secondaryTextColor } from "@edulastic/colors";
+import { Avatar, Button, Col, Row } from "antd";
+import { filter, get } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 import { Placeholder } from "../../../common/components/loader";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import StudentPerformanceSummary from "./common/components/table/StudentPerformanceSummary";
-import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
+import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
+import { StyledCard } from "../../../common/styled";
+import { downloadCSV, getStudentAssignments, toggleItem } from "../../../common/util";
+import { getCsvDownloadingState } from "../../../ducks";
+import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
+import {
+  getFiltersSelector,
+  getReportsSPRFilterData,
+  getSelectedStandardProficiency,
+  getStudentSelector
+} from "../common/filterDataDucks";
+import { useGetStudentMasteryData } from "../common/hooks";
+import { getGrades, getStudentName } from "../common/utils/transformers";
+import StudentPerformanceSummary from "./common/components/table/StudentPerformanceSummary";
+import { getDomainOptions } from "./common/utils/transformers";
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
   getStudentMasteryProfileRequestAction,
-  getStudentStandardsAction,
   getStudentStandardData,
-  getStudentStandardLoader
+  getStudentStandardLoader,
+  getStudentStandardsAction
 } from "./ducks";
-import { getCsvDownloadingState } from "../../../ducks";
-import {
-  getReportsSPRFilterData,
-  getSelectedStandardProficiency,
-  getFiltersSelector,
-  getStudentSelector
-} from "../common/filterDataDucks";
-import { useGetStudentMasteryData } from "../common/hooks";
-import { getDomainOptions } from "./common/utils/transformers";
-import { toggleItem, downloadCSV, getStudentAssignments } from "../../../common/util";
-import { getGrades, getStudentName } from "../common/utils/transformers";
 
-const usefilterRecords = (records, domain) => {
+const usefilterRecords = (records, domain) => 
   // using == instead of === for domainId as domainId can be either a string or an integer
-  return useMemo(() => filter(records, record => domain === "All" || record.domainId == domain), [records, domain]);
-};
+   useMemo(() => filter(records, record => domain === "All" || record.domainId == domain), [records, domain])
+;
 
 const getTooltip = payload => {
   if (payload && payload.length) {
@@ -50,7 +50,6 @@ const getTooltip = payload => {
 };
 
 const StudentMasteryProfile = ({
-  match,
   settings,
   loading,
   SPRFilterData,
@@ -134,7 +133,7 @@ const StudentMasteryProfile = ({
 
   return (
     <>
-      <StyledRow type="flex" gutter={12}>
+      <StyledRow type="flex" gutter={16}>
         <StyledCol xs={24} sm={24} md={12} lg={14} xl={16}>
           <ReStyledCard>
             <Row type="flex">
@@ -248,18 +247,17 @@ const enhance = connect(
 
 export default enhance(StudentMasteryProfile);
 
-const StyledRow = styled(Row)`
-  padding-left: 10px;
-  padding-right: 10px;
-`;
+const StyledRow = styled(Row)``;
 
 const StyledCol = styled(Col)`
-  padding-bottom: 10px;
+  padding-bottom: 16px;
 `;
 
 const ReStyledCard = styled(StyledCard)`
   height: 100%;
   margin: 0px;
+  padding: 20px;
+  border: 1px solid #dadae4;
 `;
 
 const StyledP = styled.p`

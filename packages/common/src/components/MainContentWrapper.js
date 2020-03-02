@@ -8,7 +8,7 @@ import {
 
 const MainContentWrapper = styled.div`
   background: ${mainBgColor};
-  padding: ${props => props.padding || "30px"};
+  padding: ${props => props.padding || "20px 30px"};
   width: ${props => props.width || "100%"};
   min-height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs}px)`};
 

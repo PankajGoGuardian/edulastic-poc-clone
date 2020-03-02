@@ -39,7 +39,6 @@ export const MoblieFlexContainer = styled(FlexContainer)`
 
 export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   justify-content: space-around;
-  flex-direction: ${props => (props.column ? "column" : "row")};
   margin-bottom: 15px;
   label {
     text-transform: uppercase;
@@ -55,10 +54,10 @@ export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
 
 export const StyledCard = styled(Card)`
   width: 100%;
+  border: ${props => (props.noBorder ? "none" : "1px solid #E9E9E9")};
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
-    padding: 30px 24px;
+    padding: 0px;
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -326,41 +325,73 @@ export const MoreButton = styled.button`
 export const TableData = styled(Table)`
   width: 100%;
   text-align: center;
-  .ant-table-thead > tr > th {
-    padding: 10px;
-    &:first-child.ant-table-column-has-actions.ant-table-column-has-sorters {
-      text-align: left;
-    }
-    border: none;
-    background-color: white;
-    &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
-    .ant-table-header-column .ant-table-column-sorters:hover::before {
-      background-color: white;
-    }
-    .ant-table-column-sorters {
-      text-transform: uppercase;
-      color: ${cardTitleColor};
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      .ant-table-column-sorter {
-        position: relative;
-        top: -2px;
-        left: 5px;
-        .ant-table-column-sorter-inner {
-          .ant-table-column-sorter-up,
-          .ant-table-column-sorter-down {
-            font-size: 10px;
+  .ant-table-thead {
+    & > tr {
+      & > th {
+        padding: 10px;
+        border: none;
+        background-color: ${white};
+        &:first-child.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: left;
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-sorters,
+        &.ant-table-column-has-actions.ant-table-column-has-filters {
+          text-align: center;
+          &:hover {
+            background-color: ${white};
           }
+        }
+        .ant-table-header-column {
+          .ant-table-column-sorters {
+            text-transform: uppercase;
+            color: ${cardTitleColor};
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:hover::before {
+              background-color: ${white};
+            }
+            .ant-table-column-sorter {
+              position: relative;
+              top: -2px;
+              left: 5px;
+              .ant-table-column-sorter-inner {
+                .ant-table-column-sorter-up,
+                .ant-table-column-sorter-down {
+                  font-size: 10px;
+                }
+              }
+            }
+          }
+        }
+
+        @media (max-width: ${extraDesktopWidth}) {
+          padding: 10px 8px;
         }
       }
     }
-    @media (max-width: ${extraDesktopWidth}) {
-      padding: 10px 8px;
+  }
+  .ant-table-tbody {
+    text-align: center;
+    & > tr {
+      & > td {
+        background: ${white};
+        padding: 10px 16px;
+        border-color: #e9e9e9;
+        & > div {
+          width: 100%;
+          text-align: center;
+          margin: 0px auto;
+        }
+      }
+      &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+        background: #f2f3f2;
+      }
     }
   }
+
   @media (max-width: 920px) {
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr > td {
@@ -379,26 +410,6 @@ export const TableData = styled(Table)`
     .ant-table-thead > tr > th .ant-table-column-sorters {
       padding-left: 2px;
     }
-  }
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters,
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
-    text-align: center;
-  }
-  .ant-table-tbody {
-    text-align: center;
-  }
-  .ant-table-tbody > tr > td {
-    background: ${lightGreySecondary};
-    border-bottom: 10px solid ${white};
-    padding: 10px 16px;
-    & > div {
-      width: 100%;
-      text-align: center;
-      margin: 0px auto;
-    }
-  }
-  .ant-table-row-expand-icon {
-    display: none;
   }
   @media (max-width: 1300px) and (min-width: 980px) {
     .ant-table-thead > tr > th,
@@ -435,15 +446,6 @@ export const DivWrapper = styled(StyledFlexContainer)`
 
   @media (max-width: ${smallDesktopWidth}) {
     overflow: auto;
-  }
-`;
-
-export const BodyContainer = styled.div`
-  width: 100%;
-  padding: 20px 30px;
-
-  @media (max-width: ${mobileWidthMax}) {
-    padding: 20px;
   }
 `;
 

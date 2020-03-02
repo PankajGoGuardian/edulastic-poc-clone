@@ -8,7 +8,6 @@ import {
   mediumDesktopWidth,
   themeColor,
   white,
-  tabGrey,
   mainTextColor,
   title,
   green,
@@ -63,18 +62,18 @@ export const StyledFlexContainer = styled(FlexContainer)`
 
 export const GraphContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 `;
 
 export const StudentGrapContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 `;
 
 export const StyledCard = styled(Card)`
   width: 100%;
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dadae4;
   .ant-card-body {
     padding: 20px;
   }
@@ -102,10 +101,14 @@ export const StudentButtonDiv = styled(Col)`
 const StyledTabButton = styled.a`
   height: 28px;
   padding: 6px 35px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};
-  color: ${({ active }) => (active ? white : tabGrey)};
+  color: ${({ active }) => (active ? white : themeColor)};
+  border: 1px solid ${themeColor};
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     background-color: ${themeColor};
     color: ${white};
@@ -130,7 +133,9 @@ export const BothButton = styled(StyledTabButton)`
 
 export const StudentButton = styled(StyledTabButton)`
   border-radius: 0px;
-  margin: 0px 2px;
+  margin: 0px;
+  border-right: none;
+  border-left: none;
 `;
 
 export const QuestionButton = styled(StyledTabButton)`
@@ -139,14 +144,13 @@ export const QuestionButton = styled(StyledTabButton)`
 
 export const RedirectButton = styled(StyledTabButton)`
   border-radius: 0;
-  display: flex;
   width: 150px;
   color: ${themeColor};
-  margin-right: 2px;
   position: relative;
-  justify-content: center;
+  border-left: none;
   &:nth-child(1) {
     border-radius: 4px 0 0 4px;
+    border-left: 1px solid ${themeColor};
   }
   &:nth-last-child(1) {
     border-radius: 0 4px 4px 0;
@@ -255,7 +259,6 @@ export const ButtonSpace = styled.div`
 
 export const ClassBoardFeats = styled.div`
   display: flex;
-  box-shadow: 0px 3px 20px 0px rgb(210, 210, 217);
   border-radius: 4px;
 `;
 

@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 import memoizeOne from "memoize-one";
 import { ThemeProvider } from "styled-components";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -25,22 +25,24 @@ import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
-import { StyledFlexContainer, ExpressGraderDetailContainer } from "./styled";
+import { StyledFlexContainer } from "./styled";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
 
 /**
  *
  * @param {Object[]} activities
  */
-const testActivitiesTransform = activities => {
-  return activities
+const testActivitiesTransform = activities =>
+  activities
     .map((x, index) => ({ ...x, qIndex: index }))
     .filter(x => !x.disabled)
     .map(x => ({ ...x, qids: (x.qids || []).map((id, index) => index + (x.qIndex + 1)) }));
-};
 
 const transform = testActivities =>
-  testActivities.map(x => ({ ...x, questionActivities: testActivitiesTransform(x.questionActivities) }));
+  testActivities.map(x => ({
+    ...x,
+    questionActivities: testActivitiesTransform(x.questionActivities)
+  }));
 
 const transformMemoized = memoizeOne(transform);
 
@@ -62,8 +64,9 @@ class ExpressGrader extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.clearEgAnswers();
+  componentWillUnmount(props) {
+    const { clearEgAnswers } = props;
+    clearEgAnswers();
   }
 
   static getDerivedStateFromProps(props) {
@@ -108,14 +111,7 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 768;
 
   render() {
-    const {
-      testActivity: _testActivity = [],
-      additionalData,
-      match,
-      classResponse = {},
-      isPresentationMode,
-      windowWidth
-    } = this.props;
+    const { testActivity: _testActivity = [], additionalData, match, isPresentationMode, windowWidth } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
@@ -132,7 +128,7 @@ class ExpressGrader extends Component {
             additionalData={additionalData || {}}
             testActivityId={testActivityId}
           />
-          <ExpressGraderDetailContainer>
+          <MainContentWrapper>
             <StyledFlexContainer justifyContent="space-between">
               <ClassBreadBrumb />
               <PresentationToggleSwitch groupId={classId} />
@@ -162,7 +158,7 @@ class ExpressGrader extends Component {
                 />
               </ThemeProvider>
             )}
-          </ExpressGraderDetailContainer>
+          </MainContentWrapper>
         </div>
       </FeaturesSwitch>
     );
@@ -176,7 +172,6 @@ const enhance = compose(
       testActivity: getSortedTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
-      classResponse: getClassResponseSelector(state),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {

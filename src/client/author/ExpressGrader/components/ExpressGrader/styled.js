@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, mobileWidthMax } from "@edulastic/colors";
+import { mobileWidth } from "@edulastic/colors";
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
@@ -12,15 +12,6 @@ export const PaginationInfo = styled.span`
   }
   @media (max-width: ${mobileWidth}) {
     display: none;
-  }
-`;
-
-export const ExpressGraderDetailContainer = styled.div`
-  width: 100%;
-  padding: 20px 30px;
-
-  @media (max-width: ${mobileWidthMax}) {
-    padding: 20px;
   }
 `;
 

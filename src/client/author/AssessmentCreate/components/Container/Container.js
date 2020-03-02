@@ -148,7 +148,7 @@ class Container extends React.Component {
           />
         )}
         <MainHeader headingText="common.newTest" />
-        <MainContentWrapper padding="20px 30px">
+        <MainContentWrapper>
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
           {!method && <CreationOptions />}
           {method === creationMethods.PDF && (

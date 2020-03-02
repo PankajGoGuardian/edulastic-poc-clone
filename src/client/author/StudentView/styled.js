@@ -1,8 +1,15 @@
 import styled, { css } from "styled-components";
-import { Button, Icon } from "antd";
+import { Button } from "antd";
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidthMax, mediumDesktopWidth, white, themeColor, tabGrey, desktopWidth } from "@edulastic/colors";
+import {
+  mobileWidthMax,
+  mediumDesktopWidth,
+  white,
+  themeColor,
+  desktopWidth,
+  mobileWidthLarge
+} from "@edulastic/colors";
 
 const FixedHeaderStyle = css`
   width: auto;
@@ -35,6 +42,8 @@ export const StudentButtonWrapper = styled(FlexContainer)`
   }
 `;
 
+export const StyledStudentTabButton = styled.div``;
+
 export const StudentButtonDiv = styled.div`
   display: flex;
   .ant-btn-primary {
@@ -49,78 +58,71 @@ export const StudentButtonDiv = styled.div`
   }
 `;
 
-export const StyledStudentTabButton = styled.a`
+const StyledTabButton = styled.a`
   height: 28px;
   padding: 6px 20px;
   font-size: 11px;
   font-weight: 600;
-  border-radius: 0px;
-  margin-right: 2px;
-  user-select: none;
-  background-color: ${({ active }) => (active ? "rgba(255, 255, 255, .30)" : white)};
-  color: ${({ active }) => (active ? themeColor : tabGrey)};
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    color: ${themeColor};
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 30px;
-    padding: 8px 12px;
-    font-size: 10px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    padding: 8px 5px;
-    height: auto;
-  }
-  @media (max-width: ${mobileWidthMax}) {
-    flex-basis: 100%;
-    white-space: nowrap;
-    text-align: center;
-    padding: 6px 15px;
-  }
-`;
-
-export const AllButton = styled(StyledStudentTabButton)`
-  border-radius: 4px 0px 0px 4px;
-`;
-
-export const CorrectButton = styled(StyledStudentTabButton)``;
-
-export const WrongButton = styled(StyledStudentTabButton)``;
-
-export const PartiallyCorrectButton = styled(StyledStudentTabButton)`
-  border-radius: 0px 4px 4px 0px;
-  margin-right: 0px;
-`;
-
-const StyledTabButton = styled.a`
-  height: 28px;
-  padding: 6px 25px;
-  font-size: 11px;
-  font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};
   color: ${({ active }) => (active ? white : themeColor)};
+  border: 1px solid ${themeColor};
+  border-left: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     background-color: ${themeColor};
     color: ${white};
   }
+  &:first-child {
+    border-left: 1px solid ${themeColor};
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 6px 30px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    padding: 6px 15px;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    width: 100%;
+    text-align: center;
+    margin: 0 !important;
+  }
+`;
+
+export const CorrectButton = StyledTabButton;
+export const WrongButton = StyledTabButton;
+
+export const AllButton = styled(StyledTabButton)`
+  border-radius: 4px 0px 0px 4px;
+`;
+
+export const PartiallyCorrectButton = styled(StyledTabButton)`
+  border-radius: 0px 4px 4px 0px;
 `;
 
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
+  height: 40px;
+  background-color: ${white};
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
   border-radius: 4px;
-  display: flex;
   padding: 20px 10px;
-  align-items: center;
   min-width: 300px;
-  justify-content: center;
-  font-size: 11px;
   position: relative;
   svg {
     position: absolute;
-    left: 10px;
-    width: 40px;
+    left: 5px;
+    width: 25px;
     height: 20px;
+    fill: ${themeColor};
+  }
+  &:hover {
+    background-color: ${themeColor};
+    color: ${white};
+    svg {
+      fill: ${white};
+    }
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

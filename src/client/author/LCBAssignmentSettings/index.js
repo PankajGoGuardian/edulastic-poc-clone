@@ -2,11 +2,8 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Col, Icon, Row, Select, message, Tooltip } from "antd";
 import moment from "moment";
-import {
-  test as testConst,
-  assignmentPolicyOptions,
-  assignmentStatusOptions
-} from "@edulastic/constants";
+import { test as testConst, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
+import { MainContentWrapper } from "@edulastic/common";
 import { getAdditionalDataSelector } from "../ClassBoard/ducks";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { slice } from "./ducks";
@@ -90,7 +87,7 @@ function LCBAssignmentSettings({
         additionalData={additionalData || {}}
         onCreate={() => history.push(`${match.url}/create`)}
       />
-      <div>
+      <MainContentWrapper>
         <OptionConationer>
           <InitOptions style={{ padding: "30px 50px" }}>
             <ClassHeading>{className ? `Settings for ${className}` : "loading..."}</ClassHeading>
@@ -116,8 +113,7 @@ function LCBAssignmentSettings({
                     value={assignment?.openPolicy}
                     onChange={changeField("openPolicy")}
                     disabled={
-                      assignment?.passwordPolicy ===
-                        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      assignment?.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
                       status !== assignmentStatusOptions.NOT_OPEN
                     }
                   >
@@ -209,11 +205,7 @@ function LCBAssignmentSettings({
             <Row gutter={0}>
               <Col offset={12}>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <ActionButton
-                    secondary
-                    style={{ width: "100%" }}
-                    onClick={() => resetToDefault()}
-                  >
+                  <ActionButton secondary style={{ width: "100%" }} onClick={() => resetToDefault()}>
                     CANCEL
                   </ActionButton>
                 </Col>
@@ -229,7 +221,7 @@ function LCBAssignmentSettings({
             </Row>
           </InitOptions>
         </OptionConationer>
-      </div>
+      </MainContentWrapper>
     </div>
   );
 }

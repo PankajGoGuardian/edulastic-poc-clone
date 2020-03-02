@@ -329,6 +329,7 @@ class QuestionWrapper extends Component {
       isQuestionView,
       isExpressGrader,
       theme,
+      isLCBView,
       ...restProps
     } = this.props;
     const {
@@ -450,7 +451,9 @@ class QuestionWrapper extends Component {
                   "calc(100% - 250px)",
                 display: "flex",
                 boxShadow: "none",
-                paddingRight: layoutType === COMPACT ? "100px" : null
+                paddingRight: layoutType === COMPACT ? "100px" : null,
+                border: isLCBView ? "1px solid #DADAE4" : null,
+                borderRadius: isLCBView ? "10px" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
               twoColLayout={showCollapseBtn ? null : theme?.twoColLayout}

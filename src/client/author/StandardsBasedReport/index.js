@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { size, isEmpty } from "lodash";
 
+import { MainContentWrapper } from "@edulastic/common";
 import HooksContainer from "../ClassBoard/components/HooksContainer/HooksContainer";
 import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
 import PresentationToggleSwitch from "../Shared/Components/PresentationToggleSwitch";
@@ -13,10 +14,9 @@ import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getQIdsSelector,
-  getClassResponseSelector,
   getQLabelsSelector
 } from "../ClassBoard/ducks";
-import { StyledFlexContainer, DivWrapper, BodyContainer } from "./components/styled";
+import { StyledFlexContainer, DivWrapper } from "./components/styled";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 import ClassBreadBrumb from "../Shared/Components/ClassBreadCrumb";
 
@@ -47,12 +47,17 @@ class StandardsBasedReport extends Component {
       match: {
         params: { assignmentId, classId }
       },
-      classResponse = {}
+      labels,
+      testQIds
     } = this.props;
     const testActivityId = this.getTestActivity(testActivity);
 
     return (
-      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
+      <FeaturesSwitch
+        inputFeatures="standardBasedReport"
+        actionOnInaccessible="hidden"
+        groupId={classId}
+      >
         <React.Fragment>
           <ClassHeader
             classId={classId}
@@ -63,7 +68,7 @@ class StandardsBasedReport extends Component {
             testActivityId={testActivityId}
           />
           <HooksContainer classId={classId} assignmentId={assignmentId} />
-          <BodyContainer>
+          <MainContentWrapper>
             <StyledFlexContainer justifyContent="space-between">
               <ClassBreadBrumb />
               <PresentationToggleSwitch groupId={classId} />
@@ -72,12 +77,12 @@ class StandardsBasedReport extends Component {
             <DivWrapper>
               <TableDisplay
                 testActivities={testActivity}
-                labels={this.props.labels}
+                labels={labels}
                 additionalData={additionalData}
-                qids={this.props.testQIds}
+                qids={testQIds}
               />
             </DivWrapper>
-          </BodyContainer>
+          </MainContentWrapper>
         </React.Fragment>
       </FeaturesSwitch>
     );
@@ -90,7 +95,6 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       testQIds: getQIdsSelector(state),
-      classResponse: getClassResponseSelector(state),
       labels: getQLabelsSelector(state)
     }),
     {

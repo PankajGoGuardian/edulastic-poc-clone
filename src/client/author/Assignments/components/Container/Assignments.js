@@ -243,7 +243,7 @@ class Assignments extends Component {
           btnTitle="AUTHOR TEST"
           isAdvancedView={isAdvancedView}
         />
-        <Container>
+        <Container padding="30px">
           <FlexContainer>
             <Main>
               {window.innerWidth >= tabletWidth ? (

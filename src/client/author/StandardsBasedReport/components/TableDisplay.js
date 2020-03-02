@@ -1,38 +1,29 @@
-//@ts-check
+// @ts-check
+import { smallDesktopWidth } from "@edulastic/colors";
+import { round, sum, values } from "lodash";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { compose } from "redux";
-import { sumBy, sum, groupBy, round, mapValues, values, partial } from "lodash";
-import PropTypes from "prop-types";
-
-import DetailedDisplay from "./DetailedDisplay";
-import { getStandardWisePerformanceMemoized } from "../Transformer";
-
-import {
-  getAdditionalDataSelector,
-  getTestActivitySelector,
-  getHasRandomQuestionselector
-} from "../../ClassBoard/ducks";
 import styled from "styled-components";
-import { smallDesktopWidth } from "@edulastic/colors";
-
-import {
-  TableData,
-  StandardCell,
-  QuestionCell,
-  MasterySummary,
-  PerformanceSummary,
-  StyledCard,
-  ReportTitle,
-  MoblieFlexContainer,
-  MoblieSubFlexContainer,
-  StandardsMobile,
-  InfoCard,
-  MasterySummaryInfo
-} from "./styled";
-
+import { getHasRandomQuestionselector } from "../../ClassBoard/ducks";
 import ArrowLeftIcon from "../Assets/left-arrow.svg";
 import ArrowRightIcon from "../Assets/right-arrow.svg";
+import { getStandardWisePerformanceMemoized } from "../Transformer";
+import DetailedDisplay from "./DetailedDisplay";
+import {
+  InfoCard,
+  MasterySummary,
+  MasterySummaryInfo,
+  MoblieFlexContainer,
+  MoblieSubFlexContainer,
+  PerformanceSummary,
+  QuestionCell,
+  ReportTitle,
+  StandardCell,
+  StandardsMobile,
+  StyledCard,
+  TableData
+} from "./styled";
 
 const getMastery = (assignmentMasteryArray, performancePercentage) => {
   performancePercentage = performancePercentage || 0;
@@ -85,7 +76,11 @@ class TableDisplay extends Component {
         (a, b) => (b.masterySummary || 0) - (a.masterySummary || 0)
       )[0];
       const perfomancePercentage = firstStandard?.masterySummary;
-      return { stdId: firstStandard ? firstStandard._id : "", perfomancePercentage, dataLoaded: true };
+      return {
+        stdId: firstStandard ? firstStandard._id : "",
+        perfomancePercentage,
+        dataLoaded: true
+      };
     }
   }
 
@@ -110,7 +105,8 @@ class TableDisplay extends Component {
   };
 
   getPerfomancePercentage = std => {
-    const performances = values(getStandardWisePerformanceMemoized(this.props.testActivities, std));
+    const { testActivities } = this.props;
+    const performances = values(getStandardWisePerformanceMemoized(testActivities, std));
     return (sum(performances) / performances.length) * 100;
   };
 
@@ -131,7 +127,13 @@ class TableDisplay extends Component {
 
   render() {
     const { stdId, perfomancePercentage } = this.state;
-    const { additionalData: { standards = [], assignmentMastery = [] } = {}, hasRandomQuestions } = this.props;
+    const {
+      additionalData: { standards = [], assignmentMastery = [] } = {},
+      hasRandomQuestions,
+      testActivities,
+      qids,
+      labels
+    } = this.props;
     const questionsColumn = hasRandomQuestions
       ? []
       : [
@@ -181,18 +183,14 @@ class TableDisplay extends Component {
         dataIndex: "icon"
       }
     ];
-    const submittedLength = this.props.testActivities.filter(act => act.status === "submitted").length;
+    const submittedLength = testActivities.filter(act => act.status === "submitted").length;
     const data = standards.map((std, index) => {
       const perfomancePercentage = this.getPerfomancePercentage(std);
       return {
         key: index + 1,
         stdId: std._id,
         standard: <p className="first-data">{std.identifier}</p>,
-        question: [
-          ...new Set(
-            std.qIds.filter(qid => this.props.qids.indexOf(qid) > -1).map(id => this.props.labels[id].barLabel)
-          )
-        ].join(","),
+        question: [...new Set(std.qIds.filter(qid => qids.indexOf(qid) > -1).map(id => labels[id].barLabel))].join(","),
         masterySummary: perfomancePercentage,
         performanceSummary: perfomancePercentage,
         icon: submittedLength ? (
@@ -234,7 +232,7 @@ class TableDisplay extends Component {
                   </InfoCard>
                 </MoblieSubFlexContainer>
 
-                <MoblieSubFlexContainer column>
+                <MoblieSubFlexContainer flexDirection="column">
                   <label>Mastery Summary</label>
                   <MasterySummary percent={round(parseFloat(d.masterySummary), 2)} showInfo={false} />
                   <MasterySummaryInfo>{round(d.masterySummary, 2)}%</MasterySummaryInfo>
@@ -247,22 +245,20 @@ class TableDisplay extends Component {
         )}
 
         {!isMobile && (
-          <StyledCard>
-            <ReportTitle>Standard performance</ReportTitle>
+          <StyledCard noBorder>
+            <ReportTitle className="abc">Standard performance</ReportTitle>
             <TableData
               columns={columns}
               dataSource={data}
               pagination={false}
-              onRow={rowData => {
-                return {
-                  onClick: () => {
-                    if (stdId === rowData.stdId) {
-                      return this.onCaretClick(rowData.stdId);
-                    }
-                    return this.onCaretClick(rowData.stdId, rowData.performanceSummary);
+              onRow={rowData => ({
+                onClick: () => {
+                  if (stdId === rowData.stdId) {
+                    return this.onCaretClick(rowData.stdId);
                   }
-                };
-              }}
+                  return this.onCaretClick(rowData.stdId, rowData.performanceSummary);
+                }
+              })}
             />
           </StyledCard>
         )}

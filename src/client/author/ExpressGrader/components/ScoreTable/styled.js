@@ -5,21 +5,20 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  mediumDesktopWidth,
   greenDark,
   lightGreen,
   green,
-  title
+  title,
+  white
 } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin-bottom: 20px;
   width: 100%;
   height: auto;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  border-radius: 0px;
   .ant-card-body {
-    padding: 30px 24px 24px;
+    padding: 0px;
   }
 `;
 
@@ -28,7 +27,7 @@ export const TableTitle = styled.div`
   font-size: 18px;
   line-height: 30px;
   font-weight: bold;
-  @media (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${smallDesktopWidth}) {
     font-size: 14px;
   }
 `;
@@ -39,9 +38,9 @@ export const TableData = styled(Table)`
   }
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
+    background: ${white};
     padding: 10px 16px;
     border-bottom: 0px;
-
     width: 107px;
     @media only screen and (max-width: ${extraDesktopWidthMax}) {
       width: 108px;
@@ -54,23 +53,34 @@ export const TableData = styled(Table)`
     }
   }
   .ant-table-tbody > tr > td {
-    background-color: #f8f8f8;
+    background-color: ${white};
   }
   .ant-table-tbody > tr {
-    border-bottom: 10px white solid;
     &:last-child {
       border-bottom: 0px;
     }
   }
-  th.sub-thead-th {
-    background-color: #f8f8f8 !important;
-    text-align: center;
+
+  .ant-table-thead
+    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td,
+  .ant-table-tbody
+    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+    > td,
+  .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+  .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+    background: #f2f3f2;
   }
-  th.th-border-bottom {
-    border-bottom: 10px white solid !important;
+
+  th.sub-thead-th {
+    background-color: ${white} !important;
+    text-align: center;
   }
   .ant-table-thead > tr > th.score-title {
     text-align: center;
+  }
+  .ant-table-tbody > tr > td.score-title > div {
+    font-size: 14px;
   }
   .ant-table-thead > tr > th .ant-table-column-sorter {
     .ant-table-column-sorter-inner {
@@ -104,7 +114,7 @@ export const StyledDivColor = styled.span`
 
 export const StyledDivMid = styled.div`
   min-width: 35px;
-  font-size: 14px;
+  font-size: 16px;
   color: ${title};
   font-weight: 600;
   text-align: center;
@@ -113,6 +123,7 @@ export const StyledDivMid = styled.div`
   }
   &.name-col {
     max-width: 160px;
+    font-size: 14px;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: left;
@@ -163,7 +174,7 @@ export const StyledText = styled.span`
 
 const TitleText = styled.div`
   color: #aaafb5;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
   text-transform: uppercase;
 `;

@@ -6,8 +6,7 @@ import {
   mainTextColor,
   greyThemeLight,
   greyThemeDark2,
-  greyThemeLighter,
-  title
+  greyThemeLighter
 } from "@edulastic/colors";
 
 // all theme variables
@@ -400,7 +399,7 @@ export const defaultTheme = {
   },
   header: {
     headerBgColor: white, // greenDark
-    headerTitleTextColor: title,
+    headerTitleTextColor: "#2F4151",
     headerTitleFontSize: headerTitle,
     headerTitleSecondaryTextSize: titleSecondarySectionFontSize,
     headerButtonColor: textColorGreenBg,

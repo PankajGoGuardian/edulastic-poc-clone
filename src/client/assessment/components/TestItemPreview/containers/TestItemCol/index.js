@@ -51,7 +51,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, nextWidget = {}, index) => {
+  renderTabContent = (widget, flowLayout, nextWidget = {}) => {
     const {
       preview,
       LCBPreviewModal,
@@ -67,9 +67,9 @@ class TestItemCol extends Component {
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
-    const qLabel = questions[widget.reference]?.qLabel;
+    // const qLabel = questions[widget.reference]?.qLabel;
     // question label for preview mode
-    const { expressGrader = false } = this.context;
+    // const { expressGrader = false } = this.context;
     const question = questions[widget.reference];
     // questions[widget.reference]?.qLabel && (!isDocBased || expressGrader)
     //   ? questions[widget.reference]
@@ -92,7 +92,10 @@ class TestItemCol extends Component {
     const isResourceWidget = nextWidget.widgetType === "resource" && nextWidget.type !== "passage";
     const resource = questions[nextWidget.reference];
     return (
-      <Tabs.TabContainer style={{ position: "relative", paddingTop: "40px" }} className="question-tab-container">
+      <Tabs.TabContainer
+        style={{ position: "relative", paddingTop: "0px" }}
+        className="question-tab-container"
+      >
         <QuestionWrapper
           showFeedback={showFeedback}
           evaluation={evaluation}

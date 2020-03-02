@@ -66,12 +66,12 @@ export const StyledCard = styled(Card)`
   margin-top: 15px;
   margin-right: 15px;
   border-radius: 10px;
-  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dadae4;
   width: 100%;
   cursor: ${props => (props.isClickEnable ? "pointer" : "default")};
   transition: all 0.2s ease-in;
   .ant-card-body {
-    padding: 19px 22px;
+    padding: 20px;
   }
   &:hover {
     box-shadow: ${props =>

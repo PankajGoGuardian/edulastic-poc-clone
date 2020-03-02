@@ -69,7 +69,7 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, items, currentItem, selectedTheme = "default" } = this.props;
+    const { theme, items, currentItem, selectedTheme = "default", settings } = this.props;
     const { showExitPopup, currentTool } = this.state;
 
     const item = items[currentItem];
@@ -81,7 +81,8 @@ class AssessmentPlayerTestlet extends React.Component {
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-
+    const { calcProvider, calcType } = settings;
+    const calculateMode = calcProvider && calcType ? `${calcType}_${calcProvider}` : false;
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={currentTool}>
@@ -90,6 +91,7 @@ class AssessmentPlayerTestlet extends React.Component {
             currentTool={currentTool}
             openExitPopup={this.openExitPopup}
             changeTool={this.changeTool}
+            calculateMode={calculateMode}
           />
           <SubmitConfirmation
             isVisible={showExitPopup}
@@ -99,7 +101,7 @@ class AssessmentPlayerTestlet extends React.Component {
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}
-              calculateMode="SCIENTIFIC_DESMOS"
+              calculateMode={calculateMode}
               style={{ zIndex: 10, height: "100%", width: "100%", left: 0 }}
             />
           )}

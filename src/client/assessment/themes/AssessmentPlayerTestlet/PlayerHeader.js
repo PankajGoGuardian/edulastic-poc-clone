@@ -26,7 +26,8 @@ const PlayerHeader = ({
   onPrevQuestion,
   onOpenExitPopup,
   currentTool,
-  changeTool
+  changeTool,
+  calculateMode
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -36,7 +37,7 @@ const PlayerHeader = ({
       <HeaderMainMenu skinb="true">
         <FlexContainer>
           <PlayerTitle>{title}</PlayerTitle>
-          <Tools changeTool={changeTool} currentTool={currentTool} />
+          <Tools changeTool={changeTool} currentTool={currentTool} calculateMode={calculateMode} />
           <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
           <ContainerRight>
             <FlexDisplay>
@@ -83,7 +84,8 @@ PlayerHeader.propTypes = {
   unlockNext: PropTypes.bool,
   onPrevQuestion: PropTypes.func.isRequired,
   onOpenExitPopup: PropTypes.func.isRequired,
-  changeTool: PropTypes.func.isRequired
+  changeTool: PropTypes.func.isRequired,
+  calculateMode: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
 };
 
 PlayerHeader.defaultProps = {

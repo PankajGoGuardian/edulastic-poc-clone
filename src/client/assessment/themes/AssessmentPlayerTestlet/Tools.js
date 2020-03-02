@@ -5,13 +5,18 @@ import { IconClose, IconCalculator } from "@edulastic/icons";
 import { Button } from "antd";
 import { Tooltip } from "../../../common/utils/helpers";
 
-const Tools = ({ changeTool, currentTool }) => (
+const Tools = ({ changeTool, currentTool, calculateMode }) => (
   <ToolBox>
-    <Tooltip title="Calculator">
-      <ToolButton active={currentTool === 1} onClick={() => changeTool(currentTool === 1 ? 0 : 1)}>
-        <CaculatorIcon />
-      </ToolButton>
-    </Tooltip>
+    {calculateMode && (
+      <Tooltip title="Calculator">
+        <ToolButton
+          active={currentTool === 1}
+          onClick={() => changeTool(currentTool === 1 ? 0 : 1)}
+        >
+          <CaculatorIcon />
+        </ToolButton>
+      </Tooltip>
+    )}
     <Tooltip>
       <ToolButton active={currentTool === 2} disabled onClick={() => changeTool(2)}>
         <CloseIcon />
@@ -24,7 +29,8 @@ export default Tools;
 
 Tools.propTypes = {
   changeTool: PropTypes.func.isRequired,
-  currentTool: PropTypes.number.isRequired
+  currentTool: PropTypes.number.isRequired,
+  calculateMode: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
 };
 
 const ToolBox = styled.div`
@@ -46,7 +52,7 @@ const CloseIcon = styled(IconClose)`
 `;
 
 const ToolButton = styled(Button)`
-  border: none;
+  border: 1px solid #ffffff;
   margin-right: 3px;
   border-radius: 5px;
 

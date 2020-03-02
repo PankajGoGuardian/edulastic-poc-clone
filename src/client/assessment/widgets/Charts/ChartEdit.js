@@ -14,14 +14,7 @@ import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
 
-const ChartEdit = ({
-  item,
-  setQuestionData,
-  fillSections,
-  cleanSections,
-  advancedLink,
-  advancedAreOpen
-}) => {
+const ChartEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedLink, advancedAreOpen }) => {
   const {
     uiStyle: { yAxisMax, yAxisMin, snapTo },
     type
@@ -41,10 +34,7 @@ const ChartEdit = ({
             altResp.value = getReCalculatedPoints(altResp.value, params);
           });
 
-          draft.validation.validResponse.value = getReCalculatedPoints(
-            draft.validation.validResponse.value,
-            params
-          );
+          draft.validation.validResponse.value = getReCalculatedPoints(draft.validation.validResponse.value, params);
         })
       );
     }
@@ -99,8 +89,7 @@ const ChartEdit = ({
             break;
           }
           case "value": {
-            draft.chart_data.data[index].y =
-              value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
+            draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
             break;
           }
           case "labelVisibility": {
@@ -135,7 +124,6 @@ const ChartEdit = ({
     setQuestionData(
       produce(item, draft => {
         draft.validation.altResponses.splice(tabIndex, 1);
-
         setCurrentTab(0);
       })
     );
@@ -162,9 +150,9 @@ const ChartEdit = ({
             y: initValue
           }))
         });
+        setCurrentTab(draft.validation.altResponses.length);
       })
     );
-    setCurrentTab(currentTab + 1);
   };
 
   const handlePointsChange = val => {
@@ -197,9 +185,7 @@ const ChartEdit = ({
       tab={currentTab}
       saveAnswer={handleAnswerChange}
       userAnswer={
-        currentTab === 0
-          ? item.validation.validResponse.value
-          : item.validation.altResponses[currentTab - 1].value
+        currentTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[currentTab - 1]?.value
       }
       view={EDIT}
       setQuestionData={setQuestionData}
@@ -207,9 +193,7 @@ const ChartEdit = ({
   );
 
   const points =
-    currentTab === 0
-      ? item.validation.validResponse.score
-      : item.validation.altResponses[currentTab - 1].score;
+    currentTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[currentTab - 1]?.score;
 
   const showFractionFormatSetting = [
     questionType.LINE_PLOT,

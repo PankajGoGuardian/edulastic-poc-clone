@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
+import { Select, message } from "antd";
+import { produce } from "immer";
 import { get } from "lodash";
 import { MathInput, withWindowSizes, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
 
@@ -33,8 +34,9 @@ import {
 import { SelectInputStyled } from "../../../../styled/InputStyles";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
+import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
 
-const { methods: methodsConst, methodOptions: methodOptionsConst } = math;
+const { methods: methodsConst, methodOptions: methodOptionsConst, methodOptionsGrouped } = math;
 
 const methods = Object.keys(methodsConst);
 
@@ -66,6 +68,20 @@ const MathFormulaAnswerMethod = ({
   useTemplate, // this is from clozemath
   t
 }) => {
+  const hasMutuallyExclusiveOptions = (selectedOptions = {}) => {
+    let flag = false;
+    let warningMsg = "";
+
+    if (selectedOptions.isExpanded && selectedOptions.isFactorised) {
+      flag = true;
+      warningMsg = "Expanded and Factored cannot be combined together";
+    } else if (selectedOptions.isMixedFraction && selectedOptions.isSimplified) {
+      flag = true;
+      warningMsg = "Simplified and Mixed Fraction cannot be combined together";
+    }
+    return [flag, warningMsg];
+  };
+
   const showAdditional = get(item, "showAdditional", false);
   const changeOptions = (prop, val) => {
     const newOptions = {
@@ -75,6 +91,11 @@ const MathFormulaAnswerMethod = ({
 
     if (!val) {
       delete newOptions[prop];
+    }
+    const [error, errorMsg] = hasMutuallyExclusiveOptions(newOptions);
+    if (error) {
+      message.warning(errorMsg);
+      return false;
     }
     onChange("options", newOptions);
   };
@@ -108,11 +129,10 @@ const MathFormulaAnswerMethod = ({
     changeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
   const methodOptions = methodOptionsConst[method];
-  const eToLowerCase = label =>
-    label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
+  const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
-  const renderMethodsOptions = () =>
-    methodOptions.map(methodOption => {
+  const renderMethodsOptions = _methodOptions =>
+    _methodOptions.map(methodOption => {
       switch (methodOption) {
         case "isSimpleFraction":
           return (
@@ -302,31 +322,28 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return (
-            <AllowedVariables
-              allowedVariables={allowedVariables}
-              onChange={onChangeAllowedOptions}
-            />
-          );
+          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedOptions} />;
         case "interpretAsSet":
           return (
-            <CheckOption
+            <RadioLabel
               dataCy="answer-set-evaluation"
               optionKey="interpretAsSet"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.interpretAsSet")}
-            />
+            >
+              {t("component.math.interpretAsSet")}
+            </RadioLabel>
           );
         case "interpretAsInterval":
           return (
-            <CheckOption
+            <RadioLabel
               dataCy="answer-set-Interval"
               optionKey="interpretAsInterval"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.interpretAsInterval")}
-            />
+            >
+              {t("component.math.interpretAsInterval")}
+            </RadioLabel>
           );
         case "interpretAsNumber":
           return (
@@ -363,9 +380,65 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const restrictKeys = allowedVariables
-    ? allowedVariables.split(",").map(segment => segment.trim())
-    : [];
+  const onChangeHandler = ({ target }) => {
+    const { value: _value, checked } = target;
+    if (_value) {
+      const newOptions = produce(options, draft => {
+        draft = { ...draft, [_value]: checked };
+        const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
+        Object.keys(draft).forEach(key => {
+          if (radioLabelOptions.includes(key)) {
+            // remove all other radio options which were selected previously
+            if (key !== _value) {
+              delete draft[key];
+            }
+          }
+        });
+        return draft;
+      });
+      onChange("options", newOptions);
+    }
+  };
+
+  const renderRadioMethodOptions = (name, radioOptions) => {
+    const optionsKeyed = Object.keys(options);
+    const radioLabelOptions = methodOptionsGrouped.equivSymbolic["INTERPRET THE VALUES AS: "];
+    const selected = optionsKeyed.find(key => radioLabelOptions.includes(key) && options[key] === true);
+    return (
+      <Col>
+        <RadioLabelGroup name={name} onChange={onChangeHandler} value={selected}>
+          {radioOptions.map(opt => (
+            <RadioLabel value={opt} checked={opt === selected}>
+              {t(`component.math.${opt}`)}
+            </RadioLabel>
+          ))}
+        </RadioLabelGroup>
+      </Col>
+    );
+  };
+
+  const renderMethodsOptionsGrouped = () => {
+    const groupedMethodOptions = methodOptionsGrouped[method];
+    if (groupedMethodOptions) {
+      return Object.keys(groupedMethodOptions).map(key => {
+        const _options =
+          key === "INTERPRET THE VALUES AS: "
+            ? renderRadioMethodOptions(key, groupedMethodOptions[key])
+            : renderMethodsOptions(groupedMethodOptions[key]);
+        return (
+          <Row gutter={24} marginLeft="0 !important" marginBottom="1em">
+            <Col>
+              <Label marginBottom="1em"> {key}</Label>
+              {_options}
+            </Col>
+          </Row>
+        );
+      });
+    }
+    return null;
+  };
+
+  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
   const warningFlag =
@@ -404,9 +477,7 @@ const MathFormulaAnswerMethod = ({
       <Row gutter={24}>
         {!methodOptions.includes("notExpected") && (
           <Col span={24}>
-            <Label data-cy="answer-math-input">
-              {labelValue || t("component.math.expectedAnswer")}
-            </Label>
+            <Label data-cy="answer-math-input">{labelValue || t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
               {(!item.templateDisplay || !item.template) && (
                 <MathInput
@@ -432,9 +503,7 @@ const MathFormulaAnswerMethod = ({
         )}
         {index > 0 ? (
           <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
-            {onDelete && (
-              <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />
-            )}
+            {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
           </div>
         ) : null}
         {item.isUnits && (
@@ -505,17 +574,12 @@ const MathFormulaAnswerMethod = ({
             </Col>
             <Col span={14}>
               {methodOptions.includes("rule") && (
-                <Rule
-                  onChange={changeOptions}
-                  t={t}
-                  syntax={options.syntax}
-                  argument={options.argument}
-                />
+                <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />
               )}
             </Col>
           </Row>
           <Row gutter={24}>
-            {renderMethodsOptions()}
+            {renderMethodsOptionsGrouped()}
             {item?.templateDisplay ? (
               <CheckOption
                 dataCy="use-template"

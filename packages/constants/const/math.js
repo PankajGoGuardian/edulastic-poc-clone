@@ -1,15 +1,15 @@
 const methods = {
   EQUIV_SYMBOLIC: "equivSymbolic",
   EQUIV_LITERAL: "equivLiteral",
-  EQUIV_VALUE: "equivValue",
-  IS_SIMPLIFIED: "isSimplified",
-  IS_FACTORISED: "isFactorised",
-  IS_EXPANDED: "isExpanded",
-  IS_RATIONALIZED: "isRationalized",
-  STRING_MATCH: "stringMatch",
-  EQUIV_SYNTAX: "equivSyntax",
-  SET_EVALUATION: "setEvaluation",
-  CHECK_IF_TRUE: "isTrue"
+  EQUIV_SYNTAX: "equivSyntax"
+  // EQUIV_VALUE: "equivValue",
+  // IS_SIMPLIFIED: "isSimplified",
+  // IS_FACTORISED: "isFactorised",
+  // IS_EXPANDED: "isExpanded",
+  // IS_RATIONALIZED: "isRationalized",
+  // STRING_MATCH: "stringMatch",
+  // SET_EVALUATION: "setEvaluation",
+  // CHECK_IF_TRUE: "isTrue"
 };
 
 const fields = {
@@ -43,10 +43,7 @@ const mathInputTypes = {
   SUCCESS: "success"
 };
 
-const units = [
-  { value: "units_us", label: "Units (US)" },
-  { value: "units_si", label: "Units (SI)" }
-];
+const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
 
 const symbols = [
   { value: "basic", label: "Basic" },
@@ -150,32 +147,58 @@ const methodOptions = {
 
   [methods.SET_EVALUATION]: [],
   [methods.EQUIV_SYNTAX]: ["notExpected", "syntax", "argument", "rule"],
-  [methods.IS_SIMPLIFIED]: [
-    "notExpected",
-    "inverseResult",
-    "setDecimalSeparator",
-    "setThousandsSeparator"
-  ],
-  [methods.IS_FACTORISED]: [
-    "notExpected",
-    "inverseResult",
-    "setDecimalSeparator",
-    "setThousandsSeparator",
-    "field"
-  ],
-  [methods.IS_EXPANDED]: [
-    "notExpected",
-    "significantDecimalPlaces",
-    "setDecimalSeparator",
-    "setThousandsSeparator"
-  ],
-  [methods.STRING_MATCH]: [
-    "ariaLabel",
-    "ignoreLeadingAndTrailingSpaces",
-    "treatMultipleSpacesAsOne"
-  ],
+  [methods.IS_SIMPLIFIED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.IS_FACTORISED]: ["notExpected", "inverseResult", "setDecimalSeparator", "setThousandsSeparator", "field"],
+  [methods.IS_EXPANDED]: ["notExpected", "significantDecimalPlaces", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
   [methods.IS_RATIONALIZED]: ["notExpected"],
   [methods.CHECK_IF_TRUE]: ["notExpected"]
+};
+
+// TODO
+// need to create finalised constants for the keys
+const methodOptionsGrouped = {
+  [methods.EQUIV_SYMBOLIC]: {
+    "STUDENT’S RESPONSE SHOULD BE: ": [
+      "isFactorised",
+      "isExpanded",
+      "isSimplified",
+      "isMixedFraction",
+      "isRationalized"
+    ],
+    "INTERPRET THE VALUES AS: ": ["interpretAsSet", "interpretAsInterval", "interpretAsNumber", "setListTypeResponse"],
+    "SPECIAL HANDLING: ": [
+      "ariaLabel",
+      "allowEulersNumber",
+      "ignoreAlphabeticCharacter",
+      "inverseResult",
+      "compareSides",
+      "unit",
+      "setDecimalSeparator",
+      "setThousandsSeparator",
+      "allowNumericOnly",
+      "allowedVariables",
+      "tolerance",
+      "significantDecimalPlaces"
+    ]
+  },
+  [methods.EQUIV_LITERAL]: {
+    "SPECIAL HANDLING: ": [
+      "ariaLabel",
+      "ignoreTrailingZeros",
+      "ignoreOrder",
+      "ignoreCoefficientOfOne",
+      "literalIgnoreLeadingAndTrailingSpaces",
+      "literalTreatMultipleSpacesAsOne",
+      "inverseResult",
+      "setDecimalSeparator",
+      "setThousandsSeparator",
+      "allowedVariables"
+    ]
+  }
+  // [methods.EQUIV_SYNTAX]: {
+  //   Default: ["notExpected", "syntax", "argument", "rule"]
+  // }
 };
 
 const characterMapButtons = [
@@ -276,5 +299,6 @@ module.exports = {
   EMBED_RESPONSE,
   KeyboardSize,
   characterMapButtons,
-  defaultNumberPad
+  defaultNumberPad,
+  methodOptionsGrouped
 };

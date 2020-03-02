@@ -5,7 +5,8 @@ import { mobileWidth } from "@edulastic/colors";
 
 export const Row = styled(AntRow)`
   margin-top: ${props => (props.marginTop ? `${props.marginTop}px` : 0)};
-
+  margin-left: ${({ marginLeft }) => marginLeft};
+  margin-top: ${({ marginBottom }) => marginBottom};
   ${props =>
     props.center &&
     `

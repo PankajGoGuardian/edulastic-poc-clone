@@ -71,7 +71,7 @@ const DropPlaylistModal = props => {
     fetchPlaylistDroppedAccessList,
     fetchStudentListAction,
     dropPlaylistAction,
-    destinationCurriculumSequence: { _id: playlistId, title, description } = {},
+    destinationCurriculumSequence: { _id: playlistId, title, description, grades, subjects } = {},
     classListFetching,
     studentListFetching
   } = props;
@@ -177,6 +177,8 @@ const DropPlaylistModal = props => {
       playlistId,
       title,
       description,
+      grades,
+      subjects,
       grantAccess: {
         classList: uniqBy([...prevAddedClasses, ...addedClass], "id"),
         studentList: uniqBy([...prevAddedStudents, ...addedStudent], "id")

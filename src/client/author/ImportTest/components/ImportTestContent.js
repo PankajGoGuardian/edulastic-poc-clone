@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -11,8 +11,7 @@ import ImportInprogress from "./ImportInProgress";
 import ImportDone from "./ImportDone";
 import { uploadTestStatusAction, setJobIdsAction, qtiImportProgressAction, UPLOAD_STATUS } from "../ducks";
 
-const ImportTestContent = ({ uploadTestStatus, setJobIds, jobIds, status, qtiImportProgress }) => {
-  const [isLoading, setisLoading] = useState(false);
+const ImportTestContent = ({ uploadTestStatus, setJobIds, status }) => {
   useEffect(() => {
     const currentStatus = sessionStorage.getItem("testUploadStatus");
     const sessionJobs = sessionStorage.getItem("jobIds");
@@ -21,14 +20,6 @@ const ImportTestContent = ({ uploadTestStatus, setJobIds, jobIds, status, qtiImp
       setJobIds(sessionJobs ? JSON.parse(sessionJobs) : []);
     }
   }, []);
-
-  useEffect(() => {
-    if (status !== UPLOAD_STATUS.STANDBY && jobIds.length && !isLoading) {
-      qtiImportProgress(jobIds);
-      setisLoading(true);
-    }
-  }, [jobIds, status]);
-
   const breadcrumbData = [
     {
       title: "RECENT ASSIGNMENTS",

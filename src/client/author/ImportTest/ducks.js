@@ -73,13 +73,14 @@ export const reducers = createReducer(initialState, {
 
 export function* uploadTestStaga({ payload: fileList = [] }) {
   try {
-    const files = [];
     yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE));
-    for (const file of fileList) {
-      const filePath = yield call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT);
-      files.push(yield call(extractContent.qtiExtract, { files: [filePath] }));
+    const responseFiles = yield all([
+      fileList.map(file => call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT))
+    ]);
+    for (const file of responseFiles) {
+      yield call(extractContent.qtiExtract, { files: file });
     }
-    const response = yield call(contentImportApi.qtiImport, { files });
+    const response = yield call(contentImportApi.qtiImport, { files: responseFiles });
     if (response?.jobIds?.length) {
       yield put(setJobIdsAction(response.jobIds));
     } else {
@@ -119,4 +120,14 @@ export const getJobsDataSelector = createSelector(
 export const getCompletedJobsByStatus = createSelector(
   getJobsDataSelector,
   jobsData => groupBy(jobsData, "status")
+);
+
+export const getUploadStatusSelector = createSelector(
+  stateSelector,
+  state => state.status
+);
+
+export const getJobIdsSelector = createSelector(
+  stateSelector,
+  state => state.jobIds
 );

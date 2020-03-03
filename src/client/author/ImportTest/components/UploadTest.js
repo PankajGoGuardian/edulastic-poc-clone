@@ -1,22 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IconUpload } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
+import { sumBy } from "lodash";
 
-import { Select } from "antd";
-import {
-  UploadTitle,
-  UploadDescription,
-  StyledButton,
-  StyledUpload,
-  uploadIconStyle,
-  FlexContainer
-} from "./styled";
+import { Select, message } from "antd";
+import { UploadTitle, UploadDescription, StyledButton, StyledUpload, uploadIconStyle, FlexContainer } from "./styled";
 import { uploadTestRequestAction } from "../ducks";
+import { getAllTagsAction, getAllTagsSelector } from "../../TestPage/ducks";
 
-const UploadTest = ({ t, uploadTest }) => {
+const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
+  const [selectedTags, setselectedTags] = useState([]);
+  useEffect(() => {
+    getAllTags({ type: "testitem" });
+  }, []);
+
   const customRequest = ({ onSuccess }) => {
     // Can check each file for server side validation or response
     setTimeout(() => {
@@ -25,18 +25,19 @@ const UploadTest = ({ t, uploadTest }) => {
   };
 
   const onChange = ({ fileList }) => {
-    // replace upload action for qti (hangdle multiple files)
-    // write action to upload multiple files (fileList)
     if (fileList.every(({ status }) => status === "done")) {
-      // make an action call here
-      console.log("all done");
+      sessionStorage.setItem("qtiTags", JSON.stringify(selectedTags));
       uploadTest(fileList);
     }
   };
 
-  const beforeUpload = (file, fileList) => {
+  const beforeUpload = (_, fileList) => {
     // file validation for size and type should be done here
-    console.log("before upload", { fileList });
+    const totalFileSize = sumBy(fileList, "size");
+    if (totalFileSize / 1024000 > 15) {
+      message.error("File size exceeds 15 MB limit.");
+      return false;
+    }
   };
 
   const props = {
@@ -49,35 +50,14 @@ const UploadTest = ({ t, uploadTest }) => {
     showUploadList: false
   };
 
-  // fake tags
-  const fetchedTags = [
-    {
-      _id: "i1",
-      name: "a1"
-    },
-    {
-      _id: "i2",
-      name: "a2"
-    },
-    {
-      _id: "i3",
-      name: "a3"
-    },
-    {
-      _id: "i4",
-      name: "a4"
-    }
-  ];
+  const testTags = allTagsData.map(({ _id, tagName }) => (
+    <Select.Option key={_id} value={_id} title={tagName}>
+      {tagName}
+    </Select.Option>
+  ));
 
-  const testTags = [];
-
-  fetchedTags.forEach(({ _id, name }) => {
-    testTags.push(<Select.Option key={_id}>{name}</Select.Option>);
-  });
-
-  const onSelectTags = obj => {
-    // make a request to bakckend to save the tag
-    console.log(JSON.stringify({ obj }, null, 2));
+  const onTagSelect = (_, selectedItems) => {
+    setselectedTags(selectedItems.map(item => ({ _id: item.props.value, tagName: item.props.title })));
   };
 
   return (
@@ -92,15 +72,7 @@ const UploadTest = ({ t, uploadTest }) => {
           </StyledButton>
         </FlexContainer>
       </StyledUpload>
-      <Select
-        mode="tags"
-        style={{ width: "100%" }}
-        placeholder="Please select"
-        defaultValue={["i1", "i3"]}
-        onSelect={onSelectTags}
-        allowClear
-      >
-        {/* tag list will come here */}
+      <Select mode="tags" style={{ width: "100%" }} placeholder="Select tags" onChange={onTagSelect} allowClear>
         {testTags}
       </Select>
     </FlexContainer>
@@ -120,8 +92,10 @@ UploadTest.propTypes = {
 export default withNamespaces("qtiimport")(
   withRouter(
     connect(
-      null,
-      { uploadTest: uploadTestRequestAction }
+      state => ({
+        allTagsData: getAllTagsSelector(state, "testitem")
+      }),
+      { uploadTest: uploadTestRequestAction, getAllTags: getAllTagsAction }
     )(UploadTest)
   )
 );

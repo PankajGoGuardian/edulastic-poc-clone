@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Input } from "antd";
@@ -73,10 +72,7 @@ const EssayPlainTextPreview = ({
   };
 
   const handleSelect = () => {
-    if (
-      node?.resizableTextArea?.textArea?.selectionStart !==
-      node?.resizableTextArea?.textArea?.selectionEnd
-    ) {
+    if (node?.resizableTextArea?.textArea?.selectionStart !== node?.resizableTextArea?.textArea?.selectionEnd) {
       setSelection({
         start: node.resizableTextArea.textArea.selectionStart,
         end: node.resizableTextArea.textArea.selectionEnd
@@ -143,11 +139,7 @@ const EssayPlainTextPreview = ({
   const fontSize = theme.fontSize || getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   return (
-    <StyledPaperWrapper
-      isV1Multipart={isV1Multipart}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <StyledPaperWrapper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -156,32 +148,18 @@ const EssayPlainTextPreview = ({
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-            )}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
 
           {!disableResponse && (
             <Toolbar reviewTab={reviewTab} borderRadiusOnlyTop style={{ borderBottom: 0 }}>
-              <FlexContainer
-                childMarginRight={0}
-                alignItems="stretch"
-                justifyContent="space-between"
-              >
+              <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
                 {item.showCopy && (
-                  <ToolbarItem onClick={handleAction(COPY)}>
-                    {t("component.essayText.copy")}
-                  </ToolbarItem>
+                  <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>
                 )}
-                {item.showCut && (
-                  <ToolbarItem onClick={handleAction(CUT)}>
-                    {t("component.essayText.cut")}
-                  </ToolbarItem>
-                )}
+                {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
                 {item.showPaste && (
-                  <ToolbarItem onClick={handleAction(PASTE)}>
-                    {t("component.essayText.paste")}
-                  </ToolbarItem>
+                  <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>
                 )}
                 {Array.isArray(item.characterMap) && (
                   <Character
@@ -243,6 +221,7 @@ EssayPlainTextPreview.propTypes = {
   col: PropTypes.object,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  isReviewTab: PropTypes.bool.isRequired,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
@@ -251,7 +230,8 @@ EssayPlainTextPreview.propTypes = {
   location: PropTypes.any.isRequired,
   testItem: PropTypes.bool,
   qIndex: PropTypes.number,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  disableResponse: PropTypes.bool.isRequired
 };
 
 EssayPlainTextPreview.defaultProps = {

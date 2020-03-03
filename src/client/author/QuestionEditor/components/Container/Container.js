@@ -25,7 +25,7 @@ import QuestionAuditTrailLogs from "../../../../assessment/containers/QuestionAu
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 
 import ItemHeader from "../ItemHeader/ItemHeader";
-import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
+import { saveQuestionAction, setQuestionDataAction, getCalculatingSelector } from "../../ducks";
 import {
   getItemIdSelector,
   getItemSelector,
@@ -176,7 +176,7 @@ class Container extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question, preview, itemFromState } = this.props;
+    const { view, question, preview, itemFromState, showCalculatingSpinner } = this.props;
     const { saveClicked, showHints, clearClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
@@ -203,6 +203,7 @@ class Container extends Component {
             saveClicked={saveClicked}
             clearClicked={clearClicked}
             scrollContainer={this.scrollContainer}
+            showCalculatingSpinner={showCalculatingSpinner}
           />
           {showHints && <Hints questions={[question]} />}
         </HideScoringBlackContext.Provider>
@@ -534,7 +535,8 @@ const enhance = compose(
       savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
       authorQuestions: getCurrentQuestionSelector(state),
       hasUnsavedChanges: state?.authorQuestions?.updated || false,
-      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false),
+      showCalculatingSpinner: getCalculatingSelector(state)
     }),
     {
       changeView: changeViewAction,

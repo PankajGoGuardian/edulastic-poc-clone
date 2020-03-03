@@ -5,7 +5,6 @@ import { compose } from "redux";
 import { cloneDeep, get, has, isEmpty, difference, shuffle } from "lodash";
 import { Button, Input, Select, Table } from "antd";
 import styled from "styled-components";
-
 import { withNamespaces } from "@edulastic/localization";
 import { variableTypes, math } from "@edulastic/constants";
 import { MathInput, MathFormulaDisplay } from "@edulastic/common";
@@ -14,7 +13,8 @@ import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
-  calculateFormulaAction
+  calculateFormulaAction,
+  getCalculatingSelector
 } from "../../../../author/QuestionEditor/ducks";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
@@ -25,6 +25,8 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import Spinner from "./Spinner";
+import ErrorText from "./ErrorText";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const { defaultNumberPad } = math;
@@ -62,7 +64,8 @@ class Variables extends Component {
       fillSections,
       cleanSections,
       advancedAreOpen,
-      item = {}
+      item = {},
+      isCalculating
     } = this.props;
     const mathFieldRef = React.createRef();
     const getMathFormulaTemplate = latex =>
@@ -77,9 +80,12 @@ class Variables extends Component {
       title: variableName,
       dataIndex: variableName,
       key: variables[variableName].id,
-      render: latex => (
-        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
-      )
+      render: latex =>
+        latex !== "Recursion_Error" ? (
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: getMathFormulaTemplate(latex) }} />
+        ) : (
+          <ErrorText />
+        )
     }));
 
     const generateExample = variable => {
@@ -212,16 +218,6 @@ class Variables extends Component {
       handleChangeVariableList(variableName, param, value, newData);
     };
 
-    const handleCalculateFormula = () => {
-      const hasFormula = Object.keys(variables).some(
-        variableName =>
-          variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
-      );
-      if (hasFormula) {
-        calculateFormula({ variables, examples });
-      }
-    };
-
     const getCombinations = (variableName, available, count, values) => {
       available = [...new Set(available)];
       const newValues = [];
@@ -341,7 +337,7 @@ class Variables extends Component {
           let tempVals = exampleValues;
           Object.keys(val).forEach(variable => {
             tempVals = tempVals.filter(value => value[variable] === val[variable]);
-            if (!val[variable]) {
+            if (!val[variable] && val[variable] !== 0) {
               isValid = false;
             }
           });
@@ -374,7 +370,21 @@ class Variables extends Component {
       }
       setQuestionData(newData);
     };
-    if (examples.length && Object.keys(examples[0]).some(key => !examples[0][key])) {
+
+    const handleCalculateFormula = () => {
+      const hasFormula = Object.keys(variables).some(
+        variableName =>
+          variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
+      );
+      if (hasFormula) {
+        generate();
+      }
+    };
+
+    if (
+      examples.length &&
+      Object.keys(examples[0]).some(key => !examples[0][key] && examples[0][key] !== 0)
+    ) {
       generate();
     }
     return (
@@ -447,21 +457,17 @@ class Variables extends Component {
                   </Col>
                   {isFormula && (
                     <Col md={10}>
-                      {advancedAreOpen && (
-                        <MathInput
-                          ref={mathFieldRef}
-                          symbols={symbols}
-                          fullWidth
-                          showDropdown
-                          numberPad={defaultNumberPad}
-                          value={variable.formula}
-                          showResponse={false}
-                          onInput={latex =>
-                            handleChangeVariableList(variableName, "formula", latex)
-                          }
-                          onBlur={handleCalculateFormula}
-                        />
-                      )}
+                      <MathInput
+                        ref={mathFieldRef}
+                        symbols={symbols}
+                        fullWidth
+                        showDropdown
+                        numberPad={defaultNumberPad}
+                        value={variable.formula}
+                        showResponse={false}
+                        onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
+                        // onBlur={handleCalculateFormula}
+                      />
                     </Col>
                   )}
                   {isSet && (
@@ -564,11 +570,14 @@ class Variables extends Component {
                     </Col>
                   )}
                   <Col md={6} style={{ paddingTop: 10 }}>
-                    <MathFormulaDisplay
-                      dangerouslySetInnerHTML={{
-                        __html: getMathFormulaTemplate(variable.exampleValue)
-                      }}
-                    />
+                    {variable.exampleValue !== "Recursion_Error" && (
+                      <MathFormulaDisplay
+                        dangerouslySetInnerHTML={{
+                          __html: getMathFormulaTemplate(variable.exampleValue)
+                        }}
+                      />
+                    )}
+                    {variable.exampleValue === "Recursion_Error" && <ErrorText />}
                   </Col>
                 </Row>
               );
@@ -609,6 +618,7 @@ class Variables extends Component {
             </Row>
           </Block>
         )}
+        {isCalculating && <Spinner />}
       </Question>
     );
   }
@@ -635,7 +645,8 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     state => ({
-      questionData: getQuestionDataSelector(state)
+      questionData: getQuestionDataSelector(state),
+      isCalculating: getCalculatingSelector(state)
     }),
     {
       setQuestionData: setQuestionDataAction,

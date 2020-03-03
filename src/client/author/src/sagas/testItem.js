@@ -3,6 +3,7 @@ import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
+import { questionType } from "@edulastic/constants";
 import { evaluateItem } from "../utils/evalution";
 
 import {
@@ -107,13 +108,14 @@ function* updateTestItemSaga({ payload }) {
 function* evaluateAnswers({ payload }) {
   try {
     // clear previous evaluation
-    yield put({
-      type: CLEAR_ITEM_EVALUATION
-    });
     // User is at the question
     const question = yield select(getCurrentQuestionSelector);
     let correctAnswers = _get(question, "validation.validResponse.value", []);
     const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
+    yield put({
+      type: CLEAR_ITEM_EVALUATION,
+      payload: question.type === questionType.MATH
+    });
     if (payload === "question" || (payload?.mode === "show" && question)) {
       // some question type like fraction editor have correct answer as number
       // need to convert into array before using spread operator
@@ -125,6 +127,7 @@ function* evaluateAnswers({ payload }) {
         const { evaluation, score, maxScore } = yield evaluateItem(answers, {
           [question?.id]: question
         });
+
         yield put({
           type: ADD_ITEM_EVALUATION,
           payload: {

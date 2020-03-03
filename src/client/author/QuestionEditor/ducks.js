@@ -17,7 +17,8 @@ import {
   hasStandards,
   PROCEED_PUBLISH_ACTION,
   togglePublishWarningModalAction,
-  getPassageSelector
+  getPassageSelector,
+  generateRecentlyUsedCollectionsList
 } from "../ItemDetail/ducks";
 import {
   setTestDataAndUpdateAction,
@@ -38,20 +39,25 @@ import {
   changeUpdatedFlagAction
 } from "../sharedDucks/questions";
 
-import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
+import {
+  SET_ALIGNMENT_FROM_QUESTION,
+  CLEAR_ITEM_EVALUATION,
+  ADD_ITEM_EVALUATION
+} from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
-import changeViewAction from "../src/actions/view";
+import { changeViewAction } from "../src/actions/view";
 import {
   getDictionariesAlignmentsSelector,
   getRecentStandardsListSelector,
   getRecentCollectionsListSelector
 } from "../src/selectors/dictionaries";
-import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
+import {
+  updateRecentStandardsAction,
+  updateRecentCollectionsAction
+} from "../src/actions/dictionaries";
 import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
-import { generateRecentlyUsedCollectionsList } from "../ItemDetail/ducks";
-
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
@@ -84,6 +90,8 @@ export const SET_IS_GRADING_RUBRIC = "[question] set is grading rubric checkbox 
 
 // Variable
 export const CALCULATE_FORMULA = "[variable] calculate variable formulation for example value";
+export const CALCULATE_FORMULA_FAILED =
+  "[variable] calculate variable formulation for example value failed";
 
 export const receiveQuestionByIdAction = id => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -153,11 +161,31 @@ const initialState = {
   loading: false,
   saving: false,
   error: null,
-  saveError: null
+  saveError: null,
+  calculating: false
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case CLEAR_ITEM_EVALUATION: {
+      return {
+        ...state,
+        calculating: !!payload
+      };
+    }
+    case CALCULATE_FORMULA:
+      return {
+        ...state,
+        calculating: true
+      };
+    case ADD_ITEM_EVALUATION:
+    case CALCULATE_FORMULA_FAILED:
+    case UPDATE_QUESTION: {
+      return {
+        ...state,
+        calculating: false
+      };
+    }
     case RECEIVE_QUESTION_REQUEST:
       return {
         ...state,
@@ -284,6 +312,11 @@ export const getAlignmentFromQuestionSelector = createSelector(
   }
 );
 
+export const getCalculatingSelector = createSelector(
+  stateSelector,
+  state => state.calculating
+);
+
 export const getIsGradingCheckboxState = createSelector(
   stateSelector,
   state => state.isGradingRubric
@@ -324,12 +357,16 @@ export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTe
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
     if (isTestFlow) {
-      const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+      const questions = Object.values(
+        yield select(state => get(state, ["authorQuestions", "byId"], {}))
+      );
       const testItem = yield select(state => get(state, ["itemDetail", "item"]));
-      const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
+      const isMultipartOrPassageType =
+        testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
       const standardPresent = questions.some(hasStandards);
 
-      // if alignment data is not present and question is not multipart or passage type , set the flag to open the modal, and wait for
+      // if alignment data is not present and question is not multipart or passage type ,
+      // set the flag to open the modal, and wait for
       // an action from the modal.!
       if (!(isMultipartOrPassageType || standardPresent)) {
         yield put(togglePublishWarningModalAction(true));
@@ -364,7 +401,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
 
     if (isGradingCheckboxState && !question.rubrics) {
-      return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
+      return message.error(
+        "Please associate a rubric to the question or uncheck the Grading Rubric option."
+      );
     }
 
     const locationState = yield select(state => state.router.location.state);
@@ -414,10 +453,18 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
           draftData.data.questions[0].itemScore = data.itemLevelScore;
-          set(draftData, ["data", "questions", 0, "validation", "validResponse", "score"], data.itemLevelScore);
+          set(
+            draftData,
+            ["data", "questions", 0, "validation", "validResponse", "score"],
+            data.itemLevelScore
+          );
           for (const [index] of draftData.data.questions.entries()) {
             if (index > 0) {
-              set(draftData, ["data", "questions", index, "validation", "validResponse", "score"], 0);
+              set(
+                draftData,
+                ["data", "questions", index, "validation", "validResponse", "score"],
+                0
+              );
             }
           }
         } else if (draftData.data.questions[0].itemScore) {
@@ -461,7 +508,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     yield put(changeUpdatedFlagAction(false));
 
     if (item.testId) {
-      yield put(setRedirectTestAction(testId));
+      yield put(setRedirectTestAction(item.testId));
     }
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -481,11 +528,17 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector);
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
-      recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
+      recentCollectionsList = generateRecentlyUsedCollectionsList(
+        collections,
+        itemBanks,
+        recentCollectionsList
+      );
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
     if (isTestFlow) {
-      // user should get redirected to item detail page when multipart or passgae questions are being created from test flow or else save and continue.
+      // user should get redirected to item detail page
+      // when multipart or passgae questions are being created
+      // from test flow or else save and continue.
       const isFinalSave = yield select(state => state.router.location.isFinalSave);
       if ((item.multipartItem || !!item.passageId || item.isPassageWithQuestions) && !isFinalSave) {
         yield put(
@@ -507,7 +560,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
       if (isPublisherUser) {
         const pathname =
-          tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";
+          tId && tId !== "undefined"
+            ? `/author/tests/tab/addItems/id/${tId}`
+            : "/author/tests/create/addItems";
         yield put(
           push({
             pathname,
@@ -562,10 +617,11 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     const { item, tId: testId, isEditFlow } = payload;
     const testItems = yield select(getSelectedItemSelector);
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
-    //updated testItems should have the current authored item
-    // if it is passage item there could be multiple testitems merge all into nextTestItems and add to test.
+    // updated testItems should have the current authored item
+    // if it is passage item there could be multiple testitems
+    // merge all into nextTestItems and add to test.
     let nextTestItems = testItems;
-    if (!!item.passageId) {
+    if (item.passageId) {
       const passage = yield select(getPassageSelector);
       nextTestItems = [...nextTestItems, ...passage.testItems];
     } else {
@@ -575,7 +631,8 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     yield put(setTestItemsAction(nextTestItems));
     yield put(setCreatedItemToTestAction(item));
 
-    // if the item is getting created from test before saving then save and continue else change the route to test
+    // if the item is getting created from test before saving
+    // then save and continue else change the route to test
     if (!testId || testId === "undefined") {
       yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
     } else {
@@ -657,7 +714,9 @@ function* calculateFormulaSaga({ payload }) {
           newQuestion.variable.variables[key].exampleValue = result.values[key];
         });
       } else {
-        const idx = newQuestion.variable.examples.findIndex(example => `example${example.key}` === result.id);
+        const idx = newQuestion.variable.examples.findIndex(
+          example => `example${example.key}` === result.id
+        );
         Object.keys(result.values).forEach(key => {
           newQuestion.variable.examples[idx][key] = result.values[key];
         });
@@ -669,6 +728,10 @@ function* calculateFormulaSaga({ payload }) {
       payload: newQuestion
     });
   } catch (err) {
+    yield put({
+      type: CALCULATE_FORMULA_FAILED
+    });
+    yield call(message.error, "some thing went wrong. please try again.");
     console.log(err);
   }
 }

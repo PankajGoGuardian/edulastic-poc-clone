@@ -37,9 +37,7 @@ export const toggleCreateItemModalAction = ({ modalVisible, itemId }) => ({
   payload: { modalVisible, itemId }
 });
 
-export const addItemEvaluationAction = data => {
-  return {
-    type: ADD_ITEM_EVALUATION,
-    payload: data
-  };
-};
+export const addItemEvaluationAction = data => ({
+  type: ADD_ITEM_EVALUATION,
+  payload: data
+});

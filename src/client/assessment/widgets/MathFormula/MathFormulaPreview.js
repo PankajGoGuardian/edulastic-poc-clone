@@ -27,6 +27,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import Spinner from "./components/Spinner";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -171,8 +172,7 @@ class MathFormulaPreview extends Component {
     }
 
     const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-    const isArrowOrShift =
-      (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
 
     if (!isSpecialChar || isArrowOrShift) {
       return false;
@@ -190,14 +190,7 @@ class MathFormulaPreview extends Component {
   }
 
   selectUnitFromDropdown = unit => {
-    const {
-      userAnswer,
-      saveAnswer,
-      type: previewType,
-      changePreview,
-      changePreviewTab,
-      disableResponse
-    } = this.props;
+    const { userAnswer, saveAnswer, type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
     saveAnswer({ ...userAnswer, unit });
     if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
       changePreview(CLEAR); // Item level
@@ -233,7 +226,8 @@ class MathFormulaPreview extends Component {
       theme,
       userAnswer,
       disableResponse,
-      answerContextConfig
+      answerContextConfig,
+      showCalculatingSpinner
     } = this.props;
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
@@ -241,10 +235,7 @@ class MathFormulaPreview extends Component {
     const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
-      item &&
-      item.validation &&
-      item.validation.altResponses &&
-      item.validation.altResponses.length > 0;
+      item && item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
     let answerContainerStyle = {};
     let statusColor = theme.widgets.mathFormula.inputColor;
@@ -286,11 +277,9 @@ class MathFormulaPreview extends Component {
       correctUnit = `\\text{${correctUnit}}`;
     }
 
-    let statusIcon = latex &&
-      !isEmpty(evaluation) &&
-      (previewType === SHOW || previewType === CHECK) && (
-        <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-      );
+    let statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+      <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+    );
 
     if (expressGrader && isAnswerModifiable) {
       statusIcon = null;
@@ -298,6 +287,7 @@ class MathFormulaPreview extends Component {
 
     return (
       <div>
+        {showCalculatingSpinner && <Spinner />}
         <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
           <QuestionLabelWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -314,11 +304,7 @@ class MathFormulaPreview extends Component {
             </QuestionTitleWrapper>
             {testItem && (
               <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-                <MathDisplay
-                  styles={cssStyles}
-                  template="\MathQuillMathField{}"
-                  innerValues={testItemCorrectValues}
-                />
+                <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
                 {item.isUnits && item.showDropdown && (
                   <UnitsDropdown
                     preview
@@ -337,10 +323,7 @@ class MathFormulaPreview extends Component {
                 justifyContent="flex-start"
                 style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
               >
-                <MathInputWrapper
-                  width={cssStyles.width}
-                  style={{ background: statusColor, borderRadius: "5px" }}
-                >
+                <MathInputWrapper width={cssStyles.width} style={{ background: statusColor, borderRadius: "5px" }}>
                   {this.isStatic() && !disableResponse && (
                     <StaticMath
                       symbols={item.symbols}
@@ -370,11 +353,7 @@ class MathFormulaPreview extends Component {
                       customKeys={customKeys}
                       numberPad={item.numberPad}
                       hideKeypad={item.isUnits && item.showDropdown}
-                      value={
-                        latex && !Array.isArray(latex)
-                          ? latex.replace("\\MathQuillMathField{}", "")
-                          : ""
-                      }
+                      value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                       onInput={latexv => this.onUserResponse(latexv)}
                       onBlur={latexv => this.onBlur(latexv)}
                       disabled={evaluation && !evaluation.some(ie => ie)}
@@ -385,11 +364,7 @@ class MathFormulaPreview extends Component {
                   {!this.isStatic() && disableResponse && (
                     <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
                       <MathSpanWrapper
-                        latex={
-                          latex && !Array.isArray(latex)
-                            ? latex.replace("\\MathQuillMathField{}", "")
-                            : ""
-                        }
+                        latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                       />
                     </MathInputSpan>
                   )}
@@ -417,10 +392,7 @@ class MathFormulaPreview extends Component {
                   item.isUnits && item.showDropdown
                     ? item.validation.validResponse.value[0].value.search("=") === -1
                       ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
-                      : item.validation.validResponse.value[0].value.replace(
-                          /=/gm,
-                          `\\ ${correctUnit}=`
-                        )
+                      : item.validation.validResponse.value[0].value.replace(/=/gm, `\\ ${correctUnit}=`)
                     : item.validation.validResponse.value[0].value
                 }
               />

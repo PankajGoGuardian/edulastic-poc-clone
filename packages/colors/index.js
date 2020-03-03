@@ -1,6 +1,7 @@
 export const white = "#fff";
 export const black = "#000";
 export const fadedBlack = "rgba(0, 0, 0, 0.65)";
+export const lightFadedBlack = "rgba(0, 0, 0, 0.15)";
 
 export const themeColor = "#4ab495"; // green
 export const themeColorLight = "#42d184"; // light green

@@ -58,10 +58,14 @@ export const USE_TABS = "[itemDetail] is use tabs";
 export const MOVE_WIDGET = "[itemDetail] move widget";
 
 // item list
-export const APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST = "[item list] approve or reject single item request";
-export const APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS = "[item list] approve or reject single item success";
-export const APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST = "[item list] approve or reject multiple items request";
-export const APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS = "[item list] approve or reject multiple items success";
+export const APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST =
+  "[item list] approve or reject single item request";
+export const APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS =
+  "[item list] approve or reject single item success";
+export const APPROVE_OR_REJECT_MULTIPLE_ITEM_REQUEST =
+  "[item list] approve or reject multiple items request";
+export const APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS =
+  "[item list] approve or reject multiple items success";
 
 // Test items
 export const RECEIVE_TEST_ITEMS_REQUEST = "[testItems] receive items request";
@@ -200,8 +204,10 @@ export const RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST = "[assignmentsSummary] receive
 export const RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS = "[assignmentsSummary] receive list success";
 export const RECEIVE_ASSIGNMENTS_SUMMARY_ERROR = "[assignmentsSummary] receive list error";
 
-export const RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST = "[assignment’s class list] receive list request";
-export const RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS = "[assignment’s class list] receive list success";
+export const RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST =
+  "[assignment’s class list] receive list request";
+export const RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS =
+  "[assignment’s class list] receive list success";
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] receive list error";
 export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 
@@ -243,8 +249,10 @@ export const SET_SAFE_BROWSE_PASSWORD = "[tests] safe browser password";
 // -----|-----|-----|----- REPORTS BEGIN -----|-----|-----|----- //
 
 export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST = "[reports] get reports assessment summary";
-export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS = "[reports] get reports assessment summary success";
-export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR = "[reports] get reports assessment summary error";
+export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS =
+  "[reports] get reports assessment summary success";
+export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR =
+  "[reports] get reports assessment summary error";
 
 // -----|-----|-----|----- REPORTS ENDED -----|-----|-----|----- //
 

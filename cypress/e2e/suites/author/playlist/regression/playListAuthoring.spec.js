@@ -367,7 +367,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">verify teacher side-'assignments page'", () => {
       playListLibrary.sidebar.clickOnAssignment();
       [testIds[0], testIds[3]].forEach(id => {
-        authorAssignmentPage.getTestRowByTestId(id).should("exist");
+        authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
     });
     it(">verify student side", () => {

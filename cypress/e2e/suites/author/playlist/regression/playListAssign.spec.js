@@ -94,7 +94,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
         cy.server();
         cy.route("GET", "**/playlists/*").as("goToPlayList");
         for (let k = 0; k < 3; k++) {
-          // playListLibrary.reviewTab.clickExpandByModule(1);
+          playListLibrary.reviewTab.clickExpandByModule(1);
           playListLibrary.reviewTab.clickShowAssignmentByTestByModule(1, 1);
           playListLibrary.reviewTab.clickLcbIconByTestByIndex(1, 1, k);
           k === 0

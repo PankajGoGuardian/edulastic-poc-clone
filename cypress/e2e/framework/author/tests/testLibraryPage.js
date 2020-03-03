@@ -32,8 +32,7 @@ export default class TestLibrary {
   };
 
   clickOnAuthorTest = () => {
-    cy.get("button")
-      .contains("Author Test")
+    cy.get('[data-cy="createNew"]')
       .click()
       .then(() => {
         cy.contains("button", "CREATE TEST").click();

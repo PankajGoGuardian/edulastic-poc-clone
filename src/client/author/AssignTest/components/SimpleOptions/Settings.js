@@ -159,6 +159,7 @@ const Settings = ({
               showTestTypeOption
             />
             <PlayerSkinSelector
+              testType={assignmentSettings?.testType}
               userRole={userRole}
               playerSkinType={assignmentSettings?.playerSkinType}
               disabled

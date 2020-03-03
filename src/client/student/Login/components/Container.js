@@ -160,11 +160,8 @@ class LoginContainer extends React.Component {
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
-                {isDistrictPolicyAllowed(
-                  isSignupUsingDaURL,
-                  districtPolicy,
-                  "userNameAndPassword"
-                ) || !isSignupUsingDaURL ? (
+                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                !isSignupUsingDaURL ? (
                   <FormBody>
                     <Col span={20} offset={2}>
                       <h5 align="center">{t("common.formboxheading")}</h5>
@@ -187,13 +184,7 @@ class LoginContainer extends React.Component {
                               },
                               {
                                 validator: (rule, value, callback) =>
-                                  isEmailValid(
-                                    rule,
-                                    value,
-                                    callback,
-                                    "both",
-                                    t("common.validation.validemail")
-                                  )
+                                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
                               }
                             ]
                           })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
@@ -206,13 +197,7 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptypassword")
                               }
                             ]
-                          })(
-                            <Input
-                              data-cy="password"
-                              prefix={<IconLock color={themeColor} />}
-                              type="password"
-                            />
-                          )}
+                          })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
                         </FormItem>
                         <FormItem>
                           {getFieldDecorator("remember", {

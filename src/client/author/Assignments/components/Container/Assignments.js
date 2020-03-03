@@ -79,14 +79,7 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const {
-      loadAssignments,
-      loadAssignmentsSummary,
-      districtId,
-      loadFolders,
-      userRole,
-      orgData
-    } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
@@ -207,13 +200,7 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState
     } = this.props;
-    const {
-      selectedRows,
-      filterState,
-      isPreviewModalVisible,
-      currentTestId,
-      openEditPopup
-    } = this.state;
+    const { selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
 
@@ -264,11 +251,7 @@ class Assignments extends Component {
                     </LeftWrapper>
                   )}
                   <TableWrapper showFilter={showFilter}>
-                    <FilterButton
-                      showFilter={showFilter}
-                      variant="filter"
-                      onClick={this.toggleFilter}
-                    >
+                    <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter
                         data-cy="smart-filter"
                         color={showFilter ? white : themeColor}

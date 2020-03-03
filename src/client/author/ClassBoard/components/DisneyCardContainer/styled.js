@@ -74,8 +74,7 @@ export const StyledCard = styled(Card)`
     padding: 20px;
   }
   &:hover {
-    box-shadow: ${props =>
-      props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)"};
+    box-shadow: ${props => (props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)")};
   }
 
   @media (min-width: ${mobileWidth}) and (max-width: 767px) {

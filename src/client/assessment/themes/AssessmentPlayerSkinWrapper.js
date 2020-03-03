@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { test } from "@edulastic/constants";
-import PracticePlayerHeader from "./AssessmentPlayerSimple/PlayerHeader";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FlexContainer } from "@edulastic/common";
+import { isUndefined } from "lodash";
 import DocBasedPlayerHeader from "./AssessmentPlayerDocBased/PlayerHeader";
 import DefaultAssessmentPlayerHeader from "./AssessmentPlayerDefault/PlayerHeader";
 import ParccHeader from "./skins/Parcc/PlayerHeader";
 import SidebarQuestionList from "./AssessmentPlayerSimple/PlayerSideBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { IPAD_LANDSCAPE_WIDTH } from "../constants/others";
-import { FlexContainer } from "@edulastic/common";
 import { Nav } from "./common";
-import { isUndefined } from "lodash";
 import SbacHeader from "./skins/Sbac/PlayerHeader";
 
 const AssessmentPlayerSkinWrapper = ({
@@ -36,7 +35,8 @@ const AssessmentPlayerSkinWrapper = ({
           isDocbased={!isUndefined(docUrl)}
         />
       );
-    } else if (playerSkinType == "sbac") {
+    }
+    if (playerSkinType == "sbac") {
       return (
         <SbacHeader
           {...restProps}
@@ -45,12 +45,12 @@ const AssessmentPlayerSkinWrapper = ({
           isDocbased={!isUndefined(docUrl)}
         />
       );
-    } else if (!isUndefined(docUrl)) {
+    }
+    if (!isUndefined(docUrl)) {
       return <DocBasedPlayerHeader {...restProps} />;
-    } else if (defaultAP) {
+    }
+    if (defaultAP) {
       return <DefaultAssessmentPlayerHeader {...restProps} />;
-    } else {
-      return <PracticePlayerHeader {...restProps} />;
     }
   };
 
@@ -78,19 +78,20 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()) {
       if (!isUndefined(docUrl) || defaultAP) {
         return { width: "100%" };
-      } else {
-        return {
-          margin: "40px 40px 0 40px",
-          width: "100%"
-        };
       }
-    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase()) {
+      return {
+        margin: "40px 40px 0 40px",
+        width: "100%"
+      };
+    }
+    if (playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
         marginTop: defaultAP ? "82px" : "47px"
       };
-    } else if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
+    }
+    if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
       return {
         paddingLeft: 0,
         paddingRight: 0,
@@ -104,11 +105,6 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()) {
       if (!isUndefined(docUrl) || defaultAP) {
         return { width: "100%" };
-      } else {
-        return {
-          width: isSidebarVisible ? "calc(100% - 220px)" : "calc(100%)",
-          background: restProps.theme.widgets.assessmentPlayers.mainBgColor
-        };
       }
     } else if (
       playerSkinType.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
@@ -121,20 +117,18 @@ const AssessmentPlayerSkinWrapper = ({
     return {};
   };
 
-  const navigationBtns = () => {
-    return (
-      <>
-        {currentItem > 0 && (
-          <Nav.BackArrow onClick={moveToPrev}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </Nav.BackArrow>
-        )}
-        <Nav.NextArrow onClick={moveToNext}>
-          <FontAwesomeIcon icon={faAngleRight} />
-        </Nav.NextArrow>
-      </>
-    );
-  };
+  const navigationBtns = () => (
+    <>
+      {currentItem > 0 && (
+        <Nav.BackArrow onClick={moveToPrev}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Nav.BackArrow>
+      )}
+      <Nav.NextArrow onClick={moveToNext}>
+        <FontAwesomeIcon icon={faAngleRight} />
+      </Nav.NextArrow>
+    </>
+  );
 
   return (
     <>

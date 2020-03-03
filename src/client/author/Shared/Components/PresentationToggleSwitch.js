@@ -11,20 +11,14 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, 
   const toggleCurrentMode = () => {
     togglePresentationMode();
     if (!isPresentationMode)
-      message.info(
-        "Presentation mode is ON. You can present assessment data without revealing student identity."
-      );
+      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
   };
 
   const title = !isPresentationMode
     ? "Presentation Mode will anonymize the names of students"
     : " Presentation Mode will get OFF";
   return (
-    <FeaturesSwitch
-      inputFeatures="presentationMode"
-      actionOnInaccessible="hidden"
-      groupId={groupId}
-    >
+    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
       <SwitchBox>
         {isPresentationMode ? "RESET" : "PRESENT"}{" "}
         <Switch checked={isPresentationMode} title={title} onClick={toggleCurrentMode} />

@@ -2,24 +2,20 @@ import React from "react";
 import {
   ControlBtn,
   ToolButton,
-  Main,
   Header,
   HeaderWrapper,
-  Container,
   FlexContainer,
   TestButton,
   ToolBar,
   SaveAndExit,
-  CalculatorContainer,
   ToolTipContainer,
   MainActionWrapper,
   LogoCompact,
-  Nav,
   CustomAffix
 } from "../common";
 import HeaderMainMenu from "../common/HeaderMainMenu";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
+import { Tooltip } from "../../../common/utils/helpers";
 
 const PlayerHeader = ({
   LCBPreviewModal,
@@ -56,11 +52,7 @@ const PlayerHeader = ({
   finishTest
 }) => {
   const rightButtons = (
-    <SaveAndExit
-      previewPlayer={previewPlayer}
-      showZoomBtn
-      finishTest={finishTest}
-    />
+    <SaveAndExit previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />
   );
 
   return (
@@ -163,7 +155,7 @@ const PlayerHeader = ({
         </HeaderMainMenu>
       </Header>
     </CustomAffix>
-  )
-}
+  );
+};
 
 export default PlayerHeader;

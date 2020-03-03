@@ -5,13 +5,7 @@ import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/ico
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
 
-import {
-  HeaderPracticePlayer,
-  PlayerTitle,
-  ContainerRight,
-  FlexDisplay,
-  ActionButton
-} from "./styled";
+import { HeaderPracticePlayer, PlayerTitle, ContainerRight, FlexDisplay, ActionButton } from "./styled";
 import Tools from "./Tools";
 
 import Logo from "../../assets/ets-log.png";

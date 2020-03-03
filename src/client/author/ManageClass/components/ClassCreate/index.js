@@ -11,10 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { createClassAction, getSelectedSubject, setSubjectAction } from "../../ducks";
 // selectors
-import {
-  getCurriculumsListSelector,
-  getFormattedCurriculumsSelector
-} from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 

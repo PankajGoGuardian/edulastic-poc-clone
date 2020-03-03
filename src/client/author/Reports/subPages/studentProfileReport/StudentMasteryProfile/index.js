@@ -32,11 +32,9 @@ import {
   getStudentStandardsAction
 } from "./ducks";
 
-const usefilterRecords = (records, domain) => 
+const usefilterRecords = (records, domain) =>
   // using == instead of === for domainId as domainId can be either a string or an integer
-   useMemo(() => filter(records, record => domain === "All" || record.domainId == domain), [records, domain])
-;
-
+  useMemo(() => filter(records, record => domain === "All" || record.domainId == domain), [records, domain]);
 const getTooltip = payload => {
   if (payload && payload.length) {
     const { masteryName = "", percentage = 0 } = payload[0].payload;

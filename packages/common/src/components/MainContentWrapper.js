@@ -1,10 +1,5 @@
 import styled from "styled-components";
-import {
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  desktopWidth,
-  mainBgColor
-} from "@edulastic/colors";
+import { mediumDesktopExactWidth, extraDesktopWidthMax, desktopWidth, mainBgColor } from "@edulastic/colors";
 
 const MainContentWrapper = styled.div`
   background: ${mainBgColor};

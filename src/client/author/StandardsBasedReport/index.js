@@ -53,11 +53,7 @@ class StandardsBasedReport extends Component {
     const testActivityId = this.getTestActivity(testActivity);
 
     return (
-      <FeaturesSwitch
-        inputFeatures="standardBasedReport"
-        actionOnInaccessible="hidden"
-        groupId={classId}
-      >
+      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
         <React.Fragment>
           <ClassHeader
             classId={classId}

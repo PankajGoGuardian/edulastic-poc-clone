@@ -92,7 +92,7 @@ const ModuleItem = SortableElement(props => {
       <ModuleActions>
         <ThemeButton key="submit" type="primary" onClick={handleModuleEdit}>
           <StyledSpan width={70} fSize={12}>
-              EDIT
+            EDIT
           </StyledSpan>
         </ThemeButton>
         <Button
@@ -107,7 +107,7 @@ const ModuleItem = SortableElement(props => {
         </Button>
       </ModuleActions>
     </ModuleContainer>
-    );
+  );
 });
 
 const Label = styled.span`
@@ -139,7 +139,7 @@ const ModuleContainer = styled.div`
   z-index: 1001;
   box-shadow: 0 0 10px 0 ${fadedGrey};
   border-radius: 4px;
-  border: ${({ dragging }) => dragging && `1px solid ${  themeColor}`};
+  border: ${({ dragging }) => dragging && `1px solid ${themeColor}`};
 `;
 
 const DragHandle = styled.div`

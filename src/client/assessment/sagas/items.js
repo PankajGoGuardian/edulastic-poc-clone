@@ -164,7 +164,7 @@ function* saveUserResponse({ payload }) {
     }
     yield put({ type: SAVE_USER_RESPONSE_SUCCESS });
     if (payload?.urlToGo) {
-      yield put(push(payload.urlToGo));
+      yield put(push({ pathname: payload.urlToGo, state: payload?.locState }));
     }
     if (shouldClearUserWork) {
       /**

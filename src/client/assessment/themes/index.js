@@ -108,7 +108,7 @@ const AssessmentContainer = ({
       setCurrentItem(index);
     } else {
       changePreview("clear");
-      saveCurrentAnswer({ urlToGo: `${url}/qid/${index}` });
+      saveCurrentAnswer({ urlToGo: `${url}/qid/${index}`, locState: history?.location?.state });
     }
   };
 
@@ -124,7 +124,8 @@ const AssessmentContainer = ({
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
       await saveUserAnswer(currentItem, timeSpent, false, groupId, {
-        urlToGo: `${url}/${"test-summary"}`
+        urlToGo: `${url}/${"test-summary"}`,
+        locState: history?.location?.state
       });
     }
   };
@@ -279,11 +280,7 @@ const enhance = compose(
       playerSkinType: state.test.playerSkinType,
       testletConfig: state.test.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
-      testletState: get(
-        state,
-        `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`,
-        {}
-      ),
+      testletState: get(state, `testUserWork[${state.test ? state.test.testActivityId : ""}].testletState`, {}),
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),

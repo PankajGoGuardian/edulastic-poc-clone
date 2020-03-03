@@ -1,9 +1,4 @@
-import {
-  testActivityApi,
-  testsApi,
-  assignmentApi,
-  attchmentApi as attachmentApi
-} from "@edulastic/api";
+import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
@@ -47,10 +42,7 @@ const modifyTestDataForPreview = test =>
   produce(test, draft => {
     const { itemGroups } = draft;
     for (const group of itemGroups) {
-      if (
-        group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-        group.deliverItemsCount
-      ) {
+      if (group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM && group.deliverItemsCount) {
         group.items = group.items.filter((_, i) => i < group.deliverItemsCount);
       }
     }
@@ -112,9 +104,7 @@ function* loadTest({ payload }) {
     const groupId = groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses));
 
     // if !preivew, need to load previous responses as well!
-    const getTestActivity = !preview
-      ? call(testActivityApi.getById, testActivityId, groupId)
-      : false;
+    const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
@@ -125,12 +115,10 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
-      const isFromSummary = yield select(state =>
-        get(state, "router.location.state.fromSummary", false)
-      );
+      const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
       let passwordValidated =
-        testActivity.assignmentSettings.passwordPolicy ===
-          testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF || isFromSummary;
+        testActivity.assignmentSettings.passwordPolicy === testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF ||
+        isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
@@ -169,18 +157,12 @@ function* loadTest({ payload }) {
     if (
       preview &&
       test.itemGroups.some(
-        (group = {}) =>
-          group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT && !group.items?.length
+        (group = {}) => group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT && !group.items?.length
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview });
     }
-    if (
-      preview &&
-      test.itemGroups?.some(
-        group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-      )
-    ) {
+    if (preview && test.itemGroups?.some(group => group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM)) {
       // for all limited random group update items as per number of delivery items count
       test = modifyTestDataForPreview(test);
     }
@@ -191,9 +173,7 @@ function* loadTest({ payload }) {
       testActivity.itemsToBeExcluded?.length
     ) {
       // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
-      test.testItems = test.testItems.filter(
-        item => !testActivity.itemsToBeExcluded.includes(item._id)
-      );
+      test.testItems = test.testItems.filter(item => !testActivity.itemsToBeExcluded.includes(item._id));
     }
     // eslint-disable-next-line prefer-const
     let { testItems, passages, testType } = test;
@@ -204,12 +184,10 @@ function* loadTest({ payload }) {
         test.calcType === testContants.calculatorTypes.GRAPHING
           ? "DESMOS"
           : testActivity?.calculatorProvider,
-      calcType:
-        testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
+      calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy ||
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+        testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
       showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
       testType: testActivity?.assignmentSettings?.testType,
       playerSkinType: testActivity?.assignmentSettings?.playerSkinType
@@ -226,11 +204,7 @@ function* loadTest({ payload }) {
       let allPrevAnswers = {};
       let allEvaluation = {};
 
-      const {
-        testActivity: activity,
-        questionActivities = [],
-        previousQuestionActivities = []
-      } = testActivity;
+      const { testActivity: activity, questionActivities = [], previousQuestionActivities = [] } = testActivity;
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
       const bookmarks = {};
@@ -306,10 +280,7 @@ function* loadTest({ payload }) {
         }
         // land on the testItems which is next to testItem that is attempted and has the highest index
         // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
-        if (
-          testItemIds.indexOf(item.testItemId) >
-          testItemIds.indexOf(lastAttemptedQuestion.testItemId)
-        ) {
+        if (testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId)) {
           lastAttemptedQuestion = item;
         }
       });
@@ -349,9 +320,12 @@ function* loadTest({ payload }) {
       // only load from previous attempted if resuming from assignments page
       const loadFromLast = yield select(state => state.test && state.test.resume);
 
+      // carryForward the prev locaation state in case of playlist flow
+      const prevLocationState = yield select(state => state?.router?.location?.state) || {};
+
       // move to last attended question
       if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(push(`${lastAttendedQuestion}`));
+        yield put(push({ pathname: `${lastAttendedQuestion}`, state: prevLocationState }));
         yield put({
           type: SET_RESUME_STATUS,
           payload: false
@@ -395,10 +369,7 @@ function* loadTest({ payload }) {
     });
   } catch (err) {
     if (err.status === 403 && preview) {
-      yield call(
-        message.error,
-        "You can no longer use this as sharing access has been revoked by author."
-      );
+      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
       Modal.destroyAll();
     }
     yield put({
@@ -432,7 +403,12 @@ function* submitTest({ payload: classId }) {
     if (navigator.userAgent.includes("SEB")) {
       yield put(push("/student/seb-quit-confirm"));
     } else {
-      yield put(push("/home/grades"));
+      const prevLocationState = yield select(state => state?.router?.location?.state);
+      if (prevLocationState) {
+        yield put(push(`/home/playlist/${prevLocationState?.playlistId}`));
+      } else {
+        yield put(push("/home/grades"));
+      }
     }
     yield put({
       type: SET_TEST_ACTIVITY_ID,

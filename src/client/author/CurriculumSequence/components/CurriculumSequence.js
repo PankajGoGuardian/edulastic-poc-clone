@@ -6,7 +6,7 @@ import { uniqueId, round } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton , FlexContainer, MainHeader } from '@edulastic/common';
+import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -385,7 +385,7 @@ class CurriculumSequence extends Component {
     const playlistMetrics = getplaylistMetrics();
 
     const summaryData = modules?.map((mod, index) => {
-      const { _id = "", title, data = {} } = mod;
+      const { _id = "", title, data = {}, hidden = false } = mod;
       const metricModule = playlistMetrics[_id] || {};
       const name = `Module ${index + 1}`;
       const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100, 0);
@@ -410,7 +410,8 @@ class CurriculumSequence extends Component {
         classes,
         submitted,
         tSpent,
-        index
+        index,
+        hidden
       };
     });
 
@@ -572,9 +573,7 @@ class CurriculumSequence extends Component {
                   </EduButton>
                 )}
                 {urlHasUseThis && isTeacher && !isPublisherUser && (
-                  <EduButton onClick={this.openDropPlaylistModal}>
-                  DROP PLAYLIST
-                </EduButton>
+                  <EduButton onClick={this.openDropPlaylistModal}>DROP PLAYLIST</EduButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <Tooltip placement="bottom" title="EDIT">
@@ -666,6 +665,7 @@ class CurriculumSequence extends Component {
                 <SummaryBlockTitle>Summary</SummaryBlockTitle>
                 <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
                 <SummaryPieChart
+                  isStudent={isStudent}
                   data={summaryData}
                   totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
                   colors={COLORS}
@@ -673,22 +673,25 @@ class CurriculumSequence extends Component {
                 <Hr />
                 <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
                 <div style={{ width: "80%", margin: "20px auto" }}>
-                  {summaryData?.map(item => (
-                    <div>
-                      <Tooltip placement="topLeft" title={item.title || item.name}>
-                        <ModuleTitle>{item.title || item.name}</ModuleTitle>
-                      </Tooltip>
-                      <Progress
-                        strokeColor={{
-                          "0%": getProgressColor(item?.value),
-                          "100%": getProgressColor(item?.value)
-                        }}
-                        strokeWidth={10}
-                        percent={item.value}
-                        size="small"
-                      />
-                    </div>
-                  ))}
+                  {summaryData?.map(
+                    item =>
+                      ((isStudent && !item.hidden) || isAuthor) && (
+                        <div style={{ opacity: item.hidden ? `.5` : `1` }}>
+                          <Tooltip placement="topLeft" title={item.title || item.name}>
+                            <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                          </Tooltip>
+                          <Progress
+                            strokeColor={{
+                              "0%": getProgressColor(item?.value),
+                              "100%": getProgressColor(item?.value)
+                            }}
+                            strokeWidth={10}
+                            percent={item.value}
+                            size="small"
+                          />
+                        </div>
+                      )
+                  )}
                 </div>
               </SummaryBlock>
             )}

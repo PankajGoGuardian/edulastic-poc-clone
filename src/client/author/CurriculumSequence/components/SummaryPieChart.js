@@ -46,7 +46,7 @@ const renderActiveShape = props => {
   );
 };
 
-const SummaryPieChart = ({ data = [], totalTimeSpent, colors }) => {
+const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showTotalTime, setDefaultTimeSpent] = useState(true);
 
@@ -56,7 +56,7 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors }) => {
   };
 
   const chartData = data
-    ?.filter(x => x?.tSpent !== 0)
+    ?.filter(x => x?.tSpent !== 0 && !(x?.hidden && isStudent))
     ?.map(x => ({
       ...x,
       value: x?.tSpent

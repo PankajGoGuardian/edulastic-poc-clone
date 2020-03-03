@@ -6,8 +6,8 @@ import Tools from "../../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../themes/AssessmentPlayerDefault/SvgDraw";
 
 const toolBoxStyle = {
-  position: "absolute",
   top: "50%",
+  left: "unset",
   transform: "translateY(-50%)"
 };
 

@@ -218,7 +218,7 @@ function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
   const oldData = cloneDeep(curriculumSequence);
   try {
-    const dataToSend = omit(curriculumSequence, ["authors", "createdDate", "updatedDate", "sharedWith", "sharedType"]);
+    const dataToSend = omit(curriculumSequence, ["authors", "createdDate", "updatedDate", "sharedWith", "sharedType", "isAuthor"]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
       return mod;

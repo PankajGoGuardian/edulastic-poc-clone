@@ -273,7 +273,7 @@ class ModuleRow extends Component {
     });
     updateCurriculumSequence({
       id: playlistId,
-      curriculumSequence: omit(dataToUpdate, ["playListMetrics", "isAuthor"])
+      curriculumSequence: dataToUpdate
     });
   };
 
@@ -293,7 +293,7 @@ class ModuleRow extends Component {
 
     updateCurriculumSequence({
       id: playlistId,
-      curriculumSequence: omit(dataToUpdate, ["playListMetrics", "isAuthor"])
+      curriculumSequence: dataToUpdate
     });
   };
 

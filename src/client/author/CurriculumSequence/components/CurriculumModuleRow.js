@@ -550,24 +550,23 @@ class ModuleRow extends Component {
                       totalAssigned = 0,
                       totalScore = 0,
                       maxScore = 0,
-                      timeSpent: tSpent = 0
+                      timeSpent: tSpent
                     } = data;
                     const submitted = assignmentId ? round((gradedCount / totalAssigned) * 100, 0) : 0;
                     const progress = round((totalScore / maxScore) * 100, 0) || 0;
                     const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
-                    const scores = 0;
+                    const duration = moment.duration(parseInt(tSpent || 0, 10));
+                    const h = duration.hours();
+                    const m = duration.minutes();
+                    const s = duration.seconds();
 
-                    const duration = moment.duration(tSpent);
-                    const h = duration.minutes();
-                    const m = duration.hours();
-
-                    const timeSpent = h > 0 ? `${h}H ${m}mins` : `${m}min`;
+                    const timeSpent = h > 0 ? `${h}H ${m}mins ${s}secs` : `${m} mins ${s} secs`;
 
                     return {
                       submitted,
                       progress,
                       classes,
-                      scores,
+                      scores: totalScore,
                       timeSpent
                     };
                   };

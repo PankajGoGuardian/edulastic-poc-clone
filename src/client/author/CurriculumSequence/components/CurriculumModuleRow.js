@@ -15,19 +15,22 @@ import { FaBars } from "react-icons/fa";
 import {
   mobileWidth,
   white,
-  desktopWidth,
   tabletWidth,
+  desktopWidth,
+  extraDesktopWidth,
   mainBgColor,
   themeColor,
   themeColorLighter,
   titleColor,
   borderGrey3,
+  borderGrey4,
   greenDark,
   greyThemeLighter,
   greyThemeDark1,
   lightGreen5,
   lightGreen6,
-  testTypeColor
+  testTypeColor,
+  textColor as descriptionColor
 } from "@edulastic/colors";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { IconVerified, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
@@ -303,7 +306,6 @@ class ModuleRow extends Component {
       collapsed,
       padding,
       status,
-      isContentExpanded,
       module,
       moduleIndex,
       mode,
@@ -368,6 +370,7 @@ class ModuleRow extends Component {
           <ModuleWrapper
             data-cy={`row-module-${moduleIndex + 1}`}
             key={`${data.length}-${module.id}`}
+            collapsed={collapsed}
             padding={padding}
             onClick={() => onCollapseExpand(moduleIndex)}
           >
@@ -404,14 +407,18 @@ class ModuleRow extends Component {
                       "100%": getProgressColor(summaryData[moduleIndex]?.value)
                     }}
                     strokeWidth={10}
-                    show={summaryData[moduleIndex]?.value}
                     percent={summaryData[moduleIndex]?.value}
                   />
                 </Col>
                 {!isStudent ? (
                   <Col span={3} style={moduleInlineStyle}>
-                    <StyledLabel>SUBMITTED</StyledLabel>
-                    <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans" padding="4px 0px">
+                    <StyledLabel justify="center">SUBMITTED</StyledLabel>
+                    <StyledLabel
+                      textColor={greyThemeDark1}
+                      fontStyle="12px/17px Open Sans"
+                      padding="4px 0px"
+                      justify="center"
+                    >
                       {/* TODO: Method to find submissions */}
                       {summaryData[moduleIndex]?.submitted === "-"
                         ? summaryData[moduleIndex]?.submitted
@@ -420,8 +427,13 @@ class ModuleRow extends Component {
                   </Col>
                 ) : (
                   <Col span={2}>
-                    <StyledLabel>&nbsp;</StyledLabel>
-                    <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans" padding="4px 0px">
+                    <StyledLabel justify="center">SCORE</StyledLabel>
+                    <StyledLabel
+                      textColor={greyThemeDark1}
+                      fontStyle="12px/17px Open Sans"
+                      padding="4px 0px"
+                      justify="center"
+                    >
                       {/* TODO: Method to find sum of scores */}
                       {summaryData[moduleIndex]?.scores ? summaryData[moduleIndex]?.scores : "-"}
                     </StyledLabel>
@@ -429,16 +441,26 @@ class ModuleRow extends Component {
                 )}
                 {!isStudent ? (
                   <Col span={2} style={moduleInlineStyle}>
-                    <StyledLabel>CLASSES</StyledLabel>
-                    <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans" padding="4px 0px">
+                    <StyledLabel justify="center">CLASSES</StyledLabel>
+                    <StyledLabel
+                      textColor={greyThemeDark1}
+                      fontStyle="12px/17px Open Sans"
+                      padding="4px 0px"
+                      justify="center"
+                    >
                       {/* TODO: Method to find classes */}
                       {summaryData[moduleIndex]?.classes}
                     </StyledLabel>
                   </Col>
                 ) : (
                   <Col span={4}>
-                    <StyledLabel>TIME SPENT</StyledLabel>
-                    <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans" padding="4px 0px">
+                    <StyledLabel justify="center">TIME SPENT</StyledLabel>
+                    <StyledLabel
+                      textColor={greyThemeDark1}
+                      fontStyle="12px/17px Open Sans"
+                      padding="4px 0px"
+                      justify="center"
+                    >
                       {/* TODO: Method to find Total Time Spent */}
                       {summaryData[moduleIndex]?.timeSpent}
                     </StyledLabel>
@@ -643,7 +665,9 @@ class ModuleRow extends Component {
                                       : message.warning("Test is not yet assigned to any class(es)"))
                                   }
                                 >
-                                  <span style={{ width: "100%" }}>{moduleData.contentTitle}</span>
+                                  <Tooltip placement="bottomLeft" title={moduleData.contentTitle}>
+                                    <EllipticSpan width="calc(100% - 30px)">{moduleData.contentTitle}</EllipticSpan>
+                                  </Tooltip>
                                   {urlHasUseThis && (
                                     <CustomIcon marginLeft={10} marginRight={5}>
                                       {!isAssigned || moduleData.assignments[0].testType === "practice" ? (
@@ -683,36 +707,51 @@ class ModuleRow extends Component {
                                   "0%": getProgressColor(progressData?.progress),
                                   "100%": getProgressColor(progressData?.progress)
                                 }}
-                                show={progressData?.progress}
                                 strokeWidth={10}
                                 percent={progressData?.progress}
                               />
                             </StyledCol>
                             {!isStudent ? (
-                              <StyledCol span={3} style={rowInlineStyle}>
-                                <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
+                              <StyledCol span={3} style={rowInlineStyle} justify="center">
+                                <StyledLabel
+                                  textColor={greyThemeDark1}
+                                  fontStyle="12px/17px Open Sans"
+                                  justify="center"
+                                >
                                   {/* TODO: Method to find submissions for each assignment */}
                                   {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
                                 </StyledLabel>
                               </StyledCol>
                             ) : (
-                              <StyledCol span={2} style={rowInlineStyle}>
-                                <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
+                              <StyledCol span={2} style={rowInlineStyle} justify="center">
+                                <StyledLabel
+                                  textColor={greyThemeDark1}
+                                  fontStyle="12px/17px Open Sans"
+                                  justify="center"
+                                >
                                   {/* TODO: Method to find sum of scores for each assignment */}
                                   {progressData?.scores || "-"}
                                 </StyledLabel>
                               </StyledCol>
                             )}
                             {!isStudent ? (
-                              <StyledCol span={2} style={rowInlineStyle}>
-                                <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
+                              <StyledCol span={2} style={rowInlineStyle} justify="center">
+                                <StyledLabel
+                                  textColor={greyThemeDark1}
+                                  fontStyle="12px/17px Open Sans"
+                                  justify="center"
+                                >
                                   {/* TODO: Method to find classes for each assignment */}
                                   {progressData?.classes || "-"}
                                 </StyledLabel>
                               </StyledCol>
                             ) : (
-                              <StyledCol span={4} style={rowInlineStyle}>
-                                <StyledLabel textColor={greyThemeDark1} fontStyle="12px/17px Open Sans">
+                              <StyledCol span={4} style={rowInlineStyle} justify="center">
+                                <StyledLabel
+                                  textColor={greyThemeDark1}
+                                  fontStyle="12px/17px Open Sans"
+                                  justify="center"
+                                >
                                   {/* TODO: Method to find Total Time Spent for each assignment */}
                                   {progressData?.timeSpent}
                                 </StyledLabel>
@@ -806,12 +845,13 @@ class ModuleRow extends Component {
                         >
                           {assignmentRows?.map((assignment, assignmentIndex) => (
                             <StyledRow key={assignmentIndex}>
-                              <Tooltip placement="bottom" title={assignment?.name}>
-                                <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
-                                  {assignment?.name}
-                                </StyledLabel>
-                              </Tooltip>
-
+                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
+                                <Tooltip placement="bottomLeft" title={assignment?.name}>
+                                  <EllipticSpan md="100px" lg="200px" xl="220px">
+                                    {assignment?.name}
+                                  </EllipticSpan>
+                                </Tooltip>
+                              </StyledLabel>
                               <StyledTag
                                 textColor={greenDark}
                                 bgColor={lightGreen6}
@@ -1044,10 +1084,10 @@ const ModuleTitle = styled.div`
 
 export const EllipsisContainer = styled.div`
   white-space: nowrap;
+  color: ${descriptionColor};
   font-size: ${props => props.fontSize || "12px"};
   line-height: ${props => props.lineHeight || "17px"};
   font-weight: ${props => props.fontWeight || "normal"};
-  color: ${props => props.color};
   letter-spacing: 0.2px;
   max-width: 95%;
   overflow: hidden;
@@ -1056,11 +1096,21 @@ export const EllipsisContainer = styled.div`
 
 const StyledProgress = styled(Progress)`
   .ant-progress-text {
-    display: ${props => !props.show && "none"};
+    display: ${props => !props.percent && "none"};
     font: 12px/17px Open Sans;
     color: ${greyThemeDark1};
     letter-spacing: 0.2px;
     font-weight: 600;
+    ${props =>
+      props.percent == 100 &&
+      `
+      &:before {
+        content: "100%";
+      }
+      i {
+        display: none;
+      }
+    `}
   }
 `;
 
@@ -1201,8 +1251,26 @@ export const ModuleDataName = styled.div`
   color: ${titleColor};
   font: 14px/19px Open Sans;
   span {
-    word-break: break-all;
     font-weight: 600;
+  }
+`;
+
+const EllipticSpan = styled.span`
+  width: ${props => props.width || "100%"};
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  @media only screen and (max-width: ${tabletWidth}) {
+    min-width: ${props => props.md || props.width};
+    max-width: ${props => props.md || props.width};
+  }
+  @media only screen and (max-width: ${extraDesktopWidth}) {
+    min-width: ${props => props.lg || props.width};
+    max-width: ${props => props.lg || props.width};
+  }
+  @media only screen and (min-width: ${extraDesktopWidth}) {
+    min-width: ${props => props.xl || props.width};
+    max-width: ${props => props.xl || props.width};
   }
 `;
 
@@ -1253,10 +1321,10 @@ const ModuleWrapper = styled.div`
   cursor: pointer;
   & {
     padding-top: 0px;
-    padding-bottom: 10px;
+    padding-bottom: ${props => (props.collapsed ? "0px" : "20px")};
     padding-left: 0px;
     padding-right: ${props => (props.padding ? "20px" : "0px")};
-    border-bottom: 1px solid #dadae4;
+    border-bottom: 1px solid ${borderGrey4};
   }
 
   .module-checkbox {

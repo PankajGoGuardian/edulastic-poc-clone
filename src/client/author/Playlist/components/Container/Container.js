@@ -14,10 +14,7 @@ import Modal from "react-responsive-modal";
 import { compose } from "redux";
 import styled from "styled-components";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
-import {
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction
-} from "../../../../student/Login/ducks";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ListHeader from "../../../src/components/common/ListHeader";
 import {
   getDefaultGradesSelector,
@@ -45,11 +42,7 @@ import {
   StyleChangeWrapper
 } from "../../../TestList/components/Container/styled";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
-import {
-  clearTestDataAction,
-  getAllTagsAction,
-  getTestsCreatingSelector
-} from "../../../TestPage/ducks";
+import { clearTestDataAction, getAllTagsAction, getTestsCreatingSelector } from "../../../TestPage/ducks";
 import {
   clearPlaylistFiltersAction,
   emptyFilters,
@@ -128,9 +121,7 @@ class TestList extends Component {
     this.updateFilterState(searchFilters);
     const pageNumber = params.page || page;
     const limitCount = params.limit || limit;
-    const queryParams = qs.stringify(
-      pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity)
-    );
+    const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
     history.push(`/author/playlists?${queryParams}`);
 
     receivePublishers();
@@ -276,8 +267,7 @@ class TestList extends Component {
     });
   }
 
-  searchFilterOption = (input, option) =>
-    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   handleCheckboxAction = (e, selectedId) => {
     const { selectedPlayLists, checkPlayList } = this.props;
@@ -364,10 +354,9 @@ class TestList extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           title="common.playlistLibrary"
-          btnTitle="NEW PLAY LIST"
-          icon={
-            <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
-          }
+          data-cy="new-playlist"
+          btnTitle="New Playlist"
+          icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile

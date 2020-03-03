@@ -231,7 +231,7 @@ function* putCurriculumSequence({ payload }) {
     } else {
       response.isAuthor = false;
     }
-    message.success(`Successfully saved ${response.title}`);
+    message.success(`Successfully saved ${response.title || ""}`);
     yield put(updateCurriculumSequenceAction(oldData));
   } catch (error) {
     message.error("There was an error updating the curriculum sequence");

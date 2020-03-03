@@ -48,6 +48,7 @@ export const placeholderGray = "#b1b1b1";
 export const backgroundGrey = "#F2F2F2";
 export const borderGrey2 = "#cbcbcb";
 export const borderGrey3 = "#e9e9e9";
+export const borderGrey4 = "#dadae4";
 export const backgroundGrey2 = "#FBFBFB";
 
 export const whiteSmoke = "#f5f5f5";

@@ -465,6 +465,7 @@ export const StyledTag = styled.div`
 export const StyledLabel = styled.div`
   display: flex;
   align-items: center;
+  justify-content: ${props => props.justify};
   padding: ${props => props.padding || "0px"};
   font: ${props => props.fontStyle || "11px/15px Open Sans"};
   font-weight: ${props => props.fontWeight || "600"};

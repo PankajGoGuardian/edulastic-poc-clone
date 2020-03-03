@@ -168,7 +168,7 @@ const DropPlaylistModal = props => {
       }
     };
     if (dropPlaylistAction(payload)) {
-      message.success("DropPlaylist Successful");
+      message.success("Playlist dropped successfully");
       closeModal();
     }
   };

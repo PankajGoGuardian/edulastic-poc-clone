@@ -140,13 +140,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
         });
         it(`Verify In The Review Tabs-Expanded Mode`, () => {
-          testReviewTab.clickOnExpandCollapseRow();
+          testReviewTab.clickOnExpandRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
           attempt[index].item = itemIds[index];
           itemPreview.verifyQuestionResponseCard(itemKeysInTest[index], attempt[index], attemptTypes.RIGHT, true);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
-          testReviewTab.clickOnExpandCollapseRow();
+          testReviewTab.clickOnCollapseRow();
         });
       });
     });

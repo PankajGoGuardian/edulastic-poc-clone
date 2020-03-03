@@ -124,6 +124,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
       it("Verifying At Student Side- Static Password", () => {
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.clickOnAssigmentByTestId(OriginalTestId, staticPassword);
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
     });
@@ -165,6 +166,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Calulator 
       it("Verifying At Student Side- Dynamic Password", () => {
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.clickOnAssigmentByTestId(OriginalTestId, dynamicPassword);
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
     });

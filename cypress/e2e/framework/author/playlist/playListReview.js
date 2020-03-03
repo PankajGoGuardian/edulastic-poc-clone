@@ -40,6 +40,45 @@ export default class PlayListReview {
 
   getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
 
+  routeSavePlayList = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("savePlaylist");
+  };
+
+  waitForSavePlayList = () => cy.wait("@savePlaylist");
+
+  getHideModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="HIDE MODULE"]');
+
+  getShowModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="SHOW MODULE"]');
+
+  getHideTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="HIDE"]');
+
+  getShowTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="SHOW"]');
+
+  clickOnHideModuleByModule = mod => {
+    this.routeSavePlayList();
+    this.getHideModuleByModule(mod).click();
+    this.waitForSavePlayList();
+  };
+
+  clickShowModuleByModule = mod => {
+    this.routeSavePlayList();
+    this.getShowModuleByModule(mod).click();
+    this.waitForSavePlayList();
+  };
+
+  clickShowTestByTestByMod = (mod, test) => {
+    this.routeSavePlayList();
+    this.getShowTestByTestByModule(mod, test).click();
+    this.waitForSavePlayList();
+  };
+
+  clickHideTestByTestByMod = (mod, test) => {
+    this.routeSavePlayList();
+    this.getHideTestByTestByModule(mod, test).click();
+    this.waitForSavePlayList();
+  };
+
   clickShowAssignmentByTestByModule = (mod, test) => this.getShowAssignmentByTestByModule(mod, test).click();
 
   clickHideAssignmentByTestByModule = (mod, test) => this.getHideAssignmentByTestByModule(mod, test).click();
@@ -55,20 +94,16 @@ export default class PlayListReview {
   };
 
   clickExpandByModule = mod =>
-    this.getModuleRowByModule(mod)
-      .find("i")
-      .eq(0)
-      .then(ele => {
-        if (!ele.hasClass("anticon-up")) cy.wrap(ele).click();
-      });
+    this.getModuleRowByModule(mod).then($container => {
+      cy.wait(300);
+      if ($container.children().length === 1) this.getModuleNameByModule(mod).click();
+    });
 
   clickCollapseByModule = mod =>
-    this.getModuleRowByModule(mod)
-      .find("i")
-      .eq(0)
-      .then(ele => {
-        if (ele.hasClass("anticon-up")) cy.wrap(ele).click({ force: true });
-      });
+    this.getModuleRowByModule(mod).then($container => {
+      cy.wait(300);
+      if ($container.children().length > 1) this.getModuleNameByModule(mod).click();
+    });
 
   clickOnAssignByTestByModule = (mod, test) =>
     this.getAssignButtonByTestByModule(mod, test).then(button => {

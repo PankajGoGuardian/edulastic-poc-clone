@@ -72,6 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {
@@ -117,6 +118,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {
@@ -169,6 +171,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {
@@ -227,6 +230,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {
@@ -269,6 +273,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {
@@ -319,6 +324,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}> Re-Assigning Test`, () =
         assignmentsPage.verifyPresenceOfTest(OriginalTestId);
         assignmentsPage.getAssignmentByTestId(OriginalTestId).should("have.length", assignCountForClass1);
         assignmentsPage.clickOnAssignmentButton();
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest();
       });
       before("Login", () => {

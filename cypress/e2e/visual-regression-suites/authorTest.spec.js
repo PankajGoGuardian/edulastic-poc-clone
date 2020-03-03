@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         it(`test-review expanded - when resolution is - '${size}'`, () => {
           cy.setResolution(size);
           const reviewTab = testLibraryPage.header.clickOnReview();
-          reviewTab.clickOnExpandCollapseRow();
+          reviewTab.clickOnExpandRow();
           cy.get('[data-cy="expandCollapseRow"]').should("contain.text", "Collapse Rows");
           cy.scrollTo(0, 0);
           cy.wait(1000);

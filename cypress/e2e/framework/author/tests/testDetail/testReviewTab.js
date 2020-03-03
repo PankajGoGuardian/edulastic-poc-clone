@@ -69,7 +69,9 @@ export default class TestReviewTab {
 
   getMoveTo = () => cy.get('[data-cy="moveto"]');
 
-  clickOnExpandCollapseRow = () => cy.get('[data-cy="expandCollapseRow"]').click();
+  clickOnExpandRow = () => cy.get('[data-cy="expand-row"]').click();
+
+  clickOnCollapseRow = () => cy.get('[data-cy="collapse-row"]').click();
 
   clickOnPreview = id =>
     this.getQueCardByItemIdInCollapsed(id)

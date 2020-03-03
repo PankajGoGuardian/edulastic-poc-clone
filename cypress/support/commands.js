@@ -220,6 +220,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snapwiz") => {
   const asgnIds = [];
+  const testAssign = [];
   let authToken;
   cy.request({
     url: `${BASE_URL}/auth/login`,
@@ -237,24 +238,40 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
       }
     }).then(({ body }) => {
       const assignments = body.result.assignments || body.result;
+      const tests = body.result.tests || [];
       assignments.forEach(asgnDO => {
         const assignment = {};
         assignment._id = asgnDO._id;
         assignment.groupId = asgnDO.classId || asgnDO.class[0]._id;
         asgnIds.push(assignment);
       });
+      tests.forEach(test => {
+        testAssign.push(test._id);
+      });
       console.log("All Assignments = ", asgnIds);
+      console.log("All Tests = ", testAssign);
+      // TODO: FIX this once it is fixed in UI
+      // asgnIds.forEach(({ _id, groupId }) => {
+      //   cy.request({
+      //     url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
+      //     method: "DELETE",
+      //     headers: {
+      //       authorization: authToken,
+      //       "Content-Type": "application/json"
+      //     }
+      //   }).then(({ body }) => {
+      //     console.log(`${_id} :: `, body.result);
+      //   });
+      // });
 
-      asgnIds.forEach(({ _id, groupId }) => {
+      testAssign.forEach(test => {
         cy.request({
-          url: `${BASE_URL}/assignments/${_id}/group/${groupId}`, // added groupId as per API change
+          url: `${BASE_URL}/test/${test}/delete-assignments`,
           method: "DELETE",
           headers: {
             authorization: authToken,
             "Content-Type": "application/json"
           }
-        }).then(({ body }) => {
-          console.log(`${_id} :: `, body.result);
         });
       });
     });

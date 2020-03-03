@@ -12,7 +12,11 @@ class StudentTestPage {
     this.report = new ReportsPage();
   }
 
-  getQuestionText = () => cy.get('[class^="QuestionNumberLabel"]').next();
+  getQuestionText = () =>
+    cy
+      .get('[class^="QuestionNumberLabel"]')
+      .parent()
+      .next();
 
   getCheckAns = () => cy.get("[data-cy=checkAnswer]");
 
@@ -648,8 +652,10 @@ class StudentTestPage {
 
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
+  getQuestionInPracticeByIndex = qIndex => cy.get(`[data-cy="queCircle-${qIndex + 1}"]`);
+
   verifySideBar = qIndex => {
-    cy.get(`[data-cy="queCircle-${qIndex + 1}"]`).should("have.css", "background-color", queColor.GREY);
+    this.getQuestionInPracticeByIndex(qIndex).should("have.css", "background-color", queColor.GREY);
   };
 
   verifyTopProgress = (qIndex, total) => {

@@ -106,7 +106,7 @@ const HeaderBar = ({
             )}
           </ActionButton>
         )}
-        <ActionButton data-cy="expandCollapseRow">
+        <ActionButton data-cy={setCollapse ? "expand-rows" : "collapse-rows"}>
           <ButtonLink
             onClick={onCollapse}
             color="primary"

@@ -176,10 +176,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnTestCardById(testId);
       testLibraryPage.clickOnDetailsOfCard();
       itemIds.forEach((id, i) => {
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnExpandRow();
         testReviewTab.getQueContainerById(id).should("not.contain", questText[i]);
         testReviewTab.getQueContainerById(id).should("contain", UPDATED_TEXT);
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnCollapseRow();
       });
     });
 
@@ -247,11 +247,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnTestCardById(testId);
       testLibraryPage.clickOnDetailsOfCard();
       itemIds.forEach((id, i) => {
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnExpandRow();
         attempt[i].item = id;
         /* After updating correct ans */
         itemPreview.verifyQuestionResponseCard(questionType[i], attempt[i], attemptTypes.RIGHT, true);
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnCollapseRow();
       });
     });
 
@@ -299,10 +299,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
       testLibraryPage.clickOnTestCardById(testId);
       testLibraryPage.clickOnDetailsOfCard();
       itemIds.forEach((id, i) => {
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnExpandRow();
         testReviewTab.getQueContainerById(id).should("contain", questText[i]);
         testReviewTab.getQueContainerById(id).should("not.contain", UPDATED_TEXT);
-        testReviewTab.clickOnExpandCollapseRow();
+        testReviewTab.clickOnCollapseRow();
       });
     });
 

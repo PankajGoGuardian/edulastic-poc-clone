@@ -77,13 +77,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
         });
 
         it(`verify  ${item}-${index + 1} in the review tabs-expanded mode`, () => {
-          testReviewTab.clickOnExpandCollapseRow();
+          testReviewTab.clickOnExpandRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);
           attemptData[index].item = itemIds[index];
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
-          testReviewTab.clickOnExpandCollapseRow();
+          testReviewTab.clickOnCollapseRow();
         });
       });
     });
@@ -106,7 +106,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
         studentTestPage.attemptQuestion(itemsInTest[index], attemptTypes.RIGHT, attemptData[index]);
         studentTestPage.clickOnNext(true);
       });
-      studentTestPage.clickOnExitTest(true);
+      // studentTestPage.clickOnExitTest(true);
     });
     it(">verify test-items order using move-to option", () => {
       testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);

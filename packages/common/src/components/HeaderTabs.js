@@ -83,7 +83,7 @@ export const StyledAnchor = styled.div`
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
-    padding: 0px 18px;
+    padding: 0px 40px;
     svg {
       display: none;
     }

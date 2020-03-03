@@ -10,7 +10,7 @@ const EduButton = ({ children, ...restProps }) => {
 
 EduButton.propTypes = {
   btnType: PropTypes.string,
-  ghost: PropTypes.bool
+  isGhost: PropTypes.bool
 };
 
 EduButton.defaultProps = {
@@ -25,13 +25,13 @@ const getStyle = ({ height, width, fontSize, style = {} }) => {
     display: "flex",
     "align-items": "center",
     "justify-content": "space-evenly",
-    fontSize: fontSize ? fontSize : "11px",
+    fontSize: fontSize || "11px",
     fontWeight: "600",
     marginLeft: "10px",
     borderRadius: "4px",
-    height: height ? height : "45px",
+    height: height || "45px",
     padding: "5px 15px",
-    width: width ? width : null
+    width: width || null
   };
   return Object.assign({}, defaultStyle, style);
 };
@@ -81,7 +81,7 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
     &:hover {
       fill: ${getColor};
     }
-    stroke: ${getBorderColor};
+    stroke: ${props => props.svgStrokeColor || ""};
   }
 
   span {

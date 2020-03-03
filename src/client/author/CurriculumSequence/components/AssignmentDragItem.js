@@ -82,9 +82,9 @@ class AssignmentDragItem extends Component {
               checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
               className="module-checkbox"
             /> */}
-            <CustomIcon marginLeft={16}>
+            {/* <CustomIcon marginLeft={16}>
               <Icon type="right" style={{ color: "#707070" }} />
-            </CustomIcon>
+            </CustomIcon> */}
             <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
           </AssignmentContent>
           {!hideEditOptions && (
@@ -105,7 +105,11 @@ class AssignmentDragItem extends Component {
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
-                <IconVisualization color={themeColor} data-cy="view-test" onClick={() => viewTest(moduleData.contentId)} />
+                <IconVisualization
+                  color={themeColor}
+                  data-cy="view-test"
+                  onClick={() => viewTest(moduleData.contentId)}
+                />
               </CustomIcon>
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
@@ -115,7 +119,7 @@ class AssignmentDragItem extends Component {
                     <IconCheckSmall color={white} />
                   ) : (
                     <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
-                    )}
+                  )}
                   {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                 </Button>
               </AssignmentButton>
@@ -157,14 +161,6 @@ AssignmentDragItem.propTypes = {
 
 export default DragSource("item", itemSource, collect)(AssignmentDragItem);
 
-const AssignContent = styled.div`
-  border-radius: 4px;
-  margin-left: 20px;
-  justify-self: flex-end;
-  min-width: 19px;
-  cursor: pointer;
-`;
-
 const Visualize = styled.span`
   border-radius: 4px;
   margin-left: 20px;
@@ -190,7 +186,7 @@ const Row = styled.div`
   background: ${white};
   padding-top: 0px;
   padding-bottom: 0px;
-  padding-left: 20px;
+  padding-left: 10px;
   padding-right: 10px;
   box-shadow: none;
 `;

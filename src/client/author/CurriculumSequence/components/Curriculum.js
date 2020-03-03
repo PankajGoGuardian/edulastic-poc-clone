@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import DropContainer from "../../../assessment/components/DropContainer";
-import CurriculumModuleRow from "./CurriculumModuleRow";
-import { themes } from "../../../theme";
 import { themeColor, white } from "@edulastic/colors";
+import PropTypes from "prop-types";
+import React from "react";
 import { FaBars } from "react-icons/fa";
-import { sortableHandle, sortableElement, sortableContainer } from "react-sortable-hoc";
+import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
+import styled from "styled-components";
+import DropContainer from "../../../assessment/components/DropContainer";
+import { themes } from "../../../theme";
+import CurriculumModuleRow from "./CurriculumModuleRow";
 
 /**
  * @typedef CurriculumProps
@@ -17,7 +17,7 @@ import { sortableHandle, sortableElement, sortableContainer } from "react-sortab
  */
 
 export const SortableTestsHandle = sortableHandle(({ clickHandle }) => (
-  <DragHandle onClick={e => clickHandle(e, moduleData, index)}>
+  <DragHandle onClick={e => clickHandle(e)}>
     <IconHandle>
       <FaBars />
     </IconHandle>
@@ -134,7 +134,7 @@ const DragHandle = styled.div`
   color: ${themeColor};
   width: 40px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   cursor: pointer;
   background: ${white};
@@ -149,6 +149,7 @@ const DragHandle = styled.div`
 
 const IconHandle = styled.span`
   font-size: 16px;
+  margin-top: 25px;
 `;
 
 ModuleWrapper.displayName = "ModuleWrapper";

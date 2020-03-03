@@ -356,12 +356,6 @@ class CurriculumSequence extends Component {
     // TODO: change options2 to something more meaningful
     const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
 
-    // Dropdown options for guides
-    const guidesDropdownOptions = curriculumGuides.map(item => ({
-      value: item._id,
-      label: item.title
-    }));
-
     const {
       status,
       title,
@@ -389,12 +383,17 @@ class CurriculumSequence extends Component {
       const { _id = "", title, data = [], hidden = false } = mod;
       const metricModule = playlistMetrics[_id] || {};
       const name = `Module ${index + 1}`;
-      const scores = round(metricModule?.reduce((a, c) => a + (c?.totalScore ), 0)/metricModule.length);
-      const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100 / metricModule.length, 0);
+      const scores = round(metricModule?.reduce((a, c) => a + c?.totalScore, 0) / metricModule.length);
+      const value = round(
+        (metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100) / metricModule.length,
+        0
+      );
       let tSpent = 0;
       if (isStudent) {
         const unHiddenTestIds = data?.filter(x => !x?.hidden).flatMap(x => x.contentId);
-        tSpent = metricModule?.filter(mm => unHiddenTestIds.includes(mm.testId)).reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
+        tSpent = metricModule
+          ?.filter(mm => unHiddenTestIds.includes(mm.testId))
+          .reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
       } else {
         tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
       }
@@ -1063,7 +1062,8 @@ const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 const ContentContainer = styled.div`
-  width: ${({ urlHasUseThis }) => (urlHasUseThis ? "calc(100% - 335px)" : "100%")};
+  width: calc(100% - 335px);
+  margin: 0px auto;
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
   }

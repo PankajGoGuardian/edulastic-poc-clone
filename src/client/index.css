@@ -1189,10 +1189,6 @@ textinput::before {
   margin: 0;
 }
 
-p {
-  margin: 0;
-}
-
 #mainQuill > .ql-container.ql-snow {
   margin: 0 !important;
   padding: 15px !important;

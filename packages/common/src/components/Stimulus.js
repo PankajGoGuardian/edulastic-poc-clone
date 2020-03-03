@@ -29,6 +29,15 @@ const Stimulus = withTheme(
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};
     }
+
+    /**
+  * @see https://snapwiz.atlassian.net/browse/EV-11832
+  * some math content clipped off, so we need to add space at top
+  */
+    & p {
+      margin: 0;
+      padding-top: 2px;
+    }
   `)
 );
 

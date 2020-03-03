@@ -330,9 +330,7 @@ class Graph extends Component {
     const newItem = cloneDeep(item);
 
     if (newItem.validation.altResponses && newItem.validation.altResponses.length) {
-      newItem.validation.altResponses = newItem.validation.altResponses.filter(
-        (response, i) => i !== index
-      );
+      newItem.validation.altResponses = newItem.validation.altResponses.filter((response, i) => i !== index);
     }
 
     setQuestionData(newItem);
@@ -444,36 +442,26 @@ class Graph extends Component {
 
               {advancedLink}
 
-              {graphType !== "firstQuadrant" &&
-                graphType !== "quadrants" &&
-                graphType !== "numberLinePlot" && (
-                  <Question
-                    section="main"
-                    label="Annotations"
-                    cleanSections={cleanSections}
-                    fillSections={fillSections}
-                    advancedAreOpen
-                  >
-                    <Annotations question={item} setQuestionData={setQuestionData} editable />
-                  </Question>
-                )}
-              <MoreOptionsComponent
-                advancedAreOpen={advancedAreOpen}
-                {...this.getMoreOptionsProps()}
-              />
+              {graphType !== "firstQuadrant" && graphType !== "quadrants" && graphType !== "numberLinePlot" && (
+                <Question
+                  section="main"
+                  label="Annotations"
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  advancedAreOpen
+                >
+                  <Annotations question={item} setQuestionData={setQuestionData} editable />
+                </Question>
+              )}
+              <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper
-            style={{ overflow: "auto" }}
-            className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}
-          >
+          <Wrapper style={{ overflow: "auto" }} className={compact ? "toolbar-compact graph-wrapper" : "graph-wrapper"}>
             <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
               <QuestionLabelWrapper>
-                {showQuestionNumber && !flowLayout ? (
-                  <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
-                ) : null}
+                {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel> : null}
                 {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
               </QuestionLabelWrapper>
 
@@ -499,10 +487,7 @@ class Graph extends Component {
                 )}
                 {previewTab === "show" && item.canvas && item.uiStyle && (
                   <Fragment>
-                    <CorrectAnswersContainer
-                      minWidth="max-content"
-                      title={t("component.graphing.correctAnswer")}
-                    >
+                    <CorrectAnswersContainer minWidth="max-content" title={t("component.graphing.correctAnswer")}>
                       <GraphDisplay
                         disableResponse
                         graphData={item}
@@ -620,8 +605,4 @@ export default GraphComponent;
 const StyledStimulus = styled(Stimulus)`
   word-break: break-word;
   white-space: pre-wrap;
-
-  & p {
-    padding-top: 0.1px;
-  }
 `;

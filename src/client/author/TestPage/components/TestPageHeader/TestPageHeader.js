@@ -297,50 +297,26 @@ const TestPageHeader = ({
             {showShareButton && (
               <EduButton title="Print" data-cy="printTest" disabled={isTestLoading} onClick={handlePrintTest}>
                 <IconPrint />
-                PRINT
               </EduButton>
             )}
             {showShareButton && (owner || features.isCurator) && (
-              <EduButton 
-                title="Share"
-                data-cy="share" 
-                onClick={onShare}
-                disabled={isTestLoading}
-              >
+              <EduButton title="Share" data-cy="share" onClick={onShare} disabled={isTestLoading}>
                 <IconShare style={{ transform: "rotate(180deg)" }} />
-                 SHARE
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && (
-              <EduButton
-                title="Save as Draft"
-                data-cy="save"
-                onClick={onSave}
-                disabled={isTestLoading}
-              >
+              <EduButton title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
                 <IconDiskette />
-                SAVE AS DRAFT
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && isDirectOwner ? (
               isPlaylist ? (
-                <EduButton
-                  title="Publish Playlist"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
+                <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton
-                  title="Publish Test"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
+                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
                   <IconSend />
-                  PUBLISH TEST
                 </EduButton>
               )
             ) : null}
@@ -390,19 +366,12 @@ const TestPageHeader = ({
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers && (
-                <EduButton 
-                  data-cy="assign"
-                  disabled={isTestLoading}
-                  onClick={handleAssign}
-                >
+                <EduButton data-cy="assign" disabled={isTestLoading} onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
               )}
             {showCancelButton && (
-              <EduButton
-                data-cy="assign"
-                onClick={() => setCancelState(true)}
-              >
+              <EduButton data-cy="assign" onClick={() => setCancelState(true)}>
                 CANCEL
               </EduButton>
             )}
@@ -417,42 +386,23 @@ const TestPageHeader = ({
               </MobileHeaderFilterIcon>
             )}
             {(owner || features.isCurator) && (
-              <EduButton
-                data-cy="share"
-                disabled={isTestLoading}
-                onClick={onShare}
-              >
+              <EduButton data-cy="share" disabled={isTestLoading} onClick={onShare}>
                 <ShareIcon />
               </EduButton>
             )}
 
             {owner && (
-              <EduButton
-                title="Save as Draft"
-                data-cy="save"
-                onClick={onSave}
-                disabled={isTestLoading}
-              >
+              <EduButton title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
                 <IconDiskette />
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && isDirectOwner ? (
               isPlaylist ? (
-                <EduButton
-                  title="Publish Playlist"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
+                <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton
-                  title="Publish Test"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
+                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
                   <IconSend />
                 </EduButton>
               )
@@ -477,18 +427,11 @@ const TestPageHeader = ({
                 APPROVE
               </EduButton>
             )}
-            {showShareButton &&
-              (owner || testStatus === "published") &&
-              !isPlaylist &&
-              !isPublishers && (
-                <EduButton
-                  disabled={isTestLoading}
-                  data-cy="assign"
-                  onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
-              )}
+            {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
+              <EduButton disabled={isTestLoading} data-cy="assign" onClick={handleAssign}>
+                ASSIGN
+              </EduButton>
+            )}
           </RightWrapper>
           <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
         </MainHeader>

@@ -112,9 +112,7 @@ const MatchListPreview = ({
   const [dragItems, setDragItems] = useState(
     duplicatedResponses
       ? getPossibleResponses()
-      : getPossibleResponses().filter(
-          answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value)
-        )
+      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer.value))
   );
 
   useEffect(() => {
@@ -241,10 +239,7 @@ const MatchListPreview = ({
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border:
-      showBorder && correct !== undefined
-        ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}`
-        : "unset",
+    border: showBorder && correct !== undefined ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
     cursor: "pointer",
     alignSelf: "stretch",
     borderRadius: 4,
@@ -268,11 +263,13 @@ const MatchListPreview = ({
     marginRight: listPosition === "right" ? 20 : 0,
     marginLeft: listPosition === "left" ? 20 : 0,
     marginTop: horizontallyAligned ? 14 : 0,
-    width: isPrintPreview ? "100%" : horizontallyAligned ? 1030 - dragItemMaxWidth : 750
+    width: isPrintPreview ? "100%" : horizontallyAligned ? null : 750,
+    flex: horizontallyAligned ? "auto" : null
   };
 
   const choicesBoxStyle = {
-    width: isPrintPreview ? "100%" : horizontallyAligned ? dragItemMaxWidth : 750
+    width: isPrintPreview ? "100%" : horizontallyAligned ? null : 750,
+    flex: horizontallyAligned ? "none" : null
   };
 
   const choicesBoxDropContainerStyle = {
@@ -281,7 +278,7 @@ const MatchListPreview = ({
     flexWrap: "wrap",
     minHeight: 140,
     borderRadius: 4,
-    justifyContent: horizontallyAligned ? "flex-start" : "center"
+    justifyContent: "center"
   };
 
   const choiceColStyle = {
@@ -303,8 +300,7 @@ const MatchListPreview = ({
     width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750
   };
 
-  const showEvaluate =
-    (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
+  const showEvaluate = (preview && !isAnswerModifiable && expressGrader) || (preview && !expressGrader);
 
   /**
    * scroll element
@@ -327,9 +323,7 @@ const MatchListPreview = ({
 
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {!smallSize && view === PREVIEW && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-            )}
+            {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
           </QuestionTitleWrapper>
           <div data-cy="previewWrapper" style={wrapperStyle}>
             <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
@@ -373,22 +367,9 @@ const MatchListPreview = ({
             </FlexContainer>
 
             {!disableResponse && (
-              <StyledCorrectAnswersContainer
-                style={choicesBoxStyle}
-                title={t("component.matchList.dragItemsTitle")}
-              >
-                <DropContainer
-                  drop={drop}
-                  flag="dragItems"
-                  style={choicesBoxDropContainerStyle}
-                  noBorder
-                >
-                  <FlexContainer
-                    alignItems="stretch"
-                    justifyContent="center"
-                    flexWrap="wrap"
-                    maxWidth="100%"
-                  >
+              <StyledCorrectAnswersContainer style={choicesBoxStyle} title={t("component.matchList.dragItemsTitle")}>
+                <DropContainer drop={drop} flag="dragItems" style={choicesBoxDropContainerStyle} noBorder>
+                  <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" maxWidth="100%">
                     {groupPossibleResponses ? (
                       possibleResponseGroups.map((i, index) => (
                         <Fragment key={index}>
@@ -571,9 +552,7 @@ const MatchListPreview = ({
                         <Index preview correctAnswer>
                           {getStemNumeration(stemNumeration, i)}
                         </Index>
-                        <MathFormulaDisplay
-                          dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
-                        />
+                        <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                       </CorItem>
                     </FlexContainer>
                   ))}

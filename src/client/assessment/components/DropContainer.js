@@ -50,11 +50,11 @@ const DropContainer = ({
       data-cy={`drag-drop-board-${index}`}
       id={`drag-drop-board-${index}${flag === "selected" ? "-target" : ""}`}
       style={{
+        width: "100%",
         zIndex: 50,
         ...style,
         border: borderNone ? "none" : border,
-        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border,
-        width: "100%"
+        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
       }}
     >
       {children}

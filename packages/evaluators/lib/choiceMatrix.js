@@ -173,6 +173,11 @@ var evaluator = function evaluator(_ref) {
 
   var answerSet = getAnswerSet(allAnswers);
   var evaluation = evaluateAnswers(userAnswers, answerSet);
+  var correctAnswerRows = evaluation.filter(function(arr) {
+    return arr.every(function(ans) {
+      return ans === true;
+    });
+  });
 
   var _getAnswerCount = getAnswerCount(evaluation),
     _getAnswerCount2 = (0, _slicedToArray2["default"])(_getAnswerCount, 2),
@@ -183,14 +188,14 @@ var evaluator = function evaluator(_ref) {
     var individualScore = maxScore / evaluation.length;
     var correctAnswerScore = Math.min(correctAnswers * individualScore, maxScore);
     var penalisation = incorrectAnswers * penalty;
-    score = Math.max(correctAnswerScore - penalisation, 0);
-  } else if (incorrectAnswers === 0) {
+    score = Math.max(correctAnswerScore - penalisation, 0).toPrecision(2);
+  } else if (correctAnswerRows.length === evaluation.length) {
     // exact match with all answers correct
     score = maxScore;
   }
 
   var evaluationObject = {
-    score: score,
+    score: parseFloat(score),
     maxScore: maxScore,
     evaluation: evaluation
   };

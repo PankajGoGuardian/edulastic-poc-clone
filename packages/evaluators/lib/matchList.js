@@ -7,9 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(
-  require("@babel/runtime/helpers/toConsumableArray")
-);
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _zip2 = _interopRequireDefault(require("lodash/zip"));
 
@@ -138,8 +136,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   if (evaluation.length === 0) {
     var _answers$;
 
-    var correctAnswer =
-      ((_answers$ = answers[0]) === null || _answers$ === void 0 ? void 0 : _answers$.value) || [];
+    var correctAnswer = ((_answers$ = answers[0]) === null || _answers$ === void 0 ? void 0 : _answers$.value) || [];
     evaluation = userResponse.map(function(item, index) {
       if (!item) return null;
       return item === correctAnswer[index];

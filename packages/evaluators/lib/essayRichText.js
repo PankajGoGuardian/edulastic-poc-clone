@@ -10,8 +10,7 @@ var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
     validResponse = _ref.validResponse;
   return {
     score: undefined,
-    maxScore:
-      (validResponse === null || validResponse === void 0 ? void 0 : validResponse.score) || 0,
+    maxScore: (validResponse === null || validResponse === void 0 ? void 0 : validResponse.score) || 0,
     evaluation: {}
   };
 };

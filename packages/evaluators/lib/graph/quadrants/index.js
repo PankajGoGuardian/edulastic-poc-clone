@@ -9,9 +9,7 @@ exports["default"] = void 0;
 
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
-var _toConsumableArray2 = _interopRequireDefault(
-  require("@babel/runtime/helpers/toConsumableArray")
-);
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -93,18 +91,12 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
     return result;
   } // compare by slope
 
-  if (
-    ignoreRepeatedShapes &&
-    ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_SLOPE
-  ) {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_SLOPE) {
     result.commonResult = true;
     return result;
   } // compare by points
 
-  if (
-    ignoreRepeatedShapes &&
-    ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_POINTS
-  ) {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_POINTS) {
     result.commonResult = true;
 
     var _loop = function _loop(i) {
@@ -141,11 +133,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
             case _constants.ShapeTypes.EXPONENT:
             case _constants.ShapeTypes.LOGARITHM:
               if (
-                !compareShapes.compare(
-                  firstShape.subElementsIds.endPoint,
-                  checkableShape.subElementsIds.endPoint,
-                  true
-                ).result
+                !compareShapes.compare(firstShape.subElementsIds.endPoint, checkableShape.subElementsIds.endPoint, true)
+                  .result
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -155,13 +144,7 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
             case _constants.ShapeTypes.ELLIPSE:
             case _constants.ShapeTypes.HYPERBOLA:
-              if (
-                !compareShapes.compare(
-                  firstShape.subElementsIds[2],
-                  checkableShape.subElementsIds[2],
-                  true
-                ).result
-              ) {
+              if (!compareShapes.compare(firstShape.subElementsIds[2], checkableShape.subElementsIds[2], true).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
@@ -353,9 +336,7 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
       });
 
       if (startPoint) {
-        shapePoints.push(
-          "(".concat(+startPoint.x.toFixed(4), ",").concat(+startPoint.y.toFixed(4), ")")
-        );
+        shapePoints.push("(".concat(+startPoint.x.toFixed(4), ",").concat(+startPoint.y.toFixed(4), ")"));
       }
 
       var endPoint = elements.find(function(x) {
@@ -363,16 +344,12 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
       });
 
       if (endPoint) {
-        shapePoints.push(
-          "(".concat(+endPoint.x.toFixed(4), ",").concat(+endPoint.y.toFixed(4), ")")
-        );
+        shapePoints.push("(".concat(+endPoint.x.toFixed(4), ",").concat(+endPoint.y.toFixed(4), ")"));
       }
 
       if (el.type === _constants.ShapeTypes.PARABOLA) {
         var thirdPoint = getParabolaThirdPoint(startPoint, endPoint);
-        shapePoints.push(
-          "(".concat(+thirdPoint.x.toFixed(4), ",").concat(+thirdPoint.y.toFixed(4), ")")
-        );
+        shapePoints.push("(".concat(+thirdPoint.x.toFixed(4), ",").concat(+thirdPoint.y.toFixed(4), ")"));
       }
     }
 

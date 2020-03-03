@@ -28,10 +28,9 @@ var ParabolaFunction =
       {
         key: "getKoefA",
         value: function getKoefA() {
-          return (
-            (this.endY - this.startY) /
-            ((this.endX - this.startX) * (this.endX - this.startX))
-          ).toFixed(_constants.FractionDigits);
+          return ((this.endY - this.startY) / ((this.endX - this.startX) * (this.endX - this.startX))).toFixed(
+            _constants.FractionDigits
+          );
         }
       },
       {

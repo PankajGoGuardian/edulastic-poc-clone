@@ -102,18 +102,20 @@ const evaluator = ({ userResponse = {}, validation = {} }) => {
   }
   const answerSet = getAnswerSet(allAnswers);
   const evaluation = evaluateAnswers(userAnswers, answerSet);
+  const correctAnswerRows = evaluation.filter(arr => arr.every(ans => ans === true));
   const [correctAnswers, incorrectAnswers] = getAnswerCount(evaluation);
 
   if (scoringType === "partialMatch") {
     const individualScore = maxScore / evaluation.length;
     const correctAnswerScore = Math.min(correctAnswers * individualScore, maxScore);
     const penalisation = incorrectAnswers * penalty;
-    score = Math.max(correctAnswerScore - penalisation, 0);
-  } else if (incorrectAnswers === 0) {
+    score = Math.max(correctAnswerScore - penalisation, 0).toPrecision(2);
+  } else if (correctAnswerRows.length === evaluation.length) {
     // exact match with all answers correct
     score = maxScore;
   }
-  const evaluationObject = { score, maxScore, evaluation };
+  const evaluationObject = { score: parseFloat(score), maxScore, evaluation };
+
   return evaluationObject;
 };
 

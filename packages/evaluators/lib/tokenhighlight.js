@@ -7,9 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(
-  require("@babel/runtime/helpers/toConsumableArray")
-);
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _intersection2 = _interopRequireDefault(require("lodash/intersection"));
 
@@ -98,8 +96,7 @@ var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
         return ans.index;
       });
     var scorePerResponse = totalScore / currentAnswer.length;
-    var currentScore =
-      scorePerResponse * (0, _intersection2["default"])(userAnswer, currentAnswer).length;
+    var currentScore = scorePerResponse * (0, _intersection2["default"])(userAnswer, currentAnswer).length;
     score = Math.max(currentScore, score);
     maxScore = Math.max(maxScore, totalScore);
 

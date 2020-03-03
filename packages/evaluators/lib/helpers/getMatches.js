@@ -54,9 +54,7 @@ function _objectSpread(target) {
 
 var getMatches = function getMatches(response, answer, compareFunction) {
   return response.filter(function(resp, index) {
-    var singleAns = (0, _isString2["default"])(answer[index])
-      ? answer[index].trim()
-      : answer[index];
+    var singleAns = (0, _isString2["default"])(answer[index]) ? answer[index].trim() : answer[index];
     var arrayAns = answer.map(function(ans) {
       return (0, _isString2["default"])(ans) ? ans.trim() : ans;
     });

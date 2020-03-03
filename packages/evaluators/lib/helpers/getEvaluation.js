@@ -61,11 +61,7 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
   var evaluation = [];
 
   if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
-    evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(
-      response,
-      answers[rightIndex].value,
-      restOptions
-    );
+    evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(response, answers[rightIndex].value, restOptions);
   } else {
     response.forEach(function(item, i) {
       var ans = answers[rightIndex].value[i];

@@ -98,6 +98,17 @@ const MatrixChoice = ({
   const validResponse = item.validation?.validResponse;
   const altResponses = item.validation?.altResponses;
 
+  const transformAnswer = (answers = []) =>
+    answers.map(row => {
+      const _row = [];
+      if (row) {
+        row.forEach(col => {
+          _row[col] = true;
+        });
+      }
+      return _row;
+    });
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -150,10 +161,7 @@ const MatrixChoice = ({
             </QuestionLabelWrapper>
 
             <QuestionContentWrapper>
-              <MathFormulaDisplay
-                style={{ marginBottom: 20 }}
-                dangerouslySetInnerHTML={{ __html: item.stimulus }}
-              />
+              <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
               <div style={{ width: "100%" }}>
                 {previewTab === CLEAR ? (
                   <Preview
@@ -198,16 +206,14 @@ const MatrixChoice = ({
                   previewTab={previewTab}
                   disableResponse
                   changeView={() => {}}
-                  evaluation={item.stems.map(() => true)}
+                  evaluation={transformAnswer(validResponse.value)}
                   {...restProps}
                 />
               </CorrectAnswersContainer>
 
               {altResponses &&
                 altResponses.map((altAnswer, i) => (
-                  <CorrectAnswersContainer
-                    title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}
-                  >
+                  <CorrectAnswersContainer title={`${t("component.matrix.alternateAnswer")} ${i + 1}`}>
                     <Preview
                       saveAnswer={() => {}}
                       userAnswer={altAnswer}
@@ -217,7 +223,7 @@ const MatrixChoice = ({
                       previewTab={previewTab}
                       disableResponse
                       changeView={() => {}}
-                      evaluation={item.stems.map(() => true)}
+                      evaluation={transformAnswer(altAnswer.value)}
                       {...restProps}
                     />
                   </CorrectAnswersContainer>

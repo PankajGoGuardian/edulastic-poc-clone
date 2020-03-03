@@ -29,8 +29,7 @@ var LogarithmFunction =
         key: "getBC",
         value: function getBC() {
           var b = this.endY - this.startY;
-          var c =
-            this.endX - this.startX >= 0 ? this.endX - this.startX : 1 / (this.startX - this.endX);
+          var c = this.endX - this.startX >= 0 ? this.endX - this.startX : 1 / (this.startX - this.endX);
           return (b / c).toFixed(_constants.FractionDigits);
         }
       }

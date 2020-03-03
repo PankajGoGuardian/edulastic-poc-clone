@@ -9,9 +9,7 @@ exports["default"] = void 0;
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _toConsumableArray2 = _interopRequireDefault(
-  require("@babel/runtime/helpers/toConsumableArray")
-);
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _isArray2 = _interopRequireDefault(require("lodash/isArray"));
 
@@ -98,8 +96,7 @@ var createAnswerObject = function createAnswerObject(answers) {
  */
 
 var compareChoice = function compareChoice(answer, response) {
-  var allowSingleLetterMistake =
-    arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var allowSingleLetterMistake = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var ignoreCase = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   // trimmmm...
   answer = ignoreCase ? answer.trim().toLowerCase() : answer.trim();
@@ -107,9 +104,7 @@ var compareChoice = function compareChoice(answer, response) {
   // if yes, then check if "levenshtein-distance" is less than 1
   // else it should be a an exact match
 
-  return allowSingleLetterMistake
-    ? (0, _fastLevenshtein.get)(answer, response) <= 1
-    : answer === response;
+  return allowSingleLetterMistake ? (0, _fastLevenshtein.get)(answer, response) <= 1 : answer === response;
 };
 
 var groupChoiceById = function groupChoiceById(answers) {
@@ -153,9 +148,7 @@ var groupChoiceById = function groupChoiceById(answers) {
           } else {
             answersById[choice.id] = !answersById[choice.id]
               ? [choice.value.trim()]
-              : [].concat((0, _toConsumableArray2["default"])(answersById[choice.id]), [
-                  choice.value.trim()
-                ]);
+              : [].concat((0, _toConsumableArray2["default"])(answersById[choice.id]), [choice.value.trim()]);
           }
         }
       } catch (err) {
@@ -195,9 +188,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
   var userResponse = _ref.userResponse,
     validation = _ref.validation;
   var responses = createAnswerObject(userResponse);
-  var answers = [validation.validResponse].concat(
-    (0, _toConsumableArray2["default"])(validation.altResponses || [])
-  );
+  var answers = [validation.validResponse].concat((0, _toConsumableArray2["default"])(validation.altResponses || []));
   var maxScore = (0, _max2["default"])(
     answers.map(function(i) {
       return i.score;
@@ -214,12 +205,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
     var answerSet = answersById[id];
     var userResp = responses[id];
     evaluation[id] = answerSet.some(function(item) {
-      return compareChoice(
-        item,
-        userResp,
-        validation.allowSingleLetterMistake,
-        validation.ignoreCase
-      );
+      return compareChoice(item, userResp, validation.allowSingleLetterMistake, validation.ignoreCase);
     });
   };
 
@@ -255,9 +241,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
   var userResponse = _ref2.userResponse,
     validation = _ref2.validation;
   var responses = createAnswerObject(userResponse);
-  var answers = [validation.validResponse].concat(
-    (0, _toConsumableArray2["default"])(validation.altResponses || [])
-  );
+  var answers = [validation.validResponse].concat((0, _toConsumableArray2["default"])(validation.altResponses || []));
   var evaluations = [];
   var maxScore = (0, _max2["default"])(
     answers.map(function(i) {
@@ -289,8 +273,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
         );
       }
 
-      var correctAnswerCount = Object.values(currentEvaluation).filter(_identity2["default"])
-        .length; // if scoring type is "partialMatch", calculate the partial score
+      var correctAnswerCount = Object.values(currentEvaluation).filter(_identity2["default"]).length; // if scoring type is "partialMatch", calculate the partial score
 
       if (validation.scoringType === "partialMatch") {
         var questionScore = answer.score;

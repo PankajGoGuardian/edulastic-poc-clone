@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Modal, Button, Radio, message } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { isEmpty } from "lodash";
+import { isEmpty, uniqBy } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
 import {
@@ -82,6 +82,8 @@ const DropPlaylistModal = props => {
   const [removedStudent, setRemovedStudent] = useState([]);
   const [addedClass, setAddedClass] = useState([]);
   const [removedClass, setRemovedClass] = useState([]);
+  const [prevAddedClasses, setPrevAddedClasses] = useState(droppedAccessData?.classList);
+  const [prevAddedStudents, setPrevAddedStudents] = useState(droppedAccessData?.studentList);
 
   useEffect(() => {
     if (isEmpty(classList)) fetchClassListAction(districtId);
@@ -103,6 +105,21 @@ const DropPlaylistModal = props => {
     );
 
     setAddedStudent(
+      droppedAccessData?.studentList?.map(x => ({
+        id: x?._id,
+        name: x?.name,
+        classId: x?.groupId,
+        type: "student"
+      }))
+    );
+    setPrevAddedClasses(
+      droppedAccessData?.classList?.map(x => ({
+        id: x?._id,
+        name: x?.name,
+        type: "class"
+      }))
+    );
+    setPrevAddedStudents(
       droppedAccessData?.studentList?.map(x => ({
         id: x?._id,
         name: x?.name,
@@ -147,9 +164,11 @@ const DropPlaylistModal = props => {
     if (item?.type === "class") {
       setAddedClass(prev => prev.filter(x => x?.id !== item?.id));
       setRemovedClass(prev => prev.concat(item?.id));
+      setPrevAddedClasses(prev => prev.filter(x => x?.id !== item?.id));
     } else {
       setAddedStudent(prev => prev.filter(x => x?.id !== item?.id));
       setRemovedStudent(prev => prev.concat(item?.id));
+      setPrevAddedStudents(prev => prev.filter(x => x?.id !== item?.id));
     }
   };
 
@@ -159,8 +178,8 @@ const DropPlaylistModal = props => {
       title,
       description,
       grantAccess: {
-        classList: addedClass,
-        studentList: addedStudent
+        classList: uniqBy([...prevAddedClasses, ...addedClass], "id"),
+        studentList: uniqBy([...prevAddedStudents, ...addedStudent], "id")
       },
       revokeAccess: {
         classList: removedClass,
@@ -179,7 +198,19 @@ const DropPlaylistModal = props => {
     }
   };
 
-  const addedData = [...addedClass, ...addedStudent];
+  const filterNewlyAddedClass = () => {
+    const addedClassIds = prevAddedClasses.map(x => x?.id);
+    return addedClass.filter(c => !addedClassIds.includes(c.id)).map(x => ({ key: x.id, label: x.name }));
+  }
+
+  const filterNewlyAddedStudents = () => {
+    const addedStudentIds = prevAddedStudents.map(x => x?.id);
+    return addedStudent.filter(c => !addedStudentIds.includes(c.id)).map(x => ({ key: x.id, label: x.name }));
+  }
+
+  const addedData = uniqBy([...prevAddedClasses ,...addedClass, ...prevAddedStudents, ...addedStudent], "id");
+  const addedClassIds = [...prevAddedClasses ,...addedClass].map(x => x?.id);
+  const addedStudentIds = [...prevAddedStudents, ...addedStudent].map(x => x?.id);
 
   return (
     <StyledPurchaseLicenseModal
@@ -196,8 +227,8 @@ const DropPlaylistModal = props => {
         <Selector
           onChange={handleClassChange}
           onSelect={fetchStudents}
-          value={addedClass.map(x => ({ key: x.id, label: x.name }))}
-          options={classList}
+          value={filterNewlyAddedClass()}
+          options={classList.filter(x => !addedClassIds.includes(x?.id))}
           isLoading={classListFetching}
           label="CLASS"
           dataCy="selectClass"
@@ -214,8 +245,8 @@ const DropPlaylistModal = props => {
           <Selector
             onChange={handleStudentChange}
             onSelect={fetchStudents}
-            value={addedStudent.map(x => ({ key: x.id, label: x.name }))}
-            options={studentList}
+            value={filterNewlyAddedStudents()}
+            options={studentList.filter(x => !addedStudentIds.includes(x?.id))}
             isLoading={studentListFetching}
             label="STUDENT"
             dataCy="selectStudent"

@@ -10,8 +10,6 @@ import { Paper, withWindowSizes } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
-import List from "../List/List";
-import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector, setTestItemsAction } from "../../../AddItems/ducks";
 import { getStandardsSelector } from "../../ducks";
 import {
@@ -42,7 +40,8 @@ import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/
 import { getUserFeatures } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 import { Content } from "../../../Container/styled";
-// TODO rewrite into  class component and mobile view
+import ReviewItems from "../ReviewItems";
+
 class Review extends PureComponent {
   static propTypes = {
     test: PropTypes.object.isRequired,
@@ -93,8 +92,7 @@ class Review extends PureComponent {
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: "",
-    hasStickyHeader: false,
-    items: []
+    hasStickyHeader: false
   };
 
   componentWillUnmount() {
@@ -105,25 +103,22 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener("scroll", this.handleScroll);
-    const { test, addItemsToAutoselectGroupsRequest, testItems } = this.props;
-    const hasAutoSelectItems = test.itemGroups.some(
-      g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
-    );
+    const { test, addItemsToAutoselectGroupsRequest } = this.props;
+    const hasAutoSelectItems = test.itemGroups.some(g => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT);
     if (hasAutoSelectItems) {
       addItemsToAutoselectGroupsRequest(test);
     }
-    this.setState({ items: testItems.slice(0, 10) });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const element = this.listWrapperRef?.current;
-    const { testItems } = this.props;
-    const { items, isCollapse } = prevState;
-
-    if (element.offsetHeight < window.innerHeight && items.length < testItems.length) {
-      this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
-    }
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   // const element = this.listWrapperRef?.current;
+  //   // const { testItems } = this.props;
+  //   // const { items, isCollapse } = prevState;
+  //   // if (element.offsetHeight < window.innerHeight && items.length < testItems.length) {
+  //   //   // eslint-disable-next-line react/no-did-update-set-state
+  //   //   this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
+  //   // }
+  // }
 
   setSelected = values => {
     const { test, setData } = this.props;
@@ -183,13 +178,39 @@ class Review extends PureComponent {
     message.success("Selected item(s) removed successfully");
   };
 
+  handleRemoveOne = indx => {
+    const { test, setData, setTestItems } = this.props;
+    const newData = cloneDeep(test);
+
+    const itemsSelected = newData.itemGroups
+      .flatMap(itemGroup => itemGroup.items || [])
+      .filter((_, index) => index === indx)
+      .find(item => item._id);
+
+    if (!itemsSelected) {
+      return message.warn("Please select at least one question to remove");
+    }
+
+    newData.itemGroups = newData.itemGroups.map(itemGroup => ({
+      ...itemGroup,
+      items: itemGroup.items.filter(testItem => testItem._id !== itemsSelected._id)
+    }));
+
+    newData.scoring.testItems = newData.scoring.testItems.filter(item =>
+      newData.itemGroups
+        .flatMap(itemGroup => itemGroup.items || [])
+        .find(({ id }) => id === item._id && itemsSelected._id !== id)
+    );
+
+    const testItems = newData.itemGroups.flatMap(itemGroup => itemGroup.items || []);
+
+    setTestItems(testItems.map(item => item._id));
+    setData(newData);
+  };
+
   handleCollapse = () => {
     const { isCollapse } = this.state;
-    const { testItems } = this.props;
-    this.setState(prevState => ({
-      isCollapse: !isCollapse,
-      items: prevState.isCollapse ? testItems.slice(0, 3) : testItems.slice(0, 10)
-    }));
+    this.setState({ isCollapse: !isCollapse });
   };
 
   toggleSummary = () => {
@@ -201,12 +222,12 @@ class Review extends PureComponent {
 
   moveTestItems = ({ oldIndex, newIndex }) => {
     const { test, setData, currentGroupIndex } = this.props;
-    const newData = cloneDeep(test);
-
-    const [removed] = newData.itemGroups[currentGroupIndex].items.splice(oldIndex, 1);
-    newData.itemGroups[currentGroupIndex].items.splice(newIndex, 0, removed);
-
-    setData(newData);
+    setData(
+      produce(test, draft => {
+        const [removed] = draft.itemGroups[currentGroupIndex].items.splice(oldIndex, 1);
+        draft.itemGroups[currentGroupIndex].items.splice(newIndex, 0, removed);
+      })
+    );
   };
 
   handleMoveTo = newIndex => {
@@ -301,15 +322,6 @@ class Review extends PureComponent {
         this.secondHeaderRef.current.classList.remove("fixed-second-header");
         this.setState({ hasStickyHeader: false });
       }
-
-      const { testItems } = this.props;
-      const { isCollapse, items } = this.state;
-      if (
-        element.scrollHeight - (element.offsetHeight + element.scrollTop) <= 400 &&
-        items.length < testItems.length
-      ) {
-        this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
-      }
     }
   };
 
@@ -345,8 +357,7 @@ class Review extends PureComponent {
       item,
       isTestPreviewModalVisible,
       currentTestId,
-      hasStickyHeader,
-      items
+      hasStickyHeader
     } = this.state;
 
     // when redirected from other pages, sometimes, test will only be having
@@ -380,20 +391,15 @@ class Review extends PureComponent {
     const collections = get(test, "collections", []);
     const passages = get(test, "passages", []);
     const passagesKeyed = keyBy(passages, "_id");
-    const slicedRows = rows.slice(0, items.length);
 
     return (
-      <Content hideOverflow={isModalVisible || isTestPreviewModalVisible} ref={this.containerRef}>
+      <Content ref={this.containerRef}>
         <ReviewPageContainer>
           <Row>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
-                  <Breadcrumb
-                    data={breadcrumbData}
-                    style={{ position: "unset" }}
-                    hasStickyHeader={hasStickyHeader}
-                  />
+                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
                     itemTotal={testItems.length}
@@ -418,45 +424,26 @@ class Review extends PureComponent {
           <ReviewContentWrapper gutter={30}>
             <ReviewLeftContainer lg={24} xl={18}>
               <Paper padding="15px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
-                {isCollapse ? (
-                  <ItemsTable
-                    items={items}
-                    setSelected={this.setSelected}
-                    selected={selected}
-                    isEditable={isEditable}
-                    owner={owner}
-                    scoring={test.scoring}
-                    questions={questions}
-                    rows={slicedRows}
-                    mobile={!isSmallSize}
-                    onChangePoints={this.handleChangePoints}
-                    handlePreview={this.handlePreviewTestItem}
-                    isCollapse={isCollapse}
-                    passagesKeyed={passagesKeyed}
-                    gradingRubricsFeature={userFeatures.gradingrubrics}
-                  />
-                ) : (
-                  <List
-                    onChangePoints={this.handleChangePoints}
-                    onPreview={this.handlePreviewTestItem}
-                    testItems={items}
-                    rows={slicedRows}
-                    standards={standards}
-                    selected={selected}
-                    setSelected={this.setSelected}
-                    onSortEnd={this.moveTestItems}
-                    shouldCancelStart={() => {}}
-                    owner={owner}
-                    isEditable={isEditable}
-                    scoring={test.scoring}
-                    questions={questions}
-                    mobile={!isSmallSize}
-                    passagesKeyed={passagesKeyed}
-                    useDragHandle
-                    isCollapse={isCollapse}
-                    gradingRubricsFeature={userFeatures.gradingrubrics}
-                  />
-                )}
+                <ReviewItems
+                  items={testItems}
+                  scoring={test.scoring}
+                  standards={standards}
+                  userFeatures={userFeatures}
+                  isEditable={isEditable}
+                  isCollapse={isCollapse}
+                  passagesKeyed={passagesKeyed}
+                  rows={rows}
+                  isSmallSize={isSmallSize}
+                  onChangePoints={this.handleChangePoints}
+                  handlePreview={this.handlePreviewTestItem}
+                  moveTestItems={this.moveTestItems}
+                  removeTestItem={this.handleRemoveOne}
+                  getContainer={() => this.containerRef.current}
+                  setSelected={this.setSelected}
+                  selected={selected}
+                  questions={questions}
+                  owner={owner}
+                />
               </Paper>
             </ReviewLeftContainer>
             {isShowSummary && (

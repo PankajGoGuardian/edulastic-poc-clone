@@ -215,3 +215,4 @@ export { default as IconExpandArrowOut } from "./src/IconExpandArrowOut";
 export { default as IconCut } from "./src/IconCut";
 export { default as IconInverse } from "./src/IconInverse";
 export { default as IconInverseOut } from "./src/IconInverseOut";
+export { default as IconExpand } from "./src/IconExpand";

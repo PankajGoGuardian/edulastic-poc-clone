@@ -70,6 +70,7 @@ const SortableQuestionItem = SortableElement(
   }) => (
     <div
       onClick={() => onHighlightQuestion(data.id)}
+      onFocus={() => onHighlightQuestion(data.id)}
       style={{ display: "flex", marginBottom: "6px", padding: (testMode || review) && "0px 3px" }}
     >
       {!testMode && !review && <DragHandle review={review} />}

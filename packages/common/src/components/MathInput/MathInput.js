@@ -239,7 +239,13 @@ class MathInput extends React.PureComponent {
           ref={this.containerRef}
           onFocus={() => {
             onFocus(true);
+            if (this.containerRef.current) {
+              this.containerRef.current.click();
+            }
             this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+          }}
+          onBlur={() => {
+            this.setState({ mathFieldFocus: false }, this.handleBlur);
           }}
           className="input"
           onClick={this.onClickMathField}

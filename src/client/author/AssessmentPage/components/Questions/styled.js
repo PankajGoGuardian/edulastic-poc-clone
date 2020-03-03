@@ -1,24 +1,14 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import {
-  themeColor,
-  white,
-  mediumDesktopExactWidth,
-  extraDesktopWidthMax,
-  smallDesktopWidth
-} from "@edulastic/colors";
+import { themeColor, white, mediumDesktopExactWidth, extraDesktopWidthMax, smallDesktopWidth } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
   min-width: 350px;
   max-width: 350px;
   padding: ${props =>
-    props.reportMode
-      ? "0px 15px 15px"
-      : props.review && !props.testMode
-      ? "30px 15px 50px"
-      : "30px 0 30px 15px"};
+    props.reportMode ? "0px 15px 15px" : props.review && !props.testMode ? "30px 15px 50px" : "30px 0 30px 15px"};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -42,7 +32,7 @@ export const QuestionWidgetWrapper = styled.div`
   max-height: ${props =>
     `calc(100vh - ${
       props.testMode
-        ? "250"
+        ? "0"
         : props.reportMode
         ? props.theme.HeaderHeight.xs + 60
         : props.theme.HeaderHeight.xs + (props.review ? 90 : 185)
@@ -54,7 +44,7 @@ export const QuestionWidgetWrapper = styled.div`
     max-height: ${props =>
       `calc(100vh - ${
         props.testMode
-          ? "250"
+          ? "0"
           : props.reportMode
           ? props.theme.HeaderHeight.md + 60
           : props.theme.HeaderHeight.md + (props.review ? 90 : 185)
@@ -64,7 +54,7 @@ export const QuestionWidgetWrapper = styled.div`
     max-height: ${props =>
       `calc(100vh - ${
         props.testMode
-          ? "250"
+          ? "0"
           : props.reportMode
           ? props.theme.HeaderHeight.xl + 60
           : props.theme.HeaderHeight.xl + (props.review ? 90 : 185)

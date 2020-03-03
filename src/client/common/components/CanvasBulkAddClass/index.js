@@ -90,6 +90,11 @@ const CanvasBulkAddClass = ({
         return sectionClasses;
       });
       setClasses(allClasses);
+
+      // setting all the table rows as checked by default
+      const allClassKeys = allClasses.map(c => `${c.canvasCode}_${c.canvasCourseSectionCode}`);
+      setSelectedRows(allClassKeys);
+
       setIsLoading(false);
     }
   }, [canvasCourseList, canvasSectionList]);

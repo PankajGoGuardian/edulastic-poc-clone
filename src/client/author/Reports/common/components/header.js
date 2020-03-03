@@ -7,6 +7,7 @@ import styled from "styled-components";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import HeaderNavigation from "./Header/HeaderNavigation";
+import { EduButton } from "@edulastic/common";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -45,50 +46,38 @@ export const CustomizedHeaderWrapper = ({
       >
         {navigationItems.length ? (
           activeNavigationKey === "standard-reports" ? (
-            <FeaturesSwitch
-              inputFeatures="customReport"
-              actionOnInaccessible="hidden"
-              key="customReport"
-            >
-              <HeaderNavigation
-                navigationItems={navigationItems}
-                activeItemKey={activeNavigationKey}
-              />
+            <FeaturesSwitch inputFeatures="customReport" actionOnInaccessible="hidden" key="customReport">
+              <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
             </FeaturesSwitch>
           ) : (
-            <HeaderNavigation
-              navigationItems={navigationItems}
-              activeItemKey={activeNavigationKey}
-            />
+            <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
           )
         ) : null}
         <StyledCol>
           <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
             {onShareClickCB ? (
-              <IconButton title="Share" shape="round" onClick={_onShareClickCB}>
+              <EduButton isGhost title="Share" onClick={_onShareClickCB}>
                 <Icon type="share-alt" />
-              </IconButton>
+              </EduButton>
             ) : null}
           </FeaturesSwitch>
           {onPrintClickCB ? (
-            <IconButton title="Print" shape="round" onClick={_onPrintClickCB}>
+            <EduButton isGhost title="Print" onClick={_onPrintClickCB}>
               <Icon type="printer" />
-            </IconButton>
+            </EduButton>
           ) : null}
           <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
             {onDownloadCSVClickCB ? (
-              <IconButton title="Download CSV" shape="round" onClick={_onDownloadCSVClickCB}>
+              <EduButton isGhost title="Download CSV" onClick={_onDownloadCSVClickCB}>
                 <Icon type="download" />
-              </IconButton>
+              </EduButton>
             ) : null}
           </FeaturesSwitch>
         </StyledCol>
       </MainHeader>
       <SecondaryHeader>
         <HeaderTitle>
-          {title !== "Reports" ? (
-            <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} />
-          ) : null}
+          {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
         </HeaderTitle>
         {onRefineResultsCB ? (
           <StyledButton display="flex" type="default" shape="round" onClick={_onRefineResultsCB}>
@@ -110,6 +99,7 @@ const ArrowIcon = styled(Icon)`
 
 const StyledCol = styled(Col)`
   text-align: right;
+  display: flex;
 `;
 
 const StyledButton = styled(Button)`

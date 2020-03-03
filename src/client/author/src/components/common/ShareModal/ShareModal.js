@@ -34,6 +34,7 @@ import { MAX_TAB_WIDTH } from "../../../constants/others";
 
 import { getOrgDataSelector, getUserRole } from "../../../selectors/user";
 import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
+import { EduButton } from "@edulastic/common";
 
 const { Paragraph } = Typography;
 
@@ -327,9 +328,15 @@ class ShareModal extends React.Component {
                   </Radio>
                 ))}
               </Radio.Group>
-              <ShareButton type="primary" data-cy="share-button-pop" onClick={this.handleShare}>
-                <IconShare color={white} /> SHARE
-              </ShareButton>
+              <EduButton
+                height="32px"
+                data-cy="share-button-pop"
+                onClick={this.handleShare}
+                style={{ display: "inline-flex" }}
+              >
+                <IconShare />
+                SHARE
+              </EduButton>
             </RadioBtnWrapper>
             <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
               {sharedType === "INDIVIDUAL" ? (
@@ -383,9 +390,9 @@ class ShareModal extends React.Component {
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
-            <DoneButton type="primary" onClick={onClose}>
+            <EduButton height="32px" onClick={onClose} style={{ display: "inline-flex", marginTop: "20px" }}>
               Done
-            </DoneButton>
+            </EduButton>
           </DoneButtonContainer>
         </ModalContainer>
       </Modal>

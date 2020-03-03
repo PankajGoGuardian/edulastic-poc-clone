@@ -43,7 +43,7 @@ class Prompt extends Component {
           />
         </FlexContainer>
         <FlexContainer justifyContent="center">
-          <EduButton type="primary" size="small" onClick={this.handleSuccess}>
+          <EduButton size="small" onClick={this.handleSuccess}>
             Reorder
           </EduButton>
         </FlexContainer>

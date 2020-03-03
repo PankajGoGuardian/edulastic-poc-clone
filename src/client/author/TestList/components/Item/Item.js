@@ -8,6 +8,7 @@ import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
 import { Button } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 import {
   Container,
   Inner,
@@ -255,24 +256,16 @@ class Item extends Component {
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
                 {owner && status === "draft" && (
-                  <Button onClick={this.moveToItem} type="primary">
-                    Edit
-                  </Button>
+                  <EduButton height="32px" onClick={this.moveToItem}>Edit</EduButton>
                 )}
                 {status === "draft" && allowDuplicate && (
-                  <Button type="primary" onClick={this.duplicate}>
-                    duplicate
-                  </Button>
+                  <EduButton height="32px" onClick={this.duplicate}>Duplicate</EduButton>
                 )}
                 {status === "published" && (
-                  <Button type="primary" onClick={e => this.showPreviewModal(testId, e)}>
-                    Preview
-                  </Button>
+                  <EduButton height="32px" onClick={e => this.showPreviewModal(testId, e)}>Preview</EduButton>
                 )}
                 {status === "published" && (
-                  <Button type="primary" onClick={this.assignTest}>
-                    Assign
-                  </Button>
+                  <EduButton height="32px" onClick={this.assignTest}>Assign</EduButton>
                 )}
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&

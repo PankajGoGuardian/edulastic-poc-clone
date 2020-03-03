@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Input, Icon } from "antd";
 import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
 import { IconUser } from "@edulastic/icons";
+import { EduButton } from "@edulastic/common";
 
 const CommonModal = props => {
   const {
@@ -23,14 +24,14 @@ const CommonModal = props => {
 
   const footer = (
     <FooterDiv>
-      <ActionButton ghost type="primary" onClick={() => closeModal()}>
+      <EduButton height="32px" isGhost onClick={() => closeModal()}>
         No, Cancel
-      </ActionButton>
+      </EduButton>
 
-      <ActionButton type="primary" onClick={() => modalFunc()}>
+      <EduButton height="32px" onClick={() => modalFunc()}>
         {buttonText || `Yes, Proceed`}
         <Icon type="right" />
-      </ActionButton>
+      </EduButton>
     </FooterDiv>
   );
 

@@ -4,14 +4,17 @@ import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import { ModalBody, Heading, YesButton } from "./ConfirmModal";
 import { white, borderGrey3 } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 
 const ShareModal = ({ visible, handleResponse }) => {
   const [value, setValue] = useState(1);
   const Footer = [
-    <Button ghost onClick={() => handleResponse("CANCEL")}>
+    <EduButton height="40px" isGhost onClick={() => handleResponse("CANCEL")}>
       NO
-    </Button>,
-    <YesButton onClick={() => handleResponse("SAVE")}>SAVE</YesButton>
+    </EduButton>,
+    <EduButton height="40px" onClick={() => handleResponse("SAVE")}>
+      SAVE
+    </EduButton>
   ];
 
   return (

@@ -13,6 +13,7 @@ import {
 } from "../../../../common/components/ConfirmationModal/styled.js";
 
 import { deleteTestRequestAction } from "../../ducks";
+import { EduButton } from "@edulastic/common";
 
 const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId }) => {
   const [confirmText, setConfirmText] = useState("");
@@ -25,12 +26,11 @@ const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId 
       onCancel={() => onCancel()}
       footer={[
         <ModalFooter>
-          <StyledButton cancel={true} key="cancel" onClick={() => onCancel(false)}>
+          <EduButton isGhost key="cancel" onClick={() => onCancel(false)}>
             No, Cancel
-          </StyledButton>
-          <StyledButton
+          </EduButton>
+          <EduButton
             key="delete"
-            type="primary"
             disabled={confirmText.toLocaleLowerCase() !== "delete"}
             onClick={() => {
               if (confirmText.toLocaleLowerCase() === "delete") {
@@ -39,7 +39,7 @@ const DeleteItemModal = ({ isVisible, onCancel, deleteTestRequestAction, testId 
             }}
           >
             Yes, Delete
-          </StyledButton>
+          </EduButton>
         </ModalFooter>
       ]}
     >

@@ -2,15 +2,18 @@ import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { EduButton } from "@edulastic/common";
 
 import { themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 
 const ConfirmModal = ({ visible, handleResponse }) => {
   const Footer = [
-    <Button ghost onClick={() => handleResponse("NO")}>
+    <EduButton height="40px" isGhost onClick={() => handleResponse("NO")}>
       NO
-    </Button>,
-    <YesButton onClick={() => handleResponse("YES")}>YES</YesButton>
+    </EduButton>,
+    <EduButton height="40px" onClick={() => handleResponse("YES")}>
+      YES
+    </EduButton>
   ];
 
   return (

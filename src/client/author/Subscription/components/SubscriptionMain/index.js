@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { EduButton } from "@edulastic/common";
 import {
   SubscriptionMainWrapper,
   CurrentPlanContainer,
@@ -29,33 +30,33 @@ import IMG4 from "../../static/4.png";
 
 const getUpgradeToTeacherPlanActions = ({ openPaymentServiceModal, openHasLicenseKeyModal, isblur }) => (
   <ActionsWrapper>
-    <ThemeButton onClick={openPaymentServiceModal} disabled={isblur} inverse>
+    <EduButton height="40px" onClick={openPaymentServiceModal} disabled={isblur}>
       UPGRADE NOW FOR $100/YEAR
-    </ThemeButton>
-    <ThemeButton onClick={openHasLicenseKeyModal} disabled={isblur}>
+    </EduButton>
+    <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal} isGhost disabled={isblur}>
       ALREADY HAVE A LICENSE KEY
-    </ThemeButton>
+    </EduButton>
   </ActionsWrapper>
 );
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
-    <ThemeButton onClick={openPurchaseLicenseModal}>PURCHASE LICENSE</ThemeButton>
+    <EduButton height="40px" onClick={openPurchaseLicenseModal} isGhost>
+      PURCHASE LICENSE
+    </EduButton>
     <Link to="/author/subscription/manage-licenses">
-      <ThemeButton>MANAGE LICENSE</ThemeButton>
+      <EduButton height="40px" isGhost>
+        MANAGE LICENSE
+      </EduButton>
     </Link>
   </ActionsWrapper>
 );
 
 const getEnterprisePlanActions = () => (
   <ActionsWrapper>
-    <ThemeButton
-      onClick={() => {
-        console.log("Open link G-Form Link in new tab");
-      }}
-    >
+    <EduButton height="40px" isGhost>
       REQUEST A QUOTE
-    </ThemeButton>
+    </EduButton>
   </ActionsWrapper>
 );
 
@@ -213,10 +214,12 @@ const SubscriptionMain = props => {
 
             {!isSubscribed && (
               <ActionsWrapper width="460px" row>
-                <ThemeButton onClick={openHasLicenseKeyModal}>ALREADY HAVE A LICENSE KEY</ThemeButton>
-                <ThemeButton onClick={openPaymentServiceModal} inverse>
+                <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal}>
+                  ALREADY HAVE A LICENSE KEY
+                </EduButton>
+                <EduButton height="40px" onClick={openPaymentServiceModal}>
                   UPGRADE NOW FOR $100/YEAR
-                </ThemeButton>
+                </EduButton>
               </ActionsWrapper>
             )}
             <StyledParagraph isSubscribed={isSubscribed}>

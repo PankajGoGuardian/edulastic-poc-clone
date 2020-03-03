@@ -6,6 +6,7 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import { ReleaseGradesModal, Info } from "./styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { EduButton } from "@edulastic/common";
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -37,17 +38,12 @@ const ReleaseScoreSettingsModal = ({
       textAlign="left"
       destroyOnClose={true}
       footer={[
-        <Button ghost key="back" onClick={onCloseReleaseScoreSettings}>
-          Cancel
-        </Button>,
-        <Button
-          data-cy="apply"
-          key="submit"
-          type="primary"
-          onClick={() => updateReleaseScoreSettings(releaseGradeValue)}
-        >
-          Apply
-        </Button>
+        <EduButton height="40px" isGhost key="back" onClick={onCloseReleaseScoreSettings}>
+          CANCEL
+        </EduButton>,
+        <EduButton data-cy="apply" key="submit" onClick={() => updateReleaseScoreSettings(releaseGradeValue)}>
+          APPLY
+        </EduButton>
       ]}
     >
       <Radio.Group value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>

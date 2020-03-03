@@ -95,7 +95,6 @@ export const RightSide = styled.div`
     margin-left: 5px;
 
     span {
-      color: ${themeColor};
       font-size: 11px;
       text-transform: uppercase;
     }

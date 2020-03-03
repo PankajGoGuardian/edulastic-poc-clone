@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import { ModalBody, Heading, YesButton } from "./ConfirmModal";
 import { backgrounds, themeColor } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 
 const DeleteModal = ({ visible, toggleModal, form }) => {
   const [disableButton, setButtonState] = useState(true);
@@ -18,12 +19,12 @@ const DeleteModal = ({ visible, toggleModal, form }) => {
   };
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal("NO")}>
+    <EduButton height="40px" isGhost onClick={() => toggleModal("NO")}>
       NO, CANCEL
-    </Button>,
-    <YesButton disabled={disableButton} onClick={handleResponse}>
+    </EduButton>,
+    <EduButton height="40px" disabled={disableButton} onClick={handleResponse}>
       YES, DELETE
-    </YesButton>
+    </EduButton>
   ];
 
   const Title = [<Heading>Delete Rubric</Heading>];

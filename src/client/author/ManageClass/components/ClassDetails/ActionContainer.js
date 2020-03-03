@@ -16,6 +16,7 @@ import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
+import { EduButton } from "@edulastic/common";
 import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
 import {
   addStudentRequestAction,
@@ -295,20 +296,15 @@ const ActionContainer = ({
       <AddStudentDivider>
         <ButtonsWrapper>
           {active && !cleverId ? (
-            <RedirectButton first data-cy="addStudent" onClick={() => toggleModal("add")}>
-              <ButtonIconWrap>
-                <IconPlusCircle />
-              </ButtonIconWrap>
+            <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>
+              <IconPlusCircle />
               ADD STUDENT
-            </RedirectButton>
+            </EduButton>
           ) : null}
-
-          <RedirectButton first data-cy="printRoster" onClick={() => history.push(`/author/manageClass/printPreview`)}>
-            <ButtonIconWrap>
-              <IconPrint />
-            </ButtonIconWrap>
+          <EduButton height="30px" isGhost data-cy="printRoster" onClick={() => history.push(`/author/manageClass/printPreview`)}>
+            <IconPrint />
             PRINT
-          </RedirectButton>
+          </EduButton>
 
           <Dropdown
             overlay={
@@ -352,13 +348,13 @@ const ActionContainer = ({
             }
             placement="bottomRight"
           >
-            <RedirectButton last>ACTIONS</RedirectButton>
+            <EduButton height="30px" isGhost>ACTIONS</EduButton>
           </Dropdown>
 
           {active && !cleverId ? (
-            <CustomRedirectButton first data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
+            <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
-            </CustomRedirectButton>
+            </EduButton>
           ) : null}
 
           {isAddMultipleStudentsModal && (

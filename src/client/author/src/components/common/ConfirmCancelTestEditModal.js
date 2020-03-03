@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "antd";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { connect } from "react-redux";
+import { EduButton } from "@edulastic/common";
 
 const ConfirmCancelTestEditModal = ({ onClose, onCancel, onOk, showCancelPopup }) => (
   <ConfirmationModal
@@ -10,12 +11,12 @@ const ConfirmCancelTestEditModal = ({ onClose, onCancel, onOk, showCancelPopup }
     onCancel={onClose}
     title="Cancel"
     footer={[
-      <Button ghost onClick={onCancel}>
+      <EduButton height="40px" isGhost onClick={onCancel}>
         Cancel
-      </Button>,
-      <Button color="primary" onClick={onOk}>
+      </EduButton>,
+      <EduButton height="40px" onClick={onOk}>
         Yes, Proceed
-      </Button>
+      </EduButton>
     ]}
   >
     All the changes done will be discarded. Are you sure you want to proceed?

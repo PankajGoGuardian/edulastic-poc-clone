@@ -8,6 +8,7 @@ import { red, green } from "@edulastic/colors";
 
 import { getAssigmentPasswordAction, setPasswordStatusAction } from "./actions/test";
 import { ConfirmationModal } from "../author/src/components/common/ConfirmationModal";
+import { EduButton } from "@edulastic/common";
 
 const RequirePassword = ({
   isPasswordValidated,
@@ -43,18 +44,18 @@ const RequirePassword = ({
       maskClosable={false}
       centered
       footer={[
-        <Button key="back" ghost onClick={onCancel}>
-          Cancel
-        </Button>,
-        <Button
+        <EduButton height="40px" isGhost key="back" onClick={onCancel}>
+          CANCEL
+        </EduButton>,
+        <EduButton
+          height="40px"
           data-cy="start"
           key="submit"
-          type="primary"
           onClick={validatePassword}
           disabled={!assignmentPassword.length}
         >
-          Start
-        </Button>
+          START
+        </EduButton>
       ]}
     >
       <BodyStyled>

@@ -877,7 +877,7 @@ class TestList extends Component {
             onCreate={this.handleCreate}
             creating={creating}
             title="common.testLibrary"
-            btnTitle="Author Test"
+            btnTitle="AUTHOR TEST"
             renderFilter={() => (
               <StyleChangeWrapper>
                 <IconTile

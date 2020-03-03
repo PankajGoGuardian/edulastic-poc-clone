@@ -8,6 +8,7 @@ import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
 
 import { SnapQuiz } from "./styled";
+import { EduButton } from "@edulastic/common";
 
 const descriptionBottom = `
   Upload your assessment in PDF format and proceed to create an Edulastic Assessment
@@ -24,9 +25,9 @@ const OptionPDF = () => (
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
     <Link to="/author/tests/snapquiz">
-      <ButtonComponent type="primary" block>
-        Upload PDF
-      </ButtonComponent>
+      <EduButton isGhost width="234px">
+        UPLOAD PDF
+      </EduButton>
     </Link>
   </CardComponent>
 );

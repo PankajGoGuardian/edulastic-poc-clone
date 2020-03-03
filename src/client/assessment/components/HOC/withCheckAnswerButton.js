@@ -32,7 +32,7 @@ export const withCheckAnswerButton = WrappedComponent => {
         {item && item.instant_feedback && (
           <Fragment>
             <br />
-            <EduButton onClick={checkAnswers} disabled={attempts === 0} type="primary">
+            <EduButton onClick={checkAnswers} disabled={attempts === 0}>
               {t("component.options.check_answer")}
             </EduButton>
           </Fragment>

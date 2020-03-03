@@ -6,16 +6,19 @@ import { Link } from "react-router-dom";
 import { fetchClassListAction } from "../../ducks";
 // components
 import { ButtonsWrapper, CancelClassBtn, IconManageClass, SaveClassBtn } from "./styled";
+import { EduButton } from "@edulastic/common";
 
 const Header = ({ classId }) => (
   <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
     <ButtonsWrapper>
       <Link to={`/author/manageClass/${classId}`}>
-        <CancelClassBtn data-cy="cancel">Cancel</CancelClassBtn>
+        <EduButton height="40px" isGhost data-cy="cancel">
+          Cancel
+        </EduButton>
       </Link>
-      <SaveClassBtn data-cy="updateClass" htmlType="submit">
+      <EduButton height="40px" data-cy="updateClass" htmlType="submit">
         Update Class
-      </SaveClassBtn>
+      </EduButton>
     </ButtonsWrapper>
   </MainHeader>
 );

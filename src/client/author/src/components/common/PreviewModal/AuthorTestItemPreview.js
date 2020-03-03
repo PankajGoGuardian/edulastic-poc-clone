@@ -268,9 +268,9 @@ class AuthorTestItemPreview extends Component {
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && (
               <EduButton
+                isGhost
+                height="28px"
                 title="CLONE"
-                style={{ padding: 0, borderColor: themeColor, height: "28px" }}
-                size="large"
                 onClick={handleDuplicateTestItem}
               >
                 <StyledFlex>
@@ -283,9 +283,9 @@ class AuthorTestItemPreview extends Component {
             )}
             {isEditable && (
               <EduButton
+                isGhost
+                height="28px"
                 title="Edit item"
-                style={{ padding: 0, borderColor: themeColor, height: "28px" }}
-                size="large"
                 onClick={editTestItem}
               >
                 <StyledFlex>
@@ -301,14 +301,8 @@ class AuthorTestItemPreview extends Component {
               (page === "addItems" || page === "itemList") && (
                 <EduButton
                   title="Delete item"
-                  style={{
-                    padding: 0,
-                    borderColor: red,
-                    fontSize: "16px",
-                    color: red,
-                    height: "28px"
-                  }}
-                  size="large"
+                  isGhost
+                  height="28px"
                   onClick={this.handleDeleteItem}
                   disabled={deleting}
                 >
@@ -325,8 +319,8 @@ class AuthorTestItemPreview extends Component {
                 {item.status === "inreview" ? (
                   <EduButton
                     title="Reject"
-                    style={{ padding: 0, borderColor: themeColor, height: "28px" }}
-                    size="large"
+                    isGhost
+                    height="28px"
                     onClick={this.handleReject}
                     type={isRejectMode ? "primary" : ""}
                   >
@@ -341,8 +335,8 @@ class AuthorTestItemPreview extends Component {
                 {item.status === "inreview" || item.status === "rejected" ? (
                   <EduButton
                     title="Approve"
-                    style={{ padding: 0, borderColor: themeColor, height: "28px" }}
-                    size="large"
+                    isGhost
+                    height="28px"
                     onClick={() => this.handleApproveOrRejectSingleItem("published")}
                   >
                     <StyledFlex>
@@ -402,27 +396,28 @@ class AuthorTestItemPreview extends Component {
         >
           <ScoreBlock customStyle={{ left: "-5px" }} />
           {page !== "itemAuthoring" && showHintsBtn && (
-            <EvaluateButton
+            <EduButton 
+              height="28px"
+              isGhost={!showHints}
               onClick={handleShowHints}
-              style={showHints ? { background: themeColor, color: white } : null}
             >
               Hint
-            </EvaluateButton>
+            </EduButton>
           )}
           {isAnswerBtnVisible && (
             <>
-              <EvaluateButton data-cy="check-answer-btn" onClick={handleCheckAnswer}>
+              <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>
                 CHECK ANSWER
-              </EvaluateButton>
-              <EvaluateButton data-cy="show-answers-btn" onClick={handleShowAnswer}>
+              </EduButton>
+              <EduButton isGhost height="28px" data-cy="show-answers-btn" onClick={handleShowAnswer}>
                 SHOW ANSWER
-              </EvaluateButton>
+              </EduButton>
             </>
           )}
           {page !== "itemAuthoring" && (
-            <EvaluateButton data-cy="clear-btn" onClick={clearView}>
+            <EduButton isGhost height="28px" data-cy="clear-btn" onClick={clearView}>
               CLEAR
-            </EvaluateButton>
+            </EduButton>
           )}
 
           <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>

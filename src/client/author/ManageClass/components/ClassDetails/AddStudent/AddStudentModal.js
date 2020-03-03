@@ -12,6 +12,7 @@ import { StyledModal, Title, ActionButton, PanelHeader, AddForm } from "./styled
 import { getUserOrgData } from "../../../../src/selectors/user";
 import { fetchStudentsByIdAction } from "../../../ducks";
 import { getValidatedClassDetails } from "../../../../Student/ducks";
+import { EduButton } from "@edulastic/common";
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -98,18 +99,17 @@ class AddStudentModal extends React.Component {
 
     const footer = (
       <>
-        <ActionButton onClick={handleCancel} ghost type="primary">
+        <EduButton height="32px" isGhost onClick={handleCancel}>
           No, Cancel
-        </ActionButton>
-
-        <ActionButton
+        </EduButton>
+        <EduButton
+          height="32px"
           data-cy="addButton"
           onClick={isUpdate ? this.enrollStudent : handleAdd}
-          type="primary"
           disabled={isFieldTouched("email") && getFieldError("email")}
         >
           {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
-        </ActionButton>
+        </EduButton>
       </>
     );
 

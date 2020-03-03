@@ -6,6 +6,7 @@ import { Form } from "antd";
 import { resetPasswordRequestAction } from "../../../ducks";
 import { getUserOrgData } from "../../../../src/selectors/user";
 import { StyledModal, Title, ActionButton, StyledInput } from "./styled";
+import { EduButton } from "@edulastic/common";
 
 class ResetPwd extends React.Component {
   static propTypes = {
@@ -65,12 +66,12 @@ class ResetPwd extends React.Component {
 
     const footer = (
       <>
-        <ActionButton onClick={handleCancel} ghost type="primary">
+        <EduButton height="32px" isGhost onClick={handleCancel}>
           Cancel
-        </ActionButton>
-        <ActionButton onClick={this.handleSubmit} type="primary" reset>
+        </EduButton>
+        <EduButton height="32px" onClick={this.handleSubmit}>
           Reset
-        </ActionButton>
+        </EduButton>
       </>
     );
 

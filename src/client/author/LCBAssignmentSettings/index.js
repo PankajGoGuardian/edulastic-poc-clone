@@ -22,6 +22,7 @@ import {
 import DateSelector from "../AssignTest/components/SimpleOptions/DateSelector";
 import Settings from "../AssignTest/components/SimpleOptions/Settings";
 import selectsData from "../TestPage/components/common/selectsData";
+import { EduButton } from "@edulastic/common";
 
 /**
  * Imports related to testSettings
@@ -205,17 +206,14 @@ function LCBAssignmentSettings({
             <Row gutter={0}>
               <Col offset={12}>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <ActionButton secondary style={{ width: "100%" }} onClick={() => resetToDefault()}>
+                  <EduButton height="40px" width="100%" isGhost onClick={() => resetToDefault()}>
                     CANCEL
-                  </ActionButton>
+                  </EduButton>
                 </Col>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <ActionButton
-                    style={{ color: "#fff", width: "100%" }}
-                    onClick={() => updateAssignmentSettings({ classId, assignmentId })}
-                  >
+                  <EduButton height="40px" onClick={() => updateAssignmentSettings({ classId, assignmentId })}>
                     UPDATE
-                  </ActionButton>
+                  </EduButton>
                 </Col>
               </Col>
             </Row>

@@ -107,6 +107,8 @@ export const StyledButton = styled(Button)`
 `;
 
 export const ModalFooter = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100%;
   text-align: center;
 `;

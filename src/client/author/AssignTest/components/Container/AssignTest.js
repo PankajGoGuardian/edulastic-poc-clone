@@ -37,6 +37,7 @@ import produce from "immer";
 import { saveAssignmentAction } from "../../../TestPage/components/Assign/ducks";
 import CommonStudentConfirmation from "./ConfirmationModal";
 import MultipleAssignConfirmation from "./MultipleAssignConfirmation";
+import { EduButton } from "@edulastic/common";
 
 const { ASSESSMENT, COMMON } = testConst.type;
 
@@ -153,16 +154,9 @@ class AssignTest extends React.Component {
   };
 
   renderHeaderButton = () => (
-    <AssignButton
-      data-cy="assignButton"
-      onClick={this.handleAssign}
-      color="secondary"
-      variant="create"
-      shadow="none"
-      disabled={this.props.isAssigning}
-    >
+    <EduButton data-cy="assignButton" onClick={this.handleAssign} disabled={this.props.isAssigning}>
       ASSIGN
-    </AssignButton>
+    </EduButton>
   );
 
   onClassFieldChange = (value, group) => {

@@ -11,6 +11,7 @@ import {
   StyledDiv
 } from "../../../../common/components/ConfirmationModal/styled";
 import { StyledSelect } from "../../../../common/styled";
+import { EduButton } from "@edulastic/common";
 
 import { getCollectionsSelector, getItemBucketsSelector } from "../../../src/selectors/user";
 
@@ -68,12 +69,12 @@ const CollectionsSelectModal = ({
       maskClosable={true}
       footer={[
         <ModalFooter>
-          <StyledButton cancel={true} type="primary" key={"1"} onClick={onCancel}>
-            CANCEl
-          </StyledButton>
-          <StyledButton type="primary" key={"2"} onClick={() => onOk("published", selectedCollections)}>
+          <EduButton isGhost key={"1"} onClick={onCancel}>
+            CANCEL
+          </EduButton>
+          <EduButton key={"2"} onClick={() => onOk("published", selectedCollections)}>
             {okText.toUpperCase()}
-          </StyledButton>
+          </EduButton>
         </ModalFooter>
       ]}
     >

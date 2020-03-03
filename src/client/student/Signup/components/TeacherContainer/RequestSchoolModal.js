@@ -23,6 +23,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
 import { states } from "./constants";
+import { EduButton } from "@edulastic/common";
 
 const { Option } = Select;
 class RequestSchool extends React.Component {
@@ -146,9 +147,9 @@ class RequestSchool extends React.Component {
     );
 
     const footer = (
-      <ActionButton data-cy="reqNewSchoolBtn" onClick={this.handleSubmit} type="primary" htmlType="submit">
-        {t("component.signup.teacher.requestnewschool")}
-      </ActionButton>
+      <EduButton height="32px" data-cy="reqNewSchoolBtn" onClick={this.handleSubmit} htmlType="submit">
+        <span>{t("component.signup.teacher.requestnewschool")}</span>
+      </EduButton>
     );
 
     const formItemLayout = {

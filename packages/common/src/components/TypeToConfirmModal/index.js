@@ -11,6 +11,7 @@ import {
   ErrorMessage,
   CancelButton
 } from "./styled";
+import { EduButton } from "@edulastic/common";
 
 class TypeToConfirmModal extends Component {
   state = {
@@ -67,12 +68,12 @@ class TypeToConfirmModal extends Component {
         maskClosable={false}
         centered
         footer={[
-          <CancelButton key="cancelButton" onClick={this.onCloseModal} ghost type="primary">
-            No, Cancel
-          </CancelButton>,
-          <YesButton key="okButton" onClick={this.onProceed}>
+          <EduButton height="40px" isGhost key="cancelButton" onClick={this.onCloseModal}>
+            NO, CANCEL
+          </EduButton>,
+          <EduButton height="40px" key="okButton" onClick={this.onProceed}>
             {btnText}
-          </YesButton>
+          </EduButton>
         ]}
       >
         <Row>

@@ -55,7 +55,6 @@ export const IconLock = styled(LockIcon)`
 `;
 
 export const ButtonText = styled(Text)`
-  color: ${green};
   font-size: 13px;
   padding: 0 10px 0 10px;
 `;

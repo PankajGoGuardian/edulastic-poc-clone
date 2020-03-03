@@ -9,6 +9,7 @@ import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
 import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
 import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import ButtonComponent from "../../../AssignmentCreate/common/ButtonComponent";
+import { EduButton } from "@edulastic/common";
 
 const OptionQti = ({ t, history: { push } }) => {
   //   const customRequest = ({ file, onSuccess }) => {
@@ -53,9 +54,9 @@ const OptionQti = ({ t, history: { push } }) => {
       </IconWrapper>
       <TitleWrapper>{t("qtiimport.card.title")}</TitleWrapper>
       <TextWrapper> {t("qtiimport.card.desctription")} </TextWrapper>
-      <ButtonComponent type="primary" block onClick={changeRoute}>
-        {t("qtiimport.card.buttontext")}
-      </ButtonComponent>
+      <EduButton isGhost width="234px" onClick={changeRoute}>
+        <span>{t("qtiimport.card.buttontext")}</span>
+      </EduButton>
     </CardComponent>
   );
 };

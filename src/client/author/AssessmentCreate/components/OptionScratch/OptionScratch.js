@@ -10,6 +10,7 @@ import TextWrapper from "../../../AssignmentCreate/common/TextWrapper";
 import IconWrapper from "../../../AssignmentCreate/common/IconWrapper";
 import { clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
+import { EduButton } from "@edulastic/common";
 
 const descriptionBottom = (
   <>
@@ -32,9 +33,9 @@ const OptionScratch = ({ history, clearTestData, clearCreatedItems, clearSelecte
       </IconWrapper>
       <TitleWrapper>Create from Scratch</TitleWrapper>
       <TextWrapper style={{ padding: "0 40px" }}>{descriptionBottom}</TextWrapper>
-      <ButtonComponent type="primary" onClick={handleCreate} block>
+      <EduButton width="234px" isGhost onClick={handleCreate}>
         CREATE TEST
-      </ButtonComponent>
+      </EduButton>
     </CardComponent>
   );
 };

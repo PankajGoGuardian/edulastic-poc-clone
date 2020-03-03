@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { withRouter, Prompt } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { withWindowSizes, Hints } from "@edulastic/common";
+import { withWindowSizes, Hints , EduButton } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
@@ -46,6 +46,7 @@ import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink, StyledButton, QuestionContentWrapper } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, "data.questions", []);
@@ -461,9 +462,9 @@ class Container extends Component {
             </Col>
             {view !== "preview" && view !== "auditTrail" && (
               <Col span={12}>
-                <StyledButton id={getFormattedAttrId(`${question?.title}-how-to-author`)}>
+                <EduButton height="30px" id={getFormattedAttrId(`${question?.title}-how-to-author`)} style={{float:"right"}}>
                   How to author
-                </StyledButton>
+                </EduButton>
               </Col>
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>

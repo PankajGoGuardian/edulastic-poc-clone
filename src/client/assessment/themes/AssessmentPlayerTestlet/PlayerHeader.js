@@ -4,6 +4,7 @@ import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/ico
 
 import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
 import ProgressContainer from "./ProgressContainer";
+import { EduButton } from "@edulastic/common";
 
 import { HeaderPracticePlayer, PlayerTitle, ContainerRight, FlexDisplay, ActionButton } from "./styled";
 import Tools from "./Tools";
@@ -38,25 +39,25 @@ const PlayerHeader = ({
               {currentPage > 1 && (
                 <>
                   {previewPlayer && (
-                    <ActionButton onClick={onPrevQuestion} title="Prev">
+                    <EduButton height="40px" onClick={onPrevQuestion} title="Prev">
                       <IconChevronLeft />
-                    </ActionButton>
+                    </EduButton>
                   )}
-                  <ActionButton onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
+                  <EduButton height="40px" onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
                     <span>Next</span>
                     <IconGraphRightArrow />
-                  </ActionButton>
+                  </EduButton>
                 </>
               )}
               {currentPage <= 1 && (
-                <ActionButton onClick={onNextQuestion} title="Start">
+                <EduButton height="40px" onClick={onNextQuestion} title="Start">
                   <span>Start</span>
                   <IconGraphRightArrow />
-                </ActionButton>
+                </EduButton>
               )}
-              <ActionButton title="Exit" onClick={onOpenExitPopup}>
+              <EduButton height="40px" title="Exit" onClick={onOpenExitPopup}>
                 <IconLogout />
-              </ActionButton>
+              </EduButton>
             </FlexDisplay>
           </ContainerRight>
         </FlexContainer>

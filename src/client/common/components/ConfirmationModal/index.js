@@ -11,6 +11,7 @@ import {
   ModalFooter
 } from "./styled";
 import PropTypes from "prop-types";
+import { EduButton } from "@edulastic/common";
 
 const ConfirmationModal = ({
   title,
@@ -36,18 +37,12 @@ const ConfirmationModal = ({
       maskClosable={false}
       footer={[
         <ModalFooter>
-          <StyledButton cancel={true} type="primary" key={"1"} onClick={onCancel}>
+          <EduButton isGhost key={"1"} onClick={onCancel}>
             NO, CANCEL
-          </StyledButton>
-          <StyledButton
-            data-cy="submitConfirm"
-            type="primary"
-            key={"2"}
-            onClick={onOk}
-            disabled={expectedVal !== inputVal.toUpperCase()}
-          >
+          </EduButton>
+          <EduButton data-cy="submitConfirm" key={"2"} onClick={onOk} disabled={expectedVal !== inputVal.toUpperCase()}>
             {okText.toUpperCase()}
-          </StyledButton>
+          </EduButton>
         </ModalFooter>
       ]}
     >

@@ -29,6 +29,7 @@ import {
   IconSwap
 } from "./styled";
 import { ModalFormItem } from "../AddStudentModal/styled";
+import { EduButton } from "@edulastic/common";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
@@ -36,10 +37,7 @@ const Item = ({ item, moveItem, isEnrolled }) => {
   };
 
   return (
-    <ItemDiv
-      style={{ cursor: !isEnrolled && "pointer" }}
-      onClick={!isEnrolled ? handleClick : null}
-    >
+    <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
       <Text>
         {item.firstName} {item.lastName}
       </Text>
@@ -76,9 +74,7 @@ class InviteMultipleStudentModal extends Component {
     form.validateFields((err, row) => {
       if (!err) {
         const { curSel } = this.state;
-        const studentsList = row.students
-          ? row.students.split(/;|\n/).filter(_o => _o.trim().length)
-          : [];
+        const studentsList = row.students ? row.students.split(/;|\n/).filter(_o => _o.trim().length) : [];
         if (studentsList.length) {
           inviteStudents({
             userDetails: studentsList,
@@ -228,48 +224,24 @@ class InviteMultipleStudentModal extends Component {
   };
 
   render() {
-    const {
-      modalVisible,
-      orgData,
-      studentsList,
-      selectedClass,
-      role,
-      policy,
-      t,
-      form
-    } = this.props;
+    const { modalVisible, orgData, studentsList, selectedClass, role, policy, t, form } = this.props;
     const { getFieldDecorator } = form;
-    const {
-      googleUsernames = true,
-      office365Usernames = true,
-      firstNameAndLastName = true
-    } = policy;
-    const {
-      placeHolderVisible,
-      curSel,
-      allStudents,
-      studentsToEnroll,
-      searchViewVisible
-    } = this.state;
+    const { googleUsernames = true, office365Usernames = true, firstNameAndLastName = true } = policy;
+    const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
     const { searchAndAddStudents = false, schools = [] } = orgData || {};
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
             const isEnrolled =
-              studentsList.filter(
-                student => student.email === item._source.email && student.enrollmentStatus == 1
-              ).length > 0;
-            return (
-              <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />
-            );
+              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
+                .length > 0;
+            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
           })
         : null;
 
     const toEnrollLists =
       studentsToEnroll.length > 0
-        ? studentsToEnroll.map(item => (
-          <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />
-          ))
+        ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />)
         : null;
 
     let placeHolderComponent;
@@ -401,12 +373,8 @@ class InviteMultipleStudentModal extends Component {
                   onChange={this.handleChange}
                   defaultValue="google"
                 >
-                  {googleUsernames && (
-                    <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>
-                  )}
-                  {office365Usernames && (
-                    <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>
-                  )}
+                  {googleUsernames && <Option value="google">{t("users.student.invitestudents.googleuser")}</Option>}
+                  {office365Usernames && <Option value="mso">{t("users.student.invitestudents.officeuser")}</Option>}
                   {firstNameAndLastName && [
                     <Option value="fl">{t("users.student.invitestudents.fl")}</Option>,
                     <Option value="lf">{t("users.student.invitestudents.lf")}</Option>
@@ -452,10 +420,7 @@ class InviteMultipleStudentModal extends Component {
                       ],
                       initialValue: defaultSchoolId
                     })(
-                      <Select
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        placeholder="Select school"
-                      >
+                      <Select getPopupContainer={triggerNode => triggerNode.parentNode} placeholder="Select school">
                         {schools.map(school => (
                           <Option key={school._id} value={school._id}>
                             {school.name}
@@ -471,21 +436,18 @@ class InviteMultipleStudentModal extends Component {
         )}
 
         <ButtonsContainer gutter={5}>
-          <Col span={7}>
-            <CancelButton onClick={this.onCloseModal}>
-              {t("users.student.invitestudents.nocancel")}
-            </CancelButton>
-          </Col>
-          <Col span={7}>
-            <OkButton
-              data-cy="addStudents"
-              onClick={() => {
-                this.addStudents();
-              }}
-            >
-              {t("users.student.invitestudents.addtoclass")}
-            </OkButton>
-          </Col>
+          <EduButton height="40px" isGhost onClick={this.onCloseModal}>
+            <span>{t("users.student.invitestudents.nocancel")}</span>
+          </EduButton>
+          <EduButton
+            height="40px"
+            data-cy="addStudents"
+            onClick={() => {
+              this.addStudents();
+            }}
+          >
+            <span>{t("users.student.invitestudents.addtoclass")}</span>
+          </EduButton>
         </ButtonsContainer>
       </StyledModal>
     );

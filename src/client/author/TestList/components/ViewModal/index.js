@@ -7,6 +7,7 @@ import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
 import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Icon, Select } from "antd";
+import { EduButton } from '@edulastic/common';
 import {
   ModalTitle,
   ModalContainer,
@@ -167,83 +168,85 @@ class ViewModal extends React.Component {
           </ModalColumn>
           <ModalColumn justify="center" ref={this.modalRef}>
             <ButtonContainer>
-              <ViewModalButton
+              <EduButton
+                isGhost
+                height="40px"
                 data-cy="details-button"
                 onClick={() => {
-                  onEdit();
-                }}
+                onEdit();
+              }}
               >
-                <IconWrapper>
-                  <IconDescription color={themeColor} />
-                </IconWrapper>
+                <IconDescription />
                 <span>DETAILS</span>
-              </ViewModalButton>
+              </EduButton>
               {allowDuplicate && (
-                <ViewModalButton
+                <EduButton 
+                  isGhost
+                  height="40px"
                   data-cy="duplicate-button"
                   onClick={() => {
-                    onDuplicate();
-                  }}
+                  onDuplicate();
+                }}
                 >
-                  <IconWrapper>
-                    <IconCopy color={themeColor} />
-                  </IconWrapper>
+                  <IconCopy />
                   <span>CLONE</span>
-                </ViewModalButton>
+                </EduButton>
               )}
 
               {status === "inreview" ? (
                 <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
-                  <ViewModalButton
+                  <EduButton
+                    isGhost
+                    height="40px"
                     data-cy="reject-button"
                     onClick={() => {
-                      onReject();
-                    }}
+                    onReject();
+                  }}
                   >
-                    <IconWrapper>
-                      <Icon type="stop" color={themeColor} />
-                    </IconWrapper>
+                    <Icon type="stop" />
                     <span>REJECT</span>
-                  </ViewModalButton>
+                  </EduButton>
                 </FeaturesSwitch>
               ) : null}
               {isDeleteAllowed ? (
-                <ViewModalButton data-cy="delete-button" onClick={() => onDelete()}>
-                  <IconWrapper>
-                    <IconTrashAlt color={themeColor} />
-                  </IconWrapper>
+                <EduButton
+                  isGhost
+                  height="40px"
+                  data-cy="delete-button"
+                  onClick={() => onDelete()}
+                >
+                  <IconTrashAlt />
                   <span>DELETE</span>
-                </ViewModalButton>
+                </EduButton>
               ) : null}
             </ButtonContainer>
             <ButtonContainer>
               {status === "inreview" || status === "rejected" ? (
                 <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
-                  <ViewModalButton
+                  <EduButton
+                    isGhost
+                    height="40px"
                     data-cy="approve-button"
-                    bgColor={themeColor}
                     onClick={() => {
-                      onApprove(editedCollections !== null ? editedCollections : _collections);
-                    }}
+                    onApprove(editedCollections !== null ? editedCollections : _collections);
+                  }}
                   >
-                    <IconWrapper>
-                      <Icon type="check" color={themeColor} />
-                    </IconWrapper>
+                    <Icon type="check" />
                     <span>Approve</span>
-                  </ViewModalButton>
+                  </EduButton>
                 </FeaturesSwitch>
               ) : null}
             </ButtonContainer>
             {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
-                <ViewModalButton
+                <EduButton
+                  height="40px"
+                  width="100%"
                   data-cy="edit/assign-button"
-                  size="large"
-                  bgColor={themeColor}
                   onClick={status === "published" ? assign : onEdit}
                 >
                   {status === "published" ? "ASSIGN" : "EDIT"}
-                </ViewModalButton>
+                </EduButton>
               </ButtonContainer>
             )}
             {status === "inreview" || status === "rejected" ? (

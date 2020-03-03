@@ -6,6 +6,7 @@ import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable } from "./styl
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { themeColorLight } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { EduButton } from "@edulastic/common";
 
 const ClassListModal = ({
   visible,
@@ -249,12 +250,12 @@ const ClassListModal = ({
       }}
       footer={
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button className="cancel-button" onClick={close}>
+          <EduButton height="40px" isGhost onClick={close}>
             CANCEL
-          </Button>
-          <Button className="import-button" onClick={addGroups} loading={syncClassLoading}>
+          </EduButton>
+          <EduButton height="40px" onClick={addGroups} loading={syncClassLoading}>
             IMPORT
-          </Button>
+          </EduButton>
         </div>
       }
     >

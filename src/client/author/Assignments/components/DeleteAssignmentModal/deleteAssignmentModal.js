@@ -18,6 +18,7 @@ import {
   deleteAssignmentRequestAction as deleteAssignmetByTestId
 } from "../../../sharedDucks/assignments";
 import { deleteAssignmentAction as deleteAssigmnetByClass } from "../../../TestPage/components/Assign/ducks";
+import { EduButton } from "@edulastic/common";
 
 const DeleteAssignmentModal = ({
   toggleDeleteAssignmentModalState,
@@ -48,19 +49,17 @@ const DeleteAssignmentModal = ({
       onCancel={() => toggleDeleteAssignmentModalAction(false)}
       footer={[
         <ModalFooter>
-          <StyledButton cancel={true} key="cancel" onClick={() => toggleDeleteAssignmentModalAction(false)}>
+          <EduButton isGhost key="cancel" onClick={() => toggleDeleteAssignmentModalAction(false)}>
             No, Cancel
-          </StyledButton>
-          ,
-          <StyledButton
+          </EduButton>
+          <EduButton
             data-cy="submitConfirm"
             key="delete"
-            type="primary"
             disabled={confirmText.toLocaleLowerCase() !== "unassign"}
             onClick={handleUnassign}
           >
             Yes, Unassign
-          </StyledButton>
+          </EduButton>
         </ModalFooter>
       ]}
     >

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Button, Row, Col, Checkbox, Spin, message } from "antd";
-import { Paper, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { Paper, FlexContainer, MathFormulaDisplay, EduButton } from "@edulastic/common";
 import { Container } from "./styled/Container";
 import { TLOList, TLOListItem } from "./styled/TLOList";
 import { ELOList } from "./styled/ELOList";
@@ -38,12 +38,12 @@ const StandardsModal = ({
 
   const footer = (
     <div>
-      <Button data-cy="cancel-Stand-Set" ghost onClick={onCancel}>
-        Cancel
-      </Button>
-      <Button type="primary" data-cy="apply-Stand-Set" onClick={() => onApply(state)}>
-        Apply
-      </Button>
+      <EduButton height="40px" data-cy="cancel-Stand-Set" isGhost onClick={onCancel}>
+        CANCEL
+      </EduButton>
+      <EduButton height="40px" data-cy="apply-Stand-Set" onClick={() => onApply(state)}>
+        APPLY
+      </EduButton>
     </div>
   );
 

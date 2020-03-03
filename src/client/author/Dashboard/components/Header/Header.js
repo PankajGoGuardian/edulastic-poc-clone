@@ -1,5 +1,5 @@
 import { green, red } from "@edulastic/colors";
-import { FlexContainer, MainHeader } from "@edulastic/common";
+import { FlexContainer, MainHeader , EduButton } from "@edulastic/common";
 import { Popover } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ import {
   PopoverWrapper,
   UpgradeBtn
 } from "./styled";
+
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -58,29 +59,27 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
               onClick={() => setvisible(true)}
               visible={visible}
             >
-              <ManageClassButton data-cy="manageClass">
+              <EduButton btnType="primary" isGhost data-cy="manageClass">
                 <i
                   className={
-                    isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"
-                  }
+                      isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"
+                    }
                   aria-hidden="true"
                 />
-                <ButtonText>
-                  {isSubscriptionExpired ? (
-                    <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
-                  ) : (
-                    "UNLOCK MORE FEATURES"
-                  )}
-                </ButtonText>
-              </ManageClassButton>
+                {isSubscriptionExpired ? (
+                  <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
+                    ) : (
+                      "UNLOCK MORE FEATURES"
+                    )}
+              </EduButton>       
             </Popover>
           </PopoverWrapper>
         )}
         <Link to="/author/manageClass">
-          <ManageClassButton data-cy="manageClass">
-            <IconPlus color={green} />
-            <ButtonText>MANAGE CLASS</ButtonText>
-          </ManageClassButton>
+          <EduButton data-cy="manageClass">
+            <IconPlus />
+            MANAGE CLASS
+          </EduButton>
         </Link>
       </FlexContainer>
     </MainHeader>

@@ -8,7 +8,7 @@ import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants } from "@edulastic/constants";
-import { MathFormulaDisplay, PremiumTag, helpers, WithResources } from "@edulastic/common";
+import { MathFormulaDisplay, PremiumTag, helpers, WithResources , EduButton } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
@@ -57,6 +57,7 @@ import { getCollectionsSelector } from "../../../src/selectors/user";
 
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
+
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
@@ -411,9 +412,10 @@ class Item extends Component {
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (
                 <ViewButton>
-                  <ViewButtonStyled data_cy={item._id} onClick={this.previewItem}>
-                    <IconEye /> {t("component.item.view")}
-                  </ViewButtonStyled>
+                  <EduButton width="100px" height="40px" isGhost data_cy={item._id} onClick={this.previewItem}>
+                    <IconEye /> 
+                    <span>{t("component.item.view").toUpperCase()}</span>
+                  </EduButton>
                   <AddButtonStyled
                     selectedToCart={selectedToCart}
                     onClick={this.handleToggleItemToCart(item)}

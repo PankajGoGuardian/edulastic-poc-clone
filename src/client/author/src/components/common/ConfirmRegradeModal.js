@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "antd";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { connect } from "react-redux";
+import { EduButton } from "@edulastic/common";
 
 const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk, loading, creating }) => (
   <ConfirmationModal
@@ -10,12 +11,18 @@ const ConfirmRegradeModal = ({ visible, onCancel, onCancelRegrade, onOk, loading
     onCancel={onCancel}
     title="Regrade"
     footer={[
-      <Button ghost loading={loading || creating} disabled={loading || creating} onClick={onCancelRegrade}>
+      <EduButton
+        height="40px"
+        isGhost
+        loading={loading || creating}
+        disabled={loading || creating}
+        onClick={onCancelRegrade}
+      >
         Skip Regrade
-      </Button>,
-      <Button color="primary" loading={loading || creating} disabled={loading || creating} onClick={onOk}>
+      </EduButton>,
+      <EduButton height="40px" loading={loading || creating} disabled={loading || creating} onClick={onOk}>
         Regrade
-      </Button>
+      </EduButton>
     ]}
   >
     There are some ongoing assignments linked to the test, would you like to apply the changes?

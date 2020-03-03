@@ -8,7 +8,7 @@ import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import produce from "immer";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer , EduButton } from "@edulastic/common";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary } from "../../../src/selectors/assignments";
 import { getFolderSelector } from "../../../src/selectors/folder";
@@ -17,6 +17,7 @@ import ActionMenu from "../ActionMenu/ActionMenu";
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
+
 
 class AdvancedTable extends Component {
   state = {
@@ -33,9 +34,7 @@ class AdvancedTable extends Component {
         sorter: true,
         width: "20%",
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 0) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 0) }),
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
@@ -57,9 +56,7 @@ class AdvancedTable extends Component {
         width: "10%",
         align: "left",
         className: "assignment-name",
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 1) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 1) }),
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {
@@ -68,9 +65,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 2) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 2) }),
         width: "11%",
         render: text => <div>{text}</div>
       },
@@ -80,9 +75,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 3) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 3) }),
         width: "11%",
         render: text => <div> {text} </div>
       },
@@ -92,9 +85,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 4) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 4) }),
         width: "11%",
         render: text => <div>{text} </div>
       },
@@ -104,9 +95,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 5) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 5) }),
         width: "11%",
         render: text => <div> {text} </div>
       },
@@ -116,9 +105,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         sortOrder: false,
-        onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 6) };
-        },
+        onHeaderCell: col => ({ onClick: () => this.handleSort(col, 6) }),
 
         width: "10%",
         render: text => <div> {text} </div>
@@ -152,7 +139,7 @@ class AdvancedTable extends Component {
                 placement="bottomRight"
                 trigger={["click"]}
               >
-                <BtnAction data-cy="testActions">ACTIONS</BtnAction>
+                <EduButton height="28px" width="100%" isGhost height data-cy="testActions">ACTIONS</EduButton>
               </Dropdown>
             </ActionDiv>
           );
@@ -237,8 +224,8 @@ class AdvancedTable extends Component {
     if (assignmentsSummary.length < 1) {
       return (
         <NoDataNotification
-          heading={"Assignments not available"}
-          description={"There are no assignments found for this filter."}
+          heading="Assignments not available"
+          description="There are no assignments found for this filter."
         />
       );
     }

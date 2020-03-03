@@ -364,7 +364,7 @@ class TestList extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           title="common.playlistLibrary"
-          btnTitle="New Play list"
+          btnTitle="NEW PLAY LIST"
           icon={
             <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
           }

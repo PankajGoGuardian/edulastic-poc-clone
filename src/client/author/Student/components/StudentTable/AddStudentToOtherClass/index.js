@@ -5,6 +5,7 @@ import { IconUser } from "@edulastic/icons";
 import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
 import { get } from "lodash";
 import { ThemeButton } from "../../../../src/components/common/ThemeButton";
+import { EduButton } from "@edulastic/common";
 
 function AddStudentsToOtherClass({
   titleText,
@@ -63,14 +64,13 @@ function AddStudentsToOtherClass({
 
   const footer = (
     <FooterDiv>
-      <ActionButton ghost type="primary" onClick={() => onCloseModal()}>
+      <EduButton height="32px" isGhost onClick={() => onCloseModal()}>
         No, Cancel
-      </ActionButton>
-
-      <ActionButton type="primary" onClick={() => handleOkClick()} disabled={!destinationClassData}>
+      </EduButton>
+      <EduButton height="32px" onClick={() => handleOkClick()} disabled={!destinationClassData}>
         {buttonText}
         <Icon type="right" />
-      </ActionButton>
+      </EduButton>
     </FooterDiv>
   );
   return successData ? (

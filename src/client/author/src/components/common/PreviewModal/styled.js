@@ -11,6 +11,7 @@ import {
   smallDesktopWidth
 } from "@edulastic/colors";
 import { Button, Icon, Typography, Input } from "antd";
+
 const { Text } = Typography;
 
 export const Container = styled.div`
@@ -118,6 +119,7 @@ export const EvaluateButton = styled(Button)`
 
 export const ReportIssueButton = styled(Button)`
   font-size: 16px;
+  margin-left: 10px;
   width: max-content !important;
   height: 28px;
   padding: 0px 10px;

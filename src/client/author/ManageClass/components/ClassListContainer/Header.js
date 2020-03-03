@@ -1,6 +1,6 @@
 import { extraDesktopWidthMax, themeColor, white } from "@edulastic/colors";
-import { MainHeader } from "@edulastic/common";
-import { IconGoogleClassroom } from "@edulastic/icons";
+import { MainHeader, EduButton } from "@edulastic/common";
+import { IconGoogleClassroom , IconPlusCircle } from "@edulastic/icons";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
@@ -13,6 +13,7 @@ import styled from "styled-components";
 import { fetchClassListAction } from "../../ducks";
 import { scopes } from "./ClassCreatePage";
 import { ButtonsWrapper, CreateIcon, IconManageClass, SyncButtons } from "./styled";
+
 
 const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
@@ -30,10 +31,10 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"
             render={renderProps => (
-              <SyncButtons onClick={renderProps.onClick}>
-                <IconGoogleClassroom width={20} height={20} />
-                <p>SYNC WITH GOOGLE CLASSROOM</p>
-              </SyncButtons>
+              <EduButton isGhost onClick={renderProps.onClick}>
+                <IconGoogleClassroom />
+                <span>SYNC WITH GOOGLE CLASSROOM</span>
+              </EduButton>
             )}
             scope={scopes}
             onSuccess={handleLoginSucess}
@@ -42,10 +43,12 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
             responseType="code"
           />
         )}
-        <StyledLink to="/author/manageClass/createClass" data-cy="createClass">
-          <CreateIcon color={themeColor} />
-          <p>Create Class</p>
-        </StyledLink>
+        <Link to="/author/manageClass/createClass" data-cy="createClass">
+          <EduButton isGhost>
+            <IconPlusCircle />
+            <span>Create Class</span>
+          </EduButton>
+        </Link>
       </ButtonsWrapper>
     </MainHeader>
   );

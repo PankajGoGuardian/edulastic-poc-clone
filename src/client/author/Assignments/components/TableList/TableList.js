@@ -8,7 +8,7 @@ import { Dropdown, Checkbox, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
-import { FlexContainer, withWindowSizes } from "@edulastic/common";
+import { FlexContainer, withWindowSizes, EduButton } from "@edulastic/common";
 
 import arrowUpIcon from "../../assets/arrow-up.svg";
 import presentationIcon from "../../assets/presentation.svg";
@@ -345,7 +345,9 @@ const TableList = ({
             placement="bottomRight"
             trigger={["click"]}
           >
-            <BtnAction data-cy="actions">ACTIONS</BtnAction>
+            <EduButton height="28px" width="100%" isGhost data-cy="actions">
+              ACTIONS
+            </EduButton>
           </Dropdown>
         </ActionDiv>
       ),

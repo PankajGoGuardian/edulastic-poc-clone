@@ -11,6 +11,7 @@ import keyIcon from "../../../../student/assets/key-icon.svg";
 import hashIcon from "../../../../student/assets/hashtag-icon.svg";
 import userIcon from "../../../../student/assets/user-icon.svg";
 import mailIcon from "../../../../student/assets/mail-icon.svg";
+import { EduButton } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -254,24 +255,22 @@ class AddNewUserForm extends React.Component {
 
     const footer = (
       <FooterDiv>
-        <ActionButton data-cy="cancel" ghost type="primary" onClick={() => closeModal()}>
+        <EduButton height="40px" isGhost data-cy="cancel" onClick={() => closeModal()}>
           No, Cancel
-        </ActionButton>
-
-        <ActionButton
+        </EduButton>
+        <EduButton
+          height="40px"
           data-cy="addUser"
-          type="primary"
           onClick={() => addNewUser(userInfo)}
           disabled={!isValidClassCode || userExistsInClass}
         >
           {role === "student" ? "Yes, Add Student" : "Yes, Add User"}
           <Icon type="right" />
-        </ActionButton>
+        </EduButton>
       </FooterDiv>
     );
 
-    const expandIcon = panelProps =>
-      panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />;
+    const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);
 
     const BasicDetailsHeader = (
       <PanelHeader>
@@ -305,12 +304,7 @@ class AddNewUserForm extends React.Component {
         afterClose={this.resetFormData}
       >
         <Form>
-          <Collapse
-            accordion
-            defaultActiveKey={keys}
-            expandIcon={expandIcon}
-            expandIconPosition="right"
-          >
+          <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
               <Field name="code">
                 <legend>Class Code</legend>
@@ -376,10 +370,7 @@ class AddNewUserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("fullName", {
                     validateTrigger: ["onBlur"],
-                    rules: [
-                      { validator: validateName },
-                      { max: 128, message: "Must less than 128 characters!" }
-                    ],
+                    rules: [{ validator: validateName }, { max: 128, message: "Must less than 128 characters!" }],
                     initialValue: ""
                   })(
                     <Input
@@ -408,9 +399,7 @@ class AddNewUserForm extends React.Component {
                 <legend>Confirm Password</legend>
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
-                    rules: [
-                      { validator: this.confirmPwdCheck, message: "Retyped password do not match." }
-                    ]
+                    rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
                   })(
                     <Input
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
@@ -459,16 +448,12 @@ class AddNewUserForm extends React.Component {
             <Panel header={AdditionalDetailsHeader} key="additional">
               <Field name="sisId">
                 <legend>SIS ID</legend>
-                <Form.Item>
-                  {getFieldDecorator("sisId")(<Input placeholder="Enter SIS ID" disabled />)}
-                </Form.Item>
+                <Form.Item>{getFieldDecorator("sisId")(<Input placeholder="Enter SIS ID" disabled />)}</Form.Item>
               </Field>
               <Field name="studentNumber">
                 <legend>Student Number</legend>
                 <Form.Item>
-                  {getFieldDecorator("studentNumber")(
-                    <Input placeholder="Enter Student Number" disabled />
-                  )}
+                  {getFieldDecorator("studentNumber")(<Input placeholder="Enter Student Number" disabled />)}
                 </Form.Item>
               </Field>
               <Field name="frlStatus">
@@ -522,9 +507,7 @@ class AddNewUserForm extends React.Component {
 
               <Field name="dob" optional>
                 <legend>DOB</legend>
-                <Form.Item>
-                  {getFieldDecorator("dob")(<DatePicker format="DD MMM, YYYY" />)}
-                </Form.Item>
+                <Form.Item>{getFieldDecorator("dob")(<DatePicker format="DD MMM, YYYY" />)}</Form.Item>
               </Field>
               <Field name="gender">
                 <legend>Gender</legend>
@@ -540,9 +523,7 @@ class AddNewUserForm extends React.Component {
               </Field>
               <Field name="contactEmails">
                 <legend>Contact</legend>
-                <Form.Item>
-                  {getFieldDecorator("contactEmails")(<Input placeholder="Enter Contact" />)}
-                </Form.Item>
+                <Form.Item>{getFieldDecorator("contactEmails")(<Input placeholder="Enter Contact" />)}</Form.Item>
               </Field>
               <Field name="tts">
                 <legend>Enable Text To Speech</legend>

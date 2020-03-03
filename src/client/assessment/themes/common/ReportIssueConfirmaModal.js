@@ -3,6 +3,7 @@ import { Button } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../author/src/components/common/ConfirmationModal";
 import { themeColor, white } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 
 const ReportIssueConfirmaModal = ({ visible, toggleModal, handleResponse }) => {
   return (
@@ -18,13 +19,13 @@ const ReportIssueConfirmaModal = ({ visible, toggleModal, handleResponse }) => {
         <Heading>Are you sure there is a problem with this question?</Heading>
         <span>
           Click{" "}
-          <StyledButton primary onClick={() => handleResponse(true)}>
+          <EduButton height="26px" onClick={() => handleResponse(true)}>
             Yes
-          </StyledButton>{" "}
+          </EduButton>{" "}
           to report this issue, or{" "}
-          <StyledButton primary onClick={() => handleResponse(false)}>
+          <EduButton height="26px" onClick={() => handleResponse(false)}>
             Cancel
-          </StyledButton>{" "}
+          </EduButton>{" "}
           to go back to the question.
         </span>
       </ModalBody>

@@ -1,4 +1,4 @@
-import { HeaderTabs, MainHeader } from "@edulastic/common";
+import { HeaderTabs, MainHeader, EduButton } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { HeaderMidContainer, TitleWrapper } from "@edulastic/common/src/components/MainHeader";
 import { assignmentPolicyOptions, test as testContants } from "@edulastic/constants";
@@ -265,24 +265,24 @@ class ClassHeader extends Component {
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
-          <OpenCloseButton data-cy="openButton" onClick={this.handleOpenAssignment}>
+          <EduButton data-cy="openButton" onClick={this.handleOpenAssignment}>
             OPEN
-          </OpenCloseButton>
+          </EduButton>
         ) : (
           assignmentStatusForDisplay !== "DONE" &&
           canPause && (
-            <OpenCloseButton
+            <EduButton
               data-cy="openPauseButton"
               onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
             >
               {isPaused ? "OPEN" : "PAUSE"}
-            </OpenCloseButton>
+            </EduButton>
           )
         )}
         {canClose ? (
-          <OpenCloseButton data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
+          <EduButton data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
             CLOSE
-          </OpenCloseButton>
+          </EduButton>
         ) : (
           ""
         )}

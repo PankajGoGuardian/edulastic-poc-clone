@@ -45,6 +45,7 @@ import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assi
 import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
+import { EduButton } from "@edulastic/common";
 
 const { statusConstants, passwordPolicy } = test;
 
@@ -92,9 +93,9 @@ class SuccessPage extends React.Component {
   renderHeaderButton = () => {
     const { isAssignSuccess, isPlaylist, isRegradeSuccess } = this.props;
     return (
-      <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+      <EduButton data-cy="assignButton" onClick={this.handleAssign}>
         {isAssignSuccess || isRegradeSuccess ? "VIEW RESPONSE" : "ASSIGN"}
-      </AssignButton>
+      </EduButton>
     );
   };
 

@@ -10,6 +10,8 @@ import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv }
 import userIcon from "../../../student/assets/user-icon.svg";
 import mailIcon from "../../../student/assets/mail-icon.svg";
 import keyIcon from "../../../student/assets/key-icon.svg";
+import { EduButton } from "@edulastic/common";
+
 const { Panel } = Collapse;
 class UserForm extends React.Component {
   state = {
@@ -96,14 +98,13 @@ class UserForm extends React.Component {
 
     const footer = (
       <FooterDiv>
-        <ActionButton ghost type="primary" onClick={() => closeModal()}>
+        <EduButton height="32px" isGhost onClick={() => closeModal()}>
           No, Cancel
-        </ActionButton>
-
-        <ActionButton type="primary" onClick={() => this.onProceed()}>
+        </EduButton>
+        <EduButton height="32px" onClick={() => this.onProceed()}>
           {buttonText || `Yes, Update`}
           <Icon type="right" />
-        </ActionButton>
+        </EduButton>
       </FooterDiv>
     );
 

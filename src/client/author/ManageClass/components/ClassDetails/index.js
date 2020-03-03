@@ -25,6 +25,7 @@ import MainInfo from "./MainInfo";
 import StudentsList from "./StudentsList";
 import { ButtonWrapper, GoogleClassSyncModal, StyledButton } from "./styled";
 import CanvasSyncModal from "./CanvasSyncModal";
+import { EduButton } from "@edulastic/common";
 
 const ClassDetails = ({
   selectedClass,
@@ -122,17 +123,16 @@ const ClassDetails = ({
             title="Enter Google Classroom Code"
             footer={
               <ButtonWrapper>
-                <StyledButton
-                  style={{ color: themeColor, width: "auto", border: "none" }}
-                  onClick={() => setDisabled(false)}
-                >
-                  Change Classroom
-                </StyledButton>
-                <div>
-                  <StyledButton onClick={closeGoogleSyncModal}>Cancel</StyledButton>
-                  <StyledButton loading={syncClassLoading} onClick={handleSyncGC} type="primary">
-                    Sync
-                  </StyledButton>
+                <EduButton height="32px" isGhost onClick={() => setDisabled(false)}>
+                  CHANGE CLASSROOM
+                </EduButton>
+                <div style={{ display: "flex" }}>
+                  <EduButton height="32px" isGhost onClick={closeGoogleSyncModal}>
+                    CANCEL
+                  </EduButton>
+                  <EduButton height="32px" loading={syncClassLoading} onClick={handleSyncGC}>
+                    SYNC
+                  </EduButton>
                 </div>
               </ButtonWrapper>
             }

@@ -53,9 +53,6 @@ export const ConfirmationModal = styled(Modal)`
         font-size: 11px;
         padding: 19px 50px;
         border-radius: 4px;
-        background: ${themeColor};
-        border-color: ${themeColor};
-        color: ${white};
         line-height: 0;
         text-transform: uppercase;
         &[disabled],

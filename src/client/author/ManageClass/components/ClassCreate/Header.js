@@ -1,4 +1,4 @@
-import { MainHeader } from "@edulastic/common";
+import { MainHeader , EduButton } from "@edulastic/common";
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,15 +8,14 @@ import { fetchClassListAction } from "../../ducks";
 // components
 import { ButtonsWrapper, CancelClassBtn, IconManageClass, SaveClassBtn } from "./styled";
 
+
 const Header = () => (
   <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
     <ButtonsWrapper>
       <Link to="/author/manageClass">
-        <CancelClassBtn data-cy="cancel">Cancel</CancelClassBtn>
+        <EduButton isGhost data-cy="cancel">Cancel</EduButton>
       </Link>
-      <SaveClassBtn data-cy="saveClass" htmlType="submit">
-        Save Class
-      </SaveClassBtn>
+      <EduButton data-cy="saveClass" htmlType="submit">Save Class</EduButton>
     </ButtonsWrapper>
   </MainHeader>
 );

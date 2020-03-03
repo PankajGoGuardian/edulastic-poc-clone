@@ -1,3 +1,12 @@
+import React, { Component } from "react";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { uniqueId, round } from "lodash";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import * as moment from "moment";
+import { EduButton , FlexContainer, MainHeader } from '@edulastic/common';
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -10,17 +19,8 @@ import {
   titleColor,
   white
 } from "@edulastic/colors";
-import { FlexContainer, MainHeader } from "@edulastic/common";
 import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit } from "@edulastic/icons";
 import { Button, Cascader, Input, Modal, Progress, Tooltip } from "antd";
-import { round, uniqueId } from "lodash";
-import * as moment from "moment";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { compose } from "redux";
-import styled from "styled-components";
 import { getUserFeatures } from "../../../student/Login/ducks";
 // import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
@@ -567,12 +567,14 @@ class CurriculumSequence extends Component {
             >
               <CurriculumHeaderButtons>
                 {(showUseThisButton || urlHasUseThis || features.isCurator) && !isStudent && (
-                  <StyledButton width="45px" margin="0px 10px 0px 0px" data-cy="share" onClick={onShareClick}>
-                    <IconShare color={lightGreen5} width={15} height={15} />
-                  </StyledButton>
+                  <EduButton isGhost data-cy="share" onClick={onShareClick}>
+                    <IconShare />
+                  </EduButton>
                 )}
                 {urlHasUseThis && isTeacher && !isPublisherUser && (
-                  <HeaderButton onClick={this.openDropPlaylistModal}>Drop Playlist</HeaderButton>
+                  <EduButton onClick={this.openDropPlaylistModal}>
+                  DROP PLAYLIST
+                </EduButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <Tooltip placement="bottom" title="EDIT">
@@ -587,15 +589,15 @@ class CurriculumSequence extends Component {
                   </Tooltip>
                 )}
                 {showUseThisButton && (
-                  <HeaderButton data-cy="use-this" onClick={handleUseThisClick}>
-                    Use This
-                  </HeaderButton>
+                  <EduButton data-cy="use-this" onClick={handleUseThisClick}>
+                    USE THIS
+                  </EduButton>
                 )}
                 {features.isCurator && (status === "inreview" || status === "rejected") && (
-                  <HeaderButton onClick={this.onApproveClick}>Approve</HeaderButton>
+                  <EduButton onClick={this.onApproveClick}>APPROVE</EduButton>
                 )}
                 {features.isCurator && status === "inreview" && (
-                  <HeaderButton onClick={this.onRejectClick}>Reject</HeaderButton>
+                  <EduButton onClick={this.onRejectClick}>REJECT</EduButton>
                 )}
               </CurriculumHeaderButtons>
             </MainHeader>
@@ -981,9 +983,6 @@ const CurriculumSequenceWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  .ant-btn {
-    height: 24px;
-  }
 `;
 
 const CurriculumSubHeaderRow = styled.div`

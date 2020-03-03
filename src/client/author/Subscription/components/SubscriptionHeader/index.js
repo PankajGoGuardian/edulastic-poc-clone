@@ -1,18 +1,19 @@
-import { MainHeader } from "@edulastic/common";
+import { MainHeader , EduButton } from "@edulastic/common";
 import PropTypes from "prop-types";
 import React, { memo } from "react";
 import { ActionBtnWrapper, HeaderActionBtn } from "./styled";
+
 
 const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isSubscribed }) => (
   <MainHeader headingText="common.subscriptionTitle">
     {!isSubscribed && (
       <ActionBtnWrapper>
-        <HeaderActionBtn onClick={openComparePlanModal} width="195px">
+        <EduButton isGhost width="195px" onClick={openComparePlanModal}>
           COMPARE PLANS
-        </HeaderActionBtn>
-        <HeaderActionBtn onClick={openPaymentServiceModal} width="215px">
+        </EduButton>
+        <EduButton width="215px" onClick={openPaymentServiceModal}>
           UPGRADE NOW FOR $100/YEAR
-        </HeaderActionBtn>
+        </EduButton>
       </ActionBtnWrapper>
     )}
   </MainHeader>

@@ -8,6 +8,7 @@ import { receiveTeachersListAction } from "../../../../Teacher/ducks";
 import { getUserOrgId, getUserIdSelector } from "../../../../src/selectors/user";
 import { groupApi } from "@edulastic/api";
 import { setClassAction } from "../../../../ManageClass/ducks";
+import { EduButton } from "@edulastic/common";
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -92,12 +93,12 @@ class AddCoTeacher extends React.Component {
 
     const footer = (
       <>
-        <ActionButton onClick={this.onAddCoTeacher} type="primary">
+        <EduButton height="32px" onClick={this.onAddCoTeacher}>
           Add
-        </ActionButton>
-        <ActionButton onClick={handleCancel} type="primary">
+        </EduButton>
+        <EduButton height="32px" onClick={handleCancel}>
           Cancel
-        </ActionButton>
+        </EduButton>
       </>
     );
 

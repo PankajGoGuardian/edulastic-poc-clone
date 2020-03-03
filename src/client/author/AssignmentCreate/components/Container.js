@@ -4,7 +4,7 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { IconTestBank, IconPlaylist } from "@edulastic/icons";
-import { MainHeader, MainContentWrapper } from "@edulastic/common";
+import { MainHeader, MainContentWrapper, EduButton } from "@edulastic/common";
 import { AlignMiddle } from "../common/Title";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
@@ -62,7 +62,9 @@ class Container extends Component {
                   <TitleWrapper>Choose From Play List</TitleWrapper>
                   <TextWrapper>Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
                   <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
-                    <ButtonComponent type="primary">Play List</ButtonComponent>
+                    <EduButton isGhost width="234px">
+                      PLAY LIST
+                    </EduButton>
                   </Link>
                   <Divider />
                   <CountWrapper>191</CountWrapper>
@@ -78,7 +80,9 @@ class Container extends Component {
                   Select pre built assessment from the <br /> Edulastic Library
                 </TextWrapper>
                 <Link to="/author/tests">
-                  <ButtonComponent type="primary">Browse All</ButtonComponent>
+                  <EduButton isGhost width="234px">
+                    BROWSE ALL
+                  </EduButton>
                 </Link>
                 <Divider />
                 <CountWrapper>191211</CountWrapper>

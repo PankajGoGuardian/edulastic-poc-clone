@@ -8,6 +8,7 @@ import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelA
 import { ModalWrapper, InitOptions } from "../../common/components/ConfirmationModal/styled";
 import { IconSelectCaretDown } from "@edulastic/icons";
 import { themeColor, white, lightGreySecondary, title, tabletWidth, mobileWidthMax } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 
 const SettingsModal = ({
   selectedTheme,
@@ -50,12 +51,12 @@ const SettingsModal = ({
       style={{ borderRadius: "5px" }}
       destroyOnClose={true}
       footer={[
-        <StyledButton ghost key="cancel" onClick={handleCancel} cancel>
+        <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
-        </StyledButton>,
-        <StyledButton key="submit" onClick={handleApply}>
+        </EduButton>,
+        <EduButton key="submit" onClick={handleApply}>
           APPLY
-        </StyledButton>
+        </EduButton>
       ]}
     >
       <InitOptions bodyStyle={bodyStyle}>

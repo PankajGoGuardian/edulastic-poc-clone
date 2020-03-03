@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "antd";
 import { ConfirmationModal } from "./ConfirmationModal";
+import { EduButton } from "@edulastic/common";
 
 const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
   <ConfirmationModal
@@ -9,12 +10,12 @@ const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
     onCancel={onCancel}
     title="Edit Test"
     footer={[
-      <Button ghost data-cy="CANCEL" onClick={onCancel}>
+      <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
         CANCEL
-      </Button>,
-      <Button color="primary" data-cy="PROCEED" onClick={onOk}>
+      </EduButton>,
+      <EduButton height="40px" data-cy="PROCEED" onClick={onOk}>
         PROCEED
-      </Button>
+      </EduButton>
     ]}
   >
     {isUsed

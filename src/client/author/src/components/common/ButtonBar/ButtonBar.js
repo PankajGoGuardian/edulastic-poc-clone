@@ -1,5 +1,5 @@
 import { themeColor, white } from "@edulastic/colors";
-import { HeaderTabs, withWindowSizes } from "@edulastic/common";
+import { HeaderTabs, withWindowSizes, EduButton } from "@edulastic/common";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -39,6 +39,7 @@ import {
   MobileTopRight,
   RightSide
 } from "./styled_components";
+
 
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
@@ -147,61 +148,51 @@ class ButtonBar extends Component {
                   (itemStatus === "draft" ? (
                     <>
                       {isTestFlow && (
-                        <CustomButton data-cy="saveCancel" onClick={onCancel}>
-                          <HeadIcon mt="0px">
-                            <IconClose color={themeColor} width="12" height="12" />
-                          </HeadIcon>
-                          Cancel
-                        </CustomButton>
+                        <EduButton data-cy="saveCancel" onClick={onCancel}>
+                          <IconClose />
+                          CANCEL
+                        </EduButton>
                       )}
                       <Tooltip title="Save">
-                        <CustomButton
+                        <EduButton
                           id={getFormattedAttrId(`${qTitle}-save`)}
                           disabled={disableSave}
                           data-cy="saveButton"
-                          regrade
-                          className="save-btn"
                           onClick={onSave}
                         >
-                          <HeadIcon>
-                            <IconSaveNew color={themeColor} width={16} height={16} />
-                          </HeadIcon>
-                          Save
-                        </CustomButton>
+                          <IconSaveNew />
+                           SAVE
+                        </EduButton>
                       </Tooltip>
                     </>
                   ) : (
                     <>
                       {isTestFlow && (
-                        <CustomButton onClick={onCancel}>
-                          <HeadIcon>
-                            <IconClose color={themeColor} width="12" height="12" />
-                          </HeadIcon>
-                          Cancel
-                        </CustomButton>
+                        <EduButton onClick={onCancel}>
+                          <IconClose />
+                          CANCEL
+                        </EduButton>
                       )}
-                      <CustomButton
+                      <EduButton
                         disabled={disableSave}
                         data-cy="saveButton"
                         onClick={onSave}
                         id={getFormattedAttrId(`${qTitle}-save`)}
                       >
-                        <HeadIcon>
-                          <IconSaveNew color={themeColor} width={20.4} height={20.4} />
-                        </HeadIcon>
-                        Save
-                      </CustomButton>
+                        <IconSaveNew />
+                        SAVE
+                      </EduButton>
                     </>
                   ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && (
-                  <Button disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
-                    Publish
-                  </Button>
+                  <EduButton disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
+                    PUBLISH
+                  </EduButton>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <Button data-cy="editItem" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
-                    Edit
-                  </Button>
+                  <EduButton data-cy="editItem" onClick={onEnableEdit} width="120px">
+                    EDIT
+                  </EduButton>
                 )}
                 {renderExtra()}
               </RightSide>

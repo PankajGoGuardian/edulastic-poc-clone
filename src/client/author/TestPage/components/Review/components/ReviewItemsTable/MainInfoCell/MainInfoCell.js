@@ -5,6 +5,7 @@ import { helpers, WithMathFormula } from "@edulastic/common";
 import { Stimulus } from "./styled";
 import { FlexContainer } from "../../../../../../../assessment/themes/common";
 import { PointsLabel, PointsInput, PreviewButton } from "../../List/styled";
+import { EduButton } from "@edulastic/common";
 
 class MainInfoCell extends React.Component {
   render() {
@@ -35,9 +36,9 @@ class MainInfoCell extends React.Component {
           justifyContent="flex-end"
         >
           <FlexContainer flexDirection="row" style={{ margin: 0 }}>
-            <PreviewButton style={{ marginTop: "0px" }} data-cy="previewButton" onClick={() => handlePreview(data.id)}>
+            <EduButton width="100px" height="40px" isGhost data-cy="previewButton" onClick={() => handlePreview(data.id)}>
               Preview
-            </PreviewButton>
+            </EduButton>
             <PointsInput
               size="large"
               type="number"

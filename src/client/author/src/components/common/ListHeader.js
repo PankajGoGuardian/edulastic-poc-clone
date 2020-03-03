@@ -7,7 +7,7 @@ import {
   themeColor,
   white
 } from "@edulastic/colors";
-import { Button, MainHeader } from "@edulastic/common";
+import { Button, MainHeader , EduButton } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPlusCircle } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -27,6 +27,7 @@ import {
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import { getUserOrgId, getUserRole } from "../../selectors/user";
+
 
 const ListHeader = ({
   onCreate,
@@ -77,47 +78,28 @@ const ListHeader = ({
           (renderButton ? (
             renderButton()
           ) : (
-            <CreateButton
+            <EduButton 
               data-cy="createNew"
               onClick={onCreate}
-              color="secondary"
-              variant="create"
-              shadow="none"
-              icon={
-                <IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />
-              }
             >
-              {btnTitle && btnTitle.length ? btnTitle : "New Item"}
-            </CreateButton>
+              <IconPlusStyled />
+              {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
+            </EduButton>
           ))}
 
         {createAssignment && (
           <>
             {userRole && userRole === roleuser.DISTRICT_ADMIN && (
-              <TestButton
-                color="secondary"
-                onClick={toggleInviteTeacherModal}
-                icon={<FontAwesomeIcon icon={faUsers} aria-hidden="true" />}
-              >
+              <EduButton isGhost onClick={toggleInviteTeacherModal}>
+                <FontAwesomeIcon icon={faUsers} aria-hidden="true" />
                 INVITE TEACHERS
-              </TestButton>
+              </EduButton>
             )}
             <Link to="/author/assignments/select">
-              <TestButton
-                color="secondary"
-                variant="test"
-                shadow="none"
-                icon={(
-                  <IconPlusStyled
-                    color={themeColor}
-                    width={20}
-                    height={20}
-                    hoverColor={themeColor}
-                  />
-                )}
-              >
-                NEW ASSIGNMENT
-              </TestButton>
+              <EduButton>
+                <IconPlusStyled />
+                  NEW ASSIGNMENT
+              </EduButton>
             </Link>
           </>
         )}

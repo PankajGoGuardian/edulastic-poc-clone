@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
+import { findIndex, get } from "lodash";
 import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -68,6 +68,16 @@ class AssessmentPlayerTestlet extends React.Component {
     this.setState({ currentTool: tool });
   };
 
+  submitAnswer = (uuid, timeSpent, groupId) => {
+    const { items, saveUserAnswer } = this.props;
+    const currentItemIndex = findIndex(items, item =>
+      get(item, "data.questions", [])
+        .map(q => q.id)
+        .includes(uuid)
+    );
+    saveUserAnswer(currentItemIndex, timeSpent, false, groupId);
+  };
+
   render() {
     const { theme, items, currentItem, selectedTheme = "default", settings } = this.props;
     const { showExitPopup, currentTool } = this.state;
@@ -92,12 +102,9 @@ class AssessmentPlayerTestlet extends React.Component {
             openExitPopup={this.openExitPopup}
             changeTool={this.changeTool}
             calculateMode={calculateMode}
+            onSubmitAnswer={this.submitAnswer}
           />
-          <SubmitConfirmation
-            isVisible={showExitPopup}
-            onClose={this.hideExitPopup}
-            finishTest={this.finishTest}
-          />
+          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}

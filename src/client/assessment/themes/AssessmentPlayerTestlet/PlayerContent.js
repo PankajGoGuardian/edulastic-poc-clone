@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { isEqual, find, isObject, isArray } from "lodash";
+import { isEqual, find, isObject, isArray, isEmpty } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import PlayerHeader from "./PlayerHeader";
@@ -22,7 +22,7 @@ const PlayerContent = ({
   title,
   questions,
   setUserAnswer,
-  saveUserAnswer,
+  onSubmitAnswer,
   saveTestletState,
   setTestUserWork,
   gotoSummary,
@@ -42,31 +42,19 @@ const PlayerContent = ({
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
 
-  const findItemIdMap = (cPageIds, pageNum) =>
-    find(
-      testletConfig.mapping,
-      ({ testletItemId, testletPageNum }) =>
-        isEqual(testletItemId, cPageIds) || testletPageNum === pageNum
-    );
+  const findItemIdMap = cPageIds =>
+    find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
     const allResponses = {};
     for (const key in testletResponse) {
-      // eslint-disable-next-line
-      if (testletResponse.hasOwnProperty(key) && isObject(testletResponse[key])) {
+      if (Object.prototype.hasOwnProperty.call(testletResponse, key) && isObject(testletResponse[key])) {
         Object.assign(allResponses, testletResponse[key]);
       }
     }
 
     return allResponses[testletId];
-  };
-
-  const findCurrentItemFromIdMap = () => {
-    const { currentPageIds, currentPageNum } = frameController;
-    const cPageIds = Object.keys(currentPageIds);
-    const currentItem = findItemIdMap(cPageIds, currentPageNum);
-    return currentItem;
   };
 
   const getCurrentQuestion = id => {
@@ -78,11 +66,14 @@ const PlayerContent = ({
 
   const saveUserResponse = () => {
     if (!LCBPreviewModal) {
-      const currentItem = findCurrentItemFromIdMap();
-      if (currentItem) {
-        const cItemIndex = Object.keys(questions).indexOf(currentItem.uuid);
-        const timeSpent = Date.now() - lastTime.current;
-        saveUserAnswer(cItemIndex, timeSpent, false, groupId);
+      const { currentPageIds } = frameController;
+      const scoringIds = Object.keys(currentPageIds);
+      if (!isEmpty(scoringIds)) {
+        const currentItem = findItemIdMap([scoringIds[0]]);
+        if (currentItem) {
+          const timeSpent = Date.now() - lastTime.current;
+          onSubmitAnswer(currentItem.uuid, timeSpent, groupId);
+        }
       }
     }
   };
@@ -105,182 +96,188 @@ const PlayerContent = ({
     if (LCBPreviewModal) {
       return;
     }
-    const currentItem = findCurrentItemFromIdMap();
+    const { currentPageIds } = frameController;
 
-    if (!currentItem) {
-      return;
-    }
+    for (const scoringId in currentPageIds) {
+      if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
+        const currentItem = findItemIdMap([scoringId]);
+        if (!currentItem) {
+          continue;
+        }
 
-    const cQuestion = getCurrentQuestion(currentItem.uuid);
+        const cQuestion = getCurrentQuestion(currentItem.uuid);
+        if (!cQuestion) {
+          continue;
+        }
+        const { type: cQuestionType } = cQuestion;
 
-    if (!cQuestion) {
-      return;
-    }
-    const { type: cQuestionType } = cQuestion;
-
-    let data = {};
-    if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
-      const { responseIds } = cQuestion;
-      Object.keys(responseIds).map(key => {
-        data[key] = {};
-        responseIds[key].map(res => {
-          const itemIds = find(currentItem.responses, ({ uuid }) => uuid === res.id);
-          if (itemIds) {
-            let testletValue = findTestletValue(itemIds.responseId);
-            if (itemIds.type === responseType.dropdown || itemIds.type === responseType.radio) {
-              const { options } = cQuestion;
-              const option = options[itemIds.uuid];
-              if (testletValue && option) {
-                let opIndex = ALPHABET.indexOf(testletValue);
-                if (itemIds.choices) {
-                  opIndex = itemIds.choices[testletValue];
+        let data = {};
+        if (cQuestionType === questionType.EXPRESSION_MULTIPART) {
+          const { responseIds } = cQuestion;
+          Object.keys(responseIds).map(key => {
+            data[key] = {};
+            responseIds[key].map(res => {
+              const itemIds = find(currentItem.responses, ({ uuid }) => uuid === res.id);
+              if (itemIds) {
+                let testletValue = findTestletValue(itemIds.responseId);
+                if (itemIds.type === responseType.dropdown || itemIds.type === responseType.radio) {
+                  const { options } = cQuestion;
+                  const option = options[itemIds.uuid];
+                  if (testletValue && option) {
+                    let opIndex = ALPHABET.indexOf(testletValue);
+                    if (itemIds.choices) {
+                      opIndex = itemIds.choices[testletValue];
+                    }
+                    testletValue = option[opIndex];
+                  } else {
+                    testletValue = "";
+                  }
                 }
-                testletValue = option[opIndex];
-              } else {
-                testletValue = "";
-              }
-            }
-            data[key][itemIds.uuid] = {
-              value: testletValue,
-              index: res.index
-            };
-          }
-        });
-      });
-    } else if (cQuestionType === questionType.MULTIPLE_CHOICE) {
-      data = [];
-      const { options } = cQuestion;
-      currentItem.responses.map(({ responseId }) => {
-        const testletValue = findTestletValue(responseId);
-        if (testletValue) {
-          if (isArray(testletValue)) {
-            // here is checkbox type
-            testletValue.map(v => {
-              const opIndex = ALPHABET.indexOf(v);
-              if (options[opIndex]) {
-                data.push(options[opIndex].value);
+                data[key][itemIds.uuid] = {
+                  value: testletValue,
+                  index: res.index
+                };
               }
             });
-          } else {
-            // here is radio type
-            const opIndex = ALPHABET.indexOf(testletValue);
-            if (options[opIndex]) {
-              data.push(options[opIndex].value);
-            }
-          }
-        }
-      });
-    } else if (cQuestionType === questionType.CLOZE_TEXT) {
-      const { responseIds: eduItemResponses = [] } = cQuestion;
-      data = eduItemResponses.map(eduRes => {
-        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-        const testletValue = findTestletValue(responseId);
-        return { ...eduRes, value: testletValue };
-      });
-    } else if (cQuestionType === questionType.CHOICE_MATRIX) {
-      // here is grid type
-      data.value = [];
-      currentItem.responses.map(({ responseId }) => {
-        let testletValue = findTestletValue(responseId) || [];
-        if (testletValue) {
-          testletValue = testletValue.split(",");
-          data.value = Array.from({
-            length: testletValue.length
-          }).fill([]);
-          testletValue.map(v => {
-            const num = v.match(/[0-9]+/);
-            const alpha = v.match(/[a-z]+/);
-            if (num && alpha) {
-              const opIndex = ALPHABET.indexOf(alpha[0]);
-              const answer = [opIndex];
-              data.value[num[0] - 1] = answer;
+          });
+        } else if (cQuestionType === questionType.MULTIPLE_CHOICE) {
+          data = [];
+          const { options } = cQuestion;
+          currentItem.responses.map(({ responseId, values }) => {
+            const testletValue = findTestletValue(responseId);
+            if (testletValue) {
+              if (isArray(testletValue) && values) {
+                // here is checkbox type
+                testletValue.map(v => {
+                  const opIndex = values.indexOf(v);
+                  if (options[opIndex]) {
+                    data.push(options[opIndex].value);
+                  }
+                });
+              } else {
+                // here is radio type
+                const opIndex = ALPHABET.indexOf(testletValue);
+                if (options[opIndex]) {
+                  data.push(options[opIndex].value);
+                }
+              }
             }
           });
-        }
-      });
-    } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
-      // here is match
-      data = [];
-      currentItem.responses.map(({ responseId }) => {
-        const testletValue = findTestletValue(responseId);
-        const { options } = cQuestion;
-        const opIndex = ALPHABET.indexOf(testletValue);
-        if (options[opIndex] && testletValue) {
-          data.push(options[opIndex].value);
-        } else {
-          data.push(false);
-        }
-      });
-    } else if (cQuestionType === questionType.CLOZE_DROP_DOWN) {
-      const { responseIds: eduItemResponses = [], options } = cQuestion;
-      data = eduItemResponses.map(eduRes => {
-        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-        const testletValue = findTestletValue(responseId);
-        const opIndex = ALPHABET.indexOf(testletValue);
-        const optionValue = testletValue ? options[eduRes.id][opIndex] : "";
-        return { ...eduRes, value: optionValue };
-      });
-    } else if (cQuestionType === questionType.TOKEN_HIGHLIGHT) {
-      const { templeWithTokens } = cQuestion;
-      data = [];
-      currentItem.responses.map(({ responseId }) => {
-        const testletValue = findTestletValue(responseId);
-        if (isArray(testletValue)) {
-          const selections = testletValue.map(value => ALPHABET.indexOf(value));
-          data = (templeWithTokens || []).map((el, i) => ({
-            value: el.value,
-            index: i,
-            selected: selections && selections.length ? selections.includes(i) : false
-          }));
-        }
-      });
-    } else if (
-      cQuestionType === questionType.ESSAY_PLAIN_TEXT ||
-      cQuestionType === questionType.SHORT_TEXT
-    ) {
-      currentItem.responses.map(({ responseId }) => {
-        data = findTestletValue(responseId);
-      });
-    } else if (cQuestionType === questionType.CLOZE_IMAGE_DRAG_DROP) {
-      const { responses: eduItemResponses = [], options } = cQuestion;
-      data = eduItemResponses.map((eduRes, contIndex) => {
-        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-        const testletValue = findTestletValue(responseId);
-        const opIndex = ALPHABET.indexOf(testletValue);
-        if (testletValue && options[opIndex]) {
-          return {
-            responseBoxID: eduRes.id,
-            value: [options[opIndex]],
-            containerIndex: contIndex
-            // rect: {}, TODO: we will check this property later.
-          };
-        }
-        return {
-          responseBoxID: eduRes.id,
-          value: [],
-          containerIndex: contIndex
-          // rect: {}, TODO: we will check this property later.
-        };
-      });
-    } else if (cQuestionType === questionType.CLOZE_IMAGE_TEXT) {
-      const { responses: eduItemResponses = [] } = cQuestion;
-      data = eduItemResponses.map(eduRes => {
-        const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
-        return findTestletValue(responseId) || "";
-      });
-    } else if (cQuestionType === questionType.GRAPH) {
-      currentItem.responses.map(({ responseId, elementType, points, labels }) => {
-        if (elementType === "point") {
-          const testletValue = findTestletValue(responseId);
-          data = getPoinstFromString(testletValue, labels);
-        } else if (elementType === "line") {
-          const testletValue = findTestletValue(responseId);
-          data = getLineFromExpression(testletValue, points, labels);
-        }
-      });
-    }
+        } else if (cQuestionType === questionType.CLOZE_TEXT) {
+          const { responseIds: eduItemResponses = [] } = cQuestion;
+          data = eduItemResponses.map(eduRes => {
+            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+            const testletValue = findTestletValue(responseId);
+            return { ...eduRes, value: testletValue };
+          });
+        } else if (cQuestionType === questionType.CHOICE_MATRIX) {
+          // here is grid type
+          data.value = [];
+          currentItem.responses.map(({ responseId }) => {
+            let testletValue = findTestletValue(responseId) || [];
+            if (testletValue) {
+              testletValue = testletValue.split(",");
+              data.value = Array.from({
+                length: testletValue.length
+              }).fill([]);
+              testletValue.map(v => {
+                const num = v.match(/[0-9]+/);
+                const alpha = v.match(/[a-z]+/);
+                if (num && alpha) {
+                  const opIndex = ALPHABET.indexOf(alpha[0]);
+                  const answer = [opIndex];
+                  data.value[num[0] - 1] = answer;
+                }
+              });
+            }
+          });
+        } else if (cQuestionType === questionType.CLOZE_DRAG_DROP) {
+          // here is match
+          data = [];
+          currentItem.responses.map(({ responseId }) => {
+            const testletValue = findTestletValue(responseId);
+            const { options } = cQuestion;
+            const opIndex = ALPHABET.indexOf(testletValue);
+            if (options[opIndex] && testletValue) {
+              data.push(options[opIndex].value);
+            } else {
+              data.push(false);
+            }
+          });
+        } else if (cQuestionType === questionType.CLOZE_DROP_DOWN) {
+          const { responseIds: eduItemResponses = [], options } = cQuestion;
+          data = eduItemResponses.map(eduRes => {
+            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
 
-    setUserAnswer(cQuestion.id, data);
+            const testletValue = findTestletValue(responseId);
+            const opIndex = ALPHABET.indexOf(testletValue);
+            const optionValue = testletValue ? options[eduRes.id][opIndex] : "";
+            return { ...eduRes, value: optionValue };
+          });
+        } else if (cQuestionType === questionType.TOKEN_HIGHLIGHT) {
+          const { templeWithTokens } = cQuestion;
+          data = [];
+          currentItem.responses.map(({ responseId }) => {
+            const testletValue = findTestletValue(responseId);
+            if (isArray(testletValue)) {
+              const selections = testletValue.map(value => ALPHABET.indexOf(value));
+              data = (templeWithTokens || []).map((el, i) => ({
+                value: el.value,
+                index: i,
+                selected: selections && selections.length ? selections.includes(i) : false
+              }));
+            }
+          });
+        } else if (cQuestionType === questionType.ESSAY_PLAIN_TEXT || cQuestionType === questionType.SHORT_TEXT) {
+          currentItem.responses.map(({ responseId }) => {
+            data = findTestletValue(responseId);
+          });
+        } else if (cQuestionType === questionType.CLOZE_IMAGE_DRAG_DROP) {
+          const { responses: eduItemResponses = [], options } = cQuestion;
+          data = eduItemResponses.map((eduRes, contIndex) => {
+            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+            const testletValue = findTestletValue(responseId);
+            const opIndex = ALPHABET.indexOf(testletValue);
+            if (testletValue && options[opIndex]) {
+              return {
+                responseBoxID: eduRes.id,
+                value: [options[opIndex]],
+                containerIndex: contIndex
+                // rect: {}, TODO: we will check this property later.
+              };
+            }
+            return {
+              responseBoxID: eduRes.id,
+              value: [],
+              containerIndex: contIndex
+              // rect: {}, TODO: we will check this property later.
+            };
+          });
+        } else if (cQuestionType === questionType.CLOZE_IMAGE_TEXT) {
+          const { responses: eduItemResponses = [] } = cQuestion;
+          data = eduItemResponses.map(eduRes => {
+            const { responseId } = find(currentItem.responses, ({ uuid }) => uuid === eduRes.id) || {};
+            return findTestletValue(responseId) || "";
+          });
+        } else if (cQuestionType === questionType.GRAPH) {
+          currentItem.responses.map(({ responseId, elementType, points, labels }) => {
+            if (elementType === "point") {
+              const testletValue = findTestletValue(responseId);
+              data = getPoinstFromString(testletValue, labels);
+            } else if (elementType === "line") {
+              const testletValue = findTestletValue(responseId);
+              data = getLineFromExpression(testletValue, points, labels);
+            }
+          });
+        } else if (cQuestionType === questionType.MATH) {
+          currentItem.responses.map(({ responseId }) => {
+            data = findTestletValue(responseId);
+          });
+        }
+
+        setUserAnswer(cQuestion.id, data);
+      }
+    }
   };
 
   useEffect(() => {
@@ -295,11 +292,7 @@ const PlayerContent = ({
           }
         }
       }
-      frameController = new ParentController(
-        testletConfig.testletId,
-        initState,
-        testletState.response
-      );
+      frameController = new ParentController(testletConfig.testletId, initState, testletState.response);
       frameController.connect(frameRef.current.contentWindow);
       frameController.setCallback({
         setCurrentQuestion: val => {
@@ -356,12 +349,7 @@ const PlayerContent = ({
         <MainContent>
           {LCBPreviewModal && currentScoring && <OverlayDiv />}
           {testletConfig.testletURL && (
-            <iframe
-              ref={frameRef}
-              id={testletConfig.testletId}
-              src={testletConfig.testletURL}
-              title="testlet player"
-            />
+            <iframe ref={frameRef} id={testletConfig.testletId} src={testletConfig.testletURL} title="testlet player" />
           )}
         </MainContent>
       </Main>
@@ -374,7 +362,7 @@ PlayerContent.propTypes = {
   title: PropTypes.string.isRequired,
   questions: PropTypes.object.isRequired,
   setUserAnswer: PropTypes.func.isRequired,
-  saveUserAnswer: PropTypes.func.isRequired,
+  onSubmitAnswer: PropTypes.func.isRequired,
   saveTestletState: PropTypes.func.isRequired,
   setTestUserWork: PropTypes.func.isRequired,
   gotoSummary: PropTypes.func.isRequired,

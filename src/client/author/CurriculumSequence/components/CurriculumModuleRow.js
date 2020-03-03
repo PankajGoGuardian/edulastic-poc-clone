@@ -256,10 +256,7 @@ class ModuleRow extends Component {
     return uta;
   };
 
-  toggleModulue = (event, module, moduleIndex) => {
-    // prevent the toggling of parent div
-    event.preventDefault();
-    event.stopPropagation();
+  toggleModule = (module, moduleIndex) => {
     const { updateCurriculumSequence, playlistId, curriculum } = this.props;
     const dataToUpdate = produce(curriculum, draftState => {
       const currentModule = draftState.modules.find(el => el._id === module._id);
@@ -464,7 +461,11 @@ class ModuleRow extends Component {
                           fontStyle="9px/13px Open Sans"
                           fontWeight="Bold"
                           padding="10px 20px 10px 0px"
-                          onClick={event => this.toggleModulue(event, module, moduleIndex)}
+                          onClick={event => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            this.toggleModule(module, moduleIndex);
+                          }}
                         >
                           {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
                         </StyledLabel>
@@ -1018,7 +1019,6 @@ const ModuleHeader = styled.div`
   background: ${white};
   align-items: center;
   padding: 20px 0px;
-  border-bottom: 1px solid #dadae4;
 `;
 
 const ModuleCount = styled.div`
@@ -1222,9 +1222,6 @@ const Assignment = styled.div`
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {
     opacity: 1;
   }
-  &:first-child {
-    border-top: 1px #f2f2f2 solid;
-  }
   @media only screen and (max-width: ${desktopWidth}) {
     flex-direction: column;
   }
@@ -1255,12 +1252,11 @@ AssignmentInnerWrapper.displayName = "AssignmentInnerWrapper";
 const ModuleWrapper = styled.div`
   cursor: pointer;
   & {
-    padding-top: 0;
-    padding-bottom: 0;
+    padding-top: 0px;
+    padding-bottom: 10px;
     padding-left: 0px;
-    padding-right: ${({ padding }) => (padding ? "20px" : "0px")};
-    margin-bottom: 10px;
-    margin-top: 10px;
+    padding-right: ${props => (props.padding ? "20px" : "0px")};
+    border-bottom: 1px solid #dadae4;
   }
 
   .module-checkbox {

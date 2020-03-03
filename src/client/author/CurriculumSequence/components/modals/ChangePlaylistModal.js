@@ -93,19 +93,19 @@ const ChangePlaylistModal = ({
   <StyledModal {...modalStyles} width="calc(100vw - 80px)">
     <Row type="flex" justify="space-between">
       {isStudent ? (
-        <StyledCol span={24}>
+        <StyledCol span={24} onClick={modalStyles.onCancel}>
           {playlists.map(playlist => (
             <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
           ))}
         </StyledCol>
       ) : (
         <>
-          <StyledCol xs={12} sm={12} md={14} lg={15} xl={18}>
+          <StyledCol xs={12} sm={12} md={14} lg={15} xl={18} onClick={modalStyles.onCancel}>
             {playlists.map(playlist => (
               <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
             ))}
           </StyledCol>
-          <StyledCol xs={12} sm={12} md={10} lg={9} xl={6} justify="flex-end">
+          <StyledCol xs={12} sm={12} md={10} lg={9} xl={6} justify="flex-end" onClick={modalStyles.onCancel}>
             <StyledCard height={60} justify="center" style={sideCardStyle} onClick={onExplorePlaylists}>
               <Row type="flex" align="middle">
                 <IconPlaylist width={18} height={18} style={sideIconStyle} color={lightGreen5} />

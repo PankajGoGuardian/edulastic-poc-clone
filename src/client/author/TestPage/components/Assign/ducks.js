@@ -256,7 +256,7 @@ function* saveAssignment({ payload }) {
     if (!assignmentId && !payload.playlistModuleId) {
       yield put(push("/author/assignments"));
     }
-    const successMessage = `${payload.playlistModuleId ? "Module" : "Test"} successfully assigned`;
+    const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
     if (!assignmentId && !payload.playlistModuleId) return;
     yield put(

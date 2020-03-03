@@ -2086,7 +2086,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2125,7 +2125,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2163,7 +2163,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2205,7 +2205,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2242,7 +2242,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2281,7 +2281,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: math.methods.EQUIV_VALUE,
+                method: math.methods.EQUIV_SYMBOLIC,
                 options: {
                   inverseResult: false
                 },
@@ -2334,7 +2334,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               [
                 {
-                  method: "equivSymbolic",
+                  method: math.methods.EQUIV_SYMBOLIC,
                   value: "",
                   options: {
                     inverseResult: false,

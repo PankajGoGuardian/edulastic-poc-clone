@@ -362,11 +362,12 @@ class QuestionItem extends React.Component {
 
           {!review && !pdfPreview && !testMode && this.renderEditButton()}
           {review &&
+            !annotations &&
             (previewMode !== "clear" || check) &&
             typeof answer !== "undefined" &&
             this.renderAnswerIndicator(type)}
         </AnswerForm>
-        {canShowAnswer() && this.renderCorrectAnswer()}
+        {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
         {!pdfPreview && (check ? this.renderScore(id) : this.renderComments(id))}
       </QuestionItemWrapper>
     );

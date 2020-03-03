@@ -114,7 +114,7 @@ function* evaluateAnswers({ payload }) {
     const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
     yield put({
       type: CLEAR_ITEM_EVALUATION,
-      payload: question.type === questionType.MATH
+      payload: question?.type === questionType.MATH
     });
     if (payload === "question" || (payload?.mode === "show" && question)) {
       // some question type like fraction editor have correct answer as number

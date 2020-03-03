@@ -44,14 +44,14 @@ const menuItems = [
     path: "home/assignments"
   },
   {
-    label: "Grades",
-    icon: IconReport,
-    path: "home/grades"
-  },
-  {
     label: "Playlist",
     icon: IconPlaylist,
     path: "home/playlist"
+  },
+  {
+    label: "Grades",
+    icon: IconReport,
+    path: "home/grades"
   },
   {
     label: "Skill Mastery",
@@ -67,7 +67,12 @@ const menuItems = [
 
 const getIndex = (page, items, isReports = false) => {
   let index;
-  if (isReports) return 1;
+  if (isReports) {
+    /*
+     *  change the return value to the index of "home/grades" route in the menuItems
+     */
+    return 2;
+  }
   items.forEach((item, i) => {
     if (item.path && item.path.includes(page)) {
       index = i;

@@ -11,7 +11,7 @@ import moment from "moment";
 import { omit } from "lodash";
 import produce from "immer";
 import { Button, Menu, Dropdown, Icon, Modal, Row as AntRow, Col, message, Progress, Avatar } from "antd";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaChevronRight } from "react-icons/fa";
 import {
   mobileWidth,
   white,
@@ -661,7 +661,7 @@ class ModuleRow extends Component {
                           }}
                         >
                           <ModuleFocused />
-                          <FaBars color={lightGreen5} style={{ margin: "0px 15px" }} />
+                          <FaChevronRight color={lightGreen5} style={{ margin: "0px 15px" }} />
                           <AntRow type="flex" gutter={20} style={{ width: "calc(100% - 25px)" }}>
                             <Col span={7} style={rowInlineStyle}>
                               <ModuleDataWrapper>

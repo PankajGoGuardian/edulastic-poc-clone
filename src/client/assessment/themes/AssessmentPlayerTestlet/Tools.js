@@ -9,7 +9,10 @@ const Tools = ({ changeTool, currentTool, calculateMode }) => (
   <ToolBox>
     {calculateMode && (
       <Tooltip title="Calculator">
-        <ToolButton active={currentTool === 1} onClick={() => changeTool(currentTool === 1 ? 0 : 1)}>
+        <ToolButton
+          active={currentTool === 1}
+          onClick={() => changeTool(currentTool === 1 ? 0 : 1)}
+        >
           <CaculatorIcon />
         </ToolButton>
       </Tooltip>
@@ -61,7 +64,9 @@ const ToolButton = styled(Button)`
   }
 
   ${({ theme, active }) => `
-    background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+    background: ${
+      active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor
+    };
     height: ${theme.default.headerToolbarButtonWidth};
     width: ${theme.default.headerToolbarButtonHeight};
 

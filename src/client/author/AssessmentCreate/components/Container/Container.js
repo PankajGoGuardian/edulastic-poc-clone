@@ -116,7 +116,15 @@ class Container extends React.Component {
   render() {
     let { method } = this.state;
     const newBreadcrumb = [...testBreadcrumbs];
-    const { creating, location, assessmentLoading, percentageUploaded, fileInfo, isAddPdf, uploadToDrive } = this.props;
+    const {
+      creating,
+      location,
+      assessmentLoading,
+      percentageUploaded,
+      fileInfo,
+      isAddPdf,
+      uploadToDrive
+    } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);

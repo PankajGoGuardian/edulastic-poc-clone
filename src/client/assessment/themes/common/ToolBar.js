@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
 import { test, questionType } from "@edulastic/constants";
-import { IconCursor, IconInRuler, IconCalculator, IconClose, IconProtactor, IconScratchPad } from "@edulastic/icons";
+import {
+  IconCursor,
+  IconInRuler,
+  IconCalculator,
+  IconClose,
+  IconProtactor,
+  IconScratchPad
+} from "@edulastic/icons";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { Tooltip } from "../../../common/utils/helpers";
 
@@ -32,7 +39,11 @@ class ToolBar extends Component {
         <Tooltip placement="top" title="Pointer">
           {/* hidden prop in StyledButton can hide the button enable it
            whenever required by removing them. */}
-          <StyledButton active={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)} hidden>
+          <StyledButton
+            active={tool.indexOf(0) !== -1}
+            onClick={() => this.toolbarHandler(0)}
+            hidden
+          >
             <CursorIcon />
           </StyledButton>
         </Tooltip>
@@ -52,7 +63,9 @@ class ToolBar extends Component {
 
         <Tooltip
           placement="top"
-          title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
+          title={
+            isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"
+          }
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
@@ -64,7 +77,11 @@ class ToolBar extends Component {
         </Tooltip>
 
         <Tooltip placement="top" title="Protactor">
-          <StyledButton active={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)} hidden>
+          <StyledButton
+            active={tool.indexOf(4) !== -1}
+            onClick={() => this.toolbarHandler(4)}
+            hidden
+          >
             <ProtactorIcon />
           </StyledButton>
         </Tooltip>
@@ -105,7 +122,9 @@ export const StyledButton = styled(Button)`
   border-radius: 5px;
   ${props => props.hidden && "display:none"}
   ${({ theme, active }) => `
-    background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+    background: ${
+      active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor
+    };
     height: ${theme.default.headerToolbarButtonWidth};
     width: ${theme.default.headerToolbarButtonHeight};
 
@@ -127,7 +146,9 @@ ${({ theme, active }) =>
   window.isIOS
     ? `
 &:focus, &:hover{
-      background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+      background: ${
+        active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor
+      };
       svg{
         fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
       }
@@ -135,7 +156,9 @@ ${({ theme, active }) =>
 `
     : `
 &:focus{
-      background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+      background: ${
+        active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor
+      };
       svg{
         fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
       }

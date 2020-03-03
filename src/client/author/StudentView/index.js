@@ -108,7 +108,12 @@ class StudentViewContainer extends Component {
   };
 
   handleApply = () => {
-    const { saveOverallFeedback, assignmentIdClassId, studentResponse, updateOverallFeedback } = this.props;
+    const {
+      saveOverallFeedback,
+      assignmentIdClassId,
+      studentResponse,
+      updateOverallFeedback
+    } = this.props;
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const testActivityId = studentTestActivity && studentTestActivity._id;
     const feedback = this.feedbackRef.current.state.value;
@@ -152,9 +157,12 @@ class StudentViewContainer extends Component {
 
     const correctNumber = activeQuestions.filter(x => x.score === x.maxScore && x.score > 0).length;
 
-    const wrongNumber = activeQuestions.filter(x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped).length;
+    const wrongNumber = activeQuestions.filter(
+      x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
+    ).length;
 
-    const partiallyCorrectNumber = activeQuestions.filter(x => x.score > 0 && x.score < x.maxScore).length;
+    const partiallyCorrectNumber = activeQuestions.filter(x => x.score > 0 && x.score < x.maxScore)
+      .length;
 
     const skippedNumber = activeQuestions.filter(x => x.skipped && x.score === 0).length;
 
@@ -162,7 +170,8 @@ class StudentViewContainer extends Component {
 
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
-      (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
+      (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) ||
+      "";
     const feedbackButtonToolTip = (
       <div>
         <p>
@@ -182,7 +191,11 @@ class StudentViewContainer extends Component {
             title="Give Overall Feedback"
             onCancel={() => this.handleShowFeedbackPopup(false)}
             footer={[
-              <Button data-cy="cancel" key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
+              <Button
+                data-cy="cancel"
+                key="back"
+                onClick={() => this.handleShowFeedbackPopup(false)}
+              >
                 Cancel
               </Button>,
               <Button data-cy="submit" key="submit" type="primary" onClick={this.handleApply}>
@@ -212,7 +225,10 @@ class StudentViewContainer extends Component {
               <AllButton active={filter === null} onClick={() => this.onClickTab(null)}>
                 ALL ({totalNumber})
               </AllButton>
-              <CorrectButton active={filter === "correct"} onClick={() => this.onClickTab("correct")}>
+              <CorrectButton
+                active={filter === "correct"}
+                onClick={() => this.onClickTab("correct")}
+              >
                 CORRECT ({correctNumber})
               </CorrectButton>
               <WrongButton active={filter === "wrong"} onClick={() => this.onClickTab("wrong")}>
@@ -224,7 +240,10 @@ class StudentViewContainer extends Component {
               <WrongButton active={filter === "skipped"} onClick={() => this.onClickTab("skipped")}>
                 SKIPPED ({skippedNumber})
               </WrongButton>
-              <PartiallyCorrectButton active={filter === "notGraded"} onClick={() => this.onClickTab("notGraded")}>
+              <PartiallyCorrectButton
+                active={filter === "notGraded"}
+                onClick={() => this.onClickTab("notGraded")}
+              >
                 NOT GRADED ({notGradedNumber})
               </PartiallyCorrectButton>
             </StudentButtonDiv>
@@ -255,7 +274,9 @@ class StudentViewContainer extends Component {
 
         <div ref={this.questionsContainerRef}>
           {!loading && (
-            <AnswerContext.Provider value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}>
+            <AnswerContext.Provider
+              value={{ isAnswerModifiable: false, currentScreen: "live_class_board" }}
+            >
               <ThemeProvider
                 theme={{
                   twoColLayout: {

@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
+import { Tooltip } from "../../../../common/utils/helpers";
 import { test, questionType } from "@edulastic/constants";
 import { IconCalculator, IconClose, IconScratchPad } from "@edulastic/icons";
 import { extraDesktopWidthMax, white } from "@edulastic/colors";
-import { Tooltip } from "../../../../common/utils/helpers";
 import { Container } from "./styled";
 import { themes } from "../../../../theme";
 
@@ -15,8 +15,13 @@ const {
 const { tools } = parcc;
 
 const { calculatorTypes } = test;
-const ToolBar = ({ settings = {}, tool = [], changeTool, qType, isDocbased = false }) => {
+const ToolBar = ({ settings = {}, tool = [], changeCaculateMode, changeTool, qType, isDocbased = false }) => {
   const toolbarHandler = value => changeTool(value);
+
+  const handleCalculateMode = value => {
+    changeTool(2);
+    changeCaculateMode(value);
+  };
 
   const { calcType } = settings;
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
@@ -54,6 +59,7 @@ const ToolBar = ({ settings = {}, tool = [], changeTool, qType, isDocbased = fal
 };
 
 ToolBar.propTypes = {
+  changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,

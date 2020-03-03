@@ -9,21 +9,41 @@ import { message } from "antd";
 import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
 import { withWindowSizes, hexToRGB, ScrollContext } from "@edulastic/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 import Hints from "@edulastic/common/src/components/Hints";
 
 import { themes } from "../../../theme";
+import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
+import HeaderMainMenu from "../common/HeaderMainMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import ReportIssuePopover from "../common/ReportIssuePopover";
-import { isZoomGreator } from "../../../common/utils/helpers";
+import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
-import { Main, Container, CalculatorContainer } from "../common";
+import {
+  ControlBtn,
+  ToolButton,
+  Main,
+  Header,
+  HeaderWrapper,
+  Container,
+  FlexContainer,
+  TestButton,
+  ToolBar,
+  SaveAndExit,
+  CalculatorContainer,
+  ToolTipContainer,
+  MainActionWrapper,
+  LogoCompact,
+  Nav,
+  CustomAffix
+} from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
 import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH, LARGE_DESKTOP_WIDTH } from "../../constants/others";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
@@ -159,12 +179,8 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  onFillColorChange = obj => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({
-      fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
-    });
-  };
+  onFillColorChange = obj =>
+    this.props.updateScratchPad({ fillColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100) });
 
   handleModeCaculate = calculateMode => {
     this.setState({
@@ -188,22 +204,14 @@ class AssessmentPlayerDefault extends React.Component {
     updateScratchPad(data);
   };
 
-  handleColorChange = obj => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({
+  handleColorChange = obj =>
+    this.props.updateScratchPad({
       currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
-  };
 
-  handleChangeFont = font => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({ currentFont: font });
-  };
+  handleChangeFont = font => this.props.updateScratchPad({ currentFont: font });
 
-  handleLineWidthChange = size => {
-    const { updateScratchPad } = this.props;
-    updateScratchPad({ lineWidth: size });
-  };
+  handleLineWidthChange = size => this.props.updateScratchPad({ lineWidth: size });
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
@@ -246,11 +254,14 @@ class AssessmentPlayerDefault extends React.Component {
 
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
+      const qId = get(next.items, `[${next.currentItem}].data.questions[0].id`, null);
       const currentToolMode = [];
       if (next.scratchPad && !prevState.currentToolMode) {
         currentToolMode.push(5);
       }
-
+      if (next.crossAction && next.crossAction[qId]) {
+        currentToolMode.push(3);
+      }
       if (!next.crossAction && !next.scratchPad) {
         currentToolMode.push(0);
       }
@@ -263,6 +274,7 @@ class AssessmentPlayerDefault extends React.Component {
       };
       return nextState;
     }
+
     return null;
   }
 
@@ -310,7 +322,6 @@ class AssessmentPlayerDefault extends React.Component {
       scratchpadData: { currentColor, currentFont, deleteMode, lineWidth, fillColor, activeMode },
       passage,
       defaultAP,
-      title,
       playerSkinType
     } = this.props;
     const {
@@ -415,6 +426,14 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0;
     }
 
+    const rightButtons = (
+      <SaveAndExit
+        previewPlayer={previewPlayer}
+        showZoomBtn
+        finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
+      />
+    );
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -423,7 +442,7 @@ class AssessmentPlayerDefault extends React.Component {
       <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel, twoColLayout: {} }}>
         <Container scratchPadMode={scratchPadMode} data-cy="assessment-player-default-wrapper">
           <AssessmentPlayerSkinWrapper
-            title={title}
+            title={this.props.title}
             LCBPreviewModal={LCBPreviewModal}
             headerHeight={headerHeight}
             isMobile={isMobile}
@@ -460,6 +479,7 @@ class AssessmentPlayerDefault extends React.Component {
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
             defaultAP={defaultAP}
+            previewPlayer={previewPlayer}
             finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
@@ -524,9 +544,8 @@ class AssessmentPlayerDefault extends React.Component {
               headerHeight={headerHeight}
               ref={this.scrollContainer}
             >
-              {/* react-sortable-hoc is required getContainer for auto-scroll, 
-                  so need to use ScrollContext here.
-                  Also, will use ScrollContext for auto-scroll on mobile */}
+              {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
+                Also, will use ScrollContext for auto-scroll on mobile */}
               <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
                 <SettingsModal />
                 <MainWrapper

@@ -6,7 +6,13 @@ import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu
 import ProgressContainer from "./ProgressContainer";
 import { EduButton } from "@edulastic/common";
 
-import { HeaderPracticePlayer, PlayerTitle, ContainerRight, FlexDisplay, ActionButton } from "./styled";
+import {
+  HeaderPracticePlayer,
+  PlayerTitle,
+  ContainerRight,
+  FlexDisplay,
+  ActionButton
+} from "./styled";
 import Tools from "./Tools";
 
 import Logo from "../../assets/ets-log.png";

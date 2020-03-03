@@ -5,7 +5,14 @@ import PropTypes from "prop-types";
 import { produce } from "immer";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
+import {
+  dropZoneTitleColor,
+  greyGraphstroke,
+  incorrect,
+  yellow1,
+  white,
+  themeColor
+} from "@edulastic/colors";
 import { ThemeProvider } from "styled-components";
 import { scrollTo, AnswerContext } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
@@ -26,12 +33,17 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 // actions
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
-import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
+import {
+  getAssignmentClassIdSelector,
+  getClassQuestionSelector,
+  getQLabelsSelector
+} from "../ClassBoard/ducks";
 
 /**
  * @param {string} studentId
  */
-const _scrollTo = studentId => scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
+const _scrollTo = studentId =>
+  scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
 
 const green = "#5eb500";
 
@@ -57,7 +69,11 @@ CustomTooltip.defaultProps = {
 
 class QuestionViewContainer extends Component {
   static getDerivedStateFromProps(nextProps, preState) {
-    const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
+    const {
+      loadClassQuestionResponses,
+      assignmentIdClassId: { assignmentId, classId } = {},
+      question
+    } = nextProps;
     const { question: _question = {} } = preState || {};
     if (question.id !== _question.id) {
       loadClassQuestionResponses(assignmentId, classId, question.id, nextProps.itemId);
@@ -101,7 +117,9 @@ class QuestionViewContainer extends Component {
     } = this.props;
     const { loading } = this.state;
 
-    let filteredItems = testItems?.filter(item => item.data.questions.some(q => q.id === question.id));
+    let filteredItems = testItems?.filter(item =>
+      item.data.questions.some(q => q.id === question.id)
+    );
 
     filteredItems = produce(filteredItems, draft => {
       draft.forEach(item => {
@@ -134,7 +152,10 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
+        .filter(
+          student =>
+            (student.status != "notStarted" || student.redirect) && student.status != "absent"
+        )
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName;
           const stData = {
@@ -142,7 +163,9 @@ class QuestionViewContainer extends Component {
             id: st.studentId,
             avatarName: getAvatarName(name),
 
-            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
+            avgTimeSpent: this.calcTimeSpentAsSec(
+              st.questionActivities.filter(x => x._id === question.id)
+            ),
             attempts: st.questionActivities.length,
             correct: 0,
             wrong: 0,
@@ -328,7 +351,9 @@ class QuestionViewContainer extends Component {
                     qIndex={qIndex}
                     currentStudent={student}
                     classResponse={{ testItems: filteredItems, ...others }}
-                    questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
+                    questionActivities={classQuestion.filter(
+                      ({ userId }) => userId === student.studentId
+                    )}
                     isPresentationMode={isPresentationMode}
                     labels={labels}
                     isLCBView

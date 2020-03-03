@@ -18,7 +18,8 @@ const ResponseBoxLayout = ({
   getHeading,
   choiceStyle
 }) => {
-  const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
+  const horizontallyAligned =
+    responseContainerPosition === "left" || responseContainerPosition === "right";
   const itemStyle = {
     ...choiceStyle,
     fontSize: smallSize ? 10 : fontSize
@@ -33,7 +34,9 @@ const ResponseBoxLayout = ({
     <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%" }}>
       <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
         <FlexContainer flexDirection="column">
-          <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
+          <DropContainerTitle>
+            {getHeading("component.cloze.dragDrop.optionContainerHeading")}
+          </DropContainerTitle>
           <FlexContainer flexDirection={horizontallyAligned ? "column" : "row"} flexWrap="wrap">
             {responses.map((option = "", index) => (
               <DragItem

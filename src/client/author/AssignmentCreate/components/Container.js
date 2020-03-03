@@ -60,7 +60,9 @@ class Container extends Component {
                     <IconPlaylist style={{ height: "40px", width: "40px" }} />
                   </IconWrapper>
                   <TitleWrapper>Choose From Play List</TitleWrapper>
-                  <TextWrapper>Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
+                  <TextWrapper>
+                    Select pre built tests from the Curriculum aligned assessment play list
+                  </TextWrapper>
                   <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
                     <EduButton isGhost width="234px">
                       PLAY LIST

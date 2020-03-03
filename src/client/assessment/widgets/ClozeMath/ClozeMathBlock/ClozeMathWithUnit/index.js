@@ -409,6 +409,9 @@ const InnerWrapper = styled.div`
     box-shadow: none !important;
     cursor: pointer;
   }
+  .mq-math-mode .mq-matrix table {
+    margin: 0px;
+  }
 `;
 
 const OuterWrapper = styled.div`
@@ -436,7 +439,6 @@ const ClozeMathInputField = styled.span`
   border-top-right-radius: 0 !important;
   display: flex !important;
   border-bottom-right-radius: 0 !important;
-  font-weight: 600 !important;
   &:active,
   &:focus {
     border-color: ${({ theme }) => theme.themeColor} !important;
@@ -446,14 +448,23 @@ const ClozeMathInputField = styled.span`
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
+  const {
+    responseContainers,
+    item,
+    answers = {},
+    evaluation = [],
+    checked,
+    onInnerClick,
+    showIndex
+  } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const individualWidth = response?.widthpx || 0;
   const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } =
+    item.uiStyle || {};
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));

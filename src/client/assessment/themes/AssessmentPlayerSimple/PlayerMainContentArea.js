@@ -121,6 +121,7 @@ const Main = styled.main`
 `;
 
 const MainContent = styled.div`
+  z-index: 1;
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
   color: ${props => props.theme.widgets.assessmentPlayers.mainContentTextColor};
   border-radius: 10px;

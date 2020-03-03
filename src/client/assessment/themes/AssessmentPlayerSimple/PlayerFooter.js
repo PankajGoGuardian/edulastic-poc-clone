@@ -39,7 +39,7 @@ const MainFooter = styled.div`
   left: ${props => (props.isSidebarVisible ? "220px" : "65px")};
   right: 0;
   padding: 22px 35px;
-  z-index: 1;
+  z-index: 2;
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};
   @media (max-width: ${largeDesktopWidth}) {
     flex-wrap: wrap;

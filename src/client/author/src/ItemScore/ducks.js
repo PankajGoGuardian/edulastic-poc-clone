@@ -1,7 +1,9 @@
-import { createReducer } from "redux-starter-kit";
+import { createReducer, createAction } from "redux-starter-kit";
 
 export const SET_ITEM_SCORE = "[itemScore] set item score";
 export const RESET_ITEM_SCORE = "[itemScore] reset item score";
+
+export const resetItemScoreAction = createAction(RESET_ITEM_SCORE);
 
 const initialState = {
   score: 0,

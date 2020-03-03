@@ -1,5 +1,4 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { delay } from "redux-saga";
 import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
@@ -20,17 +19,13 @@ import {
   CHANGE_VIEW
 } from "../constants/actions";
 
-import { SET_ITEM_SCORE, RESET_ITEM_SCORE } from "../ItemScore/ducks";
+import { SET_ITEM_SCORE } from "../ItemScore/ducks";
 
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { resetDictAlignmentsAction } from "../actions/dictionaries";
 import { PREVIEW, CLEAR } from "../../../assessment/constants/constantsForQuestions";
 
-import {
-  getQuestionsSelector,
-  CHANGE_CURRENT_QUESTION,
-  getCurrentQuestionSelector
-} from "../../sharedDucks/questions";
+import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
 
 function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
   try {
@@ -118,9 +113,7 @@ function* evaluateAnswers({ payload }) {
     // User is at the question
     const question = yield select(getCurrentQuestionSelector);
     let correctAnswers = _get(question, "validation.validResponse.value", []);
-    const altAnswers = _get(question, "validation.altResponses", []).map(
-      altAns => _get(altAns, "value", []).length
-    );
+    const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
     if (payload === "question" || (payload?.mode === "show" && question)) {
       // some question type like fraction editor have correct answer as number
       // need to convert into array before using spread operator
@@ -149,10 +142,6 @@ function* evaluateAnswers({ payload }) {
               showScore: true
             }
           });
-          yield call(delay, 1500);
-          yield put({
-            type: RESET_ITEM_SCORE
-          });
         }
       } else {
         const errorMessage = "Correct answer is not set";
@@ -160,16 +149,9 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select(state => _get(state, "answers", {}));
-      const { itemLevelScore, itemLevelScoring = false } = yield select(
-        state => state.itemDetail.item
-      );
+      const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(
-        answers,
-        questions,
-        itemLevelScoring,
-        itemLevelScore
-      );
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -186,17 +168,12 @@ function* evaluateAnswers({ payload }) {
             showScore: true
           }
         });
-        yield call(delay, 1500);
-        yield put({
-          type: RESET_ITEM_SCORE
-        });
       }
     }
   } catch (err) {
     console.error(err);
     const errorMessage =
-      err.message ||
-      "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
+      err.message || "Expression syntax is incorrect. Please refer to the help docs on what is allowed";
     yield call(message.error, errorMessage);
   }
 }

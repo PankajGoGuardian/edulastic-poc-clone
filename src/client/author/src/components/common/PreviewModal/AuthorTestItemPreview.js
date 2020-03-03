@@ -41,6 +41,7 @@ import {
 import { getUserId, getUserFeatures, getUserSelector } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
+import ScoreBlock from "../ScoreBlock";
 
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
@@ -90,16 +91,16 @@ class AuthorTestItemPreview extends Component {
   };
 
   handleApproveOrRejectSingleItem = value => {
-    const { approveOrRejectSingleItem, item } = this.props;
+    const { approveOrRejectSingleItem: _approveOrRejectSingleItem, item } = this.props;
     if (item?._id) {
-      approveOrRejectSingleItem({ itemId: item._id, status: value });
+      _approveOrRejectSingleItem({ itemId: item._id, status: value });
     }
   };
 
   handleReject = () => this.setState({ isRejectMode: true });
 
   submitReviewFeedback = (note, scratchpad) => {
-    const { submitReviewFeedback, item, approveOrRejectSingleItem } = this.props;
+    const { submitReviewFeedback, item, approveOrRejectSingleItem: _approveOrRejectSingleItem } = this.props;
 
     if (item?._id) {
       const data = { note };
@@ -116,7 +117,7 @@ class AuthorTestItemPreview extends Component {
           status: "rejected"
         }
       });
-      approveOrRejectSingleItem({ itemId: item._id, status: "rejected" });
+      _approveOrRejectSingleItem({ itemId: item._id, status: "rejected" });
     }
     this.setState({ isRejectMode: false });
   };
@@ -155,10 +156,7 @@ class AuthorTestItemPreview extends Component {
     }
 
     if (widget?.tabIndex === 0)
-      return (
-        (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
-        subCount
-      );
+      return (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + subCount;
 
     if (Array.isArray(sectionQue[1])) {
       return (
@@ -168,9 +166,7 @@ class AuthorTestItemPreview extends Component {
       );
     }
     return (
-      (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) +
-      sectionQue[1] +
-      subCount
+      (Array.isArray(sectionQue[0]) ? sectionQue[0][0] + sectionQue[0][1] : sectionQue[0]) + sectionQue[1] + subCount
     );
   };
 
@@ -338,9 +334,7 @@ class AuthorTestItemPreview extends Component {
                       <SyledSpan>
                         <Icon type="stop" color={red} />
                       </SyledSpan>
-                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>
-                        Reject
-                      </StyledText>
+                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>Reject</StyledText>
                     </StyledFlex>
                   </EduButton>
                 ) : null}
@@ -404,8 +398,9 @@ class AuthorTestItemPreview extends Component {
           padding={isPassage ? "15px 15px 0px 45px" : "0px"}
           mb={isPassage ? "5px" : "0px"}
           justifyContent="flex-end"
-          style={onlySratchpad ? { visibility: "hidden" } : {}}
+          style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
+          <ScoreBlock customStyle={{ left: "-5px" }} />
           {page !== "itemAuthoring" && showHintsBtn && (
             <EvaluateButton
               onClick={handleShowHints}
@@ -430,12 +425,7 @@ class AuthorTestItemPreview extends Component {
             </EvaluateButton>
           )}
 
-          <ReportIssueButton
-            title="Report Issue"
-            type="danger"
-            ghost
-            onClick={() => toggleReportIssue()}
-          >
+          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueButton>
         </ButtonsWrapper>
@@ -481,26 +471,10 @@ class AuthorTestItemPreview extends Component {
               {col.tabs &&
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
-                this.renderTabContent(
-                  widget,
-                  col.flowLayout,
-                  i,
-                  colIndex,
-                  sectionQue,
-                  subCount++,
-                  resourceCount
-                )}
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
               {col.tabs &&
                 !col.tabs.length &&
-                this.renderTabContent(
-                  widget,
-                  col.flowLayout,
-                  i,
-                  colIndex,
-                  sectionQue,
-                  subCount++,
-                  resourceCount
-                )}
+                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
             </React.Fragment>
           ))}
         </WidgetContainer>
@@ -538,18 +512,10 @@ class AuthorTestItemPreview extends Component {
         style={onlySratchpad ? { visibility: "hidden" } : {}}
       >
         <div>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.setCollapseView("left")}
-            left
-          >
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.setCollapseView("right")}
-            right
-          >
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -586,8 +552,7 @@ class AuthorTestItemPreview extends Component {
     return (
       <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
         {cols.map((col, i) => {
-          const hideColumn =
-            (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+          const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           return (
             <>

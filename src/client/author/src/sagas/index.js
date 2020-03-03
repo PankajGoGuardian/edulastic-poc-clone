@@ -45,6 +45,7 @@ import { bucketSaga } from "../../ContentBuckets";
 import { collectionsSaga } from "../../ContentCollections";
 import { watcherSaga as subscriptionSaga } from "../../Subscription/ducks";
 import { importTestWatcher as importTestSaga } from "../../ImportTest/ducks";
+import itemScoreSaga from "./itemScore";
 
 const authorSagas = [
   itemsSaga(),
@@ -93,7 +94,8 @@ const authorSagas = [
   bucketSaga(),
   collectionsSaga(),
   subscriptionSaga(),
-  importTestSaga()
+  importTestSaga(),
+  itemScoreSaga()
 ];
 
 export default authorSagas;

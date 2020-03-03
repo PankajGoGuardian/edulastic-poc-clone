@@ -15,7 +15,8 @@ const Wrapper = styled.div`
   left: 0%;
   top: 50%;
   transform: translate(-100%, -50%);
- 
+  ${({ customStyle }) => ({ ...customStyle })};
+  
   ${({ scoreType, theme }) => {
     const obj = {};
     if (scoreType === "allCorrect") {
@@ -45,11 +46,10 @@ const Wrapper = styled.div`
     }
 `;
 
-const ScoreBlock = ({ score, maxScore, showScore }) => {
-  const scoreType =
-    score === 0 ? "incorrect" : score === maxScore ? "allCorrect" : "partiallyCorrect";
+const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
+  const scoreType = score === 0 ? "incorrect" : score === maxScore ? "allCorrect" : "partiallyCorrect";
   return showScore ? (
-    <Wrapper scoreType={scoreType}>
+    <Wrapper customStyle={customStyle} scoreType={scoreType} data-cy="scoreBlock">
       <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>
       <div data-cy="score">
         Score {score}/{maxScore}
@@ -61,7 +61,12 @@ const ScoreBlock = ({ score, maxScore, showScore }) => {
 ScoreBlock.propTypes = {
   score: PropTypes.number.isRequired,
   maxScore: PropTypes.number.isRequired,
-  showScore: PropTypes.bool.isRequired
+  showScore: PropTypes.bool.isRequired,
+  customStyle: PropTypes.object
+};
+
+ScoreBlock.defaultProps = {
+  customStyle: {}
 };
 
 const mapStateToProps = state => ({

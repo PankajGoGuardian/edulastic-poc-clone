@@ -342,6 +342,7 @@ class CurriculumSequence extends Component {
       studentPlaylists
     } = this.props;
 
+    const isPlaylistDetailsPage = window?.location?.hash === "#review";
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     // Options for add unit
@@ -607,6 +608,15 @@ class CurriculumSequence extends Component {
               </CurriculumHeaderButtons>
             </MainHeader>
           )}
+
+          {isPlaylistDetailsPage && (
+            <ReviewBreadCrumbWrapper>
+              <SecondHeader>
+                <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
+              </SecondHeader>
+            </ReviewBreadCrumbWrapper>
+          )}
+
           <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
             <ContentContainer urlHasUseThis={urlHasUseThis}>
               <SubTopBar>
@@ -1052,6 +1062,11 @@ const ContentContainer = styled.div`
 
 const BreadCrumbWrapper = styled.div`
   padding: 20px 40px;
+`;
+
+const ReviewBreadCrumbWrapper = styled.div`
+  padding: 20px 40px 0 40px;
+  width: 100%;
 `;
 
 const enhance = compose(

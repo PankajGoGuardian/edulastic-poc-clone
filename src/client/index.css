@@ -112,6 +112,14 @@ a:hover {
 }
 
 /**
+ * Override browser default margin in p tag
+ */
+
+p {
+  margin: 0px;
+}
+
+/**
  * 1. Remove the bottom border in Chrome 57-
  * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
  */

@@ -781,6 +781,9 @@ const SvgDraw = ({
     if (svg.current && containerRef) {
       // get dimensions of container only after content is loaded
       setTimeout(() => {
+        if (!svg.current) {
+          return;
+        }
         const { scrollHeight, scrollWidth } = containerRef;
         svg.current.style.height = `${scrollHeight}px`;
         svg.current.style.width = `${scrollWidth}px`;

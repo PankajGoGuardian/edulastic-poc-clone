@@ -752,7 +752,7 @@ class WorksheetComponent extends React.Component {
               forwardedRef={this.pdfRef}
               review={review}
             />
-            {viewMode !== "report" && isToolBarVisible && (
+            {viewMode !== "report" && !testMode && isToolBarVisible && (
               <Tools
                 isWorksheet
                 onFillColorChange={this.onFillColorChange}

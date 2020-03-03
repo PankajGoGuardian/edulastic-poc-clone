@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
+import PlayerSkinSelector from "../SimpleOptions/PlayerSkinSelector";
 import { Label, StyledDatePicker, StyledRow, StyledRowLabel, StyledSelect } from "./styled";
 
 const DatePolicySelector = ({
@@ -16,7 +17,8 @@ const DatePolicySelector = ({
   closePolicy: selectedClosePolicy,
   userRole,
   testType,
-  passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+  passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+  playerSkinType
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
@@ -116,6 +118,16 @@ const DatePolicySelector = ({
             userRole={userRole}
             testType={testType}
             onAssignmentTypeChange={changeField("testType")}
+          />
+        </Col>
+        <Col xs={24} md={12} lg={6}>
+          <Label>Student Player Skin</Label>
+          <PlayerSkinSelector
+            isAdvanceView
+            testType={testType}
+            userRole={userRole}
+            playerSkinType={playerSkinType}
+            onAssignmentTypeChange={changeField("playerSkinType")}
           />
         </Col>
       </StyledRow>

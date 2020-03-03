@@ -24,7 +24,7 @@ const PlayerSkinSelector = ({
     <StyledSelect
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
-      value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
+      value={playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
       disabled={disabled}
     >
       {Object.keys(types).map(key => (

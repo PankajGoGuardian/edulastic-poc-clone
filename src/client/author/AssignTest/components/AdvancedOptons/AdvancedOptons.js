@@ -152,6 +152,7 @@ class AdvancedOptons extends React.Component {
             changeField={changeField}
             testType={assignment.testType || testSettings.testType}
             passwordPolicy={assignment.passwordPolicy}
+            playerSkinType={assignment.playerSkinType || testSettings.playerSkinType}
           />
           <StyledRowLabel gutter={16}>
             <Col>

@@ -491,6 +491,7 @@ class ModuleRow extends Component {
                           fontStyle="9px/13px Open Sans"
                           fontWeight="Bold"
                           padding="10px 20px 10px 0px"
+                          data-cy={module.hidden ? "show-module" : "hide-module"}
                           onClick={event => {
                             event.preventDefault();
                             event.stopPropagation();
@@ -773,6 +774,7 @@ class ModuleRow extends Component {
                                     fontStyle="9px/13px Open Sans"
                                     fontWeight="Bold"
                                     padding="10px 20px 10px 0px"
+                                    data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
                                     onClick={() => this.hideTest(module._id, moduleData)}
                                   >
                                     {moduleData.hidden ? "SHOW" : "HIDE"}
@@ -835,7 +837,9 @@ class ModuleRow extends Component {
                                     </StyledLink>
                                   ) : (
                                     <AssignmentButton assigned={false}>
-                                      <Button onClick={uta.action}>{uta.text}</Button>
+                                      <Button data-cy={uta.text} onClick={uta.action}>
+                                        {uta.text}
+                                      </Button>
                                     </AssignmentButton>
                                   )}
                                 </StyledCol>

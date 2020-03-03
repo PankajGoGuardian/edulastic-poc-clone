@@ -388,7 +388,10 @@ class CurriculumSequence extends Component {
       const { _id = "", title, data = [], hidden = false } = mod;
       const metricModule = playlistMetrics[_id] || {};
       const name = `Module ${index + 1}`;
-      const value = round(metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100 / data.length, 0);
+      const value = round(
+        (metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100) / data.length,
+        0
+      );
       const tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
       const assignments = data?.flatMap(x => x?.assignments) || [];
       const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
@@ -555,6 +558,7 @@ class CurriculumSequence extends Component {
                 !isPublisherUser &&
                 (isStudent ? studentPlaylists?.length : slicedRecentPlaylists?.length) > 1 && (
                   <IconTile
+                    data-cy="open-dropped-playlist"
                     style={{ cursor: "pointer", marginLeft: "18px" }}
                     onClick={this.handleGuidePopup}
                     width={18}
@@ -573,7 +577,9 @@ class CurriculumSequence extends Component {
                   </EduButton>
                 )}
                 {urlHasUseThis && isTeacher && !isPublisherUser && (
-                  <EduButton onClick={this.openDropPlaylistModal}>DROP PLAYLIST</EduButton>
+                  <EduButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal}>
+                    DROP PLAYLIST
+                  </EduButton>
                 )}
                 {isAuthor && !urlHasUseThis && (
                   <Tooltip placement="bottom" title="EDIT">

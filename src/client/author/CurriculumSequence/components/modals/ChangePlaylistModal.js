@@ -51,6 +51,7 @@ const PlaylistCard = ({
   return (
     <StyledCard
       key={`select_playlist_${pId}`}
+      data-cy={`playlist-${pId}`}
       onClick={() => select({ _id: pId, title, grades: gradeList, subjects: subjectList, groupId })}
     >
       <Row type="flex" align="middle" style={cardHeaderRowStyle}>
@@ -58,7 +59,7 @@ const PlaylistCard = ({
           {titleToInitials(title).substring(0, 2)}
         </Avatar>
         <Tooltip placement="bottomLeft" title={title}>
-          <EllipsisContainer style={cardHeaderStyle} color={active ? lightGreen5 : greyThemeDark1}>
+          <EllipsisContainer data-cy="name" style={cardHeaderStyle} color={active ? lightGreen5 : greyThemeDark1}>
             {title}
           </EllipsisContainer>
         </Tooltip>
@@ -67,13 +68,17 @@ const PlaylistCard = ({
         <StyledCol span={12}>
           <IconGraduationCap width={17} height={15} style={cardIconStyle} />
           <Tooltip placement="bottomLeft" title={`Grade ${grades}`}>
-            <EllipsisContainer style={cardTextStyle}>Grade {grades}</EllipsisContainer>
+            <EllipsisContainer data-cy="grade" style={cardTextStyle}>
+              Grade {grades}
+            </EllipsisContainer>
           </Tooltip>
         </StyledCol>
         <StyledCol span={12}>
           <IconBook width={14} height={15} style={cardIconStyle} />
           <Tooltip placement="bottomLeft" title={subjects}>
-            <EllipsisContainer style={cardTextStyle}>{subjects}</EllipsisContainer>
+            <EllipsisContainer data-cy="subject" style={cardTextStyle}>
+              {subjects}
+            </EllipsisContainer>
           </Tooltip>
         </StyledCol>
       </Row>

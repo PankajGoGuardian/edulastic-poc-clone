@@ -26,7 +26,7 @@ import { StyledRadioGroup } from "./styled";
 
 const getFooterComponent = ({ dropPlaylist }) => (
   <FlexContainer width="450px">
-    <ThemeButton onClick={dropPlaylist} inverse>
+    <ThemeButton data-cy="done-drop-playlist" onClick={dropPlaylist} inverse>
       DONE
     </ThemeButton>
   </FlexContainer>
@@ -50,6 +50,7 @@ const DroppedItem = ({ onDelete, item }) => (
     <ActionWrapper>
       <IconWrapper
         fontSize="16"
+        data-cy={`remove-${item.name}`}
         onClick={() => onDelete(item)}
         title={item.type === "class" ? "REVOKE CLASS ACCESS" : "REVOKE STUDENT ACCESS"}
         show
@@ -190,22 +191,22 @@ const DropPlaylistModal = props => {
   const filterNewlyAddedClass = () => {
     const addedClassIds = prevAddedClasses.map(x => x?.id);
     return addedClass.filter(c => !addedClassIds.includes(c.id)).map(x => ({ key: x.id, label: x.name }));
-  }
+  };
 
   const filterNewlyAddedStudents = () => {
     const addedStudentIds = prevAddedStudents.map(x => x?.id);
     return addedStudent.filter(c => !addedStudentIds.includes(c.id)).map(x => ({ key: x.id, label: x.name }));
-  }
+  };
 
-  const addedData = uniqBy([...prevAddedClasses ,...filterClasses(), ...prevAddedStudents, ...addedStudent], "id");
-  const addedClassIds = [...prevAddedClasses ,...filterClasses()].map(x => x?.id);
+  const addedData = uniqBy([...prevAddedClasses, ...filterClasses(), ...prevAddedStudents, ...addedStudent], "id");
+  const addedClassIds = [...prevAddedClasses, ...filterClasses()].map(x => x?.id);
   const addedStudentIds = [...prevAddedStudents, ...addedStudent].map(x => x?.id);
 
   const filterStudents = () => {
     const ids = addedClass.map(x => x?.id);
     return studentList.filter(x => ids.includes(x?.classId) && !addedStudentIds.includes(x?.id));
   };
-  
+
   return (
     <StyledPurchaseLicenseModal
       visible={visible}
@@ -219,6 +220,7 @@ const DropPlaylistModal = props => {
           Dropping a playlist will let other teachers/students see the playlist and follow along.
         </p>
         <Selector
+          data-cy="drop-playlist-search"
           onChange={handleClassChange}
           onSelect={fetchStudents}
           value={filterNewlyAddedClass()}

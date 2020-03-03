@@ -95,8 +95,12 @@ class AssignTest extends React.Component {
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
         testId: match.params.testId,
-        openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy || assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
-        closePolicy: isAdmin ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
+        openPolicy: isAdmin
+          ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+          : assignmentSettings.openPolicy || assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
+        closePolicy: isAdmin
+          ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
+          : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType
       });
@@ -129,7 +133,7 @@ class AssignTest extends React.Component {
     } else if (
       assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       assignment.assignmentPassword &&
-      (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25)
+      (assignment?.assignmentPassword?.length < 6 || assignment?.assignmentPassword?.length > 25)
     ) {
       return message.error("Please add a valid password.");
     }
@@ -183,7 +187,7 @@ class AssignTest extends React.Component {
     let termId = "";
     if (assignment.termId) {
       termId = assignment.termId;
-    } else if (value.length) {
+    } else if (value?.length) {
       const [initialClassId] = value;
       termId = groupById[initialClassId].termId;
     }
@@ -197,7 +201,7 @@ class AssignTest extends React.Component {
     const { classList, assignmentSettings: assignment } = this.props;
     const groupById = keyBy(classList, "_id");
     const newAssignment = produce(assignment, assignmentCopy => {
-      if (assignmentCopy.class.length > 0) {
+      if (assignmentCopy?.class?.length > 0) {
         assignmentCopy.class.forEach(_class => {
           _class.specificStudents = specificStudents;
           if (!specificStudents) {
@@ -272,18 +276,18 @@ class AssignTest extends React.Component {
               defaultTestProfiles={defaultTestProfiles}
             />
           ) : (
-              <SimpleOptions
-                group={classList}
-                students={students}
-                assignment={assignment}
-                fetchStudents={fetchStudents}
-                testSettings={testSettings}
-                updateOptions={this.updateAssignmentNew}
-                onClassFieldChange={this.onClassFieldChange}
-                specificStudents={specificStudents}
-                toggleSpecificStudents={this.toggleSpecificStudents}
-              />
-            )}
+            <SimpleOptions
+              group={classList}
+              students={students}
+              assignment={assignment}
+              fetchStudents={fetchStudents}
+              testSettings={testSettings}
+              updateOptions={this.updateAssignmentNew}
+              onClassFieldChange={this.onClassFieldChange}
+              specificStudents={specificStudents}
+              toggleSpecificStudents={this.toggleSpecificStudents}
+            />
+          )}
         </Container>
       </div>
     );

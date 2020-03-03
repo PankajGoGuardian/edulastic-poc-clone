@@ -8,6 +8,7 @@ import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import PlaylistsContainer from "./PlaylistsContainer";
 import { smallDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { IconPlaylist } from "@edulastic/icons";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -25,7 +26,7 @@ const ContentWrapper = styled.div`
 
 const StudentPlaylist = props => (
   <Wrapper>
-    <Header titleText="common.playlistTitle" />
+    <Header titleIcon={IconPlaylist} titleText="common.playlistTitle" />
     <ContentWrapper>
       <SubHeader />
       <PlaylistsContainer />

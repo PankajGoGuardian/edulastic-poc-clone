@@ -7,7 +7,7 @@ import {
   themeColor,
   white
 } from "@edulastic/colors";
-import { Button, MainHeader , EduButton } from "@edulastic/common";
+import { Button, MainHeader, EduButton } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 import { IconPlusCircle } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -20,14 +20,10 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import styled from "styled-components";
-import {
-  addBulkTeacherAdminAction,
-  setTeachersDetailsModalVisibleAction
-} from "../../../SchoolAdmin/ducks";
+import { addBulkTeacherAdminAction, setTeachersDetailsModalVisibleAction } from "../../../SchoolAdmin/ducks";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 import InviteMultipleTeacherModal from "../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import { getUserOrgId, getUserRole } from "../../selectors/user";
-
 
 const ListHeader = ({
   onCreate,
@@ -46,7 +42,8 @@ const ListHeader = ({
   userOrgId = "",
   setTeachersDetailsModalVisible,
   teacherDetailsModalVisible,
-  userRole = ""
+  userRole = "",
+  titleIcon
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false);
 
@@ -63,7 +60,7 @@ const ListHeader = ({
   };
 
   return (
-    <MainHeader headingText={title}>
+    <MainHeader Icon={titleIcon} headingText={title}>
       {midTitle && (
         <MidTitleWrapper>
           <Title>{midTitle}</Title>
@@ -78,10 +75,7 @@ const ListHeader = ({
           (renderButton ? (
             renderButton()
           ) : (
-            <EduButton 
-              data-cy="createNew"
-              onClick={onCreate}
-            >
+            <EduButton data-cy="createNew" onClick={onCreate}>
               <IconPlusStyled />
               {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}
             </EduButton>
@@ -98,7 +92,7 @@ const ListHeader = ({
             <Link to="/author/assignments/select">
               <EduButton>
                 <IconPlusStyled />
-                  NEW ASSIGNMENT
+                NEW ASSIGNMENT
               </EduButton>
             </Link>
           </>
@@ -163,11 +157,7 @@ const enhance = compose(
         userOrgId: getUserOrgId(state),
         userRole: getUserRole(state),
         firstName: user.firstName || "",
-        teacherDetailsModalVisible: get(
-          state,
-          ["schoolAdminReducer", "teacherDetailsModalVisible"],
-          false
-        )
+        teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
       };
     },
     {
@@ -224,48 +214,6 @@ export const TestButton = styled(Button)`
     height: 40px;
     min-height: 40px;
     margin-left: 5px;
-  }
-`;
-
-const CreateButton = styled(Button)`
-  position: relative;
-  min-width: auto;
-  padding: 0px 34px 0px 10px;
-  height: 45px;
-  color: ${themeColor};
-  border-radius: 3px;
-  background: ${white};
-  border-color: ${props => props.theme.themeColor};
-  justify-content: space-around;
-  margin-left: 20px;
-  border-radius: 4px;
-  &:hover,
-  &:focus {
-    color: ${props => props.theme.themeColor};
-    border-color: ${props => props.theme.themeColor};
-  }
-  svg {
-    display: block;
-    margin-right: 17px;
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
-    min-height: 36px;
-    margin-left: 10px;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    span {
-      display: none;
-    }
-    svg {
-      display: block;
-      margin-right: 0px;
-    }
-    padding: 0px;
-    width: 45px;
-    min-height: 40px;
-    justify-content: center;
   }
 `;
 

@@ -24,7 +24,11 @@ const MainHeader = ({ children, headingText, Icon, t, toggleSideBar, ...restProp
       <Container {...restProps}>
         <HeaderLeftContainer headingText={headingText} {...restProps}>
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-          {Icon && <Icon color={title} width={20} height={20} />}
+          {Icon && (
+            <TitleIcon>
+              <Icon color={title} width={20} height={20} />
+            </TitleIcon>
+          )}
           <TitleWrapper {...restProps} title={t(headingText)} data-cy="title">
             {t(headingText)}
           </TitleWrapper>
@@ -63,7 +67,7 @@ const HeaderWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    left: 80px;
+    left: 70px;
     z-index: 999;
   }
   @media (max-width: ${tabletWidth}) {
@@ -141,6 +145,15 @@ export const TitleWrapper = styled.h1`
   @media (max-width: ${smallDesktopWidth}) {
     max-width: ${props => (props.noEllipsis ? "unset" : "200px")};
     min-width: auto;
+  }
+`;
+
+const TitleIcon = styled.span`
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+  svg {
+    fill: ${props => props.theme.header.headerTitleTextColor};
   }
 `;
 

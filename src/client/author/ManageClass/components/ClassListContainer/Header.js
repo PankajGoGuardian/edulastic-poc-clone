@@ -1,6 +1,5 @@
-import { extraDesktopWidthMax, themeColor, white } from "@edulastic/colors";
-import { MainHeader, EduButton } from "@edulastic/common";
-import { IconGoogleClassroom , IconPlusCircle } from "@edulastic/icons";
+import { EduButton, MainHeader } from "@edulastic/common";
+import { IconGoogleClassroom, IconManage, IconPlusCircle } from "@edulastic/icons";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
@@ -8,12 +7,10 @@ import { GoogleLogin } from "react-google-login";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
-import styled from "styled-components";
 // ducks
 import { fetchClassListAction } from "../../ducks";
 import { scopes } from "./ClassCreatePage";
-import { ButtonsWrapper, CreateIcon, IconManageClass, SyncButtons } from "./styled";
-
+import { ButtonsWrapper } from "./styled";
 
 const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
@@ -24,7 +21,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
     console.log("error", err);
   };
   return (
-    <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
+    <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
       <ButtonsWrapper>
         {allowGoogleLogin !== false && (
           <GoogleLogin
@@ -69,25 +66,3 @@ const enhance = compose(
 );
 
 export default enhance(Header);
-
-const StyledLink = styled(Link)`
-  padding: 5px 20px;
-  text-transform: uppercase;
-  color: ${themeColor};
-  background: ${white};
-  border: 1px solid ${themeColor};
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  font-size: 11px;
-  border-radius: 4px;
-  &:hover,
-  &:focus {
-    background: ${white};
-    color: ${themeColor};
-  }
-
-  @media (min-width: ${extraDesktopWidthMax}) {
-    height: 45px;
-  }
-`;

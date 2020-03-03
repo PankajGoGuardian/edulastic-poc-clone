@@ -1,31 +1,12 @@
 import styled, { css } from "styled-components";
 import { white, red, mediumDesktopWidth, themeColor, title } from "@edulastic/colors";
 import { Button, Col, Row } from "antd";
-import { IconManage } from "@edulastic/icons";
 import { MainContentWrapper } from "@edulastic/common";
 
 export const StyledFlexContainer = styled(Row)`
   .ant-select-selection__placeholder {
     margin-left: 6px;
   }
-`;
-
-export const Title = styled.div`
-  font-size: 22px;
-  font-weight: bold;
-  line-height: 1.36;
-  text-align: left;
-  display: flex;
-  color: ${white};
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
-  }
-`;
-
-export const IconManageClass = styled(IconManage)`
-  margin-top: 5px;
-  margin-right: 10px;
 `;
 
 const ShareButtonStyle = css`

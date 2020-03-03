@@ -17,7 +17,7 @@ export const MainContainer = styled.div`
     if (props.isPrintPreview) {
       return "0";
     }
-    return "80px";
+    return "70px";
   }};
   width: 100%;
 

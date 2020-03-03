@@ -9,6 +9,7 @@ import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
+import { IconReport } from "@edulastic/icons";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -37,6 +38,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading }) => {
     <Wrapper>
       <Header
         titleText="common.reportsTitle"
+        titleIcon={IconReport}
         classSelect
         showActiveClass={false}
         classList={activeEnrolledClasses}

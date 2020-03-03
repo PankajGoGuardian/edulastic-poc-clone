@@ -1,5 +1,6 @@
-import { green, red } from "@edulastic/colors";
-import { FlexContainer, MainHeader , EduButton } from "@edulastic/common";
+import { red } from "@edulastic/colors";
+import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
+import { IconClockDashboard } from "@edulastic/icons";
 import { Popover } from "antd";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
@@ -8,17 +9,7 @@ import { Link } from "react-router-dom";
 import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
 import IMG from "../../../Subscription/static/6.png";
-import {
-  ButtonText,
-  IconPlus,
-  ManageClassButton,
-  PopoverCancel,
-  PopoverDetail,
-  PopoverTitle,
-  PopoverWrapper,
-  UpgradeBtn
-} from "./styled";
-
+import { IconPlus, PopoverCancel, PopoverDetail, PopoverTitle, PopoverWrapper, UpgradeBtn } from "./styled";
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -26,8 +17,7 @@ const getContent = ({ setvisible, isSubscriptionExpired }) => (
     <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
       <PopoverTitle>Get Started!</PopoverTitle>
       <PopoverDetail>
-        Get additional reports, options to assist students, collaborate with colleagues,
-        anti-cheating tools and more.
+        Get additional reports, options to assist students, collaborate with colleagues, anti-cheating tools and more.
       </PopoverDetail>
       <FlexContainer padding="15px 0 15px 0" width="100%">
         <PopoverCancel onClick={() => setvisible(false)}> NO, THANKS</PopoverCancel>
@@ -47,7 +37,7 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
   const [visible, setvisible] = useState(false);
 
   return (
-    <MainHeader headingText="common.dashboard">
+    <MainHeader Icon={IconClockDashboard} headingText="common.dashboard">
       <FlexContainer>
         {!premium && (
           <PopoverWrapper>
@@ -61,17 +51,15 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
             >
               <EduButton btnType="primary" isGhost data-cy="manageClass">
                 <i
-                  className={
-                      isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"
-                    }
+                  className={isSubscriptionExpired ? "fa fa-exclamation-circle" : "fa fa-unlock-alt"}
                   aria-hidden="true"
                 />
                 {isSubscriptionExpired ? (
                   <span style={{ color: red }}>RENEW SUBSCRIPTION</span>
-                    ) : (
-                      "UNLOCK MORE FEATURES"
-                    )}
-              </EduButton>       
+                ) : (
+                  "UNLOCK MORE FEATURES"
+                )}
+              </EduButton>
             </Popover>
           </PopoverWrapper>
         )}

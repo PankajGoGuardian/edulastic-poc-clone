@@ -9,7 +9,7 @@ import moment from "moment";
 import { Button, Row, Input, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
-import { IconList, IconTile } from "@edulastic/icons";
+import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { greyish, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
@@ -91,10 +91,7 @@ import {
   getUserFeatures
 } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
-import {
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction
-} from "../../../../student/Login/ducks";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
@@ -201,11 +198,8 @@ class TestList extends Component {
     let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
     if (Object.keys(searchParams).length) {
-      searchParams.curriculumId =
-        Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
-      searchParams.standardIds = searchParams.standardIds
-        ? searchParams.standardIds.map(id => parseInt(id))
-        : [];
+      searchParams.curriculumId = Number(searchParams.curriculumId) || searchFilters.curriculumId || "";
+      searchParams.standardIds = searchParams.standardIds ? searchParams.standardIds.map(id => parseInt(id)) : [];
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
@@ -236,9 +230,7 @@ class TestList extends Component {
       this.updateFilterState(searchFilters, true);
       const pageNumber = params.page || page;
       const limitCount = params.limit || limit;
-      const queryParams = qs.stringify(
-        pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity)
-      );
+      const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
       history.push(`/author/tests?${queryParams}`);
       receiveTests({ page: 1, limit, search: searchFilters });
       getAllTags({ type: "test" });
@@ -271,9 +263,7 @@ class TestList extends Component {
   searchTest = debounce(search => {
     const { receiveTests, limit, history, playlistPage, playlist: { _id } = {} } = this.props;
     const queryParams = qs.stringify(pickBy({ ...search, page: 1, limit }, identity));
-    const locToPush = playlistPage
-      ? `/author/playlists/${_id}/edit`
-      : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ search, limit, page: 1 });
   }, 500);
@@ -360,9 +350,7 @@ class TestList extends Component {
     this.updateFilterState(searchFilters, true);
     // update the url to reflect the newly applied filter and get the new results.
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page: 1, limit }, identity));
-    const locToPush = playlistPage
-      ? `/author/playlists/${_id}/edit`
-      : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ search: searchFilters, page: 1, limit });
   };
@@ -378,22 +366,13 @@ class TestList extends Component {
   };
 
   updateTestList = page => {
-    const {
-      receiveTests,
-      limit,
-      history,
-      testFilters,
-      playlistPage,
-      playlist: { _id } = {}
-    } = this.props;
+    const { receiveTests, limit, history, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
     const searchFilters = {
       ...testFilters
     };
 
     const queryParams = qs.stringify(pickBy({ ...searchFilters, page, limit }, identity));
-    const locToPush = playlistPage
-      ? `/author/playlists/${_id}/edit`
-      : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({ page, limit, search: searchFilters });
   };
@@ -405,8 +384,7 @@ class TestList extends Component {
   handleClearFilter = () => {
     const { history, mode, limit, receiveTests } = this.props;
     this.updateFilterState(emptyFilters, true);
-    if (mode !== "embedded")
-      history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
+    if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
     receiveTests({ page: 1, limit, search: emptyFilters });
   };
 
@@ -597,12 +575,7 @@ class TestList extends Component {
   };
 
   handleBulkTestAdded = index => {
-    const {
-      addTestToModuleInBulk,
-      handleSave,
-      playlist: { modules = [] } = {},
-      tests = []
-    } = this.props;
+    const { addTestToModuleInBulk, handleSave, playlist: { modules = [] } = {}, tests = [] } = this.props;
     const { markedTests, selectedTests } = this.state;
     const addedTestIds = modules.flatMap(x => x.data.map(y => y.contentId));
     const markedIds = markedTests.map(obj => obj._id);
@@ -618,9 +591,7 @@ class TestList extends Component {
     }
 
     // Dont add draft type tests
-    const nonDraftTests = uniqueMarkedTests.filter(
-      x => tests.find(y => y._id === x._id).status !== "draft"
-    );
+    const nonDraftTests = uniqueMarkedTests.filter(x => tests.find(y => y._id === x._id).status !== "draft");
     if (nonDraftTests.length === uniqueMarkedTests.length) {
       this.setState(() => ({
         selectedTests: [...selectedTests, ...uniqueMarkedIds],
@@ -636,9 +607,7 @@ class TestList extends Component {
       }));
       addTestToModuleInBulk({ moduleIndex: index, tests: nonDraftTests });
       nonDraftTests.length
-        ? message.warning(
-            `${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`
-          )
+        ? message.warning(`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`)
         : message.warning("Draft test(s) cannot be added");
     }
     if (selectedTests.length === 0) handleSave();
@@ -661,8 +630,7 @@ class TestList extends Component {
     }
   };
 
-  searchFilterOption = (input, option) =>
-    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   onAddToCart = item => {
     const { addTestToCartAction } = this.props;
@@ -769,14 +737,7 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const {
-      history,
-      receiveTests,
-      limit,
-      testFilters,
-      playlistPage,
-      playlist: { _id } = {}
-    } = this.props;
+    const { history, receiveTests, limit, testFilters, playlistPage, playlist: { _id } = {} } = this.props;
     let updatedKeys = { ...testFilters };
 
     if (filter === filterMenuItems[0].filter) {
@@ -790,9 +751,7 @@ class TestList extends Component {
     this.updateFilterState(updatedKeys, true);
 
     const queryParams = qs.stringify(pickBy({ ...updatedKeys, page: 1, limit }, identity));
-    const locToPush = playlistPage
-      ? `/author/playlists/${_id}/edit`
-      : `/author/tests?${queryParams}`;
+    const locToPush = playlistPage ? `/author/playlists/${_id}/edit` : `/author/tests?${queryParams}`;
     history.push(locToPush);
     receiveTests({
       page: 1,
@@ -918,7 +877,8 @@ class TestList extends Component {
             onCreate={this.handleCreate}
             creating={creating}
             title="common.testLibrary"
-            btnTitle="AUTHOR TEST"
+            titleIcon={IconTestBank}
+            btnTitle="Author Test"
             renderFilter={() => (
               <StyleChangeWrapper>
                 <IconTile
@@ -1055,12 +1015,7 @@ class TestList extends Component {
                     <StyledCountText>
                       {playlist.modules?.flatMap(item => item?.data || [])?.length} TESTS SELECTED
                     </StyledCountText>
-                    <StyledButton
-                      data-cy="createNewItem"
-                      type="secondary"
-                      size="large"
-                      onClick={() => {}}
-                    >
+                    <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={() => {}}>
                       <Dropdown overlay={menu} trigger={["click"]} placement="bottomCenter">
                         <a data-cy="moduleActions" className="ant-dropdown-link" href="#">
                           Actions

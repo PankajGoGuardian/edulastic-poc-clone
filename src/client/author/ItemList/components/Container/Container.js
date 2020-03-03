@@ -1,77 +1,70 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { withWindowSizes } from "@edulastic/common";
+import { IconItemLibrary } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
 import { Pagination, Spin } from "antd";
 import { debounce, omit } from "lodash";
 import moment from "moment";
-import { withWindowSizes } from "@edulastic/common";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import {
-  Container,
-  Element,
-  ListItems,
-  PaginationContainer,
-  MobileFilterIcon,
-  ContentWrapper,
-  ScrollbarContainer
-} from "./styled";
-
-import ItemFilter from "../ItemFilter/ItemFilter";
-import CartButton from "../CartButton/CartButton";
-import ListHeader from "../../../src/components/common/ListHeader";
-import { createTestItemAction } from "../../../src/actions/testItem";
-import {
+  clearDictStandardsAction,
   getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction,
-  clearDictStandardsAction
+  getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
-import {
-  getTestsItemsCountSelector,
-  getTestsItemsLimitSelector,
-  getTestsItemsPageSelector,
-  getTestItemsLoadingSelector,
-  getSearchFilterStateSelector,
-  receiveTestItemsAction,
-  clearSelectedItemsAction,
-  clearFilterStateAction,
-  updateSearchFilterStateAction,
-  filterMenuItems,
-  initalSearchState
-} from "../../../TestPage/components/AddItems/ducks";
-import {
-  setDefaultTestDataAction,
-  previewCheckAnswerAction,
-  previewShowAnswerAction,
-  getAllTagsAction
-} from "../../../TestPage/ducks";
+import { createTestItemAction } from "../../../src/actions/testItem";
+import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
+import ListHeader from "../../../src/components/common/ListHeader";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from "../../../src/selectors/dictionaries";
-import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import {
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  getDefaultGradesSelector,
-  getDefaultSubjectSelector,
   getUserFeatures
 } from "../../../src/selectors/user";
-
+import { ItemsMenu, PaginationInfo } from "../../../TestList/components/Container/styled";
 import {
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction
-} from "../../../../student/Login/ducks";
-import ItemListContainer from "./ItemListContainer";
-import { createTestFromCartAction, approveOrRejectMultipleItem } from "../../ducks";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+  clearFilterStateAction,
+  clearSelectedItemsAction,
+  filterMenuItems,
+  getSearchFilterStateSelector,
+  getTestItemsLoadingSelector,
+  getTestsItemsCountSelector,
+  getTestsItemsLimitSelector,
+  getTestsItemsPageSelector,
+  initalSearchState,
+  receiveTestItemsAction,
+  updateSearchFilterStateAction
+} from "../../../TestPage/components/AddItems/ducks";
+import {
+  getAllTagsAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction,
+  setDefaultTestDataAction
+} from "../../../TestPage/ducks";
+import { approveOrRejectMultipleItem, createTestFromCartAction } from "../../ducks";
 import Actions from "../Actions";
 import SelectCollectionModal from "../Actions/SelectCollection";
-import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
+import CartButton from "../CartButton/CartButton";
+import ItemFilter from "../ItemFilter/ItemFilter";
+import ItemListContainer from "./ItemListContainer";
+import {
+  Container,
+  ContentWrapper,
+  Element,
+  ListItems,
+  MobileFilterIcon,
+  PaginationContainer,
+  ScrollbarContainer
+} from "./styled";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -342,9 +335,7 @@ class Contaier extends Component {
     </>
   );
 
-  renderFilterIcon = isShowFilter => (
-    <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />
-  );
+  renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
   render() {
     const {
@@ -368,6 +359,7 @@ class Contaier extends Component {
           creating={creating}
           windowWidth={windowWidth}
           title="common.itemBank"
+          titleIcon={IconItemLibrary}
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
         />
@@ -403,14 +395,8 @@ class Contaier extends Component {
                     </ItemsMenu>
 
                     <ScrollbarContainer>
-                      <ItemListContainer
-                        history={history}
-                        windowWidth={windowWidth}
-                        search={search}
-                      />
-                      {count > 10 && (
-                        <PaginationContainer>{this.renderPagination()}</PaginationContainer>
-                      )}
+                      <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
+                      {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                     </ScrollbarContainer>
                   </>
                 )}

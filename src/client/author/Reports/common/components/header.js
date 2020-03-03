@@ -1,6 +1,6 @@
 import { themeColor } from "@edulastic/colors";
 import { MainHeader } from "@edulastic/common";
-import { IconFilter } from "@edulastic/icons";
+import { IconFilter, IconBarChart } from "@edulastic/icons";
 import { Button, Col, Icon } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -43,6 +43,7 @@ export const CustomizedHeaderWrapper = ({
       <MainHeader
         mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
         headingText="common.reports"
+        Icon={IconBarChart}
       >
         {navigationItems.length ? (
           activeNavigationKey === "standard-reports" ? (

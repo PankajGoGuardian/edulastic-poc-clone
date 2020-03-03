@@ -14,7 +14,7 @@ import {
   borderGrey
 } from "@edulastic/colors";
 import { Button, Table, Select, Icon, Dropdown } from "antd";
-import { IconManage, IconPlusCircle } from "@edulastic/icons";
+import { IconPlusCircle } from "@edulastic/icons";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ClassCreateContainer = styled.div`
@@ -87,24 +87,6 @@ export const ThemeButton = styled(Button)`
     width: 250px;
     margin-bottom: 10px;
   }
-`;
-
-export const Title = styled.div`
-  font-size: 22px;
-  font-weight: bold;
-  line-height: 1.36;
-  text-align: left;
-  display: flex;
-  color: ${white};
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
-  }
-`;
-
-export const IconManageClass = styled(IconManage)`
-  margin-top: 5px;
-  margin-right: 10px;
 `;
 
 export const CreateIcon = styled(IconPlusCircle)`

@@ -17,6 +17,7 @@ import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../author/sharedDucks/questions";
 import { clearUserWorkAction } from "../../../assessment/actions/userWork";
+import { IconReport } from "@edulastic/icons";
 
 const ReportListContainer = ({
   flag,
@@ -66,7 +67,7 @@ const ReportListContainer = ({
   }
   return (
     <MainContainer flag={flag}>
-      <TestAcivityHeader isDocBased={isDocBased} titleText="common.reportsTitle" />
+      <TestAcivityHeader isDocBased={isDocBased} titleIcon={IconReport} titleText="common.reportsTitle" />
       <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
       {isDocBased ? (
         <div>

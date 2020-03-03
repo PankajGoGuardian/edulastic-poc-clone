@@ -8,7 +8,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
-import { IconFilter } from "@edulastic/icons";
+import { IconFilter, IconAssignment } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 
 import {
@@ -79,14 +79,7 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const {
-      loadAssignments,
-      loadAssignmentsSummary,
-      districtId,
-      loadFolders,
-      userRole,
-      orgData
-    } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
@@ -207,13 +200,7 @@ class Assignments extends Component {
       isAdvancedView,
       toggleDeleteAssignmentModalState
     } = this.props;
-    const {
-      selectedRows,
-      filterState,
-      isPreviewModalVisible,
-      currentTestId,
-      openEditPopup
-    } = this.state;
+    const { selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
 
@@ -240,6 +227,7 @@ class Assignments extends Component {
           onCreate={this.handleCreate}
           createAssignment
           title="common.assignmentsTitle"
+          titleIcon={IconAssignment}
           btnTitle="AUTHOR TEST"
           isAdvancedView={isAdvancedView}
         />
@@ -264,11 +252,7 @@ class Assignments extends Component {
                     </LeftWrapper>
                   )}
                   <TableWrapper showFilter={showFilter}>
-                    <FilterButton
-                      showFilter={showFilter}
-                      variant="filter"
-                      onClick={this.toggleFilter}
-                    >
+                    <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
                       <IconFilter
                         data-cy="smart-filter"
                         color={showFilter ? white : themeColor}

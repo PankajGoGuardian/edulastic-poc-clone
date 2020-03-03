@@ -17,6 +17,7 @@ import { getClasses, getCurrentGroup } from "../Login/ducks";
 import { getEnrollClassAction, getAllClassesSelector, getFilteredClassesSelector } from "../ManageClass/ducks";
 import NoDataNotification from "../../common/components/NoDataNotification";
 import { LoaderConainer } from "./styled";
+import { IconBarChart } from "@edulastic/icons";
 
 const SkillReportContainer = ({
   flag,
@@ -47,7 +48,8 @@ const SkillReportContainer = ({
       <Header
         flag={flag}
         titleText="common.skillReportTitle"
-        classSelect={true}
+        titleIcon={IconBarChart}
+        classSelect
         showActiveClass={false}
         classList={activeEnrolledClasses}
         showAllClassesOption={false}

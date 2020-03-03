@@ -1,21 +1,25 @@
-import { MainHeader , EduButton } from "@edulastic/common";
+import { MainHeader, EduButton } from "@edulastic/common";
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
+import { IconManage } from "@edulastic/icons";
 // ducks
 import { fetchClassListAction } from "../../ducks";
 // components
-import { ButtonsWrapper, CancelClassBtn, IconManageClass, SaveClassBtn } from "./styled";
-
+import { ButtonsWrapper, CancelClassBtn, SaveClassBtn } from "./styled";
 
 const Header = () => (
-  <MainHeader Icon={IconManageClass} headingText="common.manageClassTitle">
+  <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
     <ButtonsWrapper>
       <Link to="/author/manageClass">
-        <EduButton isGhost data-cy="cancel">Cancel</EduButton>
+        <EduButton isGhost data-cy="cancel">
+          Cancel
+        </EduButton>
       </Link>
-      <EduButton data-cy="saveClass" htmlType="submit">Save Class</EduButton>
+      <EduButton data-cy="saveClass" htmlType="submit">
+        Save Class
+      </EduButton>
     </ButtonsWrapper>
   </MainHeader>
 );

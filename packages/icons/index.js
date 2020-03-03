@@ -159,6 +159,7 @@ export { default as IconHash } from "./src/IconHash";
 export { default as IconTestBank } from "./src/IconTestBank";
 export { default as IconItemLibrary } from "./src/IconItemLibrary";
 export { default as IconPlaylist } from "./src/IconPlaylist";
+export { default as IconPlaylist2 } from "./src/IconPlaylist2";
 export { default as IconNewFile } from "./src/IconNewFile";
 export { default as IconDraft } from "./src/IconDraft";
 export { default as IconLock } from "./src/IconLock";

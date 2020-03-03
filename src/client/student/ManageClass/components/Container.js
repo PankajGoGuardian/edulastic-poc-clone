@@ -1,6 +1,6 @@
 import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
 import { MainHeader } from "@edulastic/common";
-import { IconPlus } from "@edulastic/icons";
+import { IconPlus, IconManage } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Col, Input, Modal, Row, Spin } from "antd";
 import PropTypes from "prop-types";
@@ -51,7 +51,7 @@ const ManageClassContainer = ({
   if (loading) return <Spin />;
   return (
     <>
-      <MainHeader headingText="common.manageClassTitle">
+      <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (

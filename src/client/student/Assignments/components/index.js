@@ -8,6 +8,7 @@ import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction, setFilterClassAction } from "../../ManageClass/ducks";
+import { IconClockDashboard } from "@edulastic/icons";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -34,7 +35,13 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
 
   return (
     <Wrapper>
-      <Header titleText="common.dashboardTitle" classSelect showActiveClass={false} classList={activeEnrolledClasses} />
+      <Header
+        titleIcon={IconClockDashboard}
+        titleText="common.dashboardTitle"
+        classSelect
+        showActiveClass={false}
+        classList={activeEnrolledClasses}
+      />
       <ContentWrapper>
         <SubHeader />
         <AssignmentContainer />

@@ -89,7 +89,7 @@ StudentApp.propTypes = {
 };
 
 const MainContainer = addThemeBackgroundColor(styled.div`
-  padding-left: 80px;
+  padding-left: 70px;
   width: 100%;
 
   /* &.zoom1 {

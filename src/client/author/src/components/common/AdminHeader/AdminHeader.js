@@ -6,6 +6,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
 import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
+import { IconSettings } from "@edulastic/icons";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -53,16 +54,10 @@ class AdminHeader extends Component {
     const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
-      <MainHeader headingText={manageTabLabel} mobileHeaderHeight={100}>
+      <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>
-          <StyledTabs
-            type="card"
-            defaultActiveKey={active.mainMenu}
-            onTabClick={this.onHeaderTabClick}
-          >
-            {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledTabPane tab="District Profile" key="District Profile" />
-            ) : null}
+          <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
+            {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="District Profile" key="District Profile" /> : null}
             <StyledTabPane tab={SchoolTabtext} key="Schools" />
             <StyledTabPane tab="Users" key="Users" />
             <StyledTabPane tab="Classes" key="Classes" />
@@ -70,8 +65,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Class Enrollment" key="Class Enrollment" />
             {/* <StyledTabPane tab="Groups" key={"Groups"} /> */}
             {role === roleuser.DISTRICT_ADMIN && <StyledTabPane tab="Content" key="Content" />}
-            {role === roleuser.DISTRICT_ADMIN ||
-            (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
+            {role === roleuser.DISTRICT_ADMIN || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
               <StyledTabPane tab="Settings" key="Settings" />
             ) : null}
           </StyledTabs>
@@ -84,11 +78,7 @@ class AdminHeader extends Component {
 export default connect(
   state => ({
     role: getUserRole(state),
-    schoolLevelAdminSettings: get(
-      state,
-      "districtPolicyReducer.data.schoolAdminSettingsAccess",
-      false
-    ),
+    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false),
     manageTabLabel: getManageTabLabelSelector(state)
   }),
   {}

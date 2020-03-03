@@ -1,7 +1,7 @@
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { greyLight1, greyThemeLight, themeColor } from "@edulastic/colors";
-import { FlexContainer, helpers, withWindowSizes } from "@edulastic/common";
-import { IconList, IconPlusCircle, IconTile } from "@edulastic/icons";
+import { greyLight1, greyThemeLight } from "@edulastic/colors";
+import { FlexContainer, withWindowSizes } from "@edulastic/common";
+import { IconList, IconPlaylist2, IconTile } from "@edulastic/icons";
 import { Button, Input, Row, Spin } from "antd";
 import { debounce, get, has, identity, pick, pickBy } from "lodash";
 import moment from "moment";
@@ -12,7 +12,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import Modal from "react-responsive-modal";
 import { compose } from "redux";
-import styled from "styled-components";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import ListHeader from "../../../src/components/common/ListHeader";
@@ -356,7 +355,7 @@ class TestList extends Component {
           title="common.playlistLibrary"
           data-cy="new-playlist"
           btnTitle="New Playlist"
-          icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
+          titleIcon={IconPlaylist2}
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile
@@ -495,7 +494,3 @@ const enhance = compose(
 );
 
 export default enhance(TestList);
-
-const IconPlusStyled = styled(IconPlusCircle)`
-  position: relative;
-`;

@@ -17,9 +17,10 @@ const Header = ({
   setClassList,
   setShowClass,
   isDocBased,
-  showAllClassesOption = true
+  showAllClassesOption = true,
+  titleIcon
 }) => (
-  <MainHeader headingText={titleText} isDocBased={isDocBased}>
+  <MainHeader Icon={titleIcon} headingText={titleText} isDocBased={isDocBased}>
     <StudentSlectCommon />
     {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}
     {showActiveClass && (

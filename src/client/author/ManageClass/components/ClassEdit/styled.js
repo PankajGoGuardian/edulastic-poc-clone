@@ -1,28 +1,9 @@
 import styled, { css } from "styled-components";
 import { white, themeColor, mediumDesktopWidth, title } from "@edulastic/colors";
 import { Button, Col, Row } from "antd";
-import { IconManage } from "@edulastic/icons";
 import { MainContentWrapper } from "@edulastic/common";
 
 export const StyledFlexContainer = styled(Row)``;
-
-export const Title = styled.div`
-  font-size: 22px;
-  font-weight: bold;
-  line-height: 1.36;
-  text-align: left;
-  display: flex;
-  color: ${white};
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    font-size: 18px;
-  }
-`;
-
-export const IconManageClass = styled(IconManage)`
-  margin-top: 5px;
-  margin-right: 10px;
-`;
 
 const ShareButtonStyle = css`
   font-weight: 600;
@@ -87,11 +68,14 @@ export const Container = styled(MainContentWrapper)`
   }
 `;
 
-export const FormTitle = styled(Title)`
+export const FormTitle = styled.div`
   color: ${title};
   font-size: ${props => props.theme.subtitleFontSize};
   line-height: 1;
   margin-bottom: 25px;
+  font-weight: bold;
+  text-align: left;
+  display: flex;
 `;
 
 export const MainContainer = styled.div``;

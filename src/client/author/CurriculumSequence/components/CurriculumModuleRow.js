@@ -223,6 +223,7 @@ class ModuleRow extends Component {
       };
       const isRedirected = assignmentRows.find(el => el.redirect);
       if (isRedirected && uta.redirect) {
+        uta.isRedirected = true;
         uta.text = "RETAKE";
         uta.action = () => startAssignment(uta);
       } else if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
@@ -827,7 +828,9 @@ class ModuleRow extends Component {
                             ) : (
                               !moduleData.hidden && (
                                 <StyledCol span={7} justify="flex-end">
-                                  {uta.testType !== "practice" && uta.taStatus === testActivityStatus.SUBMITTED ? (
+                                  {uta.testType !== "practice" &&
+                                  uta.taStatus === testActivityStatus.SUBMITTED &&
+                                  !uta.isRedirected ? (
                                     <StyledLink
                                       to={`/home/class/${uta.classId}/test/${uta.testId}/testActivityReport/${
                                         uta.testActivityId

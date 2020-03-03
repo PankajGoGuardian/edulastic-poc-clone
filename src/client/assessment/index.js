@@ -26,8 +26,9 @@ const AssessmentPlayer = ({
   closeTestPreviewModal,
   isShowStudentWork = false,
   showTools,
-  startAssessment,  
-  passages
+  startAssessment,
+  passages,
+  playlistId
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -35,7 +36,7 @@ const AssessmentPlayer = ({
     // if its from a modal that maybe showing the answer, then dont reset the answer.
     if (!LCBPreviewModal) startAssessment();
     // if showing student work dont genrate question labels again
-    loadTest({ testId, testActivityId, preview, demo, test, groupId, isShowStudentWork });
+    loadTest({ testId, testActivityId, preview, demo, test, groupId, isShowStudentWork, playlistId });
   }, [testId]);
 
   const confirmBeforeQuitting = e => {

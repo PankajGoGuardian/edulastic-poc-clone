@@ -318,7 +318,8 @@ class ModuleRow extends Component {
       urlHasUseThis,
       isStudent,
       summaryData,
-      playlistMetrics
+      playlistMetrics,
+      playlistId
     } = this.props;
 
     const { title, _id, data = [], description = "" } = module;
@@ -365,7 +366,12 @@ class ModuleRow extends Component {
             height="100%"
             destroyOnClose
           >
-            <AssessmentPlayer testId={selectedTest} preview closeTestPreviewModal={this.closeModal} />
+            <AssessmentPlayer
+              playlistId={playlistId}
+              testId={selectedTest}
+              preview
+              closeTestPreviewModal={this.closeModal}
+            />
           </ModalWrapper>
           <ModuleWrapper
             data-cy={`row-module-${moduleIndex + 1}`}

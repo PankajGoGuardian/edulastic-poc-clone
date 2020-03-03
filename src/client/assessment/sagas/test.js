@@ -69,7 +69,8 @@ function* loadTest({ payload }) {
     demo = false,
     test: testData = {},
     groupId: groupIdFromUrl,
-    isShowStudentWork = false
+    isShowStudentWork = false,
+    playlistId
   } = payload;
   try {
     // if the assessment player is loaded for showing student work
@@ -110,7 +111,8 @@ function* loadTest({ payload }) {
           validation: true,
           data: true,
           groupId,
-          testActivityId
+          testActivityId,
+          ...(playlistId ? { playlistId } : {})
         }) // when preview(author side) use normal non cached api
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);

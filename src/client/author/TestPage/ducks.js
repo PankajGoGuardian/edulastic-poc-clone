@@ -1201,7 +1201,7 @@ function* shareTestSaga({ payload }) {
 
 function* publishTestSaga({ payload }) {
   try {
-    const { _id: id, _test, assignFlow } = payload;
+    const { _id: id, test: _test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     _test.thumbnail = _test.thumbnail === defaultImage ? defaultThumbnail : _test.thumbnail;
     const assessmentQuestions = yield select(getQuestionsArraySelector);

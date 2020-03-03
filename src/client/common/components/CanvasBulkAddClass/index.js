@@ -135,7 +135,11 @@ const CanvasBulkAddClass = ({
     if (!selectedRows.length) {
       return message.error("Please select atleast one canvas course section to sync.");
     }
-    const selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
+    let selectedClasses = classes.filter(c => selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`));
+
+    // setting default grades as Other (O) if grade is not selected by the user.
+    selectedClasses = selectedClasses.map(c => ({ ...c, grades: c.grades.length > 0 ? c.grades : ["O"] }));
+
     bulkSyncCanvasClass(selectedClasses);
     setShowModal(true);
   };

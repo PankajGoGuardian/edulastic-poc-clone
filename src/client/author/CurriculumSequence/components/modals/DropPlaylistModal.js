@@ -96,22 +96,6 @@ const DropPlaylistModal = props => {
   }, [visible]);
 
   useEffect(() => {
-    setAddedClass(
-      droppedAccessData?.classList?.map(x => ({
-        id: x?._id,
-        name: x?.name,
-        type: "class"
-      }))
-    );
-
-    setAddedStudent(
-      droppedAccessData?.studentList?.map(x => ({
-        id: x?._id,
-        name: x?.name,
-        classId: x?.groupId,
-        type: "student"
-      }))
-    );
     setPrevAddedClasses(
       droppedAccessData?.classList?.map(x => ({
         id: x?._id,
@@ -152,8 +136,6 @@ const DropPlaylistModal = props => {
 
   const handleStudentChange = (value, option) => {
     setMode("edit");
-    const classIds = value.flatMap(x => studentList?.filter(y => y?.id === x.key)?.map(z => z?.classId));
-    setAddedClass(prev => prev.filter(x => !classIds?.includes(x?.id)));
     setAddedStudent(
       value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId }))
     );
@@ -172,6 +154,11 @@ const DropPlaylistModal = props => {
     }
   };
 
+  const filterClasses = () => {
+    const classIds = addedStudent.flatMap(x => studentList?.filter(y => y?.id === x.id)?.map(z => z?.classId));
+    return addedClass.filter(x => !classIds?.includes(x?.id));
+  };
+
   const dropPlaylist = () => {
     const payload = {
       playlistId,
@@ -180,7 +167,7 @@ const DropPlaylistModal = props => {
       grades,
       subjects,
       grantAccess: {
-        classList: uniqBy([...prevAddedClasses, ...addedClass], "id"),
+        classList: uniqBy([...prevAddedClasses, ...filterClasses()], "id"),
         studentList: uniqBy([...prevAddedStudents, ...addedStudent], "id")
       },
       revokeAccess: {
@@ -195,7 +182,7 @@ const DropPlaylistModal = props => {
   };
 
   const fetchStudents = ({ key }) => {
-    if (searchBy === "byClass" && !studentList.some(x => x.classId === key)) {
+    if (!studentList.some(x => x.classId === key)) {
       fetchStudentListAction({ districtId, classId: key });
     }
   };
@@ -210,10 +197,15 @@ const DropPlaylistModal = props => {
     return addedStudent.filter(c => !addedStudentIds.includes(c.id)).map(x => ({ key: x.id, label: x.name }));
   }
 
-  const addedData = uniqBy([...prevAddedClasses ,...addedClass, ...prevAddedStudents, ...addedStudent], "id");
-  const addedClassIds = [...prevAddedClasses ,...addedClass].map(x => x?.id);
+  const addedData = uniqBy([...prevAddedClasses ,...filterClasses(), ...prevAddedStudents, ...addedStudent], "id");
+  const addedClassIds = [...prevAddedClasses ,...filterClasses()].map(x => x?.id);
   const addedStudentIds = [...prevAddedStudents, ...addedStudent].map(x => x?.id);
 
+  const filterStudents = () => {
+    const ids = addedClass.map(x => x?.id);
+    return studentList.filter(x => ids.includes(x?.classId) && !addedStudentIds.includes(x?.id));
+  };
+  
   return (
     <StyledPurchaseLicenseModal
       visible={visible}
@@ -246,9 +238,8 @@ const DropPlaylistModal = props => {
         {searchBy !== "byClass" && (
           <Selector
             onChange={handleStudentChange}
-            onSelect={fetchStudents}
             value={filterNewlyAddedStudents()}
-            options={studentList.filter(x => !addedStudentIds.includes(x?.id))}
+            options={filterStudents()}
             isLoading={studentListFetching}
             label="STUDENT"
             dataCy="selectStudent"

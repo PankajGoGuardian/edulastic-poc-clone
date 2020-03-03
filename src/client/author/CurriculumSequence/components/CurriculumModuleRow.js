@@ -227,6 +227,8 @@ class ModuleRow extends Component {
         uta.action = () => startAssignment(uta);
       } else if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
         uta.text = "REVIEW";
+      } else if (uta.taStatus === testActivityStatus.ABSENT && uta.utaAssignmentId) {
+        uta.text = "ABSENT";
       } else if (uta.testActivityId && uta.utaAssignmentId) {
         // In case previous uta was derived from practice flow then check for assignment ID and proceed
         uta.text = "RESUME ASSIGNMENT";

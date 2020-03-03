@@ -198,6 +198,13 @@ const AssessmentContainer = ({
     } else {
       message.destroy();
     }
+    return () => {
+      /**
+       * message might appear just during unmount.
+       * in that case we need to destroy it after
+       */
+      setTimeout(() => message.destroy(), 1500);
+    };
   }, [savingResponse]);
 
   if (loading) {

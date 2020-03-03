@@ -63,7 +63,7 @@ export const StyledAnchor = styled.div`
   align-items: center;
   justify-content: center;
   color: ${props => (props.isActive ? "#2F4151" : "#87929B")};
-  border: 1px solid ${props => (props.isActive ? "#B3BFC7" : "#E5E5E5")};
+  border: 1px solid ${props => (props.isActive ? "#2f4151" : "#E5E5E5")};
   border-bottom-color: ${props => props.isActive && white};
   width: auto;
   padding: 0px 18px;
@@ -73,15 +73,17 @@ export const StyledAnchor = styled.div`
   margin-bottom: ${props => (props.isActive ? "-1px" : "0px")};
   border-radius: 4px 4px 0px 0px;
   background-color: ${props => (props.isActive ? white : "#E5E5E5")};
+  position: relative;
   svg {
     fill: ${props => (props.isActive ? "#2F4151" : "#87929B")};
-    margin-right: 15px;
+    margin-right: 20px;
     &:hover {
       fill: ${props => (props.isActive ? "#2F4151" : "#87929B")};
     }
   }
 
   @media (max-width: ${mediumDesktopWidth}) {
+    padding: 0px 18px;
     svg {
       display: none;
     }
@@ -91,4 +93,9 @@ export const StyledAnchor = styled.div`
   }
 `;
 
-export const LinkLabel = styled.div``;
+export const LinkLabel = styled.div`
+  padding-right: 15px;
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 0px;
+  }
+`;

@@ -10,6 +10,7 @@ import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 import { IconReport } from "@edulastic/icons";
+import { MainContentWrapper } from "@edulastic/common";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -43,10 +44,10 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild }) =
         showActiveClass={false}
         classList={activeEnrolledClasses}
       />
-      <ContentWrapper>
+      <MainContentWrapper>
         <SubHeader />
         <AssignmentContainer />
-      </ContentWrapper>
+      </MainContentWrapper>
     </Wrapper>
   );
 };

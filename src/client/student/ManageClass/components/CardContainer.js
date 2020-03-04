@@ -175,9 +175,6 @@ const CollapsibleCard = styled(Collapse)`
   background: white;
   border-radius: 5px;
   margin-bottom: 5px;
-  & > .ant-collapse-item {
-    border: none;
-  }
   .ant-collapse-arrow {
     svg {
       fill: ${themeColor};

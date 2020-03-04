@@ -1,12 +1,11 @@
 import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
-import { MainHeader } from "@edulastic/common";
+import { MainHeader, EduButton, MainContentWrapper } from "@edulastic/common";
 import { IconPlus, IconManage } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Col, Input, Modal, Row, Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { compose } from "redux";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import NoDataIcon from "../../assets/nodata.svg";
 import ShowActiveClass from "../../sharedComponents/ShowActiveClasses";
@@ -31,8 +30,7 @@ const ManageClassContainer = ({
   allClassList,
   setClassList,
   setShowClass,
-  userRole,
-  currentChild
+  userRole
 }) => {
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false);
   const [classCode, setClassCode] = useState(null);
@@ -67,12 +65,12 @@ const ManageClassContainer = ({
             title={t("common.enterClassCode")}
             footer={
               <ButtonWrapper>
-                <StyledButton data-cy="cancelbutton" onClick={closeModalHandler}>
+                <EduButton data-cy="cancelbutton" height="36px" isGhost onClick={closeModalHandler}>
                   {t("common.cancel")}
-                </StyledButton>
-                <StyledButton data-cy="joinbutton" onClick={joinClassHandler} type="primary">
+                </EduButton>
+                <EduButton data-cy="joinbutton" height="36px" onClick={joinClassHandler} type="primary">
                   {t("common.join")}
-                </StyledButton>
+                </EduButton>
               </ButtonWrapper>
             }
           >
@@ -89,36 +87,38 @@ const ManageClassContainer = ({
           </JoinClassModal>
         )}
       </MainHeader>
-      <SubHeaderWrapper>
-        <Col span={12}>
-          <ManageClassSubHeader />
-        </Col>
-        <Col span={12}>
-          {showActiveClass && (
-            <ShowActiveClass
-              t={t}
-              classList={allClassList}
-              setClassList={setClassList}
-              setShowClass={setShowClass}
-              showClass={showClass}
-            />
-          )}
-        </Col>
-      </SubHeaderWrapper>
+      <MainContentWrapper>
+        <SubHeaderWrapper>
+          <Col span={12}>
+            <ManageClassSubHeader />
+          </Col>
+          <Col span={12}>
+            {showActiveClass && (
+              <ShowActiveClass
+                t={t}
+                classList={allClassList}
+                setClassList={setClassList}
+                setShowClass={setShowClass}
+                showClass={showClass}
+              />
+            )}
+          </Col>
+        </SubHeaderWrapper>
 
-      {classList.length ? (
-        <ClassCardWrapper>
-          <ClassCards classList={classList} t={t} />
-        </ClassCardWrapper>
-      ) : (
-        <NoDataBoxWrapper>
-          <NoDataBox>
-            <img src={NoDataIcon} alt="noData" />
-            <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
-            <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
-          </NoDataBox>
-        </NoDataBoxWrapper>
-      )}
+        {classList.length ? (
+          <ClassCardWrapper>
+            <ClassCards classList={classList} t={t} />
+          </ClassCardWrapper>
+        ) : (
+          <NoDataBoxWrapper>
+            <NoDataBox>
+              <img src={NoDataIcon} alt="noData" />
+              <h4>{showClass ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}</h4>
+              <p>{showClass ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}</p>
+            </NoDataBox>
+          </NoDataBoxWrapper>
+        )}
+      </MainContentWrapper>
     </>
   );
 };
@@ -145,6 +145,7 @@ const ClassCardWrapper = styled.div`
   display: flex;
   flex-flow: wrap;
   justify-content: space-between;
+  margin-top: 20px;
   &:after {
     content: "";
     flex: auto;
@@ -156,16 +157,11 @@ const SubHeaderWrapper = styled(Row)`
   flex-direction: row;
   align-items: baseline;
   justify-content: space-between;
-  margin: 15px 0px;
-
-  @media (max-width: ${smallDesktopWidth}) {
-    margin: 10px 0px;
-  }
 `;
 const JoinClassBtn = styled(Button)`
   background: ${white};
   color: ${themeColor};
-  border: none;
+  border-color: ${themeColor};
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;

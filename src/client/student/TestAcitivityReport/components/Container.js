@@ -115,5 +115,5 @@ const AssignmentsContent = styled.div`
   border-radius: 10px;
   z-index: 0;
   position: relative;
-  margin: ${props => (props.hasCollapseButtons ? "0px 30px 30px 45px" : "16px 50px 30px 55px")};
+  margin: ${props => (props.hasCollapseButtons ? "0px 30px 30px 45px" : "20px 0px")};
 `;

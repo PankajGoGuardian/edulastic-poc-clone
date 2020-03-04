@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Spin } from "antd";
+import { MainContentWrapper } from "@edulastic/common";
 import { IconBarChart } from "@edulastic/icons";
-import Header from "../sharedComponents/Header";
-import StudentMasteryProfile from "../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile";
+import { Spin } from "antd";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { getSPRFilterDataRequestAction } from "../../author/Reports/subPages/studentProfileReport/common/filterDataDucks";
-import MainContainer from "../styled/mainContainer";
-import { getUserId, getUserName, getClasses, getCurrentGroup } from "../Login/ducks";
+import StudentMasteryProfile from "../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile";
+import NoDataNotification from "../../common/components/NoDataNotification";
+import { getClasses, getCurrentGroup, getUserId, getUserName } from "../Login/ducks";
 import {
-  getEnrollClassAction,
   getAllClassesSelector,
+  getEnrollClassAction,
   getFilteredClassesSelector,
   getLoaderSelector,
   resetEnrolledClassAction
 } from "../ManageClass/ducks";
-import NoDataNotification from "../../common/components/NoDataNotification";
+import Header from "../sharedComponents/Header";
+import MainContainer from "../styled/mainContainer";
 import { LoaderConainer } from "./styled";
 
 const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
@@ -81,19 +81,21 @@ const SkillReportContainer = ({
         classList={activeEnrolledClasses}
         showAllClassesOption={false}
       />
-      {loading || initialLoading ? (
-        <LoaderConainer>
-          <Spin />
-        </LoaderConainer>
-      ) : !settings.requestFilters.termId ? (
-        <LoaderConainer>
-          <NoDataNotification heading="No Skill Mastery" description="You don't have any Skill Mastery." />
-        </LoaderConainer>
-      ) : (
-        <StyledDiv>
-          <StudentMasteryProfile settings={settings} />
-        </StyledDiv>
-      )}
+      <MainContentWrapper padding="30px">
+        {loading || initialLoading ? (
+          <LoaderConainer>
+            <Spin />
+          </LoaderConainer>
+        ) : !settings.requestFilters.termId ? (
+          <LoaderConainer>
+            <NoDataNotification heading="No Skill Mastery" description={"You don't have any Skill Mastery."} />
+          </LoaderConainer>
+        ) : (
+          <>
+            <StudentMasteryProfile settings={settings} />
+          </>
+        )}
+      </MainContentWrapper>
     </MainContainer>
   );
 };
@@ -121,7 +123,3 @@ SkillReportContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
   classId: PropTypes.node.isRequired
 };
-
-const StyledDiv = styled.div`
-  padding: 0px 20px;
-`;

@@ -26,7 +26,7 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading,
     <LayoutContent flag={flag}>
       <Wrapper>
         {assignments.length < 1 ? (
-          <NoDataNotification heading={"No Grades "} description={"You don't have any completed assignment."} />
+          <NoDataNotification heading="No Grades" description="You don't have any completed assignment." />
         ) : (
           assignments.map(item => (
             <AssignmentCard key={`${item._id}_${item.classId}`} data={item} classId={item.classId} type="reports" />
@@ -69,11 +69,6 @@ const Wrapper = styled.div`
   height: 100%;
   margin: 15px 0px;
   border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background-color: ${props => props.theme.assignment.cardContainerBgColor};
-  padding: 5px 15px;
   position: relative;
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 5px;
-  }
 `;

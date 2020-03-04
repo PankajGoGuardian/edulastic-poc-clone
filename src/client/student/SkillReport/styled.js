@@ -148,9 +148,9 @@ export const StyledProgress = styled(Progress)`
 `;
 
 export const LoaderConainer = styled.div`
-  margin: 15px 30px 30px 30px;
+  margin: 0px auto;
   background: white;
-  height: 700px;
+  height: calc(100vh - 122px);
   border-radius: 10px;
   position: relative;
 `;

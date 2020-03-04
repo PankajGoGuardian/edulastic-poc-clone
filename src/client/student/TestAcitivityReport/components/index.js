@@ -1,28 +1,28 @@
+import { MainContentWrapper } from "@edulastic/common";
+import { IconReport } from "@edulastic/icons";
+import { Spin } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { compose } from "redux";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { get } from "lodash";
-import { Spin } from "antd";
+import { compose } from "redux";
+import { clearUserWorkAction } from "../../../assessment/actions/userWork";
+import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
+import { getQuestionsArraySelector, getQuestionsSelector } from "../../../author/sharedDucks/questions";
+import { getTestEntitySelector } from "../../../author/TestPage/ducks";
 // components
 import TestAcivityHeader from "../../sharedComponents/Header";
-import TestActivitySubHeader from "./SubHeader";
-import ReportListContent from "./Container";
+import { setCurrentItemAction } from "../../sharedDucks/TestItem";
 import MainContainer from "../../styled/mainContainer";
 // actions
 import { loadTestActivityReportAction } from "../ducks";
-import { setCurrentItemAction } from "../../sharedDucks/TestItem";
-import { getTestEntitySelector } from "../../../author/TestPage/ducks";
-import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
-import { getQuestionsSelector, getQuestionsArraySelector } from "../../../author/sharedDucks/questions";
-import { clearUserWorkAction } from "../../../assessment/actions/userWork";
-import { IconReport } from "@edulastic/icons";
+import ReportListContent from "./Container";
+import TestActivitySubHeader from "./SubHeader";
 
 const ReportListContainer = ({
   flag,
   match,
-  location,
   test,
   loadTestActivityReport,
   setCurrentItem,
@@ -68,14 +68,16 @@ const ReportListContainer = ({
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader isDocBased={isDocBased} titleIcon={IconReport} titleText="common.reportsTitle" />
-      <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
-      {isDocBased ? (
-        <div>
-          <Worksheet key="review" review {...props} viewMode="report" />
-        </div>
-      ) : (
-        <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />
-      )}
+      <MainContentWrapper padding={isDocBased ? "0px" : "20px 50px"}>
+        <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
+        {isDocBased ? (
+          <div>
+            <Worksheet key="review" review {...props} viewMode="report" />
+          </div>
+        ) : (
+          <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />
+        )}
+      </MainContentWrapper>
     </MainContainer>
   );
 };
@@ -103,7 +105,6 @@ export default enhance(ReportListContainer);
 
 ReportListContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
   testFeedback: PropTypes.array.isRequired,
   clearUserWork: PropTypes.func.isRequired

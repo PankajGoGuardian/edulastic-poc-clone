@@ -1,23 +1,15 @@
+import { Layout, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Layout, Spin } from "antd";
+import { getUser } from "../../../author/src/selectors/user";
+import { getEnrollClassAction, joinClassAction, setFilterClassAction } from "../ducks";
 // components
 import ManageClassContainer from "./Container";
-import { getEnrollClassAction, setFilterClassAction } from "../ducks";
-import { joinClassAction } from "../ducks";
-import { getUser } from "../../../author/src/selectors/user";
-import { mobileWidthMax } from "@edulastic/colors";
 
 const Wrapper = styled(Layout)`
   width: 100%;
   background-color: ${props => props.theme.sectionBackgroundColor};
-`;
-const ContentWrapper = styled.div`
-  padding: 0px 40px;
-  @media (max-width: ${mobileWidthMax}) {
-    padding: 0px 10px;
-  }
 `;
 
 const ManageClass = ({
@@ -38,22 +30,20 @@ const ManageClass = ({
   if (loading) return <Spin />;
   return (
     <Wrapper>
-      <ContentWrapper>
-        <ManageClassContainer
-          classList={filterClasses}
-          loading={loading}
-          showClass={showClass}
-          joinClass={joinClass}
-          studentData={studentData}
-          classSelect={false}
-          showActiveClass={true}
-          allClassList={allClasses}
-          setClassList={setClassList}
-          setShowClass={setShowClass}
-          userRole={userRole}
-          currentChild={currentChild}
-        />
-      </ContentWrapper>
+      <ManageClassContainer
+        classList={filterClasses}
+        loading={loading}
+        showClass={showClass}
+        joinClass={joinClass}
+        studentData={studentData}
+        classSelect={false}
+        showActiveClass
+        allClassList={allClasses}
+        setClassList={setClassList}
+        setShowClass={setShowClass}
+        userRole={userRole}
+        currentChild={currentChild}
+      />
     </Wrapper>
   );
 };

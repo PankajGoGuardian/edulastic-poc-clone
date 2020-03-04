@@ -98,7 +98,7 @@ const QuestionListWrapper = styled.div`
 `;
 
 const PreviousBtn = styled(Nav.BackArrow)`
-  left: 104px;
+  left: 80px;
 `;
 
 const NextBtn = styled(Nav.NextArrow)`

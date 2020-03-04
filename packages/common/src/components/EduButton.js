@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { white, themeColor, grey, black } from "@edulastic/colors";
+import { white, themeColor, grey, black, mediumDesktopExactWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 
 const EduButton = ({ children, ...restProps }) => {
@@ -113,6 +113,12 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
 
     i {
       font-size: 22px;
+    }
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    &.ant-btn {
+      margin-left: 5px;
     }
   }
 `;

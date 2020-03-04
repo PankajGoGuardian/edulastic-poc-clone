@@ -294,11 +294,11 @@ const TestPageHeader = ({
           />
 
           <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
-            {showShareButton && (
+            {/* {showShareButton && (
               <EduButton title="Print" data-cy="printTest" disabled={isTestLoading} onClick={handlePrintTest}>
                 <IconPrint />
               </EduButton>
-            )}
+            )} */}
             {showShareButton && (owner || features.isCurator) && (
               <EduButton title="Share" data-cy="share" onClick={onShare} disabled={isTestLoading}>
                 <IconShare style={{ transform: "rotate(180deg)" }} />

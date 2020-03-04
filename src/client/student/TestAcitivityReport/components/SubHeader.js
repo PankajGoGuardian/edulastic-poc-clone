@@ -33,7 +33,7 @@ TestActivitySubHeader.defaultProps = {
 };
 
 const Container = styled.div`
-  padding: ${props => (props.isDocBased ? "10px 25px" : "0px 40px")};
+  padding: ${props => (props.isDocBased ? "10px 25px" : "0px")};
   display: flex;
 `;
 

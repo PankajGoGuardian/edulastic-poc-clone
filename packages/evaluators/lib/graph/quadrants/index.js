@@ -303,13 +303,10 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
   elements.forEach(function(el) {
     if (!allowedShapes.includes(el.type)) {
       return;
-    } // handling case if points are empty, will br sending (0,0) for math-engine
-
+    }
     if (el.type === _constants.ShapeTypes.AREA) {
       points.push("(".concat(+el.x.toFixed(4), ",").concat(+el.y.toFixed(4), ")"));
       return;
-    } else {
-      points.push("(0,0)");
     }
 
     if (el.type === _constants.ShapeTypes.EQUATION) {
@@ -460,19 +457,35 @@ var evaluator = function evaluator(_ref) {
 
           case 13:
             if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-              _context2.next = 24;
+              _context2.next = 28;
               break;
             }
 
             (_step$value = (0, _slicedToArray2["default"])(_step.value, 2)),
               (index = _step$value[0]),
               (answer = _step$value[1]);
-            _context2.next = 17;
+
+            if (
+              !userResponse.some(function(x) {
+                return x.type === _constants.ShapeTypes.AREA;
+              })
+            ) {
+              _context2.next = 21;
+              break;
+            }
+
+            _context2.next = 18;
             return _regenerator["default"].awrap(checkEquations(answer.value, userResponse));
 
-          case 17:
+          case 18:
             result = _context2.sent;
+            _context2.next = 22;
+            break;
 
+          case 21:
+            result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
+
+          case 22:
             if (result.commonResult) {
               score = Math.max(answer.score, score);
             }
@@ -480,53 +493,53 @@ var evaluator = function evaluator(_ref) {
             maxScore = Math.max(answer.score, maxScore);
             evaluation[index] = result;
 
-          case 21:
+          case 25:
             _iteratorNormalCompletion = true;
             _context2.next = 13;
             break;
 
-          case 24:
-            _context2.next = 30;
+          case 28:
+            _context2.next = 34;
             break;
 
-          case 26:
-            _context2.prev = 26;
+          case 30:
+            _context2.prev = 30;
             _context2.t0 = _context2["catch"](11);
             _didIteratorError = true;
             _iteratorError = _context2.t0;
 
-          case 30:
-            _context2.prev = 30;
-            _context2.prev = 31;
+          case 34:
+            _context2.prev = 34;
+            _context2.prev = 35;
 
             if (!_iteratorNormalCompletion && _iterator["return"] != null) {
               _iterator["return"]();
             }
 
-          case 33:
-            _context2.prev = 33;
+          case 37:
+            _context2.prev = 37;
 
             if (!_didIteratorError) {
-              _context2.next = 36;
+              _context2.next = 40;
               break;
             }
 
             throw _iteratorError;
 
-          case 36:
-            return _context2.finish(33);
+          case 40:
+            return _context2.finish(37);
 
-          case 37:
-            return _context2.finish(30);
+          case 41:
+            return _context2.finish(34);
 
-          case 38:
+          case 42:
             return _context2.abrupt("return", {
               score: score,
               maxScore: maxScore,
               evaluation: evaluation
             });
 
-          case 39:
+          case 43:
           case "end":
             return _context2.stop();
         }
@@ -534,7 +547,7 @@ var evaluator = function evaluator(_ref) {
     },
     null,
     null,
-    [[11, 26, 30, 38], [31, , 33, 37]]
+    [[11, 30, 34, 42], [35, , 37, 41]]
   );
 };
 

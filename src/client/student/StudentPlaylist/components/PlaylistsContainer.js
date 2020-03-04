@@ -1,29 +1,38 @@
-import React, { useEffect } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useEffect, lazy, Suspense } from "react";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import { Layout, Spin } from "antd";
+
+import { Progress } from "@edulastic/common";
+const CurriculumContainer = lazy(() => import("../../../author/CurriculumSequence"));
 
 import { smallDesktopWidth } from "@edulastic/colors";
 import { slice } from "../ducks";
 import { getLastPlayListSelector } from "../../../author/Playlist/ducks";
+import { getEnrollClassAction } from "../../ManageClass/ducks";
 
 import NoDataNotification from "../../../common/components/NoDataNotification";
 
 const PlaylistsContainer = ({
-  flag,
+  match,
+  location,
   playlists,
   lastPlaylist,
   fetchPlaylists,
-  currentGroup,
+  loadAllClasses,
   isLoading,
   currentChild
 }) => {
   useEffect(() => {
     fetchPlaylists();
+    loadAllClasses();
   }, [currentChild]);
 
   if (isLoading) return <Spin size="large" />;
+
+  const pathPlaylistId = location.pathname.substring(match.path.length + 1);
 
   const playlist = lastPlaylist?.value?._id
     ? playlists.find(playlist => playlist.playlistId === lastPlaylist.value._id)
@@ -31,12 +40,29 @@ const PlaylistsContainer = ({
 
   return playlists && playlists.length ? (
     // if playlists are found, switch to the last playlist
-    <Redirect
-      to={{
-        pathname: `/home/playlist/${playlist?.playlistId || playlists[0].playlistId}`,
-        state: { currentGroupId: playlist?.groupId || playlists[0].groupId }
-      }}
-    />
+    pathPlaylistId ? (
+      <Switch>
+        <Route
+          path={`${match.url}/:playlistId`}
+          render={props => (
+            <Suspense fallback={<Progress />}>
+              <CurriculumContainer
+                {...props}
+                currentGroupId={playlists.find(playlist => playlist.playlistId === pathPlaylistId).groupId}
+                urlHasUseThis
+              />
+            </Suspense>
+          )}
+        />
+      </Switch>
+    ) : (
+      <Redirect
+        to={{
+          pathname: `/home/playlist/${playlist?.playlistId || playlists[0].playlistId}`,
+          state: { currentGroupId: playlist?.groupId || playlists[0].groupId }
+        }}
+      />
+    )
   ) : (
     <LayoutContent>
       <Wrapper>
@@ -46,17 +72,23 @@ const PlaylistsContainer = ({
   );
 };
 
-export default connect(
-  state => ({
-    isLoading: state?.studentPlaylist?.isLoading,
-    playlists: state?.studentPlaylist?.playlists,
-    lastPlaylist: getLastPlayListSelector(state),
-    currentChild: state?.user?.currentChild
-  }),
-  {
-    fetchPlaylists: slice.actions.fetchStudentPlaylist
-  }
-)(PlaylistsContainer);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      isLoading: state?.studentPlaylist?.isLoading,
+      playlists: state?.studentPlaylist?.playlists,
+      lastPlaylist: getLastPlayListSelector(state),
+      currentChild: state?.user?.currentChild
+    }),
+    {
+      fetchPlaylists: slice.actions.fetchStudentPlaylist,
+      loadAllClasses: getEnrollClassAction
+    }
+  )
+);
+
+export default enhance(PlaylistsContainer);
 
 const LayoutContent = styled(Layout.Content)`
   min-height: 75vh;

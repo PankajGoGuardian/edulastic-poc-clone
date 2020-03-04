@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniqueId, round } from "lodash";
+import { uniqueId, round, groupBy } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
+import { EduButton, FlexContainer, MainHeader, ProgressBar } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -14,14 +14,17 @@ import {
   lightGreen5,
   smallDesktopWidth,
   tabletWidth,
-  textColor as descriptionColor,
+  lightGrey5,
+  lightGrey6,
   themeColor,
   titleColor,
   white
 } from "@edulastic/colors";
-import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit } from "@edulastic/icons";
-import { Button, Cascader, Input, Modal, Progress, Tooltip } from "antd";
-import { getUserFeatures } from "../../../student/Login/ducks";
+import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit, IconPlaylist } from "@edulastic/icons";
+import { Button, Cascader, Input, Modal, Tooltip } from "antd";
+import Header from "../../../student/sharedComponents/Header";
+import { getUserFeatures, getCurrentGroup } from "../../../student/Login/ducks";
+import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
 // import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
@@ -159,10 +162,36 @@ class CurriculumSequence extends Component {
     dropPlaylistModalVisible: false
   };
 
+  getCuratedStudentPlaylists = () => {
+    const { studentPlaylists, classId, destinationCurriculumSequence, useThisPlayList, isStudent } = this.props;
+    // filter and map
+    const mappedStudentPlaylists = groupBy(
+      studentPlaylists.filter(playlist => !classId || playlist.groupId === classId),
+      "playlistId"
+    );
+    Object.entries(mappedStudentPlaylists).forEach(([playlistId, playlists]) => {
+      playlists[0].groupIds = [playlists[0].groupId];
+      mappedStudentPlaylists[playlistId] = playlists.reduce((res, ele) => {
+        res.groupIds.push(ele.groupId);
+        return res;
+      });
+    });
+    const curated = Object.values(mappedStudentPlaylists);
+    if (
+      Object.keys(destinationCurriculumSequence).length &&
+      curated.length &&
+      !mappedStudentPlaylists[destinationCurriculumSequence._id]
+    ) {
+      const { playlistId: _id, title, grades, subjects } = curated[0];
+      useThisPlayList({ _id, title, grades, subjects, groupId: classId, onChange: true, isStudent });
+    }
+    return curated;
+  };
+
   handlePlaylistChange = ({ _id, title, grades, subjects, groupId }) => {
-    const { useThisPlayList, isStudent } = this.props;
+    const { useThisPlayList, isStudent, classId } = this.props;
     this.handleGuideCancel();
-    useThisPlayList({ _id, title, grades, subjects, groupId, onChange: true, isStudent });
+    useThisPlayList({ _id, title, grades, subjects, groupId: classId || groupId, onChange: true, isStudent });
   };
 
   onExplorePlaylists = () => {
@@ -339,11 +368,23 @@ class CurriculumSequence extends Component {
       isStudent,
       isTeacher,
       playlistMetricsList,
-      studentPlaylists
+      studentPlaylists,
+      activeClasses
     } = this.props;
 
-    const isPlaylistDetailsPage = window?.location?.hash === "#review";
+    // get active classes for student playlists
+    const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
+    const activeEnrolledClasses = (activeClasses || []).filter(
+      c => c.status == "1" && playlistClassList.includes(c._id)
+    );
+
+    // sliced recent playlists for changePlaylistModal
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
+    // curated student playlists for changePlaylistModal
+    const curatedStudentPlaylists = this.getCuratedStudentPlaylists();
+
+    const isPlaylistDetailsPage = window?.location?.hash === "#review";
+
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
@@ -482,6 +523,17 @@ class CurriculumSequence extends Component {
 
     const showUseThisButton = status !== "draft" && !urlHasUseThis && !isPublisherUser;
 
+    const changePlaylistIcon = (
+      <IconTile
+        data-cy="open-dropped-playlist"
+        style={{ cursor: "pointer", marginLeft: "18px" }}
+        onClick={this.handleGuidePopup}
+        width={18}
+        height={18}
+        color={themeColor}
+      />
+    );
+
     return (
       <>
         <RemoveTestModal
@@ -549,7 +601,7 @@ class CurriculumSequence extends Component {
 
           <ChangePlaylistModal
             isStudent={isStudent}
-            playlists={isStudent ? studentPlaylists : slicedRecentPlaylists}
+            playlists={isStudent ? curatedStudentPlaylists : slicedRecentPlaylists}
             onChange={this.handlePlaylistChange}
             onExplorePlaylists={this.onExplorePlaylists}
             activePlaylistId={destinationCurriculumSequence._id}
@@ -559,62 +611,63 @@ class CurriculumSequence extends Component {
             onCancel={this.handleGuideCancel}
           />
 
-          {mode !== "embedded" && (
-            <MainHeader
-              headingText={title}
-              headingSubContent={
-                urlHasUseThis &&
-                !isPublisherUser &&
-                (isStudent ? studentPlaylists?.length : slicedRecentPlaylists?.length) > 1 && (
-                  <IconTile
-                    data-cy="open-dropped-playlist"
-                    style={{ cursor: "pointer", marginLeft: "18px" }}
-                    onClick={this.handleGuidePopup}
-                    width={18}
-                    height={18}
-                    color={themeColor}
-                  />
-                )
-              }
-              titleMinWidth="100px"
-              justify="flex-start"
-            >
-              <CurriculumHeaderButtons>
-                {(showUseThisButton || urlHasUseThis || features.isCurator) && !isStudent && (
-                  <EduButton isGhost data-cy="share" onClick={onShareClick}>
-                    <IconShare />
-                  </EduButton>
-                )}
-                {urlHasUseThis && isTeacher && !isPublisherUser && (
-                  <EduButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal}>
-                    DROP PLAYLIST
-                  </EduButton>
-                )}
-                {isAuthor && !urlHasUseThis && (
-                  <Tooltip placement="bottom" title="EDIT">
-                    <StyledButton
-                      width="45px"
-                      margin="0px 10px 0px 0px"
-                      data-cy="edit-playlist"
-                      onClick={handleEditClick}
-                    >
-                      <IconPencilEdit color={lightGreen5} width={15} height={15} />
-                    </StyledButton>
-                  </Tooltip>
-                )}
-                {showUseThisButton && (
-                  <EduButton data-cy="use-this" onClick={handleUseThisClick}>
-                    USE THIS
-                  </EduButton>
-                )}
-                {features.isCurator && (status === "inreview" || status === "rejected") && (
-                  <EduButton onClick={this.onApproveClick}>APPROVE</EduButton>
-                )}
-                {features.isCurator && status === "inreview" && (
-                  <EduButton onClick={this.onRejectClick}>REJECT</EduButton>
-                )}
-              </CurriculumHeaderButtons>
-            </MainHeader>
+          {isStudent ? (
+            <Header
+              titleText={title}
+              titleIcon={IconPlaylist}
+              titleSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon}
+              classSelect
+              showActiveClass={false}
+              classList={activeEnrolledClasses}
+            />
+          ) : (
+            mode !== "embedded" && (
+              <MainHeader
+                Icon={IconPlaylist}
+                headingText={title}
+                headingSubContent={
+                  urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon
+                }
+                titleMinWidth="100px"
+                justify="flex-start"
+              >
+                <CurriculumHeaderButtons>
+                  {(showUseThisButton || urlHasUseThis || features.isCurator) && (
+                    <EduButton isGhost data-cy="share" onClick={onShareClick}>
+                      <IconShare />
+                    </EduButton>
+                  )}
+                  {urlHasUseThis && isTeacher && !isPublisherUser && (
+                    <EduButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal}>
+                      DROP PLAYLIST
+                    </EduButton>
+                  )}
+                  {isAuthor && !urlHasUseThis && (
+                    <Tooltip placement="bottom" title="EDIT">
+                      <StyledButton
+                        width="45px"
+                        margin="0px 10px 0px 0px"
+                        data-cy="edit-playlist"
+                        onClick={handleEditClick}
+                      >
+                        <IconPencilEdit color={lightGreen5} width={15} height={15} />
+                      </StyledButton>
+                    </Tooltip>
+                  )}
+                  {showUseThisButton && (
+                    <EduButton data-cy="use-this" onClick={handleUseThisClick}>
+                      USE THIS
+                    </EduButton>
+                  )}
+                  {features.isCurator && (status === "inreview" || status === "rejected") && (
+                    <EduButton onClick={this.onApproveClick}>APPROVE</EduButton>
+                  )}
+                  {features.isCurator && status === "inreview" && (
+                    <EduButton onClick={this.onRejectClick}>REJECT</EduButton>
+                  )}
+                </CurriculumHeaderButtons>
+              </MainHeader>
+            )
           )}
 
           {isPlaylistDetailsPage && (
@@ -704,7 +757,7 @@ class CurriculumSequence extends Component {
                           <Tooltip placement="topLeft" title={item.title || item.name}>
                             <ModuleTitle>{item.title || item.name}</ModuleTitle>
                           </Tooltip>
-                          <Progress
+                          <ProgressBar
                             strokeColor={{
                               "0%": getProgressColor(item?.value),
                               "100%": getProgressColor(item?.value)
@@ -728,6 +781,43 @@ class CurriculumSequence extends Component {
     );
   }
 }
+
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      curriculumGuides: state.curriculumSequence.guides,
+      guide: state.curriculumSequence.selectedGuide,
+      isContentExpanded: state.curriculumSequence.isContentExpanded,
+      selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
+      dataForAssign: state.curriculumSequence.dataForAssign,
+      recentPlaylists: getRecentPlaylistSelector(state),
+      collections: getCollectionsSelector(state),
+      features: getUserFeatures(state),
+      isPublisherUser: isPublisherUserSelector(state),
+      isStudent: getUserRole(state) === "student",
+      isTeacher: getUserRole(state) === "teacher",
+      playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
+      studentPlaylists: state?.studentPlaylist?.playlists,
+      classId: getCurrentGroup(state),
+      activeClasses: getFilteredClassesSelector(state)
+    }),
+    {
+      onGuideChange: changeGuideAction,
+      setPublisher: setPublisherAction,
+      setGuide: setGuideAction,
+      saveGuideAlignment: saveGuideAlignmentAction,
+      setSelectedItemsForAssign: setSelectedItemsForAssignAction,
+      setDataForAssign: setDataForAssignAction,
+      saveCurriculumSequence: saveCurriculumSequenceAction,
+      useThisPlayList: useThisPlayListAction,
+      removeTestFromModule: removeTestFromModuleAction,
+      addNewUnitToDestination: addNewUnitAction
+    }
+  )
+);
+
+export default enhance(CurriculumSequence);
 
 CurriculumSequence.propTypes = {
   guide: PropTypes.string,
@@ -788,7 +878,7 @@ const SummaryBlock = styled.div`
   width: 315px;
   min-width: 315px;
   min-height: 760px;
-  margin: 20px 40px 40px 0;
+  margin: 20px 30px 40px 0;
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;
@@ -818,7 +908,7 @@ const SummaryBlockTitle = styled.div`
 
 const SummaryBlockSubTitle = styled.div`
   width: 100%;
-  color: #8e9aa4;
+  color: ${lightGrey5};
   font-weight: 600;
   font-size: 13px;
   text-align: center;
@@ -1033,7 +1123,7 @@ const SubHeaderTitleContainer = styled.div`
 `;
 
 const SubHeaderDescription = styled.p`
-  color: ${descriptionColor};
+  color: ${lightGrey6};
   font-size: 14px;
   text-align: justify;
 `;
@@ -1074,41 +1164,6 @@ const BreadCrumbWrapper = styled.div`
 `;
 
 const ReviewBreadCrumbWrapper = styled.div`
-  padding: 20px 40px 0 40px;
+  padding: 20px 40px 40px 0px;
   width: 100%;
 `;
-
-const enhance = compose(
-  withRouter,
-  connect(
-    state => ({
-      curriculumGuides: state.curriculumSequence.guides,
-      guide: state.curriculumSequence.selectedGuide,
-      isContentExpanded: state.curriculumSequence.isContentExpanded,
-      selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
-      dataForAssign: state.curriculumSequence.dataForAssign,
-      recentPlaylists: getRecentPlaylistSelector(state),
-      collections: getCollectionsSelector(state),
-      features: getUserFeatures(state),
-      isPublisherUser: isPublisherUserSelector(state),
-      isStudent: getUserRole(state) === "student",
-      isTeacher: getUserRole(state) === "teacher",
-      playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
-      studentPlaylists: state?.studentPlaylist?.playlists
-    }),
-    {
-      onGuideChange: changeGuideAction,
-      setPublisher: setPublisherAction,
-      setGuide: setGuideAction,
-      saveGuideAlignment: saveGuideAlignmentAction,
-      setSelectedItemsForAssign: setSelectedItemsForAssignAction,
-      setDataForAssign: setDataForAssignAction,
-      saveCurriculumSequence: saveCurriculumSequenceAction,
-      useThisPlayList: useThisPlayListAction,
-      removeTestFromModule: removeTestFromModuleAction,
-      addNewUnitToDestination: addNewUnitAction
-    }
-  )
-);
-
-export default enhance(CurriculumSequence);

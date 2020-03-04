@@ -3,27 +3,30 @@
 import {
   borderGrey3,
   borderGrey4,
+  darkGrey2,
+  lightGrey5,
+  lightGrey6,
+  mobileWidth,
+  tabletWidth,
   desktopWidth,
   extraDesktopWidth,
   greenDark,
+  greenDark6,
   greyThemeDark1,
   greyThemeLighter,
   lightGreen5,
   lightGreen6,
   mainBgColor,
-  mobileWidth,
-  tabletWidth,
   testTypeColor,
-  textColor as descriptionColor,
   themeColor,
   themeColorLighter,
   titleColor,
   white
 } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { EduButton, ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { IconCheckSmall, IconVisualization, IconLeftArrow, IconMoreVertical, IconVerified } from "@edulastic/icons";
-import { Avatar, Button, Col, Dropdown, Icon, Menu, message, Modal, Progress, Row as AntRow } from "antd";
+import { Avatar, Button, Col, Dropdown, Icon, Menu, message, Modal, Row as AntRow } from "antd";
 import produce from "immer";
 import { round } from "lodash";
 import moment from "moment";
@@ -387,7 +390,7 @@ class ModuleRow extends Component {
               <ModuleCount>{moduleIndex + 1}</ModuleCount>
               <AntRow type="flex" gutter={20} style={{ width: "calc(100% - 25px)" }}>
                 <Col span={urlHasUseThis ? 7 : 24} style={moduleInlineStyle}>
-                  <StyledLabel fontStyle="14/19px Open Sans" fontWeight="normal">
+                  <StyledLabel fontStyle="14/19px Open Sans" fontWeight="normal" textColor={lightGrey5}>
                     Module {moduleIndex + 1}
                   </StyledLabel>
                   <ModuleTitleWrapper>
@@ -410,9 +413,9 @@ class ModuleRow extends Component {
                 {urlHasUseThis && (
                   <>
                     <Col span={4} style={moduleInlineStyle}>
-                      <StyledLabel>PROFICIENCY</StyledLabel>
+                      <StyledLabel textColor={lightGrey5}>PROFICIENCY</StyledLabel>
                       {/* TODO: Method to find Progress Percentage */}
-                      <StyledProgress
+                      <ProgressBar
                         strokeColor={{
                           "0%": getProgressColor(summaryData[moduleIndex]?.value),
                           "100%": getProgressColor(summaryData[moduleIndex]?.value)
@@ -423,7 +426,9 @@ class ModuleRow extends Component {
                     </Col>
                     {!isStudent ? (
                       <Col span={3} style={moduleInlineStyle}>
-                        <StyledLabel justify="center">SUBMITTED</StyledLabel>
+                        <StyledLabel justify="center" textColor={lightGrey5}>
+                          SUBMITTED
+                        </StyledLabel>
                         <StyledLabel
                           textColor={greyThemeDark1}
                           fontStyle="12px/17px Open Sans"
@@ -438,7 +443,9 @@ class ModuleRow extends Component {
                       </Col>
                     ) : (
                       <Col span={2}>
-                        <StyledLabel justify="center">SCORE</StyledLabel>
+                        <StyledLabel justify="center" textColor={lightGrey5}>
+                          SCORE
+                        </StyledLabel>
                         <StyledLabel
                           textColor={greyThemeDark1}
                           fontStyle="12px/17px Open Sans"
@@ -452,7 +459,9 @@ class ModuleRow extends Component {
                     )}
                     {!isStudent ? (
                       <Col span={2} style={moduleInlineStyle}>
-                        <StyledLabel justify="center">CLASSES</StyledLabel>
+                        <StyledLabel justify="center" textColor={lightGrey5}>
+                          CLASSES
+                        </StyledLabel>
                         <StyledLabel
                           textColor={greyThemeDark1}
                           fontStyle="12px/17px Open Sans"
@@ -465,7 +474,9 @@ class ModuleRow extends Component {
                       </Col>
                     ) : (
                       <Col span={4}>
-                        <StyledLabel justify="center">TIME SPENT</StyledLabel>
+                        <StyledLabel justify="center" textColor={lightGrey5}>
+                          TIME SPENT
+                        </StyledLabel>
                         <StyledLabel
                           textColor={greyThemeDark1}
                           fontStyle="12px/17px Open Sans"
@@ -668,9 +679,9 @@ class ModuleRow extends Component {
                           <ModuleFocused />
                           <FaChevronRight
                             color={lightGreen5}
-                            style={{ margin: urlHasUseThis ? "0px 15px" : "0px 15px 0px 43px" }}
+                            style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
                           />
-                          <AntRow type="flex" gutter={20} style={{ width: "calc(100% - 25px)" }}>
+                          <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
                             <Col span={urlHasUseThis ? 7 : 10} style={rowInlineStyle}>
                               <ModuleDataWrapper>
                                 <ModuleDataName
@@ -720,7 +731,7 @@ class ModuleRow extends Component {
                               <>
                                 <StyledCol span={4} style={rowInlineStyle}>
                                   {/* TODO: Method to display progress for assignments */}
-                                  <StyledProgress
+                                  <ProgressBar
                                     strokeColor={{
                                       "0%": getProgressColor(progressData?.progress),
                                       "100%": getProgressColor(progressData?.progress)
@@ -734,6 +745,7 @@ class ModuleRow extends Component {
                                     <StyledLabel
                                       textColor={greyThemeDark1}
                                       fontStyle="12px/17px Open Sans"
+                                      padding="2px"
                                       justify="center"
                                     >
                                       {/* TODO: Method to find submissions for each assignment */}
@@ -745,6 +757,7 @@ class ModuleRow extends Component {
                                     <StyledLabel
                                       textColor={greyThemeDark1}
                                       fontStyle="12px/17px Open Sans"
+                                      padding="2px"
                                       justify="center"
                                     >
                                       {/* TODO: Method to find sum of scores for each assignment */}
@@ -757,6 +770,7 @@ class ModuleRow extends Component {
                                     <StyledLabel
                                       textColor={greyThemeDark1}
                                       fontStyle="12px/17px Open Sans"
+                                      padding="2px"
                                       justify="center"
                                     >
                                       {/* TODO: Method to find classes for each assignment */}
@@ -768,6 +782,7 @@ class ModuleRow extends Component {
                                     <StyledLabel
                                       textColor={greyThemeDark1}
                                       fontStyle="12px/17px Open Sans"
+                                      padding="2px"
                                       justify="center"
                                     >
                                       {/* TODO: Method to find Total Time Spent for each assignment */}
@@ -777,13 +792,13 @@ class ModuleRow extends Component {
                                 )}
 
                                 {!isStudent ? (
-                                  <StyledCol span={8} justify="flex-end">
+                                  <StyledCol span={8} align="flex-start" justify="flex-end">
                                     {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                       <StyledLabel
                                         textColor={lightGreen5}
                                         fontStyle="9px/13px Open Sans"
                                         fontWeight="Bold"
-                                        padding="10px 20px 10px 0px"
+                                        padding="4px 20px 10px 0px"
                                         data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
                                         onClick={() => this.hideTest(module._id, moduleData)}
                                       >
@@ -1083,7 +1098,7 @@ const ModalWrapper = styled(Modal)`
 
 const StyledCol = styled(Col)`
   display: flex;
-  align-items: center;
+  align-items: ${props => props.align || "center"};
   justify-content: ${props => props.justify || "flex-start"};
 `;
 
@@ -1105,20 +1120,20 @@ const ModuleCount = styled.div`
   font-weight: 600;
   text-align: center;
   color: white;
-  background: ${greenDark};
-  box-shadow: 0px 0px 2px ${greenDark};
+  background: ${greenDark6};
+  box-shadow: 0px 0px 2px ${greenDark6};
 `;
 
 const ModuleTitle = styled.div`
   align-items: left;
-  color: ${titleColor};
+  color: ${darkGrey2};
   font-size: 18px;
   font-weight: 600;
 `;
 
 export const EllipsisContainer = styled.div`
   white-space: nowrap;
-  color: ${descriptionColor};
+  color: ${lightGrey6};
   font-size: ${props => props.fontSize || "12px"};
   line-height: ${props => props.lineHeight || "17px"};
   font-weight: ${props => props.fontWeight || "normal"};
@@ -1126,26 +1141,6 @@ export const EllipsisContainer = styled.div`
   max-width: 95%;
   overflow: hidden;
   text-overflow: ellipsis;
-`;
-
-const StyledProgress = styled(Progress)`
-  .ant-progress-text {
-    display: ${props => !props.percent && "none"};
-    font: 12px/17px Open Sans;
-    color: ${greyThemeDark1};
-    letter-spacing: 0.2px;
-    font-weight: 600;
-    ${props =>
-      props.percent == 100 &&
-      `
-      &:before {
-        content: "100%";
-      }
-      i {
-        display: none;
-      }
-    `}
-  }
 `;
 
 export const CustomIcon = styled.span`
@@ -1226,6 +1221,7 @@ export const AssignmentButton = styled.div`
     border: 1px solid ${lightGreen5};
     background-color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
     min-width: 121px;
+    max-height: 22px;
     display: flex;
     align-items: center;
     margin: ${({ margin }) => margin};
@@ -1282,7 +1278,7 @@ export const ModuleDataName = styled.div`
   display: inline-flex;
   width: 100%;
   letter-spacing: 0;
-  color: ${titleColor};
+  color: ${darkGrey2};
   font: 14px/19px Open Sans;
   span {
     font-weight: 600;
@@ -1318,7 +1314,7 @@ export const AssignmentIcon = styled.span`
 const Assignment = styled.div`
   padding: 10px 0px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   background: white !important;
   &:active ${ModuleFocused}, &:focus ${ModuleFocused}, &:hover ${ModuleFocused} {

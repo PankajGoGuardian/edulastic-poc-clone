@@ -11,6 +11,7 @@ import ShowActiveClass from "../ShowActiveClasses";
 const Header = ({
   t,
   titleText,
+  titleSubContent,
   classList,
   classSelect,
   showActiveClass,
@@ -20,7 +21,7 @@ const Header = ({
   showAllClassesOption = true,
   titleIcon
 }) => (
-  <MainHeader Icon={titleIcon} headingText={titleText} isDocBased={isDocBased}>
+  <MainHeader Icon={titleIcon} headingText={titleText} headingSubContent={titleSubContent} isDocBased={isDocBased}>
     <StudentSlectCommon />
     {classSelect && <ClassSelect t={t} classList={classList} showAllClassesOption={showAllClassesOption} />}
     {showActiveClass && (

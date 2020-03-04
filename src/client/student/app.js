@@ -1,7 +1,7 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Progress, ErrorHandler } from "@edulastic/common";
+import { ErrorHandler } from "@edulastic/common";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
@@ -23,7 +23,6 @@ import StartAssignment from "./StartAssignment";
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
 
-const CurriculumContainer = lazy(() => import("../author/CurriculumSequence"));
 const StudentApp = ({ match, selectedTheme }) => {
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
@@ -59,16 +58,7 @@ const StudentApp = ({ match, selectedTheme }) => {
                   component={ReportList}
                 />
                 <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
-                <Route exact path={`${match.url}/playlist`} component={StudentPlaylist} />
-                <Route
-                  exact
-                  path={`${match.url}/playlist/:playlistId`}
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} urlHasUseThis="true" />
-                    </Suspense>
-                  )}
-                />
+                <Route path={`${match.url}/playlist`} component={StudentPlaylist} />
               </Switch>
             </ErrorHandler>
           </Wrapper>

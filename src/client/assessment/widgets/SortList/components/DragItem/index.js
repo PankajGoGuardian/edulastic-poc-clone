@@ -53,6 +53,7 @@ const DragItem = ({
   disableResponse,
   isResetOffset,
   isReviewTab,
+  stemNumeration,
   items,
   style
 }) => {
@@ -81,6 +82,7 @@ const DragItem = ({
             showPreview={showPreview}
             smallSize={smallSize}
             index={index}
+            stemNumeration={stemNumeration}
           />
         </DragPreview>
       )}
@@ -104,6 +106,7 @@ const DragItem = ({
               index={index}
               isReviewTab={isReviewTab}
               showPreview={showPreview}
+              stemNumeration={stemNumeration}
               smallSize={smallSize}
             />
           </div>

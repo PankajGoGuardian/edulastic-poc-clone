@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Popover } from "antd";
 import { MathFormulaDisplay, measureText } from "@edulastic/common";
 
+import { getStemNumeration } from "../../../../utils/helpers";
 import DragHandle from "../DragHandle";
 import { Container } from "./styled/Container";
 import { StyledDragHandle } from "./styled/StyledDragHandle";
@@ -12,7 +13,17 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { IconCheck } from "./styled/IconCheck";
 import { IconClose } from "./styled/IconClose";
 
-export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, index, style, isReviewTab }) => {
+export const DragItemContent = ({
+  smallSize,
+  showPreview,
+  active,
+  correct,
+  obj,
+  index,
+  style,
+  isReviewTab,
+  stemNumeration
+}) => {
   const [show, toggleShow] = useState(true);
 
   const hidePopover = () => {
@@ -23,7 +34,9 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
     toggleShow(true);
   };
 
-  const popoverContent = <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />;
+  const popoverContent = (
+    <MathFormulaDisplay onMouseEnter={hidePopover} dangerouslySetInnerHTML={{ __html: obj }} />
+  );
   const { scrollWidth } = measureText(obj, style);
   /**
    * 10 will be ellipsis width at other parts,
@@ -53,7 +66,7 @@ export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, 
       <Text checkStyle={checkStyle} correct={correct} smallSize={smallSize}>
         {showPreview && (
           <WithIndex checkStyle={checkStyle} correct={correct}>
-            {index + 1}
+            {getStemNumeration(stemNumeration, index)}
           </WithIndex>
         )}
         <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />

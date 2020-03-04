@@ -292,6 +292,7 @@ const SortListPreview = ({
                       obj={draggableItem}
                       style={dragItemStyle}
                       disableResponse={disableResponse || !isAnswerModifiable}
+                      stemNumeration={stemNumeration}
                     />
                   </DropContainer>
                 ))}
@@ -344,6 +345,7 @@ const SortListPreview = ({
                       isReviewTab={isReviewTab}
                       disableResponse={disableResponse || !isAnswerModifiable}
                       changePreviewTab={changePreviewTab}
+                      stemNumeration={stemNumeration}
                     />
                   </DropContainer>
                 ))}

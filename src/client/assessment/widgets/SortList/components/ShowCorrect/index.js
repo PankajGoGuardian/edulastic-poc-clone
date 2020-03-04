@@ -29,9 +29,13 @@ const ShowCorrect = ({ list, altList, altResponses, t, stemNumeration, itemStyle
     {altResponses.map((ans, i) => (
       <Fragment key={i}>
         <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.sortList.alternateAnswer")} ${i + 1}`)}
+          id={getFormattedAttrId(
+            `${item?.title}-${t("component.sortList.alternateAnswer")} ${i + 1}`
+          )}
           style={{ marginTop: 40 }}
-        >{`${t("component.sortList.alternateAnswer")} ${i + 1}`}</Subtitle>
+        >
+          {`${t("component.sortList.alternateAnswer")} ${i + 1}`}
+        </Subtitle>
         <FlexRow>
           {ans.value.map((answer, index) => {
             const content = <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />;

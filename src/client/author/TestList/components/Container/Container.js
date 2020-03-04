@@ -597,7 +597,15 @@ class TestList extends Component {
         selectedTests: [...selectedTests, ...uniqueMarkedIds],
         markedTests: []
       }));
-      addTestToModuleInBulk({ moduleIndex: index, tests: uniqueMarkedTests });
+      const uniqueMarkedTestsIds = uniqueMarkedTests.map(x => x?._id);
+      const testsToAdd = tests.filter(x => uniqueMarkedTestsIds?.includes(x?._id));
+      const testsWithStandardIdentifiers = testsToAdd?.map(x => {
+        return {
+          ...x,
+          standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
+        };
+      });
+      addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
       message.success("Tests Added to playlist");
     } else {
       const nonDraftIds = nonDraftTests.map(x => x._id);
@@ -605,7 +613,15 @@ class TestList extends Component {
         selectedTests: [...selectedTests, ...nonDraftIds],
         markedTests: []
       }));
-      addTestToModuleInBulk({ moduleIndex: index, tests: nonDraftTests });
+      const nonDraftTestsIds = nonDraftTests?.map(x => x?._id);
+      const testsToAdd = tests.filter(x => nonDraftTestsIds?.includes(x?._id));
+      const testsWithStandardIdentifiers = testsToAdd?.map(x => {
+        return {
+          ...x,
+          standardIdentifiers: x?.summary?.standards?.reduce((a, c) => a.concat(c?.identifier), [])
+        };
+      });
+      addTestToModuleInBulk({ moduleIndex: index, tests: testsWithStandardIdentifiers });
       nonDraftTests.length
         ? message.warning(`${nonDraftTests.length}/${markedTests.length} are added to ${modules[index].title}`)
         : message.warning("Draft test(s) cannot be added");

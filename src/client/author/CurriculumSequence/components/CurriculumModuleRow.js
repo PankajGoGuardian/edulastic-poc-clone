@@ -653,7 +653,7 @@ class ModuleRow extends Component {
                         dropContent={dropContent}
                         moreMenu={moreMenu}
                         isAssigned={isAssigned}
-                        standardTags={standardTags}
+                        standardTags={moduleData.standardIdentifiers}
                         assignTest={this.assignTest}
                         viewTest={this.viewTest}
                         deleteTest={this.deleteTest}

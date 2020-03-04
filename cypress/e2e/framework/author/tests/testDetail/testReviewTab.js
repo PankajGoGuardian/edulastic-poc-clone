@@ -58,7 +58,8 @@ export default class TestReviewTab {
 
   clickOnCheckBoxByItemId = itemId => {
     this.getQueCardByItemIdInCollapsed(itemId)
-      .closest("tr")
+      .parent()
+      .prev()
       .find(".ant-checkbox-input")
       .click({ force: true });
   };

@@ -19,11 +19,7 @@ export default class PlayListLibrary {
 
   getCustomizationSwitch = () => cy.get('[data-cy="customization"]');
 
-  clickOnNewPlayList = () =>
-    cy
-      .get('[class^="Button_"]')
-      .contains("New Play list")
-      .click();
+  clickOnNewPlayList = () => cy.get('[data-cy="createNew"]').click();
 
   clickOnPlayListCardById = testId => {
     cy.server();

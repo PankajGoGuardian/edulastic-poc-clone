@@ -89,6 +89,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
         playListLibrary.addTestTab.clickOnViewTestById(id).then(test => {
           expect(id).to.eq(test);
         });
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest(true);
       });
     });
@@ -117,6 +118,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
         playListLibrary.reviewTab.clickOnViewTestByTestByModule(index + 1, 1).then(test => {
           expect(id).to.eq(test);
         });
+        studentTestPage.getNext();
         studentTestPage.clickOnExitTest(true);
         playListLibrary.reviewTab.clickExpandByModule(index + 1);
       });

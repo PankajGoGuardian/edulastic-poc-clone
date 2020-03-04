@@ -256,16 +256,24 @@ class Item extends Component {
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
                 {owner && status === "draft" && (
-                  <EduButton height="32px" onClick={this.moveToItem}>Edit</EduButton>
+                  <EduButton height="32px" onClick={this.moveToItem}>
+                    Edit
+                  </EduButton>
                 )}
                 {status === "draft" && allowDuplicate && (
-                  <EduButton height="32px" onClick={this.duplicate}>Duplicate</EduButton>
+                  <EduButton height="32px" onClick={this.duplicate}>
+                    Duplicate
+                  </EduButton>
                 )}
                 {status === "published" && (
-                  <EduButton height="32px" onClick={e => this.showPreviewModal(testId, e)}>Preview</EduButton>
+                  <EduButton height="32px" onClick={e => this.showPreviewModal(testId, e)}>
+                    Preview
+                  </EduButton>
                 )}
                 {status === "published" && (
-                  <EduButton height="32px" onClick={this.assignTest}>Assign</EduButton>
+                  <EduButton height="32px" onClick={this.assignTest}>
+                    Assign
+                  </EduButton>
                 )}
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
@@ -317,7 +325,7 @@ class Item extends Component {
               </Author>
             )}
             <StatusRow>
-              <TestStatusWrapper status={status || _source?.status}>
+              <TestStatusWrapper status={status || _source?.status} checkUser={false}>
                 {({ children, ...rest }) => (
                   <TestStatus {...rest} view="tile">
                     {children}

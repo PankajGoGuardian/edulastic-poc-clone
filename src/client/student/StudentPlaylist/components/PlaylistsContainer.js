@@ -44,15 +44,15 @@ const PlaylistsContainer = ({
       <Switch>
         <Route
           path={`${match.url}/:playlistId`}
-          render={props => (
-            <Suspense fallback={<Progress />}>
-              <CurriculumContainer
-                {...props}
-                currentGroupId={playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId}
-                urlHasUseThis
-              />
-            </Suspense>
-          )}
+          render={props => {
+            const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
+            props.location.state = { ...(props.location.state || {}), currentGroupId };
+            return (
+              <Suspense fallback={<Progress />}>
+                <CurriculumContainer {...props} urlHasUseThis />
+              </Suspense>
+            );
+          }}
         />
       </Switch>
     ) : (

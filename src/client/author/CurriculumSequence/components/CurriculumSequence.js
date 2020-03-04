@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniqueId, round, groupBy } from "lodash";
+import { uniqueId, round, groupBy, isEqual } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -159,12 +159,14 @@ class CurriculumSequence extends Component {
     },
     showConfirmRemoveModal: false,
     isPlayListEdited: false,
-    dropPlaylistModalVisible: false
+    dropPlaylistModalVisible: false,
+    curatedStudentPlaylists: []
   };
 
-  getCuratedStudentPlaylists = () => {
-    const { studentPlaylists, classId, destinationCurriculumSequence, useThisPlayList, isStudent } = this.props;
-    // filter and map
+  static getDerivedStateFromProps(props, state) {
+    const { studentPlaylists, classId, destinationCurriculumSequence, useThisPlayList, isStudent } = props;
+
+    /* -- curated playlists (based on classId)-- start */
     const mappedStudentPlaylists = groupBy(
       studentPlaylists.filter(playlist => !classId || playlist.groupId === classId),
       "playlistId"
@@ -176,17 +178,20 @@ class CurriculumSequence extends Component {
         return res;
       });
     });
-    const curated = Object.values(mappedStudentPlaylists);
+    const curatedStudentPlaylists = Object.values(mappedStudentPlaylists);
     if (
       Object.keys(destinationCurriculumSequence).length &&
-      curated.length &&
+      !isEqual(curatedStudentPlaylists, state.curatedStudentPlaylists) &&
       !mappedStudentPlaylists[destinationCurriculumSequence._id]
     ) {
-      const { playlistId: _id, title, grades, subjects } = curated[0];
+      const { playlistId: _id, title, grades, subjects } = curatedStudentPlaylists[0];
       useThisPlayList({ _id, title, grades, subjects, groupId: classId, onChange: true, isStudent });
     }
-    return curated;
-  };
+    /* -- curated playlists -- end  */
+
+    // return updated state
+    return { curatedStudentPlaylists };
+  }
 
   handlePlaylistChange = ({ _id, title, grades, subjects, groupId }) => {
     const { useThisPlayList, isStudent, classId } = this.props;
@@ -341,7 +346,8 @@ class CurriculumSequence extends Component {
       newUnit,
       isPlayListEdited,
       showConfirmRemoveModal,
-      dropPlaylistModalVisible
+      dropPlaylistModalVisible,
+      curatedStudentPlaylists
     } = this.state;
     const {
       expandedModules,
@@ -380,8 +386,6 @@ class CurriculumSequence extends Component {
 
     // sliced recent playlists for changePlaylistModal
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
-    // curated student playlists for changePlaylistModal
-    const curatedStudentPlaylists = this.getCuratedStudentPlaylists();
 
     const isPlaylistDetailsPage = window?.location?.hash === "#review";
 

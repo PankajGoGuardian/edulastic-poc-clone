@@ -6,9 +6,6 @@ import {
   white,
   tabletWidth,
   mediumDesktopWidth,
-  dashBorderColor,
-  fadedBlack,
-  redHeart,
   themeColor,
   mainTextColor,
   extraDesktopWidth,
@@ -40,8 +37,6 @@ import {
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
@@ -127,7 +122,7 @@ class SideMenu extends Component {
   }
 
   get MenuItems() {
-    const { lastPlayList, isSidebarCollapsed, features, isOrganizationDistrict } = this.props;
+    const { lastPlayList, features, isOrganizationDistrict } = this.props;
 
     let _menuItems = cloneDeep(menuItems);
     if (isOrganizationDistrict) {
@@ -135,25 +130,18 @@ class SideMenu extends Component {
     }
     if (features.isCurator || features.isPublisherAuthor) {
       _menuItems[0].path = "publisher/dashboard";
-      const [item1, item2, item3, item4, item5] = _menuItems;
-      _menuItems = [item1, item3, item4, item5];
+      const [item1, item2, item3, item4, item5, item6] = _menuItems;
+      _menuItems = [item1, item4, item5, item6];
     }
     if (features.isPublisherAuthor) {
       const [item1, ...rest] = _menuItems;
-      _menuItems = [null, ...rest];
+      _menuItems = [...rest];
     }
 
     if (!lastPlayList || !lastPlayList.value) return _menuItems;
 
     const [item1, ...rest] = _menuItems;
-    const { title = "Eureka Math", _id = "" } = lastPlayList.value || {};
-    const [fT = "", lT = ""] = title.split(" ");
-    const PlayListTextIcon = () => (
-      <TextIcon isSidebarCollapsed={isSidebarCollapsed}>
-        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`}
-        <FontAwesomeIcon icon={faHeart} />
-      </TextIcon>
-    );
+    const { _id = "" } = lastPlayList.value || {};
     return [
       item1,
       {
@@ -192,7 +180,7 @@ class SideMenu extends Component {
     }
   };
 
-  toggleMenu = e => {
+  toggleMenu = () => {
     const { toggleSideBar } = this.props;
     toggleSideBar();
   };
@@ -503,30 +491,6 @@ const Overlay = styled.div`
   background-color: black;
   opacity: 0.2;
   z-index: 1000;
-`;
-const TextIcon = styled.div`
-  border-radius: 50%;
-  margin-right: 1em;
-  width: 22px;
-  height: 22px;
-  font-size: 10px;
-  background: ${dashBorderColor};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid ${fadedBlack};
-  color: ${fadedBlack};
-  position: relative;
-  margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1rem")};
-  .fa-heart {
-    position: absolute;
-    color: ${redHeart};
-    right: -2px;
-    bottom: -2px;
-    &:before {
-      font-size: 8px;
-    }
-  }
 `;
 
 const FixedSidebar = styled.div`

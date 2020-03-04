@@ -28,6 +28,10 @@ body {
   overflow-x: hidden;
 }
 
+.ant-layout {
+  background: #ffffff;
+}
+
 /*! normalize.css v8.0.0 | MIT License | github.com/necolas/normalize.css */
 
 /* Document

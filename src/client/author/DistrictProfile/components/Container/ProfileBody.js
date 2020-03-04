@@ -1,42 +1,43 @@
-import React from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import produce from "immer";
-import { omit, map, isEqual } from "lodash";
-import { Layout, Form, Input, Button, Icon, Select, Tag } from "antd";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import {
-  extraDesktopWidth,
-  largeDesktopWidth,
-  desktopWidth,
-  borders,
-  backgrounds,
-  themeColor,
-  title,
-  red,
-  fadedGreen,
-  mobileWidthMax,
-  white,
-  mobileWidthLarge
-} from "@edulastic/colors";
 import { userApi } from "@edulastic/api";
 import {
-  resetMyPasswordAction,
-  updateUserDetailsAction,
+  backgrounds,
+  borders,
+  desktopWidth,
+  extraDesktopWidth,
+  fadedGreen,
+  largeDesktopWidth,
+  mobileWidthLarge,
+  mobileWidthMax,
+  red,
+  themeColor,
+  title,
+  white
+} from "@edulastic/colors";
+import { MainContentWrapper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Form, Icon, Input, Select, Tag } from "antd";
+import produce from "immer";
+import { isEqual, map, omit } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import styled from "styled-components";
+import {
   deleteAccountAction,
-  updateInterestedCurriculumsAction,
+  removeInterestedCurriculumsAction,
   removeSchoolAction,
-  removeInterestedCurriculumsAction
+  resetMyPasswordAction,
+  updateInterestedCurriculumsAction,
+  updateUserDetailsAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
+import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
+import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
+import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
 import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
 import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
-import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
-import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import Photo from "./Photo";
 
 const FormItem = Form.Item;
@@ -368,8 +369,8 @@ class ProfileBody extends React.Component {
       curriculums: user.orgData.interestedCurriculums
     };
     return (
-      <LayoutContent flag={flag}>
-        <ProfileWrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+      <MainContentWrapper padding="30px" flag={flag}>
+        <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
             <Photo user={user} />
           </ProfileImgWrapper>
@@ -527,7 +528,7 @@ class ProfileBody extends React.Component {
             changeEmail={this.handleChangeEmail}
           />
         )}
-      </LayoutContent>
+      </MainContentWrapper>
     );
   }
 }
@@ -562,12 +563,8 @@ ProfileBody.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-const LayoutContent = styled(Layout.Content)`
-  width: 100%;
-`;
-
 const ProfileWrapper = styled(Wrapper)`
-  padding: 30px;
+  padding: 0px;
   margin: 0px;
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 20px;
@@ -588,7 +585,7 @@ const RightContainer = styled.div`
 const ProfileContentWrapper = styled.div`
   width: 100%;
   background-color: ${white};
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   padding: 30px;
   overflow: hidden;
@@ -655,7 +652,7 @@ const ProfileImgWrapper = styled.div`
   height: 300px;
   position: relative;
   background-color: ${white};
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   display: flex;
   justify-content: center;

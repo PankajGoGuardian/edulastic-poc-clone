@@ -1,15 +1,12 @@
-import React, { useEffect } from "react";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import React from "react";
 import styled from "styled-components";
-
-import { white, desktopWidth, mediumDesktopExactWidth, extraDesktopWidthMax } from "@edulastic/colors";
-
-import { StyledCard } from "../../../author/Reports/common/styled";
-import CustomizedHeaderWrapper from "./common/components/header";
-import { StyledLeftSide } from "./components/leftSide";
-import { Usage } from "./components/Usage";
-import { Collections } from "./components/Collections";
-import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import SideContent from "../../../author/Dashboard/components/SideContent/Sidecontent";
+import { StyledCard } from "../../../author/Reports/common/styled";
+import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import CustomizedHeaderWrapper from "./common/components/header";
+import { Collections } from "./components/Collections";
+import { Usage } from "./components/Usage";
 
 const Dashboard = () => {
   return (

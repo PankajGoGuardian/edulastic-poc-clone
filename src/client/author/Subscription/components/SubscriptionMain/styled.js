@@ -10,25 +10,12 @@ import {
   desktopWidth
 } from "@edulastic/colors";
 
-export const SubscriptionMainWrapper = styled.div`
-  width: calc(100% - 100px);
-  margin: 50px auto;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
 export const CurrentPlanContainer = styled.div`
   width: 100%;
-  background: ${white};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  padding: 18px 28px;
-  height: 100px;
+  margin-bottom: 40px;
 `;
 
 export const PlanStatus = styled.h3`
@@ -106,9 +93,6 @@ export const GridContainer = styled.div`
   grid-template-columns: 30% 30% 30%;
   grid-column-gap: 35px;
   grid-row-gap: 25px;
-  border-radius: 10px;
-  margin-left: 45px;
-  padding-bottom: 30px;
   width: 100%;
 
   @media (max-width: ${largeDesktopWidth}) {

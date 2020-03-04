@@ -1,10 +1,9 @@
+import { backgrounds, numBtnColors, themeColor, white, whiteSmoke } from "@edulastic/colors";
+import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { compose } from "redux";
-import { Button, Form, Input } from "antd";
 import styled from "styled-components";
-import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
-
-import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedSchool }) => {
   const [disableButton, setButtonState] = useState(true);
@@ -45,7 +44,6 @@ const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedS
       textAlign="left"
       visible={visible}
       footer={Footer}
-      textAlign={"center"}
       onCancel={() => toggleModal("REMOVE_SCHOOL", false)}
       width={700}
     >

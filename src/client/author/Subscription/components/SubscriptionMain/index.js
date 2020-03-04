@@ -1,39 +1,36 @@
+import { EduButton, MainContentWrapper } from "@edulastic/common";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-import { EduButton } from "@edulastic/common";
-import {
-  SubscriptionMainWrapper,
-  CurrentPlanContainer,
-  AvailablePlansContainer,
-  PlanContainerWrapper,
-  PlansContainer,
-  ContentWrapper,
-  PlanImage,
-  PlanDetails,
-  PlanStatus,
-  GridContainer,
-  FeatureDescription,
-  FlexCard,
-  InnerWrapper,
-  Img,
-  StyledLink,
-  StyledParagraph
-} from "./styled";
-import { Title, Description, Container, ThemeButton, ActionsWrapper } from "../styled/commonStyled";
-
 // TODO: Update SVG imports here
 import IMG1 from "../../static/1.png";
 import IMG2 from "../../static/2.png";
 import IMG3 from "../../static/3.png";
 import IMG4 from "../../static/4.png";
+import { ActionsWrapper, Container, Description, Title } from "../styled/commonStyled";
+import {
+  AvailablePlansContainer,
+  ContentWrapper,
+  CurrentPlanContainer,
+  FeatureDescription,
+  FlexCard,
+  GridContainer,
+  Img,
+  InnerWrapper,
+  PlanContainerWrapper,
+  PlanDetails,
+  PlanImage,
+  PlansContainer,
+  PlanStatus,
+  StyledLink,
+  StyledParagraph
+} from "./styled";
 
 const getUpgradeToTeacherPlanActions = ({ openPaymentServiceModal, openHasLicenseKeyModal, isblur }) => (
   <ActionsWrapper>
     <EduButton height="40px" onClick={openPaymentServiceModal} disabled={isblur}>
       UPGRADE NOW FOR $100/YEAR
     </EduButton>
-    <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal} isGhost disabled={isblur}>
+    <EduButton isGhost height="40px" onClick={openHasLicenseKeyModal} disabled={isblur}>
       ALREADY HAVE A LICENSE KEY
     </EduButton>
   </ActionsWrapper>
@@ -124,7 +121,7 @@ const PlansComponent = ({
   <PlansContainer isblur={isblur}>
     <ContentWrapper>
       <PlanImage>
-        <img src={imgSrc} />
+        <img src={imgSrc} alt="" />
       </PlanImage>
       <PlanDetails>
         <Title margin="0 0 8px 0">{title}</Title>
@@ -150,8 +147,6 @@ const SubscriptionMain = props => {
   const {
     isSubscribed = false,
     subEndDate,
-    subType,
-    isPremiumAccount = true,
     openPaymentServiceModal,
     openHasLicenseKeyModal,
     openPurchaseLicenseModal
@@ -163,7 +158,7 @@ const SubscriptionMain = props => {
 
   return (
     <>
-      <SubscriptionMainWrapper>
+      <MainContentWrapper padding="30px">
         <CurrentPlanContainer onClick={() => setShowPlans(false)}>
           <Container>
             <Title padding="0 30px 0 0">Current Plan</Title>
@@ -184,12 +179,12 @@ const SubscriptionMain = props => {
           <>
             <PlanContainerWrapper>
               {isSubscribed ? (
-                <h2 style={{ fontWeight: 600, padding: "40px 0 12px 70px" }}>Cool features in your plan</h2>
+                <h2 style={{ fontWeight: 600 }}>Cool features in your plan</h2>
               ) : (
                 <PlansContainer isEnterprise={false}>
                   <ContentWrapper>
                     <PlanImage>
-                      <img src={availablePlans[0].imgSrc} />
+                      <img src={availablePlans[0].imgSrc} alt="" />
                     </PlanImage>
                     <PlanDetails>
                       <Title margin="0 0 8px 0">{availablePlans[0].title}</Title>
@@ -225,7 +220,7 @@ const SubscriptionMain = props => {
             <StyledParagraph isSubscribed={isSubscribed}>
               interested in buying multiple teacher premium subscriptions or upgrading to enterprise?
               {/* <StyledLink onClick={() => setShowPlans(true)}> click here.</StyledLink> */}
-              <a href="https://edulastic.com/teacher-premium/" target="_blank">
+              <a href="https://edulastic.com/teacher-premium/" target="_blank" rel="noopener noreferrer">
                 {" "}
                 click here.
               </a>
@@ -246,7 +241,7 @@ const SubscriptionMain = props => {
             ))}
           </AvailablePlansContainer>
         )}
-      </SubscriptionMainWrapper>
+      </MainContentWrapper>
     </>
   );
 };

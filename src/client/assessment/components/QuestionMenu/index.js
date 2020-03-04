@@ -26,10 +26,7 @@ class QuestionMenu extends Component {
       option.el.scrollIntoView({
         behavior: "smooth"
       });
-      setTimeout(
-        () => this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab),
-        1000
-      );
+      setTimeout(() => this.contentWrapper.addEventListener("scroll", this.throttledFindActiveTab), 1000);
     });
   };
 
@@ -64,8 +61,7 @@ class QuestionMenu extends Component {
       const elm = allOptions[i].el;
       if (
         allOptions.length > activeTab &&
-        this.contentWrapper.scrollTop >=
-          elm.offsetTop - this.contentWrapper.offsetTop + elm.scrollHeight
+        this.contentWrapper.scrollTop >= elm.offsetTop - this.contentWrapper.offsetTop + elm.scrollHeight
       ) {
         this.setState({ activeTab: i + 1 });
       }
@@ -74,8 +70,7 @@ class QuestionMenu extends Component {
       this.setState({ activeTab: 0 });
     } else if (
       allOptions.length > activeTab &&
-      this.contentWrapper.scrollHeight <=
-        this.contentWrapper.scrollTop + this.contentWrapper.clientHeight
+      this.contentWrapper.scrollHeight <= this.contentWrapper.scrollTop + this.contentWrapper.clientHeight
     ) {
       this.setState({ activeTab: allOptions.length - 1 });
     }
@@ -98,12 +93,7 @@ class QuestionMenu extends Component {
     return (
       <Menu>
         <ScrollbarContainer>
-          <MainOptions
-            activeTab={activeTab}
-            main={main}
-            advancedAreOpen={advancedAreOpen}
-            windowWidth={windowWidth}
-          >
+          <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen} windowWidth={windowWidth}>
             {main &&
               main.map((option, index) => (
                 <Option
@@ -117,10 +107,7 @@ class QuestionMenu extends Component {
           </MainOptions>
           {advanced.length > 0 && (
             <Fragment>
-              <AdvancedOptionsLink
-                handleAdvancedOpen={handleAdvancedOpen}
-                advancedAreOpen={advancedAreOpen}
-              />
+              <AdvancedOptionsLink handleAdvancedOpen={handleAdvancedOpen} advancedAreOpen={advancedAreOpen} />
               {advancedAreOpen && (
                 <AdvancedOptions>
                   {advanced.map((option, index) => (
@@ -139,13 +126,8 @@ class QuestionMenu extends Component {
         </ScrollbarContainer>
 
         {!advancedAreOpen ? (
-          <div onClick={this.openModal}>
-            <VideoThumbnail
-              title="How to author video"
-              width="100%"
-              maxWidth="100%"
-              margin="30px 0 0 0"
-            />
+          <div style={{ position: "absolute", bottom: "180px", width: "100%" }} onClick={this.openModal}>
+            <VideoThumbnail title="How to author video" width="100%" maxWidth="100%" margin="30px 0 0 0" />
           </div>
         ) : null}
         <IframeVideoModal
@@ -182,6 +164,7 @@ const Menu = styled.div`
   position: fixed;
   width: 230px;
   padding: 30px 0px;
+  height: 100%;
 `;
 
 const ScrollbarContainer = styled(PerfectScrollbar)`
@@ -205,8 +188,7 @@ const MainOptions = styled.ul`
   border-left: 2px solid #b9d5fa;
 
   &::before {
-    opacity: ${props =>
-      props.activeTab > props.main.length - 1 ? (props.advancedAreOpen ? 1 : 0) : 1};
+    opacity: ${props => (props.activeTab > props.main.length - 1 ? (props.advancedAreOpen ? 1 : 0) : 1)};
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -219,8 +201,7 @@ const MainOptions = styled.ul`
     transition: 0.2s ease transform, 0.2s ease opacity;
     transform: translateY(
       ${props =>
-        `${props.activeTab *
-          (props.windowWidth >= extraDesktopWidthMax.replace("px", "") ? 80 : 50) +
+        `${props.activeTab * (props.windowWidth >= extraDesktopWidthMax.replace("px", "") ? 80 : 50) +
           (props.activeTab > props.main.length - 1
             ? props.windowWidth >= extraDesktopWidthMax.replace("px", "")
               ? 50

@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin } from "antd";
-
+import { IconBarChart } from "@edulastic/icons";
 import Header from "../sharedComponents/Header";
-import StudentProfileReportsFilters from "../../author/Reports/subPages/studentProfileReport/common/components/filter/StudentProfileReportsFilters";
 import StudentMasteryProfile from "../../author/Reports/subPages/studentProfileReport/StudentMasteryProfile";
-
+import { getSPRFilterDataRequestAction } from "../../author/Reports/subPages/studentProfileReport/common/filterDataDucks";
 import MainContainer from "../styled/mainContainer";
 import { getUserId, getUserName, getClasses, getCurrentGroup } from "../Login/ducks";
 import {
@@ -19,7 +18,8 @@ import {
 } from "../ManageClass/ducks";
 import NoDataNotification from "../../common/components/NoDataNotification";
 import { LoaderConainer } from "./styled";
-import { IconBarChart } from "@edulastic/icons";
+
+const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
 
 const SkillReportContainer = ({
   flag,
@@ -31,33 +31,44 @@ const SkillReportContainer = ({
   userClasses,
   loading,
   resetEnrolledClassAction,
-  currentChild
+  currentChild,
+  getSPRFilterDataRequest
 }) => {
-  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
-  const fallbackClassId = !!activeEnrolledClasses[0] ? activeEnrolledClasses[0]._id : "";
-
-  const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
-
-  const settings = {
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [settings, setSettings] = useState({
     requestFilters: {
-      termId: getTermId(userClasses, classId || fallbackClassId)
+      termId: ""
     },
     selectedStudent: {
       key: userId,
       title: userName
     }
-  };
+  });
+  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
+  const fallbackClassId = !!activeEnrolledClasses[0] ? activeEnrolledClasses[0]._id : "";
 
   useEffect(() => {
     resetEnrolledClassAction();
     loadAllClasses();
+    setInitialLoading(false);
   }, [currentChild]);
 
   useEffect(() => {
     if (classId) {
-      settings.requestFilters.termId = getTermId(userClasses, classId);
+      setSettings({
+        ...settings,
+        requestFilters: { ...settings.requestFilters, termId: getTermId(userClasses, classId || fallbackClassId) }
+      });
     }
   }, [classId, currentChild]);
+
+  useEffect(() => {
+    const q = {
+      ...settings.requestFilters,
+      studentId: userId
+    };
+    if (q.termId) getSPRFilterDataRequest(q);
+  }, [settings]);
 
   return (
     <MainContainer flag={flag}>
@@ -70,23 +81,16 @@ const SkillReportContainer = ({
         classList={activeEnrolledClasses}
         showAllClassesOption={false}
       />
-      {loading ? (
+      {loading || initialLoading ? (
         <LoaderConainer>
           <Spin />
         </LoaderConainer>
       ) : !settings.requestFilters.termId ? (
         <LoaderConainer>
-          <NoDataNotification heading={"No Skill Mastery"} description={"You don't have any Skill Mastery."} />
+          <NoDataNotification heading="No Skill Mastery" description="You don't have any Skill Mastery." />
         </LoaderConainer>
       ) : (
         <StyledDiv>
-          <StudentProfileReportsFilters
-            onGoClick={() => {}}
-            location={{ pathname: userId, search: `termId=${settings.requestFilters.termId}` }}
-            style={{ display: "none" }}
-            performanceBandRequired={true}
-            standardProficiencyRequired={true}
-          />
           <StudentMasteryProfile settings={settings} />
         </StyledDiv>
       )}
@@ -108,7 +112,8 @@ export default connect(
   }),
   {
     loadAllClasses: getEnrollClassAction,
-    resetEnrolledClassAction
+    resetEnrolledClassAction,
+    getSPRFilterDataRequest: getSPRFilterDataRequestAction
   }
 )(SkillReportContainer);
 

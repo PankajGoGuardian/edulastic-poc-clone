@@ -603,6 +603,7 @@ function* useThisPlayListSaga({ payload }) {
     const urlHasUseThis = location.match(/use-this/g);
     if (isStudent && onChange) {
       yield put(push({ pathname: `/home/playlist/${_id}`, state: { currentGroupId: groupId } }));
+      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }));
     } else if (onChange && !urlHasUseThis) {
       yield put(push({ pathname: `/author/playlists/${_id}`, state: { from: "playlistLibrary" } }));
     } else {
@@ -612,6 +613,7 @@ function* useThisPlayListSaga({ payload }) {
           state: { from: "favouritePlaylist" }
         })
       );
+      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }));
     }
   } catch (error) {
     console.error(error);

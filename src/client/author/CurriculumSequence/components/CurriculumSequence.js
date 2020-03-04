@@ -451,7 +451,6 @@ class CurriculumSequence extends Component {
       const submitted =
         metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
         "-";
-
       const duration = moment.duration(tSpent);
       const h = duration.hours();
       let m = duration.minutes();

@@ -60,11 +60,13 @@ export default class TestHeader {
       return cy.wait("@published").then(xhr => {
         expect(xhr.status).to.eq(200);
         // TODO: revisit here and refactor
-        return cy.contains("Share With Others").then(() => {
-          return JSON.stringify(xhr.url)
-            .split("/")
-            .reverse()[1];
-        });
+        if (Cypress.$('[data-cy="Assignments"]').length === 1) {
+          return cy.contains("Share With Others").then(() => {
+            return JSON.stringify(xhr.url)
+              .split("/")
+              .reverse()[1];
+          });
+        }
       });
     }
   };

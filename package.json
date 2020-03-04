@@ -35,6 +35,7 @@
     "test:automation-open-poc": "cypress open --env configFile=poc",
     "test:automation-open-uat": "cypress open --env configFile=uat",
     "test:automation-open-prod": "cypress open --env configFile=prod",
+    "test:automation-open-qa": "cypress open --env configFile=qa",
     "test:visual-regression-open": "cypress open --env configFile=visual-regression,updateSnapshots=true",
     "test:visual-regression-run": "cypress run --env configFile=visual-regression,updateSnapshots=false",
     "test:visual-regression-run:update-base": "cypress run --env configFile=visual-regression,updateSnapshots=true",

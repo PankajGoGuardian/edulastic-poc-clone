@@ -71,17 +71,19 @@ if (query.token && query.userId && query.role) {
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.
  */
-const { search } = window.location;
+const { search, pathname } = window.location;
 if (search) {
   const { errorDescription, ...rest } = qs.parse(search, { ignoreQueryPrefix: true });
   if (errorDescription) {
     let errorMessage = errorDescription.split("_").join(" ");
     errorMessage = `${errorMessage[0].toUpperCase()}${errorMessage.substr(1, errorMessage.length)}`;
     sessionStorage.setItem("errorMessage", errorMessage);
-    if (isEmpty(rest)) {
-      window.location.href = window.location.href.split("?")[0];
-    } else {
-      window.location.href = `${window.location.href.split("?")[0]}?${qs.stringify(rest)}`;
+    if (!pathname.split("/").includes("login")) {
+      if (isEmpty(rest)) {
+        window.location.href = window.location.href.split("?")[0];
+      } else {
+        window.location.href = `${window.location.href.split("?")[0]}?${qs.stringify(rest)}`;
+      }
     }
   }
 }

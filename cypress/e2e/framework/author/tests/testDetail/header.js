@@ -59,9 +59,12 @@ export default class TestHeader {
       cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
       return cy.wait("@published").then(xhr => {
         expect(xhr.status).to.eq(200);
-        return JSON.stringify(xhr.url)
-          .split("/")
-          .reverse()[1];
+        // TODO: revisit here and refactor
+        return cy.contains("Share With Others").then(() => {
+          return JSON.stringify(xhr.url)
+            .split("/")
+            .reverse()[1];
+        });
       });
     }
   };

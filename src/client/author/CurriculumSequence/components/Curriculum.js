@@ -46,7 +46,8 @@ const SortableItem = sortableElement(props => {
     isReview,
     urlHasUseThis,
     summaryData,
-    playlistMetrics
+    playlistMetrics,
+    playlistClassList
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -76,6 +77,7 @@ const SortableItem = sortableElement(props => {
           urlHasUseThis={urlHasUseThis}
           summaryData={summaryData}
           playlistMetrics={playlistMetrics}
+          playlistClassList={playlistClassList}
         />
       </DropContainer>
     </AssignmentItemContainer>

@@ -752,6 +752,7 @@ class CurriculumSequence extends Component {
                     urlHasUseThis={urlHasUseThis}
                     summaryData={summaryData}
                     playlistMetrics={playlistMetrics}
+                    playlistClassList={playlistClassList}
                   />
                 )}
               </Wrapper>

@@ -261,6 +261,52 @@
         "emailnotallowed": "This email Id is not allowed in your district."
       }
     },
+    "contentAuthor": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "status": "Status",
+      "sso": "Sso",
+      "password": "Password",
+      "createContentAuthor": "+ Create Content Author",
+      "createCA": {
+        "title": "Create content author",
+        "entername": "Enter name",
+        "enterusername": "Enter username",
+        "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "nocancel": "No, Cancel",
+        "yescreate": "Yes, Create",
+        "validations": {
+          "name": "Please input name",
+          "email": "Please input email",
+          "password": "Please input password"
+        }
+      }
+    },
+    "contentApprover": {
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "status": "Status",
+      "sso": "Sso",
+      "password": "Password",
+      "createContentAuthor": "+ Create Content Approver",
+      "createCA": {
+        "title": "Create content approver",
+        "entername": "Enter name",
+        "enterusername": "Enter username",
+        "enteremail": "Enter email",
+        "enterpassword": "Enter password",
+        "nocancel": "No, Cancel",
+        "yescreate": "Yes, Create",
+        "validations": {
+          "name": "Please input name",
+          "email": "Please input email",
+          "password": "Please input password"
+        }
+      }
+    },
     "validations": {
       "edituser": "Please select user to edit.",
       "editsingleuser": "Please select single user to edit.",

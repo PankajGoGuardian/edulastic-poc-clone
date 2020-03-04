@@ -1,10 +1,9 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
+import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { keyBy, get, omit } from "lodash";
 import { message } from "antd";
-import { getUserOrgId } from "../src/selectors/user";
 import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
 
 const RECEIVE_SCHOOLADMIN_REQUEST = "[schooladmin] receive data request";
@@ -70,14 +69,6 @@ export const setTeachersDetailsModalVisibleAction = createAction(SET_TEACHERDETA
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
 const filterSelector = state => state.schoolAdminReducer.filters;
-const getRoleSelector = createSelector(
-  stateSchoolAdminSelector,
-  ({ role }) => role
-);
-const getSearchValueSelector = createSelector(
-  stateSchoolAdminSelector,
-  ({ searchName }) => searchName
-);
 
 export const getAdminUsersDataSelector = createSelector(
   stateSchoolAdminSelector,
@@ -193,7 +184,7 @@ export const reducer = createReducer(initialState, {
   [DELETE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
     const { userIds } = payload; // userIds in an array of ids
     state.data.result = omit(state.data.result, userIds);
-    state.data.totalUsers = state.data.totalUsers - userIds.length;
+    state.data.totalUsers -= userIds.length;
     state.delete = payload;
     state.deleting = false;
   },
@@ -245,7 +236,7 @@ export const reducer = createReducer(initialState, {
   [ADD_BULK_TEACHER_SUCCESS]: (state, { payload: { res, _bulkTeachers } }) => {
     state.bulkTeacherData = res;
     state.data.result = { ..._bulkTeachers, ...state.data.result };
-    state.data.totalUsers = state.data.totalUsers + Object.keys(_bulkTeachers).length;
+    state.data.totalUsers += Object.keys(_bulkTeachers).length;
     state.creating = false;
     state.teacherDetailsModalVisible = true;
   },
@@ -307,6 +298,14 @@ function* createSchoolAdminSaga({ payload }) {
       case "district-admin":
         msg = "District admin created successfully";
         break;
+      case "content-author":
+        msg = "Content Author created successfully";
+        break;
+      case "content-approver":
+        msg = "Content Approver created successfully";
+        break;
+      default:
+        msg = "Created Successfully";
     }
     yield call(message.success, msg);
   } catch (err) {

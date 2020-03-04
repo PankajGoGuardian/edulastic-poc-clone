@@ -110,6 +110,7 @@ class CurriculumContainer extends Component {
       getAllCurriculumSequences,
       getCurrentPlaylistMetrics,
       isStudent = false,
+      currentGroupId,
       history: { location } = {}
     } = this.props;
 
@@ -117,7 +118,7 @@ class CurriculumContainer extends Component {
     if (playlistId) {
       getAllCurriculumSequences([playlistId]);
       if (isStudent) {
-        getCurrentPlaylistMetrics({ groupId: location?.state?.currentGroupId, playlistId });
+        getCurrentPlaylistMetrics({ groupId: location?.state?.currentGroupId || currentGroupId, playlistId });
       } else {
         getCurrentPlaylistMetrics({ playlistId });
       }

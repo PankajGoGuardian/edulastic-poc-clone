@@ -32,7 +32,7 @@ const PlaylistsContainer = ({
 
   if (isLoading) return <Spin size="large" />;
 
-  const pathPlaylistId = location.pathname.substring(match.path.length + 1);
+  const pathPlaylistId = location.pathname.substring(match.path.length).replace(/\//g, "");
 
   const playlist = lastPlaylist?.value?._id
     ? playlists.find(playlist => playlist.playlistId === lastPlaylist.value._id)
@@ -48,7 +48,7 @@ const PlaylistsContainer = ({
             <Suspense fallback={<Progress />}>
               <CurriculumContainer
                 {...props}
-                currentGroupId={playlists.find(playlist => playlist.playlistId === pathPlaylistId).groupId}
+                currentGroupId={playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId}
                 urlHasUseThis
               />
             </Suspense>

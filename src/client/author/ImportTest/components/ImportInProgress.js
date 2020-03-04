@@ -7,14 +7,40 @@ import { connect } from "react-redux";
 
 import TitleWrapper from "../../AssignmentCreate/common/TitleWrapper";
 import TextWrapper from "../../AssignmentCreate/common/TextWrapper";
-import { FlexContainer } from "./styled";
-import { qtiImportProgressAction, UPLOAD_STATUS } from "../ducks";
+import { FlexContainer, StyledButton } from "./styled";
+import {
+  qtiImportProgressAction,
+  UPLOAD_STATUS,
+  getIsSuccessSelector,
+  getErrorDetailsSelector,
+  getSuccessMessageSelector,
+  getJobIdsSelector,
+  getUploadStatusSelector,
+  setJobIdsAction,
+  uploadTestStatusAction
+} from "../ducks";
 
-const ImportInprogress = ({ t, qtiImportProgress, jobIds, status }) => {
+const ImportInprogress = ({
+  t,
+  qtiImportProgress,
+  jobIds,
+  status,
+  successMessage,
+  isSuccess,
+  errorDetails,
+  uploadTestStatus,
+  setJobIds
+}) => {
   const checkProgress = () => {
     if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       qtiImportProgress(jobIds);
     }
+  };
+
+  const handleRetry = () => {
+    setJobIds([]);
+    uploadTestStatus(UPLOAD_STATUS.STANDBY);
+    sessionStorage.removeItem("qtiTags");
   };
 
   useEffect(() => {
@@ -29,6 +55,16 @@ const ImportInprogress = ({ t, qtiImportProgress, jobIds, status }) => {
     <FlexContainer flexDirection="column" alignItems="column" width="50%">
       <Spin size="large" style={{ top: "40%" }} />
       <TitleWrapper>{t("qtiimport.importinprogress.title")}</TitleWrapper>
+      <TextWrapper style={{ color: isSuccess ? "green" : "red", fontWeight: "bold" }}>
+        {isSuccess ? successMessage : errorDetails?.message || "Importing Failed retry"}
+        {!isSuccess && (
+          <p>
+            <StyledButton position="relative" onClick={handleRetry}>
+              {t("qtiimport.uploadpage.retry")}
+            </StyledButton>
+          </p>
+        )}
+      </TextWrapper>
       <TextWrapper> {t("qtiimport.importinprogress.description")} </TextWrapper>
     </FlexContainer>
   );
@@ -40,12 +76,17 @@ ImportInprogress.propTypes = {
 
 export default withNamespaces("qtiimport")(
   connect(
-    ({ admin }) => ({
-      jobIds: admin.importTest.jobIds,
-      status: admin.importTest.status
+    state => ({
+      jobIds: getJobIdsSelector(state),
+      status: getUploadStatusSelector(state),
+      successMessage: getSuccessMessageSelector(state),
+      isSuccess: getIsSuccessSelector(state),
+      errorDetails: getErrorDetailsSelector(state)
     }),
     {
-      qtiImportProgress: qtiImportProgressAction
+      qtiImportProgress: qtiImportProgressAction,
+      setJobIds: setJobIdsAction,
+      uploadTestStatus: uploadTestStatusAction
     }
   )(ImportInprogress)
 );

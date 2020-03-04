@@ -26,6 +26,7 @@ const SET_UPLOAD_TEST_STATUS = "[import test] set upload test status";
 const SET_JOB_IDS = "[import test] test job ids";
 const GET_IMPORT_PROGRESS = "[import test] get import progress action";
 const SET_JOBS_DATA = "[import test] set jobs response data";
+const SET_SUCCESS_MESSAGE = "[import test] set success message";
 
 export const uploadTestRequestAction = createAction(UPLOAD_TEST_REQUEST);
 export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS);
@@ -34,13 +35,16 @@ export const uploadTestStatusAction = createAction(SET_UPLOAD_TEST_STATUS);
 export const setJobIdsAction = createAction(SET_JOB_IDS);
 export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS);
 export const setJobsDataAction = createAction(SET_JOBS_DATA);
+export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE);
 
 const initialState = {
   testDetail: {},
   error: {},
   status: "STANDBY",
   jobIds: [],
-  jobsData: []
+  jobsData: [],
+  successMessage: "",
+  isSuccess: true
 };
 
 const testUploadStatus = (state, { payload }) => {
@@ -52,6 +56,7 @@ const uploadTestSuccess = (state, { payload }) => ({ ...state, ...payload });
 
 const uploadTestError = (state, { payload }) => {
   state.error = payload;
+  state.isSuccess = false;
 };
 
 const setJobIds = (state, { payload }) => {
@@ -63,30 +68,58 @@ const setJobsData = (state, { payload }) => {
   state.jobsData = payload;
 };
 
+const setSuccessMessage = (state, { payload }) => {
+  state.successMessage = payload;
+  state.isSuccess = true;
+};
+
 export const reducers = createReducer(initialState, {
   [SET_UPLOAD_TEST_STATUS]: testUploadStatus,
   [UPLOAD_TEST_SUSSESS]: uploadTestSuccess,
   [UPLOAD_TEST_ERROR]: uploadTestError,
   [SET_JOB_IDS]: setJobIds,
-  [SET_JOBS_DATA]: setJobsData
+  [SET_JOBS_DATA]: setJobsData,
+  [SET_SUCCESS_MESSAGE]: setSuccessMessage
 });
 
 export function* uploadTestStaga({ payload: fileList = [] }) {
   try {
     yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE));
-    const responseFiles = yield all([
-      fileList.map(file => call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT))
-    ]);
-    for (const file of responseFiles) {
-      yield call(extractContent.qtiExtract, { files: file });
+    let responseFiles = [];
+    let extractResponse = {};
+    try {
+      yield put(setSuccessMessageAction("Started creating signed URLS"));
+      [responseFiles] = yield all([
+        fileList.map(file => call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT))
+      ]);
+      yield put(setSuccessMessageAction("Done creating signed URLs"));
+    } catch (e) {
+      yield put(uploadTestErrorAction(e?.data || {}));
+      console.log(e);
     }
-    const response = yield call(contentImportApi.qtiImport, { files: responseFiles });
-    if (response?.jobIds?.length) {
-      yield put(setJobIdsAction(response.jobIds));
-    } else {
-      yield put(uploadTestError("Failed uploading"));
+    try {
+      yield put(setSuccessMessageAction("Initiate extracting the zip files"));
+      extractResponse = yield call(extractContent.qtiExtract, { files: responseFiles });
+      yield put(setSuccessMessageAction("Completed extracting the zip files"));
+    } catch (e) {
+      yield put(uploadTestErrorAction(e?.data || {}));
+      console.log(e);
+    }
+    try {
+      yield put(setSuccessMessageAction("Started creating the items"));
+      const response = yield call(contentImportApi.qtiImport, { files: [extractResponse] });
+      if (response?.jobIds?.length) {
+        yield put(setJobIdsAction(response.jobIds));
+      } else {
+        yield put(uploadTestError("Failed uploading"));
+      }
+      yield put(setSuccessMessageAction("Completed creating the items"));
+    } catch (e) {
+      yield put(uploadTestErrorAction(e?.data || {}));
+      console.log(e);
     }
   } catch (e) {
+    yield put(uploadTestErrorAction(e?.data || {}));
     console.log(e, "eee");
   }
 }
@@ -130,4 +163,19 @@ export const getUploadStatusSelector = createSelector(
 export const getJobIdsSelector = createSelector(
   stateSelector,
   state => state.jobIds
+);
+
+export const getSuccessMessageSelector = createSelector(
+  stateSelector,
+  state => state.successMessage
+);
+
+export const getIsSuccessSelector = createSelector(
+  stateSelector,
+  state => state.isSuccess
+);
+
+export const getErrorDetailsSelector = createSelector(
+  stateSelector,
+  state => state.error
 );

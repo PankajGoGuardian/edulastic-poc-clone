@@ -11,7 +11,8 @@
       "input": {
         "placholder": "Select Tags"
       },
-      "importbuttontext": "Import"
+      "importbuttontext": "Import",
+      "retry": "Retry"
     },
     "importinprogress": {
       "title": "Your files are successfully uploaded.",

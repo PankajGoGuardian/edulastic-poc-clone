@@ -218,19 +218,27 @@ function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
   const oldData = cloneDeep(curriculumSequence);
   try {
-    const dataToSend = omit(curriculumSequence, ["authors", "createdDate", "updatedDate", "sharedWith", "sharedType", "isAuthor"]);
+    const dataToSend = omit(curriculumSequence, [
+      "authors",
+      "createdDate",
+      "updatedDate",
+      "sharedWith",
+      "sharedType",
+      "isAuthor"
+    ]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
       return mod;
     });
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
-    const { authors } = response;
+    const { authors, version } = response;
     const userId = yield select(getUserId);
     if (authors && authors.map(author => author._id).includes(userId)) {
       response.isAuthor = true;
     } else {
       response.isAuthor = false;
     }
+    oldData.version = version;
     message.success(`Successfully saved ${response.title || ""}`);
     yield put(updateCurriculumSequenceAction(oldData));
   } catch (error) {

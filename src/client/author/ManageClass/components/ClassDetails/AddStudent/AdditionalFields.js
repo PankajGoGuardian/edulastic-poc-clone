@@ -6,8 +6,19 @@ import Field from "./CustomField";
 
 const { Option } = Select;
 
-const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => {
-  let { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
+const AdditionalFields = ({ std, stds, isEdit, showTtsField, foundUserContactEmails, ...restProps }) => {
+  let {
+    sisId,
+    studentNumber,
+    iepStatus,
+    ellStatus,
+    sedStatus,
+    frlStatus,
+    race,
+    dob,
+    gender,
+    contactEmails = foundUserContactEmails
+  } = std;
   if (isEdit && stds && stds.length) {
     const [studentDetails = {}] = stds;
     ({

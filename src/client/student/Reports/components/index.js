@@ -25,12 +25,12 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, loading }) => {
+const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   useEffect(() => {
     loadAllClasses();
-  }, []);
+  }, [currentChild]);
 
   if (loading) return <Spin />;
 
@@ -55,7 +55,8 @@ export default connect(
   state => ({
     activeClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading,
-    allClasses: state.studentEnrollClassList.allClasses
+    allClasses: state.studentEnrollClassList.allClasses,
+    currentChild: state?.user?.currentChild
   }),
   {
     loadAllClasses: getEnrollClassAction

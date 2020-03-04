@@ -171,7 +171,7 @@ export const JSXBox = styled.div`
   border: 1px solid #e8e8e8;
   border-radius: 0;
   border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
-  margin: ${props => (props.margin ? props.margin : 0)}px;
+  margin: ${props => (props.margin ? `${props.margin}px` : "auto")};
 
   div {
     color: ${props => props.theme.widgets.chart.labelStrokeColor} !important;

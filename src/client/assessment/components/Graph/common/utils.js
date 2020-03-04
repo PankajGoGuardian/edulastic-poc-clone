@@ -14,7 +14,7 @@ export const getAdjustedHeightAndWidth = (
   responseBoxTitleWidth,
   disableResponse
 ) => {
-  const obj = { width: layout.width, height: layout.height };
+  const obj = { width: parentWidth, height: layout.height };
 
   if (parentWidth < layout.width) {
     obj.width = Math.max(parentWidth, MIN_WIDTH);
@@ -40,7 +40,7 @@ export const getAdjustedV1AnnotationCoordinatesForRender = (adjustedHeightWidth,
   const widthPercentage = (size.width / v1Width) * 100;
   const heightPercentage = (size.height / v1Height) * 100;
 
-  let calcX = (xPosPercentage / 100) * adjustedHeightWidth.width;
+  const calcX = (xPosPercentage / 100) * adjustedHeightWidth.width;
   const calcY = (yPosPercentage / 100) * adjustedHeightWidth.height;
 
   const calcSizeWidth = (widthPercentage / 100) * adjustedHeightWidth.width;

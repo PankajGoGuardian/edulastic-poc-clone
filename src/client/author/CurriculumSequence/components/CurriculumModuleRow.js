@@ -875,7 +875,12 @@ class ModuleRow extends Component {
                               </>
                             ) : (
                               <StyledCol span={14} style={{ display: "flex", justifyContent: "flex-end" }}>
-                                <EduButton isGhost height="22px" style={{ padding: "0px 15px" }}>
+                                <EduButton
+                                  isGhost
+                                  height="22px"
+                                  style={{ padding: "0px 15px" }}
+                                  onClick={() => this.viewTest(moduleData?.contentId)}
+                                >
                                   <IconVisualization width="14px" height="14px" />
                                   Preview
                                 </EduButton>

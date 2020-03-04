@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
-  width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
+  min-width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
   height: ${({ height }) => height || "auto"};
 
   .input {

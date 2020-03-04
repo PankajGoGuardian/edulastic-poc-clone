@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
-import { Select, message } from "antd";
+import { Select, message, Icon } from "antd";
 import { get, groupBy } from "lodash";
 import {
   CanvasClassTable,
@@ -11,7 +11,8 @@ import {
   ButtonContainer,
   Button,
   StyledModal,
-  ClassNameWrapper
+  ClassNameWrapper,
+  BookLogoWrapper
 } from "./styled";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import { getDictCurriculumsAction } from "../../../author/src/actions/dictionaries";
@@ -159,16 +160,16 @@ const CanvasBulkAddClass = ({
       key: "name",
       render: (text, record) => (
         <ClassNameWrapper>
-          <p>{record.canvasCourseName}</p>
-          <p>{record.canvasCourseSectionName}</p>
+          <p>{`Course: ${record.canvasCourseName}`}</p>
+          <p>{`Section: ${record.canvasCourseSectionName}`}</p>
         </ClassNameWrapper>
       )
     },
     {
       title: <b>GRADE</b>,
       dataIndex: "grades",
+      width: "250px",
       key: "grades",
-      width: "350px",
       render: (_, row, index) => (
         <Select
           style={{ width: "100%" }}
@@ -279,6 +280,11 @@ const CanvasBulkAddClass = ({
       <LogoWrapper>
         <Logo />
       </LogoWrapper>
+      <BookLogoWrapper>
+        <span>
+          <Icon type="read" theme="filled" />
+        </span>
+      </BookLogoWrapper>
       <HeadingWrapper>
         <p>Imported Classes from Canvas</p>
       </HeadingWrapper>

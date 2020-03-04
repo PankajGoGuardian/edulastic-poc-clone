@@ -27,6 +27,20 @@ export const LogoWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
+export const BookLogoWrapper = styled(LogoWrapper)`
+  color: ${themeColor};
+  font-size: 30px;
+  > span {
+    border: 3px dashed ${themeColor};
+    border-radius: 50%;
+    height: 65px;
+    width: 65px;
+    line-height: 60px;
+    text-align: center;
+    display: inline-block;
+  }
+`;
+
 export const HeadingWrapper = styled.div`
   font-size: 18px;
   font-weight: 600;

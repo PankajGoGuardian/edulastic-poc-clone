@@ -205,7 +205,7 @@ class ModuleRow extends Component {
 
   processStudentAssignmentAction = (moduleId, moduleData, isAssigned, assignmentRows = []) => {
     let uta = moduleData.userTestActivities || {};
-    const { classId, classList, startAssignment, resumeAssignment, playlistId } = this.props;
+    const { classId: groupId, playlistClassList, startAssignment, resumeAssignment, playlistId } = this.props;
     const testId = uta.testId || moduleData.contentId;
 
     if (isAssigned) {
@@ -245,7 +245,7 @@ class ModuleRow extends Component {
     } else {
       uta = {
         testId,
-        classId: classList?.[0]?._id,
+        classId: uta.groupId || groupId || playlistClassList[0],
         testType: "practice",
         taStatus: uta.status,
         testActivityId: uta._id,
@@ -1388,8 +1388,7 @@ const enhance = compose(
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
       isStudent: getUserRole({ user }) === "student",
-      classId: getCurrentGroup({ user }),
-      classList: getClasses({ user })
+      classId: getCurrentGroup({ user })
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,

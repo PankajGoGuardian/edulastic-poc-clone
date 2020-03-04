@@ -407,7 +407,7 @@ function* submitTest({ payload: classId }) {
     } else {
       const prevLocationState = yield select(state => state?.router?.location?.state);
       if (prevLocationState) {
-        yield put(push(`/home/playlist/${prevLocationState?.playlistId}`));
+        yield put(push({pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: {currentGroupId: groupId}}));
       } else {
         yield put(push("/home/grades"));
       }

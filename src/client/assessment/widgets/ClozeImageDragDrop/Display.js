@@ -375,7 +375,9 @@ class Display extends Component {
       isExpressGrader,
       setQuestionData,
       studentReport,
-      getHeading
+      getHeading,
+      isPrint,
+      isPrintPreview
     } = this.props;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers, possibleResponses } = this.state;
@@ -502,11 +504,14 @@ class Display extends Component {
     const responseposition = smallSize ? "right" : responsecontainerposition;
 
     const responseBoxWidth = choiceMaxWidth;
+    const isPrintMode = isPrint || isPrintPreview;
+  
     const containerStyle = {
       margin: "auto",
-      overflow: "auto",
+      overflow: !isPrintMode && "auto",
       minWidth: choiceMaxWidth,
-      maxWidth: responseposition === "left" || responseposition === "right" ? 1050 : 750
+      maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
+      flexDirection: isPrintMode ? "column" : "row"
     };
 
     const renderSnapItems = () =>
@@ -604,6 +609,7 @@ class Display extends Component {
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
         choiceStyle={choiceStyle}
+        isPrintMode={isPrintMode}
       />
     );
 

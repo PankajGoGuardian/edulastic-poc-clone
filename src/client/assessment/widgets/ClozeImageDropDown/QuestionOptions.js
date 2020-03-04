@@ -20,7 +20,7 @@ const QuestionOptions = ({
     padding: "10px"
   }
   return (
-    <div style={{...style, display: "flex"}}>
+    <div style={{...style, display: "flex", flexWrap: "wrap"}}>
       {options.map((option, i) => (
         <div style={{display: "flex"}}>
           <StyledOptionTitle>{getStemNumeration("lowercase", i)}</StyledOptionTitle>

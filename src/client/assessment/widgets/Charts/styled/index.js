@@ -8,6 +8,7 @@ export const Line = styled.line`
   shape-rendering: crispEdges;
   stroke: ${props => props.theme.widgets.chart.gridColor};
   stroke-width: ${({ strokeWidth }) => strokeWidth};
+  fill: none;
 `;
 
 export const Axis = styled(Line)`

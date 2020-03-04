@@ -11,6 +11,8 @@ export const Content = styled.div`
   padding: 0;
   position: relative;
 
-  border-top: 1px solid ${someGreyColor1};
-  break-inside: avoid;
+  border-bottom: 1px solid ${someGreyColor1};
+  >div {
+    break-inside: avoid;
+  }
 `;

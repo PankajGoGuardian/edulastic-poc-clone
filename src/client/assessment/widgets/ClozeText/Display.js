@@ -34,7 +34,7 @@ class ClozeTextDisplay extends Component {
   }
 
   static getDerivedStateFromProps({ stimulus }) {
-    return { parsedTemplate: helpers.parseTemplate(stimulus) };
+    return { parsedTemplate: helpers.parseTemplate(stimulus.replace(/\u200B/gi, "")) };
   }
 
   getFontSize = size => {

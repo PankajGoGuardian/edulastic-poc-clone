@@ -42,7 +42,8 @@ const HighlightImagePreview = ({
   disableResponse,
   theme,
   viewComponent,
-  clearClicked
+  clearClicked,
+  isPrintPreview
 }) => {
   const canvas = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -206,6 +207,7 @@ const HighlightImagePreview = ({
           ref={canvasContainerRef}
           minHeight={canvasDimensions.maxHeight}
           width={`${canvasContainerWidth}px`}
+          isPrintPreview={isPrintPreview}
         >
           <FlexContainer justifyContent="flex-start" alignItems="baseline">
             <QuestionLabelWrapper>

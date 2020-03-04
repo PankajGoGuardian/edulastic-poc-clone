@@ -177,7 +177,7 @@ const SortListPreview = ({
   const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
   const orientation = get(item, "uiStyle.orientation");
   const isVertical = orientation === "vertical";
-  const flexDirection = isVertical ? "column" : "row";
+  const flexDirection = isPrintPreview || isVertical ? "column" : "row";
   const stemNumeration = get(item, "uiStyle.validationStemNumeration", "");
 
   const validResponse = get(item, "validation.validResponse.value", []);
@@ -218,7 +218,7 @@ const SortListPreview = ({
     minWidth: 580,
     maxWidth: isPrintPreview ? "100%" : 980,
     margin: "auto",
-    overflow: "auto"
+    overflow: isPrintPreview ? "" : "auto"
   };
 
   const wrapperStyles = {
@@ -268,6 +268,7 @@ const SortListPreview = ({
               alignItems="stretch"
               style={wrapperStyles}
               flexWrap="nowrap"
+              className="sort-list-wrapper"
             >
               <FullWidthContainer isVertical={isVertical}>
                 {!smallSize && <Title smallSize={smallSize}>{t("component.sortList.containerSourcePreview")}</Title>}

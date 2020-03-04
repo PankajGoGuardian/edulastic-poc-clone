@@ -16,7 +16,8 @@ const ResponseBoxLayout = ({
   transparentResponses,
   responseContainerPosition,
   getHeading,
-  choiceStyle
+  choiceStyle,
+  isPrintMode
 }) => {
   const horizontallyAligned = responseContainerPosition === "left" || responseContainerPosition === "right";
   const itemStyle = {
@@ -32,13 +33,9 @@ const ResponseBoxLayout = ({
   return (
     <DropContainer drop={onDrop} style={{ height: horizontallyAligned && "100%" }}>
       <StyledResponseDiv className="responses_box" data-cy="responses-box" style={containerStyle}>
-        <FlexContainer flexDirection="column">
+        <FlexContainer flexDirection="column" style={isPrintMode ? {width: "100%"} : {}}>
           <DropContainerTitle>{getHeading("component.cloze.dragDrop.optionContainerHeading")}</DropContainerTitle>
-          <FlexContainer
-            justifyContent="flex-start"
-            flexDirection={horizontallyAligned ? "column" : "row"}
-            flexWrap="wrap"
-          >
+          <FlexContainer justifyContent="flex-start" flexDirection={isPrintMode ? "column" : horizontallyAligned ? "column" : "row"} flexWrap="wrap">
             {responses.map((option = "", index) => (
               <DragItem
                 id={`response-item-${index}`}
@@ -71,7 +68,8 @@ ResponseBoxLayout.propTypes = {
   smallSize: PropTypes.bool,
   dragHandler: PropTypes.bool,
   transparentResponses: PropTypes.bool,
-  responseContainerPosition: PropTypes.string
+  responseContainerPosition: PropTypes.string,
+  isPrintMode: PropTypes.bool
 };
 
 ResponseBoxLayout.defaultProps = {
@@ -80,7 +78,8 @@ ResponseBoxLayout.defaultProps = {
   smallSize: false,
   dragHandler: false,
   transparentResponses: false,
-  responseContainerPosition: "bottom"
+  responseContainerPosition: "bottom",
+  isPrintMode: false
 };
 
 export default React.memo(ResponseBoxLayout);

@@ -153,11 +153,44 @@ const PrintAssessmentContainer = styled.div`
 
   .question-wrapper {
     max-width: 100% !important;
+    padding-left: 0;
+    padding-right: 0;
+    .sort-list-wrapper {
+      margin: auto;
+    }
   }
   .multiple-choice-wrapper {
     .multiplechoice-optionlist {
       div, label {
         margin-bottom: 0px!important;
+      }
+    }
+  }
+  .classification-preview {
+    overflow: hidden!important;
+    .classification-preview-wrapper {
+      align-items: center;
+      overflow: hidden!important;
+      >div {
+        max-width: 100%;
+        width: 100%;
+      }
+      .choice-items-wrapper {
+        flex-direction: column!important;
+      }
+      .classification-preview-wrapper-response {
+        >div {
+          height: auto!important;
+          width: auto!important;
+          >div {
+            page-break-inside: avoid;
+          }
+        }
+        div {
+          position: relative!important;
+          transform: none!important;
+          text-align: center;
+        }
       }
     }
   }

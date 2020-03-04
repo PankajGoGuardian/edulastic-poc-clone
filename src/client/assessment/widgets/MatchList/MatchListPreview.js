@@ -251,9 +251,10 @@ const MatchListPreview = ({
     transform: "translate3d(0px, 0px, 0px)"
   });
 
+  const direction = getDirection(listPosition);
   const wrapperStyle = {
     display: "flex",
-    flexDirection: getDirection(listPosition),
+    flexDirection: isPrintPreview && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
     alignItems: horizontallyAligned ? "flex-start" : "center",
     width: isPrintPreview ? "100%" : horizontallyAligned ? 1050 : 750,
     margin: "auto"
@@ -310,7 +311,7 @@ const MatchListPreview = ({
   return (
     <StyledPaperWrapper
       data-cy="matchListPreview"
-      style={{ fontSize, overflow: "auto", margin: "auto", width: "100%" }}
+      style={{ fontSize, overflow: isPrintPreview ? "hidden" : "auto", margin: "auto", width: "100%" }}
       padding={smallSize}
       ref={previewWrapperRef}
       boxShadow={smallSize ? "none" : ""}
@@ -325,7 +326,7 @@ const MatchListPreview = ({
           <QuestionTitleWrapper>
             {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
           </QuestionTitleWrapper>
-          <div data-cy="previewWrapper" style={wrapperStyle}>
+          <div data-cy="previewWrapper" style={wrapperStyle} className="match-list-preview-wrapper">
             <FlexContainer style={responseBoxStyle} flexDirection="column" alignItems="flex-start">
               {list.map((ite, i) => (
                 <AnswerItem

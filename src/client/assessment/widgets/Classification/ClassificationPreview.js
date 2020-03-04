@@ -52,7 +52,9 @@ const ClassificationPreview = ({
   showQuestionNumber,
   disableResponse,
   isReviewTab,
-  setQuestionData
+  setQuestionData,
+  isPrintPreview,
+  isPrint
 }) => {
   const listPosition = get(item, "uiStyle.possibilityListPosition", "left");
   const rowHeader = get(item, "uiStyle.rowHeader", null);
@@ -68,7 +70,7 @@ const ClassificationPreview = ({
   const styles = {
     wrapperStyle: {
       display: "flex",
-      flexDirection: direction,
+      flexDirection: (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
       overflow: "auto"
     },
@@ -351,6 +353,7 @@ const ClassificationPreview = ({
       style={{ fontSize }}
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
+      className="classification-preview"
     >
       <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
         <QuestionLabelWrapper>
@@ -364,12 +367,13 @@ const ClassificationPreview = ({
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
             </QuestionTitleWrapper>
           )}
-          <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle}>
+          <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle} className="classification-preview-wrapper">
             <ResponseContainer
               direction={direction}
               imageOptions={imageOptions}
               imageUrl={imageUrl}
               disableResponse={disableResponse}
+              className="classification-preview-wrapper-response"
             >
               {tableContent}
             </ResponseContainer>

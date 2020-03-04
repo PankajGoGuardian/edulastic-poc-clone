@@ -538,6 +538,22 @@ class CurriculumSequence extends Component {
       />
     );
 
+    const subHeaderIcon1 = !!grades.length && (
+      <SubHeaderInfoCard data-cy="playlist-grade">
+        <IconGraduationCap color="grey" />
+        <SubHeaderInfoCardText>Grade {grades.join(", ")}</SubHeaderInfoCardText>
+      </SubHeaderInfoCard>
+    );
+
+    const subHeaderIcon2 = !!subjects.length && (
+      <SubHeaderInfoCard data-cy="playlist-sub">
+        <IconBook color="grey" />
+        <SubHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SubHeaderInfoCardText>
+      </SubHeaderInfoCard>
+    );
+
+    const enableCustomize = customize && urlHasUseThis && !isStudent;
+
     return (
       <>
         <RemoveTestModal
@@ -687,22 +703,18 @@ class CurriculumSequence extends Component {
               <SubTopBar>
                 <SubTopBarContainer active={isContentExpanded} mode={mode}>
                   <CurriculumSubHeaderRow>
-                    <SubHeaderTitleContainer>
+                    <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
                       <SubHeaderDescription>{description}</SubHeaderDescription>
                     </SubHeaderTitleContainer>
-                    {!!grades.length && (
-                      <SubHeaderInfoCard data-cy="playlist-grade">
-                        <IconGraduationCap color="grey" />
-                        <SubHeaderInfoCardText>Grade {grades.join(", ")}</SubHeaderInfoCardText>
-                      </SubHeaderInfoCard>
+                    {!enableCustomize && (
+                      <SubHeaderInfoCardWrapper>
+                        {subHeaderIcon1}
+                        {subHeaderIcon2}
+                      </SubHeaderInfoCardWrapper>
                     )}
-                    {!!subjects.length && (
-                      <SubHeaderInfoCard data-cy="playlist-sub">
-                        <IconBook color="grey" />
-                        <SubHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SubHeaderInfoCardText>
-                      </SubHeaderInfoCard>
-                    )}
-                    {customize && urlHasUseThis && !isStudent && (
+                    {enableCustomize && subHeaderIcon1}
+                    {enableCustomize && subHeaderIcon2}
+                    {enableCustomize && (
                       <StyledButton
                         width="135px"
                         data-cy="save"
@@ -1112,14 +1124,11 @@ const CurriculumSubHeaderRow = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: ${props => props.marginBottom || "0px"};
-  @media only screen and (max-width: ${tabletWidth}) {
-    flex-direction: column;
-    margin-bottom: ${props => props.marginBottom && "7px"};
-  }
 `;
 
 const SubHeaderTitleContainer = styled.div`
-  max-width: 40%;
+  min-width: 200px;
+  max-width: ${props => props.maxWidth};
   word-break: break-word;
   @media only screen and (max-width: ${tabletWidth}) {
     max-width: 100%;
@@ -1132,9 +1141,14 @@ const SubHeaderDescription = styled.p`
   text-align: justify;
 `;
 
+const SubHeaderInfoCardWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const SubHeaderInfoCard = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: center;
   margin-left: 20px;
   @media only screen and (max-width: ${tabletWidth}) {
     margin-top: 10px;

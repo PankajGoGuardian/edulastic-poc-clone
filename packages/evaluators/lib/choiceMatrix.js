@@ -56,11 +56,14 @@ var getAnswerSet = function getAnswerSet(allAnswers) {
   allAnswers.forEach(function(answer) {
     answer.value.forEach(function(row, rowIndex) {
       answerSet[rowIndex] = answerSet[rowIndex] || [];
-      row.forEach(function(ans) {
-        if (!answerSet[rowIndex].includes(ans)) {
-          answerSet[rowIndex].push(ans);
-        }
-      });
+
+      if (row) {
+        row.forEach(function(ans) {
+          if (!answerSet[rowIndex].includes(ans)) {
+            answerSet[rowIndex].push(ans);
+          }
+        });
+      }
     });
   });
   return answerSet;
@@ -174,9 +177,12 @@ var evaluator = function evaluator(_ref) {
   var answerSet = getAnswerSet(allAnswers);
   var evaluation = evaluateAnswers(userAnswers, answerSet);
   var correctAnswerRows = evaluation.filter(function(arr) {
-    return arr.every(function(ans) {
-      return ans === true;
-    });
+    return (
+      arr.length > 0 &&
+      arr.every(function(ans) {
+        return ans === true;
+      })
+    );
   });
 
   var _getAnswerCount = getAnswerCount(evaluation),

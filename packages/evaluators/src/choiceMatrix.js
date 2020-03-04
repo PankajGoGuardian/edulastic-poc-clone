@@ -10,11 +10,13 @@ const getAnswerSet = allAnswers => {
   allAnswers.forEach(answer => {
     answer.value.forEach((row, rowIndex) => {
       answerSet[rowIndex] = answerSet[rowIndex] || [];
-      row.forEach(ans => {
-        if (!answerSet[rowIndex].includes(ans)) {
-          answerSet[rowIndex].push(ans);
-        }
-      });
+      if (row) {
+        row.forEach(ans => {
+          if (!answerSet[rowIndex].includes(ans)) {
+            answerSet[rowIndex].push(ans);
+          }
+        });
+      }
     });
   });
   return answerSet;
@@ -102,7 +104,7 @@ const evaluator = ({ userResponse = {}, validation = {} }) => {
   }
   const answerSet = getAnswerSet(allAnswers);
   const evaluation = evaluateAnswers(userAnswers, answerSet);
-  const correctAnswerRows = evaluation.filter(arr => arr.every(ans => ans === true));
+  const correctAnswerRows = evaluation.filter(arr => arr.length > 0 && arr.every(ans => ans === true));
   const [correctAnswers, incorrectAnswers] = getAnswerCount(evaluation);
 
   if (scoringType === "partialMatch") {
@@ -115,7 +117,6 @@ const evaluator = ({ userResponse = {}, validation = {} }) => {
     score = maxScore;
   }
   const evaluationObject = { score: parseFloat(score), maxScore, evaluation };
-
   return evaluationObject;
 };
 

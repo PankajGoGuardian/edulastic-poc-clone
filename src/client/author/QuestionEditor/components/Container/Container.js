@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter, Prompt } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes, Hints , EduButton } from "@edulastic/common";
@@ -13,6 +13,7 @@ import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
 
+import CustomPrompt from "@edulastic/common/src/components/CustomPrompt";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
@@ -425,7 +426,14 @@ class Container extends Component {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
         const itemId = backUrl.split("/")[3];
-        history.push(`/author/items/${itemId}/item-detail`);
+
+        if (itemId && backUrl.includes("/author/items")) {
+          // while creating new item
+          history.push(`/author/items/${itemId}/item-detail`);
+        } else {
+          // while creating new test
+          history.push(`/author/tests/create/description`);
+        }
       } else {
         history.push("/author/items");
       }
@@ -438,8 +446,10 @@ class Container extends Component {
 
     return (
       <EditorContainer ref={this.innerDiv}>
-        <Prompt
+        {/* TODO: message can be seen only when react-router-dom detects changes */}
+        <CustomPrompt
           when={!!hasUnsavedChanges}
+          onUnload
           message={() => "There are unsaved changes. Are you sure you want to leave?"}
         />
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>

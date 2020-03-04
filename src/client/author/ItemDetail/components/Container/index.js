@@ -31,7 +31,7 @@ const ItemDetailContainer = ({
   match,
   isLoading = false,
   getItem,
-  item,
+  item = {},
   history,
   updateItem,
   publishTestItem,
@@ -60,7 +60,9 @@ const ItemDetailContainer = ({
     if (testId) {
       setRedirectTestAction(testId);
     }
-    if (item._id !== "new") getItem(itemId, { data: true, validation: true });
+    if (itemId && itemId !== "new") {
+      getItem(itemId, { data: true, validation: true });
+    }
   }, [itemId]);
 
   const saveItem = () => {
@@ -92,8 +94,10 @@ const ItemDetailContainer = ({
       </div>
     );
 
-  const showPublishButton = (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
-  const hasAuthorPermissions = item && item.authors && item.authors.some(author => author._id === currentUserId);
+  const showPublishButton =
+    (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
+  const hasAuthorPermissions =
+    item && item.authors && item.authors.some(author => author._id === currentUserId);
 
   const allProps = {
     ...props,

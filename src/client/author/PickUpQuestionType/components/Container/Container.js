@@ -25,11 +25,16 @@ import {
   IconRead,
   IconWrite
 } from "@edulastic/icons";
+import CustomPrompt from "@edulastic/common/src/components/CustomPrompt";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
-import { convertItemToMultipartAction, convertItemToPassageWithQuestionsAction } from "../../../ItemDetail/ducks";
+import {
+  convertItemToMultipartAction,
+  convertItemToPassageWithQuestionsAction,
+  getItemDetailSelector
+} from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -215,11 +220,34 @@ class Container extends Component {
   }
 
   render() {
-    const { t, windowWidth, toggleSideBar, modalItemId, onModalClose, selectedCategory, selectedTab } = this.props;
+    const {
+      t,
+      windowWidth,
+      toggleSideBar,
+      modalItemId,
+      onModalClose,
+      selectedCategory,
+      selectedTab,
+      location: { pathname = "" },
+      history: { push },
+      itemDetails = {}
+    } = this.props;
     const { mobileViewShow, isShowCategories } = this.state;
+
+    if (!itemDetails._id) {
+      if (pathname.includes("/author/tests")) {
+        push("/author/tests/create/description");
+        return <div />;
+      }
+      if (pathname.includes("/author/items")) {
+        push("/author/items");
+        return <div />;
+      }
+    }
 
     return (
       <div showMobileView={mobileViewShow}>
+        <CustomPrompt onUnload />
         <Header
           title="common.selectQuestionWidget"
           link={this.link}
@@ -430,7 +458,8 @@ const enhance = compose(
       selectedCategory: state.pickUpQuestion.selectedCategory,
       selectedTab: state.pickUpQuestion.selectedTab,
       testName: state.tests.entity.title,
-      testId: state.tests.entity._id
+      testId: state.tests.entity._id,
+      itemDetails: getItemDetailSelector(state)
     }),
     {
       setQuestion: setQuestionAction,
@@ -463,7 +492,11 @@ Container.propTypes = {
   location: PropTypes.object.isRequired,
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired,
-  toggleModalAction: PropTypes.string.isRequired
+  toggleModalAction: PropTypes.string.isRequired,
+  isTestFlow: PropTypes.bool.isRequired,
+  itemDetails: PropTypes.object.isRequired,
+  convertToMultipart: PropTypes.func.isRequired,
+  convertToPassageWithQuestions: PropTypes.func.isRequired
 };
 
 Container.defaultProps = {

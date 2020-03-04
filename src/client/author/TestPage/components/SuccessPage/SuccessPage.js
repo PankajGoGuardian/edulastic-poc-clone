@@ -135,7 +135,7 @@ class SuccessPage extends React.Component {
     const isOwner = authors.some(o => o._id === userId);
     const playlistBreadCrumbData = [
       {
-        title: "PLAY LIST",
+        title: "PLAYLIST",
         to: "/author/playlists"
       },
       {

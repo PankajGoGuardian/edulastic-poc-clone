@@ -15,7 +15,7 @@ import MainSetting from "./MainSettings";
 const Setting = ({ current, history, windowWidth, customize, setUserCustomize }) => {
   const breadcrumbData = [
     {
-      title: "PLAY LIST",
+      title: "PLAYLIST",
       to: "/author/playlists"
     },
     {

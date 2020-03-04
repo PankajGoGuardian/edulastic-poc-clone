@@ -177,10 +177,14 @@ class CurriculumSequence extends Component {
         res.groupIds.push(ele.groupId);
         return res;
       });
+      if (!classId && mappedStudentPlaylists[playlistId]?.groupIds.includes(classId)) {
+        mappedStudentPlaylists[playlistId].groupId = classId;
+      }
     });
     const curatedStudentPlaylists = Object.values(mappedStudentPlaylists);
     if (
       Object.keys(destinationCurriculumSequence).length &&
+      curatedStudentPlaylists.length &&
       !isEqual(curatedStudentPlaylists, state.curatedStudentPlaylists) &&
       !mappedStudentPlaylists[destinationCurriculumSequence._id]
     ) {
@@ -516,7 +520,7 @@ class CurriculumSequence extends Component {
 
     const playlistBreadcrumbData = [
       {
-        title: "PLAY LIST",
+        title: "PLAYLIST",
         to: "/author/playlists"
       },
       {

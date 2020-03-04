@@ -84,7 +84,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
       it(`Summary page when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${pageURL}`);
-        cy.contains("Play List Name").should("be.visible");
+        cy.contains("Playlist Name").should("be.visible");
         cy.matchImageSnapshotWithSize();
         // for mobile
         if (size[0] < screenSizes.MAX_TAB_WIDTH)

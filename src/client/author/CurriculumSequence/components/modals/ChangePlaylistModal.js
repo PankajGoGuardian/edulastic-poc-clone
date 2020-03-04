@@ -114,7 +114,7 @@ const ChangePlaylistModal = ({
             <StyledCard height={60} justify="center" style={sideCardStyle} onClick={onExplorePlaylists}>
               <Row type="flex" align="middle">
                 <IconPlaylist width={18} height={18} style={sideIconStyle} color={lightGreen5} />
-                EXPLORE PLAY LISTS &gt;&gt;
+                EXPLORE PLAYLISTS &gt;&gt;
               </Row>
             </StyledCard>
           </StyledCol>

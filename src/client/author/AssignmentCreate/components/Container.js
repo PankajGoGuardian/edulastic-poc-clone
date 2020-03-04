@@ -59,18 +59,16 @@ class Container extends Component {
                   <IconWrapper marginBottom="0px">
                     <IconPlaylist style={{ height: "40px", width: "40px" }} />
                   </IconWrapper>
-                  <TitleWrapper>Choose From Play List</TitleWrapper>
-                  <TextWrapper>
-                    Select pre built tests from the Curriculum aligned assessment play list
-                  </TextWrapper>
+                  <TitleWrapper>Choose From Playlist</TitleWrapper>
+                  <TextWrapper>Select pre built tests from the Curriculum aligned assessment playlist</TextWrapper>
                   <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
                     <EduButton isGhost width="234px">
-                      PLAY LIST
+                      PLAYLIST
                     </EduButton>
                   </Link>
                   <Divider />
                   <CountWrapper>191</CountWrapper>
-                  <TextWrapperBold>Pre-built Assessment in Play List</TextWrapperBold>
+                  <TextWrapperBold>Pre-built Assessment in Playlist</TextWrapperBold>
                 </CardComponent>
               </FeaturesSwitch>
               <CardComponent ml="25px">

@@ -41,7 +41,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
           />
         )}
         <Link to="/author/manageClass/createClass" data-cy="createClass">
-          <EduButton isGhost>
+          <EduButton>
             <IconPlusCircle />
             <span>Create Class</span>
           </EduButton>

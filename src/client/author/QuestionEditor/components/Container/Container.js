@@ -453,6 +453,7 @@ class Container extends Component {
             {view !== "preview" && view !== "auditTrail" && (
               <Col span={12}>
                 <EduButton
+                  isGhost
                   height="30px"
                   id={getFormattedAttrId(`${question?.title}-how-to-author`)}
                   style={{ float: "right" }}

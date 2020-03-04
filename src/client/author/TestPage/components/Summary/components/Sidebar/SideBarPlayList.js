@@ -138,7 +138,7 @@ const Sidebar = ({
       </Col>
       <Row gutter={16}>
         <Col xl={12}>
-          <MainTitle>{"Play List Name"}</MainTitle>
+          <MainTitle>{"Playlist Name"}</MainTitle>
           <SummaryInput
             value={title}
             data-cy="testname"
@@ -247,7 +247,7 @@ const Sidebar = ({
         <Col xl={12}>
           <Row>
             <Col xs={12}>
-              <MainTitle>Text Color</MainTitle>
+              <MainTitle>TEXT COLOR</MainTitle>
               <SummaryDiv>
                 <ColorBox data-cy="image-text-box-color-picker" background={textColor} />
                 <SummaryButton onClick={() => onChangeColor("isTextColorPickerVisible", true)}>CHOOSE</SummaryButton>
@@ -265,7 +265,7 @@ const Sidebar = ({
               </SummaryDiv>
             </Col>
             <Col xs={12}>
-              <MainTitle>Background Color</MainTitle>
+              <MainTitle>BACKGROUND COLOR</MainTitle>
               <SummaryDiv>
                 <ColorBox data-cy="image-text-box-color-picker" background={backgroundColor} />
                 <SummaryButton onClick={() => onChangeColor("isBackgroundColorPickerVisible", true)}>

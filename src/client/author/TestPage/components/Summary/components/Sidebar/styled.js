@@ -65,11 +65,12 @@ export const Block = styled.div`
 `;
 
 export const MainTitle = styled.div`
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: ${secondaryTextColor};
   letter-spacing: 0.2px;
   margin-bottom: 8px;
+  text-transform: uppercase;
 `;
 
 export const Title = styled.span`

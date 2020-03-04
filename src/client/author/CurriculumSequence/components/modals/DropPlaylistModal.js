@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Modal, Button, Radio, message } from "antd";
 import styled from "styled-components";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { isEmpty, uniqBy } from "lodash";
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, EduButton } from "@edulastic/common";
 import {
   lightGreySecondary,
   black,
@@ -26,9 +26,9 @@ import { StyledRadioGroup } from "./styled";
 
 const getFooterComponent = ({ dropPlaylist }) => (
   <FlexContainer width="450px">
-    <ThemeButton data-cy="done-drop-playlist" onClick={dropPlaylist} inverse>
+    <EduButton height="42px" data-cy="done-drop-playlist" onClick={dropPlaylist} inverse>
       DONE
-    </ThemeButton>
+    </EduButton>
   </FlexContainer>
 );
 

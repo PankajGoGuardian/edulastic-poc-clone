@@ -77,7 +77,7 @@ const Summary = ({
   ];
   const playlistBreadcrumbData = [
     {
-      title: "PLAY LIST",
+      title: "PLAYLIST",
       to: "/author/playlists"
     },
     {

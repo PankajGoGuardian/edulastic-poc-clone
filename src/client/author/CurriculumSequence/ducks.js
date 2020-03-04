@@ -68,7 +68,7 @@ export const BATCH_ASSIGN = "[curriculum-sequence] batch assign request";
 export const BATCH_ASSIGN_RESULT = "[curriculum-sequence] batch assign result";
 export const FETCH_ASSIGNED_REQUEST = "[curriculum-sequence] fetch assigned request";
 export const FETCH_ASSIGNED_RESULT = "[curriculum-sequence] fetch assigned result";
-export const USE_THIS_PLAYLIST = "[playlist] use this play list";
+export const USE_THIS_PLAYLIST = "[playlist] use this playlist";
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
   "[curriculum-sequence] approve or reject single playlist request";
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =

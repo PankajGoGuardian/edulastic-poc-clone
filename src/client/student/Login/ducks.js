@@ -369,6 +369,11 @@ export const getUserId = createSelector(
   (_id, currentChild) => _id || currentChild
 );
 
+export const getUserName = createSelector(
+  ["user.user.firstName", "user.user.middleName", "user.user.lastName"],
+  (firstName, middleName, lastName) => [firstName || "", middleName || "", lastName || ""].join(" ").trim()
+);
+
 export const getUserFeatures = createSelector(
   ["user.user.features"],
   features => features

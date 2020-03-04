@@ -5,6 +5,9 @@ import { enrollmentApi } from "@edulastic/api";
 import { get } from "lodash";
 import { message } from "antd";
 
+export const RESET_ENROLLED_CLASSES = "[manage class] reset all enrolled classes";
+export const RESET_CLASS_LIST = "[manage class] reset class list";
+
 export const GET_ENROLL_CLASSES_REQUEST = "[auth] load enroll classes request";
 export const GET_ENROLL_CLASSES_SUCCESS = "[auth] load enroll classes request success";
 export const GET_ENROLL_CLASSES_FAIL = "[auth] load enroll classes request fail";
@@ -13,6 +16,9 @@ export const SET_FILTER_CLASS = "[manage class] set active class";
 export const JOIN_CLASS_REQUEST = "[manage class] join class request";
 export const JOIN_CLASS_REQUEST_SUCCESS = "[manage class] join class request success";
 export const JOIN_CLASS_REQUEST_FAIL = "[manage class] join class request fail";
+
+export const resetEnrolledClassAction = createAction(RESET_ENROLLED_CLASSES);
+export const resetClassListAction = createAction(RESET_CLASS_LIST);
 
 export const getEnrollClassAction = createAction(GET_ENROLL_CLASSES_REQUEST);
 export const getEnrollClassActionSuccess = createAction(GET_ENROLL_CLASSES_SUCCESS);
@@ -30,6 +36,14 @@ const initialState = {
   loading: true,
   error: null
 };
+
+const resetEnrolledClassList = (state, { payload }) => {
+  state.allClasses = [];
+  state.filteredClasses = [];
+  state.loading = true;
+  state.error = null;
+};
+
 const setEnrollClassListSuccess = (state, { payload }) => {
   state.allClasses = payload;
   state.loading = false;
@@ -47,6 +61,7 @@ const setFilterClass = (state, { payload }) => {
 const joinClassReq = state => {
   state.loading = true;
 };
+
 const joinClassSuccess = (state, { payload }) => {
   if (payload) {
     state.filteredClasses.push(payload);
@@ -59,6 +74,7 @@ const joinClassFail = state => {
 };
 
 export const reducer = createReducer(initialState, {
+  [RESET_CLASS_LIST]: resetEnrolledClassList,
   [GET_ENROLL_CLASSES_SUCCESS]: setEnrollClassListSuccess,
   [GET_ENROLL_CLASSES_FAIL]: setEnrollClassListFail,
   [SET_FILTER_CLASS]: setFilterClass,
@@ -66,6 +82,10 @@ export const reducer = createReducer(initialState, {
   [JOIN_CLASS_REQUEST_SUCCESS]: joinClassSuccess,
   [JOIN_CLASS_REQUEST_FAIL]: joinClassFail
 });
+
+function* resetEnrolledClasses() {
+  yield put(resetClassListAction());
+}
 
 function* getEnrollClass() {
   try {
@@ -102,7 +122,8 @@ function* joinClass({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(GET_ENROLL_CLASSES_REQUEST, getEnrollClass),
-    yield takeEvery(JOIN_CLASS_REQUEST, joinClass)
+    yield takeEvery(JOIN_CLASS_REQUEST, joinClass),
+    yield takeEvery(RESET_ENROLLED_CLASSES, resetEnrolledClasses)
   ]);
 }
 

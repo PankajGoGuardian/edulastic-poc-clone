@@ -18,8 +18,13 @@ const renderActiveShape = props => {
 
   const getFormattedTime = timeInMillis => {
     const duration = moment.duration(timeInMillis);
-    const minutes = duration.minutes();
+    let minutes = duration.minutes();
     const hours = duration.hours();
+    const seconds = duration.seconds();
+    // To make it consistent with module level time spent
+    if (seconds > 50) {
+      minutes += 1;
+    }
     return [`${hours} hr`, `${minutes} MINS`];
   };
 

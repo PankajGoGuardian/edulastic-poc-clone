@@ -1,35 +1,76 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { get, groupBy, isEmpty } from "lodash";
+import { message } from "antd";
+import { get, groupBy, isEmpty, last } from "lodash";
 import { ticks } from "d3-array";
 import { connect } from "react-redux";
 import {
   white,
-  pointColor,
   dropZoneTitleColor,
   secondaryTextColor,
   incorrect,
   yellow1,
-  themeColor
+  themeColor,
+  linkColor1,
+  themeColorLighter,
+  darkBlue2
 } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import memoizeOne from "memoize-one";
 import { scrollTo } from "@edulastic/common";
-import { message } from "antd";
-import { themes } from "../../../../student/themes";
 import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
 import { MAX_XGA_WIDTH, NORMAL_MONITOR_WIDTH, LARGE_DESKTOP_WIDTH, MAX_TAB_WIDTH } from "../../../src/constants/others";
 
+const bars = {
+  correctAttemps: {
+    className: "correctAttemps",
+    yAxisId: "left",
+    stackId: "a",
+    dataKey: "correctAttemps",
+    fill: themeColorLighter
+  },
+  incorrectAttemps: {
+    className: "incorrectAttemps",
+    yAxisId: "left",
+    stackId: "a",
+    dataKey: "incorrectAttemps",
+    fill: incorrect
+  },
+  partialAttempts: {
+    className: "partialAttempts",
+    yAxisId: "left",
+    stackId: "a",
+    dataKey: "partialAttempts",
+    fill: yellow1
+  },
+  skippedNum: {
+    className: "skippedNum",
+    yAxisId: "left",
+    stackId: "a",
+    dataKey: "skippedNum",
+    fill: linkColor1
+  },
+  manualGradedNum: {
+    className: "manualGradedNum",
+    yAxisId: "left",
+    stackId: "a",
+    dataKey: "manualGradedNum",
+    fill: darkBlue2
+  }
+};
+
 /**
  * @param {string} qid
  */
 const _scrollTo = qid => {
-  // when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
-  // * 2 because the position of sticky bar changes when it is made sticky, before it has a proper position with respect to its parent...
-  // the position of all the elements changes when sticky bar is made sticky
+  /**
+   * when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
+   * 2 because the position of sticky bar changes when it is made sticky,
+   * before it has a proper position with respect to its parent...
+   * the position of all the elements changes when sticky bar is made sticky
+   */
   scrollTo(
     document.querySelector(`.question-container-id-${qid}`),
     (document.querySelector(".lcb-student-sticky-bar")?.offsetHeight + 10) * 2 || 0
@@ -37,37 +78,20 @@ const _scrollTo = qid => {
 };
 const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
 
-const RectangleBar = ({ fill, x, y, width, height, dataKey, incorrectAttemps }) => {
+const RectangleBar = ({ fill, x, y, width, height, dataKey, ...rest }) => {
   let radius = [5, 5, 0, 0];
-  if (dataKey === "correctAttemps" && incorrectAttemps !== 0) {
+  const availableBars = Object.keys(bars)
+    .map(key => (rest[key] !== 0 ? key : false))
+    .filter(em => em);
+
+  if (dataKey !== last(availableBars)) {
     radius = null;
   }
-
   return <Rectangle x={x} y={y} width={width} height={height} fill={fill} radius={radius} />;
 };
 
-// eslint-disable-next-line no-unused-vars
-const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) => {
-  const isPoint = payload.value % pointValue === 0;
-  const x2 = left ? x + 10 : x - 10;
-  const textX2 = left ? x - 10 : x + 10;
-  const isLastPoint = index + 1 === maxValue;
-  return (
-    <g>
-      {(isLastPoint || isPoint) && <line x1={x} y1={y} x2={x2} y2={y} style={{ stroke: pointColor, strokeWidth: 2 }} />}
-      {(isLastPoint || isPoint) && (
-        <text x={textX2} y={y} textAnchor="middle" fill={dropZoneTitleColor} alignmentBaseline="middle" fontSize="10">
-          {Math.round(payload.value / 1000)}
-        </text>
-      )}
-    </g>
-  );
-};
-
 class BarGraph extends Component {
-  isMobile = () => {
-    window.innerWidth < 480;
-  };
+  isMobile = () => window.innerWidth < 480;
 
   constructor(props) {
     super(props);
@@ -93,7 +117,6 @@ class BarGraph extends Component {
     // README: When I was fixing the chart, I found no use case of "children". It was
     // already there. I didn't remove it since there might be some use case which I dont know about
     // Later it should be removed if it has no use case.
-
     this.state = {
       page,
       chartData: [],
@@ -115,7 +138,7 @@ class BarGraph extends Component {
       const selectedTestActivityId = testActivity.find(x => x.studentId === studentId)?.testActivityId;
       if (filtered) {
         if (isEmpty(studentResponse) || selectedTestActivityId === studentResponse?.testActivity?._id) {
-          // eslint-disable-next-line  prefer-destructuring
+          // eslint-disable-next-line prefer-destructuring
           itemsSummary = filtered.itemsSummary;
         } else {
           itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
@@ -250,7 +273,7 @@ class BarGraph extends Component {
   };
 
   handleClick = (data, index) => {
-    const { isLoading, studentview } = this.props;
+    const { isLoading, studentview, onClickHandler, hasRandomQuestions } = this.props;
     if (isLoading) {
       return;
     }
@@ -258,7 +281,6 @@ class BarGraph extends Component {
       const { qid } = data;
       return _scrollTo(qid);
     }
-    const { onClickHandler, hasRandomQuestions } = this.props;
     if (hasRandomQuestions) {
       return message.error(
         "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment."
@@ -359,52 +381,15 @@ class BarGraph extends Component {
                 ticks={ticks(0, maxTimeSpent + 10000, 10)}
                 tickFormatter={val => Math.round(val / 1000)}
               />
-              <Bar
-                className="correctAttemps"
-                yAxisId="left"
-                stackId="a"
-                dataKey="correctAttemps"
-                fill="#5eb500"
-                shape={<RectangleBar dataKey="correctAttemps" />}
-                onClick={this.handleClick}
-              />
-              <Bar
-                className="incorrectAttemps"
-                yAxisId="left"
-                stackId="a"
-                dataKey="incorrectAttemps"
-                fill={incorrect}
-                shape={<RectangleBar dataKey="incorrectAttemps" />}
-                onClick={this.handleClick}
-              />
-              <Bar
-                className="partialAttempts"
-                yAxisId="left"
-                stackId="a"
-                dataKey="partialAttempts"
-                fill={yellow1}
-                shape={<RectangleBar dataKey="partialAttempts" />}
-                onClick={this.handleClick}
-              />
-              <Bar
-                className="skippedNum"
-                yAxisId="left"
-                stackId="a"
-                dataKey="skippedNum"
-                fill={themes.default.classboard.SkippedColor}
-                shape={<RectangleBar dataKey="skippedNum" />}
-                onClick={this.handleClick}
-              />
 
-              <Bar
-                className="manualGradedNum"
-                yAxisId="left"
-                stackId="a"
-                dataKey="manualGradedNum"
-                fill="rgb(56, 150, 190)"
-                shape={<RectangleBar dataKey="manualGradedNum" />}
-                onClick={this.handleClick}
-              />
+              {Object.keys(bars).map(key => (
+                <Bar
+                  {...bars[key]}
+                  key={bars[key].dataKey}
+                  shape={<RectangleBar dataKey={bars[key].dataKey} />}
+                  onClick={this.handleClick}
+                />
+              ))}
 
               <Line
                 yAxisId="right"

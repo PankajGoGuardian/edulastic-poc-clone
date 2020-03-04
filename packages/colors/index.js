@@ -83,6 +83,7 @@ export const lightBlue6 = "#c8e8f6";
 export const lightBlue7 = "#4e95f3";
 export const darkBlue = "#0080b9";
 export const darkBlue1 = "#157ad8";
+export const darkBlue2 = "#3896be";
 export const darkBlueSecondary = "#0288d1";
 export const blueButton = "#0e93dc";
 export const blueBorder = "#40a9ff";

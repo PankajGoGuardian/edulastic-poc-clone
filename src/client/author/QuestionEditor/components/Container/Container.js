@@ -4,10 +4,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Prompt } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { withWindowSizes, Hints , EduButton } from "@edulastic/common";
+import { withWindowSizes, Hints, EduButton } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
@@ -33,21 +33,13 @@ import {
   proceedPublishingItemAction,
   savePassageAction
 } from "../../../ItemDetail/ducks";
-import {
-  getCurrentQuestionSelector,
-  changeUpdatedFlagAction
-} from "../../../sharedDucks/questions";
-import {
-  checkAnswerAction,
-  showAnswerAction,
-  toggleCreateItemModalAction
-} from "../../../src/actions/testItem";
+import { getCurrentQuestionSelector, changeUpdatedFlagAction } from "../../../sharedDucks/questions";
+import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink, StyledButton, QuestionContentWrapper } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
-
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const questions = get(item, "data.questions", []);
@@ -64,6 +56,8 @@ const shouldHideScoringBlock = (item, currentQuestionId) => {
 };
 
 class Container extends Component {
+  static displayName = "QuestionEditorContainer";
+
   constructor(props) {
     super(props);
 
@@ -214,15 +208,7 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const {
-      question,
-      testItemId,
-      testId,
-      location,
-      toggleModalAction,
-      isItem,
-      itemFromState
-    } = this.props;
+    const { question, testItemId, testId, location, toggleModalAction, isItem, itemFromState } = this.props;
     const questionTitle =
       question.type !== constantsQuestionType.PASSAGE
         ? question.title
@@ -248,10 +234,7 @@ class Container extends Component {
         const title = "MULTIPART ITEM";
         // crumbs[3] not required?
         // links have changed maybe  (EV-10862)
-        crumbs = [
-          ...crumbs.slice(0, 3),
-          { title, to: `${testPath}/createItem/${itemFromState._id}` }
-        ];
+        crumbs = [...crumbs.slice(0, 3), { title, to: `${testPath}/createItem/${itemFromState._id}` }];
       }
       return crumbs;
     }
@@ -325,8 +308,7 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        isTestFlow &&
-        ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
+        isTestFlow && ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
     }
 
     return (
@@ -413,15 +395,7 @@ class Container extends Component {
   };
 
   render() {
-    const {
-      view,
-      question,
-      history,
-      windowWidth,
-      showWarningModal,
-      proceedSave,
-      hasUnsavedChanges
-    } = this.props;
+    const { view, question, history, windowWidth, showWarningModal, proceedSave, hasUnsavedChanges } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -450,7 +424,13 @@ class Container extends Component {
         <CustomPrompt
           when={!!hasUnsavedChanges}
           onUnload
-          message={() => "There are unsaved changes. Are you sure you want to leave?"}
+          message={loc => {
+            const allow = loc.pathname.includes("/item-detail") || location.pathname.includes("/create");
+            if (allow) {
+              return true;
+            }
+            return "There are unsaved changes. Are you sure you want to leave?";
+          }}
         />
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
           {showModal && (
@@ -472,7 +452,11 @@ class Container extends Component {
             </Col>
             {view !== "preview" && view !== "auditTrail" && (
               <Col span={12}>
-                <EduButton height="30px" id={getFormattedAttrId(`${question?.title}-how-to-author`)} style={{float:"right"}}>
+                <EduButton
+                  height="30px"
+                  id={getFormattedAttrId(`${question?.title}-how-to-author`)}
+                  style={{ float: "right" }}
+                >
                   How to author
                 </EduButton>
               </Col>
@@ -481,9 +465,7 @@ class Container extends Component {
               <div>{view === "preview" && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>
-          <QuestionContentWrapper ref={this.scrollContainer}>
-            {this.renderQuestion()}
-          </QuestionContentWrapper>
+          <QuestionContentWrapper ref={this.scrollContainer}>{this.renderQuestion()}</QuestionContentWrapper>
           <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
         </ScrollContext.Provider>
       </EditorContainer>

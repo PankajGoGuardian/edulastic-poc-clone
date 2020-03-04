@@ -138,7 +138,13 @@ const Expanded = ({
     </FlexContainer>
   ) : (
     items.map(({ item: _item }, index) => (
-      <FlexContainer className="expanded-rows" justifyContent="space-between" alignItems="flex-start">
+      <FlexContainer
+        data-cy={testItem._id}
+        className="expanded-rows"
+        justifyContent="space-between"
+        alignItems="flex-start"
+      >
+        {console.log(item)}
         <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
           {isEditable && (
             <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">

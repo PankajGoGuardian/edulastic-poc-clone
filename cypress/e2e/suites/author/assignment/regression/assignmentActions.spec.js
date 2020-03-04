@@ -134,12 +134,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         subjects.forEach((subject, index) => testReviewTab.verifyGradeSubject(grades[index], subject));
       });
       itemKeysInTest.forEach((item, index) => {
-        it(`Verify In The Review Tabs-Collapsed Mode`, () => {
+        it(`Verify In The Review Tabs-Collapsed Mode-${item}`, () => {
           // Verify All questions' presence
           testReviewTab.verifyQustionById(itemIds[index]);
           testReviewTab.asesrtPointsByid(itemIds[index], points[index]);
         });
-        it(`Verify In The Review Tabs-Expanded Mode`, () => {
+        it(`Verify In The Review Tabs-Expanded Mode-${item}`, () => {
           testReviewTab.clickOnExpandRow();
           // Verify All questions' presence along with thier correct answers and points
           testReviewTab.verifyQustionById(itemIds[index]);

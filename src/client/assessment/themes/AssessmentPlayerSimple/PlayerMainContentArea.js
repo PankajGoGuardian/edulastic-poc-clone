@@ -36,7 +36,15 @@ const PlayerContentArea = ({
   playerSkinType = test.playerSkinTypes.edulastic,
   isSidebarVisible = true,
   zoomLevel,
-  windowWidth
+  windowWidth,
+  activeMode,
+  scratchPadMode,
+  lineColor,
+  deleteMode,
+  lineWidth,
+  fillColor,
+  saveHistory,
+  history
 }) => {
   const scrollContainerRef = useRef();
   const item = items[currentItem];
@@ -60,6 +68,14 @@ const PlayerContentArea = ({
                 questions={questions}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
+                activeMode={activeMode}
+                scratchPadMode={scratchPadMode}
+                lineColor={lineColor}
+                deleteMode={deleteMode}
+                lineWidth={lineWidth}
+                fillColor={fillColor}
+                saveHistory={saveHistory}
+                history={history}
               />
             )}
             {testItemState === "check" && (
@@ -70,6 +86,14 @@ const PlayerContentArea = ({
                 questions={questions}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn
+                activeMode={activeMode}
+                scratchPadMode={scratchPadMode}
+                lineColor={lineColor}
+                deleteMode={deleteMode}
+                lineWidth={lineWidth}
+                fillColor={fillColor}
+                saveHistory={saveHistory}
+                history={history}
               />
             )}
             {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}

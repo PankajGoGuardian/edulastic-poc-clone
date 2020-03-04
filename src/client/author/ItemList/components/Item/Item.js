@@ -131,6 +131,9 @@ class Item extends Component {
   closeModal = () => {
     this.setState({ isShowPreviewModal: false });
   };
+  previewItem = () => {
+    this.setState({ isShowPreviewModal: true });
+  };
 
   handleStimulusClick = () => {
     const { features, item, userId, history } = this.props;
@@ -139,7 +142,7 @@ class Item extends Component {
     if (features.isCurator || (features.isPublisherAuthor && owner)) {
       return history.push(`/author/items/${item._id}/item-detail`);
     }
-    this.setState({ isShowPreviewModal: true });
+    this.previewItem();
   };
 
   renderDetails = () => {

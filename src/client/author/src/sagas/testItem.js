@@ -111,18 +111,34 @@ function* evaluateAnswers({ payload }) {
     // User is at the question
     const question = yield select(getCurrentQuestionSelector);
     let correctAnswers = _get(question, "validation.validResponse.value", []);
-    const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
+    const correctInputAnswer = _get(question, "validation.validResponse.textinput.value", []);
+    const correctDropdownAnswer = _get(question, "validation.validResponse.dropdown.value", []);
+    const correctMathUnitAnswer = _get(question, "validation.validResponse.mathUnits.value", []);
+
+    const altAnswers = _get(question, "validation.altResponses", []).map(
+      altAns => _get(altAns, "value", []).length
+    );
+
     yield put({
       type: CLEAR_ITEM_EVALUATION,
       payload: question?.type === questionType.MATH
     });
+
     if (payload === "question" || (payload?.mode === "show" && question)) {
       // some question type like fraction editor have correct answer as number
       // need to convert into array before using spread operator
-      if (typeof correctAnswers === "number") {
+      if (typeof correctAnswers === "number" || typeof correctAnswers === "string") {
         correctAnswers = [correctAnswers];
       }
-      if ([...altAnswers, ...correctAnswers].length) {
+      const allCorrectAnswers = [
+        ...altAnswers,
+        ...correctAnswers,
+        ...correctInputAnswer,
+        ...correctDropdownAnswer,
+        ...correctMathUnitAnswer
+      ];
+
+      if (allCorrectAnswers.length) {
         const answers = yield select(state => _get(state, "answers", []));
         const { evaluation, score, maxScore } = yield evaluateItem(answers, {
           [question?.id]: question

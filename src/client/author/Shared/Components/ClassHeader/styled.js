@@ -243,7 +243,6 @@ export const HeaderMenuIcon = styled(Button)`
 export const OpenCloseWrapper = styled.div`
   white-space: nowrap;
   display: flex;
-  padding-right: 10px;
 `;
 
 export const OpenCloseButton = styled(Button)`

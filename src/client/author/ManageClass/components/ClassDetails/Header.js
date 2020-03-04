@@ -1,4 +1,4 @@
-import { MainHeader , EduButton } from "@edulastic/common";
+import { MainHeader, EduButton } from "@edulastic/common";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -7,7 +7,6 @@ import { compose } from "redux";
 import { fetchClassListAction, getSelectedClass } from "../../ducks";
 // components
 import { EditButton } from "./styled";
-
 
 const Header = ({ onEdit, activeClass, selectedClass }) => {
   const { name, institutionName = "", districtName = "" } = selectedClass;
@@ -20,14 +19,9 @@ const Header = ({ onEdit, activeClass, selectedClass }) => {
   );
 
   return (
-    <MainHeader
-      headingText={name}
-      headingSubContent={headingSubContent}
-      flexDirection="column"
-      alignItems="flex-start"
-    >
+    <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
       {activeClass ? (
-        <EduButton isGhost onClick={onEdit} data-cy="editClass">
+        <EduButton onClick={onEdit} data-cy="editClass">
           Edit Class
         </EduButton>
       ) : null}

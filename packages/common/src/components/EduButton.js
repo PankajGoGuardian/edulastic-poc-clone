@@ -31,7 +31,9 @@ const getStyle = ({ height, width, fontSize, style = {} }) => {
     borderRadius: "4px",
     height: height || "45px",
     padding: "5px 15px",
-    width: width || null
+    textTransform: "uppercase",
+    width: width || null,
+    textShadow: "none"
   };
   return Object.assign({}, defaultStyle, style);
 };
@@ -59,7 +61,8 @@ const getColor = ({ btnType, isGhost }) => {
 const getBorderColor = ({ btnType }) => {
   if (btnType == "primary") {
     return themeColor;
-  } else if (btnType == "secondary") {
+  }
+  if (btnType == "secondary") {
     return grey;
   }
 };
@@ -119,6 +122,7 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
   @media (max-width: ${mediumDesktopExactWidth}) {
     &.ant-btn {
       margin-left: 5px;
+      height: ${props => props.height || "36px"};
     }
   }
 `;

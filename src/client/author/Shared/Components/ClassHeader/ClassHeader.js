@@ -272,6 +272,7 @@ class ClassHeader extends Component {
           assignmentStatusForDisplay !== "DONE" &&
           canPause && (
             <EduButton
+              isGhost
               data-cy="openPauseButton"
               onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
             >
@@ -280,7 +281,7 @@ class ClassHeader extends Component {
           )
         )}
         {canClose ? (
-          <EduButton data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
+          <EduButton isGhost data-cy="closeButton" onClick={() => this.toggleCloseModal(true)}>
             CLOSE
           </EduButton>
         ) : (
@@ -424,9 +425,9 @@ class ClassHeader extends Component {
             overlay={actionsMenu}
             placement="bottomRight"
           >
-            <HeaderMenuIcon data-cy="headerDropDown">
+            <EduButton data-cy="headerDropDown">
               <FontAwesomeIcon icon={faEllipsisV} />
-            </HeaderMenuIcon>
+            </EduButton>
           </Dropdown>
           <StyledDiv>
             <StyledPopconfirm

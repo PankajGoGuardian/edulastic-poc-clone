@@ -17,10 +17,9 @@ export const QuestionItemWrapper = styled.div`
   padding: ${({ pdfPreview }) => !pdfPreview && "10px"};
   background: ${({ pdfPreview }) => (pdfPreview ? "transparent" : white)};
   border-radius: ${({ review }) => (review ? "10px" : "0 10px 10px 0")};
-  border: ${({ pdfPreview }) => !pdfPreview && `1px solid ${  sectionBorder}`};
-  box-shadow: ${({ highlighted, pdfPreview }) =>
-    !pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : "none"};
-  border-left: 0;
+  border: ${({ pdfPreview }) => !pdfPreview && `1px solid ${sectionBorder}`};
+  box-shadow: ${({ highlighted, pdfPreview }) => (!pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : "none")};
+  border-left: ${({ review }) => !review && 0};
 
   @media (max-width: ${smallDesktopWidth}) {
     width: 225px;
@@ -47,8 +46,7 @@ export const QuestionNumber = styled.span`
   text-align: center;
   transition: all 300ms;
   cursor: ${({ dragging, viewMode }) => viewMode && (dragging ? "grabbing" : "grab")};
-  box-shadow: ${({ highlighted, pdfPreview }) =>
-    pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
+  box-shadow: ${({ highlighted, pdfPreview }) => pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;

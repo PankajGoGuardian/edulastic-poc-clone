@@ -33,7 +33,7 @@ const renderToolTipColumn = columnName => (value, record) => {
   return <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color)} />;
 };
 
-const getColumns = (handleOnClickStandard, filters) => {
+const getColumns = (handleOnClickStandard, filters, termId) => {
   const columns = [
     {
       title: "Standard",
@@ -41,7 +41,7 @@ const getColumns = (handleOnClickStandard, filters) => {
       dataIndex: "standard",
       render: (data, record) => {
         const obj = {
-          termId: filters.termId,
+          termId: filters.termId || termId,
           studentId: record.studentId,
           standardId: record.standardId,
           profileId: filters.standardsProficiencyProfileId
@@ -156,13 +156,14 @@ const StudentMasteryTable = ({
   isCsvDownloading,
   onCsvConvert,
   handleOnClickStandard,
-  filters
+  filters,
+  termId
 }) => {
   const filteredStandards = filter(data, standard => {
     return !selectedMastery.length || intersection([standard.scale.masteryLabel], selectedMastery).length;
   });
 
-  const _columns = getColumns(handleOnClickStandard, filters);
+  const _columns = getColumns(handleOnClickStandard, filters, termId);
 
   return (
     <Row>

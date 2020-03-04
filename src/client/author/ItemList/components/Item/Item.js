@@ -8,11 +8,16 @@ import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants } from "@edulastic/constants";
-import { MathFormulaDisplay, PremiumTag, helpers, WithResources , EduButton } from "@edulastic/common";
+import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton } from "@edulastic/common";
 import { themeColor, red } from "@edulastic/colors";
 import { testItemsApi } from "@edulastic/api";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
-import { getTestItemAuthorName, getQuestionType, getTestItemAuthorIcon , hasUserGotAccessToPremiumItem } from "../../../dataUtils";
+import {
+  getTestItemAuthorName,
+  getQuestionType,
+  getTestItemAuthorIcon,
+  hasUserGotAccessToPremiumItem
+} from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
 import Stimulus from "./Stimulus";
@@ -54,10 +59,8 @@ import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 
-
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
-
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
@@ -129,13 +132,14 @@ class Item extends Component {
     this.setState({ isShowPreviewModal: false });
   };
 
-  previewItem = () => {
+  handleStimulusClick = () => {
+    const { features, item, userId, history } = this.props;
+    const owner = item.authors && item.authors.some(x => x._id === userId);
+    //Author can only edit if owner
+    if (features.isCurator || (features.isPublisherAuthor && owner)) {
+      return history.push(`/author/items/${item._id}/item-detail`);
+    }
     this.setState({ isShowPreviewModal: true });
-  };
-
-  redirectToEdit = () => {
-    const { item, history } = this.props;
-    history.push(`/author/items/${item._id}/item-detail`);
   };
 
   renderDetails = () => {
@@ -204,16 +208,7 @@ class Item extends Component {
   };
 
   handleSelection = async row => {
-    const {
-      setTestItems,
-      setDataAndSave,
-      selectedRows,
-      test,
-      gotoSummary,
-      setPassageItems,
-      item,
-      page
-    } = this.props;
+    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
       return message.error("Name field cannot be empty");
@@ -352,15 +347,13 @@ class Item extends Component {
       showSelectGroupModal
     } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
-    const isEditable = owner;
     const itemTypes = getQuestionType(item);
     const isPublisher = features.isCurator || features.isPublisherAuthor;
     const staticGroups = test?.itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC) || 0;
     const groupName =
       staticGroups.length === 1
         ? "Selected"
-        : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName ||
-          "Group";
+        : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
@@ -373,7 +366,7 @@ class Item extends Component {
               showEvaluationButtons
               onClose={this.closeModal}
               data={{ ...item, id: item._id }}
-              isEditable={isEditable}
+              isEditable={owner}
               owner={owner}
               testId={test?._id}
               isTest={!!test}
@@ -400,12 +393,8 @@ class Item extends Component {
           <Question>
             <QuestionContent>
               <Stimulus
-                onClickHandler={isPublisher ? this.redirectToEdit : this.previewItem}
-                stimulus={get(
-                  item,
-                  ["data", "questions", 0, "stimulus"],
-                  question.DEFAULT_STIMULUS
-                )}
+                onClickHandler={this.handleStimulusClick}
+                stimulus={get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS)}
               />
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
             </QuestionContent>
@@ -413,13 +402,10 @@ class Item extends Component {
               (page === "itemList" ? (
                 <ViewButton>
                   <EduButton width="100px" height="40px" isGhost data_cy={item._id} onClick={this.previewItem}>
-                    <IconEye /> 
+                    <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
-                  <AddButtonStyled
-                    selectedToCart={selectedToCart}
-                    onClick={this.handleToggleItemToCart(item)}
-                  >
+                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
                     {selectedToCart ? "Remove" : <IconPlus />}
                   </AddButtonStyled>
                 </ViewButton>
@@ -476,10 +462,7 @@ class Item extends Component {
                     {t("component.item.view")}
                     <IconEye />
                   </ViewButtonStyled>
-                  <AddButtonStyled
-                    selectedToCart={selectedToCart}
-                    onClick={this.handleToggleItemToCart(item)}
-                  >
+                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
                     {selectedToCart ? "Remove" : <IconPlus />}
                   </AddButtonStyled>
                 </ViewButton>

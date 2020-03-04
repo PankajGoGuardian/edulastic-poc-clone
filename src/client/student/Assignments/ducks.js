@@ -262,7 +262,7 @@ function* fetchAssignments({ payload }) {
     const userId = yield select(getCurrentUserId);
     const classIds = yield select(getClassIds);
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, payload),
+      call(assignmentApi.fetchAssigned, groupId),
       call(reportsApi.fetchReports, groupId)
     ]);
     // transform to handle redirect

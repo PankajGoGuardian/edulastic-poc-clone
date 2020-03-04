@@ -44,6 +44,10 @@ const setReports = (state, { payload }) => {
   if (payload.allReports) {
     state.allIds = payload.allReports;
   }
+
+  if (payload.allReports?.length === 0 && !payload.reportsObj) {
+    state.byId = {};
+  }
 };
 
 const updateReports = (state, { payload }) => {

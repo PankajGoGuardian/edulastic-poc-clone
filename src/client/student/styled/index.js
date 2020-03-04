@@ -5,7 +5,6 @@ import {
   largeDesktopWidth,
   extraDesktopWidthMax,
   mobileWidthMax,
-  smallDesktopWidth,
   textColor,
   titleColor,
   title,
@@ -13,20 +12,14 @@ import {
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
-  min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
+  min-height: ${props => props.minHeight || "75vh"};
   margin: 15px 0px;
   border-radius: 10px;
-  box-shadow: ${props => (props.boxShadow ? props.boxShadow : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
-  background-color: ${props => (props.bgColor ? props.bgColor : props.theme.assignment.cardContainerBgColor)};
-  padding: 5px 15px;
+  background-color: ${props => props.bgColor || props.theme.assignment.cardContainerBgColor};
   position: relative;
-  display: ${props => (props.display ? props.display : "")};
+  display: ${props => props.display || ""};
   justify-content: ${props => (props.display === "flex" ? "space-between" : "")};
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 5px;
-  }
   @media screen and (max-width: ${mobileWidthMax}) {
-    padding: 0px;
     display: block;
   }
 `;

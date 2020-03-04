@@ -44,12 +44,12 @@ const ManageActiveClasses = styled.div`
 
 const ButtonTabGroup = styled(Button.Group)`
   .ant-btn {
-    border: none;
     height: 32px;
     line-height: 30px;
     padding: 0px 30px;
     font-size: 12px;
     font-weight: 600;
+    border: 1px solid ${themeColor};
   }
   @media (max-width: ${smallDesktopWidth}) {
     height: 22px;
@@ -64,6 +64,5 @@ const TabButton = styled(Button)`
   &:focus {
     background: ${props => (props.active ? themeColor : white)};
     color: ${props => (props.active ? white : themeColor)};
-    border-color: none;
   }
 `;

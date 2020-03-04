@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const AssignmentContentWrapper = styled.div`
   border-radius: 10px;
-  box-shadow: ${props => (props.hasCollapseButtons ? "none" : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
+  border: 1px solid #dfdfdf;
   padding: ${props => (props.hasCollapseButtons ? 0 : "0")};
   background: ${props => (props.hasCollapseButtons ? "transparent" : props.theme.assignment.cardContainerBgColor)};
   margin-bottom: 1rem;

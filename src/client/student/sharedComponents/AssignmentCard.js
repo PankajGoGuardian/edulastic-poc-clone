@@ -129,10 +129,9 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
-  const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = first(newReports) || {};
+  const { maxScore = 0, score = 0 } = first(newReports) || {};
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;
-  const totalQuestions = correct + wrong + skipped || 0;
   const scorePercentage = (score / maxScore) * 100 || 0;
   const arrow = showAttempts ? "\u2191" : "\u2193";
 
@@ -345,7 +344,7 @@ AssignmentCard.propTypes = {
 
 const CardWrapper = styled(Row)`
   display: flex;
-  padding: 28px 10px 28px 18px;
+  padding: 25px 0px;
   border-bottom: 1px solid #f2f2f2;
 
   &:last-child {
@@ -353,7 +352,7 @@ const CardWrapper = styled(Row)`
   }
 
   @media (max-width: ${extraDesktopWidth}) {
-    padding: 20px 10px 20px 11px;
+    padding: 20px 0px;
   }
 
   @media (max-width: ${mobileWidthMax}) {

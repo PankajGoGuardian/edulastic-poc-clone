@@ -5,7 +5,6 @@ import ReactOutsideEvent from "react-outside-event";
 import {
   white,
   tabletWidth,
-  mediumDesktopWidth,
   themeColor,
   mainTextColor,
   extraDesktopWidth,
@@ -620,14 +619,7 @@ const MenuWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   padding: 8px 0px;
-  min-height: calc(100% - 100px);
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    min-height: calc(100% - 65px);
-  }
-  @media (max-width: ${tabletWidth}) {
-    min-height: 100%;
-  }
+  min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
 `;
 
 const Menu = styled(AntMenu)`

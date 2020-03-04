@@ -1,35 +1,30 @@
-import React, { useEffect } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Layout, Spin } from "antd";
 import { largeDesktopWidth } from "@edulastic/colors";
-
-import useInterval from "@use-it/interval";
 import { useRealtimeV2 } from "@edulastic/common";
+import useInterval from "@use-it/interval";
+import { Layout, Spin } from "antd";
 import { get, values } from "lodash";
-import { getCurrentGroup, getClasses } from "../../Login/ducks";
-
-import { Wrapper, NoDataBox } from "../../styled";
-
-// actions
-import {
-  fetchAssignmentsAction,
-  getAssignmentsSelector,
-  assignmentsSelector,
-  transformAssignmentForRedirect
-} from "../ducks";
-
-import {
-  addRealtimeAssignmentAction,
-  rerenderAssignmentsAction,
-  removeAssignmentAction
-} from "../../sharedDucks/AssignmentModule/ducks";
-import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
+import PropTypes from "prop-types";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import NoDataNotification from "../../../common/components/NoDataNotification";
+import { getClasses, getCurrentGroup } from "../../Login/ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
-import NoDataIcon from "../../assets/nodata.svg";
-import NoDataNotification from "../../../common/components/NoDataNotification";
+import {
+  addRealtimeAssignmentAction,
+  removeAssignmentAction,
+  rerenderAssignmentsAction
+} from "../../sharedDucks/AssignmentModule/ducks";
+import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
+import { Wrapper } from "../../styled";
+// actions
+import {
+  assignmentsSelector,
+  fetchAssignmentsAction,
+  getAssignmentsSelector,
+  transformAssignmentForRedirect
+} from "../ducks";
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now();

@@ -207,7 +207,8 @@ const StudentMasteryProfile = ({
                 data: filteredStandards,
                 selectedMastery,
                 handleOnClickStandard,
-                filters
+                filters,
+                termId: settings.requestFilters.termId
               }}
               expandAllRows={expandRows}
               setExpandAllRows={flag => setExpandRows(flag)}

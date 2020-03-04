@@ -47,6 +47,7 @@ import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 import { StyledLabel, StyledTag } from "../../Reports/common/styled";
+import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
 import {
@@ -593,7 +594,7 @@ class ModuleRow extends Component {
                     return assignment.class.map(
                       ({
                         name,
-                        _status,
+                        status,
                         assignedCount,
                         inProgressNumber,
                         inGradingNumber,
@@ -603,7 +604,7 @@ class ModuleRow extends Component {
                         redirect = false
                       }) => ({
                         name,
-                        status: _status,
+                        status,
                         assignedCount,
                         inProgressNumber,
                         inGradingNumber,
@@ -900,40 +901,34 @@ class ModuleRow extends Component {
                             <StyledRow key={assignmentIndex}>
                               <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
                                 <Tooltip placement="bottomLeft" title={assignment?.name}>
-                                  <EllipticSpan md="100px" lg="200px" xl="220px">
+                                  <EllipticSpan md="100px" lg="220px" xl="250px" padding="0px 0px 0px 20px">
                                     {assignment?.name}
                                   </EllipticSpan>
                                 </Tooltip>
                               </StyledLabel>
-                              <StyledTag
-                                textColor={greenDark}
-                                bgColor={lightGreen6}
-                                fontStyle="10px/14px Open Sans"
-                                fontWeight="Bold"
-                                width="80px"
-                                margin="2px 0px 2px 20px"
-                              >
-                                {assignment?.testType.toUpperCase()}
-                              </StyledTag>
+                              <CustomIcon marginRight={0} align="unset">
+                                <Avatar
+                                  size={18}
+                                  style={{
+                                    backgroundColor: testTypeColor[assignment?.testType || "practice"],
+                                    fontSize: "13px"
+                                  }}
+                                >
+                                  {assignment?.testType[0].toUpperCase() || "P"}
+                                </Avatar>
+                              </CustomIcon>
 
                               {assignment?.status && (
-                                <StyledTag
-                                  textColor={white}
-                                  bgColor={statusBg[assignment.status]}
-                                  width="120px"
-                                  margin="2px 0px 2px 20px"
-                                >
-                                  {assignment?.status}
-                                </StyledTag>
+                                <StyledStatusLabel status={assignment?.status}>{assignment?.status}</StyledStatusLabel>
                               )}
 
-                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
+                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor} width="150px">
                                 {`Submitted ${assignment?.submittedCount || 0} of ${assignment?.assignedCount || 0}`}
                               </StyledLabel>
 
                               {/* TODO: Display percentage completion for each assignment row */}
                               {assignment?.percentage && (
-                                <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
+                                <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor} width="70px">
                                   {assignment.percentage}
                                 </StyledLabel>
                               )}
@@ -1031,7 +1026,7 @@ const ActionsWrapper = styled.div`
   width: 120px;
   align-items: center;
   justify-content: space-evenly;
-  margin-right: 0;
+  margin-right: 0px;
 `;
 
 const StyledRow = styled.div`
@@ -1047,6 +1042,12 @@ const StyledRow = styled.div`
   &:hover {
     background: ${greyThemeLighter};
   }
+`;
+
+const StyledStatusLabel = styled(StatusLabel)`
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
 `;
 
 const AssignmentsClassesContainer = styled.div`
@@ -1292,6 +1293,7 @@ export const ModuleDataName = styled.div`
 
 const EllipticSpan = styled.span`
   width: ${props => props.width || "100%"};
+  padding: ${props => props.padding};
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

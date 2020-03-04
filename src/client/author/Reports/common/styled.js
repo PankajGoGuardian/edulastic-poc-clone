@@ -465,6 +465,8 @@ export const StyledTag = styled.div`
 export const StyledLabel = styled.div`
   display: flex;
   align-items: center;
+  min-width: ${props => props.minWidth || props.width};
+  max-width: ${props => props.maxWidth || props.width};
   justify-content: ${props => props.justify};
   padding: ${props => props.padding || "0px"};
   font: ${props => props.fontStyle || "11px/15px Open Sans"};

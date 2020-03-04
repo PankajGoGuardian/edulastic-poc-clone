@@ -29,10 +29,7 @@ import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
-import {
-  convertItemToMultipartAction,
-  convertItemToPassageWithQuestionsAction
-} from "../../../ItemDetail/ducks";
+import { convertItemToMultipartAction, convertItemToPassageWithQuestionsAction } from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -89,7 +86,8 @@ class Container extends Component {
         isTestFlow,
         itemId: itemId || id,
         testId,
-        canAddMultipleItems: data.type === questionType.PASSAGE_WITH_QUESTIONS
+        canAddMultipleItems: data.type === questionType.PASSAGE_WITH_QUESTIONS,
+        title: data.title
       });
       return;
     }
@@ -217,15 +215,7 @@ class Container extends Component {
   }
 
   render() {
-    const {
-      t,
-      windowWidth,
-      toggleSideBar,
-      modalItemId,
-      onModalClose,
-      selectedCategory,
-      selectedTab
-    } = this.props;
+    const { t, windowWidth, toggleSideBar, modalItemId, onModalClose, selectedCategory, selectedTab } = this.props;
     const { mobileViewShow, isShowCategories } = this.state;
 
     return (
@@ -261,11 +251,7 @@ class Container extends Component {
             <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
             <AffixWrapper>
               <PerfectScrollbar>
-                <LeftMenuWrapper
-                  mode="inline"
-                  selectedKeys={[selectedCategory]}
-                  onClick={this.handleCategory}
-                >
+                <LeftMenuWrapper mode="inline" selectedKeys={[selectedCategory]} onClick={this.handleCategory}>
                   <Menu.Item key="multiple-choice">
                     <IconNewList />
                     Multiple Choice
@@ -350,10 +336,7 @@ class Container extends Component {
                 minHeight: "calc(100vh - 190px)"
               }}
             >
-              <QuestionTypes
-                onSelectQuestionType={this.selectQuestionType}
-                questionType={selectedCategory}
-              />
+              <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
             </PaddingDiv>
           </RightSide>
         </PickQuestionWrapper>

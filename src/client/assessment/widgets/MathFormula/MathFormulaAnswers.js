@@ -52,34 +52,29 @@ class MathFormulaAnswers extends React.Component {
     setQuestionData(
       produce(item, draft => {
         draft.validation.validResponse.value[index][prop] = value;
-
         if (
           [
-            methods.IS_SIMPLIFIED,
-            methods.IS_FACTORISED,
-            methods.IS_EXPANDED,
-            methods.IS_TRUE,
-            methods.EQUIV_SYNTAX,
-            methods.CHECK_IF_TRUE
+            // methods.IS_SIMPLIFIED,
+            // methods.IS_FACTORISED,
+            // methods.IS_EXPANDED,
+            // methods.IS_TRUE,
+            methods.EQUIV_SYNTAX
+            // methods.CHECK_IF_TRUE
           ].includes(draft.validation.validResponse.value[index].method)
         ) {
           delete draft.validation.validResponse.value[index].value;
         }
 
         if (prop === "method") {
-          if (value === methods.IS_FACTORISED && !initialOption.field) {
-            initialOption.field = fieldsConst.INTEGER;
-          }
-
           draft.validation.validResponse.value[index].options = initialOption;
 
           delete draft.allowedVariables;
 
-          if (draft.validation.validResponse.value[index].method === methods.EQUIV_VALUE) {
-            draft.allowNumericOnly = true;
-          } else {
-            delete draft.allowNumericOnly;
-          }
+          // if (draft.validation.validResponse.value[index].method === methods.EQUIV_VALUE) {
+          //   draft.allowNumericOnly = true;
+          // } else {
+          delete draft.allowNumericOnly;
+          // }
         }
 
         updateVariables(draft, latexKeys);
@@ -219,29 +214,23 @@ class MathFormulaAnswers extends React.Component {
         draft.allowNumericOnly = v;
         if (!isAlt) {
           draft.validation.validResponse.value.forEach(value => {
-            if (!value.options) {
-              value.options = {};
-            }
+            value.options = value.options || {};
             if (!v) {
-              value.method = methods.EQUIV_SYMBOLIC;
               delete value.options.unit;
             } else {
-              value.method = methods.EQUIV_VALUE;
               value.options.unit = "m";
             }
+            value.method = value.method || methods.EQUIV_SYMBOLIC;
           });
         } else {
           draft.validation.altResponses[answerIndex].value.forEach(value => {
-            if (!value.options) {
-              value.options = {};
-            }
+            value.options = value.options || {};
             if (!v) {
-              value.method = methods.EQUIV_SYMBOLIC;
               delete value.options.unit;
             } else {
-              value.method = methods.EQUIV_VALUE;
               value.options.unit = "m";
             }
+            value.method = value.method || methods.EQUIV_SYMBOLIC;
           });
         }
         // change keypade mode and custom keys

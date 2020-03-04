@@ -19,7 +19,8 @@ class AddStudentModal extends React.Component {
   state = {
     keys: ["basic"],
     isUpdate: false,
-    foundUserId: ""
+    foundUserId: "",
+    foundUserContactEmails: ""
   };
 
   setIsUpdate = payload => {
@@ -34,6 +35,8 @@ class AddStudentModal extends React.Component {
       foundUserId: payload
     });
   };
+
+  setFoundContactEmails = value => this.setState({ foundUserContactEmails: value });
 
   enrollStudent = async () => {
     const {
@@ -159,6 +162,7 @@ class AddStudentModal extends React.Component {
               fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
               validatedClassDetails={validatedClassDetails}
               resetClassDetails={resetClassDetails}
+              setFoundContactEmails={this.setFoundContactEmails}
             />
             <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
               <Panel header={AdditionalDetailsHeader} key="additional">
@@ -168,6 +172,7 @@ class AddStudentModal extends React.Component {
                   std={std}
                   isEdit={isEdit}
                   stds={stds}
+                  foundUserContactEmails={this.state.foundUserContactEmails}
                   showTtsField
                 />
               </Panel>

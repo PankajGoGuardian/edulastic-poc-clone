@@ -26,6 +26,7 @@ const BasicFields = ({
   showClassCodeField,
   fetchClassDetailsUsingCode,
   resetClassDetails = () => {},
+  setFoundContactEmails,
   validatedClassDetails,
   t,
   classDetails,
@@ -123,8 +124,12 @@ const BasicFields = ({
             setEnroll(true);
             setIsUpdate(!isUpdate);
             setFounduser(foundUser._id);
+            setFoundContactEmails(foundUser.contactEmails);
             const firstName = foundUser.firstName ? foundUser.firstName : "";
             const lastName = foundUser.lastName ? foundUser.lastName : "";
+            if (foundUser.contactEmails?.length > 0) {
+              setFields({ contactEmails: foundUser.contactEmails.join(",") });
+            }
             if (foundUser.firstName)
               setFields({
                 fullName: {

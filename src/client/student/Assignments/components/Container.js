@@ -79,7 +79,7 @@ const Content = ({
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
-  }, [currentChild]);
+  }, [currentChild, currentGroup]);
 
   const topics = [
     `student_assignment:user:${userId}`,

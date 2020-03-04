@@ -9,7 +9,7 @@ import { cloneDeep } from "lodash";
 export const assignmentSchema = new schema.Entity("assignments", {}, { idAttribute: "_id" });
 
 // types
-export const SET_LOADING = "[studentAssignment] fetch assignments";
+export const SET_LOADING = "[studentAssignment] fetch assignments loading";
 export const SET_ASSIGNMENTS = "[studentAssignment] set assignments";
 export const ADD_ASSIGNMENT_REALTIME = "[studentAssignment] add assignment realtime";
 

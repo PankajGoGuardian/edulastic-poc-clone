@@ -17,7 +17,7 @@ import { smallDesktopWidth } from "@edulastic/colors";
 const Content = ({ flag, assignments, fetchAssignments, currentGroup, isLoading, currentChild }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
-  }, [currentChild]);
+  }, [currentChild, currentGroup]);
 
   if (isLoading) {
     return <Spin size="large" />;

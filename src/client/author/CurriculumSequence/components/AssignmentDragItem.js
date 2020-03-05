@@ -76,32 +76,34 @@ class AssignmentDragItem extends Component {
           isDragging={isDragging}
         >
           {/* <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix> */}
-          <AssignmentContent expanded={isContentExpanded}>
-            {/* <Checkbox
+          <WrapperContainer>
+            <AssignmentContent expanded={isContentExpanded}>
+              {/* <Checkbox
               onChange={() => toggleUnitItem(moduleData.id)}
               checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
               className="module-checkbox"
             /> */}
-            {/* <CustomIcon marginLeft={16}>
+              {/* <CustomIcon marginLeft={16}>
               <Icon type="right" style={{ color: "#707070" }} />
             </CustomIcon> */}
-            <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
-          </AssignmentContent>
-          {!hideEditOptions && (
-            <ModuleAssignedUnit>
-              {moduleData.assigned && !moduleData.completed && (
-                <CustomIcon>
-                  <img src={assessmentRed} alt="Module item is assigned" />
-                </CustomIcon>
-              )}
-              {moduleData.completed && (
-                <CustomIcon>
-                  <img src={assessmentGreen} alt="Module item is completed" />
-                </CustomIcon>
-              )}
-            </ModuleAssignedUnit>
-          )}
-          <Tags tags={standardTags} />
+              <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
+            </AssignmentContent>
+            {!hideEditOptions && (
+              <ModuleAssignedUnit>
+                {moduleData.assigned && !moduleData.completed && (
+                  <CustomIcon>
+                    <img src={assessmentRed} alt="Module item is assigned" />
+                  </CustomIcon>
+                )}
+                {moduleData.completed && (
+                  <CustomIcon>
+                    <img src={assessmentGreen} alt="Module item is completed" />
+                  </CustomIcon>
+                )}
+              </ModuleAssignedUnit>
+            )}
+            <Tags tags={standardTags} />
+          </WrapperContainer>
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
@@ -207,4 +209,10 @@ const Assignment = styled(Row)`
   padding-top: 10px;
   padding-bottom: 10px;
   background: ${({ isDragging }) => (isDragging ? themeColor : white)};
+`;
+
+const WrapperContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;

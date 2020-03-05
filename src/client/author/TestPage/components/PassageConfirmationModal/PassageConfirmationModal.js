@@ -1,24 +1,17 @@
 import React from "react";
-import { Button } from "antd";
-import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
+import { EduButton } from "@edulastic/common";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 const PassageConfirmationModal = ({ visible, closeModal, itemsCount, handleResponse }) => {
   const Footer = [
-    <Button ghost onClick={() => handleResponse(false)}>
+    <EduButton isGhost onClick={() => handleResponse(false)}>
       No, I’ll select
-    </Button>,
-    <Button onClick={() => handleResponse(true)}>Yes, Add all</Button>
+    </EduButton>,
+    <EduButton onClick={() => handleResponse(true)}>Yes, Add all</EduButton>
   ];
 
   return (
-    <ConfirmationModal
-      centered
-      textAlign="left"
-      visible={visible}
-      footer={Footer}
-      textAlign={"center"}
-      onCancel={closeModal}
-    >
+    <ConfirmationModal centered textAlign="left" visible={visible} footer={Footer} onCancel={closeModal}>
       <p>
         <b>{`There are ${itemsCount} items in this passage. Would you like to add them to your test`}</b>
       </p>

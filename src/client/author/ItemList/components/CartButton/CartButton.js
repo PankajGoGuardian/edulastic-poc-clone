@@ -1,10 +1,10 @@
+import { EduButton } from "@edulastic/common";
+import { PropTypes } from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
-
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { getTestEntitySelector } from "../../../TestPage/ducks";
-import { Container, CartButtonWrapper, ItemsAmount } from "./styled";
+import { Container, ItemsAmount } from "./styled";
 
 const CartButton = ({ selectedItems, onClick, buttonText, numberChecker, tests }) => {
   let numberOfSelectedItems = selectedItems && selectedItems.length;
@@ -13,10 +13,10 @@ const CartButton = ({ selectedItems, onClick, buttonText, numberChecker, tests }
   }
   return (
     <Container data-cy={buttonText} onClick={onClick} disabled={!numberOfSelectedItems}>
-      <CartButtonWrapper>
+      <EduButton isGhost>
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
-      </CartButtonWrapper>
+      </EduButton>
     </Container>
   );
 };

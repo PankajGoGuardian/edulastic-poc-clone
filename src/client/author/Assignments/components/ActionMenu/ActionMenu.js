@@ -96,9 +96,11 @@ const ActionMenu = ({
           </Link>
         </Menu.Item>
         <Menu.Item data-cy="print-assignment" key="print-assignment" onClick={handlePrintTest}>
-          <IconPrint />
-          <SpaceElement />
-          Print Test
+          <Link to="#" rel="noopener noreferrer">
+            <IconPrint />
+            <SpaceElement />
+            Print Test
+          </Link>
         </Menu.Item>
         <Menu.Item
           data-cy="release-grades"

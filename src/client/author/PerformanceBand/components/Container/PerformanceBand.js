@@ -34,6 +34,7 @@ import {
   StyledList
 } from "./styled";
 import styled from "styled-components";
+import { EduButton } from "@edulastic/common";
 
 const title = "Manage District";
 const BlueBold = styled.b`
@@ -71,18 +72,18 @@ function ProfileRow({
         onCancel={() => setConfirmVisible(false)}
         textAlign="left"
         footer={[
-          <Button
-            ghost
+          <EduButton
+            isGhost
             onClick={() => {
               setConfirmVisible(false);
               setDeleteText("");
             }}
           >
             NO, CANCEL
-          </Button>,
-          <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+          </EduButton>,
+          <EduButton disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
             YES, DELETE
-          </Button>
+          </EduButton>
         ]}
       >
         <div className="content">

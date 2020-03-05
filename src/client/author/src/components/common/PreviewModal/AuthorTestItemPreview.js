@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { themeColor, white, red } from "@edulastic/colors";
 import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
-import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
+import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { get } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +18,6 @@ import {
   Container,
   ButtonsContainer,
   ColumnContentArea,
-  EvaluateButton,
   ReportIssueButton,
   PassageNavigation,
   Divider,
@@ -267,33 +266,15 @@ class AuthorTestItemPreview extends Component {
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
             {allowDuplicate && (
-              <EduButton
-                isGhost
-                height="28px"
-                title="CLONE"
-                onClick={handleDuplicateTestItem}
-              >
-                <StyledFlex>
-                  <SyledSpan>
-                    <IconCopy color={themeColor} />
-                  </SyledSpan>
-                  <StyledText>CLONE</StyledText>
-                </StyledFlex>
+              <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
+                <IconCopy color={themeColor} />
+                <span>CLONE</span>
               </EduButton>
             )}
             {isEditable && (
-              <EduButton
-                isGhost
-                height="28px"
-                title="Edit item"
-                onClick={editTestItem}
-              >
-                <StyledFlex>
-                  <SyledSpan>
-                    <IconPencilEdit color={themeColor} />
-                  </SyledSpan>
-                  <StyledText>edit</StyledText>
-                </StyledFlex>
+              <EduButton isGhost height="28px" title="Edit item" onClick={editTestItem}>
+                <IconPencilEdit color={themeColor} />
+                <span>edit</span>
               </EduButton>
             )}
             {isOwner &&
@@ -306,12 +287,8 @@ class AuthorTestItemPreview extends Component {
                   onClick={this.handleDeleteItem}
                   disabled={deleting}
                 >
-                  <StyledFlex>
-                    <SyledSpan>
-                      <Icon type="delete" color={red} />
-                    </SyledSpan>
-                    <StyledText danger>delete</StyledText>
-                  </StyledFlex>
+                  <IconTrash />
+                  <span>delete</span>
                 </EduButton>
               )}
             <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
@@ -396,11 +373,7 @@ class AuthorTestItemPreview extends Component {
         >
           <ScoreBlock customStyle={{ left: "-5px" }} />
           {page !== "itemAuthoring" && showHintsBtn && (
-            <EduButton 
-              height="28px"
-              isGhost={!showHints}
-              onClick={handleShowHints}
-            >
+            <EduButton height="28px" isGhost={!showHints} onClick={handleShowHints}>
               Hint
             </EduButton>
           )}

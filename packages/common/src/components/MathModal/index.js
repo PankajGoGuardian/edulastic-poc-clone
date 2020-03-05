@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { math } from "@edulastic/constants";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
+import EduButton from "../EduButton";
 
 const defaultSymbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
 const { defaultNumberPad } = math;
@@ -57,12 +58,12 @@ const MathModal = ({
         style: { overflow: "auto", display: show ? "block" : "none" }
       }}
       footer={[
-        <ThemeButton ghost onClick={() => onClose()}>
+        <EduButton isGhost onClick={() => onClose()}>
           CANCEL
-        </ThemeButton>,
-        <ThemeButton type="primary" onClick={() => onSave(latex)}>
+        </EduButton>,
+        <EduButton type="primary" onClick={() => onSave(latex)}>
           OK
-        </ThemeButton>
+        </EduButton>
       ]}
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
@@ -111,15 +112,3 @@ MathModal.defaultProps = {
 };
 
 export default MathModal;
-
-const ThemeButton = styled(Button)`
-  background: ${themeColor};
-  border-color: ${themeColor};
-  color: ${props => (props.ghost ? titleColor : white)};
-  &:hover,
-  &:focus {
-    color: ${props => (props.ghost ? titleColor : white)};
-    background: ${themeColor};
-    border-color: ${themeColor};
-  }
-`;

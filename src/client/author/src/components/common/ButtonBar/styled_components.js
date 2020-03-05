@@ -20,24 +20,6 @@ export const Container = styled.div`
     height: 62px;
     display: flex;
   }
-
-  .ant-btn {
-    height: 40px;
-    width: 100px;
-    border-radius: 4px;
-    background-color: ${themeColor};
-    border-color: ${themeColor};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    span {
-      font-size: 11px;
-      font-weight: 600;
-      color: ${white};
-      letter-spacing: 0.2px;
-    }
-  }
 `;
 
 export const CustomButton = styled(Button)``;
@@ -87,24 +69,6 @@ export const HeadIcon = styled.div`
 export const RightSide = styled.div`
   display: flex;
   align-items: center;
-
-  .ant-btn {
-    width: 137px;
-    height: 45px;
-    background: #fff;
-    margin-left: 5px;
-
-    span {
-      font-size: 11px;
-      text-transform: uppercase;
-    }
-
-    @media (max-width: ${mediumDesktopWidth}) {
-      height: 36px;
-      width: auto;
-      padding: 0px 20px;
-    }
-  }
 
   @media (max-width: ${desktopWidth}) {
     position: absolute;

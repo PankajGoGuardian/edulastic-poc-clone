@@ -1,39 +1,38 @@
-import React, { useEffect, useState, useRef } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { EduButton } from "@edulastic/common";
+import { Col, Icon, Input, message, Row } from "antd";
 import { get } from "lodash";
-import { List, Button, Row, Col, message, Modal, Input, Icon } from "antd";
+import PropTypes from "prop-types";
+import React, { useEffect, useRef, useState } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
-import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
-
-
+import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  createStandardsProficiencyAction,
+  deleteStandardsProficiencyAction,
+  receiveStandardsProficiencyAction,
+  setEDitableAction,
+  setEditingIndexAction,
+  setStandardsProficiencyProfileNameAction,
+  updateStandardsProficiencyAction
+} from "../../ducks";
+import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import {
   CreateProfile,
+  ListItemStyled,
   ModalInput,
+  RowStyled,
+  SpinContainer,
   StandardsProficiencyDiv,
   StyledContent,
   StyledLayout,
-  SpinContainer,
-  StyledSpin,
-  ListItemStyled,
-  RowStyled,
-  StyledProfileRow,
+  StyledList,
   StyledProfileCol,
-  StyledList
+  StyledProfileRow,
+  StyledSpin
 } from "./styled";
-import {
-  createStandardsProficiencyAction,
-  updateStandardsProficiencyAction,
-  deleteStandardsProficiencyAction,
-  receiveStandardsProficiencyAction,
-  setEditingIndexAction,
-  setStandardsProficiencyProfileNameAction,
-  setEDitableAction
-} from "../../ducks";
-import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 
 const BlueBold = styled.b`
   color: #1774f0;
@@ -92,16 +91,16 @@ function ProfileRow(props) {
         visible={confirmVisible}
         textAlign="left"
         footer={[
-          <Button ghost onClick={() => setConfirmVisible(false)}>
+          <EduButton isGhost onClick={() => setConfirmVisible(false)}>
             NO, CANCEL
-          </Button>,
-          <Button
+          </EduButton>,
+          <EduButton
             disabled={deleteText.toUpperCase() != "DELETE"}
             loading={props.loading}
             onClick={() => deleteRow(_id)}
           >
             YES, DELETE
-          </Button>
+          </EduButton>
         ]}
       >
         <div className="content">
@@ -288,12 +287,12 @@ function StandardsProficiency(props) {
               bodyHeight="100px"
               textAlign="left"
               footer={[
-                <Button ghost onClick={() => setConfirmVisible(false)}>
+                <EduButton isGhost onClick={() => setConfirmVisible(false)}>
                   CANCEL
-                </Button>,
-                <Button disabled={profileName === ""} loading={loading} onClick={() => createStandardProficiency()}>
+                </EduButton>,
+                <EduButton disabled={profileName === ""} loading={loading} onClick={() => createStandardProficiency()}>
                   CREATE
-                </Button>
+                </EduButton>
               ]}
             >
               <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>

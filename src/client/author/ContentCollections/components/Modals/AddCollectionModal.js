@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Button, Input, Switch, message } from "antd";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import { StyledModal, ModalBody, Heading, YesButton, FieldRow } from "./ImportContentModal";
-import { getUser } from "../../../src/selectors/user";
 import { backgroundGrey2 } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
+import { Input, message, Switch } from "antd";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import { getUser } from "../../../src/selectors/user";
 import {
   createCollectionRequestAction,
-  getCreateCollectionStateSelector,
-  editCollectionRequestAction
+  editCollectionRequestAction,
+  getCreateCollectionStateSelector
 } from "../../ducks";
+import { FieldRow, Heading, ModalBody, StyledModal } from "./ImportContentModal";
 
 const { TextArea } = Input;
 
@@ -44,12 +45,12 @@ const AddCollectionModal = ({
   }, []);
 
   const Footer = [
-    <Button ghost onClick={handleResponse} disabled={isCreating}>
+    <EduButton isGhost onClick={handleResponse} disabled={isCreating}>
       CANCEL
-    </Button>,
-    <YesButton onClick={() => handleCreate()} loading={isCreating}>
+    </EduButton>,
+    <EduButton onClick={() => handleCreate()} loading={isCreating}>
       {isEditCollection ? "SAVE" : "CREATE"}
-    </YesButton>
+    </EduButton>
   ];
 
   const Title = [<Heading>{isEditCollection ? "Edit Collection" : "Add Collection"}</Heading>];

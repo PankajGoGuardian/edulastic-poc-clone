@@ -300,12 +300,12 @@ const TestPageHeader = ({
               </EduButton>
             )} */}
             {showShareButton && (owner || features.isCurator) && (
-              <EduButton title="Share" data-cy="share" onClick={onShare} disabled={isTestLoading}>
+              <EduButton isGhost IconBtn title="Share" data-cy="share" onClick={onShare} disabled={isTestLoading}>
                 <IconShare style={{ transform: "rotate(180deg)" }} />
               </EduButton>
             )}
             {showShareButton && owner && showPublishButton && (
-              <EduButton title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
+              <EduButton isGhost IconBtn title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
                 <IconDiskette />
               </EduButton>
             )}
@@ -315,7 +315,14 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
+                <EduButton
+                  isGhost
+                  IconBtn
+                  title="Publish Test"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={isTestLoading}
+                >
                   <IconSend />
                 </EduButton>
               )
@@ -343,6 +350,8 @@ const TestPageHeader = ({
             )}
             {showEditButton && (
               <EduButton
+                isGhost
+                IconBtn
                 title="Edit Test"
                 disabled={editEnable || isTestLoading}
                 data-cy="edit"
@@ -353,6 +362,8 @@ const TestPageHeader = ({
             )}
             {showDuplicateButton && (
               <EduButton
+                isGhost
+                IconBtn
                 title="Duplicate Test"
                 disabled={editEnable || isTestLoading}
                 data-cy="edit"
@@ -386,13 +397,13 @@ const TestPageHeader = ({
               </MobileHeaderFilterIcon>
             )}
             {(owner || features.isCurator) && (
-              <EduButton data-cy="share" disabled={isTestLoading} onClick={onShare}>
+              <EduButton isGhost IconBtn data-cy="share" disabled={isTestLoading} onClick={onShare}>
                 <ShareIcon />
               </EduButton>
             )}
 
             {owner && (
-              <EduButton title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
+              <EduButton isGhost IconBtn title="Save as Draft" data-cy="save" onClick={onSave} disabled={isTestLoading}>
                 <IconDiskette />
               </EduButton>
             )}
@@ -402,7 +413,14 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
+                <EduButton
+                  isGhost
+                  IconBtn
+                  title="Publish Test"
+                  data-cy="publish"
+                  onClick={handlePublish}
+                  disabled={isTestLoading}
+                >
                   <IconSend />
                 </EduButton>
               )

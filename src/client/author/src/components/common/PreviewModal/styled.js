@@ -78,6 +78,16 @@ export const ButtonsWrapper = styled.div`
   ${({ style }) => style};
   .ant-btn {
     margin-bottom: ${props => props.mb || "0px"};
+    &[title="Delete item"],
+    &[title="Delete item"]:hover,
+    &[title="Delete item"]:focus {
+      border-color: red;
+      background: white;
+      color: red;
+      svg {
+        fill: red !important;
+      }
+    }
   }
 
   @media (max-width: ${largeDesktopWidth}) {

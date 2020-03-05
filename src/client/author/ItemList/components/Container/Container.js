@@ -312,7 +312,7 @@ class Contaier extends Component {
           const { createTestFromCart } = this.props;
           createTestFromCart();
         }}
-        buttonText="Author Test"
+        buttonText="New Test"
       />
       <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
         <CartButton

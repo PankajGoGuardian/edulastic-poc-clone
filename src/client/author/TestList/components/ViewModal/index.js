@@ -7,7 +7,7 @@ import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
 import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Icon, Select } from "antd";
-import { EduButton } from '@edulastic/common';
+import { EduButton } from "@edulastic/common";
 import {
   ModalTitle,
   ModalContainer,
@@ -171,22 +171,24 @@ class ViewModal extends React.Component {
               <EduButton
                 isGhost
                 height="40px"
+                width="100%"
                 data-cy="details-button"
                 onClick={() => {
-                onEdit();
-              }}
+                  onEdit();
+                }}
               >
                 <IconDescription />
                 <span>DETAILS</span>
               </EduButton>
               {allowDuplicate && (
-                <EduButton 
+                <EduButton
                   isGhost
                   height="40px"
+                  width="100%"
                   data-cy="duplicate-button"
                   onClick={() => {
-                  onDuplicate();
-                }}
+                    onDuplicate();
+                  }}
                 >
                   <IconCopy />
                   <span>CLONE</span>
@@ -198,10 +200,11 @@ class ViewModal extends React.Component {
                   <EduButton
                     isGhost
                     height="40px"
+                    width="100%"
                     data-cy="reject-button"
                     onClick={() => {
-                    onReject();
-                  }}
+                      onReject();
+                    }}
                   >
                     <Icon type="stop" />
                     <span>REJECT</span>
@@ -209,12 +212,7 @@ class ViewModal extends React.Component {
                 </FeaturesSwitch>
               ) : null}
               {isDeleteAllowed ? (
-                <EduButton
-                  isGhost
-                  height="40px"
-                  data-cy="delete-button"
-                  onClick={() => onDelete()}
-                >
+                <EduButton isGhost height="40px" width="100%" data-cy="delete-button" onClick={() => onDelete()}>
                   <IconTrashAlt />
                   <span>DELETE</span>
                 </EduButton>
@@ -228,8 +226,8 @@ class ViewModal extends React.Component {
                     height="40px"
                     data-cy="approve-button"
                     onClick={() => {
-                    onApprove(editedCollections !== null ? editedCollections : _collections);
-                  }}
+                      onApprove(editedCollections !== null ? editedCollections : _collections);
+                    }}
                   >
                     <Icon type="check" />
                     <span>Approve</span>

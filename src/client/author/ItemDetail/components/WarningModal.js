@@ -1,22 +1,21 @@
+import { EduButton } from "@edulastic/common";
 import React from "react";
-import { Button } from "antd";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 
 const WarningModal = ({ visible = false, proceedPublish }) => {
   const Footer = [
-    <Button ghost onClick={() => proceedPublish(false)}>
+    <EduButton isGhost onClick={() => proceedPublish(false)}>
       CANCEL
-    </Button>,
-    <Button onClick={() => proceedPublish(true)}>PROCEED</Button>
+    </EduButton>,
+    <EduButton onClick={() => proceedPublish(true)}>PROCEED</EduButton>
   ];
 
   return (
     <ConfirmationModal
       centered
-      textAlign="left"
       visible={visible}
       footer={Footer}
-      textAlign={"center"}
+      textAlign="center"
       onCancel={() => proceedPublish(false)}
     >
       <p>

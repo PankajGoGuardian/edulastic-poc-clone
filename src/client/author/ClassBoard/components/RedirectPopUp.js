@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Button, Row, Radio, Select, DatePicker, message, Col } from "antd";
+import { Row, Radio, Select, DatePicker, message, Col } from "antd";
 import moment from "moment";
 import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
+import { EduButton } from "@edulastic/common";
 import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
@@ -140,12 +141,12 @@ const RedirectPopUp = ({
       visible={open}
       onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={closePopup}>
+        <EduButton isGhost key="cancel" onClick={closePopup}>
           CANCEL
-        </Button>,
-        <Button data-cy="confirmRedirect" loading={loading} key="submit" onClick={submitAction}>
+        </EduButton>,
+        <EduButton data-cy="confirmRedirect" loading={loading} key="submit" onClick={submitAction}>
           REDIRECT
-        </Button>
+        </EduButton>
       ]}
     >
       <BodyContainer>

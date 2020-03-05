@@ -1,11 +1,12 @@
+import { lightGreySecondary } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
+import { Input, message } from "antd";
 import PropTypes from "prop-types";
 import React from "react";
-import { compose } from "redux";
-import styled from "styled-components";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
-import { white, inputBorder, lightGreySecondary, blueButton } from "@edulastic/colors";
-import { Button, Input, message } from "antd";
+import { compose } from "redux";
+import styled from "styled-components";
 import { ModalFooter } from "../../../AssessmentPage/common/Modal";
 
 const ModalStyles = {
@@ -59,12 +60,12 @@ class RemoveTestModal extends React.Component {
           }}
         />
         <ModalFooter>
-          <Button type="primary" ghost key="back" onClick={() => onClose()}>
+          <EduButton isGhost key="back" onClick={() => onClose()}>
             CANCEL
-          </Button>
-          <Button key="submit" type="primary" onClick={this.onProceed}>
+          </EduButton>
+          <EduButton key="submit" type="primary" onClick={this.onProceed}>
             PROCEED
-          </Button>
+          </EduButton>
         </ModalFooter>
       </Modal>
     );
@@ -73,9 +74,7 @@ class RemoveTestModal extends React.Component {
 
 RemoveTestModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  handleTestRemoved: PropTypes.func.isRequired,
-  item: PropTypes.object
+  onClose: PropTypes.func.isRequired
 };
 
 const enhance = compose(withRouter);

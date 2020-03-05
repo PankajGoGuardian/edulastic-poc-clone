@@ -2,7 +2,6 @@
 import React from "react";
 import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
-import { themeColor } from "@edulastic/colors";
 
 const IconPencilEdit = ({ title, ...props }) => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.078 16" {...props}>

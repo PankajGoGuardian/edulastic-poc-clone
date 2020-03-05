@@ -49,9 +49,9 @@ const Expanded = ({
   let passageContent = {};
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
-    passageContent = keyBy(passagesKeyed[testItem.passageId].data, "id");
+    passageContent = keyBy(passagesKeyed[testItem.passageId]?.data, "id");
   }
-  const widgetsWithResource = { ...questions, ...keyBy(testItem.data.resources, "id"), ...passageContent };
+  const widgetsWithResource = { ...questions, ...keyBy(testItem?.data?.resources || [], "id"), ...passageContent };
   let points = 0;
 
   const itemLevelScoring = helpers.getPoints(testItem);

@@ -82,7 +82,7 @@ const getColumns = (handleOnClickStandard, filters, termId) => {
       dataIndex: "masteryName",
       render: (data, record) => {
         const obj = {
-          termId: filters.termId,
+          termId: filters.termId || termId,
           studentId: record.studentId,
           standardId: record.standardId,
           profileId: filters.standardsProficiencyProfileId

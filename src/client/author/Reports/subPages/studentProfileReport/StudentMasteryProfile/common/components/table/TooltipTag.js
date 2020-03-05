@@ -39,7 +39,7 @@ export const TooltipTagContainer = ({ standards }) => {
     </div>
   );
 
-  return (
+  return standards.length ? (
     <CustomTableTooltip
       placement="top"
       title={toolTipText(standards)}
@@ -49,5 +49,5 @@ export const TooltipTagContainer = ({ standards }) => {
         </StyledTag>
       )}
     />
-  );
+  ) : null;
 };

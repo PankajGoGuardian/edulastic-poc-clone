@@ -38,6 +38,7 @@ class MathInput extends React.PureComponent {
       jQuery(e.target).hasClass("keyboardButton")
     ) {
       e.preventDefault();
+      return false;
     }
 
     if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
@@ -118,8 +119,7 @@ class MathInput extends React.PureComponent {
 
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
-      const isArrowOrShift =
-        (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
       if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
         const isValidKey = restrictKeys.includes(e.key);
         if (!isValidKey) {

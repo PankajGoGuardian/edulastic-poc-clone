@@ -30,6 +30,13 @@ const AnswerContainer = styled.div`
     }
   }
 `;
+
+export const StyledCollapse = styled(Collapse)`
+  .ant-collapse-content.ant-collapse-content-active {
+    overflow: visible;
+  }
+`;
+
 class ClozeMathAnswer extends Component {
   state = {
     showAdditionals: []
@@ -78,7 +85,7 @@ class ClozeMathAnswer extends Component {
 
     return (
       <AnswerContainer>
-        <Collapse
+        <StyledCollapse
           // defaultActiveKey={["0"]}
           onChange={() => {}}
           bordered={false}
@@ -120,7 +127,7 @@ class ClozeMathAnswer extends Component {
               </Panel>
             );
           })}
-        </Collapse>
+        </StyledCollapse>
       </AnswerContainer>
     );
   }

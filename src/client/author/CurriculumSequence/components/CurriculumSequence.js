@@ -644,6 +644,7 @@ class CurriculumSequence extends Component {
               classSelect
               showActiveClass={false}
               classList={activeEnrolledClasses}
+              showAllClassesOption={false}
             />
           ) : (
             mode !== "embedded" && (
@@ -653,7 +654,6 @@ class CurriculumSequence extends Component {
                 headingSubContent={
                   urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon
                 }
-                titleMinWidth="100px"
                 justify="flex-start"
               >
                 <CurriculumHeaderButtons>

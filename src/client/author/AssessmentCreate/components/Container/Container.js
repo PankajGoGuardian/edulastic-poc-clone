@@ -21,6 +21,7 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction
 } from "../../ducks";
+import { withNamespaces } from "react-i18next";
 
 const breadcrumbStyle = {
   position: "static"
@@ -123,7 +124,8 @@ class Container extends React.Component {
       percentageUploaded,
       fileInfo,
       isAddPdf,
-      uploadToDrive
+      uploadToDrive,
+      t
     } = this.props;
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
@@ -147,7 +149,7 @@ class Container extends React.Component {
             }}
           />
         )}
-        <MainHeader headingText="common.newTest" />
+        <MainHeader headingText={t("common.newTest")} />
         <MainContentWrapper>
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
           {!method && <CreationOptions />}
@@ -171,6 +173,7 @@ class Container extends React.Component {
 
 const enhance = compose(
   withRouter,
+  withNamespaces("header"),
   connect(
     state => ({
       creating: getAssessmentCreatingSelector(state),

@@ -4,14 +4,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
-import { CustomizedHeaderWrapper } from "./common/components/header";
+import CustomizedHeaderWrapper from "./common/components/header";
 import navigation from "./common/static/json/navigation.json";
-import {
-  PrintableScreen,
-  StyledCard,
-  StyledContainer,
-  StyledReportsContentContainer
-} from "./common/styled";
+import { PrintableScreen, StyledCard, StyledContainer, StyledReportsContentContainer } from "./common/styled";
 import CustomReports from "./components/customReport";
 import CustomReportIframe from "./components/customReport/customReportIframe";
 import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
@@ -83,8 +78,7 @@ const Container = props => {
       loc = !loc ? reportType : loc;
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb;
       if (loc === "custom-reports" && dynamicBreadcrumb) {
-        const isCustomReportLoading =
-          props.location.pathname.split("custom-reports")[1].length > 1 || false;
+        const isCustomReportLoading = props.location.pathname.split("custom-reports")[1].length > 1 || false;
         if (isCustomReportLoading) {
           pullAllBy(breadcrumbInfo, [{ to: "" }], "to");
           breadcrumbInfo.push({
@@ -135,9 +129,7 @@ const Container = props => {
           <Route
             exact
             path={match.path}
-            render={_props => (
-              <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />
-            )}
+            render={_props => <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
           />
         ) : reportType === "standard-reports" ? (
           <Route exact path={match.path} component={() => <Reports premium={props.premium} />} />
@@ -176,10 +168,7 @@ const Container = props => {
           )}
         />
         <Route
-          path={[
-            `/author/reports/standards-gradebook`,
-            `/author/reports/standards-performance-summary`
-          ]}
+          path={[`/author/reports/standards-gradebook`, `/author/reports/standards-performance-summary`]}
           render={_props => (
             <StandardsMasteryReportContainer
               {..._props}
@@ -207,9 +196,7 @@ const Container = props => {
         />
         <Route
           path="/author/reports/custom-reports/:id"
-          render={_props => (
-            <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />
-          )}
+          render={_props => <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
         />
       </StyledReportsContentContainer>
     </PrintableScreen>

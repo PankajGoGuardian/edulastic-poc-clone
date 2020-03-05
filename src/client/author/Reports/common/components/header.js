@@ -3,13 +3,14 @@ import { MainHeader } from "@edulastic/common";
 import { IconFilter, IconBarChart } from "@edulastic/icons";
 import { Button, Col, Icon } from "antd";
 import React, { useState } from "react";
+import { withNamespaces } from "react-i18next";
 import styled from "styled-components";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import HeaderNavigation from "./Header/HeaderNavigation";
 import { EduButton } from "@edulastic/common";
 
-export const CustomizedHeaderWrapper = ({
+const CustomizedHeaderWrapper = ({
   breadcrumbsData,
   title,
   onShareClickCB,
@@ -17,7 +18,8 @@ export const CustomizedHeaderWrapper = ({
   onDownloadCSVClickCB,
   onRefineResultsCB,
   navigationItems = [],
-  activeNavigationKey = ""
+  activeNavigationKey = "",
+  t
 }) => {
   const [refineButtonActive, setRefineButtonActive] = useState(false);
 
@@ -42,7 +44,7 @@ export const CustomizedHeaderWrapper = ({
     <div>
       <MainHeader
         mobileHeaderHeight={activeNavigationKey !== "standard-reports" ? 100 : ""}
-        headingText="common.reports"
+        headingText={t("common.reports")}
         Icon={IconBarChart}
       >
         {navigationItems.length ? (
@@ -93,6 +95,8 @@ export const CustomizedHeaderWrapper = ({
     </div>
   );
 };
+
+export default withNamespaces("header")(CustomizedHeaderWrapper);
 
 const ArrowIcon = styled(Icon)`
   height: 14px;

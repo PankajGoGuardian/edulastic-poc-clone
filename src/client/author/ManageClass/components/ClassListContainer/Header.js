@@ -11,8 +11,9 @@ import { compose } from "redux";
 import { fetchClassListAction } from "../../ducks";
 import { scopes } from "./ClassCreatePage";
 import { ButtonsWrapper } from "./styled";
+import { withNamespaces } from "react-i18next";
 
-const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
+const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn, t }) => {
   const handleLoginSucess = data => {
     fetchClassList({ data });
   };
@@ -21,7 +22,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
     console.log("error", err);
   };
   return (
-    <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
+    <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
       <ButtonsWrapper>
         {allowGoogleLogin !== false && (
           <GoogleLogin
@@ -56,6 +57,7 @@ Header.propTypes = {
 };
 
 const enhance = compose(
+  withNamespaces("header"),
   connect(
     state => ({
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),

@@ -198,7 +198,8 @@ class Assignments extends Component {
       districtId,
       error,
       isAdvancedView,
-      toggleDeleteAssignmentModalState
+      toggleDeleteAssignmentModalState,
+      t
     } = this.props;
     const { selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const { showFilter = false } = filterState;
@@ -226,7 +227,7 @@ class Assignments extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment
-          title="common.assignmentsTitle"
+          title={t("common.assignmentsTitle")}
           titleIcon={IconAssignment}
           btnTitle="AUTHOR TEST"
           isAdvancedView={isAdvancedView}

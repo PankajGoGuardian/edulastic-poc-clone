@@ -7,9 +7,10 @@ import { Link } from "react-router-dom";
 import { fetchClassListAction } from "../../ducks";
 // components
 import { ButtonsWrapper } from "./styled";
+import { withNamespaces } from "react-i18next";
 
-const Header = ({ classId }) => (
-  <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
+const Header = ({ classId, t }) => (
+  <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
     <ButtonsWrapper>
       <Link to={`/author/manageClass/${classId}`}>
         <EduButton height="40px" isGhost data-cy="cancel">
@@ -23,7 +24,9 @@ const Header = ({ classId }) => (
   </MainHeader>
 );
 
-export default connect(
-  null,
-  { fetchClassList: fetchClassListAction }
-)(Header);
+export default withNamespaces("header")(
+  connect(
+    null,
+    { fetchClassList: fetchClassListAction }
+  )(Header)
+);

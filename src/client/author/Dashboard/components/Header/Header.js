@@ -10,6 +10,7 @@ import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
 import IMG from "../../../Subscription/static/6.png";
 import { IconPlus, PopoverCancel, PopoverDetail, PopoverTitle, PopoverWrapper, UpgradeBtn } from "./styled";
+import { withNamespaces } from "react-i18next";
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -29,7 +30,7 @@ const getContent = ({ setvisible, isSubscriptionExpired }) => (
   </FlexContainer>
 );
 
-const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscriptionStatus }) => {
+const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscriptionStatus, t }) => {
   useEffect(() => {
     fetchUserSubscriptionStatus();
   }, []);
@@ -37,7 +38,7 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
   const [visible, setvisible] = useState(false);
 
   return (
-    <MainHeader Icon={IconClockDashboard} headingText="common.dashboard">
+    <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
         {!premium && (
           <PopoverWrapper>
@@ -80,12 +81,14 @@ HeaderSection.propTypes = {
   fetchUserSubscriptionStatus: PropTypes.func.isRequired
 };
 
-export default connect(
-  state => ({
-    premium: state?.user?.user?.features?.premium,
-    isSubscriptionExpired: state?.subscription?.isSubscriptionExpired
-  }),
-  {
-    fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus
-  }
-)(HeaderSection);
+export default withNamespaces("header")(
+  connect(
+    state => ({
+      premium: state?.user?.user?.features?.premium,
+      isSubscriptionExpired: state?.subscription?.isSubscriptionExpired
+    }),
+    {
+      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus
+    }
+  )(HeaderSection)
+);

@@ -61,6 +61,7 @@ import {
 } from "../../ducks";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
+import { withNamespaces } from "react-i18next";
 
 class TestList extends Component {
   static propTypes = {
@@ -342,7 +343,7 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating, playListFilters } = this.props;
+    const { page, limit, count, creating, playListFilters, t } = this.props;
 
     const { blockStyle, isShowFilter } = this.state;
     const { searchString } = playListFilters;
@@ -352,7 +353,7 @@ class TestList extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
-          title="common.playlistLibrary"
+          title={t("common.playlistLibrary")}
           data-cy="new-playlist"
           btnTitle="New Playlist"
           titleIcon={IconPlaylist2}
@@ -461,6 +462,7 @@ class TestList extends Component {
 
 const enhance = compose(
   withWindowSizes,
+  withNamespaces("header"),
   connect(
     state => ({
       playlists: getPlaylistsSelector(state),

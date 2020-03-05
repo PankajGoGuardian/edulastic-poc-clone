@@ -3,9 +3,10 @@ import { IconSubscriptionHighlight } from "@edulastic/icons";
 import PropTypes from "prop-types";
 import React, { memo } from "react";
 import { ActionBtnWrapper } from "./styled";
+import { withNamespaces } from "react-i18next";
 
-const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isSubscribed }) => (
-  <MainHeader Icon={IconSubscriptionHighlight} headingText="common.subscriptionTitle">
+const SubscriptionHeader = ({ openComparePlanModal, openPaymentServiceModal, isSubscribed, t }) => (
+  <MainHeader Icon={IconSubscriptionHighlight} headingText={t("common.subscriptionTitle")}>
     {!isSubscribed && (
       <ActionBtnWrapper>
         <EduButton isGhost width="195px" onClick={openComparePlanModal}>
@@ -25,4 +26,4 @@ SubscriptionHeader.propTypes = {
   isSubscribed: PropTypes.bool.isRequired
 };
 
-export default memo(SubscriptionHeader);
+export default memo(withNamespaces("header")(SubscriptionHeader));

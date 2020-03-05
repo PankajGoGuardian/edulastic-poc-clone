@@ -18,7 +18,7 @@ import { compose } from "redux";
 import styled from "styled-components";
 import { toggleSideBarAction } from "../../../../src/client/author/src/actions/toggleMenu";
 
-const MainHeader = ({ children, headingText, Icon, t, toggleSideBar, ...restProps }) => (
+const MainHeader = ({ children, headingText, Icon, toggleSideBar, ...restProps }) => (
   <HeaderWrapper {...restProps}>
     <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
       <Container {...restProps}>
@@ -29,8 +29,8 @@ const MainHeader = ({ children, headingText, Icon, t, toggleSideBar, ...restProp
               <Icon color={title} width={20} height={20} />
             </TitleIcon>
           )}
-          <TitleWrapper {...restProps} title={t(headingText)} data-cy="title">
-            {t(headingText)}
+          <TitleWrapper {...restProps} title={headingText} data-cy="title">
+            {headingText}
           </TitleWrapper>
           {restProps.headingSubContent}
         </HeaderLeftContainer>
@@ -49,7 +49,6 @@ MainHeader.propTypes = {
 };
 
 const enhance = compose(
-  withNamespaces("header"),
   connect(
     null,
     {

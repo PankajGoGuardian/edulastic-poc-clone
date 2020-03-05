@@ -97,6 +97,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
+import { withNamespaces } from "react-i18next";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -831,7 +832,8 @@ class TestList extends Component {
       updateModuleInPlaylist,
       resequenceModules,
       testFilters,
-      handleSave
+      handleSave,
+      t
     } = this.props;
 
     const {
@@ -892,7 +894,7 @@ class TestList extends Component {
           <ListHeader
             onCreate={this.handleCreate}
             creating={creating}
-            title="common.testLibrary"
+            title={t("common.testLibrary")}
             titleIcon={IconTestBank}
             btnTitle="Author Test"
             renderFilter={() => (
@@ -1074,6 +1076,7 @@ class TestList extends Component {
 
 const enhance = compose(
   withWindowSizes,
+  withNamespaces("header"),
   connect(
     state => ({
       tests: getTestsSelector(state),

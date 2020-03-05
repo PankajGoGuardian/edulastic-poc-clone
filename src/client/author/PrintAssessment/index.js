@@ -79,8 +79,10 @@ const PrintAssessment = ({ match, userRole }) => {
       <hr />
       {!isContentHidden ? (
         <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-          {test.questions.map((question, index) => (
-            <div style={index !== 0 ? {pageBreakInside: "avoid"} : {}}>
+          {test.questions.map((question, index) => {
+            const questionHeight = question.type == "clozeImageDropDown" ? {minHeight: "500px"} : {};
+            return (
+            <div style={index !== 0 ? {pageBreakInside: "avoid", ...questionHeight} : questionHeight}>
               <QuestionWrapper
                 view="preview"
                 type={question.type}
@@ -92,7 +94,7 @@ const PrintAssessment = ({ match, userRole }) => {
               />
               <hr />
             </div>
-          ))}
+          )})}
           <StyledAnswerWrapper>
             <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
               Answer Key of {test.title}
@@ -157,6 +159,12 @@ const PrintAssessmentContainer = styled.div`
     padding-right: 0;
     .sort-list-wrapper {
       margin: auto;
+    }
+    .responseboxContainer {
+      width: 100%;
+    }
+    .cloze-image-dropdown-response {
+      overflow-x: hidden;
     }
   }
   .multiple-choice-wrapper {

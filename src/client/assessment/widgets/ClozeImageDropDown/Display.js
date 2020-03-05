@@ -384,7 +384,7 @@ class Display extends Component {
               <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
             </QuestionTitleWrapper>
 
-            <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
+            <TemplateBoxContainer smallSize={smallSize} flexDirection="column" className="cloze-image-dropdown-response">
               <TemplateBoxLayoutContainer smallSize={smallSize}>
                 {templateBoxLayout}
               </TemplateBoxLayoutContainer>

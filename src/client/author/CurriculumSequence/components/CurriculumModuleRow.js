@@ -15,7 +15,6 @@ import {
   greyThemeDark1,
   greyThemeLighter,
   lightGreen5,
-  lightGreen6,
   mainBgColor,
   testTypeColor,
   themeColor,
@@ -417,12 +416,10 @@ class ModuleRow extends Component {
                       <StyledLabel textColor={lightGrey5}>PROFICIENCY</StyledLabel>
                       {/* TODO: Method to find Progress Percentage */}
                       <ProgressBar
-                        strokeColor={{
-                          "0%": getProgressColor(summaryData[moduleIndex]?.value),
-                          "100%": getProgressColor(summaryData[moduleIndex]?.value)
-                        }}
-                        strokeWidth={10}
+                        strokeColor={getProgressColor(summaryData[moduleIndex]?.value)}
+                        strokeWidth={13}
                         percent={summaryData[moduleIndex]?.value}
+                        format={percent => (percent ? `${percent}%` : "")}
                       />
                     </Col>
                     {!isStudent ? (
@@ -729,12 +726,10 @@ class ModuleRow extends Component {
                                 <StyledCol span={4} style={rowInlineStyle}>
                                   {/* TODO: Method to display progress for assignments */}
                                   <ProgressBar
-                                    strokeColor={{
-                                      "0%": getProgressColor(progressData?.progress),
-                                      "100%": getProgressColor(progressData?.progress)
-                                    }}
-                                    strokeWidth={10}
+                                    strokeColor={getProgressColor(progressData?.progress)}
+                                    strokeWidth={13}
                                     percent={progressData?.progress}
+                                    format={percent => (percent ? `${percent}%` : "")}
                                   />
                                 </StyledCol>
                                 {!isStudent ? (
@@ -899,12 +894,14 @@ class ModuleRow extends Component {
                             <StyledRow key={assignmentIndex}>
                               <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
                                 <Tooltip placement="bottomLeft" title={assignment?.name}>
-                                  <EllipticSpan md="100px" lg="220px" xl="250px" padding="0px 0px 0px 20px">
+                                  <EllipticSpan md="100px" lg="260px" xl="300px" padding="0px 0px 0px 30px">
                                     {assignment?.name}
                                   </EllipticSpan>
                                 </Tooltip>
                               </StyledLabel>
-                              <CustomIcon marginRight={0} align="unset">
+
+                              {/* TODO: Remove if not required, else uncomment and update the assignment name sizes accordingly */}
+                              {/* <CustomIcon marginRight={0} align="unset">
                                 <Avatar
                                   size={18}
                                   style={{
@@ -914,7 +911,7 @@ class ModuleRow extends Component {
                                 >
                                   {assignment?.testType[0].toUpperCase() || "P"}
                                 </Avatar>
-                              </CustomIcon>
+                              </CustomIcon> */}
 
                               {assignment?.status && (
                                 <StyledStatusLabel status={assignment?.status}>{assignment?.status}</StyledStatusLabel>

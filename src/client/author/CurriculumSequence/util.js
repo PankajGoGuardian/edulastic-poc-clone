@@ -6,7 +6,7 @@ export const getProgressColor = percentage => {
   if (percentage <= 70) {
     return "#FFD500";
   } else {
-    return "#00AD50";
+    return "#5e5B500";
   }
 };
 

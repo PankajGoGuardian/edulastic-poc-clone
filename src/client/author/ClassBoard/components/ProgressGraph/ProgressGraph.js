@@ -61,7 +61,7 @@ export default class Graph extends Component {
               strokeColor="#2B7FF0"
               format={percent => `${percent}%`}
             />
-            <GraphDescription>average score %</GraphDescription>
+            <GraphDescription margin="3px 0 0 0">average score %</GraphDescription>
           </StyledProgressDiv>
           <GraphInfo data-cy="submittedSummary">
             {gradebook.submittedNumber} out of {gradebook.total} Submitted

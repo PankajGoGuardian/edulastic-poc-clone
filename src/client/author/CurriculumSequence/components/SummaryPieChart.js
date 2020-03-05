@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import moment from "moment";
+import { themeColorLighter, greyThemeDark1, titleColor } from "@edulastic/colors";
 import { PieChart, Pie, Sector, Cell } from "recharts";
+import { StyledProgressDiv, StyledProgress, GraphDescription } from "../../ClassBoard/components/ProgressGraph/styled";
 
 const renderActiveShape = props => {
   const {
@@ -32,10 +34,10 @@ const renderActiveShape = props => {
 
   return (
     <g>
-      <text x={cx} y={cy} dy={5} font-size="30" font-weight="bold" textAnchor="middle">
+      <text x={cx} y={cy} dy={5} font-size="30" font-weight="bold" textAnchor="middle" color={titleColor}>
         {formattedTime[0]}
       </text>
-      <text x={cx} y={cy} dy={22} font-size="13" textAnchor="middle">
+      <text x={cx} y={cy} dy={22} font-size="13" textAnchor="middle" color={greyThemeDark1}>
         {formattedTime[1]}
       </text>
       <Sector
@@ -60,14 +62,18 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
     setActiveIndex(index);
   };
 
-  const chartData = data
-    ?.filter(x => x?.tSpent !== 0 && !(x?.hidden && isStudent))
-    ?.map(x => ({
-      ...x,
-      value: x?.tSpent
-    }));
+  let maxSliceIndex = 0,
+    chartData = data?.filter(ele => ele?.tSpent !== 0 && !(ele?.hidden && isStudent));
 
-  return (
+  // find maxSliceIndex and set value = tSpent
+  chartData = chartData?.map((ele, idx) => {
+    if (ele.tSpent > chartData[maxSliceIndex].tSpent) {
+      maxSliceIndex = idx;
+    }
+    return { ...ele, value: ele?.tSpent };
+  });
+
+  return chartData.length ? (
     <PieChart width={315} height={250}>
       <Pie
         activeIndex={activeIndex}
@@ -76,16 +82,38 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
         cx={150}
         cy={130}
         innerRadius={50}
-        outerRadius={65}
+        outerRadius={68}
         label={({ name }) => name}
         isAnimationActive={false} // Tradeoff: to show labels -  https://github.com/recharts/recharts/issues/929
         onMouseEnter={onPieEnter}
         onMouseLeave={() => setDefaultTimeSpent(true)}
         showTotalTime={showTotalTime}
       >
-        {chartData?.map(m => <Cell fill={colors[m.index % colors.length]} />)}
+        {chartData?.map((m, dataIndex) => (
+          <Cell fill={dataIndex === maxSliceIndex ? themeColorLighter : colors[m.index % colors.length]} />
+        ))}
       </Pie>
     </PieChart>
+  ) : (
+    <StyledProgressDiv>
+      <StyledProgress
+        className="noProgress"
+        strokeLinecap="square"
+        type="circle"
+        percent={10}
+        width={140}
+        strokeWidth={13}
+        strokeColor="#aaaaaa"
+        trailColor="#aaaaaa"
+        margin="60px 0px 40px 0px"
+        textColor={titleColor}
+        textSize="30px"
+        format={() => `0 hr`}
+      />
+      <GraphDescription size="13px" color={greyThemeDark1}>
+        0 MINS
+      </GraphDescription>
+    </StyledProgressDiv>
   );
 };
 export default SummaryPieChart;

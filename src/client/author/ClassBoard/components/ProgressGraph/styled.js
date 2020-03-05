@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { mobileWidthLarge, themeColor } from "@edulastic/colors";
 
 export const StyledProgress = styled(Progress)`
-  margin: 0 30px 15px 30px;
+  margin: ${props => props.margin || "0 30px 15px 30px"};
   .ant-progress-text {
-    color: #434b5d;
-    font-size: 35px;
+    color: ${props => props.textColor || "#434b5d"};
+    font-size: ${props => props.textSize || "#35px"};
     margin-top: -7px !important;
     font-weight: bold;
   }
@@ -32,9 +32,9 @@ export const StyledProgressDiv = styled.div`
 export const GraphDescription = styled.span`
   text-align: center;
   font-weight: 600;
-  font-size: 11px;
-  color: #b1b1b1;
-  margin: 3px 0 0 0;
+  font-size: ${props => props.size || "11px"};
+  color: ${props => props.color || "#b1b1b1"};
+  margin: ${props => props.margin || "0px"};
   padding: 0;
   text-transform: uppercase;
   position: absolute;

@@ -264,7 +264,7 @@ class SideMenu extends Component {
                 >
                   {menuItems.map((menu, index) => {
                     const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
-                    if (menu.label === "Playlist" && !features.playlist) {
+                    if (menu?.label === "Playlist" && !features?.playlist) {
                       return null;
                     }
                     return (

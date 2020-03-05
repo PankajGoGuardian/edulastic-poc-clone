@@ -454,7 +454,9 @@ class ModuleRow extends Component {
                           justify="center"
                         >
                           {/* TODO: Method to find sum of scores */}
-                          {summaryData[moduleIndex]?.scores ? summaryData[moduleIndex]?.scores : "-"}
+                          {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
+                            ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
+                            : "-"}
                         </StyledLabel>
                       </Col>
                     )}
@@ -583,7 +585,8 @@ class ModuleRow extends Component {
                       progress,
                       classes,
                       scores: totalScore,
-                      timeSpent
+                      timeSpent,
+                      maxScore
                     };
                   };
 
@@ -762,7 +765,9 @@ class ModuleRow extends Component {
                                       justify="center"
                                     >
                                       {/* TODO: Method to find sum of scores for each assignment */}
-                                      {progressData?.scores || "-"}
+                                      {progressData?.scores >= 0 && progressData?.maxScore
+                                        ? `${progressData?.scores}/${progressData?.maxScore}`
+                                        : "-"}
                                     </StyledLabel>
                                   </StyledCol>
                                 )}

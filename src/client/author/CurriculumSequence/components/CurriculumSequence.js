@@ -437,6 +437,7 @@ class CurriculumSequence extends Component {
         (metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100) / metricModule.length,
         0
       );
+      const maxScore = round(metricModule?.reduce((a, c) => a + c?.maxScore, 0) / metricModule.length);
       let tSpent = 0;
       if (isStudent) {
         const unHiddenTestIds = data?.filter(x => !x?.hidden).flatMap(x => x.contentId);
@@ -471,7 +472,8 @@ class CurriculumSequence extends Component {
         tSpent,
         index,
         hidden,
-        scores
+        scores,
+        maxScore
       };
     });
 

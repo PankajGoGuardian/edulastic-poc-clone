@@ -653,7 +653,7 @@ function* fetchClassListByDistrictId({ payload }) {
 }
 
 function* fetchStudentListByGroupId({ payload }) {
-  if (payload.classId) return;
+  if (!payload.classId) return;
   try {
     const requestPayload = {
       districtId: payload.districtId,

@@ -688,14 +688,7 @@ class ModuleRow extends Component {
                           <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
                             <Col span={urlHasUseThis ? 7 : 10} style={rowInlineStyle}>
                               <ModuleDataWrapper>
-                                <ModuleDataName
-                                  onClick={() =>
-                                    !isStudent &&
-                                    (isAssigned
-                                      ? this.setAssignmentDropdown(moduleData?.contentId)
-                                      : message.warning("Test is not yet assigned to any class(es)"))
-                                  }
-                                >
+                                <ModuleDataName onClick={() => !isStudent && this.viewTest(moduleData?.contentId)}>
                                   <Tooltip placement="bottomLeft" title={moduleData.contentTitle}>
                                     <EllipticSpan width="calc(100% - 30px)">{moduleData.contentTitle}</EllipticSpan>
                                   </Tooltip>

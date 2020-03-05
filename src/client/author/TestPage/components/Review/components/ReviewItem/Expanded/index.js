@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 import TestItemPreview from "../../../../../../../assessment/components/TestItemPreview";
 import { PointsLabel, QuestionCheckbox } from "./styled";
@@ -46,9 +46,12 @@ const Expanded = ({
    * @type {{item:Object,question:Object}[]}
    */
   const items = testItem.itemLevelScoring ? [{ item }] : splitItems(item, testItem);
+  let passageContent = {};
   if (testItem.passageId && items?.[0]?.item) {
     items[0].item = [passagesKeyed[testItem.passageId].structure, ...items[0].item];
+    passageContent = keyBy(passagesKeyed[testItem.passageId].data, "id");
   }
+  const widgetsWithResource = { ...questions, ...keyBy(testItem.data.resources, "id"), ...passageContent };
   let points = 0;
 
   const itemLevelScoring = helpers.getPoints(testItem);
@@ -144,7 +147,6 @@ const Expanded = ({
         justifyContent="space-between"
         alignItems="flex-start"
       >
-        {console.log(item)}
         <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
           {isEditable && (
             <FlexContainer style={{ marginTop: 20, width: "5%" }} flexDirection="column" justifyContent="center">
@@ -164,7 +166,7 @@ const Expanded = ({
               disableResponse
               verticalDivider={get(_item, "[0].verticalDivider")}
               scrolling={get(_item, "[0].scrolling")}
-              questions={questions}
+              questions={widgetsWithResource}
               windowWidth="100%"
               isReviewTab
               testItem

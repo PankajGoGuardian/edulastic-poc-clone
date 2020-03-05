@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
-import { IconCircleLogout, IconContrast, IconSend } from "@edulastic/icons";
+import { IconCircleLogout, IconAccessibility, IconSend } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
@@ -12,7 +12,7 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
   <FlexContainer marginLeft="30px">
     {showZoomBtn && (
       <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
-        <IconContrast />
+        <IconAccessibility />
       </StyledButton>
     )}
 
@@ -60,7 +60,8 @@ export default connect(
 const StyledButton = styled(Button)`
   border: none;
   margin-left: 2px;
-  background: ${({ theme }) => theme.default.headerButtonBgColor};
+  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
+  color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
 
@@ -71,7 +72,7 @@ const StyledButton = styled(Button)`
     transform: translate(-50%, -50%);
     height: ${props => props.theme.default.headerRightButtonFontIconHeight};
     width: ${props => props.theme.default.headerRightButtonFontIconWidth};
-    fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
   }
 
   &:first-child {

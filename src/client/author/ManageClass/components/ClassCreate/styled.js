@@ -72,11 +72,14 @@ export const Container = styled(MainContentWrapper)`
   }
 `;
 
-export const FormTitle = styled(Title)`
+export const FormTitle = styled.div`
   color: ${title};
   font-size: ${props => props.theme.subtitleFontSize};
   line-height: 1;
   margin-bottom: 25px;
+  font-weight: bold;
+  text-align: left;
+  display: flex;
 `;
 
 export const MainContainer = styled.div``;

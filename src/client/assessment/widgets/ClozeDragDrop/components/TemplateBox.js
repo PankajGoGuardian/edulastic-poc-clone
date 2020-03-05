@@ -39,7 +39,12 @@ const TemplateBox = ({ resprops, id }) => {
   const getData = attr => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {
-      const foundedItem = options.find(option => option.value === answers[dropTargetIndex]);
+      // group all the options together in case groupResponses is checked
+      const source = hasGroupResponses ? options.flatMap(_ => _.options) : options;
+      // when groupResponses is checked, it has an object having data
+      // else it is a plain string
+      const key = hasGroupResponses ? answers[dropTargetIndex].data : answers[dropTargetIndex];
+      const foundedItem = source.find(option => option.value === key);
       if (foundedItem) {
         return attr === "value" ? foundedItem.value : foundedItem.label;
       }

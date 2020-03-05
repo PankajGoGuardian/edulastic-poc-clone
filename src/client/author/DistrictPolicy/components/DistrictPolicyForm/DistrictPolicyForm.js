@@ -29,6 +29,14 @@ import {
   HelperText
 } from "./styled";
 
+const _3RDPARTYINTEGRATION = {
+  googleClassroom: 1,
+  canvas: 2,
+  schoology: 3,
+  classlink: 4,
+  none: 5
+};
+
 function validURL(value) {
   if (value.length == 0)
     return {
@@ -139,12 +147,26 @@ class DistrictPolicyForm extends Component {
 
   thirdpartyIntegration = e => {
     const districtPolicyData = { ...this.props.districtPolicy };
-    if (e.target.value == 1) {
-      districtPolicyData.googleClassroom = true;
-      districtPolicyData.canvas = false;
-    } else if (e.target.value == 2) {
-      districtPolicyData.googleClassroom = false;
-      districtPolicyData.canvas = true;
+    // initially make all false and according to target make flag true
+    districtPolicyData.googleClassroom = false;
+    districtPolicyData.canvas = false;
+    districtPolicyData.schoology = false;
+    districtPolicyData.classlink = false;
+    switch (e.target.value) {
+      case 1:
+        districtPolicyData.googleClassroom = true;
+        break;
+      case 2:
+        districtPolicyData.canvas = true;
+        break;
+      case 3:
+        districtPolicyData.schoology = true;
+        break;
+      case 4:
+        districtPolicyData.classlink = true;
+        break;
+      default:
+        break;
     }
     this.props.changeDistrictPolicyData({ ...districtPolicyData, schoolLevel: this.props.role === "school-admin" });
   };
@@ -265,10 +287,12 @@ class DistrictPolicyForm extends Component {
       allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict.length
         ? districtPolicyData.allowedDomainsForDistrict.split(/[\s,]+/)
         : [],
-      googleClassroom: districtPolicyData.googleClassroom,
-      canvas: districtPolicyData.canvas,
+      googleClassroom: districtPolicyData.googleClassroom || false,
+      canvas: districtPolicyData.canvas || false,
       allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
-      disableStudentLogin: districtPolicyData.disableStudentLogin || false
+      disableStudentLogin: districtPolicyData.disableStudentLogin || false,
+      schoology: districtPolicyData.schoology || false,
+      classlink: districtPolicyData.classlink || false
     };
     if (districtPolicyData.hasOwnProperty("_id")) {
       this.props.updateDistrictPolicy(updateData);
@@ -286,9 +310,15 @@ class DistrictPolicyForm extends Component {
     } = this.state;
 
     const { districtPolicy } = this.props;
-
-    let thirdPartyValue = 1;
-    if (districtPolicy.canvas) thirdPartyValue = 2;
+    const thirdPartyValue = districtPolicy.googleClassroom
+      ? _3RDPARTYINTEGRATION.googleClassroom
+      : districtPolicy.canvas
+      ? _3RDPARTYINTEGRATION.canvas
+      : districtPolicy.schoology
+      ? _3RDPARTYINTEGRATION.schoology
+      : districtPolicy.classlink
+      ? _3RDPARTYINTEGRATION.classlink
+      : _3RDPARTYINTEGRATION.none;
     let saveBtnStr = "Create";
     if (districtPolicy.hasOwnProperty("_id")) {
       saveBtnStr = "Save";
@@ -434,6 +464,10 @@ class DistrictPolicyForm extends Component {
             <RadioGroup onChange={this.thirdpartyIntegration} value={thirdPartyValue}>
               <Radio value={1}>Google Classroom</Radio>
               <Radio value={2}>Canvas</Radio>
+              <Radio value={3}>Schoology</Radio>
+              <Radio value={4}>ClassLink</Radio>
+              <Radio value={5}>None</Radio>
+              {/*None signifies that no 3rd party integration is enabled*/}
             </RadioGroup>
           </StyledRow>
           <StyledRow>

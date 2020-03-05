@@ -10,10 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 
@@ -33,12 +30,25 @@ class CorrectAnswers extends Component {
     this.setState({ value });
   };
 
+  handleRemoveAltResponses = (event, deletedTabIndex) => {
+    event?.stopPropagation();
+    const { value } = this.state;
+    const { onRemoveAltResponses } = this.props;
+
+    if (value === deletedTabIndex + 1) {
+      this.setState({
+        value: deletedTabIndex
+      });
+    }
+
+    onRemoveAltResponses(deletedTabIndex);
+  };
+
   renderAltResponses = () => {
     const {
       validation,
       validation: { mixAndMatch = false },
       t,
-      onRemoveAltResponses,
       handleRemoveAltResponsesMixMatch
     } = this.props;
 
@@ -47,9 +57,10 @@ class CorrectAnswers extends Component {
         return (
           <Tab
             close
-            onClose={() => {
-              handleRemoveAltResponsesMixMatch();
+            onClose={event => {
+              event?.stopPropagation();
               this.setState({ value: 0 });
+              handleRemoveAltResponsesMixMatch();
             }}
             label={`${t("component.correctanswers.alternate")}`}
             IconPosition="right"
@@ -61,9 +72,9 @@ class CorrectAnswers extends Component {
         <Tab
           close
           key={i}
-          onClose={() => {
-            onRemoveAltResponses(i);
+          onClose={event => {
             this.setState({ value: 0 });
+            this.handleRemoveAltResponses(event, i);
           }}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
           IconPosition="right"
@@ -103,12 +114,8 @@ class CorrectAnswers extends Component {
     };
     newData.validation.validResponse = updatedValidation.validResponse;
     if (widthpx) {
-      newData.uiStyle.responsecontainerindividuals =
-        newData.uiStyle.responsecontainerindividuals || [];
-      const index = findIndex(
-        newData.uiStyle.responsecontainerindividuals,
-        container => container.id === id
-      );
+      newData.uiStyle.responsecontainerindividuals = newData.uiStyle.responsecontainerindividuals || [];
+      const index = findIndex(newData.uiStyle.responsecontainerindividuals, container => container.id === id);
       if (index === -1) {
         const newIndex = findIndex(newData.responseIds, resp => resp.id === id);
         newData.uiStyle.responsecontainerindividuals.push({ id, widthpx, index: newIndex });
@@ -227,20 +234,12 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
-          )}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
         <AddAlternative>
           {this.renderPlusButton()}
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            style={{ marginBottom: 10, marginTop: 20 }}
-          >
+          <Tabs value={value} onChange={this.handleTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
             <Tab
               label={t("component.correctanswers.correct")}
               style={{ borderRadius: validation.altResponses <= 1 ? "4px" : "4px 0 0 4px" }}
@@ -294,9 +293,7 @@ class CorrectAnswers extends Component {
                       responseIds={responseIds}
                       hasGroupResponses={hasGroupResponses}
                       uiStyle={uiStyle}
-                      onUpdateValidationValue={answers =>
-                        this.updateAltCorrectValidationAnswers(answers, i)
-                      }
+                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       view={view}
                       previewTab={previewTab}

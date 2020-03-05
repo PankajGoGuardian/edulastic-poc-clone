@@ -8,10 +8,7 @@ import { compose } from "redux";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Tab, Tabs, TabContainer } from "@edulastic/common";
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
 
@@ -28,12 +25,7 @@ class CorrectAnswers extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections(
-      "main",
-      t("component.correctanswers.setcorrectanswers"),
-      node.offsetTop,
-      node.scrollHeight
-    );
+    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {
@@ -46,15 +38,30 @@ class CorrectAnswers extends Component {
     this.setState({ value });
   };
 
+  handleRemoveAltResponses = (event, deletedTabIndex) => {
+    event?.stopPropagation();
+
+    const { value } = this.state;
+    const { onRemoveAltResponses } = this.props;
+
+    if (value === deletedTabIndex + 1) {
+      this.setState({
+        value: deletedTabIndex
+      });
+    }
+
+    onRemoveAltResponses(deletedTabIndex);
+  };
+
   renderAltResponses = () => {
-    const { validation, t, onRemoveAltResponses } = this.props;
+    const { validation, t } = this.props;
 
     if (validation.altResponses && validation.altResponses.length) {
       return validation.altResponses.map((res, i) => (
         <Tab
           close
           key={i}
-          onClose={() => onRemoveAltResponses(i)}
+          onClose={event => this.handleRemoveAltResponses(event, i)}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
           type="primary"
           IconPosition="right"
@@ -148,25 +155,13 @@ class CorrectAnswers extends Component {
     const { value } = this.state;
     return (
       <div>
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.correctanswers.setcorrectanswers")}`
-          )}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.setcorrectanswers")}`)}>
           {t("component.correctanswers.setcorrectanswers")}
         </Subtitle>
         <AddAlternative>
           {this.renderPlusButton()}
-          <Tabs
-            value={value}
-            onChange={this.handleTabChange}
-            style={{ marginBottom: 10, marginTop: 20 }}
-          >
-            <Tab
-              label={t("component.correctanswers.correct")}
-              type="primary"
-              IconPosition="right"
-            />
+          <Tabs value={value} onChange={this.handleTabChange} style={{ marginBottom: 10, marginTop: 20 }}>
+            <Tab label={t("component.correctanswers.correct")} type="primary" IconPosition="right" />
             {this.renderAltResponses()}
           </Tabs>
         </AddAlternative>
@@ -217,9 +212,7 @@ class CorrectAnswers extends Component {
                     showDashedBorder={showDashedBorder}
                     uiStyle={uiStyle}
                     backgroundColor={backgroundColor}
-                    onUpdateValidationValue={answers =>
-                      this.updateAltCorrectValidationAnswers(answers, i)
-                    }
+                    onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                     onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                   />
                 </TabContainer>

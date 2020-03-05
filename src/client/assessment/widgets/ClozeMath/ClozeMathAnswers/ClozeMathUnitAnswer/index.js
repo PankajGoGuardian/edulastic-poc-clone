@@ -8,6 +8,7 @@ import { response as defaultResponse } from "@edulastic/constants";
 import MathFormulaAnswerMethod from "../../../MathFormula/components/MathFormulaAnswerMethod";
 import SelectUnit from "./SelectUnit";
 import { AnswerContainer } from "./AnswerContainer";
+import { StyledCollapse } from "../ClozeMathAnswer";
 
 const { Panel } = Collapse;
 
@@ -50,7 +51,7 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
   );
   return (
     <AnswerContainer>
-      <Collapse
+      <StyledCollapse
         onChange={() => {}}
         bordered={false}
         expandIconPosition="right"
@@ -76,7 +77,7 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
             {...answer}
           />
         </Panel>
-      </Collapse>
+      </StyledCollapse>
     </AnswerContainer>
   );
 };

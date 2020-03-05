@@ -27,6 +27,7 @@ const SET_JOB_IDS = "[import test] test job ids";
 const GET_IMPORT_PROGRESS = "[import test] get import progress action";
 const SET_JOBS_DATA = "[import test] set jobs response data";
 const SET_SUCCESS_MESSAGE = "[import test] set success message";
+const SET_IS_IMPORTING = "[import test] set is importing";
 
 export const uploadTestRequestAction = createAction(UPLOAD_TEST_REQUEST);
 export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS);
@@ -36,6 +37,7 @@ export const setJobIdsAction = createAction(SET_JOB_IDS);
 export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS);
 export const setJobsDataAction = createAction(SET_JOBS_DATA);
 export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE);
+export const setIsImportingAction = createAction(SET_IS_IMPORTING);
 
 const initialState = {
   testDetail: {},
@@ -44,7 +46,8 @@ const initialState = {
   jobIds: [],
   jobsData: [],
   successMessage: "",
-  isSuccess: true
+  isSuccess: true,
+  importing: false
 };
 
 const testUploadStatus = (state, { payload }) => {
@@ -73,13 +76,18 @@ const setSuccessMessage = (state, { payload }) => {
   state.isSuccess = true;
 };
 
+const setIsImporting = (state, { payload }) => {
+  state.importing = payload;
+};
+
 export const reducers = createReducer(initialState, {
   [SET_UPLOAD_TEST_STATUS]: testUploadStatus,
   [UPLOAD_TEST_SUSSESS]: uploadTestSuccess,
   [UPLOAD_TEST_ERROR]: uploadTestError,
   [SET_JOB_IDS]: setJobIds,
   [SET_JOBS_DATA]: setJobsData,
-  [SET_SUCCESS_MESSAGE]: setSuccessMessage
+  [SET_SUCCESS_MESSAGE]: setSuccessMessage,
+  [SET_IS_IMPORTING]: setIsImporting
 });
 
 export function* uploadTestStaga({ payload: fileList = [] }) {
@@ -107,6 +115,7 @@ export function* uploadTestStaga({ payload: fileList = [] }) {
     }
     try {
       yield put(setSuccessMessageAction("Started creating the items"));
+      yield put(setIsImportingAction(true));
       const response = yield call(contentImportApi.qtiImport, { files: [extractResponse] });
       if (response?.jobIds?.length) {
         yield put(setJobIdsAction(response.jobIds));
@@ -130,6 +139,7 @@ function* getImportProgressSaga({ payload: jobIds }) {
     yield put(setJobsDataAction(response));
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE));
+      yield put(setIsImportingAction(false));
     }
   } catch (e) {
     console.log({ e });
@@ -178,4 +188,9 @@ export const getIsSuccessSelector = createSelector(
 export const getErrorDetailsSelector = createSelector(
   stateSelector,
   state => state.error
+);
+
+export const getIsImportingselector = createSelector(
+  stateSelector,
+  state => state.importing
 );

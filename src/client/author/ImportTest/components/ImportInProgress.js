@@ -17,7 +17,8 @@ import {
   getJobIdsSelector,
   getUploadStatusSelector,
   setJobIdsAction,
-  uploadTestStatusAction
+  uploadTestStatusAction,
+  getIsImportingselector
 } from "../ducks";
 
 const ImportInprogress = ({
@@ -29,7 +30,8 @@ const ImportInprogress = ({
   isSuccess,
   errorDetails,
   uploadTestStatus,
-  setJobIds
+  setJobIds,
+  isImporting
 }) => {
   const checkProgress = () => {
     if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
@@ -50,7 +52,7 @@ const ImportInprogress = ({
   useInterval(() => {
     checkProgress();
   }, 1000 * 5);
-
+  console.log({ isImporting });
   return (
     <FlexContainer flexDirection="column" alignItems="column" width="50%">
       <Spin size="large" style={{ top: "40%" }} />
@@ -65,7 +67,11 @@ const ImportInprogress = ({
           </p>
         )}
       </TextWrapper>
-      <TextWrapper> {t("qtiimport.importinprogress.description")} </TextWrapper>
+      <TextWrapper>
+        {isImporting
+          ? t("qtiimport.importinprogress.description")
+          : "Please stay on the screen while we are unzipping your files"}
+      </TextWrapper>
     </FlexContainer>
   );
 };
@@ -81,7 +87,8 @@ export default withNamespaces("qtiimport")(
       status: getUploadStatusSelector(state),
       successMessage: getSuccessMessageSelector(state),
       isSuccess: getIsSuccessSelector(state),
-      errorDetails: getErrorDetailsSelector(state)
+      errorDetails: getErrorDetailsSelector(state),
+      isImporting: getIsImportingselector(state)
     }),
     {
       qtiImportProgress: qtiImportProgressAction,

@@ -67,13 +67,14 @@ export const StyledTitle = styled.h1`
 export const StyledTabs = styled(Tabs)`
   width: 100%;
   &.ant-tabs {
-    height: 51px;
-    margin-bottom: -13px;
+    height: 52px;
+    margin-bottom: -11px;
+    padding: 1px 0px;
     &.ant-tabs-card {
       .ant-tabs-card-bar {
         border: none;
         .ant-tabs-nav-container {
-          height: 50px;
+          height: 52px;
         }
         .ant-tabs-nav {
           div {

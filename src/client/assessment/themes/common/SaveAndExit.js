@@ -59,7 +59,7 @@ export default connect(
 
 const StyledButton = styled(Button)`
   border: none;
-  margin-left: 2px;
+  margin-left: 5px;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};

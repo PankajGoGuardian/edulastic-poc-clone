@@ -15,7 +15,8 @@ import {
   RightCol,
   AssignmentStatusText,
   AssignmentTitle,
-  AssignmentCount
+  AssignmentCount,
+  Label
 } from "./styled";
 import { TextWrapper } from "../../../../../styledComponents";
 
@@ -54,6 +55,7 @@ export const CardTextContent = ({ data, history }) => {
         )}
       </RowWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
+        <Label>RECENT Assignments</Label>
         {asgnTitle ? (
           <>
             <LeftCol>

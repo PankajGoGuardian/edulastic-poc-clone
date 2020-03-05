@@ -3,7 +3,7 @@ export const black = "#000";
 export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 export const lightFadedBlack = "rgba(0, 0, 0, 0.15)";
 
-export const themeColor = "#4ab495"; // green
+export const themeColor = "#1AB394"; // green
 export const themeColorLight = "#42d184"; // light green
 export const themeColorLighter = "#5EB500"; // light green
 export const themeColorSecondaryLighter = "#26B96A"; // light green
@@ -89,7 +89,7 @@ export const darkBlueSecondary = "#0288d1";
 export const blueButton = "#0e93dc";
 export const blueBorder = "#40a9ff";
 
-export const green = "#4ab495";
+export const green = "#1AB394";
 export const lightGreen = "#f5f9fe";
 export const lightGreen1 = "#62ebbd";
 export const lightGreen2 = "#94df5e";

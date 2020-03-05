@@ -284,6 +284,7 @@ function* updateStudentScore({ payload }) {
     });
 
     const { questionActivities, testActivity } = scoreRes;
+    let gradeBookTestItemAddPayload = [];
     for (const {
       qid: _id,
       score: _score,
@@ -292,10 +293,17 @@ function* updateStudentScore({ payload }) {
       graded,
       skipped
     } of questionActivities) {
-      yield put(
-        gradebookTestItemAddAction([{ testActivityId: _testActivityId, _id, score: _score, maxScore, graded, skipped }])
-      );
+      gradeBookTestItemAddPayload.push({
+        testActivityId: _testActivityId,
+        _id,
+        score: _score,
+        maxScore,
+        graded,
+        skipped
+      });
     }
+
+    yield put(gradebookTestItemAddAction(gradeBookTestItemAddPayload));
     yield put({
       type: RESPONSE_ENTRY_SCORE_SUCCESS,
       payload: { questionActivities, testActivity }

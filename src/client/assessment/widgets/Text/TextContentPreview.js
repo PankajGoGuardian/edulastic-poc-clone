@@ -7,7 +7,11 @@ const TextContentPreview = ({ item, showQuestionNumber }) => (
   <div>
     <div>
       {showQuestionNumber && <div>{item.qLabel}:</div>}
-      {item.heading && <Subtitle id={getFormattedAttrId(`${item?.title}-${item.heading}`)}>{item.heading}</Subtitle>}
+      {item.heading && (
+        <Subtitle showIcon={false} id={getFormattedAttrId(`${item?.title}-${item.heading}`)}>
+          {item.heading}
+        </Subtitle>
+      )}
       {item.content && <p dangerouslySetInnerHTML={{ __html: item.content }} />}
     </div>
   </div>

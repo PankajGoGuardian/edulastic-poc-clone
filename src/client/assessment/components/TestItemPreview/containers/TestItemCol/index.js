@@ -81,7 +81,7 @@ class TestItemCol extends Component {
     return (
       <Tabs.TabContainer style={{ position: "relative", paddingTop: "0px" }} className="question-tab-container">
         <QuestionWrapper
-          showFeedback={showFeedback}
+          showFeedback={showFeedback && widget?.widgetType !== "resource"}
           evaluation={evaluation}
           multiple={multiple}
           type={widget.type}

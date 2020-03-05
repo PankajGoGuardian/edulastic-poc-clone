@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Menu } from "antd";
+import { Menu, message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -74,11 +74,16 @@ class Container extends Component {
       modalItemId,
       navigateToQuestionEdit,
       isTestFlow,
-      convertToPassageWithQuestions
+      convertToPassageWithQuestions,
+      selectedCategory
     } = this.props;
 
     const { testId, itemId, id } = match.params;
-
+    const { columnHasResource = false } = history.location?.state || {};
+    if (columnHasResource && !["rulers-calculators", "instruction"].includes(selectedCategory)) {
+      message.warning(` Please add instructions on the left and all the associated questions on the right.`);
+      return;
+    }
     // in case of combination multipart
     if (data.type === questionType.COMBINATION_MULTIPART) {
       convertToMultipart({ isTestFlow, itemId: itemId || id, testId });

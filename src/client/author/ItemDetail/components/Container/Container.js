@@ -196,13 +196,15 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
+    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow, rows } = this.props;
     changeView("edit");
 
     if (modalItemId) {
       navigateToPickupQuestionType();
       return;
     }
+    const { widgets = [] } = rows[rowIndex];
+    const columnHasResource = widgets.length > 0 && widgets.some(widget => widget.widgetType === "resource");
     history.push({
       pathname: isTestFlow
         ? `/author/tests/${match.params.testId}/createItem/${match.params.id}/pickup-questiontype`
@@ -212,7 +214,8 @@ class Container extends Component {
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: isTestFlow ? match.params.itemId : match.params.id
+        testItemId: isTestFlow ? match.params.itemId : match.params.id,
+        columnHasResource: rows.length > 1 && rowIndex === 0 && columnHasResource
       }
     });
   };

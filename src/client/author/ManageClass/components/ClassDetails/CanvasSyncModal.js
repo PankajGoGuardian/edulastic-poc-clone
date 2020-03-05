@@ -3,6 +3,7 @@ import { Button, Select, message } from "antd";
 import styled from "styled-components";
 import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { EduButton } from "@edulastic/common";
 
 const CanvasSyncModal = ({
   visible,
@@ -77,12 +78,12 @@ const CanvasSyncModal = ({
           </Button>
         ]
       : []),
-    <Button disabled={syncClassLoading} ghost onClick={handleCancel}>
+    <EduButton disabled={syncClassLoading} isGhost onClick={handleCancel}>
       Cancel
-    </Button>,
-    <Button type="primary" loading={syncClassLoading} onClick={handleSync}>
+    </EduButton>,
+    <EduButton type="primary" loading={syncClassLoading} onClick={handleSync}>
       {syncClassLoading ? "Syncing..." : "Sync"}
-    </Button>
+    </EduButton>
   ];
 
   return (

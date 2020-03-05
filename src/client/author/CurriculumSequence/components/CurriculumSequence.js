@@ -676,14 +676,9 @@ class CurriculumSequence extends Component {
                   )}
                   {isAuthor && !urlHasUseThis && (
                     <Tooltip placement="bottom" title="EDIT">
-                      <StyledButton
-                        width="45px"
-                        margin="0px 10px 0px 0px"
-                        data-cy="edit-playlist"
-                        onClick={handleEditClick}
-                      >
-                        <IconPencilEdit color={lightGreen5} width={15} height={15} />
-                      </StyledButton>
+                      <EduButton isGhost data-cy="edit-playlist" onClick={handleEditClick}>
+                        <IconPencilEdit />
+                      </EduButton>
                     </Tooltip>
                   )}
                   {showUseThisButton && (

@@ -20,7 +20,7 @@ EduButton.defaultProps = {
 
 export default EduButton;
 
-const getStyle = ({ height, width, fontSize, style = {} }) => {
+const getStyle = ({ height, width, fontSize, IconBtn, style = {} }) => {
   const defaultStyle = {
     display: "flex",
     "align-items": "center",
@@ -30,9 +30,9 @@ const getStyle = ({ height, width, fontSize, style = {} }) => {
     marginLeft: "10px",
     borderRadius: "4px",
     height: height || "45px",
-    padding: "5px 15px",
+    padding: IconBtn ? "5px" : "5px 15px",
     textTransform: "uppercase",
-    width: width || null,
+    width: width || (IconBtn ? "50px" : null),
     textShadow: "none"
   };
   return Object.assign({}, defaultStyle, style);
@@ -95,7 +95,7 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
   i {
     margin-left: 5px;
     margin-right: 5px;
-    font-size: 22px;
+    font-size: 16px;
   }
 
   &:focus,
@@ -107,15 +107,11 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
     }
 
     svg {
-      fill: ${({ btnType }) => getColor({ btnType, isGhost: false })};
+      fill: ${({ btnType }) => getColor({ btnType, isGhost: false })} !important;
       &:focus,
       &:hover {
         fill: ${({ btnType }) => getColor({ btnType, isGhost: false })};
       }
-    }
-
-    i {
-      font-size: 22px;
     }
   }
 

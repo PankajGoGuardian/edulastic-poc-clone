@@ -61,12 +61,8 @@ export const TableData = styled(Table)`
     }
   }
 
-  .ant-table-thead
-    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
-    > td,
-  .ant-table-tbody
-    > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
-    > td,
+  .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
+  .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
   .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td,
   .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
     background: #f2f3f2;
@@ -82,11 +78,16 @@ export const TableData = styled(Table)`
   .ant-table-tbody > tr > td.score-title > div {
     font-size: 14px;
   }
-  .ant-table-thead > tr > th .ant-table-column-sorter {
-    .ant-table-column-sorter-inner {
-      .ant-table-column-sorter-up,
-      .ant-table-column-sorter-down {
-        font-size: 10px;
+  .ant-table-thead > tr > th {
+    &.main-heading {
+      text-align: left;
+    }
+    .ant-table-column-sorter {
+      .ant-table-column-sorter-inner {
+        .ant-table-column-sorter-up,
+        .ant-table-column-sorter-down {
+          font-size: 10px;
+        }
       }
     }
   }

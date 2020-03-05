@@ -1,9 +1,8 @@
+import { EduButton } from "@edulastic/common";
+import { PropTypes } from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
-
-import { Container, CartButtonWrapper, ItemsAmount } from "../../../ItemList/components/CartButton/styled";
-
+import { Container, ItemsAmount } from "../../../ItemList/components/CartButton/styled";
 import { getSelectedTestsSelector } from "../../ducks";
 
 const CartButton = ({ selectedTests, onClick, buttonText, numberChecker }) => {
@@ -13,10 +12,10 @@ const CartButton = ({ selectedTests, onClick, buttonText, numberChecker }) => {
   }
   return (
     <Container onClick={onClick} disabled={!numberOfSelectedTests}>
-      <CartButtonWrapper>
+      <EduButton isGhost>
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedTests}</ItemsAmount>
-      </CartButtonWrapper>
+      </EduButton>
     </Container>
   );
 };

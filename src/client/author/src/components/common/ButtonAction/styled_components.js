@@ -1,10 +1,5 @@
 import styled from "styled-components";
-import {
-  smallMobileWidth,
-  mobileWidthLarge,
-  mediumDesktopWidth,
-  themeColor
-} from "@edulastic/colors";
+import { smallMobileWidth, mobileWidthLarge, themeColor } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -17,15 +12,7 @@ export const Container = styled.div`
   top: 13px;
 `;
 
-export const HeaderActionButton = styled(Button)`
-  max-width: 45px;
-  height: 45px;
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    max-width: 36px;
-    height: 36px;
-  }
-`;
+export const HeaderActionButton = styled.div``;
 
 export const PreviewBar = styled.div`
   display: flex;
@@ -35,22 +22,7 @@ export const PreviewBar = styled.div`
   position: relative;
 
   .ant-btn {
-    background: transparent;
-    padding: 0 10px;
     margin-left: 5px;
-    border: 0;
-    background: #fff;
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-
-    button {
-      padding: 0;
-      text-transform: initial;
-      font-size: 12px;
-      height: 45px;
-      @media (max-width: ${mediumDesktopWidth}) {
-        height: 36px;
-      }
-    }
 
     span {
       font-size: 0;

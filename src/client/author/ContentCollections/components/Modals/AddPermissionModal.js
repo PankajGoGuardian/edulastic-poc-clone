@@ -67,9 +67,7 @@ const AddPermissionModal = ({
         orgDetails: [{ orgId, orgName, role }],
         role,
         itemBankName: collectionName,
-        ...(user.role === roleuser.EDULASTIC_ADMIN
-          ? { startDate, endDate, csManager, opportunityId, notes }
-          : {})
+        ...(user.role === roleuser.EDULASTIC_ADMIN ? { startDate, endDate, csManager, opportunityId, notes } : {})
       });
       if (["SCHOOL", "USER"].includes(orgType)) {
         searchRequest({
@@ -129,9 +127,7 @@ const AddPermissionModal = ({
 
   const Title = [
     <>
-      <Heading style={{ marginBottom: "0px" }}>
-        {isEditPermission ? "Edit Permission" : "Add Permission"}
-      </Heading>
+      <Heading style={{ marginBottom: "0px" }}>{isEditPermission ? "Edit Permission" : "Add Permission"}</Heading>
       <ModalSubHeading>
         Collection: <span style={{ color: themeColor }}>{itemBankName}</span>
       </ModalSubHeading>
@@ -146,9 +142,7 @@ const AddPermissionModal = ({
     const updatedFieldData = { ...fieldData, [fieldName]: value };
     if (fieldName === "orgType") {
       if (value === "DISTRICT") {
-        updatedFieldData.orgDetails = [
-          { orgId: fieldData.districtId, orgName: fieldData.districtName }
-        ];
+        updatedFieldData.orgDetails = [{ orgId: fieldData.districtId, orgName: fieldData.districtName }];
       } else if (value === "SCHOOL") {
         updatedFieldData.orgDetails = [];
         updatedFieldData.role = updatedFieldData.role.filter(r => r !== "district-admin");
@@ -203,13 +197,7 @@ const AddPermissionModal = ({
   };
 
   return (
-    <StyledModal
-      title={Title}
-      visible={visible}
-      footer={Footer}
-      onCancel={() => handleResponse(null)}
-      width={400}
-    >
+    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
       <ModalBody>
         {user.role === roleuser.EDULASTIC_ADMIN && (
           <StyledFieldRow>
@@ -261,9 +249,7 @@ const AddPermissionModal = ({
               style={{ width: "100%" }}
               showSearch
               mode="multiple"
-              placeholder={
-                fieldData.orgType === "SCHOOL" ? "Please select school" : "Please select user"
-              }
+              placeholder={fieldData.orgType === "SCHOOL" ? "Please select school" : "Please select user"}
               notFoundContent={isFetchingOrganization ? <Spin size="small" /> : null}
               value={fieldData.orgDetails.map(o => o.orgId)}
               onFocus={() => handleSearch("", fieldData.orgType)}
@@ -294,10 +280,7 @@ const AddPermissionModal = ({
         )}
         <StyledFieldRow>
           <label>Role</label>
-          <Checkbox.Group
-            onChange={value => handleFieldChange("role", value)}
-            value={fieldData.role}
-          >
+          <Checkbox.Group onChange={value => handleFieldChange("role", value)} value={fieldData.role}>
             {roleOptions.map(checkbox => (
               <Checkbox
                 style={{ width: "50%", marginLeft: "0px" }}

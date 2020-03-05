@@ -1,33 +1,24 @@
-import { Popconfirm, Switch, Button, Menu, Icon } from "antd";
-import styled, { css } from "styled-components";
 import {
-  white,
-  mobileWidth,
-  mediumDesktopWidth,
-  extraDesktopWidth,
-  themeColor,
-  fadedBlue,
-  tabletWidth,
-  largeDesktopWidth,
-  smallDesktopWidth,
-  mobileWidthMax,
-  mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  greyThemeDark2
+  fadedBlue,
+  mediumDesktopExactWidth,
+  mediumDesktopWidth,
+  mobileWidth,
+  mobileWidthMax,
+  tabletWidth,
+  themeColor,
+  white
 } from "@edulastic/colors";
-import { Link } from "react-router-dom";
+import { Button, Icon, Menu, Popconfirm, Switch } from "antd";
+import styled, { css } from "styled-components";
 import { themes } from "../../../../theme";
 import { StyledTable as Table } from "../../../Reports/common/styled";
 
 const classBoardTheme = themes.default.classboard;
 
 export const RightSideButtonWrapper = styled.div`
-  height: 45px;
   display: flex;
 
-  @media (max-width: ${mediumDesktopWidth}) {
-    height: 36px;
-  }
   @media (max-width: ${mobileWidthMax}) {
     order: 2;
   }

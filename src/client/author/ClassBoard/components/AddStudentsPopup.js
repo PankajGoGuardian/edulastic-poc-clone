@@ -1,14 +1,14 @@
+import { EduButton } from "@edulastic/common";
+import { assignmentPolicyOptions } from "@edulastic/constants";
+import { DatePicker, message, Row, Select } from "antd";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Row, Select, message, DatePicker } from "antd";
-import moment from "moment";
-import { getUserName } from "../utils";
+import { addStudentsAction, fetchClassStudentsAction } from "../../src/actions/classBoard";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
-import { BodyContainer } from "./styled";
-
-import { fetchClassStudentsAction, addStudentsAction } from "../../src/actions/classBoard";
 import { classStudentsSelector } from "../ducks";
-import { assignmentPolicyOptions } from "@edulastic/constants";
+import { getUserName } from "../utils";
+import { BodyContainer } from "./styled";
 
 const AddStudentsPopup = ({
   groupId,
@@ -50,17 +50,17 @@ const AddStudentsPopup = ({
   return (
     <ConfirmationModal
       centered
-      textAlign={"left"}
-      title={"Add Students"}
+      textAlign="left"
+      title="Add Students"
       visible={open}
       onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={closePopup}>
+        <EduButton isGhost key="cancel" onClick={closePopup}>
           CANCEL
-        </Button>,
-        <Button data-cy="addButton" key="submit" onClick={submitAction}>
+        </EduButton>,
+        <EduButton data-cy="addButton" key="submit" onClick={submitAction}>
           ADD
-        </Button>
+        </EduButton>
       ]}
     >
       <BodyContainer>

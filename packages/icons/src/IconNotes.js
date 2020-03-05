@@ -12,7 +12,7 @@ const IconNotes = props => (
         <rect fill="#E5E5E5" width="2" height="6.961" />
         <rect fill="#E5E5E5" width="2" height="9.961" transform="translate(8)" />
       </g>
-      <g fill="#d0eddb" stroke="#bed8fa" transform="translate(1468.812 166)">
+      <g fill="#E5E5E5" stroke="#E5E5E5" transform="translate(1468.812 166)">
         <circle stroke="none" cx="2" cy="2" r="2" />
         <circle stroke="none" cx="2" cy="2" r="1.5" />
       </g>

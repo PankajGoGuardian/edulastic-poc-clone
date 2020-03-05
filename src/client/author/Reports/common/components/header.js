@@ -1,13 +1,12 @@
 import { themeColor } from "@edulastic/colors";
-import { MainHeader } from "@edulastic/common";
-import { IconFilter, IconBarChart } from "@edulastic/icons";
+import { EduButton, MainHeader } from "@edulastic/common";
+import { IconBarChart, IconFilter } from "@edulastic/icons";
 import { Button, Col, Icon } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import HeaderNavigation from "./Header/HeaderNavigation";
-import { EduButton } from "@edulastic/common";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -57,19 +56,19 @@ export const CustomizedHeaderWrapper = ({
         <StyledCol>
           <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
             {onShareClickCB ? (
-              <EduButton isGhost title="Share" onClick={_onShareClickCB}>
+              <EduButton isGhost IconBtn title="Share" onClick={_onShareClickCB}>
                 <Icon type="share-alt" />
               </EduButton>
             ) : null}
           </FeaturesSwitch>
           {onPrintClickCB ? (
-            <EduButton isGhost title="Print" onClick={_onPrintClickCB}>
+            <EduButton isGhost IconBtn title="Print" onClick={_onPrintClickCB}>
               <Icon type="printer" />
             </EduButton>
           ) : null}
           <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
             {onDownloadCSVClickCB ? (
-              <EduButton isGhost title="Download CSV" onClick={_onDownloadCSVClickCB}>
+              <EduButton isGhost IconBtn title="Download CSV" onClick={_onDownloadCSVClickCB}>
                 <Icon type="download" />
               </EduButton>
             ) : null}

@@ -894,7 +894,7 @@ class TestList extends Component {
             creating={creating}
             title="common.testLibrary"
             titleIcon={IconTestBank}
-            btnTitle="Author Test"
+            btnTitle="New Test"
             renderFilter={() => (
               <StyleChangeWrapper>
                 <IconTile

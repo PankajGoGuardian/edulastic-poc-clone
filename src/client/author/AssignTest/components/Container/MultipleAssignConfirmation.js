@@ -1,14 +1,14 @@
+import { EduButton } from "@edulastic/common";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Button } from "antd";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import {
-  saveAssignmentAction,
   getHasDuplicateAssignmentsSelector,
+  saveAssignmentAction,
   toggleHasDuplicateAssignmentPopupAction
 } from "../../../TestPage/components/Assign/ducks";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import { getPlaylistSelector, getTestSelector } from "../../../TestPage/ducks";
 import { Paragraph } from "./styled";
-import { getTestSelector, getPlaylistSelector } from "../../../TestPage/ducks";
 
 const MultipleAssignConfirmation = ({
   hasDuplicateAssignments,
@@ -35,18 +35,18 @@ const MultipleAssignConfirmation = ({
   };
 
   const Footer = [
-    <Button ghost data-cy="duplicate" onClick={onProceed} disabled={saving}>
+    <EduButton isGhost data-cy="duplicate" onClick={onProceed} disabled={saving}>
       Proceed with duplicate
-    </Button>,
-    <Button disabled={saving} data-cy="noDuplicate" onClick={onRemoveDuplicates}>
+    </EduButton>,
+    <EduButton disabled={saving} data-cy="noDuplicate" onClick={onRemoveDuplicates}>
       Remove duplicates
-    </Button>
+    </EduButton>
   ];
 
   return (
     <ConfirmationModal
       maskClosable={false}
-      textAlign={"left"}
+      textAlign="left"
       title="Warning"
       centered
       visible={hasDuplicateAssignments}

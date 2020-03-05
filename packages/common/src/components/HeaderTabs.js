@@ -30,7 +30,7 @@ HeaderTabs.defaultProps = {
 export default HeaderTabs;
 
 export const StyledTabs = styled.div`
-  min-width: 750px;
+  min-width: 500px;
   display: flex;
   align-items: center;
   justify-content: center;

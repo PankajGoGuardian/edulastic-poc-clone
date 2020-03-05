@@ -1,56 +1,54 @@
-import React, { useLayoutEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Select, Input, Menu, Dropdown, Icon, message, Modal, Button } from "antd";
-import { get, pickBy, identity, orderBy, lowerCase, find } from "lodash";
+import { themeColor } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 import {
-  IconFolderNew,
   IconFolderAll,
-  IconFolderActive,
   IconFolderDeactive,
   IconFolderMove,
+  IconFolderNew,
   // IconDuplicate,
   IconMoreVertical,
   IconPencilEdit
 } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
-
-import selectsData from "../../../TestPage/components/common/selectsData";
-import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../../../src/actions/assignments";
+import { faArchive } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown, Icon, Input, message, Select } from "antd";
+import { find, get, identity, lowerCase, orderBy, pickBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { useLayoutEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { receiveAssignmentsAction, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import {
-  receiveFolderAction,
-  receiveCreateFolderAction,
+  clearFolderAction,
   receiveAddMoveFolderAction,
+  receiveCreateFolderAction,
   receiveDeleteFolderAction,
   receiveRenameFolderAction,
-  setFolderAction,
-  clearFolderAction
+  setFolderAction
 } from "../../../src/actions/folder";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import { getDistrictIdSelector } from "../../../src/selectors/assignments";
-import { getFoldersSelector, getFolderSelector } from "../../../src/selectors/folder";
+import { getFolderSelector, getFoldersSelector } from "../../../src/selectors/folder";
+import { getGroupList, getUserRole } from "../../../src/selectors/user";
+import selectsData from "../../../TestPage/components/common/selectsData";
 import {
+  CaretUp,
+  DropMenu,
   FilterContainer,
-  StyledBoldText,
-  NewFolderButton,
-  FolderButton,
-  FolderActionModal,
-  ModalFooterButton,
-  MoveFolderActionModal,
-  FooterCancelButton,
-  FoldersListWrapper,
-  ModalTitle,
   FolderActionButton,
+  FolderActionModal,
+  FolderButton,
   FolderListItem,
   FolderListItemTitle,
-  MoreButton,
-  DropMenu,
+  FoldersListWrapper,
+  FooterCancelButton,
   MenuItems,
-  CaretUp
+  ModalFooterButton,
+  ModalTitle,
+  MoreButton,
+  MoveFolderActionModal,
+  NewFolderButton,
+  StyledBoldText
 } from "./styled";
-import { getUserRole, getGroupList } from "../../../src/selectors/user";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArchive } from "@fortawesome/free-solid-svg-icons";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
@@ -398,12 +396,12 @@ class LeftFilter extends React.Component {
           visible={visibleModal.delFolder}
           onCancel={() => this.hideModal("delFolder")}
           footer={[
-            <Button data-cy="cancel" ghost key="back" onClick={() => this.hideModal("delFolder")}>
+            <EduButton data-cy="cancel" isGhost key="back" onClick={() => this.hideModal("delFolder")}>
               CANCEL
-            </Button>,
-            <Button data-cy="submit" key="submit" color="primary" onClick={this.deleteSelectedFolder}>
+            </EduButton>,
+            <EduButton data-cy="submit" key="submit" onClick={this.deleteSelectedFolder}>
               PROCEED
-            </Button>
+            </EduButton>
           ]}
         >
           <p>

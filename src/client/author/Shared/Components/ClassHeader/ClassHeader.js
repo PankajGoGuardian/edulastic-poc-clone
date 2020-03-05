@@ -265,7 +265,7 @@ class ClassHeader extends Component {
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
-          <EduButton data-cy="openButton" onClick={this.handleOpenAssignment}>
+          <EduButton isGhost data-cy="openButton" onClick={this.handleOpenAssignment}>
             OPEN
           </EduButton>
         ) : (

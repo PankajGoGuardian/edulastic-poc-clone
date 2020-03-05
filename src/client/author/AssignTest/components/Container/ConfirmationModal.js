@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Button } from "antd";
-import { CSVLink } from "react-csv";
+import { EduButton } from "@edulastic/common";
 import { IconDownload } from "@edulastic/icons";
-import {
-  getHasCommonStudensSelector,
-  toggleHasCommonAssignmentsPopupAction,
-  saveAssignmentAction,
-  getCommonStudentsSelector
-} from "../../../TestPage/components/Assign/ducks";
+import { Button } from "antd";
+import React, { useState } from "react";
+import { CSVLink } from "react-csv";
+import { connect } from "react-redux";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import {
+  getCommonStudentsSelector,
+  getHasCommonStudensSelector,
+  saveAssignmentAction,
+  toggleHasCommonAssignmentsPopupAction
+} from "../../../TestPage/components/Assign/ducks";
 import { Paragraph } from "./styled";
 
 const ProceedConfirmation = ({
@@ -32,12 +33,12 @@ const ProceedConfirmation = ({
   };
 
   const Footer = [
-    <Button ghost disabled={saving} data-cy="noDuplicate" onClick={onCancel}>
+    <EduButton isGhost disabled={saving} data-cy="noDuplicate" onClick={onCancel}>
       CANCEL
-    </Button>,
-    <Button data-cy="duplicate" onClick={onProceed} loading={saving}>
+    </EduButton>,
+    <EduButton data-cy="duplicate" onClick={onProceed} loading={saving}>
       PROCEED
-    </Button>
+    </EduButton>
   ];
 
   const structuredCommonStudents = commonStudents.flatMap(student => {
@@ -63,7 +64,7 @@ const ProceedConfirmation = ({
   return (
     <ConfirmationModal
       maskClosable={false}
-      textAlign={"left"}
+      textAlign="left"
       title="Assign Assessment"
       centered
       visible={hasCommonStudents}
@@ -77,7 +78,7 @@ const ProceedConfirmation = ({
       <Paragraph alignItems="right">
         <CSVLink
           data={structuredCommonStudents}
-          filename={`name_match_result_.csv`}
+          filename="name_match_result_.csv"
           seperator=","
           headers={headers}
           target="_blank"

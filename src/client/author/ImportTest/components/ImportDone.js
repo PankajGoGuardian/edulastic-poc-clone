@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import { List } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -15,19 +16,21 @@ import {
   getJobIdsSelector,
   qtiImportProgressAction
 } from "../ducks";
+import { compose } from "redux";
 
-const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, qtiImportProgress }) => {
+const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, qtiImportProgress, history }) => {
   const items = jobsData.flatMap(job => job?.testItems || []) || [];
+  const testIds = jobsData.map(({ testId }) => testId);
   useEffect(() => {
     if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       qtiImportProgress(jobIds);
     }
   }, []);
-  const handleCreateTest = () => {
+  const continueToTest = () => {
     setJobIds([]);
     uploadTestStatus(UPLOAD_STATUS.STANDBY);
     sessionStorage.removeItem("qtiTags");
-    //TODO handle create test
+    history.push(`/author/tests/tab/review/id/${testIds[0]}`);
   };
   const ContinueBtn = (
     <div
@@ -38,7 +41,7 @@ const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, 
         lineHeight: "32px"
       }}
     >
-      <StyledButton onClick={handleCreateTest}>Continue</StyledButton>
+      <StyledButton onClick={continueToTest}>Continue</StyledButton>
     </div>
   );
 
@@ -74,7 +77,9 @@ ImportDone.propTypes = {
   jobsData: PropTypes.object.isRequired
 };
 
-export default withNamespaces("qtiimport")(
+export default compose(
+  withNamespaces("qtiimport"),
+  withRouter,
   connect(
     state => ({
       jobsData: getJobsDataSelector(state),
@@ -86,5 +91,5 @@ export default withNamespaces("qtiimport")(
       setJobIds: setJobIdsAction,
       qtiImportProgress: qtiImportProgressAction
     }
-  )(ImportDone)
-);
+  )
+)(ImportDone);

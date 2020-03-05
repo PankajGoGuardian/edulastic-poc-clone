@@ -249,7 +249,7 @@ class Container extends Component {
       <div showMobileView={mobileViewShow}>
         <CustomPrompt onUnload />
         <Header
-          title="common.selectQuestionWidget"
+          title={t("header:common.selectQuestionWidget")}
           link={this.link}
           noEllipsis
           toggleSideBar={toggleSideBar}
@@ -449,7 +449,7 @@ class Container extends Component {
 }
 
 const enhance = compose(
-  withNamespaces("author"),
+  withNamespaces(["author", "header"]),
   withWindowSizes,
   withRouter,
   connect(

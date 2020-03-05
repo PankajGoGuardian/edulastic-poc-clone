@@ -8,9 +8,10 @@ import { IconManage } from "@edulastic/icons";
 import { fetchClassListAction } from "../../ducks";
 // components
 import { ButtonsWrapper, CancelClassBtn, SaveClassBtn } from "./styled";
+import { withNamespaces } from "react-i18next";
 
-const Header = () => (
-  <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
+const Header = ({ t }) => (
+  <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
     <ButtonsWrapper>
       <Link to="/author/manageClass">
         <EduButton isGhost data-cy="cancel">
@@ -25,6 +26,7 @@ const Header = () => (
 );
 
 const enhance = compose(
+  withNamespaces("header"),
   connect(
     null,
     { fetchClassList: fetchClassListAction }

@@ -11,6 +11,7 @@ import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 import { IconReport } from "@edulastic/icons";
 import { MainContentWrapper } from "@edulastic/common";
+import { withNamespaces } from "react-i18next";
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -26,7 +27,7 @@ const ContentWrapper = styled.div`
   }
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild }) => {
+const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild }) =
   return (
     <Wrapper>
       <Header
-        titleText="common.reportsTitle"
+        titleText={t("common.reportsTitle")}
         titleIcon={IconReport}
         classSelect
         showActiveClass={false}
@@ -52,14 +53,16 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild }) =
   );
 };
 
-export default connect(
-  state => ({
-    activeClasses: state.studentEnrollClassList.filteredClasses,
-    loading: state.studentEnrollClassList.loading,
-    allClasses: state.studentEnrollClassList.allClasses,
-    currentChild: state?.user?.currentChild
-  }),
-  {
-    loadAllClasses: getEnrollClassAction
-  }
-)(Assignments);
+export default withNamespaces("header")(
+  connect(
+    state => ({
+      activeClasses: state.studentEnrollClassList.filteredClasses,
+      loading: state.studentEnrollClassList.loading,
+      allClasses: state.studentEnrollClassList.allClasses,
+      currentChild: state?.user?.currentChild
+    }),
+    {
+      loadAllClasses: getEnrollClassAction
+    }
+  )(Assignments)
+);

@@ -18,6 +18,7 @@ import {
 import Header from "../sharedComponents/Header";
 import MainContainer from "../styled/mainContainer";
 import { LoaderConainer } from "./styled";
+import { withNamespaces } from "react-i18next";
 
 const getTermId = (_classes, _classId) => _classes.find(c => c._id === _classId).termId || "";
 
@@ -32,7 +33,8 @@ const SkillReportContainer = ({
   loading,
   resetEnrolledClassAction,
   currentChild,
-  getSPRFilterDataRequest
+  getSPRFilterDataRequest,
+  t
 }) => {
   const [initialLoading, setInitialLoading] = useState(true);
   const [settings, setSettings] = useState({
@@ -74,7 +76,7 @@ const SkillReportContainer = ({
     <MainContainer flag={flag}>
       <Header
         flag={flag}
-        titleText="common.skillReportTitle"
+        titleText={t("common.skillReportTitle")}
         titleIcon={IconBarChart}
         classSelect
         showActiveClass={false}
@@ -100,24 +102,26 @@ const SkillReportContainer = ({
   );
 };
 
-export default connect(
-  state => ({
-    flag: state.ui.flag,
-    classId: getCurrentGroup(state),
-    allClasses: getAllClassesSelector(state),
-    activeClasses: getFilteredClassesSelector(state),
-    userClasses: getClasses(state),
-    userName: getUserName(state),
-    userId: getUserId(state),
-    currentChild: state?.user?.currentChild,
-    loading: getLoaderSelector(state)
-  }),
-  {
-    loadAllClasses: getEnrollClassAction,
-    resetEnrolledClassAction,
-    getSPRFilterDataRequest: getSPRFilterDataRequestAction
-  }
-)(SkillReportContainer);
+export default withNamespaces("header")(
+  connect(
+    state => ({
+      flag: state.ui.flag,
+      classId: getCurrentGroup(state),
+      allClasses: getAllClassesSelector(state),
+      activeClasses: getFilteredClassesSelector(state),
+      userClasses: getClasses(state),
+      userName: getUserName(state),
+      userId: getUserId(state),
+      currentChild: state?.user?.currentChild,
+      loading: getLoaderSelector(state)
+    }),
+    {
+      loadAllClasses: getEnrollClassAction,
+      resetEnrolledClassAction,
+      getSPRFilterDataRequest: getSPRFilterDataRequestAction
+    }
+  )(SkillReportContainer)
+);
 
 SkillReportContainer.propTypes = {
   flag: PropTypes.bool.isRequired,

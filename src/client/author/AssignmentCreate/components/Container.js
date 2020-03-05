@@ -21,6 +21,7 @@ import LinkWrapper from "../common/LinkWrapper";
 import FlexWrapper from "../common/FlexWrapper";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import { withNamespaces } from "react-i18next";
 
 class Container extends Component {
   render() {
@@ -35,7 +36,7 @@ class Container extends Component {
       }
     ];
 
-    const { lastPlayList = {} } = this.props;
+    const { lastPlayList = {}, t } = this.props;
     let toLinkForPlaylist = "/author/playlists";
     let from = "playlistLibrary";
     if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
@@ -45,7 +46,7 @@ class Container extends Component {
 
     return (
       <div>
-        <MainHeader headingText="common.newAssignment">
+        <MainHeader headingText={t("common.newAssignment")}>
           <AlignMiddle>SELECT A TEST</AlignMiddle>
         </MainHeader>
         <MainContentWrapper>
@@ -107,6 +108,7 @@ Container.propTypes = {
 
 const enhance = compose(
   withRouter,
+  withNamespaces("header"),
   connect(state => ({
     lastPlayList: getLastPlayListSelector(state)
   }))

@@ -1,6 +1,7 @@
-import { MainHeader } from "@edulastic/common";
 import React, { memo } from "react";
+import { MainHeader } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
-const ProfileHeader = () => <MainHeader headingText="common.profileTitle" />;
+const ProfileHeader = ({ t }) => <MainHeader headingText={t("common.profileTitle")} />;
 
-export default memo(ProfileHeader);
+export default memo(withNameSpaces("header")(ProfileHeader));

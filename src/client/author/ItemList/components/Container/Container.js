@@ -358,7 +358,7 @@ class Contaier extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           windowWidth={windowWidth}
-          title="common.itemBank"
+          title={t("header:common.itemBank")}
           titleIcon={IconItemLibrary}
           renderExtra={this.renderCartButton}
           renderFilterIcon={this.renderFilterIcon}
@@ -438,7 +438,7 @@ Contaier.propTypes = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces("author"),
+  withNamespaces(["author", "header"]),
   connect(
     state => ({
       limit: getTestsItemsLimitSelector(state),

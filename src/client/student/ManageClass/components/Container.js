@@ -49,7 +49,7 @@ const ManageClassContainer = ({
   if (loading) return <Spin />;
   return (
     <>
-      <MainHeader Icon={IconManage} headingText="common.manageClassTitle">
+      <MainHeader Icon={IconManage} headingText={t("header:common.manageClassTitle")}>
         {userRole === "parent" ? (
           <StudentSlectCommon />
         ) : (
@@ -124,7 +124,7 @@ const ManageClassContainer = ({
 };
 
 const enhance = compose(
-  withNamespaces("manageClass"),
+  withNamespaces(["manageClass", "header"]),
   React.memo
 );
 

@@ -11,10 +11,7 @@ import { withWindowSizes, AnswerContext, Hints } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
-import ItemDetailContext, {
-  COMPACT,
-  DEFAULT
-} from "@edulastic/common/src/contexts/ItemDetailContext";
+import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -199,15 +196,7 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const {
-      match,
-      history,
-      t,
-      changeView,
-      modalItemId,
-      navigateToPickupQuestionType,
-      isTestFlow
-    } = this.props;
+    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
     changeView("edit");
 
     if (modalItemId) {
@@ -380,12 +369,10 @@ class Container extends Component {
       const { _id: testItemId } = item;
       showPublishButton =
         isTestFlow &&
-        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) ||
-          isEditable);
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || isEditable);
     }
     const questionsType = rows && uniq(rows.flatMap(itm => itm.widgets.map(i => i.type)));
-    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn)
-      .length;
+    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
     return (
@@ -410,14 +397,7 @@ class Container extends Component {
   };
 
   addItemToPassage = () => {
-    const {
-      passage,
-      isTestFlow,
-      match,
-      setCreatedItemToTest,
-      item: previousItem,
-      createItem
-    } = this.props;
+    const { passage, isTestFlow, match, setCreatedItemToTest, item: previousItem, createItem } = this.props;
     const { testId } = match.params;
     // every test flow add previous item to test and then go for creating new
     if (isTestFlow) setCreatedItemToTest(previousItem);
@@ -469,9 +449,7 @@ class Container extends Component {
     const { testId } = match.params;
     const _id = passage.testItems[page - 1];
     history.push({
-      pathname: isTestFlow
-        ? `/author/items/${_id}/item-detail/test/${testId}`
-        : `/author/items/${_id}/item-detail`,
+      pathname: isTestFlow ? `/author/items/${_id}/item-detail/test/${testId}` : `/author/items/${_id}/item-detail`,
       state: { resetView: false }
     });
   };
@@ -487,18 +465,10 @@ class Container extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse("left")}
-            left
-          >
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("left")} left>
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse("right")}
-            right
-          >
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("right")} right>
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -537,8 +507,7 @@ class Container extends Component {
           )}
           {rows.map((row, i) => (
             <>
-              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) &&
-                this.renderCollapseButtons()}
+              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
               <ItemDetailRow
                 key={passage ? i + 1 : i}
                 row={row}
@@ -551,9 +520,7 @@ class Container extends Component {
                 windowWidth={windowWidth}
                 onDeleteWidget={this.handleDeleteWidget(i)}
                 onEditWidget={this.handleEditWidget}
-                onEditTabTitle={(tabIndex, value) =>
-                  updateTabTitle({ rowIndex: i, tabIndex, value })
-                }
+                onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
                 hideColumn={
                   (collapseLeft && !passageWithQuestions && i === 0) ||
                   (collapseRight && (i === 1 || passageWithQuestions))
@@ -578,7 +545,6 @@ class Container extends Component {
       item,
       updating,
       type,
-
       useTabs,
       useFlowLayout,
       changePreview,
@@ -595,7 +561,8 @@ class Container extends Component {
       view,
       showPublishButton,
       hasAuthorPermission,
-      itemDeleting
+      itemDeleting,
+      t
     } = this.props;
 
     let breadCrumbQType = "";
@@ -661,9 +628,7 @@ class Container extends Component {
             </Button>
           ]}
         >
-          <p>
-            You are about to remove the current item from the passage. This action cannot be undone.
-          </p>
+          <p>You are about to remove the current item from the passage. This action cannot be undone.</p>
         </ConfirmationModal>
         <Layout>
           {showSettings && (
@@ -689,7 +654,7 @@ class Container extends Component {
           )}
           <ItemHeader
             showIcon
-            title="common.itemDetail"
+            title={t("header:common.itemDetail")}
             reference={match.params._id}
             windowWidth={windowWidth}
             toggleSideBar={toggleSideBar}
@@ -727,10 +692,7 @@ class Container extends Component {
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar
-                    breadCrumbQType={breadCrumbQType}
-                    breadcrumb={isTestFlow ? breadCrumb : undefined}
-                  >
+                  <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
                     {item.canAddMultipleItems && passage && view !== "metadata" && (
                       <PassageNavigation>
                         {passageTestItems.length > 1 && (
@@ -739,15 +701,12 @@ class Container extends Component {
                             <Pagination
                               total={passageTestItems.length}
                               pageSize={1}
-                              defaultCurrent={
-                                passageTestItems.findIndex(i => i === item.versionId) + 1
-                              }
+                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
                               onChange={this.goToItem}
                             />
                           </>
                         )}
-                        {((!!rows[0] && !!rows[0].widgets.length) ||
-                          passage.testItems.length > 1) && (
+                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
                           <AddRemoveButtonWrapper>
                             <Button disabled={itemDeleting} onClick={this.handleRemoveItemRequest}>
                               - ITEM
@@ -845,7 +804,7 @@ Container.defaultProps = {
 const enhance = compose(
   withWindowSizes,
   withRouter,
-  withNamespaces("author"),
+  withNamespaces(["author", "header"]),
   connect(
     state => ({
       rows: getItemDetailRowsSelector(state),

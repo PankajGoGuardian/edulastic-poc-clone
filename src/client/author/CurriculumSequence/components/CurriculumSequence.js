@@ -1188,6 +1188,6 @@ const BreadCrumbWrapper = styled.div`
 `;
 
 const ReviewBreadCrumbWrapper = styled.div`
-  padding: 20px 40px 40px 0px;
+  padding: 20px 40px 0px 30px;
   width: 100%;
 `;

@@ -48,12 +48,9 @@ const CanvasSyncModal = ({
       return message.error("Both Course and Section are required.");
     }
 
-    console.log();
     const { id: canvasCourseCode, name: canvasCourseName } = canvasCourseList.find(({ id }) => id === course);
 
-    const { id: sectionId, name: sectionName, students: studentList } = canvasSectionList.find(
-      ({ id }) => id === section
-    );
+    const { id: sectionId, name: sectionName } = canvasSectionList.find(({ id }) => id === section);
 
     const data = {
       userId: user._id,
@@ -62,7 +59,6 @@ const CanvasSyncModal = ({
       canvasCourseName,
       sectionId,
       sectionName,
-      studentList,
       districtId: user.districtId
     };
     syncClassWithCanvas(data);

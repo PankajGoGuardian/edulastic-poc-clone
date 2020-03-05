@@ -84,8 +84,7 @@ const CanvasBulkAddClass = ({
             canvasCode: course.id,
             canvasCourseName: course.name,
             canvasCourseSectionCode: s.id,
-            canvasCourseSectionName: s.name,
-            students: s.students
+            canvasCourseSectionName: s.name
           };
         });
         return sectionClasses;

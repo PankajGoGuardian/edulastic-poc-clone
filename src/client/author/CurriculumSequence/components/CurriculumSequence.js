@@ -14,11 +14,13 @@ import {
   lightGreen5,
   smallDesktopWidth,
   tabletWidth,
+  greyThemeDark1,
+  lightGrey2,
   lightGrey5,
   lightGrey6,
   themeColor,
-  titleColor,
-  white
+  white,
+  titleColor
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit, IconPlaylist } from "@edulastic/icons";
 import { Button, Cascader, Input, Modal, Tooltip } from "antd";
@@ -477,6 +479,11 @@ class CurriculumSequence extends Component {
       };
     });
 
+    // check if either of the module data has empty value
+    // used for giving requisite padding in the SummaryBlock
+    const hasSummaryDataNoData = summaryData?.filter(item => (item.hidden ? !item.value && !isStudent : !item.value))
+      .length;
+
     // CURRENT LIMIT on MODULE COLORS is - 11
     const COLORS = [
       "#11AB96",
@@ -759,7 +766,7 @@ class CurriculumSequence extends Component {
                 )}
               </Wrapper>
             </ContentContainer>
-            {urlHasUseThis && (isAuthor || isStudent) && (
+            {urlHasUseThis && (
               <SummaryBlock>
                 <SummaryBlockTitle>Summary</SummaryBlockTitle>
                 <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
@@ -774,19 +781,19 @@ class CurriculumSequence extends Component {
                 <div style={{ width: "80%", margin: "20px auto" }}>
                   {summaryData?.map(
                     item =>
-                      ((isStudent && !item.hidden) || isAuthor) && (
+                      ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
                         <div style={{ opacity: item.hidden ? `.5` : `1` }}>
                           <Tooltip placement="topLeft" title={item.title || item.name}>
                             <ModuleTitle>{item.title || item.name}</ModuleTitle>
                           </Tooltip>
                           <ProgressBar
-                            strokeColor={{
-                              "0%": getProgressColor(item?.value),
-                              "100%": getProgressColor(item?.value)
-                            }}
-                            strokeWidth={10}
+                            strokeColor={getProgressColor(item?.value)}
+                            strokeWidth={13}
                             percent={item.value}
                             size="small"
+                            color={item.value ? greyThemeDark1 : lightGrey2}
+                            format={percent => (percent ? `${percent}%` : "NO DATA")}
+                            padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
                           />
                         </div>
                       )
@@ -936,32 +943,6 @@ const SummaryBlockSubTitle = styled.div`
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
-`;
-
-const HeaderButton = styled.div`
-  margin-right: 10px !important;
-  height: 45px;
-  width: 135px;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  background: ${lightGreen5};
-  border-radius: 4px;
-  border: 1px solid ${lightGreen5};
-  cursor: pointer;
-  text-transform: uppercase;
-
-  &:hover {
-    box-shadow: 0px 0px 1px ${lightGreen5};
-  }
-
-  svg {
-    margin: auto;
-  }
 `;
 
 const StyledButton = styled.div`

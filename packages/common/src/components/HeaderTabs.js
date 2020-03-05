@@ -1,4 +1,4 @@
-import { largeDesktopWidth, mediumDesktopWidth, mobileWidthMax, white } from "@edulastic/colors";
+import { largeDesktopWidth, mediumDesktopWidth, mobileWidthMax, white, desktopWidth } from "@edulastic/colors";
 import { PropTypes } from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -95,7 +95,11 @@ export const StyledAnchor = styled.div`
 
 export const LinkLabel = styled.div`
   padding-right: 15px;
+  white-space: nowrap;
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 0px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    white-space: wrap;
   }
 `;

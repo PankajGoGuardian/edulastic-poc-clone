@@ -1,14 +1,14 @@
-import React from "react";
-import styled, { withTheme } from "styled-components";
-import { Select, Button } from "antd";
-import { connect } from "react-redux";
-import { themeColorsMap } from "../../theme";
-
-import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
-import { ModalWrapper, InitOptions } from "../../common/components/ConfirmationModal/styled";
-import { IconSelectCaretDown } from "@edulastic/icons";
-import { themeColor, white, lightGreySecondary, title, tabletWidth, mobileWidthMax } from "@edulastic/colors";
+import { lightGreySecondary, mobileWidthMax, tabletWidth, themeColor, title, white } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
+import { IconSelectCaretDown } from "@edulastic/icons";
+import { Button, Select } from "antd";
+import React from "react";
+import { connect } from "react-redux";
+import styled, { withTheme } from "styled-components";
+import { ConfirmationModal } from "../../author/src/components/common/ConfirmationModal";
+import { InitOptions, ModalWrapper } from "../../common/components/ConfirmationModal/styled";
+import { themeColorsMap } from "../../theme";
+import { setSelectedThemeAction, setSettingsModalVisibilityAction, setZoomLevelAction } from "../Sidebar/ducks";
 
 const SettingsModal = ({
   selectedTheme,
@@ -20,12 +20,12 @@ const SettingsModal = ({
   theme
 }) => {
   const bodyStyle = {
-    padding: "29px 47px",
+    padding: "20px",
     marginBottom: "15px",
     textAlign: "left",
     fontSize: theme.smallFontSize,
     fontWeight: 600,
-    boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.07)"
+    boxShadow: "none"
   };
 
   const closeModal = () => setSettingsModalVisibility(false);
@@ -42,14 +42,14 @@ const SettingsModal = ({
     closeModal();
   };
   return (
-    <ModifyModalWrapper
+    <ConfirmationModal
+      maskClosable={false}
+      textAlign="left"
+      title="Zoom & Contrast"
       centered
-      title={<b>Zoom & Contrast</b>}
       visible={settingsModalVisible}
       onCancel={handleCancel}
-      width={"573px"}
-      style={{ borderRadius: "5px" }}
-      destroyOnClose={true}
+      destroyOnClose
       footer={[
         <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
@@ -92,7 +92,7 @@ const SettingsModal = ({
           </StyledSelect>
         </div>
       </InitOptions>
-    </ModifyModalWrapper>
+    </ConfirmationModal>
   );
 };
 
@@ -137,19 +137,6 @@ export const StyledSelect = styled(Select)`
   }
   .ant-select-selection__rendered {
     margin: 2px 15px;
-  }
-`;
-
-const StyledButton = styled(Button)`
-  width: 200px;
-  height: 40px;
-  font-size: ${props => props.theme.linkFontSize};
-  background-color: ${props => (props.cancel ? white : props.theme.header.headerBgColor)};
-  border-color: ${props => props.theme.header.headerBgColor};
-  color: ${props => (props.cancel ? props.theme.header.headerBgColor : white)};
-  margin-left: ${props => !props.cancel && "20px"};
-  @media (max-width: ${mobileWidthMax}) {
-    margin: 10px;
   }
 `;
 

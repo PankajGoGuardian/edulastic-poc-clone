@@ -32,7 +32,6 @@ export const RowWrapper = styled(Row)`
 
 export const LeftCol = styled(Col)`
   width: ${({ width }) => width || "45px"};
-  height: 100%;
   margin-right: 15px;
 `;
 
@@ -51,11 +50,21 @@ export const RightCol = styled(Col)`
   justify-content: center;
 `;
 
+export const Label = styled.label`
+  color: #aaafb5;
+  font-size: 9px;
+  width: 100%;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  font-weight: bold;
+`;
+
 export const RowWrapper1 = styled(Row)`
   cursor: pointer;
   display: flex;
   align-items: center;
-  height: 31px;
+  flex-wrap: wrap;
+  height: 44px;
 `;
 
 export const CardText = styled.div`

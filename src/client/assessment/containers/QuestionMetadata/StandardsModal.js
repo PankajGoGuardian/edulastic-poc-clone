@@ -37,14 +37,14 @@ const StandardsModal = ({
   const filteredELO = curriculumStandardsELO.filter(c => c.tloId === selectedTLO);
 
   const footer = (
-    <div>
+    <FlexContainer>
       <EduButton height="40px" data-cy="cancel-Stand-Set" isGhost onClick={onCancel}>
         CANCEL
       </EduButton>
       <EduButton height="40px" data-cy="apply-Stand-Set" onClick={() => onApply(state)}>
         APPLY
       </EduButton>
-    </div>
+    </FlexContainer>
   );
 
   const handleChangeSubject = val => {

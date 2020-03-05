@@ -172,6 +172,7 @@ class ViewModal extends React.Component {
                 isGhost
                 height="40px"
                 width="100%"
+                style={{ justifyContent: "center" }}
                 data-cy="details-button"
                 onClick={() => {
                   onEdit();
@@ -185,6 +186,7 @@ class ViewModal extends React.Component {
                   isGhost
                   height="40px"
                   width="100%"
+                  style={{ justifyContent: "center" }}
                   data-cy="duplicate-button"
                   onClick={() => {
                     onDuplicate();
@@ -201,6 +203,7 @@ class ViewModal extends React.Component {
                     isGhost
                     height="40px"
                     width="100%"
+                    style={{ justifyContent: "center" }}
                     data-cy="reject-button"
                     onClick={() => {
                       onReject();
@@ -212,7 +215,14 @@ class ViewModal extends React.Component {
                 </FeaturesSwitch>
               ) : null}
               {isDeleteAllowed ? (
-                <EduButton isGhost height="40px" width="100%" data-cy="delete-button" onClick={() => onDelete()}>
+                <EduButton
+                  isGhost
+                  height="40px"
+                  width="100%"
+                  style={{ justifyContent: "center" }}
+                  data-cy="delete-button"
+                  onClick={() => onDelete()}
+                >
                   <IconTrashAlt />
                   <span>DELETE</span>
                 </EduButton>

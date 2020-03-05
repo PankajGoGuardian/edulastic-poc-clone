@@ -138,7 +138,7 @@ const Next = styled(Button)`
   border: none;
   height: 40px;
   width: 100px;
-  margin-left: 3px;
+  margin-left: 5px;
   &:hover {
     background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
     color: ${({ theme }) => theme.default.headerRightButtonIconColor};

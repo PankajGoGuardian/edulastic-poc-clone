@@ -218,3 +218,4 @@ export { default as IconInverse } from "./src/IconInverse";
 export { default as IconInverseOut } from "./src/IconInverseOut";
 export { default as IconExpand } from "./src/IconExpand";
 export { default as IconAccessibility } from "./src/IconAccessibility";
+export { default as IconCanvasBook } from "./src/IconCanvasBook";

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
-import { Select, message, Icon } from "antd";
+import { Select, message } from "antd";
 import { get, groupBy } from "lodash";
+import { IconCanvasBook } from "@edulastic/icons";
 import {
   CanvasClassTable,
   Logo,
@@ -11,8 +12,7 @@ import {
   ButtonContainer,
   Button,
   StyledModal,
-  ClassNameWrapper,
-  BookLogoWrapper
+  ClassNameWrapper
 } from "./styled";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import { getDictCurriculumsAction } from "../../../author/src/actions/dictionaries";
@@ -277,13 +277,11 @@ const CanvasBulkAddClass = ({
   return (
     <Container>
       <LogoWrapper>
-        <Logo />
+        <Logo height="28px" width="155px" />
       </LogoWrapper>
-      <BookLogoWrapper>
-        <span>
-          <Icon type="read" theme="filled" />
-        </span>
-      </BookLogoWrapper>
+      <LogoWrapper>
+        <IconCanvasBook height="75px" width="75px" />
+      </LogoWrapper>
       <HeadingWrapper>
         <p>Imported Classes from Canvas</p>
       </HeadingWrapper>

@@ -288,10 +288,18 @@ class ModuleRow extends Component {
 
   hideTest = (moduleId, assignment) => {
     const { updateCurriculumSequence, playlistId, curriculum } = this.props;
+    const { currentAssignmentId } = this.state;
+
     const dataToUpdate = produce(curriculum, draftState => {
       const module = draftState.modules.find(el => el._id === moduleId);
       const content = module.data.find(el => el.contentId === assignment.contentId);
       content.hidden = !content.hidden;
+      // if Hide is clicked and assignment rows expanded, then hide assignment rows
+      if (content.hidden && currentAssignmentId.includes(content.contentId)) {
+        const prevState = [...currentAssignmentId];
+        prevState.splice(currentAssignmentId.find(x => x === content.contentId), 1);
+        this.setState({ currentAssignmentId: prevState });
+      }
       const allTestInHidden = module.data.filter(t => !t.hidden);
       if (!allTestInHidden.length && content.hidden) {
         module.hidden = true;

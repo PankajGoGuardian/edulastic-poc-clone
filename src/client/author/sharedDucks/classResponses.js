@@ -72,9 +72,7 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId =>
-      call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId })
-    )
+    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId }))
   );
 }
 
@@ -120,8 +118,7 @@ function* receiveStudentResponseSaga({ payload }) {
       },
       true
     );
-    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId)
-      ?.questionActivities;
+    const transformedQuestionActivities = transformed.find(x => x.studentId === payload.studentId)?.questionActivities;
     studentResponse.questionActivities = transformedQuestionActivities;
 
     const userWork = {};
@@ -296,7 +293,7 @@ function* updateStudentScore({ payload }) {
       skipped
     } of questionActivities) {
       yield put(
-        gradebookTestItemAddAction([{ _testActivityId, _id, _score, maxScore, graded, skipped }])
+        gradebookTestItemAddAction([{ testActivityId: _testActivityId, _id, score: _score, maxScore, graded, skipped }])
       );
     }
     yield put({

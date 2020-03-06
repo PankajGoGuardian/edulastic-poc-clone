@@ -112,8 +112,8 @@ module.exports = {
     { text: "Private Library", value: "INDIVIDUAL" },
     { text: "School Library", value: "SCHOOL" },
     { text: "District Library", value: "DISTRICT" },
-    { text: "Public Library", value: "PUBLIC" },
-    { text: "Edulastic Certified", value: "edulastic_certified" }
+    { text: "Public Library", value: "PUBLIC" }
+    // { text: "Edulastic Certified", value: "edulastic_certified" }
   ],
   statusConstants: {
     DRAFT: "draft",

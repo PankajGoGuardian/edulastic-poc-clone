@@ -30,8 +30,8 @@ const allTags = [{ value: "tag1", text: "Tag1" }, { value: "tag2", text: "Tag2" 
 
 const allCollections = [
   { value: "Private", text: "Private" },
-  { value: "Public", text: "Public" },
-  { value: "edulastic_certified", text: "Edulastic Certified" }
+  { value: "Public", text: "Public" }
+  // { value: "edulastic_certified", text: "Edulastic Certified" }
 ];
 
 const allDepthOfKnowledge = [

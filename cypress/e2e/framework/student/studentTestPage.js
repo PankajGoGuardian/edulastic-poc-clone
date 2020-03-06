@@ -96,8 +96,8 @@ class StudentTestPage {
   clickOnProceed = () =>
     cy
       .get("[data-cy=proceed]")
-      .should("be.visible")
-      .click();
+
+      .click({ force: true });
 
   submitTest = () => {
     cy.server();

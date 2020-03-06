@@ -85,7 +85,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
         originalTestIds.forEach(id => {
           authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
         });
-        playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+        playListLibrary.sidebar.clickOnRecentUsedPlayList(playListData.name);
         // TODO: Fix this once it is fixed
         // playListLibrary.reviewTab.verifyAssignedByModule(1);
       });
@@ -136,7 +136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
 
         playListLibrary.sidebar.clickOnPlayListLibrary();
         playListLibrary.searchFilter.clearAll();
-        playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+        playListLibrary.sidebar.clickOnRecentUsedPlayList(playListData.name);
         // playListLibrary.reviewTab.verifyAssignedByTestByModule(1, 1);
       });
       it(">student side verification", () => {
@@ -166,7 +166,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
           id === originalTestIds[0] ? (length = 2) : (length = 1);
           authorAssignmentPage.getAssignmentRowsTestById(id).should("have.length", length);
         });
-        playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+        playListLibrary.sidebar.clickOnRecentUsedPlayList(playListData.name);
         //   playListLibrary.reviewTab.verifyAssignedByModule(1);
       });
       it(">student side verification", () => {
@@ -204,7 +204,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
           id === originalTestIds[1] ? (length = 2) : (length = 1);
           authorAssignmentPage.getAssignmentRowsTestById(id).should("have.length", length);
         });
-        playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+        playListLibrary.sidebar.clickOnRecentUsedPlayList(playListData.name);
         // playListLibrary.reviewTab.verifyAssignedByModule(1);
       });
       it(">student side verification", () => {
@@ -241,7 +241,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>playlist assigning`, () 
       });
     });
     it.skip(">verify progress-'teacher-1'", () => {
-      playListLibrary.sidebar.clickOnPlayListByName(playListData.name);
+      playListLibrary.sidebar.clickOnRecentUsedPlayList(playListData.name);
       // TODO: unskip and fix this once progress starts appearing
       playListLibrary.reviewTab.verifyModuleProgress(0, 1);
     });

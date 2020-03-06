@@ -74,22 +74,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
       });
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
+      });
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for item No:${item} ${index + 1}`, () => {
           itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
           itemListPage.clickOnViewItemById(itemIds[index], questText[index]);
           itemPreview.clickOnShowAnsOnPreview();
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
-          itemPreview.closePreiview();
         });
       });
     });
-    context("Verify Check Ans On Preivew", () => {
+    context("Verify Check Ans On Preivew-Right Ans", () => {
       before(`Go-To Item Bank and get authored by me`, () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
+      });
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
@@ -106,9 +111,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
             attemptTypes.RIGHT
           );
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
-          itemPreview.clickOnClear();
         });
+      });
+    });
+    context("Verify Check Ans On Preivew-Wrong Ans", () => {
+      before(`Go-To Item Bank and get authored by me`, () => {
+        testLibraryPage.sidebar.clickOnTestLibrary();
+        testLibraryPage.sidebar.clickOnItemBank();
+        itemListPage.searchFilters.clearAll();
+        itemListPage.searchFilters.getAuthoredByMe();
+      });
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
+      });
+      itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {
+          itemListPage.searchFilters.typeInSearchBox(itemIds[index]);
+          itemListPage.clickOnViewItemById(itemIds[index], questText[index]);
           // Wrong ans should have red bg-color
           studentTestPage.attemptQuestion(item, attemptTypes.WRONG, attemptData[index]);
           itemPreview.clickOnCheckAnsOnPreview();
@@ -119,14 +138,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
             attemptTypes.WRONG
           );
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
-          itemPreview.closePreiview();
         });
       });
     });
 
     context("Verify Edit On Preview", () => {
+      before("close preview", () => {
+        itemPreview.closePreiview();
+      });
       // For edit only one question type is considered
-
       before(`Go to Item Bank and Get Authored by me`, () => {
         testLibraryPage.sidebar.clickOnTestLibrary();
         testLibraryPage.sidebar.clickOnItemBank();
@@ -218,27 +238,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     });
   });
   context("Preview Test items-- Add Item Tab", () => {
-    context("Verify Show Ans On Preivew", () => {
-      before(`Create a Test`, () => {
-        testLibraryPage.sidebar.clickOnTestLibrary();
-        testLibraryPage.createTest("default").then(id => {
-          testId = id;
-        });
-        itemIds.length = itemsInTest.length;
-        itemIds = OriginalItemIds;
-        cy.contains("Share");
+    before(`Create a Test`, () => {
+      testLibraryPage.sidebar.clickOnTestLibrary();
+      testLibraryPage.createTest("default").then(id => {
+        testId = id;
       });
+      itemIds.length = itemsInTest.length;
+      itemIds = OriginalItemIds;
+      cy.contains("Share");
+    });
+    context("Verify Show Ans On Preivew", () => {
       before("Get Test and Go to Add-Items Tab", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
-        testLibraryPage.sidebar.clickOnTestLibrary();
-        testLibraryPage.searchFilters.clearAll();
-        testLibraryPage.searchFilters.getAuthoredByMe();
-        testLibraryPage.clickOnTestCardById(testId);
-        testLibraryPage.clickOnDetailsOfCard();
+        testLibraryPage.visitTestById(testId);
         testLibraryPage.publishedToDraft();
         testReviewTab.testheader.clickOnAddItems();
         testAddItemTab.searchFilters.clearAll();
         testAddItemTab.searchFilters.getAuthoredByMe();
+      });
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
       });
       itemsInTest.forEach((item, index) => {
         it(`Verify Show Ans for Item NO:${item} ${index + 1}`, () => {
@@ -246,11 +265,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
           testAddItemTab.itemListPage.clickOnItemText();
           itemPreview.clickOnShowAnsOnPreview();
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT, true);
-          itemPreview.closePreiview();
+          itemPreview.clickOnClear();
         });
       });
     });
-    context("Verify Check Ans On Preivew", () => {
+    context("Verify Check Ans On Preivew-Right Ans", () => {
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
+      });
       itemsInTest.forEach((item, index) => {
         it(`Verify Right Ans for Item No:${item} ${index + 1}`, () => {
           // Correct ans should have green bg-color
@@ -267,8 +289,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.RIGHT);
           itemPreview.clickOnClear();
         });
+      });
+    });
+    context("Verify Check Ans On Preivew-Wrong Ans", () => {
+      beforeEach("close", () => {
+        itemPreview.closePreiview();
+      });
+      itemsInTest.forEach((item, index) => {
         it(`Verify Wrong Ans for Item No:${item} ${index + 1}`, () => {
+          testAddItemTab.searchFilters.typeInSearchBox(itemIds[index]);
           // Wrong ans should have red bg-color
+          itemListPage.clickOnItemText();
           studentTestPage.attemptQuestion(item, attemptTypes.WRONG, attemptData[index]);
           itemPreview.clickOnCheckAnsOnPreview();
           itemPreview.verifyEvaluationScoreOnPreview(
@@ -278,13 +309,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
             attemptTypes.WRONG
           );
           itemPreview.verifyQuestionResponseCard(itemsInTest[index], attemptData[index], attemptTypes.WRONG);
-          itemPreview.closePreiview();
+          itemPreview.clickOnClear();
         });
       });
     });
 
     context("Verify Edit On Preview", () => {
       // For edit only one question type is considered
+      before("close preview", () => {
+        itemPreview.closePreiview();
+      });
       it(`Verify Edit for Item`, () => {
         testAddItemTab.searchFilters.clearAll();
         testAddItemTab.searchFilters.getAuthoredByMe();
@@ -345,10 +379,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         testAddItemTab.searchFilters.typeInSearchBox(itemIds[itemsInTest.length]);
         testAddItemTab.itemListPage.clickOnItemText();
         itemPreview.clickOnDeleteOnPreview(true);
-        itemPreview.closePreiview();
-        itemListPage.searchFilters.typeInSearchBox(itemIds[itemsInTest.length]);
-        testAddItemTab.itemListPage.clickOnItemText();
-        itemPreview.closePreiview();
+        testAddItemTab.header.clickOnReview();
+        testReviewTab.verifyQustionById(itemIds[itemsInTest.length]);
       });
     });
   });

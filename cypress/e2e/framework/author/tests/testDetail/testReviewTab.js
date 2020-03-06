@@ -76,7 +76,8 @@ export default class TestReviewTab {
 
   clickOnPreview = id =>
     this.getQueCardByItemIdInCollapsed(id)
-      .contains("Preview")
+      // .contains("Preview")
+      .find('[data-cy="preview" ]')
       .click();
 
   previewAndEditById = id => {
@@ -114,7 +115,8 @@ export default class TestReviewTab {
 
   previewQuestById = id => {
     this.getQueCardByItemIdInCollapsed(id)
-      .find("span", "Preview")
+      // .find("span", "Preview")
+      .find('[data-cy="preview" ]')
       .click({ force: true });
   };
 
@@ -159,9 +161,7 @@ export default class TestReviewTab {
   };
 
   verifyMovedQuestionById = (id, index) => {
-    this.getQueCardByItemIdInCollapsed(id)
-      .closest("tr")
-      .should("have.attr", "data-row-key", (index - 1).toString());
+    this.getQueCardByItemIdInCollapsed(id).should("have.attr", "data-cy-item-index", (index - 1).toString());
   };
 
   getQueContainer = () => cy.get('[data-cy="question-container"]');

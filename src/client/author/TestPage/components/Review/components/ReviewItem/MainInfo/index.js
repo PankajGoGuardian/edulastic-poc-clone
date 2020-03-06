@@ -10,6 +10,7 @@ class MainInfo extends React.Component {
   render() {
     const {
       data,
+      index,
       handlePreview,
       isEditable,
       owner,
@@ -20,7 +21,7 @@ class MainInfo extends React.Component {
     } = this.props;
     const newHtml = helpers.sanitizeForReview(data.stimulus) || "";
     return (
-      <FlexContainer data-cy={data.id} style={{ justifyContent: "space-between" }}>
+      <FlexContainer data-cy-item-index={index} data-cy={data.id} style={{ justifyContent: "space-between" }}>
         <Stimulus dangerouslySetInnerHTML={{ __html: newHtml }} />
         <FlexContainer
           style={{ width: "200px" }}

@@ -183,8 +183,8 @@ class Assignments extends Component {
     const { history } = this.props;
     const { currentTestId } = this.state;
     history.push({
-      pathname: `/author/tests/${currentTestId}/editAssigned`,
-      state: { showCancelButton: true }
+      pathname: `/author/tests/tab/review/id/${currentTestId}`,
+      state: { editAssigned: true, showCancelButton: true }
     });
   };
 

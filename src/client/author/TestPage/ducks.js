@@ -922,10 +922,8 @@ function* receiveTestByIdSaga({ payload }) {
     if (entity._id !== payload.id) {
       yield put(
         push({
-          pathname: payload.editAssigned
-            ? `/author/tests/${entity._id}/editAssigned`
-            : `/author/tests/tab/review/id/${entity._id}`,
-          state: { showCancelButton: payload.editAssigned }
+          pathname: `/author/tests/tab/review/id/${entity._id}`,
+          state: { showCancelButton: payload.editAssigned, editAssigned: payload.editAssigned }
         })
       );
     }

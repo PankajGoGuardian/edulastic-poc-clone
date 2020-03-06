@@ -67,7 +67,7 @@ const ReportListContainer = ({
   }
   return (
     <MainContainer flag={flag}>
-      <TestAcivityHeader isDocBased={isDocBased} titleIcon={IconReport} titleText="common.reportsTitle" />
+      <TestAcivityHeader isDocBased={isDocBased} titleIcon={IconReport} titleText={test?.title || ""} />
       <MainContentWrapper padding={isDocBased ? "0px" : "20px 50px"}>
         <TestActivitySubHeader title={assignmentItemTitle} isDocBased={isDocBased} />
         {isDocBased ? (

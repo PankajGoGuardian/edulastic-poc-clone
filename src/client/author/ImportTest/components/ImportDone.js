@@ -32,6 +32,13 @@ const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, 
     sessionStorage.removeItem("qtiTags");
     history.push(`/author/tests/tab/review/id/${testIds[0]}`);
   };
+
+  const handleRetry = () => {
+    setJobIds([]);
+    uploadTestStatus(UPLOAD_STATUS.STANDBY);
+    sessionStorage.removeItem("qtiTags");
+  };
+
   const ContinueBtn = (
     <div
       style={{
@@ -41,7 +48,11 @@ const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, 
         lineHeight: "32px"
       }}
     >
-      <StyledButton onClick={continueToTest}>Continue</StyledButton>
+      {items.length ? (
+        <StyledButton onClick={continueToTest}>Continue</StyledButton>
+      ) : (
+        <StyledButton onClick={handleRetry}>Retry</StyledButton>
+      )}
     </div>
   );
 

@@ -14,7 +14,7 @@ export { default as TextField } from "./src/components/TextField";
 export { default as AutoExpandInput } from "./src/components/AutoExpandInput";
 export { default as Button } from "./src/components/Button";
 export { default as EduButton } from "./src/components/EduButton";
-export { default as Checkbox } from "./src/components/Checkbox";
+export { default as Checkbox, EduCheckBox, CheckBoxGrp } from "./src/components/Checkbox";
 export { default as Card } from "./src/components/Card";
 export { default as MainContentWrapper } from "./src/components/MainContentWrapper";
 export { default as HeaderTabs } from "./src/components/HeaderTabs";

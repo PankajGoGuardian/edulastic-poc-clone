@@ -9,6 +9,7 @@ import { test as testContatns } from "@edulastic/constants";
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
 import { Item, Container, SelectAllCheckbox, ActionButton, MobileButtomContainer } from "./styled";
+import { EduCheckBox } from "@edulastic/common";
 
 const { ITEM_GROUP_TYPES } = testContatns;
 const HeaderBar = ({
@@ -57,9 +58,9 @@ const HeaderBar = ({
     <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
       {owner && isEditable ? (
         <Item>
-          <SelectAllCheckbox data-cy="selectAllCh" onChange={onSelectAll}>
+          <EduCheckBox data-cy="selectAllCh" onChange={onSelectAll}>
             Select All
-          </SelectAllCheckbox>
+          </EduCheckBox>
         </Item>
       ) : (
         // this empty span can fix some
@@ -127,13 +128,7 @@ const HeaderBar = ({
               }}
               onClick={toggleSummary}
               color="primary"
-              icon={
-                <IconDescription
-                  color={isShowSummary ? themeColor : white}
-                  width={13}
-                  height={13}
-                />
-              }
+              icon={<IconDescription color={isShowSummary ? themeColor : white} width={13} height={13} />}
             >
               {windowWidth > 767 && <span>{isShowSummary ? "Show Summary" : "Hide Summary"}</span>}
             </ButtonLink>

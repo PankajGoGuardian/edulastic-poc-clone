@@ -9,6 +9,7 @@ import { compose } from "redux";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
+import { EduCheckBox } from "@edulastic/common";
 
 import {
   StyledCardContiner,
@@ -228,7 +229,7 @@ class DisneyCardContainer extends Component {
                 <RightAlignedCol>
                   <Row>
                     <Col onClick={e => e.stopPropagation()}>
-                      <CardCheckbox
+                      <EduCheckBox
                         checked={selectedStudents[student.studentId]}
                         onChange={e => {
                           if (e.target.checked) {

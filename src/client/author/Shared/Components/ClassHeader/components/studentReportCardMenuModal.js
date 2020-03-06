@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Modal, Button, Checkbox } from "antd";
 import { StyledCard } from "../../../../Reports/common/styled";
+import { EduCheckBox } from "@edulastic/common";
 
 const StudentReportCardMenuModal = props => {
   const { className, visible, title, onOk, onCancel } = props;
@@ -52,40 +53,40 @@ const StudentReportCardMenuModal = props => {
             <div className="group-seperator">
               <p className="group-heading" />
               <div className="form-item">
-                <Checkbox name="performanceBand" onClick={onCheckBoxClick} checked={state.performanceBand}>
+                <EduCheckBox name="performanceBand" onClick={onCheckBoxClick} checked={state.performanceBand}>
                   Performance Band
-                </Checkbox>
+                </EduCheckBox>
               </div>
             </div>
             <div className="group-seperator">
               <p className="group-heading">QUESTION TABLE</p>
               <div className="form-item">
-                <Checkbox name="questionPerformance" onClick={onCheckBoxClick} checked={state.questionPerformance}>
+                <EduCheckBox name="questionPerformance" onClick={onCheckBoxClick} checked={state.questionPerformance}>
                   Question Performance
-                </Checkbox>
+                </EduCheckBox>
               </div>
               <div className="form-item">
-                <Checkbox name="studentResponse" onClick={onCheckBoxClick} checked={state.studentResponse}>
+                <EduCheckBox name="studentResponse" onClick={onCheckBoxClick} checked={state.studentResponse}>
                   Student Response
-                </Checkbox>
+                </EduCheckBox>
               </div>
               <div className="form-item">
-                <Checkbox name="correctAnswer" onClick={onCheckBoxClick} checked={state.correctAnswer}>
+                <EduCheckBox name="correctAnswer" onClick={onCheckBoxClick} checked={state.correctAnswer}>
                   Correct Answer
-                </Checkbox>
+                </EduCheckBox>
               </div>
             </div>
             <div className="group-seperator">
               <p className="group-heading">STANDARD TABLE</p>
               <div className="form-item">
-                <Checkbox name="standardsPerformance" onClick={onCheckBoxClick} checked={state.standardsPerformance}>
+                <EduCheckBox name="standardsPerformance" onClick={onCheckBoxClick} checked={state.standardsPerformance}>
                   Standards Performance
-                </Checkbox>
+                </EduCheckBox>
               </div>
               <div className="form-item">
-                <Checkbox name="masteryStatus" onClick={onCheckBoxClick} checked={state.masteryStatus}>
+                <EduCheckBox name="masteryStatus" onClick={onCheckBoxClick} checked={state.masteryStatus}>
                   Mastery Status
-                </Checkbox>
+                </EduCheckBox>
               </div>
             </div>
           </div>

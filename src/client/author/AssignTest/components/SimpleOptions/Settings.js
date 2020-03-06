@@ -28,6 +28,7 @@ import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
+import { EduCheckBox } from "@edulastic/common";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -516,13 +517,13 @@ const Settings = ({
               </AlignRight>
               {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                 <CheckBoxWrapper>
-                  <Checkbox
+                  <EduCheckBox
                     disabled={forClassLevel}
                     checked={penalty === false}
                     onChange={e => overRideSettings("penalty", !e.target.checked)}
                   >
                     <Label>DON’T PENALIZE FOR INCORRECT SELECTION</Label>
-                  </Checkbox>
+                  </EduCheckBox>
                 </CheckBoxWrapper>
               )}
             </Col>

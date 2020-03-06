@@ -58,6 +58,7 @@ import { IconPencilEdit, IconTrash, IconNotes } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { roleuser } from "@edulastic/constants";
+import { EduCheckBox } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -782,14 +783,14 @@ class ClassesTable extends Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={35}>
-            <Checkbox
+            <EduCheckBox
               checked={this.state.showActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "active")}
               value={showActive}
               onChange={this.onChangeShowActive}
             >
               {t("class.showactiveclass")}
-            </Checkbox>
+            </EduCheckBox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <Button>
                 {t("common.actions")} <Icon type="down" />

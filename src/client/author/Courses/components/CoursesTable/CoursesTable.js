@@ -64,6 +64,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { receiveAdminDataAction } from "../../../SchoolAdmin/ducks";
+import { EduCheckBox } from "@edulastic/common";
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -713,9 +714,9 @@ class CoursesTable extends React.Component {
             </CreateCourseBtn>
           </LeftFilterDiv>
           <RightFilterDiv>
-            <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
+            <EduCheckBox defaultChecked={showActive} onChange={this.onChangeShowActive}>
               {t("course.showactivecourse")}
-            </StyledActiveCheckbox>
+            </EduCheckBox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <StyledDropdownBtn>
                 {t("common.actions")} <Icon type="down" />

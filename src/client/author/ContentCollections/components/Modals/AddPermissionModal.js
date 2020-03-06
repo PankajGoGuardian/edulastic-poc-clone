@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Button, Input, Checkbox, Select, DatePicker, message, Spin } from "antd";
+import { Button, Input, Select, DatePicker, message, Spin } from "antd";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import moment from "moment";
@@ -16,6 +16,7 @@ import {
   getDistrictListSelector,
   getFetchOrganizationStateSelector
 } from "../../ducks";
+import { EduCheckBox, CheckBoxGrp } from "@edulastic/common";
 
 import staticData from "../../staticData";
 
@@ -280,9 +281,9 @@ const AddPermissionModal = ({
         )}
         <StyledFieldRow>
           <label>Role</label>
-          <Checkbox.Group onChange={value => handleFieldChange("role", value)} value={fieldData.role}>
+          <CheckBoxGrp onChange={value => handleFieldChange("role", value)} value={fieldData.role}>
             {roleOptions.map(checkbox => (
-              <Checkbox
+              <EduCheckBox
                 style={{ width: "50%", marginLeft: "0px" }}
                 disabled={
                   (fieldData.orgType === "SCHOOL" && checkbox.value === "district-admin") ||
@@ -291,9 +292,9 @@ const AddPermissionModal = ({
                 value={checkbox.value}
               >
                 {checkbox.label}
-              </Checkbox>
+              </EduCheckBox>
             ))}
-          </Checkbox.Group>
+          </CheckBoxGrp>
         </StyledFieldRow>
         {user.role === "edulastic-admin" && (
           <>

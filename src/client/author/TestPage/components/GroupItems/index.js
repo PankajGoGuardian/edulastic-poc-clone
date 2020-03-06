@@ -61,6 +61,7 @@ import { IconPencilEdit, IconClose } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import { EduCheckBox } from "@edulastic/common";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
 
@@ -534,7 +535,7 @@ const GroupItems = ({
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
                   <GroupField>
-                    <Checkbox
+                    <EduCheckBox
                       checked={
                         currentGroupIndex === index
                           ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
@@ -545,7 +546,7 @@ const GroupItems = ({
                       onChange={e => handleTypeSelect(index)}
                     >
                       AUTO SELECT ITEMS BASED ON STANDARDS
-                    </Checkbox>
+                    </EduCheckBox>
                   </GroupField>
                   {(currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                   (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (

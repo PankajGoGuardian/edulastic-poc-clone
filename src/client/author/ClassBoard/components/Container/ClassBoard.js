@@ -101,6 +101,7 @@ import {
   StyledCheckbox,
   StyledFlexContainer
 } from "./styled";
+import { EduCheckBox } from "@edulastic/common";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -823,16 +824,14 @@ class ClassBoard extends Component {
                 </StyledCard>
               </GraphContainer>
               <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
-                <CheckContainer>
-                  <StyledCheckbox
-                    data-cy="selectAllCheckbox"
-                    checked={unselectedStudents.length === 0}
-                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
-                    onChange={this.onSelectAllChange}
-                  >
-                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                  </StyledCheckbox>
-                </CheckContainer>
+                <EduCheckBox
+                  data-cy="selectAllCheckbox"
+                  checked={unselectedStudents.length === 0}
+                  indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
+                  onChange={this.onSelectAllChange}
+                >
+                  {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                </EduCheckBox>
                 <ClassBoardFeats>
                   <RedirectButton
                     disabled={!isItemsVisible}

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { white, themeColor } from "@edulastic/colors";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
 import { Title } from "./styled";
+import { EduCheckBox } from "@edulastic/common";
 
 const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {}, disabled = false }) => {
   const handleProfileChange = val => {
@@ -35,7 +36,7 @@ const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBa
       dataIndex: "aboveOrAtStandard",
       width: "25%",
       key: "aboveOrAtStandard",
-      render: value => <Checkbox disabled checked={value} />
+      render: value => <EduCheckBox disabled checked={value} />
     },
     {
       title: "FROM",

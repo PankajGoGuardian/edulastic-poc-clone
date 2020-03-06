@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 import { Icon, Select, message, Button, Checkbox } from "antd";
-import { TypeToConfirmModal } from "@edulastic/common";
+import { TypeToConfirmModal, EduCheckBox } from "@edulastic/common";
 
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -453,14 +453,7 @@ class ContentAuthorTable extends Component {
       onChange: this.onSelectChange
     };
 
-    const {
-      adminUsersData: result,
-      totalUsers,
-      userOrgId,
-      updateAdminUser,
-      history,
-      t
-    } = this.props;
+    const { adminUsersData: result, totalUsers, userOrgId, updateAdminUser, history, t } = this.props;
 
     const breadcrumbData = [
       {
@@ -477,12 +470,7 @@ class ContentAuthorTable extends Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
+          <StyledButton type="default" shape="round" icon="filter" onClick={this._onRefineResultsCB}>
             {t("common.refineresults")}
             <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
@@ -520,9 +508,7 @@ class ContentAuthorTable extends Component {
                       {t("common.selectvalue")}
                     </Option>
                     <Option value="eq">{t("common.equals")}</Option>
-                    {!filterStrDD[filtersColumn] ? (
-                      <Option value="cont">{t("common.contains")}</Option>
-                    ) : null}
+                    {!filterStrDD[filtersColumn] ? <Option value="cont">{t("common.contains")}</Option> : null}
                   </StyledFilterSelect>
                   {!filterStrDD[filtersColumn] ? (
                     <StyledFilterInput
@@ -556,8 +542,7 @@ class ContentAuthorTable extends Component {
                       {t("common.addfilter")}
                     </StyledAddFilterButton>
                   )}
-                  {((filtersData.length === 1 && filtersData[0].filterAdded) ||
-                    filtersData.length > 1) && (
+                  {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
                     <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
                       {t("common.removefilter")}
                     </StyledAddFilterButton>
@@ -580,13 +565,13 @@ class ContentAuthorTable extends Component {
             </Button>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
-            <Checkbox
+            <EduCheckBox
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </Checkbox>
+            </EduCheckBox>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>

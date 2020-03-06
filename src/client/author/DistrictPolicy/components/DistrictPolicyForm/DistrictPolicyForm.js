@@ -17,6 +17,7 @@ import {
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { Form, Checkbox, Radio, message, Input } from "antd";
+import { EduCheckBox } from "@edulastic/common";
 const RadioGroup = Radio.Group;
 
 import {
@@ -332,32 +333,32 @@ class DistrictPolicyForm extends Component {
           <StyledRow>
             <StyledLabel>{isSchoolLevel ? "School" : "District"} Signon Policy:</StyledLabel>
             <StyledElementDiv>
-              <Checkbox
+              <EduCheckBox
                 checked={districtPolicy.userNameAndPassword}
                 onChange={e => this.change(e, "userNameAndPassword")}
               >
                 Username and password
-              </Checkbox>
-              <Checkbox checked={districtPolicy.googleSignOn} onChange={e => this.change(e, "googleSignOn")}>
+              </EduCheckBox>
+              <EduCheckBox checked={districtPolicy.googleSignOn} onChange={e => this.change(e, "googleSignOn")}>
                 Google Single signon
-              </Checkbox>
-              <Checkbox checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
+              </EduCheckBox>
+              <EduCheckBox checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
                 Office365 Single signon
-              </Checkbox>
-              <Checkbox checked={districtPolicy.cleverSignOn} onChange={e => this.change(e, "cleverSignOn")}>
+              </EduCheckBox>
+              <EduCheckBox checked={districtPolicy.cleverSignOn} onChange={e => this.change(e, "cleverSignOn")}>
                 Clever instance signon
-              </Checkbox>
+              </EduCheckBox>
             </StyledElementDiv>
           </StyledRow>
           <StyledRow>
             <StyledLabel> {isSchoolLevel ? "School" : "District"} Sign-up Policy:</StyledLabel>
             <StyledElementDiv>
-              <Checkbox checked={districtPolicy.teacherSignUp} onChange={e => this.change(e, "teacherSignUp")}>
+              <EduCheckBox checked={districtPolicy.teacherSignUp} onChange={e => this.change(e, "teacherSignUp")}>
                 Allow Teachers to sign-up
-              </Checkbox>
-              <Checkbox checked={districtPolicy.studentSignUp} onChange={e => this.change(e, "studentSignUp")}>
+              </EduCheckBox>
+              <EduCheckBox checked={districtPolicy.studentSignUp} onChange={e => this.change(e, "studentSignUp")}>
                 Allow Students to sign-up
-              </Checkbox>
+              </EduCheckBox>
             </StyledElementDiv>
           </StyledRow>
           <StyledRow>
@@ -366,12 +367,12 @@ class DistrictPolicyForm extends Component {
               Policy:
             </StyledLabel>
             <StyledElementDiv>
-              <Checkbox
+              <EduCheckBox
                 checked={districtPolicy.searchAndAddStudents}
                 onChange={e => this.change(e, "searchAndAddStudents")}
               >
                 Allow Teachers to search and enroll
-              </Checkbox>
+              </EduCheckBox>
             </StyledElementDiv>
           </StyledRow>
           <StyledRow>
@@ -380,28 +381,28 @@ class DistrictPolicyForm extends Component {
               with:
             </StyledLabel>
             <StyledElementDiv>
-              <Checkbox checked={districtPolicy.googleUsernames} onChange={e => this.change(e, "googleUsernames")}>
+              <EduCheckBox checked={districtPolicy.googleUsernames} onChange={e => this.change(e, "googleUsernames")}>
                 Google Usernames
-              </Checkbox>
-              <Checkbox
+              </EduCheckBox>
+              <EduCheckBox
                 checked={districtPolicy.office365Usernames}
                 onChange={e => this.change(e, "office365Usernames")}
               >
                 Office 365 Usernames
-              </Checkbox>
-              <Checkbox
+              </EduCheckBox>
+              <EduCheckBox
                 checked={districtPolicy.firstNameAndLastName}
                 onChange={e => this.change(e, "firstNameAndLastName")}
               >
                 Firstname and Lastname
-              </Checkbox>
+              </EduCheckBox>
             </StyledElementDiv>
           </StyledRow>
           {isSchoolLevel ? null : (
             <StyledRow>
               <StyledLabel>Allow School Level Admin</StyledLabel>
               <StyledElementDiv>
-                <Checkbox
+                <EduCheckBox
                   checked={districtPolicy.schoolAdminSettingsAccess}
                   onChange={e => this.change(e, "schoolAdminSettingsAccess")}
                 />

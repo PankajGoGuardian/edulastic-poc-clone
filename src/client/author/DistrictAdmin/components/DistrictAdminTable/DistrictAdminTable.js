@@ -59,6 +59,8 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 import { withNamespaces } from "@edulastic/localization";
+import { EduCheckBox } from "@edulastic/common";
+
 const menuActive = { mainMenu: "Users", subMenu: "District Admin" };
 
 const { Option } = Select;
@@ -585,13 +587,13 @@ class DistrictAdminTable extends Component {
             </Button>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
-            <Checkbox
+            <EduCheckBox
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </Checkbox>
+            </EduCheckBox>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>

@@ -84,6 +84,7 @@ import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router-dom";
+import { EduCheckBox } from "@edulastic/common";
 import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
@@ -756,13 +757,13 @@ class StudentTable extends Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
-            <Checkbox
+            <EduCheckBox
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </Checkbox>
+            </EduCheckBox>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <Button>
                 {t("common.actions")} <Icon type="down" />

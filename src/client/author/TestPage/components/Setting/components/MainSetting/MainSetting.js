@@ -49,6 +49,7 @@ import StandardProficiencyTable from "./StandardProficiencyTable";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 import PeformanceBand from "./PeformanceBand";
 import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
+import { EduCheckBox } from "@edulastic/common";
 
 const {
   settingCategories,
@@ -692,14 +693,14 @@ class MainSetting extends Component {
                   </StyledRadioGroup>
                   {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                     <p>
-                      <Checkbox
+                      <EduCheckBox
                         disabled={!owner || !isEditable}
                         checked={penalty === false}
                         data-cy="PENALIZE"
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
                         {"Don’t penalize for incorrect selection"}
-                      </Checkbox>
+                      </EduCheckBox>
                     </p>
                   )}
                   <Description>

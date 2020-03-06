@@ -4,6 +4,7 @@ import { FlexContainer } from "../../../../assessment/themes/common";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { StyledCheckbox } from "../Container/styled";
 import { StyledRow, SubjectContainer, SubjectSelect, MyStandardInput } from "./styled";
+import { EduCheckBox } from "@edulastic/common";
 
 const Option = Select.Option;
 
@@ -112,13 +113,13 @@ class StandardSetsModal extends Component {
             <SubjectContainer>
               {standardsSetNames.map(standardSetName => (
                 <FlexContainer>
-                  <StyledCheckbox
+                  <EduCheckBox
                     onChange={() => this.changeStandards(standardSetName)}
                     checked={this.state.selectedStandards.includes(standardSetName)}
                     key={standardSetName}
                   >
                     {standardSetName}
-                  </StyledCheckbox>
+                  </EduCheckBox>
                 </FlexContainer>
               ))}
             </SubjectContainer>

@@ -13,6 +13,7 @@ import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
+import { EduCheckBox } from "@edulastic/common";
 
 const layouts = [
   {
@@ -211,16 +212,12 @@ class Container extends Component {
           </Row>
         )}
         <Checkboxes>
-          <Checkbox
-            style={{ marginBottom: 20 }}
-            checked={verticalDivider}
-            onChange={onVerticalDividerChange}
-          >
+          <EduCheckBox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
             {t("author:component.settingsBar.showVerticalDivider")}
-          </Checkbox>
-          <Checkbox checked={scrolling} onChange={onScrollingChange}>
+          </EduCheckBox>
+          <EduCheckBox checked={scrolling} onChange={onScrollingChange}>
             {t("author:component.settingsBar.enableScrolling")}
-          </Checkbox>
+          </EduCheckBox>
         </Checkboxes>
       </>
     );
@@ -229,9 +226,9 @@ class Container extends Component {
       <Content>
         {isSingleQuestion ? (
           <Checkboxes>
-            <Checkbox onChange={this.handleMultipart} value={isMultipart}>
+            <EduCheckBox onChange={this.handleMultipart} value={isMultipart}>
               Convert item into a multipart
-            </Checkbox>
+            </EduCheckBox>
           </Checkboxes>
         ) : (
           multipleItemsSettings()

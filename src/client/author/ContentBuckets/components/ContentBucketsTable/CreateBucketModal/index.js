@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import { Form, Input, Row, Col, Select, Checkbox, Switch } from "antd";
 
 import { ButtonsContainer, ModalFormItem } from "../../../../../common/styled";
-import { StyledUpsertModal, StyledCheckbox, StyledOkBtn, StyledCancelBtn } from "../styled";
+import { StyledUpsertModal, StyledOkBtn, StyledCancelBtn } from "../styled";
+import { EduCheckBox, CheckBoxGrp } from "@edulastic/common";
 
 const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections, onCollectionSearch, t }) => {
   const [status, setStatus] = useState(bucket.status === 1 ? true : false);
@@ -131,25 +132,25 @@ const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections
             {getFieldDecorator("allowToDuplicate", {
               initialValue: allowToDuplicate
             })(
-              <Checkbox.Group style={{ width: "100%" }}>
+              <CheckBoxGrp style={{ width: "100%" }}>
                 <Row>
                   <Col span={8}>
-                    <StyledCheckbox value="Item">
+                    <EduCheckBox value="Item">
                       {t("content.buckets.upsertModal.allowDuplicate.scopes.item")}
-                    </StyledCheckbox>
+                    </EduCheckBox>
                   </Col>
                   <Col span={8}>
-                    <StyledCheckbox value="Test">
+                    <EduCheckBox value="Test">
                       {t("content.buckets.upsertModal.allowDuplicate.scopes.test")}
-                    </StyledCheckbox>
+                    </EduCheckBox>
                   </Col>
                   <Col span={8}>
-                    <StyledCheckbox value="PlayList">
+                    <EduCheckBox value="PlayList">
                       {t("content.buckets.upsertModal.allowDuplicate.scopes.playlist")}
-                    </StyledCheckbox>
+                    </EduCheckBox>
                   </Col>
                 </Row>
-              </Checkbox.Group>
+              </CheckBoxGrp>
             )}
           </ModalFormItem>
         </Col>
@@ -163,20 +164,16 @@ const CreateBucketModal = ({ form, createBucket, closeModal, bucket, collections
             {getFieldDecorator("allowToSee", {
               initialValue: allowToSee
             })(
-              <Checkbox.Group style={{ width: "100%" }}>
+              <CheckBoxGrp style={{ width: "100%" }}>
                 <Row>
                   <Col span={8}>
-                    <StyledCheckbox value="Item">
-                      {t("content.buckets.upsertModal.allowToSee.scopes.item")}
-                    </StyledCheckbox>
+                    <EduCheckBox value="Item">{t("content.buckets.upsertModal.allowToSee.scopes.item")}</EduCheckBox>
                   </Col>
                   <Col span={8}>
-                    <StyledCheckbox value="Test">
-                      {t("content.buckets.upsertModal.allowToSee.scopes.test")}
-                    </StyledCheckbox>
+                    <EduCheckBox value="Test">{t("content.buckets.upsertModal.allowToSee.scopes.test")}</EduCheckBox>
                   </Col>
                 </Row>
-              </Checkbox.Group>
+              </CheckBoxGrp>
             )}
           </ModalFormItem>
         </Col>

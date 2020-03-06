@@ -182,7 +182,7 @@ class ClassBoard extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { assignmentId, classId } = match.params;
-    const filterCriteria = activity => activity?.questionActivities?.[0]?._id;
+    const filterCriteria = activity => activity?.testActivityId;
     if (additionalData.testId !== prevState.testId || !prevProps.testActivity.length) {
       const firstStudentId = get(testActivity.filter(x => !!filterCriteria(x)), [0, "studentId"], false);
       if (firstStudentId)
@@ -759,14 +759,19 @@ class ClassBoard extends Component {
                 <StudentButton
                   disabled={!firstStudentId || !isItemsVisible || isLoading}
                   active={selectedTab === "Student"}
-                  onClick={e =>
-                    this.onTabChange(
-                      e,
-                      "Student",
-                      firstStudentId,
-                      testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId
-                    )
-                  }
+                  onClick={e => {
+                    const _testActivityId = testActivity?.find(x => x.studentId === firstStudentId)?.testActivityId;
+                    setCurrentTestActivityId(_testActivityId);
+                    if (!isItemsVisible) {
+                      return;
+                    }
+                    getAllTestActivitiesForStudent({
+                      studentId: firstStudentId,
+                      assignmentId,
+                      groupId: classId
+                    });
+                    this.onTabChange(e, "Student", firstStudentId, _testActivityId);
+                  }}
                 >
                   STUDENTS
                 </StudentButton>

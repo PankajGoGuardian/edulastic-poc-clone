@@ -21,6 +21,6 @@ export const isMobileDevice = () =>
   navigator.userAgent.match(/iPhone/i) ||
   navigator.userAgent.match(/iPad/i) ||
   navigator.userAgent.match(/iPod/i) ||
-  navigator.userAgent.match(/AppleWebKit/i)
+  (navigator.maxTouchPoints || "ontouchstart" in document?.documentElement)
     ? true
     : false;

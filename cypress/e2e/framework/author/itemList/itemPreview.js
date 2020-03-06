@@ -10,19 +10,14 @@ export default class PreviewItemPopup {
   getQueContainer = () => cy.get('[data-cy="question-container"]');
 
   closePreiview = () => {
-    let eleCount;
-    this.getCloseIconLength().then(length => {
-      eleCount = length;
-      console.log(eleCount, "SANJAY");
-      if (eleCount > 1) {
-        cy.get(".ant-modal-close-icon")
-          .eq(1)
-          .click();
-      } else cy.get(".ant-modal-close-icon").click();
-    });
+    cy.wait(500);
+    let eleCount = Cypress.$(".ant-modal-close-icon").length;
+    if (eleCount > 1) {
+      Cypress.$(".ant-modal-close-icon")
+        .eq(1)
+        .click();
+    } else Cypress.$(".ant-modal-close-icon").click();
   };
-
-  getCloseIconLength = () => cy.get(".ant-modal-close-icon").then(ele => Cypress.$(ele).length);
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="show-answers-btn"]').click({ force: true });
 
@@ -79,7 +74,8 @@ export default class PreviewItemPopup {
 
   verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {
     const score = this.qrp.getScoreByAttempt(attemptData, points, questionType.split(".")[0], attemptType);
-    this.getEvaluationMessage().should("contain", `${score}/${points}`);
+    // this.getEvaluationMessage()
+    cy.get('[data-cy="score"]').should("contain", `Score ${score}/${points}`);
   };
 
   clickOnDeleteOnPreview = (used = false) => {

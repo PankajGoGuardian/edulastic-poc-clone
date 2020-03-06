@@ -47,7 +47,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testSummayTab.selectSubject(subject);
     // Save the Test
     testSummayTab.header.clickOnSaveButton(true);
-    testLibraryPage.assertUrl(testId);
     testLibraryPage.seachTestAndGotoReviewById(testId);
     // Verify the test In Review
     testReviewTab.testheader.verifyNameInTitle(testname);
@@ -67,7 +66,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testReviewTab.selectGrade(grade);
     testReviewTab.testheader.clickOnSaveButton(true);
     // Get Test Card
-    testLibraryPage.assertUrl(testId);
     testLibraryPage.seachTestAndGotoReviewById(testId);
     //verify in summary and Publish
     testSummayTab.header.clickOnDescription();
@@ -91,7 +89,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
     testReviewTab.verifySummary(question, point);
     // save
     testReviewTab.testheader.clickOnSaveButton(true);
-    testLibraryPage.assertUrl(testId);
     // Publish
     testReviewTab.testheader.clickOnPublishButton();
     testLibraryPage.assertUrl(testId);

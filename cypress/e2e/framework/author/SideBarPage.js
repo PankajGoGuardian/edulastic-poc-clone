@@ -53,7 +53,11 @@ export default class TeacherSideBar {
     cy.wait("@searchTest");
   };
 
-  clickOnPlayListByName = name => {
-    cy.get(`[data-cy="${name}"]`).dblclick({ force: true });
+  clickOnRecentUsedPlayList = name => {
+    cy.server();
+    cy.route("GET", "**/content-sharing/**").as("loadPlayContent");
+    cy.get(`[data-cy="My Playlist"]`).dblclick({ force: true });
+    if (name) cy.get('[data-cy="title"]').should("contain.text", name);
+    cy.wait("@loadPlayContent");
   };
 }

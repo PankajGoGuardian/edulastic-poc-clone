@@ -112,7 +112,7 @@ class AuthorAssignmentPage {
   clickOnEditTest = () => {
     cy.server();
     cy.route("PUT", "**/test/**").as("newVersion");
-    cy.route("GET", "**/api/test/**").as("testdrafted");
+    cy.route("GET", "**/default-test-settings/*").as("testdrafted");
 
     this.clickOnActions();
     cy.get('[data-cy="edit-Assignment"]')

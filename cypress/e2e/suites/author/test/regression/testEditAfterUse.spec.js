@@ -103,7 +103,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       cy.login("teacher", Teacher.email, Teacher.pass);
       const [testname, grade, subject] = ["editedTest", "Grade 8", "ELA"];
       // Get the  test and convert it to draft
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.visitTestById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -125,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     it(">edit question text from review tab", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get Test Card and Draft It
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.visitTestById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -138,7 +138,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         });
         // Publish
         testAddItemTab.header.clickOnPublishButton();
-        // testLibraryPage.assertUrl(OriginalTestId);
+        testLibraryPage.assertUrl(newTestId);
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
         assignmentsPage.clickOnAssigmentByTestId(assignedTest);
@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     it(">remove one question from review tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
       // Get and Convert To Draft
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.visitTestById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -176,7 +176,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       item.createItem(newItemKey).then(id => {
         newItemId = id;
         // Get Test and Draft It
-        testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+        testLibraryPage.visitTestById(OriginalTestId);
         testLibraryPage.publishedToDraftAssigned();
         testLibraryPage.getVersionedTestID().then(id => {
           newTestId = id;
@@ -190,6 +190,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
           testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
           // Publish
           testReviewTab.testheader.clickOnPublishButton();
+          testLibraryPage.assertUrl(newTestId);
           // verify
           cy.login("student", Student1.email, Student1.pass);
           assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
@@ -204,7 +205,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     it(">remove one question from add item tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
 
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.visitTestById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
@@ -215,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         item.searchFilters.typeInSearchBox(item2);
         testAddItemTab.removeItemById(item2);
         testAddItemTab.header.clickOnPublishButton();
-        testLibraryPage.assertUrl(OriginalTestId);
+        testLibraryPage.assertUrl(newTestId);
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
         assignmentsPage.clickOnAssigmentByTestId(assignedTest);
@@ -228,13 +229,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
     it(">update points from review tab and verify test", () => {
       cy.login("teacher", Teacher.email, Teacher.pass);
 
-      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.visitTestById(OriginalTestId);
       testLibraryPage.publishedToDraftAssigned();
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
         testReviewTab.updatePointsByID(item4, "6");
         testAddItemTab.header.clickOnPublishButton();
-        testLibraryPage.assertUrl(OriginalTestId);
+        testLibraryPage.assertUrl(newTestId);
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
         assignmentsPage.clickOnAssigmentByTestId(assignedTest);

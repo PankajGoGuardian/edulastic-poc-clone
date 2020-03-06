@@ -93,15 +93,14 @@ export default class TestHeader {
       .find("svg")
       .click({ force: true });
 
-  isDraft = () =>
-    cy
-      .get('[data-cy="description"]')
-      .parent()
-      .parent()
-      .children()
-      .eq(0)
-      .find("span")
-      .contains("draft");
+  isDraft = () => cy.get('[data-cy="status"]').contains("draft");
+  // cy
+  //   .get('[data-cy="description"]')
+  //   .parent()
+  //   .parent()
+  //   .children()
+  //   .eq(0)
+  //   .find("span")
 
   getTestNameInTitle = () => cy.get('[data-cy="title"]');
 

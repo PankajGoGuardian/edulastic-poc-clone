@@ -346,7 +346,7 @@ export default class TestLibrary {
 
   assertUrl = testId => {
     cy.url()
-      .then(url => url.split("/").reverse()[0])
+      .then(url => url.split("/").reverse()[1])
       .should("be.eq", testId);
   };
 
@@ -387,6 +387,13 @@ export default class TestLibrary {
     this.searchFilters.getAuthoredByMe();
     this.clickOnTestCardById(id);
     this.clickOnDetailsOfCard();
+  };
+
+  visitTestById = id => {
+    cy.server();
+    cy.route("GET", "**/test/*/assignments").as("load-test-review");
+    cy.visit(`/author/tests/tab/review/id/${id}`);
+    cy.wait("@load-test-review");
   };
 
   searchByCollection = collection => {

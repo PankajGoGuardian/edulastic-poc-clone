@@ -367,7 +367,7 @@ class ClozeMathWithUnit extends React.Component {
             onDropdownVisibleChange={this.onDropdownVisibleChange}
             keypadMode={keypadMode}
             dropdownStyle={{ fontSize: btnStyle.fontSize }}
-            getPopupContainer={null}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             allOptions={allOptions}
             id={id}
           />
@@ -450,23 +450,14 @@ const ClozeMathInputField = styled.span`
 `;
 
 const MathWithUnit = ({ resprops = {}, id }) => {
-  const {
-    responseContainers,
-    item,
-    answers = {},
-    evaluation = [],
-    checked,
-    onInnerClick,
-    showIndex
-  } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const individualWidth = response?.widthpx || 0;
   const individualHeight = response?.heightpx || 0;
 
-  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } =
-    item.uiStyle || {};
+  const { heightpx: globalHeight = 0, widthpx: globalWidth = 0, minHeight, minWidth } = item.uiStyle || {};
 
   const width = individualWidth || Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10));
   const height = individualHeight || Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10));

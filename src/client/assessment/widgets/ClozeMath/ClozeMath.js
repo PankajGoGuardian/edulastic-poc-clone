@@ -143,7 +143,6 @@ const ClozeMath = ({
                 style={{
                   height: "100%",
                   width: "100%",
-                  overflow: isLCBView || isExpressGrader ? null : "auto",
                   "max-width": "100%",
                   flex: "auto"
                 }}

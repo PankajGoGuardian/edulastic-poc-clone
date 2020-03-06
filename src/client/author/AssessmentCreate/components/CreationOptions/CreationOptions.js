@@ -12,7 +12,7 @@ const CreationOptions = ({ onUploadPDF }) => (
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
-      <OptionQti />
+      {/* <OptionQti /> */}
     </FlexWrapper>
   </BodyWrapper>
 );

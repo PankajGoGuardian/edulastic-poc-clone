@@ -33,8 +33,9 @@ import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
-import { CLEAR_ITEM_EVALUATION } from "../../author/src/constants/actions";
+import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/actions";
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
+import { PREVIEW } from "../constants/constantsForQuestions";
 
 const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
@@ -124,6 +125,14 @@ function* loadTest({ payload }) {
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
+
+      yield put({
+        type: CHANGE_VIEW,
+        payload: {
+          view: PREVIEW
+        }
+      });
+
       yield put({
         type: TEST_ACTIVITY_LOADING,
         payload: false
@@ -407,7 +416,9 @@ function* submitTest({ payload: classId }) {
     } else {
       const prevLocationState = yield select(state => state?.router?.location?.state);
       if (prevLocationState) {
-        yield put(push({pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: {currentGroupId: groupId}}));
+        yield put(
+          push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
+        );
       } else {
         yield put(push("/home/grades"));
       }

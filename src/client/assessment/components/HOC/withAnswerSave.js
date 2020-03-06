@@ -16,7 +16,6 @@ export default WrappedComponent => {
     evaluation,
     userAnswer: _userAnswer,
     userPrevAnswer,
-    previewTab: _previewTab,
     ...props
   }) => {
     const { data: question } = props;
@@ -30,10 +29,6 @@ export default WrappedComponent => {
     };
 
     const userAnswer = answerContext.hideAnswers ? undefined : _userAnswer || userPrevAnswer;
-    let previewTab = _previewTab;
-    if (_userAnswer === undefined && userPrevAnswer !== undefined && userAnswer !== undefined) {
-      previewTab = "check";
-    }
 
     // `isReviewTab` is being only passed from test page's review tab, in which case
     // userAnswer nor evaluation should be propagated forward. Doing the same will cause
@@ -47,7 +42,6 @@ export default WrappedComponent => {
         userAnswer={!props.isReviewTab ? userAnswer : undefined}
         evaluation={!props.isReviewTab ? evaluation : undefined}
         {...props}
-        previewTab={previewTab}
       />
     );
   };

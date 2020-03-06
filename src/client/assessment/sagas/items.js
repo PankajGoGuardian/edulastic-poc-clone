@@ -69,7 +69,7 @@ export const getQuestionIds = item => {
 function* saveUserResponse({ payload }) {
   try {
     const ts = payload.timeSpent || 0;
-    const { autoSave, shouldClearUserWork = false, isPlaylist = false } = payload;
+    const { autoSave, shouldClearUserWork = false, isPlaylist = false, callback } = payload;
     const itemIndex = payload.itemId;
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
@@ -175,6 +175,9 @@ function* saveUserResponse({ payload }) {
       yield put({
         type: CLEAR_USER_WORK
       });
+    }
+    if (callback) {
+      yield call(callback);
     }
   } catch (err) {
     yield put({ type: SAVE_USER_RESPONSE_ERROR });

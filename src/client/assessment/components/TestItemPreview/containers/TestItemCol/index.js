@@ -87,7 +87,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           qIndex={qIndex}
-          previewTab={preview}
+          previewTab={previewTab || preview}
           timespent={timespent}
           questionId={widget.reference}
           data={{ ...question, smallSize: true }}

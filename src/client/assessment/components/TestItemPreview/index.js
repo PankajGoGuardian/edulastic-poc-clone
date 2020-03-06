@@ -125,7 +125,13 @@ class TestItemPreview extends Component {
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     return (
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
-        <Container width={windowWidth} style={style} isCollapsed={!!collapseDirection} ref={this.containerRef} className="test-item-preview">
+        <Container
+          width={windowWidth}
+          style={style}
+          isCollapsed={!!collapseDirection}
+          ref={this.containerRef}
+          className="test-item-preview"
+        >
           <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
             {cols.map((col, i) => {
               const hideColumn =
@@ -154,6 +160,7 @@ class TestItemPreview extends Component {
                     student={student}
                     disableResponse={disableResponse}
                     LCBPreviewModal={LCBPreviewModal}
+                    previewTab={previewTab}
                   />
                   {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                 </>

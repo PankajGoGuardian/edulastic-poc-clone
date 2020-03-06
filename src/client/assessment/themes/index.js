@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { Spin, message } from "antd";
 import { isUndefined, get } from "lodash";
 import { ScratchPadContext } from "@edulastic/common";
-import { test as testTypes } from "@edulastic/constants";
+import { test as testTypes, assignmentPolicyOptions } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
 import { gotoItem as gotoItemAction, saveUserResponse } from "../actions/items";
@@ -15,11 +15,17 @@ import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
 import { testLoadingSelector } from "../selectors/test";
-import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/answers";
+import {
+  getAnswersArraySelector,
+  getAnswersListSelector,
+  getUserAnswerSelector,
+  getUserPrevAnswerSelector
+} from "../selectors/answers";
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
 import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
+import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -74,7 +80,9 @@ const AssessmentContainer = ({
   showTools,
   showScratchPad,
   savingResponse,
-  playerSkinType
+  playerSkinType,
+  userPrevAnswer,
+  testSettings
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -103,12 +111,45 @@ const AssessmentContainer = ({
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload);
   };
 
+  function getPreviewTab(index = currentItem) {
+    let previewTab = CLEAR;
+    const { showPreviousAttempt: redirectPolicy } = testSettings || {};
+    const {
+      showPreviousAttemptOptions: { STUDENT_RESPONSE_AND_FEEDBACK }
+    } = assignmentPolicyOptions;
+
+    if (redirectPolicy === STUDENT_RESPONSE_AND_FEEDBACK) {
+      const questionIds = (items[index]?.data?.questions || []).map(question => question.id);
+      const currentlyAnsweredQIds = Object.keys(answersById);
+      const previouslyAnsweredQIds = Object.keys(userPrevAnswer);
+
+      const renderCheckAnswerView =
+        questionIds.length > 0 &&
+        questionIds.some(id => previouslyAnsweredQIds.includes(id) && !currentlyAnsweredQIds.includes(id));
+
+      if (renderCheckAnswerView) {
+        previewTab = CHECK;
+      }
+    }
+
+    return previewTab;
+  }
+
+  useEffect(() => {
+    const previewTab = getPreviewTab();
+    changePreview(previewTab);
+  }, [userPrevAnswer, answersById, items]);
+
   const gotoQuestion = index => {
     if (preview) {
       setCurrentItem(index);
     } else {
-      changePreview("clear");
-      saveCurrentAnswer({ urlToGo: `${url}/qid/${index}`, locState: history?.location?.state });
+      const previewTab = getPreviewTab(index);
+      saveCurrentAnswer({
+        urlToGo: `${url}/qid/${index}`,
+        locState: history?.location?.state,
+        callback: () => changePreview(previewTab)
+      });
     }
   };
 
@@ -294,7 +335,9 @@ const enhance = compose(
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
       loading: testLoadingSelector(state),
-      savingResponse: state?.test?.savingResponse
+      savingResponse: state?.test?.savingResponse,
+      userPrevAnswer: state.previousAnswers,
+      testSettings: state.test?.settings
     }),
     {
       saveUserResponse,

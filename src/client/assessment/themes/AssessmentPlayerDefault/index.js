@@ -309,7 +309,8 @@ class AssessmentPlayerDefault extends React.Component {
       passage,
       defaultAP,
       playerSkinType,
-      title
+      title,
+      changePreview
     } = this.props;
     const {
       testItemState,
@@ -552,6 +553,9 @@ class AssessmentPlayerDefault extends React.Component {
                       fontFamily={currentFont}
                       saveHistory={this.saveHistory("scratchpad")}
                       history={scratchPad}
+                      preview={preview}
+                      evaluation={evaluation}
+                      changePreviewTab={changePreview}
                     />
                   )}
                   {testItemState === "check" && (
@@ -580,6 +584,7 @@ class AssessmentPlayerDefault extends React.Component {
                       fontFamily={currentFont}
                       saveHistory={this.saveHistory("scratchpad")}
                       history={scratchPad}
+                      changePreviewTab={changePreview}
                     />
                   )}
                   {showHints && (

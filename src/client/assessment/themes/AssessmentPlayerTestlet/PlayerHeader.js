@@ -1,21 +1,12 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { IconLogout, IconGraphRightArrow, IconChevronLeft } from "@edulastic/icons";
-
-import { FlexContainer, HeaderLeftMenu, MobileMainMenu as Mobile, HeaderMainMenu } from "../common";
-import ProgressContainer from "./ProgressContainer";
 import { EduButton } from "@edulastic/common";
-
-import {
-  HeaderPracticePlayer,
-  PlayerTitle,
-  ContainerRight,
-  FlexDisplay,
-  ActionButton
-} from "./styled";
-import Tools from "./Tools";
-
+import { IconChevronLeft, IconGraphRightArrow, IconLogout } from "@edulastic/icons";
+import PropTypes from "prop-types";
+import React, { Fragment } from "react";
 import Logo from "../../assets/ets-log.png";
+import { FlexContainer, HeaderLeftMenu, HeaderMainMenu, MobileMainMenu as Mobile } from "../common";
+import ProgressContainer from "./ProgressContainer";
+import { ContainerRight, FlexDisplay, HeaderPracticePlayer, PlayerTitle } from "./styled";
+import Tools from "./Tools";
 
 const PlayerHeader = ({
   title,
@@ -45,23 +36,23 @@ const PlayerHeader = ({
               {currentPage > 1 && (
                 <>
                   {previewPlayer && (
-                    <EduButton height="40px" onClick={onPrevQuestion} title="Prev">
+                    <EduButton isGhost IconBtn height="40px" noHover onClick={onPrevQuestion} title="Prev">
                       <IconChevronLeft />
                     </EduButton>
                   )}
-                  <EduButton height="40px" onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
+                  <EduButton isGhost height="40px" noHover onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
                     <span>Next</span>
                     <IconGraphRightArrow />
                   </EduButton>
                 </>
               )}
               {currentPage <= 1 && (
-                <EduButton height="40px" onClick={onNextQuestion} title="Start">
+                <EduButton isGhost height="40px" noHover onClick={onNextQuestion} title="Start">
                   <span>Start</span>
                   <IconGraphRightArrow />
                 </EduButton>
               )}
-              <EduButton height="40px" title="Exit" onClick={onOpenExitPopup}>
+              <EduButton isGhost IconBtn height="40px" noHover title="Exit" onClick={onOpenExitPopup}>
                 <IconLogout />
               </EduButton>
             </FlexDisplay>

@@ -32,13 +32,13 @@ const getStyle = ({ height, width, fontSize, IconBtn, style = {} }) => {
     height: height || "45px",
     padding: IconBtn ? "5px" : "5px 15px",
     textTransform: "uppercase",
-    width: width || (IconBtn ? "50px" : null),
+    width: width || (IconBtn ? "45px" : null),
     textShadow: "none"
   };
   return Object.assign({}, defaultStyle, style);
 };
 
-const getBgColor = ({ btnType, isGhost }) => {
+const getBgColor = ({ btnType, isGhost, noHover }) => {
   let bgColor;
   if (btnType == "primary") {
     bgColor = isGhost ? white : themeColor;
@@ -101,16 +101,16 @@ const StyledButton = styled(props => <Button type="primary" {...props} />)`
   &:focus,
   &:hover {
     &.ant-btn.ant-btn-primary {
-      background-color: ${({ btnType }) => getBgColor({ btnType, isGhost: false })};
-      border-color: ${({ btnType }) => getBorderColor({ btnType, isGhost: false })};
-      color: ${({ btnType }) => getColor({ btnType, isGhost: false })};
+      background-color: ${({ btnType, noHover }) => getBgColor({ btnType, isGhost: noHover || false })};
+      border-color: ${({ btnType, noHover }) => getBorderColor({ btnType, isGhost: noHover || false })};
+      color: ${({ btnType, noHover }) => getColor({ btnType, isGhost: noHover || false })};
     }
 
     svg {
-      fill: ${({ btnType }) => getColor({ btnType, isGhost: false })} !important;
+      fill: ${({ btnType, noHover }) => getColor({ btnType, isGhost: noHover || false })} !important;
       &:focus,
       &:hover {
-        fill: ${({ btnType }) => getColor({ btnType, isGhost: false })};
+        fill: ${({ btnType, noHover }) => getColor({ btnType, isGhost: noHover || false })};
       }
     }
   }

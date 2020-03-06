@@ -12,6 +12,7 @@ export const Content = styled.div`
   position: relative;
 
   border-bottom: 1px solid ${someGreyColor1};
+  break-inside: avoid;
   >div {
     break-inside: avoid;
   }

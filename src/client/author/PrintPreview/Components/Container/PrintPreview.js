@@ -124,9 +124,6 @@ PrintPreview.propTypes = {
 const QuestionContentArea = styled.div`
   .test-item-col {
     width: 100%;
-    * {
-      overflow: hidden!important;
-    }
     .question-container {
       flex-wrap: wrap;
 

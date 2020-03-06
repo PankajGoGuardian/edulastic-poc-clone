@@ -105,18 +105,11 @@ export function* uploadTestStaga({ payload: fileList = [] }) {
       yield put(uploadTestErrorAction(e?.data || {}));
       console.log(e);
     }
-    try {
-      yield put(setSuccessMessageAction("Initiate extracting the zip files"));
-      extractResponse = yield call(extractContent.qtiExtract, { files: responseFiles });
-      yield put(setSuccessMessageAction("Completed extracting the zip files"));
-    } catch (e) {
-      yield put(uploadTestErrorAction(e?.data || {}));
-      console.log(e);
-    }
+
     try {
       yield put(setSuccessMessageAction("Started creating the items"));
       yield put(setIsImportingAction(true));
-      const response = yield call(contentImportApi.qtiImport, { files: [extractResponse] });
+      const response = yield call(contentImportApi.qtiImport, { files: responseFiles });
       if (response?.jobIds?.length) {
         yield put(setJobIdsAction(response.jobIds));
       } else {

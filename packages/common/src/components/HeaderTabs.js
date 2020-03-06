@@ -1,17 +1,41 @@
 import { largeDesktopWidth, mediumDesktopWidth, mobileWidthMax, white, desktopWidth } from "@edulastic/colors";
 import { PropTypes } from "prop-types";
 import React from "react";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router";
 import styled from "styled-components";
 
-const HeaderTabs = ({ id, key, onClickHandler, to, disabled, dataCy, isActive, icon, linkLabel, ...restProps }) => (
-  <StyledLink id={id} key={key} to={to} onClick={onClickHandler} disabled={disabled} data-cy={dataCy} {...restProps}>
-    <StyledAnchor isActive={isActive}>
-      {icon}
-      <LinkLabel>{linkLabel}</LinkLabel>
-    </StyledAnchor>
-  </StyledLink>
-);
+const HeaderTabs = ({
+  id,
+  key,
+  onClickHandler,
+  to,
+  disabled,
+  dataCy,
+  isActive,
+  icon,
+  linkLabel,
+  history,
+  ...restProps
+}) => {
+  const handleOnClick = () => {
+    if (to && to !== "#") {
+      // we are sending a place to route
+      history.push(to);
+    } else if (typeof onClickHandler === "function") {
+      // call the onClickHandler passed from component
+      onClickHandler();
+    }
+  };
+
+  return (
+    <StyledLink id={id} key={key} to={to} onClick={handleOnClick} disabled={disabled} data-cy={dataCy} {...restProps}>
+      <StyledAnchor isActive={isActive}>
+        {icon}
+        <LinkLabel>{linkLabel}</LinkLabel>
+      </StyledAnchor>
+    </StyledLink>
+  );
+};
 
 HeaderTabs.propTypes = {
   id: PropTypes.string.isRequired,
@@ -20,14 +44,16 @@ HeaderTabs.propTypes = {
   dataCy: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired,
   linkLabel: PropTypes.any.isRequired,
-  icon: PropTypes.any.isRequired
+  icon: PropTypes.any.isRequired,
+  onClickHandler: PropTypes.func
 };
 
 HeaderTabs.defaultProps = {
-  to: "#"
+  to: "#",
+  onClickHandler: () => {}
 };
 
-export default HeaderTabs;
+export default withRouter(HeaderTabs);
 
 export const StyledTabs = styled.div`
   min-width: 500px;
@@ -45,7 +71,7 @@ export const StyledTabs = styled.div`
   }
 `;
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled.div`
   display: flex;
   align-items: center;
   text-transform: uppercase;

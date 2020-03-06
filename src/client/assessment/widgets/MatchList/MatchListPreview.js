@@ -269,7 +269,7 @@ const MatchListPreview = ({
 
   const choicesBoxStyle = {
     width: isPrintPreview ? "100%" : horizontallyAligned ? null : 750,
-    flex: horizontallyAligned ? "none" : null
+    maxWidth: horizontallyAligned ? dragItemMaxWidth : null
   };
 
   const choicesBoxDropContainerStyle = {

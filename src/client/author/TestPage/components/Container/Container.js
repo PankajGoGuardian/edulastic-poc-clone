@@ -153,27 +153,26 @@ class Container extends PureComponent {
     showModal: false,
     editEnable: false,
     showShareModal: false,
-    isShowFilter: true
+    isShowFilter: true,
+    showCancelButton: false
   };
 
   gotoTab = tab => {
     const { history, match, location } = this.props;
     const { regradeFlow = false, previousTestId = "" } = location?.state || {};
+    const { showCancelButton } = this.state;
     const id = match.params.id && match.params.id != "undefined" && match.params.id;
-    console.log("mathc params are", match.params);
     const oldId = match.params.oldId && match.params.oldId != "undefined" && match.params.oldId;
     let url = `/author/tests/create/${tab}`;
-    console.log("this is the one called");
     if ((id && oldId) || regradeFlow) {
       const newTab = previousTestId ? "review" : tab;
       url = `/author/tests/tab/${newTab}/id/${id}/old/${oldId || previousTestId}`;
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`;
     }
-    console.log("url here is", url);
     history.push({
       pathname: url,
-      state: history.location.state
+      state: { ...history.location.state, showCancelButton }
     });
   };
 
@@ -186,7 +185,7 @@ class Container extends PureComponent {
       history: { location },
       clearSelectedItems,
       clearTestAssignments,
-      editAssigned,
+      // editAssigned,
       createdItems = [],
       setRegradeOldId,
       getDefaultTestSettings,
@@ -196,7 +195,7 @@ class Container extends PureComponent {
       location: _location
     } = this.props;
     const self = this;
-    const { showCancelButton = false } = history.location.state || {};
+    const { showCancelButton = false, editAssigned = false } = history.location.state || this.state;
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
     }
@@ -206,10 +205,7 @@ class Container extends PureComponent {
         message.success(
           <span>
             New item has been created and added to the current test. Click
-            <span
-              onClick={() => self.gotoTab("review")}
-              style={{ color: themeColor, cursor: "pointer" }}
-            >
+            <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
               here
             </span>{" "}
             to see it.
@@ -235,7 +231,7 @@ class Container extends PureComponent {
       }
     }
     if (showCancelButton) {
-      this.setState({ editEnable: true });
+      this.setState({ editEnable: true, showCancelButton });
     }
 
     if (editAssigned) {
@@ -305,12 +301,7 @@ class Container extends PureComponent {
     this.gotoTab(value);
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
-    if (
-      isEditable &&
-      itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
-      updated &&
-      !firstFlow
-    ) {
+    if (isEditable && itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 && updated && !firstFlow) {
       this.handleSave(test);
     }
   };
@@ -361,13 +352,7 @@ class Container extends PureComponent {
   };
 
   handleChangeSubject = subjects => {
-    const {
-      setData,
-      getItemsSubjectAndGrade,
-      test,
-      itemsSubjectAndGrade,
-      updateDefaultThumbnail
-    } = this.props;
+    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
     setData({ ...test, subjects });
     if (test.thumbnail === defaultImage) {
       getDefaultImage({
@@ -402,7 +387,7 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { params = {} } = match;
-    const { showCancelButton = false } = history.location.state || {};
+    const { showCancelButton = false } = history.location.state || this.state || {};
     const { editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
@@ -521,18 +506,16 @@ class Container extends PureComponent {
       name
     };
 
-    newTest.scoring.testItems = (itemGroups.flatMap(itemGroup => itemGroup.items || []) || []).map(
-      item => {
-        const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
-        if (!foundItem) {
-          return {
-            id: item ? item._id : uuidv4(),
-            points: 0
-          };
-        }
-        return foundItem;
+    newTest.scoring.testItems = (itemGroups.flatMap(itemGroup => itemGroup.items || []) || []).map(item => {
+      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
+      if (!foundItem) {
+        return {
+          id: item ? item._id : uuidv4(),
+          points: 0
+        };
       }
-    );
+      return foundItem;
+    });
     return newTest;
   };
 
@@ -614,10 +597,7 @@ class Container extends PureComponent {
             itemGroup.items.length <= itemGroup.deliverItemsCount
         )
       ) {
-        message.error(
-          "Selected items count in a group should be more than the delivered items count.",
-          3
-        );
+        message.error("Selected items count in a group should be more than the delivered items count.", 3);
         return false;
       }
     }
@@ -742,31 +722,19 @@ class Container extends PureComponent {
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
-    const { showCancelButton = false } = history.location.state || {};
+    const { showCancelButton = false } = history.location.state || this.state || {};
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const owner =
-      (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
-    const showPublishButton =
-      (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
+    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
     const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");
     const showDuplicateButton =
-      testStatus &&
-      testStatus === statusConstants.PUBLISHED &&
-      !editEnable &&
-      !owner &&
-      allowDuplicate;
+      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner && allowDuplicate;
     const showEditButton =
-      testStatus &&
-      testStatus === statusConstants.PUBLISHED &&
-      !editEnable &&
-      owner &&
-      !showCancelButton;
+      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
 
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
-    const hasPremiumQuestion = !!testItems.find(i =>
-      hasUserGotAccessToPremiumItem(i.collections, collections)
-    );
+    const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 
     const gradeSubject = { grades, subjects };
 
@@ -775,8 +743,7 @@ class Container extends PureComponent {
         <Prompt
           when={!!updated}
           message={loc =>
-            loc.pathname.startsWith("/author/tests") ||
-            "There are unsaved changes. Are you sure you want to leave?"
+            loc.pathname.startsWith("/author/tests") || "There are unsaved changes. Are you sure you want to leave?"
           }
         />
         {this.renderModal()}

@@ -11,12 +11,19 @@ const getUserDetails = ({
   role,
   orgData,
   districtId,
+  clever = false,
+  clever_district = false,
+  gm = false,
   orgData: { districtName: district = "", districtState: state = "" }
 }) => ({
   domain: window.document.domain,
   email,
   username,
   role,
+  clever,
+  clever_district,
+  gm,
+  groupId: districtId,
   schoolId: get(orgData, "schools[0]._id", ""),
   school: get(orgData, "schools[0].name", ""),
   districtId,
@@ -55,7 +62,7 @@ const analyticsIdentify = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH")
+            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
               .update(userId)
               .digest("hex")
           }
@@ -81,7 +88,7 @@ const unloadIntercom = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH")
+            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
               .update(userId)
               .digest("hex")
           }

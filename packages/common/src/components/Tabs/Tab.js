@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { themeColor, white, mobileWidth, title, mediumDesktopWidth } from "@edulastic/colors";
-import { IconPencilEdit, IconClose } from "@edulastic/icons";
+import { greyThemeDark2, mobileWidth, themeColor, title, white } from "@edulastic/colors";
+import { IconClose, IconPencilEdit } from "@edulastic/icons";
 import { Button } from "antd";
+import PropTypes from "prop-types";
+import React, { useMemo } from "react";
+import styled from "styled-components";
 
 const Tab = ({
   IconPosition,
@@ -38,7 +38,7 @@ const Tab = ({
   );
 
   const closeButton = (
-    <CloseIcon IconPosition={IconPosition}>
+    <CloseIcon IconPosition={IconPosition} className="close-icon">
       <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
   );
@@ -55,13 +55,7 @@ const Tab = ({
   }
 
   return (
-    <Container
-      active={active}
-      style={style}
-      type={type}
-      borderRadius={borderRadius}
-      onClick={onClick}
-    >
+    <Container active={active} style={style} type={type} borderRadius={borderRadius} onClick={onClick}>
       {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
@@ -103,25 +97,23 @@ export default Tab;
 
 const Container = styled.div`
   color: ${title};
-  padding: ${({ type }) => (type === "primary" ? "0px 20px 0px 0px" : "10px 25px")};
+  padding: ${({ type }) => (type === "primary" ? "0px 25px" : "10px 25px")};
   cursor: pointer;
   background: ${white};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
-  line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
-  text-align: left;
+  display: flex;
+  align-items: center;
+  border: 1px solid ${greyThemeDark2};
+  background: ${({ active }) => (active ? greyThemeDark2 : white)};
+  color: ${({ active }) => (active ? white : greyThemeDark2)};
+  text-align: center;
   border-radius: 0px;
   text-transform: uppercase;
-  border-bottom: 2px solid ${({ active }) => (active ? "#434B5D" : "transparent")};
   position: relative;
-  margin-right: 10px;
-
-  span {
-    font-size: 14px;
-    font-weight: 600;
-    margin: auto;
-    color: ${title};
-    text-transform: uppercase;
-  }
+  margin: 3px 3px 3px 0px;
+  font-weight: 600;
+  line-height: normal;
+  font-size: 12px;
 
   input {
     font-weight: 600;
@@ -131,19 +123,12 @@ const Container = styled.div`
   svg {
     width: 8px;
     height: 8px;
-    fill: ${title};
+    fill: ${({ active }) => (active ? white : greyThemeDark2)};
     position: absolute;
-    bottom: 8px;
+    top: 10px;
     right: 5px;
     &:hover {
-      fill: ${title};
-    }
-  }
-
-  @media (max-width: ${mediumDesktopWidth}) {
-    input,
-    span {
-      font-size: 12px;
+      fill: ${({ active }) => (active ? white : greyThemeDark2)};
     }
   }
 

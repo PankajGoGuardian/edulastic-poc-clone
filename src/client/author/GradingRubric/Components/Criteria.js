@@ -20,6 +20,7 @@ import TextInput from "./common/TextInput";
 import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClone, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { CustomStyleBtn } from "../../../assessment/styled/ButtonStyles";
 
 const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, className }) => {
   let scrollBarRef;
@@ -125,9 +126,10 @@ const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, c
         </CriteriaDetails>
         <CiteriaActionsContainer>
           {isEditable && (
-            <DuplicateCriteria className="duplicate-critera-button" title="Clone" onClick={handleDuplicate}>
-              <FontAwesomeIcon icon={faClone} aria-hidden="true" /> Clone Criteria
-            </DuplicateCriteria>
+            <CustomStyleBtn margin="0px" title="Clone" onClick={handleDuplicate}>
+              <FontAwesomeIcon icon={faClone} aria-hidden="true" />
+              Clone Criteria
+            </CustomStyleBtn>
           )}
           {currentRubricData.criteria.length > 1 && isEditable && (
             <DeleteCriteria className="delete-critera-button" title="Delete" onClick={handleDelete}>

@@ -1,23 +1,19 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import { FlexContainer, Tab, Tabs } from "@edulastic/common";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
+import { withNamespaces } from "@edulastic/localization";
+import { Col, Row } from "antd";
 import produce from "immer";
+import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
-import { Row, Col } from "antd";
+import React, { Component } from "react";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-
-import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab, Button, FlexContainer } from "@edulastic/common";
-
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { updateVariables } from "../../utils/variables";
-
-import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
-
-import { hexToRGB, getAlpha } from "./helpers";
+import { AlternateAnswerLink } from "../../styled/ButtonStyles";
+import { Subtitle } from "../../styled/Subtitle";
+import { updateVariables } from "../../utils/variables";
 import LocalColorPickers from "./components/LocalColorPickers";
-import { IconPlus } from "./styled/IconPlus";
+import { getAlpha, hexToRGB } from "./helpers";
 import { IconClose } from "./styled/IconClose";
 
 class AttributesTitle extends Component {
@@ -63,10 +59,7 @@ class AttributesTitle extends Component {
     const changeHandler = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.areaAttributes.global[prop] = hexToRGB(
-            obj.color,
-            (obj.alpha ? obj.alpha : 1) / 100
-          );
+          draft.areaAttributes.global[prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
         })
       );
     };
@@ -105,29 +98,16 @@ class AttributesTitle extends Component {
     const handleLocalColorChange = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.areaAttributes.local[customizeTab - 1][prop] = hexToRGB(
-            obj.color,
-            (obj.alpha ? obj.alpha : 1) / 100
-          );
+          draft.areaAttributes.local[customizeTab - 1][prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
           updateVariables(draft);
         })
       );
     };
 
     const renderPlusButton = () => (
-      <Button
-        style={{
-          minWidth: 20,
-          minHeight: 20,
-          width: 20,
-          padding: 0,
-          marginLeft: 20
-        }}
-        icon={<IconPlus />}
-        onClick={handleAddAttr}
-        color="primary"
-        variant="extendedFab"
-      />
+      <AlternateAnswerLink onClick={handleAddAttr} color="primary" variant="extendedFab">
+        {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+      </AlternateAnswerLink>
     );
 
     const renderLabel = index => (
@@ -156,18 +136,11 @@ class AttributesTitle extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.attributesTitle")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.attributesTitle")}`)}>
           {t("component.hotspot.attributesTitle")}
         </Subtitle>
 
-        <Tabs
-          style={{ marginBottom: 15 }}
-          value={customizeTab}
-          onChange={setCustomizeTab}
-          extra={renderPlusButton()}
-        >
+        <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
           <Tab
             style={{ borderRadius: areaAttributes.local <= 1 ? "4px" : "4px 0 0 4px" }}
             label={t("component.hotspot.global")}
@@ -216,9 +189,7 @@ class AttributesTitle extends Component {
             areaIndexes={areas
               .map((area, i) => i)
               .filter(
-                index =>
-                  !selectedIndexes.includes(index) ||
-                  index === areaAttributes.local[customizeTab - 1].area
+                index => !selectedIndexes.includes(index) || index === areaAttributes.local[customizeTab - 1].area
               )}
           />
         )}

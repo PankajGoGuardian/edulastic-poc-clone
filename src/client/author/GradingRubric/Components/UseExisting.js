@@ -1,44 +1,44 @@
-import React, { useState, useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
+import { faClone, faMinus, faPaperPlane, faPencilAlt, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Col, Form, Icon, message, Pagination } from "antd";
+import produce from "immer";
+import { maxBy, sumBy, uniqBy } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { sumBy, maxBy, uniqBy } from "lodash";
-import { Col, Form, Icon, message, Pagination } from "antd";
-import {
-  ExistingRubricContainer,
-  SearchBar,
-  ActionBarContainer,
-  PaginationContainer,
-  RecentlyUsedContainer,
-  TagContainer,
-  RubricsTag
-} from "../styled";
-import produce from "immer";
 import { v4 } from "uuid";
+import { CustomStyleBtn } from "../../../assessment/styled/ButtonStyles";
+import { getUserDetails } from "../../../student/Login/ducks";
+import { setItemLevelScoreFromRubricAction } from "../../ItemDetail/ducks";
+import { getCurrentQuestionSelector, removeRubricIdAction, setRubricIdAction } from "../../sharedDucks/questions";
 import {
-  updateRubricDataAction,
+  addRubricToRecentlyUsedAction,
+  deleteRubricAction,
   getCurrentRubricDataSelector,
-  saveRubricAction,
-  updateRubricAction,
-  searchRubricsRequestAction,
+  getRecentlyUsedRubricsSelector,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
-  deleteRubricAction,
-  getRecentlyUsedRubricsSelector,
-  addRubricToRecentlyUsedAction
+  saveRubricAction,
+  searchRubricsRequestAction,
+  updateRubricAction,
+  updateRubricDataAction
 } from "../ducks";
-import RubricTable from "./RubricTable";
-import ShareModal from "./common/ShareModal";
+import {
+  ActionBarContainer,
+  ExistingRubricContainer,
+  PaginationContainer,
+  RecentlyUsedContainer,
+  RubricsTag,
+  SearchBar,
+  TagContainer
+} from "../styled";
+import ConfirmModal from "./common/ConfirmModal";
 import DeleteModal from "./common/DeleteModal";
 import PreviewRubricModal from "./common/PreviewRubricModal";
+import ShareModal from "./common/ShareModal";
 import CreateNew from "./CreateNew";
-import ConfirmModal from "./common/ConfirmModal";
-import { getUserDetails } from "../../../student/Login/ducks";
-import { setRubricIdAction, getCurrentQuestionSelector, removeRubricIdAction } from "../../sharedDucks/questions";
-import { setItemLevelScoreFromRubricAction } from "../../ItemDetail/ducks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinus, faClone, faPencilAlt, faTrashAlt, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import RubricTable from "./RubricTable";
 
 const UseExisting = ({
   updateRubricData,
@@ -65,7 +65,7 @@ const UseExisting = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showPreviewRubricModal, setShowPreviewRubricModal] = useState(false);
   const [currentMode, setCurrentMode] = useState("SEARCH");
-  const [isEditable, setIsEditable] = useState(actionType === "CREATE NEW" ? true : false);
+  const [isEditable, setIsEditable] = useState(actionType === "CREATE NEW" || false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -81,191 +81,14 @@ const UseExisting = ({
     currentRubricData?.criteria
   ]);
 
-  const getContent = () => {
-    return (
-      <>
-        {(!["RUBRIC_TABLE", "SEARCH"].includes(currentMode) || actionType === "CREATE NEW") && (
-          <ActionBarContainer>
-            {actionType === "USE EXISTING" && currentMode === "PREVIEW" ? (
-              <div>
-                <span onClick={() => setCurrentMode("RUBRIC_TABLE")}>
-                  <Icon type="left" /> <span>Back</span>
-                </span>
-              </div>
-            ) : (
-              <div />
-            )}
-            <div>
-              <span onClick={() => setShowPreviewRubricModal(true)}>
-                <Icon type="eye" /> Preview
-              </span>
-              {currentMode === "PREVIEW" && !isEditable && (
-                <>
-                  {currentQuestion.rubrics?._id !== currentRubricData._id && (
-                    <span
-                      onClick={() => {
-                        associateRubricWithQuestion({
-                          metadata: { _id: currentRubricData._id, name: currentRubricData.name },
-                          maxScore
-                        });
-                        addRubricToRecentlyUsed(currentRubricData);
-                        setItemLevelScoring(false);
-                      }}
-                    >
-                      <Icon type="check" /> <span>Use</span>
-                    </span>
-                  )}
-                  {currentQuestion.rubrics?._id === currentRubricData._id && (
-                    <span onClick={() => dissociateRubricFromQuestion()}>
-                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
-                    </span>
-                  )}
-                  <span onClick={() => handleClone(currentRubricData)}>
-                    <FontAwesomeIcon icon={faClone} aria-hidden="true" /> <span>Clone</span>
-                  </span>
-                  {currentRubricData.createdBy._id === user._id && (
-                    <>
-                      <span onClick={() => setShowShareModal(true)}>
-                        <Icon type="share-alt" /> <span>Share</span>
-                      </span>
-
-                      <span onClick={() => handleEditRubric()}>
-                        <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" /> <span>Edit</span>
-                      </span>
-
-                      <span onClick={() => setShowDeleteModal(true)}>
-                        <FontAwesomeIcon icon={faTrashAlt} aria-hidden="true" /> <span>Delete</span>
-                      </span>
-                    </>
-                  )}
-                </>
-              )}
-              {isEditable && (
-                <>
-                  <span onClick={() => setShowConfirmModal(true)}>
-                    <Icon type="close" /> <span>Cancel</span>
-                  </span>
-                  <span onClick={() => handleSaveRubric("draft")}>
-                    <Icon type="save" theme="filled" /> <span>Save</span>
-                  </span>
-                  <span className="publish" onClick={() => handleSaveRubric("published")}>
-                    <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> <span>Save & Publish</span>
-                  </span>
-                </>
-              )}
-            </div>
-          </ActionBarContainer>
-        )}
-
-        <ExistingRubricContainer>
-          {["RUBRIC_TABLE", "PREVIEW", "SEARCH"].includes(currentMode) && actionType === "USE EXISTING" && (
-            <>
-              <SearchBar
-                placeholder="Search by rubric name or author name"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onSearch={handleSearch}
-                loading={searchingState}
-              />
-              {recentlyUsedRubrics.length > 0 && (
-                <RecentlyUsedContainer>
-                  <span>Recently Used: </span>
-                  <TagContainer>
-                    {recentlyUsedRubrics.map(rubric => (
-                      <RubricsTag
-                        onClick={() => {
-                          updateRubricData(rubric);
-                          setCurrentMode("PREVIEW");
-                          setIsEditable(false);
-                        }}
-                      >
-                        {rubric.name}
-                      </RubricsTag>
-                    ))}
-                  </TagContainer>
-                </RecentlyUsedContainer>
-              )}
-            </>
-          )}
-
-          {currentMode === "RUBRIC_TABLE" && (
-            <>
-              <RubricTable
-                handleTableAction={handleTableAction}
-                searchedRubricList={searchedRubricList}
-                loading={searchingState}
-                user={user}
-              />
-              <PaginationContainer>
-                <Pagination
-                  current={currentPage}
-                  total={totalSearchedCount}
-                  pageSize={5}
-                  onChange={page => handlePaginationChange(page)}
-                  hideOnSinglePage
-                />
-              </PaginationContainer>
-            </>
-          )}
-          {["CLONE", "PREVIEW", "EDIT"].includes(currentMode) && (
-            <CreateNew isEditable={isEditable} handleSaveRubric={() => handleSaveRubric()} />
-          )}
-          {actionType === "CREATE NEW" && !["CLONE", "PREVIEW", "EDIT"].includes(currentMode) && (
-            <CreateNew isEditable={isEditable} handleSaveRubric={() => handleSaveRubric()} />
-          )}
-        </ExistingRubricContainer>
-        {showShareModal && (
-          <ShareModal visible={showShareModal} handleResponse={res => handleShareModalResponse(res)} />
-        )}
-        {showDeleteModal && (
-          <DeleteModal visible={showDeleteModal} toggleModal={res => handleDeleteModalResponse(res)} />
-        )}
-        {showPreviewRubricModal && (
-          <PreviewRubricModal
-            visible={showPreviewRubricModal}
-            toggleModal={() => setShowPreviewRubricModal(false)}
-            currentRubricData={currentRubricData}
-            shouldValidate={false}
-          />
-        )}
-        <ConfirmModal visible={showConfirmModal} handleResponse={handleConfirmModalResponse} />
-      </>
-    );
-  };
-
   const handlePaginationChange = page => {
     setCurrentPage(page);
     searchRubricsRequest({
       limit: 5,
-      page: page,
+      page,
       searchString: searchQuery
     });
     setCurrentMode("RUBRIC_TABLE");
-  };
-
-  const handleSaveRubric = type => {
-    const isValid = validateRubric();
-    const { __v, updatedAt, modifiedBy, ...data } = currentRubricData;
-
-    if (isValid) {
-      if (currentRubricData._id) {
-        updateRubric({
-          ...data,
-          status: type
-        });
-        if (currentQuestion.rubrics?._id === currentRubricData._id)
-          associateRubricWithQuestion({
-            metadata: { _id: currentRubricData._id, name: currentRubricData.name },
-            maxScore
-          });
-      } else
-        saveRubric({
-          ...currentRubricData,
-          status: type
-        });
-
-      setCurrentMode("PREVIEW");
-    }
   };
 
   const validateRubric = () => {
@@ -311,6 +134,31 @@ const UseExisting = ({
     return isValid;
   };
 
+  const handleSaveRubric = type => {
+    const isValid = validateRubric();
+    const { __v, updatedAt, modifiedBy, ...data } = currentRubricData;
+
+    if (isValid) {
+      if (currentRubricData._id) {
+        updateRubric({
+          ...data,
+          status: type
+        });
+        if (currentQuestion.rubrics?._id === currentRubricData._id)
+          associateRubricWithQuestion({
+            metadata: { _id: currentRubricData._id, name: currentRubricData.name },
+            maxScore
+          });
+      } else
+        saveRubric({
+          ...currentRubricData,
+          status: type
+        });
+
+      setCurrentMode("PREVIEW");
+    }
+  };
+
   const handleEditRubric = () => {
     updateRubricData({
       ...currentRubricData,
@@ -320,7 +168,7 @@ const UseExisting = ({
     setCurrentMode("EDIT");
   };
 
-  const handleShareModalResponse = (response, value) => {
+  const handleShareModalResponse = () => {
     setShowShareModal(false);
   };
 
@@ -340,17 +188,6 @@ const UseExisting = ({
       searchString: value
     });
     setCurrentMode("RUBRIC_TABLE");
-  };
-
-  const handleTableAction = (actionType, _id) => {
-    const rubric = searchedRubricList.find(rubric => rubric._id === _id);
-    updateRubricData(rubric);
-    if (actionType === "SHARE") setShowShareModal(true);
-    else if (actionType === "DELETE") setShowDeleteModal(true);
-    else if (actionType === "PREVIEW") {
-      setCurrentMode("PREVIEW");
-      setIsEditable(false);
-    } else if (actionType === "CLONE") handleClone(rubric);
   };
 
   const handleClone = rubric => {
@@ -373,12 +210,178 @@ const UseExisting = ({
     setCurrentMode("CLONE");
   };
 
+  const handleTableAction = (actionType, _id) => {
+    const rubric = searchedRubricList.find(rubric => rubric._id === _id);
+    updateRubricData(rubric);
+    if (actionType === "SHARE") setShowShareModal(true);
+    else if (actionType === "DELETE") setShowDeleteModal(true);
+    else if (actionType === "PREVIEW") {
+      setCurrentMode("PREVIEW");
+      setIsEditable(false);
+    } else if (actionType === "CLONE") handleClone(rubric);
+  };
+
   const handleConfirmModalResponse = response => {
     setShowConfirmModal(false);
     if (response === "YES") {
       closeRubricModal();
     }
   };
+
+  const btnStyle = {
+    width: "auto",
+    margin: "0px 0px 0px 10px"
+  };
+
+  const getContent = () => (
+    <>
+      {(!["RUBRIC_TABLE", "SEARCH"].includes(currentMode) || actionType === "CREATE NEW") && (
+        <ActionBarContainer>
+          {actionType === "USE EXISTING" && currentMode === "PREVIEW" ? (
+            <div>
+              <CustomStyleBtn style={btnStyle} onClick={() => setCurrentMode("RUBRIC_TABLE")}>
+                <Icon type="left" /> <span>Back</span>
+              </CustomStyleBtn>
+            </div>
+          ) : (
+            <div />
+          )}
+          <div>
+            <CustomStyleBtn style={btnStyle} onClick={() => setShowPreviewRubricModal(true)}>
+              <Icon type="eye" /> Preview
+            </CustomStyleBtn>
+            {currentMode === "PREVIEW" && !isEditable && (
+              <>
+                {currentQuestion.rubrics?._id !== currentRubricData._id && (
+                  <CustomStyleBtn
+                    style={btnStyle}
+                    onClick={() => {
+                      associateRubricWithQuestion({
+                        metadata: { _id: currentRubricData._id, name: currentRubricData.name },
+                        maxScore
+                      });
+                      addRubricToRecentlyUsed(currentRubricData);
+                      setItemLevelScoring(false);
+                    }}
+                  >
+                    <Icon type="check" /> <span>Use</span>
+                  </CustomStyleBtn>
+                )}
+                {currentQuestion.rubrics?._id === currentRubricData._id && (
+                  <CustomStyleBtn style={btnStyle} onClick={() => dissociateRubricFromQuestion()}>
+                    <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
+                  </CustomStyleBtn>
+                )}
+                <CustomStyleBtn style={btnStyle} onClick={() => handleClone(currentRubricData)}>
+                  <FontAwesomeIcon icon={faClone} aria-hidden="true" /> <span>Clone</span>
+                </CustomStyleBtn>
+                {currentRubricData.createdBy._id === user._id && (
+                  <>
+                    <CustomStyleBtn style={btnStyle} onClick={() => setShowShareModal(true)}>
+                      <Icon type="share-alt" /> <span>Share</span>
+                    </CustomStyleBtn>
+
+                    <CustomStyleBtn style={btnStyle} onClick={() => handleEditRubric()}>
+                      <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" /> <span>Edit</span>
+                    </CustomStyleBtn>
+
+                    <CustomStyleBtn style={btnStyle} onClick={() => setShowDeleteModal(true)}>
+                      <FontAwesomeIcon icon={faTrashAlt} aria-hidden="true" /> <span>Delete</span>
+                    </CustomStyleBtn>
+                  </>
+                )}
+              </>
+            )}
+            {isEditable && (
+              <>
+                <CustomStyleBtn style={btnStyle} onClick={() => setShowConfirmModal(true)}>
+                  <Icon type="close" />
+                  <span>Cancel</span>
+                </CustomStyleBtn>
+                <CustomStyleBtn style={btnStyle} onClick={() => handleSaveRubric("draft")}>
+                  <Icon type="save" theme="filled" />
+                  <span>Save</span>
+                </CustomStyleBtn>
+                <CustomStyleBtn style={btnStyle} onClick={() => handleSaveRubric("published")}>
+                  <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
+                  <span>Save & Publish</span>
+                </CustomStyleBtn>
+              </>
+            )}
+          </div>
+        </ActionBarContainer>
+      )}
+
+      <ExistingRubricContainer>
+        {["RUBRIC_TABLE", "PREVIEW", "SEARCH"].includes(currentMode) && actionType === "USE EXISTING" && (
+          <>
+            <SearchBar
+              placeholder="Search by rubric name or author name"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onSearch={handleSearch}
+              loading={searchingState}
+            />
+            {recentlyUsedRubrics.length > 0 && (
+              <RecentlyUsedContainer>
+                <span>Recently Used: </span>
+                <TagContainer>
+                  {recentlyUsedRubrics.map(rubric => (
+                    <RubricsTag
+                      onClick={() => {
+                        updateRubricData(rubric);
+                        setCurrentMode("PREVIEW");
+                        setIsEditable(false);
+                      }}
+                    >
+                      {rubric.name}
+                    </RubricsTag>
+                  ))}
+                </TagContainer>
+              </RecentlyUsedContainer>
+            )}
+          </>
+        )}
+
+        {currentMode === "RUBRIC_TABLE" && (
+          <>
+            <RubricTable
+              handleTableAction={handleTableAction}
+              searchedRubricList={searchedRubricList}
+              loading={searchingState}
+              user={user}
+            />
+            <PaginationContainer>
+              <Pagination
+                current={currentPage}
+                total={totalSearchedCount}
+                pageSize={5}
+                onChange={page => handlePaginationChange(page)}
+                hideOnSinglePage
+              />
+            </PaginationContainer>
+          </>
+        )}
+        {["CLONE", "PREVIEW", "EDIT"].includes(currentMode) && (
+          <CreateNew isEditable={isEditable} handleSaveRubric={() => handleSaveRubric()} />
+        )}
+        {actionType === "CREATE NEW" && !["CLONE", "PREVIEW", "EDIT"].includes(currentMode) && (
+          <CreateNew isEditable={isEditable} handleSaveRubric={() => handleSaveRubric()} />
+        )}
+      </ExistingRubricContainer>
+      {showShareModal && <ShareModal visible={showShareModal} handleResponse={res => handleShareModalResponse(res)} />}
+      {showDeleteModal && <DeleteModal visible={showDeleteModal} toggleModal={res => handleDeleteModalResponse(res)} />}
+      {showPreviewRubricModal && (
+        <PreviewRubricModal
+          visible={showPreviewRubricModal}
+          toggleModal={() => setShowPreviewRubricModal(false)}
+          currentRubricData={currentRubricData}
+          shouldValidate={false}
+        />
+      )}
+      <ConfirmModal visible={showConfirmModal} handleResponse={handleConfirmModalResponse} />
+    </>
+  );
 
   return (
     <>

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get, has, isEmpty, difference, shuffle } from "lodash";
-import { Button, Input, Select, Table } from "antd";
+import { Input, Select, Table } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { variableTypes, math } from "@edulastic/constants";
@@ -21,12 +21,14 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import Question from "../../../components/Question";
 import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 import Spinner from "./Spinner";
 import ErrorText from "./ErrorText";
+import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const { defaultNumberPad } = math;
@@ -68,8 +70,7 @@ class Variables extends Component {
       isCalculating
     } = this.props;
     const mathFieldRef = React.createRef();
-    const getMathFormulaTemplate = latex =>
-      `<span class="input__math" data-latex="${latex}"></span>`;
+    const getMathFormulaTemplate = latex => `<span class="input__math" data-latex="${latex}"></span>`;
     const variableEnabled = get(questionData, "variable.enabled", false);
     const variables = get(questionData, "variable.variables", {});
     const variableCombinationCount = get(questionData, "variable.combinationsCount", 25);
@@ -92,10 +93,7 @@ class Variables extends Component {
       const factor = 10 ** variable.decimal;
       switch (variable.type) {
         case "NUMBER_RANGE": {
-          return (
-            Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) /
-            factor
-          );
+          return Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor;
         }
         case "NUMBER_SET":
         case "TEXT_SET":
@@ -125,8 +123,7 @@ class Variables extends Component {
 
       Object.keys(newVariables).map(key => {
         if (
-          (newVariables[key].type === "NUMBER_SEQUENCE" ||
-            newVariables[key].type === "TEXT_SEQUENCE") &&
+          (newVariables[key].type === "NUMBER_SEQUENCE" || newVariables[key].type === "TEXT_SEQUENCE") &&
           newVariables[key].sequence
         ) {
           const vars = newVariables[key].sequence.split(",").filter(val => !!val.trim());
@@ -160,10 +157,7 @@ class Variables extends Component {
         newData.variable.variables[variableName].type === "NUMBER_SEQUENCE" ||
         newData.variable.variables[variableName].type === "TEXT_SEQUENCE"
       ) {
-        newData.variable.variables = generateSequenceExamples(
-          variableName,
-          newData.variable.variables
-        );
+        newData.variable.variables = generateSequenceExamples(variableName, newData.variable.variables);
       }
       setQuestionData(newData);
     };
@@ -295,10 +289,7 @@ class Variables extends Component {
             values = getCombinations(
               variableName,
               Array.from(Array(variableCombinationCount * 2)).map(
-                () =>
-                  Math.round(
-                    (Math.random() * (variable.max - variable.min) + variable.min) * factor
-                  ) / factor
+                () => Math.round((Math.random() * (variable.max - variable.min) + variable.min) * factor) / factor
               ),
               variableCombinationCount,
               values
@@ -359,12 +350,7 @@ class Variables extends Component {
       }
 
       newData.variable[param] = value;
-      if (
-        param === "enabled" &&
-        value === true &&
-        newData.variable.variables &&
-        !newData.variable.examples
-      ) {
+      if (param === "enabled" && value === true && newData.variable.variables && !newData.variable.examples) {
         const updatedExamples = generate();
         newData.variable = { ...newData.variable, examples: updatedExamples };
       }
@@ -373,18 +359,14 @@ class Variables extends Component {
 
     const handleCalculateFormula = () => {
       const hasFormula = Object.keys(variables).some(
-        variableName =>
-          variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
+        variableName => variables[variableName].type === "FORMULA" && !isEmpty(variables[variableName].formula)
       );
       if (hasFormula) {
         generate();
       }
     };
 
-    if (
-      examples.length &&
-      Object.keys(examples[0]).some(key => !examples[0][key] && examples[0][key] !== 0)
-    ) {
+    if (examples.length && Object.keys(examples[0]).some(key => !examples[0][key] && examples[0][key] !== 0)) {
       generate();
     }
     return (
@@ -395,9 +377,7 @@ class Variables extends Component {
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       >
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.dynamicParameters")}`)}>
           {t("component.options.dynamicParameters")}
         </Subtitle>
         <Row gutter={24}>
@@ -420,12 +400,24 @@ class Variables extends Component {
         {variableEnabled && Object.keys(variables).length > 0 && (
           <Block>
             <Row gutter={24}>
-              <Col md={3}>{t("component.options.variable")}</Col>
-              <Col md={5}>{t("component.options.variableType")}</Col>
-              <Col md={3}>{t("component.options.variableMin")}</Col>
-              <Col md={3}>{t("component.options.variableMax")}</Col>
-              <Col md={4}>{t("component.options.variableDecimalPlaces")}</Col>
-              <Col md={6}>{t("component.options.variableExample")}</Col>
+              <Col md={3}>
+                <Label>{t("component.options.variable")}</Label>
+              </Col>
+              <Col md={5}>
+                <Label>{t("component.options.variableType")}</Label>
+              </Col>
+              <Col md={3}>
+                <Label>{t("component.options.variableMin")}</Label>
+              </Col>
+              <Col md={3}>
+                <Label>{t("component.options.variableMax")}</Label>
+              </Col>
+              <Col md={4}>
+                <Label>{t("component.options.variableDecimalPlaces")}</Label>
+              </Col>
+              <Col md={6}>
+                <Label>{t("component.options.variableExample")}</Label>
+              </Col>
             </Row>
             {Object.keys(variables).map((variableName, index) => {
               const variable = variables[variableName];
@@ -435,12 +427,12 @@ class Variables extends Component {
               const isNumberSquence = variable.type === "NUMBER_SEQUENCE";
               const isTextSquence = variable.type === "TEXT_SEQUENCE";
               return (
-                <Row key={`variable${index}`} gutter={36}>
-                  <Col md={3} style={{ paddingTop: 10 }}>
-                    <VariableLabel>{variableName}</VariableLabel>
+                <Row key={`variable${index}`} gutter={24}>
+                  <Col md={3}>
+                    <Label>{variableName}</Label>
                   </Col>
                   <Col md={5}>
-                    <Select
+                    <SelectInputStyled
                       size="large"
                       data-cy="variableType"
                       value={variable.type}
@@ -453,7 +445,7 @@ class Variables extends Component {
                           {variableTypes[key]}
                         </Select.Option>
                       ))}
-                    </Select>
+                    </SelectInputStyled>
                   </Col>
                   {isFormula && (
                     <Col md={10}>
@@ -472,49 +464,40 @@ class Variables extends Component {
                   )}
                   {isSet && (
                     <Col md={10}>
-                      <Input
+                      <TextInputStyled
                         data-cy="variableSet"
                         value={variable.set}
-                        onChange={e =>
-                          handleChangeVariableList(variableName, "set", e.target.value)
-                        }
+                        onChange={e => handleChangeVariableList(variableName, "set", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
                   {isNumberSquence && (
                     <Col md={10}>
-                      <Input
+                      <TextInputStyled
                         data-cy="variableNumberSequence"
                         value={variable.sequence}
-                        onChange={e =>
-                          handleChangeVariableList(variableName, "sequence", e.target.value)
-                        }
+                        onChange={e => handleChangeVariableList(variableName, "sequence", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
                   {isTextSquence && (
                     <Col md={10}>
-                      <Input
+                      <TextInputStyled
                         data-cy="variableTextSequence"
                         value={variable.sequence}
-                        onChange={e =>
-                          handleChangeVariableList(variableName, "sequence", e.target.value)
-                        }
+                        onChange={e => handleChangeVariableList(variableName, "sequence", e.target.value)}
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
                   {isRange && (
                     <Col md={3}>
-                      <Input
+                      <TextInputStyled
                         type="number"
                         data-cy="variableMin"
                         value={variable.min}
@@ -527,13 +510,12 @@ class Variables extends Component {
                         }
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
                   {isRange && (
                     <Col md={3}>
-                      <Input
+                      <TextInputStyled
                         type="number"
                         data-cy="variableMax"
                         value={variable.max}
@@ -546,13 +528,12 @@ class Variables extends Component {
                         }
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
                   {isRange && (
                     <Col md={4}>
-                      <Input
+                      <TextInputStyled
                         type="number"
                         data-cy="variableDecimal"
                         value={variable.decimal}
@@ -565,7 +546,6 @@ class Variables extends Component {
                         }
                         onBlur={handleCalculateFormula}
                         size="large"
-                        style={{ marginRight: 20 }}
                       />
                     </Col>
                   )}
@@ -589,19 +569,21 @@ class Variables extends Component {
             <Row gutter={24}>
               <Col md={20}>
                 <InlineLabel>{t("component.options.beforeCombinationCount")}</InlineLabel>
-                <CombinationInput
+                <TextInputStyled
                   type="number"
                   data-cy="combinationCount"
                   value={variableCombinationCount}
                   onChange={e => handleChangeVariable("combinationsCount", +e.target.value)}
                   size="large"
+                  width="70px"
+                  style={{ margin: "0px 15px" }}
                 />
                 <InlineLabel>{t("component.options.afterCombinationCount")}</InlineLabel>
               </Col>
               <Col md={4}>
-                <Button onClick={generate} type="button" style={{ float: "right" }}>
+                <CustomStyleBtn width="auto" margin="0px" onClick={generate} type="button" style={{ float: "right" }}>
                   Generate
-                </Button>
+                </CustomStyleBtn>
               </Col>
             </Row>
             <Row gutter={24}>

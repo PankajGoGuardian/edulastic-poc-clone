@@ -13,7 +13,7 @@ export const StyledWrapper = styled.div`
 export const StyledPreviewContainer = styled.div`
   display: flex;
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
-  background: ${publisherCollectionBg};
+  border: 1px solid #dadae4;
 `;
 
 export const StyledTitle = styled.h3`

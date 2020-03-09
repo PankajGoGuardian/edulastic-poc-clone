@@ -82,8 +82,8 @@ const CodeEditor = ({
   const buttonStyle = {
     width: "auto",
     height: "30px",
-    margin: "0px 0px 0px 10px",
-    padding: "0px 15px",
+    margin: "0px 0px 0px 5px",
+    padding: "0px 10px",
     display: "inline-block",
     border: `1px solid ${themeColor} !important`
   };
@@ -124,7 +124,7 @@ const CodeEditor = ({
           className="keyboard__header__select"
           size="large"
           onSelect={onLangChange}
-          width="200px"
+          width="150px"
           bg={white}
         >
           {item.languages.map((lang, index) => (

@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { Col, Form, Icon, Input } from "antd";
+import produce from "immer";
+import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import moment from "moment";
 import { v4 } from "uuid";
-import { Row, Col, Form, Input, Icon } from "antd";
-import {
-  SaveButton,
-  EditRubricContainer,
-  CancelRubricButton,
-  SaveRubricButton,
-  RubricDetailsContainer,
-  FormContainer,
-  RubricFooter
-} from "../styled";
-import produce from "immer";
+import { CustomStyleBtn } from "../../../assessment/styled/ButtonStyles";
 import { getUserDetails } from "../../../student/Login/ducks";
-import { updateRubricDataAction, getCurrentRubricDataSelector } from "../ducks";
+import { getCurrentRubricDataSelector, updateRubricDataAction } from "../ducks";
+import { EditRubricContainer, FormContainer, RubricFooter } from "../styled";
 import Criteria from "./Criteria";
 
 const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user }) => {
@@ -93,12 +84,12 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
 
         <RubricFooter>
           {isEditable && (
-            <span className="add-criteria-button" onClick={handleAddCriteria}>
+            <CustomStyleBtn margin="0px" onClick={handleAddCriteria}>
               <span>
                 <Icon type="plus" />
               </span>
               &nbsp;&nbsp; Add New Criteria
-            </span>
+            </CustomStyleBtn>
           )}
         </RubricFooter>
       </EditRubricContainer>
@@ -138,12 +129,12 @@ const enhance = compose(
   Form.create(),
   connect(
     state => ({
-      //questionData: getQuestionDataSelector(state)
+      // questionData: getQuestionDataSelector(state)
       currentRubricData: getCurrentRubricDataSelector(state),
       user: getUserDetails(state)
     }),
     {
-      //setQuestionData: setQuestionDataAction
+      // setQuestionData: setQuestionDataAction
       updateRubricData: updateRubricDataAction
     }
   )

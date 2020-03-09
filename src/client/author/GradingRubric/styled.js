@@ -113,39 +113,6 @@ export const EditRubricContainer = styled(Col)`
       border-radius: 10px 10px 0px 0px;
     }
   }
-  .add-criteria-button {
-    height: 45px;
-    display: flex;
-    align-items: center;
-    width: 170px;
-    justify-content: center;
-    box-shadow: 0px 2px 4px ${boxShadowColor};
-    border-radius: 4px;
-    font-size: ${props => props.theme.commentFontSize};
-    text-transform: uppercase;
-    color: ${white};
-    background: ${themeColor};
-    cursor: pointer;
-    span {
-      height: 20px;
-      width: 20px;
-      line-height: 19px;
-      display: inline-block;
-      text-align: center;
-      border-radius: 50%;
-      border: 1px solid ${themeColor};
-      background: ${white};
-      color: ${themeColor};
-      font-size: ${props => props.theme.questionTextlargeFontSize};
-      transition: all 0.35s ease-out;
-    }
-    &:hover {
-      span {
-        background: ${themeColor};
-        color: ${white};
-      }
-    }
-  }
 `;
 
 export const CriteriaContainer = styled.div`
@@ -207,7 +174,7 @@ export const RatingWrapper = styled.div`
 `;
 
 export const RatingSection = styled(PerfectScrollbar)`
-  height: -webkit-fill-available;
+  height: 100%;
   margin-right: ${({ isEditable }) => (isEditable ? "235px" : "-5px")};
   white-space: nowrap;
   overflow-x: hidden;
@@ -532,9 +499,6 @@ export const ActionBarContainer = styled.div`
         color: ${white};
         background: ${themeColor};
       }
-    }
-    .publish {
-      width: 140px;
     }
   }
 `;

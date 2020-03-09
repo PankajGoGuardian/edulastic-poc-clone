@@ -69,7 +69,7 @@ smoothscroll.polyfill();
         n.async = !0;
         // download the file from by passing the key https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js
         // and upload it to s3
-        n.src = "https://cdn2.edulastic.com/JS/thirdpartylib/segmentjs/v4.2.2/analytics.js";
+        n.src = AppConfig.segmentURI;
         var a = document.getElementsByTagName("script")[0];
         a.parentNode.insertBefore(n, a);
         analytics._loadOptions = e;

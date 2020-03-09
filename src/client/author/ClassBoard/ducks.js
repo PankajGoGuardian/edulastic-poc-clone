@@ -379,7 +379,7 @@ function* canvasSyncGradesSaga({ payload }) {
     yield call(message.success, "Grades synced with canvas successfully.");
   } catch (err) {
     console.error(err);
-    yield call(message.error, "Failed to sync grades with canvas.");
+    yield call(message.error, err.data.message || "Failed to sync grades with canvas.");
   }
 }
 

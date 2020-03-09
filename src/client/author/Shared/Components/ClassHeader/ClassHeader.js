@@ -319,7 +319,7 @@ class ClassHeader extends Component {
             View Password
           </MenuItems>
         )}
-        {showSyncGradesWithCanvasOption && (
+        {showSyncGradesWithCanvasOption && assignmentStatusForDisplay !== "NOT OPEN" && (
           <MenuItems key="key6" onClick={() => canvasSyncGrades({ assignmentId, groupId: classId })}>
             Canvas Grade Sync
           </MenuItems>

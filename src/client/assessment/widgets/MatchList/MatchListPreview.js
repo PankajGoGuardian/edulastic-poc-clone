@@ -229,7 +229,6 @@ const MatchListPreview = ({
   const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
     display: "flex",
     width: width || "auto",
-    maxWidth: dragItemMaxWidth - 32, // 32 is padding and margin of choices box
     alignItems: "center",
     justifyContent: _preview ? "space-between" : "flex-start",
     padding: flag === "dragItems" ? "10px 15px 10px 15px" : "0px",

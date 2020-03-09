@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Button, Input, Select, Radio, Upload, Icon } from "antd";
+import { Button, Input, Select, Radio, Upload, Icon, Spin } from "antd";
+
 import styled from "styled-components";
 import {
   themeColor,
@@ -18,7 +19,12 @@ import { ConfirmationModal } from "../../../src/components/common/ConfirmationMo
 import {
   fetchCollectionListRequestAction,
   getFetchCollectionListStateSelector,
-  getCollectionListSelector
+  getCollectionListSelector,
+  getSignedUrlSelector,
+  getSignedUrlRequestAction,
+  getSignedUrlSuccessAction,
+  signedUrlFetchingSelector,
+  importStatusSelector
 } from "../../ducks";
 import { RadioBtn, RadioGrp } from "@edulastic/common";
 
@@ -30,11 +36,38 @@ const EXISTING_COLLECTION = "existing collection";
 const UPLOAD_ZIP = "upload zip";
 const USE_AWS_S3_BUCKET = "use aws s3 bucket";
 
-const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
-  const [selectedCollectionId, setSelectedCollectionId] = useState();
+
+const ImportContentModal = ({
+  visible,
+  handleResponse,
+  collectionList,
+  getSignedUrl,
+  getSignedUrlData,
+  setSignedUrl,
+  signedUrlFetching,
+  closeModel
+}) => {
+  const [selectedCollectionName, setSelectedCollectionName] = useState();
+
   const [selectedBucketId, setSelectedBucketId] = useState("");
   const [importType, setImportType] = useState(NEW_COLLECTION);
   const [uploadType, setUploadType] = useState(UPLOAD_ZIP);
+  const [selectedFormat, setSelectedFormat] = useState("qti");
+
+  const handleUpload = ({ file, fileList }) => {
+    if (file.type !== "application/zip") {
+      return;
+    }
+    getSignedUrl(fileList[0]);
+  };
+
+  const uploadProps = {
+    beforeUpload: () => false,
+    onChange: handleUpload,
+    accept: "application/zip",
+    multiple: false,
+    showUploadList: false
+  };
 
   useEffect(() => {
     fetchCollectionListRequestAction();
@@ -42,15 +75,15 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
 
   useEffect(() => {
     setSelectedBucketId();
-  }, [selectedCollectionId]);
+  }, [selectedCollectionName]);
 
   useEffect(() => {
-    setSelectedCollectionId();
+    setSelectedCollectionName();
     setSelectedBucketId();
   }, [importType]);
 
   useEffect(() => {
-    setSelectedCollectionId();
+    setSelectedCollectionName();
     setSelectedBucketId();
     setImportType(NEW_COLLECTION);
     setUploadType(UPLOAD_ZIP);
@@ -58,23 +91,44 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
 
   const Footer = (
     <StyledFooter>
-      <NoButton ghost onClick={() => handleResponse(null)}>
+      <NoButton ghost onClick={() => closeModel()}>
         CANCEL
       </NoButton>
-      <YesButton onClick={() => handleResponse(selectedCollectionId, selectedBucketId)}>CREATE</YesButton>
+      <YesButton
+        onClick={() =>
+          handleResponse({
+            selectedCollectionName,
+            selectedBucketId,
+            signedUrl: getSignedUrlData
+          })
+        }
+      >
+        CREATE
+      </YesButton>
     </StyledFooter>
   );
   const Title = [<Heading>Import Content</Heading>];
 
   return (
-    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
+
+    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => closeModel()} width={400}>
+
       <ModalBody>
         <FieldRow>
           <span>Import content from QTI, WebCT and several other formats.</span>
         </FieldRow>
         <FieldRow>
           <label>Format</label>
-          <Select style={{ width: "100%" }} placeholder="Select format" />
+          <SelectStyled
+            style={{ width: "100%" }}
+            placeholder="Select format"
+            getPopupContainer={node => node.parentNode}
+            onChange={value => setSelectedFormat(value)}
+            value={selectedFormat}
+          >
+            <Select.Option value="qti">QTI</Select.Option>
+            <Select.Option value="webct">WebCT</Select.Option>
+          </SelectStyled>
         </FieldRow>
         <FieldRow>
           <label>Import Into</label>
@@ -86,43 +140,46 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
             <SelectStyled
               placeholder="Select a collection"
               getPopupContainer={node => node.parentNode}
-              onChange={value => setSelectedCollectionId(value)}
-              value={selectedCollectionId}
+              onChange={value => setSelectedCollectionName(value)}
+              value={selectedCollectionName}
             >
               {collectionList.map(collection => (
-                <Select.Option value={collection._id}>{collection.name}</Select.Option>
+                <Select.Option value={collection.name}>{collection.name}</Select.Option>
               ))}
             </SelectStyled>
           ) : (
-            <Input />
+            <Input
+              placeholder={`Enter collection name`}
+              onChange={ev => setSelectedCollectionName(ev.target.value)}
+              value={selectedCollectionName}
+            />
           )}
-
-          {selectedCollectionId ? (
-            <SelectStyled
-              getPopupContainer={node => node.parentNode}
-              placeholder="Select a bucket"
-              onChange={value => setSelectedBucketId(value)}
-              value={selectedBucketId}
-            >
-              {collectionList
-                .filter(collection => collection._id === selectedCollectionId)[0]
-                .buckets.map(bucket => (
-                  <Option value={bucket._id}>{bucket.name}</Option>
-                ))}
-            </SelectStyled>
-          ) : null}
         </FieldRow>
         <FieldRow>
-          <RadioGrp value={uploadType} onChange={value => setUploadType(value)}>
-            <RadioBtn value={UPLOAD_ZIP}>UPLOAD ZIP</RadioBtn>
-            <RadioBtn value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</RadioBtn>
-          </RadioGrp>
-          <Dragger>
-            <div>
-              <Icon type="upload" />
-              <span>Drag & drop zip file</span>
-            </div>
-          </Dragger>
+          <Radio.Group value={uploadType} onChange={e => setUploadType(e.target.value)}>
+            <Radio value={UPLOAD_ZIP}>UPLOAD ZIP</Radio>
+            <Radio value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</Radio>
+          </Radio.Group>
+          {signedUrlFetching ? (
+            <Spin size={"small"} />
+          ) : uploadType === UPLOAD_ZIP ? (
+            [
+              <Dragger {...uploadProps}>
+                <div>
+                  <Icon type="upload" />
+                  <span>Drag & drop zip file</span>
+                </div>
+              </Dragger>,
+              <span>{getSignedUrlData}</span>
+            ]
+          ) : (
+            <Input
+              value={getSignedUrlData}
+              onBlur={e => setSignedUrl(e.target.value)}
+              placeholder={`Enter aws s3 bucket url`}
+            />
+          )}
+
         </FieldRow>
       </ModalBody>
     </StyledModal>
@@ -132,21 +189,27 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
 const ConnectedImportContentModal = connect(
   state => ({
     fetchCollectionListState: getFetchCollectionListStateSelector(state),
-    collectionList: getCollectionListSelector(state)
+    collectionList: getCollectionListSelector(state),
+    getSignedUrlData: getSignedUrlSelector(state),
+    signedUrlFetching: signedUrlFetchingSelector(state),
+    importStatus: importStatusSelector(state)
   }),
-  { fetchCollectionListRequest: fetchCollectionListRequestAction }
+  {
+    fetchCollectionListRequest: fetchCollectionListRequestAction,
+    getSignedUrl: getSignedUrlRequestAction,
+    setSignedUrl: getSignedUrlSuccessAction
+  }
 )(ImportContentModal);
 
 export default ConnectedImportContentModal;
 
 ImportContentModal.propTypes = {
   visible: PropTypes.bool,
-  handleResponse: PropTypes.func
+  handleResponse: PropTypes.func.isRequired
 };
 
 ImportContentModal.defaultProps = {
-  visible: false,
-  handleResponse: () => {}
+  visible: false
 };
 
 export const StyledModal = styled(ConfirmationModal)`

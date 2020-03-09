@@ -1,8 +1,10 @@
 import { createSelector } from "reselect";
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { collectionsApi } from "@edulastic/api";
+import { collectionsApi, contentImportApi, extractContent } from "@edulastic/api";
+import { uploadToS3 } from "@edulastic/common";
+import { aws } from "@edulastic/constants";
 
 // constants
 export const CREATE_NEW_COLLECTION_REQUEST = "[collection] create new collection request";
@@ -23,6 +25,12 @@ export const SEARCH_ORGANIZATION_SUCCESS = "[collection] search organization suc
 export const SEARCH_ORGANIZATION_FAILED = "[collection] search organization failed";
 export const DELETE_PERMISSION_REQUEST = "[collection] delete permission request";
 export const DELETE_PERMISSION_SUCCESS = "[collection] delete permission success";
+const GET_SIGNED_URL_REQUEST = "[collection] get signed url request";
+const GET_SIGNED_URL_SUCCESS = "[collection] get signed url success";
+const GET_SIGNED_URL_ERROR = "[collection] get signed url error";
+const IMPORT_TEST_REQUEST = "[collection] import test to collection request";
+const IMPORT_TEST_SUCCESS = "[collection] import test to collection success";
+const IMPORT_TEST_ERROR = "[collection] import test to collection error";
 
 // actions
 export const createCollectionRequestAction = createAction(CREATE_NEW_COLLECTION_REQUEST);
@@ -43,6 +51,12 @@ export const searchOrgaizationSuccessAction = createAction(SEARCH_ORGANIZATION_S
 export const searchOrgaizationFailedAction = createAction(SEARCH_ORGANIZATION_FAILED);
 export const deletePermissionRequestAction = createAction(DELETE_PERMISSION_REQUEST);
 export const deletePermissionSuccessAction = createAction(DELETE_PERMISSION_SUCCESS);
+export const getSignedUrlRequestAction = createAction(GET_SIGNED_URL_REQUEST);
+export const getSignedUrlSuccessAction = createAction(GET_SIGNED_URL_SUCCESS);
+export const getSignedUrlFailedAction = createAction(GET_SIGNED_URL_ERROR);
+export const importTestToCollectionRequestAction = createAction(IMPORT_TEST_REQUEST);
+export const importTestToCollectionSuccessAction = createAction(IMPORT_TEST_SUCCESS);
+export const importTestToCollectionFailedAction = createAction(IMPORT_TEST_ERROR);
 
 const initialState = {
   creating: false,
@@ -53,7 +67,11 @@ const initialState = {
   permissions: [],
   schools: [],
   users: [],
-  districts: []
+  districts: [],
+  signedUrl: "",
+  signedUrlFetching: false,
+  importStatus: "",
+  importing: false
 };
 
 // reducer
@@ -117,6 +135,26 @@ export const reducer = createReducer(initialState, {
   },
   [DELETE_PERMISSION_SUCCESS]: (state, { payload }) => {
     state.permissions = state.permissions.filter(p => p._id !== payload);
+  },
+  [GET_SIGNED_URL_REQUEST]: state => {
+    state.signedUrlFetching = true;
+  },
+  [GET_SIGNED_URL_SUCCESS]: (state, { payload }) => {
+    state.signedUrl = payload;
+    state.signedUrlFetching = false;
+  },
+  [GET_SIGNED_URL_ERROR]: state => {
+    state.signedUrlFetching = false;
+  },
+  [IMPORT_TEST_REQUEST]: state => {
+    state.importing = true;
+  },
+  [IMPORT_TEST_SUCCESS]: (state, { payload }) => {
+    state.importStatus = payload;
+    state.importing = false;
+  },
+  [GET_SIGNED_URL_ERROR]: state => {
+    state.importing = false;
   }
 });
 
@@ -226,6 +264,37 @@ function* deletePermissionRequestSaga({ payload }) {
   }
 }
 
+export function* importTestToCollectionSaga({ payload }) {
+  try {
+    const { selectedCollectionName, selectedBucketId, signedUrl } = payload;
+    console.log("pay..", JSON.stringify(payload));
+    const response = yield call(contentImportApi.qtiImport, {
+      files: [signedUrl],
+      collectionName: selectedCollectionName
+    });
+    if (response?.jobIds?.length) {
+      yield put(importTestToCollectionSuccessAction(response.jobIds));
+      yield call(message.success, "Successfully uploaded");
+    } else {
+      yield put(importTestToCollectionFailedAction("Failed uploading"));
+      yield call(message.error, "Uploading failed");
+    }
+  } catch (e) {
+    yield put(importTestToCollectionFailedAction(e?.data || {}));
+    yield call(message.error, "Error while importing collection data");
+  }
+}
+
+export function* getSignedUrlSaga({ payload: file }) {
+  try {
+    const signedUrl = yield call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT);
+    yield put(getSignedUrlSuccessAction(signedUrl));
+  } catch (e) {
+    yield put(getSignedUrlFailedAction(e?.data || {}));
+    console.log(e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_NEW_COLLECTION_REQUEST, createCollectionRequestSaga),
@@ -235,7 +304,9 @@ export function* watcherSaga() {
     yield takeEvery(FETCH_PERMISSIONS_REQUEST, fetchPermissionsRequestSaga),
     yield takeEvery(SEARCH_ORGANIZATION_REQUEST, searchOrgaizationRequestSaga),
     yield takeEvery(EDIT_PERMISSION_REQUEST, editPermissionRequestSaga),
-    yield takeEvery(DELETE_PERMISSION_REQUEST, deletePermissionRequestSaga)
+    yield takeEvery(DELETE_PERMISSION_REQUEST, deletePermissionRequestSaga),
+    yield takeLatest(GET_SIGNED_URL_REQUEST, getSignedUrlSaga),
+    yield takeLatest(IMPORT_TEST_REQUEST, importTestToCollectionSaga)
   ]);
 }
 
@@ -286,4 +357,24 @@ export const getDistrictListSelector = createSelector(
 export const getFetchOrganizationStateSelector = createSelector(
   stateSelector,
   state => state.fetchingOrganization
+);
+
+export const getSignedUrlSelector = createSelector(
+  stateSelector,
+  state => state.signedUrl
+);
+
+export const importStatusSelector = createSelector(
+  stateSelector,
+  state => state.importStatus
+);
+
+export const importingLoaderSelector = createSelector(
+  stateSelector,
+  state => state.importing
+);
+
+export const signedUrlFetchingSelector = createSelector(
+  stateSelector,
+  state => state.signedUrlFetching
 );

@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Icon } from "antd";
+import { Icon, Spin } from "antd";
 import ContentSubHeader from "../../../src/components/common/AdminSubHeader/ContentSubHeader";
 import { CollectionsTable } from "./CollectionsTable";
 import { PermissionsTable } from "./PermissionsTable";
 import { MainContainer, SubHeaderWrapper } from "../../../../common/styled";
-import { ImportButton, TablesWrapper , StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
+import { ImportButton, TablesWrapper, StyledSearch, AddCollectionButton, CollectionSearchHeader } from "../../styled";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import ImportContentModal from "../Modals/ImportContentModal";
 import AddCollectionModal from "../Modals/AddCollectionModal";
 
 import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
+import { importingLoaderSelector, importTestToCollectionRequestAction } from "../../ducks";
 
 const menuActive = { mainMenu: "Content", subMenu: "Collections" };
 
-const Collections = ({ history, user, manageTabLabel }) => {
+const Collections = ({ history, user, manageTabLabel, importDataToCollection, importLoader }) => {
   const [selectedCollection, setCollection] = useState(null);
   const [showImportModal, setImportModalVisibility] = useState(false);
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(false);
@@ -29,7 +30,12 @@ const Collections = ({ history, user, manageTabLabel }) => {
       to: ""
     }
   ];
-  const handleImportModalResponse = response => {
+  const handleImportModalResponse = data => {
+    importDataToCollection(data);
+    setImportModalVisibility(false);
+  };
+
+  const closeModel = () => {
     setImportModalVisibility(false);
   };
 
@@ -64,7 +70,11 @@ const Collections = ({ history, user, manageTabLabel }) => {
         />
         {!!selectedCollection && <PermissionsTable selectedCollection={selectedCollection} />}
       </TablesWrapper>
-      <ImportContentModal visible={showImportModal} handleResponse={handleImportModalResponse} />
+      <ImportContentModal
+        visible={showImportModal}
+        handleResponse={handleImportModalResponse}
+        closeModel={closeModel}
+      />
       {showAddCollectionModal && (
         <AddCollectionModal
           visible={showAddCollectionModal}
@@ -72,10 +82,18 @@ const Collections = ({ history, user, manageTabLabel }) => {
           isEditCollection={false}
         />
       )}
+      {importLoader && <Spin size={"small"} />}
     </MainContainer>
   );
 };
 
-export default connect(state => ({ user: getUser(state), manageTabLabel: getManageTabLabelSelector(state) }))(
-  Collections
-);
+export default connect(
+  state => ({
+    user: getUser(state),
+    manageTabLabel: getManageTabLabelSelector(state),
+    importLoader: importingLoaderSelector(state)
+  }),
+  {
+    importDataToCollection: importTestToCollectionRequestAction
+  }
+)(Collections);

@@ -311,7 +311,7 @@ const MatchListPreview = ({
   return (
     <StyledPaperWrapper
       data-cy="matchListPreview"
-      style={{ fontSize, overflow: isPrintPreview ? "hidden" : "auto", margin: "auto", width: "100%" }}
+      style={{ fontSize, overflowX: "auto", overflowY: "hidden", margin: "auto", width: "100%" }}
       padding={smallSize}
       ref={previewWrapperRef}
       boxShadow={smallSize ? "none" : ""}
@@ -370,7 +370,7 @@ const MatchListPreview = ({
             {!disableResponse && (
               <StyledCorrectAnswersContainer style={choicesBoxStyle} title={t("component.matchList.dragItemsTitle")}>
                 <DropContainer drop={drop} flag="dragItems" style={choicesBoxDropContainerStyle} noBorder>
-                  <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" maxWidth="100%">
+                  <FlexContainer alignItems="stretch" justifyContent="center" flexWrap="wrap" width="100%">
                     {groupPossibleResponses ? (
                       possibleResponseGroups.map((i, index) => (
                         <Fragment key={index}>
@@ -379,7 +379,7 @@ const MatchListPreview = ({
                             flexDirection="column"
                             alignItems="center"
                             justifyContent="flex-start"
-                            maxWidth="100%"
+                            width="100%"
                           >
                             <Subtitle
                               style={{
@@ -389,7 +389,7 @@ const MatchListPreview = ({
                               {i.title}
                             </Subtitle>
                             <FlexContainer
-                              maxWidth="100%"
+                              width="100%"
                               justifyContent="center"
                               flexWrap="wrap"
                               display={horizontallyAligned ? "inline-flex" : "flex"}
@@ -492,7 +492,7 @@ const MatchListPreview = ({
             )}
           </div>
           {view === "edit" && (
-            <React.Fragment>
+            <FlexContainer>
               <CheckboxLabel
                 className="additional-options"
                 key={`shuffleOptions_${item.shuffleOptions}`}
@@ -509,7 +509,7 @@ const MatchListPreview = ({
               >
                 {t("component.matchList.duplicatedResponses")}
               </CheckboxLabel>
-            </React.Fragment>
+            </FlexContainer>
           )}
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>

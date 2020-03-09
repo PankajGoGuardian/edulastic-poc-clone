@@ -37,7 +37,6 @@ const Search = ({
     depthOfKnowledge,
     authorDifficulty,
     authoredByIds,
-    createdAt,
     filter
   },
   allTagsData,
@@ -137,7 +136,7 @@ const Search = ({
       <Container>
         {((userFeatures.isPublisherAuthor && filter !== "ENTIRE_LIBRARY") || userFeatures.isCurator) &&
           getStatusFilter()}
-        {userFeatures.isCurator && (
+        {userFeatures.isCurator && filter !== "AUTHORED_BY_ME" && (
           <Item>
             <ItemHeader>Authored By</ItemHeader>
             <ItemBody>
@@ -145,7 +144,7 @@ const Search = ({
                 mode="multiple"
                 size="large"
                 placeholder="All Authors"
-                optionFilterProp={"children"}
+                optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 onChange={onSearchFieldChange("authoredByIds")}
                 value={authoredByIds}

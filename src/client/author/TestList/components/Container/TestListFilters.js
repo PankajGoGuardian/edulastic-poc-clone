@@ -1,30 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import {
-  themeColor,
-  secondaryTextColor,
-  titleColor,
-  lightGreySecondary,
-  smallDesktopWidth
-} from "@edulastic/colors";
+import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
 import { test as testsConstants } from "@edulastic/constants";
-import {
-  getStandardsListSelector,
-  getFormattedCurriculumsSelector
-} from "../../../src/selectors/dictionaries";
+import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
 import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
-import {
-  getCurrentDistrictUsersSelector,
-  getCurrentDistrictUsersAction
-} from "../../../../student/Login/ducks";
+import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
 
 const filtersTitle = ["Grades", "Subject", "Status"];
 const TestListFilters = ({
@@ -49,8 +37,7 @@ const TestListFilters = ({
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
   useEffect(() => {
-    if (userFeatures.isCurator && !currentDistrictUsers?.length)
-      getCurrentDistrictUsers(districtId);
+    if (userFeatures.isCurator && !currentDistrictUsers?.length) getCurrentDistrictUsers(districtId);
   }, []);
 
   const getAuthoredByFilterData = () => {
@@ -80,8 +67,7 @@ const TestListFilters = ({
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
       const showStatusFilter =
-        (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) ||
-        userFeatures.isCurator;
+        (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
       if (showStatusFilter) {
         filterTitles.push("Status");
       }
@@ -118,13 +104,10 @@ const TestListFilters = ({
       text: item.identifier
     }));
 
-    const standardsPlaceholder = !curriculumId
-      ? "Available with Curriculum"
-      : 'Type to Search, for example "k.cc"';
+    const standardsPlaceholder = !curriculumId ? "Available with Curriculum" : 'Type to Search, for example "k.cc"';
     filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     const showStatusFilter =
-      (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) ||
-      userFeatures.isCurator;
+      (userFeatures.isPublisherAuthor && filter !== filterMenuItems[0].filter) || userFeatures.isCurator;
     if (!showStatusFilter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
@@ -196,9 +179,7 @@ const TestListFilters = ({
 
   let mappedfilterData = getFilters();
   if (isPublishers) {
-    const filtersToBeMoved = mappedfilterData.filter(f =>
-      ["Status", "Authored By"].includes(f.title)
-    );
+    const filtersToBeMoved = mappedfilterData.filter(f => ["Status", "Authored By"].includes(f.title));
     mappedfilterData = [
       ...filtersToBeMoved,
       ...mappedfilterData.filter(f => !["Status", "Authored By"].includes(f.title))
@@ -223,52 +204,49 @@ const TestListFilters = ({
         </ClearAll>
       </FilerHeading>
       <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
-      {mappedfilterData.map((filterItem, index) => (
-        <>
-          <FilterItemWrapper key={index}>
-            {filterItem.isStandardSelect && (
-              <IconExpandStandards
-                className="fa fa-expand"
-                aria-hidden="true"
-                onClick={handleSetShowModal}
-              />
-            )}
-            <SubTitle>{filterItem.title}</SubTitle>
-            <Select
-              data-cy={filterItem.title}
-              showSearch={filterItem.showSearch}
-              onSearch={filterItem.onSearch && filterItem.onSearch}
-              mode={filterItem.mode}
-              size={filterItem.size}
-              placeholder={filterItem.placeholder}
-              filterOption={filterItem.filterOption}
-              optionFilterProp={filterItem.optionFilterProp}
-              defaultValue={
-                filterItem.mode === "multiple"
-                  ? undefined
-                  : filterItem.data[0] && filterItem.data[0].value
-              }
-              value={search[filterItem.onChange]}
-              onChange={value => onChange(filterItem.onChange, value)}
-              disabled={filterItem.disabled}
-              getPopupContainer={triggerNode => triggerNode.parentNode}
-            >
-              {filterItem.data.map(({ value, text, disabled }, index1) => (
-                <Select.Option value={value} key={index1} disabled={disabled}>
-                  {text}
-                </Select.Option>
-              ))}
-              {isPublishers &&
-                filterItem.title === "Status" &&
-                filterItem.publisherOptions.map(({ value, text }) => (
-                  <Select.Option value={value} key={value}>
+      {mappedfilterData.map((filterItem, index) => {
+        if (filterItem.title === "Authored By" && search.filter === "AUTHORED_BY_ME") return null;
+        return (
+          <>
+            <FilterItemWrapper key={index}>
+              {filterItem.isStandardSelect && (
+                <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
+              )}
+              <SubTitle>{filterItem.title}</SubTitle>
+              <Select
+                data-cy={filterItem.title}
+                showSearch={filterItem.showSearch}
+                onSearch={filterItem.onSearch && filterItem.onSearch}
+                mode={filterItem.mode}
+                size={filterItem.size}
+                placeholder={filterItem.placeholder}
+                filterOption={filterItem.filterOption}
+                optionFilterProp={filterItem.optionFilterProp}
+                defaultValue={
+                  filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].value
+                }
+                value={search[filterItem.onChange]}
+                onChange={value => onChange(filterItem.onChange, value)}
+                disabled={filterItem.disabled}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {filterItem.data.map(({ value, text, disabled }, index1) => (
+                  <Select.Option value={value} key={index1} disabled={disabled}>
                     {text}
                   </Select.Option>
                 ))}
-            </Select>
-          </FilterItemWrapper>
-        </>
-      ))}
+                {isPublishers &&
+                  filterItem.title === "Status" &&
+                  filterItem.publisherOptions.map(({ value, text }) => (
+                    <Select.Option value={value} key={value}>
+                      {text}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </FilterItemWrapper>
+          </>
+        );
+      })}
     </Container>
   );
 };

@@ -96,6 +96,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           <Col span={12}>
             <Label>Count</Label>
             <Input
+              type="number"
               value={fractionProperties.count}
               placeholder="Fraction count"
               onBlur={value => handleDimensionChange("count", +value)}
@@ -104,6 +105,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           <Col span={12}>
             <Label>Sectors</Label>
             <Input
+              type="number"
               size="default"
               value={fractionProperties.sectors || 7}
               placeholder="Sectors"
@@ -117,6 +119,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           <Col span={8}>
             <Label>Count</Label>
             <Input
+              type="number"
               value={fractionProperties.count}
               placeholder="Fraction count"
               onBlur={value => handleDimensionChange("count", +value)}
@@ -125,6 +128,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           <Col span={8}>
             <Label>Rows</Label>
             <Input
+              type="number"
               size="default"
               value={fractionProperties.rows}
               placeholder="Rows"
@@ -135,6 +139,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           <Col span={8}>
             <Label>Columns</Label>
             <Input
+              type="number"
               size="default"
               value={fractionProperties.columns}
               placeholder="Columns"

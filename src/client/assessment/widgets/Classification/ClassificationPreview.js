@@ -7,11 +7,10 @@ import {
   Stimulus,
   Subtitle,
   QuestionNumberLabel,
-  measureText,
+  measureTextWithImage,
   AnswerContext,
   QuestionLabelWrapper,
-  QuestionSubLabel,
-  QuestionContentWrapper
+  QuestionSubLabel
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
@@ -70,7 +69,8 @@ const ClassificationPreview = ({
   const styles = {
     wrapperStyle: {
       display: "flex",
-      flexDirection: (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
+      flexDirection:
+        (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
       overflow: "auto"
     },
@@ -257,7 +257,7 @@ const ClassificationPreview = ({
         return shuffleOptions ? shuffle(responses) : responses;
       });
 
-  const choiceWidth = maxBy(posResp.map(op => measureText(op?.value || "")), obj => obj?.width)?.width;
+  const choiceWidth = maxBy(posResp.map(op => measureTextWithImage(op?.value || "")), obj => obj?.width)?.width;
 
   const dragItemSize = {
     maxWidth: dragItemMaxWidth,
@@ -341,7 +341,7 @@ const ClassificationPreview = ({
 
   let minResponseWidth = Infinity;
   const widthArr = posResp.map(op => {
-    const respWidth = measureText(op?.value || "");
+    const respWidth = measureTextWithImage(op?.value || "")?.width;
     minResponseWidth = Math.min(respWidth, minResponseWidth);
     return { width: respWidth };
   });
@@ -361,13 +361,17 @@ const ClassificationPreview = ({
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <div style={{ overflow: "auto" }}>
           {!smallSize && view === PREVIEW && (
             <QuestionTitleWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
             </QuestionTitleWrapper>
           )}
-          <div data-cy="classificationPreviewWrapper" style={styles.wrapperStyle} className="classification-preview-wrapper">
+          <div
+            data-cy="classificationPreviewWrapper"
+            style={styles.wrapperStyle}
+            className="classification-preview-wrapper"
+          >
             <ResponseContainer
               direction={direction}
               imageOptions={imageOptions}
@@ -472,7 +476,7 @@ const ClassificationPreview = ({
               ))}
             </ChoiceContainer>
           ) : null}
-        </QuestionContentWrapper>
+        </div>
       </FlexContainer>
     </StyledPaperWrapper>
   );

@@ -88,6 +88,7 @@ export { default as RefContext } from "./src/contexts/RefContext";
 // custom hook
 export { default as useRealtimeV2 } from "./src/customHooks/useRealtimeV2";
 export { default as useDisableDragScroll } from "./src/customHooks/useDisableDragScroll";
+export { default as measureTextWithImage } from "./src/customHooks/measureTextWithImage";
 
 // Mobile
 export { MenuIcon } from "./src/components/MenuIcon";

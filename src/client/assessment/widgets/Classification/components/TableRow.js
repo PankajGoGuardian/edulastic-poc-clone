@@ -1,4 +1,6 @@
-import React, { useLayoutEffect, useRef } from "react";
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable func-names */
+import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get, maxBy } from "lodash";
@@ -14,6 +16,8 @@ import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import { IndexBox } from "./DragItem/styled/IndexBox";
+
+const colContainerDimensionsList = [];
 
 const TableRow = ({
   startIndex,
@@ -41,7 +45,7 @@ const TableRow = ({
   showIndex
 }) => {
   const wrapperRef = useRef();
-  const observeRef = useRef(null);
+  const mutationObserverRef = useRef(null);
   const imageOptions = get(item, "imageOptions", {});
   const uiStyle = get(item, "uiStyle", {});
 
@@ -68,9 +72,9 @@ const TableRow = ({
   const getChangedContainerHeight = h => Math.max(h, imageOptions.height + imageOptions.y);
   const getChangedContainerWidth = w => Math.max(w, imageOptions.width + imageOptions.x);
 
-  const changeWrapperStyle = dropContainerDimensionsList => {
-    const { height: maxHeight } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.height) || {};
-    const { width: maxWidth } = maxBy(dropContainerDimensionsList, dropContainer => dropContainer.width) || {};
+  const changeWrapperStyle = () => {
+    const { height: maxHeight } = maxBy(colContainerDimensionsList, dropContainer => dropContainer.height) || {};
+    const { width: maxWidth } = maxBy(colContainerDimensionsList, dropContainer => dropContainer.width) || {};
     /**
      * +40 is padding of element
      */
@@ -215,28 +219,23 @@ const TableRow = ({
     );
   }
 
-  useLayoutEffect(() => {
-    if (window.$ && !observeRef.current) {
+  useEffect(() => {
+    if (window.$ && !mutationObserverRef.current) {
       const jQuery = window.$;
-      const dropContainerDimensionsList = [];
-
-      // eslint-disable-next-line
       jQuery(".answer-draggable-wrapper").each(function(index) {
-        const wraperElem = this;
-        /**
-         * need to put clientHeight for empty columns
-         * this will be called only once on mounting this component
-         */
-
-        const position = jQuery(wraperElem).position();
-        dropContainerDimensionsList[index] = {
-          width: wraperElem.clientWidth + position.left + 2,
-          height: wraperElem.clientHeight + position.top + 2
-        };
-        changeWrapperStyle(dropContainerDimensionsList);
+        const colWrapper = this;
+        mutationObserverRef.current = new MutationObserver(function() {
+          const position = jQuery(colWrapper).position();
+          colContainerDimensionsList[index] = {
+            width: colWrapper.clientWidth + position.left + 2,
+            height: colWrapper.clientHeight + position.top + 2
+          };
+          changeWrapperStyle();
+        });
+        mutationObserverRef.current.observe(this, { attributes: true, childList: true, subtree: true });
       });
     }
-  }, [item.responseOptions, item.imageOptions]);
+  }, []);
 
   return (
     <div ref={wrapperRef} style={{ position: "relative", minHeight: 140 }}>

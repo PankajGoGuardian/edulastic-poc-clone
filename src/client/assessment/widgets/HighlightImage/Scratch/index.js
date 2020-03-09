@@ -6,9 +6,9 @@ import Tools from "../../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../themes/AssessmentPlayerDefault/SvgDraw";
 
 const toolBoxStyle = {
-  top: "50%",
-  left: "unset",
-  transform: "translateY(-50%)"
+  top: "0px",
+  left: "0px",
+  position: "relative"
 };
 
 const Scratch = ({ clearClicked }) => {

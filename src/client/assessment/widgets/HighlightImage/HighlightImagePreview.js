@@ -203,6 +203,9 @@ const HighlightImagePreview = ({
   return (
     <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""} ref={containerRef}>
       <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
+        {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
+          <Scratch clearClicked={clearClicked} />
+        )}
         <CanvasContainer
           ref={canvasContainerRef}
           minHeight={canvasDimensions.maxHeight}
@@ -231,9 +234,6 @@ const HighlightImagePreview = ({
             </QuestionContentWrapper>
           </FlexContainer>
         </CanvasContainer>
-        {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
-          <Scratch clearClicked={clearClicked} />
-        )}
       </ScratchPadContext.Provider>
     </PreviewContainer>
   );

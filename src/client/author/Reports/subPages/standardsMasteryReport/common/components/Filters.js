@@ -420,7 +420,7 @@ const enhance = compose(
       browseStandards: getReportsStandardsBrowseStandards(state),
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
-      testIds: getTestIdSelector(state),
+      testIds: getTestIdSelector(state) || [],
       role: getUserRole(state),
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),

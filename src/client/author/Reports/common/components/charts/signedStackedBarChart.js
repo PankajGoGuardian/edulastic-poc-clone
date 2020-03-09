@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   BarChart,
   Bar,
@@ -268,7 +268,7 @@ export const SignedStackedBarChart = ({
                     <Cell
                       radius={[10, 10, 0, 0]}
                       key={cdItem[xAxisDataKey]}
-                      fill={cdItem["fill_" + bdIndex]}
+                      fill={bdItem.fill}
                       fillOpacity={fillOpacity}
                     />
                   ) : (

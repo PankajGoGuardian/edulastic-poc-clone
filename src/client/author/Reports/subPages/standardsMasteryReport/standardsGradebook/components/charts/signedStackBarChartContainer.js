@@ -1,13 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Row, Col } from "antd";
-import { get, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
 import { getChartData } from "../../utils/transformers";
-import { getHSLFromRange1 } from "../../../../../common/util";
 
 export const SignedStackBarChartContainer = ({
   filteredDenormalizedData,
-  rawData,
   filters,
   chartFilter,
   masteryScale = [],
@@ -28,10 +26,7 @@ export const SignedStackBarChartContainer = ({
         barsData.push({
           key: tempArr[i].masteryLabel,
           stackId: "a",
-          // V1 Color code
-          // fill: tempArr[i].color,
-          // V2 Color code
-          fill: getHSLFromRange1((i / masteryScale.length) * 100),
+          fill: tempArr[i].color,
           unit: "%",
           name: tempArr[i].masteryName
         });
@@ -123,4 +118,3 @@ export const SignedStackBarChartContainer = ({
     />
   );
 };
-7406713131;

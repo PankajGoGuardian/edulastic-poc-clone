@@ -4,22 +4,18 @@ import { connect } from "react-redux";
 import { Row, Col } from "antd";
 import { get, isEmpty } from "lodash";
 import next from "immer";
-import queryString from "query-string";
 
 import { StyledH3, StyledCard } from "../../../common/styled";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import StudentAssignmentModal from "../../../common/components/Popups/studentAssignmentModal";
-import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { Placeholder } from "../../../common/components/loader";
 
 import { UpperContainer, TableContainer } from "./components/styled";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
 import {
   getStandardsFiltersRequestAction,
-  getReportsStandardsFilters,
   getSelectedStandardProficiency,
-  getFiltersSelector,
-  getReportsStandardsBrowseStandards
+  getFiltersSelector
 } from "../common/filterDataDucks";
 
 import {
@@ -51,15 +47,10 @@ import { getStudentAssignments } from "../../../common/util";
 
 const StandardsGradebook = ({
   standardsGradebook,
-  standardsFilters,
   getStandardsGradebookRequestAction,
   isCsvDownloading,
   role,
-  user,
   settings,
-  history,
-  location,
-  match,
   loading,
   selectedStandardProficiency,
   filters,
@@ -227,10 +218,8 @@ const enhance = compose(
   connect(
     state => ({
       standardsGradebook: getReportsStandardsGradebook(state),
-      standardsFilters: getReportsStandardsFilters(state),
       loading: getReportsStandardsGradebookLoader(state),
       role: getUserRole(state),
-      user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       isCsvDownloading: getCsvDownloadingState(state),
       selectedStandardProficiency: getSelectedStandardProficiency(state),

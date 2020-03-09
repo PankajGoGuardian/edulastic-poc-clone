@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
-import styled from "styled-components";
 import { isEmpty } from "lodash";
 import next from "immer";
 
@@ -52,14 +51,7 @@ export const StandardsGradebookTable = ({
   }
 
   const tableData = useMemo(() => {
-    return getTableData(
-      filteredDenormalizedData,
-      masteryScale,
-      tableDdFilters.compareBy,
-      tableDdFilters.analyseBy,
-      tableDdFilters.masteryLevel,
-      role
-    );
+    return getTableData(filteredDenormalizedData, masteryScale, tableDdFilters.compareBy, tableDdFilters.masteryLevel);
   }, [filteredDenormalizedData, masteryScale, tableDdFilters]);
 
   const getCurrentStandard = (standardId, analyseBy) => {

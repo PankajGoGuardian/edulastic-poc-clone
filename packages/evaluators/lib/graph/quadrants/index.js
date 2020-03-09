@@ -304,6 +304,7 @@ var buildGraphApiResponse = function buildGraphApiResponse() {
     if (!allowedShapes.includes(el.type)) {
       return;
     }
+
     if (el.type === _constants.ShapeTypes.AREA) {
       points.push("(".concat(+el.x.toFixed(4), ",").concat(+el.y.toFixed(4), ")"));
       return;

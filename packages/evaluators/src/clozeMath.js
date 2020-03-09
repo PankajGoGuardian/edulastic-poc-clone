@@ -1,4 +1,5 @@
 import { flatten, groupBy, identity, get, maxBy, cloneDeep } from "lodash";
+import { evaluationType } from "@edulastic/constants";
 import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
 
@@ -88,7 +89,10 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     if (validAnswers[i].dropdown) {
       const dropDownEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
-        validation: { scoringType: "exactMatch", validResponse: { score: 1, ...validAnswers[i].dropdown } }
+        validation: {
+          scoringType: evaluationType.EXACT_MATCH,
+          validResponse: { score: 1, ...validAnswers[i].dropdown }
+        }
       }).evaluation;
 
       evaluations = { ...evaluations, ...dropDownEvaluation };
@@ -98,7 +102,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       const clozeTextEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
         validation: {
-          scoringType: "exactMatch",
+          scoringType: evaluationType.EXACT_MATCH,
           validResponse: { score: 1, ...validAnswers[i].textinput },
           ignoreCase,
           allowSingleLetterMistake
@@ -111,7 +115,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       const mathEvaluation = await mathEval({
         userResponse: maths,
         validation: {
-          scoringType: "exactMatch",
+          scoringType: evaluationType.EXACT_MATCH,
           validResponse: validAnswers[i]
         }
       });
@@ -122,7 +126,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       const mathEvaluation = await mathEval({
         userResponse: mathUnits,
         validation: {
-          scoringType: "exactMatch",
+          scoringType: evaluationType.EXACT_MATCH,
           validResponse: validAnswers[i].mathUnits
         }
       });
@@ -141,9 +145,11 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     const penaltyOfAnwer = penalty / answersCount;
     const penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
 
-    currentScore = scoreOfAnswer * correctCount;
-
-    if (scoringType === "partialMatch") {
+    if (scoringType === evaluationType.EXACT_MATCH) {
+      currentScore = correctCount === answersCount ? maxScore : 0;
+    } else {
+      // partial match
+      currentScore = scoreOfAnswer * correctCount;
       currentScore -= penaltyScore;
     }
 
@@ -252,7 +258,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
       clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
         validation: {
-          scoringType: "exactMatch",
+          scoringType: evaluationType.EXACT_MATCH,
           validResponse: { score: 1, ...validResponse.textinput },
           altResponses: alt_inputs,
           mixAndMatch: true,
@@ -268,7 +274,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
       clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
         validation: {
-          scoringType: "exactMatch",
+          scoringType: evaluationType.EXACT_MATCH,
           validResponse: { score: 1, ...validResponse.dropdown },
           altResponses: alt_dropdowns,
           mixAndMatch: true
@@ -310,7 +316,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const correctAnswerCount = Object.values(evaluation).filter(identity).length;
   const wrongAnswerCount = Object.values(evaluation).filter(i => !i).length;
 
-  if (validation.scoringType === "partialMatch") {
+  if (validation.scoringType === evaluationType.PARTIAL_MATCH) {
     score = (correctAnswerCount / optionCount) * questionScore;
     if (validation.penalty) {
       const negativeScore = penalty * wrongAnswerCount;

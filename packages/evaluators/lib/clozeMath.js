@@ -25,6 +25,8 @@ var _groupBy2 = _interopRequireDefault(require("lodash/groupBy"));
 
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
 
+var _constants = require("@edulastic/constants");
+
 var _math = require("./math");
 
 var _clozeText = _interopRequireDefault(require("./clozeText"));
@@ -252,7 +254,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
 
         case 8:
           if (!(i < validAnswers.length)) {
-            _context3.next = 37;
+            _context3.next = 36;
             break;
           }
 
@@ -265,7 +267,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             dropDownEvaluation = (0, _clozeText["default"])({
               userResponse: transformUserResponse(dropDowns),
               validation: {
-                scoringType: "exactMatch",
+                scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: _objectSpread(
                   {
                     score: 1
@@ -281,7 +283,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             clozeTextEvaluation = (0, _clozeText["default"])({
               userResponse: transformUserResponse(inputs),
               validation: {
-                scoringType: "exactMatch",
+                scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: _objectSpread(
                   {
                     score: 1
@@ -305,7 +307,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             mathEval({
               userResponse: maths,
               validation: {
-                scoringType: "exactMatch",
+                scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: validAnswers[i]
               }
             })
@@ -326,7 +328,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             mathEval({
               userResponse: mathUnits,
               validation: {
-                scoringType: "exactMatch",
+                scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: validAnswers[i].mathUnits
               }
             })
@@ -346,9 +348,12 @@ var normalEvaluator = function normalEvaluator(_ref2) {
           scoreOfAnswer = maxScore / answersCount;
           penaltyOfAnwer = penalty / answersCount;
           penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
-          currentScore = scoreOfAnswer * correctCount;
 
-          if (scoringType === "partialMatch") {
+          if (scoringType === _constants.evaluationType.EXACT_MATCH) {
+            currentScore = correctCount === answersCount ? maxScore : 0;
+          } else {
+            // partial match
+            currentScore = scoreOfAnswer * correctCount;
             currentScore -= penaltyScore;
           }
 
@@ -358,12 +363,12 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             score: currentScore
           });
 
-        case 34:
+        case 33:
           i++;
           _context3.next = 8;
           break;
 
-        case 37:
+        case 36:
           selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
           if (score === 0) {
@@ -386,7 +391,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             maxScore: maxScore
           });
 
-        case 42:
+        case 41:
         case "end":
           return _context3.stop();
       }
@@ -658,7 +663,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref4) {
               (0, _clozeText["default"])({
                 userResponse: transformUserResponse(inputs),
                 validation: {
-                  scoringType: "exactMatch",
+                  scoringType: _constants.evaluationType.EXACT_MATCH,
                   validResponse: _objectSpread(
                     {
                       score: 1
@@ -678,7 +683,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref4) {
               (0, _clozeText["default"])({
                 userResponse: transformUserResponse(dropDowns),
                 validation: {
-                  scoringType: "exactMatch",
+                  scoringType: _constants.evaluationType.EXACT_MATCH,
                   validResponse: _objectSpread(
                     {
                       score: 1
@@ -772,7 +777,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref4) {
             return !i;
           }).length;
 
-          if (validation.scoringType === "partialMatch") {
+          if (validation.scoringType === _constants.evaluationType.PARTIAL_MATCH) {
             score = (correctAnswerCount / optionCount) * questionScore;
 
             if (validation.penalty) {

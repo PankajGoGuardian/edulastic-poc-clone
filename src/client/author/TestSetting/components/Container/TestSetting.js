@@ -11,6 +11,7 @@ import { roleuser } from "@edulastic/constants";
 
 import { Radio, Row, Col, Select } from "antd";
 import styled from "styled-components";
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 
 import {
   TestSettingDiv,
@@ -160,27 +161,27 @@ class TestSetting extends Component {
             <StyledRow>
               <React.Fragment>
                 <StyledLabel>Allow Partial Score </StyledLabel>
-                <StyledRdioGroup
+                <RadioGrp
                   defaultValue={testSetting.partialScore}
                   onChange={e => this.changePartialScore(e)}
                   value={testSetting.partialScore}
                 >
-                  <Radio value={true}>Yes</Radio>
-                  <Radio value={false}>No</Radio>
-                </StyledRdioGroup>
+                  <RadioBtn value={true}>Yes</RadioBtn>
+                  <RadioBtn value={false}>No</RadioBtn>
+                </RadioGrp>
               </React.Fragment>
             </StyledRow>
             <StyledRow>
               <React.Fragment>
                 <StyledLabel>Show Timer </StyledLabel>
-                <StyledRdioGroup
+                <RadioGrp
                   defaultValue={testSetting.timer}
                   onChange={e => this.changeTimerScore(e)}
                   value={testSetting.timer}
                 >
-                  <Radio value={true}>Yes</Radio>
-                  <Radio value={false}>No</Radio>
-                </StyledRdioGroup>
+                  <RadioBtn value={true}>Yes</RadioBtn>
+                  <RadioBtn value={false}>No</RadioBtn>
+                </RadioGrp>
               </React.Fragment>
             </StyledRow>
             <StyledRow>

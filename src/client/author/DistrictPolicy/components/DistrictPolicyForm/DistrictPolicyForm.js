@@ -15,10 +15,9 @@ import {
   getPolicies
 } from "../../ducks";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 import { Form, Checkbox, Radio, message, Input } from "antd";
 import { EduCheckBox } from "@edulastic/common";
-const RadioGroup = Radio.Group;
 
 import {
   StyledFormDiv,
@@ -462,21 +461,21 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
           <StyledRow>
             <StyledLabel>3rd-party integrations:</StyledLabel>
-            <RadioGroup onChange={this.thirdpartyIntegration} value={thirdPartyValue}>
-              <Radio value={1}>Google Classroom</Radio>
-              <Radio value={2}>Canvas</Radio>
-              <Radio value={3}>Schoology</Radio>
-              <Radio value={4}>ClassLink</Radio>
-              <Radio value={5}>None</Radio>
+            <RadioGrp onChange={this.thirdpartyIntegration} value={thirdPartyValue}>
+              <RadioBtn value={1}>Google Classroom</RadioBtn>
+              <RadioBtn value={2}>Canvas</RadioBtn>
+              <RadioBtn value={3}>Schoology</RadioBtn>
+              <RadioBtn value={4}>ClassLink</RadioBtn>
+              <RadioBtn value={5}>None</RadioBtn>
               {/*None signifies that no 3rd party integration is enabled*/}
-            </RadioGroup>
+            </RadioGrp>
           </StyledRow>
           <StyledRow>
             <StyledLabel>Disable Student Login: </StyledLabel>
-            <RadioGroup onChange={this.disableStudentLogin} value={districtPolicy?.disableStudentLogin ? "yes" : "no"}>
-              <Radio value="yes">Yes</Radio>
-              <Radio value="no">No</Radio>
-            </RadioGroup>
+            <RadioGrp onChange={this.disableStudentLogin} value={districtPolicy?.disableStudentLogin ? "yes" : "no"}>
+              <RadioBtn value="yes">Yes</RadioBtn>
+              <RadioBtn value="no">No</RadioBtn>
+            </RadioGrp>
           </StyledRow>
           <StyledRow>
             <StyledLabel>

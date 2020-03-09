@@ -6,7 +6,7 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import { ReleaseGradesModal, Info } from "./styled";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { EduButton } from "@edulastic/common";
+import { EduButton, RadioBtn, RadioGrp } from "@edulastic/common";
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -46,15 +46,15 @@ const ReleaseScoreSettingsModal = ({
         </EduButton>
       ]}
     >
-      <Radio.Group value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>
+      <RadioGrp value={releaseGradeValue} onChange={e => setReleaseGradeValue(e.target.value)}>
         {_releaseGradeKeys.map((item, index) => (
           <Row key={index}>
-            <Radio data-cy={item} value={item} key={item}>
+            <RadioBtn data-cy={item} value={item} key={item}>
               {releaseGradeTypes[item]}
-            </Radio>
+            </RadioBtn>
           </Row>
         ))}
-      </Radio.Group>
+      </RadioGrp>
       {!!releaseGradeValue &&
         (releaseGradeValue === releaseGradeLabels.DONT_RELEASE ? (
           <Info>

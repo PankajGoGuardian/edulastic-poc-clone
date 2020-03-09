@@ -49,7 +49,7 @@ import StandardProficiencyTable from "./StandardProficiencyTable";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 import PeformanceBand from "./PeformanceBand";
 import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
-import { EduCheckBox } from "@edulastic/common";
+import { EduCheckBox, RadioBtn } from "@edulastic/common";
 
 const {
   settingCategories,
@@ -436,9 +436,9 @@ class MainSetting extends Component {
                     value={markAsDone}
                   >
                     {Object.keys(completionTypes).map(item => (
-                      <CompletionTypeRadio value={completionTypes[item]} key={completionTypes[item]}>
+                      <RadioBtn value={completionTypes[item]} key={completionTypes[item]}>
                         {completionTypes[item]}
-                      </CompletionTypeRadio>
+                      </RadioBtn>
                     ))}
                   </StyledRadioGroup>
                   <Description>
@@ -462,9 +462,9 @@ class MainSetting extends Component {
                   value={releaseScore}
                 >
                   {_releaseGradeKeys.map(item => (
-                    <Radio value={item} key={item}>
+                    <RadioBtn value={item} key={item}>
                       {releaseGradeTypes[item]}
-                    </Radio>
+                    </RadioBtn>
                   ))}
                 </StyledRadioGroup>
               </Body>
@@ -557,9 +557,9 @@ class MainSetting extends Component {
                     value={calcType}
                   >
                     {calculatorKeys.map(item => (
-                      <Radio data-cy={item} value={item} key={item}>
+                      <RadioBtn data-cy={item} value={item} key={item}>
                         {calculators[item]}
-                      </Radio>
+                      </RadioBtn>
                     ))}
                   </StyledRadioGroup>
                   <Description>
@@ -686,9 +686,9 @@ class MainSetting extends Component {
                     value={scoringType}
                   >
                     {Object.keys(evalTypes).map(item => (
-                      <Radio value={item} data-cy={item} key={item}>
+                      <RadioBtn value={item} data-cy={item} key={item}>
                         {evalTypes[item]}
-                      </Radio>
+                      </RadioBtn>
                     ))}
                   </StyledRadioGroup>
                   {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
@@ -723,9 +723,9 @@ class MainSetting extends Component {
                     value={testContentVisibility}
                   >
                     {testContentVisibilityTypes.map(item => (
-                      <Radio value={item.key} key={item.key}>
+                      <RadioBtn value={item.key} key={item.key}>
                         {item.value}
-                      </Radio>
+                      </RadioBtn>
                     ))}
                   </StyledRadioGroup>
                 </Body>

@@ -28,6 +28,7 @@ import {
   RadioWrap
 } from "./styled";
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
+import { RadioBtn } from "@edulastic/common";
 
 import {
   updateStandardsProficiencyAction,
@@ -220,7 +221,7 @@ class StandardsProficiencyTable extends React.Component {
             <Icon type="down" />
             {record.score}
           </StyledScoreDiv>
-          )
+        )
       },
       {
         title: "Mastery Level",
@@ -347,23 +348,23 @@ class StandardsProficiencyTable extends React.Component {
           >
             <Row>
               <RadioWrap xs={24} md={12} lg={8}>
-                <Radio value="MOST_RECENT">Most Recent</Radio>
+                <RadioBtn value="MOST_RECENT">Most Recent</RadioBtn>
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
-                <Radio value="AVERAGE">Simple Average</Radio>
+                <RadioBtn value="AVERAGE">Simple Average</RadioBtn>
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
-                <Radio value="MAX_SCORE">Max Score</Radio>
+                <RadioBtn value="MAX_SCORE">Max Score</RadioBtn>
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
-                <Radio value="POWER_LAW">Power Law</Radio>
+                <RadioBtn value="POWER_LAW">Power Law</RadioBtn>
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
-                <Radio value="MODE_SCORE">Mode Score</Radio>
+                <RadioBtn value="MODE_SCORE">Mode Score</RadioBtn>
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
                 <StyledAverageRadioDiv direction="column">
-                  <Radio value="DECAYING_AVERAGE">Decaying Average</Radio>
+                  <RadioBtn value="DECAYING_AVERAGE">Decaying Average</RadioBtn>
                   <InputOption margin={calcType === "DECAYING_AVERAGE" ? "5px" : "0px"}>
                     {calcType === "DECAYING_AVERAGE" && (
                       <React.Fragment>
@@ -382,7 +383,7 @@ class StandardsProficiencyTable extends React.Component {
               </RadioWrap>
               <RadioWrap xs={24} md={12} lg={8}>
                 <StyledAverageRadioDiv direction="column">
-                  <Radio value="MOVING_AVERAGE">Moving Average</Radio>
+                  <RadioBtn value="MOVING_AVERAGE">Moving Average</RadioBtn>
                   <InputOption margin={calcType === "MOVING_AVERAGE" ? "5px" : "0px"}>
                     {calcType === "MOVING_AVERAGE" && (
                       <React.Fragment>

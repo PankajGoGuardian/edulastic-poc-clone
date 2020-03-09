@@ -3,8 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Col, Select, Radio } from "antd";
 import { ColLabel, StyledRow, StyledSelect, StyledRadioGropRow, Label } from "./styled";
-
-const RadioGroup = Radio.Group;
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 
 const StudentsSelector = ({
   specificStudents,
@@ -22,14 +21,14 @@ const StudentsSelector = ({
     <React.Fragment>
       <StyledRadioGropRow gutter={32}>
         <Col span={24}>
-          <RadioGroup onChange={changeRadioGrop} value={specificStudents}>
-            <Radio data-cy="radioEntireClass" value={false}>
+          <RadioGrp onChange={changeRadioGrop} value={specificStudents}>
+            <RadioBtn data-cy="radioEntireClass" value={false}>
               <Label>ENTIRE CLASS</Label>
-            </Radio>
-            <Radio data-cy="radioSpecificStudent" value={true}>
+            </RadioBtn>
+            <RadioBtn data-cy="radioSpecificStudent" value={true}>
               <Label>SPECIFIC STUDENT</Label>
-            </Radio>
-          </RadioGroup>
+            </RadioBtn>
+          </RadioGrp>
         </Col>
       </StyledRadioGropRow>
       {specificStudents && (

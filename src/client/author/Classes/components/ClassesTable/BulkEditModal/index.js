@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form, message, Col } from "antd";
-import { StyledComponents } from "@edulastic/common";
+import { StyledComponents, RadioBtn, RadioGrp } from "@edulastic/common";
 import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -8,7 +8,6 @@ import { getUser } from "../../../../src/selectors/user";
 import moment from "moment";
 import { debounce, uniq } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
-
 import { ButtonsContainer, OkButton, CancelButton, StyledModal } from "../../../../../common/styled";
 
 const { Button } = StyledComponents;
@@ -273,17 +272,11 @@ function BulkEditModal({
           <h4>{`You have selected ${
             selectedClasses.length
           } Class(es) to update, please select the bulk action required`}</h4>
-          <Radio.Group onChange={evt => setBulkEditMode(evt.target.value)} value={updateMode}>
-            <Radio style={radioStyle} value="course">
-              {t("class.components.bulkedit.changecourseassociation")}
-            </Radio>
-            <Radio style={radioStyle} value="tags">
-              {t("class.components.bulkedit.updatetags")}
-            </Radio>
-            <Radio style={radioStyle} value="endDate">
-              {t("class.components.bulkedit.updateenddate")}
-            </Radio>
-          </Radio.Group>
+          <RadioGrp onChange={evt => setBulkEditMode(evt.target.value)} value={updateMode}>
+            <RadioBtn value="course">{t("class.components.bulkedit.changecourseassociation")}</RadioBtn>
+            <RadioBtn value="tags">{t("class.components.bulkedit.updatetags")}</RadioBtn>
+            <RadioBtn value="endDate">{t("class.components.bulkedit.updateenddate")}</RadioBtn>
+          </RadioGrp>
         </>
       )}
     </StyledModal>

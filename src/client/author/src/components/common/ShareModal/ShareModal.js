@@ -15,6 +15,7 @@ import { roleuser } from "@edulastic/constants";
 import { getUserFeatures } from "../../../../../student/Login/ducks";
 import { RadioInputWrapper } from "../RadioInput";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 
 import {
   getTestIdSelector,
@@ -313,9 +314,9 @@ class ShareModal extends React.Component {
           <PeopleBlock>
             <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
             <RadioBtnWrapper>
-              <Radio.Group value={sharedType} onChange={e => this.radioHandler(e)}>
+              <RadioGrp value={sharedType} onChange={e => this.radioHandler(e)}>
                 {(isDA ? shareTypeKeyForDa : shareTypeKeys).map(item => (
-                  <Radio
+                  <RadioBtn
                     value={item}
                     key={item}
                     disabled={
@@ -325,9 +326,9 @@ class ShareModal extends React.Component {
                     }
                   >
                     {shareTypes[item]}
-                  </Radio>
+                  </RadioBtn>
                 ))}
-              </Radio.Group>
+              </RadioGrp>
               <EduButton
                 height="32px"
                 data-cy="share-button-pop"

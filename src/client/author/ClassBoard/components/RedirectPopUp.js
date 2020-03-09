@@ -8,6 +8,7 @@ import { EduButton } from "@edulastic/common";
 import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 
 const { redirectPolicy } = testContants;
 
@@ -22,7 +23,6 @@ const ShowPreviousAttempt = {
   FEEDBACK_ONLY: "Feedback only"
 };
 
-const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 /**
@@ -156,22 +156,22 @@ const RedirectPopUp = ({
           {/* 
             TODO: handle the change
         */}
-          <RadioGroup
+          <RadioGrp
             value={type}
             onChange={e => {
               setType(e.target.value);
             }}
           >
-            <Radio data-cy="entireClass" value="entire">
+            <RadioBtn data-cy="entireClass" value="entire">
               Entire Class
-            </Radio>
-            <Radio data-cy="absentStudents" value="absentStudents">
+            </RadioBtn>
+            <RadioBtn data-cy="absentStudents" value="absentStudents">
               Absent Students
-            </Radio>
-            <Radio data-cy="specificStudents" value="specificStudents">
+            </RadioBtn>
+            <RadioBtn data-cy="specificStudents" value="specificStudents">
               Specific Students
-            </Radio>
-          </RadioGroup>
+            </RadioBtn>
+          </RadioGrp>
         </Row>
 
         <h4> Students </h4>

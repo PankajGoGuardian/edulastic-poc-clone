@@ -28,7 +28,7 @@ import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
-import { EduCheckBox } from "@edulastic/common";
+import { EduCheckBox, RadioBtn } from "@edulastic/common";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -188,9 +188,9 @@ const Settings = ({
                 value={markAsDone}
               >
                 {completionTypeKeys.map(item => (
-                  <Radio value={completionTypes[item]} key={item}>
+                  <RadioBtn value={completionTypes[item]} key={item}>
                     <Label>{completionTypes[item]}</Label>
-                  </Radio>
+                  </RadioBtn>
                 ))}
               </AlignRight>
             </Col>
@@ -355,9 +355,9 @@ const Settings = ({
             <Col span={12}>
               <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
                 {calculatorKeys.map(item => (
-                  <Radio data-cy={item} value={item} key={item}>
+                  <RadioBtn data-cy={item} value={item} key={item}>
                     <Label>{calculators[item]}</Label>
-                  </Radio>
+                  </RadioBtn>
                 ))}
               </AlignRight>
             </Col>
@@ -510,9 +510,9 @@ const Settings = ({
                 value={scoringType}
               >
                 {evalTypeKeys.map(item => (
-                  <Radio value={item} data-cy={item} key={item}>
+                  <RadioBtn value={item} data-cy={item} key={item}>
                     <Label>{evalTypes[item]}</Label>
-                  </Radio>
+                  </RadioBtn>
                 ))}
               </AlignRight>
               {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
@@ -543,9 +543,9 @@ const Settings = ({
                 value={testContentVisibility}
               >
                 {testContentVisibilityTypes.map(item => (
-                  <Radio value={item.key} key={item.key}>
+                  <RadioBtn value={item.key} key={item.key}>
                     {item.value}
-                  </Radio>
+                  </RadioBtn>
                 ))}
               </AlignRight>
             </Col>

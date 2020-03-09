@@ -13,7 +13,6 @@ import {
   CreateGroupWrapper,
   GroupField,
   Label,
-  RadioGroup,
   ItemCountWrapper,
   AddGroupButton,
   RadioMessage,
@@ -61,7 +60,7 @@ import { IconPencilEdit, IconClose } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
-import { EduCheckBox } from "@edulastic/common";
+import { EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
 
@@ -694,7 +693,7 @@ const GroupItems = ({
                     </AutoSelectFields>
                   )}
                   <GroupField>
-                    <RadioGroup
+                    <RadioGrp
                       name="radiogroup"
                       value={currentGroupIndex === index ? editGroupDetail.deliveryType : itemGroup.deliveryType}
                       onChange={e => handleChange("deliveryType", e.target.value)}
@@ -703,20 +702,20 @@ const GroupItems = ({
                       {((currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                         (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
                         <>
-                          <Radio
+                          <RadioBtn
                             data-cy={`check-deliver-all-${itemGroup.groupName}`}
                             defaultChecked
                             value={ITEM_GROUP_DELIVERY_TYPES.ALL}
                           >
                             Deliver all Items in this Group
-                          </Radio>
+                          </RadioBtn>
 
                           <RadioMessage>
                             Use this option to deliver a specific number of randomly picked question per Group.
                           </RadioMessage>
                         </>
                       )}
-                      <Radio
+                      <RadioBtn
                         data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
                         defaultChecked={false}
                         value={currentGroupIndex === index ? editingDeliveryType : currentDeliveryType}
@@ -742,8 +741,8 @@ const GroupItems = ({
                           />
                           <span> Item(s)</span>
                         </ItemCountWrapper>
-                      </Radio>
-                    </RadioGroup>
+                      </RadioBtn>
+                    </RadioGrp>
                   </GroupField>
                   <GroupField marginBottom="5px">
                     {currentGroupIndex === index && (

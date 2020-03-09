@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Button, Input, Select, Radio, Upload, Icon  } from "antd";
+import { Button, Input, Select, Radio, Upload, Icon } from "antd";
 import styled from "styled-components";
 import {
   themeColor,
@@ -20,18 +20,19 @@ import {
   getFetchCollectionListStateSelector,
   getCollectionListSelector
 } from "../../ducks";
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 
-const {Option} = Select;
+const { Option } = Select;
 const { Dragger } = Upload;
 
-const NEW_COLLECTION = 'new collection';
-const EXISTING_COLLECTION = 'existing collection';
-const UPLOAD_ZIP = 'upload zip';
-const USE_AWS_S3_BUCKET = 'use aws s3 bucket';
+const NEW_COLLECTION = "new collection";
+const EXISTING_COLLECTION = "existing collection";
+const UPLOAD_ZIP = "upload zip";
+const USE_AWS_S3_BUCKET = "use aws s3 bucket";
 
 const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
   const [selectedCollectionId, setSelectedCollectionId] = useState();
-  const [selectedBucketId, setSelectedBucketId] = useState('');
+  const [selectedBucketId, setSelectedBucketId] = useState("");
   const [importType, setImportType] = useState(NEW_COLLECTION);
   const [uploadType, setUploadType] = useState(UPLOAD_ZIP);
 
@@ -53,7 +54,7 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
     setSelectedBucketId();
     setImportType(NEW_COLLECTION);
     setUploadType(UPLOAD_ZIP);
-  }, [visible])
+  }, [visible]);
 
   const Footer = (
     <StyledFooter>
@@ -66,13 +67,7 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
   const Title = [<Heading>Import Content</Heading>];
 
   return (
-    <StyledModal
-      title={Title}
-      visible={visible}
-      footer={Footer}
-      onCancel={() => handleResponse(null)}
-      width={400}
-    >
+    <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => handleResponse(null)} width={400}>
       <ModalBody>
         <FieldRow>
           <span>Import content from QTI, WebCT and several other formats.</span>
@@ -83,10 +78,10 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
         </FieldRow>
         <FieldRow>
           <label>Import Into</label>
-          <Radio.Group value={importType} onChange={evt => setImportType(evt.target.value)}>
-            <Radio value={NEW_COLLECTION}>NEW COLLECTION</Radio>
-            <Radio value={EXISTING_COLLECTION}>EXISTING COLLECTION</Radio>
-          </Radio.Group>
+          <RadioGrp value={importType} onChange={evt => setImportType(evt.target.value)}>
+            <RadioBtn value={NEW_COLLECTION}>NEW COLLECTION</RadioBtn>
+            <RadioBtn value={EXISTING_COLLECTION}>EXISTING COLLECTION</RadioBtn>
+          </RadioGrp>
           {importType === EXISTING_COLLECTION ? (
             <SelectStyled
               placeholder="Select a collection"
@@ -98,7 +93,9 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
                 <Select.Option value={collection._id}>{collection.name}</Select.Option>
               ))}
             </SelectStyled>
-          ) : <Input />}
+          ) : (
+            <Input />
+          )}
 
           {selectedCollectionId ? (
             <SelectStyled
@@ -116,10 +113,10 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
           ) : null}
         </FieldRow>
         <FieldRow>
-          <Radio.Group value={uploadType} onChange={value => setUploadType(value)}>
-            <Radio value={UPLOAD_ZIP}>UPLOAD ZIP</Radio>
-            <Radio value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</Radio>
-          </Radio.Group>
+          <RadioGrp value={uploadType} onChange={value => setUploadType(value)}>
+            <RadioBtn value={UPLOAD_ZIP}>UPLOAD ZIP</RadioBtn>
+            <RadioBtn value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</RadioBtn>
+          </RadioGrp>
           <Dragger>
             <div>
               <Icon type="upload" />
@@ -132,7 +129,7 @@ const ImportContentModal = ({ visible, handleResponse, collectionList }) => {
   );
 };
 
-const ConnectedImportContentModal =  connect(
+const ConnectedImportContentModal = connect(
   state => ({
     fetchCollectionListState: getFetchCollectionListStateSelector(state),
     collectionList: getCollectionListSelector(state)
@@ -195,7 +192,6 @@ export const SelectStyled = styled(Select)`
   flex: 1;
   width: 100%;
   margin-bottom: 8px;
-
 `;
 export const FieldRow = styled.div`
   margin-bottom: 20px;

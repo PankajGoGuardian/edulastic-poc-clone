@@ -711,7 +711,7 @@ class CurriculumSequence extends Component {
             )
           )}
 
-          {(currentTab === "playlist" || isPlaylistDetailsPage) && (
+          {(currentTab === "playlist" || isPlaylistDetailsPage || isStudent) && (
             <>
               {isPlaylistDetailsPage && (
                 <ReviewBreadCrumbWrapper>

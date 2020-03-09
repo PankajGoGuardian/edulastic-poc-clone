@@ -19,7 +19,7 @@ export const ToolBox = styled(FlexContainer)`
   min-height: ${toolBoxDimension.height};
   position: ${props => (props.isWorksheet ? "absolute" : "fixed")};
   background: transparent;
-  z-index: 500;
+  z-index: 1000;
   border-radius: 4px;
   padding: 0;
   display: ${props => (props.review && !props.testMode ? "none" : "")};

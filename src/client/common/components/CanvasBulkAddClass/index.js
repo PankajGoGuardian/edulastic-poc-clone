@@ -140,7 +140,7 @@ const CanvasBulkAddClass = ({
     // setting default grades as Other (O) if grade is not selected by the user.
     selectedClasses = selectedClasses.map(c => ({ ...c, grades: c.grades.length > 0 ? c.grades : ["O"] }));
 
-    bulkSyncCanvasClass(selectedClasses);
+    bulkSyncCanvasClass({ bulkSyncData: selectedClasses });
     setShowModal(true);
   };
 

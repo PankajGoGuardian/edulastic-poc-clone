@@ -1,46 +1,48 @@
 import React from "react";
 import { Modal } from "antd";
-import styled from "styled-components";
 import PropTypes from "prop-types";
+import { youtubeVideoDetails } from "@edulastic/constants";
 
-const IframeVideoModal = ({ visible, closeModal, title, videoSource }) => (
-  <StyledModal
-    visible={visible}
-    onCancel={closeModal}
-    title={title}
-    width="50%"
-    footer={null}
-    destroyOnClose
-  >
-    <iframe
-      title="how to author"
-      width="100%"
-      height="100%"
-      src={videoSource}
-      frameBorder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-    />
-  </StyledModal>
-);
+const IframeVideoModal = ({ visible, closeModal, questionTitle = "" }) => {
+  const videoDetails = youtubeVideoDetails[questionTitle];
 
-const StyledModal = styled(Modal)`
-  .ant-modal-body {
-    height: 50vh;
-  }
-`;
+  // looads component only when video details is available
+  if (!videoDetails) return null;
+
+  const { title = "", videoId = "", uiConfig } = videoDetails;
+
+  const { width, height } = uiConfig;
+
+  return (
+    <Modal
+      visible={visible}
+      onCancel={closeModal}
+      title={title}
+      footer={null}
+      destroyOnClose
+      width="768px" // not responsive
+    >
+      <iframe
+        title={title}
+        width={width}
+        height={height}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+        frameBorder="0"
+        allowFullScreen
+      />
+    </Modal>
+  );
+};
 
 IframeVideoModal.propTypes = {
   visible: PropTypes.bool,
-  title: PropTypes.string,
   closeModal: PropTypes.func.isRequired,
-  videoSource: PropTypes.string
+  questionTitle: PropTypes.string
 };
 
 IframeVideoModal.defaultProps = {
   visible: false,
-  title: "title",
-  videoSource: ""
+  questionTitle: ""
 };
 
 export default IframeVideoModal;

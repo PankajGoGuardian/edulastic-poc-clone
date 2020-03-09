@@ -422,6 +422,7 @@ class QuestionWrapper extends Component {
                   advancedAreOpen={advancedAreOpen}
                   handleAdvancedOpen={handleAdvancedOpen}
                   scrollContainer={scrollContainer}
+                  questionTitle={data?.title || ""}
                 />
               </QuestionMenuWrapper>
             )}

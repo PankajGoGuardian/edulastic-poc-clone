@@ -87,7 +87,7 @@ class QuestionMenu extends Component {
   };
 
   render() {
-    const { main, advanced, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
+    const { main, advanced, advancedAreOpen, handleAdvancedOpen, windowWidth, questionTitle } = this.props;
     const { activeTab, isVideoModalVisible } = this.state;
 
     return (
@@ -127,15 +127,16 @@ class QuestionMenu extends Component {
 
         {!advancedAreOpen ? (
           <div style={{ position: "absolute", bottom: "180px", width: "100%" }} onClick={this.openModal}>
-            <VideoThumbnail title="How to author video" width="100%" maxWidth="100%" margin="30px 0 0 0" />
+            <VideoThumbnail
+              questionTitle={questionTitle}
+              title="How to author video"
+              width="100%"
+              maxWidth="100%"
+              margin="30px 0 0 0"
+            />
           </div>
         ) : null}
-        <IframeVideoModal
-          title="How to Author"
-          visible={isVideoModalVisible}
-          closeModal={this.closeModal}
-          videoSource="https://www.youtube.com/embed/9IRCouBvAQ8?autoplay=1"
-        />
+        <IframeVideoModal questionTitle={questionTitle} visible={isVideoModalVisible} closeModal={this.closeModal} />
       </Menu>
     );
   }
@@ -148,13 +149,15 @@ QuestionMenu.propTypes = {
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  scrollContainer: PropTypes.object
+  scrollContainer: PropTypes.object,
+  questionTitle: PropTypes.string
 };
 
 QuestionMenu.defaultProps = {
   main: [],
   advanced: [],
-  scrollContainer: null
+  scrollContainer: null,
+  questionTitle: ""
 };
 
 export default withWindowSizes(QuestionMenu);

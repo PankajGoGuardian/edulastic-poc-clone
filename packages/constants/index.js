@@ -27,6 +27,7 @@ const fonts = require("./const/fonts");
 const question = require("./const/question");
 const ChoiceDimensions = require("./const/ChoiceDimensions");
 const assignmentStatusOptions = require("./const/assignmentStatus");
+const { youtubeVideoDetails } = require("./const/howToAuthorVideos");
 
 module.exports = {
   question,
@@ -57,5 +58,6 @@ module.exports = {
   canvasDimensions,
   clozeImage,
   fonts,
-  assignmentStatusOptions
+  assignmentStatusOptions,
+  youtubeVideoDetails
 };

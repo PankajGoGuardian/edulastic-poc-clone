@@ -1,6 +1,6 @@
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import TestSettings from "../../../../framework/author/tests/testDetail/testSetting";
+import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";

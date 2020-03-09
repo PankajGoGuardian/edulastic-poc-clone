@@ -1,4 +1,14 @@
 export default class RediectPopup {
+  // *** ELEMENTS START ***
+
+  getExpressGraderTab = () => cy.get("[data-cy=Expressgrader]");
+
+  getStandardBasedReportTab = () => cy.get("[data-cy=StandardsBasedReport]");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnDropDownOptionByText = option => {
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
       cy.wrap(
@@ -27,10 +37,6 @@ export default class RediectPopup {
     this.clickOnDropDownOptionByText(option);
   };
 
-  getExpressGraderTab = () => cy.get("[data-cy=Expressgrader]");
-
-  getStandardBasedReportTab = () => cy.get("[data-cy=StandardsBasedReport]");
-
   clickOnLCBTab = () => this.getLCBTab().click({ force: true });
 
   clickOnExpressGraderTab = () =>
@@ -39,4 +45,8 @@ export default class RediectPopup {
       .click();
 
   clickOnStandardBasedReportTab = () => this.getStandardBasedReportTab().click({ force: true });
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }

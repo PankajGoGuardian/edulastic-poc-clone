@@ -4,6 +4,9 @@ export default class PlayListReview {
   constructor() {
     this.lcb = new LiveClassboardPage();
   }
+
+  // *** ELEMENTS START ***
+
   getModuleRowByModule = mod => cy.get(`[data-cy="row-module-${mod}"]`);
 
   getTestsInModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="moduleAssignment"]');
@@ -40,13 +43,6 @@ export default class PlayListReview {
 
   getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
 
-  routeSavePlayList = () => {
-    cy.server();
-    cy.route("PUT", "**/playlists/*").as("savePlaylist");
-  };
-
-  waitForSavePlayList = () => cy.wait("@savePlaylist");
-
   getHideModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="HIDE MODULE"]');
 
   getShowModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="SHOW MODULE"]');
@@ -54,6 +50,17 @@ export default class PlayListReview {
   getHideTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="HIDE"]');
 
   getShowTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="SHOW"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  routeSavePlayList = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("savePlaylist");
+  };
+
+  waitForSavePlayList = () => cy.wait("@savePlaylist");
 
   clickOnHideModuleByModule = mod => {
     this.routeSavePlayList();
@@ -131,6 +138,10 @@ export default class PlayListReview {
     return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
   };
 
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
   verifyAssignedByTestByModule = (mod, test) =>
     this.getAssignButtonByTestByModule(mod, test).then(button => {
       this.verifyAssigned(button);
@@ -166,4 +177,6 @@ export default class PlayListReview {
   verifyPlalistSubject = sub => this.getPlaylistSub().should("contain.text", sub);
 
   verifyModuleCompleteText = () => this.getModuleCompleteStatus().should("have.text", "MODULE COMPLETED");
+
+  // *** APPHELPERS END ***
 }

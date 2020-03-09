@@ -1,9 +1,21 @@
 export default class LCBHeader {
+  // *** ELEMENTS START ***
+
   getLCBTab = () => cy.get("[data-cy=LiveClassBoard]");
 
   getExpressGraderTab = () => cy.get("[data-cy=Expressgrader]");
 
   getStandardBasedReportTab = () => cy.get("[data-cy=StandardsBasedReport]");
+
+  getDropDown = () => cy.get('[data-cy="headerDropDown"]');
+
+  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
+
+  getAssignmentStatus = () => cy.get('[data-cy="assignmentStatusForDisplay"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnLCBTab = () => {
     this.getLCBTab().click({ force: true });
@@ -16,8 +28,6 @@ export default class LCBHeader {
       .click();
 
   submitConfirmationInput = () => cy.get('[data-cy="submitConfirm"]').click();
-
-  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
 
   clickOnStandardBasedReportTab = () => this.getStandardBasedReportTab().click({ force: true });
 
@@ -48,10 +58,6 @@ export default class LCBHeader {
     return cy.wait("@open").then(xhr => assert(xhr.status === 200, `verify open request ${xhr.status}`));
   };
 
-  // DROPDOWN
-
-  getDropDown = () => cy.get('[data-cy="headerDropDown"]');
-
   clickOnUnassign = () => {
     cy.server();
     cy.route("DELETE", "**/assignments/**").as("unassign");
@@ -75,6 +81,11 @@ export default class LCBHeader {
     cy.get('[data-cy="viewPassword"]').click();
   };
 
-  getAssignmentStatus = () => cy.get('[data-cy="assignmentStatusForDisplay"]');
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
   verifyAssignmentStatus = status => this.getAssignmentStatus().should("contain", status);
+
+  // *** APPHELPERS END ***
 }

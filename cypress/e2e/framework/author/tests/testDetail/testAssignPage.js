@@ -6,6 +6,26 @@ export default class TestAssignPage {
     this.sidebar = new TeacherSideBar();
   }
 
+  // *** ELEMENTS START ***
+
+  getStartDate = () => cy.get('[data-cy="startDate"]');
+
+  getCloseDate = () => cy.get('[data-cy="closeDate"]');
+
+  getMaxAttempt = () => cy.get('[inputfeatures="maxAttemptAllowed"]').find("input");
+
+  getShuffleQue = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
+
+  getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
+
+  getAnswerOnPaper = () => cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
+
+  getCalenderOk = () => cy.get(".ant-calendar-ok-btn");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnDropDownOptionByText = option => {
     cy.wait(500);
     cy.get(".ant-select-dropdown-menu-item").then($ele => {
@@ -17,13 +37,6 @@ export default class TestAssignPage {
           })
       ).click({ force: true });
     });
-  };
-
-  visitAssignPageById = id => {
-    cy.server();
-    cy.route("POST", "**/api/group/search").as("classes");
-    cy.visit(`/author/assignments/${id}`);
-    cy.wait("@classes");
   };
 
   selectClass = className => {
@@ -54,87 +67,7 @@ export default class TestAssignPage {
 
   clickOnSpecificStudent = () => cy.get('[data-cy="radioSpecificStudent"]').click();
 
-  getCalenderOk = () => cy.get(".ant-calendar-ok-btn");
-
-  // start , end => new Date() instance
-  setStartAndCloseDate = (start, end) => {
-    this.getStartDate().click({ force: true });
-    CypressHelper.setDateInCalender(start);
-    // cy.get('[data-cy="closeDate"]').click({ force: true });
-    CypressHelper.setDateInCalender(end);
-  };
-
-  getStartDate = () => cy.get('[data-cy="startDate"]');
-
-  getCloseDate = () => cy.get('[data-cy="closeDate"]');
-
-  // start - new Date() instance
-  setStartDate = start => {
-    this.getStartDate().click({ force: true });
-    CypressHelper.setDateInCalender(start);
-  };
-  // Open Policy
-  selectOpenPolicy = openPolicy => {
-    cy.get('[data-cy="selectOpenPolicy"]').click();
-    this.clickOnDropDownOptionByText(openPolicy);
-  };
-
-  setEndDate = end => {
-    this.getCloseDate().click({ force: true });
-    CypressHelper.setDateInCalender(end);
-  };
-
-  clickOnAssign = (duplicate = {}) => {
-    let assignmentIdObj = {};
-    cy.wait(1000);
-    cy.server();
-    cy.route("POST", "**/assignments").as("assigned");
-    cy.contains("ASSIGN").click();
-    if (Object.entries(duplicate).length > 0) {
-      cy.wait("@assigned");
-      if (duplicate.duplicate === true) this.proceedWithDuplicate();
-      else this.proceedWithNoDuplicate();
-    }
-    if (!duplicate.willNotAssign) {
-      cy.wait("@assigned").then(xhr => {
-        assert(
-          xhr.status === 200,
-          `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
-        );
-        // TODO: will be fixed as per requirement(class id can be included)
-        xhr.response.body.result.forEach(obj => {
-          assignmentIdObj[obj.testId] = obj._id;
-        });
-      });
-      if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) {
-        return cy.contains("Success!").then(() => assignmentIdObj);
-      } else return cy.wait(1).then(() => assignmentIdObj);
-    } else return cy.wait(1);
-  };
-
-  // OVER RIDE TEST SETTING
-
-  showOverRideSetting = () => {
-    if (Cypress.$('[inputfeatures="assessmentSuperPowersMarkAsDone"]').length === 0) {
-      cy.contains("OVERRIDE TEST SETTINGS").click({ force: true });
-    }
-  };
-
-  // MARK AS DONE
-  setMarkAsDoneToManual = () =>
-    cy
-      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
-      .find('[value="manually"]')
-      .check();
-
-  setMarkAsDoneToAutomatic = () =>
-    cy
-      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
-      .find('[value="automatically"]')
-      .check();
-
   // MAXIMUM ATTEMPTS ALLOWED
-  getMaxAttempt = () => cy.get('[inputfeatures="maxAttemptAllowed"]').find("input");
 
   setMaxAttempt = attempt => this.getMaxAttempt().type(`{selectall}${attempt}`);
 
@@ -144,12 +77,6 @@ export default class TestAssignPage {
     this.clickOnTypesOfReleaseScores();
     this.clickOnDropDownOptionByText(text);
   };
-
-  getShuffleQue = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleQuestions"]').find("button");
-
-  getShuffleChoices = () => cy.get('[inputfeatures="assessmentSuperPowersShuffleAnswerChoice"]').find("button");
-
-  getAnswerOnPaper = () => cy.get('[inputfeatures="assessmentSuperPowersAnswerOnPaper"]').find("button");
 
   selectAnswerOnPaper = () =>
     this.getAnswerOnPaper().then($swich => {
@@ -223,4 +150,91 @@ export default class TestAssignPage {
   proceedWithDuplicate = () => cy.get('[data-cy="duplicate"]').click();
 
   proceedWithNoDuplicate = () => cy.get('[data-cy="noDuplicate"]').click();
+
+  // start , end => new Date() instance
+  setStartAndCloseDate = (start, end) => {
+    this.getStartDate().click({ force: true });
+    CypressHelper.setDateInCalender(start);
+    // cy.get('[data-cy="closeDate"]').click({ force: true });
+    CypressHelper.setDateInCalender(end);
+  };
+
+  // start - new Date() instance
+  setStartDate = start => {
+    this.getStartDate().click({ force: true });
+    CypressHelper.setDateInCalender(start);
+  };
+
+  // Open Policy
+  selectOpenPolicy = openPolicy => {
+    cy.get('[data-cy="selectOpenPolicy"]').click();
+    this.clickOnDropDownOptionByText(openPolicy);
+  };
+
+  setEndDate = end => {
+    this.getCloseDate().click({ force: true });
+    CypressHelper.setDateInCalender(end);
+  };
+
+  clickOnAssign = (duplicate = {}) => {
+    let assignmentIdObj = {};
+    cy.wait(1000);
+    cy.server();
+    cy.route("POST", "**/assignments").as("assigned");
+    cy.contains("ASSIGN").click();
+    if (Object.entries(duplicate).length > 0) {
+      cy.wait("@assigned");
+      if (duplicate.duplicate === true) this.proceedWithDuplicate();
+      else this.proceedWithNoDuplicate();
+    }
+    if (!duplicate.willNotAssign) {
+      cy.wait("@assigned").then(xhr => {
+        assert(
+          xhr.status === 200,
+          `assigning the assignment - ${xhr.status === 200 ? "success" : JSON.stringify(xhr.responseBody)}`
+        );
+        // TODO: will be fixed as per requirement(class id can be included)
+        xhr.response.body.result.forEach(obj => {
+          assignmentIdObj[obj.testId] = obj._id;
+        });
+      });
+      if (!(duplicate === {} && typeof duplicate.duplicate !== "undefined")) {
+        return cy.contains("Success!").then(() => assignmentIdObj);
+      } else return cy.wait(1).then(() => assignmentIdObj);
+    } else return cy.wait(1);
+  };
+
+  // OVER RIDE TEST SETTING
+
+  showOverRideSetting = () => {
+    if (Cypress.$('[inputfeatures="assessmentSuperPowersMarkAsDone"]').length === 0) {
+      cy.contains("OVERRIDE TEST SETTINGS").click({ force: true });
+    }
+  };
+
+  // MARK AS DONE
+  setMarkAsDoneToManual = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
+      .find('[value="manually"]')
+      .check();
+
+  setMarkAsDoneToAutomatic = () =>
+    cy
+      .get('[inputfeatures="assessmentSuperPowersMarkAsDone"]')
+      .find('[value="automatically"]')
+      .check();
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  visitAssignPageById = id => {
+    cy.server();
+    cy.route("POST", "**/api/group/search").as("classes");
+    cy.visit(`/author/assignments/${id}`);
+    cy.wait("@classes");
+  };
+
+  // *** APPHELPERS END ***
 }

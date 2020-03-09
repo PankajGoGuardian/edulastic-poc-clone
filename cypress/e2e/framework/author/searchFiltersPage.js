@@ -1,6 +1,16 @@
 import CypressHelper from "../util/cypressHelpers";
 
 export default class SearchFilters {
+  // *** ELEMENTS START ***
+
+  getSearch = () => cy.get(".ant-input-search");
+
+  getSearchTextBox = () => cy.get('[placeholder="Search by skills and keywords"]').last();
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   routeSearch = () => {
     cy.server();
     cy.route("POST", "**/search/**").as("search");
@@ -62,10 +72,6 @@ export default class SearchFilters {
     cy.wait(1000);
   };
 
-  getSearch = () => cy.get(".ant-input-search");
-
-  getSearchTextBox = () => cy.get('[placeholder="Search by skills and keywords"]').last();
-
   typeInSearchBox = key => {
     this.routeSearch();
     this.getSearchTextBox()
@@ -81,4 +87,9 @@ export default class SearchFilters {
       .click({ force: true });
     this.waitForSearchResponse();
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }

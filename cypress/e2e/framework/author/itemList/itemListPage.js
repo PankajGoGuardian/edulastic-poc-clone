@@ -20,6 +20,33 @@ class ItemListPage {
     this.itemPreview = new PreviewItemPopup();
   }
 
+  // *** ELEMENTS START ***
+
+  getViewItemById = (id, text) => {
+    return cy.get(`[data_cy=${id}]`);
+    /* cy.wait(2000);
+    return cy
+      .get("body")
+      .find('[data-cy="styled-wrapped-component"]')
+      .contains(text)
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .next()
+      .find("span", " View")
+      .eq(0); */
+  };
+
+  getEditButtonOnPreview = () => this.itemPreview.getEditOnPreview();
+
+  getCloneButtonOnPreview = () => this.itemPreview.getCopyOnPreview();
+
+  getItemIdByURL = () => cy.url().then(url => url.split("/").reverse()[1]);
+
+  // *** ELEMENTS END ***
+  // *** ACTIONS START ***
+
   clickOnCreate = () => {
     // cy.server();
     // cy.route("POST", "**/testitem").as("saveItem");
@@ -48,33 +75,7 @@ class ItemListPage {
     // return itemId;
   };
 
-  getViewItemById = (id, text) => {
-    return cy.get(`[data_cy=${id}]`);
-    /* cy.wait(2000);
-    return cy
-      .get("body")
-      .find('[data-cy="styled-wrapped-component"]')
-      .contains(text)
-      .parent()
-      .parent()
-      .parent()
-      .parent()
-      .next()
-      .find("span", " View")
-      .eq(0); */
-  };
-
-  verifyPresenceOfItemById = id => {
-    this.getViewItemById(id).should("exist");
-  };
-
-  verifyAbsenceOfitemById = id => {
-    this.getViewItemById(id).should("not.exist");
-  };
-
-  getEditButtonOnPreview = () => this.itemPreview.getEditOnPreview();
-
-  getCloneButtonOnPreview = () => this.itemPreview.getCopyOnPreview();
+  closePreiview = () => cy.get(".ant-modal-close-icon").click({ force: true });
 
   clickOnViewItemById = (id, text) => {
     cy.wait(1000);
@@ -88,10 +89,8 @@ class ItemListPage {
       .click();
   };
 
-  verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
-    this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);
-
-  closePreiview = () => cy.get(".ant-modal-close-icon").click({ force: true });
+  // *** ACTIONS END ***
+  // *** APPHELPERS START ***
 
   createItem = (itemKey, queIndex = 0, publish = true) => {
     const editItem = new EditItemPage();
@@ -162,7 +161,18 @@ class ItemListPage {
     });
   };
 
-  getItemIdByURL = () => cy.url().then(url => url.split("/").reverse()[1]);
+  verifyPresenceOfItemById = id => {
+    this.getViewItemById(id).should("exist");
+  };
+
+  verifyAbsenceOfitemById = id => {
+    this.getViewItemById(id).should("not.exist");
+  };
+
+  verifyShowCheckAnsOnPreview = (questype, attempt, attemptType, showans) =>
+    this.testReviewTab.verifyQuestionResponseCard(questype, attempt, attemptType, showans);
+
+  // *** APPHELPERS END ***
 }
 
 export default ItemListPage;

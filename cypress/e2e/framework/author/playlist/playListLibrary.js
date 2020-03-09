@@ -15,9 +15,15 @@ export default class PlayListLibrary {
     this.reviewTab = new PlayListReview();
   }
 
+  // *** ELEMENTS START ***
+
   getPlayListCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
 
   getCustomizationSwitch = () => cy.get('[data-cy="customization"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnNewPlayList = () => cy.get('[data-cy="createNew"]').click();
 
@@ -36,6 +42,10 @@ export default class PlayListLibrary {
         if (button.hasClass(".ant-switch-checked")) cy.wrap(button).click();
       }
     });
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   verifyCustomization = playlistid => {
     return this.header.clickOnCustomization().then(xhr => {
@@ -94,4 +104,6 @@ export default class PlayListLibrary {
 
     return this.addTestTab.clickOnDone(true);
   };
+
+  // *** APPHELPERS END ***
 }

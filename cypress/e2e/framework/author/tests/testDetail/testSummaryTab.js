@@ -5,6 +5,8 @@ export default class TestSummayTab {
     this.header = new Header();
   }
 
+  // *** ELEMENTS START ***
+
   getTestDescription = () => cy.xpath("//textarea[@placeholder='Enter a description']");
 
   getTestName = () => cy.get('[data-cy="testname"]');
@@ -16,6 +18,10 @@ export default class TestSummayTab {
   getTestCollectionSelect = () => cy.get('[data-cy="collectionsSelect"]');
 
   getTestTagsSelect = () => cy.get('[data-cy="tagsSelect"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   selectGrade = (grade, clear = false) => {
     if (clear) {
@@ -30,14 +36,6 @@ export default class TestSummayTab {
     this.getTestGradeSelect()
       .find("input")
       .type("{esc}", { force: true });
-  };
-
-  verifyName = name => this.getTestName().should("have.value", name);
-
-  verifyGrade = grade => {
-    this.getTestGradeSelect()
-      .find("li.ant-select-selection__choice")
-      .should("contain", grade);
   };
 
   setName = testname => {
@@ -67,11 +65,6 @@ export default class TestSummayTab {
     cy.focused().blur();
   };
 
-  verifySubject = subject => {
-    this.getTestSubjectSelect()
-      .find("li.ant-select-selection__choice")
-      .should("contain", subject);
-  };
   addTags = tags => {
     // tags should be an array
     this.getTestTagsSelect()
@@ -84,4 +77,23 @@ export default class TestSummayTab {
         .type("{enter}", { force: true });
     });
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyName = name => this.getTestName().should("have.value", name);
+
+  verifyGrade = grade => {
+    this.getTestGradeSelect()
+      .find("li.ant-select-selection__choice")
+      .should("contain", grade);
+  };
+
+  verifySubject = subject => {
+    this.getTestSubjectSelect()
+      .find("li.ant-select-selection__choice")
+      .should("contain", subject);
+  };
+  // *** APPHELPERS END ***
 }

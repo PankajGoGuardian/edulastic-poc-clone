@@ -8,7 +8,8 @@ class ReportsPage {
     this.qrp = new QuestionResponsePage();
     this.sidebar = new SidebarPage();
   }
-  // elements on ReportPage
+
+  // *** ELEMENTS START ***
 
   getReviewButton = () => cy.get('[data-cy="reviewButton"]');
 
@@ -26,7 +27,13 @@ class ReportsPage {
 
   getDate = () => cy.get('[data-cy="date"]');
 
-  // common actions on ReportPage
+  getAchievedScore = () => cy.get('[data-cy="score"]');
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnReviewButtonButton() {
     cy.server();
@@ -36,6 +43,19 @@ class ReportsPage {
       .click({ force: true });
     cy.wait("@testactivity");
   }
+
+  selectQuestion = queNum => {
+    cy.get('[data-cy="questionNumber"]').click({ force: true });
+    cy.get(".ant-select-dropdown-menu")
+      .contains(`Question ${queNum.slice(1)}`)
+      .click({ force: true });
+  };
+
+  clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   validateAssignment(name, status, reviewButton) {
     cy.contains("div", name).should("be.visible");
@@ -100,20 +120,11 @@ class ReportsPage {
     });
   };
 
-  selectQuestion = queNum => {
-    cy.get('[data-cy="questionNumber"]').click({ force: true });
-    cy.get(".ant-select-dropdown-menu")
-      .contains(`Question ${queNum.slice(1)}`)
-      .click({ force: true });
-  };
-
   verifyScore = (points, attemptData, attemptType, questionType) => {
     const score = this.qrp.getScoreByAttempt(attemptData, points, questionType, attemptType);
     this.getAchievedScore().should("have.text", score.toString());
     this.getMaxScore().should("have.text", points.toString());
   };
-
-  clickOnQuestionNo = () => cy.get('[data-cy="questionNumber"]').click({ force: true });
 
   verifyMaxScoreOfQueByIndex = (index, maxscore) => {
     this.clickOnQuestionNo();
@@ -127,10 +138,6 @@ class ReportsPage {
     this.clickOnQuestionNo();
     cy.get(".ant-select-dropdown-menu-item").should("have.length", len);
   };
-
-  getAchievedScore = () => cy.get('[data-cy="score"]');
-
-  getMaxScore = () => cy.get('[data-cy="maxscore"]');
 
   verifyFeedBackComment = feedback => {
     cy.get('[data-cy="feedback"]').should("contain", feedback);
@@ -271,5 +278,7 @@ class ReportsPage {
         break;
     }
   };
+
+  // *** APPHELPERS END ***
 }
 export default ReportsPage;

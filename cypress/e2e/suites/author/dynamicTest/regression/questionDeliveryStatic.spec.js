@@ -10,7 +10,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import { attemptTypes, deliverType as DELIVERY_TYPE } from "../../../../framework/constants/questionTypes";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
-import TestSettings from "../../../../framework/author/tests/testDetail/testSetting";
+import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
   const testLibraryPage = new TestLibrary();

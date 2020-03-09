@@ -2,6 +2,14 @@
 import CypressHelper from "../util/cypressHelpers";
 
 class SignupPage {
+  // *** ELEMENTS START ***
+
+  getSchoolSearch = () => cy.get('[placeholder="Search school by Zip, name or City"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnSignupLink = () => {
     cy.contains("SIGN UP")
       .should("be.visible")
@@ -76,27 +84,6 @@ class SignupPage {
     this.clickOnSignupButton();
     cy.wait("@schoolSearch");
   };
-
-  // set school
-
-  getSchoolSearch = () => cy.get('[placeholder="Search school by Zip, name or City"]');
-
-  removeSelected = () => {
-    if (Cypress.$('[data-cy="removeSelected"]').length > 0) {
-      cy.get('[data-cy="removeSelected"]').click({ force: true });
-    }
-  };
-
-  searchAndSelectSchool = school => {
-    this.getSchoolSearch().type(school);
-    cy.wait("@schoolSearch");
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(school)
-      .click({ force: true });
-    return cy.wait("@userSearch");
-  };
-
-  verifyDistrict = dist => cy.get('[data-cy="districtName"]').should("contain.text", dist);
 
   clickOnProceed = () => cy.contains("Proceed").click();
 
@@ -188,6 +175,29 @@ class SignupPage {
     this.setCountry(country);
     this.setState(state);
   }
+
+  removeSelected = () => {
+    if (Cypress.$('[data-cy="removeSelected"]').length > 0) {
+      cy.get('[data-cy="removeSelected"]').click({ force: true });
+    }
+  };
+
+  searchAndSelectSchool = school => {
+    this.getSchoolSearch().type(school);
+    cy.wait("@schoolSearch");
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains(school)
+      .click({ force: true });
+    return cy.wait("@userSearch");
+  };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyDistrict = dist => cy.get('[data-cy="districtName"]').should("contain.text", dist);
+
+  // *** APPHELPERS END ***
 }
 
 export default SignupPage;

@@ -3,7 +3,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
-import TestSettings from "../../../../framework/author/tests/testDetail/testSetting";
+import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
 import { CALCULATOR, attemptTypes, questionTypeKey } from "../../../../framework/constants/questionTypes";
 import AuthorAssignmentPage from "../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";

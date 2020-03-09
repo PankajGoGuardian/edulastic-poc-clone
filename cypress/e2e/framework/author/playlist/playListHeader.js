@@ -1,4 +1,6 @@
 export default class PlayListHeader {
+  // *** ELEMENTS START ***
+
   getSummaryButton = () => cy.get('[data-cy="description"]');
 
   getReviewButton = () => cy.get('[data-cy="review"]');
@@ -16,6 +18,10 @@ export default class PlayListHeader {
   getUseThisButton = () => cy.get('[data-cy="use-this"]');
 
   getEdit = () => cy.get('[data-cy="edit-playlist"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnDescription = () => {
     this.getSummaryButton.click({ force: true });
@@ -84,4 +90,9 @@ export default class PlayListHeader {
     cy.wait("@getPlayList");
     return cy.wait("@duplicatePlaylist").then(xhr => xhr);
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }

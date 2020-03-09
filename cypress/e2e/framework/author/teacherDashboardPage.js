@@ -1,7 +1,17 @@
 export default class TeacherDashBoardPage {
+  // *** ELEMENTS START ***
+
   getClasCardByName = className => cy.get(`[data-cy="${className}"]`);
 
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnManageClass = () => cy.get('[data-cy="manageClass"]').click();
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   verifyClassDetail = (className, grade, subject, students, assignmentCount = 0, assignmentTitle, asgnStatus) => {
     this.getClasCardByName(className).as("classCard");
@@ -36,4 +46,6 @@ export default class TeacherDashBoardPage {
         .should("contain.text", asgnStatus);
     }
   };
+
+  // *** APPHELPERS END ***
 }

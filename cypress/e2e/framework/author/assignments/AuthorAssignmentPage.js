@@ -6,9 +6,23 @@ class AuthorAssignmentPage {
     this.smartFilter = new SmartFilters();
   }
 
+  // *** ELEMENTS START ***
+
+  getStatus = () => cy.get('[data-cy="status"]');
+
+  getSubmitted = () => cy.get('[data-cy="submitted"]');
+
+  getGraded = () => cy.get('[data-cy="graded"]');
+
+  getClass = () => cy.get('[data-cy="class"]');
+
   getTestRowByTestId = id => cy.get(`[data-test=${id}]`);
 
   getAssignmentRowsTestById = id => cy.get(`[data-cy=${id}]`).find(".ant-table-row-level-0");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   selectCheckBoxByTestName = testName => {
     cy.get('[data-cy="assignmentName"]')
@@ -55,20 +69,6 @@ class AuthorAssignmentPage {
     cy.wait("@assignment");
     cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
   };
-
-  getStatus = () => cy.get('[data-cy="status"]');
-
-  verifyStatus = status => this.getStatus().should("have.text", status);
-
-  getSubmitted = () => cy.get('[data-cy="submitted"]');
-
-  verifySubmitted = submitted => this.getSubmitted().should("have.text", submitted);
-
-  getGraded = () => cy.get('[data-cy="graded"]');
-
-  verifyGraded = graded => this.getGraded().should("have.text", graded);
-
-  getClass = () => cy.get('[data-cy="class"]');
 
   clickOnActions = () => cy.contains("span", "ACTIONS").click({ force: true });
 
@@ -145,14 +145,6 @@ class AuthorAssignmentPage {
     cy.wait("@deleteAssignments");
   };
 
-  verifyEditTestURLUnAttempted = oldTestId =>
-    // URL during edit from Assignments page is having following pattern
-    cy.wait(5000).then(() =>
-      cy.url().then(newUrl => {
-        expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
-      })
-    );
-
   clickOnReleaseGrade = () => cy.get('[data-cy="release-grades"]').click({ force: true });
 
   clickOnApply = () => cy.get('[data-cy="apply"]').click({ force: true });
@@ -179,6 +171,26 @@ class AuthorAssignmentPage {
       cy.wait(5000);
     });
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyStatus = status => this.getStatus().should("have.text", status);
+
+  verifySubmitted = submitted => this.getSubmitted().should("have.text", submitted);
+
+  verifyGraded = graded => this.getGraded().should("have.text", graded);
+
+  verifyEditTestURLUnAttempted = oldTestId =>
+    // URL during edit from Assignments page is having following pattern
+    cy.wait(5000).then(() =>
+      cy.url().then(newUrl => {
+        expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+      })
+    );
+
+  // *** APPHELPERS END ***
 }
 
 export default AuthorAssignmentPage;

@@ -23,6 +23,28 @@ export default class TestLibrary {
     this.testSettings = new TestSettings();
   }
 
+  // *** ELEMENTS START ***
+
+  getTestCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
+
+  getShortId = testId => testId.substr(testId.length - 5);
+
+  getNameList = () => cy.get('[data-cy="name-button-pop"]');
+
+  getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]');
+
+  getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]');
+
+  getEditButton = () => cy.get('[data-cy="edit"]');
+
+  getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
+
+  getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnTileView = () => {
     cy.get('[data-cy="tileView"]').click();
   };
@@ -101,10 +123,6 @@ export default class TestLibrary {
     });
   };
 
-  getTestCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
-
-  getShortId = testId => testId.substr(testId.length - 5);
-
   clickOnEditTestById = testId => {
     cy.server();
     cy.route("GET", "**/content-sharing/**").as("testload");
@@ -134,21 +152,6 @@ export default class TestLibrary {
     cy.contains("CLONE").click({ force: true });
     cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
     cy.wait("@getTest");
-  };
-
-  verifyVersionedURL = (oldTestId, newTestId) =>
-    // URL changes after ~4 sec after API response, could not watch this event, hence wait
-    cy.wait(5000).then(() =>
-      cy.url().then(newUrl => {
-        expect(newUrl).to.include(`/${newTestId}/old/${oldTestId}`);
-      })
-    );
-
-  saveTestId = xhr => {
-    assert(xhr.status === 200, "saving test");
-    const testId = xhr.response.body.result._id;
-    console.log("test created with _id : ", testId);
-    cy.saveTestDetailToDelete(testId);
   };
 
   clickOnTestCardById = testId => {
@@ -192,12 +195,6 @@ export default class TestLibrary {
     this.clickSharePop();
   };
 
-  getNameList = () => cy.get('[data-cy="name-button-pop"]');
-
-  getPermissionButton = () => cy.get('[data-cy="permission-button-pop"]');
-
-  getShareButtonPop = () => cy.get('[data-cy="share-button-pop"]');
-
   clickSharePop = (validEmail = true, email) => {
     cy.server();
     cy.route("POST", "**/content-sharing/**").as("testload");
@@ -235,7 +232,43 @@ export default class TestLibrary {
     cy.wait(2000);
   };
 
-  getEditButton = () => cy.get('[data-cy="edit"]');
+  publishedToDraft = (duplicate = false) => {
+    cy.server();
+    cy.route("POST", "**/test/**").as("duplicateTest");
+    cy.route("PUT", "**/test/**").as("testdrafted");
+    this.getEditButton()
+      .should("exist")
+      .click()
+      .then(() => {
+        if (duplicate) {
+          cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
+        } else {
+          // pop up that comes up when we try to edit a published test
+          cy.get('[data-cy="PROCEED"]').click();
+          cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
+        }
+      });
+    cy.wait(5000);
+  };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyVersionedURL = (oldTestId, newTestId) =>
+    // URL changes after ~4 sec after API response, could not watch this event, hence wait
+    cy.wait(5000).then(() =>
+      cy.url().then(newUrl => {
+        expect(newUrl).to.include(`/${newTestId}/old/${oldTestId}`);
+      })
+    );
+
+  saveTestId = xhr => {
+    assert(xhr.status === 200, "saving test");
+    const testId = xhr.response.body.result._id;
+    console.log("test created with _id : ", testId);
+    cy.saveTestDetailToDelete(testId);
+  };
 
   assertTestPublishedNoEdit = oldTestId => {
     // Test_id should change after editing test
@@ -268,25 +301,6 @@ export default class TestLibrary {
       .should("be.eq", testId);
   };
 
-  publishedToDraft = (duplicate = false) => {
-    cy.server();
-    cy.route("POST", "**/test/**").as("duplicateTest");
-    cy.route("PUT", "**/test/**").as("testdrafted");
-    this.getEditButton()
-      .should("exist")
-      .click()
-      .then(() => {
-        if (duplicate) {
-          cy.wait("@duplicateTest").then(xhr => this.saveTestId(xhr));
-        } else {
-          // pop up that comes up when we try to edit a published test
-          cy.get('[data-cy="PROCEED"]').click();
-          cy.wait("@testdrafted").then(xhr => assert(xhr.status === 200, "Test drafted"));
-        }
-      });
-    cy.wait(5000);
-  };
-
   assertTestDraftNoEdit = () => this.getAssignEdit().should("not.be.exist");
 
   assertTestDraftEdit = testId => {
@@ -301,7 +315,7 @@ export default class TestLibrary {
 
   checkforNonExistanceOfTest = testId => cy.get("body").should("not.have.descendants", `[data-cy="${testId}"]`);
 
-  getAssignEdit = () => cy.get('[data-cy="edit/assign-button"]');
+  // *** APPHELPERS END ***
 
   removeShare = () => {
     cy.server();
@@ -368,8 +382,6 @@ export default class TestLibrary {
     cy.wait(5000);
     // return cy.url().then(url => url.split("/").reverse()[2]);
   };
-
-  getVersionedTestID = () => cy.url().then(url => url.split("/").reverse()[2]);
 
   createNewTestAndFillDetails = testData => {
     const { grade, name, subject, collections } = testData;

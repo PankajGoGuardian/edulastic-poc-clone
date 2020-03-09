@@ -10,6 +10,14 @@ export default class TestAddItemTab {
     this.itemListPage = new ItemListPage();
   }
 
+  // *** ELEMENTS START ***
+
+  getAddButtons = () => cy.contains("ADD");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnCreateNewItem = () => {
     // cy.server();
     // cy.route("POST", "**/testitem**").as("saveItem");
@@ -33,8 +41,6 @@ export default class TestAddItemTab {
     return cy.wait("@search");
   };
 
-  getAddButtons = () => cy.contains("ADD");
-
   addItemById = itemId =>
     cy
       .get(`[data-cy="${itemId}"]`)
@@ -48,15 +54,6 @@ export default class TestAddItemTab {
       .closest(".fr-view")
       .contains("ADD")
       .click({ force: true });
-
-  verifyAddedItemByQuestionContent = question =>
-    cy
-      .get('[data-cy="styled-wrapped-component"]')
-      .contains(question)
-      .closest("div")
-      .next()
-      .contains("REMOVE")
-      .should("be.exist");
 
   removeItemById = itemId =>
     cy
@@ -79,6 +76,7 @@ export default class TestAddItemTab {
       .click({ force: true });
     cy.wait("@removeItem");
   };
+
   addItemByIdByGroup = (group, itemId) => {
     this.addItemById(itemId);
     cy.get('[class^="SelectGroupModal"]')
@@ -86,5 +84,20 @@ export default class TestAddItemTab {
       .click();
   };
 
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyAddedItemByQuestionContent = question =>
+    cy
+      .get('[data-cy="styled-wrapped-component"]')
+      .contains(question)
+      .closest("div")
+      .next()
+      .contains("REMOVE")
+      .should("be.exist");
+
   verifyGroupOfItemInList = (group, itemId) => cy.get(`[data-cy="${itemId}"]`).should("contain", `Group ${group}`);
+
+  // *** APPHELPERS END ***
 }

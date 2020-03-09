@@ -7,7 +7,30 @@ export default class PreviewItemPopup {
     this.qrp = new QuestionResponsePage();
   }
 
+  // *** ELEMENTS START ***
+
   getQueContainer = () => cy.get('[data-cy="question-container"]');
+
+  // Edit and Copy buuton on preview
+  getEditOnPreview = () => cy.get('[title="Edit item"]');
+
+  getCopyOnPreview = () => cy.get('[title="CLONE"]');
+
+  // text in edit item page
+  getTextInEditItem = () =>
+    cy
+      .get('[data-cy="tabs"]')
+      .next()
+      .find("input")
+      .eq(0);
+
+  getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');
+
+  getEvaluationMessage = () => cy.get(".ant-message-custom-content");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   closePreiview = () => {
     cy.wait(500);
@@ -23,11 +46,6 @@ export default class PreviewItemPopup {
 
   clickOnCheckAnsOnPreview = () => cy.get('[data-cy="check-answer-btn"]').click({ force: true });
 
-  // Edit and Copy buuton on preview
-  getEditOnPreview = () => cy.get('[title="Edit item"]');
-
-  getCopyOnPreview = () => cy.get('[title="CLONE"]');
-
   clickOnCopyItemOnPreview = () => {
     cy.server();
     cy.route("GET", "**/api/testitem/*").as("editItem");
@@ -42,40 +60,11 @@ export default class PreviewItemPopup {
     return cy.wait("@editItem").then(xhr => xhr.response.body.result._id);
   };
 
-  // text in edit item page
-  getTextInEditItem = () =>
-    cy
-      .get('[data-cy="tabs"]')
-      .next()
-      .find("input")
-      .eq(0);
-
-  // When we are edit/copy a item from test its url include test id
-  verifyItemUrlWhileEdit = (testId, ItemId) => {
-    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
-    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
-  };
-
-  verifyItemUrlWhileCopy = (testId, ItemId) => {
-    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
-    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
-  };
-
   clickOnEditItemOnPreview = () => {
     cy.server();
     cy.route("GET", "**/api/testitem/*").as("editItem");
     this.getEditOnPreview().click({ force: true });
     cy.wait("@editItem");
-  };
-
-  getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');
-
-  getEvaluationMessage = () => cy.get(".ant-message-custom-content");
-
-  verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {
-    const score = this.qrp.getScoreByAttempt(attemptData, points, questionType.split(".")[0], attemptType);
-    // this.getEvaluationMessage()
-    cy.get('[data-cy="score"]').should("contain", `Score ${score}/${points}`);
   };
 
   clickOnDeleteOnPreview = (used = false) => {
@@ -92,6 +81,31 @@ export default class PreviewItemPopup {
     }
   };
 
+  clickOnClear = () => cy.get('[data-cy="clear-btn"]').click({ force: true });
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  // When we are edit/copy a item from test its url include test id
+  verifyItemUrlWhileEdit = (testId, ItemId) => {
+    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
+  };
+
+  verifyItemUrlWhileCopy = (testId, ItemId) => {
+    // cy.url().should("contain", `/author/items/${ItemId}/item-detail/test/${testId}`);
+    cy.url().should("contain", `/tests/${testId}/editItem/${ItemId}`);
+  };
+
+  // *** APPHELPERS END ***
+
+  verifyEvaluationScoreOnPreview = (attemptData, points, questionType, attemptType) => {
+    const score = this.qrp.getScoreByAttempt(attemptData, points, questionType.split(".")[0], attemptType);
+    // this.getEvaluationMessage()
+    cy.get('[data-cy="score"]').should("contain", `Score ${score}/${points}`);
+  };
+
   verifyEditOption = () => {
     this.getEditOnPreview().should("be.visible");
     this.getCopyOnPreview().should("be.visible");
@@ -101,8 +115,6 @@ export default class PreviewItemPopup {
     this.getEditOnPreview().should("not.be.visible");
     this.getCopyOnPreview().should("be.visible");
   };
-
-  clickOnClear = () => cy.get('[data-cy="clear-btn"]').click({ force: true });
 
   verifyQuestionResponseCard = (queTypeKey, attemptData, attemptType, isShowAnswer = false) => {
     const { right, wrong, partialCorrect, item } = attemptData;

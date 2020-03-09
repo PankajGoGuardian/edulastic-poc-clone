@@ -3,7 +3,7 @@ import TestReviewTab from "../../../../framework/author/tests/testDetail/testRev
 import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import TestSettings from "../../../../framework/author/tests/testDetail/testSetting";
+import TestSettings from "../../../../framework/author/tests/testDetail/testSettingsPage";
 import { attemptTypes } from "../../../../framework/constants/questionTypes";
 import FileHelper from "../../../../framework/util/fileHelper";
 import ReportsPage from "../../../../framework/student/reportsPage";

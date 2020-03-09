@@ -13,7 +13,187 @@ class LiveClassboardPage {
     this.redirectPopup = new RediectPopup();
   }
 
+  // *** ELEMENTS START ***
+
   getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
+
+  getSubmitSummary = () => cy.get('[data-cy="submittedSummary"]');
+
+  getCardIndex = studentName =>
+    cy
+      .get('[data-cy="studentName"]')
+      .contains(studentName)
+      .then(ele => Cypress.$('[data-cy="studentName"]').index(ele));
+
+  getStudentCardByStudentName = studentName => {
+    const selector = `[data-cy="student-card-${studentName}"]`;
+    return cy.get(selector);
+  };
+
+  getAllStudentStatus = () => cy.get('[data-cy="studentStatus"]');
+
+  getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
+
+  getStudentScoreByIndex = index => cy.get('[data-cy="studentScore"]').eq(index);
+
+  getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
+
+  getQuestionsByIndex = index => cy.get('[data-cy="questions"]').eq(index);
+
+  getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
+
+  getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
+
+  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
+
+  getAvgScore = () => cy.get(".ant-progress-text");
+
+  getRedirecPopUp = () => cy.get(".ant-modal-content");
+
+  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  clickOnCardViewTab = () =>
+    cy
+      .get("[data-cy=studentnQuestionTab]")
+      .contains("a", "CARD VIEW")
+      .click({ force: true });
+
+  clickOnStudentsTab = () => {
+    cy.get("[data-cy=studentnQuestionTab]")
+      .contains("a", "STUDENTS")
+      .click({ force: true });
+    cy.contains("Leave a feedback!"); // waiting for UI to render
+  };
+
+  clickonQuestionsTab = () => {
+    cy.server();
+    cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
+    this.getQuestionsTab().click({ force: true });
+    return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
+  };
+
+  selectCheckBoxByStudentName = student => {
+    this.getStudentCardByStudentName(student)
+      .find('input[type="checkbox"]')
+      .click({ force: true });
+  };
+
+  clickOnRedirect = () => cy.get('[data-cy="rediectButton"]').click();
+
+  clickOnRedirectSubmit = () => {
+    cy.server();
+    cy.route("POST", "**/redirect").as("redirect");
+    cy.route("GET", "**/test-activity").as("testactivity");
+    this.getRedirecPopUp()
+      .get('[data-cy="confirmRedirect"]')
+      .click({ force: true });
+    cy.wait("@redirect").then(xhr => {
+      expect(xhr.status).to.equal(200);
+      expect(xhr.response.body.result).to.eq("Assignment Redirect is successful");
+    });
+
+    // FIXME: page doesn't update unless refresh on Cypress only,
+    // need to revisit h. for now reloading the page to verify redirected stats
+    // cy.reload();
+    // cy.wait("@testactivity");
+  };
+
+  // lcb > MORE actions
+
+  clickOnMore = () => cy.get('[data-cy="moreAction"]').click({ force: true });
+
+  // SUBMIT
+  clickOnMarkAsSubmit = () => {
+    cy.server();
+    cy.route("POST", "**/mark-as-submitted").as("markSubmit");
+    this.clickOnMore().then(() => cy.get('[data-cy="markSubmitted"]').click());
+    this.getConfirmationInput().type("SUBMIT");
+    this.submitConfirmationInput();
+    cy.wait("@markSubmit").then(xhr => assert(xhr.status === 200, `verify submit request ${xhr.status}`));
+  };
+
+  submitConfirmationInput = () => cy.get('[data-cy="submitConfirm"]').click();
+
+  // ABSENT
+  clickOnMarkAsAbsent = (isAllow = true) => {
+    cy.server();
+    cy.route("POST", "**/mark-as-absent").as("markAbsent");
+    this.clickOnMore().then(() => cy.get('[data-cy="markAbsent"]').click());
+    if (isAllow) {
+      this.getConfirmationInput().type("ABSENT");
+      this.submitConfirmationInput();
+      cy.wait("@markAbsent").then(xhr => assert(xhr.status === 200, `verify absent request ${xhr.status}`));
+    } else {
+      cy.contains("selected have already started the assessment, you will not be allowed to mark as absent").should(
+        "be.visible"
+      );
+    }
+  };
+
+  // REMOVE
+  clickOnRemove = (isAllow = true) => {
+    cy.server();
+    cy.route("PUT", "**/remove-students").as("removeStudents");
+    this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click());
+    if (isAllow) {
+      this.getConfirmationInput().type("REMOVE");
+      this.submitConfirmationInput();
+      cy.wait("@removeStudents").then(xhr => assert(xhr.status === 200, `verify remove request ${xhr.status}`));
+    } else {
+      cy.contains("You will not be able to remove selected student(s) as the status is graded").should("be.visible");
+    }
+  };
+
+  // ADD STUDENT
+  clickOnAddStudent = () => {
+    cy.server();
+    cy.route("GET", "**/enrollment/**").as("enrollment");
+    cy.route("PUT", "**/add-students").as("addStudents");
+    this.clickOnMore().then(() => cy.get('[data-cy="addStudents"]').click());
+    cy.wait("@enrollment");
+  };
+
+  addOneStudent = (stuEmail, isEnabled = true) => {
+    this.clickOnAddStudent();
+    cy.get('[data-cy="selectStudents"]').click();
+    cy.get(".ant-select-dropdown-menu-item")
+      .contains(stuEmail)
+      .then(ele => {
+        if (isEnabled) {
+          cy.wrap(ele).click({ force: true });
+          cy.focused().blur();
+          cy.get('[data-cy="addButton"]').click({ force: true });
+          cy.wait("@addStudents").then(xhr => assert(xhr.status === 200, `verify add student request ${xhr.status}`));
+          cy.contains("Successfully added").should("be.visible", "verify Successfully added message");
+        } else {
+          cy.wrap(ele).should(
+            "have.class",
+            "ant-select-dropdown-menu-item-disabled",
+            "verify existing studnet should be disabled in list"
+          );
+          cy.focused().blur();
+        }
+      });
+  };
+
+  copyPassword = () => cy.get('[data-cy="password"]').invoke("text");
+
+  closePassWord = () =>
+    cy
+      .get("button")
+      .find(".ant-modal-close-icon")
+      .click();
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyClassAndAssignmntId = (classId, assignmnetId) =>
+    cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
 
   checkClassName(className) {
     return cy.get("[data-cy=CurrentClassName]").contains(className);
@@ -71,28 +251,6 @@ class LiveClassboardPage {
       .should("be.visible");
   }
 
-  clickOnCardViewTab = () =>
-    cy
-      .get("[data-cy=studentnQuestionTab]")
-      .contains("a", "CARD VIEW")
-      .click({ force: true });
-
-  clickOnStudentsTab = () => {
-    cy.get("[data-cy=studentnQuestionTab]")
-      .contains("a", "STUDENTS")
-      .click({ force: true });
-    cy.contains("Leave a feedback!"); // waiting for UI to render
-  };
-
-  clickonQuestionsTab = () => {
-    cy.server();
-    cy.route("GET", /\bitem\b.*\bgroup\b/).as("getFirstQuestion");
-    this.getQuestionsTab().click({ force: true });
-    return cy.wait("@getFirstQuestion").then(xhr => xhr.response.body.result[0].testItemId);
-  };
-
-  getQuestionsTab = () => cy.get("[data-cy=studentnQuestionTab]").contains("a", "QUESTIONS");
-
   checkSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").check({ force: true });
 
   uncheckSelectAllCheckboxOfStudent = () => cy.get("[data-cy=selectAllCheckbox]").uncheck({ force: true });
@@ -104,39 +262,10 @@ class LiveClassboardPage {
       .should("contain", "Student Response")
       .should("be.visible");
 
-  getAvgScore = () => cy.get(".ant-progress-text");
-
   verifySubmittedCount = (submitted, total) =>
     this.getSubmitSummary().should("contain.text", `${submitted} out of ${total} Submitted`);
 
   verifyAbsentCount = absent => this.getSubmitSummary().should("contain.text", `${absent} absent`);
-
-  getSubmitSummary = () => cy.get('[data-cy="submittedSummary"]');
-
-  getCardIndex = studentName =>
-    cy
-      .get('[data-cy="studentName"]')
-      .contains(studentName)
-      .then(ele => Cypress.$('[data-cy="studentName"]').index(ele));
-
-  getStudentCardByStudentName = studentName => {
-    const selector = `[data-cy="student-card-${studentName}"]`;
-    return cy.get(selector);
-  };
-
-  getAllStudentStatus = () => cy.get('[data-cy="studentStatus"]');
-
-  getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
-
-  getStudentScoreByIndex = index => cy.get('[data-cy="studentScore"]').eq(index);
-
-  getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
-
-  getQuestionsByIndex = index => cy.get('[data-cy="questions"]').eq(index);
-
-  getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
-
-  getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
 
   verifyStudentCard(studentName, status, score, performance, queAttempt) {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
@@ -176,34 +305,6 @@ class LiveClassboardPage {
     this.getStudentCardByStudentName(student)
       .find('[data-cy="redirected"]')
       .should("be.exist");
-  };
-
-  selectCheckBoxByStudentName = student => {
-    this.getStudentCardByStudentName(student)
-      .find('input[type="checkbox"]')
-      .click({ force: true });
-  };
-
-  clickOnRedirect = () => cy.get('[data-cy="rediectButton"]').click();
-
-  getRedirecPopUp = () => cy.get(".ant-modal-content");
-
-  clickOnRedirectSubmit = () => {
-    cy.server();
-    cy.route("POST", "**/redirect").as("redirect");
-    cy.route("GET", "**/test-activity").as("testactivity");
-    this.getRedirecPopUp()
-      .get('[data-cy="confirmRedirect"]')
-      .click({ force: true });
-    cy.wait("@redirect").then(xhr => {
-      expect(xhr.status).to.equal(200);
-      expect(xhr.response.body.result).to.eq("Assignment Redirect is successful");
-    });
-
-    // FIXME: page doesn't update unless refresh on Cypress only,
-    // need to revisit h. for now reloading the page to verify redirected stats
-    // cy.reload();
-    // cy.wait("@testactivity");
   };
 
   verifyStudentsOnRedirectPopUp = student =>
@@ -427,96 +528,7 @@ class LiveClassboardPage {
     return questionTypeMap;
   };
 
-  // lcb > MORE actions
-
-  clickOnMore = () => cy.get('[data-cy="moreAction"]').click({ force: true });
-
-  getConfirmationInput = () => cy.get('[data-cy="confirmationInput"]');
-
-  // SUBMIT
-  clickOnMarkAsSubmit = () => {
-    cy.server();
-    cy.route("POST", "**/mark-as-submitted").as("markSubmit");
-    this.clickOnMore().then(() => cy.get('[data-cy="markSubmitted"]').click());
-    this.getConfirmationInput().type("SUBMIT");
-    this.submitConfirmationInput();
-    cy.wait("@markSubmit").then(xhr => assert(xhr.status === 200, `verify submit request ${xhr.status}`));
-  };
-
-  submitConfirmationInput = () => cy.get('[data-cy="submitConfirm"]').click();
-
-  // ABSENT
-  clickOnMarkAsAbsent = (isAllow = true) => {
-    cy.server();
-    cy.route("POST", "**/mark-as-absent").as("markAbsent");
-    this.clickOnMore().then(() => cy.get('[data-cy="markAbsent"]').click());
-    if (isAllow) {
-      this.getConfirmationInput().type("ABSENT");
-      this.submitConfirmationInput();
-      cy.wait("@markAbsent").then(xhr => assert(xhr.status === 200, `verify absent request ${xhr.status}`));
-    } else {
-      cy.contains("selected have already started the assessment, you will not be allowed to mark as absent").should(
-        "be.visible"
-      );
-    }
-  };
-
-  // REMOVE
-  clickOnRemove = (isAllow = true) => {
-    cy.server();
-    cy.route("PUT", "**/remove-students").as("removeStudents");
-    this.clickOnMore().then(() => cy.get('[data-cy="removeStudents"]').click());
-    if (isAllow) {
-      this.getConfirmationInput().type("REMOVE");
-      this.submitConfirmationInput();
-      cy.wait("@removeStudents").then(xhr => assert(xhr.status === 200, `verify remove request ${xhr.status}`));
-    } else {
-      cy.contains("You will not be able to remove selected student(s) as the status is graded").should("be.visible");
-    }
-  };
-
-  // ADD STUDENT
-  clickOnAddStudent = () => {
-    cy.server();
-    cy.route("GET", "**/enrollment/**").as("enrollment");
-    cy.route("PUT", "**/add-students").as("addStudents");
-    this.clickOnMore().then(() => cy.get('[data-cy="addStudents"]').click());
-    cy.wait("@enrollment");
-  };
-
-  addOneStudent = (stuEmail, isEnabled = true) => {
-    this.clickOnAddStudent();
-    cy.get('[data-cy="selectStudents"]').click();
-    cy.get(".ant-select-dropdown-menu-item")
-      .contains(stuEmail)
-      .then(ele => {
-        if (isEnabled) {
-          cy.wrap(ele).click({ force: true });
-          cy.focused().blur();
-          cy.get('[data-cy="addButton"]').click({ force: true });
-          cy.wait("@addStudents").then(xhr => assert(xhr.status === 200, `verify add student request ${xhr.status}`));
-          cy.contains("Successfully added").should("be.visible", "verify Successfully added message");
-        } else {
-          cy.wrap(ele).should(
-            "have.class",
-            "ant-select-dropdown-menu-item-disabled",
-            "verify existing studnet should be disabled in list"
-          );
-          cy.focused().blur();
-        }
-      });
-  };
-
-  copyPassword = () => cy.get('[data-cy="password"]').invoke("text");
-
-  closePassWord = () =>
-    cy
-      .get("button")
-      .find(".ant-modal-close-icon")
-      .click();
-
-  verifyClassAndAssignmntId = (classId, assignmnetId) =>
-    cy.url().should("include", `/author/classboard/${assignmnetId}/${classId}`);
+  // *** APPHELPERS END ***
 }
 
 export default LiveClassboardPage;

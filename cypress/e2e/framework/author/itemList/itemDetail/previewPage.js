@@ -4,6 +4,7 @@ class PreviewItemPage {
   constructor() {
     this.header = new Header();
   }
+  // *** ELEMENTS START ***
 
   getCheckAnswer = () => cy.get('[data-cy="check-answer-btn"]');
 
@@ -13,9 +14,19 @@ class PreviewItemPage {
 
   getAntMsg = () => cy.get(".ant-message-custom-content");
 
+  getScore = () => cy.get('[data-cy="score"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnClear = () => this.getClear().click({ force: true });
 
   checkOnCheckAnswer = () => this.getCheckAnswer().click({ force: true });
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   checkScore = expectedScore => {
     this.getCheckAnswer()
@@ -27,11 +38,11 @@ class PreviewItemPage {
     return this;
   };
 
-  getScore = () => cy.get('[data-cy="score"]');
-
   verifyScore = score => {
     this.getScore().should("contain.text", `Score ${score}`);
   };
+
+  // *** APPHELPERS END ***
 }
 
 export default PreviewItemPage;

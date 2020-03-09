@@ -6,6 +6,16 @@ class MetadataPage {
     this.header = new Header();
   }
 
+  // *** ELEMENTS START ***
+
+  getDropDownMenu = () => cy.get(".ant-select-dropdown-menu-item");
+
+  getSearchStandardSelect = () => cy.get('[data-cy="searchStandardSelect"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickCheckAnswer() {
     cy.contains("Check Answer")
       .should("be.visible")
@@ -40,8 +50,6 @@ class MetadataPage {
     this.selectDropDownoption("standardSetSelect", standardSet);
   };
 
-  getDropDownMenu = () => cy.get(".ant-select-dropdown-menu-item");
-
   selectDropDownoption = (selector, option) => {
     const selectby = `[data-cy="${selector}"]`;
     cy.get(selectby)
@@ -73,8 +81,6 @@ class MetadataPage {
   selectGrade = grade => {
     this.selectDropDownoption("gradeSelect", grade);
   };
-
-  getSearchStandardSelect = () => cy.get('[data-cy="searchStandardSelect"]');
 
   setStandard = standard => {
     this.getSearchStandardSelect().click();
@@ -136,6 +142,11 @@ class MetadataPage {
     CypressHelper.selectDropDownByAttribute("difficultySelect", difficulty);
     cy.focused().blur();
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }
 
 export default MetadataPage;

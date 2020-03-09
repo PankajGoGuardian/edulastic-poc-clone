@@ -6,6 +6,54 @@ export default class TeacherManageClassPage {
     this.sideBar = new TeacherSideBar();
   }
 
+  // *** ELEMENTS START ***
+
+  getClassName = () => cy.get("#name");
+
+  getGradeSelect = () => cy.get("#grades");
+
+  getSubjectSelect = () => cy.get("#subject");
+
+  getStandardSets = () => cy.get("#standardSets");
+
+  getStartDate = () => cy.get("[data-cy=startDate]");
+
+  getEndDate = () => cy.get("[data-cy=endDate]");
+
+  getClassRowByName = className =>
+    cy
+      .get("table")
+      .contains("span", className)
+      .closest("tr");
+
+  getClassDetailsByName = className => {
+    cy.server();
+    cy.route("POST", "**/users").as("searchUser");
+    cy.route("GET", "**/enrollment/**").as("enrollment");
+    this.getClassRowByName(className).click();
+    cy.wait("@enrollment");
+    cy.wait("@searchUser");
+  };
+
+  getClassRowDetails = className =>
+    this.getClassRowByName(className)
+      .find("td")
+      .then($ele => {
+        const name = $ele.eq(0).text();
+        const classCode = $ele.eq(1).text();
+        const grades = $ele.eq(2).text();
+        const subject = $ele.eq(3).text();
+        const students = $ele.eq(5).text();
+        const assignments = $ele.eq(6).text();
+        return { name, classCode, grades, subject, students, assignments };
+      });
+
+  getStudentTextArea = () => cy.get("#students");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnCreateClass = () => cy.get('[data-cy="createClass"]').click({});
 
   clickOnEditClass = () => cy.get("[data-cy='editClass']").click();
@@ -21,24 +69,10 @@ export default class TeacherManageClassPage {
 
   clickOnCancel = () => cy.get("[data-cy=cancel]").click();
 
-  getClassName = () => cy.get("#name");
-
-  getGradeSelect = () => cy.get("#grades");
-
-  getSubjectSelect = () => cy.get("#subject");
-
-  getStandardSets = () => cy.get("#standardSets");
-
   setName(name) {
     this.getClassName()
       .clear()
       .type(name);
-  }
-
-  verifyName(name) {
-    this.getClassName().then($ele => {
-      expect($ele.val()).to.eq(name);
-    });
   }
 
   selectOption = option => {
@@ -69,21 +103,9 @@ export default class TeacherManageClassPage {
     this.selectOption(grade);
   };
 
-  verifyGrade = grade => {
-    this.getGradeSelect()
-      .find(".ant-select-selection__choice__content")
-      .should("have.text", grade);
-  };
-
   selectSubject = subject => {
     this.getSubjectSelect().click();
     return this.selectOption(subject);
-  };
-
-  verifySubject = subject => {
-    this.getSubjectSelect()
-      .find(".ant-select-selection-selected-value")
-      .should("have.text", subject);
   };
 
   selectStandardSets = standardSets => {
@@ -93,16 +115,6 @@ export default class TeacherManageClassPage {
     this.clearSelections("standardSets");
     this.selectOption(standardSets);
   };
-
-  verifyStandardSets = standardSets => {
-    this.getStandardSets()
-      .find(".ant-select-selection__choice__content")
-      .should("have.text", standardSets);
-  };
-
-  getStartDate = () => cy.get("[data-cy=startDate]");
-
-  getEndDate = () => cy.get("[data-cy=endDate]");
 
   setStartDate = (datetime, isEdit) => {
     if (!isEdit) {
@@ -116,25 +128,24 @@ export default class TeacherManageClassPage {
     CypressHelper.setDateInCalender(datetime, false);
   };
 
-  verifyStartDate = date => {
-    this.getStartDate().then($d => {
-      expect($d.val()).to.eq(this.getDateInFormate(date));
-    });
-  };
-
-  verifyEndDate = date => {
-    this.getEndDate().then($d => {
-      expect($d.val()).to.eq(this.getDateInFormate(date));
-    });
-  };
-
-  getDateInFormate = datetime => {
-    const [day, mon, date, year] = datetime.toDateString().split(" ");
-    return `${date} ${mon}, ${year}`;
-  };
-
   uploadClassImag = () => {
     cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() => cy.wait(10000));
+  };
+
+  clickOnSaveClass = () => {
+    cy.server();
+    cy.route("POST", "**/group").as("createClass");
+    cy.get('[data-cy="saveClass"]').click();
+    cy.wait("@createClass").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      const { _id, institutionId, districtId } = xhr.responseBody.result;
+      const clazz = { districtId };
+      clazz.groupIds = [_id];
+      clazz.institutionIds = [institutionId];
+      console.log("new class created with _id - ", _id);
+      cy.saveClassDetailToDelete(clazz);
+      cy.url().should("contain", _id);
+    });
   };
 
   fillClassDetails(name, startDate, endDate, grade, subject, standardSet, isEdit = false) {
@@ -157,53 +168,7 @@ export default class TeacherManageClassPage {
     this.selectStandardSets(standardSet);
     this.verifyStandardSets(standardSet);
   }
-
-  clickOnSaveClass = () => {
-    cy.server();
-    cy.route("POST", "**/group").as("createClass");
-    cy.get('[data-cy="saveClass"]').click();
-    cy.wait("@createClass").then(xhr => {
-      expect(xhr.status).to.eq(200);
-      const { _id, institutionId, districtId } = xhr.responseBody.result;
-      const clazz = { districtId };
-      clazz.groupIds = [_id];
-      clazz.institutionIds = [institutionId];
-      console.log("new class created with _id - ", _id);
-      cy.saveClassDetailToDelete(clazz);
-      cy.url().should("contain", _id);
-    });
-  };
-
   // class list
-
-  getClassRowByName = className =>
-    cy
-      .get("table")
-      .contains("span", className)
-      .closest("tr");
-
-  getClassDetailsByName = className => {
-    cy.server();
-    cy.route("POST", "**/users").as("searchUser");
-    cy.route("GET", "**/enrollment/**").as("enrollment");
-    this.getClassRowByName(className).click();
-    cy.wait("@enrollment");
-    cy.wait("@searchUser");
-  };
-
-  getClassRowDetails = className =>
-    this.getClassRowByName(className)
-      .find("td")
-      .then($ele => {
-        const name = $ele.eq(0).text();
-        const classCode = $ele.eq(1).text();
-        const grades = $ele.eq(2).text();
-        const subject = $ele.eq(3).text();
-        const students = $ele.eq(5).text();
-        const assignments = $ele.eq(6).text();
-        return { name, classCode, grades, subject, students, assignments };
-      });
-
   // adding students
 
   clickOnAddStudents = () => cy.get('[data-cy="addMultiStu"]').click();
@@ -275,14 +240,57 @@ export default class TeacherManageClassPage {
     });
   };
 
-  getStudentTextArea = () => cy.get("#students");
-
   clickOnSearchTab = () => {
     cy.get('[data-cy="searchStudent"]').click();
   };
 
   clickOnAddMultipleTab = () => {
     cy.get('[data-cy="addMultipleStudent"]').click();
+  };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyName(name) {
+    this.getClassName().then($ele => {
+      expect($ele.val()).to.eq(name);
+    });
+  }
+
+  verifyGrade = grade => {
+    this.getGradeSelect()
+      .find(".ant-select-selection__choice__content")
+      .should("have.text", grade);
+  };
+
+  verifySubject = subject => {
+    this.getSubjectSelect()
+      .find(".ant-select-selection-selected-value")
+      .should("have.text", subject);
+  };
+
+  verifyStandardSets = standardSets => {
+    this.getStandardSets()
+      .find(".ant-select-selection__choice__content")
+      .should("have.text", standardSets);
+  };
+
+  verifyStartDate = date => {
+    this.getStartDate().then($d => {
+      expect($d.val()).to.eq(this.getDateInFormate(date));
+    });
+  };
+
+  verifyEndDate = date => {
+    this.getEndDate().then($d => {
+      expect($d.val()).to.eq(this.getDateInFormate(date));
+    });
+  };
+
+  getDateInFormate = datetime => {
+    const [day, mon, date, year] = datetime.toDateString().split(" ");
+    return `${date} ${mon}, ${year}`;
   };
 
   addMultipleStudent(users, uType) {
@@ -297,4 +305,6 @@ export default class TeacherManageClassPage {
       return this.clickOnDone();
     });
   }
+
+  // *** APPHELPERS END ***
 }

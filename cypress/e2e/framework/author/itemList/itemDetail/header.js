@@ -4,23 +4,32 @@ import PreviewItemPage from "./previewPage";
 import MetadataPage from "./metadataPage";
 
 class Header {
-  edit() {
-    cy.get('[data-cy="editButton"]').click({ force: true });
+  // *** ELEMENTS START ***
 
+  getEdit = () => cy.get('[data-cy="editButton"]');
+
+  getPreview = () => cy.get('[data-cy="previewButton"]');
+
+  getMetadata = () => cy.get('[data-cy="metadataButton"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  edit() {
+    this.getEdit().click({ force: true });
     return new EditItemPage();
   }
 
   preview() {
-    cy.get('[data-cy="previewButton"]').click({ force: true });
-
+    this.getPreview().click({ force: true });
     return new PreviewItemPage();
   }
 
   metadata() {
-    cy.get('[data-cy="metadataButton"]')
+    this.getMetadata()
       .should("be.visible")
       .click();
-
     return new MetadataPage();
   }
 
@@ -61,6 +70,10 @@ class Header {
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
 
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
   saveAndgetId = () => {
     cy.server();
     cy.route("PUT", "**/api/testitem/*").as("saveItem");
@@ -69,6 +82,8 @@ class Header {
       .click();
     return cy.wait("@saveItem").then(xhr => xhr.response.body.result._id);
   };
+
+  // *** APPHELPERS END ***
 }
 
 export default Header;

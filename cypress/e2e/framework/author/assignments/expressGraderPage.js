@@ -10,6 +10,8 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       new StudentTestPage().attemptQuestion(attemptQueType, attemptType, attemptData);
   }
 
+  // *** ELEMENTS START ***
+
   getGridRowByStudent = student =>
     cy
       .contains("div", student)
@@ -17,6 +19,12 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .as(this.rowAlias);
 
   getScoreInputBox = () => cy.get('[data-cy="scoreInput"]');
+
+  getExitButton = () => cy.get('[data-cy="exitbutton"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   waitForStudentData = () => {
     cy.wait("@student").then(xhr => expect(xhr.status).to.eq(200));
@@ -88,10 +96,14 @@ export default class ExpressGraderPage extends LiveClassboardPage {
           cy.wait("@test-activity");
         } else 
          */
-        cy.get('[data-cy="exitbutton"]').click({ force: true });
+        this.getExitButton().click({ force: true });
       }
     });
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   verifyScoreAndPerformance = (score, perf) => {
     cy.get(`@${this.rowAlias}`)
@@ -311,4 +323,6 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
     cy.url().should("include", `author/expressgrader/${assignmnetId}/${classId}`);
+
+  // *** APPHELPERS END ***
 }

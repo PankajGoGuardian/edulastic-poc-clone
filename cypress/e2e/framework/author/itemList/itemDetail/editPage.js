@@ -20,6 +20,42 @@ class EditItemPage {
     this.testAddItem = new TestAddItemTab();
   }
 
+  // *** ELEMENTS START ***
+
+  getSource() {
+    cy.get('[data-cy="source"]').click();
+  }
+
+  getEditButton() {
+    return cy.get('button[title="Edit"]');
+  }
+
+  getDelButton() {
+    return cy.get('button[title="Delete"]');
+  }
+
+  getItemWithId(itemId) {
+    expect(itemId).to.not.eq(undefined);
+    cy.server();
+    cy.route("GET", "**/testitem/**").as("getItem");
+    cy.visit(`/author/items/${itemId}/item-detail`);
+    cy.wait("@getItem");
+  }
+
+  getItemTotalScore = () => {
+    cy.wait(500);
+    return cy
+      .get('[data-cy="question-container"]')
+      .first()
+      .parent()
+      .next()
+      .find(".ant-input");
+  };
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickAdvancedOptionsButton() {
     cy.get('[data-cy="toggleAdvancedOptionsButton"]')
       .should("be.visible")
@@ -112,30 +148,10 @@ class EditItemPage {
     this.selectQue(qType);
   }
 
-  getSource() {
-    cy.get('[data-cy="source"]').click();
-  }
-
   cancelSource() {
     cy.contains("Cancel")
       .should("be.visible")
       .click();
-  }
-
-  getEditButton() {
-    return cy.get('button[title="Edit"]');
-  }
-
-  getDelButton() {
-    return cy.get('button[title="Delete"]');
-  }
-
-  getItemWithId(itemId) {
-    expect(itemId).to.not.eq(undefined);
-    cy.server();
-    cy.route("GET", "**/testitem/**").as("getItem");
-    cy.visit(`/author/items/${itemId}/item-detail`);
-    cy.wait("@getItem");
   }
 
   createNewItem = (onlyItem = true) => {
@@ -158,15 +174,9 @@ class EditItemPage {
     });
   }
 
-  getItemTotalScore = () => {
-    cy.wait(500);
-    return cy
-      .get('[data-cy="question-container"]')
-      .first()
-      .parent()
-      .next()
-      .find(".ant-input");
-  };
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   updateItemLevelScore = score => {
     cy.wait(300);
@@ -181,6 +191,8 @@ class EditItemPage {
   };
 
   verifyItemIdsToBeEqual = (newid, oldid) => expect(newid).eq(oldid);
+
+  // *** APPHELPERS END ***
 }
 
 export default EditItemPage;

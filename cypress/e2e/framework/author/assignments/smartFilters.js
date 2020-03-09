@@ -1,6 +1,14 @@
 import CypressHelper from "../../util/cypressHelpers";
 
 export default class SmartFilters {
+  // *** ELEMENTS START ***
+
+  getGrades = () => cy.get('[data-cy="grades"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnFilter = () => cy.get('[data-cy="smart-filter"]').click();
 
   routeAPI = () => {
@@ -9,8 +17,6 @@ export default class SmartFilters {
   };
 
   waitForAssignments = () => cy.wait("@assignment");
-
-  getGrades = () => cy.get('[data-cy="grades"]');
 
   setGrades = grade => {
     this.getGrades().click();
@@ -66,10 +72,6 @@ export default class SmartFilters {
       .get(`[title="${folderName}"]`)
       .first()
       .click({ force: true });
-
-  verifyFolderVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("be.visible");
-
-  verifyFolderNotVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("not.be.visible");
 
   renameFolder = (currentName, newName, isValid = true) => {
     cy.server();
@@ -131,6 +133,14 @@ export default class SmartFilters {
     }
   };
 
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyFolderVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("be.visible");
+
+  verifyFolderNotVisible = folderName => cy.get(`[data-cy="${folderName}"]`).should("not.be.visible");
+
   moveToFolder = (folderName, isValid = true) => {
     cy.server();
     cy.route("PUT", "**/user-folder/**").as("updateFolder");
@@ -149,4 +159,6 @@ export default class SmartFilters {
       cy.contains(`successfully moved to ${folderName} folder`).should("be.visible");
     } else cy.contains(`Test already exist in ${folderName} folder`).should("be.visible");
   };
+
+  // *** APPHELPERS END ***
 }

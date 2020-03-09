@@ -15,28 +15,34 @@ export default class TestReviewTab {
     this.studentTestPage = new StudentTestPage();
   }
 
+  // *** ELEMENTS START ***
+
   getQueCardByItemIdInCollapsed = item => cy.get(`[data-cy="${item}"]`).as("queCard");
 
   getQueContainerById = id => cy.get(`[data-cy="${id}"]`).find('[data-cy="question-container"]');
 
-  verifySummary = (quetions, points) => {
-    cy.get('[data-cy="question"]').should("have.text", `${quetions}`);
-    cy.get('[data-cy="points"]').should("have.text", `${points}`);
-  };
-
-  verifyGradeSubject = (grade, subject) => {
-    this.getTestGradeSelect()
-      .find(".ant-select-selection__choice")
-      .contains(grade);
-
-    this.getTestSubjectSelect()
-      .find(".ant-select-selection__choice")
-      .contains(subject);
-  };
-
   getTestGradeSelect = () => cy.get('[data-cy="gradeSelect"]');
 
   getTestSubjectSelect = () => cy.get('[data-cy="subjectSelect"]');
+
+  getMoveTo = () => cy.get('[data-cy="moveto"]');
+
+  getPointsOnQueCardByid = id => this.getQueCardByItemIdInCollapsed(id).find("input");
+
+  getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]');
+
+  getItemIdIdByIndex = index =>
+    cy
+      .get('[data-cy="styled-wrapped-component"]')
+      .eq(index)
+      .parent()
+      .invoke("attr", "data-cy");
+
+  getQueContainer = () => cy.get('[data-cy="question-container"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   selectGrade = grade => {
     this.getTestGradeSelect().click({ force: true });
@@ -67,8 +73,6 @@ export default class TestReviewTab {
   clickOnRemoveSelected = () => cy.get('[data-cy="removeSelected"]').click();
 
   clickOnMoveTo = () => this.getMoveTo().click();
-
-  getMoveTo = () => cy.get('[data-cy="moveto"]');
 
   clickOnExpandRow = () => cy.get('[data-cy="expand-rows"]').click();
 
@@ -107,12 +111,6 @@ export default class TestReviewTab {
       .click();
   };
 
-  verifyItemByContent = question =>
-    cy
-      .get('[data-cy="styled-wrapped-component"]')
-      .contains(question)
-      .should("be.exist", `verify added items - ${question}should appear in review tab`);
-
   previewQuestById = id => {
     this.getQueCardByItemIdInCollapsed(id)
       // .find("span", "Preview")
@@ -126,14 +124,6 @@ export default class TestReviewTab {
       .type(points, { force: true });
   };
 
-  getPointsOnQueCardByid = id => this.getQueCardByItemIdInCollapsed(id).find("input");
-
-  asesrtPointsByid = (id, points) => {
-    this.getQueCardByItemIdInCollapsed(id)
-      .find(".ant-input-lg")
-      .should("have.value", points.toString());
-  };
-
   clickOnViewAsStudent = () => {
     cy.wait(3000);
     cy.get('[data-cy="viewAsStudent"]').click();
@@ -144,10 +134,6 @@ export default class TestReviewTab {
       .get(".ant-modal-close")
       .eq(0)
       .click({ force: true });
-
-  verifyQustionById = id => {
-    this.getQueCardByItemIdInCollapsed(id).should("exist");
-  };
 
   moveQuestionByIndex = index => {
     this.clickOnMoveTo();
@@ -160,11 +146,44 @@ export default class TestReviewTab {
       .click({ force: true });
   };
 
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifySummary = (quetions, points) => {
+    cy.get('[data-cy="question"]').should("have.text", `${quetions}`);
+    cy.get('[data-cy="points"]').should("have.text", `${points}`);
+  };
+
+  verifyGradeSubject = (grade, subject) => {
+    this.getTestGradeSelect()
+      .find(".ant-select-selection__choice")
+      .contains(grade);
+
+    this.getTestSubjectSelect()
+      .find(".ant-select-selection__choice")
+      .contains(subject);
+  };
+
+  verifyItemByContent = question =>
+    cy
+      .get('[data-cy="styled-wrapped-component"]')
+      .contains(question)
+      .should("be.exist", `verify added items - ${question}should appear in review tab`);
+
+  asesrtPointsByid = (id, points) => {
+    this.getQueCardByItemIdInCollapsed(id)
+      .find(".ant-input-lg")
+      .should("have.value", points.toString());
+  };
+
+  verifyQustionById = id => {
+    this.getQueCardByItemIdInCollapsed(id).should("exist");
+  };
+
   verifyMovedQuestionById = (id, index) => {
     this.getQueCardByItemIdInCollapsed(id).should("have.attr", "data-cy-item-index", (index - 1).toString());
   };
-
-  getQueContainer = () => cy.get('[data-cy="question-container"]');
 
   verifyNoOfItemsInGroupByNo = (group, itemCount) => {
     cy.get(`[data-cy="item-Group ${group}"]`).should("contain", itemCount);
@@ -172,12 +191,5 @@ export default class TestReviewTab {
 
   verifyItemCoutInPreview = count => this.getAllquestionInReview().should("have.length", count);
 
-  getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]');
-
-  getItemIdIdByIndex = index =>
-    cy
-      .get('[data-cy="styled-wrapped-component"]')
-      .eq(index)
-      .parent()
-      .invoke("attr", "data-cy");
+  // *** APPHELPERS END ***
 }

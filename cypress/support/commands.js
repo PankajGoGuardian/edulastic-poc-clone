@@ -5,27 +5,12 @@ import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
 import { getAccessToken } from "../../packages/api/src/utils/Storage";
+import { getMimetype } from "./misc/mimeTypes.js";
+import DndSimulatorDataTransfer from "./misc/dndSimulator";
 import FileHelper from "../e2e/framework/util/fileHelper";
 import "cypress-file-upload";
 
 const screenResolutions = Cypress.config("SCREEN_SIZES");
-
-addMatchImageSnapshotCommand({
-  failureThreshold: 100, // threshold for entire image
-  failureThresholdType: "pixel", // pixel/percent for of total pixels
-  customDiffConfig: { threshold: 0.0 }, // threshold for each pixel
-  capture: "viewport" // capture only viewport in screenshot
-});
-
-Cypress.Commands.add("setResolution", size => {
-  if (Cypress._.isArray(size)) {
-    cy.viewport(size[0], size[1]);
-  } else {
-    cy.viewport(size);
-  }
-});
-
-Cypress.LocalStorage.clear = () => {};
 const BASE_URL = Cypress.config("API_URL");
 const DEFAULT_USERS = {
   teacher: {
@@ -37,6 +22,24 @@ const DEFAULT_USERS = {
     password: "snapwiz"
   }
 };
+
+addMatchImageSnapshotCommand({
+  failureThreshold: 100, // threshold for entire image
+  failureThresholdType: "pixel", // pixel/percent for of total pixels
+  customDiffConfig: { threshold: 0.0 }, // threshold for each pixel
+  capture: "viewport" // capture only viewport in screenshot
+});
+
+// overriding Cypress command
+Cypress.LocalStorage.clear = () => {};
+
+Cypress.Commands.add("setResolution", size => {
+  if (Cypress._.isArray(size)) {
+    cy.viewport(size[0], size[1]);
+  } else {
+    cy.viewport(size);
+  }
+});
 
 Cypress.Commands.add("createUser", overrides => {
   const user = userBuilder(overrides);
@@ -348,46 +351,6 @@ Cypress.Commands.add("uploadImage", base64Image => {
   );
 });
 
-class DndSimulatorDataTransfer {
-  data = {};
-
-  dropEffect = "move";
-
-  effectAllowed = "all";
-
-  files = [];
-
-  items = [];
-
-  types = [];
-
-  clearData(format) {
-    if (format) {
-      delete this.data[format];
-
-      const index = this.types.indexOf(format);
-      delete this.types[index];
-      delete this.data[index];
-    } else {
-      this.data = {};
-    }
-  }
-
-  setData(format, data) {
-    this.data[format] = data;
-    this.items.push(data);
-    this.types.push(format);
-  }
-
-  getData(format) {
-    if (format in this.data) {
-      return this.data[format];
-    }
-
-    return "";
-  }
-}
-
 Cypress.Commands.add(
   "customDragDrop",
   {
@@ -425,34 +388,6 @@ Cypress.Commands.add(
     });
   }
 );
-
-function getMimetype(filename) {
-  let mimeType = "image/png";
-  const fileExtention = filename.split(".").reverse()[0];
-  switch (fileExtention) {
-    case "png":
-      mimeType = "image/png";
-      break;
-
-    case "jpeg":
-    case "jpg":
-      mimeType = "image/jpeg";
-      break;
-
-    case "gif":
-      mimeType = "image/gif";
-      break;
-
-    case "pdf":
-      mimeType = "application/pdf";
-      break;
-
-    default:
-      break;
-  }
-
-  return mimeType;
-}
 
 /* 
 @param fileName : 'testImages/sample.jpg'

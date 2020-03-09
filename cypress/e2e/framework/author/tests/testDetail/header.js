@@ -3,6 +3,14 @@ import TestSummayTab from "./testSummaryTab";
 import TestReviewTab from "./testReviewTab";
 
 export default class TestHeader {
+  // *** ELEMENTS START ***
+
+  getTestNameInTitle = () => cy.get('[data-cy="title"]');
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   clickOnDescription = () => {
     cy.get('[data-cy="description"]').click({ force: true });
     return new TestSummayTab();
@@ -93,16 +101,13 @@ export default class TestHeader {
       .find("svg")
       .click({ force: true });
 
-  isDraft = () => cy.get('[data-cy="status"]').contains("draft");
-  // cy
-  //   .get('[data-cy="description"]')
-  //   .parent()
-  //   .parent()
-  //   .children()
-  //   .eq(0)
-  //   .find("span")
+  // *** ACTIONS END ***
 
-  getTestNameInTitle = () => cy.get('[data-cy="title"]');
+  // *** APPHELPERS START ***
+
+  isDraft = () => cy.get('[data-cy="status"]').contains("draft");
 
   verifyNameInTitle = name => this.getTestNameInTitle().should("contain", name);
+
+  // *** APPHELPERS END ***
 }

@@ -5,6 +5,12 @@ export default class Regrade {
   constructor() {
     this.testLibrary = new TestLibrary();
   }
+
+  // *** ELEMENTS START ***
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   regradeSelection = (regrade, EditFromAssgntsPage = false) => {
     cy.server();
     cy.route("PUT", "**/api/test/*").as("published");
@@ -37,4 +43,9 @@ export default class Regrade {
     cy.wait("@regrade").then(xhr => expect(xhr.status).to.eq(200));
     cy.contains("Success!");
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }

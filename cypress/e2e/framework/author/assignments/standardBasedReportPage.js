@@ -3,7 +3,20 @@ import { attemptTypes } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
 
 export default class StandardBasedReportPage extends LiveClassboardPage {
+  // *** ELEMENTS START ***
+
   getStandardRow = standard => cy.contains(standard).closest("tr");
+
+  getTableHeader = () => cy.get(".ant-table-thead").eq(0);
+
+  getTableHeaderElements = () => this.getTableHeader().find("th");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   getStandardPerformance = (stuAttemptData, questionTypeMap) => {
     const allStandardPerformance = {};
@@ -179,10 +192,8 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
     this.verifyStudentPerformance(students);
   };
 
-  getTableHeader = () => cy.get(".ant-table-thead").eq(0);
-
-  getTableHeaderElements = () => this.getTableHeader().find("th");
-
   verifyClassAndAssignmntId = (classId, assignmnetId) =>
     cy.url().should("include", `/author/standardsBasedReport/${assignmnetId}/${classId}`);
+
+  // *** APPHELPERS END ***
 }

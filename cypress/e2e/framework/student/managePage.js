@@ -4,9 +4,10 @@ export default class ManagePage {
     this.sideBar = new SidebarPage();
   }
 
-  validateclassName = classname => {
-    cy.contains(classname).should("be.visible");
-  };
+  // *** ELEMENTS START ***
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickonJoinClass = () => {
     cy.get('[data-cy="joinclass"]').click({ force: true });
@@ -48,16 +49,24 @@ export default class ManagePage {
     cy.get('[data-cy="cancelbutton"]').click({ force: true });
   };
 
+  typeClassCode = classCode => {
+    cy.get('[data-cy="classcodeinput"]').type(classCode);
+  };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  validateclassName = classname => {
+    cy.contains(classname).should("be.visible");
+  };
+
   verifyShowActiveClass = activeCount => {
     cy.contains(`ACTIVE (${activeCount})`).should("be.visible");
   };
 
   verifyShowArchiveClass = archiveCount => {
     cy.contains(`ARCHIVE (${archiveCount})`).should("be.visible");
-  };
-
-  typeClassCode = classCode => {
-    cy.get('[data-cy="classcodeinput"]').type(classCode);
   };
 
   validateEnterClassCodeMsg = () => {
@@ -67,4 +76,5 @@ export default class ManagePage {
   validateAPImsg = APImsg => {
     cy.contains(APImsg).should("be.visible");
   };
+  // *** APPHELPERS END ***
 }

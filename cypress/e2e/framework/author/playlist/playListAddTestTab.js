@@ -1,5 +1,5 @@
 export default class PlayListAddTest {
-  // =========== ELEMENTS START ===========
+  // *** ELEMENTS START ***
 
   getTestCardById = id => cy.get(`[data-cy="${id}"]`);
 
@@ -40,8 +40,9 @@ export default class PlayListAddTest {
 
   getConfirmationBoxWhileBulkRemove = () => cy.get('[data-cy="remove-count"]');
 
-  // =========== ELEMENTS END ===========
-  // =========== ACTIONS START ===========
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnManageModule = () => this.getManageModuleButton().click();
 
@@ -72,7 +73,10 @@ export default class PlayListAddTest {
     this.getViewButtonByTestId(id).click();
     return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
   };
-  // =========== ACTIONS END - APPHELPER START ===========
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   addTestByIdByModule = (testId, mod) => {
     this.getAddButtonByTestId(testId).click();
@@ -114,5 +118,6 @@ export default class PlayListAddTest {
     );
 
   verifyMessage = msg => cy.get(".ant-message").should("contain", msg);
-  // =========== APPHELPER END ===========
+
+  // *** APPHELPERS END ***
 }

@@ -9,6 +9,8 @@ class AssignmentsPage {
     // this.studentTest = new StudentTestPage();
   }
 
+  // *** ELEMENTS START ***
+
   getAssignmentButton() {
     return cy.get('[data-cy="assignmentButton"]');
   }
@@ -52,32 +54,23 @@ class AssignmentsPage {
       .click();
   }
 
-  verifyAssignmentCount(status) {
-    cy.get("body")
-      .find('[data-cy="assignmentButton"]')
-      .then(ele => {
-        const count = ele.length;
-
-        if (status === "ALL") {
-          this.getAllAssignments().contains(count);
-        }
-        if (status === "NOT_STARTED") {
-          this.getNotStarted().contains(count);
-        }
-        if (status === "IN_PROGRESS") {
-          this.getInProgress().contains(count);
-        }
-      });
-  }
-
   getAllAssignments = () => cy.get('[data-cy="ALL"]');
 
   getNotStarted = () => cy.get('[data-cy="NOT_STARTED"]');
 
   getInProgress = () => cy.get('[data-cy="IN_PROGRESS"]');
 
-  // common actions on AssignmentPage
+  getTestNameById = id => this.getAssignmentByTestId(id).find('[data-cy="testTitle"]');
 
+  getReviewButtonById = id => this.getAssignmentByTestId(id).find('[data-cy="reviewButton"]');
+
+  getStatusByPosition = pos => cy.get('[data-cy="status"]').eq(pos);
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  // common actions on AssignmentPage
   clickOnAssignmentButton() {
     cy.server();
     // cy.route("POST", "**/test-activity").as("startTest");
@@ -112,6 +105,36 @@ class AssignmentsPage {
       return cy.wait(1).then(() => xhr.response.body.result.itemGroups);
     });
   };
+
+  clickOnReviewButton = () => {
+    this.getReviewButton().click({ force: true });
+  };
+
+  enterPassword = pass => cy.get('[placeholder="Enter assignment password"]').type(pass);
+
+  clickOnStartAfterPassword = () => cy.get('[data-cy="start"]').click();
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  verifyAssignmentCount(status) {
+    cy.get("body")
+      .find('[data-cy="assignmentButton"]')
+      .then(ele => {
+        const count = ele.length;
+
+        if (status === "ALL") {
+          this.getAllAssignments().contains(count);
+        }
+        if (status === "NOT_STARTED") {
+          this.getNotStarted().contains(count);
+        }
+        if (status === "IN_PROGRESS") {
+          this.getInProgress().contains(count);
+        }
+      });
+  }
 
   validateAssignment(name, status, assignmentButtonValue, assessmentType = "A") {
     cy.contains("div", name).should("be.visible");
@@ -155,8 +178,6 @@ class AssignmentsPage {
 
   verifyTestNameById = (testName, id) => this.getTestNameById(id).should("contain", testName);
 
-  getTestNameById = id => this.getAssignmentByTestId(id).find('[data-cy="testTitle"]');
-
   verifyAssignedTestID = (oldtestid, newtestid) => {
     this.sidebar.clickOnAssignment();
     this.verifyAbsenceOfTest(newtestid);
@@ -167,25 +188,13 @@ class AssignmentsPage {
 
   verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
 
+  // *** APPHELPERS END ***
+
   reviewSubmittedTestById = id => {
     this.getReviewButtonById(id).click({ force: true });
   };
 
-  getReviewButtonById = id => this.getAssignmentByTestId(id).find('[data-cy="reviewButton"]');
-
-  clickOnReviewButton = () => {
-    this.getReviewButton().click({ force: true });
-  };
-
-  // PAUSED
-
   verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
-
-  enterPassword = pass => cy.get('[placeholder="Enter assignment password"]').type(pass);
-
-  clickOnStartAfterPassword = () => cy.get('[data-cy="start"]').click();
-
-  getStatusByPosition = pos => cy.get('[data-cy="status"]').eq(pos);
 }
 
 export default AssignmentsPage;

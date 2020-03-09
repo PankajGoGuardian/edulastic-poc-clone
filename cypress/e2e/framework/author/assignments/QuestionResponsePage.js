@@ -2,6 +2,8 @@ import { questionTypeKey as queTypes, attemptTypes, queColor } from "../../const
 import CypressHelper from "../../util/cypressHelpers";
 
 export default class QuestionResponsePage {
+  // *** ELEMENTS START ***
+
   getDropDown = () => cy.get(".ant-select-selection");
 
   getDropDownMenu = () => cy.get(".ant-select-dropdown-menu");
@@ -13,6 +15,83 @@ export default class QuestionResponsePage {
   getFeedbackArea = card => card.contains("Leave a feedback!").next();
 
   getOverallFeedback = () => cy.get('[data-cy="overallFeedback"]');
+
+  getTotalScore = () => cy.get('[data-cy="totalScore"]');
+
+  getMaxScore = () => cy.get('[data-cy="totalMaxScore"]');
+
+  getImprovement = () => cy.get('[data-cy="scoreChange"]');
+
+  getQuestionContainer = cardIndex => cy.get('[data-cy="question-container"]').eq(cardIndex);
+
+  getQuestionContainerByStudent = studentName =>
+    cy
+      .get('[data-cy="studentName"]')
+      .contains(studentName)
+      .closest('[data-cy="question-container"]');
+
+  getLabels = qcard => qcard.find("label");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  clickOnUpdateButton = card => card.find('[data-cy="updateButton"]').click({ force: true });
+
+  selectStudent = studentName => {
+    let index = -1;
+    cy.server();
+    cy.route("GET", "**/test-activity/**").as("test-activity");
+    this.getDropDown()
+      .eq(0)
+      .click({ force: true });
+
+    CypressHelper.getDropDownList(list => {
+      index = list.indexOf(studentName);
+    });
+
+    this.getDropDownMenu()
+      .contains(studentName)
+      .click({ force: true });
+
+    if (index > 0) cy.wait("@test-activity");
+    // if (!studentName.includes("Student01")) cy.wait("@test-activity");
+    this.getQuestionContainer(0).should("contain", studentName);
+    cy.wait(500); // detachment problem
+  };
+
+  selectAttempt = attemptNum => {
+    let index = -1;
+    const attempt = `Attempt ${attemptNum} `;
+    cy.server();
+    cy.route("GET", "**/test-activity/**").as("test-activity");
+    cy.get('[data-cy="attemptSelect"]').click({ force: true });
+
+    CypressHelper.getDropDownList(list => {
+      index = list.indexOf(attempt);
+    });
+
+    this.getDropDownMenu()
+      .contains(attempt)
+      .click({ force: true });
+    if (index > 0) cy.wait("@test-activity");
+  };
+
+  selectQuestion = queNum => {
+    // const questionSelect = `Question ${queNum.slice(1)}`;
+    cy.server();
+    cy.route("GET", "**/item/**").as("item");
+    this.getDropDown().click({ force: true });
+    this.getDropDownMenu()
+      .contains(`Question ${queNum.slice(1)}`)
+      .click({ force: true });
+    if (queNum !== "Q1") cy.wait("@item"); // .then(xhr => xhr.response.body.result[0].testItemId);
+    // else return cy.wait(1);
+  };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   enterOverAllFeedback = feedback => {
     cy.server();
@@ -130,8 +209,6 @@ export default class QuestionResponsePage {
     }
   };
 
-  clickOnUpdateButton = card => card.find('[data-cy="updateButton"]').click({ force: true });
-
   verifyScoreRight = (card, points) => {
     this.verifyScore(card, true, points);
   };
@@ -139,51 +216,6 @@ export default class QuestionResponsePage {
   verifyScoreWrong = (card, points) => {
     this.verifyScore(card, false, points);
   };
-
-  selectStudent = studentName => {
-    let index = -1;
-    cy.server();
-    cy.route("GET", "**/test-activity/**").as("test-activity");
-    this.getDropDown()
-      .eq(0)
-      .click({ force: true });
-
-    CypressHelper.getDropDownList(list => {
-      index = list.indexOf(studentName);
-    });
-
-    this.getDropDownMenu()
-      .contains(studentName)
-      .click({ force: true });
-
-    if (index > 0) cy.wait("@test-activity");
-    // if (!studentName.includes("Student01")) cy.wait("@test-activity");
-    this.getQuestionContainer(0).should("contain", studentName);
-    cy.wait(500); // detachment problem
-  };
-
-  selectAttempt = attemptNum => {
-    let index = -1;
-    const attempt = `Attempt ${attemptNum} `;
-    cy.server();
-    cy.route("GET", "**/test-activity/**").as("test-activity");
-    cy.get('[data-cy="attemptSelect"]').click({ force: true });
-
-    CypressHelper.getDropDownList(list => {
-      index = list.indexOf(attempt);
-    });
-
-    this.getDropDownMenu()
-      .contains(attempt)
-      .click({ force: true });
-    if (index > 0) cy.wait("@test-activity");
-  };
-
-  getTotalScore = () => cy.get('[data-cy="totalScore"]');
-
-  getMaxScore = () => cy.get('[data-cy="totalMaxScore"]');
-
-  getImprovement = () => cy.get('[data-cy="scoreChange"]');
 
   verifyTotalScoreAndImprovement = (totalScore, maxScore, improvemnt) => {
     this.getTotalScore().should("have.text", `${totalScore}`);
@@ -201,29 +233,7 @@ export default class QuestionResponsePage {
       .should("have.class", "ant-select-dropdown-menu-item-disabled");
   };
 
-  selectQuestion = queNum => {
-    // const questionSelect = `Question ${queNum.slice(1)}`;
-    cy.server();
-    cy.route("GET", "**/item/**").as("item");
-    this.getDropDown().click({ force: true });
-    this.getDropDownMenu()
-      .contains(`Question ${queNum.slice(1)}`)
-      .click({ force: true });
-    if (queNum !== "Q1") cy.wait("@item"); // .then(xhr => xhr.response.body.result[0].testItemId);
-    // else return cy.wait(1);
-  };
-
-  getQuestionContainer = cardIndex => cy.get('[data-cy="question-container"]').eq(cardIndex);
-
-  getQuestionContainerByStudent = studentName =>
-    cy
-      .get('[data-cy="studentName"]')
-      .contains(studentName)
-      .closest('[data-cy="question-container"]');
-
   // MCQ
-  getLabels = qcard => qcard.find("label");
-
   verifyLabelChecked = (quecard, choice) =>
     this.getLabels(quecard)
       .contains(choice)
@@ -362,7 +372,6 @@ export default class QuestionResponsePage {
       });
   };
 
-  //
   verifyNoQuestionResponseCard = studentName => {
     cy.get('[data-cy="studentName"]')
       .contains(studentName)
@@ -507,4 +516,6 @@ export default class QuestionResponsePage {
         break;
     }
   };
+
+  // *** APPHELPERS END ***
 }

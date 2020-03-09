@@ -12,6 +12,8 @@ class StudentTestPage {
     this.report = new ReportsPage();
   }
 
+  // *** ELEMENTS START ***
+
   getQuestionText = () =>
     cy
       .get('[class^="QuestionNumberLabel"]')
@@ -21,6 +23,61 @@ class StudentTestPage {
   getCheckAns = () => cy.get("[data-cy=checkAnswer]");
 
   getEvaluationMessage = () => cy.get(".ant-message-custom-content");
+
+  getNext = () => cy.get("[data-cy=next]");
+
+  getPrevious = () => cy.get("[data-cy=prev]");
+
+  getQueDropDown = () => cy.get('[data-cy="options"]').should("be.visible");
+
+  getHint = () => cy.contains("hint").should("be.visible");
+
+  getBookmark = () => cy.contains("bookmark").should("be.visible");
+
+  getAllChoices = () => cy.get('[class^="MultiChoiceContent"]');
+
+  getLabels = qcard => qcard.find("label");
+
+  clickOnAll = () => cy.get('[ data-cy="all"]').click();
+
+  clickOnBookmarked = () => cy.get('[ data-cy="bookmarked"]').click();
+
+  clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click();
+
+  // @questionNumber = "Q1" ; "Q2"
+  clickOnReviewQuestion = questionNumber => cy.get(`[data-cy="${questionNumber}"]`).click();
+
+  getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]');
+
+  getBasicCalc = () => cy.get('[data-cy="BASIC"]');
+
+  getGraphCalc = () => cy.get('[data-cy="GRAPHING"]');
+
+  getAchievedScore = () => cy.get('[data-cy="score"]');
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]');
+
+  getAnswerBox = () => cy.get(".responses_box");
+
+  getQuestionBox = () => cy.get(".template_box ");
+
+  getQuestionBoxByIndex = index => cy.get(`#response-container-${index}`);
+
+  getCalculatorButton = () => cy.get('[data-cy="calculator"]');
+
+  getImageQuestionBox = () => cy.get(".imagedragdrop_template_box ");
+
+  getLabelImageQuestionByIndex = index => cy.get(`#answerboard-dragdropbox-${index}`);
+
+  getHighlightToken = answer => cy.get('[data-cy="previewWrapper"]').contains("span", answer);
+
+  getRenderedDropDownLabels = () => cy.get("body").find(".ant-select-selection__rendered");
+
+  getInputsLabelText = () => cy.get(".template_box").find("input");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnCheckAns = (isExhausted = false) => {
     cy.server();
@@ -38,25 +95,6 @@ class StudentTestPage {
       );
   };
 
-  checkAnsValidateAsWrong = (maxPoints = 1) => {
-    this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
-    return this;
-  };
-
-  checkAnsValidateAsRight = (maxPoints = 1) => {
-    this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: ${maxPoints}/${maxPoints}`);
-  };
-
-  checkAnsValidateAsNoPoint = (maxPoints = 1) => {
-    this.clickOnCheckAns();
-    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
-    return this;
-  };
-
-  getNext = () => cy.get("[data-cy=next]");
-
   clickOnNext = (onlyPreview = false) => {
     cy.server();
     cy.route("POST", "**/test-activity/**").as("saved");
@@ -66,8 +104,6 @@ class StudentTestPage {
       .click();
     if (!onlyPreview) cy.wait("@saved");
   };
-
-  getPrevious = () => cy.get("[data-cy=prev]");
 
   clickOnPrevious() {
     this.getPrevious()
@@ -118,8 +154,6 @@ class StudentTestPage {
     return cy.url().should("include", "/home/grades");
   };
 
-  getQueDropDown = () => cy.get('[data-cy="options"]').should("be.visible");
-
   clickOnMenuCheckAns = () => {
     cy.get("[data-cy=setting]")
       .should("be.visible")
@@ -130,12 +164,36 @@ class StudentTestPage {
     return this;
   };
 
-  getHint = () => cy.contains("hint").should("be.visible");
+  clickOnChoice = ch =>
+    cy
+      .contains(ch)
+      .should("be.visible")
+      .click({ force: true });
 
-  getBookmark = () => cy.contains("bookmark").should("be.visible");
+  clickOnCalcuator = () => this.getCalculatorButton().click();
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+
+  checkAnsValidateAsWrong = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
+    return this;
+  };
+
+  checkAnsValidateAsRight = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: ${maxPoints}/${maxPoints}`);
+  };
+
+  checkAnsValidateAsNoPoint = (maxPoints = 1) => {
+    this.clickOnCheckAns();
+    this.getEvaluationMessage().should("contain.text", `score: 0/${maxPoints}`);
+    return this;
+  };
 
   // MCQ
-
   checkHighLightByAnswer = answer => {
     cy.contains(answer)
       .should("be.visible")
@@ -148,12 +206,6 @@ class StudentTestPage {
       });
     return this;
   };
-
-  clickOnChoice = ch =>
-    cy
-      .contains(ch)
-      .should("be.visible")
-      .click({ force: true });
 
   checkHighLightUncheckedByAnswer = answer => {
     cy.contains(answer)
@@ -168,10 +220,6 @@ class StudentTestPage {
     return this;
   };
 
-  getAllChoices = () => cy.get('[class^="MultiChoiceContent"]');
-
-  getLabels = qcard => qcard.find("label");
-
   verifyLabelChecked = (quecard, choice) =>
     this.getLabels(quecard)
       .contains(choice)
@@ -180,7 +228,6 @@ class StudentTestPage {
       .should("be.checked");
 
   // CHOICE MATRIX
-
   checkAnsMatrix = (answer, steams) => {
     Object.keys(answer).forEach(chKey => {
       cy.get('[data-cy="matrixTable"]')
@@ -218,6 +265,7 @@ class StudentTestPage {
       });
   };
 
+  // TODO : remove below redundent methods if not is use
   clickFirstRadioByTitle = title =>
     cy
       .contains("p", title)
@@ -264,14 +312,7 @@ class StudentTestPage {
       .parent()
       .should("have.class", "ant-radio-checked");
 
-  getAnswerBox = () => cy.get(".responses_box");
-
-  getQuestionBox = () => cy.get(".template_box ");
-
-  getQuestionBoxByIndex = index => cy.get(`#response-container-${index}`);
-
   // CLOZE DROP DOWN
-
   verifyAnswerCloze = (card, attempt, attemptType) => {
     card
       .find(".jsx-parser")
@@ -284,6 +325,7 @@ class StudentTestPage {
       });
   };
 
+  // CLOZE DRAGDROP TODO: refact and make it generic
   dragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
       .contains("div", answer)
@@ -303,10 +345,6 @@ class StudentTestPage {
       });
     return this;
   };
-
-  getImageQuestionBox = () => cy.get(".imagedragdrop_template_box ");
-
-  getLabelImageQuestionByIndex = index => cy.get(`#answerboard-dragdropbox-${index}`);
 
   imageDragAndDropByIndex = (answer, questionIndex) => {
     this.getAnswerBox()
@@ -385,10 +423,6 @@ class StudentTestPage {
     cy.contains(title).should("be.visible");
     return this;
   };
-
-  getRenderedDropDownLabels = () => cy.get("body").find(".ant-select-selection__rendered");
-
-  getInputsLabelText = () => cy.get(".template_box").find("input");
 
   clickDropDownByIndex = (answer, index) => {
     cy.get("div.template_box")
@@ -612,8 +646,6 @@ class StudentTestPage {
     return this;
   };
 
-  getHighlightToken = answer => cy.get('[data-cy="previewWrapper"]').contains("span", answer);
-
   checkSelectedToken = answer => {
     this.getHighlightToken(answer)
       .click()
@@ -632,8 +664,7 @@ class StudentTestPage {
     return this;
   };
 
-  // Math test
-
+  // MATH : TODO: revist and make these generic
   typeFormula = answer => this.mathEditor.typeFormula(answer);
 
   typeFormulaWithKeyboard = answer => this.mathEditor.typeFormulaWithVirtualKeyboard(answer);
@@ -781,10 +812,6 @@ class StudentTestPage {
     this.getMaxScore().should("have.text", `${maxScore}`);
   };
 
-  getAchievedScore = () => cy.get('[data-cy="score"]');
-
-  getMaxScore = () => cy.get('[data-cy="maxscore"]');
-
   verifyResponseEvaluation = attemptType =>
     cy
       .get('[data-cy="answerType"]')
@@ -796,10 +823,6 @@ class StudentTestPage {
           ? "Thats Partially Correct"
           : "Thats Incorrect"
       );
-
-  getCalculatorButton = () => cy.get('[data-cy="calculator"]');
-
-  clickOnCalcuator = () => this.getCalculatorButton().click();
 
   assertCalcType = type => {
     switch (type) {
@@ -816,23 +839,6 @@ class StudentTestPage {
         this.getCalculatorButton().should("not.exist");
     }
   };
-
-  getScientificCalc = () => cy.get('[data-cy="SCIENTIFIC"]');
-
-  getBasicCalc = () => cy.get('[data-cy="BASIC"]');
-
-  getGraphCalc = () => cy.get('[data-cy="GRAPHING"]');
-
-  // Review
-
-  clickOnAll = () => cy.get('[ data-cy="all"]').click();
-
-  clickOnBookmarked = () => cy.get('[ data-cy="bookmarked"]').click();
-
-  clickOnSkipped = () => cy.get('[ data-cy="skipped"]').click();
-
-  // @questionNumber = "Q1" ; "Q2"
-  clickOnReviewQuestion = questionNumber => cy.get(`[data-cy="${questionNumber}"]`).click();
 
   //
   verifyQuestionResponseRetained = (queTypeKey, attemptType, attemptData) => {
@@ -894,5 +900,7 @@ class StudentTestPage {
         break;
     }
   };
+
+  // *** APPHELPERS END ***
 }
 export default StudentTestPage;

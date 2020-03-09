@@ -2,6 +2,11 @@ import AssignmentsPage from "./assignmentsPage";
 import ReportsPage from "./reportsPage";
 
 class SidebarPage {
+  // *** ELEMENTS START ***
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
   onClickMyProfile = () => {
     cy.get("[data-cy=userInfo]").click();
     cy.contains("My Profile").click({ force: true });
@@ -28,5 +33,9 @@ class SidebarPage {
       .click({ force: true })
       .click({ force: true });
   };
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }
 export default SidebarPage;

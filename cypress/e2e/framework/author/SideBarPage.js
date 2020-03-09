@@ -1,5 +1,11 @@
 export default class TeacherSideBar {
+  // *** ELEMENTS START ***
+
   menuItems = () => cy.get(".scrollbar-container").find("li.ant-menu-item");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
 
   clickOnDashboard = () =>
     cy
@@ -60,4 +66,9 @@ export default class TeacherSideBar {
     if (name) cy.get('[data-cy="title"]').should("contain.text", name);
     cy.wait("@loadPlayContent");
   };
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
+  // *** APPHELPERS END ***
 }

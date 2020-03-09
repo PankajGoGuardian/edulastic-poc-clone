@@ -5,6 +5,8 @@ export default class BarGraph {
     this.axis = "currentAxis";
   }
 
+  // *** ELEMENTS START ***
+
   getLeftYAxis = () =>
     cy
       .get(".recharts-yAxis")
@@ -53,6 +55,14 @@ export default class BarGraph {
       .contains(value);
 
   getToolTip = () => cy.get(".recharts-tooltip-wrapper");
+
+  // *** ELEMENTS END ***
+
+  // *** ACTIONS START ***
+
+  // *** ACTIONS END ***
+
+  // *** APPHELPERS START ***
 
   verifyXAxisTicks = items => {
     this.getXAxis();
@@ -125,4 +135,6 @@ export default class BarGraph {
         });
       });
   };
+
+  // *** APPHELPERS END ***
 }

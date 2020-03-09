@@ -609,7 +609,7 @@ function* useThisPlayListSaga({ payload }) {
     } else {
       yield put(
         push({
-          pathname: `/author/playlists/${_id}/use-this`,
+          pathname: `/author/playlists/playlist/${_id}/use-this`,
           state: { from: "favouritePlaylist" }
         })
       );

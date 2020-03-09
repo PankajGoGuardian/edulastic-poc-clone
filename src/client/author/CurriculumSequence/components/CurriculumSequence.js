@@ -52,6 +52,7 @@ import AddUnitModalBody from "./modals/AddUnitModalBody";
 import ChangePlaylistModal from "./modals/ChangePlaylistModal";
 import DropPlaylistModal from "./modals/DropPlaylistModal";
 import SummaryPieChart from "./SummaryPieChart";
+import PlaylistPageNav from "./PlaylistPageNav";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -342,6 +343,13 @@ class CurriculumSequence extends Component {
 
   closeDropPlaylistModal = () => this.setState({ dropPlaylistModalVisible: false });
 
+  handleNavChange = value => () => {
+    const { history, match } = this.props;
+    const url = `/author/playlists/${value}/${match?.params?.id}/use-this`;
+    // this.handleSave();
+    history.push(url);
+  };
+
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
@@ -381,8 +389,12 @@ class CurriculumSequence extends Component {
       isTeacher,
       playlistMetricsList,
       studentPlaylists,
-      activeClasses
+      activeClasses,
+      match
     } = this.props;
+
+    // figure out what tab contents to render
+    const currentTab = match?.params?.currentTab;
 
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
@@ -661,9 +673,11 @@ class CurriculumSequence extends Component {
                 headingSubContent={
                   urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon
                 }
-                justify="flex-start"
+                justify={urlHasUseThis ? "space-between" : "flex-start"}
               >
-                <CurriculumHeaderButtons>
+                {urlHasUseThis && <PlaylistPageNav onChange={this.handleNavChange} current={currentTab} />}
+
+                <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
                   {(showUseThisButton || urlHasUseThis || features.isCurator) && (
                     <EduButton isGhost data-cy="share" onClick={onShareClick}>
                       <IconShare />
@@ -697,106 +711,113 @@ class CurriculumSequence extends Component {
             )
           )}
 
-          {isPlaylistDetailsPage && (
-            <ReviewBreadCrumbWrapper>
-              <SecondHeader>
-                <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
-              </SecondHeader>
-            </ReviewBreadCrumbWrapper>
-          )}
+          {(currentTab === "playlist" || isPlaylistDetailsPage) && (
+            <>
+              {isPlaylistDetailsPage && (
+                <ReviewBreadCrumbWrapper>
+                  <SecondHeader>
+                    <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
+                  </SecondHeader>
+                </ReviewBreadCrumbWrapper>
+              )}
 
-          <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-            <ContentContainer urlHasUseThis={urlHasUseThis}>
-              <SubTopBar>
-                <SubTopBarContainer active={isContentExpanded} mode={mode}>
-                  <CurriculumSubHeaderRow>
-                    <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
-                      <SubHeaderDescription>{description}</SubHeaderDescription>
-                    </SubHeaderTitleContainer>
-                    {!enableCustomize && (
-                      <SubHeaderInfoCardWrapper>
-                        {subHeaderIcon1}
-                        {subHeaderIcon2}
-                      </SubHeaderInfoCardWrapper>
+              <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
+                <ContentContainer urlHasUseThis={urlHasUseThis}>
+                  <SubTopBar>
+                    <SubTopBarContainer active={isContentExpanded} mode={mode}>
+                      <CurriculumSubHeaderRow>
+                        <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
+                          <SubHeaderDescription>{description}</SubHeaderDescription>
+                        </SubHeaderTitleContainer>
+                        {!enableCustomize && (
+                          <SubHeaderInfoCardWrapper>
+                            {subHeaderIcon1}
+                            {subHeaderIcon2}
+                          </SubHeaderInfoCardWrapper>
+                        )}
+                        {enableCustomize && subHeaderIcon1}
+                        {enableCustomize && subHeaderIcon2}
+                        {enableCustomize && (
+                          <StyledButton
+                            width="135px"
+                            data-cy="save"
+                            onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
+                          >
+                            Customize
+                          </StyledButton>
+                        )}
+                      </CurriculumSubHeaderRow>
+                    </SubTopBarContainer>
+                  </SubTopBar>
+                  <Wrapper active={isContentExpanded}>
+                    {destinationCurriculumSequence && (
+                      <Curriculum
+                        mode={mode}
+                        history={history}
+                        status={status}
+                        key={destinationCurriculumSequence._id}
+                        padding={selectContent}
+                        curriculum={destinationCurriculumSequence}
+                        expandedModules={expandedModules}
+                        onCollapseExpand={onCollapseExpand}
+                        onDrop={onDrop}
+                        modulesStatus={modulesStatus}
+                        customize={customize}
+                        handleRemove={handleRemoveTest}
+                        hideEditOptions={!urlHasUseThis}
+                        onBeginDrag={onBeginDrag}
+                        isReview={current === "review"}
+                        onSortEnd={onSortEnd}
+                        handleTestsSort={handleTestsSort}
+                        urlHasUseThis={urlHasUseThis}
+                        summaryData={summaryData}
+                        playlistMetrics={playlistMetrics}
+                        playlistClassList={playlistClassList}
+                      />
                     )}
-                    {enableCustomize && subHeaderIcon1}
-                    {enableCustomize && subHeaderIcon2}
-                    {enableCustomize && (
-                      <StyledButton
-                        width="135px"
-                        data-cy="save"
-                        onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
-                      >
-                        Customize
-                      </StyledButton>
-                    )}
-                  </CurriculumSubHeaderRow>
-                </SubTopBarContainer>
-              </SubTopBar>
-              <Wrapper active={isContentExpanded}>
-                {destinationCurriculumSequence && (
-                  <Curriculum
-                    mode={mode}
-                    history={history}
-                    status={status}
-                    key={destinationCurriculumSequence._id}
-                    padding={selectContent}
-                    curriculum={destinationCurriculumSequence}
-                    expandedModules={expandedModules}
-                    onCollapseExpand={onCollapseExpand}
-                    onDrop={onDrop}
-                    modulesStatus={modulesStatus}
-                    customize={customize}
-                    handleRemove={handleRemoveTest}
-                    hideEditOptions={!urlHasUseThis}
-                    onBeginDrag={onBeginDrag}
-                    isReview={current === "review"}
-                    onSortEnd={onSortEnd}
-                    handleTestsSort={handleTestsSort}
-                    urlHasUseThis={urlHasUseThis}
-                    summaryData={summaryData}
-                    playlistMetrics={playlistMetrics}
-                    playlistClassList={playlistClassList}
-                  />
+                  </Wrapper>
+                </ContentContainer>
+                {urlHasUseThis && (
+                  <SummaryBlock>
+                    <SummaryBlockTitle>Summary</SummaryBlockTitle>
+                    <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+                    <SummaryPieChart
+                      isStudent={isStudent}
+                      data={summaryData}
+                      totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
+                      colors={COLORS}
+                    />
+                    <Hr />
+                    <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
+                    <div style={{ width: "80%", margin: "20px auto" }}>
+                      {summaryData?.map(
+                        item =>
+                          ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
+                            <div style={{ opacity: item.hidden ? `.5` : `1` }}>
+                              <Tooltip placement="topLeft" title={item.title || item.name}>
+                                <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                              </Tooltip>
+                              <ProgressBar
+                                strokeColor={getProgressColor(item?.value)}
+                                strokeWidth={13}
+                                percent={item.value}
+                                size="small"
+                                color={item.value ? greyThemeDark1 : lightGrey2}
+                                format={percent => (percent ? `${percent}%` : "NO DATA")}
+                                padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
+                              />
+                            </div>
+                          )
+                      )}
+                    </div>
+                  </SummaryBlock>
                 )}
-              </Wrapper>
-            </ContentContainer>
-            {urlHasUseThis && (
-              <SummaryBlock>
-                <SummaryBlockTitle>Summary</SummaryBlockTitle>
-                <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
-                <SummaryPieChart
-                  isStudent={isStudent}
-                  data={summaryData}
-                  totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
-                  colors={COLORS}
-                />
-                <Hr />
-                <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
-                <div style={{ width: "80%", margin: "20px auto" }}>
-                  {summaryData?.map(
-                    item =>
-                      ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
-                        <div style={{ opacity: item.hidden ? `.5` : `1` }}>
-                          <Tooltip placement="topLeft" title={item.title || item.name}>
-                            <ModuleTitle>{item.title || item.name}</ModuleTitle>
-                          </Tooltip>
-                          <ProgressBar
-                            strokeColor={getProgressColor(item?.value)}
-                            strokeWidth={13}
-                            percent={item.value}
-                            size="small"
-                            color={item.value ? greyThemeDark1 : lightGrey2}
-                            format={percent => (percent ? `${percent}%` : "NO DATA")}
-                            padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
-                          />
-                        </div>
-                      )
-                  )}
-                </div>
-              </SummaryBlock>
-            )}
-          </StyledFlexContainer>
+              </StyledFlexContainer>
+            </>
+          )}
+          {currentTab === "insights" && <h1>Add Your {currentTab} component here</h1>}
+
+          {currentTab === "differentiation" && <h1>Add Your {currentTab} component here</h1>}
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
@@ -1039,7 +1060,7 @@ const Wrapper = styled.div`
 `;
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
-  margin-left: auto;
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
 const SubTopBar = styled.div`

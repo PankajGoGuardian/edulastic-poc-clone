@@ -146,8 +146,12 @@ class SideMenu extends Component {
       {
         label: "My Playlist",
         icon: IconPlaylist,
-        allowedPathPattern: [/playlists\/.{24}\/use-this/],
-        path: `author/playlists/${_id}/use-this`
+        allowedPathPattern: [
+          /playlists\/playlist\/.{24}\/use-this/,
+          /playlists\/insights\/.{24}\/use-this/,
+          /playlists\/differentiation\/.{24}\/use-this/
+        ],
+        path: `author/playlists/playlist/${_id}/use-this`
       },
       ...rest
     ];

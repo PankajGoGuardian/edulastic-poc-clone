@@ -233,7 +233,7 @@ class AssignTest extends React.Component {
     const { title, _id } = isPlaylist ? playlist : testItem;
     const exactMenu = parentMenu[location?.state?.from || from];
     if (exactMenu.to === "favouriteLibrary") {
-      exactMenu.to = `playlists/${_id}/use-this`;
+      exactMenu.to = `playlists/playlist/${_id}/use-this`;
     }
 
     return (

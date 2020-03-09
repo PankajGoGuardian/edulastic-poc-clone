@@ -40,7 +40,7 @@ class Container extends Component {
     let toLinkForPlaylist = "/author/playlists";
     let from = "playlistLibrary";
     if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
-      toLinkForPlaylist = `/author/playlists/${lastPlayList.value._id}/use-this`;
+      toLinkForPlaylist = `/author/playlists/playlist/${lastPlayList.value._id}/use-this`;
       from = "favouritePlaylist";
     }
 

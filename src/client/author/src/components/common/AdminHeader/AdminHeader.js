@@ -1,12 +1,12 @@
 import { MainHeader } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
+import { IconSettings } from "@edulastic/icons";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
 import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
-import { IconSettings } from "@edulastic/icons";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -16,6 +16,7 @@ class AdminHeader extends Component {
 
   onHeaderTabClick = key => {
     const { history, role } = this.props;
+    // eslint-disable-next-line default-case
     switch (key) {
       case "District Profile":
         history.push(`/author/districtprofile`);

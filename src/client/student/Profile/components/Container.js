@@ -1,19 +1,20 @@
-import React from "react";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Layout, Form, Input, Button, Icon, Table, Tag } from "antd";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
 import {
+  backgrounds,
+  desktopWidth,
   extraDesktopWidth,
   largeDesktopWidth,
-  desktopWidth,
   mobileWidthMax,
-  backgrounds,
-  white,
-  themeColor
+  themeColor,
+  white
 } from "@edulastic/colors";
+import { MainContentWrapper } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Form, Icon, Input, Table, Tag } from "antd";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import styled from "styled-components";
 import { resetMyPasswordAction } from "../../Login/ducks";
 import { Wrapper } from "../../styled";
 import Photo from "./Photo";
@@ -77,8 +78,8 @@ class ProfileContainer extends React.Component {
     const { t, user } = this.props;
     const { showChangePassword } = this.state;
     return (
-      <LayoutContent>
-        <ProfileWrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+      <MainContentWrapper>
+        <ProfileWrapper display="flex" minHeight="max-content">
           <ProfileImgWrapper>
             <Photo height={224} windowWidth={224} />
           </ProfileImgWrapper>
@@ -163,7 +164,7 @@ class ProfileContainer extends React.Component {
             )}
           </ProfileContentWrapper>
         </ProfileWrapper>
-      </LayoutContent>
+      </MainContentWrapper>
     );
   }
 }
@@ -221,22 +222,15 @@ ProfileContainer.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-const LayoutContent = styled(Layout.Content)`
-  width: 100%;
-`;
-
 const ProfileWrapper = styled(Wrapper)`
-  padding: 30px 46px;
+  padding: 0px;
   margin: 0px;
-  @media screen and (max-width: ${mobileWidthMax}) {
-    padding: 20px;
-  }
 `;
 
 const ProfileContentWrapper = styled.div`
   width: calc(100% - 409px);
   background-color: white;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   padding: 32px 50px 22px 30px;
   @media (max-width: ${largeDesktopWidth}) {
@@ -281,7 +275,7 @@ const ProfileImgWrapper = styled.div`
   height: 323px;
   position: relative;
   background-color: ${white};
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   display: flex;
   justify-content: center;

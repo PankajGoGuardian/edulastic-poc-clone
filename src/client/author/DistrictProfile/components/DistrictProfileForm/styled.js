@@ -21,7 +21,7 @@ export const StyledDivBg = styled.div`
 export const StyledDivMain = styled.div`
   width: 100%;
   background-color: ${white};
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   padding: 30px;
   overflow: hidden;

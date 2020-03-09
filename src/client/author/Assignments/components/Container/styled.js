@@ -16,8 +16,7 @@ export const Container = styled(MainContentWrapper)`
   overflow: auto;
 
   .scrollbar-container {
-    height: ${props =>
-      `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
+    height: ${props => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`}; // 60px is margin from top and bottom.
     width: 100%;
     padding-right: 30px;
     padding-left: 2px;
@@ -165,8 +164,8 @@ export const FilterButton = styled(Button)`
   padding-top: 5px;
   border-radius: 3px;
   position: fixed;
-  margin-left: ${props => (props.showFilter ? "-65px" : "-20px")};
-  margin-top: -20px;
+  margin-left: -23px;
+  margin-top: 8px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${props => (props.showFilter ? themeColor : white)} !important;

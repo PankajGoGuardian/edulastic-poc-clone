@@ -15,11 +15,11 @@ export const ReviewPageContainer = styled.div`
     background: ${mainBgColor};
     top: ${props => props.theme.HeaderHeight.xs}px;
     position: fixed;
-    left: 100px;
+    left: 70px;
     right: 0;
     z-index: 999;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-    padding: 10px 24% 10px 55px;
+    padding: 10px 25% 10px 30px;
     transition: top 1s ease-in;
     > div {
       margin: 0;

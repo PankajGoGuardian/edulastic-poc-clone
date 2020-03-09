@@ -37,7 +37,7 @@ export const ProfileImgWrapper = styled.div`
   height: 350px;
   position: relative;
   background-color: ${white};
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -67,7 +67,7 @@ export const RightContainer = styled.div`
 export const FormContent = styled(Content)`
   background-color: ${white};
   border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #b6b6cc;
   padding: 20px;
 `;
 

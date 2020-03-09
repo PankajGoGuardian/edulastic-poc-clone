@@ -1,3 +1,4 @@
+import { EduButton } from "@edulastic/common";
 import { Layout } from "antd";
 import { get, pickBy } from "lodash";
 import React, { Component, Fragment } from "react";
@@ -6,7 +7,7 @@ import { compose } from "redux";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import DistrictProfileForm from "../DistrictProfileForm/DistrictProfileForm";
-import { ButtonText, Spacer, StyledButton, StyledLayout, SubHeader } from "./styled";
+import { Spacer, StyledLayout, SubHeader } from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "District Profile", subMenu: "" };
@@ -28,24 +29,8 @@ class DistrictProfile extends Component {
     event.preventDefault();
 
     const { childRefArr } = this.formRef;
-    const {
-      userOrgId,
-      districtProfile,
-      form,
-      createDistrictProfile,
-      updateDistrictProfile
-    } = this.formRef.props;
-    const {
-      logo,
-      pageBackground,
-      name,
-      shortName,
-      city,
-      state,
-      zip,
-      nces,
-      announcement
-    } = districtProfile;
+    const { userOrgId, districtProfile, form, createDistrictProfile, updateDistrictProfile } = this.formRef.props;
+    const { logo, pageBackground, name, shortName, city, state, zip, nces, announcement } = districtProfile;
 
     if (!childRefArr.length) return null;
 
@@ -83,18 +68,18 @@ class DistrictProfile extends Component {
   showButtons = isInputEnabled =>
     !isInputEnabled ? (
       <Fragment>
-        <StyledButton type="primary" onClick={this.handleEditClick}>
+        <EduButton type="primary" onClick={this.handleEditClick}>
           Edit
-        </StyledButton>
+        </EduButton>
       </Fragment>
     ) : (
       <Fragment>
-        <StyledButton type="default" onClick={this.handleEditClick}>
-          <ButtonText>Cancel</ButtonText>
-        </StyledButton>
-        <StyledButton type="primary" onClick={this.handleFormSubmit}>
+        <EduButton isGhost onClick={this.handleEditClick}>
+          Cancel
+        </EduButton>
+        <EduButton type="primary" onClick={this.handleFormSubmit}>
           Save
-        </StyledButton>
+        </EduButton>
       </Fragment>
     );
 
@@ -110,10 +95,7 @@ class DistrictProfile extends Component {
             {this.showButtons(isInputEnabled)}
           </SubHeader>
           <StyledLayout>
-            <DistrictProfileForm
-              isInputEnabled={isInputEnabled}
-              wrappedComponentRef={this.saveFormRef}
-            />
+            <DistrictProfileForm isInputEnabled={isInputEnabled} wrappedComponentRef={this.saveFormRef} />
           </StyledLayout>
         </Layout>
       </FeaturesSwitch>

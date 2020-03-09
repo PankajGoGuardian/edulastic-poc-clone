@@ -93,7 +93,7 @@ class SideMenu extends Component {
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
-    width: 22px;
+    width: 18px;
     height: 22px;
     fill: rgb(67, 75, 93);
     margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
@@ -231,7 +231,7 @@ class SideMenu extends Component {
                       <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                     </Col>
                   ) : null}
-                  <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "left" }}>
+                  <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "center" }}>
                     {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
                   </Col>
                   {broken ? null : (
@@ -411,17 +411,6 @@ const SideBar = styled(Layout.Sider)`
   z-index: 22;
   padding-bottom: 0;
 
-  &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 12.5px 20px;
-
-    @media (min-width: ${extraDesktopWidthMax}) {
-      padding: 22.5px 20px;
-    }
-
-    @media (max-width: ${largeDesktopWidth}) {
-      padding: 4.5px 20px;
-    }
-  }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 70px;

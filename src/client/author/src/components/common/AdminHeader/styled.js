@@ -6,7 +6,8 @@ import {
   white,
   tabletWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  largeDesktopWidth
 } from "@edulastic/colors";
 
 const { TabPane } = Tabs;
@@ -75,6 +76,14 @@ export const StyledTabs = styled(Tabs)`
         border: none;
         .ant-tabs-nav-container {
           height: 52px;
+          .ant-tabs-nav-wrap,
+          .ant-tabs-nav-scroll {
+            overflow: visible;
+
+            @media (max-width: ${largeDesktopWidth}) {
+              overflow: hidden;
+            }
+          }
         }
         .ant-tabs-nav {
           div {
@@ -100,12 +109,13 @@ export const StyledTabs = styled(Tabs)`
           border-radius: 4px 4px 0px 0px;
           margin: 0 3px;
           border: 1px solid #e5e5e5;
+
           &-active {
             background: ${white};
             color: #2f4151;
             height: 51px;
             margin-bottom: -1px;
-            border: 1px solid #b3bfc7;
+            border: 1px solid #2f4151;
             border-bottom-color: ${white};
           }
         }

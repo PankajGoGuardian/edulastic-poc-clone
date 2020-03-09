@@ -69,7 +69,7 @@ import { getQuestionsSelector, getQuestionsArraySelector } from "../../../shared
 import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
-import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
+import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
 
 const { getDefaultImage } = testsApi;
 const {
@@ -324,6 +324,7 @@ class Container extends PureComponent {
   handleChangeGrade = grades => {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, grades });
+    setDefaultInterests({ grades });
     getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
@@ -361,6 +362,7 @@ class Container extends PureComponent {
       }).then(thumbnail => updateDefaultThumbnail(thumbnail));
     }
     getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
+    setDefaultInterests({ subject: subjects[0] || "" });
   };
 
   handleSaveTestId = () => {

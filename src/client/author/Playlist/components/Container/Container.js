@@ -62,6 +62,7 @@ import {
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { withNamespaces } from "react-i18next";
+import { getDefaultInterests } from "../../../dataUtils";
 
 class TestList extends Component {
   static propTypes = {
@@ -103,14 +104,17 @@ class TestList extends Component {
       match: { params = {} },
       playListFilters,
       page,
-      history
+      history,
+      interestedSubjects,
+      interestedGrades
     } = this.props;
+    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades || [] } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[playList]")) || {};
     const searchFilters = {
       ...playListFilters,
       ...sessionFilters,
-      grades: sessionFilters?.grades?.length ? sessionFilters.grades : playListFilters.grades || [],
-      subject: sessionFilters?.subject || playListFilters.subject || ""
+      grades,
+      subject
     };
     let searchParams = qs.parse(location.search);
     searchParams = this.typeCheck(searchParams, searchFilters);
@@ -172,12 +176,17 @@ class TestList extends Component {
       ...playListFilters,
       [name]: value
     };
+
+    if (name === "grades" || name === "subject" || name === "curriculumId") {
+      setDefaultInterests({ [name]: value });
+    }
+
     if (name === "subject") {
       updateDefaultSubject(value);
       storeInLocalStorage("defaultSubject", value);
     } else if (name === "grades") {
       updateDefaultGrades(value);
-      storeInLocalStorage("defaultGrades", value);
+      setDefaultInterests({ [name]: value });
     } else if (name === "createdAt") {
       updatedKeys = {
         ...updatedKeys,

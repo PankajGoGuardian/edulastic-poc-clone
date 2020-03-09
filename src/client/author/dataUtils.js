@@ -141,3 +141,17 @@ export const getInterestedStandards = (summary = {}, interestedCurriculums) => {
   }
   return interestedStandards;
 };
+
+export const setDefaultInterests = newInterest => {
+  const sessionGlobals = JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
+  //For all subject change reset curriculumIds
+  const resetCurriculumId = Object.keys(newInterest).includes("subject") ? { curriculumId: "" } : {};
+  sessionStorage.setItem(
+    "filters[globalSessionFilters]",
+    JSON.stringify({ ...sessionGlobals, ...newInterest, ...resetCurriculumId })
+  );
+};
+
+export const getDefaultInterests = () => {
+  return JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
+};

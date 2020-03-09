@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { debounce } from "lodash";
+import { debounce, uniq } from "lodash";
 import { Pagination, Spin, message } from "antd";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
@@ -11,10 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { StyledButton, ItemsPagination } from "./styled";
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector
-} from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
@@ -60,11 +57,14 @@ import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
   getUserId,
-  getUserFeatures
+  getUserFeatures,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector
 } from "../../../src/selectors/user";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import Item from "../../../ItemList/components/Item/Item";
 import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
+import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -103,9 +103,12 @@ class AddItems extends PureComponent {
       curriculums,
       getAllTags,
       search: initSearch,
-      history
+      history,
+      interestedSubjects,
+      interestedGrades
     } = this.props;
 
+    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades || [] } = getDefaultInterests();
     const isAuthoredNow = history?.location?.state?.isAuthoredNow;
     const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
@@ -115,14 +118,8 @@ class AddItems extends PureComponent {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
-      subject: selectedSubjects.length
-        ? selectedSubjects[0]
-        : sessionFilters?.subject || initSearch.subject,
-      grades: selectedGrades.length
-        ? selectedGrades
-        : sessionFilters?.grades?.length
-        ? sessionFilters.grades
-        : initSearch.grades
+      subject: selectedSubjects[0] || subject,
+      grades: uniq([...selectedGrades, ...grades])
     };
 
     this.updateFilterState(search);
@@ -162,6 +159,7 @@ class AddItems extends PureComponent {
     const { clearFilterState, receiveTestItems, limit } = this.props;
     clearFilterState();
     receiveTestItems(initalSearchState, 1, limit);
+    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
 
   handleCreateNewItem = () => {
@@ -227,10 +225,14 @@ class AddItems extends PureComponent {
   handleSearchFieldChange = fieldName => value => {
     const { search, clearDictStandards } = this.props;
     let updatedKeys = {};
+    if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
+      setDefaultInterests({ [fieldName]: value });
+    }
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
-    } if (fieldName === "subject") {
+    }
+    if (fieldName === "subject") {
       clearDictStandards();
       updatedKeys = {
         ...search,
@@ -399,12 +401,7 @@ class AddItems extends PureComponent {
                     <span>Create new Item</span>
                   </StyledButton>
                   {(features.isCurator || features.isPublisherAuthor) && (
-                    <StyledButton
-                      data-cy="groupItem"
-                      type="secondary"
-                      size="large"
-                      onClick={gotoGroupItems}
-                    >
+                    <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
                       <IconItemGroup color={themeColor} width={15} height={15} />
                       <span>Group Items</span>
                     </StyledButton>
@@ -415,9 +412,7 @@ class AddItems extends PureComponent {
               {!loading && (
                 <ScrollbarContainer>
                   {this.renderItems()}
-                  {count > 10 && (
-                    <PaginationContainer>{this.renderPagination()}</PaginationContainer>
-                  )}
+                  {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                 </ScrollbarContainer>
               )}
             </ContentWrapper>
@@ -446,7 +441,9 @@ const enhance = compose(
       testItemsList: getTestItemsSelector(state),
       selectedRows: getSelectedItemSelector(state),
       search: getSearchFilterStateSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,

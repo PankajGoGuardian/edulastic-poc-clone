@@ -1,4 +1,3 @@
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { withWindowSizes } from "@edulastic/common";
 import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -65,6 +64,7 @@ import {
   PaginationContainer,
   ScrollbarContainer
 } from "./styled";
+import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -84,8 +84,11 @@ class Contaier extends Component {
       clearSelectedItems,
       search: initSearch,
       getAllTags,
-      history
+      history,
+      interestedSubjects,
+      interestedGrades
     } = this.props;
+    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades } = getDefaultInterests();
     const isAuthoredNow = history?.location?.state?.isAuthoredNow;
     const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const { params = {} } = match;
@@ -94,8 +97,8 @@ class Contaier extends Component {
       ...initSearch,
       ...sessionFilters,
       ...applyAuthoredFilter,
-      subject: sessionFilters?.subject || initSearch.subject,
-      grades: sessionFilters?.grades?.length ? sessionFilters.grades : initSearch.grades
+      subject,
+      grades
     };
     setDefaultTestData();
     clearSelectedItems();
@@ -116,6 +119,7 @@ class Contaier extends Component {
       this.updateFilterState(search);
       receiveItems(search, 1, limit);
     }
+    console.log({ search, subject, grades });
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -164,6 +168,7 @@ class Contaier extends Component {
 
     this.updateFilterState(initalSearchState);
     receiveItems(initalSearchState, 1, limit);
+    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
   };
 
   handleSearchFieldChangeCurriculumId = value => {
@@ -188,6 +193,9 @@ class Contaier extends Component {
       search
     } = this.props;
     let updatedKeys = {};
+    if (fieldName === "grades" || fieldName === "subject" || fieldName === "curriculumId") {
+      setDefaultInterests({ [fieldName]: value });
+    }
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
@@ -198,7 +206,6 @@ class Contaier extends Component {
     }
     if (fieldName === "subject") {
       clearDictStandards();
-      storeInLocalStorage("defaultSubject", value);
       udpateDefaultSubject(value);
       updatedKeys = {
         ...search,

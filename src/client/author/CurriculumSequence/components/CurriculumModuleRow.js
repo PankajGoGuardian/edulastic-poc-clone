@@ -583,7 +583,7 @@ class ModuleRow extends Component {
                     const m = duration.minutes();
                     const s = duration.seconds();
 
-                    const timeSpent = h > 0 ? `${h}H ${m}mins ${s}secs` : `${m} mins ${s} secs`;
+                    const timeSpent = h > 0 ? `${h}H ${m}min ${s}sec` : `${m} min ${s} sec`;
 
                     return {
                       submitted,

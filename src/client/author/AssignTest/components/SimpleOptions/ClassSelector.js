@@ -3,7 +3,7 @@ import React from "react";
 import { Select, Col } from "antd";
 import { StyledRow, ColLabel, StyledSelect, Label } from "./styled";
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDeselect }) => (
+const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDeselect, specificStudents }) => (
   <React.Fragment>
     <StyledRow gutter={32}>
       <ColLabel span={24}>
@@ -13,7 +13,11 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDesel
         <StyledSelect
           showSearch
           data-cy="selectClass"
-          placeholder="Please select"
+          placeholder={
+            specificStudents
+              ? "Select a class here first and then students in the field below"
+              : "Select a class to assign"
+          }
           mode="multiple"
           optionFilterProp="children"
           cache="false"

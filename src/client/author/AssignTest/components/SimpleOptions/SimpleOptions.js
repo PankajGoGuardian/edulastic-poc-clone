@@ -248,6 +248,7 @@ class SimpleOptions extends React.Component {
             fetchStudents={fetchStudents}
             selectedGroups={classIds}
             group={group}
+            specificStudents={specificStudents}
           />
           <StudentSelector
             studentNames={studentList}

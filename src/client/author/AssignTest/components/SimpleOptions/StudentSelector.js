@@ -40,7 +40,7 @@ const StudentsSelector = ({
             <Col span={24}>
               <StyledSelect
                 data-cy="selectStudent"
-                placeholder="Please select"
+                placeholder="Select a student to assign"
                 style={{ width: "100%" }}
                 mode="multiple"
                 onSelect={updateStudents}

@@ -78,6 +78,7 @@ export const StyledLink = styled.div`
   align-items: center;
   text-transform: uppercase;
   ${restProps => restProps.style};
+  cursor: pointer;
 
   @media (max-width: ${mobileWidthMax}) {
     flex-basis: 100%;

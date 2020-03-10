@@ -9,7 +9,6 @@ import {
   mobileWidthMax
 } from "@edulastic/colors";
 import { MenuIcon } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
 import { Affix } from "antd";
 import { PropTypes } from "prop-types";
 import React from "react";

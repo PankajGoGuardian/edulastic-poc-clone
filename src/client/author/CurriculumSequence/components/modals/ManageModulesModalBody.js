@@ -4,9 +4,10 @@ import styled from "styled-components";
 import { Button, Input, message } from "antd";
 import { desktopWidth, themeColor, white, lightGreySecondary, fadedGrey, darkGrey, greyish } from "@edulastic/colors";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-import { IconPlusCircle, IconTrash, IconSave } from "@edulastic/icons";
+import { IconPlusCircle, IconTrash } from "@edulastic/icons";
 import { FaBars } from "react-icons/fa";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
+import { EduButton } from "@edulastic/common";
 
 /*
  *
@@ -32,7 +33,7 @@ const ModuleItem = SortableElement(props => {
   /*
    * TODO: On SortElement Click Highlight Container
    */
-  const [dragging, setDragging] = useState(false);
+  const [dragging] = useState(false);
 
   const handleInputChange = (e, label) => {
     label === "title" ? setEditTitle(e.target.value) : setEditDescription(e.target.value);
@@ -135,7 +136,7 @@ const ModuleContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px;
-  margin: 6px;
+  margin: 6px 0px;
   z-index: 1001;
   box-shadow: 0 0 10px 0 ${fadedGrey};
   border-radius: 4px;
@@ -198,7 +199,6 @@ const ManageModulesModalBody = props => {
 
   const {
     destinationCurriculumSequence,
-    handleAddModule,
     onCloseManageModule,
     addModuleToPlaylist,
     deleteModuleFromPlaylist,
@@ -308,23 +308,19 @@ const ManageModulesModalBody = props => {
         )}
 
         {
-          <div style={{ marginLeft: "20px" }}>
-            <ThemeButton key="submit" type="primary" data-cy="addModule" onClick={() => toggleAddState(true)}>
-              <IconPlusCircle color={white} width={15} height={15} />
-              <StyledSpan width={122} fSize={12} marginL={20}>
-                ADD MODULE
-              </StyledSpan>
-            </ThemeButton>
-          </div>
+          <EduButton key="submit" type="primary" data-cy="addModule" onClick={() => toggleAddState(true)}>
+            <IconPlusCircle color={white} width={15} height={15} />
+            <span>ADD MODULE</span>
+          </EduButton>
         }
       </ModalContent>
       <ModalFooter>
-        <Button data-cy="manageModuleCancel" type="primary" ghost key="back" onClick={onCloseManageModule}>
+        <EduButton isGhost data-cy="manageModuleCancel" type="primary" key="back" onClick={onCloseManageModule}>
           CANCEL
-        </Button>
-        <ThemeButton data-cy="done-module" key="submit" type="primary" onClick={applyHandler}>
+        </EduButton>
+        <EduButton data-cy="done-module" key="submit" type="primary" onClick={applyHandler}>
           DONE
-        </ThemeButton>
+        </EduButton>
       </ModalFooter>
     </ModalContainer>
   );
@@ -332,9 +328,7 @@ const ManageModulesModalBody = props => {
 
 ManageModulesModalBody.propTypes = {
   destinationCurriculumSequence: PropTypes.object.isRequired,
-  addModuleToPlaylist: PropTypes.func.isRequired,
-  handleAddModule: PropTypes.func.isRequired,
-  newModule: PropTypes.object.isRequired
+  addModuleToPlaylist: PropTypes.func.isRequired
 };
 
 export default ManageModulesModalBody;
@@ -363,12 +357,8 @@ const AddNewModuleContainer = styled.div`
 `;
 
 const StyledModuleList = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   margin-bottom: 10px;
-  max-height: 900px;
+  max-height: 360px;
   overflow: auto;
 `;
 
@@ -378,9 +368,7 @@ const StyledSpan = styled.span`
 `;
 
 const ModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 760px;
+  width: 100%;
   background: ${greyish};
   .ant-input {
     margin-bottom: 10px;
@@ -404,10 +392,8 @@ const ModalFooter = styled.div`
     font-size: 10px;
     font-weight: 600;
     min-width: 100px;
-    padding-left: 70px;
-    padding-right: 70px;
-    margin-left: 5px;
-    margin-right: 5px;
+    padding-left: 40px;
+    padding-right: 40px;
     @media only screen and (max-width: ${desktopWidth}) {
       padding-left: 0px;
       padding-right: 0px;

@@ -783,7 +783,20 @@ export const defaultTheme = {
       deleteBgColor: themeColor,
       rightIconColor,
       wrongIconColor,
-      questionContainerBorderColor: "#dfdfdf"
+      questionContainerBorderColor: "#dfdfdf",
+      boxBgColor: containerWhite,
+      boxNoAnswerBgColor: noAnswerBgColor,
+      boxWrongBgColor: wrongBgColor,
+      boxBgCorrectColor: rightBgColor,
+      indexBoxColor: containerWhite,
+      indexBoxBgColor: themeColorLight,
+      indexBoxNoAnswerBgColor: noAnswerColor,
+      indexBoxIncorrectBgColor: closeColor,
+      indexBoxCorrectBgColor: checkColor,
+      indexBoxFontWeight: semiBold,
+      indexBoxFontSize: subtitleFontSize,
+      incorrectIndexColor: labelStyle,
+      iconWrapperFontSize: headerTitle
     },
     clozeImageDragDrop: {
       editViewBgColor: containerWhite,

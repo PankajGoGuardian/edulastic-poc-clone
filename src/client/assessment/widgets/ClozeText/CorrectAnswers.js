@@ -89,8 +89,8 @@ class CorrectAnswers extends Component {
     const { onAddAltResponses, validation, t } = this.props;
     const { altResponses = [], mixAndMatch = false } = validation;
     // only need one altResponses block
-    // removing the button when mixNmatch and altResponses are > 1
-    if (mixAndMatch && altResponses.length >= 1) return null;
+    // removing the empty button when mixNmatch and altResponses are > 1
+    if (mixAndMatch && altResponses.length >= 1) return <AddAlternateAnswerButton />;
     return (
       <AddAlternateAnswerButton
         onClickHandler={() => {

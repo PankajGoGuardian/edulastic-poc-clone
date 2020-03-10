@@ -16,7 +16,7 @@ export const CorrectAnswerHeader = styled.div`
 
 export const PointsInput = styled(Input)`
   &.ant-input {
-    width: 230px;
+    min-width: 230px;
     background: #f8f8fb;
     border: 1px solid ${greyThemeLight};
     max-height: 40px;

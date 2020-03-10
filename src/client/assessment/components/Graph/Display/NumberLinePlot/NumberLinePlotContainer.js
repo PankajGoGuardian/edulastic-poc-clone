@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import next from "immer";
-
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -114,6 +113,16 @@ class NumberLinePlotContainer extends PureComponent {
     this.numberLinePlotRef = React.createRef();
   }
 
+  get parentWidth() {
+    // -2 done to make room for the border when width is an integer but the actual width is slightly less
+    return (this.numberLinePlotRef?.current?.clientWidth || 2) - 2;
+  }
+
+  get parentHeight() {
+    // -2 done to make room for the border when width is an integer but the actual width is slightly less
+    return (this.numberLinePlotRef?.current?.clientHeight || 2) - 2;
+  }
+
   componentDidMount() {
     const {
       canvas,
@@ -128,24 +137,10 @@ class NumberLinePlotContainer extends PureComponent {
       disableResponse
     } = this.props;
 
-    // -2 done to make room for the border when width is an integer but the actual width is slightly less
-    this.parentWidth = this.numberLinePlotRef?.current?.clientWidth - 2;
-    this.parentHeight = this.numberLinePlotRef?.current?.clientHeight - 2;
-
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT
-    );
-
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-
-      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
 
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -175,11 +170,7 @@ class NumberLinePlotContainer extends PureComponent {
         snapSizeX: numberlineAxis.ticksDistance
       });
 
-      const _layout = {
-        ...layout,
-        ...adjustedHeightWidth
-      };
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, _layout);
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
 
       this.setElementsToGraph();
     }
@@ -256,6 +247,8 @@ class NumberLinePlotContainer extends PureComponent {
       }
 
       this.setElementsToGraph(prevProps);
+
+      this._graph.resizeContainer(adjustedHeightWidth.width, adjustedHeightWidth.height);
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {

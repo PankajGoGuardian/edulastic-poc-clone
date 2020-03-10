@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
 
-import { withWindowSizes, ScratchPadContext } from "@edulastic/common";
+import { withWindowSizes, ScratchPadContext, ScrollContext } from "@edulastic/common";
 import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 
 import { themes } from "../../../theme";
@@ -132,58 +132,60 @@ class TestItemPreview extends Component {
           ref={this.containerRef}
           className="test-item-preview"
         >
-          <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
-            {cols.map((col, i) => {
-              const hideColumn =
-                (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
-              if (hideColumn && showCollapseButtons) return "";
-              return (
-                <>
-                  {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
-                  <TestItemCol
-                    {...restProps}
-                    showCollapseBtn={showCollapseButtons}
-                    evaluation={evaluation}
-                    key={i}
-                    colCount={cols.length}
-                    colIndex={i}
-                    col={collapseDirection ? { ...col, dimension: "90%" } : col}
-                    view="preview"
-                    metaData={metaData}
-                    preview={preview}
-                    multiple={cols.length > 1}
-                    style={this.getStyle(i !== cols.length - 1)}
-                    windowWidth={windowWidth}
-                    showFeedback={showFeedback}
-                    questions={questions}
-                    qIndex={qIndex}
-                    student={student}
-                    disableResponse={disableResponse}
-                    LCBPreviewModal={LCBPreviewModal}
-                    previewTab={previewTab}
-                  />
-                  {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
-                </>
-              );
-            })}
-            {scratchPadMode && (
-              <SvgDraw
-                activeMode={activeMode}
-                scratchPadMode={scratchPadMode}
-                lineColor={lineColor}
-                deleteMode={deleteMode}
-                lineWidth={lineWidth}
-                fillColor={fillColor}
-                saveHistory={saveHistory}
-                history={history}
-                fontFamily={fontFamily}
-                height="100%"
-                top="0"
-                left="0"
-                position="absolute"
-              />
-            )}
-          </ScratchPadContext.Provider>
+          <ScrollContext.Provider value={{ getScrollElement: () => this.containerRef.current }}>
+            <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
+              {cols.map((col, i) => {
+                const hideColumn =
+                  (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
+                if (hideColumn && showCollapseButtons) return "";
+                return (
+                  <>
+                    {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
+                    <TestItemCol
+                      {...restProps}
+                      showCollapseBtn={showCollapseButtons}
+                      evaluation={evaluation}
+                      key={i}
+                      colCount={cols.length}
+                      colIndex={i}
+                      col={collapseDirection ? { ...col, dimension: "90%" } : col}
+                      view="preview"
+                      metaData={metaData}
+                      preview={preview}
+                      multiple={cols.length > 1}
+                      style={this.getStyle(i !== cols.length - 1)}
+                      windowWidth={windowWidth}
+                      showFeedback={showFeedback}
+                      questions={questions}
+                      qIndex={qIndex}
+                      student={student}
+                      disableResponse={disableResponse}
+                      LCBPreviewModal={LCBPreviewModal}
+                      previewTab={previewTab}
+                    />
+                    {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
+                  </>
+                );
+              })}
+              {scratchPadMode && (
+                <SvgDraw
+                  activeMode={activeMode}
+                  scratchPadMode={scratchPadMode}
+                  lineColor={lineColor}
+                  deleteMode={deleteMode}
+                  lineWidth={lineWidth}
+                  fillColor={fillColor}
+                  saveHistory={saveHistory}
+                  history={history}
+                  fontFamily={fontFamily}
+                  height="100%"
+                  top="0"
+                  left="0"
+                  position="absolute"
+                />
+              )}
+            </ScratchPadContext.Provider>
+          </ScrollContext.Provider>
         </Container>
       </ThemeProvider>
     );

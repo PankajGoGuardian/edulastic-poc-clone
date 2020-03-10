@@ -107,11 +107,7 @@ const OrderList = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.validResponse.value = arrayMove(
-            draft.validation.validResponse.value,
-            oldIndex,
-            newIndex
-          );
+          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
         } else {
           draft.validation.altResponses[correctTab - 1].value = arrayMove(
             draft.validation.altResponses[correctTab - 1].value,
@@ -225,12 +221,10 @@ const OrderList = ({
   if (answerContext.expressGrader) {
     initialAnswers = disableResponse ? correctAnswers : userAnswer;
   } else {
-    initialAnswers =
-      userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
+    initialAnswers = userAnswer.length > 0 ? userAnswer : get(itemForPreview, "list", []).map((q, i) => i);
   }
 
-  const evaluationForCheckAnswer =
-    evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
+  const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
 
   const previewProps = {
     smallSize,
@@ -246,7 +240,7 @@ const OrderList = ({
     lockToContainerEdges: true,
     lockOffset: ["10%", "10%"],
     lockAxis: uiStyle.type === "inline" ? "x" : "y",
-    getContainer: uiStyle.type === "inline" ? null : () => scrollContainer
+    getContainer: uiStyle.type === "inline" && scrollContainer ? null : () => scrollContainer
   };
 
   return (
@@ -309,9 +303,7 @@ const OrderList = ({
               {previewTab === CLEAR && (
                 <OrderListPreview
                   {...previewProps}
-                  questions={initialAnswers.map(
-                    index => itemForPreview.list && itemForPreview.list[index]
-                  )}
+                  questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
                 />
               )}
 
@@ -338,9 +330,7 @@ const OrderList = ({
                       <OrderListPreview
                         {...previewProps}
                         showAnswer
-                        questions={Object.keys(alternateAnswers).map(key =>
-                          alternateAnswers[key].join(", ")
-                        )}
+                        questions={Object.keys(alternateAnswers).map(key => alternateAnswers[key].join(", "))}
                       />
                     </CorrectAnswersContainer>
                   )}

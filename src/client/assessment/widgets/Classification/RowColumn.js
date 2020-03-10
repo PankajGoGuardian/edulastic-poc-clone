@@ -11,7 +11,6 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import QuillSortableList from "../../components/QuillSortableList/index";
-import withAddButton from "../../components/HOC/withAddButton";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
@@ -35,7 +34,7 @@ const actions = {
 
 class RowColumn extends Component {
   render() {
-    const { item, setQuestionData, theme, t, toolbarSize, fillSections, cleanSections } = this.props;
+    const { item, setQuestionData, t, toolbarSize, fillSections, cleanSections } = this.props;
     const { uiStyle, firstMount } = item;
 
     const handleMain = (action, prop) => restProp => {
@@ -135,17 +134,33 @@ class RowColumn extends Component {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
             if (prop === "columnCount" && Array.isArray(draft.uiStyle.columnTitles)) {
-              draft.uiStyle.columnTitles = Array(val)
-                .fill("")
-                .map((el, i) => `COLUMN ${i + 1}`);
+              const oldColumnCount = draft.uiStyle.columnTitles.length;
+              const newColumnCount = val - oldColumnCount;
+              if (newColumnCount > 0) {
+                draft.uiStyle.columnTitles = draft.uiStyle.columnTitles.concat(
+                  Array(newColumnCount)
+                    .fill("")
+                    .map((_, i) => `COLUMN ${oldColumnCount + i + 1}`)
+                );
+              } else {
+                draft.uiStyle.columnTitles.splice(oldColumnCount - Math.abs(newColumnCount), Math.abs(newColumnCount));
+              }
             } else if (prop === "rowCount" && Array.isArray(draft.uiStyle.rowTitles)) {
-              draft.uiStyle.rowTitles = Array(val)
-                .fill("")
-                .map((el, i) => `ROW ${i + 1}`);
+              const oldRowCount = draft.uiStyle.rowTitles.length;
+              const newRowCount = val - oldRowCount;
+              if (newRowCount > 0) {
+                draft.uiStyle.rowTitles = draft.uiStyle.rowTitles.concat(
+                  Array(newRowCount)
+                    .fill("")
+                    .map((_, i) => `ROW ${oldRowCount + i + 1}`)
+                );
+              } else {
+                draft.uiStyle.rowTitles.splice(oldRowCount - Math.abs(newRowCount), Math.abs(newRowCount));
+              }
             }
           }
           draft.responseOptions = draft.responseOptions || [];
-          draft.responseOptions = draft.responseOptions.map(option => null);
+          draft.responseOptions = draft.responseOptions.map(() => null);
           updateVariables(draft);
         })
       );
@@ -250,7 +265,6 @@ RowColumn.propTypes = {
   toolbarSize: PropTypes.string,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

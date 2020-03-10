@@ -1,0 +1,32 @@
+{
+  "name": "dummyData",
+  "chartData": [
+    { "name": "Stud01", "effort": -100, "performance": 200, "trend": 250 },
+    { "name": "Stud06", "effort": -200, "performance": 20, "trend": 190 },
+    { "name": "Stud11", "effort": -130, "performance": 170, "trend": 180 },
+    { "name": "Sara", "effort": 120, "performance": 260, "trend": 250 },
+    { "name": "Ansh", "effort": 40, "performance": 110, "trend": 130 },
+    { "name": "Snapwizard", "effort": 330, "performance": 230, "trend": 180 },
+    { "name": "Alex", "effort": -270, "performance": -250, "trend": 250 },
+    { "name": "Mercer", "effort": -240, "performance": -50, "trend": 130 },
+    { "name": "Marco", "effort": -30, "performance": -200, "trend": 180 },
+    { "name": "Ram", "effort": 260, "performance": -60, "trend": 250 },
+    { "name": "Shyam", "effort": 140, "performance": -200, "trend": 30 },
+    { "name": "Balram", "effort": 340, "performance": -170, "trend": 180 }
+  ],
+  "summaryData": [
+    {
+      "label": "Exceeding",
+      "count": 1
+    },
+    {
+      "label": "Meeting",
+      "count": 2
+    },
+    {
+      "label": "At Risk",
+      "count": 3
+    }
+  ],
+  "standardsData": {}
+}

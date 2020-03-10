@@ -248,6 +248,11 @@ const Author = ({ match, history, location, role, orgId, districtProfileLoading,
                     />
                     <Route
                       exact
+                      path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
+                      component={props => <AssignTest {...props} isPlaylist from="playlistLibrary" />}
+                    />
+                    <Route
+                      exact
                       path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
                       component={props => <AssignTest {...props} isPlaylist from="playlistLibrary" />}
                     />

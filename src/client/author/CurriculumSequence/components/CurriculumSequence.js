@@ -6,7 +6,9 @@ import { groupBy, isEqual, uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton, FlexContainer, MainHeader, ProgressBar } from "@edulastic/common";
+import { EduButton, FlexContainer, MainHeader, ProgressBar, HeaderTabs } from "@edulastic/common";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
+import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -27,7 +29,6 @@ import { Button, Cascader, Input, Modal, Tooltip } from "antd";
 import Header from "../../../student/sharedComponents/Header";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
-// import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
@@ -48,6 +49,7 @@ import {
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
 import Curriculum from "./Curriculum";
+import Insights from "./Insights";
 import AddUnitModalBody from "./modals/AddUnitModalBody";
 import ChangePlaylistModal from "./modals/ChangePlaylistModal";
 import DropPlaylistModal from "./modals/DropPlaylistModal";
@@ -608,6 +610,7 @@ class CurriculumSequence extends Component {
           {isStudent ? (
             <Header
               titleText={title}
+              titleMinWidth="unset"
               titleIcon={IconPlaylist}
               titleSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon}
               classSelect
@@ -623,6 +626,7 @@ class CurriculumSequence extends Component {
                 headingSubContent={
                   urlHasUseThis && !isPublisherUser && slicedRecentPlaylists?.length > 1 && changePlaylistIcon
                 }
+                titleMinWidth="unset"
                 justify={urlHasUseThis ? "space-between" : "flex-start"}
               >
                 {urlHasUseThis && <PlaylistPageNav onChange={this.handleNavChange} current={currentTab} />}
@@ -765,7 +769,7 @@ class CurriculumSequence extends Component {
               </StyledFlexContainer>
             </>
           )}
-          {currentTab === "insights" && <h1>Add Your {currentTab} component here</h1>}
+          {currentTab === "insights" && <Insights />}
 
           {currentTab === "differentiation" && <h1>Add Your {currentTab} component here</h1>}
         </CurriculumSequenceWrapper>

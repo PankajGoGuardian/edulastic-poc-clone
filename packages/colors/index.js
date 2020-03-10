@@ -27,6 +27,8 @@ export const lightGrey3 = "#f4f3f3";
 export const lightGrey4 = "#dbdce0";
 export const lightGrey5 = "#8E9AA4";
 export const lightGrey6 = "#848993";
+export const lightGrey7 = "#949ca4";
+export const lightGrey8 = "#dbdbdb";
 export const darkGrey = "#a3a0a0";
 export const darkGrey1 = "#b5b5b5";
 export const darkGrey2 = "#30404f";
@@ -68,6 +70,8 @@ export const svgDisabledColor = "#80838b";
 
 export const red = "#FF0057";
 export const lightRed = "#fbdfe7";
+export const lightRed2 = "#f58888";
+export const darkRed = "#F35F5F";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
 export const deleteRed = "#FF0080";
@@ -82,6 +86,7 @@ export const lightBlue4 = "#40a1ee";
 export const lightBlue5 = "#91d5dc";
 export const lightBlue6 = "#c8e8f6";
 export const lightBlue7 = "#4e95f3";
+export const lightBlue8 = "#5faef3";
 export const darkBlue = "#0080b9";
 export const darkBlue1 = "#157ad8";
 export const darkBlue2 = "#3896be";
@@ -97,6 +102,7 @@ export const lightGreen3 = "#d2fca5";
 export const lightGreen4 = "#e1fbed";
 export const lightGreen5 = "#00ad50";
 export const lightGreen6 = "#d7faee";
+export const lightGreen7 = "#6ec88c";
 export const greenDark = "#4aac8b";
 export const greenDark1 = "#00b373";
 export const greenDark2 = "#1fb58b";
@@ -115,6 +121,9 @@ export const greenSomeWhatDark = "#17a67d";
 
 export const yellow = "#febe00";
 export const yellow1 = "#FDCC3B";
+
+export const orange = "#FFA200";
+export const darkOrange = "#F9942D";
 
 export const btnBg = "#277df1";
 export const btnBgActive = "#5196f3";
@@ -146,7 +155,7 @@ export const paginationBoxShadowColor = "#a3a0a033";
 export const greyGraphstroke = "#999";
 export const barGrapColor1 = "#1fe3a0";
 export const barGrapColor2 = "#ee1b82";
-export const incorrect = "#F35F5F";
+export const incorrect = darkRed;
 export const pCorrect = "#ebaa28";
 export const graded = "#7BC0DF";
 export const pointColor = "#4a4a4a";
@@ -193,8 +202,6 @@ export const authorAssignment = {
 
 export const fadedWhite = "#5196f3";
 export const fadedBlue = "#BED8FA";
-
-export const orange = "#FFA200";
 
 export const eastBaycolor = "#51596a";
 

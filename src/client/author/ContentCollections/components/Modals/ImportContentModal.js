@@ -36,7 +36,6 @@ const EXISTING_COLLECTION = "existing collection";
 const UPLOAD_ZIP = "upload zip";
 const USE_AWS_S3_BUCKET = "use aws s3 bucket";
 
-
 const ImportContentModal = ({
   visible,
   handleResponse,
@@ -110,9 +109,7 @@ const ImportContentModal = ({
   const Title = [<Heading>Import Content</Heading>];
 
   return (
-
     <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => closeModel()} width={400}>
-
       <ModalBody>
         <FieldRow>
           <span>Import content from QTI, WebCT and several other formats.</span>
@@ -179,7 +176,6 @@ const ImportContentModal = ({
               placeholder={`Enter aws s3 bucket url`}
             />
           )}
-
         </FieldRow>
       </ModalBody>
     </StyledModal>

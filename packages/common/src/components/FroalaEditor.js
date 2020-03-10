@@ -112,19 +112,19 @@ const DEFAULT_TOOLBAR_BUTTONS = {
   MD: {
     moreText: {
       buttons,
-      buttonsVisible: 6
+      buttonsVisible: 8
     }
   },
   SM: {
     moreText: {
       buttons,
-      buttonsVisible: 4
+      buttonsVisible: 8
     }
   },
   XS: {
     moreText: {
       buttons,
-      buttonsVisible: 2
+      buttonsVisible: 6
     }
   }
 };
@@ -245,7 +245,6 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons)
     XS: { STD: "XS", MD: "XS", SM: "XS", XS: "XS" }
   };
   const cSize = sizeMap[toolbarSize][size];
-
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
   toolbarButtons.moreText.buttons = buttons ? [...buttons] : [...toolbarButtons.moreText.buttons];
   toolbarButtons.moreMisc = {

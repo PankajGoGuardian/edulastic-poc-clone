@@ -444,7 +444,7 @@ class CurriculumSequence extends Component {
 
     const summaryData = modules?.map((mod, index) => {
       const { _id = "", title, data = [], hidden = false } = mod;
-      const metricModule = playlistMetrics[_id] || {};
+      const metricModule = playlistMetrics[_id] || [];
       const name = `Module ${index + 1}`;
       const scores = round(metricModule?.reduce((a, c) => a + c?.totalScore, 0) / metricModule.length);
       const value = round(

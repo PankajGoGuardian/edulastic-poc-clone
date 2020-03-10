@@ -21,8 +21,11 @@ const Stimulus = withTheme(
     }
 
     & .input__math,
+    & .katex-display,
+    & .katex,
     & .input__math * {
       user-select: none !important;
+      pointer-events: none !important;
       -webkit-touch-callout: none !important;
     }
 

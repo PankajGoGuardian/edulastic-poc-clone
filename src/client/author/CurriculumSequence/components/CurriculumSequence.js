@@ -578,6 +578,8 @@ class CurriculumSequence extends Component {
 
     const enableCustomize = customize && urlHasUseThis && !isStudent;
 
+    const isAuthoringFlowReview = current === "review";
+
     return (
       <>
         <RemoveTestModal
@@ -711,7 +713,7 @@ class CurriculumSequence extends Component {
             )
           )}
 
-          {(currentTab === "playlist" || isPlaylistDetailsPage || isStudent) && (
+          {(currentTab === "playlist" || isPlaylistDetailsPage || isStudent || isAuthoringFlowReview) && (
             <>
               {isPlaylistDetailsPage && (
                 <ReviewBreadCrumbWrapper>
@@ -766,7 +768,7 @@ class CurriculumSequence extends Component {
                         handleRemove={handleRemoveTest}
                         hideEditOptions={!urlHasUseThis}
                         onBeginDrag={onBeginDrag}
-                        isReview={current === "review"}
+                        isReview={isAuthoringFlowReview}
                         onSortEnd={onSortEnd}
                         handleTestsSort={handleTestsSort}
                         urlHasUseThis={urlHasUseThis}

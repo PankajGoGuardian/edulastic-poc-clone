@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Modal, Button } from "antd";
-import { themeColor, white, titleColor } from "@edulastic/colors";
-import styled from "styled-components";
+import { Modal } from "antd";
 import { math } from "@edulastic/constants";
 import MathInput from "../MathInput";
 import KatexInput from "../KatexInput";
 import EduButton from "../EduButton";
+import FlexContainer from "../FlexContainer";
 
 const defaultSymbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
 const { defaultNumberPad } = math;
@@ -57,14 +56,16 @@ const MathModal = ({
       wrapProps={{
         style: { overflow: "auto", display: show ? "block" : "none" }
       }}
-      footer={[
-        <EduButton isGhost onClick={() => onClose()}>
-          CANCEL
-        </EduButton>,
-        <EduButton type="primary" onClick={() => onSave(latex)}>
-          OK
-        </EduButton>
-      ]}
+      footer={
+        <FlexContainer justifyContent="flex-start">
+          <EduButton isGhost onClick={() => onClose()}>
+            CANCEL
+          </EduButton>
+          <EduButton type="primary" onClick={() => onSave(latex)}>
+            OK
+          </EduButton>
+        </FlexContainer>
+      }
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
       {isEditable && (

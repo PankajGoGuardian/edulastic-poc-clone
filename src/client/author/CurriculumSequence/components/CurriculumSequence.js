@@ -393,8 +393,8 @@ class CurriculumSequence extends Component {
       match
     } = this.props;
 
-    // figure out what tab contents to render
-    const currentTab = match?.params?.currentTab;
+    // figure out which tab contents to render || just render default playlist
+    const currentTab = match?.params?.currentTab || "playlist";
 
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
@@ -713,7 +713,7 @@ class CurriculumSequence extends Component {
             )
           )}
 
-          {(currentTab === "playlist" || isPlaylistDetailsPage || isStudent || isAuthoringFlowReview) && (
+          {currentTab === "playlist" && (
             <>
               {isPlaylistDetailsPage && (
                 <ReviewBreadCrumbWrapper>

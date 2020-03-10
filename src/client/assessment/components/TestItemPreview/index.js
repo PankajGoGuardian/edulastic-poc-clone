@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { ThemeProvider, withTheme } from "styled-components";
 
-import { withWindowSizes, ScratchPadContext } from "@edulastic/common";
+import { withWindowSizes, ScratchPadContext, ScrollContext } from "@edulastic/common";
 import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 
 import { themes } from "../../../theme";

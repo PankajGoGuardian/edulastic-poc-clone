@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniqueId, round, groupBy, isEqual } from "lodash";
+import { groupBy, isEqual, uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
@@ -10,22 +10,22 @@ import { EduButton, FlexContainer, MainHeader, ProgressBar } from "@edulastic/co
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
+  greyThemeDark1,
   largeDesktopWidth,
   lightGreen5,
-  smallDesktopWidth,
-  tabletWidth,
-  greyThemeDark1,
   lightGrey2,
   lightGrey5,
   lightGrey6,
+  smallDesktopWidth,
+  tabletWidth,
   themeColor,
-  white,
-  titleColor
+  titleColor,
+  white
 } from "@edulastic/colors";
-import { IconBook, IconGraduationCap, IconShare, IconTile, IconPencilEdit, IconPlaylist } from "@edulastic/icons";
+import { IconBook, IconGraduationCap, IconPencilEdit, IconPlaylist, IconShare, IconTile } from "@edulastic/icons";
 import { Button, Cascader, Input, Modal, Tooltip } from "antd";
 import Header from "../../../student/sharedComponents/Header";
-import { getUserFeatures, getCurrentGroup } from "../../../student/Login/ducks";
+import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
 // import { getTestAuthorName } from "../../dataUtils";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
@@ -45,7 +45,7 @@ import {
   setSelectedItemsForAssignAction,
   useThisPlayListAction
 } from "../ducks";
-import { getProgressColor } from "../util";
+import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
 import Curriculum from "./Curriculum";
 import AddUnitModalBody from "./modals/AddUnitModalBody";
@@ -352,7 +352,7 @@ class CurriculumSequence extends Component {
 
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
-    const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
+    const { handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
     const {
       addUnit,
       addCustomContent,
@@ -373,15 +373,12 @@ class CurriculumSequence extends Component {
       onBeginDrag,
       onSortEnd,
       current,
-      curriculumGuides,
-      guide,
       isContentExpanded,
       mode,
       recentPlaylists,
       onShareClick,
       history,
       handleTestsSort,
-      collections,
       features,
       urlHasUseThis,
       isPublisherUser,
@@ -427,8 +424,6 @@ class CurriculumSequence extends Component {
       grades = [],
       customize = true,
       isAuthor = false,
-      bgColor = themeColor || "",
-      textColor = white || "",
       modules
     } = destinationCurriculumSequence;
 
@@ -442,54 +437,7 @@ class CurriculumSequence extends Component {
 
     const playlistMetrics = getplaylistMetrics();
 
-    const summaryData = modules?.map((mod, index) => {
-      const { _id = "", title, data = [], hidden = false } = mod;
-      const metricModule = playlistMetrics[_id] || [];
-      const name = `Module ${index + 1}`;
-      const scores = round(metricModule?.reduce((a, c) => a + c?.totalScore, 0) / metricModule.length);
-      const value = round(
-        (metricModule?.reduce((a, c) => a + (c?.totalScore / c?.maxScore || 0), 0) * 100) / metricModule.length,
-        0
-      );
-      const maxScore = round(metricModule?.reduce((a, c) => a + c?.maxScore, 0) / metricModule.length);
-      let tSpent = 0;
-      if (isStudent) {
-        const unHiddenTestIds = data?.filter(x => !x?.hidden).flatMap(x => x.contentId);
-        tSpent = metricModule
-          ?.filter(mm => unHiddenTestIds.includes(mm.testId))
-          .reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
-      } else {
-        tSpent = metricModule?.reduce((a, c) => a + (parseInt(c?.timeSpent) || 0), 0);
-      }
-      const assignments = data?.flatMap(x => x?.assignments) || [];
-      const classes = assignments?.reduce((a, c) => a + (c?.class?.length || 0), 0) || "-";
-      const submitted =
-        metricModule?.map(x => round((x?.gradedCount / x?.totalAssigned || 0) * 100, 0)).reduce((a, c) => a + c, 0) ||
-        "-";
-      const duration = moment.duration(tSpent);
-      const h = duration.hours();
-      let m = duration.minutes();
-      const s = duration.seconds();
-      if (s > 50) {
-        m = m + 1;
-      }
-
-      const timeSpent = h > 0 ? `${h} H ${m} mins` : `${m} min`;
-
-      return {
-        title,
-        name,
-        value,
-        timeSpent,
-        classes,
-        submitted,
-        tSpent,
-        index,
-        hidden,
-        scores,
-        maxScore
-      };
-    });
+    const summaryData = getSummaryData(modules, playlistMetrics, isStudent);
 
     // check if either of the module data has empty value
     // used for giving requisite padding in the SummaryBlock
@@ -867,11 +815,9 @@ const enhance = compose(
 export default enhance(CurriculumSequence);
 
 CurriculumSequence.propTypes = {
-  guide: PropTypes.string,
   expandedModules: PropTypes.array,
   windowWidth: PropTypes.number.isRequired,
   saveCurriculumSequence: PropTypes.func.isRequired,
-  curriculumGuides: PropTypes.array,
   setGuide: PropTypes.func.isRequired,
   onSelectContent: PropTypes.func.isRequired,
   addNewUnitToDestination: PropTypes.func.isRequired,
@@ -881,25 +827,12 @@ CurriculumSequence.propTypes = {
   onDrop: PropTypes.func.isRequired,
   onBeginDrag: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
-  recentPlaylists: PropTypes.array,
-  publisher: PropTypes.string,
-  curriculumList: PropTypes.array,
-  setPublisher: PropTypes.func.isRequired,
-  dataForAssign: PropTypes.object.isRequired,
-  setDataForAssign: PropTypes.func.isRequired,
-  saveGuideAlignment: PropTypes.func.isRequired,
-  selectedItemsForAssign: PropTypes.array.isRequired,
-  setSelectedItemsForAssign: PropTypes.func.isRequired,
-  sourceCurriculumSequence: PropTypes.object.isRequired
+  recentPlaylists: PropTypes.array
 };
 
 CurriculumSequence.defaultProps = {
-  publisher: EUREKA_PUBLISHER,
-  guide: "",
-  curriculumList: [],
   expandedModules: [],
-  recentPlaylists: [],
-  curriculumGuides: []
+  recentPlaylists: []
 };
 
 const ModuleTitle = styled.p`

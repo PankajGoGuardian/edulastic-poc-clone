@@ -4,10 +4,6 @@ import {
   borderGrey3,
   borderGrey4,
   darkGrey2,
-  lightGrey5,
-  lightGrey6,
-  mobileWidth,
-  tabletWidth,
   desktopWidth,
   extraDesktopWidth,
   greenDark,
@@ -15,7 +11,11 @@ import {
   greyThemeDark1,
   greyThemeLighter,
   lightGreen5,
+  lightGrey5,
+  lightGrey6,
   mainBgColor,
+  mobileWidth,
+  tabletWidth,
   testTypeColor,
   themeColor,
   themeColorLighter,
@@ -24,11 +24,9 @@ import {
 } from "@edulastic/colors";
 import { EduButton, ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
-import { IconCheckSmall, IconVisualization, IconLeftArrow, IconMoreVertical, IconVerified } from "@edulastic/icons";
-import { Avatar, Button, Col, Dropdown, Icon, Menu, message, Modal, Row as AntRow } from "antd";
+import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
+import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow } from "antd";
 import produce from "immer";
-import { round } from "lodash";
-import moment from "moment";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { FaBars, FaChevronRight } from "react-icons/fa";
@@ -40,7 +38,7 @@ import styled from "styled-components";
 import AssessmentPlayer from "../../../assessment";
 import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
-import { getClasses, getCurrentGroup } from "../../../student/Login/ducks";
+import { getCurrentGroup } from "../../../student/Login/ducks";
 import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
@@ -55,7 +53,7 @@ import {
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction
 } from "../ducks";
-import { getProgressColor } from "../util";
+import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 
 /**
@@ -266,18 +264,16 @@ class ModuleRow extends Component {
   };
 
   toggleModule = (module, moduleIndex) => {
-    const { updateCurriculumSequence, playlistId, curriculum } = this.props;
+    const { updateCurriculumSequence, playlistId, curriculum, collapsed, onCollapseExpand } = this.props;
     const dataToUpdate = produce(curriculum, draftState => {
       const currentModule = draftState.modules.find(el => el._id === module._id);
       currentModule.hidden = !module.hidden;
-      currentModule.data = currentModule.data.map(test => {
-        return {
-          ...test,
-          hidden: !module.hidden
-        };
-      });
-      if ((this.props.collapsed && !currentModule.hidden) || (!this.props.collapsed && currentModule.hidden)) {
-        this.props.onCollapseExpand(moduleIndex);
+      currentModule.data = currentModule.data.map(test => ({
+        ...test,
+        hidden: !module.hidden
+      }));
+      if ((collapsed && !currentModule.hidden) || (!collapsed && currentModule.hidden)) {
+        onCollapseExpand(moduleIndex);
       }
     });
     updateCurriculumSequence({
@@ -344,13 +340,6 @@ class ModuleRow extends Component {
     //   content => content.assignments && content.assignments.length > 0
     // ).length;
     const { showModal, selectedTest, currentAssignmentId } = this.state;
-
-    const statusBg = {
-      "IN PROGRESS": "#5AABEB",
-      "IN GRADING": "#F9942D",
-      "NOT OPEN": "#95B0CD",
-      DONE: themeColor
-    };
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -553,8 +542,7 @@ class ModuleRow extends Component {
                 useDragHandle
               >
                 {data.map((moduleData, index) => {
-                  const { standards, assignments = [], contentId } = moduleData;
-                  const standardTags = (standards && standards.map(stand => stand.name)) || [];
+                  const { assignments = [], contentId } = moduleData;
                   const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);
                   const contentCompleted =
                     statusList.filter(_status => _status === "DONE").length === statusList.length &&
@@ -565,63 +553,31 @@ class ModuleRow extends Component {
                     pointerEvents: moduleData.hidden ? "none" : "all"
                   };
 
-                  const getProgressData = () => {
-                    const data = playlistMetrics?.[_id]?.find(x => x.testId === contentId) || {};
-                    const {
-                      assignmentId = "",
-                      gradedCount = 0,
-                      totalAssigned = 0,
-                      totalScore = 0,
-                      maxScore = 0,
-                      timeSpent: tSpent
-                    } = data;
-                    const submitted = assignmentId ? round((gradedCount / totalAssigned) * 100, 0) : 0;
-                    const progress = round((totalScore / maxScore) * 100, 0) || 0;
-                    const classes = assignments.reduce((a, c) => a + (c?.["class"]?.length || 0), 0);
-                    const duration = moment.duration(parseInt(tSpent || 0, 10));
-                    const h = duration.hours();
-                    const m = duration.minutes();
-                    const s = duration.seconds();
-
-                    const timeSpent = h > 0 ? `${h}H ${m}min ${s}sec` : `${m} min ${s} sec`;
-
-                    return {
-                      submitted,
-                      progress,
-                      classes,
-                      scores: totalScore,
-                      timeSpent,
-                      maxScore
-                    };
-                  };
-
-                  const progressData = getProgressData();
+                  const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
 
                   const assignmentRows = assignments.flatMap(assignment => {
                     const { testType, _id: assignmentId } = assignment;
                     return assignment.class.map(
                       ({
                         name,
-                        status,
+                        status: _status,
                         assignedCount,
                         inProgressNumber,
                         inGradingNumber,
-                        autoSubmitPicked,
                         _id: classId,
                         gradedNumber = 0,
                         redirect = false
                       }) => ({
                         name,
-                        status,
+                        status: _status,
                         assignedCount,
                         inProgressNumber,
                         inGradingNumber,
                         testType,
-                        autoSubmitPicked,
                         assignmentId,
                         classId,
                         gradedNumber,
-                        submittedCount: inGradingNumber + autoSubmitPicked + gradedNumber,
+                        submittedCount: inGradingNumber + gradedNumber,
                         redirect
                       })
                     );

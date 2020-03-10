@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import produce from "immer";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Select, Col, Row as AntdRow } from "antd";
 import styled from "styled-components";
@@ -23,24 +24,31 @@ class NumberLinePlot extends Component {
     setQuestionData({ ...graphData, stimulus });
   };
 
+  resetCorrectAnsers = graphData => {
+    const newData = produce(graphData, draft => {
+      if (draft?.validation?.validResponse?.value?.length) {
+        draft.validation.validResponse.value.length = [];
+      }
+      if (draft?.validation?.altResponses?.length) {
+        draft.validation.altResponses = draft.validation.altResponses.map(altResponse => {
+          if (altResponse?.value?.length) {
+            altResponse.value = [];
+          }
+          return altResponse;
+        });
+      }
+    });
+    return newData;
+  };
+
   handleCanvasChange = event => {
     const { value, name } = event.target;
     const { graphData, setQuestionData } = this.props;
-    const { canvas } = graphData;
+    const newGrapData = this.resetCorrectAnsers(graphData);
+    const { canvas } = newGrapData;
 
     canvas[name] = +value;
-    setQuestionData({ ...graphData, canvas });
-  };
-
-  handleCanvasBlur = (event, defaultValue) => {
-    const { value, name } = event.target;
-    const { graphData, setQuestionData } = this.props;
-    const { canvas } = graphData;
-
-    if (!value) {
-      canvas[name] = defaultValue;
-      setQuestionData({ ...graphData, canvas });
-    }
+    setQuestionData({ ...newGrapData, canvas });
   };
 
   handleNumberlineCheckboxChange = name => () => {
@@ -55,10 +63,11 @@ class NumberLinePlot extends Component {
   handleNumberlineInputChange = event => {
     const { value, name } = event.target;
     const { graphData, setQuestionData } = this.props;
-    const { numberlineAxis } = graphData;
+    const newGrapData = this.resetCorrectAnsers(graphData);
+    const { numberlineAxis } = newGrapData;
 
     numberlineAxis[name] = +value;
-    setQuestionData({ ...graphData, numberlineAxis });
+    setQuestionData({ ...newGrapData, numberlineAxis });
   };
 
   changeFractionsFormat = value => {
@@ -249,10 +258,6 @@ const enhance = compose(
 );
 
 export default enhance(NumberLinePlot);
-
-const LableFormatSelect = styled(Select)`
-  width: 100%;
-`;
 
 const StyledTextField = styled(TextField)`
   padding: 5px 10px;

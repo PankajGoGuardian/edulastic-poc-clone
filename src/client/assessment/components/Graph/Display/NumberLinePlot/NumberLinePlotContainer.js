@@ -398,11 +398,7 @@ class NumberLinePlotContainer extends PureComponent {
     }
 
     return (
-      <div
-        data-cy="axis-labels-container-rrrr"
-        ref={this.numberLinePlotRef}
-        style={{ overflowX: "hidden", width: "100%" }}
-      >
+      <div data-cy="axis-labels-container" ref={this.numberLinePlotRef} style={{ overflowX: "hidden", width: "100%" }}>
         {!disableResponse && !isPrintPreview && (
           <Tools tools={selectedControl} controls={controls} setTool={this.onSelectControl} justifyContent="flex-end" />
         )}

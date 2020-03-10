@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { themeColor, white, dashBorderColor } from "@edulastic/colors";
-import { CheckboxContainer } from "./CheckboxContainer";
 import { MultiChoiceContent, MultipleChoiceLabelContainer } from "./MultiChoiceContent";
 
 export const Label = styled.label`
@@ -15,19 +13,6 @@ export const Label = styled.label`
     cursor: ${({ uiStyle }) => {
       if (uiStyle.type === "block") {
         return "pointer";
-      }
-    }};
-  }
-
-  && ${CheckboxContainer} {
-    visibility: ${({ uiStyle }) => {
-      if (uiStyle.type === "block") {
-        return "hidden";
-      }
-    }};
-    position: ${({ uiStyle }) => {
-      if (uiStyle.type === "block") {
-        return "absolute";
       }
     }};
   }
@@ -48,23 +33,19 @@ export const Label = styled.label`
     }};
   }
 
-  margin-bottom: ${({ uiStyle }) => {
-    if (uiStyle.type === "block") {
-      return "2px";
-    }
-  }};
   flex: 1;
   position: relative;
   display: inline-block;
   padding: ${props => (props.styleType === "primary" ? "0" : "9px 0px")};
   padding-left: ${props =>
-    props.uiStyle.type === "radioBelow"
-      ? props.showIcon && props.className
-        ? "50px"
-        : "0px"
+    props.uiStyle.type === "block"
+      ? "0px"
+      : props.uiStyle.type === "radioBelow"
+      ? "12px"
       : props.styleType === "primary"
       ? "15px"
       : "25px"};
+
   border: ${props =>
     props.uiStyle.type === "block" &&
     (props.styleType === "primary"
@@ -107,13 +88,11 @@ export const Label = styled.label`
   &.right {
     background-color: ${props => props.theme.widgets.multipleChoice.labelRightBgColor};
     border-radius: 8px;
-    border: none;
     padding-right: 50px;
   }
   &.wrong {
     background-color: ${props => props.theme.widgets.multipleChoice.labelWrongBgColor};
     border-radius: 8px;
-    border: none;
     padding-right: 50px;
   }
   &.preview {

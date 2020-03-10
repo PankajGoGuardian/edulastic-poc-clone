@@ -28,6 +28,8 @@ export const MultiChoiceContent = styled.div`
   align-items: center;
   font-weight: ${props => props.theme.widgets.multipleChoice.multiChoiceContentFontWeight};
   font-size: ${props => props.fontSize || props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
+  margin-left: ${({ uiStyleType }) =>
+    uiStyleType === "radioBelow" ? "0px" : uiStyleType === "block" ? "52px" : "8px"};
 
   ${({ isCrossAction, hovered, charCount }) => {
     let color = strikeOutHover;

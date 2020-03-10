@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
 import produce from "immer";
-import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { MathFormulaDisplay } from "@edulastic/common";
 import styled from "styled-components";
 import { themeColor, white, grey } from "@edulastic/colors";
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
-import { MultiChoiceContent, MultipleChoiceLabelContainer } from "../styled/MultiChoiceContent";
-import { Label, OptionsLabel } from "../styled/Label";
+import { MultiChoiceContent } from "../styled/MultiChoiceContent";
+import { Label } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
@@ -39,8 +39,7 @@ const Option = props => {
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
-    const altResponses =
-      validation.altResponses?.length > 0 ? validation.altResponses?.map(ar => ar.value) : [];
+    const altResponses = validation.altResponses?.length > 0 ? validation.altResponses?.map(ar => ar.value) : [];
     correctAnswers = flatten([validation.validResponse?.value, ...altResponses]);
   }
 
@@ -53,21 +52,16 @@ const Option = props => {
     : userSelections.includes(item.value);
 
   const isCorrect =
-    isReviewTab || testItem
-      ? correct[correctAnswers.indexOf(item.value)]
-      : correct[userSelections.indexOf(item.value)];
+    isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];
 
-  const isCrossAction =
-    crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
+  const isCrossAction = crossAction && crossAction[qId] && crossAction[qId].indexOf(item.value) !== -1;
 
   const showIcon = (isSelected && checkAnswer) || showAnswer;
 
   if (showAnswer) {
     let validAnswers = [];
     if (!isEmpty(validation)) {
-      validAnswers = flatten(
-        [validation.validResponse, ...validation.altResponses].map(_item => _item.value)
-      );
+      validAnswers = flatten([validation.validResponse, ...validation.altResponses].map(_item => _item.value));
     }
 
     if (validAnswers.includes(item.value)) {
@@ -122,127 +116,57 @@ const Option = props => {
       switch (uiStyle.choiceLabel) {
         case "number":
           return inx + 1;
-        case "upper-alpha":
-          return ALPHABET[inx].toUpperCase();
         case "lower-alpha":
           return ALPHABET[inx].toLowerCase();
+        case "upper-alpha":
         default:
-          return null;
+          return ALPHABET[inx].toUpperCase();
       }
     } else if (uiStyle.type === "standard") {
       switch (uiStyle.stemNumeration) {
         case "number":
-          return `(${inx + 1})`;
-        case "upper-alpha":
-          return `(${ALPHABET[inx].toUpperCase()})`;
+          return inx + 1;
         case "lower-alpha":
-          return `(${ALPHABET[inx].toLowerCase()})`;
+          return ALPHABET[inx].toLowerCase();
+        case "upper-alpha":
         default:
-          return null;
+          return ALPHABET[inx].toUpperCase();
       }
     } else {
       return ALPHABET[inx].toUpperCase();
     }
   };
 
-  const getOptionLabel = i => ALPHABET[i].toUpperCase();
-
   const container = (
     <>
-      {uiStyle.type === "block" && uiStyle.choiceLabel && (
-        <OptionsLabel>{getLabel(index)}</OptionsLabel>
-      )}
       <CheckboxContainer
         smallSize={smallSize}
         uiStyle={uiStyle}
         styleType={styleType}
         multipleResponses={multipleResponses}
       >
-        <input
-          type="checkbox"
-          name="mcq_group"
-          value={item.value}
-          checked={isSelected}
-          onChange={onChangeHandler}
-        />
-        <span
-          className="labelOnly"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: multipleResponses ? "0" : "50%"
-          }}
-        >
-          {getLabel(index)}
-        </span>
+        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChangeHandler} />
       </CheckboxContainer>
+      <span className="labelOnly">{getLabel(index)}</span>
     </>
   );
 
-  const renderCheckbox = () => {
-    switch (uiStyle.type) {
-      case "radioBelow":
-        return (
-          <FlexContainer flexDirection="column" justifyContent="center">
-            <MultiChoiceContent
-              fontSize={fontSize}
-              smallSize={smallSize}
-              style={{ marginBottom: 17 }}
-              isCrossAction={isCrossAction}
-              hovered={hovered}
-              charCount={(item.label || "").length}
-            >
-              <MathFormulaDisplay
-                fontSize={fontSize}
-                dangerouslySetInnerHTML={{ __html: item.label }}
-              />
-            </MultiChoiceContent>
-            {container}
-          </FlexContainer>
-        );
-      case "block":
-        return (
-          <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
-            <MultipleChoiceLabelContainer>{container}</MultipleChoiceLabelContainer>
-            {!uiStyle.choiceLabel && <span className="labelOnly">{getOptionLabel(index)}</span>}
-            <MultiChoiceContent
-              fontSize={fontSize}
-              smallSize={smallSize}
-              isCrossAction={isCrossAction}
-              hovered={hovered}
-              charCount={(item.label || "").length}
-            >
-              <MathFormulaDisplay
-                paddingLeft
-                fontSize={fontSize}
-                dangerouslySetInnerHTML={{ __html: item.label }}
-              />
-            </MultiChoiceContent>
-          </StyledOptionsContainer>
-        );
-      case "standard":
-      default:
-        return (
-          <StyledOptionsContainer isSelected={isSelected} multipleResponses={multipleResponses}>
-            {container}
-            <span className="labelOnly">{getOptionLabel(index)}</span>
-            <MultiChoiceContent
-              fontSize={fontSize}
-              smallSize={smallSize}
-              isCrossAction={isCrossAction}
-              hovered={hovered}
-              charCount={(item.label || "").length}
-            >
-              <MathFormulaDisplay
-                fontSize={fontSize}
-                dangerouslySetInnerHTML={{ __html: item.label }}
-              />
-            </MultiChoiceContent>
-          </StyledOptionsContainer>
-        );
-    }
-  };
+  const renderCheckbox = () => (
+    <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses}>
+      {uiStyle.type !== "radioBelow" && container}
+      <MultiChoiceContent
+        fontSize={fontSize}
+        smallSize={smallSize}
+        isCrossAction={isCrossAction}
+        hovered={hovered}
+        uiStyleType={uiStyle.type}
+        charCount={(item.label || "").length}
+      >
+        <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+      </MultiChoiceContent>
+      {uiStyle.type === "radioBelow" && container}
+    </StyledOptionsContainer>
+  );
 
   // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
   return (
@@ -271,39 +195,46 @@ const Option = props => {
         }
       }}
     >
-      <PaddingDiv top={5} bottom={5} margin={uiStyle.type === "radioBelow" ? "auto" : null}>
-        <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
-          {renderCheckbox()}
-          <IconWrapper>
-            {showIcon && className === "right" && <IconCheck />}
-            {showIcon && className === "wrong" && <IconClose />}
-          </IconWrapper>
-        </FlexContainer>
-      </PaddingDiv>
+      {renderCheckbox()}
+      {showIcon && (
+        <IconWrapper>
+          {className === "right" && <IconCheck />}
+          {className === "wrong" && <IconClose />}
+        </IconWrapper>
+      )}
     </Label>
   );
 };
 
 const StyledOptionsContainer = styled.div`
   display: flex;
-  position: relative;
+  justify-content: flex-start;
+  flex-direction: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "column" : "row")};
+  align-items: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "flex-start" : "center")};
 
   span.labelOnly {
-    width: 36px;
-    height: 36px;
-    position: absolute;
+    width: ${({ uiStyleType }) => (uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "44px" : "36px")};
+    height: ${({ uiStyleType }) =>
+      uiStyleType === "radioBelow" ? "16px" : uiStyleType === "block" ? "calc(100% + 2px)" : "36px"};
+
+    position: ${({ uiStyleType }) => (uiStyleType === "block" ? "absolute" : "")};
+    left: ${({ uiStyleType }) => (uiStyleType === "block" ? "-1px" : "")};
+    top: ${({ uiStyleType }) => (uiStyleType === "block" ? "-1px" : "")};
+
     overflow: hidden;
-    border: 1px solid ${grey};
-    text-align: center;
-    font-size: ${props => props.theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
-    margin-top: -18px;
-    left: 0;
-    top: 50%;
-    border-radius: ${props => (props.multipleResponses ? "0" : "100%")};
+    font-size: ${({ theme, uiStyleType }) =>
+      uiStyleType === "radioBelow" ? "0px" : theme.widgets.multipleChoice.labelOptionFontSize || "20px"};
+    font-weight: 600;
     color: ${props => (props.isSelected ? white : themeColor)};
     background: ${props => (props.isSelected ? themeColor : white)};
-    font-weight: 600;
-    padding-top: 2px;
+
+    border: 1px solid ${grey};
+    border-radius: ${({ multipleResponses, uiStyleType }) =>
+      uiStyleType === "block" ? "4px 0px 0px 4px" : multipleResponses ? "0px" : "50%"};
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 

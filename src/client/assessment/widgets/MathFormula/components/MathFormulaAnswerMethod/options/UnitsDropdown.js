@@ -6,10 +6,8 @@ import styled from "styled-components";
 import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
-import { FlexContainer } from "@edulastic/common";
-import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { textColor, mainTextColor, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 import { SelectInputStyled } from "../../../../../styled/InputStyles";
@@ -23,15 +21,13 @@ const UnitsDropdownPure = ({
   item,
   onChange,
   t,
-  handleAdvancedOpen,
   keypadOffset,
   preview,
   selected,
   options,
   onChangeShowDropdown,
   disabled,
-  statusColor,
-  unitsStyle
+  statusColor
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -55,11 +51,6 @@ const UnitsDropdownPure = ({
     updateOffset(keypadOffset);
   };
 
-  const handlePressCustomize = () => {
-    handleAdvancedOpen({ isOpen: true });
-    scrollToKeypad();
-  };
-
   const symbol = get(item, "symbols", [])[0]; // units_us units_si
   const customKeys = get(item, "customKeys", []);
 
@@ -69,11 +60,6 @@ const UnitsDropdownPure = ({
     types: [isObject(symbol) ? symbol.label : symbol],
     command: "write"
   }));
-
-  const uiStyle = get(item, "uiStyle", {});
-  const styles = {
-    height: uiStyle.heightpx || response.minHeight
-  };
 
   const getLabel = handler => {
     const seleted = allBtns.find(btn => btn.handler === handler) || {};
@@ -107,14 +93,14 @@ const UnitsDropdownPure = ({
       )}
       {item.showDropdown && (
         <Row>
-          <Col span={12}>
+          <Col span={12} marginBottom="0px" style={{ height: "100%" }}>
             <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
               <SelectInputStyled
                 value={preview ? selected : options ? options.unit : ""}
                 onChange={handleChange}
                 disabled={disabled}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
-                style={{ ...styles, visibility: item.showDropdown ? "visible" : "hidden" }}
+                style={{ visibility: item.showDropdown ? "visible" : "hidden", height: item.showDropdown ? "100%" : 0 }}
                 statusColor={statusColor}
               >
                 {allBtns.map((btn, i) => (
@@ -132,7 +118,6 @@ const UnitsDropdownPure = ({
 };
 
 UnitsDropdownPure.propTypes = {
-  handleAdvancedOpen: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   options: PropTypes.object.isRequired,
@@ -142,8 +127,7 @@ UnitsDropdownPure.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
   disabled: PropTypes.bool,
-  statusColor: PropTypes.string,
-  unitsStyle: PropTypes.bool
+  statusColor: PropTypes.string
 };
 
 UnitsDropdownPure.defaultProps = {
@@ -152,8 +136,7 @@ UnitsDropdownPure.defaultProps = {
   disabled: false,
   selected: "",
   statusColor: "",
-  onChangeShowDropdown: () => null,
-  unitsStyle: false
+  onChangeShowDropdown: () => null
 };
 
 const enhance = compose(
@@ -168,8 +151,9 @@ const enhance = compose(
 
 export const UnitsDropdown = enhance(UnitsDropdownPure);
 
-const DropdownWrapper = styled.span`
+const DropdownWrapper = styled.div`
   position: relative;
+  height: 100%;
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
   }

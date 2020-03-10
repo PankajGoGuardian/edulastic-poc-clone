@@ -32,12 +32,15 @@ export const SelectInputStyled = styled(Select)`
     width: ${props => props.width || "100%"};
     margin: ${props => props.margin || "0px"};
     .ant-select-selection {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
       background-color: ${props => props.bg || greyThemeLighter};
       border: 1px solid ${greyThemeLight};
       color: #6a737f;
       font-size: ${props => props.fontSize || "13px"};
       width: ${props => props.width || "100%"};
-      height: ${props => props.height || "40px"};
+      height: ${props => props.height || "100%"};
       min-height: 30px;
       padding: ${props => props.padding || "0px"};
       border-radius: 2px;
@@ -53,7 +56,7 @@ export const SelectInputStyled = styled(Select)`
       &.ant-select-selection--single {
         .ant-select-selection__rendered {
           padding: 0px 30px 0px 15px;
-          line-height: ${props => props.height || "38px"};
+          line-height: ${props => props.height || "30px"};
           margin: 0px;
           .ant-select-selection-selected-value {
             padding: 0px;

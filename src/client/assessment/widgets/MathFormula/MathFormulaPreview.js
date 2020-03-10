@@ -303,7 +303,7 @@ class MathFormulaPreview extends Component {
               />
             </QuestionTitleWrapper>
             {testItem && (
-              <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+              <FlexContainer alignItems="stretch" justifyContent="flex-start">
                 <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
                 {item.isUnits && item.showDropdown && (
                   <UnitsDropdown
@@ -319,7 +319,7 @@ class MathFormulaPreview extends Component {
 
             {!testItem && (
               <FlexContainer
-                alignItems="flex-start"
+                alignItems="stretch"
                 justifyContent="flex-start"
                 style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
               >

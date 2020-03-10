@@ -1,66 +1,72 @@
-import React, { useState, useEffect } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { withNamespaces } from "react-i18next";
-import { isEqual, pick, maxBy, keyBy } from "lodash";
-import { withRouter } from "react-router-dom";
+import { testItemsApi } from "@edulastic/api";
+import { EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
+import { test as testConstants } from "@edulastic/constants";
+import { IconPencilEdit } from "@edulastic/icons";
+import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
+import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Collapse, Icon, Input, message, Select } from "antd";
+import { isEqual, keyBy, maxBy, pick } from "lodash";
 import nanoid from "nanoid";
-import {
-  Container,
-  BreadcrumbContainer,
-  Heading,
-  ContentBody,
-  CreateGroupWrapper,
-  GroupField,
-  Label,
-  ItemCountWrapper,
-  AddGroupButton,
-  RadioMessage,
-  SelectItemsButton,
-  QuestionTagsWrapper,
-  QuestionTagsContainer,
-  SelectWrapper,
-  AutoSelectFields,
-  DoneButton,
-  Footer,
-  ItemTag,
-  BrowseButton,
-  StandardNameSection,
-  PanelHeading,
-  SaveButton
-} from "./styled";
-import { Checkbox, Input, Radio, Select, Collapse, Icon, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { withNamespaces } from "react-i18next";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import StandardsModal from "../../../../assessment/containers/QuestionMetadata/StandardsModal";
+import { getDefaultInterests } from "../../../dataUtils";
+import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../src/actions/dictionaries";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import {
-  updateGroupDataAction,
+  getCurriculumsListSelector,
+  getDictionariesAlignmentsSelector,
+  getStandardsListSelector,
+  standardsSelector
+} from "../../../src/selectors/dictionaries";
+import {
+  getCollectionsSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
+  getInterestedCurriculumsSelector
+} from "../../../src/selectors/user";
+import {
   addNewGroupAction,
+  deleteItemsGroupAction,
   getAllTagsAction,
   getAllTagsSelector,
-  deleteItemsGroupAction,
+  getStaticGroupItemIds,
   getTestEntitySelector,
-  setTestDataAction,
   NewGroup,
-  getStaticGroupItemIds
+  setTestDataAction,
+  updateGroupDataAction
 } from "../../ducks";
 import { removeTestItemsAction } from "../AddItems/ducks";
 import selectsData from "../common/selectsData";
-import { test as testConstants } from "@edulastic/constants";
-import { getCollectionsSelector, getUserFeatures } from "../../../src/selectors/user";
-import StandardsModal from "../../../../assessment/containers/QuestionMetadata/StandardsModal";
-import { getDictCurriculumsAction, getDictStandardsForCurriculumAction } from "../../../src/actions/dictionaries";
 import {
-  getStandardsListSelector,
-  standardsSelector,
-  getCurriculumsListSelector,
-  getDictionariesAlignmentsSelector
-} from "../../../src/selectors/dictionaries";
+  AddGroupButton,
+  AutoSelectFields,
+  BreadcrumbContainer,
+  BrowseButton,
+  Container,
+  ContentBody,
+  CreateGroupWrapper,
+  DoneButton,
+  Footer,
+  GroupField,
+  Heading,
+  ItemCountWrapper,
+  ItemTag,
+  Label,
+  PanelHeading,
+  QuestionTagsContainer,
+  QuestionTagsWrapper,
+  RadioMessage,
+  SaveButton,
+  SelectItemsButton,
+  SelectWrapper,
+  StandardNameSection
+} from "./styled";
 import TypeConfirmModal from "./TypeConfirmModal";
-import { testItemsApi } from "@edulastic/api";
-import { IconPencilEdit, IconClose } from "@edulastic/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
-import { EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants;
 
@@ -82,7 +88,10 @@ const GroupItems = ({
   deleteItemsGroup,
   test,
   setTestData,
-  history
+  history,
+  interestedGrades,
+  interestedSubjects,
+  interestedCurriculums: [firstCurriculum]
 }) => {
   const { Panel } = Collapse;
 
@@ -96,12 +105,10 @@ const GroupItems = ({
   const [deleteGroupIndex, setDeleteGroupIndex] = useState(null);
   const [activePanels, setActivePanels] = useState([]);
   const {
-    subject = "Mathematics",
-    curriculumId = 212,
-    curriculum = "Math - Common Core",
-    grades = ["7"],
-    standards = []
-  } = alignment;
+    subject = interestedSubjects?.[0] || "",
+    grades = interestedGrades || [],
+    curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+  } = getDefaultInterests();
 
   const goBackUrl = match.params?.id
     ? `/author/tests/tab/addItems/id/${match.params.id}`
@@ -129,7 +136,6 @@ const GroupItems = ({
 
   useEffect(() => {
     setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()));
-
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -472,8 +478,11 @@ const GroupItems = ({
           t={t}
           subject={subject}
           grades={grades}
-          standards={standards}
-          standard={{ curriculum, id: curriculumId }}
+          standards={[]}
+          standard={{
+            curriculum: curriculums.find(item => item._id === parseInt(curriculumId))?.curriculum || "",
+            id: parseInt(curriculumId) || ""
+          }}
           visible={showStandardModal}
           curriculums={curriculums}
           onApply={handleApply}
@@ -800,7 +809,10 @@ const enhance = compose(
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculums: getCurriculumsListSelector(state),
       alignment: getDictionariesAlignmentsSelector(state),
-      test: getTestEntitySelector(state)
+      test: getTestEntitySelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

@@ -178,8 +178,8 @@ const AlignmentRow = ({
       if (defaultInterests.subject || defaultInterests.grades?.length || defaultInterests.curriculumId) {
         editAlignment(alignmentIndex, {
           subject: defaultInterests.subject || "",
-          curriculum: "",
-          curriculumId: defaultInterests.curriculumId || "",
+          curriculum: curriculums.find(item => item._id === parseInt(defaultInterests.curriculumId))?.curriculum || "",
+          curriculumId: parseInt(defaultInterests.curriculumId) || "",
           grades: defaultInterests.grades?.length ? defaultInterests.grades : []
         });
       } else if (defaultSubject && defaultCurriculumId) {
@@ -208,6 +208,14 @@ const AlignmentRow = ({
       }
     }
   }, [qId]);
+
+  useEffect(() => {
+    return () => {
+      editAlignment(alignmentIndex, {
+        curriculumId: ""
+      });
+    };
+  }, []);
   return (
     <Fragment>
       {showModal && (

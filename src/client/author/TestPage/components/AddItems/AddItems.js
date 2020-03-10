@@ -105,10 +105,15 @@ class AddItems extends PureComponent {
       search: initSearch,
       history,
       interestedSubjects,
-      interestedGrades
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum]
     } = this.props;
 
-    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades || [] } = getDefaultInterests();
+    const {
+      subject = interestedSubjects?.[0] || "",
+      grades = interestedGrades || [],
+      curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+    } = getDefaultInterests();
     const isAuthoredNow = history?.location?.state?.isAuthoredNow;
     const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[itemList]")) || {};
@@ -119,7 +124,8 @@ class AddItems extends PureComponent {
       ...sessionFilters,
       ...applyAuthoredFilter,
       subject: selectedSubjects[0] || subject,
-      grades: uniq([...selectedGrades, ...grades])
+      grades: uniq([...selectedGrades, ...grades]),
+      curriculumId: parseInt(curriculumId) || ""
     };
 
     this.updateFilterState(search);

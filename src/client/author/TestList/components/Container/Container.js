@@ -187,15 +187,21 @@ class TestList extends Component {
       clearDictStandards,
       history,
       interestedSubjects,
-      interestedGrades
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum]
     } = this.props;
-    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades } = getDefaultInterests();
+    const {
+      subject = interestedSubjects?.[0] || "",
+      grades = interestedGrades || [],
+      curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+    } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
     const searchFilters = {
       ...testFilters,
       ...sessionFilters,
       subject,
-      grades
+      grades,
+      curriculumId: parseInt(curriculumId) || ""
     };
 
     // propagate filter from query params to the store (test.filters)

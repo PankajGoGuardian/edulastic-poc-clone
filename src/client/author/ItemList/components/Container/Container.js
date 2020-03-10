@@ -86,9 +86,14 @@ class Contaier extends Component {
       getAllTags,
       history,
       interestedSubjects,
-      interestedGrades
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum]
     } = this.props;
-    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades } = getDefaultInterests();
+    const {
+      subject = interestedSubjects?.[0] || "",
+      grades = interestedGrades || [],
+      curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+    } = getDefaultInterests();
     const isAuthoredNow = history?.location?.state?.isAuthoredNow;
     const applyAuthoredFilter = isAuthoredNow ? { filter: "AUTHORED_BY_ME" } : {};
     const { params = {} } = match;
@@ -98,7 +103,8 @@ class Contaier extends Component {
       ...sessionFilters,
       ...applyAuthoredFilter,
       subject,
-      grades
+      grades,
+      curriculumId: parseInt(curriculumId) || ""
     };
     setDefaultTestData();
     clearSelectedItems();

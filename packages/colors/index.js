@@ -237,3 +237,5 @@ export const publisherItemBankIcon = "#7e3ec4";
 export const publisherTestsIcon = "#13CECF";
 export const publisherPlaylistIcon = "#1487DB";
 export const publisherBorder1 = "#d4d4e5";
+
+export const playlistTabLink = "#989BA4";

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Dropdown, Menu, Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import ResourceItem from "../ResourceItem";
 import SELECT_DATA from "../../../TestPage/components/common/selectsData";
+import slice from "./ducks";
 import {
   ManageContentContainer,
   SearchByNavigationBar,
@@ -50,13 +52,19 @@ const resourceData = [
 
 const resourceTabs = ["all", "tests", "video", "lessons"];
 
-const ManageContentBlock = () => {
+const ManageContentBlock = props => {
   const { Option } = Select;
   const { allGrades, allSubjects } = SELECT_DATA;
+  const { grades, subject, setDefaults, fetchTests, tests } = props;
 
   const [searchBy, setSearchBy] = useState("keywords");
   const [searchResourceBy, setSearchResourceBy] = useState("all");
   const [isShowFilter, setShowFilter] = useState(false);
+
+  useEffect(() => {
+    setDefaults({ subject, grades });
+    fetchTests();
+  }, []);
 
   const onChange = () => {};
 
@@ -95,7 +103,7 @@ const ManageContentBlock = () => {
             mode="multiple"
             style={{ width: 315, minHeight: "40px", lineHeight: 40 }}
             placeholder="Select Grades"
-            defaultValue={[]}
+            value={grades}
             onChange={onchange}
           >
             {allGrades?.map(({ text, value }) => <Option key={value}>{text}</Option>)}
@@ -103,7 +111,12 @@ const ManageContentBlock = () => {
 
           <br />
           <Title>subject</Title>
-          <Select placeholder="Select a Subject" style={{ width: 315, height: 40, lineHeight: 40 }} onChange={onchange}>
+          <Select
+            placeholder="Select a Subject"
+            style={{ width: 315, height: 40, lineHeight: 40 }}
+            value={subject}
+            onChange={onchange}
+          >
             {allSubjects.map(({ text, value }) => (
               <Option value={value}>{text}</Option>
             ))}
@@ -122,17 +135,19 @@ const ManageContentBlock = () => {
         </FilterContainer>
       ) : (
         <>
-          <SearchByNavigationBar justify="space-evenly">
-            {resourceTabs.map(tab => (
-              <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
-                {tab}
-              </SearchByTab>
-            ))}
-          </SearchByNavigationBar>
+          {false && (
+            <SearchByNavigationBar justify="space-evenly">
+              {resourceTabs.map(tab => (
+                <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
+                  {tab}
+                </SearchByTab>
+              ))}
+            </SearchByNavigationBar>
+          )}
           <br />
           <ResourceDataList>
-            {filteredData.map(resource => (
-              <ResourceItem {...resource} />
+            {tests.map(test => (
+              <ResourceItem type="tests" title={test.title} key={test._id} />
             ))}
           </ResourceDataList>
         </>
@@ -152,4 +167,14 @@ const ManageContentBlock = () => {
   );
 };
 
-export default ManageContentBlock;
+export default connect(
+  state => ({
+    subject: state.playlistTestBox?.subject,
+    grades: state.playlistTestBox?.grades,
+    tests: state.playlistTestBox?.tests || []
+  }),
+  {
+    setDefaults: slice.actions?.setDefaults,
+    fetchTests: slice.actions?.fetchTests
+  }
+)(ManageContentBlock);

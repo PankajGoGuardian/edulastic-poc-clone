@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { Checkbox } from "antd";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   white,
   smallDesktopWidth,
@@ -117,9 +116,26 @@ export const ManageModuleBtn = styled.div`
   }
 `;
 
-export const ResourceDataList = styled(PerfectScrollbar)`
+export const ResourceDataList = styled.div`
   height: 515px;
   margin-bottom: 20px;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 export const FilterContainer = styled.div`

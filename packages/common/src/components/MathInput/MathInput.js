@@ -31,20 +31,27 @@ class MathInput extends React.PureComponent {
   handleClick = e => {
     const { onFocus } = this.props;
     const { mathFieldFocus } = this.state;
-
+    let shouldHideKeyboard = true;
+    const jQueryTargetElem = jQuery(e.target);
     if (
-      jQuery(e.target).hasClass("keyboard") ||
-      jQuery(e.target).hasClass("num") ||
-      jQuery(e.target).hasClass("keyboardButton")
+      jQueryTargetElem.hasClass("keyboard") ||
+      jQueryTargetElem.hasClass("num") ||
+      jQueryTargetElem.hasClass("keyboardButton")
     ) {
       e.preventDefault();
-      return false;
+      shouldHideKeyboard = false;
+    }
+
+    if (e.target.className?.includes("ant-select")) {
+      shouldHideKeyboard = false;
     }
 
     if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
-      return;
+      shouldHideKeyboard = false;
     }
+
     if (
+      shouldHideKeyboard &&
       this.containerRef.current &&
       !this.containerRef.current.contains(e.target) &&
       mathFieldFocus &&

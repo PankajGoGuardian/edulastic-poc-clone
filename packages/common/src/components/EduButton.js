@@ -5,7 +5,11 @@ import { white, themeColor, grey, black, mediumDesktopExactWidth } from "@edulas
 import PropTypes from "prop-types";
 
 const EduButton = ({ children, ...restProps }) => {
-  return <StyledButton {...restProps}>{children}</StyledButton>;
+  return (
+    <StyledButton type="primary" {...restProps}>
+      {children}
+    </StyledButton>
+  );
 };
 
 EduButton.propTypes = {
@@ -67,7 +71,7 @@ const getBorderColor = ({ btnType }) => {
   }
 };
 
-const StyledButton = styled(props => <Button type="primary" {...props} />)`
+const StyledButton = styled(Button)`
   ${getStyle};
 
   &.ant-btn.ant-btn-primary {

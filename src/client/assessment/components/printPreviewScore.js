@@ -23,7 +23,7 @@ const PrintPreviewScore = props => {
 };
 
 const StyledPrintPreviewScore = styled(PrintPreviewScore)`
-  width: 25%;
+  width: 100%;
   display: ${props => (props.disabled ? "none" : "flex")};
   justify-content: center;
   padding: 10px;

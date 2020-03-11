@@ -22,4 +22,5 @@ export const WidgetContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   padding-top: 20px;
+  ${({ style }) => style};
 `;

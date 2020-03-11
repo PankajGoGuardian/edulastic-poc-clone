@@ -10,6 +10,8 @@ import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
+import FeedbackWrapper from "../FeedbackWrapper";
+import { questionType } from "@edulastic/constants";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
 class TestItemPreview extends Component {
@@ -81,6 +83,40 @@ class TestItemPreview extends Component {
     );
   };
 
+  renderFeedback = (widget, index) => {
+    const { showFeedback, previousQuestionActivity = [], isStudentReport, isPresentationMode, questions, isPrintPreview, showCollapseBtn } = this.props;
+    const displayFeedback = index == 0;
+    const question = questions[widget.reference];
+    const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
+    return (
+      <FeedbackWrapper
+        showFeedback={showFeedback}
+        displayFeedback={displayFeedback}
+        isPrintPreview={isPrintPreview}
+        showCollapseBtn={showCollapseBtn}
+        prevQActivityForQuestion={prevQActivityForQuestion}
+        data={{ ...question, smallSize: true }}
+        isStudentReport={isStudentReport}
+        isPresentationMode={isPresentationMode}
+      />
+    );
+  };
+
+  renderFeedbacks = () => {
+    return this.props.cols.map(col =>
+      col.widgets
+        .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
+        .map((widget, i) => (
+          <React.Fragment key={i}>
+            {col.tabs &&
+              !!col.tabs.length &&
+              value === widget.tabIndex &&
+              this.renderFeedback(widget, i)}
+            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i)}
+          </React.Fragment>
+        ))
+    );
+  };
   render() {
     const {
       cols,
@@ -127,7 +163,7 @@ class TestItemPreview extends Component {
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
         <Container
           width={windowWidth}
-          style={style}
+          style={{...style, height: "auto", padding: 0}}
           isCollapsed={!!collapseDirection}
           ref={this.containerRef}
           className="test-item-preview"
@@ -162,6 +198,7 @@ class TestItemPreview extends Component {
                       disableResponse={disableResponse}
                       LCBPreviewModal={LCBPreviewModal}
                       previewTab={previewTab}
+                      testReviewStyle={{ height: "100%", paddingTop: 0 }}
                     />
                     {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                   </>
@@ -187,6 +224,7 @@ class TestItemPreview extends Component {
             </ScratchPadContext.Provider>
           </ScrollContext.Provider>
         </Container>
+        {this.renderFeedbacks()}
       </ThemeProvider>
     );
   }

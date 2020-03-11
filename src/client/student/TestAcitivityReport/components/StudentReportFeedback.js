@@ -4,11 +4,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedDucks/TestItem";
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel, itemMaxScore }) => {
+const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, style }) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true } = question[qId] || {};
 
   return (
-    <FeedbackWrapper>
+    <FeedbackWrapper style={style}>
       <FeedbackText>
         <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
@@ -44,6 +44,7 @@ const FeedbackWrapper = styled.div`
   width: 25%;
   border-radius: 0.5rem;
   max-height: 250px;
+  ${({ style }) => style};
 `;
 
 const Total = styled.div`

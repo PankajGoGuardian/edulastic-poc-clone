@@ -171,6 +171,7 @@ class AssessmentPlayerSimple extends React.Component {
     } else {
       updateScratchpad({ activeMode: value, deleteMode: false });
     }
+    updateScratchPad(data);
   };
 
   handleUndo = () => {
@@ -202,8 +203,7 @@ class AssessmentPlayerSimple extends React.Component {
     updateScratchpad({
       currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
-  };
-
+  }
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
   saveHistory = sourceId => data => {

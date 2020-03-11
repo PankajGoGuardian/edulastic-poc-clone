@@ -155,6 +155,7 @@ const PrintAssessmentContainer = styled.div`
 
   .question-wrapper {
     max-width: 100% !important;
+    width: 100% !important;
     padding-left: 0;
     padding-right: 0;
     .sort-list-wrapper {

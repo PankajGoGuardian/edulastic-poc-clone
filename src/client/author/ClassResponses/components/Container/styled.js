@@ -68,6 +68,8 @@ export const GraphContainer = styled.div`
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin-bottom: 0px;
+  padding-top: 20px;
+  align-items: stretch;
   p {
     padding: 0px;
   }

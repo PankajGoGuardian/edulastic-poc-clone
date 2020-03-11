@@ -130,6 +130,22 @@ const QuestionContentArea = styled.div`
       @media (max-width: ${mobileWidthMax}) {
         flex-direction: row;
       }
+      .responseboxContainer {
+        width: calc(100% - 30px);
+        +div {
+          width: 100%;
+        }
+      }
+      .question-content-wrapper {
+        > div {
+          width: 100%;
+        }
+        .sort-list-wrapper {
+          >div >div {
+            margin: auto;
+          }
+        }
+      }
     }
     .question-tab-container {
       padding: 0!important;

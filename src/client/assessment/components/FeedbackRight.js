@@ -383,6 +383,7 @@ const StyledCardTwo = styled(Card)`
   }
   .ant-card-body {
     display: flex;
+    flex-grow: 2;
     flex-direction: column;
     height: calc(100% - 60px);
     .ant-input-disabled {

@@ -64,6 +64,7 @@ class TestItemCol extends Component {
       previewTab,
       col,
       isDocBased,
+      testReviewStyle = {},
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -79,7 +80,7 @@ class TestItemCol extends Component {
 
     const displayFeedback = true;
     return (
-      <Tabs.TabContainer style={{ position: "relative", paddingTop: "0px" }} className="question-tab-container">
+      <Tabs.TabContainer style={{ ...testReviewStyle, position: "relative", paddingTop: "0px", display: "flex" }} className="question-tab-container">
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}
           evaluation={evaluation}
@@ -98,14 +99,16 @@ class TestItemCol extends Component {
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
           displayFeedback={displayFeedback}
+          fullMode
           {...restProps}
+          style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
         />
       </Tabs.TabContainer>
     );
   };
 
   render() {
-    const { col, style, windowWidth, colCount, colIndex, ...restProps } = this.props;
+    const { col, style, windowWidth, colCount, colIndex, testReviewStyle = {}, ...restProps } = this.props;
     const { value } = this.state;
     const width =
       restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
@@ -147,7 +150,7 @@ class TestItemCol extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer>
+        <WidgetContainer style={testReviewStyle}>
           {col.widgets
             .filter(widget => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i) => (

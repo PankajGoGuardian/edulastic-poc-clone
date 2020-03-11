@@ -67,7 +67,7 @@ const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
   justify-content: space-between;
-
+  ${({ style }) => style};
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
@@ -332,23 +332,14 @@ class QuestionWrapper extends Component {
       isLCBView,
       ...restProps
     } = this.props;
-    const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
     const userAnswer = get(data, "activity.userResponse", null);
-
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
-    const userId = get(data, "activity.userId");
     const Question = getQuestion(type);
     const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
-    const studentName = data.activity && data.activity.studentName;
-    const presentationModeProps = {
-      isPresentationMode,
-      color: data.activity && data.activity.color,
-      icon: data.activity && data.activity.icon
-    };
 
     const userAnswerProps = {};
     if (userAnswer) {
@@ -412,6 +403,7 @@ class QuestionWrapper extends Component {
             noPadding={noPadding}
             isFlex
             data-cy="question-container"
+            style={{ width: "100%" }}
           >
             {view === "edit" && showQuestionMenu && (
               <QuestionMenuWrapper>
@@ -431,12 +423,8 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               isV1Multipart={isV1Multipart}
               style={{
-                width: `${
-                  ((view === "edit" && showQuestionMenu) || showFeedback) && !disableResponse
-                    ? "calc(100% - 265px)"
-                    : "100%"
-                }`,
-                maxWidth: ((studentReportFeedbackVisible && displayFeedback) || isPrintPreview) && "calc(100% - 250px)",
+                width: !isPrintPreview && `${view === "edit" && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
+                maxWidth: isPrintPreview && "calc(100% - 10px)",
                 display: "flex",
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null,
@@ -444,7 +432,7 @@ class QuestionWrapper extends Component {
                 borderRadius: isLCBView ? "10px" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
-              twoColLayout={showCollapseBtn ? null : theme?.twoColLayout}
+              twoColLayout={showCollapseBtn || showFeedback ? null : theme?.twoColLayout}
             >
               <StyledFlexContainer>
                 {evaluation === "pending" && <EvaluationMessage> Evaluation is pending </EvaluationMessage>}
@@ -506,46 +494,6 @@ class QuestionWrapper extends Component {
                 )}
               </StyledFlexContainer>
             </PaperWrapper>
-            {showFeedback &&
-              !isPassageOrVideoType &&
-              displayFeedback &&
-              !studentReportFeedbackVisible &&
-              !isPrintPreview && (
-                <FeedbackRight
-                  data-cy="feedBackRight"
-                  // eslint-disable-next-line
-                  twoColLayout={this.props.theme?.twoColLayout}
-                  showCollapseBtn={showCollapseBtn}
-                  disabled={disabled}
-                  widget={data}
-                  studentId={userId}
-                  studentName={studentName}
-                  rubricDetails={rubricDetails}
-                  {...presentationModeProps}
-                />
-              )}
-            {!isEmpty(prevQActivityForQuestion) && displayFeedback && !isPrintPreview && (
-              <FeedBackContainer
-                data-cy="feedBackContainer"
-                correct={correct}
-                prevScore={prevScore}
-                prevMaxScore={prevMaxScore}
-                prevFeedback={prevFeedback}
-                itemId={data.id}
-              />
-            )}
-            {/* STUDENT REPORT PAGE FEEDBACK */}
-            {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
-              <StudentReportFeedback qLabel={data.barLabel} qId={data.id} />
-            )}
-            {showFeedback && isPrintPreview && (
-              <PrintPreviewScore disabled={disabled} data={data} className="print-preview-score" />
-            )}
-            {showFeedback && isPrintPreview && (
-              <div data-cy="teacherFeedBack" className="print-preview-feedback">
-                {data?.activity?.feedback?.text ? <div>Teacher Feedback: {data.activity.feedback.text}</div> : null}
-              </div>
-            )}
           </QuestionContainer>
         </>
       </ThemeProvider>

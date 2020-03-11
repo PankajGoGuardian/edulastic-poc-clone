@@ -37,7 +37,7 @@ export const PrintPreviewContainer = styled.div`
     max-width: 40%;
   }
   .question-wrapper {
-    width: calc(100% - 120px)!important;
+    width: calc(100% - 10px)!important;
     max-width: 100%!important;
     padding: 35px 0;
   }

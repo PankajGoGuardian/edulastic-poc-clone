@@ -56,6 +56,7 @@ import { slice as subscriptionSlice } from "../../Subscription/ducks";
 import { testItemPreviewAttachment } from "../components/common/PreviewModal/previewAttachment.ducks";
 import { assignmentSettings } from "../../AssignTest/duck";
 import playlistTestBoxSlice from "../../CurriculumSequence/components/ManageContentBlock/ducks";
+import { externalToolsReducer } from "../../ExternalTools";
 
 const authorReducers = {
   authorUi,
@@ -115,7 +116,8 @@ const authorReducers = {
   subscription: subscriptionSlice.reducer,
   testItemPreviewAttachment,
   assignmentSettings,
-  playlistTestBox: playlistTestBoxSlice.reducer
+  playlistTestBox: playlistTestBoxSlice.reducer,
+  externalToolsReducer
 };
 
 export default authorReducers;

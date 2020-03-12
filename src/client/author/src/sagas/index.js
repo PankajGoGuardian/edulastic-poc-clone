@@ -47,6 +47,7 @@ import { watcherSaga as subscriptionSaga } from "../../Subscription/ducks";
 import { importTestWatcher as importTestSaga } from "../../ImportTest/ducks";
 import itemScoreSaga from "./itemScore";
 import { watcherSaga as playlistTestBoxSaga } from "../../CurriculumSequence/components/ManageContentBlock/ducks";
+import { externalToolsSaga } from "../../ExternalTools";
 
 const authorSagas = [
   itemsSaga(),
@@ -97,7 +98,8 @@ const authorSagas = [
   subscriptionSaga(),
   importTestSaga(),
   itemScoreSaga(),
-  playlistTestBoxSaga()
+  playlistTestBoxSaga(),
+  externalToolsSaga()
 ];
 
 export default authorSagas;

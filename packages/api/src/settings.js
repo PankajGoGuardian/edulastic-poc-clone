@@ -227,6 +227,32 @@ const updateInterestedStandards = body =>
     })
     .then(result => result.data.result);
 
+const getExternalTools = ({ orgId, orgType = "district" }) =>
+  api
+    .callApi({
+      url: `${prefix}/general/${orgId}/external-tools?orgType=${orgType}`,
+      method: "get"
+    })
+    .then(result => result.data.result?.externalTools || []);
+
+const createExternalTools = ({ orgId, orgType = "district", body }) =>
+  api
+    .callApi({
+      url: `${prefix}/general/${orgId}/external-tools?orgType=${orgType}`,
+      method: "post",
+      data: body
+    })
+    .then(result => result.data.result.externalTools);
+
+const updateExternalTools = ({ orgId, orgType = "district", externalToolId, body }) =>
+  api
+    .callApi({
+      url: `${prefix}/general/${orgId}/external-tools/${externalToolId}?orgType=${orgType}`,
+      method: "put",
+      data: body
+    })
+    .then(result => result.data.result.externalTools);
+
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -252,5 +278,8 @@ export default {
   getInterestedStandards,
   saveInterestedStandards,
   updateInterestedStandards,
-  getOrgDetailsByShortNameAndOrgType
+  getOrgDetailsByShortNameAndOrgType,
+  getExternalTools,
+  createExternalTools,
+  updateExternalTools
 };

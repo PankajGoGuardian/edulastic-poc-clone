@@ -15,6 +15,8 @@ const ContentSubHeader = ({ active, history, user }) => {
       case "Buckets":
         history.push(`/${userType}/content/buckets`);
         return;
+      case "ExternalTools":
+        history.push(`/${userType}/content/tools`);
     }
   };
   return (
@@ -23,6 +25,7 @@ const ContentSubHeader = ({ active, history, user }) => {
         <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={onSubTab}>
           <StyledTabPane tab="Collections" key="Collections" />
           <StyledTabPane tab="Buckets" key="Buckets" />
+          <StyledTabPane tab="External Tools" key="ExternalTools" />
         </StyledSubMenu>
       )}
     </SubHeaderWrapper>

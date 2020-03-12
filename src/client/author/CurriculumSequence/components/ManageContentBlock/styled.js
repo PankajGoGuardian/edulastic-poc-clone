@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Checkbox } from "antd";
 import {
   white,
   smallDesktopWidth,
@@ -23,6 +22,10 @@ export const ManageContentContainer = styled.div`
 
   @media (max-width: ${smallDesktopWidth}) {
     margin: 20px 40px 40px 40px;
+  }
+
+  .ant-spin {
+    position: relative;
   }
 
   .ant-select-selection {
@@ -120,6 +123,9 @@ export const ResourceDataList = styled.div`
   height: 515px;
   margin-bottom: 20px;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -136,4 +142,13 @@ export const ResourceDataList = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+`;
+
+export const LoaderWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: default;
 `;

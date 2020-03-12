@@ -1,5 +1,6 @@
 import { createSlice } from "redux-starter-kit";
-import { takeEvery, put, call, all, select } from "redux-saga/effects";
+import { delay } from "redux-saga";
+import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
 import { testsApi } from "@edulastic/api";
 
 const sliceName = "playlistTestBox";
@@ -25,7 +26,8 @@ const slice = createSlice({
     sources: [],
     isLoading: false,
     loadedPage: 0,
-    filter: "ENTIRE_LIBRARY"
+    filter: "ENTIRE_LIBRARY",
+    searchString: null
   },
   reducers: {
     setDefaults: (state, { payload }) => {
@@ -38,7 +40,11 @@ const slice = createSlice({
     },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false;
-      state.tests.push(...payload.items);
+      if (state.loadedPage === 0) {
+        state.tests = payload.items;
+      } else {
+        state.tests.push(...payload.items);
+      }
       state.loadedPage += 1;
     },
     setFilterAction: (state, { payload }) => {
@@ -67,7 +73,11 @@ const slice = createSlice({
     },
     resetAndFetchTests: state => {
       state.isLoading = true;
+      state.loadedPage = 0;
       state.tests = [];
+    },
+    setTestSearchAction: (state, { payload }) => {
+      state.searchString = payload;
     }
   }
 });
@@ -76,9 +86,15 @@ export default slice;
 
 function* fetchTestsSaga({ payload }) {
   try {
-    const { subject, grades, loadedPage, filter } = yield select(state => state[sliceName]);
+    const { status, subject, grades, loadedPage, filter, collection } = yield select(state => state[sliceName]);
     const { items, count } = yield call(testsApi.getAll, {
-      search: { subject, grades, filter },
+      search: {
+        status,
+        subject,
+        grades,
+        filter,
+        collections: collection === "" ? [] : [collection]
+      },
       page: loadedPage + 1,
       limit: LIMIT
     });
@@ -88,9 +104,35 @@ function* fetchTestsSaga({ payload }) {
   }
 }
 
+function* fetchTestsBySearchString({ payload }) {
+  try {
+    yield delay(500);
+    yield put(slice.actions?.resetLoadedPage());
+    const { status, subject, grades, loadedPage, filter, collection, searchString } = yield select(
+      state => state[sliceName]
+    );
+    const { items, count } = yield call(testsApi.getAll, {
+      search: {
+        status,
+        subject,
+        grades,
+        filter,
+        collections: collection === "" ? [] : [collection],
+        searchString
+      },
+      page: loadedPage + 1,
+      limit: LIMIT
+    });
+    yield put(slice.actions.fetchTestsSuccess({ items, count }));
+  } catch (e) {
+    console.error("Error Occured: fetchTestsBySearchParam ", e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
-    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga)
+    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
+    yield takeLatest(slice.actions.setTestSearchAction, fetchTestsBySearchString)
   ]);
 }

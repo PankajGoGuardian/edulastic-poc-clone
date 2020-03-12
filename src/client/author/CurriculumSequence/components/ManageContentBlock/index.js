@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Dropdown, Menu } from "antd";
+import { Dropdown, Menu, Spin } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
@@ -15,7 +15,8 @@ import {
   FilterBtn,
   ActionsContainer,
   ManageModuleBtn,
-  ResourceDataList
+  ResourceDataList,
+  LoaderWrapper
 } from "./styled";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 
@@ -73,6 +74,8 @@ const observeElement = (fetchTests, tests) => {
 
 const ManageContentBlock = props => {
   const {
+    isLoading,
+    loadedPage,
     filter,
     status,
     authoredBy,
@@ -90,8 +93,9 @@ const ManageContentBlock = props => {
     setSubjectAction,
     setCollectionAction,
     setSourcesAction,
-    resetLoadedPage,
-    resetAndFetchTests
+    resetAndFetchTests,
+    searchString,
+    setTestSearchAction
   } = props;
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
@@ -108,11 +112,12 @@ const ManageContentBlock = props => {
 
   const toggleTestFilter = () => {
     if (isShowFilter) {
-      resetLoadedPage();
       resetAndFetchTests();
     }
     setShowFilter(x => !x);
   };
+
+  const onSearchChange = e => setTestSearchAction(e.target.value);
 
   const menu = (
     <Menu onClick={onchange}>
@@ -138,6 +143,7 @@ const ManageContentBlock = props => {
   if (tests.length > 10) {
     fetchCall = tests.length - 7;
   }
+
   return (
     <ManageContentContainer>
       <SearchByNavigationBar>
@@ -149,7 +155,7 @@ const ManageContentBlock = props => {
         </SearchByTab>
       </SearchByNavigationBar>
       <FlexContainer>
-        <SearchBar placeholder={`Search by ${searchBy}`} onChange={onchange} />
+        <SearchBar type="search" placeholder={`Search by ${searchBy}`} onChange={onSearchChange} value={searchString} />
         <FilterBtn onClick={toggleTestFilter} isActive={isShowFilter}>
           <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
         </FilterBtn>
@@ -189,12 +195,24 @@ const ManageContentBlock = props => {
           <br />
 
           <ResourceDataList>
-            {tests.map((test, idx) => {
-              if (idx === fetchCall) {
-                return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
-              }
-              return <ResourceItem type="tests" title={test.title} key={test._id} />;
-            })}
+            {isLoading && loadedPage === 0 ? (
+              <Spin />
+            ) : tests.length ? (
+              tests.map((test, idx) => {
+                if (idx === fetchCall) {
+                  return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
+                }
+                return <ResourceItem type="tests" title={test.title} key={test._id} />;
+              })
+            ) : (
+              <h3 style={{ textAlign: "center" }}>No Data</h3>
+            ) // TODO: update this component!
+            }
+            {isLoading && loadedPage !== 0 && (
+              <LoaderWrapper>
+                <Spin />
+              </LoaderWrapper>
+            )}
           </ResourceDataList>
         </>
       )}
@@ -214,6 +232,8 @@ const ManageContentBlock = props => {
 
 export default connect(
   state => ({
+    isLoading: state.playlistTestBox?.isLoading,
+    loadedPage: state.playlistTestBox?.loadedPage,
     filter: state.playlistTestBox?.filter,
     status: state.playlistTestBox?.status,
     authoredBy: state.playlistTestBox?.authoredBy,
@@ -221,7 +241,8 @@ export default connect(
     grades: state.playlistTestBox?.grades,
     tests: state.playlistTestBox?.tests || [],
     collection: state.playlistTestBox?.collection,
-    sources: state.playlistTestBox?.sources
+    sources: state.playlistTestBox?.sources,
+    searchString: state.playlistTestBox?.searchString
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -233,7 +254,7 @@ export default connect(
     setGradesAction: slice.actions?.setGradesAction,
     setCollectionAction: slice.actions?.setCollectionAction,
     setSourcesAction: slice.actions?.setSourcesAction,
-    resetLoadedPage: slice.actions?.resetLoadedPage,
-    resetAndFetchTests: slice.actions?.resetAndFetchTests
+    resetAndFetchTests: slice.actions?.resetAndFetchTests,
+    setTestSearchAction: slice.actions?.setTestSearchAction
   }
 )(ManageContentBlock);

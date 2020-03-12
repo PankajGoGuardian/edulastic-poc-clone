@@ -65,13 +65,13 @@ const ProceedConfirmation = ({
     <ConfirmationModal
       maskClosable={false}
       textAlign="left"
-      title="Assign Assessment"
+      title="Assign Test"
       centered
       visible={hasCommonStudents}
       footer={Footer}
       onCancel={() => toggleCommonAssignmentsConfirmation(false)}
     >
-      <Paragraph>This assessment will be assigned to {commonStudents.length} student(s) multiple times.</Paragraph>
+      <Paragraph>This Test will be assigned to {commonStudents.length} student(s) multiple times.</Paragraph>
       <Paragraph>
         <b>Do you want to continue?</b>
       </Paragraph>

@@ -39,11 +39,7 @@ import {
   changeUpdatedFlagAction
 } from "../sharedDucks/questions";
 
-import {
-  SET_ALIGNMENT_FROM_QUESTION,
-  CLEAR_ITEM_EVALUATION,
-  ADD_ITEM_EVALUATION
-} from "../src/constants/actions";
+import { SET_ALIGNMENT_FROM_QUESTION, CLEAR_ITEM_EVALUATION, ADD_ITEM_EVALUATION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import { isIncompleteQuestion, hasImproperDynamicParamsConfig } from "../questionUtils";
@@ -53,11 +49,9 @@ import {
   getRecentStandardsListSelector,
   getRecentCollectionsListSelector
 } from "../src/selectors/dictionaries";
-import {
-  updateRecentStandardsAction,
-  updateRecentCollectionsAction
-} from "../src/actions/dictionaries";
+import { updateRecentStandardsAction, updateRecentCollectionsAction } from "../src/actions/dictionaries";
 import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
+import { getTestEntitySelector } from "../AssignTest/duck";
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
@@ -90,8 +84,7 @@ export const SET_IS_GRADING_RUBRIC = "[question] set is grading rubric checkbox 
 
 // Variable
 export const CALCULATE_FORMULA = "[variable] calculate variable formulation for example value";
-export const CALCULATE_FORMULA_FAILED =
-  "[variable] calculate variable formulation for example value failed";
+export const CALCULATE_FORMULA_FAILED = "[variable] calculate variable formulation for example value failed";
 
 export const receiveQuestionByIdAction = id => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -357,12 +350,9 @@ export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTe
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
     if (isTestFlow) {
-      const questions = Object.values(
-        yield select(state => get(state, ["authorQuestions", "byId"], {}))
-      );
+      const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
       const testItem = yield select(state => get(state, ["itemDetail", "item"]));
-      const isMultipartOrPassageType =
-        testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
+      const isMultipartOrPassageType = testItem && (testItem.multipartItem || testItem.isPassageWithQuestions);
       const standardPresent = questions.some(hasStandards);
 
       // if alignment data is not present and question is not multipart or passage type ,
@@ -401,9 +391,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const isGradingCheckboxState = yield select(getIsGradingCheckboxState);
 
     if (isGradingCheckboxState && !question.rubrics) {
-      return message.error(
-        "Please associate a rubric to the question or uncheck the Grading Rubric option."
-      );
+      return message.error("Please associate a rubric to the question or uncheck the Grading Rubric option.");
     }
 
     const locationState = yield select(state => state.router.location.state);
@@ -453,18 +441,10 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
           draftData.data.questions[0].itemScore = data.itemLevelScore;
-          set(
-            draftData,
-            ["data", "questions", 0, "validation", "validResponse", "score"],
-            data.itemLevelScore
-          );
+          set(draftData, ["data", "questions", 0, "validation", "validResponse", "score"], data.itemLevelScore);
           for (const [index] of draftData.data.questions.entries()) {
             if (index > 0) {
-              set(
-                draftData,
-                ["data", "questions", index, "validation", "validResponse", "score"],
-                0
-              );
+              set(draftData, ["data", "questions", index, "validation", "validResponse", "score"], 0);
             }
           }
         } else if (draftData.data.questions[0].itemScore) {
@@ -528,11 +508,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector);
       let recentCollectionsList = yield select(getRecentCollectionsListSelector);
-      recentCollectionsList = generateRecentlyUsedCollectionsList(
-        collections,
-        itemBanks,
-        recentCollectionsList
-      );
+      recentCollectionsList = generateRecentlyUsedCollectionsList(collections, itemBanks, recentCollectionsList);
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
     if (isTestFlow) {
@@ -557,12 +533,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       }
 
       const isPublisherUser = yield select(isPublisherUserSelector);
+      const { itemGroups } = yield select(getTestEntitySelector);
 
-      if (isPublisherUser) {
+      if (isPublisherUser && (itemGroups.length > 1 || itemGroups[0].type === "AUTOSELECT")) {
         const pathname =
-          tId && tId !== "undefined"
-            ? `/author/tests/tab/addItems/id/${tId}`
-            : "/author/tests/create/addItems";
+          tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";
         yield put(
           push({
             pathname,
@@ -714,9 +689,7 @@ function* calculateFormulaSaga({ payload }) {
           newQuestion.variable.variables[key].exampleValue = result.values[key];
         });
       } else {
-        const idx = newQuestion.variable.examples.findIndex(
-          example => `example${example.key}` === result.id
-        );
+        const idx = newQuestion.variable.examples.findIndex(example => `example${example.key}` === result.id);
         Object.keys(result.values).forEach(key => {
           newQuestion.variable.examples[idx][key] = result.values[key];
         });

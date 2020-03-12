@@ -988,7 +988,9 @@ export function* updateItemSaga({ payload }) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
       const isPublisherUser = yield select(isPublisherUserSelector);
-      if (isPublisherUser) {
+      const { itemGroups } = yield select(getTestEntitySelector);
+
+      if (isPublisherUser && (itemGroups.length > 1 || itemGroups[0].type === "AUTOSELECT")) {
         const tId = payload.testId;
         const pathname =
           tId && tId !== "undefined" ? `/author/tests/tab/addItems/id/${tId}` : "/author/tests/create/addItems";

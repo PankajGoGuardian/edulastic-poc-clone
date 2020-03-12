@@ -9,7 +9,7 @@ import { QuestionAnalysisTable } from "./componenets/table/questionAnalysisTable
 import { Placeholder } from "../../../common/components/loader";
 import { EmptyData } from "../../../common/components/emptyData";
 import { StyledH3 } from "../../../common/styled";
-import { StyledCard, UpperContainer, TableContainer } from "./componenets/styled";
+import { StyledCard, UpperContainer, TableContainer, StyledP } from "./componenets/styled";
 import { getChartData, getTableData } from "./utils/transformers";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import dropDownData from "./static/json/dropDownData.json";
@@ -95,6 +95,7 @@ const QuestionAnalysis = ({ loading, isCsvDownloading, role, questionAnalysis, g
                 onResetClickCB={onResetClickCB}
                 filter={chartFilter}
               />
+              <StyledP>ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)</StyledP>
             </StyledCard>
           </UpperContainer>
           <TableContainer>

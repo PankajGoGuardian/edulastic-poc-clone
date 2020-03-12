@@ -51,3 +51,9 @@ export const TableContainer = styled.div`
     }
   }
 `;
+export const StyledP = styled.p`
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c848e;
+  text-align: center;
+`;

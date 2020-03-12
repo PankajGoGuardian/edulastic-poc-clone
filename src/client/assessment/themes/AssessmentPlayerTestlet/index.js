@@ -92,7 +92,7 @@ class AssessmentPlayerTestlet extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const { calcProvider, calcType } = settings;
-    const calculateMode = calcProvider && calcType ? `${calcType}_${calcProvider}` : false;
+    const calculateMode = calcProvider && calcType !== "NONE" ? `${calcType}_${calcProvider}` : false;
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={currentTool}>

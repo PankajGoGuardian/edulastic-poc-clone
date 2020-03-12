@@ -1,28 +1,29 @@
-import React, { useState, useEffect, Fragment } from "react";
-import PropTypes from "prop-types";
-import { Row, Col, Select } from "antd";
-import { pick as _pick, uniq as _uniq, get } from "lodash";
-import { connect } from "react-redux";
+import { removeFromLocalStorage, storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { FlexContainer } from "@edulastic/common";
+import { Col, Row, Select } from "antd";
+import { get, pick as _pick } from "lodash";
+import PropTypes from "prop-types";
+import React, { Fragment, useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { getDefaultInterests, setDefaultInterests } from "../../../author/dataUtils";
+import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
 import {
   getFormattedCurriculumsSelector,
   getRecentStandardsListSelector
 } from "../../../author/src/selectors/dictionaries";
-import BrowseButton from "./styled/BrowseButton";
-import { ItemBody } from "./styled/ItemBody";
-import selectsData from "../../../author/TestPage/components/common/selectsData";
-import CustomTreeSelect from "./CustomTreeSelect";
-import StandardsModal from "./StandardsModal";
-import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
-import { storeInLocalStorage, removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../student/Login/ducks";
 import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedGradesSelector
 } from "../../../author/src/selectors/user";
-import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
+import selectsData from "../../../author/TestPage/components/common/selectsData";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../student/Login/ducks";
+import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
+import CustomTreeSelect from "./CustomTreeSelect";
 import RecentStandardsList from "./RecentStandardsList";
+import StandardsModal from "./StandardsModal";
+import BrowseButton from "./styled/BrowseButton";
+import { ItemBody } from "./styled/ItemBody";
 
 const AlignmentRow = ({
   t,
@@ -66,12 +67,14 @@ const AlignmentRow = ({
     removeFromLocalStorage("defaultCurriculumName");
     updateDefaultCurriculum({ defaultCurriculumId: "", defaultCurriculumName: "" });
     editAlignment(alignmentIndex, { subject: val, curriculum: "" });
+    setDefaultInterests({ subject: val });
   };
 
   const setGrades = val => {
     updateDefaultGrades(val);
     storeInLocalStorage("defaultGrades", val);
     editAlignment(alignmentIndex, { grades: val });
+    setDefaultInterests({ grades: val });
   };
 
   const handleChangeStandard = (curriculum, event) => {
@@ -80,6 +83,7 @@ const AlignmentRow = ({
     storeInLocalStorage("defaultCurriculumName", curriculum);
     updateDefaultCurriculum({ defaultCurriculumId: curriculumId, defaultCurriculumName: curriculum });
     editAlignment(alignmentIndex, { curriculumId, curriculum });
+    setDefaultInterests({ curriculumId });
   };
 
   const standardsArr = standards.map(el => el.identifier);
@@ -169,9 +173,16 @@ const AlignmentRow = ({
 
   useEffect(() => {
     const { grades: alGrades, subject: alSubject, curriculum: alCurriculum, curriculumId: alCurriculumId } = alignment;
-
+    const defaultInterests = getDefaultInterests();
     if (!alCurriculumId) {
-      if (defaultSubject && defaultCurriculumId) {
+      if (defaultInterests.subject || defaultInterests.grades?.length || defaultInterests.curriculumId) {
+        editAlignment(alignmentIndex, {
+          subject: defaultInterests.subject || "",
+          curriculum: curriculums.find(item => item._id === parseInt(defaultInterests.curriculumId))?.curriculum || "",
+          curriculumId: parseInt(defaultInterests.curriculumId) || "",
+          grades: defaultInterests.grades?.length ? defaultInterests.grades : []
+        });
+      } else if (defaultSubject && defaultCurriculumId) {
         editAlignment(alignmentIndex, {
           subject: defaultSubject,
           curriculum: defaultCurriculumName,
@@ -197,6 +208,14 @@ const AlignmentRow = ({
       }
     }
   }, [qId]);
+
+  useEffect(() => {
+    return () => {
+      editAlignment(alignmentIndex, {
+        curriculumId: ""
+      });
+    };
+  }, []);
   return (
     <Fragment>
       {showModal && (

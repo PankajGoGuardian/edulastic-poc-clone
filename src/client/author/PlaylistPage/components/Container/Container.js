@@ -45,6 +45,7 @@ import Summary from "../../../TestPage/components/Summary";
 import Setting from "../Settings";
 import TestList from "../../../TestList";
 import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
+import { setDefaultInterests } from "../../../dataUtils";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -140,11 +141,13 @@ class Container extends PureComponent {
   handleChangeGrade = grades => {
     const { setData, test } = this.props;
     setData({ ...test, grades });
+    setDefaultInterests({ grades });
   };
 
   handleChangeSubject = subjects => {
     const { setData, test } = this.props;
     setData({ ...test, subjects });
+    setDefaultInterests({ subject: subjects[0] || "" });
   };
 
   handleChangeCollection = (value, options) => {

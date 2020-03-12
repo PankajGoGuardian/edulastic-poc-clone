@@ -90,7 +90,7 @@ import {
   getDefaultSubjectSelector,
   getUserFeatures
 } from "../../../src/selectors/user";
-import { getInterestedStandards } from "../../../dataUtils";
+import { getInterestedStandards, getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import CartButton from "../CartButton/cartButton";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -185,14 +185,23 @@ class TestList extends Component {
       getAllTags,
       testFilters,
       clearDictStandards,
-      history
+      history,
+      interestedSubjects,
+      interestedGrades,
+      interestedCurriculums: [firstCurriculum]
     } = this.props;
+    const {
+      subject = interestedSubjects?.[0] || "",
+      grades = interestedGrades || [],
+      curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+    } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
     const searchFilters = {
       ...testFilters,
       ...sessionFilters,
-      grades: sessionFilters?.grades?.length ? sessionFilters.grades : testFilters.grades || [],
-      subject: sessionFilters?.subject || testFilters.subject || ""
+      subject,
+      grades,
+      curriculumId: parseInt(curriculumId) || ""
     };
 
     // propagate filter from query params to the store (test.filters)
@@ -204,6 +213,7 @@ class TestList extends Component {
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)));
     }
 
+    this.updateFilterState(searchFilters, true);
     if (mode === "embedded") {
       const selectedTests = [];
       const { modules } = playlist;
@@ -228,7 +238,6 @@ class TestList extends Component {
       if (!curriculums.length) {
         getCurriculums();
       }
-      this.updateFilterState(searchFilters, true);
       const pageNumber = params.page || page;
       const limitCount = params.limit || limit;
       const queryParams = qs.stringify(pickBy({ ...searchFilters, page: pageNumber, limit: limitCount }, identity));
@@ -238,9 +247,9 @@ class TestList extends Component {
     }
 
     if (searchFilters.curriculumId) {
-      const { curriculumId, grades = [] } = searchFilters;
+      const { curriculumId, grades: curriculumGrades = [] } = searchFilters;
       clearDictStandards();
-      getCurriculumStandards(curriculumId, grades, "");
+      getCurriculumStandards(curriculumId, curriculumGrades, "");
     }
     clearCreatedItems();
     clearSelectedItems();
@@ -305,6 +314,10 @@ class TestList extends Component {
     let updatedKeys = {
       ...testFilters
     };
+
+    if (name === "grades" || name === "subject" || name === "curriculumId") {
+      setDefaultInterests({ [name]: value });
+    }
 
     if (name === "curriculumId") {
       clearDictStandards();
@@ -385,6 +398,7 @@ class TestList extends Component {
   handleClearFilter = () => {
     const { history, mode, limit, receiveTests } = this.props;
     this.updateFilterState(emptyFilters, true);
+    setDefaultInterests({ subject: "", grades: [], curriculumId: "" });
     if (mode !== "embedded") history.push(`/author/tests?filter=ENTIRE_LIBRARY&limit=${limit}&page=1`);
     receiveTests({ page: 1, limit, search: emptyFilters });
   };

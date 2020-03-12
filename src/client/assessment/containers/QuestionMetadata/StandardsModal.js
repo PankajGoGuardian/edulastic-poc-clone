@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from "react";
+import { EduButton, FlexContainer, MathFormulaDisplay, Paper } from "@edulastic/common";
+import { Checkbox, Col, Row, Spin } from "antd";
 import PropTypes from "prop-types";
-import { Button, Row, Col, Checkbox, Spin, message } from "antd";
-import { Paper, FlexContainer, MathFormulaDisplay, EduButton } from "@edulastic/common";
-import { Container } from "./styled/Container";
-import { TLOList, TLOListItem } from "./styled/TLOList";
-import { ELOList } from "./styled/ELOList";
-import PopupRowSelect from "./PopupRowSelect";
+import React, { useMemo, useState } from "react";
+import { setDefaultInterests } from "../../../author/dataUtils";
 import { ConfirmationModal as StyledModal } from "../../../author/src/components/common/ConfirmationModal";
+import PopupRowSelect from "./PopupRowSelect";
+import { Container } from "./styled/Container";
+import { ELOList } from "./styled/ELOList";
+import { TLOList, TLOListItem } from "./styled/TLOList";
 
 const StandardsModal = ({
   visible,
@@ -29,6 +30,7 @@ const StandardsModal = ({
     subject,
     grades
   });
+
   const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : "");
   useMemo(() => {
     if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id);
@@ -54,17 +56,20 @@ const StandardsModal = ({
       standard: { ...prevState.standard, curriculum: "" }
     }));
     getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
+    setDefaultInterests({ subject: val });
   };
 
   const handleChangeStandard = (curriculum, event) => {
     const id = event.key;
     setState({ ...state, standard: { id, curriculum } });
     getCurriculumStandards({ id, grades: state.grades, searchStr: "" });
+    setDefaultInterests({ curriculumId: id });
   };
 
   const handleChangeGrades = val => {
     setState({ ...state, grades: val });
     getCurriculumStandards({ id: state.standard.id, grades: val, searchStr: "" });
+    setDefaultInterests({ grades: val });
   };
 
   const handleCheckELO = c => {

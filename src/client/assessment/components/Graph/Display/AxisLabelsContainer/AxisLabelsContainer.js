@@ -23,10 +23,7 @@ import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 import Tools from "../../common/Tools";
 import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
-import {
-  getAdjustedHeightAndWidth,
-  getAdjustedV1AnnotationCoordinatesForRender
-} from "../../common/utils";
+import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
 
 const v1Dimenstions = {
@@ -402,12 +399,7 @@ class AxisLabelsContainer extends PureComponent {
       _graphData = next(graphData, __graphData => {
         if (__graphData.annotations) {
           for (const o of __graphData.annotations) {
-            const co = getAdjustedV1AnnotationCoordinatesForRender(
-              adjustedHeightWidth,
-              layout,
-              o,
-              v1Dimenstions
-            );
+            const co = getAdjustedV1AnnotationCoordinatesForRender(adjustedHeightWidth, layout, o, v1Dimenstions);
             o.position.x = co.x;
             o.position.y = co.y;
             o.size.width = co.width;
@@ -420,10 +412,7 @@ class AxisLabelsContainer extends PureComponent {
     return (
       <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
         <WithResources
-          resources={[
-            `${AppConfig.jqueryPath}/jquery.min.js`,
-            `${AppConfig.katexPath}/katex.min.js`
-          ]}
+          resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
           onLoaded={this.resourcesOnLoaded}
         >
@@ -440,10 +429,7 @@ class AxisLabelsContainer extends PureComponent {
               />
             </StyledToolsContainer>
           )}
-          <ContainerWithResponses
-            className="jsxbox-with-response-box"
-            responseBoxPosition={responseBoxPosition}
-          >
+          <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
             <div className={`jsxbox-with-response-box-response-options ${this._graphId}`}>
               {!disableResponse && (
                 <ResponseBox

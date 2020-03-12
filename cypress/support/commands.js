@@ -372,19 +372,19 @@ Cypress.Commands.add(
 
     cy.get(targetSelector).then($el => {
       const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
 
-      cy.wrap($el.get(0))
-        .trigger("dragover", {
-          dataTransfer
-        })
-        .trigger("drop", {
-          dataTransfer,
-          clientX: x + opts.offsetX,
-          clientY: y + opts.offsetY
-        })
-        .trigger("dragend", {
-          dataTransfer
-        });
+      cy.get("@target").trigger("dragover", {
+        dataTransfer
+      });
+      cy.get("@target").trigger("drop", {
+        dataTransfer,
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+      // cy.get("@target").trigger("dragend", {
+      //   dataTransfer
+      // });
     });
   }
 );

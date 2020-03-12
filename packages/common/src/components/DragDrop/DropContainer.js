@@ -31,7 +31,7 @@ const DropContainer = ({ style, drop, children, index, ...rest }) => {
   };
 
   return (
-    <div ref={dropRef} style={containerStyle} {...rest} data-cy="drop-container">
+    <div ref={dropRef} style={containerStyle} {...rest} id={`drop-container-${index}`}>
       {children}
     </div>
   );

@@ -32,7 +32,7 @@ class PreviewItemPage {
     this.getCheckAnswer()
       .click()
       .then(() => {
-        this.getAntMsg().should("contain", `score: ${expectedScore}`);
+        this.getScore().should("have.text", `Score ${expectedScore}`);
       });
 
     return this;

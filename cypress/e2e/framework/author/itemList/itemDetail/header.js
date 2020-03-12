@@ -70,13 +70,14 @@ class Header {
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
 
-  // *** ACTIONS END ***
+ // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 
-  saveAndgetId = () => {
+  saveAndgetId = (newitem = false) => {
     cy.server();
-    cy.route("PUT", "**/api/testitem/*").as("saveItem");
+    if (newitem) cy.route("POST", "**/testitem").as("saveItem");
+    else cy.route("PUT", "**/api/testitem/*").as("saveItem");
     cy.get('[data-cy="saveButton"]')
       .should("be.visible")
       .click();

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Dropdown, Menu, Select } from "antd";
+import { Dropdown, Menu } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import ResourceItem from "../ResourceItem";
-import SELECT_DATA from "../../../TestPage/components/common/selectsData";
 import slice from "./ducks";
 import {
   ManageContentContainer,
@@ -16,11 +15,9 @@ import {
   FilterBtn,
   ActionsContainer,
   ManageModuleBtn,
-  ResourceDataList,
-  FilterContainer,
-  Title,
-  StyledCheckbox
+  ResourceDataList
 } from "./styled";
+import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 
 // Static resources data
 const resourceData = [
@@ -52,10 +49,30 @@ const resourceData = [
 
 const resourceTabs = ["all", "tests", "video", "lessons"];
 
+const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
+
 const ManageContentBlock = props => {
-  const { Option } = Select;
-  const { allGrades, allSubjects } = SELECT_DATA;
-  const { grades, subject, setDefaults, fetchTests, tests } = props;
+  const {
+    filter,
+    status,
+    authoredBy,
+    grades,
+    subject,
+    collection,
+    sources,
+    setDefaults,
+    fetchTests,
+    tests,
+    setFilterAction,
+    setStatusAction,
+    setAuthoredAction,
+    setGradesAction,
+    setSubjectAction,
+    setCollectionAction,
+    setSourcesAction,
+    resetLoadedPage,
+    resetAndFetchTests
+  } = props;
 
   const [searchBy, setSearchBy] = useState("keywords");
   const [searchResourceBy, setSearchResourceBy] = useState("all");
@@ -68,6 +85,14 @@ const ManageContentBlock = props => {
 
   const onChange = () => {};
 
+  const toggleTestFilter = () => {
+    if (isShowFilter) {
+      resetLoadedPage();
+      resetAndFetchTests();
+    }
+    setShowFilter(x => !x);
+  };
+
   const menu = (
     <Menu onClick={onchange}>
       <Menu.Item key="1">Website URL</Menu.Item>
@@ -78,6 +103,15 @@ const ManageContentBlock = props => {
 
   const filteredData =
     searchResourceBy === "all" ? resourceData : resourceData.filter(x => x?.type === searchResourceBy) || [];
+
+  const onFilterChange = prop => setFilterAction(prop);
+  const onStatusChange = prop => setStatusAction(prop);
+  const onAuthoredChange = prop => setAuthoredAction(prop);
+  const onSubjectChange = prop => setSubjectAction(prop);
+  const onGradesChange = prop => setGradesAction(prop);
+  const onCollectionChange = prop => setCollectionAction(prop);
+  const onSourceChange = ({ checked, value }) =>
+    setSourcesAction(checked ? sources?.concat(value) : sources?.filter(x => x !== value) || []);
 
   return (
     <ManageContentContainer>
@@ -91,48 +125,31 @@ const ManageContentBlock = props => {
       </SearchByNavigationBar>
       <FlexContainer>
         <SearchBar placeholder={`Search by ${searchBy}`} onChange={onchange} />
-        <FilterBtn onClick={() => setShowFilter(x => !x)} isActive={isShowFilter}>
+        <FilterBtn onClick={toggleTestFilter} isActive={isShowFilter}>
           <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
         </FilterBtn>
       </FlexContainer>
       <br />
       {isShowFilter ? (
-        <FilterContainer>
-          <Title>grade</Title>
-          <Select
-            mode="multiple"
-            style={{ width: 315, minHeight: "40px", lineHeight: 40 }}
-            placeholder="Select Grades"
-            value={grades}
-            onChange={onchange}
-          >
-            {allGrades?.map(({ text, value }) => <Option key={value}>{text}</Option>)}
-          </Select>
-
-          <br />
-          <Title>subject</Title>
-          <Select
-            placeholder="Select a Subject"
-            style={{ width: 315, height: 40, lineHeight: 40 }}
-            value={subject}
-            onChange={onchange}
-          >
-            {allSubjects.map(({ text, value }) => (
-              <Option value={value}>{text}</Option>
-            ))}
-          </Select>
-
-          <br />
-          <br />
-          <Title>source</Title>
-          <FlexContainer flexDirection="column" alignItems="start">
-            <StyledCheckbox onChange={onChange}>Everything</StyledCheckbox>
-            <StyledCheckbox onChange={onChange}>LearnZillion</StyledCheckbox>
-            <StyledCheckbox onChange={onChange}>Khan Academy</StyledCheckbox>
-            <StyledCheckbox onChange={onChange}>CK12</StyledCheckbox>
-            <StyledCheckbox onChange={onChange}>GRADE</StyledCheckbox>
-          </FlexContainer>
-        </FilterContainer>
+        <PlaylistTestBoxFilter
+          authoredList={[]} /// Send authors data
+          collectionsList={[]} /// send collections data
+          sourceList={sourceList}
+          filter={filter}
+          status={status}
+          authoredBy={authoredBy}
+          grades={grades}
+          subject={subject}
+          collection={collection}
+          sources={sources}
+          onFilterChange={onFilterChange}
+          onStatusChange={onStatusChange}
+          onAuthoredChange={onAuthoredChange}
+          onGradesChange={onGradesChange}
+          onSubjectChange={onSubjectChange}
+          onCollectionChange={onCollectionChange}
+          onSourceChange={onSourceChange}
+        />
       ) : (
         <>
           {false && (
@@ -169,12 +186,26 @@ const ManageContentBlock = props => {
 
 export default connect(
   state => ({
+    filter: state.playlistTestBox?.filter,
+    status: state.playlistTestBox?.status,
+    authoredBy: state.playlistTestBox?.authoredBy,
     subject: state.playlistTestBox?.subject,
     grades: state.playlistTestBox?.grades,
-    tests: state.playlistTestBox?.tests || []
+    tests: state.playlistTestBox?.tests || [],
+    collection: state.playlistTestBox?.collection,
+    sources: state.playlistTestBox?.sources
   }),
   {
+    setFilterAction: slice.actions?.setFilterAction,
     setDefaults: slice.actions?.setDefaults,
-    fetchTests: slice.actions?.fetchTests
+    fetchTests: slice.actions?.fetchTests,
+    setStatusAction: slice.actions?.setStatusAction,
+    setAuthoredAction: slice.actions?.setAuthoredAction,
+    setSubjectAction: slice.actions?.setSubjectAction,
+    setGradesAction: slice.actions?.setGradesAction,
+    setCollectionAction: slice.actions?.setCollectionAction,
+    setSourcesAction: slice.actions?.setSourcesAction,
+    resetLoadedPage: slice.actions?.resetLoadedPage,
+    resetAndFetchTests: slice.actions?.resetAndFetchTests
   }
 )(ManageContentBlock);

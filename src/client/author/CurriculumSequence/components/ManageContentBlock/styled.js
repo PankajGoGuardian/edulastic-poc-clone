@@ -137,24 +137,3 @@ export const ResourceDataList = styled.div`
     background: #555;
   }
 `;
-
-export const FilterContainer = styled.div`
-  height: 555px;
-  margin-bottom: 20px;
-`;
-
-export const Title = styled.div`
-  text-transform: uppercase;
-  color: ${title};
-  font-size: 12px;
-  font-weight: 700;
-  margin: 10px 0px;
-`;
-
-export const StyledCheckbox = styled(Checkbox)`
-  margin: 8px 0 !important;
-  color: ${title};
-  font-size: 12px;
-  font-weight: semi-bold;
-  text-transform: uppercase;
-`;

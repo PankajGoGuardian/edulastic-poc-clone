@@ -122,7 +122,6 @@ export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST_BY_DISTRICT_ID);
 export const fetchClassListSuccess = createAction(FETCH_CLASS_LIST_SUCCESS);
-updateDifferentiationStu;
 export const fetchStudentListAction = createAction(FETCH_STUDENT_LIST_BY_GROUP_ID);
 export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
 export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);

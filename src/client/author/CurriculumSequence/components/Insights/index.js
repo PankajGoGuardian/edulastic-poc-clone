@@ -66,7 +66,7 @@ const Insights = ({
 
   // merge trendData with studInfo
   const studInfoMap = getMergedTrendMap(playlistInsights.studInfo, trendData);
-  const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, []);
+  const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, [], studInfoMap);
   const curatedMetrics = getCuratedMetrics(filteredMetrics, studInfoMap);
 
   return loading || loadingProgress ? (

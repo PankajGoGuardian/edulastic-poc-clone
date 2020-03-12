@@ -36,7 +36,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
   }, [studInfo, trendData]);
 };
 
-export const getFilteredMetrics = (metricInfo = [], standards = []) => {
+export const getFilteredMetrics = (metricInfo = [], standards = [], studInfoMap = {}) => {
   const groupedData = groupBy(metricInfo, "studentId");
 
   const filteredData = Object.keys(groupedData)
@@ -73,7 +73,9 @@ export const getFilteredMetrics = (metricInfo = [], standards = []) => {
       }
       return groupedData[sId];
     })
-    .filter(item => item);
+    .filter(item => item && studInfoMap[item.studentId]);
+  // TODO: Remove the studInfoMap param
+  // & the second check in the filter above if the data is consistent in metricInfo & studInfo
 
   return filteredData;
 };

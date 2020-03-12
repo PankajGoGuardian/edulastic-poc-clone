@@ -38,7 +38,7 @@ const slice = createSlice({
     },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false;
-      state.tests = payload.items;
+      state.tests.push(...payload.items);
       state.loadedPage += 1;
     },
     setFilterAction: (state, { payload }) => {

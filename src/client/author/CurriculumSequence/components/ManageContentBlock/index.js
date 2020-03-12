@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Dropdown, Menu } from "antd";
@@ -51,6 +51,26 @@ const resourceTabs = ["all", "tests", "video", "lessons"];
 
 const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
 
+const observeElement = (fetchTests, tests) => {
+  const observer = useRef();
+  return useCallback(
+    node => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          fetchTests();
+        }
+      });
+      if (node) {
+        observer.current.observe(node);
+      }
+    },
+    [tests]
+  );
+};
+
 const ManageContentBlock = props => {
   const {
     filter,
@@ -73,6 +93,7 @@ const ManageContentBlock = props => {
     resetLoadedPage,
     resetAndFetchTests
   } = props;
+  const lastResourceItemRef = observeElement(fetchTests, tests);
 
   const [searchBy, setSearchBy] = useState("keywords");
   const [searchResourceBy, setSearchResourceBy] = useState("all");
@@ -112,7 +133,11 @@ const ManageContentBlock = props => {
   const onCollectionChange = prop => setCollectionAction(prop);
   const onSourceChange = ({ checked, value }) =>
     setSourcesAction(checked ? sources?.concat(value) : sources?.filter(x => x !== value) || []);
+  let fetchCall;
 
+  if (tests.length > 10) {
+    fetchCall = tests.length - 7;
+  }
   return (
     <ManageContentContainer>
       <SearchByNavigationBar>
@@ -162,14 +187,17 @@ const ManageContentBlock = props => {
             </SearchByNavigationBar>
           )}
           <br />
+
           <ResourceDataList>
-            {tests.map(test => (
-              <ResourceItem type="tests" title={test.title} key={test._id} />
-            ))}
+            {tests.map((test, idx) => {
+              if (idx === fetchCall) {
+                return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
+              }
+              return <ResourceItem type="tests" title={test.title} key={test._id} />;
+            })}
           </ResourceDataList>
         </>
       )}
-
       <ActionsContainer>
         <Dropdown overlay={menu} placement="topCenter">
           <ManageModuleBtn width="190px">

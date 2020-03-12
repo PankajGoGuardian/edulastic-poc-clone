@@ -8,11 +8,11 @@ import { fadedGreen, fadedRed, lightGrey7 } from "@edulastic/colors";
 import { getQuadsData } from "../transformers";
 
 // custom label shape for scatter plot
-const ScatterLabel = ({ cx, cy, name, trend, fill }) => {
+const ScatterLabel = ({ cx, cy, name, trendAngle, fill }) => {
   return (
     <g>
       <text x={cx} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={fill}>
-        {name} - {trend}
+        {name} ({trendAngle})
       </text>
       {/* TODO: SVG Arrow which takes {trend} and {color} as input */}
     </g>

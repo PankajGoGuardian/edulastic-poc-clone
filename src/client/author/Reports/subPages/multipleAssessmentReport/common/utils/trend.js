@@ -155,7 +155,8 @@ export const calculateTrend = groupedData => {
       trend = "No Trend";
       return {
         ...d,
-        trend
+        trend,
+        slope
       };
     }
 
@@ -195,7 +196,8 @@ export const calculateTrend = groupedData => {
 
     return {
       ...d,
-      trend
+      trend,
+      slope
     };
   });
 

@@ -6,9 +6,7 @@ import { groupBy, isEqual, uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton, FlexContainer, MainHeader, ProgressBar, HeaderTabs } from "@edulastic/common";
-import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
-import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader";
+import { EduButton, FlexContainer, MainHeader, ProgressBar } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,

@@ -4,7 +4,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import ScoringBlock from "../../../../framework/author/itemList/questionType/common/scoringBlock";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
-
+import { queColor } from "../../../../framework/constants/questionTypes";
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Text" type question`, () => {
   const queData = {
     group: "Fill in the Blanks",
@@ -64,16 +64,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
+          preview.checkScore("1/1");
 
-          question.getResponseOnPreview().should("have.class", "right");
+          question.getResponseOnPreview(0).should("have.css", "background-color", queColor.LIGHT_GREEN);
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get(".right .wrong").should("have.length", 0);
+          question.getResponseBoxByIndex(0).should("have.css", "background-color", queColor.WHITE);
         });
 
       // enter wrong ans
@@ -83,19 +83,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
-
-          question
-            .getResponseOnPreview()
-            .should("have.class", "wrong")
-            .and("not.have.class", "right");
+          preview.checkScore("0/1");
+          question.getResponseOnPreview(0).should("have.css", "background-color", queColor.LIGHT_RED);
         });
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get(".right .wrong").should("have.length", 0);
+          question.getResponseBoxByIndex(0).should("have.css", "background-color", queColor.WHITE);
         });
 
       // show ans
@@ -165,7 +161,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 4/8");
+          preview.checkScore("4/8");
         });
     });
 
@@ -192,10 +188,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
  */
     it(" > test score with partial match and penalty", () => {
       question.clickOnAdvancedOptions();
-
-      scoringBlock.getPanalty().type("{selectall}2");
-
       scoringBlock.selectScoringType(SCORING_TYPE.PARTIAL);
+      scoringBlock.getPanalty().type("{selectall}2");
 
       preview = question.header.preview();
 
@@ -206,7 +200,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .getCheckAnswer()
         .click()
         .then(() => {
-          preview.getAntMsg().should("contain", "score: 2/8");
+          preview.checkScore("2/8");
         });
     });
 

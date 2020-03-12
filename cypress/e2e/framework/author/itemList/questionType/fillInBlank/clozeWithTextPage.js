@@ -15,40 +15,34 @@ class ClozeWithTextPage {
   getQuestionEditor = () => cy.get(".fr-element").eq(0);
 
   addAlternate() {
-    cy.get('[data-cy="tabs"]')
-      .find("button")
-      .click();
+    cy.get('[data-cy="alternative"]').click();
 
     return this;
   }
 
-  getPoints = () =>
-    cy
-      .get('[data-cy="tabs"]')
-      .next()
-      .find("input")
-      .eq(0);
+  getPoints = () => cy.get("#cloze-with-text-points");
 
   getAlternates = () => cy.get('[data-cy="tabs"]').contains("span", "Alternate");
 
   // correct ans response box
   getResponseBoxByIndex = index =>
     cy
-      .get('[data-cy="styled-wrapped-component"]')
-      .next()
-      .find("input")
-      .eq(index);
+      .get('[class^="ClozeTextInput"]')
+      .eq(index)
+      .find("input");
 
   // advance options
-  clickOnAdvancedOptions() {
-    cy.contains("ADVANCED OPTIONS")
-      .should("be.visible")
-      .click();
-    return this;
-  }
+  clickOnAdvancedOptions = () =>
+    cy.get('[class^="AdvancedOptionsLink"]').then(ele => {
+      if (ele.siblings().length === 3) cy.wrap(ele).click();
+    });
 
   // on preview
-  getResponseOnPreview = () => cy.get(".response-btn").should("be.visible");
+  getResponseOnPreview = index =>
+    cy
+      .get('[class^="AnswerBox"]')
+      .eq(index)
+      .should("be.visible");
 
   getShowAnsBoxOnPreview = () => cy.get(".correctanswer-box").should("be.visible");
 

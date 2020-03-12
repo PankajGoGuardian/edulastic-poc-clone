@@ -63,7 +63,8 @@ export const queColor = {
   LIGHT_GREEN: "rgb(211, 254, 166)",
   LIGHT_RED: "rgb(252, 224, 232)",
   GREEN_1: "rgb(0, 173, 80)",
-  GREY: "rgb(74, 180, 149)"
+  GREY: "rgb(74, 180, 149)",
+  WHITE: "rgb(255, 255, 255)"
 };
 
 export const questionGroup = {

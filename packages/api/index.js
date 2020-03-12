@@ -50,3 +50,4 @@ export { default as studentPlaylistApi } from "./src/studentPlaylist";
 export { default as contentImportApi } from "./src/contentImport";
 export { default as extractContent } from "./src/extractContent";
 export { default as canvasApi } from "./src/canvas";
+export { default as recommendationsApi } from "./src/recommendation";

@@ -6,7 +6,7 @@ import { flatten, cloneDeep, isEmpty, omit, uniqBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
-import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi } from "@edulastic/api";
+import { curriculumSequencesApi, assignmentApi, userContextApi, groupApi, recommendationsApi } from "@edulastic/api";
 import produce from "immer";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
 import { getUserSelector, getUserId } from "../src/selectors/user";
@@ -87,6 +87,12 @@ export const FETCH_PLAYLIST_INSIGHTS = "[playlist insights] fetch playlist insig
 export const FETCH_PLAYLIST_INSIGHTS_SUCCESS = "[playlist insights] fetch playlist insights success";
 export const FETCH_PLAYLIST_INSIGHTS_ERROR = "[playlist insights] fetch playlist insights error";
 
+export const FETCH_DIFFERENTIATION_STUDENT_LIST = "[differentiation] fetch student list";
+export const UPDATE_DIFFERENTIATION_STUDENT_LIST = "[differentiation] student list update";
+export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiation work";
+export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
+export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -116,11 +122,18 @@ export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST_BY_DISTRICT_ID);
 export const fetchClassListSuccess = createAction(FETCH_CLASS_LIST_SUCCESS);
+updateDifferentiationStu;
 export const fetchStudentListAction = createAction(FETCH_STUDENT_LIST_BY_GROUP_ID);
 export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
 export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);
 export const fetchPlaylistDroppedAccessList = createAction(FETCH_PLAYLIST_ACCESS_LIST);
 export const updateDroppedAccessList = createAction(UPDATE_DROPPED_ACCESS_LIST);
+
+export const fetchDifferentiationStudentListAction = createAction(FETCH_DIFFERENTIATION_STUDENT_LIST);
+export const updateDifferentiationStudentListAction = createAction(UPDATE_DIFFERENTIATION_STUDENT_LIST);
+export const fetchDifferentiationWorkAction = createAction(FETCH_DIFFERENTIATION_WORK);
+export const setDifferentiationWorkAction = createAction(SET_DIFFERENTIATION_WORK);
+export const addRecommendationsAction = createAction(ADD_RECOMMENDATIONS_ACTIONS);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -144,6 +157,8 @@ export const onErrorPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHT
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
+
+export const getDifferentiationStudentListSelector = state => state.curriculumSequence.differentiationStudentList;
 
 const getPublisher = state => {
   if (!state.curriculumSequence) return "";
@@ -743,6 +758,36 @@ function* fetchPlaylistInsightsSaga({ payload }) {
   }
 }
 
+function* fetchDifferentiationStudentListSaga({ payload }) {
+  try {
+    const result = yield call(assignmentApi.getDifferentiationStudentList, payload);
+    console.log({ result });
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, err.data.message);
+  }
+}
+
+function* fetchDifferentiationWorkSaga({ payload }) {
+  try {
+    const result = yield call(recommendationsApi.getDifferentiationWork, payload);
+    console.log("diff work ", result);
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, err.data.message);
+  }
+}
+
+function* addRecommendationsSaga({ payload }) {
+  try {
+    const response = yield call(recommendationsApi.acceptRecommendations, payload);
+    console.log("add recommendations resp", response);
+  } catch (err) {
+    console.error(err);
+    yield call(message.error, err.data.message);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -770,7 +815,10 @@ export function* watcherSaga() {
     yield takeLatest(DROP_PLAYLIST_ACTION, dropPlaylist),
     yield takeLatest(FETCH_PLAYLIST_ACCESS_LIST, fetchPlaylistAccessList),
     yield takeLatest(FETCH_PLAYLIST_METRICS, fetchPlaylistMetricsSaga),
-    yield takeLatest(FETCH_PLAYLIST_INSIGHTS, fetchPlaylistInsightsSaga)
+    yield takeLatest(FETCH_PLAYLIST_INSIGHTS, fetchPlaylistInsightsSaga),
+    yield takeLatest(FETCH_DIFFERENTIATION_STUDENT_LIST, fetchDifferentiationStudentListSaga),
+    yield takeLatest(FETCH_DIFFERENTIATION_WORK, fetchDifferentiationWorkSaga),
+    yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga)
   ]);
 }
 
@@ -882,7 +930,9 @@ const initialState = {
   classListFetching: false,
   studentListFetching: false,
   playlistInsights: {},
-  loadingInsights: true
+  loadingInsights: true,
+  differentiationStudentList: [],
+  differentiationWork: {}
 };
 
 /**
@@ -1338,6 +1388,10 @@ function onErrorPlaylistInsights(state, { payload }) {
   };
 }
 
+function updateDifferentiationStudentList(state, { payload }) {
+  state.differentiationStudentList = payload;
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1365,5 +1419,6 @@ export default createReducer(initialState, {
   [UPDATE_DROPPED_ACCESS_LIST]: updatePlaylistDroppedAccessList,
   [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList,
   [FETCH_PLAYLIST_INSIGHTS_SUCCESS]: onSuccessPlaylistInsights,
-  [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights
+  [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights,
+  [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList
 });

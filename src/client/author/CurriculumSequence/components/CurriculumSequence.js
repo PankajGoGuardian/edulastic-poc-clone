@@ -55,6 +55,7 @@ import SummaryPieChart from "./SummaryPieChart";
 import PlaylistPageNav from "./PlaylistPageNav";
 import ManageContentBlock from "./ManageContentBlock";
 import StudentPlayListHeader from "../../../student/sharedComponents/Header/PlayListHeader";
+import Differentiation from "./Differentiation";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -800,7 +801,7 @@ class CurriculumSequence extends Component {
 
           {currentTab === "insights" && <Insights playlistId={destinationCurriculumSequence._id} />}
 
-          {currentTab === "differentiation" && <h1>Add Your {currentTab} component here</h1>}
+          {currentTab === "differentiation" && <Differentiation />}
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />

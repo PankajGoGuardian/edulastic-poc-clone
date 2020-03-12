@@ -11,6 +11,11 @@ export const getEntitiesSelector = createSelector(
   state => state.entities
 );
 
+export const getAssignmentsSelector = createSelector(
+  getEntitiesSelector,
+  state => state.assignments || []
+);
+
 export const getAssignmentsSummary = createSelector(
   stateSelector,
   state => state.summaryEntities

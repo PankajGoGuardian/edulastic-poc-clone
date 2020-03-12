@@ -137,6 +137,14 @@ const updateClassSettings = ({ assignmentId, classId, settings }) =>
     })
     .then(result => result.data);
 
+const getDifferentiationStudentList = ({ assignmentId, groupId }) =>
+  api
+    .callApi({
+      url: `${prefix}/${assignmentId}/mastery?groupId=${groupId}`,
+      method: "get"
+    })
+    .then(result => result.data);
+
 export default {
   create,
   update,
@@ -152,5 +160,6 @@ export default {
   duplicateAssignment,
   redirect,
   validateAssignmentPassword,
-  updateClassSettings
+  updateClassSettings,
+  getDifferentiationStudentList
 };

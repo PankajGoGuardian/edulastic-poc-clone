@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
 import produce from "immer";
@@ -12,6 +12,7 @@ import { Label } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
+import Cross from "./Cross";
 
 const Option = props => {
   const {
@@ -84,10 +85,6 @@ const Option = props => {
     }
   }
 
-  useEffect(() => {
-    toggleHover(isCrossAction);
-  }, [isCrossAction]);
-
   const onChangeHandler = () => {
     if (setCrossAction) {
       setCrossAction(
@@ -154,15 +151,9 @@ const Option = props => {
   const renderCheckbox = () => (
     <StyledOptionsContainer uiStyleType={uiStyle.type} isSelected={isSelected} multipleResponses={multipleResponses}>
       {uiStyle.type !== "radioBelow" && container}
-      <MultiChoiceContent
-        fontSize={fontSize}
-        smallSize={smallSize}
-        isCrossAction={isCrossAction}
-        hovered={hovered}
-        uiStyleType={uiStyle.type}
-        charCount={(item.label || "").length}
-      >
+      <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} uiStyleType={uiStyle.type}>
         <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: item.label }} />
+        {(isCrossAction || hovered) && <Cross hovered={hovered} isCrossAction={isCrossAction} />}
       </MultiChoiceContent>
       {uiStyle.type === "radioBelow" && container}
     </StyledOptionsContainer>

@@ -25,7 +25,7 @@ const CodeStub = ({ fillSections, cleanSections, item, setQuestionData, t }) => 
       <Subtitle
         id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeStub")}`)}
         textStyles={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        showIcon={false}
+        showIcon
       >
         {t("component.coding.codeStub")}
         <CustomStyleBtn bg={themeColor} height="30px" width="auto" margin="0px" onClick={handleAddNewTestCase}>

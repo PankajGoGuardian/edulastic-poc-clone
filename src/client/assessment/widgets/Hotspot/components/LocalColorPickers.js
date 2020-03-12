@@ -12,21 +12,11 @@ import { getAlpha } from "../helpers";
 
 const { Option } = Select;
 
-const LocalColorPickers = ({
-  t,
-  attributes,
-  onLocalColorChange,
-  areaIndexes,
-  handleSelectChange,
-  theme,
-  item
-}) => (
+const LocalColorPickers = ({ t, attributes, onLocalColorChange, areaIndexes, handleSelectChange, theme, item }) => (
   <div>
     {areaIndexes.length > 0 && (
       <Fragment>
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areaSelectLabel")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.areaSelectLabel")}`)}>
           {t("component.hotspot.areaSelectLabel")}
         </Subtitle>
         <SelectInputStyled
@@ -45,6 +35,7 @@ const LocalColorPickers = ({
     <Row gutter={24}>
       <Col span={12}>
         <Subtitle
+          id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.fillColorTitle")}`)}
           fontSize={theme.widgets.hotspot.subtitleFontSize}
           color={theme.widgets.hotspot.subtitleColor}
           margin="0px 0px 20px"

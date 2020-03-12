@@ -721,7 +721,7 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <AnnotationSettings annotation={annotation} setAnnotation={setAnnotation} />
+          <AnnotationSettings title={graphData?.title} annotation={annotation} setAnnotation={setAnnotation} />
         </Question>
 
         <Question
@@ -731,7 +731,13 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.background_options.background_image")}</Subtitle>
+          <Subtitle
+            id={getFormattedAttrId(
+              `${graphData?.title}-${t("component.graphing.background_options.background_image")}`
+            )}
+          >
+            {t("component.graphing.background_options.background_image")}
+          </Subtitle>
           <Row gutter={24}>
             <Col md={24}>
               <Label>{t("component.graphing.background_options.image_url")}</Label>
@@ -821,7 +827,9 @@ class QuadrantsMoreOptions extends Component {
           deskHeight={graphData.uiStyle.layoutHeight}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.background_shapes")}</Subtitle>
+          <Subtitle id={getFormattedAttrId(`${graphData?.title}-${t("component.graphing.background_shapes")}`)}>
+            {t("component.graphing.background_shapes")}
+          </Subtitle>
           <Row>
             <Col md={24}>
               {advancedAreOpen && (

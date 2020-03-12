@@ -772,7 +772,10 @@ class Authoring extends Component {
             <FlexContainer justifyContent="flex-start">
               {item.imageUrl && (
                 <UploadButton {...uploadProps} showUploadList={false}>
-                  <CustomStyleBtn margin="0px 15px 0px 0px">
+                  <CustomStyleBtn
+                    margin="0px 15px 0px 0px"
+                    id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.updateImageButtonText")}`)}
+                  >
                     {t("component.cloze.imageText.updateImageButtonText")}
                   </CustomStyleBtn>
                 </UploadButton>

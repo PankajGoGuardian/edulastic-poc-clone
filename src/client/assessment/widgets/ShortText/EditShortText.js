@@ -92,6 +92,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
 
   const renderOptions = () => (
     <OptionsList
+      title={item.title}
       points={
         correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }

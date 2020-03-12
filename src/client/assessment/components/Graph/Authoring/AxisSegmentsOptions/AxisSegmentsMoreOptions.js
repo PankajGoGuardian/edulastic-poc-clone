@@ -381,7 +381,7 @@ class AxisSegmentsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <SegmentsToolsSettings onChange={setControls} toolbar={toolbar} />
+          <SegmentsToolsSettings title={graphData?.title} onChange={setControls} toolbar={toolbar} />
         </Question>
 
         <Question

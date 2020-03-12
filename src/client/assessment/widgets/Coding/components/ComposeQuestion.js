@@ -31,7 +31,7 @@ const ComposeQuestion = ({ t, item, toolbarId, fillSections, cleanSections, font
       })
     );
   };
-
+  console.log(item.title);
   return (
     <Question
       dataCy="questiontext"
@@ -44,7 +44,7 @@ const ComposeQuestion = ({ t, item, toolbarId, fillSections, cleanSections, font
       <Subtitle
         id={getFormattedAttrId(`${item?.title}-${t("component.coding.composeQuestion")}`)}
         textStyles={{ margin: "0" }}
-        showIcon={false}
+        showIcon
       >
         {t("component.coding.composeQuestion")}
       </Subtitle>

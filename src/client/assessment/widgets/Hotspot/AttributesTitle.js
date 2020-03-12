@@ -152,6 +152,7 @@ class AttributesTitle extends Component {
           <Row gutter={24}>
             <Col span={12}>
               <Subtitle
+                id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.fillColorTitle")}`)}
                 fontSize={theme.widgets.hotspot.subtitleFontSize}
                 color={theme.widgets.hotspot.subtitleColor}
                 margin="0px 0px 20px"
@@ -167,6 +168,7 @@ class AttributesTitle extends Component {
             </Col>
             <Col span={12}>
               <Subtitle
+                id={getFormattedAttrId(`${item?.title}-${t("component.hotspot.outlineColorTitle")}`)}
                 fontSize={theme.widgets.hotspot.subtitleFontSize}
                 color={theme.widgets.hotspot.subtitleColor}
                 margin="0px 0px 20px"

@@ -50,7 +50,7 @@ const TestCases = ({ setQuestionData, fillSections, cleanSections, item, t }) =>
       <Subtitle
         id={getFormattedAttrId(`${item?.title}-${t("component.coding.testCases.title")}`)}
         textStyles={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-        showIcon={false}
+        showIcon
       >
         {t("component.coding.testCases.title")}
         <CustomStyleBtn bg={themeColor} height="30px" width="auto" margin="0px" onClick={handleAddNewTestCase}>

@@ -34,7 +34,7 @@ export default WrappedComponent => {
             />
           </CorrectAnswerHeader>
         )}
-        <WrappedComponent {...props} />
+        <WrappedComponent {...props} title={title} />
       </React.Fragment>
     );
   };

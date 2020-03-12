@@ -52,7 +52,7 @@ const LanguageSection = ({ item, setQuestionData, fillSections, cleanSections, t
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.languageSection")}`)} showIcon={false}>
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.languageSection")}`)} showIcon>
         {t("component.coding.languageSection")}
       </Subtitle>
       {languages.map(renderRow)}

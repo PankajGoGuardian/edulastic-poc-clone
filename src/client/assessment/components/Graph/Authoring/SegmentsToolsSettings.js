@@ -10,6 +10,7 @@ import { SelectWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
 import { SelectInputStyled } from "../../../styled/InputStyles";
 import { CustomStyleBtn } from "../../../styled/ButtonStyles";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class SegmentsToolsSettings extends Component {
   controls = [
@@ -111,11 +112,11 @@ class SegmentsToolsSettings extends Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, title } = this.props;
 
     return (
       <Fragment>
-        <Subtitle>Toolbar</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${title}-Toolbar`)}>Toolbar</Subtitle>
         <Row gutter={24}>{this.renderSingleToolsInDefaultGroup()}</Row>
       </Fragment>
     );

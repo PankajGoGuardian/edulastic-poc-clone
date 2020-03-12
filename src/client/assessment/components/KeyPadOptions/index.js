@@ -17,6 +17,7 @@ import { Label } from "../../styled/WidgetOptions/Label";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { SelectInputStyled, TextInputStyled } from "../../styled/InputStyles";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 const defaultNumberPad = [
   "1",
@@ -136,7 +137,9 @@ class KeyPadOptions extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{t("component.options.keypad")}</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.options.keypad")}`)}>
+          {t("component.options.keypad")}
+        </Subtitle>
 
         <Row gutter={24}>
           <Col span={12}>

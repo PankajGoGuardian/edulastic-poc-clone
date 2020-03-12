@@ -16,7 +16,7 @@ const QuestionSolution = ({ fillSections, cleanSections, item, setQuestionData, 
     fillSections={fillSections}
     cleanSections={cleanSections}
   >
-    <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeSolution")}`)} showIcon={false}>
+    <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeSolution")}`)} showIcon>
       {t("component.coding.codeSolution")}
     </Subtitle>
     <Row>

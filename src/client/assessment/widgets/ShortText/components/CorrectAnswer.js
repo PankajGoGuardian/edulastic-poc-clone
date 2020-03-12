@@ -10,11 +10,11 @@ import { withNamespaces } from "@edulastic/localization";
 import { Subtitle } from "../../../styled/Subtitle";
 import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
 
-const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme, item }) => (
+const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme, title }) => (
   <Row gutter={64}>
     <Col span={12}>
       <Subtitle
-        id={getFormattedAttrId(`${item?.title}-${t("component.shortText.selectLabel")}`)}
+        id={getFormattedAttrId(`${title}-${t("component.shortText.selectLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
       >
@@ -35,7 +35,7 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
     </Col>
     <Col span={12}>
       <Subtitle
-        id={getFormattedAttrId(`${item?.title}-${t("component.shortText.inputLabel")}`)}
+        id={getFormattedAttrId(`${title}-${t("component.shortText.inputLabel")}`)}
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}
       >

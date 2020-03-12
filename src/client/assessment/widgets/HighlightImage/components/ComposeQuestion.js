@@ -9,13 +9,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import {
-  Image as Img,
-  uploadToS3,
-  beforeUpload,
-  FlexContainer,
-  EduButton
-} from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload, FlexContainer, EduButton } from "@edulastic/common";
 import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
@@ -64,15 +58,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const {
-      item,
-      setQuestionData,
-      loading,
-      setLoading,
-      t,
-      fillSections,
-      cleanSections
-    } = this.props;
+    const { item, setQuestionData, loading, setLoading, t, fillSections, cleanSections } = this.props;
     const { image } = item;
     const { maxWidth, maxHeight } = canvasDimensions;
 
@@ -203,9 +189,7 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(`${item?.title}-${t("component.highlightImage.composeQuestion")}`)}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.highlightImage.composeQuestion")}`)}>
           {t("component.highlightImage.composeQuestion")}
         </Subtitle>
 
@@ -257,19 +241,16 @@ class ComposeQuestion extends Component {
             {thumb}
             <div style={{ marginRight: "auto" }}>
               <UpdateImageButton {...uploadProps}>
-                <CustomStyleBtn>
+                <CustomStyleBtn
+                  id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.updateImageButtonText")}`)}
+                >
                   {t("component.cloze.imageText.updateImageButtonText")}{" "}
                 </CustomStyleBtn>
               </UpdateImageButton>
             </div>
           </FlexContainer>
         ) : (
-          <Dropzone
-            onDrop={onDrop}
-            className="dropzone"
-            activeClassName="active-dropzone"
-            multiple={false}
-          >
+          <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
             {({ getRootProps, getInputProps, isDragActive }) => (
               <div
                 id={getFormattedAttrId(`${item?.title}-dropzone-image-container`)}

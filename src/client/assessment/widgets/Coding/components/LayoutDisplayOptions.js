@@ -29,10 +29,7 @@ const LayoutDisplayOptions = ({ fillSections, cleanSections, item, setQuestionDa
       cleanSections={cleanSections}
       sectionId="codinglayouts"
     >
-      <Subtitle
-        id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeDisplayOptions.title")}`)}
-        showIcon={false}
-      >
+      <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.coding.codeDisplayOptions.title")}`)} showIcon>
         {t("component.coding.codeDisplayOptions.title")}
       </Subtitle>
 

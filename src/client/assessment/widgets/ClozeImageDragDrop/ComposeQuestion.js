@@ -234,9 +234,7 @@ class ComposeQuestion extends Component {
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
-      message.success(
-        `${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`
-      );
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
@@ -270,12 +268,8 @@ class ComposeQuestion extends Component {
 
     if (isUndefined(imageOriginalWidth) || isUndefined(imageOriginalHeight)) return;
 
-    let newWidth =
-      prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
-    let newHeight =
-      prop !== "width" && value > 0
-        ? value
-        : imageHeight || Math.min(imageOriginalHeight, maxHeight);
+    let newWidth = prop === "width" && value > 0 ? value : imageWidth || Math.min(imageOriginalWidth, maxWidth);
+    let newHeight = prop !== "width" && value > 0 ? value : imageHeight || Math.min(imageOriginalHeight, maxHeight);
 
     if (keepAspectRatio) {
       [newWidth, newHeight] =
@@ -474,14 +468,7 @@ class ComposeQuestion extends Component {
 
     const { maxWidth, maxHeight } = clozeImage;
 
-    const {
-      responseLayout,
-      background,
-      imageAlterText,
-      isEditAriaLabels,
-      responses,
-      imageOptions = {}
-    } = item;
+    const { responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
 
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -493,12 +480,7 @@ class ComposeQuestion extends Component {
       showUploadList: false
     };
 
-    const {
-      imageWidth: imgWidth,
-      imageHeight: imgHeight,
-      imageOriginalWidth,
-      imageOriginalHeight
-    } = item;
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
     const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
     const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     const imageTop = this.getTop();
@@ -531,11 +513,7 @@ class ComposeQuestion extends Component {
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t("component.cloze.imageDragDrop.composequestion")}`
-          )}
-        >
+        <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDragDrop.composequestion")}`)}>
           {t("component.cloze.imageDragDrop.composequestion")}
         </Subtitle>
         <QuestionTextArea
@@ -572,22 +550,14 @@ class ComposeQuestion extends Component {
           </FieldWrapper>
 
           <FieldWrapper>
-            <InputNumber
-              data-cy="image-left-input"
-              value={imageLeft}
-              onChange={this.changeImageLeft}
-            />
+            <InputNumber data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
             <Label top={6} left={20}>
               {t("component.cloze.imageText.positionX")}
             </Label>
           </FieldWrapper>
 
           <FieldWrapper>
-            <InputNumber
-              data-cy="image-top-input"
-              value={imageTop}
-              onChange={this.chnageImageTop}
-            />
+            <InputNumber data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
             <Label top={6} left={20}>
               {t("component.cloze.imageText.positionY")}
             </Label>
@@ -633,10 +603,7 @@ class ComposeQuestion extends Component {
             trigger={["click"]}
           >
             <FieldWrapper>
-              <ColorBox
-                data-cy="image-text-box-color-picker"
-                style={{ backgroundColor: background }}
-              />
+              <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
               <Label top={6} left={20}>
                 {t("component.cloze.imageDragDrop.fillcolor")}
               </Label>
@@ -739,9 +706,7 @@ class ComposeQuestion extends Component {
                   <p className="ant-upload-hint">
                     <strong>{t("component.cloze.imageDragDrop.draganddrop")}</strong>
                   </p>
-                  <h2 className="ant-upload-text">
-                    {t("component.cloze.imageDragDrop.yourOwnImage")}
-                  </h2>
+                  <h2 className="ant-upload-text">{t("component.cloze.imageDragDrop.yourOwnImage")}</h2>
                   <p className="ant-upload-hint">
                     {t("component.cloze.imageDragDrop.orBrowse")}: PNG, JPG, GIF (1024KB MAX.)
                   </p>
@@ -753,7 +718,10 @@ class ComposeQuestion extends Component {
         <FormBottomContainer align="flex-start">
           {item.imageUrl && (
             <UploadButton {...uploadProps} showUploadList={false}>
-              <CustomStyleBtn margin="0px 15px 0px 0px">
+              <CustomStyleBtn
+                margin="0px 15px 0px 0px"
+                id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageText.updateImageButtonText")}`)}
+              >
                 {t("component.cloze.imageText.updateImageButtonText")}
               </CustomStyleBtn>
             </UploadButton>
@@ -781,9 +749,7 @@ class ComposeQuestion extends Component {
               <CheckboxLabel
                 data-cy="drag-drop-image-transparent-check"
                 defaultChecked={responseLayout && responseLayout.transparentbackground}
-                onChange={val =>
-                  this.onResponsePropChange("transparentbackground", val.target.checked)
-                }
+                onChange={val => this.onResponsePropChange("transparentbackground", val.target.checked)}
               >
                 {t("component.cloze.imageDragDrop.transparentbackground")}
               </CheckboxLabel>
@@ -820,7 +786,7 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           {isEditAriaLabels && (
             <React.Fragment>
-              <Subtitle id={getFormattedAttrId(`${item?.title}-${t()}`)}>
+              <Subtitle id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDragDrop.editAriaLabels")}`)}>
                 {t("component.cloze.imageDragDrop.editAriaLabels")}
               </Subtitle>
 

@@ -10,6 +10,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
 import { WidgetFRInput } from "../../../styled/Widget";
 import QuestionTextArea from "../../QuestionTextArea";
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class AnnotationSettings extends Component {
   handleInputChange = (name, value) => {
@@ -21,12 +22,12 @@ class AnnotationSettings extends Component {
   };
 
   render() {
-    const { t, annotation } = this.props;
+    const { t, annotation, title: graphTitle } = this.props;
     const { title, labelTop, labelBottom, labelLeft, labelRight } = annotation;
 
     return (
       <Fragment>
-        <Subtitle>Labels</Subtitle>
+        <Subtitle id={getFormattedAttrId(`${graphTitle}-Labels`)}>Labels</Subtitle>
         <Row gutter={24}>
           <Col md={12}>
             <Label>Title</Label>

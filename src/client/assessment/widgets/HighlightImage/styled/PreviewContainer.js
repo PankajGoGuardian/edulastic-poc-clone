@@ -5,5 +5,4 @@ export const PreviewContainer = styled(StyledPaperWrapper)`
   padding: 0;
   overflow: auto;
   position: relative;
-  display: flex;
 `;

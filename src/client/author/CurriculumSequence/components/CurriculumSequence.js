@@ -54,6 +54,7 @@ import DropPlaylistModal from "./modals/DropPlaylistModal";
 import SummaryPieChart from "./SummaryPieChart";
 import PlaylistPageNav from "./PlaylistPageNav";
 import ManageContentBlock from "./ManageContentBlock";
+import StudentPlayListHeader from "../../../student/sharedComponents/Header/PlayListHeader";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -353,6 +354,11 @@ class CurriculumSequence extends Component {
   };
 
   toggleManageContentClick = () => this.setState({ isManageContentActive: !this.state?.isManageContentActive });
+  handleCheckout = () => {
+    const { history, match } = this.props;
+    const { playlistId } = match.params;
+    return history.push(`/home/playlist/${playlistId}/recommendations`);
+  };
 
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
@@ -408,9 +414,6 @@ class CurriculumSequence extends Component {
 
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
-    const activeEnrolledClasses = (activeClasses || []).filter(
-      c => c.status == "1" && playlistClassList.includes(c._id)
-    );
 
     // sliced recent playlists for changePlaylistModal
     const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
@@ -619,16 +622,7 @@ class CurriculumSequence extends Component {
           />
 
           {isStudent ? (
-            <Header
-              titleText={title}
-              titleMinWidth="unset"
-              titleIcon={IconPlaylist}
-              titleSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon}
-              classSelect
-              showActiveClass={false}
-              classList={activeEnrolledClasses}
-              showAllClassesOption={false}
-            />
+            <StudentPlayListHeader />
           ) : (
             mode !== "embedded" && (
               <MainHeader
@@ -688,6 +682,25 @@ class CurriculumSequence extends Component {
 
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer urlHasUseThis={urlHasUseThis}>
+                  {isStudent && (
+                    <SubTopBar>
+                      <SubTopBarContainer
+                        style={{
+                          background: "#2f4151",
+                          padding: "10px 20px",
+                          color: "#fff",
+                          justifyContent: "space-between",
+                          flexDirection: "row",
+                          fontSize: "12px"
+                        }}
+                      >
+                        <div>NEW RECOMMENDATIONS SINCE LAST LOGIN.</div>
+                        <div style={{ cursor: "pointer" }} onClick={this.handleCheckout}>
+                          CHECK IT OUT >>
+                        </div>
+                      </SubTopBarContainer>
+                    </SubTopBar>
+                  )}
                   <SubTopBar>
                     <SubTopBarContainer active={isContentExpanded} mode={mode}>
                       <CurriculumSubHeaderRow>

@@ -14,6 +14,7 @@ import { getLastPlayListSelector } from "../../../author/Playlist/ducks";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 
 import NoDataNotification from "../../../common/components/NoDataNotification";
+import Recommendations from "./Recommendations";
 
 const PlaylistsContainer = ({
   match,
@@ -43,6 +44,7 @@ const PlaylistsContainer = ({
     pathPlaylistId ? (
       <Switch>
         <Route
+          exact
           path={`${match.url}/:playlistId`}
           render={props => {
             const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
@@ -50,6 +52,19 @@ const PlaylistsContainer = ({
             return (
               <Suspense fallback={<Progress />}>
                 <CurriculumContainer {...props} urlHasUseThis />
+              </Suspense>
+            );
+          }}
+        />
+        <Route
+          exact
+          path={`${match.url}/:playlistId/recommendations`}
+          render={props => {
+            const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
+            props.location.state = { ...(props.location.state || {}), currentGroupId };
+            return (
+              <Suspense fallback={<Progress />}>
+                <Recommendations {...props} />
               </Suspense>
             );
           }}

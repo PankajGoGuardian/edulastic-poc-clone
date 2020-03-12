@@ -42,7 +42,7 @@ class MathInput extends React.PureComponent {
       shouldHideKeyboard = false;
     }
 
-    if (e.target.className?.includes("ant-select")) {
+    if (jQueryTargetElem.hasClass("ant-select")) {
       shouldHideKeyboard = false;
     }
 

@@ -83,6 +83,9 @@ export const FETCH_PLAYLIST_ACCESS_LIST = "[drop-playlist] fetch playlist access
 export const UPDATE_DROPPED_ACCESS_LIST = "[drop-playlist] update playlist access list";
 export const FETCH_PLAYLIST_METRICS = "[playlist metrics] fetch playlist metrics";
 export const UPDATE_PLAYLIST_METRICS = "[playlist metrics] update playlist metrics";
+export const FETCH_PLAYLIST_INSIGHTS = "[playlist insights] fetch playlist insights";
+export const FETCH_PLAYLIST_INSIGHTS_SUCCESS = "[playlist insights] fetch playlist insights success";
+export const FETCH_PLAYLIST_INSIGHTS_ERROR = "[playlist insights] fetch playlist insights error";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -135,6 +138,9 @@ export const approveOrRejectSinglePlaylistSuccessAction = createAction(APPROVE_O
 export const setPlaylistDataAction = createAction(SET_PLAYLIST_DATA);
 export const receiveCurrentPlaylistMetrics = createAction(FETCH_PLAYLIST_METRICS);
 export const updatePlaylistMetrics = createAction(UPDATE_PLAYLIST_METRICS);
+export const fetchPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS);
+export const onSuccessPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS_SUCCESS);
+export const onErrorPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS_ERROR);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -720,6 +726,23 @@ function* fetchPlaylistMetricsSaga({ payload }) {
   }
 }
 
+function* fetchPlaylistInsightsSaga({ payload }) {
+  try {
+    const { playlistId } = payload || {};
+    if (!playlistId) {
+      throw new Error("Insufficient Data for fetching playlist insights: playlistId is required");
+    }
+    const result = yield call(curriculumSequencesApi.fetchPlaylistInsights, payload);
+    if (result) {
+      yield put(onSuccessPlaylistInsightsAction(result));
+    }
+  } catch (error) {
+    yield put(onErrorPlaylistInsightsAction(error));
+    message.error("Fetching playlist insights is failing...");
+    console.error(error);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -746,7 +769,8 @@ export function* watcherSaga() {
     yield takeLatest(FETCH_STUDENT_LIST_BY_GROUP_ID, fetchStudentListByGroupId),
     yield takeLatest(DROP_PLAYLIST_ACTION, dropPlaylist),
     yield takeLatest(FETCH_PLAYLIST_ACCESS_LIST, fetchPlaylistAccessList),
-    yield takeLatest(FETCH_PLAYLIST_METRICS, fetchPlaylistMetricsSaga)
+    yield takeLatest(FETCH_PLAYLIST_METRICS, fetchPlaylistMetricsSaga),
+    yield takeLatest(FETCH_PLAYLIST_INSIGHTS, fetchPlaylistInsightsSaga)
   ]);
 }
 
@@ -856,7 +880,9 @@ const initialState = {
 
   playlistMetrics: [],
   classListFetching: false,
-  studentListFetching: false
+  studentListFetching: false,
+  playlistInsights: {},
+  loadingInsights: true
 };
 
 /**
@@ -1296,6 +1322,22 @@ function updatePlaylistMetricsList(state, { payload }) {
   };
 }
 
+function onSuccessPlaylistInsights(state, { payload }) {
+  return {
+    ...state,
+    playlistInsights: payload,
+    loadingInsights: false
+  };
+}
+
+function onErrorPlaylistInsights(state, { payload }) {
+  return {
+    ...state,
+    playlistInsights: {},
+    loadingInsights: true
+  };
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1321,5 +1363,7 @@ export default createReducer(initialState, {
   [FETCH_STUDENT_LIST_BY_GROUP_ID]: state => ({ ...state, studentListFetching: true }),
   [FETCH_STUDENT_LIST_SUCCESS]: updateStudentList,
   [UPDATE_DROPPED_ACCESS_LIST]: updatePlaylistDroppedAccessList,
-  [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList
+  [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList,
+  [FETCH_PLAYLIST_INSIGHTS_SUCCESS]: onSuccessPlaylistInsights,
+  [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights
 });

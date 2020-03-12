@@ -104,6 +104,16 @@ const fetchPlaylistMetrics = data => {
     .then(result => result.data.result);
 };
 
+const fetchPlaylistInsights = data => {
+  const queryString = qs.stringify(data);
+  return api
+    .callApi({
+      method: "get",
+      url: `/report/insights?${queryString}`
+    })
+    .then(result => result.data.result);
+};
+
 export default {
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
@@ -114,5 +124,6 @@ export default {
   updatePlaylistStatus,
   update,
   duplicatePlayList,
-  fetchPlaylistMetrics
+  fetchPlaylistMetrics,
+  fetchPlaylistInsights
 };

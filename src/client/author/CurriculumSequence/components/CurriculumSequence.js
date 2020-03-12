@@ -797,7 +797,8 @@ class CurriculumSequence extends Component {
               </StyledFlexContainer>
             </>
           )}
-          {currentTab === "insights" && <Insights />}
+
+          {currentTab === "insights" && <Insights playlistId={destinationCurriculumSequence._id} />}
 
           {currentTab === "differentiation" && <h1>Add Your {currentTab} component here</h1>}
         </CurriculumSequenceWrapper>

@@ -6,9 +6,27 @@ const calcTrendAngle = trendSlope => {
   return round((Math.atan(trendSlope || 0) * 360) / Math.PI);
 };
 
-export const getMergedTrendMap = (studInfo, trendData) => {
+export const getMergedTrendMap = (studInfo = [], trendData = []) => {
   return useMemo(() => {
-    const studentMap = keyBy(studInfo, "userId");
+    const studentMap = groupBy(studInfo, "userId");
+    // reduce multiple entries and club their groupIds
+    Object.keys(studentMap).map(sId => {
+      studentMap[sId] = reduce(
+        studentMap[sId],
+        (res, ele) => {
+          res.firstName = res.firstName || ele.firstName;
+          res.lastName = res.lastName || ele.lastName;
+          res.groupIds.push(ele.groupId);
+          return res;
+        },
+        {
+          userId: sId,
+          firstName: "",
+          lastName: "",
+          groupIds: []
+        }
+      );
+    });
     trendData.forEach(item => {
       if (studentMap[item.id]) {
         studentMap[item.id].trendAngle = calcTrendAngle(item.slope);

@@ -46,8 +46,7 @@ const defaultBandInfo = [
 
 const Insights = ({
   user,
-  curriculum,
-  scaleInfo,
+  currentPlaylist,
   playlistInsights,
   studentProgress,
   fetchPlaylistInsightsAction,
@@ -55,7 +54,7 @@ const Insights = ({
   loading,
   loadingProgress
 }) => {
-  const { _id: playlistId, modules } = curriculum;
+  const { _id: playlistId, modules } = currentPlaylist;
 
   const [filters, updateFilters] = useState({
     modules: [],
@@ -71,8 +70,8 @@ const Insights = ({
       getStudentProgressRequestAction({ termId });
     }
   }, []);
-  const { metricInfo = [] } = get(studentProgress, "data.result", {});
-  const [trendData, trendCount] = useGetBandData(metricInfo, "student", [], "", defaultBandInfo);
+  const { metricInfo: progressInfo } = get(studentProgress, "data.result", {});
+  const [trendData, trendCount] = useGetBandData(progressInfo || [], "student", [], "", defaultBandInfo);
 
   // fetch playlists
   useEffect(() => {
@@ -81,12 +80,13 @@ const Insights = ({
     }
   }, [playlistId]);
 
-  const masteryData = getMasteryData(scaleInfo);
+  const { studInfo = [], metricInfo = [], scaleInfo = [] } = playlistInsights;
+  const masteryData = getMasteryData(scaleInfo[0]?.scale);
   const filterData = { ...getFilterData(modules), masteryData };
 
   // merge trendData with studInfo;
-  const studInfoMap = getMergedTrendMap(playlistInsights.studInfo, trendData);
-  const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, studInfoMap, filters);
+  const studInfoMap = getMergedTrendMap(studInfo, trendData);
+  const filteredMetrics = getFilteredMetrics(metricInfo, studInfoMap, filters);
   const curatedMetrics = getCuratedMetrics({ ...filteredMetrics, masteryData });
 
   return loading || loadingProgress ? (

@@ -813,7 +813,7 @@ class CurriculumSequence extends Component {
             </>
           )}
 
-          {currentTab === "insights" && <Insights curriculum={destinationCurriculumSequence} />}
+          {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
 
           {currentTab === "differentiation" && <Differentiation />}
         </CurriculumSequenceWrapper>

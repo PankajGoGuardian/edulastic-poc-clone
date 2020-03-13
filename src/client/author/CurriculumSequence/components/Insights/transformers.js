@@ -83,18 +83,17 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
   const filteredData = Object.keys(groupedData)
     .map(sId => {
       // filter by standards
-      groupedData[sId] = groupedData[sId].filter(item => {
-        if (standards.length && !standards.includes(item.standardId)) {
-          return false;
-        } else {
-          return true;
-        }
-      });
+      groupedData[sId] = groupedData[sId].filter(
+        ({ standardId, playlistModuleId }) =>
+          (!standards.length || standards.includes(standardId)) &&
+          (!modules.length || modules.includes(playlistModuleId))
+      );
       if (groupedData[sId].length) {
         // reduce to a single object if not null
         groupedData[sId] = reduce(
           groupedData[sId],
           (res, ele) => {
+            res.playlistModuleIds.push(ele.playlistModuleId);
             res.standardIds.push(ele.standardId);
             res.summedScore += ele.totalScore / ele.maxScore;
             res.totalTimeSpent += parseInt(ele.timeSpent);
@@ -104,6 +103,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
           {
             studentId: sId,
             standardIds: [],
+            playlistModuleIds: [],
             count: 0,
             summedScore: 0,
             totalTimeSpent: 0
@@ -209,37 +209,29 @@ export const getMasteryData = (scaleInfo = []) => {
   const defaultScaleInfo = [
     {
       score: 4,
-      shortName: "E",
       threshold: 90,
-      masteryLevel: "Exceeds Mastery",
-      color: "#3db04e"
+      masteryName: "Exceeds Mastery"
     },
     {
       score: 3,
-      shortName: "M",
       threshold: 80,
-      masteryLevel: "Mastered",
-      color: "#74e27a"
+      masteryName: "Mastered"
     },
     {
       score: 2,
-      shortName: "A",
       threshold: 70,
-      masteryLevel: "Almost Mastered",
-      color: "#ebdd54"
+      masteryName: "Almost Mastered"
     },
     {
       score: 1,
-      shortName: "N",
       threshold: 0,
-      masteryLevel: "Not Mastered",
-      color: "#fec571"
+      masteryName: "Not Mastered"
     }
   ];
 
-  return (scaleInfo?.length ? scaleInfo : defaultScaleInfo).map(({ score, masteryLevel, threshold }) => ({
+  return (scaleInfo?.length ? scaleInfo : defaultScaleInfo).map(({ score, masteryName, threshold }) => ({
     id: score.toString(),
-    name: masteryLevel,
+    name: masteryName,
     threshold
   }));
 };

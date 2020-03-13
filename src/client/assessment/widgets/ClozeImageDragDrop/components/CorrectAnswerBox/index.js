@@ -18,14 +18,17 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, answersIndex, stemNumer
       {answersIndex ? `${t("component.cloze.altAnswers")} ${answersIndex}` : t("component.cloze.correctAnswer")}
     </CorrectAnswerTitle>
     <Answers>
-      {userAnswers.map(answer => (
-        <AnswerBox key={answer.responseBoxID}>
-          <IndexBox>{getStemNumeration(stemNumeration, answer.containerIndex)}</IndexBox>
-          <AnswerContent>
-            <MathSpan dangerouslySetInnerHTML={{ __html: answer.value.join(", ") }} />
-          </AnswerContent>
-        </AnswerBox>
-      ))}
+      {userAnswers.map(
+        answer =>
+          answer && (
+            <AnswerBox key={answer.responseBoxID}>
+              <IndexBox>{getStemNumeration(stemNumeration, answer.containerIndex)}</IndexBox>
+              <AnswerContent>
+                <MathSpan dangerouslySetInnerHTML={{ __html: answer.value.join(", ") }} />
+              </AnswerContent>
+            </AnswerBox>
+          )
+      )}
     </Answers>
   </CorrectAnswerBox>
 );

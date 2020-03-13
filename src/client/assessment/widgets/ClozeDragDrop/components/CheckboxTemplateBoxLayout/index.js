@@ -89,9 +89,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
    * +60 is ellipsis width on clicking showAnswer
    * +30 is ellipsis width on clicking checkAnswer
    */
+
+  const padding = 30;
+  const widthOverflow = scrollWidth + padding + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
+ 
   const boxHeight = response?.heightpx || responseBtnStyle.heightpx;
-  const widthOverflow = scrollWidth + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
+
   const heightOverflow = imageDimensions.height > boxHeight || scrollHeight >= boxHeight;
+
   const showPopover = widthOverflow || heightOverflow;
 
   const indexStyle = {};

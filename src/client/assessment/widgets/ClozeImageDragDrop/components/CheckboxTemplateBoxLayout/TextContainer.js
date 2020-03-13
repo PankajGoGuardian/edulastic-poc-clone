@@ -17,18 +17,19 @@ const TextContainer = ({
   className,
   status,
   isChecked,
-  isExpressGrader
+  isExpressGrader,
+  showAnswer
 }) => (
   <>
     {userSelections[dropTargetIndex] &&
       userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
-        const userAnswer =
-          userSelections[dropTargetIndex].responseBoxID && isSnapFitValues ? answer : "";
+        const userAnswer = userSelections[dropTargetIndex].responseBoxID && isSnapFitValues ? answer : "";
         const content = <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />;
-
+        const maxWidth = parseInt(dragItemStyle.maxWidth, 10) / 100;
+        const padding = lessMinWidth ? 4 : 10;
+        const indexWidth = showAnswer ? 40 : 0;
         const { width: contentWidth } = measureText(answer);
-        const isOverContent = style.width < contentWidth;
-
+        const isOverContent = style.width * maxWidth < contentWidth + padding + indexWidth;
         const popoverContent = (
           <PopoverContent
             index={dropTargetIndex}

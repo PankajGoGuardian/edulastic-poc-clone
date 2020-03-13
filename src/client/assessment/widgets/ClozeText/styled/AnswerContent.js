@@ -10,9 +10,9 @@ export const AnswerContent = styled(MathFormulaDisplay)`
   border-bottom-right-radius: 4px;
   display: inline-block;
   vertical-align: middle;
-  ${({ showIndex }) => `
+  ${({ showIndex, inPopover }) => `
     max-width: ${showIndex ? 560 : 600}px;
-    width: ${showIndex ? "calc(100% - 60px)" : "100%"};
+    width: ${showIndex && !inPopover ? "calc(100% - 60px)" : "100%"};
     padding-right: ${showIndex ? 5 : 20}px;
   `}
 `;

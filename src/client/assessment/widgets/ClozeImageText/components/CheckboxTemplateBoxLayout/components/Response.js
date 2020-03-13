@@ -33,8 +33,11 @@ const Response = ({
 
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
 
-  const isOverConent = btnStyle.width < contentWidth;
+  const padding = lessMinWidth ? 4 : 30;
+  const indexWidth = showAnswer ? 40 : 0;
+  const isOverConent = btnStyle.width < contentWidth + padding + indexWidth;
   const hansAnswered = userSelections?.[dropTargetIndex];
+
   const className = `imagelabeldragdrop-droppable active ${
     hansAnswered ? "check-answer" : "noAnswer"
   } ${status} show-answer`;

@@ -43,7 +43,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const popoverContent = (
     <AnswerBox
       checked={attempt}
-      style={{ ...btnStyle, width: boxWidth, height: "auto" }}
+      style={{ ...btnStyle, whiteSpace: "normal", wordBreak: "break-all", width: "unset", height: "auto" }}
       correct={evaluation[choiceId]}
       onClick={handleClick}
     >
@@ -53,16 +53,20 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         </IndexBox>
       )}
       <AnswerContent
-        style={{ whiteSpace: "normal" }}
+        style={{ whiteSpace: "normal", width: "unset", marginRight: "1rem" }}
         showIndex={!checkAnswer}
+        inPopover
         dangerouslySetInnerHTML={{ __html: userAnswer || "" }}
       />
       {attempt && <CheckMark correct={evaluation[choiceId]} />}
     </AnswerBox>
   );
 
+  const padding = 15;
+  const indexWidth = checkAnswer ? 0 : 40;
+  const totalContentWidth = boxWidth + padding + indexWidth;
   return (
-    <Popover content={popoverContent} visible={showPopover && btnStyle.width < boxWidth}>
+    <Popover content={popoverContent} visible={showPopover && btnStyle.width < totalContentWidth}>
       <AnswerBox
         ref={answerBoxRef}
         onMouseEnter={() => togglePopover(true)}

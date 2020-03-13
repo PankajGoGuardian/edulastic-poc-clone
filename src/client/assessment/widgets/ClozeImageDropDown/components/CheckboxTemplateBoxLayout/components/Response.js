@@ -37,14 +37,16 @@ const Response = ({
   const classNames = `imagelabeldragdrop-droppable active ${answered ? "check-answer" : "noAnswer"} ${status}`;
 
   const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
-  const textPadding = lessMinWidth ? 2 : 20;
+  const textPadding = lessMinWidth ? 2 : 30;
   const indexBoxWidth = showAnswer ? 40 : 0;
   const isOverContent = btnStyle.width < contentWidth + textPadding + indexBoxWidth;
+
   let modifiedDimesion = {};
   if (isPrintPreview) {
     modifiedDimesion.width = `${btnStyle.width/imageWidth*100}%`;
     modifiedDimesion.height = `${btnStyle.height/imageHeight*100}%`;
   }
+
   const popoverContent = (
     <PopoverContent
       index={dropTargetIndex}
@@ -54,6 +56,7 @@ const Response = ({
       checkAnswer={checkAnswer}
     />
   );
+
   const content = (
     <div style={{...btnStyle, ...modifiedDimesion}} className={`${classNames} show-answer`} onClick={onClickHandler}>
       <span

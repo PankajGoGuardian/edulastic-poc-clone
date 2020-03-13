@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
-import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
+import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
 import { flatten, cloneDeep, isEmpty, omit, uniqBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
@@ -94,6 +94,8 @@ export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiati
 export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
 export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
+export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
+  "[playlist] update destination curriculum sequence request";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -136,6 +138,9 @@ export const updateDifferentiationStudentListAction = createAction(UPDATE_DIFFER
 export const fetchDifferentiationWorkAction = createAction(FETCH_DIFFERENTIATION_WORK);
 export const setDifferentiationWorkAction = createAction(SET_DIFFERENTIATION_WORK);
 export const addRecommendationsAction = createAction(ADD_RECOMMENDATIONS_ACTIONS);
+export const updateDestinationCurriculumSequenceRequestAction = createAction(
+  UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST
+);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -508,6 +513,17 @@ function* createAssignmentNow({ payload }) {
   }
 }
 
+export function* updateDestinationCurriculumSequencesaga({ payload }) {
+  try {
+    const curriculumSequence = yield select(getDestinationCurriculumSequence);
+
+    yield put(putCurriculumSequenceAction({ id: curriculumSequence._id, curriculumSequence }));
+  } catch (err) {
+    message.error("There was an error updating the curriculum sequence");
+    console.error("update curriculum sequence Error", err);
+  }
+}
+
 function* addContentToCurriculumSequence({ payload }) {
   // TODO: change unit to module to stay consistent
   const { contentToAdd, toUnit } = payload;
@@ -820,7 +836,8 @@ export function* watcherSaga() {
     yield takeLatest(FETCH_PLAYLIST_INSIGHTS, fetchPlaylistInsightsSaga),
     yield takeLatest(FETCH_DIFFERENTIATION_STUDENT_LIST, fetchDifferentiationStudentListSaga),
     yield takeLatest(FETCH_DIFFERENTIATION_WORK, fetchDifferentiationWorkSaga),
-    yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga)
+    yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga),
+    yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga)
   ]);
 }
 
@@ -881,6 +898,7 @@ const getDefaultAssignData = () => ({
 const initialState = {
   isManageContentActive: false,
   allCurriculumSequences: [],
+  destinationDirty: false,
 
   /**
    * @type {Object.<string, import('./components/CurriculumSequence').CurriculumSequenceType>}}
@@ -995,6 +1013,7 @@ const updateCurriculumSequenceReducer = (state, { payload }) => {
   state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
+  state.destinationDirty = false;
   // }
 };
 

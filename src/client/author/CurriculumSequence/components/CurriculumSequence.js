@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Prompt } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { groupBy, isEqual, uniqueId } from "lodash";
@@ -23,7 +23,7 @@ import {
   white
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap, IconPencilEdit, IconPlaylist, IconShare, IconTile } from "@edulastic/icons";
-import { Button, Cascader, Input, Modal, Tooltip } from "antd";
+import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
 import Header from "../../../student/sharedComponents/Header";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
 import { getFilteredClassesSelector } from "../../../student/ManageClass/ducks";
@@ -44,7 +44,8 @@ import {
   setSelectedItemsForAssignAction,
   useThisPlayListAction,
   playlistTestRemoveFromModuleAction,
-  toggleManageContentActiveAction
+  toggleManageContentActiveAction,
+  updateDestinationCurriculumSequenceRequestAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -355,7 +356,14 @@ class CurriculumSequence extends Component {
     history.push(url);
   };
 
-  toggleManageContentClick = () => this.props.toggleManageContent();
+  toggleManageContentClick = () => {
+    const { toggleManageContent, manageContentDirty, isManageContentActive } = this.props;
+    if (isManageContentActive && manageContentDirty) {
+      message.warn("Changes left unsaved. Please save it first");
+      return;
+    }
+    this.props.toggleManageContent();
+  };
   handleCheckout = () => {
     const { history, match } = this.props;
     const { playlistId } = match.params;
@@ -408,7 +416,9 @@ class CurriculumSequence extends Component {
       studentPlaylists,
       activeClasses,
       match,
-      isManageContentActive
+      isManageContentActive,
+      manageContentDirty,
+      updateDestinationPlaylist
     } = this.props;
 
     // figure out which tab contents to render || just render default playlist
@@ -548,6 +558,7 @@ class CurriculumSequence extends Component {
 
     return (
       <>
+        <Prompt when={manageContentDirty} message="Changes left unsaved. Please save it first" />
         <RemoveTestModal
           isVisible={showConfirmRemoveModal}
           onClose={onCloseConfirmRemoveModal}
@@ -649,6 +660,8 @@ class CurriculumSequence extends Component {
                       DROP PLAYLIST
                     </EduButton>
                   )}
+
+                  {isManageContentActive && <EduButton onClick={updateDestinationPlaylist}>SAVE</EduButton>}
                   {isAuthor && !urlHasUseThis && (
                     <Tooltip placement="bottom" title="EDIT">
                       <EduButton isGhost data-cy="edit-playlist" onClick={handleEditClick}>
@@ -820,6 +833,7 @@ const enhance = compose(
       guide: state.curriculumSequence.selectedGuide,
       isContentExpanded: state.curriculumSequence.isContentExpanded,
       isManageContentActive: state.curriculumSequence.isManageContentActive,
+      manageContentDirty: state.curriculumSequence.destinationDirty,
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
       recentPlaylists: getRecentPlaylistSelector(state),
@@ -845,7 +859,8 @@ const enhance = compose(
       removeTestFromModule: removeTestFromModuleAction,
       removeTestFromDestinationCurriculum: playlistTestRemoveFromModuleAction,
       addNewUnitToDestination: addNewUnitAction,
-      toggleManageContent: toggleManageContentActiveAction
+      toggleManageContent: toggleManageContentActiveAction,
+      updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction
     }
   )
 );

@@ -14,14 +14,15 @@ const MathFormulaDisplay = withTheme(
     font-weight: ${fonts.previewFontWeight};
     padding-left: ${props => props.paddingLeft && "50px"};
 
+    & * {
+      display: inline;
+    }
+
     p {
       -moz-padding-inline-end: 10px;
       -webkit-padding-inline-end: 10px;
       padding-inline-end: 10px;
-    }
-
-    & * {
-      display: inline;
+      display: block;
     }
 
     @media (max-width: ${desktopWidth}) {

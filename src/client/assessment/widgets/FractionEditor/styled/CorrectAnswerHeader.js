@@ -10,4 +10,5 @@ export const CorrectAnswerHeader = styled.div`
   justify-content: flex-start;
   align-items: center;
   border-radius: 3px;
+  margin-bottom: 1rem;
 `;

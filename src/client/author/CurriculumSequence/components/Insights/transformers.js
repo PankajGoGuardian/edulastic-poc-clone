@@ -22,7 +22,7 @@ export const getFilterData = (modules = []) => {
   });
 
   const standardsData = Object.values(keyBy(flatMap(modulesData, item => item.standards), "standardId")).map(
-    ({ standardId, name }) => ({ id: standardId + "", name })
+    ({ standardId, name }) => ({ id: standardId.toString(), name })
   );
   const groupsData = Object.values(keyBy(flatMap(modulesData, item => item.groups), "id"));
 
@@ -117,7 +117,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
     .filter(item => item && filteredMap[item.studentId]);
   // TODO: Remove the second check in the filter above if the data is consistent in metricInfo & studInfo
 
-  return { filteredData, filteredMap };
+  return { filteredData, filteredMap, masteryList: filters.masteryList };
 };
 
 // for domainRange = 800 => range = [-400, 400]
@@ -131,7 +131,7 @@ const getNormalizedValue = (item, mean, range) => {
   return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
 
-export const getCuratedMetrics = ({ filteredData = [], filteredMap = {} }) => {
+export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, masteryList = [], masteryData = [] }) => {
   if (!filteredData.length) {
     return [];
   }
@@ -140,7 +140,7 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {} }) => {
     minPercentScore = filteredData[0].summedScore / filteredData[0].count,
     maxPercentScore = filteredData[0].summedScore / filteredData[0].count;
 
-  const curatedMetrics = filteredData.map(item => {
+  let curatedMetrics = filteredData.map(item => {
     const percentScore = item.summedScore / item.count;
     if (item.totalTimeSpent < minTimeSpent) {
       minTimeSpent = item.totalTimeSpent;
@@ -161,6 +161,35 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {} }) => {
     };
   });
 
+  // filter based on mastery threshold
+  const masteryToShow = masteryList.map(item => item.key);
+  const masteryRangeToShow = [];
+  masteryData.forEach((item, index) => {
+    let max = 100,
+      min = 0;
+    if (index == 0) {
+      min = item.threshold;
+    } else {
+      max = masteryData[index - 1].threshold;
+      min = item.threshold;
+    }
+    if (masteryToShow.includes(item.id)) {
+      masteryRangeToShow.push({ min, max });
+    }
+  });
+  if (masteryRangeToShow.length) {
+    curatedMetrics = curatedMetrics.filter(item => {
+      let flag = false,
+        pScore = round(item.percentScore, 2) * 100;
+      masteryRangeToShow.forEach(({ min, max }) => {
+        if (min <= pScore && pScore <= max) {
+          flag = true;
+        }
+      });
+      return flag;
+    });
+  }
+
   const timeRange = maxTimeSpent - minTimeSpent,
     percentRange = maxPercentScore - minPercentScore;
   const timeMean = (maxTimeSpent + minTimeSpent) / 2,
@@ -174,6 +203,45 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {} }) => {
     const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
     return { name, ...item, effort, performance };
   });
+};
+
+export const getMasteryData = (scaleInfo = []) => {
+  const defaultScaleInfo = [
+    {
+      score: 4,
+      shortName: "E",
+      threshold: 90,
+      masteryLevel: "Exceeds Mastery",
+      color: "#3db04e"
+    },
+    {
+      score: 3,
+      shortName: "M",
+      threshold: 80,
+      masteryLevel: "Mastered",
+      color: "#74e27a"
+    },
+    {
+      score: 2,
+      shortName: "A",
+      threshold: 70,
+      masteryLevel: "Almost Mastered",
+      color: "#ebdd54"
+    },
+    {
+      score: 1,
+      shortName: "N",
+      threshold: 0,
+      masteryLevel: "Not Mastered",
+      color: "#fec571"
+    }
+  ];
+
+  return (scaleInfo?.length ? scaleInfo : defaultScaleInfo).map(({ score, masteryLevel, threshold }) => ({
+    id: score.toString(),
+    name: masteryLevel,
+    threshold
+  }));
 };
 
 export const getBoxedSummaryData = ({ up, flat, down }) => {

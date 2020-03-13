@@ -13,6 +13,7 @@ import {
   getMergedTrendMap,
   getFilteredMetrics,
   getCuratedMetrics,
+  getMasteryData,
   getBoxedSummaryData
 } from "./transformers";
 
@@ -46,6 +47,7 @@ const defaultBandInfo = [
 const Insights = ({
   user,
   curriculum,
+  scaleInfo,
   playlistInsights,
   studentProgress,
   fetchPlaylistInsightsAction,
@@ -79,11 +81,13 @@ const Insights = ({
     }
   }, [playlistId]);
 
-  // merge trendData with studInfo
-  const filterData = getFilterData(modules);
+  const masteryData = getMasteryData(scaleInfo);
+  const filterData = { ...getFilterData(modules), masteryData };
+
+  // merge trendData with studInfo;
   const studInfoMap = getMergedTrendMap(playlistInsights.studInfo, trendData);
   const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, studInfoMap, filters);
-  const curatedMetrics = getCuratedMetrics(filteredMetrics);
+  const curatedMetrics = getCuratedMetrics({ ...filteredMetrics, masteryData });
 
   return loading || loadingProgress ? (
     <Spin style={{ "margin-top": "400px" }} />

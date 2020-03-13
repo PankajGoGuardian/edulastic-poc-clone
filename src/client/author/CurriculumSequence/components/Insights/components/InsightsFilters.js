@@ -16,6 +16,12 @@ const handleStandardsChange = (selected, prevFilters, updateFilters) =>
     standards: selected
   });
 
+const handleMasteryListChange = (selected, prevFilters, updateFilters) =>
+  updateFilters({
+    ...prevFilters,
+    masteryList: selected
+  });
+
 const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
   <Row style={{ width: "100%", "margin-bottom": "20px" }} type="flex" gutter={[0, 10]}>
     <Col span={24}>
@@ -59,6 +65,12 @@ const InsightsFilters = ({ data, prevFilters, updateFilters }) => {
         onChange={selected => handleStandardsChange(selected, prevFilters, updateFilters)}
         value={prevFilters.standards}
         options={standardsData}
+      />
+      <FilterDropdown
+        label="Mastery"
+        onChange={selected => handleMasteryListChange(selected, prevFilters, updateFilters)}
+        value={prevFilters.masteryList}
+        options={masteryData}
       />
     </Row>
   );

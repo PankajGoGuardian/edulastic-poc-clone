@@ -35,14 +35,12 @@ const ResponseContainers = ({
     const height = isWrapText ? "auto" : container.height || "auto";
     const btnStyle = {
       position: "absolute",
-      top: isPrintMode ? `${top/imageHeight*100}%` : top,
-      left: isPrintMode ? `${responseContainerLeft/imageWidth*100}%` : responseContainerLeft,
+      top: isPrintMode ? `${(top / imageHeight) * 100}%` : top,
+      left: isPrintMode ? `${(responseContainerLeft / imageWidth) * 100}%` : responseContainerLeft,
       maxWidth: response.maxWidth,
-      width: isPrintMode ? `${width/imageWidth*100}%` : width,
-      height: isPrintMode && !`${height}`.includes("auto") ? `${height/imageHeight*100}%` : height,
-      background: transparentBackground
-        ? "transparent"
-        : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
+      width: isPrintMode ? `${(width / imageWidth) * 100}%` : width,
+      height: isPrintMode && !`${height}`.includes("auto") ? `${(height / imageHeight) * 100}%` : height,
+      background: transparentBackground ? "transparent" : theme.widgets.clozeImageDragDrop.responseBoxBgColor,
       border: showDropItemBorder
         ? showDashedBorder
           ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
@@ -56,12 +54,7 @@ const ResponseContainers = ({
   };
 
   return responseContainers.map((container, index) => (
-    <DropContainer
-      key={container.id}
-      style={getContainerStyle(container)}
-      drop={onDrop}
-      index={index}
-    >
+    <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>
       {container.label && (
         <span className="sr-only" role="heading">
           Drop target {container.label}

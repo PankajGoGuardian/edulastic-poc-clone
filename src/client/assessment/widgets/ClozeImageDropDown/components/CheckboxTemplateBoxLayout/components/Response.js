@@ -43,8 +43,8 @@ const Response = ({
 
   let modifiedDimesion = {};
   if (isPrintPreview) {
-    modifiedDimesion.width = `${btnStyle.width/imageWidth*100}%`;
-    modifiedDimesion.height = `${btnStyle.height/imageHeight*100}%`;
+    modifiedDimesion.width = `${(btnStyle.width / imageWidth) * 100}%`;
+    modifiedDimesion.height = `${(btnStyle.height / imageHeight) * 100}%`;
   }
 
   const popoverContent = (
@@ -58,7 +58,7 @@ const Response = ({
   );
 
   const content = (
-    <div style={{...btnStyle, ...modifiedDimesion}} className={`${classNames} show-answer`} onClick={onClickHandler}>
+    <div style={{ ...btnStyle, ...modifiedDimesion }} className={`${classNames} show-answer`} onClick={onClickHandler}>
       <span
         className="index index-box"
         style={{ display: !checkAnswer && (showAnswer && !lessMinWidth) ? "flex" : "none" }}

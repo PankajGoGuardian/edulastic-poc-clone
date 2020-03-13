@@ -310,7 +310,13 @@ const MatchListPreview = ({
   return (
     <StyledPaperWrapper
       data-cy="matchListPreview"
-      style={{ fontSize, overflowX: isPrintPreview? "hidden" : "auto", overflowY: "hidden", margin: "auto", width: "100%" }}
+      style={{
+        fontSize,
+        overflowX: isPrintPreview ? "hidden" : "auto",
+        overflowY: "hidden",
+        margin: "auto",
+        width: "100%"
+      }}
       padding={smallSize}
       ref={previewWrapperRef}
       boxShadow={smallSize ? "none" : ""}

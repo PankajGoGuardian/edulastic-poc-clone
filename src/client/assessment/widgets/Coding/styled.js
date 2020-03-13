@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { TextField } from "@edulastic/common";
-import { themeColor, white, borderGrey, fadedGrey, greyThemeLighter, lightGreySecondary, green } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  borderGrey,
+  fadedGrey,
+  greyThemeLighter,
+  lightGreySecondary,
+  green
+} from "@edulastic/colors";
 import { Button, Table, Tabs, Radio, Modal, Form } from "antd";
 import { StyledPaperWrapper } from "../../styled/Widget";
 

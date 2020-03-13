@@ -1,4 +1,5 @@
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
+import DndSimulatorDataTransfer from "../../../../support/misc/dndSimulator";
 
 export default class PlayListReview {
   constructor() {
@@ -43,53 +44,9 @@ export default class PlayListReview {
 
   getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
 
-  getHideModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="HIDE MODULE"]');
-
-  getShowModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="SHOW MODULE"]');
-
-  getHideTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="HIDE"]');
-
-  getShowTestByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="SHOW"]');
-
   // *** ELEMENTS END ***
 
-  // *** ACTIONS START ***
-
-  routeSavePlayList = () => {
-    cy.server();
-    cy.route("PUT", "**/playlists/*").as("savePlaylist");
-  };
-
-  waitForSavePlayList = () => cy.wait("@savePlaylist");
-
-  clickOnHideModuleByModule = mod => {
-    this.routeSavePlayList();
-    this.getHideModuleByModule(mod).click();
-    this.waitForSavePlayList();
-  };
-
-  clickShowModuleByModule = mod => {
-    this.routeSavePlayList();
-    this.getShowModuleByModule(mod).click();
-    this.waitForSavePlayList();
-  };
-
-  clickShowTestByTestByMod = (mod, test) => {
-    this.routeSavePlayList();
-    this.getShowTestByTestByModule(mod, test).click();
-    this.waitForSavePlayList();
-  };
-
-  clickHideTestByTestByMod = (mod, test) => {
-    this.routeSavePlayList();
-    this.getHideTestByTestByModule(mod, test).click();
-    this.waitForSavePlayList();
-  };
-
-  clickShowAssignmentByTestByModule = (mod, test) => this.getShowAssignmentByTestByModule(mod, test).click();
-
-  clickHideAssignmentByTestByModule = (mod, test) => this.getHideAssignmentByTestByModule(mod, test).click();
-
+  // *** ACTIONS END ***
   clickLcbIconByTestByIndex = (mod, test, index) => {
     cy.server();
     cy.route("GET", "**/api/realtime/url").as("lcbLoad");
@@ -177,6 +134,91 @@ export default class PlayListReview {
   verifyPlalistSubject = sub => this.getPlaylistSub().should("contain.text", sub);
 
   verifyModuleCompleteText = () => this.getModuleCompleteStatus().should("have.text", "MODULE COMPLETED");
+
+  /* shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
+    this.getDragHandlerByTestByModule(mod, sourceTest).as("source-container");
+    this.getTestByTestByModule(mod, targetTest)
+      .parent()
+      .as("target-container");
+
+    const opts = {
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    cy.get("@source-container")
+      .trigger("dragstart", {})
+      .trigger("drag", {});
+
+    cy.get("@target-container").then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
+      cy.get("@target").trigger("dragover", {
+        clientX: x,
+        clientY: y
+      });
+      cy.get("@target").trigger("drop", {
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+    });
+  };
+
+  shuffleModuleByIndex = (source, target) => {
+    this.getDragHandlerByModule(source).as("source-container");
+    this.getModuleRowByModule(target)
+      .parent()
+      .as("target-container");
+
+    const opts = {
+      offsetX: 0,
+      offsetY: 0,
+      ...(options || {})
+    };
+
+    cy.get("@source-container")
+      .trigger("dragstart", {})
+      .trigger("drag", {});
+
+    cy.get("@target-container").then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
+
+      cy.get("@target").trigger("dragover", {
+        clientX: x,
+        clientY: y
+      });
+
+      cy.get("@target").trigger("drop", {
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+    });
+  }; */
+
+  shuffleTestBetweenModule = (sourcemod, sourceTest, targetModule) => {
+    this.getTestByTestByModule(sourcemod, sourceTest).as("source-container");
+    this.getModuleRowByModule(targetModule).as("target-container");
+
+    const opts = {
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    cy.get("@source-container")
+      .trigger("dragstart")
+      .trigger("drag");
+
+    cy.get("@target-container").then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
+      cy.get("@target").trigger("dragover");
+      cy.get("@target").trigger("drop", {
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+    });
+  };
 
   // *** APPHELPERS END ***
 }

@@ -183,10 +183,7 @@ class Display extends Component {
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
     }
-    const largestResponseWidth = responseContainers.reduce(
-      (acc, resp) => Math.max(acc, resp.width),
-      0
-    );
+    const largestResponseWidth = responseContainers.reduce((acc, resp) => Math.max(acc, resp.width), 0);
     let containerHeight = 0;
     // calculate the dropdown menu height, its top relative to container, for each responseContainer
     const tops = [];
@@ -218,52 +215,48 @@ class Display extends Component {
           smallSize={smallSize}
           height={isPrintPreview ? "" : containerHeight}
         >
-          {!isPrintPreview ? <StyledPreviewImage
-            imageSrc={imageUrl || ""}
-            width={this.getWidth()}
-            height={this.getHeight()}
-            alt={imageAlterText}
-            maxHeight={maxHeight}
-            maxWidth={maxWidth}
-            style={{
-              position: "absolute",
-              top: imageOptions.y || 0,
-              left: imageOptions.x || 0
-            }}
-          /> : <img
-            src={imageUrl}
-            alt={imageAlterText}
-            style={{
-              width: "100%"
-            }}
-            />}
+          {!isPrintPreview ? (
+            <StyledPreviewImage
+              imageSrc={imageUrl || ""}
+              width={this.getWidth()}
+              height={this.getHeight()}
+              alt={imageAlterText}
+              maxHeight={maxHeight}
+              maxWidth={maxWidth}
+              style={{
+                position: "absolute",
+                top: imageOptions.y || 0,
+                left: imageOptions.x || 0
+              }}
+            />
+          ) : (
+            <img
+              src={imageUrl}
+              alt={imageAlterText}
+              style={{
+                width: "100%"
+              }}
+            />
+          )}
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
-              const {
-                height: individualHeight = 0,
-                width: individualWidth = 0
-              } = responseContainer;
+              const { height: individualHeight = 0, width: individualWidth = 0 } = responseContainer;
               const { heightpx: globalHeight = 0, widthpx: globalWidth = 0 } = uiStyle;
               const { minWidth, minHeight } = response;
-              const height =
-                parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
+              const height = parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
               const width = parseInt(individualWidth, 10) || parseInt(globalWidth, 10) || minWidth;
               const dropTargetIndex = index;
               const top = topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize);
               const left = topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize);
               const btnStyle = {
-                height: isPrintPreview ? `${height/containerHeight*100}%` : height,
-                width: isPrintPreview ? `${width/containerWidth*100}%` : width,
-                top: isPrintPreview ? `${top/containerHeight*100}%` : top,
-                left: isPrintPreview ? `${left/containerWidth*100}%` : left,
+                height: isPrintPreview ? `${(height / containerHeight) * 100}%` : height,
+                width: isPrintPreview ? `${(width / containerWidth) * 100}%` : width,
+                top: isPrintPreview ? `${(top / containerHeight) * 100}%` : top,
+                left: isPrintPreview ? `${(left / containerWidth) * 100}%` : left,
                 border: showDropItemBorder
                   ? showDashedBorder
-                    ? `dashed 2px ${
-                        theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
-                      }`
-                    : `solid 1px ${
-                        theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor
-                      }`
+                    ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                    : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
                   : 0,
                 position: "absolute",
                 borderRadius: 5
@@ -295,18 +288,11 @@ class Display extends Component {
                         label: op
                       }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={
-                        isReviewTab
-                          ? cAnswers[dropTargetIndex]
-                          : userSelectedAnswers[dropTargetIndex]
-                      }
+                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelectedAnswers[dropTargetIndex]}
                       isPrintPreview={isPrint || isPrintPreview}
                     />
                   )}
-                  <Pointer
-                    className={responseContainer.pointerPosition}
-                    width={responseContainer.width}
-                  >
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                     <Point />
                     <Triangle theme={theme} />
                   </Pointer>
@@ -343,13 +329,9 @@ class Display extends Component {
         minWidthShowAnswer={response.minWidthShowAnswer}
         minHeight={response.minHeight}
         userSelections={
-          item && item.activity && item.activity.userResponse
-            ? item.activity.userResponse
-            : userSelections
+          item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections
         }
-        evaluation={
-          item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
-        }
+        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
         imageOptions={imageOptions}
         onClickHandler={this.onClickCheckboxHandler}
         largestResponseWidth={largestResponseWidth}
@@ -358,8 +340,7 @@ class Display extends Component {
         isPrintPreview={isPrintPreview || isPrint}
       />
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altAnswers = get(validation, "altResponses", []);
     const correctAnswerBoxLayout = (
       <React.Fragment>
@@ -394,10 +375,12 @@ class Display extends Component {
               <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
             </QuestionTitleWrapper>
 
-            <TemplateBoxContainer smallSize={smallSize} flexDirection="column" className="cloze-image-dropdown-response">
-              <TemplateBoxLayoutContainer smallSize={smallSize}>
-                {templateBoxLayout}
-              </TemplateBoxLayoutContainer>
+            <TemplateBoxContainer
+              smallSize={smallSize}
+              flexDirection="column"
+              className="cloze-image-dropdown-response"
+            >
+              <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
               {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
               {answerBox}
             </TemplateBoxContainer>

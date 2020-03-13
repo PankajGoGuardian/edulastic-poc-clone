@@ -22,6 +22,7 @@ export default class PlayListHeader {
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+  getDropPlaylist = () => cy.get('[data-cy="drop-playlist"]');
 
   clickOnDescription = () => {
     this.getSummaryButton.click({ force: true });
@@ -94,5 +95,6 @@ export default class PlayListHeader {
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
   // *** APPHELPERS END ***
 }

@@ -92,7 +92,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   const padding = 30;
   const widthOverflow = scrollWidth + padding + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
- 
+
   const boxHeight = response?.heightpx || responseBtnStyle.heightpx;
 
   const heightOverflow = imageDimensions.height > boxHeight || scrollHeight >= boxHeight;

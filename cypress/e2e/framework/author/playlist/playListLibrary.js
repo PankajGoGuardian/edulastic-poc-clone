@@ -4,6 +4,7 @@ import TestSummayTab from "../tests/testDetail/testSummaryTab";
 import PlayListHeader from "./playListHeader";
 import PlayListAddTest from "./playListAddTestTab";
 import PlayListReview from "./playListReview";
+import CypressHelper from "../../util/cypressHelpers";
 
 export default class PlayListLibrary {
   constructor() {
@@ -19,6 +20,7 @@ export default class PlayListLibrary {
 
   getPlayListCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
 
+  //TODO: move this to plalist setting once all settings are appearing on UI
   getCustomizationSwitch = () => cy.get('[data-cy="customization"]');
 
   // *** ELEMENTS END ***
@@ -49,6 +51,7 @@ export default class PlayListLibrary {
 
   verifyCustomization = playlistid => {
     return this.header.clickOnCustomization().then(xhr => {
+      expect(xhr.status).to.eq(200);
       expect(xhr.response.body.result._id).to.not.eq(playlistid);
       cy.saveplayListDetailToDelete(xhr.response.body.result._id);
       return cy.wait(1).then(() => xhr.response.body.result._id);
@@ -72,6 +75,7 @@ export default class PlayListLibrary {
   seachAndClickPlayListById = id => {
     this.sidebar.clickOnPlayListLibrary();
     this.searchFilter.clearAll();
+    this.searchFilter.typeInSearchBox(id);
     this.clickOnPlayListCardById(id);
   };
 
@@ -105,5 +109,15 @@ export default class PlayListLibrary {
     return this.addTestTab.clickOnDone(true);
   };
 
+  searchAndClickOnDropDownByClass = text => {
+    cy.server();
+    cy.route("POST", "**/search/student").as("search-students");
+    CypressHelper.selectDropDownByAttribute("selectClass", text);
+    cy.wait("@search-students");
+  };
+
+  searchAndClickOnDropDownByStudent = (name, clas) => {
+    CypressHelper.selectDropDownByAttribute("selectStudent", name);
+  };
   // *** APPHELPERS END ***
 }

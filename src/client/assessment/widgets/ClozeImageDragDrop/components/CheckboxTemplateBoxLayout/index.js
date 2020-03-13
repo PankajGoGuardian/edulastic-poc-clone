@@ -56,8 +56,8 @@ const CheckboxTemplateBox = ({
 
   const btnStyle = {
     widthpx: responseContainer.width,
-    top: isPrintMode ? `${responseContainer.top/imageHeight*100}%` : responseContainer.top,
-    left: isPrintMode ? `${responseContainer.left/imageWidth*100}%` : responseContainer.left,
+    top: isPrintMode ? `${(responseContainer.top / imageHeight) * 100}%` : responseContainer.top,
+    left: isPrintMode ? `${(responseContainer.left / imageWidth) * 100}%` : responseContainer.left,
     position: "absolute",
     borderRadius: 5
   };
@@ -89,9 +89,7 @@ const CheckboxTemplateBox = ({
   }
 
   const dragItemStyle = {
-    border: `${
-      showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-    }`,
+    border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
     padding: lessMinWidth ? "0px 2px" : "0px 5px",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
@@ -104,20 +102,15 @@ const CheckboxTemplateBox = ({
 
   const dropContainerStyle = {
     ...btnStyle,
-    width: isPrintMode ? `${responseContainer.width/imageWidth*100}%` : responseContainer.width,
-    height: isPrintMode ? `${responseContainer.height/imageHeight*100}%` : responseContainer.height,
-    minWidth: lessMinWidth
-      ? parseInt(responseContainer.width, 10) + 4
-      : response.minWidthShowAnswer,
+    width: isPrintMode ? `${(responseContainer.width / imageWidth) * 100}%` : responseContainer.width,
+    height: isPrintMode ? `${(responseContainer.height / imageHeight) * 100}%` : responseContainer.height,
+    minWidth: lessMinWidth ? parseInt(responseContainer.width, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
   };
 
-  let containerClassName = `imagelabeldragdrop-droppable active ${
-    isChecked ? "check-answer" : "noAnswer"
-  } ${status}`;
-  containerClassName =
-    showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
+  let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
+  containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
 
   const icons = (checkAnswer || (showAnswer && !lessMinWidth)) && (
     <>
@@ -193,7 +186,10 @@ const CheckboxTemplateBox = ({
                     width: isPrintMode ? "" : responseContainer.width,
                     height: isPrintMode ? "" : responseContainer.height
                   }
-                : { width: isPrintMode ? "" : responseContainer.width, height: isPrintMode ? "" : responseContainer.height }
+                : {
+                    width: isPrintMode ? "" : responseContainer.width,
+                    height: isPrintMode ? "" : responseContainer.height
+                  }
             }
             isExpressGrader={isExpressGrader}
           />
@@ -205,15 +201,7 @@ const CheckboxTemplateBox = ({
 };
 
 const CheckboxTemplateBoxLayout = props => {
-  const {
-    checkAnswer,
-    responseContainers,
-    annotations,
-    image,
-    snapItems,
-    isSnapFitValues,
-    showDropItemBorder
-  } = props;
+  const { checkAnswer, responseContainers, annotations, image, snapItems, isSnapFitValues, showDropItemBorder } = props;
   const lessMinWidth = responseContainers.some(
     responseContainer => parseInt(responseContainer.width, 10) < response.minWidthShowAnswer
   );

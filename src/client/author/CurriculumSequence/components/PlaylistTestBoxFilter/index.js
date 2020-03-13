@@ -40,6 +40,7 @@ const PlaylistTestBoxFilter = props => {
 
       <Title>status</Title>
       <Select
+        data-cy="test-status"
         placeholder="Select Status"
         style={{ width: 315, height: 40, lineHeight: 40 }}
         value={status}
@@ -53,6 +54,7 @@ const PlaylistTestBoxFilter = props => {
       <br />
       <Title>authored</Title>
       <Select
+        data-cy="test-authored"
         placeholder="Select Authored"
         style={{ width: 315, height: 40, lineHeight: 40 }}
         value={authoredBy}
@@ -66,6 +68,7 @@ const PlaylistTestBoxFilter = props => {
       <br />
       <Title>grade</Title>
       <Select
+        data-cy="test-grade"
         mode="multiple"
         style={{ width: 315, minHeight: "40px", lineHeight: 40 }}
         placeholder="Select Grades"
@@ -78,6 +81,7 @@ const PlaylistTestBoxFilter = props => {
       <br />
       <Title>subject</Title>
       <Select
+        data-cy="test-subject"
         placeholder="Select Subject"
         style={{ width: 315, height: 40, lineHeight: 40 }}
         value={subject}
@@ -91,6 +95,7 @@ const PlaylistTestBoxFilter = props => {
       <br />
       <Title>collection</Title>
       <Select
+        data-cy="test-collection"
         placeholder="Select Collection"
         style={{ width: 315, height: 40, lineHeight: 40 }}
         value={collection}

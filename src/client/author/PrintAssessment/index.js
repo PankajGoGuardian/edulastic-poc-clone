@@ -62,7 +62,7 @@ const PrintAssessment = ({ match, userRole }) => {
 
   return (
     <PrintAssessmentContainer>
-      <div style={{padding: "0 20px"}}>
+      <div style={{ padding: "0 20px" }}>
         <StyledTitle>
           <b>
             <Color>Edu</Color>
@@ -80,21 +80,22 @@ const PrintAssessment = ({ match, userRole }) => {
       {!isContentHidden ? (
         <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
           {test.questions.map((question, index) => {
-            const questionHeight = question.type == "clozeImageDropDown" ? {minHeight: "500px"} : {};
+            const questionHeight = question.type == "clozeImageDropDown" ? { minHeight: "500px" } : {};
             return (
-            <div style={index !== 0 ? {pageBreakInside: "avoid", ...questionHeight} : questionHeight}>
-              <QuestionWrapper
-                view="preview"
-                type={question.type}
-                previewTab="clear"
-                qIndex={index}
-                data={{ ...question, smallSize: true }}
-                isPrint
-                isPrintPreview
-              />
-              <hr />
-            </div>
-          )})}
+              <div style={index !== 0 ? { pageBreakInside: "avoid", ...questionHeight } : questionHeight}>
+                <QuestionWrapper
+                  view="preview"
+                  type={question.type}
+                  previewTab="clear"
+                  qIndex={index}
+                  data={{ ...question, smallSize: true }}
+                  isPrint
+                  isPrintPreview
+                />
+                <hr />
+              </div>
+            );
+          })}
           <StyledAnswerWrapper>
             <span style={{ textDecoration: "underline", fontWeight: "700", fontSize: "18px" }}>
               Answer Key of {test.title}
@@ -112,8 +113,8 @@ const PrintAssessment = ({ match, userRole }) => {
       ) : (
         <div>
           <b>
-            View of Items is restricted by the admin if content visibility is set to &quot;Always hidden&quot; OR &quot;Hide prior to
-            grading&quot;
+            View of Items is restricted by the admin if content visibility is set to &quot;Always hidden&quot; OR
+            &quot;Hide prior to grading&quot;
           </b>
         </div>
       )}
@@ -124,7 +125,7 @@ const PrintAssessment = ({ match, userRole }) => {
 PrintAssessment.propTypes = {
   match: PropTypes.object,
   userRole: PropTypes.string
-}
+};
 
 const enhance = compose(
   withRouter,
@@ -142,8 +143,8 @@ const PrintAssessmentContainer = styled.div`
   background-color: white;
   pointer-events: none;
   * {
-    -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
-    color-adjust: exact !important;                 /*Firefox*/
+    -webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+    color-adjust: exact !important; /*Firefox*/
   }
   .print-assessment-title-container {
     .ant-col {
@@ -174,34 +175,35 @@ const PrintAssessmentContainer = styled.div`
   }
   .multiple-choice-wrapper {
     .multiplechoice-optionlist {
-      div, label {
-        margin-bottom: 0px!important;
+      div,
+      label {
+        margin-bottom: 0px !important;
       }
     }
   }
   .classification-preview {
-    overflow: hidden!important;
+    overflow: hidden !important;
     .classification-preview-wrapper {
       align-items: center;
-      overflow: hidden!important;
-      >div {
+      overflow: hidden !important;
+      > div {
         max-width: 100%;
         width: 100%;
       }
       .choice-items-wrapper {
-        flex-direction: column!important;
+        flex-direction: column !important;
       }
       .classification-preview-wrapper-response {
-        >div {
-          height: auto!important;
-          width: auto!important;
-          >div {
+        > div {
+          height: auto !important;
+          width: auto !important;
+          > div {
             page-break-inside: avoid;
           }
         }
         div {
-          position: relative!important;
-          transform: none!important;
+          position: relative !important;
+          transform: none !important;
           text-align: center;
         }
         .table-layout {

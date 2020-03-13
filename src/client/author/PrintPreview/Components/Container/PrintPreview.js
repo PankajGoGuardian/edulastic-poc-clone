@@ -132,7 +132,7 @@ const QuestionContentArea = styled.div`
       }
       .responseboxContainer {
         width: calc(100% - 30px);
-        +div {
+        + div {
           width: 100%;
         }
       }
@@ -141,7 +141,7 @@ const QuestionContentArea = styled.div`
           width: 100%;
         }
         .sort-list-wrapper {
-          >div >div {
+          > div > div {
             margin: auto;
           }
         }
@@ -157,10 +157,10 @@ const QuestionContentArea = styled.div`
       }
     }
     .question-tab-container {
-      padding: 0!important;
+      padding: 0 !important;
       .multiple-choice-wrapper {
         .multiplechoice-optionlist {
-          >div {
+          > div {
             //margin-bottom: 5px!important;
           }
         }
@@ -177,28 +177,28 @@ const QuestionContentArea = styled.div`
       }
     }
     .classification-preview {
-      overflow: hidden!important;
+      overflow: hidden !important;
       .classification-preview-wrapper {
         align-items: center;
-        overflow: hidden!important;
-        >div {
+        overflow: hidden !important;
+        > div {
           max-width: 100%;
           width: 100%;
         }
         .choice-items-wrapper {
-          flex-direction: column!important;
+          flex-direction: column !important;
         }
         .classification-preview-wrapper-response {
-          >div {
-            height: auto!important;
-            width: auto!important;
-            >div {
+          > div {
+            height: auto !important;
+            width: auto !important;
+            > div {
               page-break-inside: avoid;
             }
           }
           div {
-            position: relative!important;
-            transform: none!important;
+            position: relative !important;
+            transform: none !important;
             text-align: center;
           }
           .table-layout {
@@ -207,7 +207,7 @@ const QuestionContentArea = styled.div`
           }
         }
         .answer-draggable-wrapper {
-          width: 100%!important;
+          width: 100% !important;
         }
       }
     }

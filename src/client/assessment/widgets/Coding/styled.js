@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { TextField } from "@edulastic/common";
-import { themeColor, white, borderGrey, fadedGrey, greyThemeLighter } from "@edulastic/colors";
-import { Button, Table, Tabs, Radio } from "antd";
+import { themeColor, white, borderGrey, fadedGrey, greyThemeLighter, lightGreySecondary, green } from "@edulastic/colors";
+import { Button, Table, Tabs, Radio, Modal, Form } from "antd";
 import { StyledPaperWrapper } from "../../styled/Widget";
 
 export const SubtitleContainer = styled.div`
@@ -9,6 +9,13 @@ export const SubtitleContainer = styled.div`
   background: #f8f8fb;
   borderradius: 4px;
   ${({ style }) => style};
+  button {
+    text-transform: uppercase;
+    &:hover {
+      background: green;
+      color: ${white};
+    }
+  }
 `;
 
 export const EditorHeader = styled.div`
@@ -19,6 +26,17 @@ export const EditorHeader = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+// export const StyledFroalaEditor = styled(FroalaEditor)`
+//   .fr-element {
+//     background: #f8f8fb !important;
+//     padding: 20px 20px;
+//   }
+//   .fr-placeholder {
+//     color: #c1bebe;
+//     letter-spacing: 1px;
+//     z-index: 2;
+//   }
+// `;
 
 export const StyledSectionContainer = styled.div`
   padding: 15px 30px 0 30px;
@@ -148,6 +166,9 @@ export const StyledRadio = styled(Radio)`
 export const StyledRadioGroup = styled(Radio.Group)`
   text-transform: uppercase;
   font-weight: 600;
+  label {
+    font-size: ${({ fontSize }) => fontSize};
+  }
 `;
 
 export const EmptyWrapper = styled.div``;
@@ -157,4 +178,94 @@ export const CodeReviewWrapper = styled(StyledPaperWrapper)`
   ${({ flowLayout }) => flowLayout && "background: transparent"};
   padding: ${props => (props.padding ? props.padding : "0px")};
   box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
+`;
+
+export const StyledModal = styled(Modal)`
+  .ant {
+    &-modal {
+      &-content {
+        padding: 0 30px;
+        background: ${lightGreySecondary};
+      }
+      &-header {
+        padding: 25px 24px 25px 0;
+        background: ${lightGreySecondary};
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+      }
+      &-title {
+        font-weight: bold;
+        font-size: 20px;
+      }
+      &-body {
+        background: ${white};
+        border-radius: 10px;
+        box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+        border: 1px solid #f3f3f3;
+      }
+      &-footer {
+        border: none;
+        padding: 30px 30px 20px 30px;
+        text-align: center;
+        .ant-btn {
+          height: 40px;
+          padding: 0px 50px;
+          border-color: ${green};
+          text-transform: uppercase;
+          min-width: 200px;
+          &-primary {
+            background: ${green};
+            &:hover {
+              background: green;
+            }
+          }
+          &-secondary {
+            color: ${green};
+            &:hover {
+              background: ${green};
+              color: ${white};
+            }
+          }
+        }
+        button + button {
+          margin-left: 15px;
+        }
+      }
+      &-close-x {
+        font-size: 20px;
+        line-height: 61px;
+        color: black;
+      }
+    }
+  }
+`;
+
+export const StyledForm = styled(Form)`
+  .ant-row {
+    padding: 5px 0px;
+    .ant-radio-group {
+      height: 50px;
+    }
+  }
+  .ant-select-selection,
+  .ant-radio-inner,
+  textarea,
+  input,
+  select {
+    background: ${lightGreySecondary};
+  }
+  .ant-select-selection,
+  textarea,
+  input {
+    height: 40px;
+    border-radius: 0;
+  }
+  .ant-select-selection__rendered {
+    line-height: 40px;
+  }
+  .ant-select-dropdown,
+  .ant-dropdown {
+    z-index: 10000;
+  }
 `;

@@ -2491,10 +2491,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "standard"
         },
         codeStubs: [],
-        testCases: {
-          evaluationType: "auto",
-          values: []
-        },
+        testCaseEvaluationType: "auto",
+        testCases: [],
         solutions: [],
         layout: "left/right",
         editorConfig: {

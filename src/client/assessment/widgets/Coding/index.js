@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 
 import { replaceVariables } from "../../utils/variables";
 
@@ -24,9 +24,7 @@ import "./ace";
 
 const Coding = ({
   item,
-  history,
   view,
-  previewTab,
   smallSize,
   item: templateItem,
   fillSections,

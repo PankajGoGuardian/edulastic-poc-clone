@@ -467,6 +467,18 @@
         "tabs": {
           "summary": "summary",
           "testCases": "Test cases"
+        },
+        "form": {
+          "new": {
+            "title": "Add Test Case",
+            "options": {
+              "self": "Text input/output test case",
+              "mocha": "Mocha test cases"
+            }
+          },
+          "edit": {
+            "title": "Update Test Case"
+          }
         }
       },
       "languageSection": "Language Section",

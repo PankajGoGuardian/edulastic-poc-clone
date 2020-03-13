@@ -31,6 +31,19 @@ export const languages = [
   ]
 ];
 
+export const TestCaseCategories = [
+  "Independent cases",
+  "Invalid cases",
+  "More advanced cases",
+  "Negative cases",
+  "Outcome not possible cases",
+  "Repeated cases",
+  "Time complexity",
+  "Unexpected cases"
+];
+
+export const visibilityOptions = ["open", "hidden"];
+
 export const dataSource = [
   {
     id: 1,

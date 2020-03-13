@@ -126,6 +126,7 @@ const CodeEditor = ({
           onSelect={onLangChange}
           width="150px"
           bg={white}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
         >
           {item.languages.map((lang, index) => (
             <SelectInputStyled.Option value={lang} key={index} data-cy={`math-keyboard-dropdown-list-${index}`}>

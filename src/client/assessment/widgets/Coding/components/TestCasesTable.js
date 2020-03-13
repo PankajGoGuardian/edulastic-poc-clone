@@ -6,7 +6,7 @@ import { withTheme } from "styled-components";
 import { IconPencilEdit, IconTrash, IconEye } from "@edulastic/icons";
 import { themeColor, fadedGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { StyledTable, StyledTableButton, StyledTableHeader, StyledIconEye } from "../styled";
+import { StyledTable, StyledTableButton } from "../styled";
 
 const TestCasesTable = ({ onEditTestCase, handleDeleteTestCase, t, data, theme }) => {
   const columnsData = [
@@ -23,12 +23,20 @@ const TestCasesTable = ({ onEditTestCase, handleDeleteTestCase, t, data, theme }
     {
       title: t("component.coding.testCases.table.input"),
       dataIndex: "input",
-      render: input => <span>{input}</span>
+      render: input => (
+        <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", width: "100px" }}>
+          {input}
+        </div>
+      )
     },
     {
       title: t("component.coding.testCases.table.output"),
       dataIndex: "output",
-      render: output => <span>{output}</span>
+      render: output => (
+        <div style={{ textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", width: "100px" }}>
+          {output}
+        </div>
+      )
     },
     {
       title: t("component.coding.testCases.table.categories"),

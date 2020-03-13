@@ -1,7 +1,7 @@
+import React from "react";
+import PropTypes from "prop-types";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import PropTypes from "prop-types";
-import React from "react";
 import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";

@@ -1361,6 +1361,9 @@ export const defaultTheme = {
       footerButtonFontSizeSmall: smallLinkFontSize,
       headerTitleFontSizeLarge: questionTexticonFontSize,
       headerFilterFontSizeSmall: reviewPageHeaderFontSize
+    },
+    coding: {
+      buttonTestCaseFileUpload: themeColor
     }
   },
   classboard: {

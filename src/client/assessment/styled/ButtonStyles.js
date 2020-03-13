@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, greyThemeDark2 } from "@edulastic/colors";
+import { white, greyThemeDark2, greyThemeLight } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const CustomStyleBtn = styled(Button)`
@@ -13,8 +13,8 @@ export const CustomStyleBtn = styled(Button)`
     border: ${props => (props.ghost ? `1px solid ${greyThemeDark2}` : "0px")} !important;
     border-radius: ${props => (props.rounded ? "15px" : "4px")};
     display: ${props => props.display || "flex"};
-    align-items: center;
-    justify-content: center;
+    align-items: ${props => props.alignItems || "center"};
+    justify-content: ${props => props.justifyContent || "center"};
     cursor: pointer;
     text-transform: uppercase;
     font-size: ${props => props.theme.common.addNewChoiceButtonFontSize};
@@ -22,12 +22,18 @@ export const CustomStyleBtn = styled(Button)`
     letter-spacing: 0.2px;
     ${props => props.style};
 
+    &:disabled {
+      cursor: not-allowed;
+      color: ${greyThemeLight};
+    }
+
     & div,
     & span {
       font-size: ${props => props.theme.common.addNewChoiceButtonFontSize};
     }
 
     & svg {
+      stroke: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
       fill: ${props => (props.ghost ? greyThemeDark2 : props.color || white)};
       margin-right: 10px;
     }

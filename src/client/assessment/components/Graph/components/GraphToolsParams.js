@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Radio } from "antd";
-
+import unset from "lodash/unset";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { InnerTitle } from "../../../styled/InnerTitle";
 import { RadioLabel } from "../../../styled/RadioWithLabel";
+import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { TextInputStyled } from "../../../styled/InputStyles";
 
 class GraphToolsParams extends Component {
   getDrawingPromptOptions = () => {
@@ -25,6 +28,10 @@ class GraphToolsParams extends Component {
       target: { value }
     } = e;
 
+    if (value === "byTools") {
+      unset(toolbar, "includeDashed");
+    }
+
     setToolbar({
       ...toolbar,
       drawingPrompt: value
@@ -32,49 +39,71 @@ class GraphToolsParams extends Component {
   };
 
   changeLabel = e => {
-    this.props.changeLabel(e.target.name, e.target.value);
+    const { changeLabel } = this.props;
+    changeLabel(e.target.name, e.target.value);
+  };
+
+  changeToolbarOption = prop => e => {
+    const { toolbar, setToolbar } = this.props;
+    setToolbar({
+      ...toolbar,
+      [prop]: e.target.checked
+    });
   };
 
   render() {
     const {
       t,
-      toolbar: { drawingPrompt }
+      toolbar: { drawingPrompt, drawingObjects, includeDashed }
     } = this.props;
-    const drawingObjects = this.props.toolbar.drawingObjects;
 
     return (
       <React.Fragment>
         <Row>
-          <Col md={24} marginBottom="0px">
-            <InnerTitle innerText={t("component.graphing.drawingprompt")} />
-            <Radio.Group value={drawingPrompt} onChange={this.handleSelectDrawingPrompt} data-cy="drawingPrompt">
-              {this.getDrawingPromptOptions().map(({ value, label }) => (
-                <RadioLabel width="100%" mb="10px" value={value} key={value}>
+          <InnerTitle innerText={t("component.graphing.drawingprompt")} />
+          <Radio.Group value={drawingPrompt} onChange={this.handleSelectDrawingPrompt} data-cy="drawingPrompt">
+            {this.getDrawingPromptOptions().map(({ value, label }) => (
+              <Col md={12} marginBottom="0px" key={value}>
+                <RadioLabel width="100%" mb="10px" value={value}>
                   {label}
                 </RadioLabel>
-              ))}
-            </Radio.Group>
-          </Col>
+              </Col>
+            ))}
+          </Radio.Group>
         </Row>
-        {drawingPrompt == "byObjects" ? (
-          <div>
-            {drawingObjects &&
-              drawingObjects.map((obj, i) => (
-                <div key={i}>
-                  <span>
-                    {obj.type.charAt(0).toUpperCase() + obj.type.slice(1)}{" "}
-                    {obj.pointLabels && obj.pointLabels.map((point, i) => point.label)}
-                  </span>
-                  <input
-                    value={typeof obj.label === "boolean" ? "" : obj.label}
-                    onChange={this.changeLabel}
-                    name={obj.id}
-                  />
-                </div>
+        {drawingPrompt == "byObjects" && drawingObjects && (
+          <Row gutter={24}>
+            <Col md={12}>
+              {drawingObjects.map((obj, i) => (
+                <Row key={i} center>
+                  <Col md={24}>
+                    <Label>
+                      {obj.type.charAt(0).toUpperCase() + obj.type.slice(1)}{" "}
+                      {obj.pointLabels && obj.pointLabels.map(point => point.label)}
+                    </Label>
+                    <TextInputStyled
+                      value={typeof obj.label === "boolean" ? "" : obj.label}
+                      onChange={this.changeLabel}
+                      name={obj.id}
+                    />
+                  </Col>
+                </Row>
               ))}
-          </div>
-        ) : (
-          ""
+            </Col>
+            <Col md={12}>
+              <Row>
+                <Col md={24}>
+                  <CheckboxLabel
+                    name="includeDashed"
+                    onChange={this.changeToolbarOption("includeDashed")}
+                    checked={includeDashed}
+                  >
+                    {t("component.graphing.includeDashed")}
+                  </CheckboxLabel>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         )}
       </React.Fragment>
     );

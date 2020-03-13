@@ -13,7 +13,8 @@ import {
   Polynom,
   Secant,
   Sin,
-  Tangent
+  Tangent,
+  Area
 } from ".";
 
 function onHandler(board, event) {
@@ -40,6 +41,12 @@ function onHandler(board, event) {
       id,
       label,
       baseColor,
+      x: coords.usrCoords[1],
+      y: coords.usrCoords[2]
+    });
+  } else if (type === CONSTANT.TOOLS.AREA) {
+    newElement = Area.create(board, {
+      id,
       x: coords.usrCoords[1],
       y: coords.usrCoords[2]
     });

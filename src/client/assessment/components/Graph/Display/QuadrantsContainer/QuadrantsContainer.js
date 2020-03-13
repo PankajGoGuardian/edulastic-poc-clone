@@ -223,7 +223,7 @@ class GraphContainer extends PureComponent {
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
-    if (!this.drawingObjectsAreVisible()) {
+    if (!this.drawingObjectsAreVisible) {
       this._graph.setTool(tools[0]);
     }
 
@@ -564,13 +564,13 @@ class GraphContainer extends PureComponent {
 
   allControls = ["undo", "redo", "reset", "delete"];
 
-  drawingObjectsAreVisible = () => {
+  get drawingObjectsAreVisible() {
     const { view, toolbar } = this.props;
     const { drawingPrompt } = toolbar;
     return view !== EDIT && drawingPrompt === "byObjects";
-  };
+  }
 
-  getDrawingObjects = () => {
+  get getDrawingObjects() {
     const { toolbar, elements } = this.props;
     const { drawingObjects } = toolbar;
     const { selectedDrawingObject } = this.state;
@@ -580,7 +580,21 @@ class GraphContainer extends PureComponent {
       disabled: elements.findIndex(el => el.id === item.id) > -1,
       selected: !!(selectedDrawingObject && selectedDrawingObject.id === item.id)
     }));
-  };
+  }
+
+  get hasFillArea() {
+    const {
+      toolbar: { tools = [] }
+    } = this.props;
+    return tools.includes("area");
+  }
+
+  get includeDashed() {
+    const {
+      toolbar: { includeDashed }
+    } = this.props;
+    return includeDashed;
+  }
 
   selectDrawingObject = drawingObject => {
     this.setState({ selectedDrawingObject: drawingObject });
@@ -630,7 +644,7 @@ class GraphContainer extends PureComponent {
       isPrintPreview
     } = this.props;
     const { tools, drawingPrompt } = toolbar;
-    const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
+    const { selectedTool, elementSettingsAreOpened, elementId, selectedDrawingObject } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
 
@@ -651,7 +665,7 @@ class GraphContainer extends PureComponent {
             <StyledToolsContainer>
               <Tools
                 canEditTools={view === EDIT && !bgShapes}
-                tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible() ? [] : tools}
+                tools={bgShapes ? this.allTools : this.drawingObjectsAreVisible ? [] : tools}
                 setTools={this.setTools}
                 controls={bgShapes ? this.allControls : controls}
                 selected={[selectedTool]}
@@ -662,10 +676,13 @@ class GraphContainer extends PureComponent {
             </StyledToolsContainer>
           )}
           <JSXBoxWithDrawingObjectsWrapper>
-            {this.drawingObjectsAreVisible() && !disableResponse && (
+            {this.drawingObjectsAreVisible && !disableResponse && (
               <DrawingObjects
                 selectDrawingObject={this.selectDrawingObject}
-                drawingObjects={this.getDrawingObjects()}
+                drawingObjects={this.getDrawingObjects}
+                showSolutionSet={this.hasFillArea}
+                includeDashed={this.includeDashed}
+                selectedObj={selectedDrawingObject}
               />
             )}
             <JSXBoxWrapper>

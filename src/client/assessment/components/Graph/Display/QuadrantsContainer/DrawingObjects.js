@@ -1,10 +1,9 @@
 import React, { Component } from "react";
+import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import striptags from "striptags";
-
-import { secondaryTextColor, fadedBlack, greyDarken, greenDark } from "@edulastic/colors";
-
+import cloneDeep from "lodash/cloneDeep";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -15,18 +14,17 @@ import {
   IconGraphCircle as IconCircle,
   IconGraphVector as IconVector,
   IconGraphSegment as IconSegment,
-  IconGraphPolygon as IconPolygon
+  IconGraphPolygon as IconPolygon,
+  IconGraphArea as IconArea
 } from "@edulastic/icons";
-
+import { CustomStyleBtn } from "../../../../styled/ButtonStyles";
+import { RadioLabel, RadioLabelGroup } from "../../../../styled/RadioWithLabel";
+import { InnerTitle } from "../../../../styled/InnerTitle";
 import utils from "../../common/utils";
 
 class DrawingObjects extends Component {
-  onClick = drawingObject => {
-    const { selectDrawingObject } = this.props;
-    if (drawingObject.disabled || drawingObject.selected) {
-      return;
-    }
-    selectDrawingObject(drawingObject);
+  state = {
+    isDashed: {}
   };
 
   getLabel = drawingObject => {
@@ -53,9 +51,7 @@ class DrawingObjects extends Component {
 
     const options = {
       width: toolName === "point" ? 10 : toolName === "circle" || toolName === "polygon" ? 15 : 20,
-      height: 20,
-      color: greenDark,
-      stroke: greenDark
+      height: 20
     };
 
     const iconsByToolName = {
@@ -75,30 +71,89 @@ class DrawingObjects extends Component {
       parabola: () => <IconParabola {...options} />,
       parabola2: () => <IconParabola2 {...options} />,
       sine: () => <IconSine {...options} />,
-      polygon: () => <IconPolygon {...options} />
+      polygon: () => <IconPolygon {...options} />,
+      area: () => <IconArea {...options} />
     };
 
     return iconsByToolName[toolName]();
   };
 
+  setDrawingObj(drawingObj) {
+    const { selectDrawingObject } = this.props;
+    selectDrawingObject(drawingObj);
+  }
+
+  handleClikDrawingObj = drawingObject => () => {
+    let newDrawingObject = cloneDeep(drawingObject);
+    const { includeDashed } = this.props;
+    if (newDrawingObject.disabled || newDrawingObject.selected) {
+      return;
+    }
+    const { isDashed } = this.state;
+    if (includeDashed) {
+      newDrawingObject = { ...newDrawingObject, dashed: isDashed[drawingObject.id] === "dashed" };
+    }
+    this.setDrawingObj(newDrawingObject);
+  };
+
+  handleChangeLineStyle = drawingObject => e => {
+    const newDrawingObject = { ...drawingObject, dashed: e.target.value === "dashed" };
+    const { isDashed } = this.state;
+    this.setState({ isDashed: { ...isDashed, [drawingObject.id]: e.target.value } }, () => {
+      this.setDrawingObj(newDrawingObject);
+    });
+  };
+
+  drawArea = () => {
+    const { selectedObj, selectDrawingObject } = this.props;
+    if (selectedObj) {
+      selectDrawingObject(null);
+    } else {
+      selectDrawingObject({ type: "area" });
+    }
+  };
+
   render() {
-    const { drawingObjects } = this.props;
+    const { drawingObjects, showSolutionSet, selectedObj, includeDashed, t } = this.props;
+    const { isDashed } = this.state;
     return (
       <Container>
-        <Title>CLICK TO SELECT</Title>
+        <InnerTitle innerText={t("component.graphing.clickToSelect")} />
         {drawingObjects.map((drawingObject, index) => (
-          <Button
-            style={{
-              boxShadow: `inset 0 0 1em ${drawingObject.baseColor}`
-            }}
-            key={`drawing-object-${index}`}
-            onClick={() => this.onClick(drawingObject)}
-            className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
-          >
-            <span className="icon">{this.getIconByToolName(drawingObject.type)}</span>
-            {this.getLabel(drawingObject)}
-          </Button>
+          <Wrapper key={`drawing-object-${index}`}>
+            <Button
+              shadowColor={drawingObject.baseColor}
+              onClick={this.handleClikDrawingObj(drawingObject)}
+              disabled={drawingObject.disabled}
+              className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
+            >
+              {this.getIconByToolName(drawingObject.type)}
+              {this.getLabel(drawingObject)}
+            </Button>
+            {includeDashed && (
+              <RadioLabelGroup
+                mt="4px"
+                pl="12px"
+                disabled={drawingObject.disabled}
+                onChange={this.handleChangeLineStyle(drawingObject)}
+                value={isDashed[drawingObject.id] || "solid"}
+              >
+                <RadioLabel labelPadding="8px" value="solid">
+                  <Line />
+                </RadioLabel>
+                <RadioLabel labelPadding="8px" value="dashed">
+                  <Line type="dashed" />
+                </RadioLabel>
+              </RadioLabelGroup>
+            )}
+          </Wrapper>
         ))}
+        {showSolutionSet && (
+          <Button onClick={this.drawArea} disabled={selectedObj && selectedObj.type === "area"}>
+            {this.getIconByToolName("area")}
+            {t("component.graphing.solutionSet")}
+          </Button>
+        )}
       </Container>
     );
   }
@@ -106,10 +161,18 @@ class DrawingObjects extends Component {
 
 DrawingObjects.propTypes = {
   selectDrawingObject: PropTypes.func.isRequired,
-  drawingObjects: PropTypes.array.isRequired
+  drawingObjects: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
+  includeDashed: PropTypes.bool,
+  selectedObj: PropTypes.object
 };
 
-export default DrawingObjects;
+DrawingObjects.defaultProps = {
+  selectedObj: {},
+  includeDashed: false
+};
+
+export default withNamespaces("assessment")(DrawingObjects);
 
 const Container = styled.div`
   display: flex;
@@ -118,44 +181,26 @@ const Container = styled.div`
   padding: 5px;
 `;
 
-const Button = styled.div`
-  width: 100%;
-  padding: 5px;
+const Wrapper = styled.div`
   margin-bottom: 5px;
-  color: ${secondaryTextColor};
-  cursor: pointer;
-  transition: background-color 0.1s ease-in, border-color 0.1s ease-in;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+`;
 
-  .icon {
-    display: block;
-    width: 30px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+const Button = styled(CustomStyleBtn).attrs(() => ({
+  width: "100%",
+  ghost: true,
+  padding: "5px",
+  justifyContent: "flex-start"
+}))`
+  box-shadow: ${({ shadowColor }) => `inset 0 0 1em ${shadowColor || "#00b2ff"}`};
 
-  &.selected,
-  &:hover {
-    border-color: ${fadedBlack};
-  }
-
-  &.disabled,
-  &.disabled:hover {
-    color: ${greyDarken};
-    border-color: transparent;
-    cursor: default;
+  & svg {
+    margin-left: 5px;
   }
 `;
 
-export const Title = styled.div`
-  padding: 5px;
-  width: 100%;
-  font-size: 15px;
-  font-weight: ${props => props.theme.widgets.quadrants.dragDropTitleFontWeight};
+const Line = styled.span`
+  border-bottom: ${({ type }) => `2px ${type || "solid"}`};
+  display: inline-block;
+  min-width: 40px;
+  vertical-align: middle;
 `;

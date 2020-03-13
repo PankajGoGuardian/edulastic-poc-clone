@@ -12,10 +12,7 @@ import CorrectAnswers from "../CorrectAnswers";
 import withPoints from "../HOC/withPoints";
 import GraphDisplay from "./Display/GraphDisplay";
 
-import {
-  setQuestionDataAction,
-  getQuestionDataSelector
-} from "../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 import { SelectInputStyled } from "../../styled/InputStyles";
 import { Label } from "../../styled/WidgetOptions/Label";

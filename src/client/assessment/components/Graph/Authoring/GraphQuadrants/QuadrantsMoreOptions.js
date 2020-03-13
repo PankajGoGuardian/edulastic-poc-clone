@@ -1,22 +1,21 @@
-import { Checkbox } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { Select } from "antd";
 import PropTypes from "prop-types";
 import React, { Component, Fragment } from "react";
 import { compose } from "redux";
+import isNaN from "lodash/isNaN";
 import { AnnotationSettings, ScoreSettings } from "..";
 import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
 import { CheckboxLabel } from "../../../../styled/CheckboxWithLabel";
-import { ColoredRow, ColumnLabel, RowLabel, StyledTextField } from "../../../../styled/Grid";
+import { ColoredRow, ColumnLabel, RowLabel } from "../../../../styled/Grid";
 import { SelectInputStyled, TextInputStyled } from "../../../../styled/InputStyles";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import Question from "../../../Question";
-import { MoreOptionsInput } from "../../common/styled_components";
 import Tools from "../../common/Tools";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { GraphDisplay } from "../../Display";
@@ -31,7 +30,7 @@ class QuadrantsMoreOptions extends Component {
   }
 
   handleGridChange = event => {
-    let value = event.target.value;
+    const value = event.target.value;
     const reg = new RegExp("^[-.0-9]+$");
 
     if (
@@ -70,7 +69,7 @@ class QuadrantsMoreOptions extends Component {
       event.target.name === "yDistance" ||
       event.target.name === "yTickDistance"
     ) {
-      let _value = parseFloat(value);
+      const _value = parseFloat(value);
       if (!isNaN(_value)) {
         setOptions({ ...uiStyle, [name]: Math.abs(_value) });
         this.setState({ [name]: Math.abs(_value) });
@@ -89,7 +88,7 @@ class QuadrantsMoreOptions extends Component {
       setCanvas
     } = this.props;
 
-    let _value = parseFloat(value);
+    const _value = parseFloat(value);
     if (!isNaN(_value)) {
       canvas[name] = +_value;
       canvas.xRatio = 1;
@@ -444,7 +443,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
@@ -455,7 +454,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
@@ -466,7 +465,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -479,7 +478,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -492,7 +491,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -504,7 +503,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
             </Col>
@@ -576,7 +575,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
@@ -587,7 +586,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={4} style={{ marginBottom: "0" }}>
@@ -598,7 +597,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleCanvasChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -611,7 +610,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -624,7 +623,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleInputChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
               <Col md={3} style={{ marginBottom: "0" }}>
@@ -636,7 +635,7 @@ class QuadrantsMoreOptions extends Component {
                   onChange={this.handleGridChange}
                   onBlur={this.handleRatioChange}
                   disabled={false}
-                  height={"30px"}
+                  height="30px"
                 />
               </Col>
             </Col>
@@ -796,7 +795,7 @@ class QuadrantsMoreOptions extends Component {
             </Col>
           </Row>
 
-          <Row gutter={24} type={"flex"} align={"middle"}>
+          <Row gutter={24} type="flex" align="middle">
             <Col md={12}>
               <Label>{t("component.graphing.background_options.opacity")}</Label>
               <TextInputStyled

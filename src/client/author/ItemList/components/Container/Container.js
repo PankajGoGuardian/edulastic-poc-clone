@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 import {

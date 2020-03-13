@@ -41,6 +41,7 @@ import { getUserFeatures } from "../../../../../src/selectors/user";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 import { Content } from "../../../Container/styled";
 import ReviewItems from "../ReviewItems";
+import { resetItemScoreAction } from "../../../../../src/ItemScore/ducks";
 
 class Review extends PureComponent {
   static propTypes = {
@@ -277,9 +278,13 @@ class Review extends PureComponent {
   };
 
   handlePreviewTestItem = data => {
+    const { resetItemScore } = this.props;
     this.setState({
       item: { id: data }
     });
+    // clear the item score in the store, if while adding item, check/show answer was clicked
+    // EV-12256
+    resetItemScore();
     this.setModalVisibility(true);
   };
 
@@ -518,7 +523,8 @@ const enhance = compose(
       clearAnswer: clearAnswersAction,
       clearEvaluation: clearEvaluationAction,
       setTestItems: setTestItemsAction,
-      addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction
+      addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
+      resetItemScore: resetItemScoreAction
     }
   )
 );

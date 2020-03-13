@@ -26,7 +26,7 @@ export const playlistPageNavButtons = [
   }
 ];
 
-const PlayListHeader = ({ title, activeClasses, studentPlaylists, t, match, history }) => {
+const PlayListHeader = ({ title = "Untitled", activeClasses, studentPlaylists, t, match, history }) => {
   const handleNavChange = val => {
     const { playlistId } = match.params;
     if (val === "playlist") {

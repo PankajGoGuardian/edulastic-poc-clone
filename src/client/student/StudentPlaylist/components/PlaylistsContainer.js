@@ -31,8 +31,6 @@ const PlaylistsContainer = ({
     loadAllClasses();
   }, [currentChild]);
 
-  if (isLoading) return <Spin size="large" />;
-
   const pathPlaylistId = location.pathname.substring(match.path.length).replace(/\//g, "");
 
   const playlist = lastPlaylist?.value?._id
@@ -49,6 +47,7 @@ const PlaylistsContainer = ({
           render={props => {
             const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
             props.location.state = { ...(props.location.state || {}), currentGroupId };
+            if (isLoading) return <Spin size="large" />;
             return (
               <Suspense fallback={<Progress />}>
                 <CurriculumContainer {...props} urlHasUseThis />
@@ -59,15 +58,11 @@ const PlaylistsContainer = ({
         <Route
           exact
           path={`${match.url}/:playlistId/recommendations`}
-          render={props => {
-            const currentGroupId = playlists.find(playlist => playlist.playlistId === pathPlaylistId)?.groupId;
-            props.location.state = { ...(props.location.state || {}), currentGroupId };
-            return (
-              <Suspense fallback={<Progress />}>
-                <Recommendations {...props} />
-              </Suspense>
-            );
-          }}
+          render={props => (
+            <Suspense fallback={<Progress />}>
+              <Recommendations {...props} />
+            </Suspense>
+          )}
         />
       </Switch>
     ) : (

@@ -3,6 +3,14 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/recommendations";
 
+const fetchRecommendations = () =>
+  api
+    .callApi({
+      url: `${prefix}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const getDifferentiationWork = testId =>
   api
     .callApi({
@@ -21,6 +29,7 @@ const acceptRecommendations = data =>
     .then(result => result.data.result);
 
 export default {
+  fetchRecommendations,
   getDifferentiationWork,
   acceptRecommendations
 };

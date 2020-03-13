@@ -72,7 +72,8 @@ const ClassificationPreview = ({
       flexDirection:
         (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
-      overflow: "auto"
+      overflow: "auto",
+      justifyContent: isVertical && "flex-end"
     },
     dragItemsContainerStyle: {
       display: "flex",
@@ -361,7 +362,7 @@ const ClassificationPreview = ({
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
         </QuestionLabelWrapper>
 
-        <div style={{ overflow: "auto", width: isPrintPreview && "100%" }}>
+        <div style={{ overflow: "auto", width: isPrintPreview && !isVertical && "100%" }}>
           {!smallSize && view === PREVIEW && (
             <QuestionTitleWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

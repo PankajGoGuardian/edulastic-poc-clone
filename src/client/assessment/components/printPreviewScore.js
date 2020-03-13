@@ -44,6 +44,7 @@ const StyledPrintPreviewScore = styled(PrintPreviewScore)`
       display: flex;
       justify-content: center;
       align-items: center;
+      max-height: 40px;
     }
 
     .max-score-div {
@@ -53,6 +54,7 @@ const StyledPrintPreviewScore = styled(PrintPreviewScore)`
       justify-content: center;
       align-items: center;
       margin-top: 10px;
+      max-height: 40px;
     }
   }
 `;

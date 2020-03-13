@@ -361,7 +361,7 @@ const ClassificationPreview = ({
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
         </QuestionLabelWrapper>
 
-        <div style={{ overflow: "auto" }}>
+        <div style={{ overflow: "auto", width: isPrintPreview && "100%" }}>
           {!smallSize && view === PREVIEW && (
             <QuestionTitleWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

@@ -153,6 +153,10 @@ const PrintAssessmentContainer = styled.div`
     }
   }
 
+  .matchlist-wrapper img {
+    display: block;
+    page-break-inside: avoid;
+  }
   .question-wrapper {
     max-width: 100% !important;
     width: 100% !important;
@@ -199,6 +203,10 @@ const PrintAssessmentContainer = styled.div`
           position: relative!important;
           transform: none!important;
           text-align: center;
+        }
+        .table-layout {
+          flex-wrap: wrap;
+          justify-content: flex-start;
         }
       }
     }

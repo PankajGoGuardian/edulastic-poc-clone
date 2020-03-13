@@ -117,11 +117,11 @@ const TableLayout = ({
         </TD>
       );
     }
-    rows.push(<TR>{arr}</TR>);
+    rows.push(<TR className="table-layout">{arr}</TR>);
   }
   return (
     <Table>
-      <TR>
+      <TR className="table-layout">
         <TH>
           <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowHeader }} />
         </TH>

@@ -34,7 +34,10 @@ const CheckboxTemplateBox = ({
   disableResponse,
   isSnapFitValues,
   isExpressGrader,
-  lessMinWidth
+  lessMinWidth,
+  imageWidth,
+  imageHeight,
+  isPrintMode
 }) => {
   const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
 
@@ -53,8 +56,8 @@ const CheckboxTemplateBox = ({
 
   const btnStyle = {
     widthpx: responseContainer.width,
-    top: responseContainer.top,
-    left: responseContainer.left,
+    top: isPrintMode ? `${responseContainer.top/imageHeight*100}%` : responseContainer.top,
+    left: isPrintMode ? `${responseContainer.left/imageWidth*100}%` : responseContainer.left,
     position: "absolute",
     borderRadius: 5
   };
@@ -101,8 +104,8 @@ const CheckboxTemplateBox = ({
 
   const dropContainerStyle = {
     ...btnStyle,
-    width: responseContainer.width,
-    height: responseContainer.height,
+    width: isPrintMode ? `${responseContainer.width/imageWidth*100}%` : responseContainer.width,
+    height: isPrintMode ? `${responseContainer.height/imageHeight*100}%` : responseContainer.height,
     minWidth: lessMinWidth
       ? parseInt(responseContainer.width, 10) + 4
       : response.minWidthShowAnswer,
@@ -152,10 +155,10 @@ const CheckboxTemplateBox = ({
     ? {
         borderRadius: 5,
         justifyContent: lessMinWidth ? "flex-start" : "center",
-        width: responseContainer.width,
-        height: responseContainer.height
+        width: isPrintMode ? "" : responseContainer.width,
+        height: isPrintMode ? "" : responseContainer.height
       }
-    : { width: responseContainer.width, height: responseContainer.height };
+    : { width: isPrintMode ? "" : responseContainer.width, height: isPrintMode ? "" : responseContainer.height };
 
   return (
     <div onMouseEnter={handleHover} onMouseLeave={handleHover}>
@@ -187,10 +190,10 @@ const CheckboxTemplateBox = ({
                 ? {
                     borderRadius: 5,
                     justifyContent: lessMinWidth ? "flex-start" : "center",
-                    width: responseContainer.width,
-                    height: responseContainer.height
+                    width: isPrintMode ? "" : responseContainer.width,
+                    height: isPrintMode ? "" : responseContainer.height
                   }
-                : { width: responseContainer.width, height: responseContainer.height }
+                : { width: isPrintMode ? "" : responseContainer.width, height: isPrintMode ? "" : responseContainer.height }
             }
             isExpressGrader={isExpressGrader}
           />

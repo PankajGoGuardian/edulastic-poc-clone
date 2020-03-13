@@ -23,17 +23,23 @@ const ResponseContainers = ({
   showDashedBorder,
   dragItemStyle,
   onDrop,
-  fontSize
+  fontSize,
+  isPrintMode,
+  imageWidth,
+  imageHeight
 }) => {
   const getContainerStyle = container => {
     const responseContainerLeft = smallSize ? container.left / 2 : container.left;
+    const top = smallSize ? container.top / 2 : container.top;
+    const width = container.width || response.minWidth;
+    const height = isWrapText ? "auto" : container.height || "auto";
     const btnStyle = {
       position: "absolute",
-      top: smallSize ? container.top / 2 : container.top,
-      left: responseContainerLeft,
+      top: isPrintMode ? `${top/imageHeight*100}%` : top,
+      left: isPrintMode ? `${responseContainerLeft/imageWidth*100}%` : responseContainerLeft,
       maxWidth: response.maxWidth,
-      width: container.width || response.minWidth,
-      height: isWrapText ? "auto" : container.height || "auto",
+      width: isPrintMode ? `${width/imageWidth*100}%` : width,
+      height: isPrintMode && !`${height}`.includes("auto") ? `${height/imageHeight*100}%` : height,
       background: transparentBackground
         ? "transparent"
         : theme.widgets.clozeImageDragDrop.responseBoxBgColor,

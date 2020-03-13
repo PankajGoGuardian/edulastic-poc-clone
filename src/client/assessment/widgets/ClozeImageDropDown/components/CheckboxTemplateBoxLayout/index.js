@@ -29,13 +29,20 @@ const CheckboxTemplateBoxLayout = ({
   checkAnswer,
   onClickHandler,
   isExpressGrader,
-  item
+  item,
+  isPrintPreview
 }) => {
   const widthGreaterThanWindowWidth = window.innerWidth > parseInt(smallDesktopWidth.replace("px", ""), 10);
   return (
     <StyledTemplateBox fontSize={fontSize}>
-      <TemplateCover height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
-        <StyledPreviewImage
+      <TemplateCover height={isPrintPreview ? "" : canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        {isPrintPreview ? <img
+            src={imageUrl}
+            alt={imageAlterText}
+            style={{
+              width: "100%"
+            }}
+          /> : <StyledPreviewImage
           imageSrc={imageUrl || ""}
           width={widthGreaterThanWindowWidth ? imageWidth : ""}
           height={imageHeight}
@@ -46,13 +53,15 @@ const CheckboxTemplateBoxLayout = ({
             top: widthGreaterThanWindowWidth ? imageOptions.y || 0 : 0,
             left: widthGreaterThanWindowWidth ? imageOptions.x || 0 : 0
           }}
-        />
+        />}
         {responseContainers.map((responseContainer, index) => {
           const dropTargetIndex = index;
+          const top = widthGreaterThanWindowWidth ? responseContainer.top : responseContainer.top - imageOptions.y;
+          const left = widthGreaterThanWindowWidth ? responseContainer.left : responseContainer.left - imageOptions.x;
           const btnStyle = {
             position: "absolute",
-            top: widthGreaterThanWindowWidth ? responseContainer.top : responseContainer.top - imageOptions.y,
-            left: widthGreaterThanWindowWidth ? responseContainer.left : responseContainer.left - imageOptions.x,
+            top: isPrintPreview ? `${top/imageHeight*100}%` : top,
+            left: isPrintPreview ? `${left/imageWidth*100}%` : left,
             height: responseContainer.height,
             width: responseContainer.width,
             borderRadius: 5
@@ -89,6 +98,9 @@ const CheckboxTemplateBoxLayout = ({
               dropTargetIndex={dropTargetIndex}
               isExpressGrader={isExpressGrader}
               item={item}
+              isPrintPreview={isPrintPreview}
+              imageWidth={imageWidth}
+              imageHeight={imageHeight}
             />
           );
         })}

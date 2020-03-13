@@ -29,6 +29,7 @@ import { Triangle } from "../../styled/Triangle";
 import QuestionOptions from "./QuestionOptions";
 
 class Display extends Component {
+  containerRef = React.createRef();
   selectChange = (value, index) => {
     const { onChange: changeAnswers, userSelections } = this.props;
     changeAnswers(
@@ -208,16 +209,16 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
-        width={containerWidth}
+        width={isPrintPreview ? "" : containerWidth}
         fontSize={fontSize}
-        height={containerHeight}
+        height={isPrintPreview ? "" : containerHeight}
       >
         <StyledPreviewContainer
-          width={containerWidth}
+          width={isPrintPreview ? "" : containerWidth}
           smallSize={smallSize}
-          height={containerHeight}
+          height={isPrintPreview ? "" : containerHeight}
         >
-          <StyledPreviewImage
+          {!isPrintPreview ? <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
             height={this.getHeight()}
@@ -229,7 +230,13 @@ class Display extends Component {
               top: imageOptions.y || 0,
               left: imageOptions.x || 0
             }}
-          />
+          /> : <img
+            src={imageUrl}
+            alt={imageAlterText}
+            style={{
+              width: "100%"
+            }}
+            />}
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const {
@@ -242,11 +249,13 @@ class Display extends Component {
                 parseInt(individualHeight, 10) || parseInt(globalHeight, 10) || minHeight;
               const width = parseInt(individualWidth, 10) || parseInt(globalWidth, 10) || minWidth;
               const dropTargetIndex = index;
+              const top = topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize);
+              const left = topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize);
               const btnStyle = {
-                height,
-                width,
-                top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
-                left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
+                height: isPrintPreview ? `${height/containerHeight*100}%` : height,
+                width: isPrintPreview ? `${width/containerWidth*100}%` : width,
+                top: isPrintPreview ? `${top/containerHeight*100}%` : top,
+                left: isPrintPreview ? `${left/containerWidth*100}%` : left,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `dashed 2px ${
@@ -346,6 +355,7 @@ class Display extends Component {
         largestResponseWidth={largestResponseWidth}
         isExpressGrader={isExpressGrader}
         item={item}
+        isPrintPreview={isPrintPreview || isPrint}
       />
     );
     const templateBoxLayout =
@@ -372,7 +382,7 @@ class Display extends Component {
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     return (
-      <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
+      <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize} ref={this.containerRef} height="auto">
         <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
           <QuestionLabelWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}

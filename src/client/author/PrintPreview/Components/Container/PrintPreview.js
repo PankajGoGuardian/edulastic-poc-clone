@@ -147,6 +147,15 @@ const QuestionContentArea = styled.div`
         }
       }
     }
+    .fr-view img.fr-dii {
+      display: block;
+      page-break-inside: avoid;
+    }
+    .math-formula-display {
+      br {
+        display: none;
+      }
+    }
     .question-tab-container {
       padding: 0!important;
       .multiple-choice-wrapper {
@@ -191,6 +200,10 @@ const QuestionContentArea = styled.div`
             position: relative!important;
             transform: none!important;
             text-align: center;
+          }
+          .table-layout {
+            flex-wrap: wrap;
+            justify-content: flex-start;
           }
         }
         .answer-draggable-wrapper {

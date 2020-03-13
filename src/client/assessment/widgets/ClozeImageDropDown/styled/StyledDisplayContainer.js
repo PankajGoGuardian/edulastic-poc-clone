@@ -4,5 +4,5 @@ export const StyledDisplayContainer = styled.div`
   font-size: ${props => props.fontSize}px;
   width: 100%;
   display: inline-block;
-  height: max-content;
+  height: ${({height}) => height || "max-content"}
 `;

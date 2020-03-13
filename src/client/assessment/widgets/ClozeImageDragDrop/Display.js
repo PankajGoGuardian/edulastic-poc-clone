@@ -379,6 +379,7 @@ class Display extends Component {
       isPrint,
       isPrintPreview
     } = this.props;
+    const isPrintMode = isPrint || isPrintPreview;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers, possibleResponses } = this.state;
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
@@ -456,7 +457,7 @@ class Display extends Component {
     );
 
     const renderImage = () => (
-      <StyledPreviewImage
+      isPrintMode ? <img src={imageUrl} alt={imageAlterText} style={{width: "100%"}}/> :<StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}
         height={imageHeight}
@@ -504,14 +505,14 @@ class Display extends Component {
     const responseposition = smallSize ? "right" : responsecontainerposition;
 
     const responseBoxWidth = choiceMaxWidth;
-    const isPrintMode = isPrint || isPrintPreview;
   
     const containerStyle = {
       margin: "auto",
       overflow: !isPrintMode && "auto",
       minWidth: choiceMaxWidth,
       maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
-      flexDirection: isPrintMode ? "column" : "row"
+      flexDirection: isPrintMode ? "column" : "row",
+      width: isPrintMode && "100%"
     };
 
     const renderSnapItems = () =>
@@ -535,12 +536,12 @@ class Display extends Component {
       <StyledPreviewTemplateBox
         smallSize={smallSize}
         fontSize={fontSize}
-        height={computedHeight}
+        height={isPrintMode ? "" : computedHeight}
         maxWidth="100%"
       >
         <StyledPreviewContainer
           smallSize={smallSize}
-          width={previewContainerWidth}
+          width={isPrintMode ? "" : previewContainerWidth}
           data-cy="preview-contaniner"
           ref={this.previewContainerRef}
         >
@@ -559,6 +560,9 @@ class Display extends Component {
               dragItemStyle={dragItemStyle}
               fontSize={fontSize}
               onDrop={this.onDrop}
+              isPrintMode={isPrintMode}
+              imageWidth={imageWidth}
+              imageHeight={imageHeight}
             />
           )}
 
@@ -568,10 +572,10 @@ class Display extends Component {
     );
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize} height={computedHeight}>
+      <StyledPreviewTemplateBox fontSize={fontSize} height={isPrintMode ? "" : computedHeight}>
         <StyledPreviewContainer
-          width={previewContainerWidth}
-          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
+          width={isPrintMode ? "" : previewContainerWidth}
+          height={isPrintMode ? "" : this.getCalculatedHeight(maxHeight, canvasHeight)}
           ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
@@ -591,6 +595,9 @@ class Display extends Component {
             showBorder={showBorder}
             showDropItemBorder={showDropItemBorder}
             isExpressGrader={isExpressGrader}
+            isPrintMode={isPrintMode}
+            imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
+            imageWidth={previewContainerWidth}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -668,7 +675,7 @@ class Display extends Component {
                     <RelativeContainer>{responseBoxLayout}</RelativeContainer>
                   </LeftResponseContainer>
                   <LeftTemplateContainer
-                    studentReport={studentReport}
+                    studentReport={isPrintMode ? true : studentReport}
                     responseBoxContainerWidth={responseBoxWidth}
                   >
                     {templateBoxLayout}
@@ -683,7 +690,7 @@ class Display extends Component {
                 >
                   <RightTemplateContainer
                     smallSize={smallSize}
-                    studentReport={studentReport}
+                    studentReport={isPrintMode ? true : studentReport}
                     responseBoxContainerWidth={responseBoxWidth}
                   >
                     {templateBoxLayout}

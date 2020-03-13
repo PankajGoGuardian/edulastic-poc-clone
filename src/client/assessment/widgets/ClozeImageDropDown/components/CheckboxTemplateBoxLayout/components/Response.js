@@ -21,7 +21,10 @@ const Response = ({
   onClickHandler,
   indexStr,
   dropTargetIndex,
-  isExpressGrader
+  isExpressGrader,
+  isPrintPreview,
+  imageHeight,
+  imageWidth
 }) => {
   const textContainerStyle = {
     minwidth: "100%",
@@ -37,6 +40,11 @@ const Response = ({
   const textPadding = lessMinWidth ? 2 : 20;
   const indexBoxWidth = showAnswer ? 40 : 0;
   const isOverContent = btnStyle.width < contentWidth + textPadding + indexBoxWidth;
+  let modifiedDimesion = {};
+  if (isPrintPreview) {
+    modifiedDimesion.width = `${btnStyle.width/imageWidth*100}%`;
+    modifiedDimesion.height = `${btnStyle.height/imageHeight*100}%`;
+  }
   const popoverContent = (
     <PopoverContent
       index={dropTargetIndex}
@@ -47,7 +55,7 @@ const Response = ({
     />
   );
   const content = (
-    <div style={btnStyle} className={`${classNames} show-answer`} onClick={onClickHandler}>
+    <div style={{...btnStyle, ...modifiedDimesion}} className={`${classNames} show-answer`} onClick={onClickHandler}>
       <span
         className="index index-box"
         style={{ display: !checkAnswer && (showAnswer && !lessMinWidth) ? "flex" : "none" }}

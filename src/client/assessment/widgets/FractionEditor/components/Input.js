@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import { TextInputStyled } from "../../../styled/InputStyles";
@@ -9,6 +9,10 @@ const CustomInput = ({ size, type, value, placeholder, onBlur, style, id = "defa
   const handleInputChange = event => {
     changeInputValue(event.target.value);
   };
+
+  useEffect(() => {
+    changeInputValue(value);
+  }, [value]);
 
   const handleInputBlur = () => onBlur(inputValue);
 

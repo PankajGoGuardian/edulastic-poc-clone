@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col, Select } from "antd";
 import styled from "styled-components";
-
 import { greyThemeDark1, lightGrey9, themeColor, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import GroupsFilter from "./GroupsFilter";
 
 const handleModulesChange = (selected, prevFilters, updateFilters) =>
   updateFilters({
@@ -22,8 +22,14 @@ const handleMasteryListChange = (selected, prevFilters, updateFilters) =>
     masteryList: selected
   });
 
+const handleGroupsChange = (selected, prevFilters, updateFilters) =>
+  updateFilters({
+    ...prevFilters,
+    groups: selected
+  });
+
 const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
-  <Row style={{ width: "100%", "margin-bottom": "20px" }} type="flex" gutter={[0, 10]}>
+  <StyledRow type="flex" gutter={[0, 10]} style={{ "margin-bottom": "20px" }}>
     <Col span={24}>
       <StyledSpan>{label}</StyledSpan>
     </Col>
@@ -46,14 +52,14 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
         ))}
       </StyledSelect>
     </Col>
-  </Row>
+  </StyledRow>
 );
 
 const InsightsFilters = ({ data, prevFilters, updateFilters }) => {
   const { modulesData, standardsData, groupsData, masteryData } = data;
 
   return (
-    <Row style={{ width: "100%" }}>
+    <StyledRow>
       <FilterDropdown
         label="Module"
         onChange={selected => handleModulesChange(selected, prevFilters, updateFilters)}
@@ -72,11 +78,20 @@ const InsightsFilters = ({ data, prevFilters, updateFilters }) => {
         value={prevFilters.masteryList}
         options={masteryData}
       />
-    </Row>
+      <GroupsFilter
+        onClickAction={selected => handleGroupsChange(selected, prevFilters, updateFilters)}
+        current={prevFilters.groups}
+        options={groupsData}
+      />
+    </StyledRow>
   );
 };
 
 export default InsightsFilters;
+
+const StyledRow = styled(Row)`
+  width: 100%;
+`;
 
 const StyledSpan = styled.span`
   font: 11px/15px Open Sans;

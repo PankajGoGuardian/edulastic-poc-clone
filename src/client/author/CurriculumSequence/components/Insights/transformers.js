@@ -71,11 +71,11 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
 export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = {}) => {
   const modules = filters.modules.map(item => item.key);
   const standards = filters.standards.map(item => item.key);
-  const groups = filters.groups.map(item => item.key);
+  const groups = filters.groups.map(item => item.id);
 
   // filter by groups
   const filteredMap = groups.length
-    ? keyBy(Object.values(studInfoMap).filter(({ groupIds }) => groups.find(item => groupIds.includes(item))), userId)
+    ? keyBy(Object.values(studInfoMap).filter(({ groupIds }) => groups.find(item => groupIds.includes(item))), "userId")
     : studInfoMap;
 
   const groupedData = groupBy(metricInfo, "studentId");

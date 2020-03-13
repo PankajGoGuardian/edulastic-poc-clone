@@ -1,6 +1,37 @@
 import { useMemo } from "react";
-import { groupBy, keyBy, reduce, round } from "lodash";
+import { groupBy, keyBy, reduce, round, flatMap } from "lodash";
 import { lightGreen7, lightBlue8, lightRed2 } from "@edulastic/colors";
+
+export const getFilterData = (modules = []) => {
+  const modulesData = modules.map(item => {
+    let standards = [],
+      groups = [],
+      studentIds = [];
+    item.data.forEach(ele => {
+      standards.push(...ele.standards);
+      ele.assignments.forEach(assignment =>
+        assignment.class?.[0]?._id ? groups.push({ id: assignment.class[0]._id, name: assignment.class[0].name }) : null
+      );
+    });
+    return {
+      id: item._id,
+      name: item.title,
+      standards,
+      groups
+    };
+  });
+
+  const standardsData = Object.values(keyBy(flatMap(modulesData, item => item.standards), "standardId")).map(
+    ({ standardId, name }) => ({ id: standardId + "", name })
+  );
+  const groupsData = Object.values(keyBy(flatMap(modulesData, item => item.groups), "id"));
+
+  return {
+    modulesData,
+    standardsData,
+    groupsData
+  };
+};
 
 const calcTrendAngle = trendSlope => {
   return round((Math.atan(trendSlope || 0) * 360) / Math.PI);
@@ -37,7 +68,16 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
   }, [studInfo, trendData]);
 };
 
-export const getFilteredMetrics = (metricInfo = [], standards = [], studInfoMap = {}) => {
+export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = {}) => {
+  const modules = filters.modules.map(item => item.key);
+  const standards = filters.standards.map(item => item.key);
+  const groups = filters.groups.map(item => item.key);
+
+  // filter by groups
+  const filteredMap = groups.length
+    ? keyBy(Object.values(studInfoMap).filter(({ groupIds }) => groups.find(item => groupIds.includes(item))), userId)
+    : studInfoMap;
+
   const groupedData = groupBy(metricInfo, "studentId");
 
   const filteredData = Object.keys(groupedData)
@@ -74,11 +114,10 @@ export const getFilteredMetrics = (metricInfo = [], standards = [], studInfoMap 
       }
       return groupedData[sId];
     })
-    .filter(item => item && studInfoMap[item.studentId]);
-  // TODO: Remove the studInfoMap param
-  // & the second check in the filter above if the data is consistent in metricInfo & studInfo
+    .filter(item => item && filteredMap[item.studentId]);
+  // TODO: Remove the second check in the filter above if the data is consistent in metricInfo & studInfo
 
-  return filteredData;
+  return { filteredData, filteredMap };
 };
 
 // for domainRange = 800 => range = [-400, 400]
@@ -92,16 +131,16 @@ const getNormalizedValue = (item, mean, range) => {
   return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
 
-export const getCuratedMetrics = (filteredMetrics = [], studInfoMap = {}) => {
-  if (!filteredMetrics.length) {
+export const getCuratedMetrics = ({ filteredData = [], filteredMap = {} }) => {
+  if (!filteredData.length) {
     return [];
   }
-  let minTimeSpent = filteredMetrics[0].totalTimeSpent,
-    maxTimeSpent = filteredMetrics[0].totalTimeSpent,
-    minPercentScore = filteredMetrics[0].summedScore / filteredMetrics[0].count,
-    maxPercentScore = filteredMetrics[0].summedScore / filteredMetrics[0].count;
+  let minTimeSpent = filteredData[0].totalTimeSpent,
+    maxTimeSpent = filteredData[0].totalTimeSpent,
+    minPercentScore = filteredData[0].summedScore / filteredData[0].count,
+    maxPercentScore = filteredData[0].summedScore / filteredData[0].count;
 
-  const curatedMetrics = filteredMetrics.map(item => {
+  const curatedMetrics = filteredData.map(item => {
     const percentScore = item.summedScore / item.count;
     if (item.totalTimeSpent < minTimeSpent) {
       minTimeSpent = item.totalTimeSpent;
@@ -118,7 +157,7 @@ export const getCuratedMetrics = (filteredMetrics = [], studInfoMap = {}) => {
     return {
       ...item,
       percentScore,
-      ...studInfoMap[item.studentId]
+      ...filteredMap[item.studentId]
     };
   });
 

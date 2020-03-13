@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { get } from "lodash";
@@ -8,7 +8,13 @@ import InsightsFilters from "./components/InsightsFilters";
 import InsightsChart from "./components/InsightsChart";
 // import BoxedInsightsSummary from "./components/BoxedInsightsSummary";
 import AddToGroupTable from "./components/AddToGroupTable";
-import { getBoxedSummaryData, getMergedTrendMap, getFilteredMetrics, getCuratedMetrics } from "./transformers";
+import {
+  getFilterData,
+  getMergedTrendMap,
+  getFilteredMetrics,
+  getCuratedMetrics,
+  getBoxedSummaryData
+} from "./transformers";
 
 import { fetchPlaylistInsightsAction } from "../../ducks";
 import {
@@ -39,7 +45,7 @@ const defaultBandInfo = [
 
 const Insights = ({
   user,
-  playlistId,
+  curriculum,
   playlistInsights,
   studentProgress,
   fetchPlaylistInsightsAction,
@@ -47,6 +53,15 @@ const Insights = ({
   loading,
   loadingProgress
 }) => {
+  const { _id: playlistId, modules } = curriculum;
+
+  const [filters, updateFilters] = useState({
+    modules: [],
+    standards: [],
+    groups: [],
+    masteryList: []
+  });
+
   // get student trend data
   useEffect(() => {
     const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
@@ -65,16 +80,17 @@ const Insights = ({
   }, [playlistId]);
 
   // merge trendData with studInfo
+  const filterData = getFilterData(modules);
   const studInfoMap = getMergedTrendMap(playlistInsights.studInfo, trendData);
-  const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, [], studInfoMap);
-  const curatedMetrics = getCuratedMetrics(filteredMetrics, studInfoMap);
+  const filteredMetrics = getFilteredMetrics(playlistInsights.metricInfo, studInfoMap, filters);
+  const curatedMetrics = getCuratedMetrics(filteredMetrics);
 
   return loading || loadingProgress ? (
     <Spin style={{ "margin-top": "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
       <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
-        <InsightsFilters />
+        <InsightsFilters data={filterData} prevFilters={filters} updateFilters={updateFilters} />
       </StyledCol>
       <StyledCol xs={24} sm={24} md={24} lg={15} xl={15} xxl={15}>
         <InsightsChart data={curatedMetrics} />

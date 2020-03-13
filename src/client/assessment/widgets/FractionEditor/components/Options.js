@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 // import get from "lodash/get";
 import { Select, Modal, message } from "antd";
-import { FlexContainer } from "@edulastic/common";
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 import Question from "../../../components/Question/index";
@@ -11,7 +10,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import { SelectInputStyled, TextInputStyled } from "../../../styled/InputStyles";
+import { SelectInputStyled } from "../../../styled/InputStyles";
 
 const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, item }) => {
   const { confirm } = Modal;
@@ -42,6 +41,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
                 selected: [1],
                 count: 1
               };
+              draft.validation.validResponse.value = 1;
             })
           );
         }

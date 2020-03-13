@@ -9,7 +9,7 @@ const specTarget = {
       return;
     }
 
-    return props.drop(props);
+    return props.drop(props, monitor.getItem());
   }
 };
 

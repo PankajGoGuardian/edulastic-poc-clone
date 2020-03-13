@@ -42,7 +42,9 @@ import {
   setGuideAction,
   setPublisherAction,
   setSelectedItemsForAssignAction,
-  useThisPlayListAction
+  useThisPlayListAction,
+  playlistTestRemoveFromModuleAction,
+  toggleManageContentActiveAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -166,8 +168,7 @@ class CurriculumSequence extends Component {
     showConfirmRemoveModal: false,
     isPlayListEdited: false,
     dropPlaylistModalVisible: false,
-    curatedStudentPlaylists: [],
-    isManageContentActive: false
+    curatedStudentPlaylists: []
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -354,7 +355,7 @@ class CurriculumSequence extends Component {
     history.push(url);
   };
 
-  toggleManageContentClick = () => this.setState({ isManageContentActive: !this.state?.isManageContentActive });
+  toggleManageContentClick = () => this.props.toggleManageContent();
   handleCheckout = () => {
     const { history, match } = this.props;
     const { playlistId } = match.params;
@@ -380,8 +381,7 @@ class CurriculumSequence extends Component {
       isPlayListEdited,
       showConfirmRemoveModal,
       dropPlaylistModalVisible,
-      curatedStudentPlaylists,
-      isManageContentActive
+      curatedStudentPlaylists
     } = this.state;
     const {
       expandedModules,
@@ -407,7 +407,8 @@ class CurriculumSequence extends Component {
       playlistMetricsList,
       studentPlaylists,
       activeClasses,
-      match
+      match,
+      isManageContentActive
     } = this.props;
 
     // figure out which tab contents to render || just render default playlist
@@ -703,7 +704,7 @@ class CurriculumSequence extends Component {
                     </SubTopBar>
                   )}
                   <SubTopBar>
-                    <SubTopBarContainer active={isContentExpanded} mode={mode}>
+                    <SubTopBarContainer active={isContentExpanded} mode={isManageContentActive ? "embedded" : mode}>
                       <CurriculumSubHeaderRow>
                         <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
                           <SubHeaderDescription>{description}</SubHeaderDescription>
@@ -732,7 +733,7 @@ class CurriculumSequence extends Component {
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
                       <Curriculum
-                        mode={mode}
+                        mode={isManageContentActive ? "embedded" : mode}
                         history={history}
                         status={status}
                         key={destinationCurriculumSequence._id}
@@ -818,6 +819,7 @@ const enhance = compose(
       curriculumGuides: state.curriculumSequence.guides,
       guide: state.curriculumSequence.selectedGuide,
       isContentExpanded: state.curriculumSequence.isContentExpanded,
+      isManageContentActive: state.curriculumSequence.isManageContentActive,
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
       recentPlaylists: getRecentPlaylistSelector(state),
@@ -841,7 +843,9 @@ const enhance = compose(
       saveCurriculumSequence: saveCurriculumSequenceAction,
       useThisPlayList: useThisPlayListAction,
       removeTestFromModule: removeTestFromModuleAction,
-      addNewUnitToDestination: addNewUnitAction
+      removeTestFromDestinationCurriculum: playlistTestRemoveFromModuleAction,
+      addNewUnitToDestination: addNewUnitAction,
+      toggleManageContent: toggleManageContentActiveAction
     }
   )
 );

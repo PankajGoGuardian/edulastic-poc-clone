@@ -108,7 +108,7 @@ const ManageContentBlock = props => {
     fetchTests();
   }, []);
 
-  const onChange = () => {};
+  const onChange = () => { };
 
   const toggleTestFilter = () => {
     if (isShowFilter) {
@@ -128,7 +128,7 @@ const ManageContentBlock = props => {
   );
 
   const filteredData =
-    searchResourceBy === "all" ? resourceData : resourceData.filter(x => x?.type === searchResourceBy) || [];
+    searchResourceBy === "all" ? resourceData : resourceData.filter(x => x ?.type === searchResourceBy) || [];
 
   const onFilterChange = prop => setFilterAction(prop);
   const onStatusChange = prop => setStatusAction(prop);
@@ -137,7 +137,7 @@ const ManageContentBlock = props => {
   const onGradesChange = prop => setGradesAction(prop);
   const onCollectionChange = prop => setCollectionAction(prop);
   const onSourceChange = ({ checked, value }) =>
-    setSourcesAction(checked ? sources?.concat(value) : sources?.filter(x => x !== value) || []);
+    setSourcesAction(checked ? sources ?.concat(value) : sources ?.filter(x => x !== value) || []);
   let fetchCall;
 
   if (tests.length > 10) {
@@ -182,40 +182,40 @@ const ManageContentBlock = props => {
           onSourceChange={onSourceChange}
         />
       ) : (
-        <>
-          {false && (
-            <SearchByNavigationBar justify="space-evenly">
-              {resourceTabs.map(tab => (
-                <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
-                  {tab}
-                </SearchByTab>
-              ))}
-            </SearchByNavigationBar>
-          )}
-          <br />
-
-          <ResourceDataList>
-            {isLoading && loadedPage === 0 ? (
-              <Spin />
-            ) : tests.length ? (
-              tests.map((test, idx) => {
-                if (idx === fetchCall) {
-                  return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
-                }
-                return <ResourceItem type="tests" title={test.title} key={test._id} />;
-              })
-            ) : (
-              <h3 style={{ textAlign: "center" }}>No Data</h3>
-            ) // TODO: update this component!
-            }
-            {isLoading && loadedPage !== 0 && (
-              <LoaderWrapper>
-                <Spin />
-              </LoaderWrapper>
+          <>
+            {false && (
+              <SearchByNavigationBar justify="space-evenly">
+                {resourceTabs.map(tab => (
+                  <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
+                    {tab}
+                  </SearchByTab>
+                ))}
+              </SearchByNavigationBar>
             )}
-          </ResourceDataList>
-        </>
-      )}
+            <br />
+
+            <ResourceDataList>
+              {isLoading && loadedPage === 0 ? (
+                <Spin />
+              ) : tests.length ? (
+                tests.map((test, idx) => {
+                  if (idx === fetchCall) {
+                    return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
+                  }
+                  return <ResourceItem type="tests" id={test._id} title={test.title} key={test._id} summary={test ?.summary} />;
+                })
+              ) : (
+                    <h3 style={{ textAlign: "center" }}>No Data</h3>
+                  ) // TODO: update this component!
+              }
+              {isLoading && loadedPage !== 0 && (
+                <LoaderWrapper>
+                  <Spin />
+                </LoaderWrapper>
+              )}
+            </ResourceDataList>
+          </>
+        )}
       <ActionsContainer>
         <Dropdown overlay={menu} placement="topCenter">
           <ManageModuleBtn width="190px">
@@ -232,29 +232,29 @@ const ManageContentBlock = props => {
 
 export default connect(
   state => ({
-    isLoading: state.playlistTestBox?.isLoading,
-    loadedPage: state.playlistTestBox?.loadedPage,
-    filter: state.playlistTestBox?.filter,
-    status: state.playlistTestBox?.status,
-    authoredBy: state.playlistTestBox?.authoredBy,
-    subject: state.playlistTestBox?.subject,
-    grades: state.playlistTestBox?.grades,
-    tests: state.playlistTestBox?.tests || [],
-    collection: state.playlistTestBox?.collection,
-    sources: state.playlistTestBox?.sources,
-    searchString: state.playlistTestBox?.searchString
+    isLoading: state.playlistTestBox ?.isLoading,
+    loadedPage: state.playlistTestBox ?.loadedPage,
+    filter: state.playlistTestBox ?.filter,
+    status: state.playlistTestBox ?.status,
+    authoredBy: state.playlistTestBox ?.authoredBy,
+    subject: state.playlistTestBox ?.subject,
+    grades: state.playlistTestBox ?.grades,
+    tests: state.playlistTestBox ?.tests || [],
+    collection: state.playlistTestBox ?.collection,
+    sources: state.playlistTestBox ?.sources,
+    searchString: state.playlistTestBox ?.searchString
   }),
   {
-    setFilterAction: slice.actions?.setFilterAction,
-    setDefaults: slice.actions?.setDefaults,
-    fetchTests: slice.actions?.fetchTests,
-    setStatusAction: slice.actions?.setStatusAction,
-    setAuthoredAction: slice.actions?.setAuthoredAction,
-    setSubjectAction: slice.actions?.setSubjectAction,
-    setGradesAction: slice.actions?.setGradesAction,
-    setCollectionAction: slice.actions?.setCollectionAction,
-    setSourcesAction: slice.actions?.setSourcesAction,
-    resetAndFetchTests: slice.actions?.resetAndFetchTests,
-    setTestSearchAction: slice.actions?.setTestSearchAction
+    setFilterAction: slice.actions ?.setFilterAction,
+    setDefaults: slice.actions ?.setDefaults,
+    fetchTests: slice.actions ?.fetchTests,
+    setStatusAction: slice.actions ?.setStatusAction,
+    setAuthoredAction: slice.actions ?.setAuthoredAction,
+    setSubjectAction: slice.actions ?.setSubjectAction,
+    setGradesAction: slice.actions ?.setGradesAction,
+    setCollectionAction: slice.actions ?.setCollectionAction,
+    setSourcesAction: slice.actions ?.setSourcesAction,
+    resetAndFetchTests: slice.actions ?.resetAndFetchTests,
+    setTestSearchAction: slice.actions ?.setTestSearchAction
   }
 )(ManageContentBlock);

@@ -18,10 +18,13 @@ import {
   addContentToCurriculumSequenceAction,
   approveOrRejectSinglePlaylistRequestAction,
   setPlaylistDataAction,
-  receiveCurrentPlaylistMetrics
+  receiveCurrentPlaylistMetrics,
+  playlistDestinationReorderTestsAction,
+  addItemIntoPlaylistModuleAction
 } from "../ducks";
 import ShareModal from "../../src/components/common/ShareModal";
 import { CollectionsSelectModal } from "../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal";
+import { resequenceTestsAction } from "../../PlaylistPage/ducks";
 
 /**
  * @typedef {object} ModuleData
@@ -144,7 +147,13 @@ class CurriculumContainer extends Component {
     searchCurriculumSequences(publisher);
   };
 
-  onDrop = toModuleIndex => {
+  onDrop = (toModuleIndex, item) => {
+    console.log("item", item, "tomodule", toModuleIndex);
+    this.expandModule(toModuleIndex);
+    if (item.fromPlaylistTestsBox) {
+      this.props.addIntoModule({ ...item, moduleIndex: toModuleIndex });
+      return;
+    }
     const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
     const { moveContentInPlaylist } = this.props;
     moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
@@ -156,6 +165,13 @@ class CurriculumContainer extends Component {
       fromContentId,
       fromContentIndex: contentIndex
     });
+  };
+
+  expandModule = moduleId => {
+    const { expandedModules } = this.state;
+    if (!expandedModules.includes(moduleId)) {
+      this.setState({ expandedModules: [...expandedModules, moduleId] });
+    }
   };
 
   collapseExpandModule = moduleId => {
@@ -305,6 +321,8 @@ class CurriculumContainer extends Component {
           windowWidth={windowWidth}
           onDrop={onDrop}
           match={match}
+          mode={this.props.mode}
+          handleTestsSort={this.props.resequenceTests}
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
@@ -372,7 +390,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getCurrentPlaylistMetrics(payload) {
     dispatch(receiveCurrentPlaylistMetrics(payload));
-  }
+  },
+  resequenceTests: payload => dispatch(playlistDestinationReorderTestsAction(payload)),
+  addIntoModule: payload => dispatch(addItemIntoPlaylistModuleAction(payload))
 });
 
 const enhance = compose(

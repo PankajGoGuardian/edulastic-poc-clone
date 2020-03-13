@@ -7,11 +7,7 @@ import { omit, get } from "lodash";
 import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
 import { white, themeColor } from "@edulastic/colors";
-import {
-  SET_MAX_ATTEMPT,
-  UPDATE_TEST_IMAGE,
-  SET_SAFE_BROWSE_PASSWORD
-} from "../src/constants/actions";
+import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { getUserFeatures } from "../src/selectors/user";
 
 // constants
@@ -228,9 +224,7 @@ const removeTestFromPlaylistBulk = (playlist, payload) => {
   const { testIds } = payload;
   const newPlaylist = produce(playlist, draft => {
     draft.modules.forEach((obj, key) => {
-      draft.modules[key].data = draft.modules[key].data.filter(
-        content => !testIds.includes(content.contentId)
-      );
+      draft.modules[key].data = draft.modules[key].data.filter(content => !testIds.includes(content.contentId));
     });
   });
   return newPlaylist;
@@ -265,10 +259,7 @@ const moveContentInPlaylist = (playlist, payload) => {
 
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
-    const newModule = createNewModuleState(
-      payload.title || payload.moduleName,
-      payload.description
-    );
+    const newModule = createNewModuleState(payload.title || payload.moduleName, payload.description);
     if (payload.afterModuleIndex !== undefined) {
       draft.modules.splice(payload.afterModuleIndex, 0, newModule);
     } else {
@@ -324,6 +315,7 @@ function resequenceModulesInPlaylist(playlist, payload) {
 
 function resequenceTestsInModule(playlist, payload) {
   const { oldIndex, newIndex, mIndex } = payload;
+  console.log("playlist", playlist);
   const newPlaylist = produce(playlist, draft => {
     const obj = draft.modules[mIndex].data.splice(oldIndex, 1);
     draft.modules[mIndex].data.splice(newIndex, 0, obj[0]);
@@ -692,22 +684,11 @@ function* publishPlaylistSaga({ payload }) {
     const { _id: id } = payload;
     const data = yield select(getPlaylistSelector);
     const features = yield select(getUserFeatures);
-    if (
-      (features.isCurator || features.isPublisherAuthor) &&
-      !get(data, "collections", []).length
-    ) {
+    if ((features.isCurator || features.isPublisherAuthor) && !get(data, "collections", []).length) {
       yield call(message.error, "Playlist is not associated with any collection.");
       return;
     }
-    const dataToSend = omit(data, [
-      "updatedDate",
-      "createdDate",
-      "sharedWith",
-      "authors",
-      "sharedType",
-      "_id",
-      "__v"
-    ]);
+    const dataToSend = omit(data, ["updatedDate", "createdDate", "sharedWith", "authors", "sharedType", "_id", "__v"]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
       return mod;

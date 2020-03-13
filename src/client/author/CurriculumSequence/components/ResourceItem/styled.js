@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { borderGrey4, playlistTabLink, backgrounds } from "@edulastic/colors";
+import Tags from "../../../src/components/common/Tags";
 
 export const ResourceItemWrapper = styled.div`
   display: flex;
@@ -35,4 +36,23 @@ export const ResourceTitle = styled.div`
   align-items: center;
   display: flex;
   user-select: none;
+
+  .ant-tag {
+    max-width: 55px;
+    overflow: hidden;
+    word-wrap: nowrap;
+    text-overflow: ellipsis;
+    &:first-child {
+      margin-left: 15px;
+    }
+    padding: 0px 1px;
+  }
+`;
+
+export const TitleText = styled.div`
+  display: inline-block;
+  max-width: ${props => (props.noStandards ? 230 : 145)}px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;

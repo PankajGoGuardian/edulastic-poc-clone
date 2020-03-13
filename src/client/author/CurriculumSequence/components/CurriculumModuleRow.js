@@ -43,6 +43,7 @@ import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
+import { playlistTestRemoveFromModuleAction } from "../../CurriculumSequence/ducks";
 import { StyledLabel, StyledTag } from "../../Reports/common/styled";
 import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
@@ -169,8 +170,13 @@ class ModuleRow extends Component {
   };
 
   deleteTest = (moduleIndex, itemId) => {
-    const { removeItemFromUnit } = this.props;
-    removeItemFromUnit({ moduleIndex, itemId });
+    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis, mode } = this.props;
+
+    if (urlHasUseThis) {
+      removeItemFromDestinationPlaylist({ moduleIndex, itemId });
+    } else {
+      removeItemFromUnit({ moduleIndex, itemId });
+    }
   };
 
   closeModal = () => {
@@ -1353,6 +1359,7 @@ const enhance = compose(
       toggleUnitItem: toggleCheckedUnitItemAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
       removeItemFromUnit: removeTestFromModuleAction,
+      removeItemFromDestinationPlaylist: playlistTestRemoveFromModuleAction,
       removeUnit: removeUnitAction,
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,

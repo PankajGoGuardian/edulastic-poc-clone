@@ -3,7 +3,7 @@ import { delay } from "redux-saga";
 import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
 import { testsApi } from "@edulastic/api";
 
-const sliceName = "playlistTestBox";
+export const sliceName = "playlistTestBox";
 const LIMIT = 20;
 
 export const FILTERS = [
@@ -106,7 +106,7 @@ function* fetchTestsSaga({ payload }) {
 
 function* fetchTestsBySearchString({ payload }) {
   try {
-    yield delay(500);
+    yield delay(600);
     yield put(slice.actions?.resetLoadedPage());
     const { status, subject, grades, loadedPage, filter, collection, searchString } = yield select(
       state => state[sliceName]

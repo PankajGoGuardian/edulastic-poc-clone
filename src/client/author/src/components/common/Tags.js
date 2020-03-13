@@ -12,7 +12,8 @@ const Tags = ({
   isStandards,
   isPlaylist = false,
   completed = false,
-  margin 
+  margin,
+  showTitle = false
 }) => {
   if (!tags.length) return null;
 
@@ -32,7 +33,7 @@ const Tags = ({
   return (
     <Labels completed={completed} isPlaylist={isPlaylist} margin={margin}>
       {visibleTags.map((tag, i) => (
-        <Label style={labelStyle} key={i} type={type}>
+        <Label style={labelStyle} key={i} type={type} {...(showTitle ? { title: tag?.tagName || tag } : {})}>
           {isStandards || typeof tag === "string" ? tag : tag.tagName}
         </Label>
       ))}
@@ -88,7 +89,8 @@ const Labels = styled.div`
   align-items: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   justify-content: ${({ isPlaylist }) => isPlaylist && "flex-start"};
   width: ${({ isPlaylist }) => isPlaylist && "100%"};
-  margin: ${({margin, completed, isPlaylist}) => margin || `4px 0px 4px ${(isPlaylist ? (completed ? "8px" : "56px") : 0)}`};
+  margin: ${({ margin, completed, isPlaylist }) =>
+    margin || `4px 0px 4px ${isPlaylist ? (completed ? "8px" : "56px") : 0}`};
 `;
 
 const PopupContainer = styled.div`

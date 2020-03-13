@@ -24,6 +24,7 @@ import {
   getGroupsSelector
 } from "../sharedDucks/groups";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
+import { REMOVE_TEST_FROM_MODULE } from "../PlaylistPage/ducks";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -92,6 +93,7 @@ export const UPDATE_DIFFERENTIATION_STUDENT_LIST = "[differentiation] student li
 export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiation work";
 export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
+export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -127,6 +129,7 @@ export const fetchStudentListSuccess = createAction(FETCH_STUDENT_LIST_SUCCESS);
 export const dropPlaylistAction = createAction(DROP_PLAYLIST_ACTION);
 export const fetchPlaylistDroppedAccessList = createAction(FETCH_PLAYLIST_ACCESS_LIST);
 export const updateDroppedAccessList = createAction(UPDATE_DROPPED_ACCESS_LIST);
+export const addItemIntoPlaylistModuleAction = createAction(PLAYLIST_ADD_ITEM_INTO_MODULE);
 
 export const fetchDifferentiationStudentListAction = createAction(FETCH_DIFFERENTIATION_STUDENT_LIST);
 export const updateDifferentiationStudentListAction = createAction(UPDATE_DIFFERENTIATION_STUDENT_LIST);
@@ -876,6 +879,7 @@ const getDefaultAssignData = () => ({
 
 // Reducers
 const initialState = {
+  isManageContentActive: false,
   allCurriculumSequences: [],
 
   /**
@@ -931,7 +935,8 @@ const initialState = {
   playlistInsights: {},
   loadingInsights: true,
   differentiationStudentList: [],
-  differentiationWork: {}
+  differentiationWork: {},
+  destinationDirty: false
 };
 
 /**
@@ -1390,6 +1395,14 @@ function onErrorPlaylistInsights(state, { payload }) {
 function updateDifferentiationStudentList(state, { payload }) {
   state.differentiationStudentList = payload;
 }
+export const PLAYLIST_REORDER_TESTS = "[playlist] destination reorder test";
+export const playlistDestinationReorderTestsAction = createAction(PLAYLIST_REORDER_TESTS);
+
+export const REMOVE_TEST_FROM_MODULE_PLAYLIST = "[playlist edit] test remove from module";
+export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE_PLAYLIST);
+
+export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
+export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
 
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
@@ -1419,5 +1432,39 @@ export default createReducer(initialState, {
   [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList,
   [FETCH_PLAYLIST_INSIGHTS_SUCCESS]: onSuccessPlaylistInsights,
   [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights,
-  [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList
+  [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
+  [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
+    const { moduleIndex, id: contentId, title: contentTitle, standardIdentifiers } = payload;
+    if (state.destinationCurriculumSequence.modules[moduleIndex].data.find(x => x.contentId === contentId)) {
+      return state;
+    }
+    const content = {
+      contentId,
+      contentTitle,
+      standardIdentifiers,
+      contentType: "test",
+      standards: [],
+      assignments: []
+    };
+    state.destinationCurriculumSequence.modules[moduleIndex].data.push(content);
+    state.destinationDirty = true;
+  },
+  [PLAYLIST_REORDER_TESTS]: (state, { payload }) => {
+    const { oldIndex, newIndex, collection, mIndex } = payload;
+    const [takenOutTest] = state.destinationCurriculumSequence.modules[mIndex].data.splice(oldIndex, 1);
+    state.destinationCurriculumSequence.modules[mIndex].data.splice(newIndex, 0, takenOutTest);
+    state.destinationDirty = true;
+  },
+  [REMOVE_TEST_FROM_MODULE_PLAYLIST]: (state, { payload }) => {
+    const { moduleIndex, itemId } = payload;
+    if (state?.destinationCurriculumSequence?.modules?.[moduleIndex]?.data?.find(x => x.contentId === itemId)) {
+      state.destinationCurriculumSequence.modules[moduleIndex].data = state.destinationCurriculumSequence.modules[
+        moduleIndex
+      ].data.filter(x => x.contentId !== itemId);
+      state.destinationDirty = true;
+    }
+  },
+  [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
+    state.isManageContentActive = !state.isManageContentActive;
+  }
 });

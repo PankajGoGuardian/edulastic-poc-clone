@@ -11,11 +11,10 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
 
   let rightIndex = 0;
 
-  answers.forEach(({ value: { method, value: answer }, score: totalScore }, ind) => {
+  answers.forEach(({ value: answer, method, score: totalScore }, ind) => {
     if (!answer || !answer.length) {
       return;
     }
-
     let matches = 0;
     const totalMatches = method === BY_COUNT_METHOD ? answer[0] : answer.length;
 
@@ -44,9 +43,9 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
   });
 
   const evaluation = [];
-  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
+  if (answers[rightIndex].method === BY_COUNT_METHOD) {
     userResponse.forEach((col, i) => {
-      if (i < answers[rightIndex].value.value[0]) {
+      if (i < answers[rightIndex].value[0]) {
         evaluation.push(true);
       } else {
         evaluation.push(false);
@@ -54,7 +53,7 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
     });
   } else {
     userResponse.forEach(col => {
-      evaluation.push(answers[rightIndex].value.value.some(ans => isEqual(ans, col)));
+      evaluation.push(answers[rightIndex].value.some(ans => isEqual(ans, col)));
     });
   }
 
@@ -71,7 +70,7 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
 
   let rightIndex = 0;
 
-  answers.forEach(({ value: { method, value: answer }, score: totalScore }, ind) => {
+  answers.forEach(({ value: answer, method, score: totalScore }, ind) => {
     if (!answer || !answer.length) {
       return;
     }
@@ -101,9 +100,9 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
   });
 
   const evaluation = [];
-  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
+  if (answers[rightIndex].method === BY_COUNT_METHOD) {
     userResponse.forEach((col, i) => {
-      if (i < answers[rightIndex].value.value[0]) {
+      if (i < answers[rightIndex].value[0]) {
         evaluation.push(true);
       } else {
         evaluation.push(false);
@@ -111,14 +110,12 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
     });
   } else {
     userResponse.forEach(col => {
-      evaluation.push(answers[rightIndex].value.value.some(ans => isEqual(ans, col)));
+      evaluation.push(answers[rightIndex].value.some(ans => isEqual(ans, col)));
     });
   }
 
   const rightLen =
-    answers[rightIndex].value.method === BY_COUNT_METHOD
-      ? answers[rightIndex].value.value[0]
-      : answers[rightIndex].value.value.length;
+    answers[rightIndex].method === BY_COUNT_METHOD ? answers[rightIndex].value[0] : answers[rightIndex].value.length;
 
   return {
     score: score > maxScore ? maxScore : score,

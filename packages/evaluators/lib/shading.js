@@ -27,9 +27,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   var maxScore = 0;
   var rightIndex = 0;
   answers.forEach(function(_ref2, ind) {
-    var _ref2$value = _ref2.value,
-      method = _ref2$value.method,
-      answer = _ref2$value.value,
+    var answer = _ref2.value,
+      method = _ref2.method,
       totalScore = _ref2.score;
 
     if (!answer || !answer.length) {
@@ -70,9 +69,9 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   });
   var evaluation = [];
 
-  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
+  if (answers[rightIndex].method === BY_COUNT_METHOD) {
     userResponse.forEach(function(col, i) {
-      if (i < answers[rightIndex].value.value[0]) {
+      if (i < answers[rightIndex].value[0]) {
         evaluation.push(true);
       } else {
         evaluation.push(false);
@@ -81,7 +80,7 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   } else {
     userResponse.forEach(function(col) {
       evaluation.push(
-        answers[rightIndex].value.value.some(function(ans) {
+        answers[rightIndex].value.some(function(ans) {
           return (0, _isEqual2["default"])(ans, col);
         })
       );
@@ -103,9 +102,8 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   var maxScore = 0;
   var rightIndex = 0;
   answers.forEach(function(_ref4, ind) {
-    var _ref4$value = _ref4.value,
-      method = _ref4$value.method,
-      answer = _ref4$value.value,
+    var answer = _ref4.value,
+      method = _ref4.method,
       totalScore = _ref4.score;
 
     if (!answer || !answer.length) {
@@ -140,9 +138,9 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   });
   var evaluation = [];
 
-  if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
+  if (answers[rightIndex].method === BY_COUNT_METHOD) {
     userResponse.forEach(function(col, i) {
-      if (i < answers[rightIndex].value.value[0]) {
+      if (i < answers[rightIndex].value[0]) {
         evaluation.push(true);
       } else {
         evaluation.push(false);
@@ -151,7 +149,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   } else {
     userResponse.forEach(function(col) {
       evaluation.push(
-        answers[rightIndex].value.value.some(function(ans) {
+        answers[rightIndex].value.some(function(ans) {
           return (0, _isEqual2["default"])(ans, col);
         })
       );
@@ -159,9 +157,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   }
 
   var rightLen =
-    answers[rightIndex].value.method === BY_COUNT_METHOD
-      ? answers[rightIndex].value.value[0]
-      : answers[rightIndex].value.value.length;
+    answers[rightIndex].method === BY_COUNT_METHOD ? answers[rightIndex].value[0] : answers[rightIndex].value.length;
   return {
     score: score > maxScore ? maxScore : score,
     maxScore: maxScore,

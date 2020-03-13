@@ -43,8 +43,9 @@ const ShadingEdit = ({
           draft.validation.altResponses = [];
         }
         draft.validation.altResponses.push({
+          ...draft.validation.validResponse,
           score: 1,
-          value: { ...draft.validation.validResponse.value, value: [] }
+          value: []
         });
       })
     );
@@ -71,17 +72,17 @@ const ShadingEdit = ({
         if (method) {
           if (correctTab === 0) {
             const val = ans === BY_COUNT_METHOD ? [1] : [];
-            draft.validation.validResponse.value.method = ans;
-            draft.validation.validResponse.value.value = val;
+            draft.validation.validResponse.method = ans;
+            draft.validation.validResponse.value = val;
           } else {
             const val = ans === BY_COUNT_METHOD ? [1] : [];
-            draft.validation.altResponses[correctTab - 1].value.method = ans;
-            draft.validation.altResponses[correctTab - 1].value.value = val;
+            draft.validation.altResponses[correctTab - 1].method = ans;
+            draft.validation.altResponses[correctTab - 1].value = val;
           }
         } else if (correctTab === 0) {
-          draft.validation.validResponse.value.value = [...ans];
+          draft.validation.validResponse.value = [...ans];
         } else {
-          draft.validation.altResponses[correctTab - 1].value.value = [...ans];
+          draft.validation.altResponses[correctTab - 1].value = [...ans];
         }
 
         updateVariables(draft);
@@ -109,14 +110,10 @@ const ShadingEdit = ({
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       method={
-        correctTab === 0
-          ? item.validation.validResponse.value.method
-          : item.validation.altResponses[correctTab - 1].value.method
+        correctTab === 0 ? item.validation.validResponse.method : item.validation.altResponses[correctTab - 1].method
       }
       userAnswer={
-        correctTab === 0
-          ? item.validation.validResponse.value.value
-          : item.validation.altResponses[correctTab - 1].value.value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />

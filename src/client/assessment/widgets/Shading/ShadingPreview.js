@@ -99,9 +99,7 @@ const ShadingPreview = ({
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer);
 
-    const indexOfSameShade = newUserAnswer.findIndex(
-      shade => shade[0] === rowNumber && shade[1] === colNumber
-    );
+    const indexOfSameShade = newUserAnswer.findIndex(shade => shade[0] === rowNumber && shade[1] === colNumber);
 
     if (indexOfSameShade === -1) {
       newUserAnswer.push([rowNumber, colNumber]);
@@ -139,11 +137,7 @@ const ShadingPreview = ({
   ).filter((value, i) => evaluation && evaluation[i]);
 
   return (
-    <StyledPaperWrapper
-      style={{ fontSize }}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
         <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -189,7 +183,7 @@ const ShadingPreview = ({
                     size="large"
                     type="number"
                     width="320px"
-                    value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
+                    value={Array.isArray(userAnswer?.[0]) ? 1 : userAnswer?.[0]}
                     onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
                   />
                 )}
@@ -210,36 +204,34 @@ const ShadingPreview = ({
           {previewTab === SHOW && (
             <Fragment>
               <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
-                {validation.validResponse.value.method === BY_LOCATION_METHOD ? (
+                {validation.validResponse.method === BY_LOCATION_METHOD ? (
                   <ShadesView
                     {...renderProps}
-                    correctAnswers={validation.validResponse.value.value}
+                    correctAnswers={validation.validResponse.value}
                     showAnswers
                     onCellClick={() => {}}
                     shaded={[]}
                     lockedCells={read_only_author_cells ? shaded : undefined}
                   />
                 ) : (
-                  <Fragment>Any {validation.validResponse.value.value} cells</Fragment>
+                  <Fragment>Any {validation.validResponse.value} cells</Fragment>
                 )}
               </CorrectAnswersContainer>
 
               {validation.altResponses &&
                 validation.altResponses.map((altAnswer, i) => (
-                  <CorrectAnswersContainer
-                    title={`${t("component.shading.alternateAnswer")} ${i + 1}`}
-                  >
-                    {altAnswer.value.method === BY_LOCATION_METHOD ? (
+                  <CorrectAnswersContainer title={`${t("component.shading.alternateAnswer")} ${i + 1}`}>
+                    {altAnswer.method === BY_LOCATION_METHOD ? (
                       <ShadesView
                         {...renderProps}
-                        correctAnswers={altAnswer.value.value}
+                        correctAnswers={altAnswer.value}
                         showAnswers
                         onCellClick={() => {}}
                         shaded={[]}
                         lockedCells={read_only_author_cells ? shaded : undefined}
                       />
                     ) : (
-                      <Fragment>Any {altAnswer.value.value} cells</Fragment>
+                      <Fragment>Any {altAnswer.value} cells</Fragment>
                     )}
                   </CorrectAnswersContainer>
                 ))}

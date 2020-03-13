@@ -798,10 +798,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: {
-              method: BY_LOCATION_METHOD,
-              value: []
-            }
+            method: BY_LOCATION_METHOD,
+            value: []
           },
           altResponses: []
         },

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { groupBy } from "lodash";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
-import { getGroupList, getCurrentTerm } from "../../../src/selectors/user";
+import { getCurrentTerm } from "../../../src/selectors/user";
 import { receiveAssignmentsAction } from "../../../src/actions/assignments";
 import { getAssignmentsSelector } from "../../../src/selectors/assignments";
 import {
@@ -19,27 +19,28 @@ import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
   fetchDifferentiationWorkAction,
-  addRecommendationsAction
+  addRecommendationsAction,
+  getDifferentiationWorkSelector,
+  getDifferentiationWorkLoadingStateSelector
 } from "../../ducks";
 
 const Differentiation = ({
-  orgClassList,
   termId,
   assignments,
   differentiationStudentList,
+  differentiationWork,
+  isFetchingWork,
   receiveAssignments,
   fetchDifferentiationStudentList,
   fetchDifferentiationWork,
   addRecommendations
 }) => {
   const [selectedClass, setSelectedClass] = useState();
-  const [selectedAssignment, setSelectedAssignment] = useState();
+  const [selectedAssignment, setSelectedAssignment] = useState({});
   const [classList, setClassList] = useState([]);
   const [assignmentsData, setAssignmentsData] = useState({});
   const [filteredAssignments, setFilteredAssignments] = useState([]);
-  const [reviewMasteryRange, setReviewMasteryRange] = useState(69);
-  const [practiceMasteryRange, setPracticeMasteryRange] = useState([70, 90]);
-  const [challengeMasteryRange, setChallengeMasteryRange] = useState(90);
+
   useEffect(() => {
     const filters = {
       groupId: "",
@@ -56,52 +57,33 @@ const Differentiation = ({
   useEffect(() => {
     if (assignments.length) {
       const gradedAssignments = assignments.filter(a => a.status === assignmentStatusOptions.DONE);
-      const assignmentsGroupedByClassId = groupBy(gradedAssignments, "classId");
-      setAssignmentsData(assignmentsGroupedByClassId);
-      const classes = orgClassList.filter(c => Object.keys(assignmentsGroupedByClassId).includes(c._id));
-      setClassList(classes);
+      const assignmentsGroupedById = groupBy(gradedAssignments, "_id");
+      setAssignmentsData(assignmentsGroupedById);
+      const assignmentsDataForSelect = Object.keys(assignmentsGroupedById).map(assignmentId => {
+        const currentAssignmentData = assignmentsGroupedById[assignmentId][0];
+        return {
+          _id: assignmentId,
+          title: currentAssignmentData.title,
+          testId: currentAssignmentData.testId
+        };
+      });
+      setFilteredAssignments(assignmentsDataForSelect);
     }
   }, [assignments]);
 
   useEffect(() => {
-    if (selectedAssignment) {
-      fetchDifferentiationStudentList({ assignmentId: selectedAssignment, groupId: selectedClass });
-      const { testId } = filteredAssignments.find(a => a._id === selectedAssignment);
-      fetchDifferentiationWork(testId);
+    if (selectedClass) {
+      fetchDifferentiationStudentList({ assignmentId: selectedAssignment._id, groupId: selectedClass });
+      const { testId } = filteredAssignments.find(a => a._id === selectedAssignment._id);
+      fetchDifferentiationWork({ assignmentId: selectedAssignment._id, groupId: selectedClass, testId });
     }
-  }, [selectedAssignment]);
+  }, [selectedClass]);
 
-  const handleClassChange = value => {
-    setSelectedClass(value);
-    setSelectedAssignment();
-    setFilteredAssignments(assignmentsData[value]);
-  };
-
-  const handleChangeMasteryRange = (type, value) => {
-    console.log({ type, value });
-    if (type === "REVIEW") {
-      if (true) {
-        if (value < practiceMasteryRange[1]) {
-          setReviewMasteryRange(value);
-          setPracticeMasteryRange([value + 1, practiceMasteryRange[1]]);
-        }
-        // if()
-      }
-    } else if (type === "PRACTICE") {
-      const isLowerChanged = value[0] !== practiceMasteryRange[0];
-      if (isLowerChanged && value[0] < value[1]) {
-        setPracticeMasteryRange(value);
-        setReviewMasteryRange(value[0] - 1);
-      } else if (!isLowerChanged && value[1] > value[0]) {
-        setPracticeMasteryRange(value);
-        setChallengeMasteryRange(value[1]);
-      }
-    } else {
-      if (value > practiceMasteryRange[0]) {
-        setChallengeMasteryRange(value);
-        setPracticeMasteryRange([practiceMasteryRange[0], value]);
-      }
-    }
+  const handleAssignmentChange = (value, option) => {
+    setSelectedAssignment({ _id: option.props.value, title: option.props.title });
+    setSelectedClass();
+    const classData = assignmentsData[value].map(a => ({ _id: a.classId, name: a.className }));
+    setClassList(classData);
   };
 
   return (
@@ -109,29 +91,29 @@ const Differentiation = ({
       <StyledPerfectScrollbar width="75%">
         <SubHeader>
           <div>
+            <span>Based on Performance in</span>
+            <StyledSelect
+              style={{ width: "200px" }}
+              placeholder="SELECT ASSIGNMENT"
+              onChange={(value, option) => handleAssignmentChange(value, option)}
+              value={selectedAssignment._id}
+            >
+              {filteredAssignments.map(({ _id, title }) => (
+                <StyledSelect.Option key={_id} value={_id} title={title}>
+                  {title}
+                </StyledSelect.Option>
+              ))}
+            </StyledSelect>
             <span>Recommendations For</span>
             <StyledSelect
               style={{ width: "170px" }}
               placeholder="SELECT GROUP"
-              onChange={handleClassChange}
+              onChange={value => setSelectedClass(value)}
               value={selectedClass}
             >
               {classList.map(({ _id, name }) => (
                 <StyledSelect.Option key={_id} value={_id}>
                   {name}
-                </StyledSelect.Option>
-              ))}
-            </StyledSelect>
-            <span>Based on Performance in</span>
-            <StyledSelect
-              style={{ width: "200px" }}
-              placeholder="SELECT ASSIGNMENT"
-              onChange={value => setSelectedAssignment(value)}
-              value={selectedAssignment}
-            >
-              {filteredAssignments.map(({ _id, title }) => (
-                <StyledSelect.Option key={_id} value={_id}>
-                  {title}
                 </StyledSelect.Option>
               ))}
             </StyledSelect>
@@ -142,32 +124,42 @@ const Differentiation = ({
             <WorkTable
               type="REVIEW"
               differentiationStudentList={differentiationStudentList}
+              data={differentiationWork.review}
               addRecommendations={addRecommendations}
-              masteryRange={reviewMasteryRange}
-              changeMasteryRange={handleChangeMasteryRange}
+              selectedAssignment={selectedAssignment}
+              groupId={selectedClass}
+              isFetchingWork={isFetchingWork}
             />
             <WorkTable
               type="PRACTICE"
               differentiationStudentList={differentiationStudentList}
+              data={differentiationWork.practice}
               addRecommendations={addRecommendations}
-              masteryRange={practiceMasteryRange}
-              changeMasteryRange={handleChangeMasteryRange}
+              selectedAssignment={selectedAssignment}
+              groupId={selectedClass}
+              isFetchingWork={isFetchingWork}
             />
             <WorkTable
               type="CHALLENGE"
               differentiationStudentList={differentiationStudentList}
+              data={differentiationWork.challenge}
               addRecommendations={addRecommendations}
-              masteryRange={challengeMasteryRange}
-              changeMasteryRange={handleChangeMasteryRange}
+              selectedAssignment={selectedAssignment}
+              groupId={selectedClass}
+              isFetchingWork={isFetchingWork}
             />
           </div>
         </BodyContainer>
       </StyledPerfectScrollbar>
       <div style={{ width: "25%" }}>
         <SideButtonContainer>
+          {/* Hiding this button for now as implementation is not done. 
+          
           <EduButton isGhost height="35px" style={{ marginLeft: "0px" }}>
             Accept All Recommendations
-          </EduButton>
+          </EduButton> 
+          
+          */}
           <EduButton isGhost height="35px">
             Manage Content
           </EduButton>
@@ -179,10 +171,11 @@ const Differentiation = ({
 
 export default connect(
   state => ({
-    orgClassList: getGroupList(state),
     termId: getCurrentTerm(state),
     assignments: getAssignmentsSelector(state),
-    differentiationStudentList: getDifferentiationStudentListSelector(state)
+    differentiationStudentList: getDifferentiationStudentListSelector(state),
+    differentiationWork: getDifferentiationWorkSelector(state),
+    isFetchingWork: getDifferentiationWorkLoadingStateSelector(state)
   }),
   {
     receiveAssignments: receiveAssignmentsAction,

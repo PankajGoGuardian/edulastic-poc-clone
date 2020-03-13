@@ -143,7 +143,7 @@ const getDifferentiationStudentList = ({ assignmentId, groupId }) =>
       url: `${prefix}/${assignmentId}/mastery?groupId=${groupId}`,
       method: "get"
     })
-    .then(result => result.data);
+    .then(result => result.data.result);
 
 export default {
   create,

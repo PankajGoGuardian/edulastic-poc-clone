@@ -1,64 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useDrop } from "react-dnd";
+import { message } from "antd";
 import { ProgressBar, EduButton } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import { TableContainer, StyledTable, TableHeader, Tag, StyledSlider, TableSelect } from "./style";
 
-const dummyData = [
-  {
-    standard: { identifier: "4.NF.3a", name: "Creating equivalent Fractions" },
-    averageMastery: 19,
-    notStarted: 2,
-    status: "Recommended"
-  },
-  {
-    standard: { identifier: "4.NF.3b", name: "Creating equivalent Fractions and integers" },
-    averageMastery: 10,
-    notStarted: 3,
-    status: "Added"
-  },
-  {
-    standard: { identifier: "4.NF.3c", name: "Represnting Fractions" },
-    averageMastery: 40,
-    notStarted: 3,
-    status: "Recommended"
-  },
-  {
-    standard: { identifier: "4.NF.3d", name: "Addition and Substraction of Mixed Numbers" },
-    averageMastery: 25,
-    notStarted: 1,
-    status: "Recommended"
-  }
-];
+const WorkTable = ({
+  type,
+  addRecommendations,
+  selectedAssignment,
+  groupId,
+  differentiationStudentList,
+  data = [],
+  isFetchingWork
+}) => {
+  /** Drop handle to accept dropped items from manage content (yet to be implemented) */
+  const [{ isOver }, drop] = useDrop({
+    accept: "",
+    collect: monitor => ({
+      isOver: !!monitor.isOver()
+    })
+  });
 
-const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange }) => {
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [masteryRange, setMasteryRange] = useState([0, 10]);
+  const [masteryRange, setMasteryRange] = useState([0, 10]);
 
-  //   useEffect(() => {
-  //     if (type === "REVIEW") setMasteryRange([0, 69]);
-  //     else if (type === "PRACTICE") setMasteryRange([70, 90]);
-  //     else setMasteryRange([91, 100]);
-  //   }, []);
+  const isDisabledMasterySlider = useMemo(() => !!data.find(s => s.status === "ADDED"), [data]);
+  const filteredStudentList = useMemo(
+    () =>
+      differentiationStudentList.filter(
+        ({ performance }) => performance >= masteryRange[0] && performance <= masteryRange[1]
+      ),
+    [masteryRange, differentiationStudentList]
+  );
+
+  const handleSliderChange = value => {
+    if (isDisabledMasterySlider) return;
+    setMasteryRange(value);
+  };
+
+  useEffect(() => {
+    if (type === "REVIEW") {
+      handleSliderChange([0, 69]);
+    } else if (type === "PRACTICE") {
+      handleSliderChange([70, 90]);
+    } else {
+      handleSliderChange([91, 100]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange);
+  }, [data]);
+
+  useEffect(() => {
+    if (!isFetchingWork) {
+      setSelectedRows([]);
+    }
+  }, [isFetchingWork]);
+
   const getProgressBar = percentage => {
     const dataObj = {
       trailColor: borderGrey,
       strokeColor: themeColorLighter,
-      percent: 0,
+      percent: percentage || 0,
       format: percent => `${percent}%`
     };
-
-    if (percentage) {
-      dataObj.percent = percentage;
-    } else if (type === "REVIEW") {
-      dataObj.percent = 69;
-      dataObj.format = () => "Below 70%";
-    } else if (type === "CHALLENGE") {
-      dataObj.trailColor = themeColorLighter;
-      dataObj.strokeColor = borderGrey;
-      dataObj.percent = 91;
-      dataObj.format = () => "Above 90%";
-    }
 
     const { trailColor, strokeColor, percent, format } = dataObj;
     return (
@@ -72,38 +80,23 @@ const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange 
     );
   };
 
-  const getSlider = () => {
-    if (type === "REVIEW") {
-      return (
-        <>
-          <StyledSlider value={masteryRange} onChange={value => changeMasteryRange(type, value)} />
-          <span>{`Below ${+masteryRange + 1}%`}</span>
-        </>
-      );
-    }
-    if (type === "PRACTICE") {
-      return (
-        <>
-          <StyledSlider range value={masteryRange} onChange={value => changeMasteryRange(type, value)} />
-          <span>{`Between ${masteryRange[0]}% and ${masteryRange[1]}%`}</span>
-        </>
-      );
-    }
-    if (type === "CHALLENGE") {
-      return (
-        <>
-          <StyledSlider reverse value={100 - masteryRange} onChange={value => changeMasteryRange(type, 100 - value)} />
-          <span>{`Above ${masteryRange}%`}</span>
-        </>
-      );
-    }
-  };
+  const getSlider = () => (
+    <>
+      <StyledSlider range value={masteryRange} onChange={value => handleSliderChange(value)} />
+      <span>{`Between ${masteryRange[0]}% and ${masteryRange[1]}%`}</span>
+    </>
+  );
 
   const handleRowSelect = selectionType => {
     if (selectionType === "UNSELECT") {
       setSelectedRows([]);
     } else {
-      const keyArray = dummyData.map((_, i) => i);
+      const keyArray = [];
+      data.forEach((row, i) => {
+        if (row.status === "RECOMMENDED") {
+          keyArray.push(i);
+        }
+      });
       setSelectedRows(keyArray);
     }
   };
@@ -116,15 +109,16 @@ const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange 
           <span onClick={() => handleRowSelect("UNSELECT")}>Unselect All</span>
         </TableSelect>
       ),
-      dataIndex: "standard",
-      key: "standard",
-      render: s => (
-        <div>
-          <Tag marginRight="10px">{s.identifier}</Tag>
-          {s.name}
-        </div>
-      )
+      dataIndex: "identifier",
+      key: "identifier",
+      render: s => <Tag marginRight="10px">{s}</Tag>
     },
+    {
+      title: "",
+      dataIndex: "description",
+      key: "description"
+    },
+    /** Hiding these two columns for now 
     {
       title: "AVG. Mastery",
       dataIndex: "averageMastery",
@@ -136,7 +130,7 @@ const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange 
       dataIndex: "notStarted",
       key: "notStarted",
       render: s => `${s} Students`
-    },
+    }, */
     {
       title: "",
       key: "status",
@@ -149,20 +143,43 @@ const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange 
     selectedRowKeys: selectedRows,
     onChange: selectedRowKeys => {
       setSelectedRows(selectedRowKeys);
-      console.log(`selectedRowKeys: ${selectedRowKeys}`);
     },
     getCheckboxProps: record => ({
-      disabled: record.name === "Disabled User", // Column configuration not to be checked
-      name: record.name
+      disabled: record.status === "ADDED"
     })
   };
 
+  const getResourceTitle = () => {
+    if (type === "REVIEW") {
+      return `Review ${selectedAssignment.title}`;
+    }
+    if (type === "PRACTICE") {
+      return `Practice ${selectedAssignment.title}`;
+    }
+    if (type === "CHALLENGE") {
+      return `Challenge ${selectedAssignment.title}`;
+    }
+  };
+
   const handleAdd = () => {
-    addRecommendations();
+    if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
+    const standardIdentifiers = selectedRows.map(i => data[i].identifier);
+    const obj = {
+      assignmentId: selectedAssignment._id,
+      groupId,
+      standardIdentifiers,
+      type,
+      masteryRange: {
+        min: masteryRange[0],
+        max: masteryRange[1]
+      },
+      resourceTitle: getResourceTitle()
+    };
+    addRecommendations(obj);
   };
 
   return (
-    <TableContainer>
+    <TableContainer ref={drop}>
       <TableHeader>
         <span>{type === "REVIEW" ? "Review Work" : type === "PRACTICE" ? "Practice Work" : "Challenge Work"}</span>
         <span>
@@ -171,18 +188,26 @@ const WorkTable = ({ type, addRecommendations, masteryRange, changeMasteryRange 
         </span>
         <span>
           <IconUser />
-          &nbsp;&nbsp;1
+          &nbsp;&nbsp;{filteredStudentList.length}
         </span>
         <span>
+          {/* Hiding the button for now
+          
           <EduButton isGhost height="30px">
             Replace
-          </EduButton>
+          </EduButton> */}
           <EduButton height="30px" onClick={handleAdd}>
             Add
           </EduButton>
         </span>
       </TableHeader>
-      <StyledTable columns={columns} rowSelection={rowSelection} dataSource={dummyData} pagination={false} />
+      <StyledTable
+        columns={columns}
+        rowSelection={rowSelection}
+        dataSource={data}
+        pagination={false}
+        loading={isFetchingWork}
+      />
     </TableContainer>
   );
 };

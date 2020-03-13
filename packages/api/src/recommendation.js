@@ -28,8 +28,17 @@ const acceptRecommendations = data =>
     })
     .then(result => result.data.result);
 
+const getRecommendationsStatus = ({ assignmentId, groupId }) =>
+  api
+    .callApi({
+      url: `${prefix}?assignmentId=${assignmentId}&groupId=${groupId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchRecommendations,
   getDifferentiationWork,
-  acceptRecommendations
+  acceptRecommendations,
+  getRecommendationsStatus
 };

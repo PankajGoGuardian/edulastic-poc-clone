@@ -93,6 +93,7 @@ export const UPDATE_DIFFERENTIATION_STUDENT_LIST = "[differentiation] student li
 export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiation work";
 export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
+export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation] update fetch work loading state";
 export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
 export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
   "[playlist] update destination curriculum sequence request";
@@ -138,6 +139,7 @@ export const updateDifferentiationStudentListAction = createAction(UPDATE_DIFFER
 export const fetchDifferentiationWorkAction = createAction(FETCH_DIFFERENTIATION_WORK);
 export const setDifferentiationWorkAction = createAction(SET_DIFFERENTIATION_WORK);
 export const addRecommendationsAction = createAction(ADD_RECOMMENDATIONS_ACTIONS);
+export const updateFetchWorkLoadingStateAction = createAction(UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE);
 export const updateDestinationCurriculumSequenceRequestAction = createAction(
   UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST
 );
@@ -166,6 +168,11 @@ export const onErrorPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHT
 const getCurriculumSequenceState = state => state.curriculumSequence;
 
 export const getDifferentiationStudentListSelector = state => state.curriculumSequence.differentiationStudentList;
+
+export const getDifferentiationWorkSelector = state => state.curriculumSequence.differentiationWork;
+
+export const getDifferentiationWorkLoadingStateSelector = state =>
+  state.curriculumSequence.isFetchingDifferentiationWork;
 
 const getPublisher = state => {
   if (!state.curriculumSequence) return "";
@@ -778,20 +785,55 @@ function* fetchPlaylistInsightsSaga({ payload }) {
 
 function* fetchDifferentiationStudentListSaga({ payload }) {
   try {
-    const result = yield call(assignmentApi.getDifferentiationStudentList, payload);
-    console.log({ result });
+    const { studentList = [] } = yield call(assignmentApi.getDifferentiationStudentList, payload);
+    yield put(updateDifferentiationStudentListAction(studentList));
   } catch (err) {
     console.error(err);
     yield call(message.error, err.data.message);
   }
 }
 
+function structureWorkData(workData, statusData) {
+  const newState = produce(workData, draft => {
+    Object.keys(draft).forEach(type => {
+      const currentStatusArray = statusData[type.toUpperCase()];
+      if (!currentStatusArray) {
+        draft[type].forEach(i => {
+          i.status = "RECOMMENDED";
+        });
+      } else {
+        draft[type].forEach(i => {
+          const currentStatus = currentStatusArray.find(
+            s => s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.identifier)
+          );
+          if (currentStatus) {
+            i.status = "ADDED";
+            i.masteryRange = [currentStatus.masteryRange.min, currentStatus.masteryRange.max];
+          } else {
+            i.status = "RECOMMENDED";
+            i.masteryRange = [currentStatusArray[0].masteryRange.min, currentStatusArray[0].masteryRange.max];
+          }
+        });
+      }
+    });
+  });
+  return newState;
+}
+
 function* fetchDifferentiationWorkSaga({ payload }) {
   try {
-    const result = yield call(recommendationsApi.getDifferentiationWork, payload);
-    console.log("diff work ", result);
+    yield put(updateFetchWorkLoadingStateAction(true));
+    const workData = yield call(recommendationsApi.getDifferentiationWork, payload.testId);
+    const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
+      assignmentId: payload.assignmentId,
+      groupId: payload.groupId
+    });
+    const structuredData = structureWorkData(workData, statusData);
+    yield put(setDifferentiationWorkAction(structuredData));
+    yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
+    yield put(updateFetchWorkLoadingStateAction(false));
     yield call(message.error, err.data.message);
   }
 }
@@ -799,7 +841,16 @@ function* fetchDifferentiationWorkSaga({ payload }) {
 function* addRecommendationsSaga({ payload }) {
   try {
     const response = yield call(recommendationsApi.acceptRecommendations, payload);
-    console.log("add recommendations resp", response);
+    yield put(updateFetchWorkLoadingStateAction(true));
+    const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
+      assignmentId: payload.assignmentId,
+      groupId: payload.groupId
+    });
+    const workData = yield select(getDifferentiationWorkSelector);
+    const structuredData = structureWorkData(workData, statusData);
+    yield put(setDifferentiationWorkAction(structuredData));
+    yield call(message.success, response.message);
+    yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
     yield call(message.error, err.data.message);
@@ -954,7 +1005,8 @@ const initialState = {
   loadingInsights: true,
   differentiationStudentList: [],
   differentiationWork: {},
-  destinationDirty: false
+  destinationDirty: false,
+  isFetchingDifferentiationWork: false
 };
 
 /**
@@ -1423,6 +1475,10 @@ export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_
 export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
 export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
 
+function setDifferentiationWork(state, { payload }) {
+  state.differentiationWork = payload;
+}
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1452,6 +1508,10 @@ export default createReducer(initialState, {
   [FETCH_PLAYLIST_INSIGHTS_SUCCESS]: onSuccessPlaylistInsights,
   [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights,
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
+  [SET_DIFFERENTIATION_WORK]: setDifferentiationWork,
+  [UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE]: (state, { payload }) => {
+    state.isFetchingDifferentiationWork = payload;
+  },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
     const { moduleIndex, id: contentId, title: contentTitle, standardIdentifiers } = payload;
     if (state.destinationCurriculumSequence.modules[moduleIndex].data.find(x => x.contentId === contentId)) {

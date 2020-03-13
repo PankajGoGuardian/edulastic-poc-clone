@@ -83,13 +83,15 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const label = getFormulaLabel();
   const imageDimensions = getImageDimensionsHook(label);
 
-  const { scrollWidth } = measureText(label, { ...btnStyle, maxWidth: btnStyle.maxWidth });
+  const { scrollWidth, scrollHeight } = measureText(label, { ...btnStyle, maxWidth: btnStyle.maxWidth });
+
   /**
    * +60 is ellipsis width on clicking showAnswer
    * +30 is ellipsis width on clicking checkAnswer
    */
+  const boxHeight = response?.heightpx || responseBtnStyle.heightpx;
   const widthOverflow = scrollWidth + (showAnswer ? 60 : 30) > btnStyle.maxWidth;
-  const heightOverflow = imageDimensions.height > (response?.heightpx || responseBtnStyle.heightpx);
+  const heightOverflow = imageDimensions.height > boxHeight || scrollHeight >= boxHeight;
   const showPopover = widthOverflow || heightOverflow;
 
   const indexStyle = {};

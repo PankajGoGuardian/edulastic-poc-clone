@@ -78,11 +78,13 @@ const TemplateBox = ({ resprops, id }) => {
   };
 
   const boxHeight = response ? height : responseBtnStyle.heightpx;
-  const { scrollWidth: contentWidth } = measureText(label, style);
+  const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(label, style);
   const getContent = (inPopover = false) => (
     <MathSpan style={inPopover ? draggableContainerStyle : {}} dangerouslySetInnerHTML={{ __html: label }} />
   );
-  const showPopover = label && (contentWidth > style.maxWidth || imageDimensions.height > boxHeight);
+  const widthOverflow = contentWidth > style.maxWidth;
+  const heightOverflow = imageDimensions.height > boxHeight || contentHeight > boxHeight;
+  const showPopover = label && (widthOverflow || heightOverflow);
 
   const itemData = !hasGroupResponses
     ? `${getData("value")}_${dropTargetIndex}_fromResp`

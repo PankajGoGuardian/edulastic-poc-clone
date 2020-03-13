@@ -5,6 +5,7 @@ module.exports = {
     DEFAULT: "default",
     BUBBLE_SHEET: "bubble",
     USER: "user",
-    QTI_IMPORT: "qtiImports"
+    QTI_IMPORT: "qtiImports",
+    WEBCT_IMPORT: "webctImports"
   }
 };

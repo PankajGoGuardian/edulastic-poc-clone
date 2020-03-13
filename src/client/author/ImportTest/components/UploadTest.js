@@ -13,6 +13,7 @@ import { getAllTagsAction, getAllTagsSelector } from "../../TestPage/ducks";
 
 const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
   const [selectedTags, setselectedTags] = useState([]);
+  const [contentType, setContentType] = useState("qti");
   useEffect(() => {
     getAllTags({ type: "testitem" });
   }, []);
@@ -27,7 +28,7 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
   const onChange = ({ fileList }) => {
     if (fileList.every(({ status }) => status === "done")) {
       sessionStorage.setItem("qtiTags", JSON.stringify(selectedTags));
-      uploadTest(fileList);
+      uploadTest({ fileList, contentType });
     }
   };
 
@@ -60,6 +61,8 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
     setselectedTags(selectedItems.map(item => ({ _id: item.props.value, tagName: item.props.title })));
   };
 
+  const handleTypeChange = value => setContentType(value);
+
   return (
     <FlexContainer flexDirection="column" alignItems="center">
       <StyledUpload {...props}>
@@ -74,6 +77,10 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
       </StyledUpload>
       <Select mode="tags" style={{ width: "100%" }} placeholder="Select tags" onChange={onTagSelect} allowClear>
         {testTags}
+      </Select>
+      <Select onChange={handleTypeChange} value={contentType}>
+        <Select.Option value="qti">QTI</Select.Option>
+        <Select.Option value="webct">Webct</Select.Option>
       </Select>
     </FlexContainer>
   );

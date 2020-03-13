@@ -98,6 +98,7 @@ const ImportContentModal = ({
           handleResponse({
             selectedCollectionName,
             selectedBucketId,
+            selectedFormat,
             signedUrl: getSignedUrlData
           })
         }

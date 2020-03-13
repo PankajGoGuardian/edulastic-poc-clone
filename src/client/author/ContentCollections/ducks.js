@@ -266,10 +266,10 @@ function* deletePermissionRequestSaga({ payload }) {
 
 export function* importTestToCollectionSaga({ payload }) {
   try {
-    const { selectedCollectionName, selectedBucketId, signedUrl } = payload;
-    console.log("pay..", JSON.stringify(payload));
-    const response = yield call(contentImportApi.qtiImport, {
+    const { selectedCollectionName, selectedBucketId, selectedFormat: type, signedUrl } = payload;
+    const response = yield call(contentImportApi.contentImport, {
       files: [signedUrl],
+      type,
       collectionName: selectedCollectionName
     });
     if (response?.jobIds?.length) {

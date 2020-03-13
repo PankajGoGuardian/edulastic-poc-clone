@@ -3,20 +3,20 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/content";
 
-const qtiImport = data => {
+const contentImport = data => {
   return api
     .callApi({
-      url: `${prefix}/qti-import`,
+      url: `${prefix}/import`,
       method: "post",
       data
     })
     .then(({ data: response }) => response);
 };
 
-const qtiImportProgress = data => {
+const contentImportProgress = data => {
   return api
     .callApi({
-      url: `${prefix}/qti-import-progress`,
+      url: `${prefix}/import-progress`,
       method: "post",
       data
     })
@@ -24,6 +24,6 @@ const qtiImportProgress = data => {
 };
 
 export default {
-  qtiImport,
-  qtiImportProgress
+  contentImport,
+  contentImportProgress
 };

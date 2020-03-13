@@ -19,6 +19,12 @@ export const JOB_STATUS = {
   FAILED: "failed",
   SUCCESS: "success"
 };
+
+const contentFolders = {
+  qti: aws.s3Folders.QTI_IMPORT,
+  webct: aws.s3Folders.WEBCT_IMPORT
+};
+
 const UPLOAD_TEST_REQUEST = "[import test] upload test request";
 const UPLOAD_TEST_SUSSESS = "[import test] upload test success";
 const UPLOAD_TEST_ERROR = "[import test] upload test error";
@@ -90,16 +96,14 @@ export const reducers = createReducer(initialState, {
   [SET_IS_IMPORTING]: setIsImporting
 });
 
-export function* uploadTestStaga({ payload: fileList = [] }) {
+export function* uploadTestStaga({ payload }) {
+  const { fileList, contentType: type } = payload;
   try {
     yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE));
     let responseFiles = [];
-    let extractResponse = {};
     try {
       yield put(setSuccessMessageAction("Started creating signed URLS"));
-      [responseFiles] = yield all([
-        fileList.map(file => call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT))
-      ]);
+      [responseFiles] = yield all([fileList.map(file => call(uploadToS3, file.originFileObj, contentFolders[type]))]);
       yield put(setSuccessMessageAction("Done creating signed URLs"));
     } catch (e) {
       yield put(uploadTestErrorAction(e?.data || {}));
@@ -109,7 +113,7 @@ export function* uploadTestStaga({ payload: fileList = [] }) {
     try {
       yield put(setSuccessMessageAction("Started creating the items"));
       yield put(setIsImportingAction(true));
-      const response = yield call(contentImportApi.qtiImport, { files: responseFiles });
+      const response = yield call(contentImportApi.contentImport, { files: responseFiles, type });
       if (response?.jobIds?.length) {
         yield put(setJobIdsAction(response.jobIds));
       } else {
@@ -128,7 +132,7 @@ export function* uploadTestStaga({ payload: fileList = [] }) {
 
 function* getImportProgressSaga({ payload: jobIds }) {
   try {
-    const response = yield call(contentImportApi.qtiImportProgress, { jobIds });
+    const response = yield call(contentImportApi.contentImportProgress, { jobIds });
     yield put(setJobsDataAction(response));
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE));

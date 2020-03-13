@@ -21,7 +21,7 @@ const renderActiveShape = props => {
   const getFormattedTime = timeInMillis => {
     const duration = moment.duration(timeInMillis);
     let minutes = duration.minutes();
-    const hours = duration.hours();
+    const hours = Math.floor(duration.asHours());
     const seconds = duration.seconds();
     // To make it consistent with module level time spent
     if (seconds > 50) {
@@ -81,8 +81,8 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
         data={chartData}
         cx={150}
         cy={130}
-        innerRadius={50}
-        outerRadius={68}
+        innerRadius={60}
+        outerRadius={78}
         label={({ name }) => name}
         isAnimationActive={false} // Tradeoff: to show labels -  https://github.com/recharts/recharts/issues/929
         onMouseEnter={onPieEnter}

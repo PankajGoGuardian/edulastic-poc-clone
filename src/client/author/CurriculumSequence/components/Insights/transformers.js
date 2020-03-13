@@ -23,7 +23,8 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
           userId: sId,
           firstName: "",
           lastName: "",
-          groupIds: []
+          groupIds: [],
+          trendAngle: 0
         }
       );
     });
@@ -80,11 +81,15 @@ export const getFilteredMetrics = (metricInfo = [], standards = [], studInfoMap 
   return filteredData;
 };
 
-// TODO: use itemCount to get a mulFactor if there is a large volume of data to be normalized
+// for domainRange = 800 => range = [-400, 400]
+export const domainRange = 800;
+// scaleFactor to keep all the data inside the graph
+// should be close to {sqrt(2) * limit}
+export const scaleFactor = 1.8;
+
+// TODO: use itemCount to get a domainRange if there is a large volume of data to be normalized
 const getNormalizedValue = (item, mean, range) => {
-  // for mulFactor = 800 => range = [-400, 400]
-  const mulFactor = 800;
-  return item === mean ? 0 : round((mulFactor * (item - mean)) / range);
+  return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
 
 export const getCuratedMetrics = (filteredMetrics = [], studInfoMap = {}) => {
@@ -151,66 +156,35 @@ export const getBoxedSummaryData = ({ up, flat, down }) => {
 };
 
 export const getQuadsData = data => {
-  // mulFactor to keep all the data inside the graph
-  // should be close to {sqrt(2) * limit}
-  const scaleFactor = 1.65,
-    threshFactor = 0.2;
-
-  // limits for rendering the graph
-  let eLimit = 50,
-    pLimit = 50;
-  data.map(item => {
-    if (eLimit < Math.abs(item.effort)) eLimit = Math.abs(item.effort);
-    if (pLimit < Math.abs(item.performance)) pLimit = Math.abs(item.performance);
-  });
-
-  eLimit = Math.round(eLimit * scaleFactor);
-  pLimit = Math.round(pLimit * scaleFactor);
-
-  // nearby threshold for axes to prevent labels from being cut off
-  const eThresh = Math.round(eLimit * threshFactor),
-    pThresh = Math.round(pLimit * threshFactor);
-
-  // initialize quadsData with domains
-  const quads = [
-    {
-      domainX: [-eLimit, eThresh],
-      domainY: [-pThresh, pLimit],
-      color: lightBlue8,
-      data: []
-    },
-    {
-      domainX: [-eThresh, eLimit],
-      domainY: [-pThresh, pLimit],
-      color: lightGreen7,
-      data: []
-    },
-    {
-      domainX: [-eLimit, eThresh],
-      domainY: [-pLimit, pThresh],
-      color: lightRed2,
-      data: []
-    },
-    {
-      domainX: [-eThresh, eLimit],
-      domainY: [-pLimit, pThresh],
-      color: lightBlue8,
-      data: []
-    }
-  ];
-
-  data.map(item => {
-    // push the data into their respective quads
+  return data.map(item => {
+    // add the color and quad info
     if (item.effort < 0 && item.performance > 0) {
-      quads[0].data.push(item);
+      return { ...item, color: lightBlue8, quad: 1 };
     } else if (item.effort > 0 && item.performance > 0) {
-      quads[1].data.push(item);
+      return { ...item, color: lightGreen7, quad: 2 };
     } else if (item.effort < 0 && item.performance < 0) {
-      quads[2].data.push(item);
+      return { ...item, color: lightRed2, quad: 3 };
     } else {
-      quads[3].data.push(item);
+      return { ...item, color: lightBlue8, quad: 4 };
     }
   });
+};
 
-  return quads;
+export const calcArrowPosition = ({ cx, cy, name, trendAngle }) => {
+  let x = cx,
+    y = cy;
+  if (trendAngle > 160 || trendAngle < -160) {
+    x += round((name.length + 3.5) * 5);
+    y -= trendAngle > 160 ? 6 : 4;
+  } else if (trendAngle > 90 || trendAngle < -90) {
+    x += round(name.length * 4.3);
+    y -= trendAngle > 90 ? 4 : 6;
+  } else if (trendAngle > 30 || trendAngle < -30) {
+    x += round(name.length * 4);
+    y -= trendAngle > 0 ? 3 : 6;
+  } else {
+    x += round(name.length * 3.7);
+    y -= 2;
+  }
+  return `${x} ${y}`;
 };

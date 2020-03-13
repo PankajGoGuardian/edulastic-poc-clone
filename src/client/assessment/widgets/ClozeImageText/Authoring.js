@@ -613,7 +613,7 @@ class Authoring extends Component {
 
               <CheckContainer position="unset" alignSelf="center">
                 <CheckboxLabel
-                  data-cy="drag-drop-image-aria-check"
+                  data-cy="keep-aspect-ratio"
                   checked={keepAspectRatio}
                   onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
                 >

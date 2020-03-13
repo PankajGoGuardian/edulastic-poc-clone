@@ -109,7 +109,9 @@ class LabelImageStandardPage {
 
   // upload image
 
-  getDropZoneImageContainer = () => cy.get('[data-cy="drag-drop-image-panel"]');
+  getDropZoneImageContainer = () => this.getDragDropImagePanel().find('[class^="PreviewImage"]');
+
+  getImage;
 
   changeImageWidth(width) {
     cy.get('[data-cy="image-width-input"]')
@@ -129,9 +131,11 @@ class LabelImageStandardPage {
     return this;
   }
 
-  getImageWidth = () => cy.get('[data-cy="drag-drop-image-panel"]');
+  getDragDropImagePanel = () => cy.get('[data-cy="drag-drop-image-panel"]');
 
-  getImageHeight = () => cy.get('[data-cy="drag-drop-image-panel"]');
+  getImageWidth = () => this.getDragDropImagePanel().find('[class^="PreviewImage"]');
+
+  getImageHeight = () => this.getDragDropImagePanel().find('[class^="PreviewImage"]');
 
   // image alternate
 
@@ -145,7 +149,7 @@ class LabelImageStandardPage {
   }
 
   checkImageAlternate(text) {
-    cy.get('[data-cy="drag-drop-image-panel"]')
+    this.getDragDropImagePanel()
       .find("img")
       .should("have.attr", "alt", text);
     return this;
@@ -154,23 +158,18 @@ class LabelImageStandardPage {
   // color picker
 
   updateColorPicker(color) {
-    cy.get('[data-cy="image-text-box-color-picker"]').click();
-    cy.get('[data-cy="image-text-box-color-panel"]')
-      .find("input")
+    cy.get('[data-cy="image-text-box-color-picker"]')
       .click()
-      .clear()
-      .type(color)
-      .should("have.value", color);
-    cy.get("body").click();
+      .then(() => {
+        cy.get('input[spellcheck="false"]')
+          .type(`{selectall}${color}`)
+          .should("have.value", color);
+        cy.get("body").click();
+      });
     return this;
   }
 
-  getAllInputPanel = () =>
-    cy
-      .get('[data-cy="drag-drop-image-panel"]')
-      .find("img")
-      .next()
-      .children(".react-draggable");
+  getAllInputPanel = () => this.getDragDropImagePanel().find('[data-cy="drag-input"]');
 
   // max response
 
@@ -178,11 +177,7 @@ class LabelImageStandardPage {
 
   // dashboard border
 
-  getDashboardBorderCheck = () =>
-    cy
-      .get('[data-cy="drag-drop-image-dashboard-check"]')
-      .closest("label")
-      .should("be.visible");
+  getDashboardBorderCheck = () => cy.get('[data-cy="drag-drop-image-dashboard-check"]').closest("label");
 
   // edit ARIA labels
 
@@ -193,33 +188,42 @@ class LabelImageStandardPage {
       .should("be.visible");
 
   // choices
-  getChoiceByIndex = index => cy.get(`[data-cy=edit_prefix_${index}]`);
+  getChoiceByIndex = index => this.getAllChoices().eq(index);
 
-  deleteChoiceByIndex(index) {
-    const selector = `[data-cy=choice_prefix_${index}]`;
-    cy.get(selector)
-      .find('[data-cy="deleteButton"]')
-      .click();
+  deleteChoiceByIndex = index => {
+    const selector = `[data-cy=deleteprefix${index}]`;
+    cy.get(selector).click();
     return this;
-  }
+  };
 
-  getAllChoices = () => cy.get('[data-cy="possibleResponses"]').find("input");
+  getAllChoices = () => cy.get('[data-cy="possibleResponses"]').find('[data-cy="quillSortableItem"]');
+
+  getEditChoiceByindex = index => this.getChoiceByIndex(index).find("p");
+
+  updateChoiceByIndex = (index, ch) => {
+    this.getChoiceByIndex(index).type(`{selectall}${ch}`);
+    cy.get("body").click();
+  };
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
+      .first()
       .should("be.visible")
       .click();
     return this;
   }
 
-  checkAddedAnswers = text =>
+  getAddedAnsByindex = index =>
     cy
-      .get(".draggable_box")
-      .children()
-      .contains("div", text)
-      .should("be.visible");
+      .get('[data-cy="responses-box"]')
+      .find('[data-cy="drag-item"]')
+      .eq(index);
 
-  getPointsEditor = () => cy.get('[data-cy="point-field"]').should("be.visible");
+  checkAddedAnswers = (index, text) => this.getAddedAnsByindex(index).should("contain.text", text);
+
+  getPointsEditor = () => cy.get('[id="label-image-with-drag-&-drop-points"]');
+
+  updatePoints = points => this.getPointsEditor().type(`{selectall}${points}`);
 
   getCorrectAnsOptions = () =>
     cy
@@ -229,8 +233,8 @@ class LabelImageStandardPage {
       .contains("label");
 
   addAlternate() {
-    cy.get('[data-cy="alternate"]')
-      .should("be.visible")
+    cy.get('[data-cy="alternative"]')
+      //.should("be.visible")
       .click();
     return this;
   }
@@ -259,49 +263,29 @@ class LabelImageStandardPage {
       .find(".draggable_box_transparent")
       .children();
 
-  getResponsesBoard = () => cy.get('[data-cy="drag-drop-board"]').find("div .container");
+  getResponsesBoard = () => cy.get('[data-cy="responses-box"]').find('[data-cy="drag-item"]');
 
   dragAndDropResponseToBoard(toIndex) {
     this.getResponsesBox()
       .first()
-      .customDragDrop(`#answerboard-dragdropbox-${toIndex}`);
+      .customDragDrop(`#drop-container-${toIndex}`);
     return this;
   }
 
   dragAndDropBoardToBoard(fromIndex, toIndex) {
-    cy.get(`#answerboard-dragdropbox-${fromIndex}`)
-      .find(".container")
-      .children()
-      .first()
-      .customDragDrop(`#answerboard-dragdropbox-${toIndex}`);
+    cy.get(`#drop-container-${fromIndex}`).customDragDrop(`#drop-container-${toIndex}`);
     return this;
   }
 
-  getMultipleResponse = () =>
-    cy
-      .get('[data-cy="multi-check"]')
-      .closest("label")
-      .should("be.visible");
+  getMultipleResponse = () => cy.get('[data-cy="multi-check"]');
 
-  getDragHandle = () =>
-    cy
-      .get('[data-cy="drag-check"]')
-      .closest("label")
-      .should("be.visible");
+  getDragHandle = () => cy.get('[data-cy="drag-check"]');
 
-  getShuffleResponse = () =>
-    cy
-      .get('[data-cy="shuffle-check"]')
-      .closest("label")
-      .should("be.visible");
+  getShuffleResponse = () => cy.get('[data-cy="shuffle-check"]');
 
   getShuffleDropDown = () => cy.get('[data-cy="multi"]').should("be.visible");
 
-  getTransparentResponse = () =>
-    cy
-      .get('[data-cy="transparent-check"]')
-      .closest("label")
-      .should("be.visible");
+  getTransparentResponse = () => cy.get('[data-cy="transparent-check"]');
 
   // Label Image Drop Down
 

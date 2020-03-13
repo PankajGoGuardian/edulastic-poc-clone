@@ -23,6 +23,8 @@ const Draggable = ({
   responseWidth
 }) => (
   <CustomRnd
+    data-cy="drag-input"
+    id={`drag-input-${index}`}
     background={background}
     showDashedBorder={showDashedBorder}
     showBorder={showBorder}

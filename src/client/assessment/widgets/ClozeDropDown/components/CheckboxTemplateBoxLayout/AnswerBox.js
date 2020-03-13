@@ -28,18 +28,16 @@ const Container = styled.div`
   cursor: pointer;
   border-radius: 4px;
   background: ${({ theme, checked, correct }) => {
-    if (checked === undefined && correct === undefined) {
-      return theme.widgets.clozeDropDown.boxBgColor;
-    }
-    if (checked === false) {
+    if (!checked) {
       return theme.widgets.clozeDropDown.boxNoAnswerBgColor;
     }
-    if (checked && !correct) {
+    if (!correct) {
       return theme.widgets.clozeDropDown.boxWrongBgColor;
     }
-    if (checked && correct) {
+    if (correct) {
       return theme.widgets.clozeDropDown.boxBgCorrectColor;
     }
+    return theme.widgets.clozeDropDown.boxBgColor;
   }};
 `;
 
@@ -70,13 +68,11 @@ const IndexBox = styled.div`
   flex-shrink: 0;
   ${({ theme, checked, correct }) => `
     background: ${
-      checked === undefined && correct === undefined
-        ? theme.widgets.clozeDropDown.indexBoxBgColor
-        : checked === false
+      !checked
         ? theme.widgets.clozeDropDown.indexBoxNoAnswerBgColor
-        : checked && !correct
-        ? theme.widgets.clozeDropDown.indexBoxIncorrectBgColor
-        : theme.widgets.clozeDropDown.indexBoxCorrectBgColor
+        : correct
+        ? theme.widgets.clozeDropDown.indexBoxCorrectBgColor
+        : theme.widgets.clozeDropDown.indexBoxIncorrectBgColor
     };
     color: ${theme.widgets.clozeDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};

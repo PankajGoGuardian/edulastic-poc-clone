@@ -27,8 +27,8 @@ class Annotation extends Component {
     const { removeAnnotation, updateAnnotation, index, value } = this.props;
     return (
       <div>
-        <Row style={{ marginBottom: "15px", textTransform: "none" }} type={"flex"} justify={"space-between"}>
-          <FroalaInput pl={"0px"}>
+        <Row style={{ marginBottom: "15px", textTransform: "none" }} type="flex" justify="space-between">
+          <FroalaInput pl="0px">
             <FroalaEditor
               value={value}
               onChange={val => updateAnnotation(val, index)}
@@ -37,6 +37,7 @@ class Annotation extends Component {
               config={{
                 placeholder: "Edit your content"
               }}
+              toolbarId={`froala-editor-annotations-${index}`}
             />
           </FroalaInput>
           <DeleteButton onDelete={() => removeAnnotation(index)} />

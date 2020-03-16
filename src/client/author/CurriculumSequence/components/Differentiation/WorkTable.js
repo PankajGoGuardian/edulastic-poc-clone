@@ -110,8 +110,8 @@ const WorkTable = ({
           <span onClick={() => handleRowSelect("UNSELECT")}>Unselect All</span>
         </TableSelect>
       ),
-      dataIndex: "identifier",
-      key: "identifier",
+      dataIndex: "standardIdentifier",
+      key: "standardIdentifier",
       render: s => <Tag marginRight="10px">{s}</Tag>
     },
     {
@@ -166,7 +166,7 @@ const WorkTable = ({
     if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
     if (!filteredStudentList.length)
       return message.error("Please select the mastery range which is having atleast 1 student.");
-    const standardIdentifiers = selectedRows.map(i => data[i].identifier);
+    const standardIdentifiers = selectedRows.map(i => data[i].standardIdentifier);
     const obj = {
       assignmentId: selectedAssignment._id,
       groupId,

@@ -832,7 +832,7 @@ function structureWorkData(workData, statusData) {
       } else {
         draft[type].forEach(i => {
           const currentStatus = currentStatusArray.find(
-            s => s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.identifier)
+            s => s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.standardIdentifier)
           );
           if (currentStatus) {
             i.status = "ADDED";

@@ -24,7 +24,14 @@ export const getChecks = answer => {
     let options = val.options || {};
     options = omitBy(options, f => f === false);
 
-    let midRes = Object.keys(options).reduce((acc, key, i) => {
+    const optionsKeyed = Object.keys(options);
+    const optionsToFilter = ["allowedVariables", "allowNumericOnly", "unit", "argument"];
+    const filteredOptions = optionsKeyed.filter(key => !optionsToFilter.includes(key));
+    // combine the method and options using colon
+    // combine only if there are sub options
+    const initialValue = filteredOptions.length > 0 ? `${val.method}:` : `${val.method}`;
+
+    let midRes = optionsKeyed.reduce((acc, key, i) => {
       if (key === "interpretAsInterval" || key === "interpretAsNumber") {
         acc = acc === "equivSymbolic" ? "symbolic" : acc;
       }
@@ -32,7 +39,6 @@ export const getChecks = answer => {
         return acc;
       }
       const fieldVal = options[key];
-      acc += i === 0 ? ":" : "";
 
       if (key === "argument") {
         return acc;
@@ -71,7 +77,7 @@ export const getChecks = answer => {
         acc += `${key}`;
       }
       return `${acc},`;
-    }, val.method);
+    }, initialValue);
 
     if (midRes[midRes.length - 1] === ",") {
       midRes = midRes.slice(0, midRes.length - 1);

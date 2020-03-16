@@ -79,7 +79,15 @@ var getChecks = function getChecks(answer) {
     options = (0, _omitBy2["default"])(options, function(f) {
       return f === false;
     });
-    var midRes = Object.keys(options).reduce(function(acc, key, i) {
+    var optionsKeyed = Object.keys(options);
+    var optionsToFilter = ["allowedVariables", "allowNumericOnly", "unit", "argument"];
+    var filteredOptions = optionsKeyed.filter(function(key) {
+      return !optionsToFilter.includes(key);
+    }); // combine the method and options using colon
+    // combine only if there are sub options
+
+    var initialValue = filteredOptions.length > 0 ? "".concat(val.method, ":") : "".concat(val.method);
+    var midRes = optionsKeyed.reduce(function(acc, key, i) {
       if (key === "interpretAsInterval" || key === "interpretAsNumber") {
         acc = acc === "equivSymbolic" ? "symbolic" : acc;
       }
@@ -89,7 +97,6 @@ var getChecks = function getChecks(answer) {
       }
 
       var fieldVal = options[key];
-      acc += i === 0 ? ":" : "";
 
       if (key === "argument") {
         return acc;
@@ -135,7 +142,7 @@ var getChecks = function getChecks(answer) {
       }
 
       return "".concat(acc, ",");
-    }, val.method);
+    }, initialValue);
 
     if (midRes[midRes.length - 1] === ",") {
       midRes = midRes.slice(0, midRes.length - 1);

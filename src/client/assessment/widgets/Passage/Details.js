@@ -112,6 +112,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         </Subtitle>
         <WidgetFRInput>
           <QuestionTextArea
+            placeholder={t("component.passage.enterPassageTitleHere")}
             onChange={value => handleChange("contentsTitle", value)}
             value={item.contentsTitle || ""}
             border="border"

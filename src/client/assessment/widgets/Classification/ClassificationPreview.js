@@ -72,8 +72,7 @@ const ClassificationPreview = ({
       flexDirection:
         (isPrintPreview || isPrint) && direction.includes("row") ? direction.replace(/row/gi, "column") : direction,
       width: "100%",
-      overflow: "auto",
-      justifyContent: isVertical && "flex-end"
+      overflow: "auto"
     },
     dragItemsContainerStyle: {
       display: "flex",
@@ -338,7 +337,7 @@ const ClassificationPreview = ({
     />
   );
 
-  const tableContent = rowCount > 1 ? tableLayout : dragLayout;
+  const tableContent = choiceWidth === 0 ? <div /> : rowCount > 1 ? tableLayout : dragLayout;
 
   let minResponseWidth = Infinity;
   const widthArr = posResp.map(op => {
@@ -362,7 +361,13 @@ const ClassificationPreview = ({
           {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
         </QuestionLabelWrapper>
 
-        <div style={{ overflow: "auto", width: isPrintPreview && !isVertical && "100%" }}>
+        <div
+          style={{
+            overflow: "auto",
+            width: isPrintPreview && !isVertical && "100%",
+            visibility: choiceWidth === 0 ? "hidden" : null
+          }}
+        >
           {!smallSize && view === PREVIEW && (
             <QuestionTitleWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

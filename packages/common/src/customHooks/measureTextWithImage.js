@@ -4,7 +4,7 @@ import { getImageDimensions } from "@edulastic/common";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 const measureTextWithImage = (text, style = {}, tag1 = "div", tag2 = "span") => {
-  const [dimensions, setDimensions] = useState({ height: 1, width: 1, scrollWidth: 1, scrollHeight: 1 });
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0, scrollWidth: 0, scrollHeight: 0 });
 
   const updateDimensions = em => {
     setDimensions({

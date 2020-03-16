@@ -32,7 +32,6 @@ const Container = styled.div`
   break-inside: avoid;
   min-height: 140px;
   background-color: ${dashBorderColor};
-  flex-shrink: 0;
 
   ${({ direction, choiceWidth }) => {
     if (direction === "row") {

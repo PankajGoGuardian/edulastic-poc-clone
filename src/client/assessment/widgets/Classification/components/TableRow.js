@@ -1,9 +1,7 @@
-/* eslint-disable prefer-arrow-callback */
-/* eslint-disable func-names */
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { get, maxBy } from "lodash";
+import { get } from "lodash";
 import { CenteredText } from "@edulastic/common";
 
 import produce from "immer";
@@ -17,7 +15,7 @@ import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import { IndexBox } from "./DragItem/styled/IndexBox";
 
-const colContainerDimensionsList = [];
+import TriggerStyle from "./TriggerStyle";
 
 const TableRow = ({
   startIndex,
@@ -45,8 +43,6 @@ const TableRow = ({
   showIndex
 }) => {
   const wrapperRef = useRef();
-  const mutationObserverRef = useRef(null);
-  const imageOptions = get(item, "imageOptions", {});
   const uiStyle = get(item, "uiStyle", {});
 
   const handleRowTitleDragStop = (event, data) => {
@@ -66,23 +62,6 @@ const TableRow = ({
           draft.rowHeaderPos = { x: d.x < 0 ? 0 : d.x, y: d.y < 0 ? 0 : d.y };
         })
       );
-    }
-  };
-
-  const getChangedContainerHeight = h => Math.max(h, imageOptions.height + imageOptions.y);
-  const getChangedContainerWidth = w => Math.max(w, imageOptions.width + imageOptions.x);
-
-  const changeWrapperStyle = () => {
-    const { height: maxHeight } = maxBy(colContainerDimensionsList, dropContainer => dropContainer.height) || {};
-    const { width: maxWidth } = maxBy(colContainerDimensionsList, dropContainer => dropContainer.width) || {};
-    /**
-     * +40 is padding of element
-     */
-    const h = (getChangedContainerHeight(maxHeight) || maxHeight) + 40;
-    const w = (getChangedContainerWidth(maxWidth) || maxWidth) + 40;
-    if (wrapperRef.current) {
-      wrapperRef.current.style.height = `${h}px`;
-      wrapperRef.current.style.width = `${w}px`;
     }
   };
 
@@ -214,31 +193,18 @@ const TableRow = ({
                 />
               );
             })}
+          <TriggerStyle />
         </DropContainer>
       </ResponseRnd>
     );
   }
 
-  useEffect(() => {
-    if (window.$ && !mutationObserverRef.current) {
-      const jQuery = window.$;
-      jQuery(".answer-draggable-wrapper").each(function(index) {
-        const colWrapper = this;
-        mutationObserverRef.current = new MutationObserver(function() {
-          const position = jQuery(colWrapper).position();
-          colContainerDimensionsList[index] = {
-            width: colWrapper.clientWidth + position.left + 2,
-            height: colWrapper.clientHeight + position.top + 2
-          };
-          changeWrapperStyle();
-        });
-        mutationObserverRef.current.observe(this, { attributes: true, childList: true, subtree: true });
-      });
-    }
-  }, []);
-
   return (
-    <div ref={wrapperRef} style={{ position: "relative", minHeight: 140 }}>
+    <div
+      ref={wrapperRef}
+      id="classification-cols-container"
+      style={{ position: "relative", minHeight: 140, overflow: "hidden" }}
+    >
       {cols}
     </div>
   );

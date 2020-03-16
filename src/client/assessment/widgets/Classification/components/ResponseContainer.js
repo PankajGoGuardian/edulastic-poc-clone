@@ -5,7 +5,6 @@ export const ResponseContainer = styled.div`
   padding: 10px;
   position: relative;
   display: block;
-  flex-shrink: 0;
 
   ${({ theme, imageUrl, direction, imageOptions = { width: 0, height: 0 }, disableResponse }) => {
     let css = ``;

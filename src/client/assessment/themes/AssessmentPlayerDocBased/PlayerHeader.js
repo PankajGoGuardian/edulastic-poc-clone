@@ -13,6 +13,7 @@ import {
 import { Tooltip } from "../../../common/utils/helpers";
 import { Container, StyledButton, CaculatorIcon } from "../common/ToolBar";
 import { MAX_MOBILE_WIDTH } from "../../constants/others";
+import { IconSearch } from "@edulastic/icons";
 
 const { calculatorTypes } = test;
 
@@ -24,7 +25,9 @@ const PlayerHeader = ({
   previewPlayer,
   settings,
   currentToolMode,
-  onChangeTool
+  onChangeTool,
+  handleMagnifier,
+  enableMagnifier
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const { calcType } = settings;
@@ -59,6 +62,11 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
+                  <Tooltip placement="top" title="Calculator">
+                    <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
+                      <IconSearch />
+                    </StyledButton>
+                  </Tooltip>
                 </Container>
               </MainActionWrapper>
               {!isMobile && rightButtons}

@@ -53,7 +53,9 @@ const PlayerHeader = ({
   qType,
   previewPlayer,
   headerStyleWidthZoom,
-  finishTest
+  finishTest,
+  handleMagnifier,
+  enableMagnifier
 }) => {
   const rightButtons = (
     <SaveAndExit
@@ -152,6 +154,8 @@ const PlayerHeader = ({
                         changeCaculateMode={changeCaculateMode}
                         changeTool={changeTool}
                         qType={qType}
+                        handleMagnifier={handleMagnifier}
+                        enableMagnifier={enableMagnifier}
                       />
                     )}
                   </ToolTipContainer>

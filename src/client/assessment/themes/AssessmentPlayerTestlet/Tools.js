@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { IconClose, IconCalculator } from "@edulastic/icons";
+import { IconClose, IconCalculator, IconSearch } from "@edulastic/icons";
 import { Button } from "antd";
 import { Tooltip } from "../../../common/utils/helpers";
 
-const Tools = ({ changeTool, currentTool, calculateMode }) => (
+const Tools = ({ changeTool, currentTool, calculateMode, handleMagnifier, enableMagnifier }) => (
   <ToolBox>
     {calculateMode && (
       <Tooltip title="Calculator">
@@ -20,6 +20,11 @@ const Tools = ({ changeTool, currentTool, calculateMode }) => (
     <Tooltip>
       <ToolButton active={currentTool === 2} disabled onClick={() => changeTool(2)}>
         <CloseIcon />
+      </ToolButton>
+    </Tooltip>
+    <Tooltip>
+      <ToolButton active={enableMagnifier} onClick={handleMagnifier}>
+        <IconSearch />
       </ToolButton>
     </Tooltip>
   </ToolBox>
@@ -53,7 +58,7 @@ const CloseIcon = styled(IconClose)`
 
 const ToolButton = styled(Button)`
   border: 1px solid #ffffff;
-  margin-right: 3px;
+  margin-right: 10px;
   border-radius: 5px;
 
   & :hover {

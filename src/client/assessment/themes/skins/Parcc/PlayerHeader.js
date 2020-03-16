@@ -52,7 +52,8 @@ const PlayerHeader = ({
   defaultAP,
   isDocbased,
   items,
-  toolsOpenStatus
+  toolsOpenStatus,
+  handleMagnifier
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -66,6 +67,8 @@ const PlayerHeader = ({
   const onSettingsChange = e => {
     if (e.key === "save") {
       finishTest();
+    } else if (e.key === "enableMagnifier") {
+      handleMagnifier();
     }
   };
 

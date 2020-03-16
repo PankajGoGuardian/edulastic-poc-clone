@@ -9,7 +9,8 @@ import {
   IconCalculator,
   IconClose,
   IconProtactor,
-  IconScratchPad
+  IconScratchPad,
+  IconSearch
 } from "@edulastic/icons";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { Tooltip } from "../../../common/utils/helpers";
@@ -30,7 +31,7 @@ class ToolBar extends Component {
   };
 
   render() {
-    const { settings, tool, qType } = this.props;
+    const { settings, tool, qType, handleMagnifier, enableMagnifier } = this.props;
     const { calcType } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -89,6 +90,11 @@ class ToolBar extends Component {
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton active={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
             <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
+        <Tooltip placement="top" title="Magnify">
+          <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
+            <IconSearch/>
           </StyledButton>
         </Tooltip>
       </Container>

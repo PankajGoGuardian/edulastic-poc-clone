@@ -13,6 +13,7 @@ import { FlexContainer } from "@edulastic/common";
 import { Nav } from "./common";
 import { isUndefined } from "lodash";
 import SbacHeader from "./skins/Sbac/PlayerHeader";
+import Magnifier from "../../common/components/Magnifier";
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -22,6 +23,9 @@ const AssessmentPlayerSkinWrapper = ({
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
+  const [enableMagnifier, setEnableMagnifier] = useState(false);
+
+  const handleMagnifier = () => setEnableMagnifier(!enableMagnifier);
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -34,6 +38,7 @@ const AssessmentPlayerSkinWrapper = ({
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={!isUndefined(docUrl)}
+          handleMagnifier={handleMagnifier}
         />
       );
     } else if (playerSkinType == "sbac") {
@@ -43,14 +48,16 @@ const AssessmentPlayerSkinWrapper = ({
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={!isUndefined(docUrl)}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
         />
       );
     } else if (!isUndefined(docUrl)) {
-      return <DocBasedPlayerHeader {...restProps} />;
+      return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
     } else if (defaultAP) {
-      return <DefaultAssessmentPlayerHeader {...restProps} />;
+      return <DefaultAssessmentPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
     } else {
-      return <PracticePlayerHeader {...restProps} />;
+      return <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
     }
   };
 
@@ -136,8 +143,9 @@ const AssessmentPlayerSkinWrapper = ({
     );
   };
 
-  return (
-    <>
+  const renderDom = () => {
+    return (
+      <div>
       {header()}
       <FlexContainer>
         {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
@@ -151,7 +159,25 @@ const AssessmentPlayerSkinWrapper = ({
         </StyledMainContainer>
         {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && defaultAP && navigationBtns()}
       </FlexContainer>
-    </>
+    </div>
+    )
+  }
+  return (
+    <Magnifier enable={enableMagnifier}>
+      {header()}
+      <FlexContainer>
+        {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
+        <StyledMainContainer
+          mainContainerStyle={getMainContainerStyle()}
+          style={getStyle()}
+          playerSkin={playerSkinType}
+          isSidebarVisible={isSidebarVisible}
+        >
+          {children}
+        </StyledMainContainer>
+        {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && defaultAP && navigationBtns()}
+      </FlexContainer>
+    </Magnifier>
   );
 };
 

@@ -2519,6 +2519,7 @@ export const themes = {
     }
   }),
   playerSkin: {
+    magnifierBorderColor: "#7A7A7A",
     parcc: {
       header: {
         background: "white",

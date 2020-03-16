@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Icon, Menu } from "antd";
 import { get } from "lodash";
 import { StyledButton, StyledDropdown, StyledMenu } from "./styled";
 import { IconUser } from "@edulastic/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const menuItems = {
   changeColor: "Change the background and foreground color",
@@ -16,8 +18,19 @@ const SettingMenu = ({
   user: {firstName},
   onSettingsChange
 }) => {
-  const menu = <StyledMenu onClick={onSettingsChange}>
-    {Object.keys(menuItems).map(key => <Menu.Item key={key}>{menuItems[key]}</Menu.Item>)}
+  const [setting, setSetting] = useState({
+    enableMagnifier: false,
+    showLineReaderMask: false
+  });
+  const handleSettingsChange = (e) => {
+    setSetting({
+      ...setting,
+      [e.key]: !setting[e.key]
+    });
+    onSettingsChange(e);
+  }
+  const menu = <StyledMenu onClick={handleSettingsChange}>
+    {Object.keys(menuItems).map(key => <Menu.Item key={key}>{menuItems[key]}{setting[key] && <FontAwesomeIcon icon={faCheck} />}</Menu.Item>)}
     <Menu.Divider />
     <Menu.Item key="save">Save & Exit</Menu.Item>
   </StyledMenu>

@@ -50,7 +50,9 @@ const PlayerHeader = ({
   toggleToolsOpenStatus,
   toolsOpenStatus,
   headerRef,
-  previewPlayer
+  previewPlayer,
+  handleMagnifier,
+  enableMagnifier
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -139,6 +141,8 @@ const PlayerHeader = ({
                     changeCaculateMode={() => {}}
                     changeTool={toggleToolsOpenStatus}
                     qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+                    handleMagnifier={handleMagnifier}
+                    enableMagnifier={enableMagnifier}
                   />
                 )}
               </MainActionWrapper>

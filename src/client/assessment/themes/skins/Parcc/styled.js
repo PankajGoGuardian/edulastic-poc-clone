@@ -97,6 +97,10 @@ export const StyledMenu = styled(Menu)`
       color: ${menuItem.hover.color};
     }
   }
+  .ant-dropdown-menu-item {
+    display: flex;
+    justify-content: space-between;
+  }
   .ant-menu-item {
     padding: 8px 12px;
     height: 36px;

@@ -8,7 +8,7 @@ import PlayerHeader from "./PlayerHeader";
 import ParentController from "./utility/parentController";
 import { getLineFromExpression, getPoinstFromString, ALPHABET } from "./utility/helpers";
 import { MainContent, Main, OverlayDiv } from "./styled";
-
+import Magnifier from "../../../common/components/Magnifier";
 let frameController = {};
 
 const responseType = {
@@ -41,6 +41,9 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
+  const [enableMagnifier, setEnableMagnifier] = useState(false);
+
+  const handleMagnifier = () => setEnableMagnifier(!enableMagnifier);
 
   const findItemIdMap = cPageIds =>
     find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
@@ -333,7 +336,7 @@ const PlayerContent = ({
   }, [currentPage]);
 
   return (
-    <>
+    <Magnifier enable={enableMagnifier}>
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}
@@ -343,6 +346,8 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
+        handleMagnifier={handleMagnifier}
+        enableMagnifier={enableMagnifier}
         {...restProps}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
@@ -353,7 +358,7 @@ const PlayerContent = ({
           )}
         </MainContent>
       </Main>
-    </>
+    </Magnifier>
   );
 };
 

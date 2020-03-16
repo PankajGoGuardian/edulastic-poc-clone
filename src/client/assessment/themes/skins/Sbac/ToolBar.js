@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Tooltip } from "../../../../common/utils/helpers";
 import { test, questionType } from "@edulastic/constants";
-import { IconCalculator, IconClose, IconScratchPad } from "@edulastic/icons";
+import { IconCalculator, IconClose, IconScratchPad, IconSearch } from "@edulastic/icons";
 import { Container, StyledButton, StyledIcon } from "./styled";
 
 const { calculatorTypes } = test;
@@ -18,7 +18,8 @@ const ToolBar = ({
   qType,
   setZoomLevel,
   zoomLevel,
-  isDocbased
+  isDocbased,
+  handleMagnifier
 }) => {
   const [zoom, setZoom] = useState(0);
   const toolbarHandler = value => changeTool(value);
@@ -86,6 +87,11 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
+      <Tooltip placement="top" title="Magnify">
+        <StyledButton onClick={handleMagnifier}>
+          <IconSearch/>
+        </StyledButton>
+      </Tooltip>
     </Container>
   );
 };

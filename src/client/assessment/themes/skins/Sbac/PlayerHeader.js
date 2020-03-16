@@ -63,7 +63,8 @@ const PlayerHeader = ({
   zoomLevel,
   defaultAP,
   isDocbased,
-  toolsOpenStatus
+  toolsOpenStatus,
+  handleMagnifier
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1);
@@ -166,6 +167,7 @@ const PlayerHeader = ({
                 setZoomLevel={setZoomLevel}
                 zoomLevel={zoomLevel}
                 isDocbased={isDocbased}
+                handleMagnifier={handleMagnifier}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

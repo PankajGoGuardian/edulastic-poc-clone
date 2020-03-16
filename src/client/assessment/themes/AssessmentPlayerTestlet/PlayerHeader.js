@@ -17,7 +17,9 @@ const PlayerHeader = ({
   onOpenExitPopup,
   currentTool,
   changeTool,
-  calculateMode
+  calculateMode,
+  handleMagnifier,
+  enableMagnifier
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -27,7 +29,7 @@ const PlayerHeader = ({
       <HeaderMainMenu skinb="true">
         <FlexContainer>
           <PlayerTitle>{title}</PlayerTitle>
-          <Tools changeTool={changeTool} currentTool={currentTool} calculateMode={calculateMode} />
+          <Tools changeTool={changeTool} currentTool={currentTool} calculateMode={calculateMode} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />
           <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
           <ContainerRight>
             <FlexDisplay>

@@ -421,6 +421,8 @@ class CurriculumSequence extends Component {
       updateDestinationPlaylist
     } = this.props;
 
+    const testsInPlaylist = destinationCurriculumSequence?.modules?.flatMap(m => m?.data?.map(d => d?.contentId)) || [];
+
     // figure out which tab contents to render || just render default playlist
     const currentTab = match?.params?.currentTab || "playlist";
 
@@ -773,7 +775,7 @@ class CurriculumSequence extends Component {
                 </ContentContainer>
                 {urlHasUseThis &&
                   (isManageContentActive ? (
-                    <ManageContentBlock />
+                    <ManageContentBlock testsInPlaylist={testsInPlaylist} />
                   ) : (
                     <SummaryBlock>
                       <SummaryBlockTitle>Summary</SummaryBlockTitle>

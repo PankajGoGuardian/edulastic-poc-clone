@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { borderGrey4, playlistTabLink, backgrounds } from "@edulastic/colors";
+import { borderGrey4, playlistTabLink, backgrounds, themeColor } from "@edulastic/colors";
 import Tags from "../../../src/components/common/Tags";
 
 export const ResourceItemWrapper = styled.div`
@@ -21,13 +21,16 @@ export const ResourceItemWrapper = styled.div`
 export const IconWrapper = styled.div`
   width: 30px;
   padding-right: 12px;
+  svg {
+    fill: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
+  }
 `;
 
 export const ResourceTitle = styled.div`
   text-align: left;
   font: Semibold 10px/14px Open Sans;
   letter-spacing: 0.19px;
-  color: ${playlistTabLink};
+  color: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
   text-transform: uppercase;
   width: 250px;
   overflow: hidden;
@@ -37,6 +40,7 @@ export const ResourceTitle = styled.div`
   align-items: center;
   display: flex;
   user-select: none;
+  font-weight: 600;
 
   .ant-tag {
     max-width: 55px;

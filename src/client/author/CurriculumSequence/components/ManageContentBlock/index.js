@@ -9,6 +9,7 @@ import ResourceItem from "../ResourceItem";
 import { toggleManageModulesVisibilityCSAction } from "../../ducks";
 import slice from "./ducks";
 import {
+  ManageContentOuterWrapper,
   ManageContentContainer,
   SearchByNavigationBar,
   SearchByTab,
@@ -99,8 +100,10 @@ const ManageContentBlock = props => {
     searchString,
     setTestSearchAction,
     isManageModulesVisible,
-    toggleManageModulesVisibility
+    toggleManageModulesVisibility,
+    testsInPlaylist = []
   } = props;
+
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
   const [searchBy, setSearchBy] = useState("keywords");
@@ -151,91 +154,107 @@ const ManageContentBlock = props => {
   }
 
   return (
-    <ManageContentContainer data-cy="play-list-search-container">
-      <SearchByNavigationBar>
+    <ManageContentOuterWrapper>
+      <ActionsContainer>
+        <Dropdown overlay={menu} placement="topCenter">
+          <ManageModuleBtn justify="space-between">
+            Add Resource
+            <i class="fa fa-chevron-down" aria-hidden="true" />
+          </ManageModuleBtn>
+        </Dropdown>
+
+        <ManageModuleBtn justify="center" onClick={openManageModules}>
+          manage modules
+        </ManageModuleBtn>
+      </ActionsContainer>
+
+      <ManageContentContainer data-cy="play-list-search-container">
+        {/* <SearchByNavigationBar>
         <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
           keywords
         </SearchByTab>
         <SearchByTab onClick={() => setSearchBy("standards")} isTabActive={searchBy === "standards"}>
           standards
         </SearchByTab>
-      </SearchByNavigationBar>
-      <FlexContainer>
-        <SearchBar type="search" placeholder={`Search by ${searchBy}`} onChange={onSearchChange} value={searchString} />
-        <FilterBtn data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
-          <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-        </FilterBtn>
-      </FlexContainer>
-      <br />
-      {isShowFilter ? (
-        <PlaylistTestBoxFilter
-          authoredList={[]} /// Send authors data
-          collectionsList={[]} /// send collections data
-          sourceList={sourceList}
-          filter={filter}
-          status={status}
-          authoredBy={authoredBy}
-          grades={grades}
-          subject={subject}
-          collection={collection}
-          sources={sources}
-          onFilterChange={onFilterChange}
-          onStatusChange={onStatusChange}
-          onAuthoredChange={onAuthoredChange}
-          onGradesChange={onGradesChange}
-          onSubjectChange={onSubjectChange}
-          onCollectionChange={onCollectionChange}
-          onSourceChange={onSourceChange}
-        />
-      ) : (
-        <>
-          {false && (
-            <SearchByNavigationBar justify="space-evenly">
-              {resourceTabs.map(tab => (
-                <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
-                  {tab}
-                </SearchByTab>
-              ))}
-            </SearchByNavigationBar>
-          )}
-          <br />
+      </SearchByNavigationBar> */}
+        <FlexContainer>
+          <SearchBar
+            type="search"
+            placeholder={`Search by ${searchBy}`}
+            onChange={onSearchChange}
+            value={searchString}
+          />
+          <FilterBtn data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
+            <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+          </FilterBtn>
+        </FlexContainer>
+        <br />
+        {isShowFilter ? (
+          <PlaylistTestBoxFilter
+            authoredList={[]} /// Send authors data
+            collectionsList={[]} /// send collections data
+            sourceList={sourceList}
+            filter={filter}
+            status={status}
+            authoredBy={authoredBy}
+            grades={grades}
+            subject={subject}
+            collection={collection}
+            sources={sources}
+            onFilterChange={onFilterChange}
+            onStatusChange={onStatusChange}
+            onAuthoredChange={onAuthoredChange}
+            onGradesChange={onGradesChange}
+            onSubjectChange={onSubjectChange}
+            onCollectionChange={onCollectionChange}
+            onSourceChange={onSourceChange}
+          />
+        ) : (
+          <>
+            {/* <SearchByNavigationBar justify="space-evenly">
+                {resourceTabs.map(tab => (
+                  <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
+                    {tab}
+                  </SearchByTab>
+                ))}
+              </SearchByNavigationBar>
 
-          <ResourceDataList>
-            {isLoading && loadedPage === 0 ? (
-              <Spin />
-            ) : tests.length ? (
-              tests.map((test, idx) => {
-                if (idx === fetchCall) {
-                  return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
-                }
-                return (
-                  <ResourceItem type="tests" id={test._id} title={test.title} key={test._id} summary={test?.summary} />
-                );
-              })
-            ) : (
-              <h3 style={{ textAlign: "center" }}>No Data</h3>
-            ) // TODO: update this component!
-            }
-            {isLoading && loadedPage !== 0 && (
-              <LoaderWrapper>
+              <br /> */}
+            <ResourceDataList>
+              {isLoading && loadedPage === 0 ? (
                 <Spin />
-              </LoaderWrapper>
-            )}
-          </ResourceDataList>
-        </>
-      )}
-      <ActionsContainer>
-        <Dropdown overlay={menu} placement="topCenter">
-          <ManageModuleBtn width="190px">
-            Add Resource
-            <i class="fa fa-chevron-down" aria-hidden="true" />
-          </ManageModuleBtn>
-        </Dropdown>
+              ) : tests.length ? (
+                tests.map((test, idx) => {
+                  if (idx === fetchCall) {
+                    return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
+                  }
+                  return (
+                    <ResourceItem
+                      type="tests"
+                      id={test?._id}
+                      title={test?.title}
+                      key={test?._id}
+                      summary={test?.summary}
+                      isAdded={testsInPlaylist.includes(test?._id)}
+                    />
+                  );
+                })
+              ) : (
+                <h3 style={{ textAlign: "center" }}>No Data</h3>
+              ) // TODO: update this component!
+              }
+              {isLoading && loadedPage !== 0 && (
+                <LoaderWrapper>
+                  <Spin />
+                </LoaderWrapper>
+              )}
+            </ResourceDataList>
+          </>
+        )}
 
-        <ManageModuleBtn onClick={openManageModules}>manage modules</ManageModuleBtn>
-      </ActionsContainer>
-      {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
-    </ManageContentContainer>
+        {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
+      </ManageContentContainer>
+    </ManageContentOuterWrapper>
   );
 };
 

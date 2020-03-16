@@ -10,14 +10,22 @@ import {
   title
 } from "@edulastic/colors";
 
+export const ManageContentOuterWrapper = styled.div`
+  width: 400px;
+  min-width: 400px;
+  min-height: 760px;
+  margin: 20px 30px 40px 0;
+  border-radius: 4px;
+`;
+
 export const ManageContentContainer = styled.div`
   width: 400px;
   min-width: 400px;
   min-height: 760px;
   margin: 20px 30px 40px 0;
   background: ${white};
-  padding: 22px;
-  border-radius: 4px;
+  padding: 10px 22px;
+  border-radius: 10px;
   border: 1px solid ${borderGrey4};
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -92,7 +100,7 @@ export const FilterBtn = styled.div`
 
 export const ActionsContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   width: 100%;
   margin-top: 0%;
   position: relative;
@@ -100,7 +108,8 @@ export const ActionsContainer = styled.div`
 
 export const ManageModuleBtn = styled.div`
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: ${({ justify }) => justify};
   height: 30px;
   border: 1px solid ${themeColor};
   color: ${themeColor};
@@ -109,18 +118,23 @@ export const ManageModuleBtn = styled.div`
   padding: 6px 15px 4px 15px;
   border-radius: 4px;
   font-size: 11px;
-  width: ${({ width }) => width};
+  font-weight: 600;
+  width: 48%;
   user-select: none;
   cursor: pointer;
 
   &:hover {
     color: ${white};
     background: ${themeColor};
+
+    i {
+      transform: rotate(0.5turn);
+    }
   }
 `;
 
 export const ResourceDataList = styled.div`
-  height: 515px;
+  height: 700px;
   margin-bottom: 20px;
   overflow: auto;
   display: flex;

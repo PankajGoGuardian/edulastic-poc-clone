@@ -75,6 +75,8 @@ export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
   "[curriculum-sequence] approve or reject single playlist success";
 export const SET_PLAYLIST_DATA = "[curriculum-sequence] set playlist data";
+
+// Drop Playlist Action Constants
 export const FETCH_CLASS_LIST_BY_DISTRICT_ID = "[drop-playlist] fetch class list by district id";
 export const FETCH_CLASS_LIST_SUCCESS = "[drop-playlist] fetch class list success";
 export const FETCH_STUDENT_LIST_BY_GROUP_ID = "[drop-playlist] fetch student list by group id";
@@ -87,6 +89,14 @@ export const UPDATE_PLAYLIST_METRICS = "[playlist metrics] update playlist metri
 export const FETCH_PLAYLIST_INSIGHTS = "[playlist insights] fetch playlist insights";
 export const FETCH_PLAYLIST_INSIGHTS_SUCCESS = "[playlist insights] fetch playlist insights success";
 export const FETCH_PLAYLIST_INSIGHTS_ERROR = "[playlist insights] fetch playlist insights error";
+
+// Manage Modules Action Constants
+export const ADD_MODULE = "[curriculum-sequence] Add new module";
+export const UPDATE_MODULE = "[curriculum-sequence] Update module data";
+export const DELETE_MODULE = "[curriculum-sequence] Delete module";
+export const ORDER_MODULES = "[curriculum-sequence] Resequence modules";
+export const UPDATE_CUSTOMIZED_PLAYLIST = "[curriculum-sequence] Update the customized playlist";
+export const TOGGLE_MANAGE_MODULE = "[curriculum-sequence] toggle manage module modal";
 
 export const FETCH_DIFFERENTIATION_STUDENT_LIST = "[differentiation] fetch student list";
 export const UPDATE_DIFFERENTIATION_STUDENT_LIST = "[differentiation] student list update";
@@ -163,6 +173,14 @@ export const updatePlaylistMetrics = createAction(UPDATE_PLAYLIST_METRICS);
 export const fetchPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS);
 export const onSuccessPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS_SUCCESS);
 export const onErrorPlaylistInsightsAction = createAction(FETCH_PLAYLIST_INSIGHTS_ERROR);
+
+// Manage Modules Actions
+export const toggleManageModulesVisibilityCSAction = createAction(TOGGLE_MANAGE_MODULE);
+export const createNewModuleCSAction = createAction(ADD_MODULE);
+export const updateModuleCSAction = createAction(UPDATE_MODULE);
+export const deleteModuleCSAction = createAction(DELETE_MODULE);
+export const resequenceModulesCSAction = createAction(ORDER_MODULES);
+export const updatePlaylistCSAction = createAction(UPDATE_CUSTOMIZED_PLAYLIST);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -250,7 +268,7 @@ function* fetchItemsFromApi({ payload: ids }) {
  * @param {PutCurriculumSequencePayload} [args.payload]
  */
 function* putCurriculumSequence({ payload }) {
-  const { id, curriculumSequence } = payload;
+  const { id, curriculumSequence, isPlaylist = false } = payload;
   const oldData = cloneDeep(curriculumSequence);
   try {
     const dataToSend = omit(curriculumSequence, [
@@ -266,16 +284,20 @@ function* putCurriculumSequence({ payload }) {
       return mod;
     });
     const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
-    const { authors, version } = response;
+    const { authors, version, _id } = response;
     const userId = yield select(getUserId);
     if (authors && authors.map(author => author._id).includes(userId)) {
       response.isAuthor = true;
     } else {
       response.isAuthor = false;
     }
+    oldData._id = _id;
     oldData.version = version;
     message.success(`Successfully saved ${response.title || ""}`);
     yield put(updateCurriculumSequenceAction(oldData));
+    if (isPlaylist) {
+      yield put(toggleManageModulesVisibilityCSAction(false));
+    }
   } catch (error) {
     message.error("There was an error updating the curriculum sequence");
   }
@@ -552,7 +574,7 @@ function* addContentToCurriculumSequence({ payload }) {
   });
 }
 
-function* saveCurriculumSequence() {
+function* saveCurriculumSequence({ payload }) {
   // call api and update curriculum
   const destinationCurriculumSequence = { ...(yield select(getDestinationCurriculumSequence)) };
 
@@ -560,7 +582,7 @@ function* saveCurriculumSequence() {
   delete destinationCurriculumSequence._id;
 
   yield putCurriculumSequence({
-    payload: { id, curriculumSequence: destinationCurriculumSequence }
+    payload: { id, curriculumSequence: destinationCurriculumSequence, isPlaylist: payload?.isPlaylist }
   });
 }
 
@@ -997,12 +1019,12 @@ const initialState = {
       studentList: []
     }
   },
-
   playlistMetrics: [],
   classListFetching: false,
   studentListFetching: false,
   playlistInsights: {},
   loadingInsights: true,
+  isManageModulesVisible: false,
   differentiationStudentList: [],
   differentiationWork: {},
   destinationDirty: false,
@@ -1463,6 +1485,16 @@ function onErrorPlaylistInsights(state, { payload }) {
   };
 }
 
+const createNewModuleState = (title, description) => ({
+  title,
+  description,
+  data: []
+});
+
+function toggleManageModuleHandler(state, { payload }) {
+  return { ...state, isManageModulesVisible: payload };
+}
+
 function updateDifferentiationStudentList(state, { payload }) {
   state.differentiationStudentList = payload;
 }
@@ -1507,6 +1539,36 @@ export default createReducer(initialState, {
   [UPDATE_PLAYLIST_METRICS]: updatePlaylistMetricsList,
   [FETCH_PLAYLIST_INSIGHTS_SUCCESS]: onSuccessPlaylistInsights,
   [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights,
+  [TOGGLE_MANAGE_MODULE]: toggleManageModuleHandler,
+  [ADD_MODULE]: (state, { payload }) => {
+    const newModule = createNewModuleState(payload?.title || payload?.moduleName, payload?.description);
+    if (payload?.afterModuleIndex !== undefined) {
+      state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
+    } else {
+      state.destinationCurriculumSequence?.modules?.push(newModule);
+    }
+    return state;
+  },
+  [UPDATE_MODULE]: (state, { payload }) => {
+    const { id, title, description } = payload;
+    if (payload !== undefined) {
+      state.destinationCurriculumSequence.modules[id].title = title;
+      state.destinationCurriculumSequence.modules[id].description = description;
+    }
+    return state;
+  },
+  [DELETE_MODULE]: (state, { payload }) => {
+    if (payload !== undefined) {
+      state.destinationCurriculumSequence?.modules?.splice(payload, 1);
+    }
+    return state;
+  },
+  [ORDER_MODULES]: (state, { payload }) => {
+    const { oldIndex, newIndex } = payload;
+    const obj = state.destinationCurriculumSequence?.modules?.splice(oldIndex, 1);
+    state.destinationCurriculumSequence?.modules?.splice(newIndex, 0, obj[0]);
+    return state;
+  },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
   [SET_DIFFERENTIATION_WORK]: setDifferentiationWork,
   [UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE]: (state, { payload }) => {

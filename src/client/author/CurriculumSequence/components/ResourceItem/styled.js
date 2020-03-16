@@ -3,6 +3,7 @@ import { borderGrey4, playlistTabLink, backgrounds } from "@edulastic/colors";
 import Tags from "../../../src/components/common/Tags";
 
 export const ResourceItemWrapper = styled.div`
+  width: 95%;
   display: flex;
   padding: 10px 10px;
   border-bottom: 1px solid ${borderGrey4};

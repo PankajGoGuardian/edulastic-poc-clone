@@ -6,6 +6,7 @@ import { FlexContainer } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import ResourceItem from "../ResourceItem";
+import { toggleManageModulesVisibilityCSAction } from "../../ducks";
 import slice from "./ducks";
 import {
   ManageContentContainer,
@@ -19,6 +20,7 @@ import {
   LoaderWrapper
 } from "./styled";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
+import ManageModulesModal from "../ManageModulesModal";
 
 // Static resources data
 const resourceData = [
@@ -95,7 +97,9 @@ const ManageContentBlock = props => {
     setSourcesAction,
     resetAndFetchTests,
     searchString,
-    setTestSearchAction
+    setTestSearchAction,
+    isManageModulesVisible,
+    toggleManageModulesVisibility
   } = props;
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
@@ -118,6 +122,8 @@ const ManageContentBlock = props => {
   };
 
   const onSearchChange = e => setTestSearchAction(e.target.value);
+  const openManageModules = () => toggleManageModulesVisibility(true);
+  const closeManageModules = () => toggleManageModulesVisibility(false);
 
   const menu = (
     <Menu onClick={onchange}>
@@ -226,14 +232,16 @@ const ManageContentBlock = props => {
           </ManageModuleBtn>
         </Dropdown>
 
-        <ManageModuleBtn>manage modules</ManageModuleBtn>
+        <ManageModuleBtn onClick={openManageModules}>manage modules</ManageModuleBtn>
       </ActionsContainer>
+      {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
     </ManageContentContainer>
   );
 };
 
 export default connect(
   state => ({
+    isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
     isLoading: state.playlistTestBox?.isLoading,
     loadedPage: state.playlistTestBox?.loadedPage,
     filter: state.playlistTestBox?.filter,
@@ -257,6 +265,7 @@ export default connect(
     setCollectionAction: slice.actions?.setCollectionAction,
     setSourcesAction: slice.actions?.setSourcesAction,
     resetAndFetchTests: slice.actions?.resetAndFetchTests,
-    setTestSearchAction: slice.actions?.setTestSearchAction
+    setTestSearchAction: slice.actions?.setTestSearchAction,
+    toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction
   }
 )(ManageContentBlock);

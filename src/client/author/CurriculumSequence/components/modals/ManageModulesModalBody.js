@@ -218,10 +218,7 @@ const ManageModulesModalBody = props => {
   };
   const handleSort = prop => resequenceModules(prop);
 
-  const applyHandler = () => {
-    handleApply();
-    onCloseManageModule();
-  };
+  const applyHandler = () => handleApply();
 
   const handleModuleSave = () => {
     if (addTitle.trim()) {
@@ -256,7 +253,11 @@ const ManageModulesModalBody = props => {
       message.error(`Module with title '${editTitle}' already exists. Please use another title`);
       return false;
     }
-    updateModuleInPlaylist({ id, title: editTitle, description: editDescription });
+    if (editTitle) {
+      updateModuleInPlaylist({ id, title: editTitle, description: editDescription });
+    } else {
+      message.warning("Module title cannot be Empty");
+    }
     return true;
   };
 

@@ -293,9 +293,8 @@ function* fetchAssignments({ payload }) {
  */
 function* startAssignment({ payload }) {
   try {
-    const { assignmentId, testId, testType, classId, isPlaylist = false } = payload;
-
-    if (!isPlaylist) {
+    const { assignmentId, testId, testType, classId, isPlaylist = false, studentRecommendation } = payload;
+    if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId) throw new Error("insufficient data");
     } else if (!testId) throw new Error("insufficient data");
 
@@ -310,7 +309,16 @@ function* startAssignment({ payload }) {
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
     let testActivityId = null;
-    if (isPlaylist && !assignmentId) {
+    if (studentRecommendation) {
+      const { _id } = yield testActivityApi.create({
+        groupId: classId,
+        institutionId,
+        groupType,
+        testId,
+        studentRecommendationId: studentRecommendation._id
+      });
+      testActivityId = _id;
+    } else if (isPlaylist && !assignmentId) {
       const { _id } = yield testActivityApi.create({
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
@@ -333,7 +341,19 @@ function* startAssignment({ payload }) {
 
     // set Activity id
     if (testType !== TESTLET) {
-      if (isPlaylist) {
+      if (studentRecommendation) {
+        yield put(
+          push({
+            pathname: `/student/${
+              testType === COMMON ? ASSESSMENT : testType
+            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            state: {
+              playlistAssignmentFlow: true,
+              playlistId: studentRecommendation.playlistId
+            }
+          })
+        );
+      } else if (isPlaylist) {
         yield put(
           push({
             pathname: `/student/${
@@ -373,9 +393,9 @@ function* startAssignment({ payload }) {
  */
 function* resumeAssignment({ payload }) {
   try {
-    const { assignmentId, testActivityId, testId, testType, classId, isPlaylist } = payload;
+    const { assignmentId, testActivityId, testId, testType, classId, isPlaylist, studentRecommendation } = payload;
 
-    if (!isPlaylist) {
+    if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId || !testActivityId) throw new Error("insufficient data");
     } else if (!testId || !testActivityId) throw new Error("insufficient data");
 
@@ -390,8 +410,17 @@ function* resumeAssignment({ payload }) {
     // const assignment = assignmentsById[assignmentId];
     // const classIds = yield select(getClassIds);
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
-
-    if (testType !== TESTLET) {
+    if (studentRecommendation) {
+      yield put(
+        push({
+          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+          state: {
+            playlistAssignmentFlow: true,
+            playlistId: studentRecommendation.playlistId
+          }
+        })
+      );
+    } else if (testType !== TESTLET) {
       if (isPlaylist) {
         yield put(
           push({

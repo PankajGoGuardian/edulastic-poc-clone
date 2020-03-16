@@ -3,6 +3,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { studentPlaylistApi, recommendationsApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import moment from "moment";
+import { keyBy, groupBy } from "lodash";
 
 const slice = createSlice({
   name: "studentPlaylist",
@@ -78,77 +79,7 @@ export const getIsLoadingSelector = createSelector(
 
 export const getRecommendationsSelector = createSelector(
   stateSelector,
-  state => {
-    //TODO update to return state.recommendations
-    return [
-      {
-        userId: "1111111",
-        groupId: "1111111",
-        districtId: "1111111",
-        status: "1111111",
-        updatedAt: "1583912632165",
-        createdAt: "1583912632165",
-        referenceId: "1111111",
-        referenceType: "1111111",
-        referenceName: "1111111",
-        recommendedResource: [
-          {
-            _id: "1111111",
-            name: "assignment title 1",
-            resourceType: "TEST",
-            recommendationType: "PRACTICE",
-            metadata: {
-              standardIdentifiers: []
-            }
-          }
-        ]
-      },
-      {
-        userId: "1111111",
-        groupId: "1111111",
-        districtId: "1111111",
-        status: "1111111",
-        updatedAt: "1583164999891",
-        createdAt: "1583164863419",
-        referenceId: "1111111",
-        referenceType: "1111111",
-        referenceName: "1111111",
-        recommendedResource: [
-          {
-            _id: "1111111",
-            name: "assignment title 2",
-            resourceType: "TEST",
-            recommendationType: "CHALLENGE",
-            metadata: {
-              standardIdentifiers: []
-            }
-          }
-        ]
-      },
-      {
-        userId: "1111111",
-        groupId: "1111111",
-        districtId: "1111111",
-        status: "1111111",
-        updatedAt: "1583150002238",
-        createdAt: "1583149309395",
-        referenceId: "1111111",
-        referenceType: "1111111",
-        referenceName: "1111111",
-        recommendedResource: [
-          {
-            _id: "1111111",
-            name: "assignment title 3",
-            resourceType: "TEST",
-            recommendationType: "REVIEW",
-            metadata: {
-              standardIdentifiers: []
-            }
-          }
-        ]
-      }
-    ];
-  }
+  state => state.recommendations
 );
 
 const formatDate = timeStamp => {
@@ -164,11 +95,47 @@ const formatDate = timeStamp => {
 
 export const getTransformedRecommendations = createSelector(
   getRecommendationsSelector,
-  recommendations => {
-    return recommendations.map(item => ({
-      ...item,
-      updatedAt: formatDate(item.updatedAt),
-      createdAt: formatDate(item.createdAt)
-    }));
+  state => {
+    return (
+      state.map(item => ({
+        ...item,
+        updatedAt: formatDate(item.updatedAt),
+        createdAt: formatDate(item.createdAt),
+        createdAtTemp: item.createdAt
+      })) || []
+    );
+  }
+);
+
+export const recommendationsTimed = createSelector(
+  getTransformedRecommendations,
+  state =>
+    groupBy(state, item => {
+      return moment(item.createdAtTemp)
+        .startOf("day")
+        .valueOf();
+    })
+);
+
+export const getDateKeysSelector = createSelector(
+  recommendationsTimed,
+  state => {
+    return Object.keys(state).sort((a, b) => b - a);
+  }
+);
+
+export const userRecommenendationActivities = createSelector(
+  getTransformedRecommendations,
+  (state = []) => keyBy(state, "_id")
+);
+
+export const getActivitiesByResourceId = createSelector(
+  getRecommendationsSelector,
+  state => {
+    const studentTestActivitiesById = {};
+    for (const item of state) {
+      studentTestActivitiesById[item._id] = item.studentTestActivities;
+    }
+    return studentTestActivitiesById;
   }
 );

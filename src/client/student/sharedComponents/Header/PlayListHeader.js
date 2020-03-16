@@ -26,7 +26,7 @@ export const playlistPageNavButtons = [
   }
 ];
 
-const PlayListHeader = ({ title = "Untitled", activeClasses, studentPlaylists, t, match, history }) => {
+const PlayListHeader = ({ title = "Playlist", activeClasses, studentPlaylists, t, match, history }) => {
   const handleNavChange = val => {
     const { playlistId } = match.params;
     if (val === "playlist") {
@@ -41,20 +41,23 @@ const PlayListHeader = ({ title = "Untitled", activeClasses, studentPlaylists, t
     <MainHeader Icon={IconPlaylist} headingText={title} justify={"space-between"}>
       <HeaderMidContainer>
         <StyledTabs>
-          {playlistPageNavButtons.map(({ value, text, path }) => (
-            <HeaderTabs
-              style={currentPath === path ? { cursor: "not-allowed" } : { cursor: "pointer" }}
-              dataCy={value}
-              isActive={currentPath === path}
-              linkLabel={text}
-              key={value}
-              onClickHandler={() => handleNavChange(value)}
-              isPlaylist
-            />
-          ))}
+          {match?.params?.playlistId &&
+            playlistPageNavButtons.map(({ value, text, path }) => (
+              <HeaderTabs
+                style={currentPath === path ? { cursor: "not-allowed" } : { cursor: "pointer" }}
+                dataCy={value}
+                isActive={currentPath === path}
+                linkLabel={text}
+                key={value}
+                onClickHandler={() => handleNavChange(value)}
+                isPlaylist
+              />
+            ))}
         </StyledTabs>
       </HeaderMidContainer>
-      <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption={false} />
+      {activeEnrolledClasses.length && (
+        <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption={false} />
+      )}
     </MainHeader>
   );
 };

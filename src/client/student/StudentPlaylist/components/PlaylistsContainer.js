@@ -74,11 +74,7 @@ const PlaylistsContainer = ({
       />
     )
   ) : (
-    <LayoutContent>
-      <Wrapper>
-        <NoDataNotification heading="No Playlists" description={"You don't have any playlists assigned to you yet."} />
-      </Wrapper>
-    </LayoutContent>
+    <Recommendations />
   );
 };
 

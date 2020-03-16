@@ -10,6 +10,7 @@ import {
 import { ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { Button, Col, Row, Spin, Tooltip } from "antd";
+import { isEmpty, last } from "lodash";
 import React, { useEffect } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
@@ -23,34 +24,47 @@ import NoDataNotification from "../../../common/components/NoDataNotification";
 import { resumeAssignmentAction, startAssignmentAction } from "../../Assignments/ducks";
 import { getCurrentGroup } from "../../Reports/ducks";
 import PlayListHeader from "../../sharedComponents/Header/PlayListHeader";
-import { getIsLoadingSelector, getTransformedRecommendations, slice } from "../ducks";
+import {
+  getActivitiesByResourceId,
+  getDateKeysSelector,
+  getIsLoadingSelector,
+  recommendationsTimed,
+  slice
+} from "../ducks";
 
-const Recommendations = ({ startAssignment, resumeAssignment, isLoading, recommendations, fetchRecommendations }) => {
+const Recommendations = ({
+  startAssignment,
+  resumeAssignment,
+  isLoading,
+  fetchRecommendations,
+  activitiesByResourceId,
+  match,
+  recommendationsByTime,
+  dateKeys
+}) => {
   useEffect(() => {
     fetchRecommendations();
   }, []);
 
-  const progressData = {
-    submitted: 5,
-    progress: 0,
-    classes: 1,
-    scores: 80,
-    maxScore: 100
-  };
+  const handleStartPractice = ({ testId, classId, studentRecommendationId, activities }) => _ => {
+    const lastActivity = last(activities) || {};
 
-  const handleStartPractice = resource => _ => {
-    // const {testId,classId,testType,testActivityId,isPlaylist,status} = resource;
-    //TODO check status and start or resume
-    //if(resource.status === 1) resume
-    //if(resource.status === 0) start
-    //if(resource.status === 2) review
-    startAssignment({
-      testId: "5e5ccf6cd904e10008085e39",
-      classId: "5e5ce215b3d3c8000878e230",
-      testType: "practice",
-      testActivityId: "5e5cea132ae8a400082d13c5",
-      isPlaylist: { moduleId: "5e5cbaed9ff1d600071c0b67", playlistId: "5e5cbaed9ff1d600071c0b66" }
-    });
+    if (lastActivity.status === testActivityStatus.START) {
+      resumeAssignment({
+        testId,
+        classId,
+        studentRecommendation: { _id: studentRecommendationId, playlistId: match.params.playlistId },
+        testActivityId: lastActivity._id,
+        testType: "practice"
+      });
+    } else {
+      startAssignment({
+        testId,
+        classId,
+        studentRecommendation: { _id: studentRecommendationId, playlistId: match.params.playlistId },
+        testType: "practice"
+      });
+    }
   };
 
   return (
@@ -61,74 +75,100 @@ const Recommendations = ({ startAssignment, resumeAssignment, isLoading, recomme
       ) : (
         <CurriculumSequenceWrapper>
           <Wrapper>
-            {recommendations.length ? (
+            {dateKeys.length ? (
               <div className="item" style={{ width: "100%" }}>
-                {recommendations.map(data => {
-                  const randomProgress = Math.round(Math.random() * 100);
+                {dateKeys.map(dateStamp => {
+                  const data = recommendationsByTime[dateStamp];
                   return (
                     <RowWrapper>
-                      <Date>RECOMMENDED {<span dangerouslySetInnerHTML={{ __html: data.createdAt }} />}</Date>
-                      {[...data.recommendedResource, ...data.recommendedResource].map(resource => (
-                        <Assignment key={resource._id} borderRadius="unset" boxShadow="unset">
-                          <ModuleFocused />
-                          <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
-                          <Row
-                            type="flex"
-                            gutter={20}
-                            align="flex-end"
-                            style={{ width: "calc(100% - 25px)" }}
-                            align="flex-end"
-                          >
-                            <Col span={10} align="flex-end">
-                              <ModuleDataWrapper>
-                                <ModuleDataName>
-                                  <Tooltip placement="bottomLeft" title={resource.name}>
-                                    <EllipticSpan>{resource.name}</EllipticSpan>
-                                  </Tooltip>
-                                  <StatusWrapper>{resource.recommendationType}</StatusWrapper>
-                                </ModuleDataName>
-                                <Tags margin="5px 0px 0px 0px" tags={[]} show={2} isPlaylist />
-                              </ModuleDataWrapper>
-                            </Col>
-                            <StyledCol span={4} style={{ flexDirection: "column" }} align="flex-start">
-                              <span>Mastery</span>
-                              <ProgressBar
-                                strokeColor={getProgressColor(randomProgress)}
-                                strokeWidth={13}
-                                percent={randomProgress}
-                                format={percent => (percent ? `${percent}%` : "")}
-                              />
-                            </StyledCol>
-                            <StyledCol span={2} justify="center" align="flex-end">
-                              <StyledLabel
-                                textColor={greyThemeDark1}
-                                fontStyle="12px/17px Open Sans"
-                                padding="2px"
-                                justify="center"
-                              >
-                                {progressData?.scores >= 0 && progressData?.maxScore
-                                  ? `${progressData?.scores}/${progressData?.maxScore}`
-                                  : "-"}
-                              </StyledLabel>
-                            </StyledCol>
-                            <StyledCol span={7} justify="flex-end" align="flex-end">
-                              {resource.status === testActivityStatus.SUBMITTED && !resource.isRedirected ? (
-                                <StyledLink
-                                  to={`/home/class/${resource.classId}/test/${resource.testId}/testActivityReport/${
-                                    resource.testActivityId
-                                  }`}
+                      <Date>RECOMMENDED {<span dangerouslySetInnerHTML={{ __html: data[0].createdAt }} />}</Date>
+                      {data.map(recommendation => {
+                        const activities = activitiesByResourceId[recommendation._id];
+                        const lastActivity = last(activities) || {};
+                        const { score, maxScore } = lastActivity;
+                        const scorePercentage = Math.round((score / maxScore) * 100);
+                        const { recommendedResource = {} } = recommendation;
+                        return (
+                          <Assignment key={recommendedResource._id} borderRadius="unset" boxShadow="unset">
+                            <ModuleFocused />
+                            <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
+                            <Row
+                              type="flex"
+                              gutter={20}
+                              align="flex-end"
+                              style={{ width: "calc(100% - 25px)" }}
+                              align="flex-end"
+                            >
+                              <Col span={10} align="flex-end">
+                                <ModuleDataWrapper>
+                                  <ModuleDataName>
+                                    <div>
+                                      <Tooltip placement="bottomLeft" title={recommendation.recommendationType.name}>
+                                        <EllipticSpan>{recommendedResource.name}</EllipticSpan>
+                                      </Tooltip>
+                                      <Tags
+                                        margin="5px 0px 0px 0px"
+                                        tags={recommendedResource?.metadata?.standardIdentifiers || []}
+                                        show={2}
+                                        isPlaylist
+                                      />
+                                    </div>
+                                    <StatusWrapper hasTags={recommendedResource?.metadata?.standardIdentifiers?.length}>
+                                      {recommendation.recommendationType}
+                                    </StatusWrapper>
+                                  </ModuleDataName>
+                                </ModuleDataWrapper>
+                              </Col>
+                              <StyledCol span={4} style={{ flexDirection: "column" }} align="flex-start">
+                                <span>Mastery</span>
+                                <ProgressBar
+                                  strokeColor={getProgressColor(scorePercentage)}
+                                  strokeWidth={13}
+                                  percent={scorePercentage}
+                                  format={percent =>
+                                    !window.isNaN(percent) && !isEmpty(lastActivity) ? `${percent}%` : ""
+                                  }
+                                />
+                              </StyledCol>
+                              <StyledCol span={2} justify="center" align="flex-end">
+                                <StyledLabel
+                                  textColor={greyThemeDark1}
+                                  fontStyle="12px/17px Open Sans"
+                                  padding="2px"
+                                  justify="center"
                                 >
-                                  REVIEW
-                                </StyledLink>
-                              ) : (
+                                  {score >= 0 && maxScore ? `${score}/${maxScore}` : "-"}
+                                </StyledLabel>
+                              </StyledCol>
+                              <StyledCol span={7} justify="flex-end" align="flex-end">
                                 <AssignmentButton>
-                                  <Button onClick={handleStartPractice(resource)}>START PRACTICE</Button>
+                                  <Button
+                                    onClick={handleStartPractice({
+                                      testId: recommendedResource._id,
+                                      classId: recommendation.groupId,
+                                      studentRecommendationId: recommendation._id,
+                                      activities
+                                    })}
+                                  >
+                                    {lastActivity.status === testActivityStatus.START
+                                      ? "RESUME PRACTICE"
+                                      : "START PRACTICE"}
+                                  </Button>
                                 </AssignmentButton>
-                              )}
-                            </StyledCol>
-                          </Row>
-                        </Assignment>
-                      ))}
+                                {lastActivity.status === testActivityStatus.SUBMITTED && (
+                                  <StyledLink
+                                    to={`/home/class/${recommendation.groupId}/test/${
+                                      recommendedResource._id
+                                    }/testActivityReport/${lastActivity._id}`}
+                                  >
+                                    REVIEW
+                                  </StyledLink>
+                                )}
+                              </StyledCol>
+                            </Row>
+                          </Assignment>
+                        );
+                      })}
                       {/* TODO will remove below description when there is a confirmation on the palylist data */}
                       {data.description && (
                         <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
@@ -179,9 +219,10 @@ const enhance = compose(
   withRouter,
   connect(
     state => ({
-      classId: getCurrentGroup(state.user),
-      recommendations: getTransformedRecommendations(state),
-      isLoading: getIsLoadingSelector(state)
+      isLoading: getIsLoadingSelector(state),
+      activitiesByResourceId: getActivitiesByResourceId(state),
+      dateKeys: getDateKeysSelector(state),
+      recommendationsByTime: recommendationsTimed(state)
     }),
     {
       startAssignment: startAssignmentAction,
@@ -270,6 +311,7 @@ const StatusWrapper = styled.div`
   color: #6bbfa3;
   font-weight: bold;
   text-transform: uppercase;
+  align-self: ${props => props.hasTags && "flex-start"};
 `;
 
 const Description = styled.div`
@@ -327,9 +369,10 @@ const StyledCol = styled(Col)`
 
 const AssignmentButton = styled.div`
   min-width: 121px;
+  margin-right: 10px;
   .ant-btn {
-    color: lightGreen5;
-    border: 1px solid ${lightGreen5};
+    color: ${themeColor};
+    border: 1px solid ${themeColor};
     background-color: ${white};
     min-width: 121px;
     max-height: 22px;

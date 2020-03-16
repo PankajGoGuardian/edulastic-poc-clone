@@ -1,11 +1,24 @@
 import PlayListReview from "./playListReview";
-import DndSimulatorDataTransfer from "../../../../support/misc/dndSimulator";
+import PlayListSearchContainer from "./searchConatinerPage";
 
 class PlaylistCustom extends PlayListReview {
-  dragTestFromSearchToModule = (mod, test) => {
-    // extend and get test .as("source-container");
+  constructor() {
+    this.searchContainer = new PlayListSearchContainer();
+  }
+  /* GET ELEMENTS */
+  getManageContentButton = () => cy.get('[data-cy="manage-content"]');
 
-    this.getModuleRowByModule(mod).as("@target-container");
+  clickOnManageContent = () => {
+    this.searchContainer.routeTestSearch();
+    this.getManageContentButton().click();
+    this.searchContainer.waitForTestSearch();
+  };
+
+  /* APP HELPERS */
+  dragTestFromSearchToModule = (sourcemod, test) => {
+    this.clickExpandByModule(sourcemod);
+    this.getModuleRowByModule(sourcemod).as("target-container");
+    this.searchContainer.getTestInSearchResultsById(test).as("source-container");
 
     const opts = {
       offsetX: 0,
@@ -25,28 +38,6 @@ class PlaylistCustom extends PlayListReview {
         clientY: y + opts.offsetY
       });
     });
-  };
-
-  getManageContentButton = () => cy.get('[data-cy="manage-content"]');
-
-  getKeywords = () => cy.get('[class*="SearchByTab"]').contains("keywords");
-
-  getStandards = () => cy.get('[class*="SearchByTab"]').contains("standards");
-
-  getKeywordsSearchBar = () => cy.get('[placeholder="Search by keywords"]').should("be.visible");
-
-  getStandardSearchBar = () => cy.get('[placeholder="Search by standards"]').should("be.visible");
-
-  clickOnManageContent = () => {
-    this.getManageContentButton().click();
-  };
-
-  clickOnKeyword = () => {
-    this.getKeywords().click();
-  };
-
-  clickOnStandard = () => {
-    this.getStandards().click();
   };
 }
 

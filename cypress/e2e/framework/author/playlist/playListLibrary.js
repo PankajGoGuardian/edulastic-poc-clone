@@ -5,6 +5,8 @@ import PlayListHeader from "./playListHeader";
 import PlayListAddTest from "./playListAddTestTab";
 import PlayListReview from "./playListReview";
 import CypressHelper from "../../util/cypressHelpers";
+import PlayListSearchContainer from "./searchConatinerPage";
+import PlaylistCustom from "./playListCustomizationPage";
 
 export default class PlayListLibrary {
   constructor() {
@@ -14,6 +16,8 @@ export default class PlayListLibrary {
     this.header = new PlayListHeader();
     this.addTestTab = new PlayListAddTest();
     this.reviewTab = new PlayListReview();
+    this.searchContainer = new PlayListSearchContainer();
+    this.playlistCustom = new PlaylistCustom();
   }
 
   // *** ELEMENTS START ***
@@ -24,7 +28,6 @@ export default class PlayListLibrary {
   getCustomizationSwitch = () => cy.get('[data-cy="customization"]');
 
   // *** ELEMENTS END ***
-
   // *** ACTIONS START ***
 
   clickOnNewPlayList = () => cy.get('[data-cy="createNew"]').click();
@@ -107,6 +110,27 @@ export default class PlayListLibrary {
     }
 
     return this.addTestTab.clickOnDone(true);
+  };
+  createPlayListWithTests = playListData => {
+    /* const playListData = {
+      metadata: {
+        name: "Play List",
+        grade: "Grade 10",
+        subject: "Social Studies"
+      },
+      moduledata: {
+        module1:[...testids],
+        module2:[...testids]
+      }
+    }; */
+    return this.createPlayList(playListData.metadata, Cypress._.keys(playListData.moduledata).length).then(id => {
+      this.searchFilter.clearAll();
+      this.searchFilter.getAuthoredByMe();
+      Cypress._.values(playListData.moduledata).forEach((tests, mod) => {
+        this.addTestTab.bulkAddByModule(tests, mod + 1);
+      });
+      return this.header.clickOnPublish().then(() => id);
+    });
   };
 
   searchAndClickOnDropDownByClass = text => {

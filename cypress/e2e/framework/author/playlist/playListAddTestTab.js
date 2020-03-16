@@ -98,7 +98,11 @@ export default class PlayListAddTest {
         cy.saveplayListDetailToDelete(plyaListId);
       });
     }
-    return cy.wait(1).then(() => plyaListId);
+
+    return cy.wait(1).then(() => {
+      Cypress.$('[class^="styles_closeButton"]').click();
+      return plyaListId;
+    });
   };
 
   bulkAddByModule = (testId, mod) => {

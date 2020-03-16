@@ -28,7 +28,7 @@ const ResourceItem = ({ title, type, id, summary, isAdded }) => {
   });
 
   return (
-    <ResourceItemWrapper ref={drag}>
+    <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
       <IconWrapper isAdded={isAdded}>{ICONS_BY_TYPE[type]}</IconWrapper>
       <ResourceTitle isAdded={isAdded} title={title}>
         <TitleText noStandards={standardIdentifiers.length === 0}>{title}</TitleText>{" "}

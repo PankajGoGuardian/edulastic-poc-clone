@@ -27,12 +27,6 @@ export default class PlayListReview {
 
   getStandardsContainerByTestbyModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[class^="Tags_"]');
 
-  getShowAssignmentByTestByModule = (mod, test) =>
-    this.getTestByTestByModule(mod, test).find('[data-cy="show-assignment"]');
-
-  getHideAssignmentByTestByModule = (mod, test) =>
-    this.getTestByTestByModule(mod, test).find('[data-cy="hide-assignment"]');
-
   getPresentationIconByTestByModule = (mod, test) =>
     this.getTestByTestByModule(mod, test)
       .next()
@@ -46,7 +40,6 @@ export default class PlayListReview {
 
   // *** ELEMENTS END ***
 
-  // *** ACTIONS END ***
   clickLcbIconByTestByIndex = (mod, test, index) => {
     cy.server();
     cy.route("GET", "**/api/realtime/url").as("lcbLoad");
@@ -135,29 +128,23 @@ export default class PlayListReview {
 
   verifyModuleCompleteText = () => this.getModuleCompleteStatus().should("have.text", "MODULE COMPLETED");
 
-  /* shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
+  /*  shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
     this.getDragHandlerByTestByModule(mod, sourceTest).as("source-container");
-    this.getTestByTestByModule(mod, targetTest)
-      .parent()
-      .as("target-container");
+    this.getDragHandlerByTestByModule(mod, targetTest).as("target-container");
 
     const opts = {
       offsetX: 0,
       offsetY: 0
     };
 
-    cy.get("@source-container")
-      .trigger("dragstart", {})
-      .trigger("drag", {});
-
     cy.get("@target-container").then($el => {
       const { x, y } = $el.get(0).getBoundingClientRect();
       cy.wrap($el.get(0)).as("target");
-      cy.get("@target").trigger("dragover", {
-        clientX: x,
-        clientY: y
-      });
-      cy.get("@target").trigger("drop", {
+      cy.get("@source-container")
+        .trigger("dragstart")
+        .trigger("drag");
+      cy.get("@source-container").trigger("dragover");
+      cy.get("@source-container").trigger("drop", {
         clientX: x + opts.offsetX,
         clientY: y + opts.offsetY
       });
@@ -199,7 +186,8 @@ export default class PlayListReview {
   shuffleTestBetweenModule = (sourcemod, sourceTest, targetModule) => {
     this.getTestByTestByModule(sourcemod, sourceTest).as("source-container");
     this.getModuleRowByModule(targetModule).as("target-container");
-
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("save-playlist");
     const opts = {
       offsetX: 0,
       offsetY: 0
@@ -214,9 +202,12 @@ export default class PlayListReview {
       cy.wrap($el.get(0)).as("target");
       cy.get("@target").trigger("dragover");
       cy.get("@target").trigger("drop", {
+        which: 1,
         clientX: x + opts.offsetX,
         clientY: y + opts.offsetY
       });
+      // cy.get("@target").trigger("dragend", {});
+      cy.wait("@save-playlist");
     });
   };
 

@@ -11,7 +11,7 @@ export default class PlayListHeader {
 
   getPublishButton = () => cy.get('[data-cy="publish"]');
 
-  getSaveButton = () => cy.get('[data-cy="save"]');
+  getSaveButton = () => cy.get('button[btntype="primary"]').contains("SAVE");
 
   getShareButton = () => cy.get('[data-cy="share"]');
 
@@ -22,7 +22,6 @@ export default class PlayListHeader {
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
-  getDropPlaylist = () => cy.get('[data-cy="drop-playlist"]');
 
   clickOnDescription = () => {
     this.getSummaryButton.click({ force: true });
@@ -55,13 +54,13 @@ export default class PlayListHeader {
     cy.wait("@publishPlaylist").then(xhr => {
       expect(xhr.status).to.eq(200);
     });
-    cy.wait("@renderPlaylist");
+    return cy.wait("@renderPlaylist");
   };
 
   clickOnSave = () => {
     cy.server();
     cy.route("PUT", "**/playlists/**").as("saveOldPlayList");
-    this.getSaveButton().click();
+    this.getSaveButton().click({ force: true });
     return cy.wait("@saveOldPlayList");
   };
 

@@ -18,11 +18,13 @@ import {
   ActionsContainer,
   ManageModuleBtn,
   ResourceDataList,
-  LoaderWrapper
+  LoaderWrapper,
+  CustomModal
 } from "./styled";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ManageModulesModal from "../ManageModulesModal";
-
+import { EduButton } from "@edulastic/common";
+import { ExternalLTIModalContent } from "./components/ExternalLTIModalContent";
 // Static resources data
 const resourceData = [
   {
@@ -51,24 +53,23 @@ const resourceData = [
   }
 ];
 
-const resourceTabs = ["all", "tests", "video", "lessons"];
+const resourceTabs = ["all", "tests", "resources"];
 
 const sourceList = ["everything", "learnzillion", "khan academy", "ck12", "grade"];
 
 const observeElement = (fetchTests, tests) => {
-  const observer = useRef();
   return useCallback(
     node => {
-      if (observer.current) {
-        observer.current.disconnect();
+      if (observer) {
+        observer.disconnect();
       }
-      observer.current = new IntersectionObserver(entries => {
+      const observer = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting) {
           fetchTests();
         }
       });
       if (node) {
-        observer.current.observe(node);
+        observer.observe(node);
       }
     },
     [tests]
@@ -89,6 +90,8 @@ const ManageContentBlock = props => {
     setDefaults,
     fetchTests,
     tests,
+    externalLTIModal,
+    externalLTIResources,
     setFilterAction,
     setStatusAction,
     setAuthoredAction,
@@ -101,7 +104,9 @@ const ManageContentBlock = props => {
     setTestSearchAction,
     isManageModulesVisible,
     toggleManageModulesVisibility,
-    testsInPlaylist = []
+    testsInPlaylist = [],
+    changeExternalLTIModal,
+    addExternalLTIResouce
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -109,13 +114,22 @@ const ManageContentBlock = props => {
   const [searchBy, setSearchBy] = useState("keywords");
   const [searchResourceBy, setSearchResourceBy] = useState("all");
   const [isShowFilter, setShowFilter] = useState(false);
+  const [isShowExternalLTITool, setIsShowExternalLTITool] = useState(false);
 
   useEffect(() => {
     setDefaults({ subject, grades });
     fetchTests();
   }, []);
 
-  const onChange = () => {};
+  const onChange = ({ key }) => {
+    if (key === "3") {
+      setIsShowExternalLTITool(!isShowExternalLTITool);
+    }
+  };
+
+  const onModalClose = () => {
+    setIsShowExternalLTITool(false);
+  };
 
   const toggleTestFilter = () => {
     if (isShowFilter) {
@@ -128,8 +142,13 @@ const ManageContentBlock = props => {
   const openManageModules = () => toggleManageModulesVisibility(true);
   const closeManageModules = () => toggleManageModulesVisibility(false);
 
+  const addLTIResource = () => {
+    addExternalLTIResouce();
+    setIsShowExternalLTITool(false);
+  };
+
   const menu = (
-    <Menu onClick={onchange}>
+    <Menu onClick={onChange}>
       <Menu.Item key="1">Website URL</Menu.Item>
       <Menu.Item key="2">Youtube</Menu.Item>
       <Menu.Item key="3">External LTI Resource</Menu.Item>
@@ -152,6 +171,50 @@ const ManageContentBlock = props => {
   if (tests.length > 10) {
     fetchCall = tests.length - 7;
   }
+
+  const renderList = () => {
+    const listToRender = [];
+    if (searchResourceBy === "resources" || searchResourceBy === "all") {
+      // map resources to an element
+      if (externalLTIResources.length) {
+        externalLTIResources.map((resource, idx) => {
+          listToRender.push(
+            <ResourceItem
+              type="lti_resource"
+              id={resource.contentId}
+              title={resource.contentTitle}
+              key={idx}
+              data={resource?.data}
+            />
+          );
+        });
+      }
+    }
+    if (searchResourceBy === "tests" || searchResourceBy === "all") {
+      // map tests to an element.
+      if (tests.length) {
+        tests.map((test, idx) => {
+          if (idx === fetchCall) {
+            listToRender.push(<div style={{ height: "1px" }} ref={lastResourceItemRef} />);
+          }
+          listToRender.push(
+            <ResourceItem
+              type="tests"
+              id={test._id}
+              title={test.title}
+              key={test._id}
+              summary={test?.summary}
+              isAdded={testsInPlaylist.includes(test?._id)}
+            />
+          );
+        });
+      }
+    }
+    if (listToRender.length) {
+      return listToRender;
+    }
+    return <h3 style={{ textAlign: "center" }}>No Data</h3>;
+  };
 
   return (
     <ManageContentOuterWrapper>
@@ -221,28 +284,7 @@ const ManageContentBlock = props => {
 
               <br /> */}
             <ResourceDataList>
-              {isLoading && loadedPage === 0 ? (
-                <Spin />
-              ) : tests.length ? (
-                tests.map((test, idx) => {
-                  if (idx === fetchCall) {
-                    return <div style={{ height: "1px" }} ref={lastResourceItemRef} />;
-                  }
-                  return (
-                    <ResourceItem
-                      type="tests"
-                      id={test?._id}
-                      title={test?.title}
-                      key={test?._id}
-                      summary={test?.summary}
-                      isAdded={testsInPlaylist.includes(test?._id)}
-                    />
-                  );
-                })
-              ) : (
-                <h3 style={{ textAlign: "center" }}>No Data</h3>
-              ) // TODO: update this component!
-              }
+              {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
               {isLoading && loadedPage !== 0 && (
                 <LoaderWrapper>
                   <Spin />
@@ -253,6 +295,24 @@ const ManageContentBlock = props => {
         )}
 
         {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
+        <CustomModal
+          title="External LTI Resource"
+          visible={isShowExternalLTITool}
+          onCancel={onModalClose}
+          footer={[
+            <EduButton isGhost height="40px" onClick={onModalClose}>
+              CANCEL
+            </EduButton>,
+            <EduButton height="40px" onClick={addLTIResource}>
+              ADD RESOURCE
+            </EduButton>
+          ]}
+        >
+          <ExternalLTIModalContent
+            data={externalLTIModal}
+            onChange={(key, value) => changeExternalLTIModal({ key, value })}
+          />
+        </CustomModal>
       </ManageContentContainer>
     </ManageContentOuterWrapper>
   );
@@ -271,7 +331,9 @@ export default connect(
     tests: state.playlistTestBox?.tests || [],
     collection: state.playlistTestBox?.collection,
     sources: state.playlistTestBox?.sources,
-    searchString: state.playlistTestBox?.searchString
+    searchString: state.playlistTestBox?.searchString,
+    externalLTIModal: state.playlistTestBox?.externalLTIModal,
+    externalLTIResources: state.playlistTestBox?.externalLTIResources
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -285,6 +347,8 @@ export default connect(
     setSourcesAction: slice.actions?.setSourcesAction,
     resetAndFetchTests: slice.actions?.resetAndFetchTests,
     setTestSearchAction: slice.actions?.setTestSearchAction,
-    toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction
+    toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
+    changeExternalLTIModal: slice.actions?.changeExternalLTIModalAction,
+    addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction
   }
 )(ManageContentBlock);

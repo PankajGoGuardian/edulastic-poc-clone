@@ -9,18 +9,20 @@ import VideoIcon from "./static/graduation-cap.svg";
 const ICONS_BY_TYPE = {
   tests: <TestIcon />,
   video: <img src={VideoIcon} />,
-  lessons: <img src={LessonIcon} />
+  lti_resource: <img src={LessonIcon} />
 };
 
-const ResourceItem = ({ title, type, id, summary, isAdded }) => {
+const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded }) => {
   const standardIdentifiers = (summary?.standards || []).map(x => x.identifier);
   const [{ opacity }, drag] = useDrag({
     item: {
       type: "item",
+      dataType: type,
       id,
       fromPlaylistTestsBox: true,
       title,
-      standardIdentifiers
+      standardIdentifiers,
+      data
     },
     collect: monitor => ({
       opacity: monitor.isDragging() ? 0.4 : 1

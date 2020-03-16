@@ -2,6 +2,8 @@ import { createSlice } from "redux-starter-kit";
 import { delay } from "redux-saga";
 import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
 import { testsApi } from "@edulastic/api";
+import { set } from "lodash";
+import nanoid from "nanoid";
 
 export const sliceName = "playlistTestBox";
 const LIMIT = 20;
@@ -18,6 +20,7 @@ const slice = createSlice({
   slice: sliceName,
   initialState: {
     tests: [],
+    externalLTIResources: [],
     status: "",
     authoredBy: "",
     subject: "",
@@ -27,7 +30,8 @@ const slice = createSlice({
     isLoading: false,
     loadedPage: 0,
     filter: "ENTIRE_LIBRARY",
-    searchString: null
+    searchString: null,
+    externalLTIModal: {}
   },
   reducers: {
     setDefaults: (state, { payload }) => {
@@ -78,6 +82,17 @@ const slice = createSlice({
     },
     setTestSearchAction: (state, { payload }) => {
       state.searchString = payload;
+    },
+    changeExternalLTIModalAction: (state, { payload }) => {
+      const { key, value } = payload;
+      set(state.externalLTIModal, key, value);
+    },
+    addExternalLTIResourceAction: state => {
+      const data = state.externalLTIModal;
+      data.contentType = "LTI_RESOURCE";
+      data.contentId = nanoid();
+      state.externalLTIResources.unshift(data);
+      state.externalLTIModal = {};
     }
   }
 });

@@ -9,6 +9,7 @@ import {
   borderGrey4,
   title
 } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ManageContentOuterWrapper = styled.div`
   width: 400px;
@@ -165,4 +166,19 @@ export const LoaderWrapper = styled.div`
   padding: 10px;
   margin-top: 10px;
   cursor: default;
+`;
+
+export const CustomModal = styled(ConfirmationModal)`
+  && {
+    .ant-modal-content {
+      background: ${white};
+      .ant-modal-header {
+        padding: 0 25px 0 25px;
+        background: ${white};
+      }
+      .ant-modal-body {
+        box-shadow: none;
+      }
+    }
+  }
 `;

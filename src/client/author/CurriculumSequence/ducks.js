@@ -277,7 +277,8 @@ function* putCurriculumSequence({ payload }) {
       "updatedDate",
       "sharedWith",
       "sharedType",
-      "isAuthor"
+      "isAuthor",
+      "collectionName"
     ]);
     dataToSend.modules = dataToSend.modules.map(mod => {
       mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
@@ -1575,15 +1576,17 @@ export default createReducer(initialState, {
     state.isFetchingDifferentiationWork = payload;
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
-    const { moduleIndex, id: contentId, title: contentTitle, standardIdentifiers } = payload;
+    const { moduleIndex, dataType, id: contentId, title: contentTitle, standardIdentifiers, data } = payload;
     if (state.destinationCurriculumSequence.modules[moduleIndex].data.find(x => x.contentId === contentId)) {
       return state;
     }
+
     const content = {
       contentId,
       contentTitle,
       standardIdentifiers,
-      contentType: "test",
+      data,
+      contentType: dataType,
       standards: [],
       assignments: []
     };

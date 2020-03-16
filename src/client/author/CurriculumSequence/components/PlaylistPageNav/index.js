@@ -5,20 +5,25 @@ import { HeaderMidContainer } from "@edulastic/common/src/components/MainHeader"
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { playlistPageNavButtons } from "./navButtonsList";
 
-const PlaylistPageNav = ({ onChange, current }) => (
+const PlaylistPageNav = ({ onChange, current, showDifferentiationTab }) => (
   <HeaderMidContainer>
     <StyledTabs>
-      {playlistPageNavButtons.map(({ value, text }, index) => (
-        <HeaderTabs
-          style={current === value ? { cursor: "not-allowed" } : { cursor: "pointer" }}
-          dataCy={value}
-          isActive={current === value}
-          linkLabel={text}
-          key={value}
-          onClickHandler={onChange(value)}
-          isPlaylist
-        />
-      ))}
+      {playlistPageNavButtons.map(({ value, text }, index) => {
+        if (value === "differentiation" && !showDifferentiationTab) {
+          return null;
+        }
+        return (
+          <HeaderTabs
+            style={current === value ? { cursor: "not-allowed" } : { cursor: "pointer" }}
+            dataCy={value}
+            isActive={current === value}
+            linkLabel={text}
+            key={value}
+            onClickHandler={onChange(value)}
+            isPlaylist
+          />
+        );
+      })}
     </StyledTabs>
   </HeaderMidContainer>
 );

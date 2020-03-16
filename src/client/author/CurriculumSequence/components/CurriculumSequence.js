@@ -418,13 +418,16 @@ class CurriculumSequence extends Component {
       match,
       isManageContentActive,
       manageContentDirty,
-      updateDestinationPlaylist
+      updateDestinationPlaylist,
+      collections
     } = this.props;
 
     const testsInPlaylist = destinationCurriculumSequence?.modules?.flatMap(m => m?.data?.map(d => d?.contentId)) || [];
 
     // figure out which tab contents to render || just render default playlist
     const currentTab = match?.params?.currentTab || "playlist";
+
+    const showDifferentiationTab = !!collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp");
 
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
@@ -649,7 +652,13 @@ class CurriculumSequence extends Component {
                 titleMinWidth="unset"
                 justify={urlHasUseThis ? "space-between" : "flex-start"}
               >
-                {urlHasUseThis && <PlaylistPageNav onChange={this.handleNavChange} current={currentTab} />}
+                {urlHasUseThis && (
+                  <PlaylistPageNav
+                    onChange={this.handleNavChange}
+                    current={currentTab}
+                    showDifferentiationTab={showDifferentiationTab}
+                  />
+                )}
 
                 <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
                   {(showUseThisButton || urlHasUseThis || features.isCurator) && (
@@ -817,7 +826,7 @@ class CurriculumSequence extends Component {
 
           {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
 
-          {currentTab === "differentiation" && <Differentiation />}
+          {currentTab === "differentiation" && showDifferentiationTab && <Differentiation />}
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />

@@ -21,7 +21,8 @@ import {
   fetchDifferentiationWorkAction,
   addRecommendationsAction,
   getDifferentiationWorkSelector,
-  getDifferentiationWorkLoadingStateSelector
+  getDifferentiationWorkLoadingStateSelector,
+  getWorkStatusDataSelector
 } from "../../ducks";
 
 const Differentiation = ({
@@ -30,6 +31,7 @@ const Differentiation = ({
   differentiationStudentList,
   differentiationWork,
   isFetchingWork,
+  workStatusData,
   receiveAssignments,
   fetchDifferentiationStudentList,
   fetchDifferentiationWork,
@@ -129,6 +131,7 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              workStatusData={workStatusData.REVIEW || []}
             />
             <WorkTable
               type="PRACTICE"
@@ -138,6 +141,7 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              workStatusData={workStatusData.PRACTICE || []}
             />
             <WorkTable
               type="CHALLENGE"
@@ -147,6 +151,7 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              workStatusData={workStatusData.CHALLENGE || []}
             />
           </div>
         </BodyContainer>
@@ -175,7 +180,8 @@ export default connect(
     assignments: getAssignmentsSelector(state),
     differentiationStudentList: getDifferentiationStudentListSelector(state),
     differentiationWork: getDifferentiationWorkSelector(state),
-    isFetchingWork: getDifferentiationWorkLoadingStateSelector(state)
+    isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
+    workStatusData: getWorkStatusDataSelector(state)
   }),
   {
     receiveAssignments: receiveAssignmentsAction,

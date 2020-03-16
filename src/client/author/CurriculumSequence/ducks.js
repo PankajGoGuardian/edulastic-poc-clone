@@ -104,6 +104,8 @@ export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiati
 export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation] update fetch work loading state";
+export const UPDATE_WORK_STATUS_DATA = "[differentiation] update work status data";
+
 export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
 export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
   "[playlist] update destination curriculum sequence request";
@@ -153,6 +155,7 @@ export const updateFetchWorkLoadingStateAction = createAction(UPDATE_FETCH_DIFFE
 export const updateDestinationCurriculumSequenceRequestAction = createAction(
   UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST
 );
+export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -191,6 +194,8 @@ export const getDifferentiationWorkSelector = state => state.curriculumSequence.
 
 export const getDifferentiationWorkLoadingStateSelector = state =>
   state.curriculumSequence.isFetchingDifferentiationWork;
+
+export const getWorkStatusDataSelector = state => state.curriculumSequence.workStatusData;
 
 const getPublisher = state => {
   if (!state.curriculumSequence) return "";
@@ -851,6 +856,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
       assignmentId: payload.assignmentId,
       groupId: payload.groupId
     });
+    yield put(updateWorkStatusDataAction(statusData));
     const structuredData = structureWorkData(workData, statusData);
     yield put(setDifferentiationWorkAction(structuredData));
     yield put(updateFetchWorkLoadingStateAction(false));
@@ -869,6 +875,7 @@ function* addRecommendationsSaga({ payload }) {
       assignmentId: payload.assignmentId,
       groupId: payload.groupId
     });
+    yield put(updateWorkStatusDataAction(statusData));
     const workData = yield select(getDifferentiationWorkSelector);
     const structuredData = structureWorkData(workData, statusData);
     yield put(setDifferentiationWorkAction(structuredData));
@@ -1029,7 +1036,8 @@ const initialState = {
   differentiationStudentList: [],
   differentiationWork: {},
   destinationDirty: false,
-  isFetchingDifferentiationWork: false
+  isFetchingDifferentiationWork: false,
+  workStatusData: {}
 };
 
 /**
@@ -1572,6 +1580,9 @@ export default createReducer(initialState, {
   },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
   [SET_DIFFERENTIATION_WORK]: setDifferentiationWork,
+  [UPDATE_WORK_STATUS_DATA]: (state, { payload }) => {
+    state.workStatusData = payload;
+  },
   [UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE]: (state, { payload }) => {
     state.isFetchingDifferentiationWork = payload;
   },

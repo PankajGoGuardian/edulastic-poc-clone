@@ -13,7 +13,8 @@ const WorkTable = ({
   groupId,
   differentiationStudentList,
   data = [],
-  isFetchingWork
+  isFetchingWork,
+  workStatusData
 }) => {
   /** Drop handle to accept dropped items from manage content (yet to be implemented) */
   const [{ isOver }, drop] = useDrop({
@@ -151,18 +152,20 @@ const WorkTable = ({
 
   const getResourceTitle = () => {
     if (type === "REVIEW") {
-      return `Review ${selectedAssignment.title}`;
+      return `Review #${workStatusData.length + 1} - ${selectedAssignment.title}`;
     }
     if (type === "PRACTICE") {
-      return `Practice ${selectedAssignment.title}`;
+      return `Practice #${workStatusData.length + 1} - ${selectedAssignment.title}`;
     }
     if (type === "CHALLENGE") {
-      return `Challenge ${selectedAssignment.title}`;
+      return `Challenge #${workStatusData.length + 1} - ${selectedAssignment.title}`;
     }
   };
 
   const handleAdd = () => {
     if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
+    if (!filteredStudentList.length)
+      return message.error("Please select the mastery range which is having atleast 1 student.");
     const standardIdentifiers = selectedRows.map(i => data[i].identifier);
     const obj = {
       assignmentId: selectedAssignment._id,

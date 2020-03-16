@@ -95,6 +95,7 @@ const Differentiation = ({
           <div>
             <span>Based on Performance in</span>
             <StyledSelect
+              data-cy="select-assignment"
               style={{ width: "200px" }}
               placeholder="SELECT ASSIGNMENT"
               onChange={(value, option) => handleAssignmentChange(value, option)}
@@ -108,6 +109,7 @@ const Differentiation = ({
             </StyledSelect>
             <span>Recommendations For</span>
             <StyledSelect
+              data-cy="select-group"
               style={{ width: "170px" }}
               placeholder="SELECT GROUP"
               onChange={value => setSelectedClass(value)}
@@ -125,6 +127,7 @@ const Differentiation = ({
           <div>
             <WorkTable
               type="REVIEW"
+              data-cy="review"
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.review}
               addRecommendations={addRecommendations}
@@ -135,6 +138,7 @@ const Differentiation = ({
             />
             <WorkTable
               type="PRACTICE"
+              data-cy="practice"
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.practice}
               addRecommendations={addRecommendations}
@@ -145,6 +149,7 @@ const Differentiation = ({
             />
             <WorkTable
               type="CHALLENGE"
+              data-cy="challenge"
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.challenge}
               addRecommendations={addRecommendations}

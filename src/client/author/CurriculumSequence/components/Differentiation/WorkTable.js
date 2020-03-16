@@ -182,7 +182,7 @@ const WorkTable = ({
   };
 
   return (
-    <TableContainer ref={drop}>
+    <TableContainer data-cy={`table-${type}`} ref={drop}>
       <TableHeader>
         <span>{type === "REVIEW" ? "Review Work" : type === "PRACTICE" ? "Practice Work" : "Challenge Work"}</span>
         <span>

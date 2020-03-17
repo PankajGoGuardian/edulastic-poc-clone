@@ -1,0 +1,782 @@
+[
+  {
+    "tags": "EDUM-450",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Exponential Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-451",
+    "collection": "Spark Math",
+    "name": "Grade-8-Simplifying Exponential Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-452",
+    "collection": "Spark Math",
+    "name": "Grade-8-Evaluating Cube Roots\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-453",
+    "collection": "Spark Math",
+    "name": "Grade-8-Evaluating Square Roots\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-454",
+    "collection": "Spark Math",
+    "name": "Grade-8-Expressing Numbers in Scientific Notation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-455",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Scientific Notation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-456",
+    "collection": "Spark Math",
+    "name": "Grade-8-Operations with Scientific Notation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.A.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-457",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Graphs that Display Linear Relationships\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.B.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-458",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Graphs with Proportional Relationships\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.B.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-459",
+    "collection": "Spark Math",
+    "name": "Grade-8-Using Similar Triangles to Explain Slope\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.B.6"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-460",
+    "collection": "Spark Math",
+    "name": "Grade-8-Writing Linear Equations Using Slope-Intercept Form\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.B.6"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-461",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Solutions to Linear Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.a"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-462",
+    "collection": "Spark Math",
+    "name": "Grade-8-Finding Linear Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-463",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Linear Equations Involving Integers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-464",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Linear Equations with Decimal Coefficients\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-465",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Linear Equations with Fraction Coefficients\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-466",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Linear Equations with Percents as Coefficients\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.7.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-467",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Systems of Linear Equations Graphically\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.8.a"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-468",
+    "collection": "Spark Math",
+    "name": "Grade-8-Investigating Systems of Equations Graphically and Algebraically\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.8.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-469",
+    "collection": "Spark Math",
+    "name": "Grade-8-Solving Word Problems Involving Systems of Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.EE.C.8.c"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.EE"
+    }
+  },
+  {
+    "tags": "EDUM-470",
+    "collection": "Spark Math",
+    "name": "Grade-8-Determining If a Relation Is a Function\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-471",
+    "collection": "Spark Math",
+    "name": "Grade-8-Graphing Functions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-472",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Domain\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-473",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Domain and Range\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-474",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Range\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-475",
+    "collection": "Spark Math",
+    "name": "Grade-8-Comparing Functions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-476",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Graphs of Functions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-477",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Types of Functions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-478",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Linear Functions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-479",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Linear Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.B.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-480",
+    "collection": "Spark Math",
+    "name": "Grade-8-Rate of Change\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.B.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-481",
+    "collection": "Spark Math",
+    "name": "Grade-8-Describing a Graph\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.F.B.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.F"
+    }
+  },
+  {
+    "tags": "EDUM-482",
+    "collection": "Spark Math",
+    "name": "Grade-8-Recognize Transformations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.1.a"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-483",
+    "collection": "Spark Math",
+    "name": "Grade-8-Recognize Transformations with Angles\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.1.b"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-484",
+    "collection": "Spark Math",
+    "name": "Grade-8-Recognize Transformations with Parallel Lines\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.1.c"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-485",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Congruence Using Transformations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-486",
+    "collection": "Spark Math",
+    "name": "Grade-8-Effects of All Types of Transformations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-487",
+    "collection": "Spark Math",
+    "name": "Grade-8-Effects of Dilation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-488",
+    "collection": "Spark Math",
+    "name": "Grade-8-Effects of Reflection\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-489",
+    "collection": "Spark Math",
+    "name": "Grade-8-Effects of Rotation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-490",
+    "collection": "Spark Math",
+    "name": "Grade-8-Effects of Translation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-491",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Similarity\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-492",
+    "collection": "Spark Math",
+    "name": "Grade-8-Classifying Congruent Triangles\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-493",
+    "collection": "Spark Math",
+    "name": "Grade-8-Classifying Triangles as Congruent or Similar\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-494",
+    "collection": "Spark Math",
+    "name": "Grade-8-Triangles and Angle Properties\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-495",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding Triangles Using Angles\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.A.5"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-496",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understanding the Pythagorean Theorem\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.B.6"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-497",
+    "collection": "Spark Math",
+    "name": "Grade-8-Applying the Pythagorean Theorem: Identify Side Lengths\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.B.7"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-498",
+    "collection": "Spark Math",
+    "name": "Grade-8-Applying the Pythagorean Theorem: Distance Between Points\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.B.8"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-499",
+    "collection": "Spark Math",
+    "name": "Grade-8-Comparing Volumes\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.C.9"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-500",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Volume\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.G.C.9"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.G"
+    }
+  },
+  {
+    "tags": "EDUM-501",
+    "collection": "Spark Math",
+    "name": "Grade-8-Classifying Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.NS.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.NS"
+    }
+  },
+  {
+    "tags": "EDUM-502",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Rational and Irrational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.NS.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.NS"
+    }
+  },
+  {
+    "tags": "EDUM-503",
+    "collection": "Spark Math",
+    "name": "Grade-8-Approximating Irrational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.NS.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.NS"
+    }
+  },
+  {
+    "tags": "EDUM-504",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying the Correlation Between Two Quantities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  },
+  {
+    "tags": "EDUM-505",
+    "collection": "Spark Math",
+    "name": "Grade-8-Understand Patterns of Association Between Two Quantities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.1"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  },
+  {
+    "tags": "EDUM-506",
+    "collection": "Spark Math",
+    "name": "Grade-8-Line of Best Fit\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.2"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  },
+  {
+    "tags": "EDUM-507",
+    "collection": "Spark Math",
+    "name": "Grade-8-Interpreting Scatter Plots\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.3"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  },
+  {
+    "tags": "EDUM-508",
+    "collection": "Spark Math",
+    "name": "Grade-8-Identifying Relative Frequency\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  },
+  {
+    "tags": "EDUM-509",
+    "collection": "Spark Math",
+    "name": "Grade-8-Interpreting Two-Way Tables",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["8.SP.A.4"],
+      "grade": ["Grade 8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "8.SP"
+    }
+  }
+]

@@ -1,0 +1,613 @@
+[
+  {
+    "tags": "EDUM-403",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solve & Expand: Linear Expressions with Rational Coefficients\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.A.1"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-404",
+    "collection": "Spark Math",
+    "name": "Grade-7-Identifying Multiple Forms of an Expression\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.A.2"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-405",
+    "collection": "Spark Math",
+    "name": "Grade-7-Properties of Operations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.3"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-406",
+    "collection": "Spark Math",
+    "name": "Grade-7-Properties of Operations: Rational Numbers-Word Problems\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.3"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-407",
+    "collection": "Spark Math",
+    "name": "Grade-7-Comparing Algebraic Solutions to Arithmetic Solutions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-408",
+    "collection": "Spark Math",
+    "name": "Grade-7-Reviewing One-Step Linear Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-409",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving Multi-Step Equations with Fractions and Decimals\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-410",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving Multi-Step Equations with Integers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-411",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving One-Step Equations: Addition and Subtraction\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-412",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving One-Step Equations: Multiplication and Division\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-413",
+    "collection": "Spark Math",
+    "name": "Grade-7-Using Equations to Solve Word Problems\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-414",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving Inequalities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.EE.B.4.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.EE"
+    }
+  },
+  {
+    "tags": "EDUM-415",
+    "collection": "Spark Math",
+    "name": "Grade-7-Proportional Reasoning with Scale Drawings\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.A.1"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-416",
+    "collection": "Spark Math",
+    "name": "Grade-7-Geometric Constructions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.A.2"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-417",
+    "collection": "Spark Math",
+    "name": "Grade-7-Plane Sections of Rectangular Prisms and Pyramids\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.A.3"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-418",
+    "collection": "Spark Math",
+    "name": "Grade-7-Area and Circumference of a Circle\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.4"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-419",
+    "collection": "Spark Math",
+    "name": "Grade-7-Solving for Unknown Angles\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.5"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-420",
+    "collection": "Spark Math",
+    "name": "Grade-7-Finding Area\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-421",
+    "collection": "Spark Math",
+    "name": "Grade-7-\"Finding Area",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-422",
+    "collection": "Spark Math",
+    "name": "Grade-7-Finding Perimeter\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-423",
+    "collection": "Spark Math",
+    "name": "Grade-7-Finding Surface Area\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-424",
+    "collection": "Spark Math",
+    "name": "Grade-7-Finding Volume\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.G.B.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.G"
+    }
+  },
+  {
+    "tags": "EDUM-425",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding and Identifying Opposite Quantities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.1.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-426",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Addition of Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.1.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-427",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Subtraction of Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.1.c"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-428",
+    "collection": "Spark Math",
+    "name": "Grade-7-Adding and Subtracting Integers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.1.d"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-429",
+    "collection": "Spark Math",
+    "name": "Grade-7-Applying Addition and Subtraction to Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.1.d"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-430",
+    "collection": "Spark Math",
+    "name": "Grade-7-Applying Multiplication to Integers and Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-431",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Multiplication of Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-432",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Multiplication of Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-433",
+    "collection": "Spark Math",
+    "name": "Grade-7-Applying Division to Integers and Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-434",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Division of Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-435",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Division of Integers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-436",
+    "collection": "Spark Math",
+    "name": "Grade-7-Applying Multiplication and Division to Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.c"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-437",
+    "collection": "Spark Math",
+    "name": "Grade-7-Converting Rational Numbers to Decimals\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.2.d"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-438",
+    "collection": "Spark Math",
+    "name": "Grade-7-Number Sentences with Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.NS.A.3"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.NS"
+    }
+  },
+  {
+    "tags": "EDUM-439",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding and Inferring Sample Data\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.A.1"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-440",
+    "collection": "Spark Math",
+    "name": "Grade-7-Inferring Variation in Data Samples\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.A.2"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-441",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Overlap of Data Distributions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.B.3"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-442",
+    "collection": "Spark Math",
+    "name": "Grade-7-Using Measures of Center and Variability to Draw Inferences\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.B.4"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-443",
+    "collection": "Spark Math",
+    "name": "Grade-7-Using Measures of Center to Draw Inferences\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.B.4"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-444",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding the Probability of an Event\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.5"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-445",
+    "collection": "Spark Math",
+    "name": "Grade-7-Approximating the Probability of an Event\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.6"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-446",
+    "collection": "Spark Math",
+    "name": "Grade-7-Using Uniform Models to Calculate Probability\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.7.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-447",
+    "collection": "Spark Math",
+    "name": "Grade-7-Identifying a Probability Model\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.7.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-448",
+    "collection": "Spark Math",
+    "name": "Grade-7-Understanding Compound Events\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.8.a"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  },
+  {
+    "tags": "EDUM-449",
+    "collection": "Spark Math",
+    "name": "Grade-7-Identifying the Probability of Compound Events",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["7.SP.C.8.b"],
+      "grade": ["Grade 7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "7.SP"
+    }
+  }
+]

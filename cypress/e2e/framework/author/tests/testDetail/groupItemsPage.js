@@ -99,24 +99,45 @@ export default class GroupItemsPage {
   selectStandardSet = standardSet => CypressHelper.selectDropDownByAttribute("standardSet-Select", standardSet);
 
   selectGrade = grade => {
-    this.clearAllGrades();
+    //this.clearAllGrades();
+    cy.server();
+    cy.route("POST", "**/search/browse-standards").as("browseStandards");
     grade.forEach(element => {
       CypressHelper.selectDropDownByAttribute("grade-Select", element);
+      cy.wait("@browseStandards");
     });
   };
 
-  clearAllGrades = () =>
-    cy
-      .get('[data-cy="grade-Select"]')
-      .find('[data-icon="close"]')
-      .click({ multiple: true });
+  clearAllGrades = () => {
+    cy.server();
+    cy.route("POST", "**/search/browse-standards").as("browseStandards");
 
-  selectStandardsBySubGradeStandardSet = (subject, Grade, standardSet, standards) => {
+    cy.get('[data-cy="grade-Select"]')
+      .find('[data-icon="close"]')
+      .each(ele => {
+        cy.wrap(ele).click();
+        cy.wait("@browseStandards");
+      });
+  };
+
+  selectStandardsBySubGradeStandardSet = (subject, Grade, standardSet, standards, standardsGroup) => {
+    this.clearAllGrades();
     if (subject) this.selectSubject(subject);
     if (standardSet) this.selectStandardSet(standardSet);
     if (Grade) this.selectGrade(Grade);
+    if (standardsGroup) this.selectStandardGroup(standardsGroup);
     standards.forEach(standard => this.checkstandardsByName(standard));
   };
+
+  selectStandardGroup = standard =>
+    cy
+      .get(`.ant-spin-container`)
+      .find(".tlo-item-title")
+      .then($el => {
+        cy.wrap($el.filter((i, ele) => Cypress.$(ele).text() === standard)).click({
+          force: true
+        });
+      });
 
   clickOnApply = () => cy.get('[data-cy="apply-Stand-Set"]').click();
 
@@ -163,12 +184,12 @@ export default class GroupItemsPage {
 
   createDynamicTest = (group = 1, filterForAutoselect, overRide = false) => {
     const { standard, collection, deliveryCount, dok, tags, difficulty } = filterForAutoselect;
-    const { subject, grade, standardSet, standardsToSelect } = standard;
+    const { subject, grade, standardSet, standardsToSelect, standardsGroup } = standard;
     this.clickOnEditByGroup(group);
     if (overRide) this.checkAutoSelectForGroup(group, true);
     else this.checkAutoSelectForGroup(group);
     this.clickBrowseOnStandardsByGroup(group);
-    this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect);
+    this.selectStandardsBySubGradeStandardSet(subject, grade, standardSet, standardsToSelect, standardsGroup);
     this.clickOnApply();
     if (dok) this.setDOK(group, dok);
     if (difficulty) this.setDifficulty(group, difficulty);
@@ -249,4 +270,32 @@ export default class GroupItemsPage {
   };
 
   // *** APPHELPERS END ***
+  setTag = (group, tag) => {
+    cy.get('[data-cy="selectTags"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
+
+    this.selectOptionByAttrByGroup(group, tag);
+  };
+
+  setDOK = (group, dok) => {
+    cy.get('[data-cy="selectDOK"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
+    this.selectOptionByAttrByGroup(group, dok);
+  };
+
+  setDifficulty = (group, difficulty) => {
+    cy.get('[data-cy="selectDifficulty"]')
+      .eq(group - 1)
+      .click();
+    cy.wait(300);
+    this.selectOptionByAttrByGroup(group, difficulty);
+  };
+
+  selectOptionByAttrByGroup = (group, attr) => {
+    cy.get(`[data-cy="Group ${group} ${attr}"]`).click({ force: true });
+  };
 }

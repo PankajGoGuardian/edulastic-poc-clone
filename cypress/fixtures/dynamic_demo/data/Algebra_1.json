@@ -1,0 +1,950 @@
+[
+  {
+    "tags": "EDUM-510",
+    "collection": "Spark Math",
+    "name": "Algebra-1 \"Adding Subtracting and Multiplying Polynomials\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.APR.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-511",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Multi-Step Linear Equation Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-512",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Multi-Step Linear Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-513",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Multi-Step Linear Inequalities",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-514",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Multi-Step Linear Inequality Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-515",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving One-Step Linear Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-516",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving One-Step Linear Inequalities",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-517",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving One-Step Linear Inequality Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-518",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Graphing Linear Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-519",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Modeling with Exponential Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-520",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Equations and Inequalities that Represent a Context",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-521",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving a System of Inequalities",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-522",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Manipulating Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.CED.A.4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-523",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Linear Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-524",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Solutions to Equations as Ordered Pairs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.D.10"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-525",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Graphing Using Technology",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.D.11"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-526",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Graphing Linear Inequalities on the Coordinate Plane",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.D.12"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-527",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Multi-Step Equations and Compound Inequalities",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.B.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-528",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Quadratic Equations by Completing the Square",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.B.4.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-529",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Strategies for Solving Quadratic Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.B.4.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-530",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Systems of Equations by Elimination",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.C.5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-531",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Systems of Linear Equations Algebraically",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.C.6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-532",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Systems of Linear Equations Graphically",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.C.6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-533",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving Systems of Linear Equations: Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.C.6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-534",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Solving a Linear-Quadratic System",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.REI.C.7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-535",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying the Parts of an Expression",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.A.1.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-536",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.A.1.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-537",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Rewriting Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-538",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Factoring Quadratic Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.B.3.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-539",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Quadratic Functions and Completing the Square",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.B.3.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-540",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Equivalent Exponential Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSA.SSE.B.3.c"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSA"
+    }
+  },
+  {
+    "tags": "EDUM-541",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Writing Functions to Model Relationships",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.A.1.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-542",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Effects of Combining Different Types of Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.A.1.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-543",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Arithmetic and Geometric Sequences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-544",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Arithmetic Sequences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-545",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Geometric Sequences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-546",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Transforming Linear Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.B.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-547",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Inverse Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.BF.B.4.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-548",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying a Function",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-549",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Evaluating Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-550",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-551",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Recursive Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-552",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Characteristics of Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.B.4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-553",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying x- and y-Intercepts",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.B.4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-554",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Domains of Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.B.5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-555",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Calculating the Rate of Change for a Linear Function",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.B.6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-556",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Graphing Linear Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.7.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-557",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Graphing Non-Linear Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.7.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-558",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Exponential Functions Using Graphs and Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.7.e"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-559",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Exponential Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.7.e"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-560",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Properties of Quadratic Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.8.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-561",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Understanding Exponential Growth and Decay",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.8.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-562",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Analyzing Linear and Exponential Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.9"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-563",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Comparing Functions in Different Forms",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.IF.C.9"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-564",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Comparing Linear and Exponential Functions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.1.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-565",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Situations with a Constant Rate of Change",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.1.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-566",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Calculating Exponential Growth and Decay Algebraically",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.1.c"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-567",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Calculating Exponential Growth and Decay within a Context",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.1.c"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-568",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Types of Functions and Sequences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-569",
+    "collection": "Spark Math",
+    "name": "Algebra-1 \"Linear Exponential and Quadratic Functions\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-570",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Linear & Exponential Equations – Modeling Situations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSF.LE.B.5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSF"
+    }
+  },
+  {
+    "tags": "EDUM-571",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Choosing Appropriate Units to Solve a Problem",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.Q.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-572",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.Q.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-573",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Choosing Appropriate Quantities",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.Q.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-574",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Accuracy of Measurements and Estimation",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.Q.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-575",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Properties of Exponents",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.RN.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-576",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Roots and Radical Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.RN.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-577",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Operations with Rational and Irrational Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSN.RN.B.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSN"
+    }
+  },
+  {
+    "tags": "EDUM-578",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Modeling Data Using Box Plots and Histograms",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.A.1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-579",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Two Box Plots",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-580",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interquartile Range and Standard Deviation",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.A.2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-581",
+    "collection": "Spark Math",
+    "name": "Algebra-1 \"Shape Center and Spread of a Data Set\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.A.3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-582",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Two-Way Relative Frequency Tables",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.B.5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-583",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Representing Data Using a Scatter Plot",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.B.6.a"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-584",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Scatter Plots and Residual Values",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.B.6.b"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-585",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Scatter Plots and Lines of Best Fit",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.B.6.c"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-586",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Interpreting Slope and y-Intercept in Terms of Context",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.C.7"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-587",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Estimating and Interpreting the Correlation Coefficient",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.C.8"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  },
+  {
+    "tags": "EDUM-588",
+    "collection": "Spark Math",
+    "name": "Algebra-1 Identifying Causal and Correlated Relationships",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["HSS.ID.C.9"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "HSS"
+    }
+  }
+]

@@ -1,0 +1,691 @@
+[
+  {
+    "tags": "EDUM-350",
+    "collection": "Spark Math",
+    "name": "Grade-6-Exponents\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-351",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying Expressions that Represent Situations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-352",
+    "collection": "Spark Math",
+    "name": "Grade-6-Translate Addition Sentences into Algebraic Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-353",
+    "collection": "Spark Math",
+    "name": "Grade-6-Translate Subtraction Sentences to Algebraic Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-354",
+    "collection": "Spark Math",
+    "name": "Grade-6-Translating Division Sentences to Algebraic Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-355",
+    "collection": "Spark Math",
+    "name": "Grade-6-Translating Multiplication Sentences to Algebraic Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-356",
+    "collection": "Spark Math",
+    "name": "Grade-6-Parts of an Expression\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.b"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-357",
+    "collection": "Spark Math",
+    "name": "Grade-6-Using Order of Operations to Evaluate Expressions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.2.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-358",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identify Equivalent Expressions: Distributive Property\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.3"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-359",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying Equivalent Expressions by Evaluation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.A.4"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-360",
+    "collection": "Spark Math",
+    "name": "Grade-6-Using Substitution to Determine Solutions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.B.5"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-361",
+    "collection": "Spark Math",
+    "name": "Grade-6-Writing Equations Using Variables\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.B.6"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-362",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Word Problems Involving Equations\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.B.7"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-363",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Word Problems Involving Inequalities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.B.8"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-364",
+    "collection": "Spark Math",
+    "name": "Grade-6-Independent and Dependent Variables and Equations   Assign\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.EE.C.9"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.EE"
+    }
+  },
+  {
+    "tags": "EDUM-365",
+    "collection": "Spark Math",
+    "name": "Grade-6-Finding the Area of Composite Figures\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.G.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.G"
+    }
+  },
+  {
+    "tags": "EDUM-366",
+    "collection": "Spark Math",
+    "name": "Grade-6-Finding the Volume of a Rectangular Prism\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.G.A.2"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.G"
+    }
+  },
+  {
+    "tags": "EDUM-367",
+    "collection": "Spark Math",
+    "name": "Grade-6-Polygons in the Coordinate Plane\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.G.A.3"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.G"
+    }
+  },
+  {
+    "tags": "EDUM-368",
+    "collection": "Spark Math",
+    "name": "Grade-6-Finding the Surface Area of 3-D Figures Using Nets\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.G.A.4"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.G"
+    }
+  },
+  {
+    "tags": "EDUM-369",
+    "collection": "Spark Math",
+    "name": "Grade-6-Dividing Fractions and Mixed Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-370",
+    "collection": "Spark Math",
+    "name": "Grade-6-Dividing Fractions and Whole Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-371",
+    "collection": "Spark Math",
+    "name": "Grade-6-Dividing Two Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-372",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Problems Involving the Division of Fractions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-373",
+    "collection": "Spark Math",
+    "name": "Grade-6-Dividing Multi-Digit Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.B.2"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-374",
+    "collection": "Spark Math",
+    "name": "Grade-6-Add/Subtract/Multiply/Divide: Multi-Digit Decimals\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.B.3"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-375",
+    "collection": "Spark Math",
+    "name": "Grade-6-Estimating with All Operations: Multi-Digit Decimals\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.B.3"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-376",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying the Greatest Common Factor\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.B.4"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-377",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying the Least Common Multiple\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.B.4"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-378",
+    "collection": "Spark Math",
+    "name": "Grade-6-Using Integers to Represent Quantities\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.5"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-379",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying Opposite Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.6.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-380",
+    "collection": "Spark Math",
+    "name": "Grade-6-Opposite Numbers in the Coordinate Plane\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.6.b"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-381",
+    "collection": "Spark Math",
+    "name": "Grade-6-Rational Numbers on Number Lines and Coordinate Planes\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.6.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-382",
+    "collection": "Spark Math",
+    "name": "Grade-6-Ordering Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.7.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-383",
+    "collection": "Spark Math",
+    "name": "Grade-6-Use Inequality Statements to Express Real-World Context\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.7.b"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-384",
+    "collection": "Spark Math",
+    "name": "Grade-6-Understanding the Absolute Value of Rational Numbers\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.7.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-385",
+    "collection": "Spark Math",
+    "name": "Grade-6-Absolute Value and Statements about Order\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.7.d"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-386",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Problems with Points on the Coordinate Plane\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.NS.C.8"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.NS"
+    }
+  },
+  {
+    "tags": "EDUM-387",
+    "collection": "Spark Math",
+    "name": "Grade-6-Representing Ratios\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-388",
+    "collection": "Spark Math",
+    "name": "Grade-6-Expressing Unit Rate\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.2"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-389",
+    "collection": "Spark Math",
+    "name": "Grade-6-Ratio Tables and Graphs\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-390",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Problems Involving Unit Rate\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.b"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-391",
+    "collection": "Spark Math",
+    "name": "Grade-6-Expressing Percents\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-392",
+    "collection": "Spark Math",
+    "name": "Grade-6-Percent Relationships\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-393",
+    "collection": "Spark Math",
+    "name": "Grade-6-Solving Percent Word Problems\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-394",
+    "collection": "Spark Math",
+    "name": "Grade-6-Converting Measurement Units Using Ratio Reasoning\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.RP.A.3.d"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.RP"
+    }
+  },
+  {
+    "tags": "EDUM-395",
+    "collection": "Spark Math",
+    "name": "Grade-6-Recognizing Statistical Questions\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.A.1"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-396",
+    "collection": "Spark Math",
+    "name": "Grade-6-Describing Data Distributions in Terms of Center/Spread/Shape\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.A.2"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-397",
+    "collection": "Spark Math",
+    "name": "Grade-6-Recognizing Measures of Center & Measures of Variation\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.A.3"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-398",
+    "collection": "Spark Math",
+    "name": "Grade-6-Displaying Numerical Data\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.B.4"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-399",
+    "collection": "Spark Math",
+    "name": "Grade-6-Identifying Observation Numbers Based on a Data Display\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.B.5.a"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-400",
+    "collection": "Spark Math",
+    "name": "Grade-6-Attributes of Data Displays\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.B.5.b"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-401",
+    "collection": "Spark Math",
+    "name": "Grade-6-Find: Measures of Center and Variability of Data Sets\r",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.B.5.c"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  },
+  {
+    "tags": "EDUM-402",
+    "collection": "Spark Math",
+    "name": "Grade-6-Measures of Center and Variability: Shape Data Display",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["6.SP.B.5.d"],
+      "grade": ["Grade 6"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "6.SP"
+    }
+  }
+]

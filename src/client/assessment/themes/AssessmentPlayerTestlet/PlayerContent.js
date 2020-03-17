@@ -10,7 +10,6 @@ import { getLineFromExpression, getPoinstFromString, ALPHABET } from "./utility/
 import { MainContent, Main, OverlayDiv } from "./styled";
 import Magnifier from "../../../common/components/Magnifier";
 let frameController = {};
-
 const responseType = {
   dropdown: "dropdown",
   input: "input",
@@ -36,14 +35,42 @@ const PlayerContent = ({
   ...restProps
 }) => {
   const frameRef = useRef();
+  const frameRefForMagnifier = useRef();
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now());
   const [currentPage, setCurrentQuestion] = useState(0);
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
-  const [enableMagnifier, setEnableMagnifier] = useState(false);
+  let enableMagnifier = false;
 
-  const handleMagnifier = () => setEnableMagnifier(!enableMagnifier);
+  const showMagnifier = () => {
+    if (frameRefForMagnifier.current) {
+    frameRefForMagnifier.current.contentWindow.document.body.innerHTML = frameRef.current?.contentWindow?.document?.body?.innerHTML;
+    document.getElementById("magnifier-wrapper").style.display = "block";
+    const icon = document.getElementById("magnifier-icon");
+    icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgHoverColor;
+    const svg = icon.getElementsByTagName("svg")[0];
+    svg.style.fill = restProps.theme.default.header.headerButtonHoverColor;
+    enableMagnifier = true;
+    }
+  }
+
+  const hideMagnifier = () => {
+    document.getElementById("magnifier-wrapper").style.display = "none";
+    const icon = document.getElementById("magnifier-icon");
+    icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgColor;
+    const svg = icon.getElementsByTagName("svg")[0];
+    svg.style.fill = restProps.theme.default.header.headerButtonColor;
+    enableMagnifier = false;
+  }
+
+  const handleMagnifier = () => {
+    if (!enableMagnifier) {
+      showMagnifier();
+    } else {
+      hideMagnifier();
+    }
+  }
 
   const findItemIdMap = cPageIds =>
     find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
@@ -88,11 +115,13 @@ const PlayerContent = ({
     } else if (!LCBPreviewModal) {
       gotoSummary();
     }
+    hideMagnifier();
   };
 
   const prevQuestion = () => {
     saveUserResponse();
     frameController.sendPrevDev();
+    hideMagnifier();
   };
 
   const mapTestletToEdu = () => {
@@ -313,6 +342,7 @@ const PlayerContent = ({
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
           if (!LCBPreviewModal) {
+            hideMagnifier();
             setTestUserWork({
               [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
             });
@@ -326,6 +356,11 @@ const PlayerContent = ({
   }, [testletConfig]);
 
   useEffect(() => {
+    window.addEventListener("resize", hideMagnifier);
+    return () => window.removeEventListener("resize", hideMagnifier);
+  }, []);
+
+  useEffect(() => {
     if (currentPage > 0) {
       if (!LCBPreviewModal) {
         saveTestletState();
@@ -335,8 +370,38 @@ const PlayerContent = ({
     }
   }, [currentPage]);
 
+  const zoomedContent = () => {
+      return (
+        <>
+          <PlayerHeader
+            title={title}
+            dropdownOptions={testletItems}
+            currentPage={currentPage}
+            onOpenExitPopup={openExitPopup}
+            onNextQuestion={nextQuestion}
+            unlockNext={unlockNext}
+            onPrevQuestion={prevQuestion}
+            previewPlayer={previewPlayer}
+            handleMagnifier={handleMagnifier}
+            enableMagnifier={enableMagnifier}
+            {...restProps}
+          />
+          <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+            <MainContent id={`${testletConfig.testletId}_magnifier`}>
+              {LCBPreviewModal && currentScoring && <OverlayDiv />}
+              {testletConfig.testletURL && (
+                <iframe ref={frameRefForMagnifier} id={`${testletConfig.testletId}_magnifier`}  src={testletConfig.testletURL} title="testlet player" />
+              )}
+            </MainContent>
+          </Main>
+        </>
+      )
+  };
   return (
-    <Magnifier enable={enableMagnifier}>
+    <Magnifier enable={enableMagnifier} zoomedContent={zoomedContent} type="testlet" offset={{
+      top: 70,
+      left: 0
+    }}>
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}

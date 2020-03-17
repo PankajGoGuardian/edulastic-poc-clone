@@ -23,7 +23,7 @@ const Tools = ({ changeTool, currentTool, calculateMode, handleMagnifier, enable
       </ToolButton>
     </Tooltip>
     <Tooltip>
-      <ToolButton active={enableMagnifier} onClick={handleMagnifier}>
+      <ToolButton active={enableMagnifier} onClick={handleMagnifier} id="magnifier-icon">
         <IconSearch />
       </ToolButton>
     </Tooltip>

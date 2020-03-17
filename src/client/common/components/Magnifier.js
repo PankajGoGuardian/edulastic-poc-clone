@@ -9,7 +9,10 @@ const Magnifier = ({
   windowWidth,
   windowHeight,
   enable,
-  config: {width, height, scale}
+  config: {width, height, scale},
+  zoomedContent: ZoomedContent,
+  type,
+  offset
 }) => {
   const [setting, setSetting] = useState({
     pos: {x: windowWidth/2 - width/2, y: windowHeight/2 - height/2},
@@ -79,9 +82,10 @@ const Magnifier = ({
   return (
     <>
       {children}
-      {enable && <div
+      {(enable || type === "testlet") && <div
         ref={ref}
         onMouseDown={onMouseDown}
+        id="magnifier-wrapper"
         style={{
           border: `1px solid ${magnifierBorderColor}`,
           width: `${width}px`,
@@ -89,10 +93,12 @@ const Magnifier = ({
           borderRadius: "5px",
           position: "fixed",
           overflow: "hidden",
-          left: setting.pos.x >= -width/2 ? setting.pos.x + 'px' : `${-width/2}px`,
-          top: setting.pos.y >= -height/2 ? setting.pos.y + 'px' : `${-height/2}`,
+          left: setting.pos.x + 'px',
+          top: setting.pos.y + 'px',
           zIndex: 1000,
-          cursor: "move"
+          cursor: "move",
+          background: "white",
+          display: type === "testlet" ? "none" : "block"
         }}
         >
         <div style={{
@@ -102,19 +108,20 @@ const Magnifier = ({
           overflow: "visible",
           position: "absolute",
           display: "block",
-          left: setting.pos.x > -width/2 ? `-${2*setting.pos.x}px` : `${width}px`,
-          top: setting.pos.y >= -height/2 ? `-${2*setting.pos.y}px` : `${height}px`,
+          left: `-${2*setting.pos.x + offset.left}px`,
+          top: `-${2*setting.pos.y + offset.top}px`,
           transformOrigin: "left top",
           userSelect: "none",
           marginLeft: `-${width/2}px`
         }}>
-          {children}
+          {(ZoomedContent && <ZoomedContent/>) || children}
         </div>
         <div style={{
           width: `${width}px`,
           height: `${height}px`, 
           position: 'absolute'}}/>
-      </div>}
+      </div>
+      }
     </>
   );
 };
@@ -125,6 +132,10 @@ Magnifier.defaultProps = {
     width: 182,
     height: 182,
     scale: 2
+  },
+  offset: {
+    top: 0,
+    left: 0
   }
 }
 Magnifier.propTypes = {

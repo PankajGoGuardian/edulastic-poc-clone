@@ -93,18 +93,21 @@ const Insights = ({
     <Spin style={{ "margin-top": "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
-      <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
+      {/* TODO: for left section, reduce 6 to 4 on enabling the right section */}
+      <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
         <InsightsFilters data={filterData} prevFilters={filters} updateFilters={updateFilters} />
       </StyledCol>
-      <StyledCol xs={24} sm={24} md={24} lg={15} xl={15} xxl={15}>
+      {/* TODO: for mid section, reduce 18 to 14 on enabling the right section */}
+      <StyledCol xs={24} sm={24} md={24} lg={18} xl={18} xxl={18}>
+        {/* TODO: for insights chart, update width to 100% in the component on enabling the right section */}
         <InsightsChart data={curatedMetrics} />
       </StyledCol>
-      <StyledCol xs={24} sm={24} md={24} lg={5} xl={5} xxl={5}>
-        <Row>
-          {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
-          <AddToGroupTable />
-        </Row>
-      </StyledCol>
+      {/* <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+        <StyledRow> */}
+      {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
+      {/* <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} /> */}
+      {/* </StyledRow>
+      </StyledCol> */}
     </InsightsContainer>
   );
 };
@@ -125,9 +128,12 @@ const enhance = connect(
 
 export default enhance(Insights);
 
-const InsightsContainer = styled(Row)`
+const StyledRow = styled(Row)`
   width: 100%;
-  padding: 40px 40px 0 40px;
+`;
+
+const InsightsContainer = styled(StyledRow)`
+  padding: 40px 25px;
 `;
 
 const StyledCol = styled(Col)`

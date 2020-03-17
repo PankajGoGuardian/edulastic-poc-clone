@@ -95,7 +95,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
           (res, ele) => {
             res.playlistModuleIds.push(ele.playlistModuleId);
             res.standardIds.push(ele.standardId);
-            res.summedScore += ele.totalScore / ele.maxScore;
+            res.summedScore += ele.maxScore ? ele.totalScore / ele.maxScore : 1;
             res.totalTimeSpent += parseInt(ele.timeSpent);
             res.count += 1;
             return res;

@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Dropdown, Menu, Spin } from "antd";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, EduButton } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
+import AssessmentPlayer from "../../../../assessment";
 import ResourceItem from "../ResourceItem";
 import { toggleManageModulesVisibilityCSAction } from "../../ducks";
 import slice from "./ducks";
@@ -19,12 +20,13 @@ import {
   ManageModuleBtn,
   ResourceDataList,
   LoaderWrapper,
-  CustomModal
+  CustomModal,
+  ModalWrapper
 } from "./styled";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ManageModulesModal from "../ManageModulesModal";
-import { EduButton } from "@edulastic/common";
 import { ExternalLTIModalContent } from "./components/ExternalLTIModalContent";
+
 // Static resources data
 const resourceData = [
   {
@@ -106,7 +108,11 @@ const ManageContentBlock = props => {
     toggleManageModulesVisibility,
     testsInPlaylist = [],
     changeExternalLTIModal,
-    addExternalLTIResouce
+    addExternalLTIResouce,
+    selectedTestForPreview = "",
+    testPreviewModalVisible = false,
+    showPreviewModal,
+    closePreviewModal
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -185,6 +191,7 @@ const ManageContentBlock = props => {
               title={resource.contentTitle}
               key={idx}
               data={resource?.data}
+              previewTest={showPreviewModal}
             />
           );
         });
@@ -205,6 +212,7 @@ const ManageContentBlock = props => {
               key={test._id}
               summary={test?.summary}
               isAdded={testsInPlaylist.includes(test?._id)}
+              previewTest={showPreviewModal}
             />
           );
         });
@@ -314,6 +322,16 @@ const ManageContentBlock = props => {
           />
         </CustomModal>
       </ManageContentContainer>
+      <ModalWrapper
+        footer={null}
+        visible={testPreviewModalVisible}
+        onCancel={closePreviewModal}
+        width="100%"
+        height="100%"
+        destroyOnClose
+      >
+        <AssessmentPlayer testId={selectedTestForPreview} preview closeTestPreviewModal={closePreviewModal} />
+      </ModalWrapper>
     </ManageContentOuterWrapper>
   );
 };
@@ -333,7 +351,9 @@ export default connect(
     sources: state.playlistTestBox?.sources,
     searchString: state.playlistTestBox?.searchString,
     externalLTIModal: state.playlistTestBox?.externalLTIModal,
-    externalLTIResources: state.playlistTestBox?.externalLTIResources
+    externalLTIResources: state.playlistTestBox?.externalLTIResources,
+    testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
+    selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -349,6 +369,8 @@ export default connect(
     setTestSearchAction: slice.actions?.setTestSearchAction,
     toggleManageModulesVisibility: toggleManageModulesVisibilityCSAction,
     changeExternalLTIModal: slice.actions?.changeExternalLTIModalAction,
-    addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction
+    addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction,
+    showPreviewModal: slice.actions?.showTestPreviewModal,
+    closePreviewModal: slice.actions?.closeTestPreviewModal
   }
 )(ManageContentBlock);

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Modal } from "antd";
 import {
   white,
   smallDesktopWidth,
@@ -7,7 +8,7 @@ import {
   greyThemeLight,
   backgrounds,
   borderGrey4,
-  title
+  mainBgColor
 } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
@@ -178,6 +179,30 @@ export const CustomModal = styled(ConfirmationModal)`
       }
       .ant-modal-body {
         box-shadow: none;
+      }
+    }
+  }
+`;
+
+export const ModalWrapper = styled(Modal)`
+  top: 0px;
+  padding: 0;
+  overflow: hidden;
+  .ant-modal-content {
+    background: ${mainBgColor};
+    .ant-modal-close-icon {
+      color: ${white};
+    }
+    .ant-modal-body {
+      padding: 0px;
+      min-height: 100px;
+      text-align: center;
+      main {
+        padding: 20px 40px;
+        height: calc(100vh - 62px);
+        & > section {
+          padding: 0px;
+        }
       }
     }
   }

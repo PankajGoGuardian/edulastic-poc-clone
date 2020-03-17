@@ -209,7 +209,7 @@ class AssessmentPlayerDefault extends React.Component {
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveUserWork({
-      [items[currentItem]._id]: { ...userWork, [sourceId]: data }
+      [items[currentItem]?._id]: { ...userWork, [sourceId]: data }
     });
     const qId = items[currentItem].data.questions[0].id;
     if (!userAnswers[qId]) {
@@ -332,7 +332,7 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
-    const previousQuestionActivity = previousQuestionActivities[item._id];
+    const previousQuestionActivity = previousQuestionActivities[(item?._id)];
     let isNonAutoGradable = false;
 
     if (item.data && item.data.questions) {
@@ -620,13 +620,13 @@ const enhance = compose(
       evaluation: state.evaluation,
       preview: state.view.preview,
       questions: state.assessmentplayerQuestions.byId,
-      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].scratchpad`, null),
-      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].resourceId`, null),
-      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}].crossAction`, null),
-      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]._id}]`, {}),
+      scratchPad: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].scratchpad`, null),
+      highlights: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].resourceId`, null),
+      crossAction: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}].crossAction`, null),
+      userWork: get(state, `userWork.present[${ownProps.items[ownProps.currentItem]?._id}]`, {}),
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
-      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]?._id], false),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
       currentGroupId: getCurrentGroupWithAllClasses(state),

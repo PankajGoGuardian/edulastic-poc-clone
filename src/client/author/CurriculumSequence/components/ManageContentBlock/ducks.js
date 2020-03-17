@@ -31,7 +31,9 @@ const slice = createSlice({
     loadedPage: 0,
     filter: "ENTIRE_LIBRARY",
     searchString: null,
-    externalLTIModal: {}
+    externalLTIModal: {},
+    testPreviewModalVisible: false,
+    selectedTestForPreview: ""
   },
   reducers: {
     setDefaults: (state, { payload }) => {
@@ -93,6 +95,14 @@ const slice = createSlice({
       data.contentId = nanoid();
       state.externalLTIResources.unshift(data);
       state.externalLTIModal = {};
+    },
+    showTestPreviewModal: (state, { payload }) => {
+      state.selectedTestForPreview = payload;
+      state.testPreviewModalVisible = true;
+    },
+    closeTestPreviewModal: state => {
+      state.selectedTestForPreview = "";
+      state.testPreviewModalVisible = false;
     }
   }
 });

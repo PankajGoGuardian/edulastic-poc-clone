@@ -8,13 +8,22 @@ export const ResourceItemWrapper = styled.div`
   padding: 10px 10px;
   border-bottom: 1px solid ${borderGrey4};
   margin: 4px;
-  cursor: default;
+  cursor: grab;
+
+  .preview-btn {
+    display: none;
+    cursor: pointer;
+  }
 
   &:hover {
     background: ${backgrounds.default};
     -webkit-transition: background 300ms ease;
     -ms-transition: background 300ms ease;
     transition: background 300ms ease;
+
+    .preview-btn {
+      display: block;
+    }
   }
 `;
 

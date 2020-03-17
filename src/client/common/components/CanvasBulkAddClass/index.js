@@ -115,7 +115,7 @@ const CanvasBulkAddClass = ({
 
   const handleStandardsChange = (index, key, value, options) => {
     const standardSets = options.map(option => ({
-      _id: option.props.value,
+      id: option.props.value,
       name: option.props.children
     }));
     handleChange(index, "standardSets", standardSets);
@@ -229,7 +229,7 @@ const CanvasBulkAddClass = ({
               option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
             mode="multiple"
-            value={row.standardSets.map(s => s._id) || []}
+            value={row.standardSets.map(s => s.id) || []}
             placeholder="Select Standards"
             onChange={(val, options) => {
               handleStandardsChange(ind, "standardSets", val, options);

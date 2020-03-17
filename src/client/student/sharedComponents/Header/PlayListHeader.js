@@ -26,7 +26,15 @@ export const playlistPageNavButtons = [
   }
 ];
 
-const PlayListHeader = ({ title = "Playlist", activeClasses, studentPlaylists, t, match, history }) => {
+const PlayListHeader = ({
+  title = "Playlist",
+  activeClasses,
+  studentPlaylists,
+  t,
+  match,
+  history,
+  headingSubContent
+}) => {
   const handleNavChange = val => {
     const { playlistId } = match.params;
     if (val === "playlist") {
@@ -38,7 +46,7 @@ const PlayListHeader = ({ title = "Playlist", activeClasses, studentPlaylists, t
   const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1" && playlistClassList.includes(c._id));
   return (
-    <MainHeader Icon={IconPlaylist} headingText={title} justify={"space-between"}>
+    <MainHeader Icon={IconPlaylist} headingText={title} justify={"space-between"} headingSubContent={headingSubContent}>
       <HeaderMidContainer>
         <StyledTabs>
           {match?.params?.playlistId &&

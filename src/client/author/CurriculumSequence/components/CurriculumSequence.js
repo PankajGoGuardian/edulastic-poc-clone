@@ -640,7 +640,7 @@ class CurriculumSequence extends Component {
           />
 
           {isStudent ? (
-            <StudentPlayListHeader />
+            <StudentPlayListHeader headingSubContent={curatedStudentPlaylists?.length > 1 && changePlaylistIcon} />
           ) : (
             mode !== "embedded" && (
               <MainHeader

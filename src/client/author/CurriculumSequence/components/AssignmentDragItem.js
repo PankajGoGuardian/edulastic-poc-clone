@@ -16,6 +16,7 @@ import {
   AssignmentIcon,
   AssignmentButton
 } from "./CurriculumModuleRow";
+import { LTIResourceRow } from "./LTIResourceRow";
 
 /**
  * @typedef Props
@@ -75,80 +76,92 @@ class AssignmentDragItem extends Component {
           boxShadow="unset"
           isDragging={isDragging}
         >
-          {/* <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix> */}
-          <WrapperContainer>
-            <AssignmentContent expanded={isContentExpanded}>
-              {/* <Checkbox
-              onChange={() => toggleUnitItem(moduleData.id)}
-              checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
-              className="module-checkbox"
-            /> */}
-              {/* <CustomIcon marginLeft={16}>
-              <Icon type="right" style={{ color: "#707070" }} />
-            </CustomIcon> */}
-              <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
-            </AssignmentContent>
-            {!hideEditOptions && (
-              <ModuleAssignedUnit>
-                {moduleData.assigned && !moduleData.completed && (
-                  <CustomIcon>
-                    <img src={assessmentRed} alt="Module item is assigned" />
-                  </CustomIcon>
+          {moduleData.contentType === "lti_resource" ? (
+            <LTIResourceRow
+              data={moduleData}
+              mode={mode}
+              urlHasUseThis
+              deleteTest={deleteTest}
+              moduleIndex={moduleIndex}
+            />
+          ) : (
+            <>
+              {/* <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix> */}
+              <WrapperContainer>
+                <AssignmentContent expanded={isContentExpanded}>
+                  {/* <Checkbox
+                onChange={() => toggleUnitItem(moduleData.id)}
+                checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
+                className="module-checkbox"
+              /> */}
+                  {/* <CustomIcon marginLeft={16}>
+                <Icon type="right" style={{ color: "#707070" }} />
+              </CustomIcon> */}
+                  <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
+                </AssignmentContent>
+                {!hideEditOptions && (
+                  <ModuleAssignedUnit>
+                    {moduleData.assigned && !moduleData.completed && (
+                      <CustomIcon>
+                        <img src={assessmentRed} alt="Module item is assigned" />
+                      </CustomIcon>
+                    )}
+                    {moduleData.completed && (
+                      <CustomIcon>
+                        <img src={assessmentGreen} alt="Module item is completed" />
+                      </CustomIcon>
+                    )}
+                  </ModuleAssignedUnit>
                 )}
-                {moduleData.completed && (
+                <Tags tags={standardTags} />
+              </WrapperContainer>
+              <AssignmentIconsHolder>
+                <AssignmentIcon>
                   <CustomIcon>
-                    <img src={assessmentGreen} alt="Module item is completed" />
+                    <IconVisualization
+                      color={themeColor}
+                      data-cy="view-test"
+                      onClick={() => viewTest(moduleData.contentId)}
+                    />
                   </CustomIcon>
+                </AssignmentIcon>
+                {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                  <AssignmentButton assigned={isAssigned}>
+                    <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
+                      {isAssigned ? (
+                        <IconCheckSmall color={white} />
+                      ) : (
+                        <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
+                      )}
+                      {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                    </Button>
+                  </AssignmentButton>
                 )}
-              </ModuleAssignedUnit>
-            )}
-            <Tags tags={standardTags} />
-          </WrapperContainer>
-          <AssignmentIconsHolder>
-            <AssignmentIcon>
-              <CustomIcon>
-                <IconVisualization
-                  color={themeColor}
-                  data-cy="view-test"
-                  onClick={() => viewTest(moduleData.contentId)}
-                />
-              </CustomIcon>
-            </AssignmentIcon>
-            {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
-              <AssignmentButton assigned={isAssigned}>
-                <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
-                  {isAssigned ? (
-                    <IconCheckSmall color={white} />
-                  ) : (
-                    <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
-                  )}
-                  {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                </Button>
-              </AssignmentButton>
-            )}
-            {/* {(!hideEditOptions || mode === "embedded") && (
-              <AssignmentIcon>
-                <Dropdown overlay={moreMenu} trigger={["click"]}>
-                  <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                    <IconMoreVertical color={themeColor} />
-                  </CustomIcon>
-                </Dropdown>
-              </AssignmentIcon>
-            )} */}
-            {(!hideEditOptions || mode === "embedded") && (
-              <AssignmentIcon>
-                <CustomIcon
-                  data-cy="assignmentDeleteOptionsIcon"
-                  onClick={e => {
-                    e.stopPropagation();
-                    deleteTest(moduleIndex, moduleData.contentId);
-                  }}
-                >
-                  <IconTrash color={themeColor} />
-                </CustomIcon>
-              </AssignmentIcon>
-            )}
-          </AssignmentIconsHolder>
+                {/* {(!hideEditOptions || mode === "embedded") && (
+                <AssignmentIcon>
+                  <Dropdown overlay={moreMenu} trigger={["click"]}>
+                    <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                      <IconMoreVertical color={themeColor} />
+                    </CustomIcon>
+                  </Dropdown>
+                </AssignmentIcon>
+              )} */}
+                {(!hideEditOptions || mode === "embedded") && (
+                  <AssignmentIcon>
+                    <CustomIcon
+                      data-cy="assignmentDeleteOptionsIcon"
+                      onClick={e => {
+                        e.stopPropagation();
+                        deleteTest(moduleIndex, moduleData.contentId);
+                      }}
+                    >
+                      <IconTrash color={themeColor} />
+                    </CustomIcon>
+                  </AssignmentIcon>
+                )}
+              </AssignmentIconsHolder>
+            </>
+          )}
         </Assignment>
       </div>
     );

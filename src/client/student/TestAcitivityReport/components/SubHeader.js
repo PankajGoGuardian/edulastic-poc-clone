@@ -5,9 +5,17 @@ import { Col } from "antd";
 
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
 import QuestionSelect from "./QuestionSelect.js";
+import { withRouter } from "react-router";
 
-const TestActivitySubHeader = ({ title, isDocBased }) => {
-  const breadcrumbData = [{ title: "GRADES", to: "/home/grades" }, { title: title }];
+const TestActivitySubHeader = ({ title, isDocBased, location }) => {
+  const { fromRecommendations, playListId } = location;
+  const breadcrumbData = fromRecommendations
+    ? [
+        { title: "My Playlist", to: `/home/playlist/${playListId}` },
+        { title: "Recommendation", to: `/home/playlist/${playListId}/recommendations` },
+        { title }
+      ]
+    : [{ title: "GRADES", to: "/home/grades" }, { title: title }];
   return (
     <Container isDocBased={isDocBased}>
       <BreadcrumbContainer>
@@ -22,7 +30,7 @@ const TestActivitySubHeader = ({ title, isDocBased }) => {
   );
 };
 
-export default TestActivitySubHeader;
+export default withRouter(TestActivitySubHeader);
 
 TestActivitySubHeader.propTypes = {
   title: PropTypes.string

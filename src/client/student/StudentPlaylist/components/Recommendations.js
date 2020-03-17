@@ -22,7 +22,6 @@ import { StyledLabel } from "../../../author/Reports/common/styled";
 import Tags from "../../../author/src/components/common/Tags";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 import { resumeAssignmentAction, startAssignmentAction } from "../../Assignments/ducks";
-import { getCurrentGroup } from "../../Reports/ducks";
 import PlayListHeader from "../../sharedComponents/Header/PlayListHeader";
 import {
   getActivitiesByResourceId,
@@ -119,7 +118,12 @@ const Recommendations = ({
                                   </ModuleDataName>
                                 </ModuleDataWrapper>
                               </Col>
-                              <StyledCol span={4} style={{ flexDirection: "column" }} align="flex-start">
+                              <StyledCol
+                                span={4}
+                                style={{ flexDirection: "column" }}
+                                align="flex-start"
+                                justify="flex-end"
+                              >
                                 <span>Mastery</span>
                                 <ProgressBar
                                   strokeColor={getProgressColor(scorePercentage)}
@@ -157,9 +161,13 @@ const Recommendations = ({
                                 </AssignmentButton>
                                 {lastActivity.status === testActivityStatus.SUBMITTED && (
                                   <StyledLink
-                                    to={`/home/class/${recommendation.groupId}/test/${
-                                      recommendedResource._id
-                                    }/testActivityReport/${lastActivity._id}`}
+                                    to={{
+                                      pathname: `/home/class/${recommendation.groupId}/test/${
+                                        recommendedResource._id
+                                      }/testActivityReport/${lastActivity._id}`,
+                                      fromRecommendations: true,
+                                      playListId: match.params?.playlistId
+                                    }}
                                   >
                                     REVIEW
                                   </StyledLink>

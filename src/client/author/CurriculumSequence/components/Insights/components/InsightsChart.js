@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { round } from "lodash";
@@ -8,14 +8,27 @@ import { lightGrey7 } from "@edulastic/colors";
 import { domainRange, scaleFactor, getQuadsData, calcArrowPosition } from "../transformers";
 import gradientColorRuler from "../assets/ruler-color-gradient.svg";
 
+const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =>
+  setActiveData(
+    activeData.map(item => {
+      item.isActive = item.studentId === studentId ? !item.isActive : allActive == null ? item.isActive : allActive;
+      return item;
+    })
+  );
+
 // custom label shape for scatter plot
-const ScatterLabel = ({ cx, cy, name, trendAngle, color }) => {
+const ScatterLabel = ({ cx, cy, studentId, name, trendAngle, color, isActive, handleArrowClick }) => {
   return (
-    <g>
-      <text x={cx} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
-        {name}
-      </text>
-      <g transform={`translate(${calcArrowPosition({ cx, cy, name, trendAngle })}) rotate(${-trendAngle - 90})`}>
+    <g onClick={e => handleArrowClick(e, studentId)}>
+      {isActive && (
+        <text x={cx} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
+          {name}
+        </text>
+      )}
+      <g
+        transform={`translate(${calcArrowPosition({ cx, cy, name, trendAngle, isActive })}) rotate(${-trendAngle -
+          90})`}
+      >
         <path d="M0,0V18.385" transform="translate(4.065 3.536)" fill="none" stroke={color} stroke-width="2" />
         <g transform="translate(7.565 26.438) rotate(180)" fill={color}>
           <path
@@ -35,7 +48,14 @@ const ScatterLabel = ({ cx, cy, name, trendAngle, color }) => {
 };
 
 const InsightsChart = ({ data }) => {
-  const quadsData = getQuadsData(data);
+  // active state of the display data (labels)
+  const [activeData, setActiveData] = useState([]);
+  const [allActive, setAllActive] = useState(false);
+
+  useEffect(() => {
+    setActiveData(getQuadsData(data));
+  }, [data]);
+
   const graphLimit = round((domainRange * scaleFactor) / 2);
 
   // props for standard components
@@ -47,7 +67,11 @@ const InsightsChart = ({ data }) => {
   const scatterChartProps = {
     width: "100%",
     height: "100%",
-    margin: { top: -1, right: -1, bottom: -1, left: -1 }
+    margin: { top: -1, right: -1, bottom: -1, left: -1 },
+    onClick: () => {
+      toggleActiveData({ activeData, setActiveData, allActive: !allActive });
+      setAllActive(!allActive);
+    }
   };
 
   return (
@@ -65,7 +89,18 @@ const InsightsChart = ({ data }) => {
             <ScatterChart {...scatterChartProps}>
               <XAxis type="number" dataKey={"effort"} name="effort" domain={[-graphLimit, graphLimit]} hide />
               <YAxis type="number" dataKey={"performance"} name="performance" domain={[-graphLimit, graphLimit]} hide />
-              <Scatter name="A school" data={quadsData} shape={<ScatterLabel />} />
+              <Scatter
+                name="Effort vs Performance"
+                data={activeData}
+                shape={
+                  <ScatterLabel
+                    handleArrowClick={(e, studentId) => {
+                      e.stopPropagation();
+                      toggleActiveData({ studentId, activeData, setActiveData });
+                    }}
+                  />
+                }
+              />
             </ScatterChart>
           </ResponsiveContainer>
         </Row>

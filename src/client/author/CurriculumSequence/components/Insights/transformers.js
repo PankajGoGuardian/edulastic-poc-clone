@@ -269,7 +269,10 @@ export const getQuadsData = data => {
   });
 };
 
-export const calcArrowPosition = ({ cx, cy, name, trendAngle }) => {
+export const calcArrowPosition = ({ cx, cy, name, trendAngle, isActive }) => {
+  if (!isActive) {
+    return `${cx} ${cy}`;
+  }
   let x = cx,
     y = cy;
   if (trendAngle > 160 || trendAngle < -160) {

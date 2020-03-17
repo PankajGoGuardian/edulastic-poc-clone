@@ -281,7 +281,8 @@ const GroupItems = ({
     if (!data?.eloStandards?.length) {
       return message.warn("Please select a standard before applying");
     }
-    const { subject, grades, eloStandards } = data;
+    const { subject, eloStandards } = data;
+    const grades = data.grades.length ? data.grades : eloStandards[0]?.grades || [];
     const { curriculumId, _id: standardId, tloId: domainId, identifier } = eloStandards[0];
     const standardDetails = {
       subject,

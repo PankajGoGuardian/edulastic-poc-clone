@@ -348,7 +348,7 @@ function* startAssignment({ payload }) {
               testType === COMMON ? ASSESSMENT : testType
             }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
             state: {
-              playlistAssignmentFlow: true,
+              playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId
             }
           })
@@ -415,7 +415,7 @@ function* resumeAssignment({ payload }) {
         push({
           pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
           state: {
-            playlistAssignmentFlow: true,
+            playlistRecommendationsFlow: true,
             playlistId: studentRecommendation.playlistId
           }
         })

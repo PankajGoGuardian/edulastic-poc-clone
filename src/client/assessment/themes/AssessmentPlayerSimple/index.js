@@ -124,6 +124,8 @@ class AssessmentPlayerSimple extends React.Component {
     saveCurrentAnswer({ shouldClearUserWork: true });
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
+    } else if (history?.location?.state?.playlistRecommendationsFlow) {
+      history.push(`/home/playlist/${history?.location?.state?.playlistId}/recommendations`);
     } else {
       history.push("/home/assignments");
     }
@@ -203,9 +205,10 @@ class AssessmentPlayerSimple extends React.Component {
     updateScratchpad({
       currentColor: hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
     });
-  }
+  };
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
+
   saveHistory = sourceId => data => {
     const { saveUserWork, items, currentItem, setUserAnswer, userAnswers, userWork } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));

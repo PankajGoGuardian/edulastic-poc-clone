@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDrop } from "react-dnd";
 import { message } from "antd";
+import { groupBy } from "lodash";
 import { ProgressBar, EduButton } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import { TableContainer, StyledTable, TableHeader, Tag, StyledSlider, TableSelect } from "./style";
-import { ResouceIcon } from "../../components/ResourceItem/index";
-import { groupBy } from "lodash";
+import { ResouceIcon } from "../ResourceItem/index";
 
 const WorkTable = ({
   type,
@@ -93,12 +93,37 @@ const WorkTable = ({
     );
   };
 
-  const getSlider = () => (
-    <>
-      <StyledSlider range value={masteryRange} onChange={value => handleSliderChange(value)} />
-      <span>{`Between ${masteryRange[0]}% and ${masteryRange[1]}%`}</span>
-    </>
-  );
+  const getSlider = () => {
+    if (type === "REVIEW") {
+      return (
+        <>
+          <StyledSlider min={1} value={masteryRange[1]} onChange={value => handleSliderChange([0, value])} />
+          <span>{`Below ${masteryRange[1] + 1}%`}</span>
+        </>
+      );
+    }
+    if (type === "PRACTICE") {
+      return (
+        <>
+          <StyledSlider range value={masteryRange} onChange={value => handleSliderChange(value)} />
+          <span>{`Between ${masteryRange[0]}% and ${masteryRange[1]}%`}</span>
+        </>
+      );
+    }
+    if (type === "CHALLENGE") {
+      return (
+        <>
+          <StyledSlider
+            reverse
+            value={100 - masteryRange[0] + 1}
+            onChange={value => handleSliderChange([100 - value, 100])}
+            min={1}
+          />
+          <span>{`Above ${masteryRange[0] - 1}%`}</span>
+        </>
+      );
+    }
+  };
 
   const handleRowSelect = selectionType => {
     if (selectionType === "UNSELECT") {
@@ -183,8 +208,8 @@ const WorkTable = ({
       return message.error("Please select the mastery range which is having atleast 1 student.");
 
     const groups = groupBy(selectedRows.map(x => data[x]), x => (x.testId ? "tests" : "standards"));
-    console.log("groups", groups);
-    let recommendations = [];
+
+    const recommendations = [];
     if (groups.standards) {
       const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
       const obj = {

@@ -74,26 +74,28 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   });
 
   return chartData.length ? (
-    <PieChart width={315} height={250}>
-      <Pie
-        activeIndex={activeIndex}
-        activeShape={props => renderActiveShape({ ...props, showTotalTime, totalTimeSpent })}
-        data={chartData}
-        cx={150}
-        cy={130}
-        innerRadius={60}
-        outerRadius={78}
-        label={({ name }) => name}
-        isAnimationActive={false} // Tradeoff: to show labels -  https://github.com/recharts/recharts/issues/929
-        onMouseEnter={onPieEnter}
-        onMouseLeave={() => setDefaultTimeSpent(true)}
-        showTotalTime={showTotalTime}
-      >
-        {chartData?.map((m, dataIndex) => (
-          <Cell fill={dataIndex === maxSliceIndex ? themeColorLighter : colors[m.index % colors.length]} />
-        ))}
-      </Pie>
-    </PieChart>
+    <StyledProgressDiv>
+      <PieChart width={315} height={250}>
+        <Pie
+          activeIndex={activeIndex}
+          activeShape={props => renderActiveShape({ ...props, showTotalTime, totalTimeSpent })}
+          data={chartData}
+          cx={150}
+          cy={130}
+          innerRadius={60}
+          outerRadius={78}
+          label={({ name }) => name}
+          isAnimationActive={false} // Tradeoff: to show labels -  https://github.com/recharts/recharts/issues/929
+          onMouseEnter={onPieEnter}
+          onMouseLeave={() => setDefaultTimeSpent(true)}
+          showTotalTime={showTotalTime}
+        >
+          {chartData?.map((m, dataIndex) => (
+            <Cell fill={dataIndex === maxSliceIndex ? themeColorLighter : colors[m.index % colors.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+    </StyledProgressDiv>
   ) : (
     <StyledProgressDiv>
       <StyledProgress

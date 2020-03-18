@@ -212,7 +212,7 @@ class ModuleRow extends Component {
 
   processStudentAssignmentAction = (moduleId, moduleData, isAssigned, assignmentRows = []) => {
     let uta = moduleData.userTestActivities || {};
-    const { classId: groupId, playlistClassList, startAssignment, resumeAssignment, playlistId } = this.props;
+    const { classId: groupId, playlistClassList, startAssignment, resumeAssignment, playlistId, history } = this.props;
     const testId = uta.testId || moduleData.contentId;
 
     if (isAssigned) {
@@ -239,6 +239,11 @@ class ModuleRow extends Component {
         uta.action = () => startAssignment(uta);
       } else if (uta.taStatus === testActivityStatus.SUBMITTED && uta.utaAssignmentId) {
         uta.text = "REVIEW";
+        uta.action = () =>
+          history.push({
+            pathname: `/home/class/${uta.classId}/test/${uta.testId}/testActivityReport/${uta.testActivityId}`,
+            fromPlayList: true
+          });
       } else if (uta.taStatus === testActivityStatus.ABSENT && uta.utaAssignmentId) {
         uta.text = "ABSENT";
       } else if (uta.testActivityId && uta.utaAssignmentId) {
@@ -873,23 +878,11 @@ class ModuleRow extends Component {
                                   ) : (
                                     !moduleData.hidden && (
                                       <StyledCol span={7} justify="flex-end">
-                                        {uta.testType !== "practice" &&
-                                        uta.taStatus === testActivityStatus.SUBMITTED &&
-                                        !uta.isRedirected ? (
-                                          <StyledLink
-                                            to={`/home/class/${uta.classId}/test/${uta.testId}/testActivityReport/${
-                                              uta.testActivityId
-                                            }`}
-                                          >
+                                        <AssignmentButton assigned={false}>
+                                          <Button data-cy={uta.text} onClick={uta.action}>
                                             {uta.text}
-                                          </StyledLink>
-                                        ) : (
-                                          <AssignmentButton assigned={false}>
-                                            <Button data-cy={uta.text} onClick={uta.action}>
-                                              {uta.text}
-                                            </Button>
-                                          </AssignmentButton>
-                                        )}
+                                          </Button>
+                                        </AssignmentButton>
                                       </StyledCol>
                                     )
                                   )}

@@ -137,8 +137,19 @@ const DropPlaylistModal = props => {
 
   const handleStudentChange = (value, option) => {
     setMode("edit");
+    const studentClassMap = addedStudent.reduce((acc, student) => {
+      if (student.type === "student") {
+        acc[student.id] = student.classId;
+      }
+      return acc;
+    }, {});
     setAddedStudent(
-      value.map((x, i) => ({ id: x?.key, name: x?.label, type: "student", classId: option[i]?.props?.classId }))
+      value.map((x, i) => ({
+        id: x?.key,
+        name: x?.label,
+        type: "student",
+        classId: option[i]?.props?.classId || studentClassMap[(x?.key)]
+      }))
     );
   };
 

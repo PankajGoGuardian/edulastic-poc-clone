@@ -105,6 +105,8 @@ const Differentiation = ({
           <div>
             <span>Based on Performance in</span>
             <StyledSelect
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
               data-cy="select-assignment"
               style={{ width: "200px" }}
               placeholder="SELECT ASSIGNMENT"
@@ -119,6 +121,8 @@ const Differentiation = ({
             </StyledSelect>
             <span>Recommendations For</span>
             <StyledSelect
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().includes(input.trim().toLowerCase())}
               data-cy="select-group"
               style={{ width: "170px" }}
               placeholder="SELECT GROUP"

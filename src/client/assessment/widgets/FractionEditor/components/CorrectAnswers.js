@@ -75,6 +75,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
       <CorrectAnswerHeader>
         <CustomInput
           type="number"
+          min={1}
           id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
           size="default"
           value={get(item, "validation.validResponse.score", 1)}
@@ -87,6 +88,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
         <FlexContainer flexDirection="column">
           <Input
             type="number"
+            min={1}
             placeholder="Correct answer"
             size="default"
             value={selected.length}
@@ -96,6 +98,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
           <Divider />
           <Input
             type="number"
+            min={1}
             size="default"
             value={totalSelections}
             onChange={handleCorrectAnswerChange}

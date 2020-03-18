@@ -97,6 +97,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <Label>Count</Label>
             <Input
               type="number"
+              min={1}
               value={fractionProperties.count}
               placeholder="Fraction count"
               onBlur={value => handleDimensionChange("count", +value)}
@@ -120,6 +121,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
             <Label>Count</Label>
             <Input
               type="number"
+              min={1}
               value={fractionProperties.count}
               placeholder="Fraction count"
               onBlur={value => handleDimensionChange("count", +value)}

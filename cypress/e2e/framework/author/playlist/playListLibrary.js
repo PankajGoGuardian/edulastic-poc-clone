@@ -16,7 +16,6 @@ export default class PlayListLibrary {
     this.header = new PlayListHeader();
     this.addTestTab = new PlayListAddTest();
     this.reviewTab = new PlayListReview();
-    this.searchContainer = new PlayListSearchContainer();
     this.playlistCustom = new PlaylistCustom();
   }
 
@@ -27,8 +26,29 @@ export default class PlayListLibrary {
   //TODO: move this to plalist setting once all settings are appearing on UI
   getCustomizationSwitch = () => cy.get('[data-cy="customization"]');
 
+  getPlaylistDropSearch = () => cy.get('[data-cy="drop-playlist-search"]');
+
+  getDropByClass = () => cy.get('[value="byClass"]');
+
+  getDropByStudent = () => cy.get('[value="byStudent"]');
+
+  getDoneDropPlaylist = () => cy.get('[data-cy="done-drop-playlist"]');
+
+  getRemoveDropByName = name => cy.get(`[data-cy="remove-${name}"]`);
   // *** ELEMENTS END ***
   // *** ACTIONS START ***
+  checkDropByClass = () => this.getDropByClass().check({ force: true });
+
+  checkDropByStudent = () => this.getDropByStudent().check({ force: true });
+
+  clickRemoveDropByName = name => this.getRemoveDropByName(name.trim()).click();
+
+  clickDoneDropPlaylist = () => {
+    cy.server();
+    cy.route("POST", "**/user-playlist-activity/").as("doneDropPlaylist");
+    this.getDoneDropPlaylist().click();
+    cy.wait("@doneDropPlaylist");
+  };
 
   clickOnNewPlayList = () => cy.get('[data-cy="createNew"]').click();
 
@@ -99,6 +119,7 @@ export default class PlayListLibrary {
     this.playListSummary.setName(playListData.name);
     this.playListSummary.selectGrade(playListData.grade, true);
     this.playListSummary.selectSubject(playListData.subject, true);
+    if (playListData.collection) this.playListSummary.selectCollection(playListData.collection);
 
     this.header.clickOnAddTests();
     this.addTestTab.clickOnManageModule();

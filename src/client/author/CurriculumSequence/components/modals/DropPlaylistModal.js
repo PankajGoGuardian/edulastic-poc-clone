@@ -231,7 +231,6 @@ const DropPlaylistModal = props => {
           Dropping a playlist will let other teachers/students see the playlist and follow along.
         </p>
         <Selector
-          data-cy="drop-playlist-search"
           onChange={handleClassChange}
           onSelect={fetchStudents}
           value={filterNewlyAddedClass()}

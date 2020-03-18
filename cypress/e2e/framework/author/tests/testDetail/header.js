@@ -74,7 +74,10 @@ export default class TestHeader {
               .split("/")
               .reverse()[1];
           });
-        }
+        } else
+          return JSON.stringify(xhr.url)
+            .split("/")
+            .reverse()[1];
       });
     }
   };

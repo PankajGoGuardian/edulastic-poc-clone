@@ -3,6 +3,7 @@ import PlayListSearchContainer from "./searchConatinerPage";
 
 class PlaylistCustom extends PlayListReview {
   constructor() {
+    super();
     this.searchContainer = new PlayListSearchContainer();
   }
   /* GET ELEMENTS */

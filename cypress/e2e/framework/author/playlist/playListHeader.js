@@ -22,6 +22,7 @@ export default class PlayListHeader {
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+  getDropPlaylist = () => cy.get('[data-cy="drop-playlist"]');
 
   clickOnDescription = () => {
     this.getSummaryButton.click({ force: true });
@@ -89,6 +90,13 @@ export default class PlayListHeader {
     this.getSaveButton().click();
     cy.wait("@getPlayList");
     return cy.wait("@duplicatePlaylist").then(xhr => xhr);
+  };
+
+  clickOnDropPlalist = () => {
+    cy.server();
+    cy.route("GET", "**/user-playlist-activity/*").as("getPlaylistUsers");
+    this.getDropPlaylist().click();
+    cy.wait("@getPlaylistUsers");
   };
 
   // *** ACTIONS END ***

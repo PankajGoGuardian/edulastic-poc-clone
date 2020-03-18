@@ -1,5 +1,6 @@
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import DndSimulatorDataTransfer from "../../../../support/misc/dndSimulator";
+import { teacherSide } from "../../constants/assignmentStatus";
 
 export default class PlayListReview {
   constructor() {
@@ -37,6 +38,14 @@ export default class PlayListReview {
   getPlaylistGrade = () => cy.get('[data-cy="playlist-grade"]');
 
   getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
+
+  getHideModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="hide-module"]');
+
+  getShowModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="show-module"]');
+
+  getHideByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="make-hidden"]');
+
+  getShowByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="make-visible"]');
 
   // *** ELEMENTS END ***
 
@@ -86,6 +95,27 @@ export default class PlayListReview {
     cy.route("GET", "**/test/*").as("viewTest");
     this.getViewTestByTestByModule(mod, test).click();
     return cy.wait("@viewTest").then(xhr => xhr.response.body.result._id);
+  };
+
+  clickHideModuleByModule = mod => {
+    this.routeSavePlaylist();
+    this.getHideModuleByModule(mod).click();
+    this.waitForSave();
+  };
+  clickShowModuleByModule = mod => {
+    this.routeSavePlaylist();
+    this.getShowModuleByModule(mod).click();
+    this.waitForSave();
+  };
+  clickHideTestByModule = (mod, test) => {
+    this.routeSavePlaylist();
+    this.getHideByTestByModule(mod, test).click();
+    this.waitForSave();
+  };
+  clickHideModuleByModule = (mod, test) => {
+    this.routeSavePlaylist();
+    this.getShowByTestByModule(mod).click(mod, test);
+    this.waitForSave();
   };
 
   // *** ACTIONS END ***
@@ -183,11 +213,10 @@ export default class PlayListReview {
     });
   }; */
 
-  shuffleTestBetweenModule = (sourcemod, sourceTest, targetModule) => {
-    this.getTestByTestByModule(sourcemod, sourceTest).as("source-container");
-    this.getModuleRowByModule(targetModule).as("target-container");
-    cy.server();
-    cy.route("PUT", "**/playlists/*").as("save-playlist");
+  moveTestBetweenModule = (sourcemodNumber, sourceTestNumber, targetModuleNumber) => {
+    this.getTestByTestByModule(sourcemodNumber, sourceTestNumber).as("source-container");
+    this.getModuleRowByModule(targetModuleNumber).as("target-container");
+    this.routeSavePlaylist();
     const opts = {
       offsetX: 0,
       offsetY: 0
@@ -206,10 +235,16 @@ export default class PlayListReview {
         clientX: x + opts.offsetX,
         clientY: y + opts.offsetY
       });
-      // cy.get("@target").trigger("dragend", {});
-      cy.wait("@save-playlist");
+      this.waitForSave();
     });
   };
+
+  routeSavePlaylist = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("save-playlist");
+  };
+
+  waitForSave = () => cy.wait("@save-playlist");
 
   // *** APPHELPERS END ***
 }

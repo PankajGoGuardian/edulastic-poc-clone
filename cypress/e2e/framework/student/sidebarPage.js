@@ -37,5 +37,12 @@ class SidebarPage {
 
   // *** APPHELPERS START ***
   // *** APPHELPERS END ***
+
+  clickOnPlaylistLibrary = () => {
+    cy.server();
+    cy.route("GET", "**/user-playlist-activity").as("getDroppedPlaylists");
+    cy.get('[data-cy="Playlist"]').dblclick({ force: true });
+    cy.wait("@getDroppedPlaylists");
+  };
 }
 export default SidebarPage;

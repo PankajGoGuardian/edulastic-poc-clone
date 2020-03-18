@@ -9,7 +9,7 @@ import { Progress } from "@edulastic/common";
 const CurriculumContainer = lazy(() => import("../../../author/CurriculumSequence"));
 
 import { smallDesktopWidth } from "@edulastic/colors";
-import { slice } from "../ducks";
+import { slice, getDateKeysSelector } from "../ducks";
 import { getLastPlayListSelector } from "../../../author/Playlist/ducks";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
 
@@ -22,13 +22,18 @@ const PlaylistsContainer = ({
   playlists,
   lastPlaylist,
   fetchPlaylists,
+  fetchRecommendations,
   loadAllClasses,
   isLoading,
-  currentChild
+  currentChild,
+  dateKeys
 }) => {
   useEffect(() => {
     fetchPlaylists();
     loadAllClasses();
+    if (!dateKeys.length) {
+      fetchRecommendations();
+    }
   }, [currentChild]);
 
   const pathPlaylistId = location.pathname.substring(match.path.length).replace(/\//g, "");
@@ -85,10 +90,12 @@ const enhance = compose(
       isLoading: state?.studentPlaylist?.isLoading,
       playlists: state?.studentPlaylist?.playlists,
       lastPlaylist: getLastPlayListSelector(state),
+      dateKeys: getDateKeysSelector(state),
       currentChild: state?.user?.currentChild
     }),
     {
       fetchPlaylists: slice.actions.fetchStudentPlaylist,
+      fetchRecommendations: slice.actions.fetchRecommendations,
       loadAllClasses: getEnrollClassAction
     }
   )

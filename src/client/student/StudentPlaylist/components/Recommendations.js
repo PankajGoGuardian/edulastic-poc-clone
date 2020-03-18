@@ -11,7 +11,7 @@ import { ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { Button, Col, Row, Spin, Tooltip } from "antd";
 import { isEmpty, last } from "lodash";
-import React, { useEffect } from "react";
+import React from "react";
 import { FaChevronRight } from "react-icons/fa";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -23,28 +23,17 @@ import Tags from "../../../author/src/components/common/Tags";
 import NoDataNotification from "../../../common/components/NoDataNotification";
 import { resumeAssignmentAction, startAssignmentAction } from "../../Assignments/ducks";
 import PlayListHeader from "../../sharedComponents/Header/PlayListHeader";
-import {
-  getActivitiesByResourceId,
-  getDateKeysSelector,
-  getIsLoadingSelector,
-  recommendationsTimed,
-  slice
-} from "../ducks";
+import { getActivitiesByResourceId, getDateKeysSelector, getIsLoadingSelector, recommendationsTimed } from "../ducks";
 
 const Recommendations = ({
   startAssignment,
   resumeAssignment,
   isLoading,
-  fetchRecommendations,
   activitiesByResourceId,
   match,
   recommendationsByTime,
   dateKeys
 }) => {
-  useEffect(() => {
-    fetchRecommendations();
-  }, []);
-
   const handleStartPractice = ({ testId, classId, studentRecommendationId, activities }) => _ => {
     const lastActivity = last(activities) || {};
 
@@ -234,8 +223,7 @@ const enhance = compose(
     }),
     {
       startAssignment: startAssignmentAction,
-      resumeAssignment: resumeAssignmentAction,
-      fetchRecommendations: slice.actions.fetchRecommendations
+      resumeAssignment: resumeAssignmentAction
     }
   )
 );

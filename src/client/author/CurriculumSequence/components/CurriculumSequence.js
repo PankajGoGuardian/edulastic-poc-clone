@@ -59,6 +59,7 @@ import PlaylistPageNav from "./PlaylistPageNav";
 import ManageContentBlock from "./ManageContentBlock";
 import StudentPlayListHeader from "../../../student/sharedComponents/Header/PlayListHeader";
 import Differentiation from "./Differentiation";
+import { getDateKeysSelector } from "../../../student/StudentPlaylist/ducks";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -419,7 +420,8 @@ class CurriculumSequence extends Component {
       isManageContentActive,
       manageContentDirty,
       updateDestinationPlaylist,
-      collections
+      collections,
+      dateKeys
     } = this.props;
 
     const testsInPlaylist = destinationCurriculumSequence?.modules?.flatMap(m => m?.data?.map(d => d?.contentId)) || [];
@@ -708,7 +710,7 @@ class CurriculumSequence extends Component {
 
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer urlHasUseThis={urlHasUseThis}>
-                  {isStudent && (
+                  {isStudent && !!dateKeys.length && (
                     <SubTopBar>
                       <SubTopBarContainer
                         style={{
@@ -856,7 +858,8 @@ const enhance = compose(
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
       studentPlaylists: state?.studentPlaylist?.playlists,
       classId: getCurrentGroup(state),
-      activeClasses: getFilteredClassesSelector(state)
+      activeClasses: getFilteredClassesSelector(state),
+      dateKeys: getDateKeysSelector(state)
     }),
     {
       onGuideChange: changeGuideAction,

@@ -63,7 +63,7 @@ const PlayListHeader = ({
             ))}
         </StyledTabs>
       </HeaderMidContainer>
-      {activeEnrolledClasses.length && (
+      {!!activeEnrolledClasses.length && (
         <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption={false} />
       )}
     </MainHeader>

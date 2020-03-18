@@ -172,6 +172,9 @@ class AssessmentPlayerSimple extends React.Component {
       updateScratchpad({ activeMode: "" });
     } else {
       updateScratchpad({ activeMode: value, deleteMode: false });
+      if (value === "drawBreakingLine") {
+        message.info("Please double click to stop drawing");
+      }
     }
     updateScratchPad(data);
   };

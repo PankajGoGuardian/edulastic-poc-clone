@@ -11,6 +11,7 @@ import { allThemeVars } from "../../../../../theme";
 import { StyledFlex, StyledInput, StyledRejectionSubmitBtn, StyledFlexContainer } from "./styled";
 
 import { savePreviewRejectAction } from "./previewAttachment.ducks";
+import { message } from "antd";
 
 const PreviewModalWithScratchPad = ({
   submitReviewFeedback,
@@ -54,6 +55,9 @@ const PreviewModalWithScratchPad = ({
     } else if (activeMode === value) {
       setActiveMode("");
     } else {
+      if (value === "drawBreakingLine") {
+        message.info("Please double click to stop drawing");
+      }
       setActiveMode(value);
       setDeleteMode(false);
     }

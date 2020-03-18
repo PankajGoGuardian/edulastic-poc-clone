@@ -4,6 +4,7 @@ import { cloneDeep } from "lodash";
 import { hexToRGB, ScratchPadContext } from "@edulastic/common";
 import Tools from "../../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../themes/AssessmentPlayerDefault/SvgDraw";
+import { message } from "antd";
 
 const Scratch = ({ clearClicked }) => {
   const [fillColor, setFillColor] = useState("#ff0000");
@@ -41,6 +42,9 @@ const Scratch = ({ clearClicked }) => {
     } else if (activeMode === value) {
       setActiveMode("");
     } else {
+      if (value === "drawBreakingLine") {
+        message.info("Please double click to stop drawing");
+      }
       setActiveMode(value);
       setDeletMode(false);
     }

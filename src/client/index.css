@@ -2095,10 +2095,6 @@ span.token.active-word {
   height: 100vh;
 }
 
-.ant-message-info .anticon {
-  color: #f9942d;
-}
-
 .sortableHelper {
   z-index: 10000;
 }

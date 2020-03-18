@@ -477,6 +477,12 @@ class TestList extends Component {
     this.setState({ showManageModuleModal: false });
   };
 
+  handleSaveModule = () => {
+    const { handleSave } = this.props;
+    handleSave();
+    this.setState({ showManageModuleModal: false });
+  };
+
   deleteModule = id => {
     const { selectedTests } = this.state;
     const { playlist, deleteModuleFromPlaylist } = this.props;
@@ -974,7 +980,7 @@ class TestList extends Component {
                 deleteModuleFromPlaylist={this.deleteModule}
                 resequenceModules={resequenceModules}
                 handleAddModule={this.onCloseCreateModule}
-                handleApply={handleSave}
+                handleApply={this.handleSaveModule}
                 onCloseManageModule={this.onCloseManageModule}
                 addState={moduleModalAdd}
                 handleTestAdded={this.handleTestAdded}

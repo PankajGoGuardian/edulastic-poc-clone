@@ -29,6 +29,7 @@ const ManageModulesModal = ({
     // need to save only when at-least a module present
     if (!destinationCurriculumSequence?.modules?.length) return;
     if (destinationCurriculumSequence._id) updatePlaylist({ isPlaylist: true });
+    onClose();
   };
 
   return (

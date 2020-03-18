@@ -201,7 +201,7 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
     const name = [fName ? fName[0] + "." : "", lName || (fName ? "" : "-")].join(" ").trim();
     const effort = getNormalizedValue(item.totalTimeSpent, timeMean, timeRange);
     const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
-    return { name, ...item, effort, performance };
+    return { name, ...item, effort, performance, isActive: true };
   });
 };
 
@@ -269,24 +269,21 @@ export const getQuadsData = data => {
   });
 };
 
-export const calcArrowPosition = ({ cx, cy, name, trendAngle, isActive }) => {
-  if (!isActive) {
-    return `${cx} ${cy}`;
-  }
+export const calcLabelPosition = ({ cx, cy, name, trendAngle }) => {
   let x = cx,
     y = cy;
   if (trendAngle > 160 || trendAngle < -160) {
-    x += round((name.length + 3.5) * 5);
+    x -= round((name.length + 3.5) * 5);
     y -= trendAngle > 160 ? 6 : 4;
   } else if (trendAngle > 90 || trendAngle < -90) {
-    x += round(name.length * 4.3);
+    x -= round(name.length * 4.3);
     y -= trendAngle > 90 ? 4 : 6;
   } else if (trendAngle > 30 || trendAngle < -30) {
-    x += round(name.length * 4);
+    x -= round(name.length * 4);
     y -= trendAngle > 0 ? 3 : 6;
   } else {
-    x += round(name.length * 3.7);
+    x -= round(name.length * 3.7);
     y -= 2;
   }
-  return `${x} ${y}`;
+  return { nameX: x, arrowY: y };
 };

@@ -5,7 +5,7 @@ import { round } from "lodash";
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis } from "recharts";
 
 import { lightGrey7 } from "@edulastic/colors";
-import { domainRange, scaleFactor, getQuadsData, calcArrowPosition } from "../transformers";
+import { domainRange, scaleFactor, getQuadsData, calcLabelPosition } from "../transformers";
 import gradientColorRuler from "../assets/ruler-color-gradient.svg";
 
 const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =>
@@ -18,17 +18,15 @@ const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =
 
 // custom label shape for scatter plot
 const ScatterLabel = ({ cx, cy, studentId, name, trendAngle, color, isActive, handleArrowClick }) => {
+  const { nameX, arrowY } = calcLabelPosition({ cx, cy, name, trendAngle });
   return (
     <g onClick={e => handleArrowClick(e, studentId)}>
       {isActive && (
-        <text x={cx} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
+        <text x={nameX} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
           {name}
         </text>
       )}
-      <g
-        transform={`translate(${calcArrowPosition({ cx, cy, name, trendAngle, isActive })}) rotate(${-trendAngle -
-          90})`}
-      >
+      <g transform={`translate(${cx} ${arrowY}) rotate(${-trendAngle - 90})`}>
         <path d="M0,0V18.385" transform="translate(4.065 3.536)" fill="none" stroke={color} stroke-width="2" />
         <g transform="translate(7.565 26.438) rotate(180)" fill={color}>
           <path
@@ -50,7 +48,7 @@ const ScatterLabel = ({ cx, cy, studentId, name, trendAngle, color, isActive, ha
 const InsightsChart = ({ data }) => {
   // active state of the display data (labels)
   const [activeData, setActiveData] = useState([]);
-  const [allActive, setAllActive] = useState(false);
+  const [allActive, setAllActive] = useState(true);
 
   useEffect(() => {
     setActiveData(getQuadsData(data));

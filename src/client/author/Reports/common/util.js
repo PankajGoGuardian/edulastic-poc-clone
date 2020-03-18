@@ -11,16 +11,16 @@ export const testTypeHashMap = {
   assessment: "class"
 };
 
-export const percentage = (numerator, denominator, ceilCalculation = false) => {
+export const percentage = (numerator, denominator, roundCalculation = false) => {
   if (numerator == 0 && denominator == 0) {
     return 0;
   }
 
   const calculatedPercentage = (numerator / denominator) * 100;
-  return ceilCalculation ? ceil(calculatedPercentage) : calculatedPercentage;
+  return roundCalculation ? round(calculatedPercentage) : calculatedPercentage;
 };
 
-export const ceilingPercentage = partialRight(percentage, true);
+export const roundedPercentage = partialRight(percentage, true);
 
 export const stringCompare = (a_string = "", b_string = "") =>
   (a_string || "").toLowerCase().localeCompare((b_string || "").toLowerCase());
@@ -141,7 +141,7 @@ export const processTeacherIds = orgDataArr => {
 };
 
 export const getOverallScore = (metrics = []) =>
-  ceilingPercentage(
+  roundedPercentage(
     sumBy(metrics, item => parseFloat(item.totalScore)),
     sumBy(metrics, item => parseFloat(item.maxScore))
   );

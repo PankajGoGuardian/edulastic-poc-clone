@@ -1,6 +1,6 @@
 import next from "immer";
 import { groupBy, sumBy, round, forEach, get, maxBy, find, map, orderBy, includes, filter } from "lodash";
-import { ceilingPercentage, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
+import { roundedPercentage, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
 
 const analyseKeys = {
   masteryScore: "Mastery Score",
@@ -173,8 +173,8 @@ export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleI
 };
 
 // Table column related utils
-export const getScore = record => ceilingPercentage(record.totalScore, record.maxScore);
-export const getOverallScore = records => ceilingPercentage(sumBy(records, "totalScore"), sumBy(records, "maxScore"));
+export const getScore = record => roundedPercentage(record.totalScore, record.maxScore);
+export const getOverallScore = records => roundedPercentage(sumBy(records, "totalScore"), sumBy(records, "maxScore"));
 export const getMasteryScore = record => round(record.fmSum / parseInt(record.fmCount, 10), 2);
 export const getMasteryScoreColor = (domain, scaleInfo) => getMasteryLevel(getMasteryScore(domain), scaleInfo).color;
 export const getAnalyseByTitle = key => analyseKeys[key] || "";

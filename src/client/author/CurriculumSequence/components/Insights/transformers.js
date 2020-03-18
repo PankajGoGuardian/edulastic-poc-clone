@@ -10,7 +10,7 @@ export const getFilterData = (modules = []) => {
     item.data.forEach(ele => {
       standards.push(...ele.standards);
       ele.assignments.forEach(assignment =>
-        assignment.class?.[0]?._id ? groups.push({ id: assignment.class[0]._id, name: assignment.class[0].name }) : null
+        assignment.class?.forEach(cl => groups.push({ id: cl._id, name: cl.name }))
       );
     });
     return {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { groupBy, isEmpty } from "lodash";
+import { groupBy, uniqBy } from "lodash";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
 import { getCurrentTerm } from "../../../src/selectors/user";
@@ -43,7 +43,7 @@ const Differentiation = ({
   const [selectedClass, setSelectedClass] = useState();
   const [selectedAssignment, setSelectedAssignment] = useState({});
   const [classList, setClassList] = useState([]);
-  const [assignmentsData, setAssignmentsData] = useState({});
+  const [assignmentsByTestId, setAssignmentsByTestId] = useState({});
   const [filteredAssignments, setFilteredAssignments] = useState([]);
 
   useEffect(() => {
@@ -62,8 +62,9 @@ const Differentiation = ({
   useEffect(() => {
     if (assignments.length) {
       const gradedAssignments = assignments.filter(a => a.status === assignmentStatusOptions.DONE);
+      const _assignmentsByTestId = groupBy(gradedAssignments, "testId");
       const assignmentsGroupedById = groupBy(gradedAssignments, "_id");
-      setAssignmentsData(assignmentsGroupedById);
+      setAssignmentsByTestId(_assignmentsByTestId);
       const assignmentsDataForSelect = Object.keys(assignmentsGroupedById).map(assignmentId => {
         const currentAssignmentData = assignmentsGroupedById[assignmentId][0];
         return {
@@ -72,30 +73,37 @@ const Differentiation = ({
           testId: currentAssignmentData.testId
         };
       });
-      setFilteredAssignments(assignmentsDataForSelect);
+      setFilteredAssignments(uniqBy(assignmentsDataForSelect, "testId"));
       setSelectedAssignment(assignmentsDataForSelect[0]);
-      const firstAssignmentClassList = assignmentsGroupedById[assignmentsDataForSelect[0]._id].map(a => ({
+      const selectedTestId = assignmentsDataForSelect[0]?.testId;
+      const firstAssignmentClassList = _assignmentsByTestId[selectedTestId].map(a => ({
         _id: a.classId,
-        name: a.className
+        name: a.className,
+        assignmentId: a._id
       }));
-      setClassList(firstAssignmentClassList);
+      setClassList(uniqBy(firstAssignmentClassList, "_id"));
       setSelectedClass(firstAssignmentClassList[0]._id);
     }
   }, [assignments]);
 
   useEffect(() => {
     if (selectedClass) {
-      fetchDifferentiationStudentList({ assignmentId: selectedAssignment._id, groupId: selectedClass });
       const { testId } = filteredAssignments.find(a => a._id === selectedAssignment._id);
-      fetchDifferentiationWork({ assignmentId: selectedAssignment._id, groupId: selectedClass, testId });
+      const classData = classList.find(_class => _class._id === selectedClass);
+      fetchDifferentiationStudentList({ assignmentId: classData.assignmentId, groupId: selectedClass });
+      fetchDifferentiationWork({ assignmentId: classData.assignmentId, groupId: selectedClass, testId });
     }
   }, [selectedClass]);
 
   const handleAssignmentChange = (value, option) => {
-    setSelectedAssignment({ _id: option.props.value, title: option.props.title });
+    setSelectedAssignment({ _id: value, title: option.props.title });
     setSelectedClass();
-    const classData = assignmentsData[value].map(a => ({ _id: a.classId, name: a.className }));
-    setClassList(classData);
+    const classData = assignmentsByTestId[option.props.testId].map(a => ({
+      _id: a.classId,
+      name: a.className,
+      assignmentId: a._id
+    }));
+    setClassList(uniqBy(classData, "_id"));
   };
 
   return (
@@ -113,8 +121,8 @@ const Differentiation = ({
               onChange={(value, option) => handleAssignmentChange(value, option)}
               value={selectedAssignment._id}
             >
-              {filteredAssignments.map(({ _id, title }) => (
-                <StyledSelect.Option key={_id} value={_id} title={title}>
+              {filteredAssignments.map(({ _id, title, testId }) => (
+                <StyledSelect.Option key={_id} value={_id} testId={testId} title={title}>
                   {title}
                 </StyledSelect.Option>
               ))}

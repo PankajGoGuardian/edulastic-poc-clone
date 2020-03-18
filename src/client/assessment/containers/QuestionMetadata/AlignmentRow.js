@@ -210,11 +210,13 @@ const AlignmentRow = ({
   }, [qId]);
 
   useEffect(() => {
-    return () => {
-      editAlignment(alignmentIndex, {
-        curriculumId: ""
-      });
-    };
+    if (!isDocBased) {
+      return () => {
+        editAlignment(alignmentIndex, {
+          curriculumId: ""
+        });
+      };
+    }
   }, []);
   return (
     <Fragment>

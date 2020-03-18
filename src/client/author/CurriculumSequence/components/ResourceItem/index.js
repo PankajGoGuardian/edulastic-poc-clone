@@ -18,7 +18,7 @@ export const ICONS_BY_TYPE = {
 export const ResouceIcon = ({ type, isAdded }) => <IconWrapper isAdded={isAdded}>{ICONS_BY_TYPE[type]}</IconWrapper>;
 
 const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, previewTest }) => {
-  const standardIdentifiers = (summary ?.standards || []).map(x => x.identifier);
+  const standardIdentifiers = (summary?.standards || []).map(x => x.identifier);
   const [{ opacity }, drag] = useDrag({
     item: {
       type: "item",
@@ -37,8 +37,10 @@ const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, pre
   return (
     <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
       <ResouceIcon tests={type} isAdded={isAdded} />
-      <ResourceTitle isAdded={isAdded} title={title}>
-        <TitleText noStandards={standardIdentifiers.length === 0}>{title}</TitleText>
+      <ResourceTitle isAdded={isAdded}>
+        <TitleText noStandards={standardIdentifiers.length === 0} title={title}>
+          {title}
+        </TitleText>
         <Tags tags={standardIdentifiers} show={1} showTitle />
       </ResourceTitle>
       <Tooltip title="preview">

@@ -13,7 +13,7 @@ const statusColors = {
   inreview: "#51A9B7"
 };
 
-const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes }) => {
+const AuditList = ({ auditTrails: { attachments, users }, handleShowNotes }) => {
   const columns = [
     {
       title: "Date",
@@ -33,10 +33,10 @@ const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes })
     },
     {
       title: "Name",
-      dataIndex: "reviewerId",
-      key: "reviewerId",
+      dataIndex: "userId",
+      key: "userId",
       render: value => {
-        const { firstName, lastName } = reviewers.find(rv => rv._id === value) || {};
+        const { firstName, lastName } = users.find(rv => rv._id === value) || {};
         return (
           <span>
             {firstName} {lastName}
@@ -45,10 +45,10 @@ const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes })
       },
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => {
-        const prev = get(a, "reviewerId", "");
-        const next = get(b, "reviewerId", "");
-        const { firstName: prevFirstName, lastName: prevLastName } = reviewers.find(rv => rv._id === prev) || {};
-        const { firstName: nextFirstName, lastName: nextLastName } = reviewers.find(rv => rv._id === next) || {};
+        const prev = get(a, "userId", "");
+        const next = get(b, "userId", "");
+        const { firstName: prevFirstName, lastName: prevLastName } = users.find(rv => rv._id === prev) || {};
+        const { firstName: nextFirstName, lastName: nextLastName } = users.find(rv => rv._id === next) || {};
         return `${nextFirstName}${nextLastName}`.localeCompare(`${prevFirstName}${prevLastName}`);
       },
       width: 250
@@ -98,7 +98,7 @@ const AuditList = ({ auditTrails: { attachments, reviewers }, handleShowNotes })
 AuditList.propTypes = {
   auditTrails: PropTypes.shape({
     attachments: PropTypes.arrayOf(PropTypes.object),
-    reviewers: PropTypes.arrayOf(PropTypes.object)
+    users: PropTypes.arrayOf(PropTypes.object)
   })
 };
 

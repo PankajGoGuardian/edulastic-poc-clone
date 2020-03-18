@@ -150,15 +150,15 @@ function* saveUserResponse({ payload }) {
       const update = {
         data: { scratchpad: _userWork.scratchpad },
         referrerId: userTestActivityId,
-        reviewerId: userId,
+        userId,
         type: "scratchpad",
         referrerType: "TestActivityContent",
-        testItemId,
+        referrerId2: testItemId,
         status: "published"
       };
       const filter = {
         referrerId: userTestActivityId,
-        testItemId
+        referrerId2: testItemId
       };
       yield call(attachmentApi.updateAttachment, { update, filter });
     }

@@ -52,7 +52,8 @@ import {
   putCurriculumSequenceAction,
   removeUnitAction,
   setSelectedItemsForAssignAction,
-  toggleCheckedUnitItemAction
+  toggleCheckedUnitItemAction,
+  getSignedRequestAction
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
@@ -142,7 +143,8 @@ class ModuleRow extends Component {
   state = {
     showModal: false,
     selectedTest: "",
-    currentAssignmentId: []
+    currentAssignmentId: [],
+    showResourceModal: false
   };
 
   /**
@@ -182,7 +184,8 @@ class ModuleRow extends Component {
 
   closeModal = () => {
     this.setState({
-      showModal: false
+      showModal: false,
+      showResourceModal: false
     });
   };
 
@@ -317,6 +320,23 @@ class ModuleRow extends Component {
     });
   };
 
+  submitForm = () => {
+    if (!document.getElementById("ltiLaunchForm")) {
+      window.requestAnimationFrame(this.submitForm);
+    } else {
+      document.getElementById("ltiLaunchForm").submit();
+    }
+  };
+
+  showResource = contentId => {
+    const { playlistId, module, getSignedRequest, signedRequest } = this.props;
+    getSignedRequest({ playlistId, moduleId: module._id, contentId });
+    this.setState({
+      showResourceModal: true
+    });
+    this.submitForm();
+  };
+
   render() {
     const {
       onCollapseExpand,
@@ -336,7 +356,8 @@ class ModuleRow extends Component {
       isStudent,
       summaryData,
       playlistMetrics,
-      playlistId
+      playlistId,
+      signedRequest
     } = this.props;
 
     const { title, _id, data = [], description = "" } = module;
@@ -346,7 +367,7 @@ class ModuleRow extends Component {
     // const numberOfAssigned = data.filter(
     //   content => content.assignments && content.assignments.length > 0
     // ).length;
-    const { showModal, selectedTest, currentAssignmentId } = this.state;
+    const { showModal, selectedTest, currentAssignmentId, showResourceModal } = this.state;
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -383,6 +404,35 @@ class ModuleRow extends Component {
               closeTestPreviewModal={this.closeModal}
             />
           </ModalWrapper>
+
+          <ModalWrapper
+            footer={null}
+            visible={showResourceModal}
+            onCancel={this.closeModal}
+            width="100%"
+            height="100%"
+            destroyOnClose
+          >
+            {signedRequest && (
+              <div>
+                <form
+                  style={{ display: `none` }}
+                  id="ltiLaunchForm"
+                  target="form-iframe"
+                  method="POST"
+                  target="resource-iframe"
+                  action={`http://ec2-54-80-205-175.compute-1.amazonaws.com:3000/launch-lti`}
+                >
+                  {Object.keys(signedRequest).map(key => (
+                    <input name={key} value={signedRequest[key]} type="text" />
+                  ))}
+                  <input value="Submit" type="submit" />
+                </form>
+                <iframe width="100%" height="100%" name="resource-iframe" src="" />
+              </div>
+            )}
+          </ModalWrapper>
+
           <ModuleWrapper
             data-cy={`row-module-${moduleIndex + 1}`}
             key={`${data.length}-${module.id}`}
@@ -653,7 +703,11 @@ class ModuleRow extends Component {
                             style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
                           />
                           {contentType === "lti_resource" ? (
-                            <LTIResourceRow data={moduleData} urlHasUseThis={urlHasUseThis} />
+                            <LTIResourceRow
+                              data={moduleData}
+                              urlHasUseThis={urlHasUseThis}
+                              showResource={this.showResource}
+                            />
                           ) : (
                             <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
                               <Col span={urlHasUseThis ? 7 : 10} style={rowInlineStyle}>
@@ -1356,6 +1410,7 @@ const enhance = compose(
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
+      signedRequest: curriculumSequence.signedRequest,
       isStudent: getUserRole({ user }) === "student",
       classId: getCurrentGroup({ user })
     }),
@@ -1367,7 +1422,8 @@ const enhance = compose(
       removeUnit: removeUnitAction,
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
-      updateCurriculumSequence: putCurriculumSequenceAction
+      updateCurriculumSequence: putCurriculumSequenceAction,
+      getSignedRequest: getSignedRequestAction
     }
   )
 );

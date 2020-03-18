@@ -6,7 +6,7 @@ import { lightGreen5, white, themeColor } from "@edulastic/colors";
 import { ModuleDataName, EllipticSpan, AssignmentButton, AssignmentIcon, CustomIcon } from "./CurriculumModuleRow";
 import { IconTrash } from "@edulastic/icons";
 
-export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIndex }) => {
+export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIndex, showResource }) => {
   if (mode === "embedded") {
     return (
       <Row type="flex" align="top" style={{ width: "calc(100%)" }}>
@@ -15,7 +15,7 @@ export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIn
         </Col>
         <StyledCol span={urlHasUseThis ? 17 : 14}>
           <AssignmentButton>
-            <Button onClick={() => console.log("Pressed View Button")}>VIEW</Button>
+            <Button onClick={() => showResource(data.contentId)}>VIEW</Button>
           </AssignmentButton>
           <AssignmentIcon>
             <CustomIcon
@@ -44,7 +44,7 @@ export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIn
       </Col>
       <StyledCol span={urlHasUseThis ? 17 : 14}>
         <AssignmentButton style={{ marginRight: "40px" }}>
-          <Button onClick={() => console.log("Pressed View Button")}>VIEW</Button>
+          <Button onClick={() => showResource(data.contentId)}>VIEW</Button>
         </AssignmentButton>
       </StyledCol>
     </Row>

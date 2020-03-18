@@ -114,6 +114,19 @@ const fetchPlaylistInsights = data => {
     .then(result => result.data.result);
 };
 
+const getSignedRequest = ({ playlistId, moduleId, contentId }) => {
+  return api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${playlistId}/generate-lti-request`,
+      data: {
+        moduleId,
+        contentId
+      }
+    })
+    .then(result => result.data.result);
+};
+
 export default {
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
@@ -125,5 +138,6 @@ export default {
   update,
   duplicatePlayList,
   fetchPlaylistMetrics,
-  fetchPlaylistInsights
+  fetchPlaylistInsights,
+  getSignedRequest
 };

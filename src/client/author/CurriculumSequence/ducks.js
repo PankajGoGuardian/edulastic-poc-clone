@@ -111,6 +111,9 @@ export const PLAYLIST_ADD_ITEM_INTO_MODULE = "[playlist] add item into module";
 export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
   "[playlist] update destination curriculum sequence request";
 
+export const GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST = "[playlist] get signed request for resource request";
+export const UPDATE_SIGNED_REQUEST_FOR_RESOURCE = "[playlist] update signed request for resource";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -158,6 +161,9 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 );
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA);
 export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTIATION);
+
+export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
+export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -561,6 +567,15 @@ export function* updateDestinationCurriculumSequencesaga({ payload }) {
   }
 }
 
+export function* getSignedRequestSaga({ payload }) {
+  try {
+    const request = yield call(curriculumSequencesApi.getSignedRequest, payload);
+    yield put(updateSinedRequestAction(request));
+  } catch (err) {
+    message.error("There was an error loading resource");
+  }
+}
+
 function* addContentToCurriculumSequence({ payload }) {
   // TODO: change unit to module to stay consistent
   const { contentToAdd, toUnit } = payload;
@@ -932,7 +947,8 @@ export function* watcherSaga() {
     yield takeLatest(FETCH_DIFFERENTIATION_STUDENT_LIST, fetchDifferentiationStudentListSaga),
     yield takeLatest(FETCH_DIFFERENTIATION_WORK, fetchDifferentiationWorkSaga),
     yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga),
-    yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga)
+    yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga),
+    yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga)
   ]);
 }
 
@@ -1642,5 +1658,8 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.isManageContentActive = !state.isManageContentActive;
+  },
+  [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
+    state.signedRequest = payload;
   }
 });

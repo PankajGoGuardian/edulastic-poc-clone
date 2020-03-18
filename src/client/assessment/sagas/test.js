@@ -201,7 +201,8 @@ function* loadTest({ payload }) {
         testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
       showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
       testType: testActivity?.assignmentSettings?.testType,
-      playerSkinType: testActivity?.assignmentSettings?.playerSkinType
+      playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
+      showMagnifier: testActivity?.assignmentSettings?.showMagnifier
     };
 
     const answerCheckByItemId = {};
@@ -369,7 +370,8 @@ function* loadTest({ payload }) {
         pageStructure: test.pageStructure,
         freeFormNotes: test.freeFormNotes,
         settings,
-        answerCheckByItemId
+        answerCheckByItemId,
+        showMagnifier: settings.showMagnifier || test.showMagnifier
       }
     });
     yield put(setPasswordValidateStatusAction(true));

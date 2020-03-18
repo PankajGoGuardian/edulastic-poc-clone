@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col } from "antd";
-import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth } from "@edulastic/colors";
+import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col, Button } from "antd";
+import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth, linkColor1, mobileWidth } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -286,4 +286,97 @@ export const Label = styled.label`
 
 export const StyledDiv = styled.div`
   flex: 1;
+`;
+
+export const AdvancedButton = styled(Button)`
+  padding: 0;
+  border: none;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${linkColor1};
+  box-shadow: none;
+  margin-top: 20px;
+  width: 190px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  svg {
+    transform: ${props => (props.show ? "rotate(180deg)" : "none")};
+  }
+`;
+
+export const Block = styled.div`
+  margin-bottom: 30px;
+  padding: ${props => (props.smallSize ? "15px" : "29px 30px 30px 30px")};
+  background: ${props => (props.smallSize ? white : "#f8f8f8")};
+  border-radius: 4px;
+
+  .ant-input {
+    height: 40px;
+    font-size: 13px;
+    border-radius: 4px;
+  }
+`;
+
+export const StyledRadioGroup = styled(Radio.Group)`
+  span {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: #434b5d;
+  }
+
+  .ant-radio {
+    margin-right: 25px;
+  }
+
+  .ant-radio-wrapper {
+    margin-right: 40px;
+  }
+`;
+
+export const RadioWrapper = styled(Block)`
+  padding: 0;
+
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
+
+  .ant-row {
+    padding: 14px 22px;
+    background: ${white};
+    border-radius: 4px;
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
+  }
+
+  @media (max-width: ${mobileWidth}) {
+    .ant-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #e8e8e8;
+      padding-top: 20px;
+
+      &:first-child {
+        margin-top: 20px;
+      }
+
+      .ant-col-8 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+    }
+  }
+`;
+
+export const Title = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: ${secondaryTextColor};
 `;

@@ -97,6 +97,12 @@ export const StyledMenu = styled(Menu)`
       color: ${menuItem.hover.color};
     }
   }
+  .ant-dropdown-menu-item-disabled {
+    &:hover {
+      color: rgba(0, 0, 0, 0.25);
+      background: white;
+    }
+  }
   .ant-dropdown-menu-item {
     display: flex;
     justify-content: space-between;

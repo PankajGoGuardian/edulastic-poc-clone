@@ -153,6 +153,7 @@ class AdvancedOptons extends React.Component {
             testType={assignment.testType || testSettings.testType}
             passwordPolicy={assignment.passwordPolicy}
             playerSkinType={assignment.playerSkinType || testSettings.playerSkinType}
+            showMagnifier={assignment.showMagnifier || testSettings.showMagnifier}
           />
           <StyledRowLabel gutter={16}>
             <Col>

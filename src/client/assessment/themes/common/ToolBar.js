@@ -31,7 +31,7 @@ class ToolBar extends Component {
   };
 
   render() {
-    const { settings, tool, qType, handleMagnifier, enableMagnifier } = this.props;
+    const { settings, tool, qType, handleMagnifier, enableMagnifier, showMagnifier } = this.props;
     const { calcType } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -92,11 +92,11 @@ class ToolBar extends Component {
             <ScratchPadIcon />
           </StyledButton>
         </Tooltip>
-        <Tooltip placement="top" title="Magnify">
+        {showMagnifier && <Tooltip placement="top" title="Magnify">
           <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
             <IconSearch/>
           </StyledButton>
-        </Tooltip>
+        </Tooltip>}
       </Container>
     );
   }

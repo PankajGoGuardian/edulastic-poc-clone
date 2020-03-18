@@ -20,6 +20,7 @@ const AssessmentPlayerSkinWrapper = ({
   defaultAP,
   docUrl,
   playerSkinType = test.playerSkinTypes.edulastic,
+  showMagnifier = true,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
@@ -39,6 +40,7 @@ const AssessmentPlayerSkinWrapper = ({
           defaultAP={defaultAP}
           isDocbased={!isUndefined(docUrl)}
           handleMagnifier={handleMagnifier}
+          showMagnifier={showMagnifier}
         />
       );
     } else if (playerSkinType == "sbac") {
@@ -50,14 +52,15 @@ const AssessmentPlayerSkinWrapper = ({
           isDocbased={!isUndefined(docUrl)}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
+          showMagnifier={showMagnifier}
         />
       );
     } else if (!isUndefined(docUrl)) {
-      return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
+      return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
     } else if (defaultAP) {
-      return <DefaultAssessmentPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
+      return <DefaultAssessmentPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
     } else {
-      return <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />;
+      return <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
     }
   };
 

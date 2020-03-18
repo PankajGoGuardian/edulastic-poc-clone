@@ -292,7 +292,8 @@ class MainSetting extends Component {
       performanceBand,
       standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
-      playerSkinType = playerSkinTypes.edulastic.toLowerCase()
+      playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
+      showMagnifier = true
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -367,7 +368,7 @@ class MainSetting extends Component {
               )}
               {showAdvancedOption && (
                 <StyledAnchor affix={false} offsetTop={125}>
-                  {settingCategories.slice(-6, -5).map(category => (
+                  {settingCategories.slice(-6, -4).map(category => (
                     <Anchor.Link
                       key={category.id}
                       href={`${history.location.pathname}#${category.id}`}
@@ -771,7 +772,55 @@ class MainSetting extends Component {
                   </Row>
                 </Block>
               )}
-
+              <Block id="accessibility" smallSize={isSmallSize}>
+                <Title>Accessibility</Title>
+                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0 }}>
+                  {Object.keys(accessibilities).map(item => (
+                    <Row key={accessibilities[item]} style={{ width: "100%" }}>
+                      <Col span={12}>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                      </Col>
+                      <Col span={12}>
+                        <RadioGroup
+                          disabled={!owner || !isEditable}
+                          onChange={e => this.updateTestData("showMagnifier")(e.target.value)}
+                          defaultValue={showMagnifier}
+                        >
+                          <Radio value>ENABLE</Radio>
+                          <Radio value={false}>DISABLE</Radio>
+                        </RadioGroup>
+                      </Col>
+                    </Row>
+                  ))}
+                </RadioWrapper>
+              </Block>
+              {/* {availableFeatures.includes("enableMagnifier") && (
+              <Block id="enable-magnifier" smallSize={isSmallSize}>
+                <Title>Accessibility</Title>
+                <Body smallSize={isSmallSize}>
+                  <Row>
+                    <Col span={12}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Magnifier</span>
+                    </Col>
+                    <Col span={12}>
+                      <StyledRadioGroup
+                        disabled={!owner || !isEditable}
+                        onChange={this.updateFeatures("enableMagnifier")}
+                        value={true}
+                        style={{flexDirection: "row"}}
+                      >
+                        <RadioBtn value={true} key="true">
+                          ENABLE
+                        </RadioBtn>
+                        <RadioBtn value={false} key="false">
+                          DISABLE
+                        </RadioBtn>
+                      </StyledRadioGroup>
+                    </Col>
+                  </Row>
+                </Body>
+              </Block>
+            )} */}
               {/* <Block id="navigations" smallSize={isSmallSize}>
                 <Title>Navigation / Control</Title>
                 <RadioWrapper style={{ marginTop: "29px" }}>

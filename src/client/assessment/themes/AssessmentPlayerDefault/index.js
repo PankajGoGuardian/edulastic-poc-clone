@@ -310,7 +310,8 @@ class AssessmentPlayerDefault extends React.Component {
       defaultAP,
       playerSkinType,
       title,
-      changePreview
+      changePreview,
+      showMagnifier
     } = this.props;
     const {
       testItemState,
@@ -460,6 +461,7 @@ class AssessmentPlayerDefault extends React.Component {
             playerSkinType={playerSkinType}
             defaultAP={defaultAP}
             finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
+            showMagnifier={showMagnifier}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
               <Tools

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input, message } from "antd";
-import { green, red, blueBorder } from "@edulastic/colors";
+import { green, red, blueBorder, themeColor } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
@@ -17,7 +17,12 @@ import {
   MessageSpan,
   MaxAttemptIInput,
   DivBlock,
-  Label
+  Label,
+  AdvancedButton,
+  Block,
+  StyledRadioGroup,
+  RadioWrapper,
+  Title
 } from "./styled";
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 import SubscriptionsBlock from "../../../TestPage/components/Setting/components/MainSetting/SubscriptionsBlock";
@@ -29,6 +34,8 @@ import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
 import { EduCheckBox, RadioBtn } from "@edulastic/common";
+import { IconCaretDown } from "@edulastic/icons";
+import { isUndefined } from "lodash";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -43,7 +50,8 @@ const {
   testContentVisibility: testContentVisibilityOptions,
   releaseGradeLabels,
   passwordPolicyOptions,
-  passwordPolicy: passwordPolicyValues
+  passwordPolicy: passwordPolicyValues,
+  accessibilities
 } = test;
 
 const Settings = ({
@@ -66,7 +74,8 @@ const Settings = ({
     color: blueBorder,
     message: ""
   });
-
+  const [showAdvancedOption, toggleAdvancedOption] = useState(false);
+  const advancedHandler = () => toggleAdvancedOption(!showAdvancedOption);
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {
       setPasswordStatus({
@@ -143,7 +152,8 @@ const Settings = ({
     performanceBand = tempTestSettings.performanceBand,
     standardGradingScale = tempTestSettings.standardGradingScale,
     testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
-    passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60
+    passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60,
+    showMagnifier = tempTestSettings.showMagnifier
   } = assignmentSettings;
 
   return (
@@ -574,6 +584,34 @@ const Settings = ({
             setSettingsData={val => overRideSettings("standardGradingScale", val)}
           />
         </DivBlock>
+        <AdvancedButton onClick={advancedHandler} show={showAdvancedOption}>
+          {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+          <IconCaretDown color={themeColor} width={11} height={6} />
+        </AdvancedButton>
+        {showAdvancedOption && <div>
+          <Block id="accessibility">
+            <Title>Accessibility</Title>
+            <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
+              {Object.keys(accessibilities).map(item => (
+                <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
+                  <Col span={12}>
+                    <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                  </Col>
+                  <Col span={12}>
+                    <StyledRadioGroup
+                      disabled={forClassLevel}
+                      onChange={e => overRideSettings("showMagnifier", e.target.value)}
+                      defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
+                    >
+                      <Radio value>ENABLE</Radio>
+                      <Radio value={false}>DISABLE</Radio>
+                    </StyledRadioGroup>
+                  </Col>
+                </StyledRowSettings>
+              ))}
+            </RadioWrapper>
+          </Block>
+        </div>}
       </StyledDiv>
     </SettingsWrapper>
   );

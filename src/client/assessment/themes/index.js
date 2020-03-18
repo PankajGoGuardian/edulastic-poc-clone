@@ -82,7 +82,8 @@ const AssessmentContainer = ({
   savingResponse,
   playerSkinType,
   userPrevAnswer,
-  testSettings
+  testSettings,
+  showMagnifier
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -230,7 +231,8 @@ const AssessmentContainer = ({
     showScratchPad,
     passage,
     defaultAP,
-    playerSkinType
+    playerSkinType,
+    showMagnifier
   };
 
   useEffect(() => {
@@ -305,7 +307,8 @@ AssessmentContainer.propTypes = {
   testType: PropTypes.string.isRequired,
   testletConfig: PropTypes.object,
   test: PropTypes.object,
-  playerSkinType: PropTypes.string
+  playerSkinType: PropTypes.string,
+  showMagnifier: PropTypes.bool
 };
 
 AssessmentContainer.defaultProps = {
@@ -337,7 +340,8 @@ const enhance = compose(
       loading: testLoadingSelector(state),
       savingResponse: state?.test?.savingResponse,
       userPrevAnswer: state.previousAnswers,
-      testSettings: state.test?.settings
+      testSettings: state.test?.settings,
+      showMagnifier: state.test.showMagnifier
     }),
     {
       saveUserResponse,

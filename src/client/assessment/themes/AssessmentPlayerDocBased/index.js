@@ -129,7 +129,8 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme,
       previewPlayer,
       settings,
-      playerSkinType
+      playerSkinType,
+      showMagnifier
     } = this.props;
 
     const item = items[0];

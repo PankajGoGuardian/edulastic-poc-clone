@@ -23,9 +23,9 @@ module.exports = {
     { id: "performance-bands", title: "Performance Bands" },
     { id: "standards-proficiency", title: "Standards Proficiency" },
     { id: "player-skin-type", title: "Student Player Skin" },
+    { id: "accessibility", title: "Accessibility" },
     { id: "title", title: "Title" },
     { id: "navigations", title: "Navigations / Control" },
-    { id: "accessibility", title: "Accessibility" },
     { id: "ui-time", title: "UI / Time" },
     { id: "administration", title: "Administration" }
   ],
@@ -103,9 +103,10 @@ module.exports = {
     PARTIAL_CREDIT: "PARTIAL_CREDIT"
   },
   accessibilities: {
-    SHOW_COLOUR_SHCEME: "Show Color Scheme",
-    SHOW_FONT_SIZE: "Show Font Size",
-    SHOW_ZOOM: "Show Zoom"
+    // SHOW_COLOUR_SHCEME: "Show Color Scheme",
+    // SHOW_FONT_SIZE: "Show Font Size",
+    // SHOW_ZOOM: "Show Zoom",
+    SHOW_MAGNIFIER: "Magnifier"
   },
   collectionDefaultFilter: [
     { text: "All Collections", value: "" },

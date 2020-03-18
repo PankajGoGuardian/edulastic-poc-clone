@@ -16,7 +16,8 @@ const menuItems = {
 }
 const SettingMenu = ({
   user: {firstName},
-  onSettingsChange
+  onSettingsChange,
+  showMagnifier
 }) => {
   const [setting, setSetting] = useState({
     enableMagnifier: false,
@@ -30,13 +31,13 @@ const SettingMenu = ({
     onSettingsChange(e);
   }
   const menu = <StyledMenu onClick={handleSettingsChange}>
-    {Object.keys(menuItems).map(key => <Menu.Item key={key}>{menuItems[key]}{setting[key] && <FontAwesomeIcon icon={faCheck} />}</Menu.Item>)}
+    {Object.keys(menuItems).map(key => <Menu.Item key={key} disabled={key === "enableMagnifier" && !showMagnifier}>{menuItems[key]}{setting[key] && <FontAwesomeIcon icon={faCheck} />}</Menu.Item>)}
     <Menu.Divider />
     <Menu.Item key="save">Save & Exit</Menu.Item>
   </StyledMenu>
 
   return (
-    <StyledDropdown overlay={menu} getPopupContainer={triggerNode => triggerNode.parentNode}>
+    <StyledDropdown overlay={menu} trigger="click" getPopupContainer={triggerNode => triggerNode.parentNode}>
       <StyledButton style={{width: "auto"}}>
         <IconUser />
           {firstName} <Icon type="down" />

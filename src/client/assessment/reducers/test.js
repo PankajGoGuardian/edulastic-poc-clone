@@ -54,6 +54,7 @@ const test = (state = initialState, { payload, type }) => {
         pageStructure: payload.pageStructure,
         isDocBased: payload.isDocBased,
         freeFormNotes: payload.freeFormNotes,
+        showMagnifier: payload.showMagnifier,
         settings: {
           ...state.settings,
           ...payload.settings

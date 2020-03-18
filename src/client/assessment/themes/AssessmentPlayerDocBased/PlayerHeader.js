@@ -27,7 +27,8 @@ const PlayerHeader = ({
   currentToolMode,
   onChangeTool,
   handleMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  showMagnifier
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const { calcType } = settings;
@@ -62,11 +63,11 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
-                  <Tooltip placement="top" title="Calculator">
+                  {showMagnifier && <Tooltip placement="top" title="Magnify">
                     <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
                       <IconSearch />
                     </StyledButton>
-                  </Tooltip>
+                  </Tooltip>}
                 </Container>
               </MainActionWrapper>
               {!isMobile && rightButtons}

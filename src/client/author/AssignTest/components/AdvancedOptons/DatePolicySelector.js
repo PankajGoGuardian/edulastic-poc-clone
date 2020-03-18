@@ -18,7 +18,8 @@ const DatePolicySelector = ({
   userRole,
   testType,
   passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-  playerSkinType
+  playerSkinType,
+  showMagnifier = true
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {

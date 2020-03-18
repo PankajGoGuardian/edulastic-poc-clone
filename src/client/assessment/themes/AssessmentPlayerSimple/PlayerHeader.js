@@ -52,7 +52,8 @@ const PlayerHeader = ({
   headerRef,
   previewPlayer,
   handleMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  showMagnifier
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -143,6 +144,7 @@ const PlayerHeader = ({
                     qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
+                    showMagnifier={showMagnifier}
                   />
                 )}
               </MainActionWrapper>

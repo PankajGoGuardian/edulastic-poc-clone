@@ -19,7 +19,9 @@ const ToolBar = ({
   setZoomLevel,
   zoomLevel,
   isDocbased,
-  handleMagnifier
+  handleMagnifier,
+  showMagnifier,
+  enableMagnifier
 }) => {
   const [zoom, setZoom] = useState(0);
   const toolbarHandler = value => changeTool(value);
@@ -87,11 +89,11 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      <Tooltip placement="top" title="Magnify">
+      {showMagnifier && <Tooltip placement="top" title="Magnify" active={enableMagnifier}>
         <StyledButton onClick={handleMagnifier}>
           <IconSearch/>
         </StyledButton>
-      </Tooltip>
+      </Tooltip>}
     </Container>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { groupBy } from "lodash";
+import { groupBy, isEmpty } from "lodash";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
 import { getCurrentTerm } from "../../../src/selectors/user";
@@ -22,8 +22,10 @@ import {
   addRecommendationsAction,
   getDifferentiationWorkSelector,
   getDifferentiationWorkLoadingStateSelector,
-  getWorkStatusDataSelector
+  getWorkStatusDataSelector,
+  addTestToDifferentationAction
 } from "../../ducks";
+import ManageContentBlock from "../ManageContentBlock";
 
 const Differentiation = ({
   termId,
@@ -35,7 +37,8 @@ const Differentiation = ({
   receiveAssignments,
   fetchDifferentiationStudentList,
   fetchDifferentiationWork,
-  addRecommendations
+  addRecommendations,
+  addTestToDifferentiation
 }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [selectedAssignment, setSelectedAssignment] = useState({});
@@ -134,6 +137,7 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.REVIEW || []}
             />
             <WorkTable
@@ -145,6 +149,7 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.PRACTICE || []}
             />
             <WorkTable
@@ -156,13 +161,14 @@ const Differentiation = ({
               selectedAssignment={selectedAssignment}
               groupId={selectedClass}
               isFetchingWork={isFetchingWork}
+              addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.CHALLENGE || []}
             />
           </div>
         </BodyContainer>
       </StyledPerfectScrollbar>
-      <div style={{ width: "25%" }}>
-        <SideButtonContainer>
+      <div style={{ width: 407 }}>
+        <SideButtonContainer style={{ paddingTop: 5 }}>
           {/* Hiding this button for now as implementation is not done. 
           
           <EduButton isGhost height="35px" style={{ marginLeft: "0px" }}>
@@ -170,10 +176,13 @@ const Differentiation = ({
           </EduButton> 
           
           */}
-          <EduButton isGhost height="35px">
+          {/* <EduButton isGhost height="35px">
             Manage Content
-          </EduButton>
+          </EduButton> */}
         </SideButtonContainer>
+        <div>
+          <ManageContentBlock />
+        </div>
       </div>
     </StyledFlexContainer>
   );
@@ -192,6 +201,7 @@ export default connect(
     receiveAssignments: receiveAssignmentsAction,
     fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
     fetchDifferentiationWork: fetchDifferentiationWorkAction,
-    addRecommendations: addRecommendationsAction
+    addRecommendations: addRecommendationsAction,
+    addTestToDifferentiation: addTestToDifferentationAction
   }
 )(Differentiation);

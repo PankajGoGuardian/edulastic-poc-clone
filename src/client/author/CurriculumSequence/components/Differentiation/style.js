@@ -52,9 +52,9 @@ export const BodyContainer = styled.div`
 
 export const TableContainer = styled.div`
   padding: 20px 0px;
-  border: 2px solid ${borderGrey};
   border-radius: 4px;
   margin-bottom: 20px;
+  border: ${props => (props.highlighted ? `2px dashed ${themeColor}` : `2px solid ${borderGrey}`)};
 `;
 
 export const TableHeader = styled.div`

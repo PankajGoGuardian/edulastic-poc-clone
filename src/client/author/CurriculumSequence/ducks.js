@@ -102,6 +102,7 @@ export const FETCH_DIFFERENTIATION_STUDENT_LIST = "[differentiation] fetch stude
 export const UPDATE_DIFFERENTIATION_STUDENT_LIST = "[differentiation] student list update";
 export const FETCH_DIFFERENTIATION_WORK = "[differentiation] fetch differentiation work";
 export const SET_DIFFERENTIATION_WORK = "[differentiation] set differentiation work";
+export const ADD_TEST_TO_DIFFERENTIATION = "[differentiation] add test";
 export const ADD_RECOMMENDATIONS_ACTIONS = "[differentiation] add recommendations";
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE = "[differentiation] update fetch work loading state";
 export const UPDATE_WORK_STATUS_DATA = "[differentiation] update work status data";
@@ -156,6 +157,7 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
   UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST
 );
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA);
+export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTIATION);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -869,7 +871,15 @@ function* fetchDifferentiationWorkSaga({ payload }) {
 
 function* addRecommendationsSaga({ payload }) {
   try {
-    const response = yield call(recommendationsApi.acceptRecommendations, payload);
+    let response = null;
+    if (Array.isArray(payload)) {
+      for (const payloadItem of payload) {
+        response = yield call(recommendationsApi.acceptRecommendations, payloadItem);
+      }
+    } else {
+      response = yield call(recommendationsApi.acceptRecommendations, payload);
+    }
+    payload = Array.isArray(payload) ? payload[0] : payload;
     yield put(updateFetchWorkLoadingStateAction(true));
     const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
       assignmentId: payload.assignmentId,
@@ -1516,10 +1526,6 @@ export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_
 export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
 export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
 
-function setDifferentiationWork(state, { payload }) {
-  state.differentiationWork = payload;
-}
-
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1579,7 +1585,18 @@ export default createReducer(initialState, {
     return state;
   },
   [UPDATE_DIFFERENTIATION_STUDENT_LIST]: updateDifferentiationStudentList,
-  [SET_DIFFERENTIATION_WORK]: setDifferentiationWork,
+  [SET_DIFFERENTIATION_WORK]: (state, { payload }) => {
+    state.differentiationWork = payload;
+  },
+  [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, testId, masteryRange, title } = payload;
+    const alreadyPresent = Object.keys(state.differentiationWork)
+      .flatMap(x => state.differentiationWork?.[x] || [])
+      .find(x => x?.testId === testId);
+    if (!alreadyPresent) {
+      state.differentiationWork[type].push({ testId, description: title, status: "RECOMMENDED", masteryRange });
+    }
+  },
   [UPDATE_WORK_STATUS_DATA]: (state, { payload }) => {
     state.workStatusData = payload;
   },

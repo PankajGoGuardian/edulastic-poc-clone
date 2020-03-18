@@ -5,6 +5,8 @@ import { ProgressBar, EduButton } from "@edulastic/common";
 import { IconUser } from "@edulastic/icons";
 import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import { TableContainer, StyledTable, TableHeader, Tag, StyledSlider, TableSelect } from "./style";
+import { ResouceIcon } from "../../components/ResourceItem/index";
+import { groupBy } from "lodash";
 
 const WorkTable = ({
   type,
@@ -14,16 +16,9 @@ const WorkTable = ({
   differentiationStudentList,
   data = [],
   isFetchingWork,
-  workStatusData
+  workStatusData,
+  addTestToDifferentiation
 }) => {
-  /** Drop handle to accept dropped items from manage content (yet to be implemented) */
-  const [{ isOver }, drop] = useDrop({
-    accept: "",
-    collect: monitor => ({
-      isOver: !!monitor.isOver()
-    })
-  });
-
   const [selectedRows, setSelectedRows] = useState([]);
   const [masteryRange, setMasteryRange] = useState([0, 10]);
 
@@ -50,6 +45,20 @@ const WorkTable = ({
       handleSliderChange([91, 100]);
     }
   }, []);
+
+  /** Drop handle to accept dropped items from manage content (yet to be implemented) */
+  const [{ isOver }, drop] = useDrop({
+    accept: "item",
+    collect: monitor => ({
+      isOver: !!monitor.isOver()
+    }),
+    drop: (item, monitor) => {
+      if (selectedAssignment?._id && groupId && item.dataType === "tests") {
+        console.log("dropped item", item);
+        addTestToDifferentiation({ type: type.toLowerCase(), testId: item?.id, masteryRange, title: item?.title });
+      }
+    }
+  });
 
   useEffect(() => {
     if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange);
@@ -112,7 +121,9 @@ const WorkTable = ({
       ),
       dataIndex: "standardIdentifier",
       key: "standardIdentifier",
-      render: s => <Tag marginRight="10px">{s}</Tag>
+      render: (s, record) => {
+        return record.testId ? <ResouceIcon type="tests" /> : <Tag marginRight="10px">{s}</Tag>;
+      }
     },
     {
       title: "",
@@ -166,23 +177,50 @@ const WorkTable = ({
     if (!selectedRows.length) return message.error("Please select atleast one standard to add.");
     if (!filteredStudentList.length)
       return message.error("Please select the mastery range which is having atleast 1 student.");
-    const standardIdentifiers = selectedRows.map(i => data[i].standardIdentifier);
-    const obj = {
-      assignmentId: selectedAssignment._id,
-      groupId,
-      standardIdentifiers,
-      type,
-      masteryRange: {
-        min: masteryRange[0],
-        max: masteryRange[1]
-      },
-      resourceTitle: getResourceTitle()
-    };
-    addRecommendations(obj);
+
+    const groups = groupBy(selectedRows.map(x => data[x]), x => (x.testId ? "tests" : "standards"));
+    console.log("groups", groups);
+    let recommendations = [];
+    if (groups.standards) {
+      const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
+      const obj = {
+        assignmentId: selectedAssignment._id,
+        groupId,
+        standardIdentifiers,
+        type,
+        masteryRange: {
+          min: masteryRange[0],
+          max: masteryRange[1]
+        },
+        resourceTitle: getResourceTitle()
+      };
+
+      recommendations.push(obj);
+    }
+
+    if (groups.tests) {
+      const testIds = groups.tests.map(x => x.testId);
+      const obj = {
+        assignmentId: selectedAssignment._id,
+        groupId,
+        testIds,
+        type,
+        masteryRange: {
+          min: masteryRange[0],
+          max: masteryRange[1]
+        },
+        resourceTitle: getResourceTitle()
+      };
+      recommendations.push(obj);
+    }
+
+    if (recommendations.length) {
+      addRecommendations(recommendations);
+    }
   };
 
   return (
-    <TableContainer data-cy={`table-${type}`} ref={drop}>
+    <TableContainer highlighted={isOver} data-cy={`table-${type}`} ref={drop}>
       <TableHeader>
         <span>{type === "REVIEW" ? "Review Work" : type === "PRACTICE" ? "Practice Work" : "Challenge Work"}</span>
         <span>

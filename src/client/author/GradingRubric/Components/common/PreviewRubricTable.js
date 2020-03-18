@@ -48,9 +48,12 @@ const PreviewRubricTable = ({
   );
 
   const getContent = () => {
-    return data.criteria.map(c => {
+    return data?.criteria?.map(c => {
       return (
-        <CriteriaWrapper key={c.id} showError={!Object.keys(selectedRatings).includes(c.id) && validateRubricResponse}>
+        <CriteriaWrapper
+          key={c?.id}
+          showError={!Object.keys(selectedRatings).includes(c?.id) && validateRubricResponse}
+        >
           {getCriteria(c)}
           {getRatings(c)}
         </CriteriaWrapper>

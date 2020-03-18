@@ -36,7 +36,7 @@ const Container = ({
   canvasSectionList
 }) => {
   const { isAuthenticated, signupStatus } = user;
-
+  const allowCanvas = sessionStorage.getItem("signupFlow") === "canvas";
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname);
   const partner = Partners[partnerKey];
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -61,8 +61,8 @@ const Container = ({
   };
 
   useEffect(() => {
-    if (signupStatus === 2 && !isAuthorized && userInfo?.orgData?.allowCanvas) handleAuthorization();
-  }, [signupStatus, userInfo?.orgData?.allowCanvas]);
+    if (signupStatus === 2 && !isAuthorized && allowCanvas) handleAuthorization();
+  }, [signupStatus, allowCanvas]);
 
   if (!isAuthenticated) {
     return (
@@ -99,13 +99,13 @@ const Container = ({
           generalSettings={generalSettings}
           districtPolicy={districtPolicy}
           districtShortName={districtShortName}
-          allowCanvas={userInfo.orgData.allowCanvas}
+          allowCanvas={allowCanvas}
         />
       )}
-      {signupStatus === 2 && !userInfo.orgData.allowCanvas && (
+      {signupStatus === 2 && !allowCanvas && (
         <SubjectGradeForm userInfo={userInfo} districtId={isSignupUsingDaURL ? generalSettings.orgId : false} />
       )}
-      {signupStatus === 2 && userInfo.orgData.allowCanvas && isAuthorized && (
+      {signupStatus === 2 && allowCanvas && isAuthorized && (
         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
           <CanvasBulkAddClass
             user={userInfo}

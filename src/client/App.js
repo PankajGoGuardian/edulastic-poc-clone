@@ -67,6 +67,10 @@ if (query.token && query.userId && query.role) {
   TokenStorage.selectAccessToken(query.userId, query.role);
 }
 
+if (query?.itemBank?.toUpperCase() === "CANVAS") {
+  sessionStorage.setItem("signupFlow", "canvas");
+}
+
 /**
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.

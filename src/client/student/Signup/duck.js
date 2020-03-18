@@ -509,6 +509,7 @@ function* bulkSyncCanvasClassSaga({ payload }) {
       yield put(setBulkSyncCanvasStateAction("FAILED"));
     } else {
       yield put(setBulkSyncCanvasStateAction("SUCCESS"));
+      sessionStorage.removeItem("signupFlow");
     }
   } catch (err) {
     console.error(err);

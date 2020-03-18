@@ -22,6 +22,7 @@ import StartAssignment from "./StartAssignment";
 
 import { themes as globalThemes } from "../theme";
 import { addThemeBackgroundColor } from "../common/utils/helpers";
+import NotFound from "../NotFound";
 
 const StudentApp = ({ match, selectedTheme }) => {
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default;
@@ -59,6 +60,7 @@ const StudentApp = ({ match, selectedTheme }) => {
                 />
                 <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
                 <Route path={`${match.url}/playlist`} component={StudentPlaylist} />
+                <Route component={NotFound} />
               </Switch>
             </ErrorHandler>
           </Wrapper>

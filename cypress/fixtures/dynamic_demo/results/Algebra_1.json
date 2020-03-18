@@ -1,0 +1,62 @@
+[
+  {
+    "tags": "EDUM-510",
+    "name": "Algebra-1-Adding Subtracting and Multiplying Polynomials",
+    "id": "5e70dabcffc1260008c4d36f",
+    "standard": ["HSA.APR.A.1"]
+  },
+  {
+    "tags": "EDUM-511",
+    "name": "Algebra-1-Solving Multi-Step Linear Equation Word Problems",
+    "id": "5e70db6fa0240700080c5fb4",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-512",
+    "name": "Algebra-1-Solving Multi-Step Linear Equations",
+    "id": "5e70db89ffc1260008c4d373",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-513",
+    "name": "Algebra-1-Solving Multi-Step Linear Inequalities",
+    "id": "5e70dba6ffc1260008c4d376",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-514",
+    "name": "Algebra-1-Solving Multi-Step Linear Inequality Word Problems",
+    "id": "5e70dbc124dbb70007e56b4e",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-515",
+    "name": "Algebra-1-Solving One-Step Linear Equations",
+    "id": "5e70dbdb24dbb70007e56b52",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-516",
+    "name": "Algebra-1-Solving One-Step Linear Inequalities",
+    "id": "5e70dbf4ffc1260008c4d379",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-517",
+    "name": "Algebra-1-Solving One-Step Linear Inequality Word Problems",
+    "id": "5e70dc0dffc1260008c4d37c",
+    "standard": ["HSA.CED.A.1"]
+  },
+  {
+    "tags": "EDUM-518",
+    "name": "Algebra-1-Graphing Linear Equations",
+    "id": "5e70dc25ffc1260008c4d37f",
+    "standard": ["HSA.CED.A.2"]
+  },
+  {
+    "tags": "EDUM-519",
+    "name": "Algebra-1-Modeling with Exponential Equations",
+    "id": "5e71c19bec9551000788f797",
+    "standard": ["HSA.CED.A.2"]
+  }
+]

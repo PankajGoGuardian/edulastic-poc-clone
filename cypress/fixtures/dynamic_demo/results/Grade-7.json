@@ -1,0 +1,62 @@
+[
+  {
+    "tags": "EDUM-403",
+    "name": "Grade-7-Solve & Expand: Linear Expressions with Rational Coefficients\r",
+    "id": "5e70e03a24dbb70007e56b5b",
+    "standard": ["7.EE.A.1"]
+  },
+  {
+    "tags": "EDUM-404",
+    "name": "Grade-7-Identifying Multiple Forms of an Expression\r",
+    "id": "5e70e05124dbb70007e56b5e",
+    "standard": ["7.EE.A.2"]
+  },
+  {
+    "tags": "EDUM-405",
+    "name": "Grade-7-Properties of Operations\r",
+    "id": "5e70e0672a674a000874baaf",
+    "standard": ["7.EE.B.3"]
+  },
+  {
+    "tags": "EDUM-406",
+    "name": "Grade-7-Properties of Operations: Rational Numbers-Word Problems\r",
+    "id": "5e70e07e3afffc0008227da4",
+    "standard": ["7.EE.B.3"]
+  },
+  {
+    "tags": "EDUM-407",
+    "name": "Grade-7-Comparing Algebraic Solutions to Arithmetic Solutions\r",
+    "id": "5e70e0943afffc0008227da7",
+    "standard": ["7.EE.B.4.a"]
+  },
+  {
+    "tags": "EDUM-408",
+    "name": "Grade-7-Reviewing One-Step Linear Equations\r",
+    "id": "5e70e0a9cf9df1000706a1f2",
+    "standard": ["7.EE.B.4.a"]
+  },
+  {
+    "tags": "EDUM-409",
+    "name": "Grade-7-Solving Multi-Step Equations with Fractions and Decimals\r",
+    "id": "5e70e0c024dbb70007e56b61",
+    "standard": ["7.EE.B.4.a"]
+  },
+  {
+    "tags": "EDUM-410",
+    "name": "Grade-7-Solving Multi-Step Equations with Integers\r",
+    "id": "5e70e0d53afffc0008227dab",
+    "standard": ["7.EE.B.4.a"]
+  },
+  {
+    "tags": "EDUM-411",
+    "name": "Grade-7-Solving One-Step Equations: Addition and Subtraction\r",
+    "id": "5e70e0ed24dbb70007e56b64",
+    "standard": ["7.EE.B.4.a"]
+  },
+  {
+    "tags": "EDUM-412",
+    "name": "Grade-7-Solving One-Step Equations: Multiplication and Division\r",
+    "id": "5e70e1022a674a000874bab3",
+    "standard": ["7.EE.B.4.a"]
+  }
+]

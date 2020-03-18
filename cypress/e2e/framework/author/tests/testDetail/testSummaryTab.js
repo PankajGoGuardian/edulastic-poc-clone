@@ -1,4 +1,5 @@
 import Header from "./header";
+import CypressHelper from "../../../util/cypressHelpers";
 
 export default class TestSummayTab {
   constructor() {
@@ -66,15 +67,24 @@ export default class TestSummayTab {
   };
 
   addTags = tags => {
-    // tags should be an array
+    cy.server();
+    cy.route("POST", "**/tag").as("add-tags");
     this.getTestTagsSelect()
       .click({ force: true })
       .find("input")
-      .as("TagTextBox");
-    tags.forEach(element => {
-      cy.get("@TagTextBox")
-        .type(element, { force: true })
-        .type("{enter}", { force: true });
+      .type(tags, { force: true });
+    cy.wait(300); // allow list to expand
+    cy.get(".ant-select-dropdown-menu-item").then($ele => {
+      cy.wrap(
+        $ele
+          // eslint-disable-next-line func-names
+          .filter(function() {
+            return Cypress.$(this).text() === `${tags} (Create new Tag)`;
+          })
+      ).click({ force: true });
+    });
+    cy.wait("@add-tags").then(xhr => {
+      expect(xhr.status).to.eq(200);
     });
   };
 

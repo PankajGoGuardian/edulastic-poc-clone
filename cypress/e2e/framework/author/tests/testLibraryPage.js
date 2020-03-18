@@ -384,13 +384,14 @@ export default class TestLibrary {
   };
 
   createNewTestAndFillDetails = testData => {
-    const { grade, name, subject, collections } = testData;
+    const { grade, name, subject, collections, tags } = testData;
     this.sidebar.clickOnTestLibrary();
     this.clickOnAuthorTest();
     this.testSummary.setName(name);
     if (grade) this.testSummary.selectGrade(grade);
     if (subject) this.testSummary.selectSubject(subject);
     if (collections) this.testSummary.selectCollection(collections);
+    if (tags) this.testSummary.addTags(tags);
   };
 
   seachTestAndGotoReviewById = id => {

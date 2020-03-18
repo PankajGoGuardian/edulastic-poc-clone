@@ -1,0 +1,62 @@
+[
+  {
+    "tags": "EDUM-450",
+    "name": "Grade-8-Identifying Exponential Expressions\r",
+    "id": "5e70e12c3afffc0008227dae",
+    "standard": ["8.EE.A.1"]
+  },
+  {
+    "tags": "EDUM-451",
+    "name": "Grade-8-Simplifying Exponential Expressions\r",
+    "id": "5e70e1413afffc0008227db1",
+    "standard": ["8.EE.A.1"]
+  },
+  {
+    "tags": "EDUM-452",
+    "name": "Grade-8-Evaluating Cube Roots\r",
+    "id": "5e70e1552a674a000874bab6",
+    "standard": ["8.EE.A.2"]
+  },
+  {
+    "tags": "EDUM-453",
+    "name": "Grade-8-Evaluating Square Roots\r",
+    "id": "5e70e16b3afffc0008227db4",
+    "standard": ["8.EE.A.2"]
+  },
+  {
+    "tags": "EDUM-454",
+    "name": "Grade-8-Expressing Numbers in Scientific Notation\r",
+    "id": "5e70e1813afffc0008227db7",
+    "standard": ["8.EE.A.3"]
+  },
+  {
+    "tags": "EDUM-455",
+    "name": "Grade-8-Understanding Scientific Notation\r",
+    "id": "5e70e1963afffc0008227dba",
+    "standard": ["8.EE.A.3"]
+  },
+  {
+    "tags": "EDUM-456",
+    "name": "Grade-8-Operations with Scientific Notation\r",
+    "id": "5e70e32c2a674a000874baba",
+    "standard": ["8.EE.A.4"]
+  },
+  {
+    "tags": "EDUM-457",
+    "name": "Grade-8-Identifying Graphs that Display Linear Relationships\r",
+    "id": "5e70e1c224dbb70007e56b68",
+    "standard": ["8.EE.B.5"]
+  },
+  {
+    "tags": "EDUM-458",
+    "name": "Grade-8-Understanding Graphs with Proportional Relationships\r",
+    "id": "5e70e1dc3afffc0008227dbd",
+    "standard": ["8.EE.B.5"]
+  },
+  {
+    "tags": "EDUM-459",
+    "name": "Grade-8-Using Similar Triangles to Explain Slope\r",
+    "id": "5e70e1f93afffc0008227dc0",
+    "standard": ["8.EE.B.6"]
+  }
+]

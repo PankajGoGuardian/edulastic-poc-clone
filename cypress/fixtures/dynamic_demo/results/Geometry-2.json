@@ -1,0 +1,63 @@
+[
+  {
+    "tags": "EDUM-646",
+    "name": "Geometry-1-Circle Similarity",
+    "id": "5e70dd032f91cc0008df4060",
+    "standard": ["HSG.C.A.1"]
+  },
+  {
+    "tags": "EDUM-647",
+    "name": "Geometry-1-Identifying Relationships among Angles",
+    "id": "5e70dd322f91cc0008df4063",
+    "standard": ["HSG.C.A.2"]
+  },
+
+  {
+    "tags": "EDUM-648",
+    "name": "Geometry-1-Identifying Relationships among Radii and Chords",
+    "id": "5e70de47cf9df1000706a1e0",
+    "standard": ["HSG.C.A.2"]
+  },
+  {
+    "tags": "EDUM-649",
+    "name": "Geometry-1-Theorems for Angles and Circles",
+    "id": "5e70de65cf9df1000706a1e3",
+    "standard": ["HSG.C.A.2"]
+  },
+  {
+    "tags": "EDUM-650",
+    "name": "Geometry-1-Triangles and Quadrilaterals Inscribed in a Circle",
+    "id": "5e70de80ffc1260008c4d383",
+    "standard": ["HSG.C.A.3"]
+  },
+  {
+    "tags": "EDUM-651",
+    "name": "Geometry-1-Constructing a Tangent",
+    "id": "5e70de9a3afffc0008227d9e",
+    "standard": ["HSG.C.A.4"]
+  },
+  {
+    "tags": "EDUM-652",
+    "name": "Geometry-1-Arc Lengths",
+    "id": "5e70deb33afffc0008227da1",
+    "standard": ["HSG.C.B.5"]
+  },
+  {
+    "tags": "EDUM-653",
+    "name": "Geometry-1-Area of Sectors",
+    "id": "5e70dececf9df1000706a1e6",
+    "standard": ["HSG.C.B.5"]
+  },
+  {
+    "tags": "EDUM-654",
+    "name": "Geometry-1-Constant of Proportionality",
+    "id": "5e70dee8cf9df1000706a1e9",
+    "standard": ["HSG.C.B.5"]
+  },
+  {
+    "tags": "EDUM-655",
+    "name": "Geometry-1-Definitions of Geometric Objects",
+    "id": "5e70df01cf9df1000706a1ec",
+    "standard": ["HSG.CO.A.1"]
+  }
+]

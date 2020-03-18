@@ -13,19 +13,20 @@ describe(` >>item groups`, () => {
   let obj = {};
 
   before("Login and create new items", () => {
-    cy.login("publisher", "author2.sparkmath@edulastic.com", "edulastic");
+    cy.login("publisher", "author2.sparkmath@edulastic.com", "welcome");
   });
   testData.forEach((data, index) => {
-    if (index === 40) {
-      context(`>autoselect-${index + 1}`, () => {
+    if (index > 9) {
+      context(`>autoselect-${index + 1}-${data.tags}`, () => {
         before("create test", () => {
           obj = {};
           tets_id = "not_created";
           testLibraryPage.createNewTestAndFillDetails({
             name: data.name,
-            collections: "Spark Math - Spark Math Bucket",
+            collections: "Spark Math - SparkMath for Playlist",
             grade: "Grade 10",
-            subject: "Math"
+            subject: "Math",
+            tags: data.tags
           });
         });
         it(`>create test`, () => {
@@ -36,7 +37,7 @@ describe(` >>item groups`, () => {
           groupItemsPage.createDynamicTest(1, data);
           testLibraryPage.header.clickOnReview();
           cy.wait("@createTest").then(xhr => {
-            testLibraryPage.saveTestId(xhr);
+            //  testLibraryPage.saveTestId(xhr);
             tets_id = xhr.response.body.result._id;
           });
           // testLibraryPage.review.testheader.clickOnPublishButton();
@@ -57,7 +58,7 @@ describe(` >>item groups`, () => {
   context("Write", () => {
     it("write", () => {
       cy.wait(1).then(() => {
-        cy.writeFile("cypress/fixtures/dynamic_demo/results/Grade-7.json", test_name);
+        cy.writeFile("cypress/fixtures/dynamic_demo/results/Grade-7.json", test_name, { flag: "a+" });
       });
     });
   });

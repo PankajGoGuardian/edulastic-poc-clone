@@ -15,7 +15,7 @@ const screenResolutions = Cypress.config("SCREEN_SIZES");
  *  Global before hook to delete testdata
  */
 before("delete test data", () => {
-  cy.deleteTestData();
+  // cy.deleteTestData();
 });
 
 /*

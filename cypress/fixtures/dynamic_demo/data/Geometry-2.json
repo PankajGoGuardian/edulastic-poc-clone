@@ -6,6 +6,7 @@
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -14,10 +15,11 @@
   {
     "tags": "EDUM-647",
     "collection": "Spark Math",
-    "name": "Geometry-1-Identifying Relationships among Angles\r",
+    "name": "Geometry-1-Identifying Relationships among Angles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -26,10 +28,11 @@
   {
     "tags": "EDUM-648",
     "collection": "Spark Math",
-    "name": "Geometry-1-Identifying Relationships among Radii and Chords\r",
+    "name": "Geometry-1-Identifying Relationships among Radii and Chords",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -38,10 +41,11 @@
   {
     "tags": "EDUM-649",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems for Angles and Circles\r",
+    "name": "Geometry-1-Theorems for Angles and Circles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -50,10 +54,11 @@
   {
     "tags": "EDUM-650",
     "collection": "Spark Math",
-    "name": "Geometry-1-Triangles and Quadrilaterals Inscribed in a Circle\r",
+    "name": "Geometry-1-Triangles and Quadrilaterals Inscribed in a Circle",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -62,10 +67,11 @@
   {
     "tags": "EDUM-651",
     "collection": "Spark Math",
-    "name": "Geometry-1-Constructing a Tangent\r",
+    "name": "Geometry-1-Constructing a Tangent",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.A.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -74,10 +80,11 @@
   {
     "tags": "EDUM-652",
     "collection": "Spark Math",
-    "name": "Geometry-1-Arc Lengths\r",
+    "name": "Geometry-1-Arc Lengths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.B.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -86,10 +93,11 @@
   {
     "tags": "EDUM-653",
     "collection": "Spark Math",
-    "name": "Geometry-1-Area of Sectors\r",
+    "name": "Geometry-1-Area of Sectors",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.B.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -98,10 +106,11 @@
   {
     "tags": "EDUM-654",
     "collection": "Spark Math",
-    "name": "Geometry-1-Constant of Proportionality\r",
+    "name": "Geometry-1-Constant of Proportionality",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.C.B.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -110,10 +119,11 @@
   {
     "tags": "EDUM-655",
     "collection": "Spark Math",
-    "name": "Geometry-1-Definitions of Geometric Objects\r",
+    "name": "Geometry-1-Definitions of Geometric Objects",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -122,10 +132,11 @@
   {
     "tags": "EDUM-656",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems about Triangles\r",
+    "name": "Geometry-1-Theorems about Triangles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.C.10"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -134,10 +145,11 @@
   {
     "tags": "EDUM-657",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems about Parallelograms\r",
+    "name": "Geometry-1-Theorems about Parallelograms",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.C.11"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -146,10 +158,11 @@
   {
     "tags": "EDUM-658",
     "collection": "Spark Math",
-    "name": "Geometry-1-Formal Geometric Constructions\r",
+    "name": "Geometry-1-Formal Geometric Constructions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.D.12"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -158,10 +171,11 @@
   {
     "tags": "EDUM-659",
     "collection": "Spark Math",
-    "name": "Geometry-1-Constructing Inscribed Figures\r",
+    "name": "Geometry-1-Constructing Inscribed Figures",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.D.13"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -170,10 +184,11 @@
   {
     "tags": "EDUM-660",
     "collection": "Spark Math",
-    "name": "Geometry-1-Properties of Transformations\r",
+    "name": "Geometry-1-Properties of Transformations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -182,10 +197,11 @@
   {
     "tags": "EDUM-661",
     "collection": "Spark Math",
-    "name": "Geometry-1-Transforming Figures\r",
+    "name": "Geometry-1-Transforming Figures",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -194,10 +210,11 @@
   {
     "tags": "EDUM-662",
     "collection": "Spark Math",
-    "name": "Geometry-1-Mapping Figures onto Themselves\r",
+    "name": "Geometry-1-Mapping Figures onto Themselves",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -206,10 +223,11 @@
   {
     "tags": "EDUM-663",
     "collection": "Spark Math",
-    "name": "Geometry-1-Transformations in the Plane\r",
+    "name": "Geometry-1-Transformations in the Plane",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -218,10 +236,11 @@
   {
     "tags": "EDUM-664",
     "collection": "Spark Math",
-    "name": "Geometry-1-Sequences of Transformations\r",
+    "name": "Geometry-1-Sequences of Transformations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.A.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -230,10 +249,11 @@
   {
     "tags": "EDUM-665",
     "collection": "Spark Math",
-    "name": "Geometry-1-Investigating Figures Related by Transformations\r",
+    "name": "Geometry-1-Investigating Figures Related by Transformations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.B.6"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -242,10 +262,11 @@
   {
     "tags": "EDUM-666",
     "collection": "Spark Math",
-    "name": "Geometry-1-Rigid Motions and Congruent Triangles\r",
+    "name": "Geometry-1-Rigid Motions and Congruent Triangles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.B.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -254,10 +275,11 @@
   {
     "tags": "EDUM-667",
     "collection": "Spark Math",
-    "name": "Geometry-1-Proving Triangles are Congruent\r",
+    "name": "Geometry-1-Proving Triangles are Congruent",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.B.8"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -266,10 +288,11 @@
   {
     "tags": "EDUM-668",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems about Lines and Angles\r",
+    "name": "Geometry-1-Theorems about Lines and Angles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.CO.C.9"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -278,10 +301,11 @@
   {
     "tags": "EDUM-669",
     "collection": "Spark Math",
-    "name": "Geometry-1-\"Relating Area",
+    "name": "Geometry-1-Relating Area Circumference and Volume",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GMD.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -290,10 +314,11 @@
   {
     "tags": "EDUM-670",
     "collection": "Spark Math",
-    "name": "Geometry-1-\"Volume of Cylinders",
+    "name": "Geometry-1-Volume of Cylinders Pyramids Cones and Spheres",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GMD.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -302,10 +327,11 @@
   {
     "tags": "EDUM-671",
     "collection": "Spark Math",
-    "name": "Geometry-1-Identifying Cross-Sections\r",
+    "name": "Geometry-1-Identifying Cross-Sections",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GMD.B.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -314,10 +340,11 @@
   {
     "tags": "EDUM-672",
     "collection": "Spark Math",
-    "name": "Geometry-1-Deriving Circle Equations\r",
+    "name": "Geometry-1-Deriving Circle Equations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -326,10 +353,11 @@
   {
     "tags": "EDUM-673",
     "collection": "Spark Math",
-    "name": "Geometry-1-Deriving Parabola Equations\r",
+    "name": "Geometry-1-Deriving Parabola Equations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -338,10 +366,11 @@
   {
     "tags": "EDUM-674",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems about Circles\r",
+    "name": "Geometry-1-Theorems about Circles",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -350,10 +379,11 @@
   {
     "tags": "EDUM-675",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems about Quadrilaterals\r",
+    "name": "Geometry-1-Theorems about Quadrilaterals",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -362,10 +392,11 @@
   {
     "tags": "EDUM-676",
     "collection": "Spark Math",
-    "name": "Geometry-1-Slopes of Parallel and Perpendicular Lines\r",
+    "name": "Geometry-1-Slopes of Parallel and Perpendicular Lines",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -374,10 +405,11 @@
   {
     "tags": "EDUM-677",
     "collection": "Spark Math",
-    "name": "Geometry-1-Identifying Attributes of Line Segments\r",
+    "name": "Geometry-1-Identifying Attributes of Line Segments",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.6"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -386,10 +418,11 @@
   {
     "tags": "EDUM-678",
     "collection": "Spark Math",
-    "name": "Geometry-1-Coordinate Geometry and Area\r",
+    "name": "Geometry-1-Coordinate Geometry and Area",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -398,10 +431,11 @@
   {
     "tags": "EDUM-679",
     "collection": "Spark Math",
-    "name": "Geometry-1-Coordinate Geometry and Perimeter\r",
+    "name": "Geometry-1-Coordinate Geometry and Perimeter",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.GPE.B.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -410,10 +444,11 @@
   {
     "tags": "EDUM-680",
     "collection": "Spark Math",
-    "name": "Geometry-1-Using Geometric Shapes to Describe Objects\r",
+    "name": "Geometry-1-Using Geometric Shapes to Describe Objects",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.MG.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -422,10 +457,11 @@
   {
     "tags": "EDUM-681",
     "collection": "Spark Math",
-    "name": "Geometry-1-Density in Modeling Situations\r",
+    "name": "Geometry-1-Density in Modeling Situations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.MG.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -434,10 +470,11 @@
   {
     "tags": "EDUM-682",
     "collection": "Spark Math",
-    "name": "Geometry-1-Solving Design Problems\r",
+    "name": "Geometry-1-Solving Design Problems",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.MG.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -446,10 +483,11 @@
   {
     "tags": "EDUM-683",
     "collection": "Spark Math",
-    "name": "Geometry-1-The Laws of Sines and Cosines\r",
+    "name": "Geometry-1-The Laws of Sines and Cosines",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.D.10"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -458,10 +496,11 @@
   {
     "tags": "EDUM-684",
     "collection": "Spark Math",
-    "name": "Geometry-1-Applying the Laws of Sines and Cosines\r",
+    "name": "Geometry-1-Applying the Laws of Sines and Cosines",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.D.11"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -470,10 +509,11 @@
   {
     "tags": "EDUM-685",
     "collection": "Spark Math",
-    "name": "Geometry-1-Dilation Given by a Center\r",
+    "name": "Geometry-1-Dilation Given by a Center",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.A.1.a"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -482,10 +522,11 @@
   {
     "tags": "EDUM-686",
     "collection": "Spark Math",
-    "name": "Geometry-1-Dilation Given by a Scale Factor\r",
+    "name": "Geometry-1-Dilation Given by a Scale Factor",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.A.1.b"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -494,10 +535,11 @@
   {
     "tags": "EDUM-687",
     "collection": "Spark Math",
-    "name": "Geometry-1-Definition of Similarity\r",
+    "name": "Geometry-1-Definition of Similarity",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -506,10 +548,11 @@
   {
     "tags": "EDUM-688",
     "collection": "Spark Math",
-    "name": "Geometry-1-Understanding the AA Theorem\r",
+    "name": "Geometry-1-Understanding the AA Theorem",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -518,10 +561,11 @@
   {
     "tags": "EDUM-689",
     "collection": "Spark Math",
-    "name": "Geometry-1-Theorems Involving Similarity\r",
+    "name": "Geometry-1-Theorems Involving Similarity",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.B.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -530,10 +574,11 @@
   {
     "tags": "EDUM-690",
     "collection": "Spark Math",
-    "name": "Geometry-1-Problem Solving: Similarity and Congruence\r",
+    "name": "Geometry-1-Problem Solving: Similarity and Congruence",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.B.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -542,10 +587,11 @@
   {
     "tags": "EDUM-691",
     "collection": "Spark Math",
-    "name": "Geometry-1-Defining Trigonometric Ratios\r",
+    "name": "Geometry-1-Defining Trigonometric Ratios",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.C.6"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -554,10 +600,11 @@
   {
     "tags": "EDUM-692",
     "collection": "Spark Math",
-    "name": "Geometry-1-Understanding the Relationship between Sine and Cosine\r",
+    "name": "Geometry-1-Understanding the Relationship between Sine and Cosine",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.C.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -566,10 +613,11 @@
   {
     "tags": "EDUM-693",
     "collection": "Spark Math",
-    "name": "Geometry-1-Solving Right Triangle Problems\r",
+    "name": "Geometry-1-Solving Right Triangle Problems",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.C.8"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -578,10 +626,11 @@
   {
     "tags": "EDUM-694",
     "collection": "Spark Math",
-    "name": "Geometry-1-Area of Triangles Involving Sine\r",
+    "name": "Geometry-1-Area of Triangles Involving Sine",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSG.SRT.D.9"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSG"
@@ -590,10 +639,11 @@
   {
     "tags": "EDUM-695",
     "collection": "Spark Math",
-    "name": "Geometry-1-Subsets of Sample Spaces\r",
+    "name": "Geometry-1-Subsets of Sample Spaces",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.A.1"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -602,10 +652,11 @@
   {
     "tags": "EDUM-696",
     "collection": "Spark Math",
-    "name": "Geometry-1-Independent Events\r",
+    "name": "Geometry-1-Independent Events",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.A.2"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -614,10 +665,11 @@
   {
     "tags": "EDUM-697",
     "collection": "Spark Math",
-    "name": "Geometry-1-Determining Independent Events\r",
+    "name": "Geometry-1-Determining Independent Events",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.A.3"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -626,10 +678,11 @@
   {
     "tags": "EDUM-698",
     "collection": "Spark Math",
-    "name": "Geometry-1-Two-Way Frequency Tables\r",
+    "name": "Geometry-1-Two-Way Frequency Tables",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.A.4"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -638,10 +691,11 @@
   {
     "tags": "EDUM-699",
     "collection": "Spark Math",
-    "name": "Geometry-1-Applying Conditional Probability\r",
+    "name": "Geometry-1-Applying Conditional Probability",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.A.5"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -650,10 +704,11 @@
   {
     "tags": "EDUM-700",
     "collection": "Spark Math",
-    "name": "Geometry-1-Modeling Conditional Probability\r",
+    "name": "Geometry-1-Modeling Conditional Probability",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.B.6"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -662,10 +717,11 @@
   {
     "tags": "EDUM-701",
     "collection": "Spark Math",
-    "name": "Geometry-1-The Addition Rule\r",
+    "name": "Geometry-1-The Addition Rule",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.B.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -674,10 +730,11 @@
   {
     "tags": "EDUM-702",
     "collection": "Spark Math",
-    "name": "Geometry-1-The Multiplication Rule\r",
+    "name": "Geometry-1-The Multiplication Rule",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.B.8"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -686,10 +743,11 @@
   {
     "tags": "EDUM-703",
     "collection": "Spark Math",
-    "name": "Geometry-1-Permutations and Combinations\r",
+    "name": "Geometry-1-Permutations and Combinations",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.CP.B.9"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -698,10 +756,11 @@
   {
     "tags": "EDUM-704",
     "collection": "Spark Math",
-    "name": "Geometry-1-Making Fair Decisions\r",
+    "name": "Geometry-1-Making Fair Decisions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.MD.B.6"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"
@@ -714,6 +773,7 @@
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["HSS.MD.B.7"],
+      "grade": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
       "subject": "Mathematics",
       "standardSet": "Math - Common Core",
       "standardsGroup": "HSS"

@@ -37,7 +37,7 @@ const SettingMenu = ({
   </StyledMenu>
 
   return (
-    <StyledDropdown overlay={menu} trigger="click" getPopupContainer={triggerNode => triggerNode.parentNode}>
+    <StyledDropdown overlay={menu} getPopupContainer={triggerNode => triggerNode.parentNode}>
       <StyledButton style={{width: "auto"}}>
         <IconUser />
           {firstName} <Icon type="down" />

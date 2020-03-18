@@ -80,7 +80,7 @@ class TestItemCol extends Component {
 
     const displayFeedback = true;
     return (
-      <Tabs.TabContainer style={{ ...testReviewStyle, position: "relative", paddingTop: "0px", display: "flex" }} className="question-tab-container">
+      <Tabs.TabContainer style={{ ...testReviewStyle, position: "relative", paddingTop: "0px", display: "flex", flexDirection: "column" }} className="question-tab-container">
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}
           evaluation={evaluation}

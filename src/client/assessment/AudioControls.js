@@ -189,6 +189,5 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  height: 40px;
-  padding: 0px 20px;
+  padding: 20px 20px 0;
 `;

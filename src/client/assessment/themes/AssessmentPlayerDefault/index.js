@@ -182,6 +182,9 @@ class AssessmentPlayerDefault extends React.Component {
       data.activeMode = value;
       data.deleteMode = false;
     }
+    if (value === "drawBreakingLine") {
+      message.info("Please double click to stop drawing");
+    }
     updateScratchPad(data);
   };
 

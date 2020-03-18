@@ -453,6 +453,9 @@ class WorksheetComponent extends React.Component {
       this.setState({ activeMode: "" });
     } else {
       this.setState({ activeMode: value, deleteMode: false });
+      if (value === "drawBreakingLine") {
+        message.info("Please double click to stop drawing");
+      }
     }
   };
 

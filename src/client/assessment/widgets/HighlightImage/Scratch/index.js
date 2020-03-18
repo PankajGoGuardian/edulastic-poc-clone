@@ -4,6 +4,7 @@ import { cloneDeep } from "lodash";
 import { hexToRGB } from "@edulastic/common";
 import Tools from "../../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../themes/AssessmentPlayerDefault/SvgDraw";
+import { message } from "antd";
 
 const toolBoxStyle = {
   top: "50%",
@@ -42,6 +43,9 @@ const Scratch = ({ clearClicked }) => {
     } else if (activeMode === value) {
       setActiveMode("");
     } else {
+      if (value === "drawBreakingLine") {
+        message.info("Please double click to stop drawing");
+      }
       setActiveMode(value);
       setDeletMode(false);
     }

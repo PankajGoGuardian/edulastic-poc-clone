@@ -429,8 +429,6 @@ class CurriculumSequence extends Component {
     // figure out which tab contents to render || just render default playlist
     const currentTab = match?.params?.currentTab || "playlist";
 
-    const showDifferentiationTab = !!collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp");
-
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
 
@@ -459,8 +457,11 @@ class CurriculumSequence extends Component {
       grades = [],
       customize = true,
       isAuthor = false,
-      modules
+      modules,
+      collections: _playlistCollections = []
     } = destinationCurriculumSequence;
+    const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
+    const showDifferentiationTab = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
     const getplaylistMetrics = () => {
       const temp = {};

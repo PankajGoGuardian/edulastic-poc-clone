@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { groupBy, keyBy, reduce, round, flatMap } from "lodash";
 import { lightGreen7, lightBlue8, lightRed2 } from "@edulastic/colors";
 
-export const getFilterData = (modules = []) => {
+export const getFilterData = (modules = [], selectedModules = []) => {
   const modulesData = modules.map(item => {
     let standards = [],
       groups = [],
@@ -20,11 +20,13 @@ export const getFilterData = (modules = []) => {
       groups
     };
   });
-
-  const standardsData = Object.values(keyBy(flatMap(modulesData, item => item.standards), "standardId")).map(
+  const filteredModules = selectedModules.length
+    ? modulesData.filter(module => selectedModules.map(module => module.key).includes(module.id))
+    : modulesData;
+  const standardsData = Object.values(keyBy(flatMap(filteredModules, item => item.standards), "standardId")).map(
     ({ standardId, name }) => ({ id: standardId.toString(), name })
   );
-  const groupsData = Object.values(keyBy(flatMap(modulesData, item => item.groups), "id"));
+  const groupsData = Object.values(keyBy(flatMap(filteredModules, item => item.groups), "id"));
 
   return {
     modulesData,

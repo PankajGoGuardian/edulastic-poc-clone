@@ -71,6 +71,7 @@ const WorkTable = ({
   }, [isFetchingWork]);
 
   const getProgressBar = percentage => {
+    if (!percentage && percentage !== 0) return null;
     const dataObj = {
       trailColor: borderGrey,
       strokeColor: themeColorLighter,
@@ -80,13 +81,15 @@ const WorkTable = ({
 
     const { trailColor, strokeColor, percent, format } = dataObj;
     return (
-      <ProgressBar
-        strokeWidth={10}
-        trailColor={trailColor}
-        strokeColor={strokeColor}
-        percent={percent}
-        format={format}
-      />
+      <div style={{ width: "120px" }}>
+        <ProgressBar
+          strokeWidth={10}
+          trailColor={trailColor}
+          strokeColor={strokeColor}
+          percent={percent}
+          format={format}
+        />
+      </div>
     );
   };
 
@@ -130,19 +133,20 @@ const WorkTable = ({
       dataIndex: "description",
       key: "description"
     },
-    /** Hiding these two columns for now 
+
     {
       title: "AVG. Mastery",
       dataIndex: "averageMastery",
       key: "averageMastery",
-      render: p => <div style={{ width: "120px" }}>{getProgressBar(p)}</div>
+      render: p => getProgressBar(p)
     },
     {
       title: "NOT STARTED",
-      dataIndex: "notStarted",
-      key: "notStarted",
-      render: s => `${s} Students`
-    }, */
+      dataIndex: "notStartedCount",
+      key: "notStartedCount",
+      width: "130px",
+      render: s => (s !== undefined ? `${s} Students` : null)
+    },
     {
       title: "",
       key: "status",

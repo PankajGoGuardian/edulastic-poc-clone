@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
 import { takeLatest, takeEvery, put, call, all, select, take } from "redux-saga/effects";
-import { flatten, cloneDeep, isEmpty, omit, uniqBy } from "lodash";
+import { flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -837,8 +837,11 @@ function structureWorkData(workData, statusData) {
             s => s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.standardIdentifier)
           );
           if (currentStatus) {
+            const { masteryRange, studentTestActivities, users } = currentStatus;
             i.status = "ADDED";
-            i.masteryRange = [currentStatus.masteryRange.min, currentStatus.masteryRange.max];
+            i.masteryRange = [masteryRange.min, masteryRange.max];
+            i.averageMastery = (sumBy(studentTestActivities, "score") / sumBy(studentTestActivities, "maxScore")) * 100;
+            i.notStartedCount = users.length - studentTestActivities.length;
           } else {
             i.status = "RECOMMENDED";
             i.masteryRange = [currentStatusArray[0].masteryRange.min, currentStatusArray[0].masteryRange.max];

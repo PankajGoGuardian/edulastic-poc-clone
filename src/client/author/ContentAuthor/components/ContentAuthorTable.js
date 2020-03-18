@@ -415,9 +415,10 @@ class ContentAuthorTable extends Component {
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "content-author",
+      role: "",
       limit: 25,
-      page: currentPage
+      page: currentPage,
+      permissions: "author"
       // uncomment after elastic search is fixed
       // sortField,
       // order

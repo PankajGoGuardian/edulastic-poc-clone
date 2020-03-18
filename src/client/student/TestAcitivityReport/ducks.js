@@ -27,7 +27,7 @@ function* loadAttachmentsFromServer(filter) {
   try {
     const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, filter);
     for (const attachment of attachments) {
-      const { data: scratchPad, testItemId } = attachment;
+      const { data: scratchPad, referrerId2: testItemId } = attachment;
       yield put({ type: REQUEST_SCRATCH_PAD_SUCCESS, payload: { scratchPad, testItemId } });
     }
   } catch (error) {
@@ -38,7 +38,7 @@ function* loadAttachmentsFromServer(filter) {
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
     testItemsIdArray.map(testItemId =>
-      call(loadAttachmentsFromServer, { referrerId: testActivityId, testItemId })
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId })
     )
   );
 }

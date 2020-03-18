@@ -114,11 +114,11 @@ function* scratchPadLoadSaga({ payload }) {
     if (testActivityId && testItemId) {
       const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
         referrerId: testActivityId,
-        testItemId
+        referrerId2: testItemId
       });
       const scratchpadData = {};
       for (const attachment of attachments) {
-        const { data, testItemId: _testItemId } = attachment;
+        const { data, referrerId2: _testItemId } = attachment;
         scratchpadData[_testItemId] = data;
       }
 

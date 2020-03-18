@@ -867,6 +867,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {
     console.error(err);
+    yield put(setDifferentiationWorkAction({}));
     yield put(updateFetchWorkLoadingStateAction(false));
     yield call(message.error, err.data.message);
   }

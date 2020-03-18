@@ -73,6 +73,13 @@ const Differentiation = ({
         };
       });
       setFilteredAssignments(assignmentsDataForSelect);
+      setSelectedAssignment(assignmentsDataForSelect[0]);
+      const firstAssignmentClassList = assignmentsGroupedById[assignmentsDataForSelect[0]._id].map(a => ({
+        _id: a.classId,
+        name: a.className
+      }));
+      setClassList(firstAssignmentClassList);
+      setSelectedClass(firstAssignmentClassList[0]._id);
     }
   }, [assignments]);
 

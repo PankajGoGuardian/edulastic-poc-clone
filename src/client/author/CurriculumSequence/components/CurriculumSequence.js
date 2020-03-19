@@ -198,8 +198,8 @@ class CurriculumSequence extends Component {
       !isEqual(curatedStudentPlaylists, state.curatedStudentPlaylists) &&
       !mappedStudentPlaylists[destinationCurriculumSequence._id]
     ) {
-      const { playlistId: _id, title, grades, subjects } = curatedStudentPlaylists[0];
-      useThisPlayList({ _id, title, grades, subjects, groupId: classId, onChange: true, isStudent });
+      const { playlistId: _id, title, grades, subjects, customize = null } = curatedStudentPlaylists[0];
+      useThisPlayList({ _id, title, grades, subjects, groupId: classId, onChange: true, isStudent, customize });
     }
     /* -- curated playlists -- end  */
 
@@ -244,8 +244,8 @@ class CurriculumSequence extends Component {
         params: { id: _id }
       }
     } = this.props;
-    const { title, grades, subjects } = destinationCurriculumSequence;
-    useThisPlayList({ _id, title, grades, subjects });
+    const { title, grades, subjects, customize = null } = destinationCurriculumSequence;
+    useThisPlayList({ _id, title, grades, subjects, customize });
   };
 
   handleAddUnitOpen = () => {

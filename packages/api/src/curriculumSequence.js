@@ -86,11 +86,13 @@ const updatePlaylistStatus = data =>
     })
     .then(result => result.data.result);
 
-const duplicatePlayList = ({ _id, title }) =>
+const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
   api
     .callApi({
       method: "post",
-      url: `${prefix}/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}`
+      url: `${prefix}/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}${
+        forUseThis ? `&forUseThis=1` : ""
+      }`
     })
     .then(res => res.data.result);
 

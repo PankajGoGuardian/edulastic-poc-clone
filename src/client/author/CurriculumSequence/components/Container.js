@@ -148,7 +148,6 @@ class CurriculumContainer extends Component {
   };
 
   onDrop = (toModuleIndex, item) => {
-    console.log("item", item, "tomodule", toModuleIndex);
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
       this.props.addIntoModule({ ...item, moduleIndex: toModuleIndex });
@@ -379,8 +378,8 @@ const mapDispatchToProps = dispatch => ({
   moveContentInPlaylist(payload) {
     dispatch(addContentToCurriculumSequenceAction(payload));
   },
-  useThisPlayList(_id, title, grades, subjects) {
-    dispatch(useThisPlayListAction({ _id, title, grades, subjects }));
+  useThisPlayList(_id, title, grades, subjects, customize) {
+    dispatch(useThisPlayListAction({ _id, title, grades, subjects, customize }));
   },
   approveOrRejectSinglePlaylistRequest(payload) {
     dispatch(approveOrRejectSinglePlaylistRequestAction(payload));

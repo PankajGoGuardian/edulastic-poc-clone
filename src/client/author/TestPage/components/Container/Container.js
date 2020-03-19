@@ -204,7 +204,7 @@ class Container extends PureComponent {
       if (_location?.state?.showItemAddedMessage) {
         message.success(
           <span>
-            New item has been created and added to the current test. Click
+            New item has been created and added to the current test. Click{" "}
             <span onClick={() => self.gotoTab("review")} style={{ color: themeColor, cursor: "pointer" }}>
               here
             </span>{" "}

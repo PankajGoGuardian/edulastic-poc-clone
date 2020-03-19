@@ -65,7 +65,7 @@ const RequirePassword = ({
           <PasswordInput
             placeholder="Enter assignment password"
             value={assignmentPassword}
-            type={"text"}
+            type="password"
             onChange={e => handleSetPassword(e.target.value)}
             message={passwordStatusMessage}
           />

@@ -30,6 +30,10 @@ const StartAssignButton = styled(Button)`
     }
   }
 
+  &.ant-btn {
+    padding: 5px 20px;
+  }
+
   span {
     color: ${props => props.theme.assignment.cardDefaultBtnTextColor};
     font-size: ${props => props.theme.assignment.cardDefaultBtnFontSize};

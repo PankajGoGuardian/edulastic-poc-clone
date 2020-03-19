@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Row, Radio, Select, DatePicker, message, Col } from "antd";
+import { Row, Select, DatePicker, message, Col } from "antd";
 import moment from "moment";
 import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
@@ -13,7 +13,7 @@ import { RadioBtn, RadioGrp } from "@edulastic/common";
 const { redirectPolicy } = testContants;
 
 const QuestionDelivery = {
-  [redirectPolicy.QuestionDelivery.All]: "All",
+  [redirectPolicy.QuestionDelivery.ALL]: "All",
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: "Skipped and Wrong"
 };
 

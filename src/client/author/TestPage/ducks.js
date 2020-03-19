@@ -163,6 +163,8 @@ export const DELETE_ITEMS_GROUP = "[tests] delete items group";
 export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST = "[test] add items to autoselect groups request";
 export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect group";
 export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage create";
+export const UPDATE_LAST_USED_COLLECTION_LIST = "[test] update recent collections";
+
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -188,6 +190,7 @@ export const addItemsToAutoselectGroupsRequestAction = createAction(ADD_ITEMS_TO
 export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSELECT_GROUP);
 export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 export const updateTestEntityAction = createAction(SET_TEST_DATA);
+export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_COLLECTION_LIST);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -312,9 +315,15 @@ export const defaultTestTypeProfilesSelector = createSelector(
   stateSelector,
   state => state.defaultTestTypeProfiles
 );
+
 export const getDefaultThumbnailSelector = createSelector(
   stateSelector,
   state => state.thumbnail
+);
+
+export const getlastUsedCollectionListSelector = createSelector(
+  stateSelector,
+  state => state.lastUsedCollectionList || []
 );
 
 export const getTestEntitySelector = createSelector(
@@ -514,6 +523,7 @@ const initialState = {
   createdItems: [],
   sharedUsersList: [],
   passageItems: [],
+  lastUsedCollectionList: [],
   tagsList: { playlist: [], test: [], group: [], testitem: [] },
   defaultTestTypeProfiles: {},
   currentGroupIndex: 0
@@ -557,6 +567,8 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, entity: createBlankTest(), updated: false };
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload };
+    case UPDATE_LAST_USED_COLLECTION_LIST:
+      return { ...state, lastUsedCollectionList: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
       return { ...state, loading: true, error: null };
     case SET_TEST_EDIT_ASSIGNED:

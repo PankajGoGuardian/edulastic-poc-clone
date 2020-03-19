@@ -33,7 +33,8 @@ import {
   updateDocBasedTestAction,
   duplicateTestRequestAction,
   getReleaseScorePremiumSelector,
-  approveOrRejectSingleTestRequestAction
+  approveOrRejectSingleTestRequestAction,
+  updateLastUsedCollectionListAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -522,7 +523,7 @@ class Container extends PureComponent {
   };
 
   handleSave = () => {
-    const { test = {}, updateTest, createTest, currentTab } = this.props;
+    const { test = {}, updateTest, createTest, currentTab, updateLastUsedCollectionList } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
     }
@@ -531,9 +532,11 @@ class Container extends PureComponent {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
         this.sebPasswordRef.current.input.focus();
       }
-
       return message.error("Please add a valid password");
     }
+
+    updateLastUsedCollectionList(test.collections);
+
     if (test._id) {
       updateTest(test._id, { ...newTest, currentTab });
     } else {
@@ -839,7 +842,8 @@ const enhance = compose(
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       duplicateTest: duplicateTestRequestAction,
-      approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction
+      approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
+      updateLastUsedCollectionList: updateLastUsedCollectionListAction
     }
   )
 );

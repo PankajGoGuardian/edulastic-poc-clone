@@ -18,6 +18,7 @@ import { getSummarySelector } from "../../ducks";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
 import { getUser, getItemBucketsSelector } from "../../../../../src/selectors/user";
 import {
+  getlastUsedCollectionListSelector,
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
   getAllTagsAction,
@@ -45,6 +46,7 @@ const Summary = ({
   getAllTags,
   allTagsData,
   allPlaylistTagsData,
+  lastUsedCollectionList,
   orgCollections,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
@@ -65,6 +67,15 @@ const Summary = ({
   useEffect(() => {
     getAllTags({ type: isPlaylist ? "playlist" : "test" });
   }, []);
+
+  useEffect(() => {
+    const bucketIds = lastUsedCollectionList.flatMap(c => c.bucketIds);
+    const filteredCollections = orgCollections
+      .filter(item => bucketIds.includes(item.bucketId))
+      .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
+    !test.collections.length && filteredCollections.length && onChangeCollection(null, filteredCollections);
+  }, [lastUsedCollectionList]);
+
   const breadcrumbData = [
     {
       title: showCancelButton ? "ASSIGNMENTS / EDIT TEST" : "TESTS LIBRARY",
@@ -176,6 +187,7 @@ const enhance = compose(
       allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
+      lastUsedCollectionList: getlastUsedCollectionListSelector(state),
       orgCollections: getItemBucketsSelector(state)
     }),
     {

@@ -2,7 +2,7 @@ import { blueBorder, green, red, themeColor } from "@edulastic/colors";
 import { CheckboxLabel, RadioBtn, withWindowScroll } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown } from "@edulastic/icons";
-import { Anchor, Col, Input, message, Row, Select, Switch } from "antd";
+import { Anchor, Col, Input, message, Row, Radio, Select, Switch } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -37,7 +37,9 @@ import {
   StyledAnchor,
   StyledRadioGroup,
   StyledSelect,
-  Title
+  Title,
+  RadioGroup,
+  RadioWrapper
 } from "./styled";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 

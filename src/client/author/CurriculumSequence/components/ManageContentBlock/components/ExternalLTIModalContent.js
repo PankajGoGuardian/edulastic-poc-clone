@@ -11,7 +11,7 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
   return (
     <Col span={24}>
       <StyledContentRow>
-        <StyledLabel>Tool Provider</StyledLabel>
+        <StyledLabel>TOOL PROVIDER</StyledLabel>
         <StyledSelect
           placeholder="Select a tool"
           value={data.data?.toolProvider}
@@ -22,7 +22,7 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
         </StyledSelect>
       </StyledContentRow>
       <StyledContentRow>
-        <StyledLabel>Title</StyledLabel>
+        <StyledLabel>TITLE</StyledLabel>
         <StyledInput
           placeholder="Enter a title"
           value={data.contentTitle}
@@ -38,7 +38,7 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
         />
       </StyledContentRow>
       <StyledContentRow>
-        <StyledLabel>ConsumerKey</StyledLabel>
+        <StyledLabel>CONSUMER KEY</StyledLabel>
         <StyledInput
           placeholder="Enter a consumer key"
           value={data.data?.consumerKey}
@@ -46,7 +46,7 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
         />
       </StyledContentRow>
       <StyledContentRow>
-        <StyledLabel>Shared Secret</StyledLabel>
+        <StyledLabel>SHARED SECRET</StyledLabel>
         <StyledInput
           placeholder="Enter a shared secret"
           value={data.data?.sharedSecret}
@@ -54,7 +54,7 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
         />
       </StyledContentRow>
       <StyledContentRow>
-        <StyledLabel>Custom Parameters</StyledLabel>
+        <StyledLabel>CUSTOM PARAMETERS</StyledLabel>
         <StyledInput
           placeholder="Enter a custom parameters"
           value={data.data?.customParams}

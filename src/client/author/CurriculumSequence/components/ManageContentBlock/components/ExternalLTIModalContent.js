@@ -1,6 +1,6 @@
 import React from "react";
 import { Input, Select, Row, Col } from "antd";
-import { EduCheckBox } from "@edulastic/common";
+import { CheckboxLabel } from "@edulastic/common";
 import styled from "styled-components";
 
 export const ExternalLTIModalContent = ({ data, onChange }) => {
@@ -62,12 +62,12 @@ export const ExternalLTIModalContent = ({ data, onChange }) => {
         />
       </StyledContentRow>
       <StyledContentRow>
-        <EduCheckBox
+        <CheckboxLabel
           checked={data.data?.enableGrading}
           onChange={() => onChange("data.enableGrading", !data.data?.enableGrading)}
         >
           ENABLE GRADING
-        </EduCheckBox>
+        </CheckboxLabel>
       </StyledContentRow>
     </Col>
   );

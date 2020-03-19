@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { themeColor, white } from "@edulastic/colors";
+import { CheckboxLabel } from "@edulastic/common";
+import { Select, Table } from "antd";
+import React from "react";
 import { connect } from "react-redux";
-import { Table, Checkbox, Select } from "antd";
 import styled from "styled-components";
-import { white, themeColor } from "@edulastic/colors";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
 import { Title } from "./styled";
-import { EduCheckBox, CheckboxLabel } from "@edulastic/common";
 
 const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {}, disabled = false }) => {
   const handleProfileChange = val => {

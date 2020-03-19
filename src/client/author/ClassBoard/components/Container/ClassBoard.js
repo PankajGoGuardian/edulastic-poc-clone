@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper, EduCheckBox, CheckboxLabel } from "@edulastic/common";
+import { MainContentWrapper, CheckboxLabel } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,

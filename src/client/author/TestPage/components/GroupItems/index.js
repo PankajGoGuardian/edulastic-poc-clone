@@ -1,5 +1,5 @@
 import { testItemsApi } from "@edulastic/api";
-import { CheckboxLabel, EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
+import { CheckboxLabel, RadioBtn, RadioGrp } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import { IconPencilEdit } from "@edulastic/icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";

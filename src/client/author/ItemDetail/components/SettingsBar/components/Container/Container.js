@@ -1,5 +1,5 @@
 import { themeColor, title } from "@edulastic/colors";
-import { Button, CheckboxLabel, EduCheckBox } from "@edulastic/common";
+import { Button, CheckboxLabel } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 import { Col, Row, Switch } from "antd";

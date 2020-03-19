@@ -1,65 +1,55 @@
+import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Icon, message, Select } from "antd";
+import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isEmpty } from "lodash";
-import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-import { TypeToConfirmModal, CheckboxLabel } from "@edulastic/common";
-
 import {
-  StyledTableContainer,
+  StyledAddFilterButton,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
   StyledFilterInput,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../../admin/Common/StyledComponents";
-
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  LeftFilterDiv,
-  RightFilterDiv
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-
-import { StyledDistrictAdminTable } from "./styled";
-
-import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
-import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";
-
 import {
-  receiveAdminDataAction,
-  createAdminUserAction,
-  updateAdminUserAction,
-  deleteAdminUserAction,
-  setSearchNameAction,
-  getAdminUsersDataSelector,
-  getAdminUsersDataCountSelector,
-  getShowActiveUsersSelector,
-  setShowActiveUsersAction,
-  getPageNoSelector,
-  setPageNoAction,
-  getFiltersSelector,
+  addFilterAction,
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction,
+  createAdminUserAction,
+  deleteAdminUserAction,
+  getAdminUsersDataCountSelector,
+  getAdminUsersDataSelector,
+  getFiltersSelector,
+  getPageNoSelector,
+  getShowActiveUsersSelector,
+  receiveAdminDataAction,
   removeFilterAction,
-  setRoleAction
+  setPageNoAction,
+  setRoleAction,
+  setSearchNameAction,
+  setShowActiveUsersAction,
+  updateAdminUserAction
 } from "../../../SchoolAdmin/ducks";
-
-import { getUserOrgId } from "../../../src/selectors/user";
 import Breadcrumb from "../../../src/components/Breadcrumb";
-
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { withNamespaces } from "@edulastic/localization";
-import { EduCheckBox } from "@edulastic/common";
+import { getUserOrgId } from "../../../src/selectors/user";
+import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
+import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";
+import { StyledDistrictAdminTable } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "District Admin" };
 

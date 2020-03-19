@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Col, Radio, Select, Icon, Checkbox, Input, message } from "antd";
+import { Col, Radio, Select, Icon, Input, message } from "antd";
 import { green, red, blueBorder, themeColor } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
-import { RadioBtn, CheckboxLabel, EduCheckBox } from "@edulastic/common";
+import { RadioBtn, CheckboxLabel } from "@edulastic/common";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
   AlignRight,
@@ -588,30 +588,32 @@ const Settings = ({
           {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
           <IconCaretDown color={themeColor} width={11} height={6} />
         </AdvancedButton>
-        {showAdvancedOption && <div>
-          <Block id="accessibility">
-            <Title>Accessibility</Title>
-            <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
-              {Object.keys(accessibilities).map(item => (
-                <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
-                  <Col span={12}>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
-                  </Col>
-                  <Col span={12}>
-                    <StyledRadioGroup
-                      disabled={forClassLevel}
-                      onChange={e => overRideSettings("showMagnifier", e.target.value)}
-                      defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
-                    >
-                      <Radio value>ENABLE</Radio>
-                      <Radio value={false}>DISABLE</Radio>
-                    </StyledRadioGroup>
-                  </Col>
-                </StyledRowSettings>
-              ))}
-            </RadioWrapper>
-          </Block>
-        </div>}
+        {showAdvancedOption && (
+          <div>
+            <Block id="accessibility">
+              <Title>Accessibility</Title>
+              <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
+                {Object.keys(accessibilities).map(item => (
+                  <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
+                    <Col span={12}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                    </Col>
+                    <Col span={12}>
+                      <StyledRadioGroup
+                        disabled={forClassLevel}
+                        onChange={e => overRideSettings("showMagnifier", e.target.value)}
+                        defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
+                      >
+                        <Radio value>ENABLE</Radio>
+                        <Radio value={false}>DISABLE</Radio>
+                      </StyledRadioGroup>
+                    </Col>
+                  </StyledRowSettings>
+                ))}
+              </RadioWrapper>
+            </Block>
+          </div>
+        )}
       </StyledDiv>
     </SettingsWrapper>
   );

@@ -106,7 +106,7 @@ const MixMatchCorrectAnswer = ({
   );
 
   return (
-    <FlexContainer justifyContent="flex-start" flexWrap="nowrap" style={{ overflow: "auto" }}>
+    <FlexContainer width="100%" justifyContent="flex-start" flexWrap="nowrap" style={{ overflow: "auto" }}>
       {correctAnswersBlock}
       {altAnswerBlock}
     </FlexContainer>
@@ -114,7 +114,6 @@ const MixMatchCorrectAnswer = ({
 };
 
 MixMatchCorrectAnswer.propTypes = {
-  response: PropTypes.object.isRequired,
   alternateResponse: PropTypes.object.isRequired,
   uiStyle: PropTypes.object.isRequired,
   onUpdateValidationValue: PropTypes.func.isRequired

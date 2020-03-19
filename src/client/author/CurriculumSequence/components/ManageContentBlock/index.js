@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Dropdown, Menu, Spin } from "antd";
@@ -112,7 +112,9 @@ const ManageContentBlock = props => {
     selectedTestForPreview = "",
     testPreviewModalVisible = false,
     showPreviewModal,
-    closePreviewModal
+    closePreviewModal,
+    subjectsFromCurriculumSequence,
+    gradesFromCurriculumSequence
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -123,7 +125,7 @@ const ManageContentBlock = props => {
   const [isShowExternalLTITool, setIsShowExternalLTITool] = useState(false);
 
   useEffect(() => {
-    setDefaults({ subject, grades });
+    setDefaults({ subject: subjectsFromCurriculumSequence, grades: gradesFromCurriculumSequence });
     fetchTests();
   }, []);
 
@@ -337,7 +339,7 @@ const ManageContentBlock = props => {
 };
 
 export default connect(
-  state => ({
+  (state, ownProps) => ({
     isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
     isLoading: state.playlistTestBox?.isLoading,
     loadedPage: state.playlistTestBox?.loadedPage,
@@ -353,7 +355,9 @@ export default connect(
     externalLTIModal: state.playlistTestBox?.externalLTIModal,
     externalLTIResources: state.playlistTestBox?.externalLTIResources,
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
-    selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview
+    selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
+    subjectsFromCurriculumSequence: ownProps?.subjects,
+    gradesFromCurriculumSequence: ownProps?.grades
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,

@@ -787,7 +787,11 @@ class CurriculumSequence extends Component {
                 </ContentContainer>
                 {urlHasUseThis &&
                   (isManageContentActive ? (
-                    <ManageContentBlock testsInPlaylist={testsInPlaylist} />
+                    <ManageContentBlock
+                      testsInPlaylist={testsInPlaylist}
+                      subjects={destinationCurriculumSequence?.subjects?.[0]}
+                      grades={destinationCurriculumSequence?.grades || []}
+                    />
                   ) : (
                     <SummaryBlock>
                       <SummaryBlockTitle>Summary</SummaryBlockTitle>

@@ -62,7 +62,7 @@ import {
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { withNamespaces } from "react-i18next";
-import { getDefaultInterests } from "../../../dataUtils";
+import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 
 class TestList extends Component {
   static propTypes = {

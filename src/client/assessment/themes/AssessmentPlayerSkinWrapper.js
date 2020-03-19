@@ -104,7 +104,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? "48px" : "38px"
+        marginTop: defaultAP ? "78px" : "38px"
       };
     }
     return {};
@@ -146,27 +146,16 @@ const AssessmentPlayerSkinWrapper = ({
     );
   };
 
-  const renderDom = () => {
-    return (
-      <div>
-      {header()}
-      <FlexContainer>
-        {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
-        <StyledMainContainer
-          mainContainerStyle={getMainContainerStyle()}
-          style={getStyle()}
-          playerSkin={playerSkinType}
-          isSidebarVisible={isSidebarVisible}
-        >
-          {children}
-        </StyledMainContainer>
-        {playerSkinType === test.playerSkinTypes.edulastic.toLowerCase() && defaultAP && navigationBtns()}
-      </FlexContainer>
-    </div>
-    )
+  const getTopOffset = () => {
+    if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
+      return {top: 120, left: 0};
+    } else {
+      return {top: 63, left: 0};
+    }
   }
+
   return (
-    <Magnifier enable={enableMagnifier}>
+    <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       {header()}
       <FlexContainer>
         {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && leftSideBar()}
@@ -204,6 +193,9 @@ const StyledMainContainer = styled.div`
     .practice-player-footer {
       left: ${({ isSidebarVisible }) => (isSidebarVisible ? "220px" : "65px")};
     }
+    .question-tab-container {
+      height: fit-content!important;
+    }
   }
   ${({ playerSkin }) =>
     playerSkin.toLowerCase() === test.playerSkinTypes.parcc.toLowerCase() ||
@@ -211,6 +203,7 @@ const StyledMainContainer = styled.div`
       ? `
     .question-tab-container {
       padding-top: 0!important;
+      height: fit-content!important;
     }
     .scratchpad-tools {
       top: 130px;

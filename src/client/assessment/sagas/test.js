@@ -276,7 +276,7 @@ function* loadTest({ payload }) {
       });
 
       attachments.forEach(attachment => {
-        scratchPadData[attachment.testItemId] = attachment.data;
+        scratchPadData[attachment.referrerId2] = attachment.data;
       });
 
       questionActivities.forEach(item => {

@@ -5,7 +5,7 @@ import uuid from "uuid/v4";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { get, debounce } from "lodash";
+import { get, debounce, isUndefined } from "lodash";
 import { ActionCreators } from "redux-undo";
 import { hexToRGB, withWindowSizes } from "@edulastic/common";
 import { white, themeColor } from "@edulastic/colors";
@@ -135,15 +135,15 @@ class WorksheetComponent extends React.Component {
   }
 
   static getDerivedStateFromProps(props, prevState) {
+    let data;
     if (prevState.uploadModal && prevState.creating && !props.creating) {
-      return {
+      data = {
         uploadModal: false,
         creating: false,
         isAddPdf: false
       };
-    }
-    if (!prevState.creating && props.creating) {
-      return {
+    } else if (!prevState.creating && props.creating) {
+      data = {
         creating: true
       };
     }
@@ -172,6 +172,10 @@ class WorksheetComponent extends React.Component {
 
   handleChangePage = nextPage => {
     this.setState({ currentPage: nextPage });
+    const {onPageChange} = this.props;
+    if (onPageChange) {
+      onPageChange(nextPage);
+    }
   };
 
   handleAddAnnotation = question => {
@@ -594,11 +598,11 @@ class WorksheetComponent extends React.Component {
       studentWorkAnswersById,
       studentWork,
       isAssessmentPlayer,
-      extraPaddingTop
+      extraPaddingTop,
+      onPageChange
     } = this.props;
 
     const {
-      currentPage,
       uploadModal,
       highlightedQuestion,
       currentColor,
@@ -614,6 +618,8 @@ class WorksheetComponent extends React.Component {
       isToolBarVisible,
       fromFreeFormNotes
     } = this.state;
+    const currentPage = onPageChange ? this.props.currentPage : this.state.currentPage;
+
     let { answersById } = this.props;
     if (studentWorkAnswersById) {
       answersById = studentWorkAnswersById;

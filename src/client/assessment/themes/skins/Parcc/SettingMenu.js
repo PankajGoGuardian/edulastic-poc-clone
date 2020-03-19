@@ -17,7 +17,8 @@ const menuItems = {
 const SettingMenu = ({
   user: {firstName},
   onSettingsChange,
-  showMagnifier
+  showMagnifier,
+  enableMagnifier
 }) => {
   const [setting, setSetting] = useState({
     enableMagnifier: false,

@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from "react";
 import { withWindowSizes } from "@edulastic/common";
 import PropTypes from "prop-types";
 import { themes } from "../../theme";
+import styled from "styled-components";
 const { playerSkin: { magnifierBorderColor } } = themes;
 
 const Magnifier = ({
@@ -21,12 +22,17 @@ const Magnifier = ({
     windowWidth,
     windowHeight
   })
-
   const ref = useRef();
   useEffect(() => {
     if(setting.dragging) {
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
+      handleSidebarScroll({
+        target: document.getElementsByClassName("scrollbar-container")[0]
+      });
+      handleScroll({
+        target: document.getElementsByClassName("test-item-preview")[0]
+      });
     }
     if (setting.windowWidth !== windowWidth || setting.windowHeight !== windowHeight) {
       setSetting({
@@ -41,6 +47,20 @@ const Magnifier = ({
       document?.removeEventListener('mouseup', onMouseUp)
     }
   });
+
+  useEffect(() => {
+    const container = document.getElementsByClassName("test-item-preview")[0];
+    container?.addEventListener("scroll", handleScroll);
+    const sideBar = document.getElementsByClassName("scrollbar-container")[0];
+    sideBar?.addEventListener("scroll", handleSidebarScroll);
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+      sideBar?.removeEventListener("scroll", handleSidebarScroll);
+    }
+  }, []);
+
+  const handleScroll = e => document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
+  const handleSidebarScroll = e => document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, scale * e.target.scrollTop);
 
   const onMouseDown = e => {
     if (e.button !== 0) return;
@@ -82,7 +102,7 @@ const Magnifier = ({
   return (
     <>
       {children}
-      {(enable || type === "testlet") && <div
+      {(enable || type === "testlet") && <ZoomedWrapper
         ref={ref}
         onMouseDown={onMouseDown}
         id="magnifier-wrapper"
@@ -100,6 +120,7 @@ const Magnifier = ({
           background: "white",
           display: type === "testlet" ? "none" : "block"
         }}
+        className="zoomed-container-wrapper"
         >
         <div style={{
           transform: `scale(${scale})`,
@@ -108,11 +129,11 @@ const Magnifier = ({
           overflow: "visible",
           position: "absolute",
           display: "block",
-          left: `-${2*setting.pos.x + offset.left}px`,
-          top: `-${2*setting.pos.y + offset.top}px`,
+          left: `${-(scale*setting.pos.x) - offset.left}px`,
+          top: `${-(scale*setting.pos.y) - offset.top }px`,
           transformOrigin: "left top",
           userSelect: "none",
-          marginLeft: `-${width/2}px`
+          marginLeft: `-${width/scale}px`
         }}>
           {(ZoomedContent && <ZoomedContent/>) || children}
         </div>
@@ -120,11 +141,24 @@ const Magnifier = ({
           width: `${width}px`,
           height: `${height}px`, 
           position: 'absolute'}}/>
-      </div>
+      </ZoomedWrapper>
       }
     </>
   );
 };
+
+const ZoomedWrapper = styled.div`
+  main {
+    .test-item-preview {
+      overflow: auto!important;
+      .classification-preview {
+        * {
+          overflow: visible!important;
+        }
+      }
+    }
+  }
+`;
 
 Magnifier.defaultProps = {
   enable: false,

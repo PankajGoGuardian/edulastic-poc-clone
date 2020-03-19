@@ -48,7 +48,8 @@ class AssessmentPlayerDocBased extends React.Component {
     showExitPopup: false,
     currentToolMode: {
       calculator: false
-    }
+    },
+    currentPage: 0
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -112,7 +113,7 @@ class AssessmentPlayerDocBased extends React.Component {
   };
 
   render() {
-    const { showExitPopup, calculateMode, currentToolMode } = this.state;
+    const { showExitPopup, calculateMode, currentToolMode, currentPage } = this.state;
     const {
       theme,
       items,
@@ -180,6 +181,8 @@ class AssessmentPlayerDocBased extends React.Component {
                 noCheck
                 testMode
                 extraPaddingTop={extraPaddingTop}
+                onPageChange={(currentPage) => this.setState({currentPage})}
+                currentPage={currentPage}
               />
             )}
             <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />

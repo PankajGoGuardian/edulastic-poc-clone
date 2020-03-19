@@ -45,23 +45,25 @@ const PlayerContent = ({
 
   const showMagnifier = () => {
     if (frameRefForMagnifier.current) {
-    frameRefForMagnifier.current.contentWindow.document.body.innerHTML = frameRef.current?.contentWindow?.document?.body?.innerHTML;
-    document.getElementById("magnifier-wrapper").style.display = "block";
-    const icon = document.getElementById("magnifier-icon");
-    icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgHoverColor;
-    const svg = icon.getElementsByTagName("svg")[0];
-    svg.style.fill = restProps.theme.default.header.headerButtonHoverColor;
-    enableMagnifier = true;
+      frameRefForMagnifier.current.contentWindow.document.body.innerHTML = frameRef.current?.contentWindow?.document?.body?.innerHTML;
+      document.getElementById("magnifier-wrapper").style.display = "block";
+      const icon = document.getElementById("magnifier-icon");
+      icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgHoverColor;
+      const svg = icon.getElementsByTagName("svg")[0];
+      svg.style.fill = restProps.theme.default.header.headerButtonHoverColor;
+      enableMagnifier = true;
     }
   }
 
   const hideMagnifier = () => {
-    document.getElementById("magnifier-wrapper").style.display = "none";
-    const icon = document.getElementById("magnifier-icon");
-    icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgColor;
-    const svg = icon.getElementsByTagName("svg")[0];
-    svg.style.fill = restProps.theme.default.header.headerButtonColor;
-    enableMagnifier = false;
+    if (enableMagnifier) {
+      document.getElementById("magnifier-wrapper").style.display = "none";
+      const icon = document.getElementById("magnifier-icon");
+      icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgColor;
+      const svg = icon.getElementsByTagName("svg")[0];
+      svg.style.fill = restProps.theme.default.header.headerButtonColor;
+      enableMagnifier = false;
+    }
   }
 
   const handleMagnifier = () => {
@@ -115,13 +117,17 @@ const PlayerContent = ({
     } else if (!LCBPreviewModal) {
       gotoSummary();
     }
-    hideMagnifier();
+    if (enableMagnifier) {
+      hideMagnifier();
+    }
   };
 
   const prevQuestion = () => {
     saveUserResponse();
     frameController.sendPrevDev();
-    hideMagnifier();
+    if (enableMagnifier) {
+      hideMagnifier();
+    }
   };
 
   const mapTestletToEdu = () => {
@@ -342,7 +348,9 @@ const PlayerContent = ({
         handleReponse: mapTestletToEdu,
         playerStateHandler: (itemState, itemResponse) => {
           if (!LCBPreviewModal) {
-            hideMagnifier();
+            if (enableMagnifier) {
+              setTimeout(showMagnifier, 1000);
+            }
             setTestUserWork({
               [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
             });
@@ -356,8 +364,8 @@ const PlayerContent = ({
   }, [testletConfig]);
 
   useEffect(() => {
-    window.addEventListener("resize", hideMagnifier);
-    return () => window.removeEventListener("resize", hideMagnifier);
+    window.addEventListener("resize", rerenderMagnifier);
+    return () => window.removeEventListener("resize", rerenderMagnifier);
   }, []);
 
   useEffect(() => {
@@ -369,6 +377,12 @@ const PlayerContent = ({
       frameController.getCurrentPageScoreID();
     }
   }, [currentPage]);
+
+  const rerenderMagnifier = () => {
+    if (enableMagnifier) {
+      showMagnifier();
+    }
+  };
 
   const zoomedContent = () => {
       return (

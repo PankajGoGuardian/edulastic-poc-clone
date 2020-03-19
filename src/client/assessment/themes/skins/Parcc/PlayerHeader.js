@@ -54,7 +54,8 @@ const PlayerHeader = ({
   items,
   toolsOpenStatus,
   handleMagnifier,
-  showMagnifier
+  showMagnifier,
+  enableMagnifier
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -141,7 +142,7 @@ const PlayerHeader = ({
                 />
               </FlexContainer>
               <FlexContainer>
-                <SettingMenu onSettingsChange={onSettingsChange} showMagnifier={showMagnifier} />
+                <SettingMenu onSettingsChange={onSettingsChange} showMagnifier={showMagnifier} enableMagnifier={enableMagnifier} />
               </FlexContainer>
             </HeaderWrapper>
           </HeaderPracticePlayer>

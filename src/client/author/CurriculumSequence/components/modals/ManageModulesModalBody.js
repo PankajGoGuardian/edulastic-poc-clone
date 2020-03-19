@@ -174,6 +174,8 @@ const ModuleTitle = styled.div`
 const ModuleDescription = styled.div`
   font-size: 12px;
   color: ${darkGrey};
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 `;
 
 const ModuleActions = styled.div`

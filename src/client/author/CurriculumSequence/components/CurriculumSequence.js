@@ -461,7 +461,7 @@ class CurriculumSequence extends Component {
       collections: _playlistCollections = []
     } = destinationCurriculumSequence;
     const sparkCollection = collections.find(c => c.name === "Spark Math" && c.owner === "Edulastic Corp") || {};
-    const showDifferentiationTab = _playlistCollections.some(item => item._id === sparkCollection?._id);
+    const isSparkMathPlaylist = _playlistCollections.some(item => item._id === sparkCollection?._id);
 
     const getplaylistMetrics = () => {
       const temp = {};
@@ -560,7 +560,7 @@ class CurriculumSequence extends Component {
       </SubHeaderInfoCard>
     );
 
-    const enableCustomize = customize && urlHasUseThis && !isStudent;
+    const enableCustomize = customize && urlHasUseThis && !isStudent && isSparkMathPlaylist;
 
     const isAuthoringFlowReview = current === "review";
 
@@ -659,7 +659,7 @@ class CurriculumSequence extends Component {
                   <PlaylistPageNav
                     onChange={this.handleNavChange}
                     current={currentTab}
-                    showDifferentiationTab={showDifferentiationTab}
+                    showDifferentiationTab={isSparkMathPlaylist}
                   />
                 )}
 
@@ -833,7 +833,7 @@ class CurriculumSequence extends Component {
 
           {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
 
-          {currentTab === "differentiation" && showDifferentiationTab && <Differentiation />}
+          {currentTab === "differentiation" && isSparkMathPlaylist && <Differentiation />}
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />

@@ -107,7 +107,7 @@ const GroupItems = ({
   const {
     subject = interestedSubjects?.[0] || "",
     grades = interestedGrades || [],
-    curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+    curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
   } = getDefaultInterests();
 
   const goBackUrl = match.params?.id

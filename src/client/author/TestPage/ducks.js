@@ -96,11 +96,12 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
     }
   });
 
-export const getTestGradeAndSubject = (group, testGrades, testSubjects) => {
+export const getTestGradeAndSubject = (group, testGrades, testSubjects, testTags) => {
   if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
     return {
       testGrades: _uniq([...testGrades, ...group.standardDetails.grades]),
-      testSubjects: _uniq([...testSubjects, group.standardDetails.subject])
+      testSubjects: _uniq([...testSubjects, group.standardDetails.subject]),
+      testTags: _uniq([...testTags, ...group.tags])
     };
   }
   return { testGrades, testSubjects };
@@ -776,10 +777,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       };
     case UPDATE_GROUP_DATA:
       // eslint-disable-next-line no-case-declarations
-      const { testGrades, testSubjects } = getTestGradeAndSubject(
+      const { testGrades, testSubjects, testTags } = getTestGradeAndSubject(
         payload?.updatedGroupData,
         state.entity.grades,
-        state.entity.subjects
+        state.entity.subjects,
+        state.entity.tags
       );
       return {
         ...state,
@@ -791,7 +793,8 @@ export const reducer = (state = initialState, { type, payload }) => {
             return group;
           }),
           grades: testGrades,
-          subjects: testSubjects
+          subjects: testSubjects,
+          tags: testTags
         }
       };
     case ADD_NEW_GROUP:

@@ -566,7 +566,7 @@ class CurriculumSequence extends Component {
 
     return (
       <>
-        <Prompt when={manageContentDirty} message="Changes left unsaved. Please save it first" />
+        <Prompt when={manageContentDirty} message="Changes done here are not saved. Do you want to leave?" />
         <RemoveTestModal
           isVisible={showConfirmRemoveModal}
           onClose={onCloseConfirmRemoveModal}

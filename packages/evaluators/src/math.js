@@ -114,7 +114,14 @@ const exactMatchEvaluator = async (userResponse = "", answers) => {
     };
     /* eslint-disable */
     for (let answer of answers) {
-      const checks = getChecks(answer);
+      let checks = getChecks(answer);
+      if (typeof checks === "string") {
+        if (checks.includes("equivLiteral")) {
+          checks = checks.replace(/equivLiteral/g, "literal");
+        } else if (checks.includes("equivSyntax")) {
+          checks = checks.replace(/equivSyntax/g, "syntax");
+        }
+      }
       const corrects = getAnswerCorrectMethods(answer);
       let valid = false;
       for (let correct of corrects) {

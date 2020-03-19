@@ -34,7 +34,7 @@ export const PlaceHolderText = styled.p`
   pointer-events: none;
   user-select: none;
   display: ${props => (props.visible ? "block" : "none")};
-  z-index: 2000;
+  z-index: 1020;
 `;
 
 export const SelUserKindDiv = styled(Row)`

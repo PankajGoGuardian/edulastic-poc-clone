@@ -99,7 +99,7 @@ const GroupItems = ({
   const [showStandardModal, setShowStandardModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const [currentGroupIndex, setCurrentGroupIndex] = useState();
+  const [currentGroupIndex, setCurrentGroupIndex] = useState(null);
   const [confirmModalCategory, setConfirmModalCategory] = useState(null);
   const [fetchingItems, setFetchingItems] = useState(false);
   const [deleteGroupIndex, setDeleteGroupIndex] = useState(null);
@@ -322,6 +322,9 @@ const GroupItems = ({
   };
 
   const validateGroups = () => {
+    if (currentGroupIndex !== null) {
+      return message.error("Please save the changes made to the group first.");
+    }
     let staticGroups = [];
     let autoSelectGroups = [];
     let isValid = true;
@@ -785,9 +788,11 @@ const GroupItems = ({
           })}
         </Collapse>
         <GroupField>
-          <AddGroupButton data-cy="add-group" onClick={handleAddGroup}>
-            Add Group
-          </AddGroupButton>
+          {currentGroupIndex === null && (
+            <AddGroupButton data-cy="add-group" onClick={handleAddGroup}>
+              Add Group
+            </AddGroupButton>
+          )}
         </GroupField>
         <Footer>
           <DoneButton data-cy="done" onClick={validateGroups}>

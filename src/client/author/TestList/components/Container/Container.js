@@ -193,7 +193,7 @@ class TestList extends Component {
     const {
       subject = interestedSubjects?.[0] || "",
       grades = interestedGrades || [],
-      curriculumId = firstCurriculum.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
+      curriculumId = firstCurriculum?.subject === interestedSubjects?.[0] ? firstCurriculum?._id : ""
     } = getDefaultInterests();
     const sessionFilters = JSON.parse(sessionStorage.getItem("filters[testList]")) || {};
     const searchFilters = {

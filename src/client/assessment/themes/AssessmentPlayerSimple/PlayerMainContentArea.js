@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 import { Hints, ScrollContext } from "@edulastic/common";
 import { test } from "@edulastic/constants";
@@ -11,6 +12,7 @@ import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
 
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
+import { getEvaluationSelector } from "../../selectors/answers";
 
 const PlayerContentArea = ({
   itemRows,
@@ -44,7 +46,8 @@ const PlayerContentArea = ({
   lineWidth,
   fillColor,
   saveHistory,
-  history
+  history,
+  evaluation
 }) => {
   const scrollContainerRef = useRef();
   const item = items[currentItem];
@@ -95,6 +98,7 @@ const PlayerContentArea = ({
                 fillColor={fillColor}
                 saveHistory={saveHistory}
                 history={history}
+                evaluation={evaluation}
               />
             )}
             {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
@@ -135,7 +139,11 @@ PlayerContentArea.defaultProps = {
   dropdownOptions: []
 };
 
-export default PlayerContentArea;
+const mapStateToProps = (state, props) => ({
+  evaluation: getEvaluationSelector(state, props)
+});
+
+export default connect(mapStateToProps)(PlayerContentArea);
 
 const Main = styled.main`
   background-color: ${props => props.theme.widgets.assessmentPlayers.mainBgColor};

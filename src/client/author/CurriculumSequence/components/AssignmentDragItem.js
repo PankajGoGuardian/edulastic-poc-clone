@@ -63,7 +63,8 @@ class AssignmentDragItem extends Component {
       standardTags,
       isAssigned,
       assigned,
-      isDragging
+      isDragging,
+      showResource
     } = this.props;
 
     return connectDragSource(
@@ -83,6 +84,7 @@ class AssignmentDragItem extends Component {
               urlHasUseThis
               deleteTest={deleteTest}
               moduleIndex={moduleIndex}
+              showResource={showResource}
             />
           ) : (
             <>

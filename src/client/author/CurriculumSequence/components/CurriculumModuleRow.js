@@ -108,7 +108,8 @@ const SortableElement = sortableElement(props => {
     deleteTest,
     moduleIndex,
     dropContent,
-    onBeginDrag
+    onBeginDrag,
+    showResource
   } = props;
   return (
     <AssignmentDragItemContainer>
@@ -133,6 +134,7 @@ const SortableElement = sortableElement(props => {
         handleDrop={dropContent}
         onBeginDrag={onBeginDrag}
         onClick={e => e.stopPropagation()}
+        showResource={showResource}
       />
     </AssignmentDragItemContainer>
   );
@@ -685,6 +687,7 @@ class ModuleRow extends Component {
                         viewTest={this.viewTest}
                         deleteTest={this.deleteTest}
                         onClick={e => e.stopPropagation()}
+                        showResource={this.showResource}
                         {...this.props}
                       />
                     );

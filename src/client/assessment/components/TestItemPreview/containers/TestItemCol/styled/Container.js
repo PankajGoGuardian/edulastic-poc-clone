@@ -8,7 +8,7 @@ export const Container = styled.div`
   border-right-color: ${props => props.theme.testItemPreview.itemColBorderColor};
   background-color: ${props => props.hasCollapseButtons && "#fff"};
   border-radius: ${props => props.hasCollapseButtons && "10px"};
-  min-height: ${props => props.hasCollapseButtons && "100vh"};
+  min-height: ${props => props.hasCollapseButtons && "calc(100vh - 122px)"};
   padding-top: ${props => props.hasCollapseButtons && "15px"};
   @media (max-width: ${mobileWidth}) {
     padding-left: 0px;

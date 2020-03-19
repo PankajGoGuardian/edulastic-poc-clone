@@ -372,11 +372,12 @@ class AuthorTestItemPreview extends Component {
           style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
           <ScoreBlock customStyle={{ left: "-5px" }} />
-          {page !== "itemAuthoring" && showHintsBtn && (
+          {/* we may need to bring hint button back */}
+          {/* {page !== "itemAuthoring" && showHintsBtn && (
             <EduButton height="28px" isGhost={!showHints} onClick={handleShowHints}>
               Hint
             </EduButton>
-          )}
+          )} */}
           {isAnswerBtnVisible && (
             <>
               <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>

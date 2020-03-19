@@ -6,7 +6,7 @@ import { questionType } from "@edulastic/constants";
 import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, round, isEmpty } from "lodash";
+import { get, round } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 
@@ -48,20 +48,18 @@ import { Text } from "../widgets/Text";
 import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
-import FeedbackRight from "./FeedbackRight";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { requestScratchPadAction } from "../../author/ExpressGrader/ducks";
 import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
-import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import { getFontSize } from "../utils/helpers";
-import FeedBackContainer from "./FeedBackContainer";
-import { PrintPreviewScore } from "./printPreviewScore";
 import PreviewRubricTable from "../../author/GradingRubric/Components/common/PreviewRubricTable";
 import { Coding } from "../widgets/Coding";
+
+import Hints from "./Hints";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -316,12 +314,10 @@ class QuestionWrapper extends Component {
       disableResponse,
       isStudentReport,
       showStudentWork,
-      prevQActivityForQuestion = {},
       LCBPreviewModal,
       showUserTTS,
       showCollapseBtn = false,
       selectedTheme = "default",
-      displayFeedback = true,
       isPrintPreview = false,
       evaluation,
       scrollContainer,
@@ -340,7 +336,6 @@ class QuestionWrapper extends Component {
     const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
-
     const userAnswerProps = {};
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
@@ -423,7 +418,9 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               isV1Multipart={isV1Multipart}
               style={{
-                width: !isPrintPreview && `${view === "edit" && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
+                width:
+                  !isPrintPreview &&
+                  `${view === "edit" && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
                 maxWidth: isPrintPreview && "calc(100% - 10px)",
                 display: "flex",
                 boxShadow: "none",
@@ -475,7 +472,6 @@ class QuestionWrapper extends Component {
                             }
                           }}
                         >
-                          {" "}
                           Show student work
                         </ShowStudentWorkBtn>
                       )}
@@ -492,6 +488,7 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
+                {view === "preview" && <Hints question={data} />}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>
@@ -524,8 +521,7 @@ QuestionWrapper.propTypes = {
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
-  LCBPreviewModal: PropTypes.any,
-  displayFeedback: PropTypes.bool
+  LCBPreviewModal: PropTypes.any
 };
 
 QuestionWrapper.defaultProps = {
@@ -547,8 +543,7 @@ QuestionWrapper.defaultProps = {
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
   disableResponse: false,
-  isPresentationMode: false,
-  displayFeedback: true
+  isPresentationMode: false
 };
 
 const enhance = compose(

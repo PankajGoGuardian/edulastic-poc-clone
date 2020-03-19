@@ -77,7 +77,6 @@ export const Label = styled.label`
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? "initial" : "none")};
   margin-right: 12px;
-  margin-bottom: 1rem;
 
   &.checked {
     background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};

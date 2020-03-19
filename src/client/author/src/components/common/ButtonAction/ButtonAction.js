@@ -68,14 +68,15 @@ class ButtonAction extends Component {
         {view === "preview" && (
           <PreviewBar>
             <ScoreBlock />
-            <RightActionButton
+            {/* we may need to bring hint button back */}
+            {/* <RightActionButton
               style={showHints ? { background: themeColor } : null}
               hints
               onClick={handleShowHints}
               data-cy="show-hint-btn"
             >
               <LabelText style={showHints ? { color: white } : null}>HINTS</LabelText>
-            </RightActionButton>
+            </RightActionButton> */}
             {showCheckButton && (
               <RightActionButton onClick={this.handleCheckClick} data-cy="check-answer-btn">
                 <IconCheck width={16} height={12} />

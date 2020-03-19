@@ -2,12 +2,12 @@
 import React from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
+import get from "lodash/get";
 import styled from "styled-components";
-import { Tooltip } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import { smallDesktopWidth } from "@edulastic/colors";
-import get from "lodash/get";
+import { Tooltip } from "../../../common/utils/helpers";
 import { showHintButton } from "../../utils/test";
 
 const TestButton = ({
@@ -37,15 +37,15 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-
-      {showHintButton(questions) ? (
+      {/* we may need to bring hint button back */}
+      {/* {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
             <StyledIconLightBulb />
             <span>{t("common.test.hint")}</span>
           </StyledButton>
         </Tooltip>
-      ) : null}
+      ) : null} */}
 
       <Tooltip placement="top" title="Bookmark">
         <StyledButton onClick={toggleBookmark} active={isBookmarked}>

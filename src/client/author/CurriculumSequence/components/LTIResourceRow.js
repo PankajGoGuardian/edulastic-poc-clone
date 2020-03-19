@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Button } from "antd";
 import styled from "styled-components";
 import { Tooltip } from "../../../common/utils/helpers";
-import { lightGreen5, white, themeColor } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { ModuleDataName, EllipticSpan, AssignmentButton, AssignmentIcon, CustomIcon } from "./CurriculumModuleRow";
 import { IconTrash } from "@edulastic/icons";
 
@@ -43,54 +43,13 @@ export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIn
         </ModuleDataName>
       </Col>
       <StyledCol span={urlHasUseThis ? 17 : 14}>
-        <AssignmentButton style={{ marginRight: "40px" }}>
+        <AssignmentButton>
           <Button onClick={() => showResource(data.contentId)}>VIEW</Button>
         </AssignmentButton>
       </StyledCol>
     </Row>
   );
 };
-
-export const ViewButton = styled.div`
-  float: right;
-  min-width: 121px;
-  .ant-btn {
-    color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-    border: 1px solid ${lightGreen5};
-    background-color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
-    min-width: 121px;
-    max-height: 22px;
-    display: flex;
-    align-items: center;
-    margin: ${({ margin }) => margin};
-
-    svg {
-      fill: ${({ assigned }) => (assigned ? white : lightGreen5)};
-    }
-    &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-      color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
-      border-color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-      svg {
-        fill: ${({ assigned }) => (assigned ? lightGreen5 : white)};
-      }
-    }
-    i {
-      position: absolute;
-      position: absolute;
-      left: 6px;
-      display: flex;
-      align-items: center;
-    }
-    span {
-      margin-left: auto;
-      margin-right: auto;
-      font: 9px/13px Open Sans;
-      letter-spacing: 0.17px;
-      font-weight: 600;
-    }
-  }
-`;
 
 const StyledCol = styled(Col)`
   display: flex;

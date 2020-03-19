@@ -22,13 +22,18 @@ export default class QuestionResponsePage {
 
   getImprovement = () => cy.get('[data-cy="scoreChange"]');
 
-  getQuestionContainer = cardIndex => cy.get('[data-cy="question-container"]').eq(cardIndex);
+  getQuestionContainer = cardIndex =>
+    cy
+      .get('[data-cy="student-question-container"]')
+      // .find('[data-cy="question-container"]')
+      .eq(cardIndex);
 
   getQuestionContainerByStudent = studentName =>
     cy
       .get('[data-cy="studentName"]')
       .contains(studentName)
-      .closest('[data-cy="question-container"]');
+      .closest('[data-cy="student-question-container"]');
+  // .find('[data-cy="question-container"]');
 
   getLabels = qcard => qcard.find("label");
 

@@ -42,7 +42,11 @@ function Preview({
   const testItemID = passages?.[0]?.testItems?.[0] || ""; // pass testItemId in which passage was used
   const answerContextConfig = useContext(AnswerContext);
   return (
-    <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
+    <StyledFlexContainer
+      key={item._id}
+      data-cy="student-question-container"
+      className={`student-question-container-id-${studentId}`}
+    >
       <TestItemPreview
         showCollapseBtn
         showFeedback
@@ -147,17 +151,11 @@ class ClassQuestions extends Component {
               return false;
             }
 
-            if (
-              filter === "wrong" &&
-              (firstQAct.score > 0 || firstQAct.skipped || firstQAct.graded === false)
-            ) {
+            if (filter === "wrong" && (firstQAct.score > 0 || firstQAct.skipped || firstQAct.graded === false)) {
               return false;
             }
 
-            if (
-              filter === "partial" &&
-              !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)
-            ) {
+            if (filter === "partial" && !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)) {
               return false;
             }
             if (filter === "skipped" && !(firstQAct.skipped && firstQAct.score === 0)) {
@@ -172,9 +170,7 @@ class ClassQuestions extends Component {
         let questions = data.questions
           .map(question => {
             const { id } = question;
-            let qActivities = questionActivities.filter(
-              ({ qid, id: altId }) => qid === id || altId === id
-            );
+            let qActivities = questionActivities.filter(({ qid, id: altId }) => qid === id || altId === id);
             if (qActivities.length > 1) {
               /**
                * taking latest qActivity for a qid
@@ -200,9 +196,7 @@ class ClassQuestions extends Component {
 
               if (
                 filter === "wrong" &&
-                (qActivities[0].score > 0 ||
-                  qActivities[0].skipped ||
-                  qActivities[0].graded === false)
+                (qActivities[0].score > 0 || qActivities[0].skipped || qActivities[0].graded === false)
               ) {
                 return false;
               }
@@ -302,8 +296,7 @@ class ClassQuestions extends Component {
             continue;
           }
           for (const variable of Object.keys(variables)) {
-            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
-              example[variable];
+            draft[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue = example[variable];
           }
         }
       }
@@ -342,13 +335,9 @@ class ClassQuestions extends Component {
       let showStudentWork = null;
       let scractchPadUsed = userWork[item._id];
       if (isQuestionView) {
-        scractchPadUsed = item.data.questions.some(
-          question => question?.activity?.scratchPadPresent || false
-        );
+        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPadPresent || false);
       } else {
-        scractchPadUsed = item.data.questions.some(
-          question => question?.activity?.scratchPad?.scratchpad
-        );
+        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
       }
       if (scractchPadUsed) {
         showStudentWork = () => this.showStudentWork(item);
@@ -450,10 +439,7 @@ export default connect(
     testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(
-      state,
-      ownProps.currentStudent.studentId
-    ),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
     userWork: get(state, ["userWork", "present"], {})
   }),
   {

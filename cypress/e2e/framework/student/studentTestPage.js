@@ -686,7 +686,7 @@ class StudentTestPage {
   getQuestionInPracticeByIndex = qIndex => cy.get(`[data-cy="queCircle-${qIndex + 1}"]`);
 
   verifySideBar = qIndex => {
-    this.getQuestionInPracticeByIndex(qIndex).should("have.css", "background-color", queColor.GREY);
+    this.getQuestionInPracticeByIndex(qIndex).should("have.css", "background-color", queColor.GREEN_2);
   };
 
   verifyTopProgress = (qIndex, total) => {

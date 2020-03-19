@@ -100,6 +100,7 @@ class MetadataPage {
         cy.wait(3000); // UI renders list slow even after api responsed
        */
         this.getDropDownMenu()
+          .should("have.length.greaterThan", 1)
           .contains(std)
           .click({ force: true });
       });

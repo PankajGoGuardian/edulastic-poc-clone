@@ -3,30 +3,56 @@ import CypressHelper from "../../util/cypressHelpers";
 export default class DifferentiationPage {
   // *** ELEMENTS START ***
 
-  getClassSelect = () => cy.get('[data-cy="select-group"]');
+  getDifferentiationTab = () => cy.get('[data-cy="differentiation"]');
 
-  getAssignmentSelect = () => cy.get('data-cy="select-assignment"');
+  getClassSelect = () => cy.get("[data-cy=select-group]");
 
-  getReviewSlider = () => cy.get('[data-cy="table-REVIEW"]').find(".ant-slider");
+  getReviewWorkContainer = () => cy.get('[data-cy="table-REVIEW"]');
+
+  getChallengeWorkContainer = () => cy.get('[data-cy="table-CHALLENGE"]');
+
+  getReviewTestByIndex = index => this.getReviewWorkContainer().find(`[data-row-key="${index}"]`);
+
+  getChallengeTestByIndex = index => this.getChallengeWorkContainer().find(`[data-row-key="${index}"]`);
+
+  getAssignmentSelect = () => cy.get("[data-cy=select-assignment]");
+
+  getReviewSlider = () => this.getReviewWorkContainer().find(".ant-slider");
 
   getPracticeSlider = () => cy.get('[data-cy="table-PRACTICE"]').find(".ant-slider");
 
-  getChallengeSlider = () => cy.get('[data-cy="table-CHALLENGE"]').find(".ant-slider");
+  getChallengeSlider = () => this.getChallengeWorkContainer().find(".ant-slider");
+
+  getReviewStandardsRows = () => this.getReviewWorkContainer().find(".ant-table-row-level-0");
+
+  getChallengeStandardsRows = () => this.getChallengeWorkContainer().find(".ant-table-row-level-0");
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickOnDifferentiationTab = () => this.getDifferentiationTab().click();
 
   clickOnClassSelect = () => this.getClassSelect().click();
 
   clickOnAssignmentSelect = () => this.getAssignmentSelect().click();
 
   selectClass = className => {
+    this.clickOnClassSelect();
+    cy.server();
+    cy.route("GET", "**/recommendations**").as("recommendations");
     CypressHelper.selectDropDownByAttribute("select-group", className);
+    cy.wait("@recommendations");
   };
 
   selectAssignment = assignmentName => {
+    this.clickOnAssignmentSelect();
     CypressHelper.selectDropDownByAttribute("select-assignment", assignmentName);
+  };
+
+  verifyAssignmentNotPresentInDropDown = value => {
+    this.clickOnAssignmentSelect();
+    CypressHelper.getDropDownList().should("not.contain", value);
   };
 
   setMasteryRangeSlider = (min, max) => {

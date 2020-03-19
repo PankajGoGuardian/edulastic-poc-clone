@@ -181,7 +181,7 @@ class ViewModal extends React.Component {
                 <IconDescription />
                 <span>DETAILS</span>
               </EduButton>
-              {allowDuplicate && (
+              {allowDuplicate && status !== "draft" && (
                 <EduButton
                   isGhost
                   height="40px"

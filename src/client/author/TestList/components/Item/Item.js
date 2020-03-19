@@ -260,12 +260,12 @@ class Item extends Component {
                     Edit
                   </EduButton>
                 )}
-                {status === "draft" && allowDuplicate && (
+                {allowDuplicate && status !== "draft" && (
                   <EduButton height="32px" onClick={this.duplicate}>
                     Duplicate
                   </EduButton>
                 )}
-                {status === "published" && (
+                {(status === "published" || status === "draft") && (
                   <EduButton height="32px" onClick={e => this.showPreviewModal(testId, e)}>
                     Preview
                   </EduButton>

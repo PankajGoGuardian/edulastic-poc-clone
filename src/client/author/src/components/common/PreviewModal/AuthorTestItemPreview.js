@@ -169,11 +169,7 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
-  renderTabContent = (
-    widget,
-    flowLayout
-    // , index, colIndex, sectionQue, subCount, resourceCount
-  ) => {
+  renderTabContent = ({ widget, flowLayout, widgetIndex, colIndex }) => {
     const {
       preview,
       LCBPreviewModal,
@@ -219,6 +215,8 @@ class AuthorTestItemPreview extends Component {
     if (question.activity && question.activity.filtered) {
       return <div />;
     }
+    const widgets = cols[colIndex]?.widgets || [];
+    const borderRadius = widgetIndex === 0 || widgetIndex === widgets.length - 1 ? "10px" : "0px";
 
     return (
       <Tabs.TabContainer>
@@ -238,6 +236,7 @@ class AuthorTestItemPreview extends Component {
           isFlex
           flowLayout={flowLayout}
           LCBPreviewModal={LCBPreviewModal}
+          borderRadius={borderRadius}
           {...restProps}
         />
       </Tabs.TabContainer>
@@ -440,10 +439,26 @@ class AuthorTestItemPreview extends Component {
               {col.tabs &&
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
+                this.renderTabContent({
+                  widget,
+                  flowLayout: col.flowLayout,
+                  widgetIndex: i,
+                  colIndex,
+                  sectionQue,
+                  subCount: subCount++,
+                  resourceCount
+                })}
               {col.tabs &&
                 !col.tabs.length &&
-                this.renderTabContent(widget, col.flowLayout, i, colIndex, sectionQue, subCount++, resourceCount)}
+                this.renderTabContent({
+                  widget,
+                  flowLayout: col.flowLayout,
+                  widgetIndex: i,
+                  colIndex,
+                  sectionQue,
+                  subCount: subCount++,
+                  resourceCount
+                })}
             </React.Fragment>
           ))}
         </WidgetContainer>

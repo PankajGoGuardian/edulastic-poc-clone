@@ -417,6 +417,7 @@ class QuestionWrapper extends Component {
               className="question-wrapper"
               disabled={disabled}
               isV1Multipart={isV1Multipart}
+              borderRadius={isLCBView ? "10px" : restProps.borderRadius}
               style={{
                 width:
                   !isPrintPreview &&
@@ -425,8 +426,7 @@ class QuestionWrapper extends Component {
                 display: "flex",
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null,
-                border: isLCBView ? "1px solid #DADAE4" : null,
-                borderRadius: isLCBView ? "10px" : null
+                border: isLCBView ? "1px solid #DADAE4" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
               twoColLayout={showCollapseBtn || showFeedback ? null : theme?.twoColLayout}

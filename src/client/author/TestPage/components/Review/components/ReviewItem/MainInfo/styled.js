@@ -20,8 +20,8 @@ export const Stimulus = WithMathFormula(styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 15px;
-  height: 25px;
   flex: 1;
+  padding-top: 3px;
 
   & *:not(.edu) {
     ${Style}

@@ -53,14 +53,13 @@ import {
   LeftWrapper,
   FixedWrapper
 } from "./styled";
-import { getUserRole, getInterestedGradesSelector, getInterestedSubjectsSelector } from "../../../src/selectors/user";
+import { getUserRole } from "../../../src/selectors/user";
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import {
   toggleDeleteAssignmentModalAction,
   getToggleDeleteAssignmentModalState
 } from "../../../sharedDucks/assignments";
 import { DeleteAssignmentModal } from "../DeleteAssignmentModal/deleteAssignmentModal";
-import { getDefaultInterests } from "../../../dataUtils";
 
 const initialFilterState = {
   grades: [],
@@ -80,27 +79,15 @@ class Assignments extends Component {
   };
 
   componentDidMount() {
-    const {
-      loadAssignments,
-      loadAssignmentsSummary,
-      districtId,
-      loadFolders,
-      userRole,
-      orgData,
-      interestedGrades,
-      interestedSubjects
-    } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, userRole, orgData } = this.props;
 
     const { defaultTermId, terms } = orgData;
     const storedFilters = JSON.parse(sessionStorage.getItem("filters[Assignments]")) || {};
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters;
-    const { subject = interestedSubjects?.[0] || "", grades = interestedGrades } = getDefaultInterests();
     const filters = {
       ...initialFilterState,
       ...storedFilters,
-      showFilter,
-      subject,
-      grades
+      showFilter
     };
     if (defaultTermId && !storedFilters.hasOwnProperty("termId")) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId);
@@ -363,9 +350,7 @@ const enhance = compose(
       error: get(state, "test.error", false),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, "user.user.orgData", {}),
-      toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state),
-      interestedGrades: getInterestedGradesSelector(state),
-      interestedSubjects: getInterestedSubjectsSelector(state)
+      toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(state)
     }),
     {
       loadAssignments: receiveAssignmentsAction,

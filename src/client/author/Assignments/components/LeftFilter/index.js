@@ -49,7 +49,6 @@ import {
   NewFolderButton,
   StyledBoldText
 } from "./styled";
-import { setDefaultInterests } from "../../../dataUtils";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
@@ -243,9 +242,6 @@ class LeftFilter extends React.Component {
     } else {
       filters = { ...filters, pageNo: 1 };
       loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
-    }
-    if (key === "grades" || key === "subject") {
-      setDefaultInterests({ [key]: value });
     }
     onSetFilter(filters);
   };

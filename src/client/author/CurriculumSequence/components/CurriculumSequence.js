@@ -560,7 +560,7 @@ class CurriculumSequence extends Component {
       </SubHeaderInfoCard>
     );
 
-    const enableCustomize = customize && urlHasUseThis && !isStudent && isSparkMathPlaylist;
+    const enableCustomize = customize && urlHasUseThis && !isStudent;
 
     const isAuthoringFlowReview = current === "review";
 

@@ -2,6 +2,7 @@ import React from "react";
 import { Input, Select, Row, Col } from "antd";
 import { CheckboxLabel } from "@edulastic/common";
 import styled from "styled-components";
+import { themeColor } from "@edulastic/colors";
 
 export const ExternalLTIModalContent = ({ data, onChange }) => {
   const getToolProviderOptions = () => {
@@ -96,5 +97,8 @@ const StyledInput = styled(Input)`
 const StyledSelect = styled(Select)`
   .ant-select-selection {
     border-radius: 0;
+  }
+  .ant-select-arrow {
+    color: ${themeColor};
   }
 `;

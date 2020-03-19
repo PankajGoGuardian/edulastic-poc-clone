@@ -98,7 +98,7 @@ const WorkTable = ({
       return (
         <>
           <StyledSlider min={1} value={masteryRange[1]} onChange={value => handleSliderChange([0, value])} />
-          <span>{`Below ${masteryRange[1] + 1}%`}</span>
+          <span>{`Below ${masteryRange[1]}%`}</span>
         </>
       );
     }
@@ -118,6 +118,7 @@ const WorkTable = ({
             value={100 - masteryRange[0] + 1}
             onChange={value => handleSliderChange([100 - value, 100])}
             min={1}
+            tipFormatter={value => 100 - value}
           />
           <span>{`Above ${masteryRange[0] - 1}%`}</span>
         </>

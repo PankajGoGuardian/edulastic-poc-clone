@@ -136,7 +136,7 @@ export const ManageModuleBtn = styled.div`
 `;
 
 export const ResourceDataList = styled.div`
-  height: 700px;
+  height: calc(100vh - 295px);
   margin-bottom: 20px;
   overflow: auto;
   display: flex;

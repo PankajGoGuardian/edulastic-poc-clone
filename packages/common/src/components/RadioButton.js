@@ -28,13 +28,21 @@ const StyledRadioBtn = styled(Radio)`
       box-shadow: none;
     }
     .ant-radio {
+      margin-right: 10px;
       & + span {
         font-size: ${props => props.labelFontSize || "12px"};
         padding: ${props => props.labelPadding || "0px 10px"};
+        text-transform: uppercase;
       }
       .ant-radio-inner {
         border-color: ${greyThemeLight};
         background: ${greyThemeLighter};
+        width: 18px;
+        height: 18px;
+        &:after {
+          top: 4px;
+          left: 4px;
+        }
       }
       &.ant-radio-checked {
         &:after {

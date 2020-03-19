@@ -1,73 +1,65 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { compose } from "redux";
+import { themeColor } from "@edulastic/colors";
+import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Icon, Menu, message, Select } from "antd";
 import { get, isEmpty } from "lodash";
-
-import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-import { TypeToConfirmModal } from "@edulastic/common";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
+import { compose } from "redux";
 import {
+  StyledActionDropDown,
+  StyledAddFilterButton,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
   StyledFilterInput,
-  StyledActionDropDown,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../../admin/Common/StyledComponents";
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  LeftFilterDiv,
-  RightFilterDiv,
-  StyledTableButton
+  StyledTableButton,
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-import { StyledTeacherTable } from "./styled";
-import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
-import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
-import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
-import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
-
-import { getTeachersListSelector } from "../../ducks";
-
 import {
-  receiveAdminDataAction,
-  createAdminUserAction,
-  updateAdminUserAction,
-  deleteAdminUserAction,
-  setSearchNameAction,
-  getAdminUsersDataSelector,
-  getAdminUsersDataCountSelector,
-  getShowActiveUsersSelector,
-  setShowActiveUsersAction,
-  getPageNoSelector,
-  setPageNoAction,
-  getFiltersSelector,
+  addBulkTeacherAdminAction,
+  addFilterAction,
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction,
+  createAdminUserAction,
+  deleteAdminUserAction,
+  getAdminUsersDataCountSelector,
+  getAdminUsersDataSelector,
+  getFiltersSelector,
+  getPageNoSelector,
+  getShowActiveUsersSelector,
+  receiveAdminDataAction,
   removeFilterAction,
+  setPageNoAction,
   setRoleAction,
-  addBulkTeacherAdminAction,
-  setTeachersDetailsModalVisibleAction
+  setSearchNameAction,
+  setShowActiveUsersAction,
+  setTeachersDetailsModalVisibleAction,
+  updateAdminUserAction
 } from "../../../SchoolAdmin/ducks";
-
-import { getUserOrgId } from "../../../src/selectors/user";
-
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { withRouter } from "react-router-dom";
-import { EduCheckBox } from "@edulastic/common";
+import { getUserOrgId } from "../../../src/selectors/user";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
+import { getTeachersListSelector } from "../../ducks";
+import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
+import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
+import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import { StyledTeacherTable } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
@@ -676,13 +668,13 @@ class TeacherTable extends Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
-            <EduCheckBox
+            <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </EduCheckBox>
+            </CheckboxLabel>
             <StyledActionDropDown overlay={actionMenu}>
               <Button>
                 {t("common.actions")} <Icon type="down" />

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-import { TypeToConfirmModal } from "@edulastic/common";
+import { TypeToConfirmModal, CheckboxLabel } from "@edulastic/common";
 
 import {
   StyledTableContainer,
@@ -587,13 +587,13 @@ class DistrictAdminTable extends Component {
             </Button>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
-            <EduCheckBox
+            <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </EduCheckBox>
+            </CheckboxLabel>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>

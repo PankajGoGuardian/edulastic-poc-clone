@@ -1,7 +1,8 @@
-import React from "react";
+import { CheckboxLabel } from "@edulastic/common";
+import { Col, Row } from "antd";
 import PropTypes from "prop-types";
-import { Row, Col, Checkbox } from "antd";
-import { StyledCard, ColWrapper } from "./styled";
+import React from "react";
+import { ColWrapper, StyledCard } from "./styled";
 
 const ListCard = ({ item, onPerformanceBandUpdate, owner, isEditable }) => (
   <StyledCard
@@ -17,7 +18,7 @@ const ListCard = ({ item, onPerformanceBandUpdate, owner, isEditable }) => (
         {item.bands}
       </Col>
       <ColWrapper span={6}>
-        <Checkbox disabled={!owner || !isEditable} onChange={onPerformanceBandUpdate} />
+        <CheckboxLabel disabled={!owner || !isEditable} onChange={onPerformanceBandUpdate} />
       </ColWrapper>
       <ColWrapper span={6}>{item.from}</ColWrapper>
       <ColWrapper span={6}>{item.bands}</ColWrapper>

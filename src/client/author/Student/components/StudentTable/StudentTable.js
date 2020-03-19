@@ -1,91 +1,81 @@
+import { themeColor } from "@edulastic/colors";
+import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Icon, Menu, message, Select } from "antd";
+import { get, identity, isEmpty, pickBy, unset } from "lodash";
+import * as moment from "moment";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
-import * as moment from "moment";
-import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
-import { TypeToConfirmModal } from "@edulastic/common";
-import { getUserFeatures } from "../../../../student/Login/ducks";
 import {
+  StyledActionDropDown,
+  StyledAddFilterButton,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
   StyledFilterInput,
-  StyledActionDropDown,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../../admin/Common/StyledComponents";
+import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  LeftFilterDiv,
-  RightFilterDiv,
-  StyledTableButton
+  StyledTableButton,
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-import { StyledStudentTable } from "./styled";
-
-import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
-
-import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
-import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
-import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
-import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
-
-import {
-  addMultiStudentsRequestAction,
-  setStudentsDetailsModalVisibleAction,
-  getAddStudentsToOtherClassSelector,
-  setAddStudentsToOtherClassVisiblityAction,
-  addStudentsToOtherClassAction,
-  fetchClassDetailsUsingCodeAction,
-  setMultiStudentsProviderAction,
-  getValidatedClassDetails,
-  resetFetchedClassDetailsAction
-} from "../../ducks";
-
+import { getFullNameFromString } from "../../../../common/utils/helpers";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
-
+import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import {
-  receiveAdminDataAction,
-  createAdminUserAction,
-  updateAdminUserAction,
-  deleteAdminUserAction,
-  setSearchNameAction,
-  getAdminUsersDataSelector,
-  getAdminUsersDataCountSelector,
-  getShowActiveUsersSelector,
-  setShowActiveUsersAction,
-  getPageNoSelector,
-  setPageNoAction,
-  getFiltersSelector,
+  addFilterAction,
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction,
+  createAdminUserAction,
+  deleteAdminUserAction,
+  getAdminUsersDataCountSelector,
+  getAdminUsersDataSelector,
+  getFiltersSelector,
+  getPageNoSelector,
+  getShowActiveUsersSelector,
+  receiveAdminDataAction,
   removeFilterAction,
-  setRoleAction
+  setPageNoAction,
+  setRoleAction,
+  setSearchNameAction,
+  setShowActiveUsersAction,
+  updateAdminUserAction
 } from "../../../SchoolAdmin/ducks";
-
 import { receiveSchoolsAction } from "../../../Schools/ducks";
-
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-
-import { getFullNameFromString } from "../../../../common/utils/helpers";
-
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { withRouter } from "react-router-dom";
-import { EduCheckBox } from "@edulastic/common";
-import { getPolicies, receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  addMultiStudentsRequestAction,
+  addStudentsToOtherClassAction,
+  fetchClassDetailsUsingCodeAction,
+  getAddStudentsToOtherClassSelector,
+  getValidatedClassDetails,
+  resetFetchedClassDetailsAction,
+  setAddStudentsToOtherClassVisiblityAction,
+  setMultiStudentsProviderAction,
+  setStudentsDetailsModalVisibleAction
+} from "../../ducks";
+import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
+import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
+import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
+import { StyledStudentTable } from "./styled";
+
 const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
 const { Option } = Select;
@@ -757,13 +747,13 @@ class StudentTable extends Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
-            <EduCheckBox
+            <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </EduCheckBox>
+            </CheckboxLabel>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <Button>
                 {t("common.actions")} <Icon type="down" />

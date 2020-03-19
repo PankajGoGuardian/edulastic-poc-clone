@@ -6,10 +6,8 @@ import { themeColorLighter, yellow, red } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
+import { CheckboxLabel } from "@edulastic/common";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
-
-import CardCheckbox from "./CardCheckbox/CardCheckbox";
-import { EduCheckBox } from "@edulastic/common";
 
 import {
   StyledCardContiner,
@@ -229,7 +227,7 @@ class DisneyCardContainer extends Component {
                 <RightAlignedCol>
                   <Row>
                     <Col onClick={e => e.stopPropagation()}>
-                      <EduCheckBox
+                      <CheckboxLabel
                         checked={selectedStudents[student.studentId]}
                         onChange={e => {
                           if (e.target.checked) {

@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Checkbox } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
 
-import { TextField, PaddingDiv } from "@edulastic/common";
+import { TextField, PaddingDiv, CheckboxLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
@@ -119,14 +118,14 @@ class AdditionalOptions extends Component {
               onChange={e => this.changeStimulus("distractorRationale", e.target.value)}
               value={questionData.distractorRationale}
             />
-            <Checkbox
+            <CheckboxLabel
               checked={questionData.distractorRationalePerResponse}
               onChange={e => this.onChange("distractorRationalePerResponse", e.target.checked)}
               size="large"
               style={{ width: "80%" }}
             >
               {t("component.options.distractorRationalePerResponse")}
-            </Checkbox>
+            </CheckboxLabel>
           </Col>
         </Row>
         <PaddingDiv top={30}>

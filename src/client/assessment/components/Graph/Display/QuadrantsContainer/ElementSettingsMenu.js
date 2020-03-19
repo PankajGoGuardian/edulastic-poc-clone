@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import ColorPicker from "rc-color-picker";
 import PropTypes from "prop-types";
-import { Checkbox, Paper, Button, FroalaEditor } from "@edulastic/common";
+import { Paper, Button, FroalaEditor, CheckboxLabel } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
@@ -45,20 +45,16 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           <Fragment>
             {element.label && (
               <Row style={{ marginBottom: "10px" }}>
-                <Checkbox
-                  label="Show Label"
-                  onChange={() => handleLabelVisibility(!labelIsVisible)}
-                  checked={labelIsVisible}
-                />
+                <CheckboxLabel onChange={() => handleLabelVisibility(!labelIsVisible)} checked={labelIsVisible}>
+                  Show Label
+                </CheckboxLabel>
               </Row>
             )}
             {element.type === "point" && (
               <Row style={{ marginBottom: "10px" }}>
-                <Checkbox
-                  label="Show Object"
-                  onChange={() => handlePointVisibility(!pointIsVisible)}
-                  checked={pointIsVisible}
-                />
+                <CheckboxLabel onChange={() => handlePointVisibility(!pointIsVisible)} checked={pointIsVisible}>
+                  Show Object
+                </CheckboxLabel>
               </Row>
             )}
           </Fragment>

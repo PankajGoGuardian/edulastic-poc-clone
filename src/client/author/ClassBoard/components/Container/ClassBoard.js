@@ -1,5 +1,5 @@
 import { black } from "@edulastic/colors";
-import { MainContentWrapper } from "@edulastic/common";
+import { MainContentWrapper, EduCheckBox, CheckboxLabel } from "@edulastic/common";
 import {
   IconAddStudents,
   IconDownload,
@@ -101,7 +101,6 @@ import {
   StyledCheckbox,
   StyledFlexContainer
 } from "./styled";
-import { EduCheckBox } from "@edulastic/common";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -824,14 +823,14 @@ class ClassBoard extends Component {
                 </StyledCard>
               </GraphContainer>
               <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
-                <EduCheckBox
+                <CheckboxLabel
                   data-cy="selectAllCheckbox"
                   checked={unselectedStudents.length === 0}
                   indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
                   onChange={this.onSelectAllChange}
                 >
                   {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                </EduCheckBox>
+                </CheckboxLabel>
                 <ClassBoardFeats>
                   <RedirectButton
                     disabled={!isItemsVisible}

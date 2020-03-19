@@ -1,8 +1,9 @@
+import { CheckboxLabel } from "@edulastic/common";
+import { Form, Select } from "antd";
 import React, { useEffect } from "react";
-import { Form, Checkbox, Select } from "antd";
 import styled from "styled-components";
-import { deltaSyncConfig, DISABLE_SUBMIT_TITLE } from "../Data";
 import { FlexColumn } from "../Common/StyledComponents";
+import { deltaSyncConfig, DISABLE_SUBMIT_TITLE } from "../Data";
 import CancelApplyActions from "./CancelApplyActions";
 
 const { Option } = Select;
@@ -59,12 +60,12 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableField
         <Form.Item>
           {getFieldDecorator("studentDeltaMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig.studentDeltaMergeEnabled}</Checkbox>)}
+          })(<CheckboxLabel>{deltaSyncConfig.studentDeltaMergeEnabled}</CheckboxLabel>)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator("studentFullMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig.studentFullMergeEnabled}</Checkbox>)}
+          })(<CheckboxLabel>{deltaSyncConfig.studentFullMergeEnabled}</CheckboxLabel>)}
         </Form.Item>
         <Form.Item label={deltaSyncConfig.studentMergeAttribute}>
           {getFieldDecorator("studentMergeAttribute", {})(
@@ -78,12 +79,12 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableField
         <Form.Item>
           {getFieldDecorator("teacherDeltaMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig.teacherDeltaMergeEnabled}</Checkbox>)}
+          })(<CheckboxLabel>{deltaSyncConfig.teacherDeltaMergeEnabled}</CheckboxLabel>)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator("teacherFullMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig.teacherFullMergeEnabled}</Checkbox>)}
+          })(<CheckboxLabel>{deltaSyncConfig.teacherFullMergeEnabled}</CheckboxLabel>)}
         </Form.Item>
         <Form.Item label={deltaSyncConfig.teacherMergeAttribute}>
           {getFieldDecorator("teacherMergeAttribute", {})(

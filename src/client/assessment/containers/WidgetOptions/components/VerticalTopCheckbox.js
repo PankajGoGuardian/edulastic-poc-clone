@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Checkbox } from "antd";
+import { CheckboxLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import PropTypes from "prop-types";
+import React from "react";
 
 const VerticalTopCheckbox = ({ onChange, checked, t, ...restProps }) => (
-  <Checkbox checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
+  <CheckboxLabel checked={checked} onChange={e => onChange(e.target.checked)} {...restProps}>
     {t("component.options.verticaltop")}
-  </Checkbox>
+  </CheckboxLabel>
 );
 
 VerticalTopCheckbox.propTypes = {

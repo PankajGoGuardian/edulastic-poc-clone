@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import { Select, TextField, Checkbox } from "@edulastic/common";
+import { Select, TextField, CheckboxLabel } from "@edulastic/common";
 import { cloneDeep } from "lodash";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
@@ -165,11 +164,9 @@ class Layout extends Component {
           </Row>
           <Row>
             <Col md={8}>
-              <Checkbox
-                onChange={() => changeUiStyle("wordwrap", !uiStyle.wordwrap)}
-                label={t("component.options.wordwrap")}
-                checked={uiStyle.wordwrap}
-              />
+              <CheckboxLabel onChange={() => changeUiStyle("wordwrap", !uiStyle.wordwrap)} checked={uiStyle.wordwrap}>
+                {t("component.options.wordwrap")}
+              </CheckboxLabel>
             </Col>
           </Row>
           <Row marginTop={13}>
@@ -213,11 +210,12 @@ class Layout extends Component {
               </Row>
               <Row>
                 <Col md={6}>
-                  <Checkbox
+                  <CheckboxLabel
                     onChange={() => changeIndividualUiStyle("wordwrap", !responsecontainerindividual.wordwrap, index)}
-                    label={t("component.options.wordwrap")}
                     checked={responsecontainerindividual.wordwrap}
-                  />
+                  >
+                    {t("component.options.wordwrap")}
+                  </CheckboxLabel>
                 </Col>
               </Row>
             </Container>

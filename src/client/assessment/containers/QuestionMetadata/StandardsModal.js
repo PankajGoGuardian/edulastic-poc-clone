@@ -1,5 +1,5 @@
-import { EduButton, FlexContainer, MathFormulaDisplay, Paper } from "@edulastic/common";
-import { Checkbox, Col, Row, Spin } from "antd";
+import { CheckboxLabel, EduButton, FlexContainer, MathFormulaDisplay, Paper } from "@edulastic/common";
+import { Col, Row, Spin } from "antd";
 import PropTypes from "prop-types";
 import React, { useMemo, useState } from "react";
 import { setDefaultInterests } from "../../../author/dataUtils";
@@ -131,10 +131,11 @@ const StandardsModal = ({
                       justifyContent="flex-start"
                       style={{ marginBottom: 15 }}
                     >
-                      <Checkbox
+                      <CheckboxLabel
                         data-cy={c.identifier}
                         onChange={() => handleCheckELO(c)}
                         checked={state.eloStandards.some(item => item._id === c._id)}
+                        style={{ marginRight: "10px" }}
                       />
                       <div>
                         <b>{c.identifier}</b>

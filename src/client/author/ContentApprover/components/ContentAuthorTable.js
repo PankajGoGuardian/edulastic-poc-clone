@@ -1,61 +1,55 @@
+import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Icon, message, Select } from "antd";
+import { get, isEmpty } from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isEmpty } from "lodash";
-import { Icon, Select, message, Button, Checkbox } from "antd";
-import { TypeToConfirmModal, EduCheckBox } from "@edulastic/common";
-
-import { withNamespaces } from "@edulastic/localization";
 import {
+  StyledAddFilterButton,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
   StyledFilterInput,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../admin/Common/StyledComponents";
-
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  LeftFilterDiv,
-  RightFilterDiv
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../common/styled";
-
-import CreateContentAuthorModal from "./CreateContentAuthorModal";
-import EditContentAuthorModal from "./EditContentAuthorModal";
-
+import { StyledContentAuthorTable } from "../../ContentAuthor/components/styled";
 import {
-  receiveAdminDataAction,
-  createAdminUserAction,
-  updateAdminUserAction,
-  deleteAdminUserAction,
-  setSearchNameAction,
-  getAdminUsersDataSelector,
-  getAdminUsersDataCountSelector,
-  getShowActiveUsersSelector,
-  setShowActiveUsersAction,
-  getPageNoSelector,
-  setPageNoAction,
-  getFiltersSelector,
+  addFilterAction,
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction,
+  createAdminUserAction,
+  deleteAdminUserAction,
+  getAdminUsersDataCountSelector,
+  getAdminUsersDataSelector,
+  getFiltersSelector,
+  getPageNoSelector,
+  getShowActiveUsersSelector,
+  receiveAdminDataAction,
   removeFilterAction,
-  setRoleAction
+  setPageNoAction,
+  setRoleAction,
+  setSearchNameAction,
+  setShowActiveUsersAction,
+  updateAdminUserAction
 } from "../../SchoolAdmin/ducks";
-
-import { getUserOrgId } from "../../src/selectors/user";
 import Breadcrumb from "../../src/components/Breadcrumb";
-
 import AdminSubHeader from "../../src/components/common/AdminSubHeader/UserSubHeader";
-import { StyledContentAuthorTable } from "../../ContentAuthor/components/styled";
+import { getUserOrgId } from "../../src/selectors/user";
+import CreateContentAuthorModal from "./CreateContentAuthorModal";
+import EditContentAuthorModal from "./EditContentAuthorModal";
 
 const menuActive = { mainMenu: "Users", subMenu: "Content Approvers" };
 
@@ -566,13 +560,13 @@ class ContentAuthorTable extends Component {
             </Button>
           </LeftFilterDiv>
           <RightFilterDiv width={35}>
-            <EduCheckBox
+            <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </EduCheckBox>
+            </CheckboxLabel>
           </RightFilterDiv>
         </StyledFilterDiv>
         <TableContainer>

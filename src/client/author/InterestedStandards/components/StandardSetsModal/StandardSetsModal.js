@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import { CheckboxLabel } from "@edulastic/common";
 import { Col, Form, Modal, Select } from "antd";
+import React, { Component } from "react";
 import { FlexContainer } from "../../../../assessment/themes/common";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
-import { StyledCheckbox } from "../Container/styled";
-import { StyledRow, SubjectContainer, SubjectSelect, MyStandardInput } from "./styled";
-import { EduCheckBox } from "@edulastic/common";
+import { MyStandardInput, StyledRow, SubjectContainer, SubjectSelect } from "./styled";
 
 const Option = Select.Option;
 
@@ -113,13 +112,13 @@ class StandardSetsModal extends Component {
             <SubjectContainer>
               {standardsSetNames.map(standardSetName => (
                 <FlexContainer>
-                  <EduCheckBox
+                  <CheckboxLabel
                     onChange={() => this.changeStandards(standardSetName)}
                     checked={this.state.selectedStandards.includes(standardSetName)}
                     key={standardSetName}
                   >
                     {standardSetName}
-                  </EduCheckBox>
+                  </CheckboxLabel>
                 </FlexContainer>
               ))}
             </SubjectContainer>

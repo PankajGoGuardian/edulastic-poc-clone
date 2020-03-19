@@ -1,19 +1,15 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Checkbox, Row, Col, Switch } from "antd";
-import ReactOutsideEvent from "react-outside-event";
-
-import { title, themeColor } from "@edulastic/colors";
-import { Button } from "@edulastic/common";
+import { themeColor, title } from "@edulastic/colors";
+import { Button, CheckboxLabel, EduCheckBox } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-
+import { Col, Row, Switch } from "antd";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import ReactOutsideEvent from "react-outside-event";
 import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
-
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
-import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
-import { EduCheckBox } from "@edulastic/common";
+import { Checkboxes, Content, Heading, Items, SettingsButtonWrapper } from "./styled";
 
 const layouts = [
   {
@@ -212,12 +208,12 @@ class Container extends Component {
           </Row>
         )}
         <Checkboxes>
-          <EduCheckBox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
+          <CheckboxLabel style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
             {t("author:component.settingsBar.showVerticalDivider")}
-          </EduCheckBox>
-          <EduCheckBox checked={scrolling} onChange={onScrollingChange}>
+          </CheckboxLabel>
+          <CheckboxLabel checked={scrolling} onChange={onScrollingChange}>
             {t("author:component.settingsBar.enableScrolling")}
-          </EduCheckBox>
+          </CheckboxLabel>
         </Checkboxes>
       </>
     );
@@ -226,9 +222,9 @@ class Container extends Component {
       <Content>
         {isSingleQuestion ? (
           <Checkboxes>
-            <EduCheckBox onChange={this.handleMultipart} value={isMultipart}>
+            <CheckboxLabel onChange={this.handleMultipart} value={isMultipart}>
               Convert item into a multipart
-            </EduCheckBox>
+            </CheckboxLabel>
           </Checkboxes>
         ) : (
           multipleItemsSettings()

@@ -38,7 +38,7 @@ export const StyledAnchor = styled(Anchor)`
 
   .ant-anchor-link {
     position: relative;
-    padding: 10px;
+    padding: 14px;
     @media (max-width: ${smallDesktopWidth}) {
       max-width: 200px;
     }
@@ -76,11 +76,11 @@ export const StyledAnchor = styled(Anchor)`
   }
 
   .ant-anchor-link-title {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2px;
     color: ${linkColor1};
-    text-transform: capitalize;
+    text-transform: uppercase;
 
     @media (max-width: ${mediumDesktopWidth}) {
       white-space: normal;

@@ -1,55 +1,45 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { get } from "lodash";
-import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox, message } from "antd";
-
-import { test as testContants, roleuser } from "@edulastic/constants";
-import { withWindowScroll } from "@edulastic/common";
-import { red, green, blueBorder, themeColor } from "@edulastic/colors";
-import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
+import { blueBorder, green, red, themeColor } from "@edulastic/colors";
+import { CheckboxLabel, RadioBtn, withWindowScroll } from "@edulastic/common";
+import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown } from "@edulastic/icons";
-import {
-  setTestDataAction,
-  getTestEntitySelector,
-  defaultTestTypeProfilesSelector,
-  testTypeAsProfileNameType,
-  getReleaseScorePremiumSelector,
-  getDisableAnswerOnPaperSelector
-} from "../../../../ducks";
-import UiTime from "../UiTime/UiTime";
+import { Anchor, Col, Input, message, Row, Select, Switch } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
-
+import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import {
-  StyledAnchor,
-  RadioGroup,
-  InputTitle,
-  InputPassword,
-  MaxAttempts,
-  Body,
-  Title,
-  Block,
+  defaultTestTypeProfilesSelector,
+  getDisableAnswerOnPaperSelector,
+  getReleaseScorePremiumSelector,
+  getTestEntitySelector,
+  setTestDataAction,
+  testTypeAsProfileNameType
+} from "../../../../ducks";
+import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
+import PeformanceBand from "./PeformanceBand";
+import StandardProficiencyTable from "./StandardProficiencyTable";
+import {
+  AdvancedButton,
   AdvancedSettings,
+  Block,
   BlueText,
-  Description,
-  NormalText,
-  StyledRadioGroup,
-  RadioWrapper,
-  StyledSelect,
-  ActivityInput,
+  Body,
   Container,
+  Description,
+  InputPassword,
   MaxAnswerChecksInput,
-  CompletionTypeRadio,
+  MaxAttempts,
   MessageSpan,
   NavigationMenu,
-  AdvancedButton
+  StyledAnchor,
+  StyledRadioGroup,
+  StyledSelect,
+  Title
 } from "./styled";
-import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
-import StandardProficiencyTable from "./StandardProficiencyTable";
 import SubscriptionsBlock from "./SubscriptionsBlock";
-import PeformanceBand from "./PeformanceBand";
-import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
-import { EduCheckBox, RadioBtn } from "@edulastic/common";
 
 const {
   settingCategories,
@@ -694,14 +684,14 @@ class MainSetting extends Component {
                   </StyledRadioGroup>
                   {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                     <p>
-                      <EduCheckBox
+                      <CheckboxLabel
                         disabled={!owner || !isEditable}
                         checked={penalty === false}
                         data-cy="PENALIZE"
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
                         {"Don’t penalize for incorrect selection"}
-                      </EduCheckBox>
+                      </CheckboxLabel>
                     </p>
                   )}
                   <Description>

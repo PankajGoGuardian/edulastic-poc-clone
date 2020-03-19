@@ -1,5 +1,5 @@
 import { testItemsApi } from "@edulastic/api";
-import { EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
+import { CheckboxLabel, EduCheckBox, RadioBtn, RadioGrp } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import { IconPencilEdit } from "@edulastic/icons";
 import { faTrashAlt } from "@fortawesome/free-regular-svg-icons";
@@ -544,7 +544,7 @@ const GroupItems = ({
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
                   <GroupField>
-                    <EduCheckBox
+                    <CheckboxLabel
                       checked={
                         currentGroupIndex === index
                           ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
@@ -555,7 +555,7 @@ const GroupItems = ({
                       onChange={e => handleTypeSelect(index)}
                     >
                       AUTO SELECT ITEMS BASED ON STANDARDS
-                    </EduCheckBox>
+                    </CheckboxLabel>
                   </GroupField>
                   {(currentGroupIndex === index && editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                   (currentGroupIndex !== index && itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (

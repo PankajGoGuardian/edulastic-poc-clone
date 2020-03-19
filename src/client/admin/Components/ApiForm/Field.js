@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { CheckboxLabel } from "@edulastic/common";
+import { Button, DatePicker, Input, Radio, Select, Table } from "antd";
 import { get } from "lodash";
-import moment from "moment";
-import { Input, DatePicker, Select, Checkbox, Radio, Button, Table, message } from "antd";
-
+import React, { useEffect, useState } from "react";
 import { doValidate } from "./apis";
 
 const Field = ({ displayName, type, validate, onChange, ...rest }) => {
@@ -85,7 +84,7 @@ const Field = ({ displayName, type, validate, onChange, ...rest }) => {
           </Select>
         );
       case "checkbox":
-        return <Checkbox onChange={onChangeCheckbox}>{displayName}</Checkbox>;
+        return <CheckboxLabel onChange={onChangeCheckbox}>{displayName}</CheckboxLabel>;
       case "radiogroup":
         return (
           <Radio.Group {...rest} onChange={handleOnChange}>

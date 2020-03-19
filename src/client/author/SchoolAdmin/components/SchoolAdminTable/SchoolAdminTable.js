@@ -1,78 +1,67 @@
-import React, { Component } from "react";
+import { themeColor } from "@edulastic/colors";
+import { CheckboxLabel, StyledComponents, TypeToConfirmModal } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Button, Icon, Menu, message, Select } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
-
-import { roleuser } from "@edulastic/constants";
-
 import {
+  StyledActionDropDown,
+  StyledAddFilterButton,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
-  StyledAddFilterButton,
   StyledFilterInput,
-  StyledActionDropDown,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../../admin/Common/StyledComponents";
-
 import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledPagination,
   StyledSchoolSearch,
-  LeftFilterDiv,
-  RightFilterDiv,
-  StyledTableButton
+  StyledTableButton,
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-import { StyledSchoolAdminTable } from "./styled";
-
-import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
-import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
-
+import { getFullNameFromAsString } from "../../../../common/utils/helpers";
+import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import {
-  receiveAdminDataAction,
-  createAdminUserAction,
-  updateAdminUserAction,
-  deleteAdminUserAction,
-  setSearchNameAction,
-  getAdminUsersDataSelector,
-  getAdminUsersDataCountSelector,
-  getShowActiveUsersSelector,
-  setShowActiveUsersAction,
-  getPageNoSelector,
-  setPageNoAction,
-  getFiltersSelector,
+  addFilterAction,
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction,
+  createAdminUserAction,
+  deleteAdminUserAction,
+  getAdminUsersDataCountSelector,
+  getAdminUsersDataSelector,
+  getFiltersSelector,
+  getPageNoSelector,
+  getShowActiveUsersSelector,
+  receiveAdminDataAction,
   removeFilterAction,
-  setRoleAction
+  setPageNoAction,
+  setRoleAction,
+  setSearchNameAction,
+  setShowActiveUsersAction,
+  updateAdminUserAction
 } from "../../ducks";
-
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
-
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-
-import { getFullNameFromAsString } from "../../../../common/utils/helpers";
-
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { EduCheckBox } from "@edulastic/common";
+import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
+import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
+import { StyledSchoolAdminTable } from "./styled";
 
 const menuActive = { mainMenu: "Users", subMenu: "School Admin" };
 
 const { Option } = Select;
-const { OnHoverTable, OnHoverButton } = StyledComponents;
 
 const filterStrDD = {
   status: {
@@ -627,13 +616,13 @@ class SchoolAdminTable extends Component {
           </LeftFilterDiv>
 
           <RightFilterDiv width={40}>
-            <EduCheckBox
+            <CheckboxLabel
               checked={this.state.showActive}
               onChange={this.onChangeShowActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "status")}
             >
               {t("common.showcurrent")}
-            </EduCheckBox>
+            </CheckboxLabel>
             {role === roleuser.DISTRICT_ADMIN ? (
               <StyledActionDropDown overlay={actionMenu}>
                 <Button>

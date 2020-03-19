@@ -1,34 +1,32 @@
+import { themeColor, white } from "@edulastic/colors";
+import { CheckboxLabel } from "@edulastic/common";
+import { Col, Form, Icon, Input, InputNumber, message, Row, Slider, Table } from "antd";
+import produce from "immer";
+import { get } from "lodash";
 import React from "react";
-import { Table, Input, InputNumber, Form, Icon, Checkbox, message, Slider, Row, Col } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import produce from "immer";
 import styled from "styled-components";
-import { themeColor, white } from "@edulastic/colors";
-import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
-
-import {
-  receivePerformanceBandAction,
-  createPerformanceBandAction,
-  updatePerformanceBandAction,
-  setPerformanceBandChangesAction,
-  getPerformanceBandList
-} from "../../ducks";
-
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { getUserOrgId } from "../../../src/selectors/user";
-
 import {
-  StyledTableContainer,
-  StyledColFromTo,
+  createPerformanceBandAction,
+  getPerformanceBandList,
+  receivePerformanceBandAction,
+  setPerformanceBandChangesAction,
+  updatePerformanceBandAction
+} from "../../ducks";
+import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
+import {
+  PercentText,
+  SaveAlert,
   StyledBottomDiv,
-  StyledSaveButton,
+  StyledColFromTo,
   StyledDivCenter,
   StyledEnableContainer,
-  SaveAlert,
-  PercentText
+  StyledSaveButton,
+  StyledTableContainer
 } from "./styled";
-import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 function Ellipsify({ children: text, limit }) {
   //needed to handle multibyte chars(unicode,emojis)
@@ -439,7 +437,7 @@ export class PerformanceBandTable extends React.Component {
         render: (text, record) => {
           return (
             <StyledDivCenter>
-              <Checkbox
+              <CheckboxLabel
                 defaultChecked={record.aboveOrAtStandard}
                 checked={record.aboveOrAtStandard}
                 disabled={this.props.readOnly}

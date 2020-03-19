@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Col, Radio, Select, Icon, Checkbox, Input, message } from "antd";
 import { green, red, blueBorder, themeColor } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
+import { RadioBtn, CheckboxLabel, EduCheckBox } from "@edulastic/common";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
   AlignRight,
@@ -33,7 +34,6 @@ import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
-import { EduCheckBox, RadioBtn } from "@edulastic/common";
 import { IconCaretDown } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 
@@ -527,13 +527,13 @@ const Settings = ({
               </AlignRight>
               {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                 <CheckBoxWrapper>
-                  <EduCheckBox
+                  <CheckboxLabel
                     disabled={forClassLevel}
                     checked={penalty === false}
                     onChange={e => overRideSettings("penalty", !e.target.checked)}
                   >
                     <Label>DON’T PENALIZE FOR INCORRECT SELECTION</Label>
-                  </EduCheckBox>
+                  </CheckboxLabel>
                 </CheckBoxWrapper>
               )}
             </Col>

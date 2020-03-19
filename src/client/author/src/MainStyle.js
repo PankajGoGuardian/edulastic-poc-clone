@@ -6,7 +6,9 @@ import {
   themeColor,
   smallDesktopWidth,
   greyThemeLight,
-  mainBgColor
+  mainBgColor,
+  greyThemeDark2,
+  greyThemeLighter
 } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
@@ -91,6 +93,15 @@ export const MainContainer = styled.div`
     background-color: ${props => props.theme.themeColor};
   }
 
+  button.ant-switch {
+    min-width: 34px;
+    height: 16px;
+    &:after {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
   .ant-pagination {
     display: flex;
     justify-content: flex-end;
@@ -165,6 +176,38 @@ export const MainContainer = styled.div`
   .ant-table-tbody > tr > td.ant-table-selection-column {
     width: 35px;
     max-width: 35px;
+    .ant-checkbox {
+      .ant-checkbox-inner {
+        width: 18px;
+        height: 18px;
+        border-color: ${greyThemeLight};
+        background: ${greyThemeLighter};
+        &:after {
+          left: 30%;
+        }
+      }
+      &-indeterminate .ant-checkbox-inner::after {
+        left: 50%;
+      }
+      &.ant-checkbox-checked {
+        &:after {
+          border-color: ${themeColor};
+        }
+        .ant-checkbox-inner {
+          border-color: ${themeColor};
+          background: ${themeColor};
+        }
+      }
+      &.ant-checkbox-disabled {
+        &:after {
+          border-color: ${greyThemeLight};
+        }
+        .ant-checkbox-inner {
+          border-color: ${greyThemeLight};
+          background: ${greyThemeLight};
+        }
+      }
+    }
   }
 
   .ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {

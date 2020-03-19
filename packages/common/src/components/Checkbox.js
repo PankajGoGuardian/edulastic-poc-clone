@@ -1,51 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import {
-  themeColor,
-  white,
-  grey,
-  secondaryTextColor,
-  darkGrey,
-  greyThemeLight,
-  greyThemeLighter
-} from "@edulastic/colors";
-import { Checkbox as CB } from "antd";
-
-export const CheckBoxGrp = CB.Group;
-
-export const EduCheckBox = styled(CB)`
-  .ant-checkbox {
-    & + span {
-      padding-left: 15px;
-    }
-    .ant-checkbox-inner {
-      background-color: ${greyThemeLighter};
-      border-color: ${greyThemeLight};
-    }
-    &.ant-checkbox-checked {
-      .ant-checkbox-inner {
-        background-color: ${themeColor};
-        border-color: ${themeColor};
-        &:after {
-          border-color: ${white};
-        }
-      }
-      &:after {
-        border-color: ${themeColor};
-      }
-    }
-    &.ant-checkbox-disabled {
-      .ant-checkbox-inner {
-        background-color: ${greyThemeLight};
-        border-color: ${greyThemeLight}!important;
-        &:after {
-          border-color: ${greyThemeLight};
-        }
-      }
-    }
-  }
-`;
+import { themeColor, white, grey, secondaryTextColor, darkGrey } from "@edulastic/colors";
 
 const Checkbox = ({ onChange, checked, label, style, className, labelFontSize, textTransform, disabled }) => {
   const onClickHandler = () => {

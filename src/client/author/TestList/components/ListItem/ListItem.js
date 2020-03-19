@@ -1,50 +1,50 @@
-import React, { Component } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { darkGrey, cardTitleColor, themeColor, fadedBlack } from "@edulastic/colors";
-import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId, IconEye, IconClose, IconPlus } from "@edulastic/icons";
-import { Col, Checkbox, message } from "antd";
 import { assignmentApi } from "@edulastic/api";
+import { cardTitleColor, darkGrey, fadedBlack, themeColor } from "@edulastic/colors";
+import { CheckboxLabel } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import Tags from "../../../src/components/common/Tags";
-import {
-  Container,
-  ListCard,
-  Inner,
-  Outer,
-  Description,
-  Author,
-  AuthorName,
-  Header,
-  Stars,
-  StyledLink,
-  ItemInformation,
-  IconWrapper,
-  IconText,
-  ViewButtonWrapper,
-  ContentWrapper,
-  TagsWrapper,
-  CardIdWrapper,
-  CardId,
-  Footer,
-  TestStatus,
-  StyledModuleName
-} from "./styled";
-import ViewModal from "../ViewModal";
+import { IconClose, IconEye, IconHeart, IconId, IconPlus, IconShare, IconUser } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Col } from "antd";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import { getAuthorCollectionMap } from "../../../dataUtils";
 import {
-  ViewButton as ViewButtonContainer,
   AddButtonStyled,
+  ViewButton as ViewButtonContainer,
   ViewButtonStyled
 } from "../../../ItemList/components/Item/styled";
-import { getSelectedTestsSelector, approveOrRejectSingleTestRequestAction } from "../../ducks";
+import Tags from "../../../src/components/common/Tags";
 import { getUserRole, isPublisherUserSelector } from "../../../src/selectors/user";
-
+import { approveOrRejectSingleTestRequestAction, getSelectedTestsSelector } from "../../ducks";
+import { EllipsisWrapper, ViewButton } from "../Item/styled";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
+import ViewModal from "../ViewModal";
+import {
+  Author,
+  AuthorName,
+  CardId,
+  CardIdWrapper,
+  Container,
+  ContentWrapper,
+  Description,
+  Footer,
+  Header,
+  IconText,
+  IconWrapper,
+  Inner,
+  ItemInformation,
+  ListCard,
+  Outer,
+  Stars,
+  StyledLink,
+  StyledModuleName,
+  TagsWrapper,
+  TestStatus,
+  ViewButtonWrapper
+} from "./styled";
 
 class ListItem extends Component {
   static propTypes = {
@@ -238,7 +238,7 @@ class ListItem extends Component {
                       </StyledModuleName>
                     )}
 
-                    <Checkbox
+                    <CheckboxLabel
                       onChange={e => handleCheckboxAction(e, { _id: item._id, title: item.title })}
                       checked={checked}
                     />
@@ -246,7 +246,7 @@ class ListItem extends Component {
                 )}
                 {isPlaylist && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
                   <div onClick={e => e.stopPropagation()}>
-                    <Checkbox onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
+                    <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
                   </div>
                 )}
                 {!isPlaylist && mode !== "embedded" && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (

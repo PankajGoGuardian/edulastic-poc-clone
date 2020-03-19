@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { message } from "antd";
-
 import { themeColor, white } from "@edulastic/colors";
-import { IconClose, IconMoveTo, IconCollapse, IconEye, IconDescription } from "@edulastic/icons";
+import { CheckboxLabel } from "@edulastic/common";
 import { test as testContatns } from "@edulastic/constants";
-
-import Prompt from "../Prompt/Prompt";
+import { IconClose, IconCollapse, IconDescription, IconEye, IconMoveTo } from "@edulastic/icons";
+import { message } from "antd";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { ButtonLink } from "../../../../../src/components/common";
-import { Item, Container, SelectAllCheckbox, ActionButton, MobileButtomContainer } from "./styled";
-import { EduCheckBox } from "@edulastic/common";
+import Prompt from "../Prompt/Prompt";
+import { ActionButton, Container, Item, MobileButtomContainer } from "./styled";
 
 const { ITEM_GROUP_TYPES } = testContatns;
 const HeaderBar = ({
@@ -58,9 +56,9 @@ const HeaderBar = ({
     <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
       {owner && isEditable ? (
         <Item>
-          <EduCheckBox data-cy="selectAllCh" onChange={onSelectAll}>
+          <CheckboxLabel data-cy="selectAllCh" onChange={onSelectAll}>
             Select All
-          </EduCheckBox>
+          </CheckboxLabel>
         </Item>
       ) : (
         // this empty span can fix some

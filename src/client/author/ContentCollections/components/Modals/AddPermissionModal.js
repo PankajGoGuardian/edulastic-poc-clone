@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Button, Input, Select, DatePicker, message, Spin } from "antd";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import moment from "moment";
 import { backgroundGrey2, themeColor } from "@edulastic/colors";
+import { CheckBoxGrp, CheckboxLabel } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { StyledModal, ModalBody, Heading, YesButton, FieldRow } from "./ImportContentModal";
+import { Button, DatePicker, Input, message, Select, Spin } from "antd";
+import moment from "moment";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 import { getUser } from "../../../src/selectors/user";
 import {
   getCreateCollectionStateSelector,
-  searchOrgaizationRequestAction,
+  getDistrictListSelector,
+  getFetchOrganizationStateSelector,
   getSchoolListSelector,
   getUserListSelector,
-  getDistrictListSelector,
-  getFetchOrganizationStateSelector
+  searchOrgaizationRequestAction
 } from "../../ducks";
-import { EduCheckBox, CheckBoxGrp } from "@edulastic/common";
-
 import staticData from "../../staticData";
+import { FieldRow, Heading, ModalBody, StyledModal, YesButton } from "./ImportContentModal";
 
 const { roleOptions, permissionLevelOptions } = staticData;
 
@@ -283,7 +282,7 @@ const AddPermissionModal = ({
           <label>Role</label>
           <CheckBoxGrp onChange={value => handleFieldChange("role", value)} value={fieldData.role}>
             {roleOptions.map(checkbox => (
-              <EduCheckBox
+              <CheckboxLabel
                 style={{ width: "50%", marginLeft: "0px" }}
                 disabled={
                   (fieldData.orgType === "SCHOOL" && checkbox.value === "district-admin") ||
@@ -292,7 +291,7 @@ const AddPermissionModal = ({
                 value={checkbox.value}
               >
                 {checkbox.label}
-              </EduCheckBox>
+              </CheckboxLabel>
             ))}
           </CheckBoxGrp>
         </StyledFieldRow>

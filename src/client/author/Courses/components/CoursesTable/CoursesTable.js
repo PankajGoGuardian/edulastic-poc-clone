@@ -1,70 +1,62 @@
-import React, { Component } from "react";
+import { themeColor } from "@edulastic/colors";
+import { CheckboxLabel, TypeToConfirmModal } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
+import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { withNamespaces } from "@edulastic/localization";
+import { Icon, Menu, message, Select } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
+import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
-import { get } from "lodash";
-
-import { Icon, Select, message, Menu } from "antd";
-const Option = Select.Option;
-
-import AddCourseModal from "./AddCourseModal/AddCourseModal";
-import EditCourseModal from "./EditCourseModal/EditCourseModal";
-import UploadCourseModal from "./UploadCourseModal";
 import {
+  StyledActionDropDown,
+  StyledClassName,
   StyledControlDiv,
   StyledFilterDiv,
-  StyledFilterSelect,
   StyledFilterInput,
-  StyledActionDropDown,
-  StyledClassName
+  StyledFilterSelect
 } from "../../../../admin/Common/StyledComponents";
 import {
-  StyledCoursesTable,
-  StyledFilterButton,
-  StyledActiveCheckbox,
-  StyledPagination,
-  StyledHeaderColumn,
-  StyledSortIconDiv,
-  StyledSortIcon,
-  UserNameContainer,
-  UserName,
-  StyledDropdownBtn,
-  CreateCourseBtn
-} from "./styled";
-
-import {
-  receiveCourseListAction,
-  createCourseAction,
-  updateCourseAction,
-  deactivateCourseAction,
-  getCourseListSelector,
-  setSelectedRowKeysAction,
-  setShowActiveStatusAction,
-  resetUploadModalStatusAction
-} from "../../ducks";
-
-import {
-  MainContainer,
-  TableContainer,
-  SubHeaderWrapper,
   FilterWrapper,
+  LeftFilterDiv,
+  MainContainer,
+  RightFilterDiv,
   StyledButton,
   StyledSchoolSearch,
   StyledTableButton,
-  RightFilterDiv,
-  LeftFilterDiv
+  SubHeaderWrapper,
+  TableContainer
 } from "../../../../common/styled";
-
-import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-import { roleuser } from "@edulastic/constants";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import Breadcrumb from "../../../src/components/Breadcrumb";
-import { TypeToConfirmModal } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
 import { receiveAdminDataAction } from "../../../SchoolAdmin/ducks";
-import { EduCheckBox } from "@edulastic/common";
+import Breadcrumb from "../../../src/components/Breadcrumb";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import {
+  createCourseAction,
+  deactivateCourseAction,
+  getCourseListSelector,
+  receiveCourseListAction,
+  resetUploadModalStatusAction,
+  setSelectedRowKeysAction,
+  setShowActiveStatusAction,
+  updateCourseAction
+} from "../../ducks";
+import AddCourseModal from "./AddCourseModal/AddCourseModal";
+import EditCourseModal from "./EditCourseModal/EditCourseModal";
+import {
+  CreateCourseBtn,
+  StyledCoursesTable,
+  StyledDropdownBtn,
+  StyledFilterButton,
+  StyledHeaderColumn,
+  StyledPagination,
+  StyledSortIcon,
+  StyledSortIconDiv
+} from "./styled";
+import UploadCourseModal from "./UploadCourseModal";
+
+const Option = Select.Option;
 
 class CoursesTable extends React.Component {
   constructor(props) {
@@ -714,9 +706,9 @@ class CoursesTable extends React.Component {
             </CreateCourseBtn>
           </LeftFilterDiv>
           <RightFilterDiv>
-            <EduCheckBox defaultChecked={showActive} onChange={this.onChangeShowActive}>
+            <CheckboxLabel defaultChecked={showActive} onChange={this.onChangeShowActive}>
               {t("course.showactivecourse")}
-            </EduCheckBox>
+            </CheckboxLabel>
             <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
               <StyledDropdownBtn>
                 {t("common.actions")} <Icon type="down" />

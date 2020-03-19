@@ -273,11 +273,7 @@ export const TypeIcon = styled.span`
   height: 18px;
   max-width: 18px;
   background: ${props =>
-    props.type === "p"
-      ? testTypeColor.practice
-      : props.type === "c"
-      ? testTypeColor.common
-      : testTypeColor.assessment};
+    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;

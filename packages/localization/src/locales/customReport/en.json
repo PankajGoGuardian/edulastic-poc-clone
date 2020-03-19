@@ -27,6 +27,7 @@
     "selectusers": "User(s)",
     "selectusersplaceholder": "Enter comma separated user(s) email",
     "selectusersrequired": "user(s) required",
+    "invalidselectedusers": "Invalid user email(s)",
     "edit": {
       "title": "Edit Report",
       "ok": "Update"

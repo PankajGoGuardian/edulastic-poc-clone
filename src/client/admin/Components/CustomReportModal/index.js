@@ -5,6 +5,7 @@ import TextArea from "antd/es/input/TextArea";
 import { schoolApi } from "@edulastic/api";
 import CheckboxGroup from "antd/es/checkbox/Group";
 
+const EMAIL_PATTERN_FORMAT = /^[_A-Za-z0-9-'\+]+(\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\-\.]+)*(\.[A-Za-z]{1,25})$/;
 const Option = Select.Option;
 class CustomReportModal extends React.Component {
   constructor(props) {
@@ -185,6 +186,11 @@ class CustomReportModal extends React.Component {
       schools: []
     });
     onCancel();
+  };
+
+  validateCommaSeparatedEmails = () => {
+    const emails = this.props.form.getFieldValue("users");
+    return emails ? !emails.split(",").filter(email => !EMAIL_PATTERN_FORMAT.test(email.trim())).length : true;
   };
 
   render() {
@@ -398,6 +404,10 @@ class CustomReportModal extends React.Component {
                     {
                       required: true,
                       message: t("customreport.selectusersrequired")
+                    },
+                    {
+                      validator: this.validateCommaSeparatedEmails,
+                      message: t("customreport.invalidselectedusers")
                     }
                   ]
                 })(<TextArea placeholder={t(`customreport.selectusersplaceholder`)} />)}

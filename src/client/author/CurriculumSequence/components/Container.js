@@ -6,6 +6,7 @@ import { message } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
+import { set, omit } from "lodash";
 
 import CurriculumSequence from "./CurriculumSequence";
 import {
@@ -148,9 +149,37 @@ class CurriculumContainer extends Component {
   };
 
   onDrop = (toModuleIndex, item) => {
+    const { destinationCurriculumSequence } = this.props;
     this.expandModule(toModuleIndex);
     if (item.fromPlaylistTestsBox) {
-      this.props.addIntoModule({ ...item, moduleIndex: toModuleIndex });
+      let flag = false;
+      if (item.contentType === "lti_resource") {
+        destinationCurriculumSequence.modules.every((module, i) => {
+          if (!module.data.find(x => x.resourceId === item.id)) {
+            flag = true;
+            return true;
+          }
+        });
+        if (flag) {
+          set(item, "resourceId", item.id);
+        }
+      } else if (item.contentType === "tests") {
+        destinationCurriculumSequence.modules.every((module, i) => {
+          if (!module.data.find(x => x.contentId === item.id)) {
+            flag = true;
+            return true;
+          }
+        });
+        if (flag) {
+          set(item, "contentId", item.id);
+        }
+      }
+      if (flag) {
+        const newItem = omit(item, ["id", "type", "fromPlaylistTestsBox"]);
+        this.props.addIntoModule({ item: newItem, moduleIndex: toModuleIndex });
+      } else {
+        message.error("Content already exists");
+      }
       return;
     }
     const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;

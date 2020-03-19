@@ -1637,17 +1637,9 @@ export default createReducer(initialState, {
     state.isFetchingDifferentiationWork = payload;
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
-    const { moduleIndex, dataType, id: contentId, title: contentTitle, standardIdentifiers, data } = payload;
-    if (state.destinationCurriculumSequence.modules[moduleIndex].data.find(x => x.contentId === contentId)) {
-      return state;
-    }
-
+    const { moduleIndex, item } = payload;
     const content = {
-      contentId,
-      contentTitle,
-      standardIdentifiers,
-      data,
-      contentType: dataType,
+      ...item,
       standards: [],
       assignments: []
     };

@@ -22,10 +22,10 @@ const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, pre
   const [{ opacity }, drag] = useDrag({
     item: {
       type: "item",
-      dataType: type,
+      contentType: type,
       id,
       fromPlaylistTestsBox: true,
-      title,
+      contentTitle: title,
       standardIdentifiers,
       data
     },

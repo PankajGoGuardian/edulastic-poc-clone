@@ -91,8 +91,7 @@ const slice = createSlice({
     },
     addExternalLTIResourceAction: state => {
       const data = state.externalLTIModal;
-      data.contentType = "LTI_RESOURCE";
-      data.contentId = nanoid();
+      data.resourceId = nanoid();
       state.externalLTIResources.unshift(data);
       state.externalLTIModal = {};
     },

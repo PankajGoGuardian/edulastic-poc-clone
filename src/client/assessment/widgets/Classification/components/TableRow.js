@@ -128,14 +128,13 @@ const TableRow = ({
             marginTop="0"
           >
             {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
-              <CenteredText
+              <div
                 style={{
                   display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  alignItems: "baseline",
                   wordWrap: "break-word",
                   width: get(item, "uiStyle.row_titles_width", "max-content"),
-                  height: get(item, "uiStyle.row_min_height", "50px")
+                  height: get(item, "uiStyle.row_min_height", "auto")
                 }}
                 dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
               />

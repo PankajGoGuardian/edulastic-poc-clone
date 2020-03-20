@@ -133,6 +133,7 @@ const ActionContainer = ({
               "iepStatus",
               "sedStatus",
               "username",
+              "password",
               "contactEmails"
             ]);
             // contactEmails field is in csv of multiple emails

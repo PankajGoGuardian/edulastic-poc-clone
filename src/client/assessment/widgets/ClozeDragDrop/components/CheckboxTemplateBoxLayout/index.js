@@ -162,6 +162,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       status={status}
       className={className}
       isExpressGrader={isExpressGrader}
+      stemNumeration={stemNumeration}
     />
   );
 

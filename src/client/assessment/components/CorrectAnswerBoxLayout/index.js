@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { Popover } from "antd";
 
 import { getStemNumeration } from "../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
@@ -61,25 +62,55 @@ const CorrectAnswerBoxLayout = ({
           Object.keys(results).map((key, index) => (
             <div key={index}>
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
-              {results[key].map((value, itemId) => (
-                <div key={itemId} className="response-btn check-answer showanswer" style={btnStyle}>
-                  <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-                  <span className="text" style={{ justifyContent: centerText && "center" }}>
-                    {Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}
-                  </span>
-                </div>
-              ))}
+              {results[key].map((value, itemId) => {
+                const getContent = (inPopover = false) => {
+                  const height = inPopover ? "auto" : btnStyle.height;
+                  return (
+                    <div key={itemId} className="response-btn check-answer showanswer" style={{ ...btnStyle, height }}>
+                      <span className="index" style={{ alignSelf: "stretch" }}>
+                        {getStemNumeration(stemNumeration, index)}
+                      </span>
+                      <span className="text" style={{ justifyContent: centerText && "center" }}>
+                        {Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}
+                      </span>
+                    </div>
+                  );
+                };
+                const content = getContent();
+                const popoverContent = getContent(true);
+                return (
+                  <Popover placement="bottomLeft" content={popoverContent}>
+                    {content}
+                  </Popover>
+                );
+              })}
             </div>
           ))}
         {!hasGroupResponses &&
-          results.map((result, index) => (
-            <div key={index} className="response-btn check-answer showanswer" style={btnStyle}>
-              <span className="index">{getStemNumeration(stemNumeration, index)}</span>
-              <span className="text" style={{ justifyContent: centerText && "center" }}>
-                {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
-              </span>
-            </div>
-          ))}
+          results.map((result, index) => {
+            const getContent = (inPopover = false) => {
+              const height = inPopover ? "auto" : btnStyle.height;
+              return (
+                <div key={index} className="response-btn check-answer showanswer" style={{ ...btnStyle, height }}>
+                  <span className="index" style={{ alignSelf: "stretch" }}>
+                    {getStemNumeration(stemNumeration, index)}
+                  </span>
+                  <span className="text" style={{ justifyContent: centerText && "center" }}>
+                    {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue
+                      ? getLabel(result)
+                      : result}
+                  </span>
+                </div>
+              );
+            };
+            const content = getContent();
+            const popoverContent = getContent(true);
+            return (
+              <Popover placement="bottomLeft" content={popoverContent}>
+                {content}
+              </Popover>
+            );
+          })}
       </div>
     </StyledCorrectAnswerbox>
   );

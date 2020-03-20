@@ -413,18 +413,6 @@ function* submitTest({ payload: classId }) {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
-    if (navigator.userAgent.includes("SEB")) {
-      yield put(push("/student/seb-quit-confirm"));
-    } else {
-      const prevLocationState = yield select(state => state?.router?.location?.state);
-      if (prevLocationState) {
-        yield put(
-          push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
-        );
-      } else {
-        yield put(push("/home/grades"));
-      }
-    }
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: "" }
@@ -432,6 +420,24 @@ function* submitTest({ payload: classId }) {
     yield put({
       type: CLEAR_USER_WORK
     });
+    if (navigator.userAgent.includes("SEB")) {
+      return yield put(push("/student/seb-quit-confirm"));
+    }
+    const prevLocationState = yield select(state => state?.router?.location?.state);
+    if (prevLocationState?.playlistRecommendationsFlow) {
+      return yield put(
+        push({
+          pathname: `/home/playlist/${prevLocationState?.playlistId}/recommendations`,
+          state: { currentGroupId: groupId }
+        })
+      );
+    }
+    if (prevLocationState?.playlistAssignmentFlow) {
+      return yield put(
+        push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
+      );
+    }
+    return yield put(push("/home/grades"));
   } catch (err) {
     if (err.status === 403) {
       console.log(err);

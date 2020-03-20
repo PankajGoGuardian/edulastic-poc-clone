@@ -31,9 +31,7 @@ const PlaylistsContainer = ({
   useEffect(() => {
     fetchPlaylists();
     loadAllClasses();
-    if (!dateKeys.length) {
-      fetchRecommendations();
-    }
+    fetchRecommendations();
   }, [currentChild]);
 
   const pathPlaylistId = location.pathname.substring(match.path.length).replace(/\//g, "");
@@ -90,7 +88,6 @@ const enhance = compose(
       isLoading: state?.studentPlaylist?.isLoading,
       playlists: state?.studentPlaylist?.playlists,
       lastPlaylist: getLastPlayListSelector(state),
-      dateKeys: getDateKeysSelector(state),
       currentChild: state?.user?.currentChild
     }),
     {

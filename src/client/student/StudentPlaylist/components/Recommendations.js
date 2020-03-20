@@ -90,7 +90,7 @@ const Recommendations = ({
                               <Col span={10} align="flex-end">
                                 <ModuleDataWrapper>
                                   <ModuleDataName>
-                                    <div>
+                                    <div style={{ textOverflow: "ellipsis", overflow: "hidden", maxWidth: "70%" }}>
                                       <Tooltip placement="bottomLeft" title={recommendation.recommendationType.name}>
                                         <EllipticSpan>{recommendedResource.name}</EllipticSpan>
                                       </Tooltip>

@@ -15,7 +15,6 @@ import { ConfirmationModal } from "../../../src/components/common/ConfirmationMo
 export const ManageContentOuterWrapper = styled.div`
   width: 400px;
   min-width: 400px;
-  min-height: 760px;
   margin: 20px 30px 40px 0;
   border-radius: 4px;
 `;
@@ -23,7 +22,6 @@ export const ManageContentOuterWrapper = styled.div`
 export const ManageContentContainer = styled.div`
   width: 400px;
   min-width: 400px;
-  min-height: 760px;
   margin: 20px 30px 40px 0;
   background: ${white};
   padding: 10px 22px;

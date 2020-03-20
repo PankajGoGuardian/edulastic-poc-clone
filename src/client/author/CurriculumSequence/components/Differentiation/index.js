@@ -45,6 +45,7 @@ const Differentiation = ({
   const [classList, setClassList] = useState([]);
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({});
   const [filteredAssignments, setFilteredAssignments] = useState([]);
+  const [showManageContent, setShowManageContent] = useState(false);
 
   useEffect(() => {
     const filters = {
@@ -108,7 +109,7 @@ const Differentiation = ({
 
   return (
     <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start" flexDirection="row">
-      <StyledPerfectScrollbar width="75%">
+      <StyledPerfectScrollbar width={showManageContent ? "calc(100% - 410px)" : "100%"}>
         <SubHeader>
           <div>
             <span>Based on Performance in</span>
@@ -143,6 +144,18 @@ const Differentiation = ({
                 </StyledSelect.Option>
               ))}
             </StyledSelect>
+          </div>
+          <div>
+            <EduButton
+              isGhost
+              height="35px"
+              onClick={e => {
+                e.target.blur();
+                setShowManageContent(!showManageContent);
+              }}
+            >
+              Manage Content
+            </EduButton>
           </div>
         </SubHeader>
         <BodyContainer>
@@ -186,23 +199,25 @@ const Differentiation = ({
           </div>
         </BodyContainer>
       </StyledPerfectScrollbar>
-      <div style={{ width: 407 }}>
-        <SideButtonContainer style={{ paddingTop: 5 }}>
-          {/* Hiding this button for now as implementation is not done. 
+      {showManageContent && (
+        <div style={{ width: 407, position: "fixed", right: 0 }}>
+          <SideButtonContainer style={{ paddingTop: 5 }}>
+            {/* Hiding this button for now as implementation is not done. 
           
           <EduButton isGhost height="35px" style={{ marginLeft: "0px" }}>
             Accept All Recommendations
           </EduButton> 
           
           */}
-          {/* <EduButton isGhost height="35px">
+            {/* <EduButton isGhost height="35px">
             Manage Content
           </EduButton> */}
-        </SideButtonContainer>
-        <div>
-          <ManageContentBlock />
+          </SideButtonContainer>
+          <div>
+            <ManageContentBlock />
+          </div>
         </div>
-      </div>
+      )}
     </StyledFlexContainer>
   );
 };

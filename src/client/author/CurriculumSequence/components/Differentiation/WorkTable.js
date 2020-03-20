@@ -38,11 +38,11 @@ const WorkTable = ({
 
   useEffect(() => {
     if (type === "REVIEW") {
-      handleSliderChange([0, 69]);
+      handleSliderChange([0, 70]);
     } else if (type === "PRACTICE") {
       handleSliderChange([70, 90]);
     } else {
-      handleSliderChange([91, 100]);
+      handleSliderChange([90, 100]);
     }
   }, []);
 
@@ -115,12 +115,12 @@ const WorkTable = ({
         <>
           <StyledSlider
             reverse
-            value={100 - masteryRange[0] + 1}
+            value={100 - masteryRange[0]}
             onChange={value => handleSliderChange([100 - value, 100])}
             min={1}
-            tipFormatter={value => 100 - value}
+            tipFormatter={value => `${100 - value}`}
           />
-          <span>{`Above ${masteryRange[0] - 1}%`}</span>
+          <span>{`Above ${masteryRange[0]}%`}</span>
         </>
       );
     }

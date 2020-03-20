@@ -23,6 +23,7 @@ export const SubHeader = styled.div`
   padding: 20px 10px 0px 20px;
   width: 100%;
   display: flex;
+  justify-content: space-between;
   > div {
     display: flex;
     align-items: center;
@@ -196,7 +197,6 @@ export const StyledSelect = styled(Select)`
   }
 `;
 
-export const StyledPerfectScrollbar = styled(PerfectScrollbar)`
+export const StyledPerfectScrollbar = styled.div`
   width: ${({ width }) => width};
-  height: calc(100vh - 62px);
 `;

@@ -20,15 +20,17 @@ const TriggerStyle = () => {
 
     const contMaxWidth = maxBy(dimensions, d => d.width);
     const contMaxHeight = maxBy(dimensions, d => d.height);
-    $(colsContainer).height(contMaxHeight.height + 5);
-    $(colsContainer).width(contMaxWidth.width + 5);
+    if (contMaxHeight && contMaxWidth) {
+      $(colsContainer).height(contMaxHeight.height + 5);
+      $(colsContainer).width(contMaxWidth.width + 5);
+    }
   };
 
   useEffect(() => {
     if (window.$) {
       setTimeout(() => {
         setContainerStyle();
-      }, 150);
+      }, 250);
     }
   });
   return null;

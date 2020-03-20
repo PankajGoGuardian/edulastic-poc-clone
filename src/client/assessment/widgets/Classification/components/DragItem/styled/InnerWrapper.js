@@ -35,7 +35,7 @@ export const InnerWrapper = styled.div`
       opacity:  ${dragging ? 0.1 : 1};
       font-weight: ${theme.widgets.classification.dragItemFontWeight};
       border-width: 2px;
-      width: ${width ? `${width}px` : ""};
+      width: ${width ? `${width + 10}px` : ""};
       min-width: ${minWidth}px;
       max-width: ${maxWidth - 25}px;
       min-height: ${minHeight}px;

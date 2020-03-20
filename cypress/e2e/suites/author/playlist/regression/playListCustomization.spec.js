@@ -1,5 +1,5 @@
 import PlayListLibrary from "../../../../framework/author/playlist/playListLibrary";
-import Playlist from "../../../../framework/author/playlist/playListCustomization";
+//import Playlist from "../../../../framework/author/playlist/playListCustomization";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 
@@ -10,14 +10,18 @@ describe("Playlist customization", () => {
   };
 
   const playListLibrary = new PlayListLibrary();
-  const playlistCustmization = new Playlist();
-  const testLibrary = new TestLibrary();
+  //const container = new PlayListSearchContainer();
   const testToCreate = ["search_1", "search_2"];
   const originalTestIds = [];
-  const playListData = {
-    name: "New playlist 1",
-    grade: "Grade 6",
-    subject: "Mathematics"
+  const testName = "test search 1 ";
+  const testId = "5e70b89ac513dc0008b25fe0";
+  const testStandard = {
+    standard1: "8.G.C.9",
+    standard2: "8.G.C.9 7.EE.A.1"
+  };
+  const testTag = {
+    tag1: "test tag 1 ",
+    tag2: "wrong tag"
   };
   const sidebar = new TeacherSideBar();
 
@@ -51,19 +55,51 @@ describe("Playlist customization", () => {
           }); */
 
     before("Log in as tecaher", () => {
-      cy.login("Teacher", "ts3@yopmail.com", "snapwiz");
-      sidebar.clickOnRecentUsedPlayList("customization playlist 1");
+      cy.login("teacher", "playschooltecaher@snapwiz.com", "snapwiz");
+      sidebar.clickOnRecentUsedPlayList("Test Search Playlist");
     });
 
     it("ManageContent toggle", () => {
       cy.contains("Summary").should("be.visible");
-      playlistCustmization.clickOnManageContent();
-      playlistCustmization.clickOnKeyword();
-      playlistCustmization.getKeywordsSearchBar();
-      playlistCustmization.clickOnStandard();
-      playlistCustmization.getStandardSearchBar();
-      playlistCustmization.clickOnManageContent();
+      playListLibrary.playlistCustom.clickOnManageContent();
+      playListLibrary.searchContainer.getKeywordsSearchBar();
+      playListLibrary.playlistCustom.getManageContentButton().click();
       cy.contains("Summary").should("be.visible");
+    });
+  });
+
+  context("Search from folder", () => {
+    before("Go to Resource Container", () => {
+      playListLibrary.playlistCustom.clickOnManageContent();
+    });
+
+    it("search By Name", () => {
+      playListLibrary.searchContainer.typeInSearchBar(`${testName}`);
+      playListLibrary.searchContainer
+        .getTestInSearchResultsById("5e70b870c513dc0008b25fde")
+        .should("contain", `${testName}`);
+    });
+    it("Search by Id", () => {
+      playListLibrary.searchContainer.getKeywordsSearchBar().clear();
+      playListLibrary.searchContainer.typeInSearchBar(`${testId}`);
+      playListLibrary.searchContainer.getTestInSearchResultsById("5e70b89ac513dc0008b25fe0").should("be.visible");
+    });
+    it("Search By standard", () => {
+      playListLibrary.searchContainer.getKeywordsSearchBar().clear();
+      playListLibrary.searchContainer.typeInSearchBar(`${testStandard.standard1}`);
+      playListLibrary.searchContainer.getTestInSearchResultsById("5e70b870c513dc0008b25fde").should("be.visible");
+      playListLibrary.searchContainer.getTestInSearchResultsById("5e70b89ac513dc0008b25fe0").should("be.visible");
+      playListLibrary.searchContainer.getKeywordsSearchBar().clear();
+      playListLibrary.searchContainer.typeInSearchBar(`${testStandard.standard2}`);
+      playListLibrary.searchContainer.getSearchContainer().should("contain", "test search 2 ");
+    });
+    it("Search by Tag", () => {
+      playListLibrary.searchContainer.getKeywordsSearchBar().clear();
+      playListLibrary.searchContainer.typeInSearchBar(`${testTag.tag1}`);
+      playListLibrary.searchContainer.getSearchContainer("5e70b870c513dc0008b25fde").should("be.visible");
+      playListLibrary.searchContainer.getKeywordsSearchBar().clear();
+      playListLibrary.searchContainer.typeInSearchBar(`${testTag.tag2}`);
+      playListLibrary.searchContainer.getSearchContainer().should("contain", "No Data");
     });
   });
 });

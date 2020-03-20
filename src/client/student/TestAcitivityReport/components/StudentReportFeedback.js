@@ -43,7 +43,6 @@ const FeedbackWrapper = styled.div`
   margin-top: 55px;
   width: 25%;
   border-radius: 0.5rem;
-  max-height: 250px;
   ${({ style }) => style};
 `;
 

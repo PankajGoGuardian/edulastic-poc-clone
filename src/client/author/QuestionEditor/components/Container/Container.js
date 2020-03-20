@@ -4,10 +4,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { withRouter, Prompt } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { withWindowSizes, Hints, EduButton } from "@edulastic/common";
+import { withWindowSizes, EduButton } from "@edulastic/common";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
@@ -37,7 +37,7 @@ import { getCurrentQuestionSelector, changeUpdatedFlagAction } from "../../../sh
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
-import { BackLink, StyledButton, QuestionContentWrapper } from "./styled";
+import { BackLink, QuestionContentWrapper } from "./styled";
 import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
@@ -173,7 +173,7 @@ class Container extends Component {
 
   renderQuestion = () => {
     const { view, question, preview, itemFromState, showCalculatingSpinner } = this.props;
-    const { saveClicked, showHints, clearClicked } = this.state;
+    const { saveClicked, clearClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
@@ -201,7 +201,8 @@ class Container extends Component {
             scrollContainer={this.scrollContainer}
             showCalculatingSpinner={showCalculatingSpinner}
           />
-          {showHints && <Hints questions={[question]} />}
+          {/* we may need to bring hint button back */}
+          {/* {showHints && <Hints questions={[question]} />} */}
         </HideScoringBlackContext.Provider>
       );
     }

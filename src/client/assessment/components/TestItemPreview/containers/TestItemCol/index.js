@@ -51,7 +51,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, index) => {
+  renderTabContent = (widget, flowLayout) => {
     const {
       preview,
       LCBPreviewModal,

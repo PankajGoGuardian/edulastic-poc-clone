@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { AnswerContext, PaddingDiv, Hints } from "@edulastic/common";
+import { AnswerContext } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
@@ -61,15 +61,18 @@ const ReportListContent = ({
               scrolling={item.scrolling}
               releaseScore={releaseScore}
               showFeedback
+              hideHintButton
+              showExplanation
               showCollapseBtn
               disableResponse
               isStudentReport
               viewComponent="studentReport"
               evaluation={evaluation}
             />
-            <PaddingDiv>
+            {/* we may need to bring hint button back */}
+            {/* <PaddingDiv>
               <Hints questions={get(item, [`data`, `questions`], [])} />
-            </PaddingDiv>
+            </PaddingDiv> */}
           </Wrapper>
         </AssignmentContentWrapper>
         <TestPreviewModal

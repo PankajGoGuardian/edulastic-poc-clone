@@ -8,10 +8,10 @@ import {
   QuestionSubLabel as SubLabel,
   MathFormulaDisplay
 } from "@edulastic/common";
-import { themeColor, lightFadedBlack } from "@edulastic/colors";
+import { themeColor, lightFadedBlack, mainTextColor, backgroundGrey, greenDark } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
 
-const Hints = ({ question }) => {
+const Hints = ({ question, showHints }) => {
   if (question.type === "passage") {
     return null;
   }
@@ -20,7 +20,8 @@ const Hints = ({ question }) => {
   const validHints = hints?.filter(hint => hint?.label);
   const hintCount = validHints.length;
 
-  const [showCount, updateShowCount] = useState(0);
+  const initialCount = showHints ? hintCount : 0;
+  const [showCount, updateShowCount] = useState(initialCount);
 
   const showHintHandler = () => updateShowCount(1);
 
@@ -29,6 +30,10 @@ const Hints = ({ question }) => {
   return (
     hintCount > 0 && (
       <div data-cy="hint-container">
+        <QuestionLabel>
+          <QuestionText>{question.barLabel}</QuestionText> - Hints
+        </QuestionLabel>
+
         {!!showCount &&
           validHints.map(
             ({ value, label }, index) =>
@@ -108,4 +113,19 @@ const ShowMoreHint = styled.div`
   text-transform: uppercase;
   color: ${themeColor};
   font-size: 0.8em;
+`;
+
+const QuestionLabel = styled.div`
+  color: ${mainTextColor};
+  font-weight: 700;
+  font-size: 16px;
+  padding-bottom: 1rem;
+  padding-left: 11px;
+  border-bottom: 0.05rem solid ${backgroundGrey};
+`;
+
+const QuestionText = styled.span`
+  font-weight: 700;
+  font-size: 16px;
+  color: ${greenDark};
 `;

@@ -326,6 +326,7 @@ class QuestionWrapper extends Component {
       isExpressGrader,
       theme,
       isLCBView,
+      hideHintButton,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -488,7 +489,7 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
-                {view === "preview" && <Hints question={data} />}
+                {view === "preview" && !hideHintButton && <Hints question={data} />}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>

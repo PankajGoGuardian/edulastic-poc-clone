@@ -11,7 +11,6 @@ import { withWindowSizes } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
-import Hints from "@edulastic/common/src/components/Hints";
 import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
@@ -24,15 +23,8 @@ import {
 import { getCollectionsSelector, getUserFeatures } from "../../../selectors/user";
 import { changePreviewAction, changeViewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
-import {
-  getSelectedItemSelector,
-  setTestItemsAction
-} from "../../../../TestPage/components/AddItems/ducks";
-import {
-  setTestDataAndUpdateAction,
-  getTestSelector,
-  updateTestAndNavigateAction
-} from "../../../../TestPage/ducks";
+import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
+import { setTestDataAndUpdateAction, getTestSelector, updateTestAndNavigateAction } from "../../../../TestPage/ducks";
 import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import { addItemToCartAction } from "../../../../ItemList/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
@@ -90,15 +82,7 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const {
-      data,
-      testId,
-      history,
-      updateTestAndNavigate,
-      test,
-      match,
-      isTest = !!testId
-    } = this.props;
+    const { data, testId, history, updateTestAndNavigate, test, match, isTest = !!testId } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
@@ -158,13 +142,7 @@ class PreviewModal extends React.Component {
   };
 
   goToItem = page => {
-    const {
-      setQuestionsForPassage,
-      setPrevewItem,
-      item,
-      testItemPreviewData,
-      passage
-    } = this.props;
+    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData, passage } = this.props;
     const itemId = passage.testItems[page - 1];
     if (!(testItemPreviewData && testItemPreviewData.data)) {
       setPrevewItem(item);
@@ -175,16 +153,7 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const {
-      setDataAndSave,
-      selectedRows,
-      addItemToCart,
-      test,
-      gotoSummary,
-      item,
-      setTestItems,
-      page
-    } = this.props;
+    const { setDataAndSave, selectedRows, addItemToCart, test, gotoSummary, item, setTestItems, page } = this.props;
     console.log("page is", page);
     if (page === "itemList") {
       return addItemToCart(item);
@@ -343,13 +312,10 @@ class PreviewModal extends React.Component {
                   changePreviewTab={changePreviewMode}
                   onlySratchpad={onlySratchpad}
                 />
-                {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+                {/* we may need to bring hint button back */}
+                {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
                 {showReportIssueField && (
-                  <ReportIssue
-                    textareaRows="3"
-                    item={item}
-                    toggleReportIssue={this.toggleReportIssue}
-                  />
+                  <ReportIssue textareaRows="3" item={item} toggleReportIssue={this.toggleReportIssue} />
                 )}
               </>
             )}
@@ -395,9 +361,7 @@ const enhance = compose(
     (state, ownProps) => {
       const itemId = (ownProps.data || {}).id;
       return {
-        item:
-          getItemDetailSelectorForPreview(state, itemId, ownProps.page) ||
-          get(state, "itemDetail.item"),
+        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page) || get(state, "itemDetail.item"),
         collections: getCollectionsSelector(state),
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),

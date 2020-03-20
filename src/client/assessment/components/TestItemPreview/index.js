@@ -6,13 +6,16 @@ import { ThemeProvider, withTheme } from "styled-components";
 
 import { withWindowSizes, ScratchPadContext, ScrollContext } from "@edulastic/common";
 import { IconArrowLeft, IconArrowRight } from "@edulastic/icons";
+import { questionType } from "@edulastic/constants";
 
 import { themes } from "../../../theme";
 import TestItemCol from "./containers/TestItemCol";
 import { Container, Divider, CollapseBtn } from "./styled/Container";
 import FeedbackWrapper from "../FeedbackWrapper";
-import { questionType } from "@edulastic/constants";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
+
+import Hints from "../Hints";
+import Explanation from "../Common/Explanation";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -38,7 +41,8 @@ class TestItemPreview extends Component {
   };
 
   state = {
-    collapseDirection: ""
+    collapseDirection: "",
+    value: 0
   };
 
   containerRef = React.createRef();
@@ -67,7 +71,7 @@ class TestItemPreview extends Component {
     }));
   };
 
-  renderCollapseButtons = i => {
+  renderCollapseButtons = () => {
     const { collapseDirection } = this.state;
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
@@ -91,27 +95,35 @@ class TestItemPreview extends Component {
       isPresentationMode,
       questions,
       isPrintPreview,
-      showCollapseBtn
+      showCollapseBtn,
+      hideHintButton,
+      showExplanation
     } = this.props;
     const displayFeedback = index == 0;
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
     return (
-      <FeedbackWrapper
-        showFeedback={showFeedback}
-        displayFeedback={displayFeedback}
-        isPrintPreview={isPrintPreview}
-        showCollapseBtn={showCollapseBtn}
-        prevQActivityForQuestion={prevQActivityForQuestion}
-        data={{ ...question, smallSize: true }}
-        isStudentReport={isStudentReport}
-        isPresentationMode={isPresentationMode}
-      />
+      <>
+        <FeedbackWrapper
+          showFeedback={showFeedback}
+          displayFeedback={displayFeedback}
+          isPrintPreview={isPrintPreview}
+          showCollapseBtn={showCollapseBtn}
+          prevQActivityForQuestion={prevQActivityForQuestion}
+          data={{ ...question, smallSize: true }}
+          isStudentReport={isStudentReport}
+          isPresentationMode={isPresentationMode}
+        />
+        {hideHintButton && <Hints question={question} showHints />}
+        {showExplanation && <Explanation question={question} />}
+      </>
     );
   };
 
   renderFeedbacks = () => {
-    return this.props.cols.map(col =>
+    const { cols } = this.props;
+    const { value } = this.state;
+    return cols.map(col =>
       col.widgets
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
         .map((widget, i) => (

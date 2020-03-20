@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
-import { withWindowSizes, AnswerContext, Hints } from "@edulastic/common";
+import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination } from "antd";
@@ -323,7 +323,6 @@ class Container extends Component {
 
   renderPreview = () => {
     const { rows, preview, item: itemProps, passage, view } = this.props;
-    const { showHints } = this.state;
     const item = itemProps || {};
     const allRows = item.passageId ? [passage.structure, ...rows] : rows;
     let _questions = keyBy(item.data.questions, "id");
@@ -347,7 +346,8 @@ class Container extends Component {
             page="itemAuthoring"
           />
         </PreviewContent>
-        {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+        {/* we may need to bring hint button back */}
+        {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
       </>
     );
   };

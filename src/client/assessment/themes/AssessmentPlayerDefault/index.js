@@ -10,7 +10,7 @@ import { get, keyBy } from "lodash";
 import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
 import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
-import Hints from "@edulastic/common/src/components/Hints";
+// import Hints from "@edulastic/common/src/components/Hints";
 
 import { themes } from "../../../theme";
 import MainWrapper from "./MainWrapper";
@@ -322,7 +322,7 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
       calculateMode,
-      showHints,
+      // showHints,
       enableCrossAction,
       minWidth,
       defaultContentWidth,
@@ -589,11 +589,12 @@ class AssessmentPlayerDefault extends React.Component {
                     changePreviewTab={changePreview}
                   />
                 )}
-                {showHints && (
+                {/* we may need to bring hint button back */}
+                {/* {showHints && (
                   <StyledPaddingDiv>
                     <Hints questions={get(item, [`data`, `questions`], [])} />
                   </StyledPaddingDiv>
-                )}
+                )} */}
               </MainWrapper>
             </Main>
 
@@ -657,8 +658,3 @@ const enhance = compose(
 );
 
 export default enhance(AssessmentPlayerDefault);
-
-const StyledPaddingDiv = styled(PaddingDiv)`
-  padding: 10px;
-  height: max-content;
-`;

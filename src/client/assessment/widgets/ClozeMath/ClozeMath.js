@@ -109,11 +109,8 @@ const ClozeMath = ({
       if (o.type === "dropdown") {
         return item.options[o.id];
       }
-      const { keypadMode, customUnits } =
-        find(item.responseIds.mathUnits, res => res.id === o.id) || {};
-      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn =>
-        btn.types.includes(keypadMode)
-      ).map(b => b.label);
+      const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === o.id) || {};
+      let otherOptions = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(b => b.label);
 
       if (keypadMode === "custom") {
         otherOptions = customUnits.split(",").filter(u => !!u);
@@ -122,6 +119,7 @@ const ClozeMath = ({
     });
   }
 
+  const { isLCBView, isExpressGrader } = restProps;
   return (
     <WithResources
       resources={[
@@ -135,9 +133,7 @@ const ClozeMath = ({
       <StyledClozeMathWrapper>
         <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
           <QuestionLabelWrapper>
-            {!flowLayout
-              ? showQuestionNumber && <QuestionNumberLabel>{qLabel}</QuestionNumberLabel>
-              : null}
+            {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}</QuestionNumberLabel> : null}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </QuestionLabelWrapper>
           <QuestionContentWrapper>
@@ -147,7 +143,7 @@ const ClozeMath = ({
                 style={{
                   height: "100%",
                   width: "100%",
-                  overflow: "auto",
+                  overflow: isLCBView || isExpressGrader ? null : "auto",
                   "max-width": "100%",
                   flex: "auto"
                 }}
@@ -170,9 +166,7 @@ const ClozeMath = ({
                 />
               </StyledPaperWrapper>
             )}
-            {(isPrint || isPrintPreview) && (
-              <QuestionOptions options={options} style={{ marginTop: "50px" }} />
-            )}
+            {(isPrint || isPrintPreview) && <QuestionOptions options={options} style={{ marginTop: "50px" }} />}
             {view === EDIT && (
               <ContentArea data-cy="question-area">
                 <Template
@@ -199,11 +193,7 @@ const ClozeMath = ({
                   />
                 </Question>
 
-                <ChoicesForDropDown
-                  item={item}
-                  fillSections={fillSections}
-                  cleanSections={cleanSections}
-                />
+                <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
                 {advancedLink}
 

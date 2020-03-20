@@ -430,6 +430,8 @@ class QuestionWrapper extends Component {
               className="question-wrapper"
               disabled={disabled}
               isV1Multipart={isV1Multipart}
+              isLCBView={isLCBView}
+              isExpressGrader={isExpressGrader}
               style={{
                 width: `${
                   ((view === "edit" && showQuestionMenu) || showFeedback) && !disableResponse
@@ -465,6 +467,8 @@ class QuestionWrapper extends Component {
                   disableResponse={disableResponse}
                   studentReport={studentReportFeedbackVisible}
                   isPrintPreview={isPrintPreview}
+                  isLCBView={isLCBView}
+                  isExpressGrader={isExpressGrader}
                   {...userAnswerProps}
                 />
 

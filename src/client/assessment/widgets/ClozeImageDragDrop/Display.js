@@ -148,10 +148,7 @@ class Display extends Component {
         possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
       }
       return {
-        userAnswers:
-          nextProps.userSelections && nextProps.userSelections.length
-            ? [...nextProps.userSelections]
-            : [],
+        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : [],
         possibleResponses
       };
     }
@@ -288,8 +285,7 @@ class Display extends Component {
 
     if (typeof fromContainerIndex === "number") {
       newAnswers[fromContainerIndex] = {
-        responseBoxID:
-          responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
+        responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
         value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
         containerIndex: index
       };
@@ -373,6 +369,7 @@ class Display extends Component {
       showBorder,
       isReviewTab,
       isExpressGrader,
+      isLCBView,
       setQuestionData,
       studentReport,
       getHeading
@@ -389,13 +386,7 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const {
-      heightpx,
-      wordwrap,
-      responsecontainerposition,
-      responsecontainerindividuals,
-      stemNumeration
-    } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
@@ -404,9 +395,7 @@ class Display extends Component {
     };
 
     const dragItemStyle = {
-      border: `${
-        showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-      }`,
+      border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
       margin: "0 0 0 3px", // EV-8287
       display: "flex",
       alignItems: "center",
@@ -418,12 +407,7 @@ class Display extends Component {
     };
 
     const { maxHeight, maxWidth } = clozeImage;
-    const {
-      imageWidth: imgWidth,
-      imageHeight: imgHeight,
-      imageOriginalWidth,
-      imageOriginalHeight
-    } = item;
+    const { imageWidth: imgWidth, imageHeight: imgHeight, imageOriginalWidth, imageOriginalHeight } = item;
     const imageWidth = imgWidth || imageOriginalWidth || maxWidth;
     const imageHeight = imgHeight || imageOriginalHeight || maxHeight;
     let canvasHeight = imageHeight + (imageOptions.y || 0);
@@ -480,11 +464,7 @@ class Display extends Component {
     }, 0);
     const imageOffsetY = get(item, "imageOptions.y", 0);
     // eslint-disable-next-line max-len
-    const computedHeight = Math.max(
-      maxResponseOffsetTop,
-      maxAnnotationsOffsetTop,
-      imageHeight + imageOffsetY
-    );
+    const computedHeight = Math.max(maxResponseOffsetTop, maxAnnotationsOffsetTop, imageHeight + imageOffsetY);
 
     const choiceMinWidth = get(item, "uiStyle.choiceMinWidth", choiceDefaultMinW);
     const choiceMaxWidth = get(item, "uiStyle.choiceMaxWidth", choiceDefaultMaxW);
@@ -504,7 +484,7 @@ class Display extends Component {
     const responseBoxWidth = choiceMaxWidth;
     const containerStyle = {
       margin: "auto",
-      overflow: "auto",
+      overflow: isLCBView || isExpressGrader ? null : "auto",
       minWidth: choiceMaxWidth,
       maxWidth: responseposition === "left" || responseposition === "right" ? 1050 : 750
     };
@@ -527,12 +507,7 @@ class Display extends Component {
 
     const previewContainerWidth = canvasWidth > maxWidth ? canvasWidth : maxWidth;
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        smallSize={smallSize}
-        fontSize={fontSize}
-        height={computedHeight}
-        maxWidth="100%"
-      >
+      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} height={computedHeight} maxWidth="100%">
         <StyledPreviewContainer
           smallSize={smallSize}
           width={previewContainerWidth}
@@ -590,8 +565,7 @@ class Display extends Component {
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
@@ -608,9 +582,7 @@ class Display extends Component {
     );
 
     const validAnswers = get(item, "validation.validResponse.value", []);
-    const altAnswers = get(item, "validation.altResponses", []).map(alt =>
-      get(alt, "value", []).map(res => res)
-    );
+    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
@@ -628,9 +600,7 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <HorizontalScrollContext.Provider
-          value={{ getScrollElement: () => this.displayWrapperRef.current }}
-        >
+        <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.displayWrapperRef.current }}>
           <FlexContainer justifyContent="flex-start" alignItems="baseline">
             <QuestionLabelWrapper>
               {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -661,20 +631,13 @@ class Display extends Component {
                   <LeftResponseContainer width={responseBoxWidth || null} isReviewTab={isReviewTab}>
                     <RelativeContainer>{responseBoxLayout}</RelativeContainer>
                   </LeftResponseContainer>
-                  <LeftTemplateContainer
-                    studentReport={studentReport}
-                    responseBoxContainerWidth={responseBoxWidth}
-                  >
+                  <LeftTemplateContainer studentReport={studentReport} responseBoxContainerWidth={responseBoxWidth}>
                     {templateBoxLayout}
                   </LeftTemplateContainer>
                 </LeftContainer>
               )}
               {responseposition === "right" && (
-                <RightContainer
-                  smallSize={smallSize}
-                  style={containerStyle}
-                  ref={this.displayWrapperRef}
-                >
+                <RightContainer smallSize={smallSize} style={containerStyle} ref={this.displayWrapperRef}>
                   <RightTemplateContainer
                     smallSize={smallSize}
                     studentReport={studentReport}

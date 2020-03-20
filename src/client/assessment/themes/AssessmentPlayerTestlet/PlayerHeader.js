@@ -29,23 +29,29 @@ const PlayerHeader = ({
       <HeaderMainMenu skinb="true">
         <FlexContainer>
           <PlayerTitle>{title}</PlayerTitle>
-          <Tools changeTool={changeTool} currentTool={currentTool} calculateMode={calculateMode} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} />
+          <Tools
+            changeTool={changeTool}
+            currentTool={currentTool}
+            calculateMode={calculateMode}
+            handleMagnifier={handleMagnifier}
+            enableMagnifier={enableMagnifier}
+          />
           <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
           <ContainerRight>
             <FlexDisplay>
               {currentPage > 1 && (
-                <EduButton isGhost height="40px" noHover onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
+                <EduButton isGhost height="40px" onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
                   <span>Next</span>
                   <IconGraphRightArrow />
                 </EduButton>
               )}
               {currentPage <= 1 && (
-                <EduButton isGhost height="40px" noHover onClick={onNextQuestion} title="Start">
+                <EduButton isGhost height="40px" onClick={onNextQuestion} title="Start">
                   <span>Start</span>
                   <IconGraphRightArrow />
                 </EduButton>
               )}
-              <EduButton isGhost IconBtn height="40px" noHover title="Exit" onClick={onOpenExitPopup}>
+              <EduButton isGhost IconBtn height="40px" title="Exit" onClick={onOpenExitPopup}>
                 <IconLogout />
               </EduButton>
             </FlexDisplay>

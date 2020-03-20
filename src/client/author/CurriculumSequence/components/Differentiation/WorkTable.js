@@ -53,9 +53,14 @@ const WorkTable = ({
       isOver: !!monitor.isOver()
     }),
     drop: (item, monitor) => {
-      if (selectedAssignment?._id && groupId && item.dataType === "tests") {
+      if (selectedAssignment?._id && groupId && item.contentType === "tests") {
         console.log("dropped item", item);
-        addTestToDifferentiation({ type: type.toLowerCase(), testId: item?.id, masteryRange, title: item?.title });
+        addTestToDifferentiation({
+          type: type.toLowerCase(),
+          testId: item?.id,
+          masteryRange,
+          title: item?.contentTitle
+        });
       }
     }
   });

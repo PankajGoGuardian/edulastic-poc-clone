@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { greenDark, secondaryTextColor, white, green } from "@edulastic/colors";
+import styled, { css } from "styled-components";
+import { secondaryTextColor, white } from "@edulastic/colors";
 import { WithMathFormula } from "@edulastic/common";
 
 export const StyledToolsContainer = styled.div`
@@ -61,7 +61,7 @@ export const ToolbarItem = styled.div`
 `;
 
 export const ToolbarItemLabel = styled.span`
-  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)}
+  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)};
   font-size: 14px;
   font-weight: 600;
   line-height: 19px;
@@ -127,17 +127,28 @@ export const GraphWrapper = styled.div`
   }
 `;
 
+const borderStyle = css`
+  border-radius: 0;
+  border-style: solid;
+  border-width: ${({ showBorder }) => (showBorder ? 1 : 0)}px;
+  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
+`;
+
+export const JSXBoxWrapper = styled.div`
+  position: relative;
+  overflow: ${({ showBorder }) => (showBorder ? "hidden" : "auto")};
+  width: ${props => `${props.width}px`};
+  ${borderStyle}
+`;
+
 export const JSXBox = styled.div`
   // IMPORTANT: TRY NOT TO WRITE SVG ELEMENTS STYLE HERE CUZ ATTRIBUTES GET OVERRIDEN
 
   background-color: ${props => props.theme.widgets.chart.bgColor} !important;
   position: relative;
   overflow: hidden;
-
-  border: 1px solid #e8e8e8;
-  border-radius: 0;
-  border-color: ${props => props.theme.widgets.chart.axisBorderColor} !important;
   margin: ${props => (props.margin ? props.margin : 0)}px;
+  ${borderStyle}
 
   text {
     fill: ${props => props.theme.widgets.chart.labelStrokeColor};
@@ -244,12 +255,6 @@ export const Title = WithMathFormula(styled.div`
   display: block;
   padding: 1em 0;
 `);
-
-export const JSXBoxWrapper = styled.div`
-  position: relative;
-  overflow: auto;
-  width: ${props => `${props.width}px`};
-`;
 
 export const JSXBoxWithDropValues = styled.div`
   position: relative;

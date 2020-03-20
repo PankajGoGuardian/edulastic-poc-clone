@@ -59,8 +59,8 @@ const valueHeightHashMap = {
 };
 
 const getColoredElems = (elements, compareResult, theme) => {
-  const {rightIconColor} = theme.widgets.graphPlacement;
-  const {wrongIconColor} = theme.widgets.graphPlacement;
+  const { rightIconColor } = theme.widgets.graphPlacement;
+  const { wrongIconColor } = theme.widgets.graphPlacement;
 
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
@@ -135,7 +135,7 @@ const getColoredElems = (elements, compareResult, theme) => {
 };
 
 const getCorrectAnswer = (answerArr, theme) => {
-  const {rightIconColor} = theme.widgets.graphPlacement;
+  const { rightIconColor } = theme.widgets.graphPlacement;
 
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
@@ -462,18 +462,18 @@ class PlacementContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, theme } = this.props;
 
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements, this.props.theme));
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements, theme));
       return;
     }
 
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult, this.props.theme);
+      const coloredElements = getColoredElems(elements, compareResult, theme);
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadAnswersFromConfig(coloredElements);
@@ -482,7 +482,7 @@ class PlacementContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
-      const coloredElements = getColoredElems(elements, compareResult, this.props.theme);
+      const coloredElements = getColoredElems(elements, compareResult, theme);
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(coloredElements);
@@ -588,7 +588,7 @@ class PlacementContainer extends PureComponent {
                 dragDropBoundsClassName={dragDropBoundsClassName}
               />
             )}
-            <JSXBoxWrapper width={+layout.width + 40}>
+            <JSXBoxWrapper width={+layout.width + 40} showBorder={hasAnnotation}>
               {annotation && annotation.labelTop && (
                 <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
               )}
@@ -601,7 +601,13 @@ class PlacementContainer extends PureComponent {
               {annotation && annotation.labelBottom && (
                 <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
               )}
-              <JSXBox data-cy="jxgbox" id={this._graphId} className="jxgbox" margin={margin} />
+              <JSXBox
+                data-cy="jxgbox"
+                id={this._graphId}
+                className="jxgbox"
+                margin={margin}
+                showBorder={!hasAnnotation}
+              />
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>
           </JSXBoxWithDropValues>

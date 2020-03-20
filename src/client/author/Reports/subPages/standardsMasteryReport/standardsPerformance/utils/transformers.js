@@ -175,6 +175,11 @@ export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleI
 // Table column related utils
 export const getScore = record => roundedPercentage(record.totalScore, record.maxScore);
 export const getOverallScore = records => roundedPercentage(sumBy(records, "totalScore"), sumBy(records, "maxScore"));
+export const getOverallRawScore = records => {
+  const maxScoreSum = sumBy(records, "maxScore");
+  const totalScoreSum = sumBy(records, "totalScore") || 0;
+  return maxScoreSum ? `${totalScoreSum.toFixed(2)} / ${maxScoreSum}` : 0;
+};
 export const getMasteryScore = record => round(record.fmSum / parseInt(record.fmCount, 10), 2);
 export const getMasteryScoreColor = (domain, scaleInfo) => getMasteryLevel(getMasteryScore(domain), scaleInfo).color;
 export const getAnalyseByTitle = key => analyseKeys[key] || "";
@@ -186,7 +191,7 @@ export const getOverallValue = (record = [], analyseByKey, scaleInfo) => {
     case "score":
       return `${getOverallScore(record.records)}%`;
     case "rawScore":
-      return `${sumBy(record.records, "totalScore").toFixed(2)} / ${sumBy(record.records, "maxScore")}`;
+      return getOverallRawScore(record.records);
     case "masteryLevel":
       return getRecordMasteryLevel(record.records, scaleInfo).masteryLabel;
     default:

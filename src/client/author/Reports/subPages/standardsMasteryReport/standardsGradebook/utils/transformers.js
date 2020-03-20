@@ -310,8 +310,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
     let scorePercentUnrounded = (_item.totalTotalScore / _item.totalMaxScore) * 100;
     scorePercentUnrounded = !isNaN(scorePercentUnrounded) ? scorePercentUnrounded : 0;
 
-    let rawScoreUnrounded = _item.totalTotalScore / groupedData[item].length;
-    rawScoreUnrounded = !isNaN(rawScoreUnrounded) ? rawScoreUnrounded : 0;
+    let rawScoreUnrounded = _item.totalTotalScore || 0;
 
     let fmUnrounded = _item.totalFinalMastery / groupedData[item].length;
     fmUnrounded = !isNaN(fmUnrounded) ? fmUnrounded : 0;

@@ -34,7 +34,7 @@ export const SortableItemContainer = styled.div.attrs({
     flex: 1;
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     background: ${greyThemeLighter};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     margin-right: 0;

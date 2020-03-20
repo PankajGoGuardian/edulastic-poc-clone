@@ -139,15 +139,14 @@ const BackgroundStyleWrapper = styled.div.attrs({
 })`
   position: relative;
   width: 100%;
-  display: block;
+  display: flex;
+  align-items: center;
   font-size: ${props => props.fontSize || props.theme.fontSize};
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
   }
 
   .fr-wrapper {
-    transition: padding-top 0.5s;
-    padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
     ${({ centerContent }) => {
       if (centerContent) {
         return `.fr-element p,
@@ -528,9 +527,6 @@ const CustomEditor = ({
         focus: function() {
           if (initOnClick) {
             this.hasFocus = true;
-            if (this.toolbar) {
-              this.toolbar.show();
-            }
           }
         },
         blur: function() {
@@ -822,7 +818,6 @@ const CustomEditor = ({
       />
       <BackgroundStyleWrapper
         backgroundColor={config.backgroundColor}
-        toolbarExpanded={toolbarExpanded}
         centerContent={centerContent}
         border={border}
         theme={theme}

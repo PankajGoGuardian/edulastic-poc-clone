@@ -137,7 +137,10 @@ const ActionContainer = ({
             ]);
             // contactEmails field is in csv of multiple emails
             const contactEmailsString = get(stdData, "contactEmails", "");
-            const contactEmails = contactEmailsString ? contactEmailsString.split(",").map(x => x.trim()) : [];
+            const contactEmails =
+              contactEmailsString && typeof contactEmailsString === "string"
+                ? contactEmailsString.split(",").map(x => x.trim())
+                : contactEmailsString;
             // no need to have length check, as it is already handled in form validator
             if (contactEmails?.[0]) {
               stdData.contactEmails = contactEmails;
@@ -301,7 +304,12 @@ const ActionContainer = ({
               ADD STUDENT
             </EduButton>
           ) : null}
-          <EduButton height="30px" isGhost data-cy="printRoster" onClick={() => history.push(`/author/manageClass/printPreview`)}>
+          <EduButton
+            height="30px"
+            isGhost
+            data-cy="printRoster"
+            onClick={() => history.push(`/author/manageClass/printPreview`)}
+          >
             <IconPrint />
             PRINT
           </EduButton>
@@ -348,7 +356,9 @@ const ActionContainer = ({
             }
             placement="bottomRight"
           >
-            <EduButton height="30px" isGhost>ACTIONS</EduButton>
+            <EduButton height="30px" isGhost>
+              ACTIONS
+            </EduButton>
           </Dropdown>
 
           {active && !cleverId ? (

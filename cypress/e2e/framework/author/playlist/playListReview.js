@@ -101,21 +101,25 @@ export default class PlayListReview {
     this.routeSavePlaylist();
     this.getHideModuleByModule(mod).click();
     this.waitForSave();
+    this.getAssignButtonByModule(mod).should("have.css", "opacity", "0.5");
   };
   clickShowModuleByModule = mod => {
     this.routeSavePlaylist();
     this.getShowModuleByModule(mod).click();
     this.waitForSave();
+    this.getAssignButtonByModule(mod).should("have.css", "opacity", "1");
   };
   clickHideTestByModule = (mod, test) => {
     this.routeSavePlaylist();
     this.getHideByTestByModule(mod, test).click();
     this.waitForSave();
+    this.getAssignButtonByTestByModule(mod, test).should("have.css", "opacity", "0.5");
   };
-  clickHideModuleByModule = (mod, test) => {
+  clickShowTestByModule = (mod, test) => {
     this.routeSavePlaylist();
-    this.getShowByTestByModule(mod).click(mod, test);
+    this.getShowByTestByModule(mod, test).click(mod, test);
     this.waitForSave();
+    this.getAssignButtonByTestByModule(mod, test).should("have.css", "opacity", "1");
   };
 
   // *** ACTIONS END ***

@@ -5,8 +5,8 @@ import PlayListHeader from "./playListHeader";
 import PlayListAddTest from "./playListAddTestTab";
 import PlayListReview from "./playListReview";
 import CypressHelper from "../../util/cypressHelpers";
-import PlayListSearchContainer from "./searchConatinerPage";
 import PlaylistCustom from "./playListCustomizationPage";
+import PlayListAssign from "./playListAssignPage";
 
 export default class PlayListLibrary {
   constructor() {
@@ -17,6 +17,7 @@ export default class PlayListLibrary {
     this.addTestTab = new PlayListAddTest();
     this.reviewTab = new PlayListReview();
     this.playlistCustom = new PlaylistCustom();
+    this.playListAssign = new PlayListAssign();
   }
 
   // *** ELEMENTS START ***
@@ -154,14 +155,20 @@ export default class PlayListLibrary {
     });
   };
 
+  clickDropDownByClass = text => {
+    this.checkDropByClass();
+    CypressHelper.selectDropDownByAttribute("selectClass", text);
+  };
+
   searchAndClickOnDropDownByClass = text => {
     cy.server();
     cy.route("POST", "**/search/student").as("search-students");
-    CypressHelper.selectDropDownByAttribute("selectClass", text);
+    this.clickDropDownByClass(text);
     cy.wait("@search-students");
   };
 
   searchAndClickOnDropDownByStudent = (name, clas) => {
+    this.checkDropByStudent();
     CypressHelper.selectDropDownByAttribute("selectStudent", name);
   };
   // *** APPHELPERS END ***

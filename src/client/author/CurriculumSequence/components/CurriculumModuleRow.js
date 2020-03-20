@@ -93,7 +93,6 @@ const SortableHandle = sortableHandle(() => (
 ));
 
 const SortableElement = sortableElement(props => {
-
   const { moduleData, id, dropContent } = props;
 
   return (
@@ -831,11 +830,12 @@ class ModuleRow extends Component {
                                             </Button>
                                           </AssignmentButton>
                                         ) : (
-                                          <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>
-                                            <Button
-                                              data-cy="assignButton"
-                                              onClick={() => assignTest(_id, moduleData.contentId)}
-                                            >
+                                          <AssignmentButton
+                                            data-cy="assignButton"
+                                            assigned={isAssigned}
+                                            style={rowInlineStyle}
+                                          >
+                                            <Button onClick={() => assignTest(_id, moduleData.contentId)}>
                                               <IconLeftArrow width={13.3} height={9.35} />
                                               ASSIGN
                                             </Button>

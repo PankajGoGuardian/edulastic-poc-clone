@@ -158,5 +158,12 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["ESSAY_RICH.default", "ESSAY_RICH.default", "ESSAY_RICH.default"]
+  },
+
+  "PLAYLIST_TEST_2": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.2", "MCQ_TF.2"]
   }
 }

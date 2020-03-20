@@ -135,7 +135,7 @@ class StudentTestPage {
 
       .click({ force: true });
 
-  submitTest = () => {
+  clickSubmitButton = () => {
     cy.server();
     // cy.route("GET", "**/test-activity/*").as("saved");
     cy.route("PUT", "**/test-activity/**").as("testactivity");
@@ -151,6 +151,10 @@ class StudentTestPage {
       .click();
     // cy.wait("@saved");
     cy.wait("@testactivity");
+  };
+
+  submitTest = () => {
+    this.clickSubmitButton();
     return cy.url().should("include", "/home/grades");
   };
 

@@ -11,6 +11,10 @@ class StudenPlaylist extends PlayListReview {
 
   getPlaylistSubOnCardById = () => this.getPlaylistCardById(id).find('[data-cy="subject"]');
 
+  getStartPractice = (mod, test) => this.getTestByTestByModule(mod, test).find(`[data-cy="START PRACTICE"]`);
+
+  getResumePractice = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="RESUME PRACTICE"]');
+
   clickOpenDroppedPlaylist = () => this.getOpenDroppedPlaylist().click();
 
   clickOnPractiseByTestByMod = (mod, test) => this.clickOnPractiseResumeByTestcard(mod, test, true);
@@ -20,21 +24,17 @@ class StudenPlaylist extends PlayListReview {
   clickOnPractiseResumeByTestcard = (mod, test, start = false) => {
     cy.server();
     cy.route("GET", "**/attachments/*").as("loadPracticeTest");
-    if (start)
-      this.getTestByTestByModule(mod, test)
-        .find(`[data-cy="START PRACTICE"]`)
-        .click();
-    else
-      this.getTestByTestByModule(mod, test)
-        .find('[data-cy="RESUME PRACTICE"]')
-        .click();
+    if (start) this.getStartPractice(mod, test).click();
+    else this.getResumePractice(mod, test).click();
     cy.wait("@loadPracticeTest");
   };
+
   clickOnViewPlaylistById = id => {
     cy.server();
     cy.route("GET", "**/playlists/*").as("loadDropdPlaylist");
     this.getPlaylistCardById(id).click();
     cy.wait("@loadDropdPlaylist").then(xhr => expect(xhr.status).to.eq(200));
+    cy.contains("PROFICIENCY");
   };
 }
 export default StudenPlaylist;

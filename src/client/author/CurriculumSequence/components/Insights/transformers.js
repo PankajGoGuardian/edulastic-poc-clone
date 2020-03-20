@@ -97,7 +97,8 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
           (res, ele) => {
             res.playlistModuleIds.push(ele.playlistModuleId);
             res.standardIds.push(ele.standardId);
-            res.summedScore += ele.maxScore ? ele.totalScore / ele.maxScore : 1;
+            res.totalTotalScore += ele.totalScore || 0;
+            res.totalMaxScore += ele.maxScore || 0;
             res.totalTimeSpent += parseInt(ele.timeSpent);
             res.count += 1;
             return res;
@@ -107,7 +108,8 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
             standardIds: [],
             playlistModuleIds: [],
             count: 0,
-            summedScore: 0,
+            totalTotalScore: 0,
+            totalMaxScore: 0,
             totalTimeSpent: 0
           }
         );
@@ -128,7 +130,6 @@ export const domainRange = 800;
 // should be close to {sqrt(2) * limit}
 export const scaleFactor = 1.8;
 
-// TODO: use itemCount to get a domainRange if there is a large volume of data to be normalized
 const getNormalizedValue = (item, mean, range) => {
   return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
@@ -139,11 +140,11 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   }
   let minTimeSpent = filteredData[0].totalTimeSpent,
     maxTimeSpent = filteredData[0].totalTimeSpent,
-    minPercentScore = filteredData[0].summedScore / filteredData[0].count,
-    maxPercentScore = filteredData[0].summedScore / filteredData[0].count;
+    minPercentScore = 1,
+    maxPercentScore = 0;
 
   let curatedMetrics = filteredData.map(item => {
-    const percentScore = item.summedScore / item.count;
+    const percentScore = item.totalMaxScore ? item.totalTotalScore / item.totalMaxScore : 0;
     if (item.totalTimeSpent < minTimeSpent) {
       minTimeSpent = item.totalTimeSpent;
     }

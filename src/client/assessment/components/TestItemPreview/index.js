@@ -165,6 +165,7 @@ class TestItemPreview extends Component {
     const hasResourceTypeQuestion =
       cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
+    const { isLCBView, isExpressGrader } = restProps;
     return (
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
         <Container
@@ -180,6 +181,8 @@ class TestItemPreview extends Component {
                 const hideColumn =
                   (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
                 if (hideColumn && showCollapseButtons) return "";
+                const fullHeight =
+                  (isExpressGrader || isLCBView) && i === 0 && col.widgets.every(widget => widget.type === "passage");
                 return (
                   <>
                     {(i > 0 || collapseDirection === "left") && showCollapseButtons && this.renderCollapseButtons(i)}
@@ -204,7 +207,8 @@ class TestItemPreview extends Component {
                       disableResponse={disableResponse}
                       LCBPreviewModal={LCBPreviewModal}
                       previewTab={previewTab}
-                      testReviewStyle={{ height: "auto", paddingTop: 0 }}
+                      fullHeight={fullHeight}
+                      testReviewStyle={{ height: fullHeight ? "100%" : "auto", paddingTop: 0 }}
                     />
                     {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                   </>

@@ -398,7 +398,7 @@ class QuestionWrapper extends Component {
             noPadding={noPadding}
             isFlex
             data-cy="question-container"
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: restProps.fullHeight ? "100%" : null }}
           >
             {view === "edit" && showQuestionMenu && (
               <QuestionMenuWrapper>

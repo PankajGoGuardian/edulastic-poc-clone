@@ -304,9 +304,9 @@ class ModuleRow extends Component {
     }
   };
 
-  showResource = contentId => {
+  showResource = (contentId, resource) => {
     const { playlistId, module, getSignedRequest, signedRequest } = this.props;
-    getSignedRequest({ playlistId, moduleId: module._id, contentId });
+    getSignedRequest({ playlistId, moduleId: module._id, contentId, resource });
     this.setState({
       showResourceModal: true
     });

@@ -15,7 +15,7 @@ export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIn
         </Col>
         <StyledCol span={urlHasUseThis ? 17 : 14}>
           <AssignmentButton>
-            <Button onClick={() => showResource(data.contentId)}>VIEW</Button>
+            <Button onClick={() => showResource(data.contentId, data.data)}>VIEW</Button>
           </AssignmentButton>
           <AssignmentIcon>
             <CustomIcon

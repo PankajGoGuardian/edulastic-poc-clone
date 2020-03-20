@@ -116,14 +116,15 @@ const fetchPlaylistInsights = data => {
     .then(result => result.data.result);
 };
 
-const getSignedRequest = ({ playlistId, moduleId, contentId }) => {
+const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) => {
   return api
     .callApi({
       method: "post",
       url: `${prefix}/${playlistId}/generate-lti-request`,
       data: {
         moduleId,
-        contentId
+        contentId,
+        resource
       }
     })
     .then(result => result.data.result);

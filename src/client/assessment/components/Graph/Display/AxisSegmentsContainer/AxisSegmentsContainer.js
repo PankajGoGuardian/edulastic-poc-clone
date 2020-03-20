@@ -501,12 +501,22 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, disableResponse, view, graphData, setQuestionData, isPrintPreview } = this.props;
+    const {
+      layout,
+      canvas,
+      elements,
+      tools,
+      disableResponse,
+      view,
+      graphData,
+      setQuestionData,
+      isPrintPreview
+    } = this.props;
     const { selectedTool } = this.state;
     const vertical = layout.orientation === "vertical";
 
     return (
-      <div data-cy="axis-labels-container">
+      <div data-cy="axis-segments-container">
         <GraphWrapper vertical={vertical}>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />

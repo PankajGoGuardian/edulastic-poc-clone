@@ -383,7 +383,7 @@ export const Col = styled.div`
 
 export const PaperWrapper = styled(StyledPaperWrapper)`
   padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
-  minwidth: ${({ style }) => style.minWidth};
+  min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
   @media (max-width: ${mobileWidthMax}) {
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "20px;")};
@@ -399,9 +399,6 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   position: relative;
   width: 100%;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
   min-height: 90px;
   padding: 0 0 10px 0;
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;

@@ -1,10 +1,11 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
+import { isEqual, max } from "lodash";
 import next from "immer";
 
-import { WithResources } from "@edulastic/common";
+import { WithResources, measureText } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
@@ -21,7 +22,7 @@ import { CONSTANT } from "../../Builder/config";
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
-import ResponseBox, { defaultTitleWidth as responseBoxTitleWidth } from "./ResponseBox";
+import ResponseBox from "./ResponseBox";
 import { GraphWrapper, JSXBox, ContainerWithResponses, StyledToolsContainer } from "./styled";
 import { getAdjustedHeightAndWidth, getAdjustedV1AnnotationCoordinatesForRender } from "../../common/utils";
 import AppConfig from "../../../../../../../app-config";
@@ -104,12 +105,44 @@ class AxisLabelsContainer extends PureComponent {
       resourcesLoaded: false
     };
 
-    this.parentWidth = 0;
-    this.parentHeight = 0;
-
     this.updateValues = this.updateValues.bind(this);
 
     this.axisLabelsContainerRef = React.createRef();
+  }
+
+  // -2 done to make room for the border when width is an integer but the actual width is slightly less
+  get parentHeight() {
+    return this.axisLabelsContainerRef?.current?.clientHeight - 2 || 0;
+  }
+
+  get parentWidth() {
+    return this.axisLabelsContainerRef?.current?.clientWidth - 2 || 0;
+  }
+
+  get choiceMaxWidth() {
+    const { list } = this.props;
+    const { maxWidth } = response;
+    const maxContentWidth = Math.min(max(list.map(value => measureText(value.text).width)), maxWidth);
+    return maxContentWidth;
+  }
+
+  get adjustedHeightWidth() {
+    const {
+      layout,
+      numberlineAxis: { responseBoxPosition },
+      disableResponse
+    } = this.props;
+
+    return getAdjustedHeightAndWidth(
+      this.parentWidth,
+      this.parentHeight,
+      layout,
+      this.MIN_WIDTH,
+      this.MIN_HEIGHT,
+      responseBoxPosition,
+      this.choiceMaxWidth,
+      disableResponse
+    );
   }
 
   componentDidMount() {
@@ -124,24 +157,10 @@ class AxisLabelsContainer extends PureComponent {
       graphData,
       setElementsStash,
       disableResponse,
-      view,
-      numberlineAxis: { responseBoxPosition }
+      view
     } = this.props;
-    // eslint-disable-next-line max-len
-    // -2 done to make room for the border when width is an integer but the actual width is slightly less
-    this.parentWidth = this.axisLabelsContainerRef?.current?.clientWidth - 2;
-    this.parentHeight = this.axisLabelsContainerRef?.current?.clientHeight - 2;
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT,
-      responseBoxPosition,
-      responseBoxTitleWidth,
-      disableResponse
-    );
+    const adjustedHeightWidth = this.adjustedHeightWidth;
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
@@ -200,20 +219,10 @@ class AxisLabelsContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view,
-      numberlineAxis: { responseBoxPosition }
+      view
     } = this.props;
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT,
-      responseBoxPosition,
-      responseBoxTitleWidth,
-      disableResponse
-    );
+    const adjustedHeightWidth = this.adjustedHeightWidth;
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -383,16 +392,7 @@ class AxisLabelsContainer extends PureComponent {
     const { shouldZoom } = theme;
     const { isV1Migrated } = graphData;
 
-    const adjustedHeightWidth = getAdjustedHeightAndWidth(
-      this.parentWidth,
-      this.parentHeight,
-      layout,
-      this.MIN_WIDTH,
-      this.MIN_HEIGHT,
-      responseBoxPosition,
-      responseBoxTitleWidth,
-      disableResponse
-    );
+    const adjustedHeightWidth = this.adjustedHeightWidth;
 
     let _graphData = graphData;
     if (isV1Migrated) {
@@ -408,9 +408,13 @@ class AxisLabelsContainer extends PureComponent {
         }
       });
     }
+    const isHorizontal = responseBoxPosition === "top" || responseBoxPosition === "bottom";
+    // +20 is padding between container and choices
+    const responseBoxWidth = isHorizontal ? "100%" : `${this.choiceMaxWidth}px`;
+    const graphContainerWidth = isHorizontal ? "100%" : `calc(100% - ${responseBoxWidth}px)`;
 
     return (
-      <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef}>
+      <div data-cy="axis-labels-container" ref={this.axisLabelsContainerRef} style={{ width: "100%" }}>
         <WithResources
           resources={[`${AppConfig.jqueryPath}/jquery.min.js`, `${AppConfig.katexPath}/katex.min.js`]}
           fallBack={<span />}
@@ -442,11 +446,13 @@ class AxisLabelsContainer extends PureComponent {
                   separationDistanceX={separationDistanceX}
                   separationDistanceY={separationDistanceY}
                   position={responseBoxPosition}
+                  responseBoxWidth={responseBoxWidth}
+                  choiceWidth={this.choiceMaxWidth}
                   minWidth={Math.min(adjustedHeightWidth.width, this.parentWidth)}
                   minHeight={adjustedHeightWidth.height}
                 />
               )}
-              <div style={{ position: "relative", overflow: "auto", width: "100%" }}>
+              <div style={{ position: "relative", overflow: "auto", width: graphContainerWidth }}>
                 <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
                 <AnnotationRnd
                   question={_graphData}

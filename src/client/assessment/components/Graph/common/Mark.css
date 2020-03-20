@@ -1,6 +1,6 @@
 .mark {
-  height: 45px !important;
-  width: 120px !important;
+  height: 45px;
+  width: 120px;
   word-break: break-word;
   max-width: 55px;
   padding: 2px;

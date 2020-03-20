@@ -4,9 +4,8 @@ import { Rnd } from "react-rnd";
 import { Tooltip } from "antd";
 
 import { WithResources } from "@edulastic/common";
-import AppConfig from "../../../../../../../../app-config";
-
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
+import AppConfig from "../../../../../../../../app-config";
 
 import { Container, Title, MarkContainer, DraggableOptionsContainer } from "./styled";
 
@@ -26,8 +25,8 @@ class ResponseBox extends Component {
     window.removeEventListener("touchstart", this.preventPageScroll);
     window.removeEventListener("touchmove", this.preventPageScroll);
     const titleHeight = this.titleRef.current.clientHeight;
-    const { onAddMark, position, markWidth, markHeight, minWidth } = this.props;
-    let x = d.x + markWidth / 2;
+    const { onAddMark, position, choiceWidth, markHeight, minWidth } = this.props;
+    let x = d.x + choiceWidth / 2;
     let y = d.y + markHeight / 2;
 
     const _height = height + titleHeight;
@@ -47,7 +46,7 @@ class ResponseBox extends Component {
     this.setState({ draggingMark: null });
   };
 
-  handleDragStart = i => e => {
+  handleDragStart = i => () => {
     window.addEventListener("touchstart", this.preventPageScroll, { passive: false });
     window.addEventListener("touchmove", this.preventPageScroll, { passive: false });
     this.setState({ draggingMark: i });
@@ -64,9 +63,10 @@ class ResponseBox extends Component {
   render() {
     const {
       values,
+      responseBoxWidth,
+      choiceWidth,
       minWidth,
       minHeight,
-      titleWidth,
       markCount,
       markWidth,
       markHeight,
@@ -79,7 +79,7 @@ class ResponseBox extends Component {
     } = this.props;
 
     const { draggingMark, resourcesLoaded } = this.state;
-    const width = position === "top" || position === "bottom" ? minWidth : titleWidth;
+    const width = position === "top" || position === "bottom" ? minWidth : choiceWidth;
 
     const markCountInLine = Math.floor((width - separationDistanceX) / (markWidth + separationDistanceX));
     const linesCount = Math.ceil(markCount / markCountInLine);
@@ -93,20 +93,19 @@ class ResponseBox extends Component {
         onLoaded={this.resourcesOnLoaded}
       >
         {!resourcesLoaded ? null : (
-          <Container width={width} position={position}>
+          <Container width={responseBoxWidth}>
             <Title ref={this.titleRef}>DRAG DROP VALUES</Title>
             <DraggableOptionsContainer className="draggable-options-container" height={height} width={width}>
               {values.map((value, i) => {
-                let content = replaceLatexesWithMathHtml(value.text);
-
+                const content = replaceLatexesWithMathHtml(value.text);
                 return (
                   <Rnd
                     key={value.id}
                     position={{
-                      x: separationDistanceX + (i % markCountInLine) * (markWidth + separationDistanceX),
+                      x: separationDistanceX + (i % markCountInLine) * (choiceWidth + separationDistanceX),
                       y: Math.floor(i / markCountInLine) * (markHeight + separationDistanceY)
                     }}
-                    size={{ width: markWidth, height: markHeight }}
+                    size={{ width: choiceWidth - 20, height: markHeight }}
                     onDragStart={this.handleDragStart(i)}
                     onDragStop={(evt, d) => this.handleDragDropValuePosition(d, value, width, height)}
                     style={{ zIndex: 10 }}
@@ -141,11 +140,11 @@ class ResponseBox extends Component {
 
 ResponseBox.propTypes = {
   bounds: PropTypes.string.isRequired,
+  responseBoxWidth: PropTypes.string.isRequired,
   values: PropTypes.array,
   onAddMark: PropTypes.func,
   minWidth: PropTypes.number,
   minHeight: PropTypes.number,
-  titleWidth: PropTypes.number,
   markCount: PropTypes.number,
   markWidth: PropTypes.number,
   markHeight: PropTypes.number,
@@ -160,7 +159,6 @@ ResponseBox.defaultProps = {
   onAddMark: () => {},
   minWidth: 600,
   minHeight: 150,
-  titleWidth: defaultTitleWidth,
   markCount: 0,
   markWidth: 120, // from .mark class
   markHeight: 45, // from .mark class

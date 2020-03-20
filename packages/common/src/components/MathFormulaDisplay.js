@@ -18,6 +18,18 @@ const MathFormulaDisplay = withTheme(
       display: inline;
     }
 
+    table {
+      display: table;
+    }
+
+    table tr {
+      display: table-row;
+    }
+
+    table td {
+      display: table-cell;
+    }
+
     p {
       -moz-padding-inline-end: 10px;
       -webkit-padding-inline-end: 10px;

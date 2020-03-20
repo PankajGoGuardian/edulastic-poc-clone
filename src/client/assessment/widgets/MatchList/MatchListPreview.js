@@ -313,7 +313,6 @@ const MatchListPreview = ({
       style={{
         fontSize,
         overflowX: isPrintPreview ? "hidden" : "auto",
-        overflowY: "hidden",
         margin: "auto",
         width: "100%"
       }}

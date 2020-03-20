@@ -165,5 +165,12 @@
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.2", "MCQ_TF.2"]
+  },
+  "PLAYLIST_TEST_1": {
+    "name": "Test Assessment",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "collections": "Spark Math - Spark Math Bucket",
+    "itemKeys": ["MCQ_TF.10", "MCQ_TF.10"]
   }
 }

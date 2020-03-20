@@ -60,6 +60,7 @@ import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { LTIResourceRow } from "./LTIResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
+import { pick } from "lodash";
 
 /**
  * @typedef {object} Props
@@ -305,6 +306,7 @@ class ModuleRow extends Component {
   };
 
   showResource = (contentId, resource) => {
+    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
     const { playlistId, module, getSignedRequest, signedRequest } = this.props;
     getSignedRequest({ playlistId, moduleId: module._id, contentId, resource });
     this.setState({

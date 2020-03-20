@@ -63,22 +63,19 @@ const Insights = ({
     masteryList: []
   });
 
-  // get student trend data
+  // fetch student trend data & playlist insights
   useEffect(() => {
     const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
-    if (termId) {
-      getStudentProgressRequestAction({ termId });
+    if (playlistId && termId) {
+      getStudentProgressRequestAction({ termId, playlistId });
     }
-  }, []);
-  const { metricInfo: progressInfo } = get(studentProgress, "data.result", {});
-  const [trendData, trendCount] = useGetBandData(progressInfo || [], "student", [], "", defaultBandInfo);
-
-  // fetch playlists
-  useEffect(() => {
     if (playlistId) {
       fetchPlaylistInsightsAction({ playlistId });
     }
   }, [playlistId]);
+
+  const { metricInfo: progressInfo } = get(studentProgress, "data.result", {});
+  const [trendData, trendCount] = useGetBandData(progressInfo || [], "student", [], "", defaultBandInfo);
 
   const { studInfo = [], metricInfo = [], scaleInfo = [] } = playlistInsights;
   const masteryData = getMasteryData(scaleInfo[0]?.scale);

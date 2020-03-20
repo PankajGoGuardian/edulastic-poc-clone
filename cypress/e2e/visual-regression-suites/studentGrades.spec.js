@@ -1,14 +1,15 @@
 import FileHelper from "../framework/util/fileHelper";
 import { assignedTests } from "../framework/testdata/visualRegression";
+import { assignedTests1 } from "../framework/testdata/visualRegression";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
-const assignmentQue = assignedTests["5de8ce86c05b97000826d0ae"];
+const assignmentQue = assignedTests1["5e4b9001f13f470008a12ab2"];
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   const pageURL = "/home/grades";
   before("set token", () => {
     cy.fixture("usersVisualRegression").then(allusers => {
-      const { username, password } = allusers.default.student;
+      const { username, password } = allusers.studentPlayer1;
       cy.setToken(username, password); // setting auth token for student user
     });
   });
@@ -16,7 +17,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`Grades`, () => {
     before("set token", () => {
       cy.fixture("users").then(users => {
-        const user = users["visual-regression"].student;
+        const user = users["visual-regression"].studentPlayer1;
         cy.setToken(user.username, user.password);
       });
     });
@@ -39,7 +40,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         cy.setResolution(size);
 
         cy.visit(
-          `/home/class/5d53b53af7efc82f60100347/test/5de8ce86c05b97000826d0ae/testActivityReport/5de8d6368269fc0008609245`
+          `/home/class/5e4b86f0c12c24000700889f/test/5e4b9001f13f470008a12ab2/testActivityReport/5e71feb0dd3b77000833a801`
         );
         cy.wait("@testactivity");
         // cy.get('[data-cy="reviewButton"]').click({ force: true });

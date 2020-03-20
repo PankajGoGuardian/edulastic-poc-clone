@@ -2,12 +2,13 @@
 import FileHelper from "../framework/util/fileHelper";
 import StudentTestPage from "../framework/student/studentTestPage";
 import { assignedTests } from "../framework/testdata/visualRegression";
+import { assignedTests1 } from "../framework/testdata/visualRegression";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const test = new StudentTestPage();
-const allTestIds = Object.keys(assignedTests);
+const allTestIds = Object.keys(assignedTests1);
 const assignmentURL = [
-  "/student/assessment/5de8ce86c05b97000826d0ae/class/5d53b53af7efc82f60100347/uta/5de8df5f612991000874eaa7/qid"
+  "/student/assessment/5e4b9001f13f470008a12ab2/class/5e4b86f0c12c24000700889f/uta/5e6b0fa198bb760008edda8b/qid/"
 ];
 /* const assignmentURL = [
   "/student/assessment/5dc3e3018286cb00071c326b/class/5d53b53af7efc82f60100347/uta/5dc3fe580e43cf000724ffa9/qid",
@@ -20,14 +21,14 @@ const assignmentURL = [
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   before("set token", () => {
     cy.fixture("usersVisualRegression").then(allusers => {
-      const { username, password } = allusers.default.student;
+      const { username, password } = allusers.studentPlayer;
       cy.setToken(username, password); // setting auth token for student user
     });
   });
 
   allTestIds.forEach(testId => {
     const pageURL = assignmentURL.filter(url => url.includes(testId))[0];
-    const items = assignedTests[testId];
+    const items = assignedTests1[testId];
 
     SCREEN_SIZES.forEach(size => {
       context(`Assessment Player-${testId}-${size}`, () => {
@@ -43,7 +44,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
           it(`>${queNum}-${itemId}-'${size}'`, () => {
             cy.setResolution(size);
             test.getQueDropDown().click();
-            cy.contains(`${queNum}/ ${items.length}`).click({ force: true });
+            cy.contains(`${queNum}/${items.length}`).click({ force: true });
             cy.wait(2000); // allow que to render before taking screenshot
             cy.matchImageSnapshotWithSize();
             cy.isPageScrollPresent().then(({ hasScroll }) => {
@@ -55,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
         it(`> review page-'${size}'`, () => {
           cy.setResolution(size);
           test.getQueDropDown().click();
-          cy.contains(`Question ${items.length}/ ${items.length}`).click({ force: true });
+          cy.contains(`Question ${items.length}/${items.length}`).click({ force: true });
           cy.wait(2000);
           test.clickOnNext();
           cy.matchImageSnapshotWithSize();

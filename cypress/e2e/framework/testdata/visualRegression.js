@@ -72,6 +72,34 @@ export const assignedTests = {
   ]
 };
 
+export const assignedTests1 = {
+  "5e4b9001f13f470008a12ab2": [
+    { itemId: "5dc55be71f221d00089993fd", itemType: "Cloze with Drag & Drop" },
+    { itemId: "5dc55f5c1fd7b30007f3d199", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc55f6f1fd7b30007f3d19b", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc55f9de402510007e1f5af", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc55fe6e402510007e1f5b1", itemType: "Cloze with Drag & Drop" },
+    { itemId: "5dc560991373ba0007b6f082", itemType: "Cloze with Drag & Drop" },
+    { itemId: "5dc560bd1fd7b30007f3d19f", itemType: "Label Image with Drag & Drop" },
+    { itemId: "5dc561e7fa22a900071d2789", itemType: "Sort List" },
+    { itemId: "5dc5636c411194000864b588", itemType: "Classification" },
+    { itemId: "5dc5638c1373ba0007b6f085", itemType: "Classification" },
+    { itemId: "5dc563b71fd7b30007f3d1a8", itemType: "Classification" },
+    { itemId: "5dc563f3b7056400076e00cd", itemType: "Classification" },
+    { itemId: "5dc565471373ba0007b6f08b", itemType: "Match list" },
+    { itemId: "5dc5658e411194000864b58a", itemType: "Match list" },
+    { itemId: "5dc565b0b7056400076e00d1", itemType: "Match list" },
+    { itemId: "5dc565d91fd7b30007f3d1ab", itemType: "Match list" },
+    { itemId: "5dc566e7b7056400076e00d5", itemType: "OrderList" },
+    { itemId: "5dc56967e402510007e1f5c5", itemType: "Classification" },
+    { itemId: "5dc5697e8829380008941734", itemType: "Classification" },
+    { itemId: "5dc56b3117b0f80007a8164b", itemType: "Graph Placement" },
+    { itemId: "5dc56cce2709b70007f7c4ec", itemType: "Number line with drag & drop" },
+    { itemId: "5dc56d393fc89d000886dd7a", itemType: "Number line with drag & drop" },
+    { itemId: "5dc56d5700e419000870b6e6", itemType: "Number line with drag & drop" }
+  ]
+};
+
 /* 
   export const draftTests = {
   "5dc3fc9b2ab139000860fa37": [

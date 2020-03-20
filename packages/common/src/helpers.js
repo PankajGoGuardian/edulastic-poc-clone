@@ -572,6 +572,16 @@ export const templateHasImage = template => {
   return hasImage;
 };
 
+export const templateHasMath = template => {
+  let hasMath = false;
+  if (window.$) {
+    const fakeEm = window.$("<div/>", {});
+    fakeEm.append(template);
+    hasMath = fakeEm.find(".input__math").length > 0;
+  }
+  return hasMath;
+};
+
 export const getImageUrl = template => {
   let url = "";
   if (window.$) {

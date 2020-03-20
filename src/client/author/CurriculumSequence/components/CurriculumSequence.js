@@ -413,6 +413,7 @@ class CurriculumSequence extends Component {
       isPublisherUser,
       isStudent,
       isTeacher,
+      role,
       playlistMetricsList,
       studentPlaylists,
       activeClasses,
@@ -423,6 +424,8 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys
     } = this.props;
+
+    const isNotStudentOrParent = !(role === "student" || role === "parent");
 
     const testsInPlaylist = destinationCurriculumSequence?.modules?.flatMap(m => m?.data?.map(d => d?.contentId)) || [];
 
@@ -560,7 +563,7 @@ class CurriculumSequence extends Component {
       </SubHeaderInfoCard>
     );
 
-    const enableCustomize = customize && urlHasUseThis && !isStudent;
+    const enableCustomize = (customize && urlHasUseThis && isNotStudentOrParent) || (customize && isNotStudentOrParent);
 
     const isAuthoringFlowReview = current === "review";
 
@@ -785,6 +788,13 @@ class CurriculumSequence extends Component {
                     )}
                   </Wrapper>
                 </ContentContainer>
+                {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
+                  <ManageContentBlock
+                    testsInPlaylist={testsInPlaylist}
+                    subjects={destinationCurriculumSequence?.subjects?.[0]}
+                    grades={destinationCurriculumSequence?.grades || []}
+                  />
+                ) : null}
                 {urlHasUseThis &&
                   (isManageContentActive ? (
                     <ManageContentBlock
@@ -860,6 +870,7 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       isStudent: getUserRole(state) === "student",
       isTeacher: getUserRole(state) === "teacher",
+      role: getUserRole(state),
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
       studentPlaylists: state?.studentPlaylist?.playlists,
       classId: getCurrentGroup(state),

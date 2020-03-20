@@ -21,6 +21,7 @@ export const Stimulus = WithMathFormula(styled.div`
   text-overflow: ellipsis;
   padding-right: 15px;
   flex: 1;
+  text-align: left;
   padding-top: 3px;
 
   & *:not(.edu) {

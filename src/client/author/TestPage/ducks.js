@@ -192,9 +192,9 @@ export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 export const updateTestEntityAction = createAction(SET_TEST_DATA);
 export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_COLLECTION_LIST);
 
-export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
+export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: { id, requestLatest, editAssigned }
+  payload: { id, requestLatest, editAssigned, isPlaylist }
 });
 
 export const receiveTestByIdSuccess = entity => ({
@@ -934,7 +934,7 @@ function* receiveTestByIdSaga({ payload }) {
     });
     entity.passages = [...entity.passages, ...differenceBy(tests.entity.passages, entity.passages, "_id")];
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
-    if (entity._id !== payload.id) {
+    if (entity._id !== payload.id && !payload?.isPlaylist) {
       yield put(
         push({
           pathname: `/author/tests/tab/review/id/${entity._id}`,

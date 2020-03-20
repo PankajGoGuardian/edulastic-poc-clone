@@ -353,7 +353,8 @@ class Review extends PureComponent {
       showAnswer,
       showCancelButton,
       userFeatures,
-      testItems
+      testItems,
+      isPlaylistTestReview = false
     } = this.props;
     const {
       isCollapse,
@@ -400,32 +401,34 @@ class Review extends PureComponent {
     return (
       <Content ref={this.containerRef}>
         <ReviewPageContainer>
-          <Row>
-            <Col lg={24} xl={owner && isEditable ? 24 : 18}>
-              <div ref={this.secondHeaderRef}>
-                <SecondHeader>
-                  <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
-                  <HeaderBar
-                    onSelectAll={this.handleSelectAll}
-                    itemTotal={testItems.length}
-                    selectedItems={selected}
-                    onRemoveSelected={this.handleRemoveSelected}
-                    onCollapse={this.handleCollapse}
-                    onMoveTo={this.handleMoveTo}
-                    owner={owner}
-                    isEditable={isEditable}
-                    windowWidth={windowWidth}
-                    setCollapse={isCollapse}
-                    toggleSummary={this.toggleSummary}
-                    isShowSummary={isShowSummary}
-                    onShowTestPreview={this.showTestPreviewModal}
-                    hasStickyHeader={hasStickyHeader}
-                    itemGroups={test.itemGroups}
-                  />
-                </SecondHeader>
-              </div>
-            </Col>
-          </Row>
+          {!isPlaylistTestReview && (
+            <Row>
+              <Col lg={24} xl={owner && isEditable ? 24 : 18}>
+                <div ref={this.secondHeaderRef}>
+                  <SecondHeader>
+                    <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} hasStickyHeader={hasStickyHeader} />
+                    <HeaderBar
+                      onSelectAll={this.handleSelectAll}
+                      itemTotal={testItems.length}
+                      selectedItems={selected}
+                      onRemoveSelected={this.handleRemoveSelected}
+                      onCollapse={this.handleCollapse}
+                      onMoveTo={this.handleMoveTo}
+                      owner={owner}
+                      isEditable={isEditable}
+                      windowWidth={windowWidth}
+                      setCollapse={isCollapse}
+                      toggleSummary={this.toggleSummary}
+                      isShowSummary={isShowSummary}
+                      onShowTestPreview={this.showTestPreviewModal}
+                      hasStickyHeader={hasStickyHeader}
+                      itemGroups={test.itemGroups}
+                    />
+                  </SecondHeader>
+                </div>
+              </Col>
+            </Row>
+          )}
           <ReviewContentWrapper gutter={30}>
             <ReviewLeftContainer lg={24} xl={18}>
               <Paper padding="15px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>

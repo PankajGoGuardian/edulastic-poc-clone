@@ -64,6 +64,7 @@ class AssignmentDragItem extends Component {
       isAssigned,
       assigned,
       isDragging,
+      togglePlaylistTestDetails,
       showResource
     } = this.props;
 
@@ -99,7 +100,13 @@ class AssignmentDragItem extends Component {
                   {/* <CustomIcon marginLeft={16}>
                 <Icon type="right" style={{ color: "#707070" }} />
               </CustomIcon> */}
-                  <ModuleDataName isDragging={isDragging}>{moduleData.contentTitle}</ModuleDataName>
+                  <ModuleDataName
+                    onClick={() => togglePlaylistTestDetails({ id: moduleData?.contentId })}
+                    isDragging={isDragging}
+                    isReview
+                  >
+                    {moduleData.contentTitle}
+                  </ModuleDataName>
                 </AssignmentContent>
                 {!hideEditOptions && (
                   <ModuleAssignedUnit>

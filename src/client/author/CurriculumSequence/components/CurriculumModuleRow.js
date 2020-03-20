@@ -53,11 +53,13 @@ import {
   removeUnitAction,
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction,
-  getSignedRequestAction
+  getSignedRequestAction,
+  togglePlaylistTestDetailsModalWithId
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { LTIResourceRow } from "./LTIResourceRow";
+import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 
 /**
  * @typedef {object} Props
@@ -91,50 +93,18 @@ const SortableHandle = sortableHandle(() => (
 ));
 
 const SortableElement = sortableElement(props => {
-  const {
-    moduleData,
-    id,
-    isContentExpanded,
-    hideEditOptions,
-    assignTest,
-    mode,
-    assigned,
-    moreMenu,
-    menu,
-    standardTags,
-    status,
-    isAssigned,
-    viewTest,
-    deleteTest,
-    moduleIndex,
-    dropContent,
-    onBeginDrag,
-    showResource
-  } = props;
+
+  const { moduleData, id, dropContent } = props;
+
   return (
     <AssignmentDragItemContainer>
       <SortableHandle />
       <AssignmentDragItem
         key={`${id}-${moduleData.id}`}
-        moduleData={moduleData}
-        isContentExpanded={isContentExpanded}
-        hideEditOptions={hideEditOptions}
-        assignTest={assignTest}
-        mode={mode}
-        assigned={assigned}
-        moreMenu={moreMenu}
-        menu={menu}
-        standardTags={standardTags}
-        status={status}
         contentIndex={id}
-        isAssigned={isAssigned}
-        viewTest={viewTest}
-        deleteTest={deleteTest}
-        moduleIndex={moduleIndex}
         handleDrop={dropContent}
-        onBeginDrag={onBeginDrag}
         onClick={e => e.stopPropagation()}
-        showResource={showResource}
+        {...props}
       />
     </AssignmentDragItemContainer>
   );
@@ -364,7 +334,9 @@ class ModuleRow extends Component {
       summaryData,
       playlistMetrics,
       playlistId,
-      signedRequest
+      signedRequest,
+      playlistTestDetailsModalData,
+      togglePlaylistTestDetails
     } = this.props;
 
     const { title, _id, data = [], description = "" } = module;
@@ -396,21 +368,23 @@ class ModuleRow extends Component {
     return (
       (isStudent && module.hidden) || (
         <React.Fragment>
-          <ModalWrapper
-            footer={null}
-            visible={showModal}
-            onCancel={this.closeModal}
-            width="100%"
-            height="100%"
-            destroyOnClose
-          >
-            <AssessmentPlayer
-              playlistId={playlistId}
-              testId={selectedTest}
-              preview
-              closeTestPreviewModal={this.closeModal}
-            />
-          </ModalWrapper>
+          {showModal && (
+            <ModalWrapper
+              footer={null}
+              visible={showModal}
+              onCancel={this.closeModal}
+              width="100%"
+              height="100%"
+              destroyOnClose
+            >
+              <AssessmentPlayer
+                playlistId={playlistId}
+                testId={selectedTest}
+                preview
+                closeTestPreviewModal={this.closeModal}
+              />
+            </ModalWrapper>
+          )}
 
           <ModalWrapper
             footer={null}
@@ -720,7 +694,11 @@ class ModuleRow extends Component {
                             <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
                               <Col span={urlHasUseThis ? 7 : 10} style={rowInlineStyle}>
                                 <ModuleDataWrapper>
-                                  <ModuleDataName onClick={() => !isStudent && this.viewTest(moduleData?.contentId)}>
+                                  <ModuleDataName
+                                    onClick={() =>
+                                      !isStudent && togglePlaylistTestDetails({ id: moduleData?.contentId })
+                                    }
+                                  >
                                     <Tooltip placement="bottomLeft" title={moduleData.contentTitle}>
                                       <EllipticSpan width="calc(100% - 30px)">{moduleData.contentTitle}</EllipticSpan>
                                     </Tooltip>
@@ -1012,6 +990,13 @@ class ModuleRow extends Component {
               </SortableContainer>
             )}
           </ModuleWrapper>
+          {playlistTestDetailsModalData?.isVisible && (
+            <PlaylistTestDetailsModal
+              onClose={togglePlaylistTestDetails}
+              modalInitData={playlistTestDetailsModalData}
+              viewAsStudent={this.viewTest}
+            />
+          )}
         </React.Fragment>
       )
     );
@@ -1301,10 +1286,11 @@ const ModuleDataWrapper = styled.div`
 
 export const ModuleDataName = styled.div`
   display: inline-flex;
-  width: 100%;
+  width: ${({ isReview }) => (isReview ? "auto" : "100%")};
   letter-spacing: 0;
   color: ${darkGrey2};
   font: 14px/19px Open Sans;
+  cursor: ${({ isReview }) => isReview && "pointer"};
   span {
     font-weight: 600;
   }
@@ -1408,7 +1394,8 @@ const enhance = compose(
       assigned: curriculumSequence.assigned,
       signedRequest: curriculumSequence.signedRequest,
       isStudent: getUserRole({ user }) === "student",
-      classId: getCurrentGroup({ user })
+      classId: getCurrentGroup({ user }),
+      playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
@@ -1419,7 +1406,8 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
       updateCurriculumSequence: putCurriculumSequenceAction,
-      getSignedRequest: getSignedRequestAction
+      getSignedRequest: getSignedRequestAction,
+      togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId
     }
   )
 );

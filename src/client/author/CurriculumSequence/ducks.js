@@ -1080,7 +1080,13 @@ const initialState = {
   differentiationWork: {},
   destinationDirty: false,
   isFetchingDifferentiationWork: false,
-  workStatusData: {}
+  workStatusData: {},
+
+  // Playlist Test Details State
+  playlistTestDetailsModal: {
+    isVisible: false,
+    currentTestId: null
+  }
 };
 
 /**
@@ -1559,6 +1565,10 @@ export const playlistTestRemoveFromModuleAction = createAction(REMOVE_TEST_FROM_
 export const TOGGLE_MANAGE_CONTENT_ACTIVE = "[playlist] toggle manage content";
 export const toggleManageContentActiveAction = createAction(TOGGLE_MANAGE_CONTENT_ACTIVE);
 
+// Playlist Test Details Modal
+export const TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID = "[playlist] toggle test details modal";
+export const togglePlaylistTestDetailsModalWithId = createAction(TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID);
+
 export default createReducer(initialState, {
   [UPDATE_CURRICULUM_SEQUENCE_LIST]: setCurriculumSequencesReducer,
   [UPDATE_CURRICULUM_SEQUENCE]: updateCurriculumSequenceReducer,
@@ -1666,5 +1676,14 @@ export default createReducer(initialState, {
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload;
+  },
+  [TOGGLE_PLAYLIST_TEST_DETAILS_MODAL_WITH_ID]: (state, { payload }) => {
+    if (payload?.id) {
+      state.playlistTestDetailsModal.isVisible = true;
+      state.playlistTestDetailsModal.currentTestId = payload.id;
+    } else {
+      state.playlistTestDetailsModal.isVisible = false;
+      state.playlistTestDetailsModal.currentTestId = null;
+    }
   }
 });

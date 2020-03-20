@@ -66,13 +66,15 @@ class SummaryTest extends Component {
         `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,
         {
           fromSummary: true,
-          question: q
+          question: q,
+          ...history.location.state
         }
       );
     } else {
       history.push(`/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}`, {
         fromSummary: true,
-        question: q
+        question: q,
+        ...history.location.state
       });
     }
   };

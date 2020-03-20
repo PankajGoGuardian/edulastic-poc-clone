@@ -76,7 +76,7 @@ export const redirectPolicySelector = createSelector(
 
 export const currentItemIdSelector = createSelector(
   currentItemSelector,
-  state => state._id
+  state => state?._id
 );
 
 export const currentItemAnswerChecksSelector = createSelector(

@@ -38,7 +38,7 @@ export const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, "score", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "" };
 
 export const getOverallMasteryScore = records =>
-  records.length ? round(sumBy(records, "fmSum") / sumBy(records, domain => parseInt(domain.fmCount, 10)), 2) : 0;
+  records.length ? (sumBy(records, "fmSum") / sumBy(records, domain => parseInt(domain.fmCount, 10))).toFixed(2) : 0;
 
 export const getMasteryLevel = (score, scaleInfo) => {
   for (const obj of scaleInfo) {

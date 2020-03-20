@@ -101,7 +101,7 @@ export const ActiveToolBoxContainer = styled(FlexContainer)`
   width: ${toolBoxDimension.width};
   min-height: ${toolBoxDimension.height};
   background: ${props => props.theme.default.sideToolbarBgColor};
-
+  ${({style}) => style};
   & .drawing-tool-button {
     margin: 0px;
   }
@@ -109,4 +109,19 @@ export const ActiveToolBoxContainer = styled(FlexContainer)`
 
 export const Block = styled.div`
   margin-bottom: 4px;
+`;
+
+export const ExpandWrapper = styled.div`
+  display: flex;
+  min-height: auto!important;
+  position: absolute;
+  left: 0;
+  bottom: -48px;
+  ${({style}) => style};
+  button {
+    margin-right: 8px;
+  }
+  .scratchpad-action-tools {
+    flex-direction: row;
+  }
 `;

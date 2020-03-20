@@ -5,8 +5,8 @@ import { Label, Block } from "./styled";
 
 const { Option } = Select;
 
-const Size = ({ value, onChangeSize }) => (
-  <Block>
+const Size = ({ value, onChangeSize, style }) => (
+  <Block style={style}>
     <Label>Size</Label>
     <Select
       defaultValue={value}

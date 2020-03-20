@@ -21,7 +21,9 @@ import {
 import { drawTools } from "@edulastic/constants";
 import { white, greenDark5 } from "@edulastic/colors";
 import { Tooltip } from "../../../../common/utils/helpers";
-import { customizeIcon, StyledButton, Separate } from "./styled";
+import { customizeIcon, StyledButton, Separate, ExpandWrapper } from "./styled";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Trash = customizeIcon(IconTrash);
 
@@ -95,14 +97,25 @@ ActiveTool.propTypes = {
   activeMode: PropTypes.string.isRequired
 };
 
-const DrawingTools = ({ onChange, isTestMode, className }) => {
+const DrawingTools = ({ onChange, isTestMode, className, scratchpadResponsiveHeight }) => {
   const [active, setActive] = useState(null);
+  const [expandMore, setExpandMore] = useState(false);
   const availableBtns = isTestMode ? buttonsList.filter(obj => obj.mode !== "none") : buttonsList;
-
+  const getNoOfButtonsToShow = () => {
+    const noOfButtonsCanDisplay = Math.floor((scratchpadResponsiveHeight - 60)/48);
+    if (noOfButtonsCanDisplay >= availableBtns.length) {
+      return availableBtns.length;
+    }
+    return noOfButtonsCanDisplay - 1;
+  }
   const handleMouseEnter = i => () => setActive(i);
   const handleMouseLeave = () => setActive(null);
+  const expandMoreButtons = () => setExpandMore(true);
+  const collapseMoreButtons = () => setExpandMore(false);
+  const buttonsToShow = scratchpadResponsiveHeight ? availableBtns.slice(0, getNoOfButtonsToShow()) : availableBtns;
 
-  return availableBtns.map((button, i) => (
+  return <>
+  { buttonsToShow.map((button, i) => (
     <Tooltip placement="right" title={button.label} key={button.mode}>
       <StyledButton
         key={i}
@@ -113,7 +126,33 @@ const DrawingTools = ({ onChange, isTestMode, className }) => {
         <button.icon color={active === i ? greenDark5 : white} />
       </StyledButton>
     </Tooltip>
-  ));
+  )) }
+  {buttonsToShow.length !== availableBtns.length && (
+    <ExpandWrapper
+      onMouseEnter={expandMoreButtons}
+      onMouseLeave={collapseMoreButtons}
+    >
+      <Tooltip placement="right">
+        <StyledButton
+        >
+          <FontAwesomeIcon icon={faEllipsisV} style={{transform: "rotate(90deg)", color: "#ffffff"}} />
+        </StyledButton>
+      </Tooltip>
+      {expandMore && availableBtns.slice(buttonsToShow.length).map((button, i) => (
+        <Tooltip placement="right" title={button.label} key={button.mode}>
+          <StyledButton
+            key={i}
+            onClick={onChange(button.mode)}
+            onMouseEnter={handleMouseEnter(i)}
+            onMouseLeave={handleMouseLeave}
+          >
+            <button.icon color={active === i ? greenDark5 : white} />
+          </StyledButton>
+        </Tooltip>
+      ))}
+    </ExpandWrapper>
+  )}
+  </>;
 };
 
 DrawingTools.propTypes = {

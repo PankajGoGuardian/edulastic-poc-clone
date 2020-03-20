@@ -5,7 +5,7 @@ import { Trash, Redo, Undo } from "./tools";
 import { StyledButton } from "./styled";
 
 const BottomTools = ({ undo, redo, onToolChange, deleteMode }) => (
-  <FlexContainer flexDirection="column">
+  <FlexContainer flexDirection="column" className="scratchpad-action-tools">
     <StyledButton onClick={undo}>
       <Undo />
     </StyledButton>

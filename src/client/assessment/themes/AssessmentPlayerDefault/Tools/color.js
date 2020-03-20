@@ -6,13 +6,13 @@ import { getAlpha } from "@edulastic/common";
 
 import { Block, Label } from "./styled";
 
-const ColorPicker = ({ activeMode, fillColor, currentColor, onFillColorChange, onColorChange }) => {
+const ColorPicker = ({ activeMode, fillColor, currentColor, onFillColorChange, onColorChange, style }) => {
   const showFillColorArray = [drawTools.DRAW_SQUARE, drawTools.DRAW_CIRCLE, drawTools.DRAW_TRIANGLE];
 
   return (
     <>
       {showFillColorArray.includes(activeMode) && (
-        <Block>
+        <Block style={style}>
           <Label>Fill</Label>
           <RcColorPicker
             animation="slide-up"
@@ -23,7 +23,7 @@ const ColorPicker = ({ activeMode, fillColor, currentColor, onFillColorChange, o
           />
         </Block>
       )}
-      <Block>
+      <Block style={style}>
         <Label>Color</Label>
         <RcColorPicker
           style={{ zIndex: 100000 }}

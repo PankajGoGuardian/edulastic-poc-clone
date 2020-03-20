@@ -51,7 +51,7 @@ export const fonts = [
   { fontFamily: "'Anton', sans-serif", name: "Anton" }
 ];
 
-const FontPicker = ({ onChange, currentFont }) => {
+const FontPicker = ({ onChange, currentFont, style }) => {
   const [open, toggleOpen] = useState(false);
   const [activeItem, setActiveItem] = useState({});
   const [fontName, setFontName] = useState("");
@@ -120,7 +120,7 @@ const FontPicker = ({ onChange, currentFont }) => {
   }, [currentFont]);
 
   return (
-    <Block>
+    <Block style={style}>
       <Label>Font</Label>
       <PopoverContainer ref={containerRef}>
         <Popover

@@ -110,10 +110,10 @@ export const ManageModuleBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${({ justify }) => justify};
-  height: 30px;
+  height: 35px;
   border: 1px solid ${themeColor};
-  color: ${themeColor};
-  background: ${white};
+  color: ${({ active }) => (active ? white : themeColor)};
+  background: ${({ active }) => (active ? themeColor : white)};
   text-transform: uppercase;
   padding: 6px 15px 4px 15px;
   border-radius: 4px;

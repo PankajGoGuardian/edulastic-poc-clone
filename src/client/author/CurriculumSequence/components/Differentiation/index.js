@@ -145,18 +145,20 @@ const Differentiation = ({
               ))}
             </StyledSelect>
           </div>
-          <div>
-            <EduButton
-              isGhost
-              height="35px"
-              onClick={e => {
-                e.target.blur();
-                setShowManageContent(!showManageContent);
-              }}
-            >
-              Manage Content
-            </EduButton>
-          </div>
+          {!showManageContent && (
+            <div>
+              <EduButton
+                isGhost
+                height="35px"
+                onClick={e => {
+                  e.target.blur();
+                  setShowManageContent(true);
+                }}
+              >
+                Manage Content
+              </EduButton>
+            </div>
+          )}
         </SubHeader>
         <BodyContainer>
           <div>
@@ -214,7 +216,7 @@ const Differentiation = ({
           </EduButton> */}
           </SideButtonContainer>
           <div>
-            <ManageContentBlock />
+            <ManageContentBlock isDifferentiationTab onShowManageContent={() => setShowManageContent(false)} />
           </div>
         </div>
       )}

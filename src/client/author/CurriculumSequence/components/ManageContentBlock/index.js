@@ -80,6 +80,8 @@ const observeElement = (fetchTests, tests) => {
 
 const ManageContentBlock = props => {
   const {
+    isDifferentiationTab = false,
+    onShowManageContent,
     isLoading,
     loadedPage,
     filter,
@@ -229,16 +231,32 @@ const ManageContentBlock = props => {
   return (
     <ManageContentOuterWrapper>
       <ActionsContainer>
-        <Dropdown overlay={menu} placement="topCenter">
-          <ManageModuleBtn justify="space-between">
-            Add Resource
-            <i class="fa fa-chevron-down" aria-hidden="true" />
-          </ManageModuleBtn>
-        </Dropdown>
+        {isDifferentiationTab ? (
+          <>
+            <ManageModuleBtn active justify="center" onClick={onShowManageContent}>
+              manage content
+            </ManageModuleBtn>
+            <Dropdown overlay={menu} placement="topCenter">
+              <ManageModuleBtn justify="space-between">
+                add resource
+                <i class="fa fa-chevron-down" aria-hidden="true" />
+              </ManageModuleBtn>
+            </Dropdown>
+          </>
+        ) : (
+          <>
+            <Dropdown overlay={menu} placement="topCenter">
+              <ManageModuleBtn justify="space-between">
+                add resource
+                <i class="fa fa-chevron-down" aria-hidden="true" />
+              </ManageModuleBtn>
+            </Dropdown>
 
-        <ManageModuleBtn justify="center" onClick={openManageModules}>
-          manage modules
-        </ManageModuleBtn>
+            <ManageModuleBtn justify="center" onClick={openManageModules}>
+              manage modules
+            </ManageModuleBtn>
+          </>
+        )}
       </ActionsContainer>
 
       <ManageContentContainer data-cy="play-list-search-container">

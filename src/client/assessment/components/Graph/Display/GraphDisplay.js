@@ -373,7 +373,7 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
-        fontSize: fontSize && parseInt(fontSize, 10),
+        fontSize: fontSize || 12,
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
@@ -591,7 +591,7 @@ class GraphDisplay extends Component {
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance: numberlineAxis && fractionStringToNumber(numberlineAxis.ticksDistance),
-        fontSize: fontSize && parseInt(fontSize, 10),
+        fontSize: fontSize || 12,
         labelsFrequency: numberlineAxis && parseInt(numberlineAxis.labelsFrequency, 10),
         separationDistanceX: numberlineAxis && parseInt(numberlineAxis.separationDistanceX, 10),
         separationDistanceY: numberlineAxis && parseInt(numberlineAxis.separationDistanceY, 10),
@@ -676,11 +676,41 @@ class GraphDisplay extends Component {
           <Fragment>
             {/* zoomLevel change css transform: scale() style,
                 after changing this style you need to do full reinit of component with jsxgraph object */}
-            {zl === 1 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
-            {zl === 1.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
-            {zl === 1.75 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
-            {zl === 2.5 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
-            {zl === 3 && <GraphContainer theme={theme} {...this.getGraphContainerProps()} isPrintPreview={isPrint || isPrintPreview} />}
+            {zl === 1 && (
+              <GraphContainer
+                theme={theme}
+                {...this.getGraphContainerProps()}
+                isPrintPreview={isPrint || isPrintPreview}
+              />
+            )}
+            {zl === 1.5 && (
+              <GraphContainer
+                theme={theme}
+                {...this.getGraphContainerProps()}
+                isPrintPreview={isPrint || isPrintPreview}
+              />
+            )}
+            {zl === 1.75 && (
+              <GraphContainer
+                theme={theme}
+                {...this.getGraphContainerProps()}
+                isPrintPreview={isPrint || isPrintPreview}
+              />
+            )}
+            {zl === 2.5 && (
+              <GraphContainer
+                theme={theme}
+                {...this.getGraphContainerProps()}
+                isPrintPreview={isPrint || isPrintPreview}
+              />
+            )}
+            {zl === 3 && (
+              <GraphContainer
+                theme={theme}
+                {...this.getGraphContainerProps()}
+                isPrintPreview={isPrint || isPrintPreview}
+              />
+            )}
           </Fragment>
         ) : (
           <div>Wrong parameters</div>

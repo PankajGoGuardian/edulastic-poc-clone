@@ -177,12 +177,13 @@ class TestItemPreview extends Component {
     const hasResourceTypeQuestion =
       cols.length > 1 && cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
-    const { isLCBView, isExpressGrader } = restProps;
+    const { isLCBView, isExpressGrader, viewComponent } = restProps;
+    const isStudentAttempt = ["studentPlayer", "practicePlayer"].includes(viewComponent);
     return (
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
         <Container
           width={windowWidth}
-          style={{ ...style, height: "auto", padding: 0 }}
+          style={{ ...style, height: !isStudentAttempt && "auto", padding: 0 }}
           isCollapsed={!!collapseDirection}
           ref={this.containerRef}
           className="test-item-preview"

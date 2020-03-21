@@ -79,6 +79,7 @@ const PlayerContentArea = ({
                 fillColor={fillColor}
                 saveHistory={saveHistory}
                 history={history}
+                viewComponent="practicePlayer"
               />
             )}
             {testItemState === "check" && (

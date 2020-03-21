@@ -1,6 +1,15 @@
 import styled from "styled-components";
 import { Row, Radio, Switch, Input, Select, DatePicker, Table, Col, Button } from "antd";
-import { white, secondaryTextColor, themeColor, themeColorLight, red, largeDesktopWidth, linkColor1, mobileWidth } from "@edulastic/colors";
+import {
+  white,
+  secondaryTextColor,
+  themeColor,
+  themeColorLight,
+  red,
+  largeDesktopWidth,
+  linkColor1,
+  mobileWidth
+} from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -9,6 +18,7 @@ export const OptionConationer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: ${window.innerHeight <= 780 && "24px"};
 `;
 
 export const InitOptions = styled.div`

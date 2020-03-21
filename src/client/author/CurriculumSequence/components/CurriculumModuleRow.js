@@ -539,7 +539,7 @@ class ModuleRow extends Component {
                     (totalAssigned ? (
                       <StyledCol span={8} justify="flex-end">
                         <StyledLabel
-                          textColor={lightGreen5}
+                          textColor={themeColor}
                           fontStyle="9px/13px Open Sans"
                           fontWeight="Bold"
                           padding="10px 20px 10px 0px"
@@ -554,9 +554,12 @@ class ModuleRow extends Component {
                         </StyledLabel>
                         <StyledTag
                           data-cy="AssignWholeModule"
-                          bgColor={lightGreen5}
+                          bgColor={themeColor}
                           onClick={() => (!module.hidden ? assignModule(module) : {})}
                           style={moduleInlineStyle}
+                          width="156px"
+                          height="32px"
+                          bgColor={themeColor}
                         >
                           ASSIGN MODULE
                         </StyledTag>
@@ -682,7 +685,7 @@ class ModuleRow extends Component {
                         >
                           <ModuleFocused />
                           <FaChevronRight
-                            color={lightGreen5}
+                            color={lightGrey5}
                             style={{ margin: urlHasUseThis ? "4px 15px" : "4px 15px 0px 43px" }}
                           />
                           {contentType === "lti_resource" ? (
@@ -800,13 +803,20 @@ class ModuleRow extends Component {
                                   )}
 
                                   {!isStudent ? (
-                                    <StyledCol span={8} align="flex-start" justify="flex-end">
+                                    <StyledCol
+                                      width="260px"
+                                      marginLeft="auto"
+                                      span={8}
+                                      align="flex-start"
+                                      justify="flex-end"
+                                      paddingRight="0"
+                                    >
                                       {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                         <StyledLabel
-                                          textColor={lightGreen5}
+                                          textColor={themeColor}
                                           fontStyle="9px/13px Open Sans"
                                           fontWeight="Bold"
-                                          padding="4px 20px 10px 0px"
+                                          padding="4px 50px 10px 0px"
                                           data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
                                           onClick={() => this.hideTest(module._id, moduleData)}
                                         >
@@ -823,6 +833,7 @@ class ModuleRow extends Component {
                                                   : "show-assignment"
                                               }
                                               onClick={() => this.setAssignmentDropdown(moduleData.contentId)}
+                                              style={{ padding: "0 6px" }}
                                             >
                                               <IconCheckSmall color={white} />
                                               &nbsp;&nbsp;
@@ -837,7 +848,10 @@ class ModuleRow extends Component {
                                             assigned={isAssigned}
                                             style={rowInlineStyle}
                                           >
-                                            <Button onClick={() => assignTest(_id, moduleData.contentId)}>
+                                            <Button
+                                              onClick={() => assignTest(_id, moduleData.contentId)}
+                                              style={{ width: 124 }}
+                                            >
                                               <IconLeftArrow width={13.3} height={9.35} />
                                               ASSIGN
                                             </Button>
@@ -853,7 +867,7 @@ class ModuleRow extends Component {
                                               align="auto"
                                               style={rowInlineStyle}
                                             >
-                                              <IconMoreVertical width={5} height={14} color={lightGreen5} />
+                                              <IconMoreVertical width={5} height={14} color={themeColor} />
                                             </CustomIcon>
                                           </Dropdown>
                                         ))}
@@ -1112,6 +1126,9 @@ const StyledCol = styled(Col)`
   display: flex;
   align-items: ${props => props.align || "center"};
   justify-content: ${props => props.justify || "flex-start"};
+  padding-right: ${({ paddingRight }) => paddingRight} !important;
+  width: ${({ width }) => width};
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
 const ModuleHeader = styled.div`
@@ -1206,32 +1223,12 @@ const ModuleTitleWrapper = styled.div`
   }
 `;
 
-const StyledLink = styled(Link)`
-  min-width: 121px;
-  border-radius: 4px;
-  height: 24px;
-  color: ${lightGreen5};
-  border: 1px solid ${lightGreen5};
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font: 9px/13px Open Sans;
-  letter-spacing: 0.17px;
-  font-weight: 600;
-  &:hover {
-    background-color: ${lightGreen5};
-    color: white;
-    fill: white;
-  }
-`;
-
 export const AssignmentButton = styled.div`
   min-width: 121px;
   .ant-btn {
-    color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-    border: 1px solid ${lightGreen5};
-    background-color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
+    color: ${({ assigned }) => (assigned ? white : themeColor)};
+    border: 1px solid ${themeColor};
+    background-color: ${({ assigned }) => (assigned ? themeColor : white)};
     min-width: 121px;
     max-height: 22px;
     display: flex;
@@ -1239,14 +1236,14 @@ export const AssignmentButton = styled.div`
     margin: ${({ margin }) => margin};
 
     svg {
-      fill: ${({ assigned }) => (assigned ? white : lightGreen5)};
+      fill: ${({ assigned }) => (assigned ? white : themeColor)};
     }
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : lightGreen5)};
-      color: ${({ assigned }) => (assigned ? lightGreen5 : white)};
-      border-color: ${({ assigned }) => (assigned ? white : lightGreen5)};
+      background-color: ${({ assigned }) => (assigned ? white : themeColor)};
+      color: ${({ assigned }) => (assigned ? themeColor : white)};
+      border-color: ${({ assigned }) => (assigned ? white : themeColor)};
       svg {
-        fill: ${({ assigned }) => (assigned ? lightGreen5 : white)};
+        fill: ${({ assigned }) => (assigned ? themeColor : white)};
       }
     }
     i {

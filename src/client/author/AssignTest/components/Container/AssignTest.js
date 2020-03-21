@@ -44,7 +44,7 @@ const { ASSESSMENT, COMMON } = testConst.type;
 const parentMenu = {
   assignments: { title: "Assignments", to: "assignments" },
   playlistLibrary: { title: "Playlist Library", to: "playlists" },
-  favouritePlaylist: { title: "Favourite playlist", to: "favouriteLibrary" },
+  favouritePlaylist: { title: "My playlist", to: "favouriteLibrary" },
   testLibrary: { title: "Test Library", to: "tests" }
 };
 

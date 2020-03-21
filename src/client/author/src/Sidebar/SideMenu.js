@@ -149,7 +149,9 @@ class SideMenu extends Component {
         allowedPathPattern: [
           /playlists\/playlist\/.{24}\/use-this/,
           /playlists\/insights\/.{24}\/use-this/,
-          /playlists\/differentiation\/.{24}\/use-this/
+          /playlists\/differentiation\/.{24}\/use-this/,
+          /playlists\/assignments\/.{24}\/.{24}/,
+          /playlists\/assignments\/.{24}\/.{24}\/.{24}/
         ],
         path: `author/playlists/playlist/${_id}/use-this`
       },

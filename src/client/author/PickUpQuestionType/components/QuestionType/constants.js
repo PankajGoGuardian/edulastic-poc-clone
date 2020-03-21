@@ -2231,8 +2231,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Matrices",
         isMath: true,
         stimulus: "",
-        template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
-        templateDisplay: false,
+        template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times\\begin{bmatrix}3\\\\4\\end{bmatrix}=${EMBED_RESPONSE}`,
+        templateDisplay: true,
         type: questionType.MATH,
         validation: {
           scoringType: "exactMatch",

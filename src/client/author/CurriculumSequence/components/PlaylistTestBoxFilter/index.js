@@ -52,12 +52,12 @@ const PlaylistTestBoxFilter = props => {
       </Select>
 
       <br />
-      <Title>authored</Title>
+      <Title>authored by</Title>
       <Select
         data-cy="test-authored"
         placeholder="Select Authored"
         style={{ width: 315, height: 40, lineHeight: 40 }}
-        value={authoredBy}
+        value={authoredBy || undefined}
         onChange={onAuthorChange}
       >
         {authoredList.map(({ text, value }) => (
@@ -98,7 +98,7 @@ const PlaylistTestBoxFilter = props => {
         data-cy="test-collection"
         placeholder="Select Collection"
         style={{ width: 315, height: 40, lineHeight: 40 }}
-        value={collection}
+        value={collection || undefined}
         onChange={onCollectionChange}
       >
         {collectionsList.map(({ text, value }) => (

@@ -69,7 +69,7 @@ const slice = createSlice({
       state.subject = payload;
     },
     setCollectionAction: (state, { payload }) => {
-      state.subject = payload;
+      state.collection = payload;
     },
     setSourcesAction: (state, { payload }) => {
       state.sources = payload;
@@ -111,6 +111,7 @@ export default slice;
 function* fetchTestsSaga({ payload }) {
   try {
     const { status, subject, grades, loadedPage, filter, collection } = yield select(state => state[sliceName]);
+    // Add authoredBy and sources once BE is fixed
     const { items, count } = yield call(testsApi.getAll, {
       search: {
         status,

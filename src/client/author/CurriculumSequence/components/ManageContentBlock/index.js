@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
+import { uniq } from "lodash";
 import { connect } from "react-redux";
 import { Dropdown, Menu, Spin } from "antd";
+import { test as testsConstants } from "@edulastic/constants";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
 import AssessmentPlayer from "../../../../assessment";
 import ResourceItem from "../ResourceItem";
 import { toggleManageModulesVisibilityCSAction } from "../../ducks";
+import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
 import slice from "./ducks";
 import {
   ManageContentOuterWrapper,
@@ -116,7 +119,12 @@ const ManageContentBlock = props => {
     showPreviewModal,
     closePreviewModal,
     subjectsFromCurriculumSequence,
-    gradesFromCurriculumSequence
+    gradesFromCurriculumSequence,
+    collections,
+    currentDistrictUsers,
+    districtId,
+    getCurrentDistrictUsers,
+    userFeatures
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -129,6 +137,8 @@ const ManageContentBlock = props => {
   useEffect(() => {
     setDefaults({ subject: subjectsFromCurriculumSequence, grades: gradesFromCurriculumSequence });
     fetchTests();
+    // remove this condition once BE is fixed
+    if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);
   }, []);
 
   const onChange = ({ key }) => {
@@ -283,7 +293,13 @@ const ManageContentBlock = props => {
         {isShowFilter ? (
           <PlaylistTestBoxFilter
             authoredList={[]} /// Send authors data
-            collectionsList={[]} /// send collections data
+            collectionsList={uniq(
+              [
+                ...testsConstants.collectionDefaultFilter?.filter(c => c?.value),
+                ...collections.map(o => ({ value: o?._id, text: o?.name }))
+              ],
+              "value"
+            )}
             sourceList={sourceList}
             filter={filter}
             status={status}
@@ -375,7 +391,11 @@ export default connect(
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
     subjectsFromCurriculumSequence: ownProps?.subjects,
-    gradesFromCurriculumSequence: ownProps?.grades
+    gradesFromCurriculumSequence: ownProps?.grades,
+    collections: state.user?.user?.orgData?.itemBanks || [],
+    currentDistrictUsers: getCurrentDistrictUsersSelector(state),
+    districtId: state?.user?.user?.orgData?.districtId,
+    userFeatures: state?.user?.user?.features
   }),
   {
     setFilterAction: slice.actions?.setFilterAction,
@@ -393,6 +413,7 @@ export default connect(
     changeExternalLTIModal: slice.actions?.changeExternalLTIModalAction,
     addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction,
     showPreviewModal: slice.actions?.showTestPreviewModal,
-    closePreviewModal: slice.actions?.closeTestPreviewModal
+    closePreviewModal: slice.actions?.closeTestPreviewModal,
+    getCurrentDistrictUsers: getCurrentDistrictUsersAction
   }
 )(ManageContentBlock);

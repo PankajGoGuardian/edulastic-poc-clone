@@ -117,7 +117,7 @@ class ClozeMathInput extends React.Component {
         }
       }
     }
-    this.saveAnswer();
+    this.saveAnswer({ keypressEvent: true, key: e.key });
   };
 
   clickOutside = e => {
@@ -206,7 +206,7 @@ class ClozeMathInput extends React.Component {
     this.saveAnswer();
   };
 
-  saveAnswer = () => {
+  saveAnswer = ({ keypressEvent = false, key = "" } = {}) => {
     const { resprops = {}, id } = this.props;
     const { currentMathQuill } = this.state;
     if (currentMathQuill) {
@@ -217,9 +217,9 @@ class ClozeMathInput extends React.Component {
         responseIds: { maths }
       } = item;
       const { index } = find(maths, res => res.id === id) || {};
-
-      if (latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
-        save({ value: latex, index }, "maths", id);
+      const newValue = keypressEvent ? latex + key : latex;
+      if (newValue !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+        save({ value: newValue, index }, "maths", id);
       }
     }
   };

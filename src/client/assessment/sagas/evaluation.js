@@ -57,7 +57,6 @@ function* evaluateAnswers({ payload: groupId }) {
     };
     if (userWork) activity.userWork = userWork;
     const { evaluations, maxScore, score } = yield call(testItemsApi.evaluation, testItemId, activity);
-
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
@@ -84,7 +83,7 @@ function* evaluateAnswers({ payload: groupId }) {
         itemId: testItemId
       }
     });
-    message.success(`score: ${score.toFixed()}/${maxScore}`);
+    message.success(`score: ${score % 1 === 0 ? score : score.toFixed(2)}/${maxScore}`);
   } catch (err) {
     if (err.status === 403) message.warn("Check answer limit exceeded for the item.");
     else message.error("Check answer failed");

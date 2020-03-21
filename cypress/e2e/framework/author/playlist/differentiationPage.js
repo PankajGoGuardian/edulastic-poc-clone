@@ -9,6 +9,8 @@ export default class DifferentiationPage {
 
   getReviewWorkContainer = () => cy.get('[data-cy="table-REVIEW"]');
 
+  getPracticeWorkContainer = () => cy.get('[data-cy="table-PRACTICE"]');
+
   getChallengeWorkContainer = () => cy.get('[data-cy="table-CHALLENGE"]');
 
   getReviewTestByIndex = index => this.getReviewWorkContainer().find(`[data-row-key="${index}"]`);
@@ -19,40 +21,52 @@ export default class DifferentiationPage {
 
   getReviewSlider = () => this.getReviewWorkContainer().find(".ant-slider");
 
-  getPracticeSlider = () => cy.get('[data-cy="table-PRACTICE"]').find(".ant-slider");
+  getPracticeSlider = () => this.getPracticeWorkContainer().find(".ant-slider");
 
   getChallengeSlider = () => this.getChallengeWorkContainer().find(".ant-slider");
 
+  // standard rows
   getReviewStandardsRows = () => this.getReviewWorkContainer().find(".ant-table-row-level-0");
 
+  getPracticeStandardsRows = () => this.getPracticeWorkContainer().find(".ant-table-row-level-0");
+
   getChallengeStandardsRows = () => this.getChallengeWorkContainer().find(".ant-table-row-level-0");
+
+  // checkbox
+
+  getCheckBoxForStandard = standard =>
+    cy
+      .get("@rows")
+      .contains(standard)
+      .closest("tr")
+      .find('input[type="checkbox"]');
 
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnDifferentiationTab = () => this.getDifferentiationTab().click();
+  clickOnDifferentiationTab = (loadDefault = false) => {
+    cy.server();
+    cy.route("GET", "**/recommendations**").as("recommendations");
+    this.getDifferentiationTab().click();
+    cy.wait("@recommendations");
+  };
 
   clickOnClassSelect = () => this.getClassSelect().click();
 
   clickOnAssignmentSelect = () => this.getAssignmentSelect().click();
 
-  selectClass = className => {
-    this.clickOnClassSelect();
+  selectClass = (className, isDefault = false) => {
     cy.server();
     cy.route("GET", "**/recommendations**").as("recommendations");
+    this.clickOnClassSelect();
     CypressHelper.selectDropDownByAttribute("select-group", className);
-    cy.wait("@recommendations");
+    if (!isDefault) cy.wait("@recommendations");
   };
 
   selectAssignment = assignmentName => {
     this.clickOnAssignmentSelect();
     CypressHelper.selectDropDownByAttribute("select-assignment", assignmentName);
-  };
-
-  verifyAssignmentNotPresentInDropDown = value => {
-    this.clickOnAssignmentSelect();
-    CypressHelper.getDropDownList().should("not.contain", value);
   };
 
   setMasteryRangeSlider = (min, max) => {
@@ -83,8 +97,79 @@ export default class DifferentiationPage {
     this.setMasteryRangeSlider(min, max);
   };
 
+  checkStandardForReview = std => {
+    this.getReviewStandardsRows().as("rows");
+    this.getCheckBoxForStandard(std).check({ force: true });
+  };
+
+  checkStandardForPractice = std => {
+    this.getPracticeStandardsRows().as("rows");
+    this.getCheckBoxForStandard(std).check({ force: true });
+  };
+
+  checkStandardForChallenge = std => {
+    this.getChallengeStandardsRows().as("rows");
+    this.getCheckBoxForStandard(std).check({ force: true });
+  };
+
+  clickOnAddByRecommendationType = type => {
+    cy.server();
+    cy.route("POST", "**/recommendations/**").as("addRecommendation");
+    cy.get(`[data-cy="addButton-${type}"]`).click();
+    cy.wait("@addRecommendation")
+      .its("status")
+      .should("be.eq", 200);
+  };
+
+  clickOnAddPracticeWork = () => cy.get('[data-cy="addButton-PRACTICE"]').click();
+
+  clickOnAddChallengeork = () => cy.get('[data-cy="addButton-CHALLENGE"]').click();
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
+
+  verifyAssignmentNotPresentInDropDown = value => {
+    this.clickOnAssignmentSelect();
+    CypressHelper.getDropDownList().should("not.contain", value);
+  };
+
+  verifyStandardRowByStandard = ({ type, standardId, avgMastery, notStartedCount, added = false }) => {
+    cy.get(`[data-cy="table-${type}"]`)
+      .find(".ant-table-row-level-0")
+      .contains(standardId)
+      .closest("tr")
+      .find("td")
+      .then($ele => {
+        cy.wrap($ele).as("columns");
+
+        if (added)
+          cy.get("@columns")
+            .find('input[type="checkbox"]')
+            .and("be.disabled");
+        else
+          cy.get("@columns")
+            .find('input[type="checkbox"]')
+            .should("not.be.checked")
+            .and("be.enabled");
+
+        if (avgMastery) {
+          cy.get("@columns")
+            .find(".ant-progress-text")
+            .should("contain.text", `${avgMastery}%`);
+        }
+
+        if (notStartedCount) {
+          cy.get("@columns")
+            .eq(4)
+            .should("contain.text", `${notStartedCount} Students`);
+        }
+
+        cy.get("@columns")
+          .eq(5)
+          .should("have.text", added ? "ADDED" : "RECOMMENDED");
+      });
+  };
+
   // *** APPHELPERS END ***
 }

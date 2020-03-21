@@ -88,6 +88,7 @@ const WorkTable = ({
     return (
       <div style={{ width: "120px" }}>
         <ProgressBar
+          data-cy="progressbar"
           strokeWidth={10}
           trailColor={trailColor}
           strokeColor={strokeColor}
@@ -149,8 +150,12 @@ const WorkTable = ({
     {
       title: () => (
         <TableSelect>
-          <span onClick={() => handleRowSelect("SELECT")}>Select All</span>
-          <span onClick={() => handleRowSelect("UNSELECT")}>Unselect All</span>
+          <span data-cy="select-all" onClick={() => handleRowSelect("SELECT")}>
+            Select All
+          </span>
+          <span data-cy="deselect-all" onClick={() => handleRowSelect("UNSELECT")}>
+            Unselect All
+          </span>
         </TableSelect>
       ),
       dataIndex: "standardIdentifier",
@@ -263,7 +268,7 @@ const WorkTable = ({
           <>{getSlider()}</>
         </span>
         <span>
-          <IconUser />
+          <IconUser data-cy="student" />
           &nbsp;&nbsp;{filteredStudentList.length}
         </span>
         <span>
@@ -272,7 +277,7 @@ const WorkTable = ({
           <EduButton isGhost height="30px">
             Replace
           </EduButton> */}
-          <EduButton height="30px" onClick={handleAdd}>
+          <EduButton data-cy={`addButton-${type}`} height="30px" onClick={handleAdd}>
             Add
           </EduButton>
         </span>

@@ -89,3 +89,9 @@ export const releaseGradeTypesDropDown = {
   WITH_RESPONSE: "Release scores and student responses",
   WITH_ANSWERS: "Release scores,student responses and correct answers"
 };
+
+export const recommendationType = {
+  REVIEW: "REVIEW",
+  PRACTICE: "PRACTICE",
+  CHALLENGE: "CHALLENGE"
+};

@@ -161,6 +161,20 @@ Cypress.Commands.add("deletePlayList", playListObj => {
   });
 });
 
+Cypress.Commands.add("deletePlayListRecommendation", (email, password = "snapwiz") => {
+  cy.setToken(email, password).then(() => {
+    cy.request({
+      url: `${BASE_URL}/recommendations`,
+      method: "DELETE",
+      headers: {
+        Authorization: getAccessToken()
+      }
+    }).then(({ status }) => {
+      expect(status).to.eq(200);
+    });
+  });
+});
+
 Cypress.Commands.add("saveItemDetailToDelete", itemId => {
   if (itemId) {
     cy.readFile(`${deleteTestDataFile}`).then(json => {

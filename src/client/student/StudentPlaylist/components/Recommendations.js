@@ -77,7 +77,13 @@ const Recommendations = ({
                         const scorePercentage = Math.round((score / maxScore) * 100);
                         const { recommendedResource = {} } = recommendation;
                         return (
-                          <Assignment key={recommendedResource._id} borderRadius="unset" boxShadow="unset">
+                          <Assignment
+                            data-cy="recommendation"
+                            data-test={recommendedResource._id}
+                            key={recommendedResource._id}
+                            borderRadius="unset"
+                            boxShadow="unset"
+                          >
                             <ModuleFocused />
                             <FaChevronRight color={themeColor} style={{ margin: "0 15px", alignSelf: "center" }} />
                             <Row
@@ -92,16 +98,20 @@ const Recommendations = ({
                                   <ModuleDataName>
                                     <div style={{ textOverflow: "ellipsis", overflow: "hidden", maxWidth: "70%" }}>
                                       <Tooltip placement="bottomLeft" title={recommendation.recommendationType.name}>
-                                        <EllipticSpan>{recommendedResource.name}</EllipticSpan>
+                                        <EllipticSpan data-cy="assignmentName">{recommendedResource.name}</EllipticSpan>
                                       </Tooltip>
                                       <Tags
+                                        data-cy="tags"
                                         margin="5px 0px 0px 0px"
                                         tags={recommendedResource?.metadata?.standardIdentifiers || []}
                                         show={2}
                                         isPlaylist
                                       />
                                     </div>
-                                    <StatusWrapper hasTags={recommendedResource?.metadata?.standardIdentifiers?.length}>
+                                    <StatusWrapper
+                                      data-cy="recommendationType"
+                                      hasTags={recommendedResource?.metadata?.standardIdentifiers?.length}
+                                    >
                                       {recommendation.recommendationType}
                                     </StatusWrapper>
                                   </ModuleDataName>
@@ -115,6 +125,7 @@ const Recommendations = ({
                               >
                                 <span>Mastery</span>
                                 <ProgressBar
+                                  data-cy="mastery"
                                   strokeColor={getProgressColor(scorePercentage)}
                                   strokeWidth={13}
                                   percent={scorePercentage}
@@ -125,6 +136,7 @@ const Recommendations = ({
                               </StyledCol>
                               <StyledCol span={2} justify="center" align="flex-end">
                                 <StyledLabel
+                                  data-cy="score"
                                   textColor={greyThemeDark1}
                                   fontStyle="12px/17px Open Sans"
                                   padding="2px"
@@ -136,6 +148,7 @@ const Recommendations = ({
                               <StyledCol span={7} justify="flex-end" align="flex-end">
                                 <AssignmentButton>
                                   <Button
+                                    data-cy="practice"
                                     onClick={handleStartPractice({
                                       testId: recommendedResource._id,
                                       classId: recommendation.groupId,
@@ -150,6 +163,7 @@ const Recommendations = ({
                                 </AssignmentButton>
                                 {lastActivity.status === testActivityStatus.SUBMITTED && (
                                   <StyledLink
+                                    data-cy="review"
                                     to={{
                                       pathname: `/home/class/${recommendation.groupId}/test/${
                                         recommendedResource._id

@@ -1,0 +1,136 @@
+import TeacherSideBar from "../../../../framework/author/SideBarPage";
+import FileHelper from "../../../../framework/util/fileHelper";
+import DifferentiationPage from "../../../../framework/author/playlist/differentiationPage";
+import { recommendationType } from "../../../../framework/constants/assignmentStatus";
+import SidebarPage from "../../../../framework/student/sidebarPage";
+import { PlayListRecommendation } from "../../../../framework/student/playlistRecommnedationPage";
+import StudentTestPage from "../../../../framework/student/studentTestPage";
+
+const { _ } = Cypress;
+
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendations`, () => {
+  const differentiationPage = new DifferentiationPage();
+  const sidebar = new TeacherSideBar();
+  const studentSidebar = new SidebarPage();
+  const studentRecommendationTab = new PlayListRecommendation();
+  const studentTestPage = new StudentTestPage();
+
+  const assignment1 = "Test One for Automation - Playlist Recommendation (5.G.A.1)";
+  const assignment2 = "Test Two for Automation - Playlist Recommendation (5.MD.A.1)";
+  const assignment3 = "Test Three for Automation - Playlist Recommendation (5.G.A.1 and 5.G.A.2)";
+  const class1 = "Playlist Recommendation Class-1";
+
+  const standards = {
+    1: "5.G.A.1",
+    2: "5.G.A.2",
+    3: "5.MD.A.1"
+  };
+
+  const teacher = {
+    email: "teacher2.playlist.recommendation@automation.com",
+    password: "automation"
+  };
+
+  const students = {
+    1: {
+      email: "student1.addrecommendation@snapwiz.com"
+    },
+    2: {
+      email: "student2.addrecommendation@snapwiz.com"
+    },
+    3: {
+      email: "student3.addrecommendation@snapwiz.com"
+    }
+  };
+
+  const password = "automation";
+
+  const standardMapping = [
+    { standard: standards[1], reviewStandards: ["4.G.A.1"], challengeStandards: ["6.G.A.1"] },
+    {
+      standard: standards[2],
+      reviewStandards: ["4.MD.A.1", "4.MD.A.2", "4.MD.A.3", "4.MD.B.4"],
+      challengeStandards: ["6.NS.A.1", "6.NS.B.2", "6.NS.B.3"]
+    },
+    {
+      standard: standards[3],
+      reviewStandards: ["4.G.A.1", "4.G.A.2"],
+      challengeStandards: ["6.G.A.1", "6.G.A.2"]
+    }
+  ];
+
+  context(">add review recommendation and verify", () => {
+    const standardId = standardMapping[0].reviewStandards[0];
+
+    before("reset recommendation for all student", () => {
+      _.keys(students).forEach(s => {
+        cy.deletePlayListRecommendation(students[s].email, password);
+      });
+    });
+
+    before("use playlist and navigate to differentiation tab", () => {
+      cy.login("teacher", teacher.email, teacher.password);
+      sidebar.clickOnRecentUsedPlayList();
+      differentiationPage.clickOnDifferentiationTab();
+    });
+
+    it("add review recommendation and verify teachers side", () => {
+      differentiationPage.checkStandardForReview(standardId);
+      differentiationPage.clickOnAddByRecommendationType(recommendationType.REVIEW);
+      differentiationPage.verifyStandardRowByStandard({
+        type: recommendationType.REVIEW,
+        standardId,
+        notStartedCount: 1,
+        added: true
+      });
+    });
+
+    it("verify recommendation at student", () => {
+      cy.login("student", students[3].email, password);
+      studentSidebar.clickOnPlaylistLibrary();
+
+      // verify before attempt
+      studentRecommendationTab.clickOnRecommendation();
+      studentRecommendationTab.veryRecommendationRow({
+        assignmentName: assignment1,
+        type: recommendationType.REVIEW,
+        recommendationNumber: 1,
+        standardIds: [standardId]
+      });
+
+      // attempt TODO: assertion on items of dynamic test
+      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1);
+
+      for (let q = 1; q <= 2; q++) {
+        // TODO: attempt with actual response once items are identified
+        studentTestPage.clickOnNext();
+      }
+      studentTestPage.clickSubmitButton();
+    });
+
+    it("verify student side after attempt ", () => {
+      studentRecommendationTab.veryRecommendationRow({
+        assignmentName: assignment1,
+        type: recommendationType.REVIEW,
+        recommendationNumber: 1,
+        standardIds: [standardId],
+        attempted: true,
+        score: "0/2",
+        mastery: "0"
+      });
+    });
+
+    it("verify teacher side after attempt ", () => {
+      cy.login("teacher", teacher.email, teacher.password);
+      sidebar.clickOnRecentUsedPlayList();
+      differentiationPage.clickOnDifferentiationTab();
+      differentiationPage.verifyStandardRowByStandard({
+        type: recommendationType.REVIEW,
+        standardId,
+        notStartedCount: 0,
+        added: true,
+        avgMastery: 0
+      });
+    });
+  });
+});

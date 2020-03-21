@@ -2,10 +2,14 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
-import { collectionsApi, contentImportApi, extractContent } from "@edulastic/api";
+import { collectionsApi, contentImportApi } from "@edulastic/api";
 import { uploadToS3 } from "@edulastic/common";
 import { aws } from "@edulastic/constants";
 
+const ContentFolders = {
+  qti: aws.s3Folders.QTI_IMPORT,
+  webct: aws.s3Folders.WEBCT_IMPORT
+};
 // constants
 export const CREATE_NEW_COLLECTION_REQUEST = "[collection] create new collection request";
 export const CREATE_NEW_COLLECTION_SUCCESS = "[collection] create new collection success";
@@ -266,11 +270,19 @@ function* deletePermissionRequestSaga({ payload }) {
 
 export function* importTestToCollectionSaga({ payload }) {
   try {
-    const { selectedCollectionName, selectedBucketId, selectedFormat: type, signedUrl } = payload;
+    const {
+      selectedCollectionName,
+      selectedFormat: type,
+      signedUrl,
+      createTest = true,
+      testItemStatus = "published"
+    } = payload;
     const response = yield call(contentImportApi.contentImport, {
       files: [signedUrl],
       type,
-      collectionName: selectedCollectionName
+      collectionName: selectedCollectionName,
+      createTest,
+      testItemStatus
     });
     if (response?.jobIds?.length) {
       yield put(importTestToCollectionSuccessAction(response.jobIds));
@@ -285,9 +297,10 @@ export function* importTestToCollectionSaga({ payload }) {
   }
 }
 
-export function* getSignedUrlSaga({ payload: file }) {
+export function* getSignedUrlSaga({ payload }) {
+  const { file, selectedFormat } = payload;
   try {
-    const signedUrl = yield call(uploadToS3, file.originFileObj, aws.s3Folders.QTI_IMPORT);
+    const signedUrl = yield call(uploadToS3, file.originFileObj, ContentFolders[selectedFormat]);
     yield put(getSignedUrlSuccessAction(signedUrl));
   } catch (e) {
     yield put(getSignedUrlFailedAction(e?.data || {}));

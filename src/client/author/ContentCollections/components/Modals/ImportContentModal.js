@@ -36,6 +36,11 @@ const EXISTING_COLLECTION = "existing collection";
 const UPLOAD_ZIP = "upload zip";
 const USE_AWS_S3_BUCKET = "use aws s3 bucket";
 
+const TestItemStatus = {
+  PUBLISHED: "published",
+  DRAFT: "draft"
+};
+
 const ImportContentModal = ({
   visible,
   handleResponse,
@@ -52,12 +57,13 @@ const ImportContentModal = ({
   const [importType, setImportType] = useState(NEW_COLLECTION);
   const [uploadType, setUploadType] = useState(UPLOAD_ZIP);
   const [selectedFormat, setSelectedFormat] = useState("qti");
+  const [testItemStatus, setItemStatus] = useState(TestItemStatus.PUBLISHED);
 
   const handleUpload = ({ file, fileList }) => {
     if (file.type !== "application/zip") {
       return;
     }
-    getSignedUrl(fileList[0]);
+    getSignedUrl({ file: fileList[0], selectedFormat });
   };
 
   const uploadProps = {
@@ -86,6 +92,7 @@ const ImportContentModal = ({
     setSelectedBucketId();
     setImportType(NEW_COLLECTION);
     setUploadType(UPLOAD_ZIP);
+    setItemStatus(TestItemStatus.PUBLISHED);
   }, [visible]);
 
   const Footer = (
@@ -99,7 +106,9 @@ const ImportContentModal = ({
             selectedCollectionName,
             selectedBucketId,
             selectedFormat,
-            signedUrl: getSignedUrlData
+            signedUrl: getSignedUrlData,
+            testItemStatus,
+            createTest: false
           })
         }
       >
@@ -129,6 +138,11 @@ const ImportContentModal = ({
           </SelectStyled>
         </FieldRow>
         <FieldRow>
+          <label>Status</label>
+          <RadioGrp value={testItemStatus} onChange={event => setItemStatus(event.target.value)}>
+            <RadioBtn value={TestItemStatus.PUBLISHED}>PUBLISHED</RadioBtn>
+            <RadioBtn value={TestItemStatus.DRAFT}>DRAFT</RadioBtn>
+          </RadioGrp>
           <label>Import Into</label>
           <RadioGrp value={importType} onChange={evt => setImportType(evt.target.value)}>
             <RadioBtn value={NEW_COLLECTION}>NEW COLLECTION</RadioBtn>
@@ -147,7 +161,7 @@ const ImportContentModal = ({
             </SelectStyled>
           ) : (
             <Input
-              placeholder={`Enter collection name`}
+              placeholder="Enter collection name"
               onChange={ev => setSelectedCollectionName(ev.target.value)}
               value={selectedCollectionName}
             />
@@ -159,7 +173,7 @@ const ImportContentModal = ({
             <Radio value={USE_AWS_S3_BUCKET}>USE AWS S3 BUCKET</Radio>
           </Radio.Group>
           {signedUrlFetching ? (
-            <Spin size={"small"} />
+            <Spin size="small" />
           ) : uploadType === UPLOAD_ZIP ? (
             [
               <Dragger {...uploadProps}>
@@ -174,7 +188,7 @@ const ImportContentModal = ({
             <Input
               value={getSignedUrlData}
               onBlur={e => setSignedUrl(e.target.value)}
-              placeholder={`Enter aws s3 bucket url`}
+              placeholder="Enter aws s3 bucket url"
             />
           )}
         </FieldRow>

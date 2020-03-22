@@ -67,6 +67,29 @@ const isEmpty = str => {
   return str === "<p><br></p>" || str === "";
 };
 
+function isBlobData(file) {
+  let isBinary = false;
+  if (file instanceof Blob && !(file instanceof File)) {
+    // even file objects are instance of Blob
+    // need to consider that as well while checking
+    isBinary = true;
+  }
+  return isBinary;
+}
+
+function convertBlobToFile(blob) {
+  if (blob) {
+    let fileExtension = "png";
+    const { type: fileType = "" } = blob;
+    if (fileType.includes("image/")) {
+      fileExtension = fileType.split("image/")[1];
+    }
+    const file = new File([file], `pasted-image-${Date.now()}.${fileExtension}`);
+    return file;
+  }
+  return null;
+}
+
 const s3Folders = Object.values(aws.s3Folders);
 /**
  * upload a file to s3 using signed url
@@ -79,7 +102,13 @@ export const uploadToS3 = async (file, folder) => {
   if (!folder || !s3Folders.includes(folder)) {
     throw new Error("folder is invalid");
   }
-  const result = await fileApi.getSignedUrl(file.name, folder);
+  let fileToUpload = file;
+  // image was pasted
+  if (isBlobData(fileToUpload)) {
+    fileToUpload = convertBlobToFile(file); // create new file with the BLOB data
+  }
+  const { name: fileName } = fileToUpload;
+  const result = await fileApi.getSignedUrl(fileName, folder);
   const formData = new FormData();
   const { fields, url } = result;
 

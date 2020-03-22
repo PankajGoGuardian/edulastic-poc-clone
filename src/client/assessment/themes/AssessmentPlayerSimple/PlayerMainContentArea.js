@@ -86,7 +86,7 @@ const PlayerContentArea = ({
               <TestItemPreview
                 cols={itemRows}
                 previewTab="check"
-                preview="show"
+                preview="check"
                 questions={questions}
                 previousQuestionActivity={previousQuestionActivity}
                 showCollapseBtn

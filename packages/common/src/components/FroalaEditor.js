@@ -471,7 +471,7 @@ const CustomEditor = ({
             }
           }
         },
-        "image.beforeUpload": function(image) {
+        "image.beforeUpload": function(image, clipboardImage) {
           if (
             !canInsert(this.selection.element()) ||
             !canInsert(this.selection.endElement()) ||
@@ -482,7 +482,7 @@ const CustomEditor = ({
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.DEFAULT)
             .then(result => {
-              this.image.insert(result);
+              this.image.insert(result, false, null, clipboardImage);
             })
             .catch(e => {
               console.error(e);
@@ -496,11 +496,11 @@ const CustomEditor = ({
           try {
             if (!$img[0].complete) {
               await loadImage($img[0].src);
+              $img.css({
+                verticalAlign: "middle",
+                width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
+              });
             }
-            $img.css({
-              verticalAlign: "middle",
-              width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
-            });
           } catch (e) {
             message.error("image loading failed");
           }

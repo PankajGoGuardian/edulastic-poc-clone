@@ -1,6 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Row, Col, Tooltip } from "antd";
 import styled from "styled-components";
+import { getUserRole } from "../../../../src/selectors/user";
 
 import { greyThemeDark1, fadedGrey, themeColor } from "@edulastic/colors";
 import { IconFolderAll, IconFolderDeactive, IconFolderNew } from "@edulastic/icons";
@@ -16,7 +18,7 @@ const GroupContainer = ({ name, Icon, onClickAction, isActive }) => (
   </StyledCol>
 );
 
-const GroupsFilter = ({ current, options, onClickAction }) => {
+const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
   return (
     <StyledRow type="flex" justify="center">
       <Col span={24}>
@@ -24,11 +26,13 @@ const GroupsFilter = ({ current, options, onClickAction }) => {
           Groups
         </StyledSpan>
       </Col>
-      <GroupContainer
-        Icon={props => <IconFolderAll {...props} />}
-        name="All Students"
-        onClickAction={() => onClickAction([])}
-      />
+      {!["district-admin", "school-admin"].find(x => x === userRole) && (
+        <GroupContainer
+          Icon={props => <IconFolderAll {...props} />}
+          name="All Students"
+          onClickAction={() => onClickAction([])}
+        />
+      )}
       {options.map(item => (
         <GroupContainer
           {...item}
@@ -41,7 +45,11 @@ const GroupsFilter = ({ current, options, onClickAction }) => {
   );
 };
 
-export default GroupsFilter;
+const enhance = connect(state => ({
+  userRole: getUserRole(state)
+}));
+
+export default enhance(GroupsFilter);
 
 const StyledRow = styled(Row)`
   width: 100%;

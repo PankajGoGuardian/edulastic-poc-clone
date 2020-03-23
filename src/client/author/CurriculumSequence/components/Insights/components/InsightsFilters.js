@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Select } from "antd";
+import { Row, Col, Select, Checkbox, Tooltip } from "antd";
 import styled from "styled-components";
 import {
   greyThemeDark1,
@@ -63,7 +63,14 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
   </StyledRow>
 );
 
-const InsightsFilters = ({ data, prevFilters, updateFilters, clearFilter }) => {
+const InsightsFilters = ({
+  data,
+  prevFilters,
+  updateFilters,
+  overallProgressCheck,
+  setOverallProgressCheck,
+  clearFilter
+}) => {
   const { modulesData, standardsData, groupsData, masteryData } = data;
 
   return (
@@ -92,6 +99,14 @@ const InsightsFilters = ({ data, prevFilters, updateFilters, clearFilter }) => {
         value={prevFilters.masteryList}
         options={masteryData}
       />
+      <StyledCheckbox checked={overallProgressCheck} onChange={e => setOverallProgressCheck(e.target.checked)}>
+        <Tooltip
+          placement="right"
+          title="It will include all the assignments that the student has attempted in current school year"
+        >
+          Include all Assignments
+        </Tooltip>
+      </StyledCheckbox>
       <GroupsFilter
         onClickAction={selected => handleGroupsChange(selected, prevFilters, updateFilters)}
         current={prevFilters.groups}
@@ -110,6 +125,15 @@ const StyledRow = styled(Row)`
 const StyledSpan = styled.span`
   font: 11px/15px Open Sans;
   font-weight: 600;
+  text-transform: uppercase;
+  color: ${greyThemeDark1};
+`;
+
+const StyledCheckbox = styled(Checkbox)`
+  margin-bottom: 20px;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
+  white-space: nowrap;
   text-transform: uppercase;
   color: ${greyThemeDark1};
 `;

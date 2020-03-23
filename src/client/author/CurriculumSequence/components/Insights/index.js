@@ -64,19 +64,25 @@ const Insights = ({
   const { _id: playlistId, modules } = currentPlaylist;
 
   const [filters, updateFilters] = useState(initialFilters);
-
   const [highlighted, setHighlighted] = useState({});
+  const [overallProgressCheck, setOverallProgressCheck] = useState(false);
 
-  // fetch student trend data & playlist insights
+  // fetch playlist insights
   useEffect(() => {
-    const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
-    if (playlistId && termId) {
-      getStudentProgressRequestAction({ termId, playlistId });
-    }
     if (playlistId) {
       fetchPlaylistInsightsAction({ playlistId });
     }
   }, [playlistId]);
+
+  // fetch student progress data
+  useEffect(() => {
+    const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
+    if (overallProgressCheck && termId) {
+      getStudentProgressRequestAction({ termId });
+    } else if (playlistId && termId) {
+      getStudentProgressRequestAction({ termId, playlistId });
+    }
+  }, [overallProgressCheck, playlistId]);
 
   const { metricInfo: progressInfo } = get(studentProgress, "data.result", {});
   const [trendData, trendCount] = useGetBandData(progressInfo || [], "student", [], "", defaultBandInfo);
@@ -92,9 +98,11 @@ const Insights = ({
 
   const clearFilter = () => {
     updateFilters(initialFilters);
+    setOverallProgressCheck(false);
+    setHighlighted({});
   };
 
-  return loading || loadingProgress ? (
+  return loading ? (
     <Spin style={{ "margin-top": "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
@@ -103,11 +111,17 @@ const Insights = ({
           data={filterData}
           prevFilters={filters}
           updateFilters={updateFilters}
+          overallProgressCheck={overallProgressCheck}
+          setOverallProgressCheck={setOverallProgressCheck}
           clearFilter={clearFilter}
         />
       </StyledCol>
       <StyledCol xs={24} sm={24} md={24} lg={14} xl={14} xxl={14}>
-        <InsightsChart data={curatedMetrics} highlighted={highlighted} setHighlighted={setHighlighted} />
+        {loadingProgress ? (
+          <Spin />
+        ) : (
+          <InsightsChart data={curatedMetrics} highlighted={highlighted} setHighlighted={setHighlighted} />
+        )}
       </StyledCol>
       <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
         <StyledRow>

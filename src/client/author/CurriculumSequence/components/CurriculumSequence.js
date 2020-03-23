@@ -764,6 +764,7 @@ class CurriculumSequence extends Component {
                     {destinationCurriculumSequence && (
                       <Curriculum
                         mode={isManageContentActive ? "embedded" : mode}
+                        isManageContentActive={isManageContentActive}
                         history={history}
                         status={status}
                         key={destinationCurriculumSequence._id}

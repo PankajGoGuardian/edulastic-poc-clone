@@ -145,9 +145,15 @@ class ModuleRow extends Component {
   };
 
   deleteTest = (moduleIndex, itemId) => {
-    const { removeItemFromUnit, removeItemFromDestinationPlaylist, urlHasUseThis, mode } = this.props;
+    const {
+      removeItemFromUnit,
+      removeItemFromDestinationPlaylist,
+      urlHasUseThis,
+      mode,
+      isManageContentActive
+    } = this.props;
 
-    if (urlHasUseThis) {
+    if (urlHasUseThis || isManageContentActive) {
       removeItemFromDestinationPlaylist({ moduleIndex, itemId });
     } else {
       removeItemFromUnit({ moduleIndex, itemId });

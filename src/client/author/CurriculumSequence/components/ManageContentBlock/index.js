@@ -255,14 +255,14 @@ const ManageContentBlock = props => {
           </>
         ) : (
           <>
-            <Dropdown overlay={menu} placement="topCenter">
+            <Dropdown data-cy="add-resource" overlay={menu} placement="topCenter">
               <ManageModuleBtn justify="space-between">
                 add resource
                 <i class="fa fa-chevron-down" aria-hidden="true" />
               </ManageModuleBtn>
             </Dropdown>
 
-            <ManageModuleBtn justify="center" onClick={openManageModules}>
+            <ManageModuleBtn data-cy="ManageModules" justify="center" onClick={openManageModules}>
               manage modules
             </ManageModuleBtn>
           </>

@@ -90,12 +90,12 @@ export default class TestLibrary {
       }
       if (test.subject) {
         test.subject.forEach(subject => {
-          testSummary.selectSubject(subject);
+          testSummary.selectSubject(subject, true);
         });
       }
 
       if (test.collections) {
-        testSummary.selectCollection(test.collections);
+        testSummary.selectCollection(test.collections, true);
       }
 
       // add items

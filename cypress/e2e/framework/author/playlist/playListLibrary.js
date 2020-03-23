@@ -120,7 +120,7 @@ export default class PlayListLibrary {
     this.playListSummary.setName(playListData.name);
     this.playListSummary.selectGrade(playListData.grade, true);
     this.playListSummary.selectSubject(playListData.subject, true);
-    if (playListData.collection) this.playListSummary.selectCollection(playListData.collection);
+    if (playListData.collection) this.playListSummary.selectCollection(playListData.collection, true);
 
     this.header.clickOnAddTests();
     this.addTestTab.clickOnManageModule();

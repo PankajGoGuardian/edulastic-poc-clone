@@ -89,6 +89,7 @@ export default class PlayListAddTest {
 
     cy.server();
     cy.route("POST", "**/playlists").as("saveNewPlayList");
+    this.routeSavePlaylist();
 
     this.getDoneButton().click();
     if (newPlaylist === true) {
@@ -97,7 +98,7 @@ export default class PlayListAddTest {
         plyaListId = xhr.response.body.result._id;
         cy.saveplayListDetailToDelete(plyaListId);
       });
-    }
+    } else this.waitForSave();
 
     return cy.wait(1).then(() => {
       Cypress.$('[class^="styles_closeButton"]').click();
@@ -123,5 +124,11 @@ export default class PlayListAddTest {
 
   verifyMessage = msg => cy.get(".ant-message").should("contain", msg);
 
+  routeSavePlaylist = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("save-playlist");
+  };
+
+  waitForSave = () => cy.wait("@save-playlist");
   // *** APPHELPERS END ***
 }

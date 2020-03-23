@@ -218,6 +218,8 @@ export default class PlayListReview {
   }; */
 
   moveTestBetweenModule = (sourcemodNumber, sourceTestNumber, targetModuleNumber) => {
+    this.clickExpandByModule(sourcemodNumber);
+    this.clickExpandByModule(targetModuleNumber);
     this.getTestByTestByModule(sourcemodNumber, sourceTestNumber).as("source-container");
     this.getModuleRowByModule(targetModuleNumber).as("target-container");
     this.routeSavePlaylist();

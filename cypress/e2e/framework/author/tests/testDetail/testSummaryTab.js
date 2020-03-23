@@ -57,7 +57,12 @@ export default class TestSummayTab {
     cy.focused().blur();
   };
 
-  selectCollection = collection => {
+  selectCollection = (collection, clear = false) => {
+    if (clear) {
+      this.getTestCollectionSelect().then($ele => {
+        if ($ele.find(".anticon-close").length !== 0) cy.wrap($ele.find(".anticon-close")).click({ multiple: true });
+      });
+    }
     this.getTestCollectionSelect().click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(collection)

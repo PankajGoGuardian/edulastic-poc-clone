@@ -123,7 +123,7 @@ const PreviewModalWithScratchPad = ({
             lineWidth={lineWidth}
             className="review-scratchpad"
             scratchpadResponsiveHeight={scrollContainerRef.current.clientHeight}
-            style={{minHeight: "auto"}}
+            style={{ minHeight: "auto" }}
           />
         )}
         <div style={{ width: "100%", position: "relative", overflow: "auto" }} ref={containerRef}>

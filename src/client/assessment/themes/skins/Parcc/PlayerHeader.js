@@ -142,7 +142,11 @@ const PlayerHeader = ({
                 />
               </FlexContainer>
               <FlexContainer>
-                <SettingMenu onSettingsChange={onSettingsChange} showMagnifier={showMagnifier} enableMagnifier={enableMagnifier} />
+                <SettingMenu
+                  onSettingsChange={onSettingsChange}
+                  showMagnifier={showMagnifier}
+                  enableMagnifier={enableMagnifier}
+                />
               </FlexContainer>
             </HeaderWrapper>
           </HeaderPracticePlayer>

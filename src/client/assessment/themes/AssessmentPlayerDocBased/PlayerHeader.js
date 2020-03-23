@@ -63,11 +63,13 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
-                  {showMagnifier && <Tooltip placement="top" title="Magnify">
-                    <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
-                      <IconSearch />
-                    </StyledButton>
-                  </Tooltip>}
+                  {showMagnifier && (
+                    <Tooltip placement="top" title="Magnify">
+                      <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
+                        <IconSearch />
+                      </StyledButton>
+                    </Tooltip>
+                  )}
                 </Container>
               </MainActionWrapper>
               {!isMobile && rightButtons}

@@ -102,43 +102,21 @@ const DrawingTools = ({ onChange, isTestMode, className, scratchpadResponsiveHei
   const [expandMore, setExpandMore] = useState(false);
   const availableBtns = isTestMode ? buttonsList.filter(obj => obj.mode !== "none") : buttonsList;
   const getNoOfButtonsToShow = () => {
-    const noOfButtonsCanDisplay = Math.floor((scratchpadResponsiveHeight - 60)/48);
+    const noOfButtonsCanDisplay = Math.floor((scratchpadResponsiveHeight - 60) / 48);
     if (noOfButtonsCanDisplay >= availableBtns.length) {
       return availableBtns.length;
     }
     return noOfButtonsCanDisplay - 1;
-  }
+  };
   const handleMouseEnter = i => () => setActive(i);
   const handleMouseLeave = () => setActive(null);
   const expandMoreButtons = () => setExpandMore(true);
   const collapseMoreButtons = () => setExpandMore(false);
   const buttonsToShow = scratchpadResponsiveHeight ? availableBtns.slice(0, getNoOfButtonsToShow()) : availableBtns;
 
-  return <>
-  { buttonsToShow.map((button, i) => (
-    <Tooltip placement="right" title={button.label} key={button.mode}>
-      <StyledButton
-        key={i}
-        onClick={onChange(button.mode)}
-        onMouseEnter={handleMouseEnter(i)}
-        onMouseLeave={handleMouseLeave}
-      >
-        <button.icon color={active === i ? greenDark5 : white} />
-      </StyledButton>
-    </Tooltip>
-  )) }
-  {buttonsToShow.length !== availableBtns.length && (
-    <ExpandWrapper
-      onMouseEnter={expandMoreButtons}
-      onMouseLeave={collapseMoreButtons}
-    >
-      <Tooltip placement="right">
-        <StyledButton
-        >
-          <FontAwesomeIcon icon={faEllipsisV} style={{transform: "rotate(90deg)", color: "#ffffff"}} />
-        </StyledButton>
-      </Tooltip>
-      {expandMore && availableBtns.slice(buttonsToShow.length).map((button, i) => (
+  return (
+    <>
+      {buttonsToShow.map((button, i) => (
         <Tooltip placement="right" title={button.label} key={button.mode}>
           <StyledButton
             key={i}
@@ -150,9 +128,30 @@ const DrawingTools = ({ onChange, isTestMode, className, scratchpadResponsiveHei
           </StyledButton>
         </Tooltip>
       ))}
-    </ExpandWrapper>
-  )}
-  </>;
+      {buttonsToShow.length !== availableBtns.length && (
+        <ExpandWrapper onMouseEnter={expandMoreButtons} onMouseLeave={collapseMoreButtons}>
+          <Tooltip placement="right">
+            <StyledButton>
+              <FontAwesomeIcon icon={faEllipsisV} style={{ transform: "rotate(90deg)", color: "#ffffff" }} />
+            </StyledButton>
+          </Tooltip>
+          {expandMore &&
+            availableBtns.slice(buttonsToShow.length).map((button, i) => (
+              <Tooltip placement="right" title={button.label} key={button.mode}>
+                <StyledButton
+                  key={i}
+                  onClick={onChange(button.mode)}
+                  onMouseEnter={handleMouseEnter(i)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button.icon color={active === i ? greenDark5 : white} />
+                </StyledButton>
+              </Tooltip>
+            ))}
+        </ExpandWrapper>
+      )}
+    </>
+  );
 };
 
 DrawingTools.propTypes = {

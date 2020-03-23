@@ -2,6 +2,30 @@ import { useMemo } from "react";
 import { groupBy, keyBy, reduce, round, flatMap } from "lodash";
 import { lightGreen7, lightBlue8, lightRed2 } from "@edulastic/colors";
 
+/* Important Constants */
+
+// for domainRange = 800 => range = [-400, 400]
+export const domainRange = 800;
+// scaleFactor to keep all the data inside the graph
+// should be close to {sqrt(2) * limit}
+export const scaleFactor = 1.8;
+// distance used for grouping students
+const groupingDist = round(0.2 * domainRange);
+
+// TODO: use itemCount to get a domainRange if there is a large volume of data to be normalized
+const getNormalizedValue = (item, mean, range) => {
+  return item === mean ? 0 : round((domainRange * (item - mean)) / range);
+};
+
+// function to check if the points p & q can be grouped based on distance
+// effort => x, performance => y
+const canBeGrouped = (p, q) => {
+  if (Math.abs(p.effort - q.effort) < groupingDist && Math.abs(p.performance - q.performance) < groupingDist) {
+    return true;
+  }
+  return false;
+};
+
 export const getFilterData = (modules = [], selectedModules = []) => {
   const modulesData = modules.map(item => {
     let standards = [],
@@ -122,16 +146,6 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
   // TODO: Remove the second check in the filter above if the data is consistent in metricInfo & studInfo
 
   return { filteredData, filteredMap, masteryList: filters.masteryList };
-};
-
-// for domainRange = 800 => range = [-400, 400]
-export const domainRange = 800;
-// scaleFactor to keep all the data inside the graph
-// should be close to {sqrt(2) * limit}
-export const scaleFactor = 1.8;
-
-const getNormalizedValue = (item, mean, range) => {
-  return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
 
 export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, masteryList = [], masteryData = [] }) => {
@@ -258,21 +272,66 @@ export const getBoxedSummaryData = ({ up, flat, down }) => {
 };
 
 export const getQuadsData = data => {
-  return data.map(item => {
+  const quads = [[], [], [], []];
+
+  data.map(item => {
     // add the color and quad info
     if (item.effort < 0 && item.performance > 0) {
-      return { ...item, color: lightBlue8, quad: 1 };
+      quads[0].push({ ...item, color: lightBlue8, quad: 1 });
     } else if (item.effort > 0 && item.performance > 0) {
-      return { ...item, color: lightGreen7, quad: 2 };
+      quads[1].push({ ...item, color: lightGreen7, quad: 2 });
     } else if (item.effort < 0 && item.performance < 0) {
-      return { ...item, color: lightRed2, quad: 3 };
+      quads[2].push({ ...item, color: lightRed2, quad: 3 });
     } else {
-      return { ...item, color: lightBlue8, quad: 4 };
+      quads[3].push({ ...item, color: lightBlue8, quad: 4 });
     }
+  });
+
+  return flatMap(quads, quad => {
+    let len = quad.length,
+      i,
+      j;
+    const grouped = {},
+      groupings = {};
+    // create groupings
+    for (i = 0; grouped[i] == null && i < len; i++) {
+      grouped[i] = i;
+      groupings[i] = [quad[i]];
+      for (j = i + 1; grouped[j] == null && j < len; j++) {
+        if (canBeGrouped(quad[i], quad[j])) {
+          grouped[j] = i;
+          groupings[i].push(quad[j]);
+        }
+      }
+    }
+    // curate groupings to object
+    return Object.keys(groupings).map(key => {
+      const len = groupings[key].length;
+      return len === 1
+        ? groupings[key][0]
+        : reduce(
+            groupings[key],
+            (res, ele) => {
+              res.color = res.color || ele.color;
+              res.effort = round((res.effort * res.count + ele.effort) / (res.count + 1));
+              res.performance = round((res.performance * res.count + ele.performance) / (res.count + 1));
+              res.count += 1;
+              return res;
+            },
+            {
+              isGrouped: true,
+              color: "",
+              count: 0,
+              effort: 0,
+              performance: 0,
+              studentIds: groupings[key].map(item => item.studentId)
+            }
+          );
+    });
   });
 };
 
-export const calcLabelPosition = ({ cx, cy, name, trendAngle }) => {
+export const calcLabelPosition = ({ cx, cy, name = "", trendAngle = 0 }) => {
   let x = cx,
     y = cy;
   if (trendAngle > 160 || trendAngle < -160) {
@@ -289,4 +348,55 @@ export const calcLabelPosition = ({ cx, cy, name, trendAngle }) => {
     y -= 2;
   }
   return { nameX: x, arrowY: y };
+};
+
+export const calcArrowPosition = angle => {
+  let cx = 0,
+    cy = 0;
+  if (angle <= -150) {
+    cx += 1;
+    cy += 10;
+  } else if (angle <= -120) {
+    cx += 3;
+    cy += 7;
+  } else if (angle <= -100) {
+    cx += 5;
+    cy += 2;
+  } else if (angle <= -70) {
+    cx += 7;
+    cy -= 1;
+  } else if (angle <= -40) {
+    cx += 7;
+    cy -= 4;
+  } else if (angle <= -20) {
+    cx += 4;
+    cy -= 6;
+  } else if (angle <= -5) {
+    cx += 1;
+    cy -= 7;
+  } else if (angle <= 5) {
+    cy -= 6;
+  } else if (angle <= 20) {
+    cx -= 3;
+    cy -= 6;
+  } else if (angle <= 45) {
+    cx -= 5;
+    cy -= 6;
+  } else if (angle <= 70) {
+    cx -= 6;
+    cy -= 5;
+  } else if (angle <= 90) {
+    cx -= 7;
+    cy -= 1;
+  } else if (angle <= 120) {
+    cx -= 7;
+    cy += 1;
+  } else if (angle <= 150) {
+    cx -= 7;
+    cy += 6;
+  } else if (angle <= 180) {
+    cx -= 1;
+    cy += 10;
+  }
+  return [cx, cy];
 };

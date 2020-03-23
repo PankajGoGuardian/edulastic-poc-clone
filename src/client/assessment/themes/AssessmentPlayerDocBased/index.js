@@ -181,7 +181,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 noCheck
                 testMode
                 extraPaddingTop={extraPaddingTop}
-                onPageChange={(currentPage) => this.setState({currentPage})}
+                onPageChange={currentPage => this.setState({ currentPage })}
                 currentPage={currentPage}
               />
             )}

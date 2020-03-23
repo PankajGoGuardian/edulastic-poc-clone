@@ -172,7 +172,7 @@ class WorksheetComponent extends React.Component {
 
   handleChangePage = nextPage => {
     this.setState({ currentPage: nextPage });
-    const {onPageChange} = this.props;
+    const { onPageChange } = this.props;
     if (onPageChange) {
       onPageChange(nextPage);
     }

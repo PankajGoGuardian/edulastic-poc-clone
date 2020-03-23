@@ -58,13 +58,7 @@ const PlayerHeader = ({
   enableMagnifier,
   showMagnifier
 }) => {
-  const rightButtons = (
-    <SaveAndExit
-      previewPlayer={previewPlayer}
-      showZoomBtn
-      finishTest={finishTest}
-    />
-  );
+  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />;
 
   return (
     <CustomAffix>
@@ -169,7 +163,7 @@ const PlayerHeader = ({
         </HeaderMainMenu>
       </Header>
     </CustomAffix>
-  )
-}
+  );
+};
 
 export default PlayerHeader;

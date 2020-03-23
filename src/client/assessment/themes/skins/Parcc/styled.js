@@ -3,7 +3,9 @@ import { Popover, Button, Dropdown, Menu, Icon } from "antd";
 import { smallDesktopWidth } from "@edulastic/colors";
 import { themes } from "../../../../theme";
 
-const { playerSkin: { parcc } } = themes;
+const {
+  playerSkin: { parcc }
+} = themes;
 const { defaultButton, navigationButtons, menuItem, breadcrumb } = parcc;
 
 export const StyledPopover = styled(Popover)`
@@ -73,7 +75,7 @@ export const ControlBtn = styled(Button)`
   width: 45px;
   height: 40px;
   border: none;
-  ${({style}) => style};
+  ${({ style }) => style};
   background: ${navigationButtons.background};
   color: ${navigationButtons.color};
   &:hover {
@@ -83,14 +85,14 @@ export const ControlBtn = styled(Button)`
   svg {
     fill: ${navigationButtons.color};
   }
-`
-
-export const StyledDropdown = styled(Dropdown)`
 `;
 
+export const StyledDropdown = styled(Dropdown)``;
+
 export const StyledMenu = styled(Menu)`
-  ${({style}) => style};
-  .ant-dropdown-menu-item, .ant-menu-item {
+  ${({ style }) => style};
+  .ant-dropdown-menu-item,
+  .ant-menu-item {
     font-weight: 600;
     &:hover {
       background: ${menuItem.hover.background};
@@ -127,7 +129,9 @@ export const StyledHeaderTitle = styled.div`
   color: ${breadcrumb.color}!important;
   font-weight: bold;
   text-transform: uppercase;
-  .ant-breadcrumb-link, .ant-breadcrumb-separator, a {
+  .ant-breadcrumb-link,
+  .ant-breadcrumb-separator,
+  a {
     color: ${breadcrumb.color}!important;
   }
   svg {
@@ -138,7 +142,7 @@ export const StyledHeaderTitle = styled.div`
 export const HistoryBackLeftArrow = styled(Icon)`
   margin-right: 5px;
   font-size: 10px;
-`
+`;
 
 export const Container = styled.div`
   margin-left: 40px;

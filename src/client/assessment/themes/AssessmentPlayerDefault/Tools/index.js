@@ -83,7 +83,7 @@ const Tools = ({
       } else {
         setting[key] = false;
       }
-    })
+    });
     const anyButtonNotTodisplayIndex = Object.values(setting).filter(s => s).length - 1;
     if (anyButtonNotTodisplayIndex !== -1) {
       if (remainingHeight < moreButtonHeight) {
@@ -92,102 +92,137 @@ const Tools = ({
       }
     }
     return setting;
-  }
+  };
 
   const renderShowMore = setting => {
-    const {showBackButton, showActiveTool, showFontPicker, showColorPicker, showToolOptions, showButtomTools } = setting;
-    return <ExpandWrapper
-      onMouseEnter={expandMoreButtons}
-      onMouseLeave={collapseMoreButtons}
-      style={{bottom: "-56px", alignItems: "flex-end"}}
+    const {
+      showBackButton,
+      showActiveTool,
+      showFontPicker,
+      showColorPicker,
+      showToolOptions,
+      showButtomTools
+    } = setting;
+    return (
+      <ExpandWrapper
+        onMouseEnter={expandMoreButtons}
+        onMouseLeave={collapseMoreButtons}
+        style={{ bottom: "-56px", alignItems: "flex-end" }}
       >
-      <FlexContainer style={{alignItems: "flex-end"}}>
-        <Tooltip placement="right">
-          <StyledButton
-          >
-            <FontAwesomeIcon icon={faEllipsisV} style={{transform: "rotate(90deg)", color: "#ffffff"}} />
-          </StyledButton>
-        </Tooltip>
-        {expandMore && <>
-          {!showBackButton && <BackButton onClick={onToolChange} />}
-          {!showActiveTool && <ActiveTool activeMode={activeMode} />}
-          <FlexContainer childMarginRight={0} id="tool">
-            {drawTools.SELECT_TOOL !== activeMode && (
-              <>
-                {!showFontPicker && <Size value={lineWidth} onChangeSize={onChangeSize} style={{marginRight: "8px"}} />}
-                {showFontArr.includes(activeMode) && !showFontPicker && <FontPicker onChange={onChangeFont} currentFont={currentFont} style={{marginRight: "8px"}} />}
-                {!showColorPicker && <ColorPicker
-                  activeMode={activeMode}
-                  fillColor={fillColor}
-                  currentColor={currentColor}
-                  onFillColorChange={onFillColorChange}
-                  onColorChange={onColorChange}
-                  style={{marginRight: "8px"}}
-                />}
-              </>
-            )}
-            {drawTools.SELECT_TOOL === activeMode && !showToolOptions && <SelectToolOptions />}
-          </FlexContainer>
-          </>
-        }
-      </FlexContainer>
+        <FlexContainer style={{ alignItems: "flex-end" }}>
+          <Tooltip placement="right">
+            <StyledButton>
+              <FontAwesomeIcon icon={faEllipsisV} style={{ transform: "rotate(90deg)", color: "#ffffff" }} />
+            </StyledButton>
+          </Tooltip>
+          {expandMore && (
+            <>
+              {!showBackButton && <BackButton onClick={onToolChange} />}
+              {!showActiveTool && <ActiveTool activeMode={activeMode} />}
+              <FlexContainer childMarginRight={0} id="tool">
+                {drawTools.SELECT_TOOL !== activeMode && (
+                  <>
+                    {!showFontPicker && (
+                      <Size value={lineWidth} onChangeSize={onChangeSize} style={{ marginRight: "8px" }} />
+                    )}
+                    {showFontArr.includes(activeMode) && !showFontPicker && (
+                      <FontPicker onChange={onChangeFont} currentFont={currentFont} style={{ marginRight: "8px" }} />
+                    )}
+                    {!showColorPicker && (
+                      <ColorPicker
+                        activeMode={activeMode}
+                        fillColor={fillColor}
+                        currentColor={currentColor}
+                        onFillColorChange={onFillColorChange}
+                        onColorChange={onColorChange}
+                        style={{ marginRight: "8px" }}
+                      />
+                    )}
+                  </>
+                )}
+                {drawTools.SELECT_TOOL === activeMode && !showToolOptions && <SelectToolOptions />}
+              </FlexContainer>
+            </>
+          )}
+        </FlexContainer>
 
-      {!showButtomTools && expandMore && <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />}
-    </ExpandWrapper>
-  }
+        {!showButtomTools && expandMore && (
+          <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />
+        )}
+      </ExpandWrapper>
+    );
+  };
   const setting = isUndefined(scratchpadResponsiveHeight) ? {} : getSetting();
   const showMore = Object.values(setting).filter(s => !s).length > 0;
   const {
     showBackButton = true,
-    showActiveTool = true, 
+    showActiveTool = true,
     showFontPicker = true,
     showColorPicker = true,
     showToolOptions = true,
     showButtomTools = true
   } = setting;
 
-  return <ToolBox
-    activeMode={activeMode}
-    isWorksheet={isWorksheet}
-    justifyContent="space-around"
-    review={review}
-    testMode={testMode}
-    flexDirection="column"
-    isToolBarVisible={isToolBarVisible}
-    className={className}
-    style={{...containerStyle, ...style}}
-  >
-    {activeMode === "" && <DrawingTools onChange={onToolChange} isTestMode={isDocBased || testMode} scratchpadResponsiveHeight={scratchpadResponsiveHeight} />}
+  return (
+    <ToolBox
+      activeMode={activeMode}
+      isWorksheet={isWorksheet}
+      justifyContent="space-around"
+      review={review}
+      testMode={testMode}
+      flexDirection="column"
+      isToolBarVisible={isToolBarVisible}
+      className={className}
+      style={{ ...containerStyle, ...style }}
+    >
+      {activeMode === "" && (
+        <DrawingTools
+          onChange={onToolChange}
+          isTestMode={isDocBased || testMode}
+          scratchpadResponsiveHeight={scratchpadResponsiveHeight}
+        />
+      )}
 
-    {activeMode !== "" && (
-      <ActiveToolBoxContainer flexDirection="column" justifyContent="space-between" style={ scratchpadResponsiveHeight && {minHeight: "auto"}}>
-        <FlexContainer flexDirection="column">
-          {showBackButton && <BackButton onClick={onToolChange} />}
-          {showActiveTool && <ActiveTool activeMode={activeMode} />}
-          <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
-            {drawTools.SELECT_TOOL !== activeMode && (
-              <>
-                {showFontPicker && <Size value={lineWidth} onChangeSize={onChangeSize} />}
-                {showFontArr.includes(activeMode) && showFontPicker && <FontPicker onChange={onChangeFont} currentFont={currentFont} />}
-                {showColorPicker && <ColorPicker
-                  activeMode={activeMode}
-                  fillColor={fillColor}
-                  currentColor={currentColor}
-                  onFillColorChange={onFillColorChange}
-                  onColorChange={onColorChange}
-                />}
-              </>
-            )}
-            {drawTools.SELECT_TOOL === activeMode && showToolOptions && <SelectToolOptions />}
+      {activeMode !== "" && (
+        <ActiveToolBoxContainer
+          flexDirection="column"
+          justifyContent="space-between"
+          style={scratchpadResponsiveHeight && { minHeight: "auto" }}
+        >
+          <FlexContainer flexDirection="column">
+            {showBackButton && <BackButton onClick={onToolChange} />}
+            {showActiveTool && <ActiveTool activeMode={activeMode} />}
+            <FlexContainer flexDirection="column" childMarginRight={0} id="tool">
+              {drawTools.SELECT_TOOL !== activeMode && (
+                <>
+                  {showFontPicker && <Size value={lineWidth} onChangeSize={onChangeSize} />}
+                  {showFontArr.includes(activeMode) && showFontPicker && (
+                    <FontPicker onChange={onChangeFont} currentFont={currentFont} />
+                  )}
+                  {showColorPicker && (
+                    <ColorPicker
+                      activeMode={activeMode}
+                      fillColor={fillColor}
+                      currentColor={currentColor}
+                      onFillColorChange={onFillColorChange}
+                      onColorChange={onColorChange}
+                    />
+                  )}
+                </>
+              )}
+              {drawTools.SELECT_TOOL === activeMode && showToolOptions && <SelectToolOptions />}
+            </FlexContainer>
           </FlexContainer>
-        </FlexContainer>
 
-        {showButtomTools && <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />}
-      </ActiveToolBoxContainer>
-    )}
-    {activeMode !== "" && showMore && renderShowMore(setting)}
-  </ToolBox>
-}
+          {showButtomTools && (
+            <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />
+          )}
+        </ActiveToolBoxContainer>
+      )}
+      {activeMode !== "" && showMore && renderShowMore(setting)}
+    </ToolBox>
+  );
+};
 
 Tools.propTypes = {
   onToolChange: PropTypes.func.isRequired,

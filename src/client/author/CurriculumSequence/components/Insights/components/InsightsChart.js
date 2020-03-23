@@ -4,51 +4,49 @@ import { Row, Col } from "antd";
 import { round } from "lodash";
 import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis } from "recharts";
 
-import { lightGrey7 } from "@edulastic/colors";
+import { white, lightGrey7 } from "@edulastic/colors";
 import { domainRange, scaleFactor, getQuadsData, calcLabelPosition } from "../transformers";
 import gradientColorRuler from "../assets/ruler-color-gradient.svg";
+import TrendArrow from "../assets/TrendArrow";
 
 const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =>
   setActiveData(
     activeData.map(item => {
-      item.isActive = item.studentId === studentId ? !item.isActive : allActive == null ? item.isActive : allActive;
+      if (!item.isGrouped) {
+        item.isActive = item.studentId === studentId ? !item.isActive : allActive == null ? item.isActive : allActive;
+      }
       return item;
     })
   );
 
 // custom label shape for scatter plot
-const ScatterLabel = ({ cx, cy, studentId, name, trendAngle, color, isActive, handleArrowClick }) => {
+const ScatterLabel = props => {
+  const { cx, cy, handleArrowClick, handleCircleClick, ...item } = props;
+  const { studentId, name, trendAngle, color, count, isActive, isGrouped } = item;
   const { nameX, arrowY } = calcLabelPosition({ cx, cy, name, trendAngle });
-  return (
+  return isGrouped ? (
+    <g onClick={e => handleCircleClick(e, item.studentIds, color)}>
+      <circle cx={cx} cy={cy} r={12} fill={lightGrey7} />
+      <text x={cx} y={cy + 4} fill={white} text-anchor="middle" font-size="11" font-weight="bold" textAnchor="middle">
+        {count}
+      </text>
+    </g>
+  ) : (
     <g onClick={e => handleArrowClick(e, studentId)}>
       {isActive && (
         <text x={nameX} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
           {name}
         </text>
       )}
-      <g transform={`translate(${cx} ${arrowY}) rotate(${-trendAngle - 90})`}>
-        <path d="M0,0V18.385" transform="translate(4.065 3.536)" fill="none" stroke={color} stroke-width="2" />
-        <g transform="translate(7.565 26.438) rotate(180)" fill={color}>
-          <path
-            d="M 6.129451751708984 5.499964714050293 L 0.8705185651779175 5.499964714050293 L 3.499985218048096 0.9923245310783386 L 6.129451751708984 5.499964714050293 Z"
-            stroke="none"
-          />
-          <path
-            d="M 3.499985218048096 1.984634399414062 L 1.741035938262939 4.999964714050293 L 5.258934497833252 4.999964714050293 L 3.499985218048096 1.984634399414062 M 3.499985218048096 4.291534423828125e-06 L 6.999975204467773 5.999964714050293 L -4.76837158203125e-06 5.999964714050293 L 3.499985218048096 4.291534423828125e-06 Z"
-            stroke="none"
-            fill={color}
-          />
-        </g>
-        <path d="M3,0A3,3,0,1,1,0,3,3,3,0,0,1,3,0Z" transform="translate(8.485 4.243) rotate(135)" fill={color} />
-      </g>
+      <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
     </g>
   );
 };
 
-const InsightsChart = ({ data }) => {
+const InsightsChart = ({ data, highlighted, setHighlighted }) => {
   // active state of the display data (labels)
   const [activeData, setActiveData] = useState([]);
-  const [allActive, setAllActive] = useState(true);
+  const [allActive, setAllActive] = useState(false);
 
   useEffect(() => {
     setActiveData(getQuadsData(data));
@@ -73,7 +71,7 @@ const InsightsChart = ({ data }) => {
   };
 
   return (
-    <Row type="flex" justify="center" align="middle" style={{ width: "90%" }}>
+    <Row type="flex" justify="center" align="middle" style={{ width: "100%" }}>
       <StyledCol xs={1} sm={2} md={2} lg={2} xl={2}>
         LOW EFFORT
       </StyledCol>
@@ -95,6 +93,10 @@ const InsightsChart = ({ data }) => {
                     handleArrowClick={(e, studentId) => {
                       e.stopPropagation();
                       toggleActiveData({ studentId, activeData, setActiveData });
+                    }}
+                    handleCircleClick={(e, studentIds, color) => {
+                      e.stopPropagation();
+                      setHighlighted(highlighted.ids?.includes(studentIds[0]) ? {} : { ids: studentIds, color });
                     }}
                   />
                 }

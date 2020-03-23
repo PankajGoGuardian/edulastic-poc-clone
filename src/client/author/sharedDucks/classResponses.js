@@ -72,7 +72,9 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId => call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId }))
+    testItemsIdArray.map(testItemId =>
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId })
+    )
   );
 }
 

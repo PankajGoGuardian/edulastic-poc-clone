@@ -101,7 +101,7 @@ export const ActiveToolBoxContainer = styled(FlexContainer)`
   width: ${toolBoxDimension.width};
   min-height: ${toolBoxDimension.height};
   background: ${props => props.theme.default.sideToolbarBgColor};
-  ${({style}) => style};
+  ${({ style }) => style};
   & .drawing-tool-button {
     margin: 0px;
   }
@@ -113,11 +113,11 @@ export const Block = styled.div`
 
 export const ExpandWrapper = styled.div`
   display: flex;
-  min-height: auto!important;
+  min-height: auto !important;
   position: absolute;
   left: 0;
   bottom: -48px;
-  ${({style}) => style};
+  ${({ style }) => style};
   button {
     margin-right: 8px;
   }

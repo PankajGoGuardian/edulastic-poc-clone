@@ -62,9 +62,7 @@ function* loadTestActivityReport({ payload }) {
     const questions = getQuestions(test.itemGroups);
     const questionsWithActivities = questions.map(question => {
       if (!question.activity) {
-        const activity = reports.questionActivities.find(
-          qActivity => qActivity.qid === question.id
-        );
+        const activity = reports.questionActivities.find(qActivity => qActivity.qid === question.id);
         return {
           ...question,
           activity

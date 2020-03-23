@@ -45,7 +45,8 @@ const PlayerContent = ({
 
   const showMagnifier = () => {
     if (frameRefForMagnifier.current) {
-      frameRefForMagnifier.current.contentWindow.document.body.innerHTML = frameRef.current?.contentWindow?.document?.body?.innerHTML;
+      frameRefForMagnifier.current.contentWindow.document.body.innerHTML =
+        frameRef.current?.contentWindow?.document?.body?.innerHTML;
       document.getElementById("magnifier-wrapper").style.display = "block";
       const icon = document.getElementById("magnifier-icon");
       icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgHoverColor;
@@ -53,7 +54,7 @@ const PlayerContent = ({
       svg.style.fill = restProps.theme.default.header.headerButtonHoverColor;
       enableMagnifier = true;
     }
-  }
+  };
 
   const hideMagnifier = () => {
     if (enableMagnifier) {
@@ -64,7 +65,7 @@ const PlayerContent = ({
       svg.style.fill = restProps.theme.default.header.headerButtonColor;
       enableMagnifier = false;
     }
-  }
+  };
 
   const handleMagnifier = () => {
     if (!enableMagnifier) {
@@ -72,7 +73,7 @@ const PlayerContent = ({
     } else {
       hideMagnifier();
     }
-  }
+  };
 
   const findItemIdMap = cPageIds =>
     find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
@@ -385,37 +386,47 @@ const PlayerContent = ({
   };
 
   const zoomedContent = () => {
-      return (
-        <>
-          <PlayerHeader
-            title={title}
-            dropdownOptions={testletItems}
-            currentPage={currentPage}
-            onOpenExitPopup={openExitPopup}
-            onNextQuestion={nextQuestion}
-            unlockNext={unlockNext}
-            onPrevQuestion={prevQuestion}
-            previewPlayer={previewPlayer}
-            handleMagnifier={handleMagnifier}
-            enableMagnifier={enableMagnifier}
-            {...restProps}
-          />
-          <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-            <MainContent id={`${testletConfig.testletId}_magnifier`}>
-              {LCBPreviewModal && currentScoring && <OverlayDiv />}
-              {testletConfig.testletURL && (
-                <iframe ref={frameRefForMagnifier} id={`${testletConfig.testletId}_magnifier`}  src={testletConfig.testletURL} title="testlet player" />
-              )}
-            </MainContent>
-          </Main>
-        </>
-      )
+    return (
+      <>
+        <PlayerHeader
+          title={title}
+          dropdownOptions={testletItems}
+          currentPage={currentPage}
+          onOpenExitPopup={openExitPopup}
+          onNextQuestion={nextQuestion}
+          unlockNext={unlockNext}
+          onPrevQuestion={prevQuestion}
+          previewPlayer={previewPlayer}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          {...restProps}
+        />
+        <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+          <MainContent id={`${testletConfig.testletId}_magnifier`}>
+            {LCBPreviewModal && currentScoring && <OverlayDiv />}
+            {testletConfig.testletURL && (
+              <iframe
+                ref={frameRefForMagnifier}
+                id={`${testletConfig.testletId}_magnifier`}
+                src={testletConfig.testletURL}
+                title="testlet player"
+              />
+            )}
+          </MainContent>
+        </Main>
+      </>
+    );
   };
   return (
-    <Magnifier enable={enableMagnifier} zoomedContent={zoomedContent} type="testlet" offset={{
-      top: 70,
-      left: 0
-    }}>
+    <Magnifier
+      enable={enableMagnifier}
+      zoomedContent={zoomedContent}
+      type="testlet"
+      offset={{
+        top: 70,
+        left: 0
+      }}
+    >
       <PlayerHeader
         title={title}
         dropdownOptions={testletItems}

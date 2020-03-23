@@ -65,6 +65,8 @@ const Insights = ({
 
   const [filters, updateFilters] = useState(initialFilters);
 
+  const [highlighted, setHighlighted] = useState({});
+
   // fetch student trend data & playlist insights
   useEffect(() => {
     const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
@@ -96,8 +98,7 @@ const Insights = ({
     <Spin style={{ "margin-top": "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
-      {/* TODO: for left section, reduce 6 to 4 on enabling the right section */}
-      <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+      <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
         <InsightsFilters
           data={filterData}
           prevFilters={filters}
@@ -105,17 +106,15 @@ const Insights = ({
           clearFilter={clearFilter}
         />
       </StyledCol>
-      {/* TODO: for mid section, reduce 18 to 14 on enabling the right section */}
-      <StyledCol xs={24} sm={24} md={24} lg={18} xl={18} xxl={18}>
-        {/* TODO: for insights chart, update width to 100% in the component on enabling the right section */}
-        <InsightsChart data={curatedMetrics} />
+      <StyledCol xs={24} sm={24} md={24} lg={14} xl={14} xxl={14}>
+        <InsightsChart data={curatedMetrics} highlighted={highlighted} setHighlighted={setHighlighted} />
       </StyledCol>
-      {/* <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
-        <StyledRow> */}
-      {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
-      {/* <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} /> */}
-      {/* </StyledRow>
-      </StyledCol> */}
+      <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+        <StyledRow>
+          {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
+          <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} highlighted={highlighted} />
+        </StyledRow>
+      </StyledCol>
     </InsightsContainer>
   );
 };

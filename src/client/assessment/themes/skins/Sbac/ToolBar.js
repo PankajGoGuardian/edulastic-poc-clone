@@ -89,11 +89,13 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {showMagnifier && <Tooltip placement="top" title="Magnify" >
-        <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
-          <IconSearch/>
-        </StyledButton>
-      </Tooltip>}
+      {showMagnifier && (
+        <Tooltip placement="top" title="Magnify">
+          <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
+            <IconSearch />
+          </StyledButton>
+        </Tooltip>
+      )}
     </Container>
   );
 };

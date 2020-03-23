@@ -1,32 +1,34 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { withWindowSizes } from "@edulastic/common";
 import PropTypes from "prop-types";
 import { themes } from "../../theme";
 import styled from "styled-components";
-const { playerSkin: { magnifierBorderColor } } = themes;
+const {
+  playerSkin: { magnifierBorderColor }
+} = themes;
 
 const Magnifier = ({
   children,
   windowWidth,
   windowHeight,
   enable,
-  config: {width, height, scale},
+  config: { width, height, scale },
   zoomedContent: ZoomedContent,
   type,
   offset
 }) => {
   const [setting, setSetting] = useState({
-    pos: {x: windowWidth/2 - width/2, y: windowHeight/2 - height/2},
+    pos: { x: windowWidth / 2 - width / 2, y: windowHeight / 2 - height / 2 },
     dragging: false,
     rel: null,
     windowWidth,
     windowHeight
-  })
+  });
   const ref = useRef();
   useEffect(() => {
-    if(setting.dragging) {
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+    if (setting.dragging) {
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
       handleSidebarScroll({
         target: document.getElementsByClassName("scrollbar-container")[0]
       });
@@ -39,13 +41,13 @@ const Magnifier = ({
         ...setting,
         windowWidth,
         windowHeight,
-        pos: {x: windowWidth/2 - width/2, y: windowHeight/2 - height/2}
+        pos: { x: windowWidth / 2 - width / 2, y: windowHeight / 2 - height / 2 }
       });
     }
     return () => {
-      document?.removeEventListener('mousemove', onMouseMove)
-      document?.removeEventListener('mouseup', onMouseUp)
-    }
+      document?.removeEventListener("mousemove", onMouseMove);
+      document?.removeEventListener("mouseup", onMouseUp);
+    };
   });
 
   useEffect(() => {
@@ -56,11 +58,13 @@ const Magnifier = ({
     return () => {
       container?.removeEventListener("scroll", handleScroll);
       sideBar?.removeEventListener("scroll", handleSidebarScroll);
-    }
+    };
   }, []);
 
-  const handleScroll = e => document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
-  const handleSidebarScroll = e => document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, scale * e.target.scrollTop);
+  const handleScroll = e =>
+    document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
+  const handleSidebarScroll = e =>
+    document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, scale * e.target.scrollTop);
 
   const onMouseDown = e => {
     if (e.button !== 0) return;
@@ -77,7 +81,7 @@ const Magnifier = ({
     e.preventDefault();
   };
 
-  const onMouseUp = (e) => {
+  const onMouseUp = e => {
     setSetting({
       ...setting,
       dragging: false
@@ -86,7 +90,7 @@ const Magnifier = ({
     e.preventDefault();
   };
 
-  const onMouseMove = (e) => {
+  const onMouseMove = e => {
     if (!setting.dragging) return;
     setSetting({
       ...setting,
@@ -97,52 +101,58 @@ const Magnifier = ({
     });
     e.stopPropagation();
     e.preventDefault();
-  }
+  };
 
   return (
     <>
       {children}
-      {(enable || type === "testlet") && <ZoomedWrapper
-        ref={ref}
-        onMouseDown={onMouseDown}
-        id="magnifier-wrapper"
-        style={{
-          border: `1px solid ${magnifierBorderColor}`,
-          width: `${width}px`,
-          height: `${height}px`,
-          borderRadius: "5px",
-          position: "fixed",
-          overflow: "hidden",
-          left: setting.pos.x + 'px',
-          top: setting.pos.y + 'px',
-          zIndex: 1000,
-          cursor: "move",
-          background: "white",
-          display: type === "testlet" ? "none" : "block"
-        }}
-        className="zoomed-container-wrapper"
+      {(enable || type === "testlet") && (
+        <ZoomedWrapper
+          ref={ref}
+          onMouseDown={onMouseDown}
+          id="magnifier-wrapper"
+          style={{
+            border: `1px solid ${magnifierBorderColor}`,
+            width: `${width}px`,
+            height: `${height}px`,
+            borderRadius: "5px",
+            position: "fixed",
+            overflow: "hidden",
+            left: setting.pos.x + "px",
+            top: setting.pos.y + "px",
+            zIndex: 1000,
+            cursor: "move",
+            background: "white",
+            display: type === "testlet" ? "none" : "block"
+          }}
+          className="zoomed-container-wrapper"
         >
-        <div style={{
-          transform: `scale(${scale})`,
-          width: windowWidth,
-          height: windowHeight,
-          overflow: "visible",
-          position: "absolute",
-          display: "block",
-          left: `${-(scale*setting.pos.x) - offset.left}px`,
-          top: `${-(scale*setting.pos.y) - offset.top }px`,
-          transformOrigin: "left top",
-          userSelect: "none",
-          marginLeft: `-${width/scale}px`
-        }}>
-          {(ZoomedContent && <ZoomedContent/>) || children}
-        </div>
-        <div style={{
-          width: `${width}px`,
-          height: `${height}px`, 
-          position: 'absolute'}}/>
-      </ZoomedWrapper>
-      }
+          <div
+            style={{
+              transform: `scale(${scale})`,
+              width: windowWidth,
+              height: windowHeight,
+              overflow: "visible",
+              position: "absolute",
+              display: "block",
+              left: `${-(scale * setting.pos.x) - offset.left}px`,
+              top: `${-(scale * setting.pos.y) - offset.top}px`,
+              transformOrigin: "left top",
+              userSelect: "none",
+              marginLeft: `-${width / scale}px`
+            }}
+          >
+            {(ZoomedContent && <ZoomedContent />) || children}
+          </div>
+          <div
+            style={{
+              width: `${width}px`,
+              height: `${height}px`,
+              position: "absolute"
+            }}
+          />
+        </ZoomedWrapper>
+      )}
     </>
   );
 };
@@ -150,10 +160,10 @@ const Magnifier = ({
 const ZoomedWrapper = styled.div`
   main {
     .test-item-preview {
-      overflow: auto!important;
+      overflow: auto !important;
       .classification-preview {
         * {
-          overflow: visible!important;
+          overflow: visible !important;
         }
       }
     }
@@ -171,7 +181,7 @@ Magnifier.defaultProps = {
     top: 0,
     left: 0
   }
-}
+};
 Magnifier.propTypes = {
   children: PropTypes.node.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -182,5 +192,5 @@ Magnifier.propTypes = {
     height: PropTypes.number.isRequired,
     scale: PropTypes.number.isRequired
   })
-}
+};
 export default withWindowSizes(Magnifier);

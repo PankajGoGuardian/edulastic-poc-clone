@@ -56,11 +56,32 @@ const AssessmentPlayerSkinWrapper = ({
         />
       );
     } else if (!isUndefined(docUrl)) {
-      return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
+      return (
+        <DocBasedPlayerHeader
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          showMagnifier={showMagnifier}
+        />
+      );
     } else if (defaultAP) {
-      return <DefaultAssessmentPlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
+      return (
+        <DefaultAssessmentPlayerHeader
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          showMagnifier={showMagnifier}
+        />
+      );
     } else {
-      return <PracticePlayerHeader {...restProps} handleMagnifier={handleMagnifier} enableMagnifier={enableMagnifier} showMagnifier={showMagnifier} />;
+      return (
+        <PracticePlayerHeader
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          showMagnifier={showMagnifier}
+        />
+      );
     }
   };
 
@@ -148,11 +169,11 @@ const AssessmentPlayerSkinWrapper = ({
 
   const getTopOffset = () => {
     if (playerSkinType.toLowerCase() === test.playerSkinTypes.sbac.toLowerCase()) {
-      return {top: 120, left: 0};
+      return { top: 120, left: 0 };
     } else {
-      return {top: 63, left: 0};
+      return { top: 63, left: 0 };
     }
-  }
+  };
 
   return (
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
@@ -194,7 +215,7 @@ const StyledMainContainer = styled.div`
       left: ${({ isSidebarVisible }) => (isSidebarVisible ? "220px" : "65px")};
     }
     .question-tab-container {
-      height: fit-content!important;
+      height: fit-content !important;
     }
   }
   ${({ playerSkin }) =>

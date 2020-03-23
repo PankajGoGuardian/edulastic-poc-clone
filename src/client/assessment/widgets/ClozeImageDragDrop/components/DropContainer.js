@@ -30,7 +30,7 @@ const DropContainer = ({ connectDropTarget, index, style, children, className, i
       id={`answerboard-dragdropbox-${index}`}
       style={{
         ...style,
-        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
+        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", background: "#f8f8f8", border: "2px dashed #b9b9b9" } : {})
       }}
       className={className}
     >

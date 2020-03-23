@@ -671,7 +671,7 @@ export const defaultTheme = {
     titleFontSize: questionTextextraFontSize
   },
   dropContainer: {
-    isOverBorderColor: checkColor,
+    isOverBorderColor: "#b9b9b9",
     isNotOverBorderColor: borderColor,
     noBorderColor: "none"
   },

@@ -94,8 +94,9 @@ const TemplateBox = ({ resprops, id }) => {
   const containerStyle = {
     display: "inline-flex",
     verticalAlign: "middle",
-    borderRadius: 10,
-    border: "2px dashed #E6E6E6",
+    borderRadius: 2,
+    border: "1px dashed #b9b9b9",
+    background: "#f8f8f8",
     margin: "2px"
   };
 

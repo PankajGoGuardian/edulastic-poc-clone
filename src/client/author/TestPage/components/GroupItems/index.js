@@ -431,7 +431,7 @@ const GroupItems = ({
           return message.error("No test items found for current combination of filters.");
         }
         if (total < data.limit) {
-          return message.error(`Maximum items should not exceed ${total}`);
+          return message.error(`There are only ${total} items that meet the search criteria`);
         }
         const testItems = items.map(i => ({ ...i, autoselectedItem: true }));
         saveGroupToTest(testItems);

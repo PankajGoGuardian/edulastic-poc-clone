@@ -343,27 +343,39 @@ export default class QuestionResponsePage {
   verifyAnswerCloze = (card, attempt, attemptType, right) => {
     card
       .find(".jsx-parser")
-      .find(".response-btn ")
+      // .find(".response-btn ")
+      .find('[data-cy="answer-box"]')
       .each((response, i) => {
         cy.wrap(response).as("responseBox");
         //.should("have.class", "show-answer");
 
         if (attemptType !== attemptTypes.SKIP) {
-          cy.get("@responseBox")
-            .should("contain.text", attempt[i])
-            .and("have.class", "check-answer");
+          cy.get("@responseBox").should("contain.text", attempt[i]);
+          // .and("have.class", "check-answer");
 
           switch (attemptType) {
             case attemptTypes.RIGHT:
-              cy.get("@responseBox").should("have.class", "right");
+              cy.get("@responseBox")
+                // .should("have.class", "right")
+                .should("have.css", "background-color", queColor.LIGHT_GREEN);
+
               break;
 
             case attemptTypes.WRONG:
-              cy.get("@responseBox").should("have.class", "wrong");
+              cy.get("@responseBox")
+                // .should("have.class", "wrong")
+                .should("have.css", "background-color", queColor.LIGHT_RED);
+
               break;
 
             case attemptTypes.PARTIAL_CORRECT:
-              cy.get("@responseBox").should("have.class", attempt[i] === right[i] ? "right" : "wrong");
+              cy.get("@responseBox")
+                // .should("have.class", attempt[i] === right[i] ? "right" : "wrong");;
+                .should(
+                  "have.css",
+                  "background-color",
+                  attempt[i] === right[i] ? queColor.LIGHT_GREEN : queColor.LIGHT_RED
+                );
               break;
 
             default:
@@ -371,8 +383,9 @@ export default class QuestionResponsePage {
           }
         } else {
           cy.get("@responseBox")
-            .should("not.have.class", "check-answer")
-            .and("have.class", "wrong");
+            // .should("not.have.class", "check-answer")
+            // .and("have.class", "wrong");
+            .should("have.css", "background-color", queColor.LIGHT_GREY);
         }
       });
   };

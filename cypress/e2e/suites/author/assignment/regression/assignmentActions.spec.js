@@ -162,7 +162,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
       });
       before("Add Created Item To test", () => {
         // Add created Item using add item tab
-        testReviewTab.testheader.clickOnAddItems(true);
+        testReviewTab.testheader.clickOnAddItems();
         testReviewTab.searchFilters.clearAll();
         testReviewTab.searchFilters.getAuthoredByMe();
         testAddItemTab.addItemById(newItemId);
@@ -173,6 +173,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         testReviewTab.getQueCardByItemIdInCollapsed(newItemId).should("have.length", 1);
         // Publish
         testReviewTab.testheader.clickOnPublishButton();
+      });
+
+      beforeEach("close assignment player if failed in between", () => {
+        studentTestPage.clickOnExitTest();
       });
 
       it("Verify and attempt assignment", () => {

@@ -297,7 +297,7 @@ export default class TestLibrary {
       .should("be.eq", testId);
     this.header.clickOnPublishButton();
     cy.url()
-      .then(url => url.split("/").reverse()[0])
+      .then(url => url.split("/").reverse()[1])
       .should("be.eq", testId);
   };
 
@@ -309,7 +309,7 @@ export default class TestLibrary {
       .click({ force: true });
     cy.wait("@assignment");
     cy.url()
-      .then(url => url.split("/").reverse()[0])
+      .then(url => url.split("/").reverse()[1])
       .should("be.eq", testId);
   };
 

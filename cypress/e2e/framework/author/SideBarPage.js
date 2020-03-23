@@ -7,11 +7,7 @@ export default class TeacherSideBar {
 
   // *** ACTIONS START ***
 
-  clickOnDashboard = () =>
-    cy
-      .get('[data-cy="Dashboard"]')
-      .click({ force: true })
-      .click({ force: true });
+  clickOnDashboard = () => cy.get('[data-cy="Dashboard"]').click({ force: true });
 
   clickOnPlayListLibrary = () => {
     cy.server();
@@ -44,7 +40,7 @@ export default class TeacherSideBar {
 
   clickOnItemBank = () => {
     cy.server();
-    cy.route("POST", "**/search/**").as("itemSearch");
+    cy.route("POST", "**/search/items").as("itemSearch");
 
     cy.get('[data-cy="Item Bank"]').dblclick({ force: true });
     // .click({ force: true });

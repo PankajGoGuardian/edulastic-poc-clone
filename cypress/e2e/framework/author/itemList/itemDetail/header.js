@@ -60,17 +60,20 @@ class Header {
 
   clickOnPublishItem = () => {
     cy.route("PUT", "**/publish?status=published").as("publish");
+    cy.route("POST", "**/search/items").as("itemSearch");
     cy.get('[data-cy="publishItem"]').click();
     cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
     return cy.wait("@publish").then(xhr => {
       expect(xhr.status).to.eq(200);
-      return xhr.url.split("/").reverse()[1];
+      const id = xhr.url.split("/").reverse()[1];
+      // page now redirects back to itembank
+      return cy.wait("@itemSearch").then(() => id);
     });
   };
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
 
- // *** ACTIONS END ***
+  // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 

@@ -186,7 +186,8 @@ class AuthorAssignmentPage {
     // URL during edit from Assignments page is having following pattern
     cy.wait(5000).then(() =>
       cy.url().then(newUrl => {
-        expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+        // expect(newUrl).to.include(`/${oldTestId}/editAssigned`);
+        expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`);
       })
     );
 

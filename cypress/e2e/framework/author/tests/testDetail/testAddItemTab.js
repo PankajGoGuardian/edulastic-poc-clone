@@ -65,7 +65,7 @@ export default class TestAddItemTab {
     cy.server();
     cy.route("POST", "**/api/search/browse-standards").as("browseStandards");
     cy.get('[data-cy="groupItem"]').click();
-    cy.wait("@browseStandards");
+    // cy.wait("@browseStandards");
   };
 
   removeGroupItemById = itemId => {

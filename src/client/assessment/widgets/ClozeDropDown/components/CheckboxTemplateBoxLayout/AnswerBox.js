@@ -6,14 +6,14 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 const AnswerBox = ({ checked, correct, userAnswer, indexStr, inPopover, showIndex, lessMinWidth, ...rest }) => (
-  <Container {...rest} checked={checked} correct={correct}>
+  <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>
     {showIndex && (
-      <IndexBox checked={checked} correct={correct}>
+      <IndexBox data-cy="index" checked={checked} correct={correct}>
         {indexStr}
       </IndexBox>
     )}
     <AnswerContent inPopover={inPopover} dangerouslySetInnerHTML={{ __html: userAnswer || "" }} />
-    <IconWrapper rightPosition={lessMinWidth ? 1 : 8}>
+    <IconWrapper data-cy={`icon-${checked && correct}`} rightPosition={lessMinWidth ? 1 : 8}>
       {checked && correct && <RightIcon />}
       {checked && !correct && <WrongIcon />}
     </IconWrapper>

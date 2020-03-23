@@ -6,7 +6,8 @@ import {
   mainTextColor,
   greyThemeLight,
   greyThemeDark2,
-  greyThemeLighter
+  greyThemeLighter,
+  title
 } from "@edulastic/colors";
 
 // all theme variables
@@ -35,7 +36,7 @@ const containerGrey = "#F8F8FB";
 const containerWhite = "#FFFFFF";
 const keyboardColor = "#91D8FF";
 const keyboardHoverColor = "#7AC8F3";
-const keyboardFontColor = "#6A737F";
+const keyboardFontColor = title;
 const keyboardBorderColor = "#b3b3b3";
 const keyboardBgColor = "#FFFFFF";
 const numberpadBorderColor = "#FFFFFF";
@@ -66,7 +67,7 @@ const noAnswerBgColor = "#d3d3d3";
 const noAnswerColor = "#a9a9a9";
 const checkColor = "#5EB500";
 const closeColor = "#DD2E44";
-const questionTextColor = "#6A737F";
+const questionTextColor = title;
 const questionTextBorderColor = "#d9d9d9";
 const triangleBottomColor = "#000000";
 const uploadIcon = "#E6E6E6";
@@ -84,7 +85,7 @@ const breadcrumbColor = "#69727E";
 const titleColor = "#304050";
 
 const sidebarBgColorPlayer = "#F8F8F8";
-const sidebarFontColorPlayer = "#6A737F";
+const sidebarFontColorPlayer = title;
 
 const regular = "400";
 const semiBold = "600";

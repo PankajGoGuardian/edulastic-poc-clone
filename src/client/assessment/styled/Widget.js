@@ -6,7 +6,8 @@ import {
   greyThemeLight,
   greyThemeLighter,
   mediumDesktopExactWidth,
-  selectColor
+  selectColor,
+  title
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
 import styled from "styled-components";
@@ -45,12 +46,12 @@ export const Widget = styled.div`
   .ql-editor {
     padding: ${props => (props.questionTextArea ? "0 !important" : "inherit")};
     font-size: ${props => (props.questionTextArea ? "14px" : "inherit")};
-    color: ${props => (props.questionTextArea ? "#6A737F" : "inherit")};
+    color: ${props => (props.questionTextArea ? title : "inherit")};
     position: ${props => (props.questionTextArea ? "relative" : "inherit")};
     top: ${props => (props.questionTextArea ? "-7px" : "inherit")};
 
     &.ql-blank::before {
-      color: ${props => (props.questionTextArea ? "#6A737F" : "inherit")};
+      color: ${props => (props.questionTextArea ? title : "inherit")};
       font-style: ${props => (props.questionTextArea ? "normal" : "inherit")};
     }
   }

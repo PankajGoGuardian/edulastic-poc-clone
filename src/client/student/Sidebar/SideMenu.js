@@ -9,7 +9,7 @@ import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import styled, { withTheme } from "styled-components";
-import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
 import {
   IconHeader,
   IconLogoCompact,
@@ -31,7 +31,6 @@ import {
   mainTextColor,
   themeColor,
   extraDesktopWidth,
-  mediumDesktopWidth,
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
@@ -316,16 +315,14 @@ class SideMenu extends Component {
                         ) : (
                           <PseudoDiv>{this.getInitials()}</PseudoDiv>
                         )}
-                        <StyledTooltip title={userName}>
-                          <div style={{ paddingLeft: 11, width: "100px" }}>
-                            {!isSidebarCollapsed && (
-                              <UserName>{userName.replace(/\s/g, "").length ? userName : "Anonymous"}</UserName>
-                            )}
-                            {!isSidebarCollapsed && (
-                              <UserType>{role === "parent" ? "parent" : t("common.userRoleStudent")}</UserType>
-                            )}
-                          </div>
-                        </StyledTooltip>
+                        <div style={{ paddingLeft: 11, width: "100px" }}>
+                          {!isSidebarCollapsed && (
+                            <UserName>{userName.replace(/\s/g, "").length ? userName : "Anonymous"}</UserName>
+                          )}
+                          {!isSidebarCollapsed && (
+                            <UserType>{role === "parent" ? "parent" : t("common.userRoleStudent")}</UserType>
+                          )}
+                        </div>
 
                         {!isSidebarCollapsed && !isMobile && (
                           <IconDropdown
@@ -382,12 +379,6 @@ const enhance = compose(
 );
 
 export default enhance(withTheme(ReactOutsideEvent(SideMenu, ["mousedown"])));
-
-const StyledTooltip = styled(Tooltip)`
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-  }
-`;
 
 const FixedSidebar = styled.div`
   position: fixed;

@@ -15,7 +15,7 @@ import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip, message } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, message } from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -421,12 +421,10 @@ class SideMenu extends Component {
                       ) : (
                         <PseudoDiv>{this.getInitials()}</PseudoDiv>
                       )}
-                      <Tooltip title={userName}>
-                        <div style={{ paddingLeft: 11, width: "100px" }}>
-                          {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
-                          {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
-                        </div>
-                      </Tooltip>
+                      <div style={{ paddingLeft: 11, width: "100px" }}>
+                        {!isCollapsed && !isMobile && <UserName>{userName || "Anonymous"}</UserName>}
+                        {!isCollapsed && !isMobile && <UserType>{_userRole}</UserType>}
+                      </div>
 
                       {!isCollapsed && !isMobile && (
                         <IconDropdown

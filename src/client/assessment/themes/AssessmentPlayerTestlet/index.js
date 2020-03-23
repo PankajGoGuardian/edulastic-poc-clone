@@ -104,7 +104,12 @@ class AssessmentPlayerTestlet extends React.Component {
             calculateMode={calculateMode}
             onSubmitAnswer={this.submitAnswer}
           />
-          <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+          <SubmitConfirmation
+            settings={settings}
+            isVisible={showExitPopup}
+            onClose={this.hideExitPopup}
+            finishTest={this.finishTest}
+          />
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}

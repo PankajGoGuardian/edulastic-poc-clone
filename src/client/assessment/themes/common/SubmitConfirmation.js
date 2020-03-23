@@ -1,14 +1,21 @@
 import React, { Component } from "react";
 import styled, { withTheme } from "styled-components";
+import moment from "moment";
 import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import { Button, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
+import { assignmentPolicyOptions } from "@edulastic/constants";
 import ColWithZoom from "../../../common/components/ColWithZoom";
 
 class SubmitConfirmation extends Component {
   render() {
-    const { isVisible, onClose, finishTest, t, theme } = this.props;
+    const { isVisible, onClose, finishTest, t, theme, settings = {} } = this.props;
+    const { endDate, closePolicy } = settings;
+    const dateText =
+      closePolicy === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
+        ? ` end date ${moment(endDate).format("MMMM DD, YYYY hh:mm A")}.`
+        : " Teacher/Admin closes it.";
 
     return (
       <Modal
@@ -27,8 +34,11 @@ class SubmitConfirmation extends Component {
         center
       >
         <ModalContainer>
-          <Title>{t("exitConfirmation.title")}</Title>
-          <TitleDescription>{t("exitConfirmation.body")}</TitleDescription>
+          <TitleDescription>
+            {t("exitConfirmation.body")}
+            {dateText}
+          </TitleDescription>
+          <TitleDescription>{t("exitConfirmation.confirm")}</TitleDescription>
           <ButtonContainer>
             <Row gutter={20} style={{ width: "100%" }}>
               <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>

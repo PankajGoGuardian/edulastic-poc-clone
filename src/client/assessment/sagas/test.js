@@ -202,7 +202,9 @@ function* loadTest({ payload }) {
       showPreviousAttempt: testActivity?.assignmentSettings?.showPreviousAttempt || "NONE",
       testType: testActivity?.assignmentSettings?.testType,
       playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
-      showMagnifier: testActivity?.assignmentSettings?.showMagnifier
+      showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
+      endDate: testActivity?.assignmentSettings?.endDate,
+      closePolicy: testActivity?.assignmentSettings?.closePolicy
     };
 
     const answerCheckByItemId = {};

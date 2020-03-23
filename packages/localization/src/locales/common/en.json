@@ -17,7 +17,8 @@
   },
   "exitConfirmation": {
     "title": "Are you sure?",
-    "body": "This will take you out of the assignment but you will be able to finish it later if you are within the end date specified for the assignment.",
+    "body": "You will still be able to come back and finish this assignment as long as it is before the",
+    "confirm": "CONFIRM ?",
     "buttonProceed": "Proceed",
     "buttonCancel": "Cancel"
   }

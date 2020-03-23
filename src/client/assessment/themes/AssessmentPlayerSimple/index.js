@@ -336,7 +336,12 @@ class AssessmentPlayerSimple extends React.Component {
               saveHistory={this.saveHistory("scratchpad")}
               history={scratchPad}
             />
-            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+            <SubmitConfirmation
+              settings={settings}
+              isVisible={showExitPopup}
+              onClose={this.hideExitPopup}
+              finishTest={this.finishTest}
+            />
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

@@ -519,6 +519,7 @@ class AssessmentPlayerDefault extends React.Component {
                 isVisible={isSubmitConfirmationVisible}
                 onClose={() => this.closeSubmitConfirmation()}
                 finishTest={this.finishTest}
+                settings={settings}
               />
             )}
             <Main

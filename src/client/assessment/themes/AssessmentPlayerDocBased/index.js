@@ -185,7 +185,12 @@ class AssessmentPlayerDocBased extends React.Component {
                 currentPage={currentPage}
               />
             )}
-            <SubmitConfirmation isVisible={showExitPopup} onClose={this.hideExitPopup} finishTest={this.finishTest} />
+            <SubmitConfirmation
+              settings={settings}
+              isVisible={showExitPopup}
+              onClose={this.hideExitPopup}
+              finishTest={this.finishTest}
+            />
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool("calculator")}

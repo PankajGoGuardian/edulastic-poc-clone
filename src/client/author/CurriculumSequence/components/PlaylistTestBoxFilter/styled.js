@@ -3,8 +3,24 @@ import { Checkbox } from "antd";
 import { title, themeColor } from "@edulastic/colors";
 
 export const FilterContainer = styled.div`
-  height: auto;
   margin-bottom: 20px;
+  height: calc(100vh - 295px);
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 export const Title = styled.div`

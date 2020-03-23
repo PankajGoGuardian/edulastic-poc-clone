@@ -38,9 +38,10 @@ const slice = createSlice({
   },
   reducers: {
     setDefaults: (state, { payload }) => {
-      const { subject = "", grades = [] } = payload;
+      const { subject = "", grades = [], collection = "" } = payload;
       state.subject = subject;
       state.grades = grades;
+      state.collection = collection;
     },
     fetchTests: state => {
       state.isLoading = true;

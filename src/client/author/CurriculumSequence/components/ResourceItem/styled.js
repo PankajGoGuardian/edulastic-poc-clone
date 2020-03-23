@@ -5,6 +5,7 @@ import Tags from "../../../src/components/common/Tags";
 export const ResourceItemWrapper = styled.div`
   width: 95%;
   display: flex;
+  align-items: center;
   padding: 10px 10px;
   border-bottom: 1px solid ${borderGrey4};
   margin: 4px;

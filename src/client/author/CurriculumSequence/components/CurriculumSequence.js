@@ -791,16 +791,18 @@ class CurriculumSequence extends Component {
                 {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
                   <ManageContentBlock
                     testsInPlaylist={testsInPlaylist}
-                    subjects={destinationCurriculumSequence?.subjects?.[0]}
-                    grades={destinationCurriculumSequence?.grades || []}
+                    subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
+                    gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
+                    collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
                   />
                 ) : null}
                 {urlHasUseThis &&
                   (isManageContentActive ? (
                     <ManageContentBlock
                       testsInPlaylist={testsInPlaylist}
-                      subjects={destinationCurriculumSequence?.subjects?.[0]}
-                      grades={destinationCurriculumSequence?.grades || []}
+                      subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
+                      gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
+                      collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
                     />
                   ) : (
                     <SummaryBlock>

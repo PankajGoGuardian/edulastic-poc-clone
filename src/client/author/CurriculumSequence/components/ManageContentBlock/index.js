@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { uniq } from "lodash";
 import { connect } from "react-redux";
-import { Dropdown, Menu, Spin } from "antd";
+import { Dropdown, Menu, Spin, Empty } from "antd";
 import { test as testsConstants } from "@edulastic/constants";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
@@ -120,6 +120,7 @@ const ManageContentBlock = props => {
     closePreviewModal,
     subjectsFromCurriculumSequence,
     gradesFromCurriculumSequence,
+    collectionFromCurriculumSequence = "",
     collections,
     currentDistrictUsers,
     districtId,
@@ -137,7 +138,11 @@ const ManageContentBlock = props => {
   const [isShowExternalLTITool, setIsShowExternalLTITool] = useState(false);
 
   useEffect(() => {
-    setDefaults({ subject: subjectsFromCurriculumSequence, grades: gradesFromCurriculumSequence });
+    setDefaults({
+      subject: subjectsFromCurriculumSequence,
+      grades: gradesFromCurriculumSequence,
+      collection: collectionFromCurriculumSequence
+    });
     fetchTests();
     fetchExternalToolProvidersAction({ districtId });
     // remove this condition once BE is fixed
@@ -238,7 +243,7 @@ const ManageContentBlock = props => {
     if (listToRender.length) {
       return listToRender;
     }
-    return <h3 style={{ textAlign: "center" }}>No Data</h3>;
+    return <Empty style={{ margin: "auto" }} image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   };
 
   return (

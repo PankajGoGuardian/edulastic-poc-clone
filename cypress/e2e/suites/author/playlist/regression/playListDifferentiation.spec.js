@@ -14,7 +14,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
   const standard1 = "5.G.A.1";
   const standard2 = "5.G.A.2";
   const standard3 = "5.MD.A.1";
-
+  const reviewMasteryRange = [
+    { mastery: 55, studCount: 0 },
+    { mastery: 60, studCount: 1 },
+    { mastery: 80, studCount: 2 },
+    { mastery: 100, studCount: 3 }
+  ];
+  const practiceMasteryRange = [
+    { masteryMin: 50, MasteryMax: 59, studCount: 0 },
+    { masteryMin: 50, MasteryMax: 79, studCount: 1 },
+    { masteryMin: 60, MasteryMax: 80, studCount: 2 },
+    { masteryMin: 60, MasteryMax: 100, studCount: 3 }
+  ];
+  const challengeMasteryRange = [
+    { mastery: 90, studCount: 1 },
+    { mastery: 80, studCount: 2 },
+    { mastery: 60, studCount: 3 }
+  ];
   const teacher = {
     email: "teacher.playlist.recommendation@automation.com",
     password: "automation"
@@ -72,6 +88,37 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
           .getChallengeStandardsRows()
           .should("have.length", standardMapping[index].challengeStandards.length);
       });
+    });
+
+    it("[TC03] > Verify Mastery Range Slider", () => {
+      differentiationPage.selectAssignment(assignment1);
+      differentiationPage.selectClass(class1);
+      for (let value of reviewMasteryRange) {
+        differentiationPage.setAndVerifyReviewMasteryRange(value.mastery);
+        differentiationPage.verifyReviewStudentCount(value.studCount);
+      }
+      for (let value of practiceMasteryRange) {
+        differentiationPage.setAndVerifyPracticeMasteryRange(value.masteryMin, value.MasteryMax);
+        differentiationPage.verifyPracticeStudentCount(value.studCount);
+      }
+      for (let value of challengeMasteryRange) {
+        differentiationPage.setAndVerifyChallengeMasteryRange(value.mastery);
+        differentiationPage.verifyChallengeStudentCount(value.studCount);
+      }
+    });
+
+    it("[TC04] > Verify Checkboxes and buttons", () => {
+      differentiationPage.selectAssignment(assignment2);
+      differentiationPage.selectClass(class2);
+      differentiationPage.verifySelectAllReviewWork();
+      differentiationPage.verifyUnselectAllReviewWork();
+      differentiationPage.verifyAddButtonVisibility("REVIEW");
+      differentiationPage.verifySelectAllPracticeWork();
+      differentiationPage.verifyUnselectAllPracticeWork();
+      differentiationPage.verifyAddButtonVisibility("PRACTICE");
+      differentiationPage.verifySelectAllChallengeWork();
+      differentiationPage.verifyUnselectAllChallengeWork();
+      differentiationPage.verifyAddButtonVisibility("CHALLENGE");
     });
   });
 });

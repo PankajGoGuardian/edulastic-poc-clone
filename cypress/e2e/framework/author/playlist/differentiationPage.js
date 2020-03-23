@@ -25,6 +25,14 @@ export default class DifferentiationPage {
 
   getChallengeSlider = () => this.getChallengeWorkContainer().find(".ant-slider");
 
+  getReviewSliderHandle = () => this.getReviewWorkContainer().find(".ant-slider-handle");
+
+  getPracticeSliderHandle = () => this.getPracticeWorkContainer().find(".ant-slider-handle");
+
+  getChallengeSliderHandle = () => this.getChallengeWorkContainer().find(".ant-slider-handle");
+
+  getAddButton = type => cy.get(`[data-cy="addButton-${type}"]`);
+
   // standard rows
   getReviewStandardsRows = () => this.getReviewWorkContainer().find(".ant-table-row-level-0");
 
@@ -69,32 +77,63 @@ export default class DifferentiationPage {
     CypressHelper.selectDropDownByAttribute("select-assignment", assignmentName);
   };
 
-  setMasteryRangeSlider = (min, max) => {
-    cy.get("@slider")
-      .find(".ant-slider-rail")
-      .then($ele => {
-        const { width } = $ele.get(0).getBoundingClientRect();
-        const xMin = (width * min) / 100;
-        const xMax = (width * max) / 100;
-        cy.wrap($ele)
-          .click(xMin, 5, { force: true })
-          .click(xMax, 5, { force: true });
-      });
+  setMasteryRangeSlider = (minvalue, maxvalue) => {
+    let sliderhandle1 = 0;
+    let sliderhandle2 = 1;
+    if (!minvalue || !maxvalue) {
+      sliderhandle2 = 0;
+    }
+    if (minvalue) {
+      cy.get("@slider-handlers")
+        .eq(sliderhandle1)
+        .as("min-handler")
+        .invoke("attr", "aria-valuenow")
+        .then(val => {
+          let currentvalue;
+          if (sliderhandle2 === 0) {
+            currentvalue = 100 - parseInt(val);
+          } else {
+            currentvalue = parseInt(val);
+          }
+          if (minvalue < currentvalue) {
+            cy.get("@min-handler").type("{leftarrow}".repeat(currentvalue - minvalue));
+          } else if (minvalue > currentvalue) {
+            cy.get("@min-handler").type("{rightarrow}".repeat(minvalue - currentvalue));
+          }
+        });
+    }
+    if (maxvalue) {
+      cy.get("@slider-handlers")
+        .eq(sliderhandle2)
+        .as("max-handler")
+        .invoke("attr", "aria-valuenow")
+        .then(val => {
+          let currentvalue = parseInt(val);
+          if (maxvalue < currentvalue) {
+            cy.get("@max-handler").type("{leftarrow}".repeat(currentvalue - maxvalue));
+          } else if (maxvalue > currentvalue) {
+            cy.get("@max-handler").type("{rightarrow}".repeat(maxvalue - currentvalue));
+          }
+        });
+    }
   };
 
-  setReviewMasteryRange = (min, max) => {
-    this.getReviewSlider().as("slider");
-    this.setMasteryRangeSlider(min, max);
+  setAndVerifyReviewMasteryRange = max => {
+    this.getReviewSliderHandle().as("slider-handlers");
+    this.setMasteryRangeSlider(undefined, max);
+    this.verifyReviewMasteryRange(`Below ${max}%`);
   };
 
-  setPracticeMasteryRange = (min, max) => {
-    this.getPracticeSlider().as("slider");
+  setAndVerifyPracticeMasteryRange = (min, max) => {
+    this.getPracticeSliderHandle().as("slider-handlers");
     this.setMasteryRangeSlider(min, max);
+    this.verifyPracticeMasteryRange(`Between ${min}% and ${max}%`);
   };
 
-  setChallengeMasteryRange = (min, max) => {
-    this.getChallengeSlider().as("slider");
-    this.setMasteryRangeSlider(min, max);
+  setAndVerifyChallengeMasteryRange = min => {
+    this.getChallengeSliderHandle().as("slider-handlers");
+    this.setMasteryRangeSlider(min, undefined);
+    this.verifyChallengeMasteryRange(`Above ${min}%`);
   };
 
   checkStandardForReview = std => {
@@ -115,7 +154,7 @@ export default class DifferentiationPage {
   clickOnAddByRecommendationType = type => {
     cy.server();
     cy.route("POST", "**/recommendations/**").as("addRecommendation");
-    cy.get(`[data-cy="addButton-${type}"]`).click();
+    this.getAddButton(type).click();
     cy.wait("@addRecommendation")
       .its("status")
       .should("be.eq", 200);
@@ -132,6 +171,113 @@ export default class DifferentiationPage {
   verifyAssignmentNotPresentInDropDown = value => {
     this.clickOnAssignmentSelect();
     CypressHelper.getDropDownList().should("not.contain", value);
+  };
+
+  verifyCheckBox = (type, status) => {
+    cy.get(`[data-cy="table-${type}"]`)
+      .find(".ant-table-row-level-0")
+      .closest("tr")
+      .find("td")
+      .then($ele => {
+        cy.wrap($ele).as("columns");
+        if (status == "checked") {
+          cy.get("@columns")
+            .find('input[type="checkbox"]')
+            .should("be.checked")
+            .and("be.enabled");
+        }
+        if (status == "unchecked") {
+          cy.get("@columns")
+            .find('input[type="checkbox"]')
+            .should("not.be.checked")
+            .and("be.enabled");
+        }
+      });
+  };
+
+  verifySelectAllReviewWork = () => {
+    cy.get('[data-cy="select-all"]')
+      .eq(0)
+      .click();
+    this.verifyCheckBox("REVIEW", "checked");
+  };
+
+  verifyUnselectAllReviewWork = () => {
+    cy.get('[data-cy="deselect-all"]')
+      .eq(0)
+      .click();
+    this.verifyCheckBox("REVIEW", "unchecked");
+  };
+
+  verifySelectAllPracticeWork = () => {
+    cy.get('[data-cy="select-all"]')
+      .eq(1)
+      .click();
+    this.verifyCheckBox("PRACTICE", "checked");
+  };
+
+  verifyUnselectAllPracticeWork = () => {
+    cy.get('[data-cy="deselect-all"]')
+      .eq(1)
+      .click();
+    this.verifyCheckBox("PRACTICE", "unchecked");
+  };
+
+  verifySelectAllChallengeWork = () => {
+    cy.get('[data-cy="select-all"]')
+      .eq(2)
+      .click();
+    this.verifyCheckBox("CHALLENGE", "checked");
+  };
+
+  verifyUnselectAllChallengeWork = () => {
+    cy.get('[data-cy="deselect-all"]')
+      .eq(2)
+      .click();
+    this.verifyCheckBox("CHALLENGE", "unchecked");
+  };
+
+  verifyAddButtonVisibility = type => {
+    this.getAddButton(type).should("be.visible");
+  };
+
+  verifyReviewMasteryRange = value => {
+    this.getReviewSlider()
+      .next()
+      .should("contain", value);
+  };
+
+  verifyPracticeMasteryRange = value => {
+    this.getPracticeSlider()
+      .next()
+      .should("contain", value);
+  };
+
+  verifyChallengeMasteryRange = value => {
+    this.getChallengeSlider()
+      .next()
+      .should("contain", value);
+  };
+
+  verifyReviewStudentCount = count => {
+    this.getReviewWorkContainer()
+      .find('[data-cy="student"]')
+      .parent()
+      .should("contain.text", count);
+  };
+
+  verifyPracticeStudentCount = count => {
+    this.getPracticeWorkContainer()
+      .find('[data-cy="student"]')
+      .parent()
+      .should("contain.text", count);
+  };
+
+  verifyChallengeStudentCount = count => {
+    this.getChallengeWorkContainer()
+      .find('[data-cy="student"]')
+      .parent()
+      .should("contain.text", count);
   };
 
   verifyStandardRowByStandard = ({ type, standardId, avgMastery, notStartedCount, added = false }) => {

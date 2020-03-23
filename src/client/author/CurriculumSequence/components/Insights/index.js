@@ -78,9 +78,9 @@ const Insights = ({
   useEffect(() => {
     const termId = get(user, "orgData.defaultTermId", "") || get(user, "orgData.terms", [])?.[0]?._id;
     if (overallProgressCheck && termId) {
-      getStudentProgressRequestAction({ termId });
+      getStudentProgressRequestAction({ termId, insights: true });
     } else if (playlistId && termId) {
-      getStudentProgressRequestAction({ termId, playlistId });
+      getStudentProgressRequestAction({ termId, playlistId, insights: true });
     }
   }, [overallProgressCheck, playlistId]);
 

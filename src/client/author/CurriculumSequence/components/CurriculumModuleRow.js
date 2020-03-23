@@ -368,6 +368,7 @@ class ModuleRow extends Component {
       </Menu>
     );
     const moduleInlineStyle = {
+      "white-space": "nowrap",
       opacity: module.hidden ? `.5` : `1`,
       pointerEvents: module.hidden ? "none" : "all"
     };

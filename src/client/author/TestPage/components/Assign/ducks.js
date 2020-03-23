@@ -247,7 +247,7 @@ function* saveAssignment({ payload }) {
       allowDuplicates: !!payload.allowDuplicates
     });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
-
+    const isCanvasClass = assignment.class.some(c => !!c.cnvId);
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));
@@ -258,6 +258,9 @@ function* saveAssignment({ payload }) {
     }
     const successMessage = `${payload.playlistModuleId && !payload.testId ? "Module" : "Test"} successfully assigned`;
     yield call(message.success, successMessage);
+    if (isCanvasClass) {
+      yield call(message.success, "This assignment is shared to your Canvas class also.");
+    }
     if (!assignmentId && !payload.playlistModuleId) return;
     yield put(
       push(

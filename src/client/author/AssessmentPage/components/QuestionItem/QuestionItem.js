@@ -299,7 +299,7 @@ class QuestionItem extends React.Component {
     }
     const {
       data: { id, qIndex, type } = {},
-      index,
+      questionIndex,
       review,
       viewMode,
       previewTab,
@@ -339,7 +339,7 @@ class QuestionItem extends React.Component {
         <AnswerForm style={{ justifyContent: review ? "flex-start" : "space-between" }}>
           <Draggable
             type="question"
-            data={JSON.stringify({ id, index: qIndex || index })}
+            data={JSON.stringify({ id, index: questionIndex })}
             onDragStart={this.handleDragStart}
             onDragEnd={this.handleDragEnd}
             enabled={!review && !testMode}
@@ -351,7 +351,7 @@ class QuestionItem extends React.Component {
               pdfPreview={pdfPreview}
               // title={viewMode === "edit" && (pdfPreview ? "Drag and Drop the Question Annotation" : "Drag this Question Annotation onto PDF")}
             >
-              {qIndex || index + 1}
+              {questionIndex}
             </QuestionNumber>
           </Draggable>
           {!annotations && (

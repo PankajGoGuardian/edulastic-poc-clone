@@ -158,6 +158,7 @@ const PDFPreview = ({
                   <QuestionItem
                     key={questionId}
                     index={qIndex}
+                    questionIndex={qIndex}
                     review={review}
                     data={questionsById[questionId]}
                     answer={answersById[questionId]}

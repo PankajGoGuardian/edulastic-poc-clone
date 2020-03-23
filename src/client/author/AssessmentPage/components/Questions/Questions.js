@@ -66,7 +66,8 @@ const SortableQuestionItem = SortableElement(
     onDragStart,
     highlighted,
     testMode,
-    onHighlightQuestion
+    onHighlightQuestion,
+    questionIndex
   }) => (
     <div
       onClick={() => onHighlightQuestion(data.id)}
@@ -77,6 +78,7 @@ const SortableQuestionItem = SortableElement(
       <QuestionItem
         key={key}
         index={index}
+        questionIndex={questionIndex}
         data={data}
         review={review}
         onCreateOptions={onCreateOptions}
@@ -429,6 +431,11 @@ class Questions extends React.Component {
     return sortBy(list, item => item.qIndex);
   }
 
+  getQIndexForDocBasedItems() {
+    let loopVar = 1;
+    return this.questionList.map(x => (x.type === "sectionLabel" ? null : loopVar++));
+  }
+
   render() {
     const { currentEditQuestionIndex } = this.state;
     const {
@@ -450,6 +457,9 @@ class Questions extends React.Component {
     if (list.length > 0 && list[currentEditQuestionIndex]) {
       shouldModalBeVisibile = list[currentEditQuestionIndex].type !== "sectionLabel";
     }
+
+    const questionIndex = this.getQIndexForDocBasedItems();
+
     return (
       <Fragment>
         <QuestionsWrapper
@@ -474,6 +484,7 @@ class Questions extends React.Component {
                   <SortableQuestionItem
                     key={question.id}
                     index={i}
+                    questionIndex={questionIndex[i]}
                     data={question}
                     review={review}
                     onCreateOptions={this.handleCreateOptions}

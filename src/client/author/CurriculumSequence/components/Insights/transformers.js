@@ -81,13 +81,15 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
           firstName: "",
           lastName: "",
           groupIds: [],
-          trendAngle: 0
+          trendAngle: 0,
+          hasTrend: false
         }
       );
     });
     trendData.forEach(item => {
       if (studentMap[item.id]) {
         studentMap[item.id].trendAngle = calcTrendAngle(item.slope);
+        studentMap[item.id].hasTrend = true;
       }
     });
     return studentMap;

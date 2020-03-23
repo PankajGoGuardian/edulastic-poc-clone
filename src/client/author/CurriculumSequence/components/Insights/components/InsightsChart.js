@@ -22,7 +22,7 @@ const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =
 // custom label shape for scatter plot
 const ScatterLabel = props => {
   const { cx, cy, handleArrowClick, handleCircleClick, ...item } = props;
-  const { studentId, name, trendAngle, color, count, isActive, isGrouped } = item;
+  const { studentId, name, trendAngle, color, count, hasTrend, isActive, isGrouped } = item;
   const { nameX, arrowY } = calcLabelPosition({ cx, cy, name, trendAngle });
   return isGrouped ? (
     <g onClick={e => handleCircleClick(e, item.studentIds, color)}>
@@ -38,7 +38,11 @@ const ScatterLabel = props => {
           {name}
         </text>
       )}
-      <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
+      {hasTrend ? (
+        <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
+      ) : (
+        <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
+      )}
     </g>
   );
 };

@@ -40,15 +40,20 @@ const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
   </DropdownContainer>
 );
 
+/* TODO: Revert the temporary changes by referring to EV-12639 */
+
 const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   {
-    title: "SELECT ALL",
+    // title: "SELECT ALL",
+    title: "Student(s)",
     key: "name",
     dataIndex: "name"
   },
   {
-    title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
-    colSpan: 3,
+    // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
+    title: "Performance",
+    colSpan: 2,
+    align: "left",
     key: "percentScore",
     dataIndex: "percentScore",
     render: (data, record) => `${round(data * 100)}%`
@@ -72,19 +77,19 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
         )
       );
     }
-  },
-  {
-    title: "Reports",
-    colSpan: 0,
-    key: "studentId",
-    dataIndex: "studentId",
-    render: (data, record) => (
-      /* TODO: Link for individual student reports */
-      <Link to="/author">
-        <IconBarChart width={24} height={21} />
-      </Link>
-    )
-  }
+  } //,
+  // {
+  //   title: "Reports",
+  //   colSpan: 0,
+  //   key: "studentId",
+  //   dataIndex: "studentId",
+  //   render: (data, record) => (
+  //     /* TODO: Link for individual student reports */
+  //     <Link to="/author">
+  //       <IconBarChart width={24} height={21} />
+  //     </Link>
+  //   )
+  // }
 ];
 
 const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
@@ -104,10 +109,12 @@ const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
     }
   });
 
+  /* TODO: Revert the temporary changes by referring to EV-12639 */
+
   return (
     <Col span={24}>
       <StyledTable
-        rowSelection={rowSelection}
+        // rowSelection={rowSelection}
         columns={getColumns(groupsData, groupId => handleAddGroupChange(groupId, checkedStudents), checkedGroups)}
         dataSource={studData}
         pagination={false}
@@ -153,8 +160,11 @@ export const StyledTable = styled(Table)`
             border-bottom: unset;
             background: white;
             white-space: nowrap;
-            font: 11px/15px Open Sans;
-            font-weight: 600;
+            ${() => {
+              /* TODO: Revert the temporary changes by referring to EV-12639 */
+            }}
+            font: 12px/17px Open Sans;
+            font-weight: 700;
             color: ${themeColor};
             .ant-table-column-sorters {
               .ant-table-column-sorter {
@@ -189,7 +199,11 @@ export const StyledTable = styled(Table)`
               fill: ${themeColor};
             }
           }
-          td:nth-child(2) {
+          ${() => {
+            /* TODO: Revert the temporary changes by referring to EV-12639 */
+          }}
+          td:nth-child(1) {
+            min-width: 120px;
             max-width: 120px;
             overflow: hidden;
             text-overflow: ellipsis;

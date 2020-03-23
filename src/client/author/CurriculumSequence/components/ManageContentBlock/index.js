@@ -124,7 +124,9 @@ const ManageContentBlock = props => {
     currentDistrictUsers,
     districtId,
     getCurrentDistrictUsers,
-    userFeatures
+    userFeatures,
+    fetchExternalToolProvidersAction,
+    externalToolsProviders
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -137,6 +139,7 @@ const ManageContentBlock = props => {
   useEffect(() => {
     setDefaults({ subject: subjectsFromCurriculumSequence, grades: gradesFromCurriculumSequence });
     fetchTests();
+    fetchExternalToolProvidersAction({ districtId });
     // remove this condition once BE is fixed
     if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);
   }, []);
@@ -354,6 +357,7 @@ const ManageContentBlock = props => {
         >
           <ExternalLTIModalContent
             data={externalLTIModal}
+            externalToolsProviders={externalToolsProviders}
             onChange={(key, value) => changeExternalLTIModal({ key, value })}
           />
         </CustomModal>
@@ -390,6 +394,7 @@ export default connect(
     externalLTIResources: state.playlistTestBox?.externalLTIResources,
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
+    externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
     subjectsFromCurriculumSequence: ownProps?.subjects,
     gradesFromCurriculumSequence: ownProps?.grades,
     collections: state.user?.user?.orgData?.itemBanks || [],
@@ -414,6 +419,7 @@ export default connect(
     addExternalLTIResouce: slice.actions?.addExternalLTIResourceAction,
     showPreviewModal: slice.actions?.showTestPreviewModal,
     closePreviewModal: slice.actions?.closeTestPreviewModal,
-    getCurrentDistrictUsers: getCurrentDistrictUsersAction
+    getCurrentDistrictUsers: getCurrentDistrictUsersAction,
+    fetchExternalToolProvidersAction: slice.actions?.fetchExternalToolProvidersAction
   }
 )(ManageContentBlock);

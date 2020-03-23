@@ -4,9 +4,12 @@ import { CheckboxLabel } from "@edulastic/common";
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
 
-export const ExternalLTIModalContent = ({ data, onChange }) => {
+export const ExternalLTIModalContent = ({ data, externalToolsProviders, onChange }) => {
   const getToolProviderOptions = () => {
-    return [<Select.Option value="first">First</Select.Option>, <Select.Option value="second">Second</Select.Option>];
+    return (
+      externalToolsProviders &&
+      externalToolsProviders.map(({ toolName }) => <Select.Option value={toolName}>{toolName}</Select.Option>)
+    );
   };
 
   return (

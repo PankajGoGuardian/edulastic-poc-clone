@@ -1,7 +1,7 @@
 import { createSlice } from "redux-starter-kit";
 import { delay } from "redux-saga";
 import { takeEvery, takeLatest, put, call, all, select } from "redux-saga/effects";
-import { testsApi } from "@edulastic/api";
+import { testsApi, settingsApi } from "@edulastic/api";
 import { set } from "lodash";
 import nanoid from "nanoid";
 
@@ -33,7 +33,8 @@ const slice = createSlice({
     searchString: null,
     externalLTIModal: {},
     testPreviewModalVisible: false,
-    selectedTestForPreview: ""
+    selectedTestForPreview: "",
+    externalToolsProviders: []
   },
   reducers: {
     setDefaults: (state, { payload }) => {
@@ -102,6 +103,13 @@ const slice = createSlice({
     closeTestPreviewModal: state => {
       state.selectedTestForPreview = "";
       state.testPreviewModalVisible = false;
+    },
+    fetchExternalToolProvidersAction: (state, { payload }) => {
+      state.externalToolsProviders = [];
+    },
+
+    fetchExternalToolProvidersSuccess: (state, { payload }) => {
+      state.externalToolsProviders = payload;
     }
   }
 });
@@ -154,10 +162,20 @@ function* fetchTestsBySearchString({ payload }) {
   }
 }
 
+function* fetchExternalToolsSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.getExternalTools, { orgId: payload.districtId });
+    yield put(slice.actions.fetchExternalToolProvidersSuccess(result));
+  } catch (e) {
+    console.error("Error Occured: fetchExternalTools ", e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
     yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
-    yield takeLatest(slice.actions.setTestSearchAction, fetchTestsBySearchString)
+    yield takeLatest(slice.actions.setTestSearchAction, fetchTestsBySearchString),
+    yield takeEvery(slice.actions.fetchExternalToolProvidersAction, fetchExternalToolsSaga)
   ]);
 }

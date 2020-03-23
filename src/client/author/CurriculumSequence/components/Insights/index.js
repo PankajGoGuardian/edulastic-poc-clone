@@ -44,6 +44,13 @@ const defaultBandInfo = [
   }
 ];
 
+const initialFilters = {
+  modules: [],
+  standards: [],
+  groups: [],
+  masteryList: []
+};
+
 const Insights = ({
   user,
   currentPlaylist,
@@ -56,12 +63,7 @@ const Insights = ({
 }) => {
   const { _id: playlistId, modules } = currentPlaylist;
 
-  const [filters, updateFilters] = useState({
-    modules: [],
-    standards: [],
-    groups: [],
-    masteryList: []
-  });
+  const [filters, updateFilters] = useState(initialFilters);
 
   // fetch student trend data & playlist insights
   useEffect(() => {
@@ -86,13 +88,22 @@ const Insights = ({
   const filteredMetrics = getFilteredMetrics(metricInfo, studInfoMap, filters);
   const curatedMetrics = getCuratedMetrics({ ...filteredMetrics, masteryData });
 
+  const clearFilter = () => {
+    updateFilters(initialFilters);
+  };
+
   return loading || loadingProgress ? (
     <Spin style={{ "margin-top": "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
       {/* TODO: for left section, reduce 6 to 4 on enabling the right section */}
       <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
-        <InsightsFilters data={filterData} prevFilters={filters} updateFilters={updateFilters} />
+        <InsightsFilters
+          data={filterData}
+          prevFilters={filters}
+          updateFilters={updateFilters}
+          clearFilter={clearFilter}
+        />
       </StyledCol>
       {/* TODO: for mid section, reduce 18 to 14 on enabling the right section */}
       <StyledCol xs={24} sm={24} md={24} lg={18} xl={18} xxl={18}>

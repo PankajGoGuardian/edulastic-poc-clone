@@ -1,8 +1,16 @@
 import React from "react";
 import { Row, Col, Select } from "antd";
 import styled from "styled-components";
-import { greyThemeDark1, lightGrey9, themeColor, greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import {
+  greyThemeDark1,
+  lightGrey9,
+  themeColor,
+  greyThemeLight,
+  greyThemeLighter,
+  titleColor
+} from "@edulastic/colors";
 import GroupsFilter from "./GroupsFilter";
+import { FlexContainer } from "@edulastic/common";
 
 const handleModulesChange = (selected, prevFilters, updateFilters) =>
   updateFilters({
@@ -55,11 +63,17 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
   </StyledRow>
 );
 
-const InsightsFilters = ({ data, prevFilters, updateFilters }) => {
+const InsightsFilters = ({ data, prevFilters, updateFilters, clearFilter }) => {
   const { modulesData, standardsData, groupsData, masteryData } = data;
 
   return (
     <StyledRow>
+      <FilterHeading justifyContent="space-between">
+        <Title>FILTERS</Title>
+        <ClearAll data-cy="clearAll" onClick={clearFilter}>
+          CLEAR ALL
+        </ClearAll>
+      </FilterHeading>
       <FilterDropdown
         label="Module"
         onChange={selected => handleModulesChange(selected, prevFilters, updateFilters)}
@@ -124,4 +138,26 @@ const StyledSelect = styled(Select)`
       }
     }
   }
+`;
+
+const FilterHeading = styled(FlexContainer)`
+  margin-bottom: 10px;
+`;
+
+const ClearAll = styled.span`
+  color: ${themeColor};
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  :hover {
+    color: ${themeColor};
+  }
+`;
+
+const Title = styled.span`
+  color: ${titleColor};
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 `;

@@ -5,8 +5,10 @@ import { Tooltip } from "../../../common/utils/helpers";
 import { themeColor } from "@edulastic/colors";
 import { ModuleDataName, EllipticSpan, AssignmentButton, AssignmentIcon, CustomIcon } from "./CurriculumModuleRow";
 import { IconTrash } from "@edulastic/icons";
+import { connect } from "react-redux";
+import { getUserRole } from "../../src/selectors/user";
 
-export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIndex, showResource }) => {
+const ResourceRow = ({ isStudent, data, mode, urlHasUseThis, deleteTest, moduleIndex, showResource }) => {
   if (mode === "embedded") {
     return (
       <Row type="flex" align="top" style={{ width: "calc(100%)" }}>
@@ -43,8 +45,10 @@ export const LTIResourceRow = ({ data, mode, urlHasUseThis, deleteTest, moduleIn
         </ModuleDataName>
       </Col>
       <StyledCol span={urlHasUseThis ? 17 : 14}>
-        <AssignmentButton>
-          <Button onClick={() => showResource(data.contentId)}>VIEW</Button>
+        <AssignmentButton style={!isStudent ? { marginRight: "31px" } : null}>
+          <Button onClick={() => showResource(data.contentId)} style={{ width: "124px" }}>
+            VIEW
+          </Button>
         </AssignmentButton>
       </StyledCol>
     </Row>
@@ -55,3 +59,7 @@ const StyledCol = styled(Col)`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const LTIResourceRow = connect(({ user }) => ({
+  isStudent: getUserRole({ user }) === "student"
+}))(ResourceRow);

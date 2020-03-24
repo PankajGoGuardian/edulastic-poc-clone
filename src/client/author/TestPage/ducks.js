@@ -164,6 +164,7 @@ export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST = "[test] add items to autos
 export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect group";
 export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage create";
 export const UPDATE_LAST_USED_COLLECTION_LIST = "[test] update recent collections";
+export const UPDATE_CREATING = "[test] create test request initiated";
 
 // actions
 
@@ -191,6 +192,7 @@ export const addItemsToAutoselectGroupAction = createAction(ADD_ITEMS_TO_AUTOSEL
 export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 export const updateTestEntityAction = createAction(SET_TEST_DATA);
 export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_COLLECTION_LIST);
+export const setIsCreatingAction = createAction(UPDATE_CREATING);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -854,6 +856,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           passages: [...state.entity.passages, payload]
         }
       };
+    case UPDATE_CREATING:
+      return {
+        ...state,
+        creating: payload
+      };
     default:
       return state;
   }
@@ -1327,7 +1334,7 @@ function* deleteSharedUserSaga({ payload }) {
 }
 
 // TODO: analyse and refactor this logic.
-function* setTestDataAndUpdateSaga(payload) {
+function* setTestDataAndUpdateSaga({ payload }) {
   try {
     let newTest = yield select(getTestSelector);
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
@@ -1378,7 +1385,12 @@ function* setTestDataAndUpdateSaga(payload) {
         grades: _uniq([...grades, ...questionGrades])
       })
     );
-
+    yield put(setTestDataAction(newTest));
+    const creating = yield select(getTestsCreatingSelector);
+    if (newTest._id || creating) {
+      return;
+    }
+    yield put(setIsCreatingAction(true));
     if (newTest.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(newTest, "data.subjects[0]", "Other Subjects"),
@@ -1387,7 +1399,6 @@ function* setTestDataAndUpdateSaga(payload) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
 
-    yield put(setTestDataAction(newTest));
     if (!newTest._id) {
       const { title, testContentVisibility } = newTest;
       const role = yield select(getUserRole);
@@ -1414,14 +1425,14 @@ function* setTestDataAndUpdateSaga(payload) {
       // passages doesnt accepted by BE
       testObj = omit(testObj, ["passages", "summary"]);
       const entity = yield call(testsApi.create, testObj);
-
+      const { itemGroups: _itemGroups } = yield select(getTestSelector);
       yield put({
         type: UPDATE_ENTITY_DATA,
         payload: {
-          entity: { ...entity, itemGroups }
+          entity: { ...entity, itemGroups: _itemGroups }
         }
       });
-
+      yield put(setIsCreatingAction(false));
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(replace(`/author/tests/tab/${payload.current}/id/${entity._id}`));
@@ -1790,7 +1801,6 @@ export function* addAutoselectGroupItems({ payload: test }) {
 }
 
 export function* watcherSaga() {
-  const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
@@ -1810,10 +1820,7 @@ export function* watcherSaga() {
     yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
     yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
     yield takeEvery(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST, approveOrRejectSingleTestSaga),
-    yield takeLatest(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST, addItemsToAutoselectGroupsSaga)
+    yield takeLatest(ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST, addItemsToAutoselectGroupsSaga),
+    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga)
   ]);
-  while (true) {
-    const { payload } = yield take(requestChan);
-    yield call(setTestDataAndUpdateSaga, payload);
-  }
 }

@@ -25,7 +25,7 @@ import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeMo
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import { getStatus } from "../../../src/utils/getStatus";
-import { publishForRegradeAction } from "../../ducks";
+import { publishForRegradeAction, getTestsCreatingSelector } from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
 import {
@@ -142,7 +142,8 @@ const TestPageHeader = ({
   features,
   userId,
   onCuratorApproveOrReject,
-  userRole
+  userRole,
+  creating
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -154,9 +155,9 @@ const TestPageHeader = ({
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor);
 
   useEffect(() => {
-    if (match?.params?.oldId) {
+    if (!creating && match?.params?.oldId) {
       fetchAssignments(match?.params?.oldId);
-    } else if (test?._id) {
+    } else if (!creating && test?._id) {
       fetchAssignments(test?._id);
     }
   }, [test?._id, match?.params?.oldId]);
@@ -479,7 +480,8 @@ const enhance = compose(
       testAssignments: getAssignmentsSelector(state),
       features: getUserFeatures(state),
       userId: getUserId(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      creating: getTestsCreatingSelector(state)
     }),
     {
       publishForRegrade: publishForRegradeAction,

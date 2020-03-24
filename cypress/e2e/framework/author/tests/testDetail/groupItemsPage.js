@@ -192,7 +192,7 @@ export default class GroupItemsPage {
     itemIds.forEach((item, index) => {
       if (!group) this.addItems.addItemById(item);
       else this.addItems.addItemByIdByGroup(group, item);
-      cy.wait("@addItem");
+      // cy.wait("@addItem");
       if (index === 0 && newTest === true) {
         cy.wait("@createTest").then(xhr => {
           this.testLibraryPage.saveTestId(xhr);

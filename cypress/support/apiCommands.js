@@ -285,6 +285,13 @@ Cypress.Commands.add("deleteTestData", () => {
   });
 });
 
+Cypress.Commands.add("createTestDataFile", () => {
+  cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
+    let testData = fileContent !== null ? JSON.parse(fileContent) : {};
+    cy.writeFile(deleteTestDataFile, testData);
+  });
+});
+
 Cypress.Commands.add("deleteEnrollments", enrollment => {
   cy.request({
     url: `${BASE_URL}/enrollment/student`,

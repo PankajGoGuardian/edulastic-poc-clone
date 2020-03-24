@@ -36,8 +36,9 @@ function finalSummary(stats) {
   // console.log(`Total Test = ${tests} , Passed = ${passes} , Failed = ${failures} , Skipped = ${skipped}`);
   console.log(`Test Passing % = ${Math.round((passes * 100) / tests)}%`); */
   return {
+    "#Spec": Object.keys(getAllSummary).length,
     Status: tests === passes ? "✔" : "✖",
-    Spec: "Overall",
+    Spec: `Overall(${Object.keys(getAllSummary).length} specs)`,
     Duration: duration > 1000 ? getFormatedTime(duration) : `${duration}ms`,
     Tests: tests,
     Passing: `${passes}(${Math.round((passes * 100) / tests)}%)`,
@@ -83,9 +84,10 @@ function getSuiteSummary(suite) {
 getSuiteSummary(suites.suites);
 Object.keys(getAllSummary)
   .sort()
-  .forEach(suiteName => {
+  .forEach((suiteName, i) => {
     const { time, total, pass, fail, skip, pending } = getAllSummary[suiteName];
     completesummary.push({
+      "#Spec": `${i + 1}`,
       Status: total === pass ? "✔" : "✖",
       Spec: `${suiteName}`,
       Duration: time > 1000 ? getFormatedTime(time) : `${time}ms`,
@@ -98,6 +100,7 @@ Object.keys(getAllSummary)
   });
 
 completesummary.push({
+  "#Spec": "-",
   Status: "-",
   Spec: "-",
   Duration: "-",

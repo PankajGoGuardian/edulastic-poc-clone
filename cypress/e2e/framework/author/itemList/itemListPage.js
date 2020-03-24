@@ -95,7 +95,7 @@ class ItemListPage {
   createItem = (itemKey, queIndex = 0, publish = true) => {
     const editItem = new EditItemPage();
     const metadataPage = new MetadataPage();
-    this.sidebar.clickOnDashboard();
+    if (publish) this.sidebar.clickOnDashboard();
     return cy.fixture("questionAuthoring").then(itemData => {
       const [queType, queKey] = itemKey.split(".");
       const questionJson = itemData[queType][queKey];

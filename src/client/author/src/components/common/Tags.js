@@ -114,5 +114,6 @@ const Label = styled(Tag)`
   font-weight: 700;
   ${props => getLabelStyle(props.type)};
   border: none;
+  line-height: 16px;
   margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : 0)} 0;
 `;

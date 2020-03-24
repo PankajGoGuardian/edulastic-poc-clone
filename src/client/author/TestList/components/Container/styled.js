@@ -197,6 +197,7 @@ export const ItemsMenu = styled(FlexContainer)`
 export const PaginationInfo = styled.div`
   font-weight: 600;
   font-size: 13px;
+  text-transform: uppercase;
   span {
     background: ${greyThemeLight};
     padding: 2px 25px;

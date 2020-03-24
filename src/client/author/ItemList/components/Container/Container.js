@@ -50,7 +50,10 @@ import {
   previewShowAnswerAction,
   setDefaultTestDataAction
 } from "../../../TestPage/ducks";
-import { approveOrRejectMultipleItem, createTestFromCartAction } from "../../ducks";
+import {
+  approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
+  createTestFromCartAction
+} from "../../ducks";
 import Actions from "../Actions";
 import SelectCollectionModal from "../Actions/SelectCollection";
 import CartButton from "../CartButton/CartButton";
@@ -105,7 +108,7 @@ class Contaier extends Component {
       ...applyAuthoredFilter,
       subject,
       grades,
-      curriculumId: parseInt(curriculumId) || ""
+      curriculumId: parseInt(curriculumId, 10) || ""
     };
     setDefaultTestData();
     clearSelectedItems();
@@ -126,7 +129,7 @@ class Contaier extends Component {
       this.updateFilterState(search);
       receiveItems(search, 1, limit);
     }
-    console.log({ search, subject, grades });
+
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -142,8 +145,8 @@ class Contaier extends Component {
   };
 
   handleSearch = searchState => {
-    const { limit, receiveItems, userFeatures } = this.props;
-    let search = searchState || this.props.search;
+    const { limit, receiveItems, userFeatures, search: propSearch } = this.props;
+    let search = searchState || propSearch;
     if (!userFeatures.isCurator) search = omit(search, "authoredByIds");
     receiveItems(search, 1, limit);
   };
@@ -319,35 +322,27 @@ class Contaier extends Component {
     return count;
   };
 
-  renderCartButton = () => (
-    <>
-      <CartButton
-        onClick={() => {
-          const { createTestFromCart } = this.props;
-          createTestFromCart();
-        }}
-        buttonText="New Test"
-      />
-      <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
-        <CartButton
-          onClick={() => {
-            const { approveOrRejectMultipleItem } = this.props;
-            approveOrRejectMultipleItem({ status: "rejected" });
-          }}
-          buttonText="Reject"
-          numberChecker={this.rejectNumberChecker}
-        />
-        <CartButton
-          onClick={() => {
-            const { approveOrRejectMultipleItem } = this.props;
-            approveOrRejectMultipleItem({ status: "published" });
-          }}
-          buttonText="Approve"
-          numberChecker={this.approveNumberChecker}
-        />
-      </FeaturesSwitch>
-    </>
-  );
+  renderCartButton = () => {
+    const { approveOrRejectMultipleItem, createTestFromCart } = this.props;
+
+    return (
+      <>
+        <CartButton onClick={createTestFromCart} buttonText="New Test" />
+        <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
+          <CartButton
+            onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}
+            buttonText="Reject"
+            numberChecker={this.rejectNumberChecker}
+          />
+          <CartButton
+            onClick={() => approveOrRejectMultipleItem({ status: "published" })}
+            buttonText="Approve"
+            numberChecker={this.approveNumberChecker}
+          />
+        </FeaturesSwitch>
+      </>
+    );
+  };
 
   renderFilterIcon = isShowFilter => <FilterToggleBtn isShowFilter={isShowFilter} toggleFilter={this.toggleFilter} />;
 
@@ -403,13 +398,13 @@ class Contaier extends Component {
                   <>
                     <ItemsMenu>
                       <PaginationInfo>
-                        <span>{count}</span> QUESTIONS FOUND
+                        <span>{count}</span> {t("author:component.item.questionFound")}
                       </PaginationInfo>
                       <Actions type="TESTITEM" />
                     </ItemsMenu>
 
                     <ScrollbarContainer>
-                      <ItemListContainer history={history} windowWidth={windowWidth} search={search} />
+                      <ItemListContainer windowWidth={windowWidth} search={search} />
                       {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                     </ScrollbarContainer>
                   </>
@@ -487,7 +482,7 @@ const enhance = compose(
       createTestFromCart: createTestFromCartAction,
       updateSearchFilterState: updateSearchFilterStateAction,
       clearFilterState: clearFilterStateAction,
-      approveOrRejectMultipleItem
+      approveOrRejectMultipleItem: approveOrRejectMultipleItemAction
     }
   )
 );

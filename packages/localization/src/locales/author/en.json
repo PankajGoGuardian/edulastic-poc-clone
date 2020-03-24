@@ -76,7 +76,10 @@
     "backToItemDetail": "Back to item detail",
     "item": {
       "view": "View",
-      "by": "By"
+      "by": "By",
+      "actions": "Actions",
+      "itemCount": "Items selected",
+      "questionFound": "Questions Found"
     },
     "itemlist": {
       "header": {

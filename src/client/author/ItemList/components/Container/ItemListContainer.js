@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router";
 import Item from "../Item/Item";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getTestItemsSelector, getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -51,6 +52,7 @@ const ItemListContainer = ({
 
 export default compose(
   memo,
+  withRouter,
   connect(
     state => ({
       items: getTestItemsSelector(state),

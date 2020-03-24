@@ -7,10 +7,11 @@ import { get, keyBy, intersection, uniq } from "lodash";
 import { Spin, Button, Modal, message } from "antd";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, EduButton, FlexContainer } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import { IconClose, IconExpand, IconCollapse } from "@edulastic/icons";
 import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
@@ -41,7 +42,8 @@ class PreviewModal extends React.Component {
       flag: false,
       passageLoading: false,
       showHints: false,
-      showReportIssueField: false
+      showReportIssueField: false,
+      fullModal: false
     };
   }
 
@@ -154,7 +156,7 @@ class PreviewModal extends React.Component {
 
   handleSelection = () => {
     const { setDataAndSave, selectedRows, addItemToCart, test, gotoSummary, item, setTestItems, page } = this.props;
-    console.log("page is", page);
+
     if (page === "itemList") {
       return addItemToCart(item);
     }
@@ -198,6 +200,12 @@ class PreviewModal extends React.Component {
     this.setState(prevState => ({ showReportIssueField: !prevState.showReportIssueField }));
   };
 
+  toggleFullModal = () => {
+    this.setState(prevState => ({
+      fullModal: !prevState.fullModal
+    }));
+  };
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -220,7 +228,7 @@ class PreviewModal extends React.Component {
       changePreviewMode
     } = this.props;
 
-    const { passageLoading, showHints, showReportIssueField } = this.state;
+    const { passageLoading, showHints, showReportIssueField, fullModal } = this.state;
     const resources = keyBy(get(item, "data.resources", []), "id");
 
     let allWidgets = { ...questions, ...resources };
@@ -247,14 +255,16 @@ class PreviewModal extends React.Component {
       <PreviewModalWrapper
         bodyStyle={{ padding: 30 }}
         isSmallSize={isSmallSize}
-        width={isSmallSize ? "100%" : "70%"}
+        width={isSmallSize || fullModal ? "100%" : "70%"}
+        height={isSmallSize || fullModal ? "100%" : null}
         visible={isVisible}
+        closable={false}
         onCancel={this.closeModal}
         footer={null}
         centered
         className="noOverFlowModal"
       >
-        <HeadingWrapper>
+        <HeadingWrapper data-cy="fjfjfjjjffjfj">
           <Title>Preview</Title>
           {isPassage && showAddPassageItemToTestButton && (
             <ButtonsWrapper added={this.isAddOrRemove}>
@@ -273,6 +283,14 @@ class PreviewModal extends React.Component {
               </Button>
             </ButtonsWrapper>
           )}
+          <ModalTopAction>
+            <EduButton IconBtn isGhost width="32px" height="32px" onClick={this.toggleFullModal}>
+              {fullModal ? <IconCollapse /> : <IconExpand />}
+            </EduButton>
+            <EduButton IconBtn isGhost width="32px" height="32px" onClick={this.closeModal}>
+              <IconClose />
+            </EduButton>
+          </ModalTopAction>
         </HeadingWrapper>
         <ModalContentArea>
           <QuestionWrapper padding="0px">
@@ -425,6 +443,11 @@ const HeadingWrapper = styled.div`
   padding: 10px 10px 20px 10px;
   justify-content: space-between;
   margin-top: -15px;
+  position: relative;
+`;
+
+const ModalTopAction = styled(FlexContainer)`
+  justify-content: flex-end;
 `;
 
 const Title = styled.div`

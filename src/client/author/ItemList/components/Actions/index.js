@@ -1,9 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-import { Menu, Dropdown, Button, message } from "antd";
+import { compose } from "redux";
+import { Menu, Dropdown, message } from "antd";
 import styled from "styled-components";
 import { roleuser } from "@edulastic/constants";
+import { withNamespaces } from "@edulastic/localization";
+import { EduButton, Label, FlexContainer } from "@edulastic/common";
 import { themeColor, white, mainTextColor, title } from "@edulastic/colors";
 
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -21,7 +24,8 @@ const Actions = ({
   setAddCollectionModalVisible,
   createTestFromCart,
   isPublisherUser,
-  type
+  type,
+  t
 }) => {
   if (!(userRole === roleuser.DISTRICT_ADMIN || isPublisherUser)) return null;
   let numberOfSelectedItems = selectedItems?.length;
@@ -32,7 +36,7 @@ const Actions = ({
     numberOfSelectedItems = selectedPlaylists?.length;
   }
 
-  //Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
+  // Keep this format as createTestFromCart is directly called in Menu item it will have a payload related to event
   const handleCreateTest = () => {
     if (!numberOfSelectedItems) {
       return message.error("Add items to create test");
@@ -57,48 +61,48 @@ const Actions = ({
   );
 
   return (
-    <ActionContainer>
-      {numberOfSelectedItems || 0} Items selected
+    <FlexContainer>
+      <Label>
+        <spna>{numberOfSelectedItems || 0}</spna>
+        {t("component.item.itemCount")}
+      </Label>
       <Dropdown overlay={menu} placement="bottomCenter">
-        <Button>Actions</Button>
+        <EduButton height="30px" width="120px" isGhost>
+          {t("component.item.actions")}
+        </EduButton>
       </Dropdown>
-    </ActionContainer>
+    </FlexContainer>
   );
 };
 
 Actions.propTypes = {
-  selectedItems: PropTypes.number.isRequired
+  selectedItems: PropTypes.number.isRequired,
+  t: PropTypes.func.isRequired
 };
 
-export default connect(
-  state => ({
-    selectedItems: getSelectedItemSelector(state),
-    userRole: getUserRole(state),
-    isPublisherUser: isPublisherUserSelector(state),
-    selectedTests: getSelectedTestsSelector(state),
-    selectedPlaylists: getSelectedPlaylistSelector(state)
-  }),
+const mapStateToProps = state => ({
+  selectedItems: getSelectedItemSelector(state),
+  userRole: getUserRole(state),
+  isPublisherUser: isPublisherUserSelector(state),
+  selectedTests: getSelectedTestsSelector(state),
+  selectedPlaylists: getSelectedPlaylistSelector(state)
+});
+
+const withConnect = connect(
+  mapStateToProps,
   {
     setAddCollectionModalVisible: setAddCollectionModalVisibleAction,
     createTestFromCart: createTestFromCartAction
   }
+);
+
+export default compose(
+  withNamespaces("author"),
+  withConnect
 )(Actions);
 
-const ActionContainer = styled.div`
-  .ant-btn {
-    margin-left: 15px;
-    background: ${white};
-    color: ${themeColor};
-    width: 150px;
-  }
-  .ant-dropdown-open {
-    background: ${themeColor};
-    color: ${white};
-  }
-`;
-
 const DropMenu = styled(Menu)`
-  width: 150px;
+  width: 120px;
 `;
 
 const MenuItems = styled(Menu.Item)`

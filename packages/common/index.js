@@ -53,6 +53,7 @@ export { default as QuestionLabelWrapper } from "./src/components/QuestionLabelW
 export { default as QuestionContentWrapper } from "./src/components/QuestionContentWrapper";
 export { default as ProgressBar } from "./src/components/ProgressBar";
 export { RadioBtn, RadioGrp } from "./src/components/RadioButton";
+export { default as Label } from "./src/components/Label";
 
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";

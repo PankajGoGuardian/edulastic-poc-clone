@@ -57,17 +57,17 @@ export const TestStatus = styled.span`
   color: ${({ status }) => textColor[status]};
   text-transform: uppercase;
   font-weight: bold;
+  line-height: 16px;
 `;
 
 export const EdulasticVerified = styled(IconELogo)`
   ${props => {
     if (props.bottom) {
       return `margin-left:10px;`;
-    } 
-      return `position: absolute;
+    }
+    return `position: absolute;
       top: 10px;
       right: 10px;`;
-    
   }};
 `;
 
@@ -121,8 +121,7 @@ export const Header = styled.div`
   height: 65px;
   width: 100%;
   position: relative;
-  background: url(${props =>
-    props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg"});
+  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

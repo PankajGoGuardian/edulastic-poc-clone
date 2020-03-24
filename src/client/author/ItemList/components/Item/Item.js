@@ -8,8 +8,7 @@ import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question, test as testContants } from "@edulastic/constants";
-import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton } from "@edulastic/common";
-import { themeColor, red } from "@edulastic/colors";
+import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, CheckboxLabel } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import {
@@ -39,7 +38,6 @@ import {
   AddButtonStyled,
   HeartIcon,
   ShareIcon,
-  UserIcon,
   IdIcon,
   MoreInfo,
   Details,
@@ -71,11 +69,12 @@ class Item extends Component {
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
     checkAnswer: PropTypes.func.isRequired,
+    gotoSummary: PropTypes.func,
     showAnser: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool,
-    page: PropTypes.string
+    page: PropTypes.string.isRequired
   };
 
   static defaultProps = {
@@ -131,6 +130,7 @@ class Item extends Component {
   closeModal = () => {
     this.setState({ isShowPreviewModal: false });
   };
+
   previewItem = () => {
     this.setState({ isShowPreviewModal: true });
   };
@@ -138,7 +138,7 @@ class Item extends Component {
   handleStimulusClick = () => {
     const { features, item, userId, history } = this.props;
     const owner = item.authors && item.authors.some(x => x._id === userId);
-    //Author can only edit if owner
+    // Author can only edit if owner
     if (features.isCurator || (features.isPublisherAuthor && owner)) {
       return history.push(`/author/items/${item._id}/item-detail`);
     }
@@ -148,11 +148,11 @@ class Item extends Component {
   renderDetails = () => {
     const { item, windowWidth, collections } = this.props;
     const questions = get(item, "data.questions", []);
-    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const getAllTTS = questions.filter(_item => _item.tts).map(_item => _item.tts);
     const details = [
       {
         name: "DOK:",
-        text: (questions.find(item => item.depthOfKnowledge) || {}).depthOfKnowledge
+        text: (questions.find(_item => _item.depthOfKnowledge) || {}).depthOfKnowledge
       },
       {
         name: getTestItemAuthorIcon(item, collections),
@@ -173,7 +173,7 @@ class Item extends Component {
       }
     ];
     if (getAllTTS.length) {
-      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      const ttsSuccess = getAllTTS.filter(_item => _item.taskStatus !== "COMPLETED").length === 0;
       const ttsStatusSuccess = {
         name: ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />
       };
@@ -211,7 +211,17 @@ class Item extends Component {
   };
 
   handleSelection = async row => {
-    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
+    const {
+      setTestItems,
+      setDataAndSave,
+      selectedRows,
+      test,
+      gotoSummary,
+      setPassageItems,
+      item,
+      page,
+      current
+    } = this.props;
     if (!test.title?.trim().length && page !== "itemList") {
       gotoSummary();
       return message.error("Name field cannot be empty");
@@ -238,11 +248,11 @@ class Item extends Component {
         }
       }
 
-      setDataAndSave({ addToTest: true, item, current: this.props.current });
+      setDataAndSave({ addToTest: true, item, current });
       message.success("Item added to cart");
     } else {
-      keys = keys.filter(item => item !== row._id);
-      setDataAndSave({ addToTest: false, item: { _id: row._id }, current: this.props.current });
+      keys = keys.filter(_item => _item !== row._id);
+      setDataAndSave({ addToTest: false, item: { _id: row._id }, current });
       message.success("Item removed from cart");
     }
     setTestItems(keys);
@@ -314,7 +324,7 @@ class Item extends Component {
    *  {Bool} value: user wants to select all the items?
    */
   handleResponse = value => {
-    const { setAndSavePassageItems, passageItems, selectedRows = [], page } = this.props;
+    const { setAndSavePassageItems, passageItems, page } = this.props;
     this.setState({ passageConfirmModalVisible: false });
     // add all the passage items to test.
     if (value) {
@@ -381,7 +391,7 @@ class Item extends Component {
           {passageConfirmModalVisible && (
             <PassageConfirmationModal
               visible={passageConfirmModalVisible}
-              closeModal={() => this.setState(prev => ({ passageConfirmModalVisible: false }))}
+              closeModal={() => this.setState(() => ({ passageConfirmModalVisible: false }))}
               itemsCount={passageItemsCount}
               handleResponse={this.handleResponse}
             />
@@ -408,9 +418,7 @@ class Item extends Component {
                     <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
-                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
-                    {selectedToCart ? "Remove" : <IconPlus />}
-                  </AddButtonStyled>
+                  <CheckboxLabel checked={selectedToCart} ml="24px" onChange={this.handleToggleItemToCart(item)} />
                 </ViewButton>
               ) : isPublisher ? (
                 <AddRemoveBtnPublisher

@@ -14,6 +14,7 @@ export const CheckboxStyle = styled(Checkbox)`
   color: ${props => props.theme.widgetOptions.labelColor};
   text-transform: uppercase;
   margin-bottom: ${({ mb }) => mb || "0px"};
+  margin-left: ${({ ml }) => ml || "0px"};
   margin-top: ${({ mt }) => mt || "0px"};
   &.ant-checkbox-wrapper {
     & + .ant-checkbox-wrapper {
@@ -64,8 +65,6 @@ export const CheckboxStyle = styled(Checkbox)`
   }
 `;
 
-const CheckboxLabel = ({ children, ...props }) => {
-  return <CheckboxStyle {...props}>{children}</CheckboxStyle>;
-};
+const CheckboxLabel = ({ children, ...props }) => <CheckboxStyle {...props}>{children}</CheckboxStyle>;
 
 export default CheckboxLabel;

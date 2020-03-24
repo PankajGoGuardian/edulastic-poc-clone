@@ -66,7 +66,7 @@ export const Link = styled.a`
 `;
 
 export const Container = styled.div`
-  padding: 25px 0px;
+  padding: 12px 0px 8px;
   border-bottom: 1px solid #dadae4;
 
   @media (max-width: ${tabletWidth}) {
@@ -110,6 +110,7 @@ export const Question = styled.div`
 
 export const QuestionContent = styled.div`
   flex: 1;
+  line-height: 1;
 
   @media (max-width: ${tabletWidth}) {
     text-align: left;
@@ -282,7 +283,7 @@ export const Detail = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  margin-top: 15px;
+  margin-top: 8px;
   min-height: 40px;
 
   @media (max-width: ${tabletWidth}) {
@@ -523,7 +524,7 @@ export const CountGreen = styled.div`
 export const Details = styled.div`
   background: ${lightGreySecondary};
   border-radius: 3px;
-  margin-top: ${props => (props.isOpenedDetails ? "15px" : "0")};
+  margin-top: ${props => (props.isOpenedDetails ? "12px" : "0")};
   padding: ${props => (props.isOpenedDetails ? "20px" : "0 20px 0")};
   transition: all 0.3s ease;
   max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};

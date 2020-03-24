@@ -20,6 +20,7 @@ class ParentController extends MessageController {
     this.handleReponse = null;
     this.playerStateHandler = null;
     this.setCurrentScoring = null;
+    this.handleLog = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -31,6 +32,7 @@ class ParentController extends MessageController {
     this.handleReponse = callbacks.handleReponse;
     this.playerStateHandler = callbacks.playerStateHandler;
     this.setCurrentScoring = callbacks.setCurrentScoring;
+    this.handleLog = callbacks.handleLog;
   }
 
   /********************** call from testlet ************************/
@@ -71,8 +73,9 @@ class ParentController extends MessageController {
 
   // get log data from testlet
   onLog(log) {
-    // console.log("parent :: get log data from testlet");
-    // console.log(JSON.stringify(log));
+    if (this.handleLog) {
+      this.handleLog(log);
+    }
   }
 
   // get error info from testlet

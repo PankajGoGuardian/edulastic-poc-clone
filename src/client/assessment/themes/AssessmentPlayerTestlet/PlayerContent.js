@@ -9,6 +9,7 @@ import ParentController from "./utility/parentController";
 import { getLineFromExpression, getPoinstFromString, ALPHABET } from "./utility/helpers";
 import { MainContent, Main, OverlayDiv } from "./styled";
 import Magnifier from "../../../common/components/Magnifier";
+
 let frameController = {};
 const responseType = {
   dropdown: "dropdown",
@@ -32,6 +33,7 @@ const PlayerContent = ({
   previewPlayer,
   location = { state: {} },
   groupId,
+  saveTestletLog,
   ...restProps
 }) => {
   const frameRef = useRef();
@@ -319,6 +321,12 @@ const PlayerContent = ({
     }
   };
 
+  const rerenderMagnifier = () => {
+    if (enableMagnifier) {
+      showMagnifier();
+    }
+  };
+
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState;
@@ -356,7 +364,8 @@ const PlayerContent = ({
               [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
             });
           }
-        }
+        },
+        handleLog: saveTestletLog
       });
       return () => {
         frameController.disconnect();
@@ -379,44 +388,36 @@ const PlayerContent = ({
     }
   }, [currentPage]);
 
-  const rerenderMagnifier = () => {
-    if (enableMagnifier) {
-      showMagnifier();
-    }
-  };
-
-  const zoomedContent = () => {
-    return (
-      <>
-        <PlayerHeader
-          title={title}
-          dropdownOptions={testletItems}
-          currentPage={currentPage}
-          onOpenExitPopup={openExitPopup}
-          onNextQuestion={nextQuestion}
-          unlockNext={unlockNext}
-          onPrevQuestion={prevQuestion}
-          previewPlayer={previewPlayer}
-          handleMagnifier={handleMagnifier}
-          enableMagnifier={enableMagnifier}
-          {...restProps}
-        />
-        <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-          <MainContent id={`${testletConfig.testletId}_magnifier`}>
-            {LCBPreviewModal && currentScoring && <OverlayDiv />}
-            {testletConfig.testletURL && (
-              <iframe
-                ref={frameRefForMagnifier}
-                id={`${testletConfig.testletId}_magnifier`}
-                src={testletConfig.testletURL}
-                title="testlet player"
-              />
-            )}
-          </MainContent>
-        </Main>
-      </>
-    );
-  };
+  const zoomedContent = () => (
+    <>
+      <PlayerHeader
+        title={title}
+        dropdownOptions={testletItems}
+        currentPage={currentPage}
+        onOpenExitPopup={openExitPopup}
+        onNextQuestion={nextQuestion}
+        unlockNext={unlockNext}
+        onPrevQuestion={prevQuestion}
+        previewPlayer={previewPlayer}
+        handleMagnifier={handleMagnifier}
+        enableMagnifier={enableMagnifier}
+        {...restProps}
+      />
+      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+        <MainContent id={`${testletConfig.testletId}_magnifier`}>
+          {LCBPreviewModal && currentScoring && <OverlayDiv />}
+          {testletConfig.testletURL && (
+            <iframe
+              ref={frameRefForMagnifier}
+              id={`${testletConfig.testletId}_magnifier`}
+              src={testletConfig.testletURL}
+              title="testlet player"
+            />
+          )}
+        </MainContent>
+      </Main>
+    </>
+  );
   return (
     <Magnifier
       enable={enableMagnifier}
@@ -468,7 +469,8 @@ PlayerContent.propTypes = {
   previewPlayer: PropTypes.bool,
   location: PropTypes.object.isRequired,
   groupId: PropTypes.string.isRequired,
-  changeTool: PropTypes.func.isRequired
+  changeTool: PropTypes.func.isRequired,
+  saveTestletLog: PropTypes.func.isRequired
 };
 
 PlayerContent.defaultProps = {

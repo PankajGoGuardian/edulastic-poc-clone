@@ -97,3 +97,8 @@ export const SET_SHUFFLED_OPTIONS = "[shuffledOptions] set shuffled options";
 // graphTools
 export const SET_ELEMENTS_STASH = "[graphTools] set elements stash";
 export const SET_STASH_INDEX = "[graphTools] set stash index";
+
+// testlet
+export const SAVE_TESTLET_LOG = "[testlet] save testlet log";
+export const SAVE_TESTLET_LOG_SUCCESS = "[testlet] save testlet success";
+export const SAVE_TESTLET_LOG_FAILURE = "[testlet] save testlet failure";

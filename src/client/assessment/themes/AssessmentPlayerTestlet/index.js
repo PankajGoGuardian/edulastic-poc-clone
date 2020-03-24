@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 // actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
-import { setTestUserWorkAction, saveTestletStateAction } from "../../actions/testUserWork";
+import { setTestUserWorkAction, saveTestletStateAction, saveTestletLogAction } from "../../actions/testUserWork";
 import { setUserAnswerAction } from "../../actions/answers";
 
 // components
@@ -25,6 +25,7 @@ class AssessmentPlayerTestlet extends React.Component {
     isFirst: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
+    saveTestletLog: PropTypes.func.isRequired,
     gotoQuestion: PropTypes.func.isRequired,
     currentItem: PropTypes.any.isRequired,
     items: PropTypes.any.isRequired,
@@ -78,10 +79,16 @@ class AssessmentPlayerTestlet extends React.Component {
     saveUserAnswer(currentItemIndex, timeSpent, false, groupId);
   };
 
+  saveTestletLog = log => {
+    const { saveTestletLog, LCBPreviewModal } = this.props;
+    if (!LCBPreviewModal) {
+      saveTestletLog(log);
+    }
+  };
+
   render() {
     const { theme, items, currentItem, selectedTheme = "default", settings } = this.props;
     const { showExitPopup, currentTool } = this.state;
-
     const item = items[currentItem];
     if (!item) {
       return <div />;
@@ -103,6 +110,7 @@ class AssessmentPlayerTestlet extends React.Component {
             changeTool={this.changeTool}
             calculateMode={calculateMode}
             onSubmitAnswer={this.submitAnswer}
+            saveTestletLog={this.saveTestletLog}
           />
           <SubmitConfirmation
             settings={settings}
@@ -137,6 +145,7 @@ export default connect(
     checkAnswer: checkAnswerEvaluation,
     setUserAnswer: setUserAnswerAction,
     setTestUserWork: setTestUserWorkAction, // save to redux
-    saveTestletState: saveTestletStateAction // save to db
+    saveTestletState: saveTestletStateAction, // save to db,
+    saveTestletLog: saveTestletLogAction // save logs to db
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

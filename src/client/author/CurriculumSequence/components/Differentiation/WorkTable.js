@@ -219,7 +219,7 @@ const WorkTable = ({
       return message.error("Please select the mastery range which is having atleast 1 student.");
 
     const groups = groupBy(selectedRows.map(x => data[x]), x => (x.testId ? "tests" : "standards"));
-
+    console.log(groups);
     const recommendations = [];
     if (groups.standards) {
       const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);

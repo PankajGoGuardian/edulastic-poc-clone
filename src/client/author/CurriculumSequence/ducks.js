@@ -865,7 +865,9 @@ function structureWorkData(workData, statusData) {
       } else {
         draft[type].forEach(i => {
           const currentStatus = currentStatusArray.find(
-            s => s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.standardIdentifier)
+            s =>
+              (s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.standardIdentifier)) ||
+              s.derivedFrom === "TESTS"
           );
           if (currentStatus) {
             const { masteryRange, studentTestActivities, users } = currentStatus;

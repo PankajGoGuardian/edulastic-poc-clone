@@ -9,6 +9,7 @@ import {
   greyThemeLighter,
   titleColor
 } from "@edulastic/colors";
+import { IconInfo } from "@edulastic/icons";
 import GroupsFilter from "./GroupsFilter";
 import { FlexContainer } from "@edulastic/common";
 
@@ -100,11 +101,12 @@ const InsightsFilters = ({
         options={masteryData}
       />
       <StyledCheckbox checked={overallProgressCheck} onChange={e => setOverallProgressCheck(e.target.checked)}>
+        Include all Assignments
         <Tooltip
           placement="right"
           title="It will include all the assignments that the student has attempted in current school year"
         >
-          Include all Assignments
+          <IconInfo height={12} width={12} />
         </Tooltip>
       </StyledCheckbox>
       <GroupsFilter
@@ -136,6 +138,13 @@ const StyledCheckbox = styled(Checkbox)`
   white-space: nowrap;
   text-transform: uppercase;
   color: ${greyThemeDark1};
+  span {
+    display: inline-flex;
+    align-items: center;
+  }
+  svg {
+    margin-left: 8px;
+  }
 `;
 
 const StyledSelect = styled(Select)`

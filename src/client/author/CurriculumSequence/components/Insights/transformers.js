@@ -93,7 +93,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
     });
     // calculate and set flag for students with available trend data
     trendData.forEach(item => {
-      if (studentMap[item.id]) {
+      if (studentMap[item.id] && Object.keys(item.tests).length > 1) {
         studentMap[item.id].trendAngle = calcTrendAngle(item.slope);
         studentMap[item.id].hasTrend = true;
       }

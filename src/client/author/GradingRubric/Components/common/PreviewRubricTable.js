@@ -39,8 +39,10 @@ const PreviewRubricTable = ({
           selected={selectedRatings[criteria.id] == rating.id ? true : false}
           isDisabled={isDisabled}
         >
-          <div>{rating.name}</div>
-          <div className="points">{`${rating.points} pts`}</div>
+          <div>
+            <div>{rating.name}</div>
+            <div className="points">{`${rating.points} pts`}</div>
+          </div>
           <div dangerouslySetInnerHTML={{ __html: rating.desc }} />
         </RatingSection>
       ))}
@@ -119,16 +121,18 @@ const RatingSection = styled.div`
   background: ${({ selected }) => (selected ? lightGreen3 : "inherit")};
   > div:first-child {
     font-weight: ${props => props.theme.semiBold};
-    margin-bottom: 5px;
+    margin-bottom: 7px;
     font-size: ${props => props.theme.questionTextsmallFontSize};
     text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
   }
   .points {
     text-transform: uppercase;
     color: ${themeColor};
     font-size: ${props => props.theme.keyboardFontSize};
     font-weight: ${props => props.theme.bold};
-    margin-bottom: 5px;
+    margin-left: 5px;
   }
 `;
 

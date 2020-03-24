@@ -313,12 +313,8 @@ class ModuleRow extends Component {
 
   showResource = (contentId, resource) => {
     resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
-    const { playlistId, module, getSignedRequest, signedRequest } = this.props;
+    const { playlistId, module, getSignedRequest } = this.props;
     getSignedRequest({ playlistId, moduleId: module._id, contentId, resource });
-    this.setState({
-      showResourceModal: true
-    });
-    this.submitForm();
   };
 
   render() {
@@ -393,34 +389,24 @@ class ModuleRow extends Component {
               />
             </ModalWrapper>
           )}
-
-          <ModalWrapper
-            footer={null}
-            visible={showResourceModal}
-            onCancel={this.closeModal}
-            width="100%"
-            height="100%"
-            destroyOnClose
-          >
-            {signedRequest && (
-              <div>
-                <form
-                  style={{ display: `none` }}
-                  id="ltiLaunchForm"
-                  target="form-iframe"
-                  method="POST"
-                  target="resource-iframe"
-                  action={`http://ec2-54-80-205-175.compute-1.amazonaws.com:3000/launch-lti`}
-                >
-                  {Object.keys(signedRequest).map(key => (
-                    <input name={key} value={signedRequest[key]} type="text" />
-                  ))}
-                  <input value="Submit" type="submit" />
-                </form>
-                <iframe width="100%" height="100%" name="resource-iframe" src="" />
-              </div>
-            )}
-          </ModalWrapper>
+          {signedRequest && (
+            <div>
+              <form
+                style={{ display: `none` }}
+                id="ltiLaunchForm"
+                target="form-iframe"
+                method="POST"
+                target="_blank"
+                action={`http://ec2-54-80-205-175.compute-1.amazonaws.com:3000/launch-lti`}
+              >
+                {Object.keys(signedRequest).map(key => (
+                  <input name={key} value={signedRequest[key]} type="text" />
+                ))}
+                <input value="Submit" type="submit" />
+              </form>
+              {this.submitForm()}
+            </div>
+          )}
 
           <ModuleWrapper
             data-cy={`row-module-${moduleIndex + 1}`}

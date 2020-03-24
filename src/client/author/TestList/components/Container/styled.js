@@ -198,11 +198,28 @@ export const PaginationInfo = styled.div`
   font-weight: 600;
   font-size: 13px;
   text-transform: uppercase;
-  span {
+  span:first-child {
     background: ${greyThemeLight};
     padding: 2px 25px;
     border-radius: 15px;
     color: ${greyThemeDark1};
     margin-right: 5px;
+  }
+`;
+
+export const FiltersWrapper = styled.div`
+  display: flex;
+  justify-self: center;
+  margin-right: auto;
+  margin-left: 10px;
+  max-width: 20%;
+  justify-content: space-between;
+  .ant-tag {
+    color: #686f75;
+    background: #bac3ca;
+    padding: 2px 10px;
+    border: none;
+    font-weight: bold;
+    border-radius: 6px;
   }
 `;

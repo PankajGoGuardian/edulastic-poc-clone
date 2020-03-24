@@ -98,6 +98,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { withNamespaces } from "react-i18next";
+import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -1047,6 +1048,8 @@ class TestList extends Component {
                 <PaginationInfo>
                   <span>{count}</span> TESTS FOUND
                 </PaginationInfo>
+
+                <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} />
 
                 {mode === "embedded" && (
                   <BtnActionsContainer>

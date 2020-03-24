@@ -69,6 +69,7 @@ import {
   ScrollbarContainer
 } from "./styled";
 import { setDefaultInterests, getDefaultInterests } from "../../../dataUtils";
+import HeaderFilter from "../HeaderFilter";
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -129,7 +130,6 @@ class Contaier extends Component {
       this.updateFilterState(search);
       receiveItems(search, 1, limit);
     }
-
     if (curriculums.length === 0) {
       getCurriculums();
     }
@@ -359,7 +359,6 @@ class Contaier extends Component {
     } = this.props;
 
     const { isShowFilter } = this.state;
-
     return (
       <div>
         <SelectCollectionModal contentType="TESTITEM" />
@@ -394,21 +393,25 @@ class Contaier extends Component {
               <MobileFilterIcon> {this.renderFilterIcon(isShowFilter)} </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
-                {!loading && (
-                  <>
-                    <ItemsMenu>
-                      <PaginationInfo>
-                        <span>{count}</span> {t("author:component.item.questionFound")}
-                      </PaginationInfo>
-                      <Actions type="TESTITEM" />
-                    </ItemsMenu>
+                <>
+                  <ItemsMenu>
+                    <PaginationInfo>
+                      <span>{count}</span> <span>{t("author:component.item.questionFound")}</span>
+                    </PaginationInfo>
+                    <HeaderFilter
+                      search={search}
+                      handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                    />
+                    <Actions type="TESTITEM" />
+                  </ItemsMenu>
 
+                  {!loading && (
                     <ScrollbarContainer>
                       <ItemListContainer windowWidth={windowWidth} search={search} />
                       {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                     </ScrollbarContainer>
-                  </>
-                )}
+                  )}
+                </>
               </ContentWrapper>
             </Element>
           </ListItems>

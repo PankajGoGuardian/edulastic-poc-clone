@@ -63,6 +63,7 @@ import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { withNamespaces } from "react-i18next";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
+import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 class TestList extends Component {
   static propTypes = {
@@ -445,6 +446,7 @@ class TestList extends Component {
                 <PaginationInfo>
                   <span>{count}</span> PLAYLISTS FOUND
                 </PaginationInfo>
+                <HeaderFilter search={playListFilters} handleCloseFilter={this.handleFiltersChange} />
                 {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 20px" }}>

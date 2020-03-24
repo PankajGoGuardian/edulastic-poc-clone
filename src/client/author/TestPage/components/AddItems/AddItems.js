@@ -65,6 +65,7 @@ import NoDataNotification from "../../../../common/components/NoDataNotification
 import Item from "../../../ItemList/components/Item/Item";
 import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
+import HeaderFilter from "../../../ItemList/components/HeaderFilter";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -393,6 +394,10 @@ class AddItems extends PureComponent {
                 <PaginationInfo>
                   <span>{count}</span> QUESTIONS FOUND
                 </PaginationInfo>
+                <HeaderFilter
+                  search={search}
+                  handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                />
                 <FlexContainer alignItems="center" justifyContent="space-between">
                   <span style={{ fontSize: "12px" }}>
                     {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED

@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { uniqBy, groupBy, isEmpty, forEach } from "lodash";
+import { keyBy, isEmpty, forEach } from "lodash";
 import selectData from "../../TestPage/components/common/selectsData";
 import { getInterestedCurriculumsSelector, getShowAllCurriculumsSelector } from "../selectors/user";
 const { defaultStandards } = selectData;
@@ -11,6 +11,11 @@ export const curriculumsSelector = createSelector(
 export const getCurriculumsListSelector = createSelector(
   curriculumsSelector,
   state => state.curriculums
+);
+
+export const curriculumsByIdSelector = createSelector(
+  getCurriculumsListSelector,
+  state => keyBy(state, "_id")
 );
 
 export const getFormattedCurriculumsSelector = (state, props) => {

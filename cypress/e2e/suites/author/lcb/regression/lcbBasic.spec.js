@@ -247,12 +247,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
   before(" > attempt by all students", () => {
     attemptsData.forEach(attempts => {
-      const { attempt, email, stuName, status } = attempts;
-      statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
-      statsMap[stuName].attempt = attempt;
-      statsMap[stuName].status = status;
-      test.attemptAssignment(email, status, attempt, questionTypeMap);
-      studentSidebar.clickOnAssignment();
+      cy.wait(1).then(() => {
+        const { attempt, email, stuName, status } = attempts;
+        statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
+        statsMap[stuName].attempt = attempt;
+        statsMap[stuName].status = status;
+        test.attemptAssignment(email, status, attempt, questionTypeMap);
+        studentSidebar.clickOnAssignment();
+      });
     });
   });
 

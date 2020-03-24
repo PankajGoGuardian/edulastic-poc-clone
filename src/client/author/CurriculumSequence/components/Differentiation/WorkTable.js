@@ -11,8 +11,7 @@ import { ResouceIcon } from "../ResourceItem/index";
 const WorkTable = ({
   type,
   addRecommendations,
-  selectedAssignment,
-  groupId,
+  selectedData,
   differentiationStudentList,
   data = [],
   isFetchingWork,
@@ -53,7 +52,7 @@ const WorkTable = ({
       isOver: !!monitor.isOver()
     }),
     drop: (item, monitor) => {
-      if (selectedAssignment?._id && groupId && item.contentType === "tests") {
+      if (selectedData?.assignmentId && selectedData?.classId && item.contentType === "tests") {
         console.log("dropped item", item);
         addTestToDifferentiation({
           type: type.toLowerCase(),
@@ -203,13 +202,13 @@ const WorkTable = ({
 
   const getResourceTitle = () => {
     if (type === "REVIEW") {
-      return `Review #${workStatusData.length + 1} - ${selectedAssignment.title}`;
+      return `Review #${workStatusData.length + 1} - ${selectedData.title}`;
     }
     if (type === "PRACTICE") {
-      return `Practice #${workStatusData.length + 1} - ${selectedAssignment.title}`;
+      return `Practice #${workStatusData.length + 1} - ${selectedData.title}`;
     }
     if (type === "CHALLENGE") {
-      return `Challenge #${workStatusData.length + 1} - ${selectedAssignment.title}`;
+      return `Challenge #${workStatusData.length + 1} - ${selectedData.title}`;
     }
   };
 
@@ -224,8 +223,8 @@ const WorkTable = ({
     if (groups.standards) {
       const standardIdentifiers = groups.standards.map(x => x.standardIdentifier);
       const obj = {
-        assignmentId: selectedAssignment._id,
-        groupId,
+        assignmentId: selectedData.assignmentId,
+        groupId: selectedData.classId,
         standardIdentifiers,
         type,
         masteryRange: {
@@ -241,8 +240,8 @@ const WorkTable = ({
     if (groups.tests) {
       const testIds = groups.tests.map(x => x.testId);
       const obj = {
-        assignmentId: selectedAssignment._id,
-        groupId,
+        assignmentId: selectedData.assignmentId,
+        groupId: selectedData.classId,
         testIds,
         type,
         masteryRange: {

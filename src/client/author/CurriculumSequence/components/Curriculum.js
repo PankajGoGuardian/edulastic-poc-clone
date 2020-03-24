@@ -1,6 +1,7 @@
 import { themeColor, white } from "@edulastic/colors";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
+import { Prompt } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import styled from "styled-components";
@@ -101,10 +102,13 @@ const Curriculum = props => {
     onDrop(toModuleIndex);
   };
 
-  const { curriculum: { modules } = {}, onSortEnd } = props;
+  const { curriculum: { modules } = {}, onSortEnd, manageContentDirty, resetDestination } = props;
+
+  useEffect(() => () => resetDestination(), []);
 
   return (
     <SortableContainer onSortEnd={onSortEnd} lockAxis="y" lockOffset={["0%", "0%"]} lockToContainerEdges useDragHandle>
+      <Prompt when={manageContentDirty} message={loc => "Changes done here are not saved. Do you want to leave?"} />
       {modules &&
         modules.map((moduleItem, index) => (
           <SortableItem moduleItem={moduleItem} index={index} id={index} onDrop={onDrop} {...props} />

@@ -45,7 +45,8 @@ import {
   useThisPlayListAction,
   playlistTestRemoveFromModuleAction,
   toggleManageContentActiveAction,
-  updateDestinationCurriculumSequenceRequestAction
+  updateDestinationCurriculumSequenceRequestAction,
+  resetDestinationAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -422,7 +423,8 @@ class CurriculumSequence extends Component {
       manageContentDirty,
       updateDestinationPlaylist,
       collections,
-      dateKeys
+      dateKeys,
+      resetDestination
     } = this.props;
 
     const isNotStudentOrParent = !(role === "student" || role === "parent");
@@ -563,13 +565,15 @@ class CurriculumSequence extends Component {
       </SubHeaderInfoCard>
     );
 
-    const enableCustomize = (customize && urlHasUseThis && isNotStudentOrParent) || (customize && isNotStudentOrParent);
-
     const isAuthoringFlowReview = current === "review";
+
+    const enableCustomize =
+      ((customize && urlHasUseThis && isNotStudentOrParent) || (customize && isNotStudentOrParent)) &&
+      destinationCurriculumSequence &&
+      !isAuthoringFlowReview;
 
     return (
       <>
-        <Prompt when={manageContentDirty} message="Changes done here are not saved. Do you want to leave?" />
         <RemoveTestModal
           isVisible={showConfirmRemoveModal}
           onClose={onCloseConfirmRemoveModal}
@@ -773,6 +777,7 @@ class CurriculumSequence extends Component {
                         expandedModules={expandedModules}
                         onCollapseExpand={onCollapseExpand}
                         onDrop={onDrop}
+                        resetDestination={resetDestination}
                         modulesStatus={modulesStatus}
                         customize={customize}
                         handleRemove={handleRemoveTest}
@@ -785,6 +790,7 @@ class CurriculumSequence extends Component {
                         summaryData={summaryData}
                         playlistMetrics={playlistMetrics}
                         playlistClassList={playlistClassList}
+                        manageContentDirty={manageContentDirty}
                       />
                     )}
                   </Wrapper>
@@ -893,7 +899,8 @@ const enhance = compose(
       removeTestFromDestinationCurriculum: playlistTestRemoveFromModuleAction,
       addNewUnitToDestination: addNewUnitAction,
       toggleManageContent: toggleManageContentActiveAction,
-      updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction
+      updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction,
+      resetDestination: resetDestinationAction
     }
   )
 );

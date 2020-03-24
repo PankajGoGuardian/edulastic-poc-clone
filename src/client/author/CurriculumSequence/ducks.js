@@ -114,6 +114,8 @@ export const UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST =
 export const GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST = "[playlist] get signed request for resource request";
 export const UPDATE_SIGNED_REQUEST_FOR_RESOURCE = "[playlist] update signed request for resource";
 
+export const RESET_DESTINATION = "[playlist] reset destination";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -192,6 +194,7 @@ export const updateModuleCSAction = createAction(UPDATE_MODULE);
 export const deleteModuleCSAction = createAction(DELETE_MODULE);
 export const resequenceModulesCSAction = createAction(ORDER_MODULES);
 export const updatePlaylistCSAction = createAction(UPDATE_CUSTOMIZED_PLAYLIST);
+export const resetDestinationAction = createAction(RESET_DESTINATION);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -1023,7 +1026,7 @@ const initialState = {
   isManageContentActive: false,
   allCurriculumSequences: [],
   destinationDirty: false,
-
+  originalData: null,
   /**
    * @type {Object.<string, import('./components/CurriculumSequence').CurriculumSequenceType>}}
    */
@@ -1145,6 +1148,7 @@ const updateCurriculumSequenceReducer = (state, { payload }) => {
   state.byId[id] = curriculumSequence?.[0] || curriculumSequence;
   // if (curriculumSequence.type === "guide") {
   state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
+  state.originalData = state.destinationCurriculumSequence;
   state.destinationDirty = false;
   // }
 };
@@ -1685,5 +1689,15 @@ export default createReducer(initialState, {
       state.playlistTestDetailsModal.isVisible = false;
       state.playlistTestDetailsModal.currentTestId = null;
     }
+  },
+  [RESET_DESTINATION]: state => {
+    if (state.originalData) {
+      state.destinationCurriculumSequence = state.originalData;
+    } else {
+      state.destinationCurriculumSequence = {};
+    }
+    state.isManageContentActive = false;
+
+    state.destinationDirty = false;
   }
 });

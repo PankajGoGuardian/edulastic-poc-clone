@@ -12,12 +12,12 @@ export const scaleFactor = 1.8;
 // distance used for grouping students
 const groupingDist = round(0.2 * domainRange);
 
-// TODO: use itemCount to get a domainRange if there is a large volume of data to be normalized
+// (function) to get the normalized value, given the mean and the range
 const getNormalizedValue = (item, mean, range) => {
   return item === mean ? 0 : round((domainRange * (item - mean)) / range);
 };
 
-// function to check if the points p & q can be grouped based on distance
+// (function) to check if the points p & q can be grouped based on distance
 // effort => x, performance => y
 const canBeGrouped = (p, q) => {
   if (Math.abs(p.effort - q.effort) < groupingDist && Math.abs(p.performance - q.performance) < groupingDist) {
@@ -26,6 +26,7 @@ const canBeGrouped = (p, q) => {
   return false;
 };
 
+// (function) to curate the filters list (modules, standards, groups)
 export const getFilterData = (modules = [], selectedModules = []) => {
   const modulesData = modules.map(item => {
     let standards = [],
@@ -47,6 +48,8 @@ export const getFilterData = (modules = [], selectedModules = []) => {
   const filteredModules = selectedModules.length
     ? modulesData.filter(module => selectedModules.map(module => module.key).includes(module.id))
     : modulesData;
+
+  // filter standards dropdown data based on the filtered modules
   const standardsData = Object.values(keyBy(flatMap(filteredModules, item => item.standards), "standardId")).map(
     ({ standardId, name }) => ({ id: standardId.toString(), name })
   );
@@ -59,10 +62,12 @@ export const getFilterData = (modules = [], selectedModules = []) => {
   };
 };
 
+// (function) to get the trendAngle from the trendSlope
 const calcTrendAngle = trendSlope => {
   return round((Math.atan(trendSlope || 0) * 360) / Math.PI);
 };
 
+// (function) to get a unique student map complete with trendAngle
 export const getMergedTrendMap = (studInfo = [], trendData = []) => {
   return useMemo(() => {
     const studentMap = groupBy(studInfo, "userId");
@@ -86,6 +91,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
         }
       );
     });
+    // calculate and set flag for students with available trend data
     trendData.forEach(item => {
       if (studentMap[item.id]) {
         studentMap[item.id].trendAngle = calcTrendAngle(item.slope);
@@ -96,6 +102,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) => {
   }, [studInfo, trendData]);
 };
 
+// (function) to filter student data based on modules, standards &
 export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = {}) => {
   const modules = filters.modules.map(item => item.key);
   const standards = filters.standards.map(item => item.key);
@@ -117,7 +124,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
           (!modules.length || modules.includes(playlistModuleId))
       );
       if (groupedData[sId].length) {
-        // reduce to a single object if not null
+        // reduce grouped student data to a single object if not null
         groupedData[sId] = reduce(
           groupedData[sId],
           (res, ele) => {
@@ -150,6 +157,7 @@ export const getFilteredMetrics = (metricInfo = [], studInfoMap = {}, filters = 
   return { filteredData, filteredMap, masteryList: filters.masteryList };
 };
 
+// (function) to curate metrics for each student by calculating their effort & performance and filter them by selected mastery level
 export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, masteryList = [], masteryData = [] }) => {
   if (!filteredData.length) {
     return [];
@@ -159,6 +167,7 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
     minPercentScore = 1,
     maxPercentScore = 0;
 
+  // calculate max & min for percentScore & timeSpent
   let curatedMetrics = filteredData.map(item => {
     const percentScore = item.totalMaxScore ? item.totalTotalScore / item.totalMaxScore : 0;
     if (item.totalTimeSpent < minTimeSpent) {
@@ -209,11 +218,13 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
     });
   }
 
+  // calculate the mean & range for percentScore & timeSpent
   const timeRange = maxTimeSpent - minTimeSpent,
     percentRange = maxPercentScore - minPercentScore;
   const timeMean = (maxTimeSpent + minTimeSpent) / 2,
     percentMean = (maxPercentScore + minPercentScore) / 2;
 
+  // normalize values to get effort & performance
   return curatedMetrics.map(item => {
     const fName = item.firstName && item.firstName.trim();
     const lName = item.lastName && item.lastName.trim();
@@ -224,6 +235,7 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
   });
 };
 
+// (function) to get the mastery scale for comparing students
 export const getMasteryData = (scaleInfo = []) => {
   const defaultScaleInfo = [
     {
@@ -255,6 +267,7 @@ export const getMasteryData = (scaleInfo = []) => {
   }));
 };
 
+// (function) to get the summary data for BoxedSummary component
 export const getBoxedSummaryData = ({ up, flat, down }) => {
   const summaryData = [
     {
@@ -273,6 +286,7 @@ export const getBoxedSummaryData = ({ up, flat, down }) => {
   return summaryData;
 };
 
+// (function) to calculate the color and groupings for quadrant based student data
 export const getQuadsData = data => {
   const quads = [[], [], [], []];
 
@@ -289,10 +303,13 @@ export const getQuadsData = data => {
     }
   });
 
+  // logic to create groupings for nearby data using greedy approach
   return flatMap(quads, quad => {
     let len = quad.length,
       i,
       j;
+    // grouped => maps the index of the grouped element to the index of the parent grouping element
+    // groupings => stores the data of all possible groups with parent element index as the key
     const grouped = {},
       groupings = {};
     // create groupings
@@ -333,6 +350,7 @@ export const getQuadsData = data => {
   });
 };
 
+// (function) to calculate the label position in InsightsChart
 export const calcLabelPosition = ({ cx, cy, name = "", trendAngle = 0 }) => {
   let x = cx,
     y = cy;
@@ -352,6 +370,7 @@ export const calcLabelPosition = ({ cx, cy, name = "", trendAngle = 0 }) => {
   return { nameX: x, arrowY: y };
 };
 
+// (function) to calculate the arrow position for the AddGroupTable
 export const calcArrowPosition = angle => {
   let cx = 0,
     cy = 0;

@@ -133,6 +133,7 @@ const ManageContentBlock = props => {
   const lastResourceItemRef = observeElement(fetchTests, tests);
 
   const [searchBy, setSearchBy] = useState("keywords");
+  const [isAddNew, setAddNew] = useState(false);
   const [searchResourceBy, setSearchResourceBy] = useState("all");
   const [isShowFilter, setShowFilter] = useState(false);
   const [isShowExternalLTITool, setIsShowExternalLTITool] = useState(false);
@@ -157,6 +158,7 @@ const ManageContentBlock = props => {
 
   const onModalClose = () => {
     setIsShowExternalLTITool(false);
+    setAddNew(false);
   };
 
   const toggleTestFilter = () => {
@@ -364,6 +366,8 @@ const ManageContentBlock = props => {
             data={externalLTIModal}
             externalToolsProviders={externalToolsProviders}
             onChange={(key, value) => changeExternalLTIModal({ key, value })}
+            isAddNew={isAddNew}
+            setAddNew={setAddNew}
           />
         </CustomModal>
       </ManageContentContainer>

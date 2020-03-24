@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { groupBy, uniqBy } from "lodash";
+import { groupBy, maxBy } from "lodash";
 import { EduButton } from "@edulastic/common";
 import { assignmentStatusOptions } from "@edulastic/constants";
 import { getCurrentTerm } from "../../../src/selectors/user";
@@ -41,11 +41,12 @@ const Differentiation = ({
   addTestToDifferentiation
 }) => {
   const [selectedClass, setSelectedClass] = useState();
-  const [selectedAssignment, setSelectedAssignment] = useState({});
   const [classList, setClassList] = useState([]);
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({});
-  const [filteredAssignments, setFilteredAssignments] = useState([]);
   const [showManageContent, setShowManageContent] = useState(false);
+
+  const [testData, setTestData] = useState([]);
+  const [selectedTest, setSelectedTest] = useState();
 
   useEffect(() => {
     const filters = {
@@ -64,47 +65,72 @@ const Differentiation = ({
     if (assignments.length) {
       const gradedAssignments = assignments.filter(a => a.status === assignmentStatusOptions.DONE);
       const _assignmentsByTestId = groupBy(gradedAssignments, "testId");
-      const assignmentsGroupedById = groupBy(gradedAssignments, "_id");
       setAssignmentsByTestId(_assignmentsByTestId);
-      const assignmentsDataForSelect = Object.keys(assignmentsGroupedById).map(assignmentId => {
-        const currentAssignmentData = assignmentsGroupedById[assignmentId][0];
-        return {
-          _id: assignmentId,
-          title: currentAssignmentData.title,
-          testId: currentAssignmentData.testId
-        };
-      });
-      setFilteredAssignments(uniqBy(assignmentsDataForSelect, "testId"));
-      setSelectedAssignment(assignmentsDataForSelect[0]);
-      const selectedTestId = assignmentsDataForSelect[0]?.testId;
-      const firstAssignmentClassList = _assignmentsByTestId[selectedTestId].map(a => ({
-        _id: a.classId,
-        name: a.className,
-        assignmentId: a._id
+      const testDataGenerated = Object.keys(_assignmentsByTestId).map(testId => ({
+        title: _assignmentsByTestId[testId][0].title,
+        _id: testId
       }));
-      setClassList(uniqBy(firstAssignmentClassList, "_id"));
-      setSelectedClass(firstAssignmentClassList[0]._id);
+
+      setTestData(testDataGenerated);
+      setSelectedTest(testDataGenerated[0]._id);
+      let currentTestClasses = _assignmentsByTestId[testDataGenerated[0]._id].map(a => ({
+        classId: a.classId,
+        assignmentId: a._id,
+        className: a.className,
+        title: a.title,
+        createdAt: a.createdAt
+      }));
+
+      currentTestClasses = groupBy(currentTestClasses, "classId");
+      currentTestClasses = Object.keys(currentTestClasses).map(classId => {
+        const clazzArray = currentTestClasses[classId];
+        return maxBy(clazzArray, "createdAt");
+      });
+
+      setClassList(currentTestClasses);
+      setSelectedClass(currentTestClasses[0]);
     }
   }, [assignments]);
 
   useEffect(() => {
     if (selectedClass) {
-      const { testId } = filteredAssignments.find(a => a._id === selectedAssignment._id);
-      const classData = classList.find(_class => _class._id === selectedClass);
-      fetchDifferentiationStudentList({ assignmentId: classData.assignmentId, groupId: selectedClass });
-      fetchDifferentiationWork({ assignmentId: classData.assignmentId, groupId: selectedClass, testId });
+      fetchDifferentiationStudentList({ assignmentId: selectedClass.assignmentId, groupId: selectedClass.classId });
+      fetchDifferentiationWork({
+        assignmentId: selectedClass.assignmentId,
+        groupId: selectedClass.classId,
+        testId: selectedTest
+      });
     }
   }, [selectedClass]);
 
-  const handleAssignmentChange = (value, option) => {
-    setSelectedAssignment({ _id: value, title: option.props.title });
-    setSelectedClass();
-    const classData = assignmentsByTestId[option.props.testId].map(a => ({
-      _id: a.classId,
-      name: a.className,
-      assignmentId: a._id
+  const handleAssignmentChange = value => {
+    setSelectedTest(value);
+
+    let selectedTestClasses = assignmentsByTestId[value].map(a => ({
+      classId: a.classId,
+      assignmentId: a._id,
+      className: a.className,
+      title: a.title,
+      createdAt: a.createdAt
     }));
-    setClassList(uniqBy(classData, "_id"));
+
+    selectedTestClasses = groupBy(selectedTestClasses, "classId");
+    selectedTestClasses = Object.keys(selectedTestClasses).map(classId => {
+      const clazzArray = selectedTestClasses[classId];
+      return maxBy(clazzArray, "createdAt");
+    });
+
+    setClassList(selectedTestClasses);
+    setSelectedClass();
+  };
+
+  const handleClassChange = (value, option) => {
+    setSelectedClass({
+      classId: option.props.classId,
+      assignmentId: option.props.assignmentId,
+      className: option.props.cName,
+      title: option.props.title
+    });
   };
 
   return (
@@ -120,10 +146,10 @@ const Differentiation = ({
               style={{ width: "200px" }}
               placeholder="SELECT ASSIGNMENT"
               onChange={(value, option) => handleAssignmentChange(value, option)}
-              value={selectedAssignment._id}
+              value={selectedTest}
             >
-              {filteredAssignments.map(({ _id, title, testId }) => (
-                <StyledSelect.Option key={_id} value={_id} testId={testId} title={title}>
+              {testData.map(({ _id, title }) => (
+                <StyledSelect.Option key={_id} value={_id} title={title}>
                   {title}
                 </StyledSelect.Option>
               ))}
@@ -135,12 +161,19 @@ const Differentiation = ({
               data-cy="select-group"
               style={{ width: "170px" }}
               placeholder="SELECT GROUP"
-              onChange={value => setSelectedClass(value)}
-              value={selectedClass}
+              onChange={(value, option) => handleClassChange(value, option)}
+              value={selectedClass ? `${selectedClass.assignmentId}_${selectedClass.classId}` : undefined}
             >
-              {classList.map(({ _id, name }) => (
-                <StyledSelect.Option key={_id} value={_id}>
-                  {name}
+              {classList.map(({ classId, className, assignmentId, title }) => (
+                <StyledSelect.Option
+                  key={`${assignmentId}_${classId}`}
+                  value={`${assignmentId}_${classId}`}
+                  cName={className}
+                  assignmentId={assignmentId}
+                  classId={classId}
+                  title={title}
+                >
+                  {className}
                 </StyledSelect.Option>
               ))}
             </StyledSelect>
@@ -168,8 +201,7 @@ const Differentiation = ({
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.review}
               addRecommendations={addRecommendations}
-              selectedAssignment={selectedAssignment}
-              groupId={selectedClass}
+              selectedData={selectedClass}
               isFetchingWork={isFetchingWork}
               addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.REVIEW || []}
@@ -180,8 +212,7 @@ const Differentiation = ({
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.practice}
               addRecommendations={addRecommendations}
-              selectedAssignment={selectedAssignment}
-              groupId={selectedClass}
+              selectedData={selectedClass}
               isFetchingWork={isFetchingWork}
               addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.PRACTICE || []}
@@ -192,8 +223,7 @@ const Differentiation = ({
               differentiationStudentList={differentiationStudentList}
               data={differentiationWork.challenge}
               addRecommendations={addRecommendations}
-              selectedAssignment={selectedAssignment}
-              groupId={selectedClass}
+              selectedData={selectedClass}
               isFetchingWork={isFetchingWork}
               addTestToDifferentiation={addTestToDifferentiation}
               workStatusData={workStatusData.CHALLENGE || []}

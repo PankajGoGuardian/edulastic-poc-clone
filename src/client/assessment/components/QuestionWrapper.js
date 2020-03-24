@@ -60,6 +60,8 @@ import PreviewRubricTable from "../../author/GradingRubric/Components/common/Pre
 import { Coding } from "../widgets/Coding";
 
 import Hints from "./Hints";
+import { isRichTextFieldEmpty } from "../../author/questionUtils";
+import { EDIT } from "../constants/constantsForQuestions";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -286,7 +288,7 @@ class QuestionWrapper extends Component {
   };
 
   static getDerivedStateFromProps(props) {
-    if (props.view !== "edit") {
+    if (props.view !== EDIT) {
       return { main: [], advanced: [], activeTab: 0 };
     }
     return null;
@@ -334,6 +336,8 @@ class QuestionWrapper extends Component {
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
+    const scoringInstructions = data?.scoringInstructions || "";
+    const isScoringInstructionsEnabled = data?.isScoringInstructionsEnabled || false;
     const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
@@ -401,7 +405,7 @@ class QuestionWrapper extends Component {
             data-cy="question-container"
             style={{ width: "100%", height: restProps.fullHeight ? "100%" : null }}
           >
-            {view === "edit" && showQuestionMenu && (
+            {view === EDIT && showQuestionMenu && (
               <QuestionMenuWrapper>
                 <QuestionMenu
                   activeTab={activeTab}
@@ -422,7 +426,7 @@ class QuestionWrapper extends Component {
               style={{
                 width:
                   !isPrintPreview &&
-                  `${view === "edit" && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
+                  `${view === EDIT && showQuestionMenu && !disableResponse ? "calc(100% - 265px)" : "100%"}`,
                 maxWidth: isPrintPreview && "calc(100% - 10px)",
                 display: "flex",
                 boxShadow: "none",
@@ -453,6 +457,12 @@ class QuestionWrapper extends Component {
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
+                {view !== EDIT && isScoringInstructionsEnabled && !isRichTextFieldEmpty(scoringInstructions) && (
+                  <InstructionsContainer>
+                    <i style={{ lineHeight: "24px" }} className="fa fa-info-circle" aria-hidden="true" />
+                    <span style={{ marginLeft: "10px" }} dangerouslySetInnerHTML={{ __html: scoringInstructions }} />
+                  </InstructionsContainer>
+                )}
 
                 {showFeedback && timeSpent ? (
                   <>
@@ -597,4 +607,12 @@ const RubricTableWrapper = styled.div`
     margin: 0px 16px 10px;
     text-transform: uppercase;
   }
+`;
+
+const InstructionsContainer = styled.div`
+  display: flex;
+  border: 1px solid ${borderGrey2};
+  border-radius: 4px;
+  margin: 1rem 0;
+  padding: 10px;
 `;

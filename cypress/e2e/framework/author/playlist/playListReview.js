@@ -1,6 +1,5 @@
 import LiveClassboardPage from "../assignments/LiveClassboardPage";
 import DndSimulatorDataTransfer from "../../../../support/misc/dndSimulator";
-import { teacherSide } from "../../constants/assignmentStatus";
 
 export default class PlayListReview {
   constructor() {
@@ -46,6 +45,9 @@ export default class PlayListReview {
   getHideByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="make-hidden"]');
 
   getShowByTestByModule = (mod, test) => this.getTestByTestByModule(mod, test).find('[data-cy="make-visible"]');
+
+  getShowAssignmentsByTestByMod = (mod, test) =>
+    this.getTestByTestByModule(mod, test).find('[data-cy="show-assignment"]');
 
   // *** ELEMENTS END ***
 
@@ -121,6 +123,8 @@ export default class PlayListReview {
     this.waitForSave();
     this.getAssignButtonByTestByModule(mod, test).should("have.css", "opacity", "1");
   };
+
+  clickShowAssignmentByTestByModule = (mod, test) => this.getShowAssignmentsByTestByMod(mod, test).click();
 
   // *** ACTIONS END ***
 

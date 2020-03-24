@@ -220,12 +220,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Test In Test 
       });
 
       context(">verify copy on preivew", () => {
-        it(`Get Test Card-${testName} and Go-To Review`, () => {
+        it(`>Get Test Card-${testName} and Go-To Review`, () => {
           testLibraryPage.visitTestById(OriginalTestId);
           testLibraryPage.publishedToDraft();
         });
 
-        it(`>verify copy for`, () => {
+        it(`>verify copy`, () => {
           testReviewTab.previewQuestById(itemIds[1]);
           itemPreview.clickOnCopyItemOnPreview();
           // Copy automatically include new item in test

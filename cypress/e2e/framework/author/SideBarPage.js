@@ -50,6 +50,8 @@ export default class TeacherSideBar {
   clickOnTestLibrary = () => {
     cy.server();
     cy.route("POST", "**/tests").as("searchTest");
+    // TODO: below is temp fix and wait is not added- look for this while fixing
+    cy.route("POST", "**browse-standards").as("search-standards");
     cy.wait(5000); // waiting for mongo to elastic search sync delay
     cy.get('[data-cy="Test Library"]').dblclick({ force: true });
     cy.wait("@searchTest");

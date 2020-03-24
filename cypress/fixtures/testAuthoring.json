@@ -70,8 +70,8 @@
   },
   "search_1": {
     "name": "Search Assessment 01",
-    "grade": ["Kindergarten"],
-    "subject": ["Math"],
+    "grade": ["Grade 10"],
+    "subject": ["Social Studies"],
     "itemKeys": ["MCQ_TF.1"],
     "tags": ["abc", "xyz"]
   },

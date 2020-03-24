@@ -309,7 +309,7 @@ export default class TestLibrary {
       .click({ force: true });
     cy.wait("@assignment");
     cy.url()
-      .then(url => url.split("/").reverse()[1])
+      .then(url => url.split("/").reverse()[0])
       .should("be.eq", testId);
   };
 

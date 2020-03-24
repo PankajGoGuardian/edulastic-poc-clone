@@ -3,9 +3,8 @@ import FileHelper from "../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import TestAssignPage from "../../../../framework/author/tests/testDetail/testAssignPage";
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customization`, () => {
   const playlistlibraryPage = new PlayListLibrary();
   const testlibraryPage = new TestLibrary();
   const assignmentsPage = new AssignmentsPage();
@@ -54,7 +53,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
         testlibraryPage.header.clickOnDescription();
         testlibraryPage.testSummary.setName(`test- ${k + 1}`);
         testlibraryPage.header.clickOnPublishButton();
-        testlibraryPage.sidebar.clickOnPlayListLibrary();
       });
     }
     cy.wait(1).then(() => {
@@ -62,7 +60,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       plalistdata.moduledata.module2 = testIds.slice(2, 4);
     });
   });
-  before(">create playlist and assign", () => {
+  before(">create playlist", () => {
     playlistlibraryPage.createPlayListWithTests(plalistdata).then(id => {
       playlisid = id;
       playlistlibraryPage.header.clickOnEdit();
@@ -71,104 +69,104 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playlistlibraryPage.header.clickOnPublish();
     });
   });
-
-  context(">add new test to module-'from search bar'", () => {
-    before(">login", () => {
-      cy.deleteAllAssignments("", teacher.email);
-      cy.login("teacher", teacher.email, teacher.pass);
-      testlibraryPage.createTest("default").then(id => {
-        newtest = id;
+  context(">customization - assign", () => {
+    context(">add new test to module-'from search bar'", () => {
+      before(">login", () => {
+        cy.login("teacher", teacher.email, teacher.pass);
+        testlibraryPage.createTest("default").then(id => {
+          newtest = id;
+        });
+      });
+      it(">search and use playlist", () => {
+        playlistlibraryPage.searchByCollection(collection);
+        playlistlibraryPage.clickOnPlayListCardById(playlisid);
+        playlistlibraryPage.header.clickOnUseThis(true).then(id => {
+          customplaylist = id;
+        });
+      });
+      it(">assign whole module", () => {
+        playlistlibraryPage.playlistCustom.clickOnAssignButtonByModule(1);
+        playlistlibraryPage.playListAssign.selectClass("Class");
+        playlistlibraryPage.playListAssign.clickOnAssign();
+      });
+      it(">customize-'add new test'", () => {
+        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList();
+        playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
+        playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
+        playlistlibraryPage.header.clickOnSave();
+        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
+      });
+      it(">assign the whole module-'re-assign'", () => {
+        playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 3);
+        playlistlibraryPage.playListAssign.selectClass("Class");
+        playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false });
+      });
+      it(">verify student side-'attempt'", () => {
+        cy.login("student", students.email, students.pass);
+        [...testIds.slice(0, 2), newtest].forEach(id => {
+          assignmentsPage.getAssignmentByTestId(id).should("have.length", 1);
+        });
+        assignmentsPage.clickOnAssigmentByTestId(newtest);
+        studentTestPage.attemptQuestionsByQueType(qType, attemptdata);
+        studentTestPage.submitTest();
       });
     });
-    it(">search and use playlist", () => {
-      playlistlibraryPage.searchByCollection(collection);
-      playlistlibraryPage.clickOnPlayListCardById(playlisid);
-      playlistlibraryPage.header.clickOnUseThis(true).then(id => {
-        customplaylist = id;
+    context(">move test from other module", () => {
+      before(">login", () => {
+        cy.login("teacher", teacher.email, teacher.pass);
+      });
+      it(">search and use playlist", () => {
+        playlistlibraryPage.searchByCollection(collection);
+        playlistlibraryPage.clickOnPlayListCardById(playlisid);
+        playlistlibraryPage.header.clickOnUseThis();
+        cy.url().should("contain", customplaylist);
+      });
+      it(">add a test and verify", () => {
+        playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 1, 1);
+        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 4);
+        playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
+      });
+
+      it(">assign the test", () => {
+        playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 4);
+        playlistlibraryPage.playListAssign.selectClass("Class");
+        playlistlibraryPage.playListAssign.clickOnAssign();
+      });
+      it(">verify student side-'after assigning'", () => {
+        cy.login("student", students.email, students.pass);
+        assignmentsPage.getAssignmentByTestId(testIds[2]).should("have.length", 1);
       });
     });
-    it(">assign whole module", () => {
-      playlistlibraryPage.playlistCustom.clickOnAssignButtonByModule(1);
-      playlistlibraryPage.playListAssign.selectClass("Class");
-      playlistlibraryPage.playListAssign.clickOnAssign();
-    });
-    it(">customize-'add new test'", () => {
-      playlistlibraryPage.sidebar.clickOnRecentUsedPlayList();
-      playlistlibraryPage.playlistCustom.clickOnManageContent();
-      playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
-      playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
-      playlistlibraryPage.header.clickOnSave();
-      playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
-    });
-    it(">assign the whole module-'re-assign'", () => {
-      playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1);
-      playlistlibraryPage.playListAssign.selectClass("Class");
-      playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false });
-    });
-    it(">verify student side-'attempt'", () => {
-      cy.login("student", students.email, students.pass);
-      [...testIds.slice(0, 2), newtest].forEach(id => {
-        assignmentsPage.getAssignmentByTestId(id).should("have.length", 1);
+    context(">remove assigned test", () => {
+      before(">login", () => {
+        cy.login("teacher", teacher.email, teacher.pass);
       });
-      assignmentsPage.clickOnAssigmentByTestId(newtest);
-      studentTestPage.attemptQuestionsByQueType(qType, attemptdata);
-      studentTestPage.submitTest();
-    });
-  });
-  context(">move test from other module", () => {
-    before(">login", () => {
-      cy.deleteAllAssignments("", teacher.email);
-      cy.login("teacher", teacher.email, teacher.pass);
-    });
-    it(">search and use playlist", () => {
-      playlistlibraryPage.searchByCollection(collection);
-      playlistlibraryPage.clickOnPlayListCardById(playlisid);
-      playlistlibraryPage.header.clickOnUseThis();
-      cy.url().should("contain", customplaylist);
-    });
-    it(">add a test and verify", () => {
-      playlistlibraryPage.playlistCustom.clickOnManageContent();
-      playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 1, 1);
-      playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 4);
-      playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
+      it(">search and use playlist", () => {
+        playlistlibraryPage.searchByCollection(collection);
+        playlistlibraryPage.clickOnPlayListCardById(playlisid);
+        playlistlibraryPage.header.clickOnUseThis();
+        cy.url().should("contain", customplaylist);
+      });
+      it(">remove a assigned test and verify", () => {
+        playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.reviewTab.clickExpandByModule(1);
+        playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 1);
+        playlistlibraryPage.header.clickOnSave();
+        playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
+        playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
+      });
+      it(">verify student side-'presence of deleted test and attempt'", () => {
+        cy.login("student", students.email, students.pass);
+        assignmentsPage.getAssignmentByTestId(testIds[0]).should("have.length", 1);
+        assignmentsPage.clickOnAssigmentByTestId(testIds[0]);
+        studentTestPage.attemptQuestionsByQueType(qType, attemptdata);
+        studentTestPage.submitTest();
+      });
     });
 
-    it(">assign the test", () => {
-      playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 4);
-      playlistlibraryPage.playListAssign.selectClass("Class");
-      playlistlibraryPage.playListAssign.clickOnAssign();
-    });
-    it(">verify student side-'after assigning'", () => {
-      cy.login("student", students.email, students.pass);
-      assignmentsPage.getAssignmentByTestId(testIds[2]).should("have.length", 1);
-    });
-  });
-  context(">remove assigned test", () => {
-    before(">login", () => {
-      cy.login("teacher", teacher.email, teacher.pass);
-    });
-    it(">search and use playlist", () => {
-      playlistlibraryPage.searchByCollection(collection);
-      playlistlibraryPage.clickOnPlayListCardById(playlisid);
-      playlistlibraryPage.header.clickOnUseThis();
-      cy.url().should("contain", customplaylist);
-    });
-    it(">remove a assigned test and verify", () => {
-      playlistlibraryPage.playlistCustom.clickOnManageContent();
-      playlistlibraryPage.reviewTab.clickExpandByModule(1);
-      playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 4);
-      playlistlibraryPage.header.clickOnSave();
-      playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
-      playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
-    });
-    it(">verify student side", () => {
-      cy.login("student", students[0].email, students[0].pass);
-      assignmentsPage.getAssignmentButton().should("have.length", 2);
-      assignmentsPage.getAssignmentByTestId(testIds[3]).should("have.length", 0);
-    });
-  });
-
-  /* context(">move assigned test", () => {
+    /* context(">move assigned test", () => {
     before(">login", () => {
       cy.deleteAllAssignments("", teacher.email);
       cy.login("teacher", teacher.email, teacher.pass);
@@ -207,4 +205,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       assignmentsPage.getAssignmentByTestId(testIds[1]).should("have.length", 1);
     });
   }); */
+  });
 });

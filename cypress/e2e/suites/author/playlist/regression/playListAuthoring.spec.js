@@ -29,11 +29,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     subject: "Social Studies"
   };
   const student = {
-    email: "student.playlistBasic@snapwiz.com",
+    email: "student.playlistbasic@snapwiz.com",
     pass: "snapwiz"
   };
   const teacher = {
-    email: "teacher.playlistBasic@snapwiz.com",
+    email: "teacher.playlistbasic@snapwiz.com",
     pass: "snapwiz"
   };
   const msgs = [
@@ -124,13 +124,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
     });
     it(">verify review- 'standards'", () => {
-      playListLibrary.header.clickOnPublish();
       tests.forEach((id, index) => {
         playListLibrary.reviewTab.verifyStandardsByTestByModule(index + 1, 1, standard);
       });
     });
     it(">manage modules-'delete a test'", () => {
-      playListLibrary.header.clickOnEdit();
       // delete test by module
       playListLibrary.header.clickOnReview();
       playListLibrary.reviewTab.clickExpandByModule(1);
@@ -328,44 +326,35 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playListLibrary.createPlayList(playListData, 1).then(id => {
         playlistId = id;
         playListLibrary.searchFilter.clearAll();
-        playListLibrary.addTestTab.bulkAddByModule([testIds[0]], 1);
+        playListLibrary.addTestTab.bulkAddByModule([testIds[0], testIds[1]], 1);
         playListLibrary.header.clickOnSettings();
         playListLibrary.setCustomization();
         playListLibrary.header.clickOnPublish();
       });
     });
     it(">get playlist and customize", () => {
-      playListLibrary.getPlayListAndClickOnUseThisById(playlistId);
-      playListLibrary.verifyCustomization(playlistId).then(id => {
-        customizedPlaylist = id;
-      });
+      playListLibrary.seachAndClickPlayListById(playlistId);
+      playListLibrary.header.clickOnUseThis();
+      cy.url().should("contain", playlistId);
     });
     it(">edit customized-'add new test'", () => {
-      playListLibrary.header.clickOnAddTests();
-      playListLibrary.searchFilter.clearAll();
-      playListLibrary.addTestTab.addTestByIdByModule(testIds[3], 1);
+      playListLibrary.playlistCustom.clickOnManageContent();
+      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(testIds[3]);
+      playListLibrary.playlistCustom.dragTestFromSearchToModule(1, testIds[3]);
     });
     it(">assign the customized", () => {
-      playListLibrary.header.clickOnPublish();
-      playListLibrary.header.clickOnUseThis();
+      playListLibrary.header.clickOnSave();
       playListLibrary.reviewTab.clickOnAssignButtonByModule(1);
       playListAssign.selectClass("Class");
       playListAssign.selectOpenPolicy("Automatically on Start Date");
       playListAssign.clickOnAssign();
     });
-    it(">verify teacher side-'original playlist'", () => {
-      playListLibrary.seachAndClickPlayListById(playlistId);
-      playListLibrary.reviewTab.clickExpandByModule(1);
-      playListLibrary.reviewTab.verifyNoOfTestByModule(1, 1);
-      playListLibrary.reviewTab.clickCollapseByModule(1);
-    });
     it(">verify teacher side-'customized playlist'", () => {
-      playListLibrary.seachAndClickPlayListById(customizedPlaylist);
+      playListLibrary.seachAndClickPlayListById(playlistId);
       playListLibrary.reviewTab.clickExpandByModule(1);
       playListLibrary.reviewTab.verifyNoOfTestByModule(1, 2);
       playListLibrary.reviewTab.clickCollapseByModule(1);
     });
-
     it(">verify teacher side-'assignments page'", () => {
       playListLibrary.sidebar.clickOnAssignment();
       [testIds[0], testIds[3]].forEach(id => {

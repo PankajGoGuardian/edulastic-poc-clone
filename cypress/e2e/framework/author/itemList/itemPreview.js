@@ -34,12 +34,8 @@ export default class PreviewItemPopup {
 
   closePreiview = () => {
     cy.wait(500);
-    let eleCount = Cypress.$(".ant-modal-close-icon").length;
-    if (eleCount > 1) {
-      Cypress.$(".ant-modal-close-icon")
-        .eq(1)
-        .click();
-    } else Cypress.$(".ant-modal-close-icon").click();
+    let eleCount = Cypress.$('[data-cy="close-preview"]').length;
+    if (eleCount === 1) Cypress.$('[data-cy="close-preview"]').click();
   };
 
   clickOnShowAnsOnPreview = () => cy.get('[data-cy="show-answers-btn"]').click({ force: true });

@@ -70,7 +70,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
   context("Preview Test items-- Item bank", () => {
     context("Verify Show Ans On Preivew", () => {
       before(`Go-To Item Bank and get authored by me`, () => {
-        testLibraryPage.sidebar.clickOnItemBank();
+        // testLibraryPage.sidebar.clickOnItemBank();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
       });
@@ -371,7 +371,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
     });
     context("Verify Delete On Preivew", () => {
       before(`Go To Item Bank and Get Authored by me`, () => {
-        testReviewTab.testheader.clickOnAddItems();
+        //   testReviewTab.testheader.clickOnAddItems();
         itemListPage.searchFilters.clearAll();
         itemListPage.searchFilters.getAuthoredByMe();
       });

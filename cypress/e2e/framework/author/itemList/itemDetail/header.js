@@ -77,9 +77,10 @@ class Header {
 
   // *** APPHELPERS START ***
 
-  saveAndgetId = (newitem = false) => {
+  saveAndgetId = (isOld = false) => {
+    // isOld=false === isNew=true
     cy.server();
-    if (newitem) cy.route("POST", "**/testitem").as("saveItem");
+    if (!isOld) cy.route("POST", "**/testitem").as("saveItem");
     else cy.route("PUT", "**/api/testitem/*").as("saveItem");
     cy.get('[data-cy="saveButton"]')
       .should("be.visible")

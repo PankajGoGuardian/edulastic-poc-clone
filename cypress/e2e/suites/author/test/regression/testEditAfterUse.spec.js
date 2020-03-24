@@ -132,7 +132,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         // Edit Question Text From Review Tab
         testReviewTab.previewAndEditById(item3);
         mcqTrueFalsePage.setQuestionEditorText("Edited Text");
-        testReviewTab.itemHeader.saveAndgetId().then(item => {
+        // It will create new version of item
+        testReviewTab.itemHeader.saveAndgetId(true).then(item => {
           expect(item).not.eq(item3);
           cy.saveItemDetailToDelete(item);
         });

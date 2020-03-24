@@ -274,7 +274,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       queData.choices.forEach((ch, index) => {
         question.getChoiceInputByIndex(index).type(`{selectall}${ch}`);
       });
-      editItem.header.saveAndgetId(true).then(id => {
+      editItem.header.saveAndgetId().then(id => {
         item_id = id;
         cy.saveItemDetailToDelete(id);
       });

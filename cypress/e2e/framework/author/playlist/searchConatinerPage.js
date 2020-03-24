@@ -1,3 +1,5 @@
+import CypressHelper from "../../util/cypressHelpers";
+
 export default class PlayListSearchContainer {
   /* GET ELEMNETS */
   getSearchContainer = () => cy.get('[data-cy="play-list-search-container"]');
@@ -12,10 +14,16 @@ export default class PlayListSearchContainer {
 
   getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 
+  getFilterButton = () => cy.get('[data-cy="test-filter"]');
+
   /* ACTIONS */
   clickOnKeyword = () => this.getKeywords().click();
 
   clickOnStandard = () => this.getStandards().click();
+
+  clickFilterButton = () => this.getFilterButton().click();
+
+  selectCollection = collection => CypressHelper.selectDropDownByAttribute("test-collection", collection);
 
   typeInSearchBar = text => {
     this.routeTestSearch();

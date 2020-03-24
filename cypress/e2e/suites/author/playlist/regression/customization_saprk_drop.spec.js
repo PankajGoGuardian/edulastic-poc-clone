@@ -129,6 +129,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
 
       it(">customize-'add new test'", () => {
         playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.playlistCustom.searchContainer.clickFilterButton();
+        playlistlibraryPage.playlistCustom.searchContainer.selectCollection("Private Library");
+        playlistlibraryPage.playlistCustom.searchContainer.clickFilterButton();
         playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
         playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
         playlistlibraryPage.header.clickOnSave();
@@ -228,6 +231,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.header.clickOnSave();
       });
       it(">customize-'add test to new module'", () => {
+        playlistlibraryPage.playlistCustom.searchContainer.clickFilterButton();
+        playlistlibraryPage.playlistCustom.searchContainer.selectCollection("Private Library");
+        playlistlibraryPage.playlistCustom.searchContainer.clickFilterButton();
         playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
         playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(2, newtest);
         playlistlibraryPage.header.clickOnSave();

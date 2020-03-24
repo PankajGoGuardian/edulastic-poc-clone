@@ -74,7 +74,7 @@ export default class TestAddItemTab {
     cy.get(`[data-cy="${itemId}"]`)
       // .contains("Selected")
       .click({ force: true });
-    cy.wait("@removeItem");
+    // cy.wait("@removeItem");
   };
 
   addItemByIdByGroup = (group, itemId) => {

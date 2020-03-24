@@ -322,7 +322,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
-      question.header.saveAndgetId(true).then(id => {
+      question.header.saveAndgetId().then(id => {
         cy.wait(3000);
         editItem.sideBar.clickOnItemBank();
         itemList.searchFilters.clearAll();

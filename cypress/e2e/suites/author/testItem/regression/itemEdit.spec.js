@@ -284,7 +284,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit-Items after a
         itemListPage.clickOnViewItemById(ele, questText[i]);
         itemPreview.clickEditOnPreview();
         mcqTrueFalsePage.setQuestionEditorText(UPDATED_TEXT);
-        editItemPage.header.saveAndgetId().then(id => {
+        editItemPage.header.saveAndgetId(true).then(id => {
           expect(id).not.eq(ele);
           cy.saveItemDetailToDelete(id);
         });

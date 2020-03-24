@@ -195,7 +195,7 @@ function* loadTest({ payload }) {
         test.calcType === testContants.calculatorTypes.GRAPHING
           ? "DESMOS"
           : testActivity?.calculatorProvider,
-      calcType: testActivity?.testActivity?.calcType || test.calcType || testContants.calculatorTypes.NONE,
+      calcType: testActivity?.assignmentSettings?.calcType || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
       passwordPolicy:
         testActivity?.assignmentSettings?.passwordPolicy || testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,

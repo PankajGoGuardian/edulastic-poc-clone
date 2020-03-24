@@ -2,7 +2,7 @@ import { faClone, faMinus, faPaperPlane, faPencilAlt, faTrashAlt } from "@fortaw
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Col, Form, Icon, message, Pagination } from "antd";
 import produce from "immer";
-import { maxBy, sumBy, uniqBy } from "lodash";
+import { maxBy, sumBy, uniqBy, debounce } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -181,14 +181,14 @@ const UseExisting = ({
     setShowDeleteModal(false);
   };
 
-  const handleSearch = value => {
+  const handleSearch = debounce(value => {
     searchRubricsRequest({
       limit: 5,
       page: currentPage,
       searchString: value
     });
     setCurrentMode("RUBRIC_TABLE");
-  };
+  }, 500);
 
   const handleClone = rubric => {
     const clonedData = produce(rubric, draft => {
@@ -318,7 +318,10 @@ const UseExisting = ({
             <SearchBar
               placeholder="Search by rubric name or author name"
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={e => {
+                setSearchQuery(e.target.value);
+                handleSearch(e.target.value);
+              }}
               onSearch={handleSearch}
               loading={searchingState}
             />

@@ -572,6 +572,7 @@ export function* updateDestinationCurriculumSequencesaga({ payload }) {
 
 export function* getSignedRequestSaga({ payload }) {
   try {
+    yield put(updateSinedRequestAction(null));
     const request = yield call(curriculumSequencesApi.getSignedRequest, payload);
     yield put(updateSinedRequestAction(request));
   } catch (err) {

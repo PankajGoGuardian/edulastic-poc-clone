@@ -101,7 +101,7 @@ export const getTestGradeAndSubject = (group, testGrades, testSubjects, testTags
     return {
       testGrades: _uniq([...testGrades, ...group.standardDetails.grades]),
       testSubjects: _uniq([...testSubjects, group.standardDetails.subject]),
-      testTags: _uniq([...testTags, ...group.tags])
+      testTags: _uniq([...testTags, ...(group.tags || [])])
     };
   }
   return { testGrades, testSubjects };

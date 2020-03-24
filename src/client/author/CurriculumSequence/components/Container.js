@@ -116,6 +116,7 @@ class CurriculumContainer extends Component {
       isStudent = false,
       history: { location } = {}
     } = this.props;
+    console.log("match params", match.params);
 
     const playlistId = match.params.id || match.params.playlistId;
     if (playlistId) {

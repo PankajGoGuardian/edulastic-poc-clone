@@ -400,8 +400,6 @@ export default connect(
     testPreviewModalVisible: state.playlistTestBox?.testPreviewModalVisible,
     selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
     externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
-    subjectsFromCurriculumSequence: ownProps?.subjects,
-    gradesFromCurriculumSequence: ownProps?.grades,
     collections: state.user?.user?.orgData?.itemBanks || [],
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
     districtId: state?.user?.user?.orgData?.districtId,

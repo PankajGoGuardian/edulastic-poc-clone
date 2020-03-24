@@ -46,7 +46,8 @@ import {
   playlistTestRemoveFromModuleAction,
   toggleManageContentActiveAction,
   updateDestinationCurriculumSequenceRequestAction,
-  resetDestinationAction
+  resetDestinationAction,
+  duplicateManageContentAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -359,13 +360,38 @@ class CurriculumSequence extends Component {
   };
 
   toggleManageContentClick = () => {
-    const { toggleManageContent, manageContentDirty, isManageContentActive } = this.props;
+    const {
+      toggleManageContent,
+      manageContentDirty,
+      isManageContentActive,
+      destinationCurriculumSequence,
+      currentUserId,
+      duplicateManageContent
+    } = this.props;
+    const { authors } = destinationCurriculumSequence;
+    const canEdit = authors.find(x => x._id === currentUserId);
+
     if (isManageContentActive && manageContentDirty) {
       message.warn("Changes left unsaved. Please save it first");
       return;
     }
-    this.props.toggleManageContent();
+    if (!isManageContentActive && !canEdit) {
+      //duplicateManageContent(destinationCurriculumSequence);
+      Modal.confirm({
+        title: "Do you want to Customize ?",
+        content:
+          "Customizing the playlist will unlink from original source. Any updates made by the owner of the playlist will not be visible anymore. Do you want to continue?",
+        onOk: () => {
+          duplicateManageContent(destinationCurriculumSequence);
+          Modal.destroyAll();
+        }
+      });
+      return;
+    } else {
+      this.props.toggleManageContent();
+    }
   };
+
   handleCheckout = () => {
     const { history, match } = this.props;
     const { playlistId } = match.params;
@@ -884,7 +910,8 @@ const enhance = compose(
       studentPlaylists: state?.studentPlaylist?.playlists,
       classId: getCurrentGroup(state),
       activeClasses: getFilteredClassesSelector(state),
-      dateKeys: getDateKeysSelector(state)
+      dateKeys: getDateKeysSelector(state),
+      currentUserId: state?.user?.user?._id
     }),
     {
       onGuideChange: changeGuideAction,
@@ -900,7 +927,8 @@ const enhance = compose(
       addNewUnitToDestination: addNewUnitAction,
       toggleManageContent: toggleManageContentActiveAction,
       updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction,
-      resetDestination: resetDestinationAction
+      resetDestination: resetDestinationAction,
+      duplicateManageContent: duplicateManageContentAction
     }
   )
 );

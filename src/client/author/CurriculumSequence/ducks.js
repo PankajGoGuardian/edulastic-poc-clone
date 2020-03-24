@@ -116,6 +116,8 @@ export const UPDATE_SIGNED_REQUEST_FOR_RESOURCE = "[playlist] update signed requ
 
 export const RESET_DESTINATION = "[playlist] reset destination";
 
+export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
+
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
 export const updateCurriculumSequenceAction = createAction(UPDATE_CURRICULUM_SEQUENCE);
@@ -166,6 +168,7 @@ export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTI
 
 export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
 export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
+export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTENT);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -684,6 +687,24 @@ function* fetchAssigned() {
   }
 }
 
+function* duplicateManageContentSaga({ payload }) {
+  try {
+    const { _id: originalId, onChange, groupId, title: originalTitle } = payload;
+    const duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
+      _id: originalId,
+      title: originalTitle,
+      forUseThis: true
+    });
+
+    yield put(updateCurriculumSequenceAction(duplicatedPlaylist));
+    yield put(toggleManageContentActiveAction());
+    yield put(push(`/author/playlists/${duplicatedPlaylist._id}`));
+  } catch (e) {
+    console.error(error);
+    message.error("something went wrong");
+  }
+}
+
 function* useThisPlayListSaga({ payload }) {
   try {
     const { customize, isStudent, _id: originalId, onChange, groupId, title: originalTitle, authors = [] } = payload;
@@ -967,7 +988,8 @@ export function* watcherSaga() {
     yield takeLatest(FETCH_DIFFERENTIATION_WORK, fetchDifferentiationWorkSaga),
     yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga),
     yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga),
-    yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga)
+    yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga),
+    yield takeLatest(DUPLICATE_MANAGE_CONTENT, duplicateManageContentSaga)
   ]);
 }
 

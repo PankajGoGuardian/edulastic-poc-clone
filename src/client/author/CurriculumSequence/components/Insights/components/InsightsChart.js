@@ -129,6 +129,9 @@ const StyledCol = styled(Col)`
   text-transform: uppercase;
   color: ${lightGrey7};
   font: Bold 11px/15px Open Sans;
+  svg {
+    overflow: visible;
+  }
 `;
 
 const StyledImg = styled.img`

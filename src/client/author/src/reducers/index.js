@@ -57,6 +57,7 @@ import { testItemPreviewAttachment } from "../components/common/PreviewModal/pre
 import { assignmentSettings } from "../../AssignTest/duck";
 import playlistTestBoxSlice from "../../CurriculumSequence/components/ManageContentBlock/ducks";
 import { externalToolsReducer } from "../../ExternalTools";
+import testPlayer from "../../sharedDucks/testPlayer";
 
 const authorReducers = {
   authorUi,
@@ -117,7 +118,8 @@ const authorReducers = {
   testItemPreviewAttachment,
   assignmentSettings,
   playlistTestBox: playlistTestBoxSlice.reducer,
-  externalToolsReducer
+  externalToolsReducer,
+  testPlayer
 };
 
 export default authorReducers;

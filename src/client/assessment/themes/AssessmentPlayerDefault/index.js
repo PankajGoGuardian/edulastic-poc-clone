@@ -35,6 +35,7 @@ import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { setUserAnswerAction } from "../../actions/answers";
 import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
+import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -137,7 +138,8 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   openSubmitConfirmation = () => {
-    const { previewPlayer } = this.props;
+    const { previewPlayer, updateTestPlayer } = this.props;
+    updateTestPlayer({enableMagnifier: false});
     if (previewPlayer) {
       return;
     }
@@ -314,7 +316,9 @@ class AssessmentPlayerDefault extends React.Component {
       playerSkinType,
       title,
       changePreview,
-      showMagnifier
+      showMagnifier,
+      handleMagnifier,
+      enableMagnifier
     } = this.props;
     const {
       testItemState,
@@ -465,6 +469,8 @@ class AssessmentPlayerDefault extends React.Component {
             defaultAP={defaultAP}
             finishTest={previewPlayer ? () => closeTestPreviewModal() : () => this.openSubmitConfirmation()}
             showMagnifier={showMagnifier}
+            handleMagnifier={handleMagnifier}
+            enableMagnifier={enableMagnifier}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
               <Tools
@@ -559,6 +565,7 @@ class AssessmentPlayerDefault extends React.Component {
                     preview={preview}
                     evaluation={evaluation}
                     changePreviewTab={changePreview}
+                    enableMagnifier={enableMagnifier}
                   />
                 )}
                 {testItemState === "check" && (
@@ -588,6 +595,7 @@ class AssessmentPlayerDefault extends React.Component {
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
                     changePreviewTab={changePreview}
+                    enableMagnifier={enableMagnifier}
                   />
                 )}
                 {/* we may need to bring hint button back */}
@@ -653,7 +661,8 @@ const enhance = compose(
       setUserAnswer: setUserAnswerAction,
       clearUserWork: clearUserWorkAction,
       updateScratchPad: updateScratchpadAction,
-      resetScratchPadData: resetScratchPadDataAction
+      resetScratchPadData: resetScratchPadDataAction,
+      updateTestPlayer: updateTestPlayerAction
     }
   )
 );

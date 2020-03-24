@@ -21,7 +21,7 @@ const QuestionSelectDropdown = ({
   const dropdownWrapper = useRef(null);
   const menuStyle = { top: `${dropdownWrapper.current?.clientHeight}px !important`, left: `0px !important` };
   return (
-    <SelectContainer ref={dropdownWrapper} menuStyle={menuStyle} style={dropdownStyle} skinb={skinb}>
+    <SelectContainer ref={dropdownWrapper} menuStyle={menuStyle} style={dropdownStyle} skinb={skinb} className="question-select-dropdown">
       <Select
         getPopupContainer={triggerNode => triggerNode.parentNode}
         defaultValue={currentItem}

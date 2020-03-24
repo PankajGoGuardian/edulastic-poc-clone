@@ -33,6 +33,7 @@ import { setUserAnswerAction } from "../../actions/answers";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 
 import { updateScratchpadAction } from "../../../common/ducks/scratchpad";
+import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -112,6 +113,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   openExitPopup = () => {
+    this.props.updateTestPlayer({ enableMagnifier: false });
     this.setState({ showExitPopup: true });
   };
 
@@ -381,7 +383,8 @@ const enhance = compose(
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       setUserAnswer: setUserAnswerAction,
-      updateScratchpad: updateScratchpadAction
+      updateScratchpad: updateScratchpadAction,
+      updateTestPlayer: updateTestPlayerAction
     }
   )
 );

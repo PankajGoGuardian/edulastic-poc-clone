@@ -19,6 +19,7 @@ import WorksheetComponent from "../../../author/AssessmentPage/components/Worksh
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
+import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 
 const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC", "EDULASTIC"];
 
@@ -65,11 +66,12 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   openExitPopup = () => {
-    const { closeTestPreviewModal, previewPlayer } = this.props;
+    const { closeTestPreviewModal, previewPlayer, updateTestPlayer } = this.props;
     if (previewPlayer && closeTestPreviewModal) {
       return closeTestPreviewModal();
     }
     this.setState({ showExitPopup: true });
+    updateTestPlayer({ enableMagnifier: false });
   };
 
   hideExitPopup = () => {
@@ -215,7 +217,8 @@ const enhance = compose(
       settings: state.test.settings
     }),
     {
-      changeView: changeViewAction
+      changeView: changeViewAction,
+      updateTestPlayer: updateTestPlayerAction
     }
   )
 );

@@ -52,7 +52,8 @@ const ClozeMathPreview = ({
   isV1Migrated,
   disableResponse,
   isPrintPreview,
-  allOptions = []
+  allOptions = [],
+  enableMagnifier = false
 }) => {
   const [newHtml, setNewHtml] = useState("");
   const { isAnswerModifiable } = useContext(AnswerContext);
@@ -84,6 +85,14 @@ const ClozeMathPreview = ({
       [answerType]: answers
     };
     saveAnswer(newAnswers);
+    if (enableMagnifier) {
+      setTimeout(() => {
+        const questionWrapper = document.querySelector(".zoomed-container-wrapper .question-wrapper .jsx-parser p");
+        if (questionWrapper) {
+          questionWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper .question-wrapper .jsx-parser p").innerHTML;
+        }
+      }, 1000);
+    }
   };
 
   const onInnerClick = () => {

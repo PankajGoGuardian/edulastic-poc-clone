@@ -21,12 +21,12 @@ const AssessmentPlayerSkinWrapper = ({
   docUrl,
   playerSkinType = test.playerSkinTypes.edulastic,
   showMagnifier = true,
+  handleMagnifier,
+  enableMagnifier = false,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
-  const [enableMagnifier, setEnableMagnifier] = useState(false);
-
-  const handleMagnifier = () => setEnableMagnifier(!enableMagnifier);
+  
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };

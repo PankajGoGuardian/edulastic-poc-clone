@@ -252,7 +252,9 @@ ClozeMath.defaultProps = {
 const enhance = compose(
   withTutorial("clozeMath"),
   connect(
-    null,
+    state => ({
+      enableMagnifier: state.testPlayer.enableMagnifier
+    }),
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,

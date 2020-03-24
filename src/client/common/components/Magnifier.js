@@ -7,6 +7,8 @@ const {
   playerSkin: { magnifierBorderColor }
 } = themes;
 
+const copyDomOnClickOfElements = ["question-select-dropdown", "answer-math-input-field", "ant-select-selection"];
+
 const Magnifier = ({
   children,
   windowWidth,
@@ -24,6 +26,7 @@ const Magnifier = ({
     windowWidth,
     windowHeight
   });
+  const clickedClassName = useRef();
   const ref = useRef();
   useEffect(() => {
     if (setting.dragging) {
@@ -35,6 +38,8 @@ const Magnifier = ({
       handleScroll({
         target: document.getElementsByClassName("test-item-preview")[0]
       });
+      handleDragElements();
+      handleHints();
     }
     if (setting.windowWidth !== windowWidth || setting.windowHeight !== windowHeight) {
       setSetting({
@@ -44,6 +49,7 @@ const Magnifier = ({
         pos: { x: windowWidth / 2 - width / 2, y: windowHeight / 2 - height / 2 }
       });
     }
+
     return () => {
       document?.removeEventListener("mousemove", onMouseMove);
       document?.removeEventListener("mouseup", onMouseUp);
@@ -55,11 +61,74 @@ const Magnifier = ({
     container?.addEventListener("scroll", handleScroll);
     const sideBar = document.getElementsByClassName("scrollbar-container")[0];
     sideBar?.addEventListener("scroll", handleSidebarScroll);
+    document.addEventListener("click", hideElements);
+
+    //This is to attach events to dom elements after some moment
+    setTimeout(attachEvents, 1000);
+
     return () => {
       container?.removeEventListener("scroll", handleScroll);
       sideBar?.removeEventListener("scroll", handleSidebarScroll);
+      document.removeEventListener("click", hideElements);
+
+      //This is to deattach events to dom elements after some moment
+      removeAttachedEvents();
     };
   }, []);
+
+  const attachEvents = () => {
+    copyDomOnClickOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.addEventListener("click", cloneDom(className));
+        }
+      })
+    })
+  }
+
+  const removeAttachedEvents = () => {
+    copyDomOnClickOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.removeEventListener("click", cloneDom(className));
+        }
+      })
+    })
+  }
+
+  const cloneDom = (className) => {
+    //THis work to clone main container to zoomed container on any specific event happened.
+    const cls = className;
+    return () => {
+      clickedClassName.current = cls;
+      const mainWrapper = document.querySelector(".zoomed-container-wrapper");
+      if (mainWrapper) {
+        //copy after some time as to wait to fully render main container
+        setTimeout(() => {
+          mainWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper").innerHTML;
+        }, 1000);
+      }
+    }
+  }
+  const hideElements = e => {
+    //THis work to copy dom if any attached event fired before
+
+    const className = clickedClassName.current;
+    if (className) {
+      //copy after some time as to wait to fully render main container
+      setTimeout(() => {
+        const elm = document.querySelector(`.unzoom-container-wrapper .${className}`);
+        const zoomedElm = document.querySelector(`.zoomed-container-wrapper .${className}`);
+        if (elm && (e.target !== elm || !elm.contains(e.target))) {
+          if (zoomedElm) {
+            document.querySelector(`.zoomed-container-wrapper`).innerHTML = document.querySelector(`.unzoom-container-wrapper`).innerHTML;
+          }
+        }
+      }, 1000)
+    }
+  }
 
   const handleScroll = e =>
     document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
@@ -103,29 +172,45 @@ const Magnifier = ({
     e.preventDefault();
   };
 
+  const handleDragElements = () => {
+    const dragElements = document.querySelectorAll(".zoomed-container-wrapper .react-draggable");
+    if (dragElements.length > 0) {
+      document.querySelectorAll(".unzoom-container-wrapper .react-draggable").forEach((elm, i) => {
+        dragElements[i].style.transform = elm.style.transform;
+      })
+    }
+  }
+
+  const handleHints = () => {
+    const dragElements = document.querySelectorAll(".zoomed-container-wrapper .hint-container");
+    if (dragElements.length > 0) {
+      document.querySelectorAll(".unzoom-container-wrapper .hint-container").forEach((elm, i) => {
+        dragElements[i].innerHTML = elm.innerHTML;
+      })
+    }
+  }
+
   return (
     <>
-      {children}
-      {(enable || type === "testlet") && (
-        <ZoomedWrapper
-          ref={ref}
-          onMouseDown={onMouseDown}
-          id="magnifier-wrapper"
-          style={{
-            border: `1px solid ${magnifierBorderColor}`,
-            width: `${width}px`,
-            height: `${height}px`,
-            borderRadius: "5px",
-            position: "fixed",
-            overflow: "hidden",
-            left: setting.pos.x + "px",
-            top: setting.pos.y + "px",
-            zIndex: 1000,
-            cursor: "move",
-            background: "white",
-            display: type === "testlet" ? "none" : "block"
-          }}
-          className="zoomed-container-wrapper"
+      <div className="unzoom-container-wrapper">{children}</div>
+      {(enable || type === "testlet") && <ZoomedWrapper
+        ref={ref}
+        onMouseDown={onMouseDown}
+        id="magnifier-wrapper"
+        style={{
+          border: `1px solid ${magnifierBorderColor}`,
+          width: `${width}px`,
+          height: `${height}px`,
+          borderRadius: "5px",
+          position: "fixed",
+          overflow: "hidden",
+          left: setting.pos.x + 'px',
+          top: setting.pos.y + 'px',
+          zIndex: 1050,
+          cursor: "move",
+          background: "white",
+          display: type === "testlet" ? "none" : "block"
+        }}
         >
           <div
             style={{
@@ -141,6 +226,7 @@ const Magnifier = ({
               userSelect: "none",
               marginLeft: `-${width / scale}px`
             }}
+            className="zoomed-container-wrapper"
           >
             {(ZoomedContent && <ZoomedContent />) || children}
           </div>
@@ -152,7 +238,7 @@ const Magnifier = ({
             }}
           />
         </ZoomedWrapper>
-      )}
+      }
     </>
   );
 };

@@ -26,6 +26,7 @@ import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
 import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
 import { CHECK, CLEAR } from "../constants/constantsForQuestions";
+import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -83,7 +84,9 @@ const AssessmentContainer = ({
   playerSkinType,
   userPrevAnswer,
   testSettings,
-  showMagnifier
+  showMagnifier,
+  updateTestPlayer,
+  enableMagnifier
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -101,6 +104,9 @@ const AssessmentContainer = ({
     lastTime.current = Date.now();
     window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));
+    if (enableMagnifier) {
+      updateTestPlayer({enableMagnifier: false});
+    }
   }, [qid]);
 
   useEffect(() => {
@@ -170,6 +176,9 @@ const AssessmentContainer = ({
         locState: history?.location?.state
       });
     }
+    if (enableMagnifier) {
+      updateTestPlayer({enableMagnifier: false});
+    }
   };
 
   const saveProgress = () => {
@@ -187,6 +196,9 @@ const AssessmentContainer = ({
 
   const moveToPrev = () => {
     if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
+    if (enableMagnifier) {
+      updateTestPlayer({enableMagnifier: false});
+    }
   };
 
   const testItem = items[currentItem] || {};
@@ -206,6 +218,7 @@ const AssessmentContainer = ({
     }
   }, 1000 * 30);
 
+  const handleMagnifier = () => updateTestPlayer({enableMagnifier: !enableMagnifier});
   const props = {
     saveCurrentAnswer,
     items,
@@ -232,7 +245,9 @@ const AssessmentContainer = ({
     passage,
     defaultAP,
     playerSkinType,
-    showMagnifier
+    showMagnifier,
+    handleMagnifier,
+    enableMagnifier
   };
 
   useEffect(() => {
@@ -341,14 +356,16 @@ const enhance = compose(
       savingResponse: state?.test?.savingResponse,
       userPrevAnswer: state.previousAnswers,
       testSettings: state.test?.settings,
-      showMagnifier: state.test.showMagnifier
+      showMagnifier: state.test.showMagnifier,
+      enableMagnifier: state.testPlayer.enableMagnifier
     }),
     {
       saveUserResponse,
       evaluateAnswer,
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
-      gotoItem: gotoItemAction
+      gotoItem: gotoItemAction,
+      updateTestPlayer: updateTestPlayerAction
     }
   )
 );

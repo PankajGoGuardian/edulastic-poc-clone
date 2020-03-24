@@ -329,6 +329,7 @@ class QuestionWrapper extends Component {
       theme,
       isLCBView,
       hideHintButton,
+      enableMagnifier,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -499,7 +500,7 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
-                {view === "preview" && !hideHintButton && <Hints question={data} />}
+                {view === "preview" && !hideHintButton && <Hints question={data} enableMagnifier={enableMagnifier} />}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>
@@ -570,7 +571,8 @@ const enhance = compose(
       showUserTTS: get(state, "user.user.tts", "no"),
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      enableMagnifier: state.testPlayer.enableMagnifier
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import {
@@ -11,7 +11,7 @@ import {
 import { themeColor, lightFadedBlack, mainTextColor, backgroundGrey, greenDark } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
 
-const Hints = ({ question, showHints }) => {
+const Hints = ({ question, showHints, enableMagnifier }) => {
   if (question.type === "passage") {
     return null;
   }
@@ -23,13 +23,25 @@ const Hints = ({ question, showHints }) => {
   const initialCount = showHints ? hintCount : 0;
   const [showCount, updateShowCount] = useState(initialCount);
 
+  useEffect(() => {
+    if (enableMagnifier) {
+      setTimeout(() => {
+        const dragElements = document.querySelectorAll(".zoomed-container-wrapper .hint-container");
+        if (dragElements.length > 0) {
+          document.querySelectorAll(".unzoom-container-wrapper .hint-container").forEach((elm, i) => {
+            dragElements[i].innerHTML = elm.innerHTML;
+          })
+        }
+      }, 500);
+    }
+  }, [showCount]);
   const showHintHandler = () => updateShowCount(1);
 
   const showMoreHints = () => updateShowCount(showCount + 1);
 
   return (
     hintCount > 0 && (
-      <div data-cy="hint-container">
+      <div data-cy="hint-container" className="hint-container">
         <QuestionLabel>
           <QuestionText>{question.barLabel}</QuestionText> - Hints
         </QuestionLabel>

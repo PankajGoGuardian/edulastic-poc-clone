@@ -47,7 +47,8 @@ const PlayerContentArea = ({
   fillColor,
   saveHistory,
   history,
-  evaluation
+  evaluation,
+  enableMagnifier
 }) => {
   const scrollContainerRef = useRef();
   const item = items[currentItem];
@@ -80,6 +81,7 @@ const PlayerContentArea = ({
                 saveHistory={saveHistory}
                 history={history}
                 viewComponent="practicePlayer"
+                enableMagnifier={enableMagnifier}
               />
             )}
             {testItemState === "check" && (
@@ -99,9 +101,10 @@ const PlayerContentArea = ({
                 saveHistory={saveHistory}
                 history={history}
                 evaluation={evaluation}
+                enableMagnifier={enableMagnifier}
               />
             )}
-            {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />}
+            {showHints && <Hints questions={get(item, [`data`, `questions`], [])} enableMagnifier={enableMagnifier} />}
           </MainContent>
         </ScrollContext.Provider>
         {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && (

@@ -97,7 +97,8 @@ class TestItemPreview extends Component {
       isPrintPreview,
       showCollapseBtn,
       hideHintButton,
-      showExplanation
+      showExplanation,
+      enableMagnifier
     } = this.props;
     const displayFeedback = index == 0;
     const question = questions[widget.reference];
@@ -114,7 +115,7 @@ class TestItemPreview extends Component {
           isStudentReport={isStudentReport}
           isPresentationMode={isPresentationMode}
         />
-        {hideHintButton && <Hints question={question} showHints />}
+        {hideHintButton && <Hints question={question} showHints enableMagnifier={enableMagnifier} />}
         {showExplanation && <Explanation question={question} />}
       </>
     );

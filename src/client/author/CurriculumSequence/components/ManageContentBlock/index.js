@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
-import { uniq } from "lodash";
+import { uniq, pick } from "lodash";
 import { connect } from "react-redux";
-import { Dropdown, Menu, Spin, Empty } from "antd";
+import { Dropdown, Menu, Spin, Empty, message } from "antd";
 import { test as testsConstants } from "@edulastic/constants";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { IconFilter } from "@edulastic/icons";
 import { white, themeColor } from "@edulastic/colors";
+import { curriculumSequencesApi } from "@edulastic/api";
 import AssessmentPlayer from "../../../../assessment";
 import ResourceItem from "../ResourceItem";
 import { toggleManageModulesVisibilityCSAction } from "../../ducks";
@@ -29,6 +29,7 @@ import {
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ManageModulesModal from "../ManageModulesModal";
 import { ExternalLTIModalContent } from "./components/ExternalLTIModalContent";
+import { submitLTIForm } from "../CurriculumModuleRow";
 
 // Static resources data
 const resourceData = [
@@ -202,12 +203,22 @@ const ManageContentBlock = props => {
     fetchCall = tests.length - 7;
   }
 
+  const showResource = async resource => {
+    resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({ resource });
+      submitLTIForm(signedRequest);
+    } catch (e) {
+      message.error("Failed to load the resource");
+    }
+  };
+
   const renderList = () => {
     const listToRender = [];
     if (searchResourceBy === "resources" || searchResourceBy === "all") {
       // map resources to an element
       if (externalLTIResources.length) {
-        externalLTIResources.map((resource, idx) => {
+        externalLTIResources.forEach((resource, idx) => {
           listToRender.push(
             <ResourceItem
               type="lti_resource"
@@ -215,7 +226,7 @@ const ManageContentBlock = props => {
               title={resource.contentTitle}
               key={idx}
               data={resource?.data}
-              previewTest={showPreviewModal}
+              previewTest={() => showResource(resource?.data)}
             />
           );
         });
@@ -224,7 +235,7 @@ const ManageContentBlock = props => {
     if (searchResourceBy === "tests" || searchResourceBy === "all") {
       // map tests to an element.
       if (tests.length) {
-        tests.map((test, idx) => {
+        tests.forEach((test, idx) => {
           if (idx === fetchCall) {
             listToRender.push(<div style={{ height: "1px" }} ref={lastResourceItemRef} />);
           }
@@ -236,7 +247,7 @@ const ManageContentBlock = props => {
               key={test._id}
               summary={test?.summary}
               isAdded={testsInPlaylist.includes(test?._id)}
-              previewTest={showPreviewModal}
+              previewTest={() => showPreviewModal(test._id)}
             />
           );
         });
@@ -386,7 +397,7 @@ const ManageContentBlock = props => {
 };
 
 export default connect(
-  (state, ownProps) => ({
+  state => ({
     isManageModulesVisible: state.curriculumSequence?.isManageModulesVisible,
     isLoading: state.playlistTestBox?.isLoading,
     loadedPage: state.playlistTestBox?.loadedPage,

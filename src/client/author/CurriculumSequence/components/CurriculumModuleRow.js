@@ -10,7 +10,6 @@ import {
   greenDark6,
   greyThemeDark1,
   greyThemeLighter,
-  lightGreen5,
   lightGrey5,
   lightGrey6,
   mainBgColor,
@@ -25,7 +24,7 @@ import {
 import { EduButton, ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
 import { IconCheckSmall, IconLeftArrow, IconMoreVertical, IconVerified, IconVisualization } from "@edulastic/icons";
-import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow } from "antd";
+import { Avatar, Button, Col, Dropdown, Icon, Menu, Modal, Row as AntRow, message } from "antd";
 import produce from "immer";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -35,6 +34,8 @@ import { Link, withRouter } from "react-router-dom";
 import { sortableContainer, sortableElement, sortableHandle } from "react-sortable-hoc";
 import { compose } from "redux";
 import styled from "styled-components";
+import { pick } from "lodash";
+import { curriculumSequencesApi } from "@edulastic/api";
 import AssessmentPlayer from "../../../assessment";
 import { Tooltip } from "../../../common/utils/helpers";
 import { resumeAssignmentAction, startAssignmentAction } from "../../../student/Assignments/ducks";
@@ -43,24 +44,22 @@ import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { playlistTestRemoveFromModuleAction } from "../../CurriculumSequence/ducks";
 import { StyledLabel, StyledTag } from "../../Reports/common/styled";
 import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
 import {
+  playlistTestRemoveFromModuleAction,
   putCurriculumSequenceAction,
   removeUnitAction,
   setSelectedItemsForAssignAction,
   toggleCheckedUnitItemAction,
-  getSignedRequestAction,
   togglePlaylistTestDetailsModalWithId
 } from "../ducks";
 import { getProgressColor, getProgressData } from "../util";
 import AssignmentDragItem from "./AssignmentDragItem";
 import { LTIResourceRow } from "./LTIResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
-import { pick } from "lodash";
 
 /**
  * @typedef {object} Props
@@ -109,6 +108,24 @@ const SortableElement = sortableElement(props => {
     </AssignmentDragItemContainer>
   );
 });
+
+export const submitLTIForm = signedRequest => {
+  if (signedRequest) {
+    const ltiForm = document.createElement("form");
+    ltiForm.style.display = "none";
+    ltiForm.setAttribute("target", "_blank");
+    ltiForm.setAttribute("action", "https://edulasticv2-lti.snapwiz.net/launch-lti");
+    ltiForm.setAttribute("method", "POST");
+    ltiForm.setAttribute("id", "lti-review-form");
+    const formBody = Object.keys(signedRequest)
+      .map(key => `<input name="${key}" value="${signedRequest[key]}" type="text" />`)
+      .join("");
+    ltiForm.innerHTML = formBody;
+    document.body.appendChild(ltiForm);
+    ltiForm.submit();
+    document.body.removeChild(ltiForm);
+  }
+};
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
@@ -303,18 +320,20 @@ class ModuleRow extends Component {
     });
   };
 
-  submitForm = () => {
-    if (!document.getElementById("ltiLaunchForm")) {
-      window.requestAnimationFrame(this.submitForm);
-    } else {
-      document.getElementById("ltiLaunchForm").submit();
-    }
-  };
-
-  showResource = (contentId, resource) => {
+  showResource = async (contentId, resource) => {
     resource = resource && pick(resource, ["toolProvider", "url", "customParams", "consumerKey", "sharedSecret"]);
-    const { playlistId, module, getSignedRequest } = this.props;
-    getSignedRequest({ playlistId, moduleId: module._id, contentId, resource });
+    const { playlistId, module } = this.props;
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({
+        playlistId,
+        moduleId: module._id,
+        contentId,
+        resource
+      });
+      submitLTIForm(signedRequest);
+    } catch (e) {
+      message.error("Failed to load the resource");
+    }
   };
 
   render() {
@@ -337,7 +356,6 @@ class ModuleRow extends Component {
       summaryData,
       playlistMetrics,
       playlistId,
-      signedRequest,
       playlistTestDetailsModalData,
       togglePlaylistTestDetails
     } = this.props;
@@ -388,24 +406,6 @@ class ModuleRow extends Component {
                 closeTestPreviewModal={this.closeModal}
               />
             </ModalWrapper>
-          )}
-          {signedRequest && (
-            <div>
-              <form
-                style={{ display: `none` }}
-                id="ltiLaunchForm"
-                target="form-iframe"
-                method="POST"
-                target="_blank"
-                action={`http://ec2-54-80-205-175.compute-1.amazonaws.com:3000/launch-lti`}
-              >
-                {Object.keys(signedRequest).map(key => (
-                  <input name={key} value={signedRequest[key]} type="text" />
-                ))}
-                <input value="Submit" type="submit" />
-              </form>
-              {this.submitForm()}
-            </div>
           )}
 
           <ModuleWrapper
@@ -1384,7 +1384,6 @@ const enhance = compose(
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
-      signedRequest: curriculumSequence.signedRequest,
       isStudent: getUserRole({ user }) === "student",
       classId: getCurrentGroup({ user }),
       playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal
@@ -1398,7 +1397,6 @@ const enhance = compose(
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction,
       updateCurriculumSequence: putCurriculumSequenceAction,
-      getSignedRequest: getSignedRequestAction,
       togglePlaylistTestDetails: togglePlaylistTestDetailsModalWithId
     }
   )

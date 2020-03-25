@@ -38,7 +38,7 @@ function finalSummary(stats) {
   return {
     "#Spec": Object.keys(getAllSummary).length,
     Status: tests === passes ? "✔" : "✖",
-    Spec: `Overall(${Object.keys(getAllSummary).length} specs)`,
+    Spec: "Overall",
     Duration: duration > 1000 ? getFormatedTime(duration) : `${duration}ms`,
     Tests: tests,
     Passing: `${passes}(${Math.round((passes * 100) / tests)}%)`,

@@ -60,7 +60,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
     });
 
     it(`> verify the assignment status is ${teacherSide.IN_PROGRESS}`, () => {
-      teacherSidebar.clickOnAssignment();
+      // teacherSidebar.clickOnAssignment();
       authorAssignmentPage.verifyStatus(teacherSide.IN_PROGRESS);
       authorAssignmentPage.verifySubmitted("0 of 1");
       authorAssignmentPage.verifyGraded("0");
@@ -79,7 +79,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Status with
 
     it(` > add new student to the class before due date , status should be ${teacherSide.IN_PROGRESS}`, () => {
       teacherSidebar.clickOnDashboard();
-
       teacherSidebar.clickOnAssignment();
       authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
       lcb.addOneStudent(students[2].email);

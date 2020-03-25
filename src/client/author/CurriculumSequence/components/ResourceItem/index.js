@@ -44,7 +44,7 @@ const ResourceItem = ({ title, type, id, summary, data = undefined, isAdded, pre
         <Tags tags={standardIdentifiers} show={1} showTitle />
       </ResourceTitle>
       <Tooltip title="preview">
-        <IconEye className="preview-btn" color={themeColor} width={18} height={16} onClick={() => previewTest(id)} />
+        <IconEye className="preview-btn" color={themeColor} width={18} height={16} onClick={previewTest} />
       </Tooltip>
     </ResourceItemWrapper>
   );

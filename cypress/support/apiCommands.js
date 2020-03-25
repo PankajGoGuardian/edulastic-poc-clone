@@ -223,31 +223,6 @@ Cypress.Commands.add("deleteTestData", () => {
       testData = JSON.parse(fileContent);
       console.log("testDataJson in deleteTestData", testData);
 
-      // delete playlist
-
-      if (testData.playlist && testData.playlist.length > 0) {
-        testData.playlist.forEach(playlistObj => {
-          cy.deletePlayList(playlistObj);
-        });
-        delete testData.playlist;
-      }
-
-      // delete tests
-      if (testData.tests && testData.tests.length > 0) {
-        testData.tests.forEach(test => {
-          cy.deleteTest(test);
-        });
-        delete testData.tests;
-      }
-
-      // delete testItems
-      if (testData.testItems && testData.testItems.length > 0) {
-        testData.testItems.forEach(item => {
-          cy.deleteItem(item);
-        });
-        delete testData.testItems;
-      }
-
       cy.setToken(daCredential.username, daCredential.password).then(() => {
         // archive users
         if (testData.users) {
@@ -276,6 +251,30 @@ Cypress.Commands.add("deleteTestData", () => {
           delete testData.enrollments;
         }
       });
+
+      // delete playlist
+      if (testData.playlist && testData.playlist.length > 0) {
+        testData.playlist.forEach(playlistObj => {
+          cy.deletePlayList(playlistObj);
+        });
+        delete testData.playlist;
+      }
+
+      // delete tests
+      if (testData.tests && testData.tests.length > 0) {
+        testData.tests.forEach(test => {
+          cy.deleteTest(test);
+        });
+        delete testData.tests;
+      }
+
+      // delete testItems
+      if (testData.testItems && testData.testItems.length > 0) {
+        testData.testItems.forEach(item => {
+          cy.deleteItem(item);
+        });
+        delete testData.testItems;
+      }
     } else testData = {};
 
     // TODO : add other collections API

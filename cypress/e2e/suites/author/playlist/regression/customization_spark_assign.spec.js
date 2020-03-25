@@ -72,6 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
   context(">customization - assign", () => {
     context(">add new test to module-'from search bar'", () => {
       before(">login", () => {
+        cy.deleteAllAssignments("", teacher.email);
         cy.login("teacher", teacher.email, teacher.pass);
         testlibraryPage.createTest("default").then(id => {
           newtest = id;
@@ -92,13 +93,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       it(">customize-'add new test'", () => {
         playlistlibraryPage.sidebar.clickOnRecentUsedPlayList();
         playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.playlistCustom.searchContainer.setFilters({ collection: "Private Library" });
         playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
         playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
         playlistlibraryPage.header.clickOnSave();
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
       });
       it(">assign the whole module-'re-assign'", () => {
-        playlistlibraryPage.reviewTab.clickOnAssignByTestByModule(1, 3);
+        playlistlibraryPage.reviewTab.clickOnAssignButtonByModule(1);
         playlistlibraryPage.playListAssign.selectClass("Class");
         playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false });
       });
@@ -108,7 +110,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
           assignmentsPage.getAssignmentByTestId(id).should("have.length", 1);
         });
         assignmentsPage.clickOnAssigmentByTestId(newtest);
-        studentTestPage.attemptQuestionsByQueType(qType, attemptdata);
+        studentTestPage.attemptQuestionsByQueType(qType.slice(1), attemptdata);
         studentTestPage.submitTest();
       });
     });
@@ -152,7 +154,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       it(">remove a assigned test and verify", () => {
         playlistlibraryPage.playlistCustom.clickOnManageContent();
         playlistlibraryPage.reviewTab.clickExpandByModule(1);
-        playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 1);
+        playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 4);
         playlistlibraryPage.header.clickOnSave();
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);

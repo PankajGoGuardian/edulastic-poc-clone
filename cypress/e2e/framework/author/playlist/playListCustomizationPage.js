@@ -19,7 +19,10 @@ class PlaylistCustom extends PlayListReview {
   dragTestFromSearchToModule = (sourcemod, test) => {
     this.clickExpandByModule(sourcemod);
     this.getModuleRowByModule(sourcemod).as("target-container");
-    this.searchContainer.getTestInSearchResultsById(test).as("source-container");
+    this.searchContainer
+      .getTestInSearchResultsById(test)
+      .first()
+      .as("source-container");
 
     const opts = {
       offsetX: 0,

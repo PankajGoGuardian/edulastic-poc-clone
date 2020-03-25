@@ -41,6 +41,7 @@ export default class TeacherSideBar {
   clickOnItemBank = () => {
     cy.server();
     cy.route("POST", "**/search/items").as("itemSearch");
+    cy.route("POST", "**browse-standards").as("search-standards");
 
     cy.get('[data-cy="Item Bank"]').dblclick({ force: true });
     // .click({ force: true });

@@ -107,14 +107,11 @@ export default class GroupItemsPage {
 
   clearAllGrades = () =>
     cy.get('[data-cy="grade-Select"]').then($ele => {
-      if (Cypress.$($ele).find('[data-icon="close"]').length) {
-        cy.wrap($ele)
+      if ($ele.find('[data-icon="close"]').length > 0)
+        cy.get('[data-cy="grade-Select"]')
           .find('[data-icon="close"]')
           .click({ multiple: true });
-      }
     });
-  // .find('[data-icon="close"]')
-  // .click({ multiple: true });
 
   selectStandardsBySubGradeStandardSet = (subject, Grade, standardSet, standards) => {
     if (subject) this.selectSubject(subject);

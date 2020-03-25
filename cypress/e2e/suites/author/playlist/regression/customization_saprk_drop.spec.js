@@ -61,16 +61,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       playlistdata.moduledata.module2 = testIds.slice(2, 4);
     });
   });
-  before(">create playlist", () => {
-    playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
-      playlistid = id;
-      playlistlibraryPage.header.clickOnEdit();
-      playlistlibraryPage.header.clickOnSettings();
-      playlistlibraryPage.setCustomization();
-      playlistlibraryPage.header.clickOnPublish();
+
+  context(">allowing customization- drop", () => {
+    before(">create playlist", () => {
+      playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
+        playlistid = id;
+        playlistlibraryPage.header.clickOnEdit();
+        playlistlibraryPage.header.clickOnSettings();
+        playlistlibraryPage.setCustomization();
+        playlistlibraryPage.header.clickOnPublish();
+      });
     });
-  });
-  context(">customization- drop", () => {
     context(">add a test to module-'from other module'", () => {
       before(">login", () => {
         cy.login("teacher", teacher.email, teacher.pass);
@@ -155,7 +156,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         });
       });
     });
-
     context(">remove test", () => {
       before(">login", () => {
         cy.login("teacher", teacher.email, teacher.pass);
@@ -258,7 +258,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         });
       });
     });
-
     context(">verify and edit by owner", () => {
       before(">create new test", () => {
         cy.login("publisher", contentEditor.email, contentEditor.pass);
@@ -277,7 +276,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(2, 2);
         playlistlibraryPage.header.clickOnPublish();
       });
-      it(">verify at teacher side-'new test'", () => {
+      it(">verify at teacher side-'removed test'", () => {
         cy.login("teacher", teacher.email, teacher.pass);
         playlistlibraryPage.searchByCollection(collection);
         playlistlibraryPage.clickOnPlayListCardById(playlistid);

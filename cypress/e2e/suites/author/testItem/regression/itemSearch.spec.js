@@ -50,7 +50,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
       context("Searching In Entire Library", () => {
         // Searched Published Tests should be visible in Entire Library
         it("Search By Standards-Published", () => {
-          testLibrary.sidebar.clickOnItemBank();
+          //  testLibrary.sidebar.clickOnItemBank();
           testLibrary.searchFilters.clearAll();
           Object.keys(standardToSearch).forEach(ele => {
             searchFilters.getSearchTextBox().clear({ force: true });

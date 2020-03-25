@@ -37,5 +37,11 @@ export default class PlayListSearchContainer {
     cy.route("POST", "**/search/tests").as("searchTests");
   };
 
+  setFilters = ({ collection }) => {
+    this.clickFilterButton();
+    if (collection) this.selectCollection(collection);
+    this.clickFilterButton();
+  };
+
   waitForTestSearch = () => cy.wait("@searchTests");
 }

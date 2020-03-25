@@ -350,7 +350,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       playListAssign.clickOnAssign();
     });
     it(">verify teacher side-'customized playlist'", () => {
-      playListLibrary.seachAndClickPlayListById(playlistId);
+      playListLibrary.seachAndClickPlayListById(playlistId, true);
       playListLibrary.reviewTab.clickExpandByModule(1);
       playListLibrary.reviewTab.verifyNoOfTestByModule(1, 2);
       playListLibrary.reviewTab.clickCollapseByModule(1);

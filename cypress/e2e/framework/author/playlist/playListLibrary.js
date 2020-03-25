@@ -96,9 +96,10 @@ export default class PlayListLibrary {
   checkforNonExistanceOfPlayList = playlistid =>
     cy.get("body").should("not.have.descendants", `[data-cy="${playlistid}"]`);
 
-  seachAndClickPlayListById = id => {
+  seachAndClickPlayListById = (id, draft = false) => {
     this.sidebar.clickOnPlayListLibrary();
     this.searchFilter.clearAll();
+    if (draft) this.searchFilter.getAuthoredByMe();
     this.searchFilter.typeInSearchBox(id);
     this.clickOnPlayListCardById(id);
   };

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { groupBy, keyBy, reduce, round, flatMap } from "lodash";
+import { sortBy, groupBy, keyBy, reduce, round, flatMap } from "lodash";
 import { lightGreen7, lightBlue8, lightRed2 } from "@edulastic/colors";
 
 /* Important Constants */
@@ -225,14 +225,17 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
     percentMean = (maxPercentScore + minPercentScore) / 2;
 
   // normalize values to get effort & performance
-  return curatedMetrics.map(item => {
-    const fName = item.firstName && item.firstName.trim();
-    const lName = item.lastName && item.lastName.trim();
-    const name = [fName ? fName[0] + "." : "", lName || (fName ? "" : "-")].join(" ").trim();
-    const effort = getNormalizedValue(item.totalTimeSpent, timeMean, timeRange);
-    const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
-    return { name, ...item, effort, performance, isActive: true };
-  });
+  return sortBy(
+    curatedMetrics.map(item => {
+      const fName = item.firstName && item.firstName.trim();
+      const lName = item.lastName && item.lastName.trim();
+      const name = [fName ? fName[0] + "." : "", lName || (fName ? "" : "-")].join(" ").trim();
+      const effort = getNormalizedValue(item.totalTimeSpent, timeMean, timeRange);
+      const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
+      return { name, ...item, effort, performance, isActive: true };
+    }),
+    ["lastName", "firstName"]
+  );
 };
 
 // (function) to get the mastery scale for comparing students

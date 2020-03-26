@@ -1,5 +1,7 @@
 import CypressHelper from "../../util/cypressHelpers";
+import PlayListSearchContainer from "./searchConatinerPage";
 
+const searchContainer = new PlayListSearchContainer();
 export default class DifferentiationPage {
   // *** ELEMENTS START ***
 
@@ -33,6 +35,8 @@ export default class DifferentiationPage {
 
   getAddButton = type => cy.get(`[data-cy="addButton-${type}"]`);
 
+  getManageContentButton = () => cy.get("[data-cy=manage-content]");
+
   // standard rows
   getReviewStandardsRows = () => this.getReviewWorkContainer().find(".ant-table-row-level-0");
 
@@ -52,6 +56,12 @@ export default class DifferentiationPage {
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickOnManageContent = () => {
+    searchContainer.routeTestSearch();
+    this.getManageContentButton().click();
+    searchContainer.waitForTestSearch();
+  };
 
   clickOnDifferentiationTab = (loadDefault = false) => {
     cy.server();
@@ -315,6 +325,37 @@ export default class DifferentiationPage {
           .eq(5)
           .should("have.text", added ? "ADDED" : "RECOMMENDED");
       });
+  };
+
+  dragTestFromSearchToSectionAndVerify = (targetmode, testId, testName) => {
+    searchContainer.typeInSearchBar(testName);
+    cy.get(`[data-cy="table-${targetmode}"]`).as("target-container"); // get review container
+    searchContainer
+      .getTestInSearchResultsById(testId)
+      .first()
+      .as("source-container");
+
+    const opts = {
+      offsetX: 0,
+      offsetY: 0
+    };
+
+    cy.get("@source-container")
+      .trigger("dragstart")
+      .trigger("drag");
+
+    cy.get("@target-container").then($el => {
+      const { x, y } = $el.get(0).getBoundingClientRect();
+      cy.wrap($el.get(0)).as("target");
+      cy.get("@target").trigger("dragover");
+      cy.get("@target").trigger("drop", {
+        clientX: x + opts.offsetX,
+        clientY: y + opts.offsetY
+      });
+    });
+    cy.get("@target-container")
+      .find(`[data-row-key="1"]`)
+      .should("contain", testName);
   };
 
   // *** APPHELPERS END ***

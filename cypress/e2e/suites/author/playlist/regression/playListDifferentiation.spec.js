@@ -14,6 +14,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
   const standard1 = "5.G.A.1";
   const standard2 = "5.G.A.2";
   const standard3 = "5.MD.A.1";
+  const customizedTests = [
+    { id: "5e78e3974b09d80007cbcc51", name: "Test_for_Differentiation_tab_Review_Work", target: "REVIEW" },
+    { id: "5e78e48aa609890008de851e", name: "Test for Differentiation Tab - Practice Work", target: "PRACTICE" },
+    { id: "5e78e54a1e75ab000741efd6", name: "Test for Differentiation tab - for Challenge work", target: "CHALLENGE" }
+  ];
   const reviewMasteryRange = [
     { mastery: 55, studCount: 0 },
     { mastery: 60, studCount: 1 },
@@ -119,6 +124,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
       differentiationPage.verifySelectAllChallengeWork();
       differentiationPage.verifyUnselectAllChallengeWork();
       differentiationPage.verifyAddButtonVisibility("CHALLENGE");
+    });
+
+    it("[TC05] > Verify Manage Content tab -Drag test and verify", () => {
+      differentiationPage.selectAssignment(assignment1);
+      differentiationPage.selectClass(class1);
+      differentiationPage.clickOnManageContent();
+      for (let value of customizedTests) {
+        differentiationPage.dragTestFromSearchToSectionAndVerify(value.target, value.id, value.name);
+      }
     });
   });
 });

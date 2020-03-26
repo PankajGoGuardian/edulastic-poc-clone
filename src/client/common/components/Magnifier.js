@@ -7,7 +7,25 @@ const {
   playerSkin: { magnifierBorderColor }
 } = themes;
 
-const copyDomOnClickOfElements = ["question-select-dropdown", "answer-math-input-field", "ant-select-selection"];
+const copyDomOnClickOfElements = [
+  "question-select-dropdown",
+  "answer-math-input-field",
+  "ant-select-selection",
+  "graph-toolbar-right li",
+  "graph-toolbar-left li",
+  "left-collapse-btn",
+  "right-collapse-btn",
+  "mq-editable-field"
+];
+
+const copyDomOnHoverOfElements = [
+  "parcc-question-list",
+  "ant-dropdown-trigger"
+];
+
+const copyDomOnBlurOfElements = [
+  "ant-input"
+];
 
 const Magnifier = ({
   children,
@@ -85,6 +103,23 @@ const Magnifier = ({
         }
       })
     })
+    copyDomOnHoverOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.addEventListener("mouseenter", cloneDom(className));
+          elm.addEventListener("mouseleave", cloneDom(className));
+        }
+      })
+    })
+    copyDomOnBlurOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.addEventListener("blur", cloneDom(className));
+        }
+      })
+    })
   }
 
   const removeAttachedEvents = () => {
@@ -96,8 +131,29 @@ const Magnifier = ({
         }
       })
     })
+
+    copyDomOnHoverOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.removeEventListener("mouseenter", cloneDom(className));
+          elm.removeEventListener("mouseleave", cloneDom(className));
+        }
+      })
+    })
+    copyDomOnBlurOfElements.forEach(className => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.removeEventListener("blur", cloneDom(className));
+        }
+      })
+    })
   }
 
+  /*
+    TODO: Refactor copyDom mutations to remove duplication from src/client/assessment/themes/AssessmentPlayerTestlet/PlayerContent.js
+  */
   const cloneDom = (className) => {
     //THis work to clone main container to zoomed container on any specific event happened.
     const cls = className;
@@ -108,7 +164,30 @@ const Magnifier = ({
         //copy after some time as to wait to fully render main container
         setTimeout(() => {
           mainWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper").innerHTML;
+          if (className === "question-select-dropdown") {
+            const headerQuestionWrapper = document.querySelector(".unzoom-container-wrapper .question-select-dropdown .ant-select-dropdown-menu");
+            headerQuestionWrapper?.addEventListener("scroll", scrollQuestionLIst);
+            //scroll after copy dom
+            setTimeout(() => scrollQuestionLIst({
+              target: document.querySelector(".unzoom-container-wrapper .question-select-dropdown .ant-select-dropdown-menu")
+            }), 100);
+          } else if (className === "parcc-question-list") {
+            const headerParccQUestionList = document.querySelector(".unzoom-container-wrapper .parcc-question-list .ant-menu");
+            headerParccQUestionList?.addEventListener("scroll", scrollParccReviewList);
+            //scroll after copy dom
+            setTimeout(() => scrollParccReviewList({
+              target: document.querySelector(".unzoom-container-wrapper .parcc-question-list .ant-menu")
+            }), 100);
+          } else if (className === "ant-dropdown-trigger") {
+            const headerParccQUestionList = document.querySelector(".unzoom-container-wrapper .sabc-header-question-list .ant-dropdown-menu");
+            headerParccQUestionList?.addEventListener("scroll", scrollSabcQuestionList);
+            //scroll after copy dom
+            setTimeout(() => scrollSabcQuestionList({
+              target: document.querySelector(".unzoom-container-wrapper .sabc-header-question-list .ant-dropdown-menu")
+            }), 100);
+          }
         }, 1000);
+        
       }
     }
   }
@@ -133,7 +212,13 @@ const Magnifier = ({
   const handleScroll = e =>
     document.getElementsByClassName("test-item-preview")[1]?.scrollTo(0, scale * e.target.scrollTop);
   const handleSidebarScroll = e =>
-    document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, scale * e.target.scrollTop);
+    document.getElementsByClassName("scrollbar-container")[1]?.scrollTo(0, e.target.scrollTop);
+  const scrollQuestionLIst = e =>
+    document.querySelector(".zoomed-container-wrapper .question-select-dropdown .ant-select-dropdown-menu")?.scrollTo(0, e.target.scrollTop);
+  const scrollParccReviewList = e =>
+    document.querySelector(".zoomed-container-wrapper .parcc-question-list .ant-menu")?.scrollTo(0, e.target.scrollTop);
+  const scrollSabcQuestionList = e =>
+    document.querySelector(".zoomed-container-wrapper .sabc-header-question-list .ant-dropdown-menu")?.scrollTo(0, e.target.scrollTop);
 
   const onMouseDown = e => {
     if (e.button !== 0) return;
@@ -193,7 +278,7 @@ const Magnifier = ({
   return (
     <>
       <div className="unzoom-container-wrapper">{children}</div>
-      {(enable || type === "testlet") && <ZoomedWrapper
+      {enable && <ZoomedWrapper
         ref={ref}
         onMouseDown={onMouseDown}
         id="magnifier-wrapper"
@@ -208,8 +293,7 @@ const Magnifier = ({
           top: setting.pos.y + 'px',
           zIndex: 1050,
           cursor: "move",
-          background: "white",
-          display: type === "testlet" ? "none" : "block"
+          background: "white"
         }}
         >
           <div

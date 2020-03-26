@@ -95,7 +95,7 @@ const PlayerHeader = ({
     <StyledFlexContainer>
       <Header ref={headerRef} style={headerStyle}>
         <HeaderTopMenu style={{ display: "flex", justifyContent: "space-between", fontWeight: 600 }}>
-          <FlexContainer>
+          <FlexContainer className="sabc-header-question-list">
             {!isDocbased && (
               <>
                 <QuestionList options={options} currentItem={currentItem} gotoQuestion={gotoQuestion} />

@@ -309,7 +309,7 @@ export default function Tools(props) {
   return (
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
       {toolsAreVisible && (
-        <ToolbarLeft>
+        <ToolbarLeft className="graph-toolbar-left">
           {tools.map(item => (
             <ToolBtn
               style={{ ...getSize() }}
@@ -381,7 +381,7 @@ export default function Tools(props) {
           )}
         </ToolbarLeft>
       )}
-      <ToolbarRight>
+      <ToolbarRight  className="graph-toolbar-right">
         {controls.map(control => (
           <ToolBtn
             key={`control-${control}`}

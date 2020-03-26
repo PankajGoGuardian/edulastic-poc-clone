@@ -76,10 +76,10 @@ class TestItemPreview extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left className="left-collapse-btn">
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right className="right-collapse-btn">
             <IconArrowRight />
           </CollapseBtn>
         </div>

@@ -3,13 +3,12 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { message } from "antd";
 import { ActionCreators } from "redux-undo";
 import { get, keyBy } from "lodash";
 import { withWindowSizes, hexToRGB } from "@edulastic/common";
 import { nonAutoGradableTypes, questionType } from "@edulastic/constants";
-import PaddingDiv from "@edulastic/common/src/components/PaddingDiv";
 // import Hints from "@edulastic/common/src/components/Hints";
 
 import { themes } from "../../../theme";
@@ -139,7 +138,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   openSubmitConfirmation = () => {
     const { previewPlayer, updateTestPlayer } = this.props;
-    updateTestPlayer({enableMagnifier: false});
+    updateTestPlayer({ enableMagnifier: false });
     if (previewPlayer) {
       return;
     }

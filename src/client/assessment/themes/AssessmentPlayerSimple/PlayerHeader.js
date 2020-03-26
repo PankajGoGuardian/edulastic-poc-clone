@@ -4,11 +4,11 @@ import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Tooltip } from "../../../common/utils/helpers";
 import styled from "styled-components";
-
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
+import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
+import { Tooltip, isZoomGreator } from "../../../common/utils/helpers";
 
 import {
   Header,
@@ -28,9 +28,8 @@ import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from "../../constants/others";
 
 import SettingsModal from "../../../student/sharedComponents/SettingsModal";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
-import { isZoomGreator } from "../../../common/utils/helpers";
+
 import ToolbarModal from "../common/ToolbarModal";
-import { smallDesktopWidth, extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 
 const PlayerHeader = ({
   title,
@@ -70,7 +69,7 @@ const PlayerHeader = ({
   }
 
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
-  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} finishTest={onOpenExitPopup} />;
+  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} showZoomBtn finishTest={onOpenExitPopup} />;
 
   return (
     <Fragment>
@@ -84,7 +83,6 @@ const PlayerHeader = ({
         items={items}
         currentItem={currentItem}
         isNonAutoGradable={isNonAutoGradable}
-        checkAnswer={checkAnswer}
         toggleBookmark={() => toggleBookmark(item._id)}
         isBookmarked={isBookmarked}
         handletoggleHints={onshowHideHints}

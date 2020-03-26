@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -8,18 +8,16 @@ import { connect } from "react-redux";
 import { Hints, ScrollContext } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import TestItemPreview from "../../components/TestItemPreview";
-import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
 
 import { IPAD_PORTRAIT_WIDTH, IPAD_LANDSCAPE_WIDTH, MAX_MOBILE_WIDTH } from "../../constants/others";
 import { getEvaluationSelector } from "../../selectors/answers";
+import getZoomedResponsiveWidth from "../../utils/zoomedResponsiveWidth";
 
 const PlayerContentArea = ({
   itemRows,
   previewTab,
-  dropdownOptions,
   currentItem,
-  gotoQuestion,
   isFirst,
   isLast,
   moveToPrev,
@@ -28,7 +26,6 @@ const PlayerContentArea = ({
   t,
   unansweredQuestionCount,
   items,
-  theme,
   showHints,
   testItemState,
   setHighlights,
@@ -54,6 +51,7 @@ const PlayerContentArea = ({
   const item = items[currentItem];
   const isZoomApplied = zoomLevel > 1;
   const previousQuestionActivity = previousQuestionActivities[item._id];
+  const responsiveWidth = getZoomedResponsiveWidth({ windowWidth, diff: 290, zoomLevel });
 
   return (
     <Main>
@@ -61,7 +59,7 @@ const PlayerContentArea = ({
         {/* react-sortable-hoc is required getContainer for auto-scroll, so need to use ScrollContext here
             Also, will use ScrollContext for auto-scroll on mobile */}
         <ScrollContext.Provider value={{ getScrollElement: () => scrollContainerRef.current }}>
-          <MainContent skin zoomed={isZoomApplied} zoomLevel={zoomLevel} responsiveWidth={windowWidth - 70}>
+          <MainContent skin zoomed={isZoomApplied} zoomLevel={zoomLevel} responsiveWidth={responsiveWidth}>
             {testItemState === "" && (
               <TestItemPreview
                 crossAction={crossAction}
@@ -126,9 +124,7 @@ const PlayerContentArea = ({
 PlayerContentArea.propTypes = {
   itemRows: PropTypes.array,
   previewTab: PropTypes.string.isRequired,
-  dropdownOptions: PropTypes.array,
   currentItem: PropTypes.number.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
   isFirst: PropTypes.func.isRequired,
   isLast: PropTypes.func.isRequired,
   moveToPrev: PropTypes.func.isRequired,
@@ -138,8 +134,7 @@ PlayerContentArea.propTypes = {
 };
 
 PlayerContentArea.defaultProps = {
-  itemRows: [],
-  dropdownOptions: []
+  itemRows: []
 };
 
 const mapStateToProps = (state, props) => ({
@@ -168,16 +163,16 @@ const MainContent = styled.div`
   overflow: visible;
   width: 100%;
   flex-direction: column;
-  padding: ${({ zoomed, zoomLevel, skin }) => {
+  padding: ${({ zoomed, zoomLevel }) => {
     if (zoomed) {
       if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
-        return "30px 50px 20px";
+        return "20px";
       }
       if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
-        return "35px 50px 20px";
+        return "15px";
       }
       if (zoomLevel >= 2.5) {
-        return "35px 50px 20px";
+        return "10px";
       }
       return "0";
     }
@@ -185,11 +180,10 @@ const MainContent = styled.div`
   ${({ zoomLevel, responsiveWidth }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined;
     return `
-      width: ${zoomed ? `${responsiveWidth}px` : "100%"};
+      width: ${responsiveWidth}px;
       height: ${zoomed ? `${100 / zoomLevel}%` : "100%"};
       transform: ${zoomed ? `scale(${zoomLevel})` : ""};
       transform-origin: ${zoomed ? `top left` : ""};
-      margin: ${!zoomed ? "auto" : ""};
     `;
   }};
   & * {
@@ -220,15 +214,5 @@ const MainWrapper = styled.div`
 
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     margin-top: 75px;
-  }
-`;
-
-const Sidebar = styled.div`
-  width: ${({ isVisible }) => (isVisible ? 220 : 65)}px;
-  background-color: ${props => props.theme.widgets.assessmentPlayers.sidebarBgColor};
-  color: ${props => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  padding-top: 85px;
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    display: none;
   }
 `;

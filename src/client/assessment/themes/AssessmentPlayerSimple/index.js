@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import React from "react";
@@ -65,7 +66,6 @@ class AssessmentPlayerSimple extends React.Component {
     testItemState: "",
     toolsOpenStatus: [0],
     history: 0,
-    calcBrand: "EDULASTIC",
     currentItem: 0,
     enableCrossAction: false
   };
@@ -178,7 +178,6 @@ class AssessmentPlayerSimple extends React.Component {
         message.info("Please double click to stop drawing");
       }
     }
-    updateScratchPad(data);
   };
 
   handleUndo = () => {
@@ -245,7 +244,6 @@ class AssessmentPlayerSimple extends React.Component {
       skippedInOrder,
       zoomLevel,
       windowWidth,
-      playerSkinType,
       scratchPadData
     } = this.props;
     const { showExitPopup, showHints, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
@@ -265,8 +263,6 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
-
-    const headerHeight = this.headerRef.current?.clientHeight || 0;
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -327,7 +323,7 @@ class AssessmentPlayerSimple extends React.Component {
               setCrossAction={enableCrossAction ? this.saveHistory("crossAction") : false}
               crossAction={crossAction || {}}
               previousQuestionActivities={previousQuestionActivities}
-              zoomLevel={playerSkinType !== "edulastic" ? zoomLevel : 0}
+              zoomLevel={zoomLevel}
               windowWidth={windowWidth}
               activeMode={activeMode}
               scratchPadMode={scratchPadMode}

@@ -54,6 +54,10 @@ export const StyledPreviewImage = styled.img`
   user-select: none;
   pointer-events: none;
   object-fit: contain;
+  &[src*="passage"] {
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+  }
 `;
 
 export const QuestionText = styled.div`

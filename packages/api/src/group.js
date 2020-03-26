@@ -106,6 +106,15 @@ const fetchPlaylistAccess = playlistId =>
     })
     .then(result => result.data.result);
 
+const saveHangoutEvent = data =>
+  api
+    .callApi({
+      url: `${prefix}/hangout`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -118,5 +127,6 @@ export default {
   archiveGroup,
   fetchStudentsByGroupId,
   dropPlaylist,
-  fetchPlaylistAccess
+  fetchPlaylistAccess,
+  saveHangoutEvent
 };

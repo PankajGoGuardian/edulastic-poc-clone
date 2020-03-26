@@ -15,6 +15,7 @@ import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 import { CardBox } from "./styled";
+import Launch from "../../../LaunchHangout/Launch";
 
 const Card = ({ data }) => (
   <CardBox data-cy={data.name}>
@@ -75,6 +76,7 @@ const MyClasses = ({
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
       )}
+      <Launch />
     </MainContentWrapper>
   );
 };

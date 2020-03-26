@@ -1,38 +1,145 @@
-import React, { useState } from "react";
-import { Modal, Row, Col, Select } from "antd";
+import React from "react";
+import styled from "styled-components";
+import { Modal, Row, Col, Spin, Select, Checkbox } from "antd";
+import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
+import { greyThemeDark1, greyThemeLight, greyThemeLighter, lightGrey9, darkGrey2, themeColor } from "@edulastic/colors";
 
-const HangoutsModal = ({ classList = [], setShowHangoutsModal, ...props }) => {
-  const [selectedGroupId, selectGroupId] = useState("");
-  const selectedGroup = classList.find(c => c._id === selectedGroupId);
+const HangoutsModal = ({
+  title,
+  description,
+  visible,
+  selected,
+  onSelect,
+  checked,
+  onCheckUncheck,
+  onOk,
+  onCancel,
+  loading,
+  classList = [],
+  isStudent
+}) => {
   return (
-    <Modal {...props}>
-      <Row type="flex" align="middle" gutter={[20, 20]}>
-        <Col span={24}>
-          <Select
-            placeholder="Select Class"
-            style={{ width: "100%" }}
-            dropdownStyle={{ zIndex: 2000 }}
-            onChange={selectGroupId}
-          >
-            {classList.map(({ _id, name }) => (
-              <Select.Option key={_id} value={_id}>
-                {name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Col>
-        <Col span={24} style={{ display: "inline-flex", "justify-content": "center" }}>
-          <EduButton isGhost width="100px" onClick={() => setShowHangoutsModal(false)}>
-            Cancel
-          </EduButton>
-          <EduButton width="100px" href={selectedGroup?.hangoutLink} target="_blank" disabled={!selectedGroup}>
-            Join
-          </EduButton>
-        </Col>
-      </Row>
-    </Modal>
+    <StyledModal visible={visible} footer={null} onCancel={onCancel}>
+      {loading ? (
+        <Spin size="small" />
+      ) : (
+        <Row type="flex" align="middle" gutter={[20, 20]}>
+          <StyledCol span={24} justify="space-between">
+            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
+              {title}
+            </StyledDiv>
+            <IconClose height={20} width={20} onClick={onCancel} />
+          </StyledCol>
+          <StyledCol span={24} marginBottom="20px" justify="left">
+            <StyledDiv color={darkGrey2}>{description}</StyledDiv>
+          </StyledCol>
+          <StyledCol span={24} marginBottom="30px">
+            <StyledSelect
+              placeholder="Select Class"
+              dropdownStyle={{ zIndex: 2000 }}
+              defaultValue={selected?._id}
+              onChange={onSelect}
+            >
+              {classList.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
+            </StyledSelect>
+          </StyledCol>
+          {/* TODO: Remove "false" when the feature is ready to be deployed */}
+          {isStudent && false && (
+            <StyledCol span={24} marginBottom="25px" justify="left">
+              <Checkbox checked={checked} onChange={onCheckUncheck}>
+                <StyledDiv fontStyle="11px/15px Open Sans">SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM</StyledDiv>
+              </Checkbox>
+            </StyledCol>
+          )}
+          <StyledCol span={24} marginBottom="10px">
+            <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
+              Cancel
+            </EduButton>
+            {isStudent ? (
+              <EduButton
+                height="40px"
+                width="200px"
+                href={selected?.hangoutLink}
+                target="_blank"
+                disabled={!selected}
+                style={{ "margin-left": "20px" }}
+              >
+                Join
+              </EduButton>
+            ) : (
+              <EduButton height="40px" width="200px" onClick={onOk} style={{ "margin-left": "20px" }}>
+                Launch
+              </EduButton>
+            )}
+          </StyledCol>
+        </Row>
+      )}
+    </StyledModal>
   );
 };
 
 export default HangoutsModal;
+
+const StyledModal = styled(Modal)`
+  .ant-modal-content {
+    width: 630px;
+    .ant-modal-close {
+      display: none;
+    }
+    .ant-modal-header {
+      display: none;
+    }
+    .ant-modal-body {
+      padding: 24px 46px 32px;
+    }
+  }
+`;
+
+const StyledCol = styled(Col)`
+  display: flex;
+  align-items: center;
+  justify-content: ${props => props.justify || "center"};
+  margin-bottom: ${props => props.marginBottom};
+  svg {
+    cursor: pointer;
+  }
+`;
+
+const StyledSelect = styled(Select)`
+  width: 100%;
+  .ant-select-selection {
+    background: ${greyThemeLighter};
+    min-height: 40px;
+    padding: 5px;
+    border-radius: 2px;
+    border: 1px solid ${greyThemeLight};
+    .ant-select-selection__rendered {
+      .ant-select-selection__placeholder {
+        font-size: 13px;
+        letter-spacing: 0.24px;
+        color: ${lightGrey9};
+      }
+    }
+    .ant-select-arrow {
+      top: 20px;
+    }
+    .ant-select-arrow-icon {
+      svg {
+        fill: ${themeColor};
+      }
+    }
+  }
+`;
+
+const StyledDiv = styled.div`
+  display: inline;
+  text-align: left;
+  font: ${props => props.fontStyle || "14px/19px Open Sans"};
+  font-weight: ${props => props.fontWeight || 600};
+  color: ${props => props.color || greyThemeDark1};
+`;

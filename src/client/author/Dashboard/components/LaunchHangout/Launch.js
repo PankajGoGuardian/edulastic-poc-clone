@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { Select, Spin } from "antd";
-import { StyledModal } from "../../../ManageClass/components/ClassDetails/AddStudent/styled";
-import { EduButton, WithResources } from "@edulastic/common";
-import styled from "styled-components";
-import { backgroundGrey2, green, themeColorTagsBg } from "@edulastic/colors";
-import { getLaunchHangoutStatus, launchHangoutClose } from "../../duck";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
+import { EduButton, WithResources } from "@edulastic/common";
+import HangoutsModal from "../../../../student/Assignments/components/HangoutsModal";
+
+import { getLaunchHangoutStatus, launchHangoutClose } from "../../duck";
 import { getClasses } from "../../../../student/Login/ducks";
 import { getSavedGroupHangoutEvent, saveHangoutEventRequestAction } from "../../../Classes/ducks";
 
 const GOOGLE_SDK_URL = "https://apis.google.com/js/api.js";
 
 const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHangoutEvent, savedGroupHangoutInfo }) => {
-  const [groupId, setGroupId] = useState(classList?.[0]?._id || "");
+  const [groupId, setGroupId] = useState("");
   const [launching, setLaunching] = useState(false);
+
+  const selectedGroup = classList.find(group => group._id === groupId);
+
   const saveHangoutLink = (hangoutLink, event) => {
     if (hangoutLink) {
       const calendarEventData = JSON.stringify(event);
@@ -27,7 +29,6 @@ const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHango
     }
   };
   const createCalendarEvent = () => {
-    const selectedGroup = classList.filter(group => group._id === groupId)?.[0];
     const { code, name, _id } = selectedGroup;
     const requestId = _id;
     const currentDate = new Date();
@@ -95,7 +96,6 @@ const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHango
 
   const launchHangout = () => {
     setLaunching(true);
-    const selectedGroup = classList.filter(group => group._id === groupId)?.[0];
     if (selectedGroup && selectedGroup.hangoutLink) {
       closePopUp();
       window.open(`${selectedGroup.hangoutLink}`, "_blank");
@@ -141,45 +141,21 @@ const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHango
     closeLaunchHangout();
   };
 
-  const footer = (
-    <>
-      <EduButton height="32px" isGhost onClick={closePopUp}>
-        No, Cancel
-      </EduButton>
-      <EduButton height="32px" onClick={launchHangout}>
-        Yes, Launch
-      </EduButton>
-    </>
-  );
   return (
     <WithResources resources={[GOOGLE_SDK_URL]} fallBack={<></>} onLoaded={onApiLoad}>
-      <StyledModal
-        title={"Launch Hangout"}
+      <HangoutsModal
         visible={isOpenLaunch}
         onCancel={closePopUp}
-        footer={launching ? null : footer}
-        textAlign="left"
-        padding="0px"
-        centered
-      >
-        {launching ? (
-          <Spin size={"small"} />
-        ) : (
-          <FieldWrapper>
-            `<label>Select a class</label>
-            <Select placeholder="Select a class" onChange={setGroupId} dropdownStyle={{ zIndex: 1005 }}>
-              {classList.map(
-                c =>
-                  c.active && (
-                    <Select.Option key={c._id} value={c._id}>
-                      {c.name}
-                    </Select.Option>
-                  )
-              )}
-            </Select>
-          </FieldWrapper>
-        )}
-      </StyledModal>
+        onOk={launchHangout}
+        loading={launching}
+        title="Launch Hangout"
+        onSelect={setGroupId}
+        selected={selectedGroup}
+        checked={false}
+        onCheckUncheck={() => {}}
+        classList={classList.filter(c => c.active)}
+        description="Select the class that you want to invite for the Hangout session."
+      />
     </WithResources>
   );
 };
@@ -203,34 +179,3 @@ export default connect(
     saveHangoutEvent: saveHangoutEventRequestAction
   }
 )(Launch);
-
-const FieldWrapper = styled.div`
-  display: block;
-  margin-bottom: 10px;
-  label {
-    display: block;
-    margin-bottom: 5px;
-    text-align: left;
-    text-transform: uppercase;
-    font-size: ${({ theme }) => theme.smallFontSize};
-    font-weight: ${({ theme }) => theme.semiBold};
-  }
-  .ant-select {
-    width: 100%;
-    .ant-select-selection {
-      background: ${backgroundGrey2};
-      border-radius: 2px;
-      .ant-select-selection__rendered {
-        min-height: 35px;
-        line-height: 35px;
-        font-weight: 500;
-        .ant-select-selection__choice {
-          background: ${themeColorTagsBg};
-          color: ${green};
-          font-size: ${({ theme }) => theme.smallFontSize};
-          font-weight: ${({ theme }) => theme.semiBold};
-        }
-      }
-    }
-  }
-`;

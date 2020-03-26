@@ -1,16 +1,19 @@
-import { red } from "@edulastic/colors";
-import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
-import { IconClockDashboard } from "@edulastic/icons";
-import { Popover } from "antd";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { withNamespaces } from "react-i18next";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { Popover } from "antd";
+
+import { red, white, themeColor } from "@edulastic/colors";
+import { EduButton, FlexContainer, MainHeader } from "@edulastic/common";
+import { IconClockDashboard, IconHangouts } from "@edulastic/icons";
+
 import { slice } from "../../../Subscription/ducks";
 // TODO: Change to SVG
 import IMG from "../../../Subscription/static/6.png";
 import { IconPlus, PopoverCancel, PopoverDetail, PopoverTitle, PopoverWrapper, UpgradeBtn } from "./styled";
-import { withNamespaces } from "react-i18next";
 import { launchHangoutOpen } from "../../duck";
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
@@ -73,7 +76,10 @@ const HeaderSection = ({
             </Popover>
           </PopoverWrapper>
         )}
-        <EduButton onClick={launchHangout}>LAUNCH HANGOUT</EduButton>
+        <StyledEduButton isGhost onClick={launchHangout}>
+          <IconHangouts height={21} width={19} />
+          Launch Hangout
+        </StyledEduButton>
         <Link to="/author/manageClass">
           <EduButton data-cy="manageClass">
             <IconPlus />
@@ -104,3 +110,20 @@ export default withNamespaces("header")(
     }
   )(HeaderSection)
 );
+
+const StyledEduButton = styled(EduButton)`
+  span {
+    margin: 0 15px;
+  }
+  svg {
+    .b {
+      fill: ${white};
+    }
+  }
+  &:hover,
+  &:focus {
+    .b {
+      fill: ${themeColor};
+    }
+  }
+`;

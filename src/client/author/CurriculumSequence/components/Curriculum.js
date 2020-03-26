@@ -49,7 +49,8 @@ const SortableItem = sortableElement(props => {
     summaryData,
     playlistMetrics,
     playlistClassList,
-    isManageContentActive
+    isManageContentActive,
+    hasEditAccess
   } = props;
 
   const handleTestSort = prop => handleTestsSort({ ...prop, mIndex: id });
@@ -87,6 +88,7 @@ const SortableItem = sortableElement(props => {
           summaryData={summaryData}
           playlistMetrics={playlistMetrics}
           playlistClassList={playlistClassList}
+          hasEditAccess={hasEditAccess}
         />
       </DropContainer>
     </AssignmentItemContainer>

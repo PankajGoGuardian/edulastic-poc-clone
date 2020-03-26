@@ -4,15 +4,15 @@ import styled from "styled-components";
 
 const Container = styled.div`
   position: absolute;
-  top: 0px;
-  right: ${({ showAnswer }) => (showAnswer ? 14 : 0)}px;
-  bottom: 0px;
-  padding: 8px 4px 8px 4px;
+  top: ${({ top }) => top || "0px"};
+  right: ${({ showAnswer, right }) => (showAnswer ? "14px" : right || "0px")};
+  bottom: ${({ bottom }) => bottom || "0px"};
+  padding: ${({ noPadding }) => (noPadding ? "0px" : "8px 4px 8px 4px")};
   background-color: ${({ showAnswer }) => (showAnswer ? "inherit" : "white")};
 `;
 
-const Ellipsis = ({ showAnswer }) => (
-  <Container showAnswer={showAnswer}>
+const Ellipsis = ({ showAnswer, ...rest }) => (
+  <Container showAnswer={showAnswer} {...rest}>
     <p>...</p>
   </Container>
 );

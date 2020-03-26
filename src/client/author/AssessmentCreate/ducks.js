@@ -17,7 +17,8 @@ import {
   getTestEntitySelector,
   setTestDataAction,
   getReleaseScorePremiumSelector,
-  NewGroup
+  NewGroup,
+  receiveTestByIdAction
 } from "../TestPage/ducks";
 import { getUserSelector, getUserRole } from "../src/selectors/user";
 
@@ -250,6 +251,7 @@ function* createAssessmentSaga({ payload }) {
 
       const assessment = yield call(testsApi.create, assesmentPayload);
       yield put(createAssessmentSuccessAction());
+      yield put(receiveTestByIdAction(assessment._id, true, false));
       yield put(push(`/author/assessments/${assessment._id}`));
     }
   } catch (error) {

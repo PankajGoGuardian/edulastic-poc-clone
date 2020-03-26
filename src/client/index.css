@@ -2182,3 +2182,12 @@ div[class*="_pendo"] button {
 .ant-menu-inline-collapsed-tooltip {
   display: none !important;
 }
+
+/* bring drive picker dialog above antd modal */
+.picker-dialog {
+  z-index: 1003 !important;
+}
+
+.picker-dialog-bg {
+  z-index: 1003 !important;
+}

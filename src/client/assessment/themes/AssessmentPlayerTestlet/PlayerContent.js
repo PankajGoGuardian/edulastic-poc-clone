@@ -445,7 +445,9 @@ const PlayerContent = ({
         },
         handleLog: saveTestletLog
       });
-      setTimeout(showMagnifier, 1000);
+      if (enableMagnifier) {
+        setTimeout(showMagnifier, 1000);
+      }
       return () => {
         frameController.disconnect();
       };
@@ -465,7 +467,9 @@ const PlayerContent = ({
       window.localStorage.assessmentLastTime = Date.now();
       frameController.getCurrentPageScoreID();
     }
-    setTimeout(showMagnifier, 1000);
+    if (enableMagnifier) {
+      setTimeout(showMagnifier, 1000);
+    }
   }, [currentPage]);
 
   const zoomedContent = () => {

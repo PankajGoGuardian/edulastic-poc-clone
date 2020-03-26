@@ -67,7 +67,7 @@ const ReviewToolbar = ({ t, options, filterData = {}, gotoQuestion, skipped = []
   );
 
   return (
-    <Container>
+    <Container className="parcc-question-list">
       <StyledPopover placement="bottom" content={content} getPopupContainer={triggerNode => triggerNode.parentNode}>
         <StyledButton>
           <StyledIconList />

@@ -43,35 +43,113 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
-  let enableMagnifier = false;
+  const [enableMagnifier, setEnableMagnifier] = useState(false);
 
   const showMagnifier = () => {
+    setEnableMagnifier(true);
     if (frameRefForMagnifier.current) {
-      frameRefForMagnifier.current.contentWindow.document.body.innerHTML =
-        frameRef.current?.contentWindow?.document?.body?.innerHTML;
-      document.getElementById("magnifier-wrapper").style.display = "block";
-      const icon = document.getElementById("magnifier-icon");
-      icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgHoverColor;
-      const svg = icon.getElementsByTagName("svg")[0];
-      svg.style.fill = restProps.theme.default.header.headerButtonHoverColor;
-      enableMagnifier = true;
+      setTimeout(attachDettachHandlerOnTab, 1000);
+      copyDom();
     }
   };
 
-  const hideMagnifier = () => {
-    if (enableMagnifier) {
-      document.getElementById("magnifier-wrapper").style.display = "none";
-      const icon = document.getElementById("magnifier-icon");
-      icon.style.backgroundColor = restProps.theme.default.default.headerButtonBgColor;
-      const svg = icon.getElementsByTagName("svg")[0];
-      svg.style.fill = restProps.theme.default.header.headerButtonColor;
-      enableMagnifier = false;
+  /*
+    TODO: Refactor copyDom mutations to remove duplication from src/client/common/components/Magnifier.js
+  */
+  const copyDom = () => {
+    setTimeout(() => {
+      if (frameRefForMagnifier.current && frameRefForMagnifier?.current?.contentWindow?.document?.body) {
+        frameRefForMagnifier.current.contentWindow.document.body.innerHTML =
+          frameRef.current?.contentWindow?.document?.body?.innerHTML;
+
+        applyStyleToElements();
+        handleScrollPage({
+          target: frameRef.current?.contentWindow?.document?.body?.querySelector(".pages")
+        });
+        handleScrollPanel({
+          target: frameRef.current?.contentWindow?.document?.body?.querySelector(".winsight-panel")
+        });
+      }
+    }, 1000);
+  }
+
+  const attachDettachHandlerOnTab = (type = "attach") => {
+    const elems = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".tabbed .tab") || [];
+    elems.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+    const pages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages");
+    pages.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("scroll", handleScrollPage) : elm.removeEventListener("scroll", handleScrollPage);
+    });
+
+    //add scroll event to panel
+    const panels = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-panel");
+    panels.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("scroll", handleScrollPanel) : elm.removeEventListener("scroll", handleScrollPanel);
+    });
+
+    const buttons = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-button");
+    buttons.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+    const options = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".option");
+    options.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+
+    // attach click events to accordions
+    const accordions = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".accordion");
+    accordions.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+
+    //attach click event to dropdowns
+    const dropdowns = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".selectTrigger");
+    dropdowns.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+
+    //attach click event to passage
+    const passages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".passageSelection");
+    passages.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
+    });
+  }
+
+  const applyStyleToElements = () => {
+    const win = document.defaultView;
+    if (win.getComputedStyle){
+      //apply style from actual dom to magnified dom for specific class type
+      const magnifiedElems = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end");
+      frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end").forEach((elm, i) => {
+        magnifiedElems[i].style.display = win.getComputedStyle(elm).display;
+      })
     }
+  }
+
+  const handleScrollPage = (e) => {
+    const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
+    if (page) {
+      page.scrollTo(0, e.target.scrollTop);
+    }
+  }
+
+  const handleScrollPanel = (e) => {
+    const panel = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".winsight-panel");
+    if (panel) {
+      panel.scrollTo(0, e.target.scrollTop);
+    }
+  }
+
+  const hideMagnifier = () => {
+    setEnableMagnifier(false);
+    attachDettachHandlerOnTab("dettach");
   };
 
   const handleMagnifier = () => {
     if (!enableMagnifier) {
-      showMagnifier();
+      setTimeout(showMagnifier, 1000);
     } else {
       hideMagnifier();
     }
@@ -367,6 +445,7 @@ const PlayerContent = ({
         },
         handleLog: saveTestletLog
       });
+      setTimeout(showMagnifier, 1000);
       return () => {
         frameController.disconnect();
       };
@@ -386,38 +465,41 @@ const PlayerContent = ({
       window.localStorage.assessmentLastTime = Date.now();
       frameController.getCurrentPageScoreID();
     }
+    setTimeout(showMagnifier, 1000);
   }, [currentPage]);
 
-  const zoomedContent = () => (
-    <>
-      <PlayerHeader
-        title={title}
-        dropdownOptions={testletItems}
-        currentPage={currentPage}
-        onOpenExitPopup={openExitPopup}
-        onNextQuestion={nextQuestion}
-        unlockNext={unlockNext}
-        onPrevQuestion={prevQuestion}
-        previewPlayer={previewPlayer}
-        handleMagnifier={handleMagnifier}
-        enableMagnifier={enableMagnifier}
-        {...restProps}
-      />
-      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${testletConfig.testletId}_magnifier`}>
-          {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletConfig.testletURL && (
-            <iframe
-              ref={frameRefForMagnifier}
-              id={`${testletConfig.testletId}_magnifier`}
-              src={testletConfig.testletURL}
-              title="testlet player"
-            />
-          )}
-        </MainContent>
-      </Main>
-    </>
-  );
+  const zoomedContent = () => {
+    return (
+      <>
+        <PlayerHeader
+          title={title}
+          dropdownOptions={testletItems}
+          currentPage={currentPage}
+          onOpenExitPopup={openExitPopup}
+          onNextQuestion={nextQuestion}
+          unlockNext={unlockNext}
+          onPrevQuestion={prevQuestion}
+          previewPlayer={previewPlayer}
+          enableMagnifier={enableMagnifier}
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+        />
+        <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+          <MainContent id={`${testletConfig.testletId}_magnifier`}>
+            {LCBPreviewModal && currentScoring && <OverlayDiv />}
+            {testletConfig.testletURL && (
+              <iframe
+                ref={frameRefForMagnifier}
+                id={`${testletConfig.testletId}_magnifier`}
+                src={testletConfig.testletURL}
+                title="testlet player"
+              />
+            )}
+          </MainContent>
+        </Main>
+      </>
+    );
+  };
   return (
     <Magnifier
       enable={enableMagnifier}
@@ -437,9 +519,9 @@ const PlayerContent = ({
         unlockNext={unlockNext}
         onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
+        {...restProps}
         handleMagnifier={handleMagnifier}
         enableMagnifier={enableMagnifier}
-        {...restProps}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>

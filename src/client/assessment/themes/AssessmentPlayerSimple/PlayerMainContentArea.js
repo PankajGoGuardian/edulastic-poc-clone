@@ -165,7 +165,7 @@ const MainContent = styled.div`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   display: flex;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   flex-direction: column;
   padding: ${({ zoomed, zoomLevel, skin }) => {

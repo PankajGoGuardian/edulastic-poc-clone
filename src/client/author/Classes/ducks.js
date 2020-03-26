@@ -32,6 +32,10 @@ const ARCHIVE_CLASS_REQUEST = "[class] archive class request";
 const ARCHIVE_CLASS_SUCCESS = "[class] archive class success";
 const ARCHIVE_CLASS_ERROR = "[class ] archive class error";
 
+const SAVE_HANGOUT_EVENT_REQUEST = "[class] save hangout event request";
+const SAVE_HANGOUT_EVENT_SUCCESS = "[class] save hangout event success";
+const SAVE_HANGOUT_EVENT_ERROR = "[class ] save hangout event error";
+
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST);
 export const receiveClassListSuccessAction = createAction(RECEIVE_CLASSLIST_SUCCESS);
 export const receiveClassListErrorAction = createAction(RECEIVE_CLASSLIST_ERROR);
@@ -58,6 +62,10 @@ export const archiveClassAction = createAction(ARCHIVE_CLASS_REQUEST);
 export const archiveClassSuccessAction = createAction(ARCHIVE_CLASS_SUCCESS);
 export const archiveClassErrorAction = createAction(ARCHIVE_CLASS_ERROR);
 
+export const saveHangoutEventRequestAction = createAction(SAVE_HANGOUT_EVENT_REQUEST);
+export const saveHangoutEventSuccessAction = createAction(SAVE_HANGOUT_EVENT_SUCCESS);
+export const saveHangoutEventErrorAction = createAction(SAVE_HANGOUT_EVENT_ERROR);
+
 // selectors
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
@@ -68,6 +76,11 @@ export const getClassListSelector = createSelector(
 export const getBulkEditSelector = createSelector(
   stateClassSelector,
   ({ bulkEdit }) => bulkEdit
+);
+
+export const getSavedGroupHangoutEvent = createSelector(
+  stateClassSelector,
+  state => state.savedHangoutEvent
 );
 
 // reducers
@@ -212,6 +225,16 @@ export const reducer = createReducer(initialState, {
   [ARCHIVE_CLASS_ERROR]: (state, { payload }) => {
     state.archiving = false;
     state.archiveError = payload.archiveError;
+  },
+  [SAVE_HANGOUT_EVENT_REQUEST]: state => {
+    state.saving = true;
+  },
+  [SAVE_HANGOUT_EVENT_SUCCESS]: (state, { payload }) => {
+    state.saving = false;
+    state.savedHangoutEvent = payload.savedGroup;
+  },
+  [SAVE_HANGOUT_EVENT_ERROR]: state => {
+    state.saving = false;
   }
 });
 
@@ -301,6 +324,19 @@ function* archiveClassSaga({ payload }) {
   }
 }
 
+function* saveHangoutEventSaga({ payload }) {
+  try {
+    const savedGroup = yield call(groupApi.saveHangoutEvent, payload);
+    const successMessage = "Hangout event saved successfully";
+    yield call(message.success, successMessage);
+    yield put(saveHangoutEventSuccessAction({ savedGroup }));
+  } catch (err) {
+    const errorMessage = "Hangout event save is failing";
+    yield call(message.error, errorMessage);
+    yield put(saveHangoutEventErrorAction());
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_CLASSLIST_REQUEST, receiveClassListSaga)]);
   yield all([yield takeEvery(UPDATE_CLASS_REQUEST, updateClassSaga)]);
@@ -309,4 +345,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_TEACHERLIST_REQUEST, receiveTeachersListSaga)]);
   yield all([yield takeEvery(BULK_UPDATE_CLASSES, bulkUpdateClassesSaga)]);
   yield all([yield takeEvery(ARCHIVE_CLASS_REQUEST, archiveClassSaga)]);
+  yield all([yield takeEvery(SAVE_HANGOUT_EVENT_REQUEST, saveHangoutEventSaga)]);
 }

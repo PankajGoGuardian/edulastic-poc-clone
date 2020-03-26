@@ -11,6 +11,7 @@ import { slice } from "../../../Subscription/ducks";
 import IMG from "../../../Subscription/static/6.png";
 import { IconPlus, PopoverCancel, PopoverDetail, PopoverTitle, PopoverWrapper, UpgradeBtn } from "./styled";
 import { withNamespaces } from "react-i18next";
+import { launchHangoutOpen } from "../../duck";
 
 const getContent = ({ setvisible, isSubscriptionExpired }) => (
   <FlexContainer width="475px" alignItems="flex-start">
@@ -30,13 +31,21 @@ const getContent = ({ setvisible, isSubscriptionExpired }) => (
   </FlexContainer>
 );
 
-const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscriptionStatus, t }) => {
+const HeaderSection = ({
+  premium,
+  isSubscriptionExpired = false,
+  fetchUserSubscriptionStatus,
+  t,
+  openLaunchHangout
+}) => {
   useEffect(() => {
     fetchUserSubscriptionStatus();
   }, []);
 
   const [visible, setvisible] = useState(false);
-
+  const launchHangout = () => {
+    openLaunchHangout();
+  };
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
@@ -64,6 +73,7 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
             </Popover>
           </PopoverWrapper>
         )}
+        <EduButton onClick={launchHangout}>LAUNCH HANGOUT</EduButton>
         <Link to="/author/manageClass">
           <EduButton data-cy="manageClass">
             <IconPlus />
@@ -78,7 +88,8 @@ const HeaderSection = ({ premium, isSubscriptionExpired = false, fetchUserSubscr
 HeaderSection.propTypes = {
   premium: PropTypes.any.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
-  fetchUserSubscriptionStatus: PropTypes.func.isRequired
+  fetchUserSubscriptionStatus: PropTypes.func.isRequired,
+  openLaunchHangout: PropTypes.func.isRequired
 };
 
 export default withNamespaces("header")(
@@ -88,7 +99,8 @@ export default withNamespaces("header")(
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired
     }),
     {
-      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus
+      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
+      openLaunchHangout: launchHangoutOpen
     }
   )(HeaderSection)
 );

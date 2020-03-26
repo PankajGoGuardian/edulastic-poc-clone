@@ -44,7 +44,6 @@ import {
   AddRemoveBtn,
   AddRemoveBtnPublisher
 } from "./styled";
-import PreviewModal from "../../../src/components/common/PreviewModal";
 import {
   setAndSavePassageItemsAction,
   getPassageItemsCountSelector,
@@ -71,6 +70,7 @@ class Item extends Component {
     checkAnswer: PropTypes.func.isRequired,
     gotoSummary: PropTypes.func,
     showAnser: PropTypes.func.isRequired,
+    openPreviewModal: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool,
@@ -83,7 +83,6 @@ class Item extends Component {
   };
 
   state = {
-    isShowPreviewModal: false,
     isOpenedDetails: false,
     passageConfirmModalVisible: false,
     selectedId: ""
@@ -127,22 +126,14 @@ class Item extends Component {
     return helpers.sanitizeForReview(stimulus);
   }
 
-  closeModal = () => {
-    this.setState({ isShowPreviewModal: false });
-  };
-
-  previewItem = () => {
-    this.setState({ isShowPreviewModal: true });
-  };
-
   handleStimulusClick = () => {
-    const { features, item, userId, history } = this.props;
+    const { features, item, userId, history, openPreviewModal } = this.props;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     // Author can only edit if owner
     if (features.isCurator || (features.isPublisherAuthor && owner)) {
       return history.push(`/author/items/${item._id}/item-detail`);
     }
-    this.previewItem();
+    openPreviewModal();
   };
 
   renderDetails = () => {
@@ -333,7 +324,6 @@ class Item extends Component {
     }
 
     // open the modal for selecting  testItems manually.
-    this.setState({ isShowPreviewModal: true });
   };
 
   render() {
@@ -343,23 +333,13 @@ class Item extends Component {
       windowWidth,
       selectedToCart,
       search,
-      userId,
-      checkAnswer,
-      showAnswer,
       page,
       passageItemsCount,
-      gotoSummary,
       test,
-      features
+      features,
+      openPreviewModal
     } = this.props;
-    const {
-      isOpenedDetails,
-      isShowPreviewModal = false,
-      selectedId,
-      passageConfirmModalVisible,
-      showSelectGroupModal
-    } = this.state;
-    const owner = item.authors && item.authors.some(x => x._id === userId);
+    const { isOpenedDetails, selectedId, passageConfirmModalVisible, showSelectGroupModal } = this.state;
     const itemTypes = getQuestionType(item);
     const isPublisher = features.isCurator || features.isPublisherAuthor;
     const staticGroups = test?.itemGroups.filter(g => g.type === ITEM_GROUP_TYPES.STATIC) || 0;
@@ -371,23 +351,6 @@ class Item extends Component {
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
         <Container className="fr-view">
-          {isShowPreviewModal && (
-            <PreviewModal
-              isVisible={isShowPreviewModal}
-              page={page}
-              showAddPassageItemToTestButton
-              showEvaluationButtons
-              onClose={this.closeModal}
-              data={{ ...item, id: item._id }}
-              isEditable={owner}
-              owner={owner}
-              testId={test?._id}
-              isTest={!!test}
-              checkAnswer={() => checkAnswer({ ...item, isItem: true })}
-              showAnswer={() => showAnswer(item)}
-              gotoSummary={gotoSummary}
-            />
-          )}
           {passageConfirmModalVisible && (
             <PassageConfirmationModal
               visible={passageConfirmModalVisible}
@@ -414,7 +377,7 @@ class Item extends Component {
             {windowWidth > MAX_TAB_WIDTH &&
               (page === "itemList" ? (
                 <ViewButton>
-                  <EduButton width="100px" height="40px" isGhost data_cy={item._id} onClick={this.previewItem}>
+                  <EduButton width="100px" height="40px" isGhost data_cy={item._id} onClick={openPreviewModal}>
                     <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>

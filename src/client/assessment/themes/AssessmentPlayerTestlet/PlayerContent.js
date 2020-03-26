@@ -34,6 +34,8 @@ const PlayerContent = ({
   location = { state: {} },
   groupId,
   saveTestletLog,
+  enableMagnifier,
+  updateTestPlayer,
   ...restProps
 }) => {
   const frameRef = useRef();
@@ -43,10 +45,9 @@ const PlayerContent = ({
   const [testletItems, setQuestions] = useState([]);
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
-  const [enableMagnifier, setEnableMagnifier] = useState(false);
 
   const showMagnifier = () => {
-    setEnableMagnifier(true);
+    updateTestPlayer({ enableMagnifier: true });
     if (frameRefForMagnifier.current) {
       setTimeout(attachDettachHandlerOnTab, 1000);
       copyDom();
@@ -143,7 +144,7 @@ const PlayerContent = ({
   }
 
   const hideMagnifier = () => {
-    setEnableMagnifier(false);
+    updateTestPlayer({ enableMagnifier: false });
     attachDettachHandlerOnTab("dettach");
   };
 

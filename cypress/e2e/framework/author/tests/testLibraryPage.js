@@ -320,12 +320,14 @@ export default class TestLibrary {
   removeShare = () => {
     cy.server();
     cy.route("DELETE", "**/content-sharing/**").as("removeshare");
-    cy.route("GET", "**/content-sharing/**").as("removeshare1");
-    cy.get('[data-cy="share-button-close"]').each(shareClose => {
-      cy.wrap(shareClose).click({ force: true });
-      cy.wait("@removeshare");
+    cy.wait(1).then(() => {
+      if (Cypress.$('[data-cy="share-button-close"]').length) {
+        cy.get('[data-cy="share-button-close"]').each(shareClose => {
+          cy.wrap(shareClose).click({ force: true });
+          cy.wait("@removeshare");
+        });
+      }
     });
-    cy.wait("@removeshare1");
   };
 
   editsharing = () => cy.contains("span", "Edit").click({ force: true });

@@ -23,7 +23,7 @@ const toggleActiveData = ({ studentId, activeData, setActiveData, allActive }) =
 const ScatterLabel = props => {
   const { cx, cy, handleArrowClick, handleCircleClick, ...item } = props;
   const { studentId, name, trendAngle, color, count, hasTrend, isActive, isGrouped } = item;
-  const { nameX, arrowY } = calcLabelPosition({ cx, cy, name, trendAngle });
+  const { nameX, arrowY } = calcLabelPosition({ cx, cy, angle: trendAngle });
   return isGrouped ? (
     <g onClick={e => handleCircleClick(e, item.studentIds, color)}>
       <circle cx={cx} cy={cy} r={12} fill={lightGrey7} />
@@ -34,7 +34,7 @@ const ScatterLabel = props => {
   ) : (
     <g onClick={e => handleArrowClick(e, studentId)}>
       {isActive && (
-        <text x={nameX} y={cy} font-size="12" font-weight="bold" textAnchor="middle" fill={color}>
+        <text x={nameX} y={cy} font-size="12" font-weight="bold" textAnchor="end" fill={color}>
           {name}
         </text>
       )}

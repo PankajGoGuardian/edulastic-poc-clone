@@ -357,7 +357,9 @@ class ModuleRow extends Component {
       playlistMetrics,
       playlistId,
       playlistTestDetailsModalData,
-      togglePlaylistTestDetails
+      togglePlaylistTestDetails,
+      customize,
+      hasEditAccess
     } = this.props;
 
     const { title, _id, data = [], description = "" } = module;
@@ -531,20 +533,22 @@ class ModuleRow extends Component {
                     !isStudent &&
                     (totalAssigned ? (
                       <StyledCol span={8} justify="flex-end">
-                        <StyledLabel
-                          textColor={themeColor}
-                          fontStyle="9px/13px Open Sans"
-                          fontWeight="Bold"
-                          padding="10px 20px 10px 0px"
-                          data-cy={module.hidden ? "show-module" : "hide-module"}
-                          onClick={event => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            this.toggleModule(module, moduleIndex);
-                          }}
-                        >
-                          {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
-                        </StyledLabel>
+                        {customize && hasEditAccess && (
+                          <StyledLabel
+                            textColor={themeColor}
+                            fontStyle="9px/13px Open Sans"
+                            fontWeight="Bold"
+                            padding="10px 20px 10px 0px"
+                            data-cy={module.hidden ? "show-module" : "hide-module"}
+                            onClick={event => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              this.toggleModule(module, moduleIndex);
+                            }}
+                          >
+                            {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
+                          </StyledLabel>
+                        )}
                         <StyledTag
                           data-cy="AssignWholeModule"
                           bgColor={themeColor}
@@ -804,18 +808,20 @@ class ModuleRow extends Component {
                                       justify="flex-end"
                                       paddingRight="0"
                                     >
-                                      {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                                        <StyledLabel
-                                          textColor={themeColor}
-                                          fontStyle="9px/13px Open Sans"
-                                          fontWeight="Bold"
-                                          padding="4px 50px 10px 0px"
-                                          data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
-                                          onClick={() => this.hideTest(module._id, moduleData)}
-                                        >
-                                          {moduleData.hidden ? "SHOW" : "HIDE"}
-                                        </StyledLabel>
-                                      )}
+                                      {customize &&
+                                        hasEditAccess &&
+                                        (!hideEditOptions || (status === "published" && mode === "embedded")) && (
+                                          <StyledLabel
+                                            textColor={themeColor}
+                                            fontStyle="9px/13px Open Sans"
+                                            fontWeight="Bold"
+                                            padding="4px 50px 10px 0px"
+                                            data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
+                                            onClick={() => this.hideTest(module._id, moduleData)}
+                                          >
+                                            {moduleData.hidden ? "SHOW" : "HIDE"}
+                                          </StyledLabel>
+                                        )}
                                       {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
                                         (isAssigned ? (
                                           <AssignmentButton assigned={isAssigned} style={rowInlineStyle}>

@@ -1,15 +1,24 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Collapse, Select, Icon } from "antd";
-
+import produce from "immer";
+import { arrayMove } from "react-sortable-hoc";
+import { Collapse, Icon } from "antd";
+import { forEach, cloneDeep, get, findIndex } from "lodash";
+import { ScrollContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { greyThemeLight, greyThemeLighter, greyThemeDark2 } from "@edulastic/colors";
-import { response } from "@edulastic/constants";
+import { response as responseDimensions } from "@edulastic/constants";
+import SortableList from "../../../components/SortableList";
 import { SelectInputStyled } from "../../../styled/InputStyles";
+import { CustomStyleBtn } from "../../../styled/ButtonStyles";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { InnerTitle } from "../../../styled/InnerTitle";
+import { updateVariables } from "../../../utils/variables";
 
 const { Panel } = Collapse;
-const { Option } = Select;
+const { Option } = SelectInputStyled;
 
 const AnswerContainer = styled.div`
   margin-top: 16px;
@@ -35,23 +44,101 @@ const AnswerSelect = styled(SelectInputStyled)`
   height: ${({ height }) => (!height ? null : `${height}`)};
 
   .ant-select-selection {
-    height: ${response.minHeight}px;
+    height: ${responseDimensions.minHeight}px;
   }
 
   .ant-select-selection__rendered {
-    min-height: ${response.minHeight}px;
+    min-height: ${responseDimensions.minHeight}px;
   }
 `;
 
 class ClozeDropDownAnswer extends Component {
+  static contextType = ScrollContext;
+
   selectChange = (value, dropDownId) => {
     const { onChange: changeAnswers } = this.props;
     changeAnswers({ value, dropDownId });
   };
 
+  onSortEnd = dropDownId => ({ oldIndex, newIndex }) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.options[dropDownId] = arrayMove(draft.options[dropDownId], oldIndex, newIndex);
+      })
+    );
+  };
+
+  addNewChoiceBtn = dropDownId => () => {
+    const { item, setQuestionData, t } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        draft.options[dropDownId].push(
+          `${t("component.cloze.dropDown.newChoice")} ${draft.options[dropDownId].length + 1}`
+        );
+      })
+    );
+  };
+
+  remove = dropDownId => itemIndex => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.options[dropDownId].splice(itemIndex, 1);
+        const validDropDown = cloneDeep(draft.validation.validResponse.dropdown.value);
+        forEach(validDropDown, answer => {
+          if (answer.id === dropDownId) {
+            answer.value = "";
+          }
+        });
+        draft.validation.validResponse.dropdown.value = validDropDown;
+        updateVariables(draft);
+      })
+    );
+  };
+
+  editOptions = dropDownId => (itemIndex, e) => {
+    const { item, setQuestionData } = this.props;
+    const prevDropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
+    const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
+
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        const prevOption = draft.options[dropDownId][itemIndex];
+        draft.options[dropDownId][itemIndex] = e.target.value;
+        const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
+        const width = Math.min(splitWidth, 400);
+        const drpdwnIndex = findIndex(draft.responseIds.dropDowns, drpdwn => drpdwn.id === dropDownId);
+        const ind = findIndex(draft.responseContainers, cont => cont.id === dropDownId);
+        if (ind === -1) {
+          draft.responseContainers.push({
+            index: draft.responseIds.dropDowns[drpdwnIndex].index,
+            id: dropDownId,
+            widthpx: width,
+            type: "dropDowns"
+          });
+        } else {
+          draft.responseContainers[ind].widthpx = width;
+        }
+        if (prevAnswerIndex !== -1) {
+          const prevAnswer = prevDropDownAnswers[prevAnswerIndex].value;
+          if (prevAnswer && prevAnswer === prevOption) {
+            prevDropDownAnswers.splice(prevAnswerIndex, 1, { id: dropDownId, value: e.target.value });
+          }
+        }
+
+        updateVariables(draft);
+      })
+    );
+  };
+
   render() {
-    const { answers, item } = this.props;
-    const { options, responseContainers = [] } = item;
+    const { getScrollElement } = this.context;
+    const { answers, item, t } = this.props;
+    const { options, responseContainers = [], stimulus } = item;
+    const scrollContainer = getScrollElement();
 
     return (
       <AnswerContainer>
@@ -69,20 +156,39 @@ class ClozeDropDownAnswer extends Component {
             const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
             return (
               <Panel header={`Text Dropdown ${answer.index + 1}`} key={answer.index}>
-                <AnswerSelect
-                  value={answer.value}
-                  onChange={text => this.selectChange(text, answer.id)}
-                  getPopupContainer={triggerNode => triggerNode.parentNode}
-                  width={width}
-                  height={height}
-                >
-                  {option &&
-                    option.map((op, opIndex) => (
-                      <Option value={op} key={opIndex}>
-                        {op}
-                      </Option>
-                    ))}
-                </AnswerSelect>
+                <Row gutter={8}>
+                  <Col span={12} align="left">
+                    <InnerTitle innerText={`${t("component.math.correctAnswerForDropdown")}`} />
+                    <AnswerSelect
+                      value={answer.value}
+                      onChange={text => this.selectChange(text, answer.id)}
+                      getPopupContainer={() => scrollContainer}
+                      width={width}
+                      height={height}
+                    >
+                      {option &&
+                        option.map((op, opIndex) => (
+                          <Option value={op} key={opIndex}>
+                            {op}
+                          </Option>
+                        ))}
+                    </AnswerSelect>
+                  </Col>
+                  <Col span={12} align="left">
+                    <InnerTitle innerText={`${t("component.math.choicesfordropdown")}`} />
+                    <SortableList
+                      items={options[answer.id] || []}
+                      dirty={stimulus}
+                      onSortEnd={this.onSortEnd(answer.id)}
+                      useDragHandle
+                      onRemove={this.remove(answer.id)}
+                      onChange={this.editOptions(answer.id)}
+                    />
+                    <CustomStyleBtn onClick={this.addNewChoiceBtn(answer.id)}>
+                      {t("component.cloze.dropDown.addnewchoice")}
+                    </CustomStyleBtn>
+                  </Col>
+                </Row>
               </Panel>
             );
           })}

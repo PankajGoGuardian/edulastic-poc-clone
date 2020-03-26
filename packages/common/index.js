@@ -21,7 +21,6 @@ export {
   SelectInputStyled,
   DatePickerStyled,
   TextAreaInputStyled,
-  NumberInputStyled,
   FieldLabel
 } from "./src/components/InputStyles";
 export { default as Card } from "./src/components/Card";

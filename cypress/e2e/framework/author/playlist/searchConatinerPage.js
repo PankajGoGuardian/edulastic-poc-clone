@@ -27,7 +27,9 @@ export default class PlayListSearchContainer {
 
   typeInSearchBar = text => {
     this.routeTestSearch();
-    this.getKeywordsSearchBar().type(text);
+    this.getKeywordsSearchBar()
+      .clear()
+      .type(text);
     this.waitForTestSearch();
   };
 

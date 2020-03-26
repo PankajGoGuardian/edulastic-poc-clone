@@ -181,6 +181,7 @@ const Differentiation = ({
           {!showManageContent && (
             <div>
               <EduButton
+                data-cy="manage-content"
                 isGhost
                 height="35px"
                 onClick={e => {

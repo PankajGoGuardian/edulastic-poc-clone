@@ -1,10 +1,10 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
-import { isString, get, round } from "lodash";
-import { fileApi } from "@edulastic/api";
-import { aws, question, questionType } from "@edulastic/constants";
-import { replaceLatexesWithMathHtml } from "./utils/mathUtils";
+import { get, round, isNaN } from "lodash";
 import { message } from "antd";
+import { fileApi } from "@edulastic/api";
+import { aws, question } from "@edulastic/constants";
+import { replaceLatexesWithMathHtml } from "./utils/mathUtils";
 import AppConfig from "../../../app-config";
 
 export const ALPHABET = [
@@ -37,6 +37,8 @@ export const ALPHABET = [
 ];
 
 const getDisplayName = WrappedComponent => WrappedComponent.displayName || WrappedComponent.name || "Component";
+
+export const isChrome = /chrome/gi.test(window.navigator.userAgent);
 
 const getPaginationInfo = ({ page, limit, count }) => ({
   from: (page - 1) * limit + 1,
@@ -138,7 +140,7 @@ function addProps() {
 }
 
 const sanitizeSelfClosingTags = inputString => {
-  let _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
+  const _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
 
   const sanitizedString =
     _inputString &&
@@ -203,9 +205,7 @@ const parseTemplate = tmpl => {
   return replaceForJsxParser(sanitizeSelfClosingTags(temp));
 };
 
-export const getResponsesCount = element => {
-  return $(element).find("textinput, textdropdown, mathinput, mathunit").length;
-};
+export const getResponsesCount = element => $(element).find("textinput, textdropdown, mathinput, mathunit").length;
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
@@ -253,7 +253,7 @@ export const sanitizeForReview = stimulus => {
   if (!window.$) return stimulus;
   if (!stimulus || !stimulus.trim().length) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
-  //remove br tag also
+  // remove br tag also
   // span needs to be checked because if we use matrix it comes as span tag (ref: EV-10640)
   const tagsToRemove = ["mathinput", "mathunit", "textinput", "textdropdown", "img", "table", "response", "br", "span"];
   let tagFound = false;
@@ -262,7 +262,7 @@ export const sanitizeForReview = stimulus => {
       const elem = $(this).context;
       // replace if tag is not span
       // span comes when we use italic or bold
-      let shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
+      const shouldReplace = elem.nodeName !== "SPAN"; // sanitize other tags (mainly input responses) from stimulus except span
       const latex = elem.getAttribute("data-latex");
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
@@ -311,7 +311,7 @@ export const sanitizeForReview = stimulus => {
 };
 
 export const removeIndexFromTemplate = tmpl => {
-  let temp = ` ${tmpl}`.slice(1);
+  const temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
     return temp;
   }
@@ -362,7 +362,7 @@ const getPoints = item => {
 };
 
 const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
-  let questionScore = {};
+  const questionScore = {};
   const maxScore = newMaxScore || totalMaxScore;
   if (item.itemLevelScoring === true || item.isLimitedDeliveryType === true) {
     questions.forEach((o, i) => {
@@ -461,6 +461,110 @@ export const highlightSelectedText = (className = "token active-word", tag = "sp
   }
 };
 
+// In Chrome, the client rects will include the entire bounds of all nodes that
+// begin (have a start tag) within the selection, even if the selection does
+// not overlap the entire node. To resolve this, we split the range at each
+// start tag and join the client rects together.
+// https://code.google.com/p/chromium/issues/detail?id=324437
+/* eslint-disable consistent-return */
+export const getRangeClientRectsChrome = range => {
+  const tempRange = range.cloneRange();
+  const clientRects = [];
+
+  for (let ancestor = range.endContainer; ancestor != null; ancestor = ancestor.parentNode) {
+    // If we've climbed up to the common ancestor, we can now use the
+    // original start point and stop climbing the tree.
+    const atCommonAncestor = ancestor === range.commonAncestorContainer;
+    if (atCommonAncestor) {
+      tempRange.setStart(range.startContainer, range.startOffset);
+    } else {
+      tempRange.setStart(tempRange.endContainer, 0);
+    }
+    const rects = Array.from(tempRange.getClientRects());
+    clientRects.push(rects);
+    if (atCommonAncestor) {
+      clientRects.reverse();
+      return [].concat(...clientRects);
+    }
+    tempRange.setEndBefore(ancestor);
+  }
+};
+
+/**
+ * Like range.getClientRects() but normalizes for browser bugs.
+ */
+export const getRangeClientRects = isChrome ? getRangeClientRectsChrome : range => Array.from(range.getClientRects());
+
+/**
+ * Like range.getBoundingClientRect() but normalizes for browser bugs.
+ */
+export const getRangeBoundingClientRect = range => {
+  // "Return a DOMRect object describing the smallest rectangle that includes
+  // the first rectangle in list and all of the remaining rectangles of which
+  // the height or width is not zero."
+  // http://www.w3.org/TR/cssom-view/#dom-range-getboundingclientrect
+  const rects = getRangeClientRects(range);
+  let top = 0;
+  let right = 0;
+  let bottom = 0;
+  let left = 0;
+
+  if (rects.length) {
+    // If the first rectangle has 0 width, we use the second, this is needed
+    // because Chrome renders a 0 width rectangle when the selection contains
+    // a line break.
+    if (rects.length > 1 && rects[0].width === 0) {
+      ({ top, right, bottom, left } = rects[1]);
+    } else {
+      ({ top, right, bottom, left } = rects[0]);
+    }
+
+    for (let ii = 1; ii < rects.length; ii++) {
+      const rect = rects[ii];
+      if (rect.height !== 0 && rect.width !== 0) {
+        top = Math.min(top, rect.top);
+        right = Math.max(right, rect.right);
+        bottom = Math.max(bottom, rect.bottom);
+        left = Math.min(left, rect.left);
+      }
+    }
+  }
+
+  return {
+    top,
+    right,
+    bottom,
+    left,
+    width: right - left,
+    height: bottom - top
+  };
+};
+
+/**
+ * Return the bounding ClientRect for the visible DOM selection, if any.
+ * In cases where there are no selected ranges or the bounding rect is
+ * temporarily invalid, return null.
+ */
+export const getSelectionRect = global => {
+  const selection = global.getSelection();
+  if (!selection.rangeCount) {
+    return null;
+  }
+
+  const range = selection.getRangeAt(0);
+  const boundingRect = getRangeBoundingClientRect(range);
+  const { top, right, bottom, left } = boundingRect;
+
+  // When a re-render leads to a node being removed, the DOM selection will
+  // temporarily be placed on an ancestor node, which leads to an invalid
+  // bounding rect. Discard this state.
+  if (top === 0 && right === 0 && bottom === 0 && left === 0) {
+    return null;
+  }
+
+  return boundingRect;
+};
+
 export const decodeHTML = str => {
   if (!window.$) {
     return str;
@@ -508,14 +612,12 @@ export const formatBytes = (bytes = 0, decimals = 2) => {
 
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
 
 export const isMobileDevice = () => {
   const prefixes = " -webkit- -moz- -o- -ms- ".split(" ");
-  const mq = query => {
-    return window.matchMedia(query).matches;
-  };
+  const mq = query => window.matchMedia(query).matches;
 
   if ("ontouchstart" in window || (window.DocumentTouch && document instanceof DocumentTouch)) {
     return true;
@@ -580,6 +682,7 @@ export const measureText = (text, style = {}, tag1 = "div", tag2 = "span") => {
   document.body.removeChild(fakeEm);
   return result;
 };
+
 export const getFormattedAttrId = inputString => {
   if (!inputString) return "";
 
@@ -622,15 +725,14 @@ export const getImageUrl = template => {
   return url;
 };
 
-export const getImageDimensions = url => {
-  return new Promise((resolve, reject) => {
+export const getImageDimensions = url =>
+  new Promise(resolve => {
     const image = new Image();
     image.onload = function() {
       resolve({ height: this.naturalHeight, width: this.naturalWidth });
     };
     image.src = url;
   });
-};
 
 export default {
   sanitizeSelfClosingTags,
@@ -650,5 +752,6 @@ export default {
   formatBytes,
   isMobileDevice,
   measureText,
-  getFormattedAttrId
+  getFormattedAttrId,
+  getSelectionRect
 };

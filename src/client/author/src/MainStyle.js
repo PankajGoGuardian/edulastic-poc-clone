@@ -209,44 +209,4 @@ export const MainContainer = styled.div`
       }
     }
   }
-
-  .ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
-    background: ${themeColor}20;
-  }
-
-  .ant-select-selection {
-    &__choice {
-      height: 24px !important;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      background: ${themeColor}20;
-      color: ${themeColor};
-      font-weight: 600;
-      margin: 8px 5px 0px 3px !important;
-      &__content {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.2px;
-        color: ${themeColor};
-        font-weight: bold;
-        height: 24px;
-        display: flex;
-        align-items: center;
-      }
-      .ant-select-remove-icon svg {
-        fill: ${themeColor};
-        width: 12px;
-        height: 12px;
-      }
-
-      @media (max-width: ${smallDesktopWidth}) {
-        margin: 10px 5px 0px 3px !important;
-        height: 20px !important;
-        &__content {
-          height: 20px;
-        }
-      }
-    }
-  }
 `;

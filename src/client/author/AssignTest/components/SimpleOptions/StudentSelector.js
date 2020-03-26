@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Col, Select, Radio } from "antd";
 import { ColLabel, StyledRow, StyledSelect, StyledRadioGropRow, Label } from "./styled";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
+import { RadioBtn, RadioGrp, SelectInputStyled, FieldLabel } from "@edulastic/common";
 
 const StudentsSelector = ({
   specificStudents,
@@ -34,19 +34,18 @@ const StudentsSelector = ({
       {specificStudents && (
         <React.Fragment>
           <StyledRow gutter={32}>
-            <ColLabel span={24}>
-              <Label>STUDENT</Label>
-            </ColLabel>
             <Col span={24}>
-              <StyledSelect
+              <FieldLabel>STUDENT</FieldLabel>
+              <SelectInputStyled
                 data-cy="selectStudent"
                 placeholder="Select a student to assign"
-                style={{ width: "100%" }}
                 mode="multiple"
                 onSelect={updateStudents}
                 onDeselect={handleRemoveStudents}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 value={studentNames}
+                getPopupContainer={trigger => trigger.parentNode}
+                margin="0px 0px 15px"
               >
                 {students
                   .filter(({ enrollmentStatus }) => enrollmentStatus > 0)
@@ -59,7 +58,7 @@ const StudentsSelector = ({
                       </Select.Option>
                     );
                   })}
-              </StyledSelect>
+              </SelectInputStyled>
             </Col>
           </StyledRow>
         </React.Fragment>

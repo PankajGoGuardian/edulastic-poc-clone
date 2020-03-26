@@ -1,5 +1,5 @@
 import { blueBorder, green, red, themeColor } from "@edulastic/colors";
-import { CheckboxLabel, RadioBtn, withWindowScroll } from "@edulastic/common";
+import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
 import { IconCaretDown } from "@edulastic/icons";
 import { Anchor, Col, Input, message, Row, Radio, Select, Switch } from "antd";
@@ -7,7 +7,6 @@ import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { SelectInputStyled } from "../../../../../../assessment/styled/InputStyles";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import {
@@ -377,16 +376,18 @@ class MainSetting extends Component {
                 <Row>
                   <Title>Test Type</Title>
                   <Body smallSize={isSmallSize}>
-                    <StyledSelect
+                    <SelectInputStyled
+                      width="70%"
                       value={testType}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("testType")}
+                      getPopupContainer={trigger => trigger.parentNode}
                     >
                       {(userRole === roleuser.DISTRICT_ADMIN ||
                         userRole === roleuser.SCHOOL_ADMIN ||
                         testType === COMMON) && (
                         <Option key={COMMON} value={COMMON}>
-                          {"Common Assessment"}
+                          Common Assessment
                         </Option>
                       )}
                       {Object.keys(testTypes).map(key => (
@@ -394,7 +395,7 @@ class MainSetting extends Component {
                           {testTypes[key]}
                         </Option>
                       ))}
-                    </StyledSelect>
+                    </SelectInputStyled>
                   </Body>
                 </Row>
               </Block>
@@ -405,8 +406,9 @@ class MainSetting extends Component {
               <Block id="maximum-attempts-allowed">
                 <Title>Maximum Attempts Allowed </Title>
                 <Body>
-                  <MaxAttempts
+                  <TextInputStyled
                     type="number"
+                    width="100px"
                     disabled={!owner || !isEditable}
                     size="large"
                     value={maxAttempts}
@@ -487,9 +489,8 @@ class MainSetting extends Component {
                     />
                   )}
                   <Description>
-                    {
-                      "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
-                    }
+                    Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To
+                    use this feature Safe Exam Browser (on Windows/Mac only) must be installed.
                   </Description>
                 </Body>
               </Block>
@@ -508,8 +509,7 @@ class MainSetting extends Component {
                   />
                   <Description>
                     {"If "}
-                    <BlueText>ON</BlueText>
-                    {", then order of questions will be different for each student."}
+                    <BlueText>ON</BlueText>, then order of questions will be different for each student.
                   </Description>
                 </Body>
               </Block>
@@ -529,11 +529,10 @@ class MainSetting extends Component {
                   <Description>
                     {"If set to "}
                     <BlueText>ON</BlueText>
-                    {
-                      ", answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
-                    }
+                    , answer choices for multiple choice and multiple select questions will be randomly shuffled for
+                    students.
                     <br />
-                    {"Text to speech does not work when the answer choices are shuffled."}
+                    Text to speech does not work when the answer choices are shuffled.
                   </Description>
                 </Body>
               </Block>
@@ -556,9 +555,8 @@ class MainSetting extends Component {
                     ))}
                   </StyledRadioGroup>
                   <Description>
-                    {
-                      "Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
-                    }
+                    Choose if student can use a calculator, also select the type of calculator that would be shown to
+                    the students.
                   </Description>
                 </Body>
               </Block>
@@ -575,9 +573,8 @@ class MainSetting extends Component {
                     onChange={this.updateTestData("answerOnPaper")}
                   />
                   <Description>
-                    {
-                      "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
-                    }
+                    Use this opinion if you are administering this assessment on paper. If you use this opinion, you
+                    will have to manually grade student responses after the assessment is closed.
                   </Description>
                 </Body>
               </Block>
@@ -589,22 +586,25 @@ class MainSetting extends Component {
                 <Row>
                   <Title>Require Password</Title>
                   <Body smallSize={isSmallSize}>
-                    <StyledSelect
+                    <SelectInputStyled
+                      width="70%"
                       value={passwordPolicy}
                       data-cy={passwordPolicy}
                       disabled={!owner || !isEditable}
                       onChange={this.updateTestData("passwordPolicy")}
+                      getPopupContainer={trigger => trigger.parentNode}
                     >
                       {Object.keys(passwordPolicyOptions).map(key => (
                         <Option key={key} value={passwordPolicyValues[key]}>
                           {passwordPolicyOptions[key]}
                         </Option>
                       ))}
-                    </StyledSelect>
+                    </SelectInputStyled>
                     {passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC && (
                       <>
                         <Description>
-                          <InputPassword
+                          <TextInputStyled
+                            width="40%"
                             required
                             color={isPasswordValid()}
                             disabled={!owner || !isEditable}
@@ -618,16 +618,15 @@ class MainSetting extends Component {
                           {validationMessage ? <MessageSpan>{validationMessage}</MessageSpan> : ""}
                         </Description>
                         <Description>
-                          {
-                            "The password is entered by you and does not change. Students must enter this password before they can take the assessment."
-                          }
+                          The password is entered by you and does not change. Students must enter this password before
+                          they can take the assessment.
                         </Description>
                       </>
                     )}
                     {passwordPolicy === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC && (
                       <>
                         <Description>
-                          <Input
+                          <TextInputStyled
                             required
                             type="number"
                             disabled={!owner || !isEditable}
@@ -641,9 +640,12 @@ class MainSetting extends Component {
                           Minutes
                         </Description>
                         <Description>
-                          {
-                            "Students must enter a password to take the assessment. The password is auto-generated and revealed only when the assessment is opened. If you select this method, you also need to specify the time in minutes after which the password would automatically expire. Use this method for highly sensitive and secure assessments. If you select this method, the teacher or the proctor must open the assessment manually and announce the password in class when the students are ready to take the assessment."
-                          }
+                          Students must enter a password to take the assessment. The password is auto-generated and
+                          revealed only when the assessment is opened. If you select this method, you also need to
+                          specify the time in minutes after which the password would automatically expire. Use this
+                          method for highly sensitive and secure assessments. If you select this method, the teacher or
+                          the proctor must open the assessment manually and announce the password in class when the
+                          students are ready to take the assessment.
                         </Description>
                       </>
                     )}
@@ -655,7 +657,8 @@ class MainSetting extends Component {
               <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
                 <Title>Check Answer Tries Per Question</Title>
                 <Body smallSize={isSmallSize}>
-                  <MaxAnswerChecksInput
+                  <TextInputStyled
+                    width="40%"
                     disabled={!owner || !isEditable}
                     onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
                     size="large"
@@ -692,14 +695,13 @@ class MainSetting extends Component {
                         data-cy="PENALIZE"
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
-                        {"Don’t penalize for incorrect selection"}
+                        Don’t penalize for incorrect selection
                       </CheckboxLabel>
                     </p>
                   )}
                   <Description>
-                    {
-                      "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."
-                    }
+                    Choose if students should be awarded partial credit for their answers or not. If partial credit is
+                    allowed, then choose whether the student should be penalized for.
                   </Description>
                 </Body>
               </Block>
@@ -753,6 +755,7 @@ class MainSetting extends Component {
                         value={playerSkinType === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
                         disabled={!owner || !isEditable}
                         onChange={this.updateTestData("playerSkinType")}
+                        getPopupContainer={trigger => trigger.parentNode}
                       >
                         {Object.keys(skinTypes).map(key => (
                           <Option key={key} value={key}>
@@ -773,14 +776,14 @@ class MainSetting extends Component {
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
                       </Col>
                       <Col span={12}>
-                        <RadioGroup
+                        <StyledRadioGroup
                           disabled={!owner || !isEditable}
                           onChange={e => this.updateTestData("showMagnifier")(e.target.value)}
                           defaultValue={showMagnifier}
                         >
-                          <Radio value>ENABLE</Radio>
-                          <Radio value={false}>DISABLE</Radio>
-                        </RadioGroup>
+                          <RadioBtn value>ENABLE</RadioBtn>
+                          <RadioBtn value={false}>DISABLE</RadioBtn>
+                        </StyledRadioGroup>
                       </Col>
                     </Row>
                   ))}

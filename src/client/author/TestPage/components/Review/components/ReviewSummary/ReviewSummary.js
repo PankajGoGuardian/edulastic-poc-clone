@@ -1,40 +1,37 @@
+import { FieldLabel, FlexContainer, SelectInputStyled } from "@edulastic/common";
+import { Row, Select } from "antd";
+import PropTypes from "prop-types";
 import React, { useMemo } from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { Select, Row } from "antd";
-import { keyBy } from "lodash";
-import { FlexContainer } from "@edulastic/common";
+import { getInterestedStandards } from "../../../../../dataUtils";
+import Tags from "../../../../../src/components/common/Tags";
+import {
+  getInterestedCurriculumsSelector,
+  getItemBucketsSelector,
+  getUserFeatures
+} from "../../../../../src/selectors/user";
+import {
+  getDisableAnswerOnPaperSelector as hasRandomQuestions,
+  getTestEntitySelector,
+  getTestSummarySelector
+} from "../../../../ducks";
 import { Photo, selectsData } from "../../../common";
-
 import {
   Container,
+  FlexBoxFour,
+  FlexBoxOne,
+  FlexBoxThree,
+  FlexBoxTwo,
+  InnerFlex,
+  MainLabel,
+  Standard,
   SummaryInfoContainer,
   SummaryInfoNumber,
   SummaryInfoTitle,
-  TableHeaderCol,
-  TableBodyRow,
   TableBodyCol,
-  Standard,
-  FlexBoxOne,
-  FlexBoxTwo,
-  FlexBoxThree,
-  FlexBoxFour,
-  InnerFlex,
-  SummarySelectBox,
-  MainLabel
+  TableBodyRow,
+  TableHeaderCol
 } from "./styled";
-import { getInterestedStandards } from "../../../../../dataUtils";
-import {
-  getInterestedCurriculumsSelector,
-  getUserFeatures,
-  getItemBucketsSelector
-} from "../../../../../src/selectors/user";
-import {
-  getTestEntitySelector,
-  getDisableAnswerOnPaperSelector as hasRandomQuestions,
-  getTestSummarySelector
-} from "../../../../ducks";
-import Tags from "../../../../../src/components/common/Tags";
 
 const ReviewSummary = ({
   isEditable = false,
@@ -72,72 +69,63 @@ const ReviewSummary = ({
       </FlexBoxOne>
       <FlexBoxTwo>
         <InnerFlex>
-          <MainLabel marginBottom="0px" width="75px">
-            Grade
-          </MainLabel>
-          <SummarySelectBox
+          <FieldLabel>Grade</FieldLabel>
+          <SelectInputStyled
             data-cy="gradeSelect"
             mode="multiple"
             size="large"
-            style={{ width: "100%" }}
             disabled={!owner || !isEditable}
             placeholder="Please select"
             defaultValue={grades}
             onChange={onChangeGrade}
-            marginBottom="0px"
+            margin="0px 0px 15px"
           >
             {selectsData.allGrades.map(({ value, text }) => (
               <Select.Option key={value} value={value}>
                 {text}
               </Select.Option>
             ))}
-          </SummarySelectBox>
+          </SelectInputStyled>
         </InnerFlex>
         <InnerFlex>
-          <MainLabel marginBottom="0px" width="75px">
-            Subject
-          </MainLabel>
-          <SummarySelectBox
+          <FieldLabel>Subject</FieldLabel>
+          <SelectInputStyled
             data-cy="subjectSelect"
             mode="multiple"
             size="large"
             disabled={!owner || !isEditable}
-            style={{ width: "100%" }}
             placeholder="Please select"
             defaultValue={subjects}
             onChange={onChangeSubjects}
-            marginBottom="0px"
+            margin="0px 0px 15px"
           >
             {subjectsList.map(({ value, text }) => (
               <Select.Option key={value} value={value}>
                 {text}
               </Select.Option>
             ))}
-          </SummarySelectBox>
+          </SelectInputStyled>
         </InnerFlex>
         {isPublishers && (
           <InnerFlex>
-            <MainLabel marginBottom="0px" width="75px">
-              Collections
-            </MainLabel>
-            <SummarySelectBox
+            <FieldLabel>Collections</FieldLabel>
+            <SelectInputStyled
               mode="multiple"
               data-cy="collectionsSelect"
               size="medium"
               disabled={!owner || !isEditable}
-              style={{ width: "100%" }}
               placeholder="Please select"
               value={filteredCollections.flatMap(c => c.bucketIds)}
               onChange={onChangeCollection}
               filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
-              marginBottom="0px"
+              margin="0px 0px 15px"
             >
               {orgCollections?.map(o => (
                 <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
                   {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
               ))}
-            </SummarySelectBox>
+            </SelectInputStyled>
           </InnerFlex>
         )}
       </FlexBoxTwo>

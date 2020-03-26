@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { Select } from "antd";
 import { test as testsConstants } from "@edulastic/constants";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
@@ -212,8 +212,8 @@ const TestListFilters = ({
               {filterItem.isStandardSelect && (
                 <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
               )}
-              <SubTitle>{filterItem.title}</SubTitle>
-              <Select
+              <FieldLabel>{filterItem.title}</FieldLabel>
+              <SelectInputStyled
                 data-cy={filterItem.title}
                 showSearch={filterItem.showSearch}
                 onSearch={filterItem.onSearch && filterItem.onSearch}
@@ -229,6 +229,7 @@ const TestListFilters = ({
                 onChange={value => onChange(filterItem.onChange, value)}
                 disabled={filterItem.disabled}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
+                margin="0px 0px 15px"
               >
                 {filterItem.data.map(({ value, text, disabled }, index1) => (
                   <Select.Option value={value} key={index1} disabled={disabled}>
@@ -242,7 +243,7 @@ const TestListFilters = ({
                       {text}
                     </Select.Option>
                   ))}
-              </Select>
+              </SelectInputStyled>
             </FilterItemWrapper>
           </>
         );
@@ -282,64 +283,6 @@ export default connect(
 const Container = styled.div`
   padding: 27px 0;
 
-  .ant-select {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  .ant-select-selection {
-    background: ${lightGreySecondary};
-  }
-
-  .ant-select-lg {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: #434b5d;
-    .ant-select-selection--multiple {
-      .ant-select-selection__rendered {
-        li.ant-select-selection__choice {
-          height: 24px;
-          line-height: 24px;
-          margin-top: 7px;
-
-          @media (max-width: ${smallDesktopWidth}) {
-            height: 20px;
-            line-height: 20px;
-          }
-        }
-      }
-    }
-  }
-
-  .ant-select-selection__choice {
-    border-radius: 5px;
-    border: solid 1px #c8e8f6;
-    background-color: #c8e8f6;
-    height: 23.5px;
-  }
-
-  .ant-select-selection__choice__content {
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 0.2px;
-    color: #0083be;
-    opacity: 1;
-  }
-
-  .ant-select-remove-icon {
-    svg {
-      fill: #0083be;
-    }
-  }
-
-  .ant-select-arrow-icon {
-    font-size: 14px;
-    svg {
-      fill: ${themeColor};
-    }
-  }
-
   @media (min-width: 993px) {
     padding-right: 35px;
   }
@@ -369,13 +312,6 @@ const ClearAll = styled.span`
   :hover {
     color: ${themeColor};
   }
-`;
-
-const SubTitle = styled.div`
-  margin: 12px 0 5px;
-  color: ${secondaryTextColor};
-  font-size: 13px;
-  font-weight: 600;
 `;
 
 const IconExpandStandards = styled.span`

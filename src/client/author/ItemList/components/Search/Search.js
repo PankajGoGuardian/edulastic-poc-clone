@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import { Select } from "antd";
-import { connect } from "react-redux";
-import moment from "moment";
-import { questionType as questionTypes } from "@edulastic/constants";
-import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import {
-  Container,
-  Item,
-  ItemBody,
-  ItemHeader,
-  MainFilterItems,
-  ItemRelative,
-  IconWrapper,
-  StyledDatePicker
-} from "./styled";
-import selectsData from "../../../TestPage/components/common/selectsData";
-import StandardsSearchModal from "./StandardsSearchModal";
-import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
-import { test as testsConstants } from "@edulastic/constants";
-import { getAllTagsSelector } from "../../../TestPage/ducks";
-import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { questionType as questionTypes, test as testsConstants } from "@edulastic/constants";
 import { faExpandAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Select } from "antd";
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
+import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
+import selectsData from "../../../TestPage/components/common/selectsData";
+import { getAllTagsSelector } from "../../../TestPage/ducks";
+import StandardsSearchModal from "./StandardsSearchModal";
+import { Container, IconWrapper, Item, ItemBody, ItemRelative, MainFilterItems } from "./styled";
 
 const Search = ({
   search: {
@@ -95,9 +85,9 @@ const Search = ({
   const getStatusFilter = () => {
     return (
       <Item>
-        <ItemHeader>Status</ItemHeader>
+        <FieldLabel>Status</FieldLabel>
         <ItemBody>
-          <Select
+          <SelectInputStyled
             data-cy="selectStatus"
             size="large"
             onSelect={onSearchFieldChange("status")}
@@ -115,7 +105,7 @@ const Search = ({
                   {el.text}
                 </Select.Option>
               ))}
-          </Select>
+          </SelectInputStyled>
         </ItemBody>
       </Item>
     );
@@ -138,9 +128,9 @@ const Search = ({
           getStatusFilter()}
         {userFeatures.isCurator && filter !== "AUTHORED_BY_ME" && (
           <Item>
-            <ItemHeader>Authored By</ItemHeader>
+            <FieldLabel>Authored By</FieldLabel>
             <ItemBody>
-              <Select
+              <SelectInputStyled
                 mode="multiple"
                 size="large"
                 placeholder="All Authors"
@@ -155,13 +145,13 @@ const Search = ({
                     {`${el.firstName} ${el.lastName}`}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </ItemBody>
           </Item>
         )}
         <Item>
-          <ItemHeader>Grades</ItemHeader>
-          <Select
+          <FieldLabel>Grades</FieldLabel>
+          <SelectInputStyled
             data-cy="selectGrades"
             mode="multiple"
             size="large"
@@ -175,12 +165,12 @@ const Search = ({
                 {el.text}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Item>
         <Item>
-          <ItemHeader>Subject</ItemHeader>
+          <FieldLabel>Subject</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               data-cy="selectSubject"
               onSelect={onSearchFieldChange("subject")}
               value={subject}
@@ -192,13 +182,13 @@ const Search = ({
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Standard set</ItemHeader>
+          <FieldLabel>Standard set</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               data-cy="selectSdtSet"
               showSearch
               size="large"
@@ -219,19 +209,19 @@ const Search = ({
                     </Select.Option>
                   ))
                 : ""}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
         <ItemRelative>
           <IconWrapper>
             <FontAwesomeIcon icon={faExpandAlt} aria-hidden="true" onClick={() => setShowModal(true)} />
           </IconWrapper>
-          <ItemHeader>Standards</ItemHeader>
-          <Select
+          <FieldLabel>Standards</FieldLabel>
+          <SelectInputStyled
             data-cy="selectStd"
             mode="multiple"
             size="large"
-            optionFilterProp={"children"}
+            optionFilterProp="children"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             placeholder={standardsPlaceholder}
             onChange={onSearchFieldChange("standardIds")}
@@ -244,16 +234,16 @@ const Search = ({
                 {`${el.identifier}`}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </ItemRelative>
         <Item>
-          <ItemHeader>Question Type</ItemHeader>
+          <FieldLabel>Question Type</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               data-cy="selectqType"
               showSearch
               size="large"
-              optionFilterProp={"children"}
+              optionFilterProp="children"
               filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               onSelect={onSearchFieldChange("questionType")}
               value={questionType}
@@ -264,13 +254,13 @@ const Search = ({
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Depth of Knowledge</ItemHeader>
+          <FieldLabel>Depth of Knowledge</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               data-cy="selectDOK"
               size="large"
               onSelect={onSearchFieldChange("depthOfKnowledge")}
@@ -282,13 +272,13 @@ const Search = ({
                   {`${index > 0 ? index : ""} ${el.text}`}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Difficulty</ItemHeader>
+          <FieldLabel>Difficulty</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               data-cy="selectDifficulty"
               size="large"
               onSelect={onSearchFieldChange("authorDifficulty")}
@@ -300,13 +290,13 @@ const Search = ({
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
         <Item>
-          <ItemHeader>Collections</ItemHeader>
+          <FieldLabel>Collections</FieldLabel>
 
-          <Select
+          <SelectInputStyled
             mode="multiple"
             data-cy="Collections"
             size="large"
@@ -320,15 +310,15 @@ const Search = ({
                 {el.text}
               </Select.Option>
             ))}
-          </Select>
+          </SelectInputStyled>
         </Item>
 
         {showStatus && !isPublishers && getStatusFilter()}
 
         <Item>
-          <ItemHeader>Tags</ItemHeader>
+          <FieldLabel>Tags</FieldLabel>
           <ItemBody>
-            <Select
+            <SelectInputStyled
               mode="multiple"
               data-cy="selectTags"
               size="large"
@@ -342,7 +332,7 @@ const Search = ({
                   {el.tagName}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </ItemBody>
         </Item>
       </Container>

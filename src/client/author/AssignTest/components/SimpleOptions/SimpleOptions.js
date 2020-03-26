@@ -29,6 +29,7 @@ import FeaturesSwitch, { isFeatureAccessible } from "../../../../features/compon
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getReleaseScorePremiumSelector } from "../../../TestPage/ducks";
 import PlayerSkinSelector from "./PlayerSkinSelector";
+import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 
 export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
@@ -266,14 +267,12 @@ class SimpleOptions extends React.Component {
             passwordPolicy={assignment.passwordPolicy}
           />
 
-          <StyledRow gutter={32}>
+          <StyledRow gutter={32} mb="15px">
             <Col span={12}>
               <Row>
-                <ColLabel span={24}>
-                  <Label>OPEN POLICY</Label>
-                </ColLabel>
                 <Col span={24}>
-                  <StyledSelect
+                  <FieldLabel>OPEN POLICY</FieldLabel>
+                  <SelectInputStyled
                     data-cy="selectOpenPolicy"
                     placeholder="Please select"
                     cache="false"
@@ -286,17 +285,15 @@ class SimpleOptions extends React.Component {
                         {text}
                       </Select.Option>
                     ))}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
               </Row>
             </Col>
             <Col span={12}>
               <Row>
-                <ColLabel span={24}>
-                  <Label>CLOSE POLICY</Label>
-                </ColLabel>
                 <Col span={24}>
-                  <StyledSelect
+                  <FieldLabel>CLOSE POLICY</FieldLabel>
+                  <SelectInputStyled
                     data-cy="selectClosePolicy"
                     placeholder="Please select"
                     cache="false"
@@ -308,7 +305,7 @@ class SimpleOptions extends React.Component {
                         {text}
                       </Select.Option>
                     ))}
-                  </StyledSelect>
+                  </SelectInputStyled>
                 </Col>
               </Row>
             </Col>

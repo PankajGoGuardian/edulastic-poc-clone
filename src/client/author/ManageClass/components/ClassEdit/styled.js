@@ -54,17 +54,6 @@ export const ButtonsWrapper = styled.div`
 export const Container = styled(MainContentWrapper)`
   .ant-form-item-control {
     line-height: normal;
-    .ant-input,
-    .ant-select-selection {
-      min-height: 40px;
-      background: #f8f8f8;
-      .ant-select-selection__rendered {
-        line-height: 40px;
-      }
-    }
-    .ant-calendar-picker-icon {
-      color: ${themeColor};
-    }
   }
 `;
 

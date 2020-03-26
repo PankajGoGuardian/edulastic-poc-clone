@@ -13,7 +13,6 @@ import {
 import { SummarySelect } from "../../../Summary/common/SummaryForm";
 import { MainTitle } from "../../../Summary/components/Sidebar/styled";
 
-
 export const Container = styled(Paper)`
   padding: 15px 0px;
 
@@ -62,24 +61,7 @@ export const MainLabel = styled(MainTitle)`
   }
 `;
 
-export const SummarySelectBox = styled(SummarySelect)`
-  @media (max-width: 1199px) {
-    margin-bottom: ${props => props.marginBottom || ""};
-    &.ant-select-lg .ant-select-selection--multiple {
-      min-height: 30px;
-      .ant-select-selection__rendered {
-        line-height: 28px;
-        .ant-select-search {
-          height: 20px;
-          line-height: 20px;
-        }
-      }
-      .ant-select-selection__choice {
-        margin: 4px 5px 0px 3px !important;
-      }
-    }
-  }
-`;
+export const SummarySelectBox = styled(SummarySelect)``;
 
 export const SummaryInfoContainer = styled.div`
   padding: 5px 10px;

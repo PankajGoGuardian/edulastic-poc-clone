@@ -1,5 +1,5 @@
 import { themeColor } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { EduButton, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import {
   IconFolderAll,
   IconFolderDeactive,
@@ -447,14 +447,15 @@ class LeftFilter extends React.Component {
           </>
         ) : (
           <>
-            <StyledBoldText>Grade</StyledBoldText>
-            <Select
+            <FieldLabel>Grade</FieldLabel>
+            <SelectInputStyled
               data-cy="grades"
               mode="multiple"
               placeholder="All grades"
               value={grades}
               onChange={this.handleChange("grades")}
               getPopupContainer={triggerNode => triggerNode.parentNode}
+              margin="0px 0px 15px"
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -464,59 +465,66 @@ class LeftFilter extends React.Component {
                     </Select.Option>
                   )
               )}
-            </Select>
-            <StyledBoldText>Subject</StyledBoldText>
-            <Select
+            </SelectInputStyled>
+
+            <FieldLabel>Subject</FieldLabel>
+            <SelectInputStyled
               data-cy="subjects"
               mode="default"
               placeholder="All subjects"
               value={subject}
               onChange={this.handleChange("subject")}
               getPopupContainer={triggerNode => triggerNode.parentNode}
+              margin="0px 0px 15px"
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
                 </Select.Option>
               ))}
-            </Select>
-            <StyledBoldText>Year</StyledBoldText>
-            <Select
+            </SelectInputStyled>
+
+            <FieldLabel>Year</FieldLabel>
+            <SelectInputStyled
               data-cy="schoolYear"
               mode="default"
               placeholder="All years"
               value={termId}
               onChange={this.handleChange("termId")}
               getPopupContainer={triggerNode => triggerNode.parentNode}
+              margin="0px 0px 15px"
             >
               <Select.Option key="all" value="">
-                {"All years"}
+                All years
               </Select.Option>
               {termsData.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
               ))}
-            </Select>
-            <StyledBoldText>Test Type</StyledBoldText>
-            <Select
+            </SelectInputStyled>
+
+            <FieldLabel>Test Type</FieldLabel>
+            <SelectInputStyled
               data-cy="filter-testType"
               mode="default"
               placeholder="All"
               value={testType}
               onChange={this.handleChange("testType")}
               getPopupContainer={triggerNode => triggerNode.parentNode}
+              margin="0px 0px 15px"
             >
               {roleBasedTestType.map(({ value, text }, index) => (
                 <Select.Option key={index} value={value}>
                   {text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
+
             {userRole === "teacher" && (
               <>
-                <StyledBoldText>Class</StyledBoldText>
-                <Select
+                <FieldLabel>Class</FieldLabel>
+                <SelectInputStyled
                   data-cy="filter-class"
                   showSearch
                   optionFilterProp="children"
@@ -525,9 +533,10 @@ class LeftFilter extends React.Component {
                   value={classId}
                   onChange={this.handleChange("classId")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
+                  margin="0px 0px 15px"
                 >
-                  <Select.Option key={"all"} value={""}>
-                    {"All classes"}
+                  <Select.Option key="all" value="">
+                    All classes
                   </Select.Option>
                   {classListActive.map(item => (
                     <Select.Option key={item._id} value={item._id}>
@@ -540,9 +549,10 @@ class LeftFilter extends React.Component {
                       <FontAwesomeIcon icon={faArchive} />
                     </Select.Option>
                   ))}
-                </Select>
-                <StyledBoldText>Status</StyledBoldText>
-                <Select
+                </SelectInputStyled>
+
+                <FieldLabel>Status</FieldLabel>
+                <SelectInputStyled
                   data-cy="filter-status"
                   showSearch
                   optionFilterProp="children"
@@ -551,8 +561,9 @@ class LeftFilter extends React.Component {
                   value={status}
                   onChange={this.handleChange("status")}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
+                  margin="0px 0px 15px"
                 >
-                  <Select.Option key={"all"} value={""}>
+                  <Select.Option key="all" value="">
                     Select Status
                   </Select.Option>
                   {Object.keys(AssignmentStatus).map(status => (
@@ -560,7 +571,7 @@ class LeftFilter extends React.Component {
                       {AssignmentStatus[status]}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectInputStyled>
               </>
             )}
 
@@ -570,9 +581,9 @@ class LeftFilter extends React.Component {
               color="secondary"
               variant="create"
               shadow="none"
-              icon={<IconFolderNew />}
             >
               NEW FOLDER
+              <IconFolderNew />
             </NewFolderButton>
             <FoldersListWrapper>{this.renderFolders(true)}</FoldersListWrapper>
           </>

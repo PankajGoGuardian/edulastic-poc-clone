@@ -73,7 +73,7 @@ export const AlignRight = styled(RadioGroup)`
 `;
 
 export const StyledRadioGropRow = styled(Row)`
-  margin-bottom: 24px;
+  margin-bottom: 15px;
   margin-top: -8px;
 `;
 

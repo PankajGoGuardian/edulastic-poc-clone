@@ -103,12 +103,6 @@ export const Block = styled.div`
   padding: ${props => (props.smallSize ? "15px" : "29px 30px 30px 30px")};
   background: ${props => (props.smallSize ? white : "#f8f8fb")};
   border-radius: 4px;
-
-  .ant-input {
-    height: 40px;
-    font-size: 13px;
-    border-radius: 4px;
-  }
 `;
 
 export const Title = styled.div`
@@ -186,15 +180,9 @@ export const RadioGroup = styled(Radio.Group)`
   }
 `;
 
-export const StyledSelect = styled(Select)`
-  height: 40px;
-  width: 30%;
-  margin-right: 30px;
-`;
+export const StyledSelect = styled(Select)``;
 
-export const MaxAttempts = styled(Input)`
-  width: 20%;
-`;
+export const MaxAttempts = styled(Input)``;
 
 export const BlueText = styled.span`
   color: ${linkColor1};
@@ -228,22 +216,12 @@ export const ActivityInput = styled(Input)`
   border-radius: 2px;
 `;
 
-export const InputPassword = styled(Input)`
-  width: 40%;
-  margin-right: 10px;
-  border-color: ${props => (props.color ? props.color : blueBorder)};
-  &:hover,
-  &:focus {
-    border-color: ${props => (props.color ? props.color : blueBorder)};
-  }
-`;
+export const InputPassword = styled(Input)``;
 export const MessageSpan = styled.span`
   color: ${red};
 `;
 
-export const MaxAnswerChecksInput = styled(Input)`
-  width: 40%;
-`;
+export const MaxAnswerChecksInput = styled(Input)``;
 
 export const AdvancedSettings = styled.div``;
 

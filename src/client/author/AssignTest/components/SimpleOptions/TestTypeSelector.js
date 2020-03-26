@@ -1,8 +1,9 @@
+import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { roleuser, test } from "@edulastic/constants";
+import { Col, Select } from "antd";
 import React from "react";
-import { Select } from "antd";
-import { Col, Row } from "antd";
-import { test, roleuser } from "@edulastic/constants";
-import { ColLabel, Label, StyledSelect, StyledRow, StyledRowSelect } from "./styled";
+import { ColLabel, StyledRow, StyledRowSelect } from "./styled";
+
 const { type } = test;
 const { ASSESSMENT, PRACTICE, COMMON } = type;
 
@@ -21,7 +22,7 @@ const TestTypeSelector = ({
   };
 
   const SelectOption = (
-    <StyledSelect data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
+    <SelectInputStyled data-cy="testType" onChange={onAssignmentTypeChange} value={testType} disabled={disabled}>
       {isAdmin && (
         <Select.Option key={COMMON} value={COMMON}>
           Common Assessment
@@ -32,23 +33,23 @@ const TestTypeSelector = ({
           {testTypes[key]}
         </Select.Option>
       ))}
-    </StyledSelect>
+    </SelectInputStyled>
   );
 
   return fullwidth ? (
     <StyledRowSelect gutter={48}>
       <Col span={24}>
-        <Label>TEST TYPE</Label>
+        <FieldLabel>TEST TYPE</FieldLabel>
+        {SelectOption}
       </Col>
-      <Col span={24}>{SelectOption}</Col>
     </StyledRowSelect>
   ) : (
     <React.Fragment>
       <StyledRow gutter={48}>
         {!isAdvanceView && (
-          <ColLabel span={24}>
-            <Label>TEST TYPE</Label>
-          </ColLabel>
+          <Col span={24}>
+            <FieldLabel>TEST TYPE</FieldLabel>
+          </Col>
         )}
         <Col span={24}>{SelectOption}</Col>
       </StyledRow>

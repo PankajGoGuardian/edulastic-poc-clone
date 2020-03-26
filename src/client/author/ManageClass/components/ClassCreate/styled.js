@@ -3,11 +3,7 @@ import { white, red, mediumDesktopWidth, themeColor, title } from "@edulastic/co
 import { Button, Col, Row } from "antd";
 import { MainContentWrapper } from "@edulastic/common";
 
-export const StyledFlexContainer = styled(Row)`
-  .ant-select-selection__placeholder {
-    margin-left: 6px;
-  }
-`;
+export const StyledFlexContainer = styled(Row)``;
 
 const ShareButtonStyle = css`
   font-weight: 600;
@@ -58,17 +54,6 @@ export const ButtonsWrapper = styled.div`
 export const Container = styled(MainContentWrapper)`
   .ant-form-item-control {
     line-height: normal;
-    .ant-input,
-    .ant-select-selection {
-      min-height: 40px;
-      background: #f8f8f8;
-      .ant-select-selection__rendered {
-        line-height: 40px;
-      }
-    }
-    .ant-calendar-picker-icon {
-      color: ${themeColor};
-    }
   }
 `;
 

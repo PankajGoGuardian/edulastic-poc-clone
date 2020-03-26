@@ -27,9 +27,9 @@ const FontSizeSelect = ({ t, onChange, value }) => {
         getPopupContainer={triggerNode => triggerNode.parentNode}
       >
         {options.map(({ value: val, label }) => (
-          <StyledSelect.Option data-cy={val} key={val} value={val}>
+          <SelectInputStyled.Option data-cy={val} key={val} value={val}>
             {label}
-          </StyledSelect.Option>
+          </SelectInputStyled.Option>
         ))}
       </SelectInputStyled>
     </Fragment>

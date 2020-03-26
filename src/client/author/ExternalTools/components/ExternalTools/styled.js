@@ -1,6 +1,7 @@
 import { Input, List, Row, Col } from "antd";
 import styled from "styled-components";
-import { themeColor, placeholderGray, backgrounds } from "@edulastic/colors";
+import { themeColor, white, placeholderGray, backgrounds } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ExternalToolsSearchHeader = styled.div`
   display: flex;
@@ -43,4 +44,19 @@ export const StyledRow = styled(Row)`
 export const StyledColRight = styled(Col)`
   display: flex;
   justify-content: flex-end;
+`;
+
+export const CustomModal = styled(ConfirmationModal)`
+  && {
+    .ant-modal-content {
+      background: ${white};
+      .ant-modal-header {
+        padding: 0 25px 0 25px;
+        background: ${white};
+      }
+      .ant-modal-body {
+        box-shadow: none;
+      }
+    }
+  }
 `;

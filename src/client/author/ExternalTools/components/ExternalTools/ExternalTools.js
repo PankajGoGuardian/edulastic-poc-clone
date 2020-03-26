@@ -111,7 +111,7 @@ class ExternalTools extends Component {
   };
 
   render() {
-    const { formData, user, deleteExternalToolProvider, history } = this.props;
+    const { formData, user, deleteExternalToolProvider, history, userOrgId } = this.props;
     const { isModalVisible, data } = this.state;
     return (
       <MainContainer>
@@ -149,7 +149,7 @@ class ExternalTools extends Component {
               key={i}
               onEdit={() => this.onEdit(cloneDeep(tool))}
               data={tool}
-              deleteData={deleteExternalToolProvider}
+              deleteData={() => deleteExternalToolProvider({ orgId: userOrgId, id: tool._id })}
             />
           )}
         />

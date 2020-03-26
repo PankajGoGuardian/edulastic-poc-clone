@@ -46,10 +46,6 @@ export const reducer = createReducer(initialState, {
   [FETCH_EXTERNAL_TOOL_PROVIDER_FAILURE]: (state, { payload }) => {
     state.data = [];
   },
-  [DELETE_EXTERNAL_TOOL_PROVIDER]: (state, { payload }) => {
-    const index = state.data.findIndex(item => item._id == payload);
-    state.data.splice(index, 1);
-  },
   [UPDATE_EXTERNAL_TOOL_PROVIDER]: (state, { payload }) => {
     const { index, data } = payload;
     state.data[index] = data;
@@ -84,10 +80,21 @@ function* saveExternalToolProviderSaga({ payload }) {
   }
 }
 
+function* deleteExternalToolProviderSaga({ payload }) {
+  try {
+    const { orgId, id } = payload;
+    const toolsList = yield call(settingsApi.deleteExternalTools, { orgId, externalToolId: id });
+    yield put(fetchExternalToolProviderSuccessAction(toolsList));
+  } catch (err) {
+    yield call(message.error, "Unable to Delete Tool");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(FETCH_EXTERNAL_TOOL_PROVIDER, fetchExternalToolProviderSaga),
-    yield takeEvery(SAVE_EXTERNAL_TOOL_PROVIDER, saveExternalToolProviderSaga)
+    yield takeEvery(SAVE_EXTERNAL_TOOL_PROVIDER, saveExternalToolProviderSaga),
+    yield takeEvery(DELETE_EXTERNAL_TOOL_PROVIDER, deleteExternalToolProviderSaga)
   ]);
 }
 

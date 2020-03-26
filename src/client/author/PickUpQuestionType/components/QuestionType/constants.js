@@ -78,7 +78,8 @@ import LineChart from "../../../src/assets/charts/line-chart.svg";
 
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
-import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
+import SQPassage from "../../../src/assets/video-and-passages/passage01.png";
+import MQPassage from "../../../src/assets/video-and-passages/passage02.png";
 import TextResource from "../../../src/assets/video-and-passages/text.svg";
 
 // Rulers & Calculators
@@ -2010,7 +2011,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "read",
-      cardImage: VPPassage,
+      cardImage: SQPassage,
       isPassageType: true,
       data: {
         title: "Passage with Questions",
@@ -2020,7 +2021,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "read",
-      cardImage: VPPassage,
+      cardImage: MQPassage,
       isPassageType: true,
       data: {
         title: "Passage with Multiple parts",

@@ -9,6 +9,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { setTestUserWorkAction, saveTestletStateAction, saveTestletLogAction } from "../../actions/testUserWork";
 import { setUserAnswerAction } from "../../actions/answers";
+import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 
 // components
 import { Container, CalculatorContainer } from "../common";
@@ -48,7 +49,8 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   openExitPopup = () => {
-    const { closeTestPreviewModal } = this.props;
+    const { closeTestPreviewModal, updateTestPlayer } = this.props;
+    updateTestPlayer({ enableMagnifier: false });
     this.setState({ showExitPopup: true }, () => {
       if (closeTestPreviewModal) {
         closeTestPreviewModal();
@@ -146,6 +148,7 @@ export default connect(
     setUserAnswer: setUserAnswerAction,
     setTestUserWork: setTestUserWorkAction, // save to redux
     saveTestletState: saveTestletStateAction, // save to db,
-    saveTestletLog: saveTestletLogAction // save logs to db
+    saveTestletLog: saveTestletLogAction, // save logs to db
+    updateTestPlayer: updateTestPlayerAction
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

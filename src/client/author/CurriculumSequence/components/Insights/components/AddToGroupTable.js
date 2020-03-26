@@ -46,8 +46,8 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   {
     // title: "SELECT ALL",
     title: "Student(s)",
-    key: "name",
-    dataIndex: "name"
+    key: "fullName",
+    dataIndex: "fullName"
   },
   {
     // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,

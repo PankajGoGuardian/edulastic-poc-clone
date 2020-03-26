@@ -229,10 +229,11 @@ export const getCuratedMetrics = ({ filteredData = [], filteredMap = {}, mastery
     curatedMetrics.map(item => {
       const fName = item.firstName && item.firstName.trim();
       const lName = item.lastName && item.lastName.trim();
-      const name = [fName ? fName[0] + "." : "", lName || (fName ? "" : "-")].join(" ").trim();
+      const name = fName && lName ? lName + ", " + fName[0] : lName || fName || "-";
+      const fullName = fName && lName ? lName + ", " + fName : lName || fName || "-";
       const effort = getNormalizedValue(item.totalTimeSpent, timeMean, timeRange);
       const performance = getNormalizedValue(item.percentScore, percentMean, percentRange);
-      return { name, ...item, effort, performance, isActive: true };
+      return { name, fullName, ...item, effort, performance, isActive: true };
     }),
     ["lastName", "firstName"]
   );

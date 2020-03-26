@@ -1,5 +1,6 @@
 import { MainContentWrapper, MainHeader, EduButton } from "@edulastic/common";
-import { IconClockDashboard } from "@edulastic/icons";
+import { IconClockDashboard, IconHangouts } from "@edulastic/icons";
+import { white, themeColor } from "@edulastic/colors";
 import { Row, Layout, Spin } from "antd";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
@@ -22,6 +23,9 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
   const classListWithHangouts = activeEnrolledClasses.filter(c => c.hangoutLink);
 
   const [showHangoutsModal, setShowHangoutsModal] = useState(false);
+  const [selectedGroupId, selectGroupId] = useState("");
+
+  const selectedGroup = classListWithHangouts.find(c => c._id === selectedGroupId);
 
   useEffect(() => {
     loadAllClasses();
@@ -32,21 +36,24 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
   return (
     <Wrapper>
       <HangoutsModal
-        title="Join Hangouts"
+        isStudent
         visible={showHangoutsModal}
-        classList={classListWithHangouts}
-        setShowHangoutsModal={setShowHangoutsModal}
-        footer={null}
         onCancel={() => setShowHangoutsModal(false)}
+        title="Join Hangout"
+        onSelect={selectGroupId}
+        selected={selectedGroup}
+        classList={classListWithHangouts}
+        description="Select the class that you want to join for the Hangout session."
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
           <StudentSlectCommon />
           <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption />
           {classListWithHangouts.length && (
-            <EduButton height="40px" style={{ "margin-left": "10px" }} onClick={() => setShowHangoutsModal(true)}>
-              Join Hangouts
-            </EduButton>
+            <StyledEduButton height="40px" isGhost onClick={() => setShowHangoutsModal(true)}>
+              <IconHangouts height={23} width={20} />
+              Join Hangout
+            </StyledEduButton>
           )}
         </Row>
       </MainHeader>
@@ -72,3 +79,21 @@ export default withNamespaces("header")(
     }
   )(Assignments)
 );
+
+const StyledEduButton = styled(EduButton)`
+  margin-left: 10px;
+  span {
+    margin: 0 15px;
+  }
+  svg {
+    .b {
+      fill: ${white};
+    }
+  }
+  &:hover,
+  &:focus {
+    .b {
+      fill: ${themeColor};
+    }
+  }
+`;

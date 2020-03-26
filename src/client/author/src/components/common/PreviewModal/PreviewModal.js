@@ -7,6 +7,8 @@ import { get, keyBy, intersection, uniq } from "lodash";
 import { Spin, Button, Modal, message } from "antd";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { withWindowSizes, EduButton, FlexContainer } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
@@ -32,6 +34,8 @@ import AuthorTestItemPreview from "./AuthorTestItemPreview";
 import { SMALL_DESKTOP_WIDTH } from "../../../../../assessment/constants/others";
 import ReportIssue from "./ReportIssue";
 import { allowDuplicateCheck } from "../../../utils/permissionCheck";
+
+import { Nav } from "../../../../../assessment/themes/common";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -206,6 +210,20 @@ class PreviewModal extends React.Component {
     }));
   };
 
+  navigationBtns = () => {
+    const { nextItem, prevItem } = this.props;
+    return (
+      <>
+        <Nav.BackArrow onClick={prevItem} position="absolute">
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </Nav.BackArrow>
+        <Nav.NextArrow onClick={nextItem} position="absolute">
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Nav.NextArrow>
+      </>
+    );
+  };
+
   // TODO consistency for question and resources for previeew
   render() {
     const {
@@ -264,7 +282,8 @@ class PreviewModal extends React.Component {
         centered
         className="noOverFlowModal"
       >
-        <HeadingWrapper data-cy="fjfjfjjjffjfj">
+        {this.navigationBtns()}
+        <HeadingWrapper>
           <Title>Preview</Title>
           {isPassage && showAddPassageItemToTestButton && (
             <ButtonsWrapper added={this.isAddOrRemove}>
@@ -361,13 +380,17 @@ PreviewModal.propTypes = {
   changeView: PropTypes.func.isRequired,
   testId: PropTypes.string.isRequired,
   history: PropTypes.any.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  prevItem: PropTypes.func,
+  nextItem: PropTypes.func
 };
 
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
   showAnswer: () => {},
   gotoSummary: () => {},
+  prevItem: () => {},
+  nextItem: () => {},
   loading: false,
   isEditable: false
 };
@@ -423,6 +446,8 @@ const PreviewModalWrapper = styled(Modal)`
   background: #f7f7f7;
   top: 30px;
   padding: 0px;
+  position: relative;
+
   .ant-modal-content {
     background: transparent;
     box-shadow: none;
@@ -453,6 +478,7 @@ const ModalTopAction = styled(FlexContainer)`
 const Title = styled.div`
   font-weight: bold;
   font-size: 20px;
+  user-select: none;
 `;
 
 const ButtonsWrapper = styled.div`

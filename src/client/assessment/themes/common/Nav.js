@@ -3,7 +3,7 @@ import { themeColor, smallDesktopWidth } from "@edulastic/colors";
 
 const sharedBtnStyle = css`
   background-color: transparent;
-  position: fixed;
+  position: ${({ position }) => position || "fixed"};
   top: 50%;
   transform: translateY(-50%);
   z-index: 1;

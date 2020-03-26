@@ -20,7 +20,6 @@ export const getPassageSelector = createSelector(
 );
 
 export const getItemDetailSelectorForPreview = (state, id, page) => {
-  console.log("do i come here", { id, page });
   let testItems = [];
   const testItemPreview = get(state, "testItemPreview.item", {});
   if (testItemPreview && testItemPreview.data) {
@@ -35,7 +34,6 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
     console.warn("unknown page type ", page);
   }
   const item = testItems.find(x => x._id === id);
-  console.log("what is item", item);
   if (item?.multipartItem) {
     // markQuestionLabel([item]);
   }

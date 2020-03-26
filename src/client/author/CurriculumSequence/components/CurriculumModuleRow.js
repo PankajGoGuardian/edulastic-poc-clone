@@ -141,7 +141,13 @@ class ModuleRow extends Component {
    */
   assignModule = module => {
     const { setSelectedItemsForAssign, history, playlistId } = this.props;
-    const moduleItemsIds = module.data.map(item => item.contentId);
+
+    const moduleItemsIds = [];
+    module.data.forEach(item => {
+      if (item.contentType === "test") {
+        moduleItemsIds.push(item.contentId);
+      }
+    });
     setSelectedItemsForAssign(moduleItemsIds);
     history.push(`/author/playlists/assignments/${playlistId}/${module._id}`);
   };

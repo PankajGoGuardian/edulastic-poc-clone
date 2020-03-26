@@ -177,7 +177,9 @@ function* saveAssignment({ payload }) {
         }
         module &&
           module[0].data.forEach(dat => {
-            testIds.push(dat.contentId);
+            if (dat.contentType === "test") {
+              testIds.push(dat.contentId);
+            }
           });
         if (!testIds.length) {
           yield put(setAssignmentSavingAction(false));

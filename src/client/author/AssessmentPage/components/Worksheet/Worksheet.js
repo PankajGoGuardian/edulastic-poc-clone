@@ -29,7 +29,8 @@ import {
   percentageUploadedSelector,
   fileInfoSelector,
   createAssessmentRequestAction,
-  setPercentUploadedAction
+  setPercentUploadedAction,
+  uploadToDriveAction
 } from "../../../AssessmentCreate/ducks";
 
 const swap = (array, i, j) => {
@@ -599,7 +600,8 @@ class WorksheetComponent extends React.Component {
       studentWork,
       isAssessmentPlayer,
       extraPaddingTop,
-      onPageChange
+      onPageChange,
+      uploadToDrive
     } = this.props;
 
     const {
@@ -690,6 +692,7 @@ class WorksheetComponent extends React.Component {
             fileInfo={fileInfo}
             isAddPdf={isAddPdf}
             cancelUpload={this.cancelUpload}
+            uploadToDrive={uploadToDrive}
           />
         </Modal>
 
@@ -853,7 +856,8 @@ const enhance = compose(
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction,
-      updateQuestionNumber: updateQuestionNumberAction
+      updateQuestionNumber: updateQuestionNumberAction,
+      uploadToDrive: uploadToDriveAction
     }
   )
 );

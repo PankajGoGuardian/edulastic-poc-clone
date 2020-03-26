@@ -468,10 +468,10 @@ export const ActionBarContainer = styled.div`
   }
   > div:last-child {
     float: right;
-    display: flex;
-    flex-wrap: wrap;
   }
   > div {
+    display: flex;
+    flex-wrap: wrap;
     > span {
       color: ${themeColor};
       background: ${white};

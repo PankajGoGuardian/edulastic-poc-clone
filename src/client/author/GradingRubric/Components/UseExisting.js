@@ -141,22 +141,37 @@ const UseExisting = ({
     if (isValid) {
       if (currentRubricData._id) {
         updateRubric({
-          ...data,
-          status: type
+          rubricData: {
+            ...data,
+            status: type
+          },
+          maxScore
         });
-        if (currentQuestion.rubrics?._id === currentRubricData._id)
-          associateRubricWithQuestion({
-            metadata: { _id: currentRubricData._id, name: currentRubricData.name },
-            maxScore
-          });
+        // if (currentQuestion.rubrics?._id === currentRubricData._id)
+        //   associateRubricWithQuestion({
+        //     metadata: { _id: currentRubricData._id, name: currentRubricData.name },
+        //     maxScore
+        //   });
       } else
         saveRubric({
-          ...currentRubricData,
-          status: type
+          rubricData: {
+            ...currentRubricData,
+            status: type
+          },
+          maxScore
         });
 
       setCurrentMode("PREVIEW");
     }
+  };
+
+  const handleUseRubric = () => {
+    associateRubricWithQuestion({
+      metadata: { _id: currentRubricData._id, name: currentRubricData.name },
+      maxScore
+    });
+    addRubricToRecentlyUsed(currentRubricData);
+    setItemLevelScoring(false);
   };
 
   const handleEditRubric = () => {
@@ -237,50 +252,19 @@ const UseExisting = ({
     <>
       {(!["RUBRIC_TABLE", "SEARCH"].includes(currentMode) || actionType === "CREATE NEW") && (
         <ActionBarContainer>
-          {actionType === "USE EXISTING" && currentMode === "PREVIEW" ? (
-            <div>
+          <div>
+            {actionType === "USE EXISTING" && currentMode === "PREVIEW" && (
               <CustomStyleBtn style={btnStyle} onClick={() => setCurrentMode("RUBRIC_TABLE")}>
                 <Icon type="left" /> <span>Back</span>
               </CustomStyleBtn>
-            </div>
-          ) : (
-            <div />
-          )}
-          <div>
-            <CustomStyleBtn style={btnStyle} onClick={() => setShowPreviewRubricModal(true)}>
-              <Icon type="eye" /> Preview
-            </CustomStyleBtn>
+            )}
             {currentMode === "PREVIEW" && !isEditable && (
               <>
-                {currentQuestion.rubrics?._id !== currentRubricData._id && (
-                  <CustomStyleBtn
-                    style={btnStyle}
-                    onClick={() => {
-                      associateRubricWithQuestion({
-                        metadata: { _id: currentRubricData._id, name: currentRubricData.name },
-                        maxScore
-                      });
-                      addRubricToRecentlyUsed(currentRubricData);
-                      setItemLevelScoring(false);
-                    }}
-                  >
-                    <Icon type="check" /> <span>Use</span>
-                  </CustomStyleBtn>
-                )}
-                {currentQuestion.rubrics?._id === currentRubricData._id && (
-                  <CustomStyleBtn style={btnStyle} onClick={() => dissociateRubricFromQuestion()}>
-                    <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
-                  </CustomStyleBtn>
-                )}
                 <CustomStyleBtn style={btnStyle} onClick={() => handleClone(currentRubricData)}>
                   <FontAwesomeIcon icon={faClone} aria-hidden="true" /> <span>Clone</span>
                 </CustomStyleBtn>
                 {currentRubricData.createdBy._id === user._id && (
                   <>
-                    <CustomStyleBtn style={btnStyle} onClick={() => setShowShareModal(true)}>
-                      <Icon type="share-alt" /> <span>Share</span>
-                    </CustomStyleBtn>
-
                     <CustomStyleBtn style={btnStyle} onClick={() => handleEditRubric()}>
                       <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" /> <span>Edit</span>
                     </CustomStyleBtn>
@@ -292,19 +276,42 @@ const UseExisting = ({
                 )}
               </>
             )}
+          </div>
+          <div>
+            <CustomStyleBtn style={btnStyle} onClick={() => setShowPreviewRubricModal(true)}>
+              <Icon type="eye" /> Preview
+            </CustomStyleBtn>
+            {currentMode === "PREVIEW" && !isEditable && (
+              <>
+                {currentQuestion.rubrics?._id !== currentRubricData._id && (
+                  <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
+                    <Icon type="check" /> <span>Use</span>
+                  </CustomStyleBtn>
+                )}
+                {currentQuestion.rubrics?._id === currentRubricData._id && (
+                  <CustomStyleBtn style={btnStyle} onClick={() => dissociateRubricFromQuestion()}>
+                    <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
+                  </CustomStyleBtn>
+                )}
+                {currentRubricData.createdBy._id === user._id && (
+                  <>
+                    <CustomStyleBtn style={btnStyle} onClick={() => setShowShareModal(true)}>
+                      <Icon type="share-alt" /> <span>Share</span>
+                    </CustomStyleBtn>
+                  </>
+                )}
+              </>
+            )}
             {isEditable && (
               <>
                 <CustomStyleBtn style={btnStyle} onClick={() => setShowConfirmModal(true)}>
                   <Icon type="close" />
                   <span>Cancel</span>
                 </CustomStyleBtn>
-                <CustomStyleBtn style={btnStyle} onClick={() => handleSaveRubric("draft")}>
-                  <Icon type="save" theme="filled" />
-                  <span>Save</span>
-                </CustomStyleBtn>
                 <CustomStyleBtn style={btnStyle} onClick={() => handleSaveRubric("published")}>
-                  <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
-                  <span>Save & Publish</span>
+                  {/* <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> */}
+                  <Icon type="save" theme="filled" />
+                  <span>Save & Use</span>
                 </CustomStyleBtn>
               </>
             )}

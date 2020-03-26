@@ -1,11 +1,12 @@
-import { takeEvery, call, put, all, select } from "redux-saga/effects";
-import { push } from "connected-react-router";
+import { takeEvery, call, put, all } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { createAction, createReducer } from "redux-starter-kit";
 import { rubricsApi } from "@edulastic/api";
 import { message } from "antd";
+import { setRubricIdAction } from "../sharedDucks/questions";
+import { setItemLevelScoreFromRubricAction } from "../ItemDetail/ducks";
 
-//constants
+// constants
 export const UPDATE_RUBRIC_DATA = "[rubric] update rubric data";
 export const SAVE_RUBRIC = "[rubric] save rubric";
 export const UPDATE_RUBRIC = "[rubric] update rubric";
@@ -19,7 +20,7 @@ export const ADD_RUBRIC_TO_RECENTLY_USED = "[rubric] add rubric to recently used
 export const UPDATE_RUBRIC_IN_RECENTLY_USED_LIST = "[rubric] update rubric in recently used list";
 export const SET_RECENTLY_USED_LIST = "[rubric] set recently used list";
 
-//actions
+// actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA);
 export const saveRubricAction = createAction(SAVE_RUBRIC);
 export const updateRubricAction = createAction(UPDATE_RUBRIC);
@@ -33,7 +34,7 @@ export const addRubricToRecentlyUsedAction = createAction(ADD_RUBRIC_TO_RECENTLY
 export const updateRubricInRecentlyUsedAction = createAction(UPDATE_RUBRIC_IN_RECENTLY_USED_LIST);
 export const setRecentlyUsedList = createAction(SET_RECENTLY_USED_LIST);
 
-//reducer
+// reducer
 const initialState = {
   searchedList: [],
   currentRubric: null,
@@ -64,13 +65,21 @@ export const reducer = createReducer(initialState, {
   }
 });
 
-//sagas
+// sagas
 function* saveRubricSaga({ payload }) {
   try {
-    const data = yield call(rubricsApi.createRubrics, payload);
+    const data = yield call(rubricsApi.createRubrics, payload.rubricData);
     yield put(updateRubricDataAction(data));
-    if (payload.status === "draft") yield call(message.success, "Rubric is saved as draft");
-    else if (payload.status === "published") yield call(message.success, "Rubric is saved and published");
+    yield put(
+      setRubricIdAction({
+        metadata: { _id: data._id, name: data.name },
+        maxScore: payload.maxScore
+      })
+    );
+    yield put(addRubricToRecentlyUsedAction(payload.rubricData));
+    yield put(setItemLevelScoreFromRubricAction(false));
+    if (payload.rubricData.status === "draft") yield call(message.success, "Rubric is saved as draft");
+    else if (payload.rubricData.status === "published") yield call(message.success, "Rubric is saved and published");
   } catch (err) {
     yield call(message.error, "Failed to save Rubric");
   }
@@ -79,10 +88,17 @@ function* saveRubricSaga({ payload }) {
 function* updateRubricSaga({ payload }) {
   try {
     const data = yield call(rubricsApi.updateRubricsById, {
-      id: payload._id,
-      body: payload
+      id: payload.rubricData._id,
+      body: payload.rubricData
     });
     yield put(updateRubricDataAction(data));
+    yield put(
+      setRubricIdAction({
+        metadata: { _id: payload.rubricData._id, name: payload.rubricData.name },
+        maxScore: payload.maxScore
+      })
+    );
+    yield put(addRubricToRecentlyUsedAction(payload.rubricData));
     yield put(updateRubricInRecentlyUsedAction(data));
     if (payload.status === "draft") yield call(message.success, "Rubric is updated as draft");
     else if (payload.status === "published") yield call(message.success, "Rubric is updated and published");
@@ -158,7 +174,7 @@ export function* watcherSaga() {
   ]);
 }
 
-//selectors
+// selectors
 export const getStateSelector = state => state.rubricReducer;
 
 export const getCurrentRubricDataSelector = createSelector(

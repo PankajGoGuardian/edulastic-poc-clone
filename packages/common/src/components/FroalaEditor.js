@@ -309,6 +309,7 @@ const CustomEditor = ({
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
       linkAlwaysBlank: true, // adding to make link always open in blank
+      zIndex: 999,
       imageDefaultWidth: imageDefaultWidth,
       initOnClick,
       toolbarButtons,

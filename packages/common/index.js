@@ -77,7 +77,8 @@ export {
   measureText,
   templateHasImage,
   getImageDimensions,
-  getImageUrl
+  getImageUrl,
+  getSelectionRect
 } from "./src/helpers";
 
 // contexts

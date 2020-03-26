@@ -2,22 +2,25 @@ import styled from "styled-components";
 import { white } from "@edulastic/colors";
 
 export const ColorPickerContainer = styled.div`
-  position: absolute;
   z-index: 900;
   padding: 8px 16px;
   background: ${white};
   box-shadow: 0 2px 8px #00000090;
   border-radius: 4px;
+  user-select: none;
+  transition: opacity 0.3s;
 
-  &::before {
+  &::after {
     position: absolute;
     content: "";
-    border: 7px solid;
-    top: -14px;
-    border-top-color: transparent;
+    border: 10px solid;
+    border-top-color: white;
     border-right-color: transparent;
-    border-bottom-color: white;
+    border-bottom-color: transparent;
     border-left-color: transparent;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 `;
 
@@ -27,5 +30,5 @@ export const Overlay = styled.div`
   left: 0px;
   right: 0px;
   bottom: 0px;
-  z-index: 0;
+  z-index: 2;
 `;

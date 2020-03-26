@@ -16,9 +16,9 @@ const ColorPicker = ({ selectColor, bg }) => {
         <BackSlashIcon type="minus" />
       </ColorButton>
       <ColorButton onClick={chooseColor(highlightBlue)} color={highlightBlue} active={bg === highlightBlue} />
-      <ColorButton onClick={chooseColor(green)} color={green} active={bg === blue} />
-      <ColorButton onClick={chooseColor(orange)} color={orange} active={bg === blue} />
-      <ColorButton onClick={chooseColor(yellow)} color={yellow} active={bg === blue} />
+      <ColorButton onClick={chooseColor(green)} color={green} active={bg === green} />
+      <ColorButton onClick={chooseColor(orange)} color={orange} active={bg === orange} />
+      <ColorButton onClick={chooseColor(yellow)} color={yellow} active={bg === yellow} />
       <ColorButton onClick={chooseColor(pink)} color={pink} active={bg === pink} />
     </FlexContainer>
   );
@@ -49,11 +49,12 @@ const ColorButton = styled.div`
   border: 1px solid;
   cursor: pointer;
 
-  ${({ color, active }) => `
-    background: ${color || white};
-    border-color: ${active ? blue : color || black}
-  `}
   &:hover {
     border-color: ${blue};
   }
+
+  ${({ color, active }) => `
+    background: ${color || white};
+    border-color: ${active ? blue : color || black};
+  `}
 `;

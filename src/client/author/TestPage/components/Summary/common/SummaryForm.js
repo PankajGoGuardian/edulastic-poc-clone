@@ -34,16 +34,6 @@ export const SummaryButton = styled(Button)`
 
 export const SummarySelect = styled(props => <Select {...props} getPopupContainer={trigger => trigger.parentNode} />)`
   margin-bottom: ${FieldsMargin};
-
-  .ant-select-selection {
-    border: 1px solid #e1e1e1;
-    background: ${lightGreySecondary};
-
-    &__placeholder {
-      font-size: 13px;
-      margin-left: 15px;
-    }
-  }
 `;
 
 export const SummaryTextArea = styled(Input.TextArea)`

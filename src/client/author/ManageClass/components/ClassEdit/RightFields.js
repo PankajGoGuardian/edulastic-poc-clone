@@ -10,6 +10,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { StandardsValidationMSG } from "../ClassCreate/styled";
 import Tags from "./Tags";
+import { TextInputStyled, DatePickerStyled, SelectInputStyled } from "@edulastic/common";
 
 const { allGrades, allSubjects } = selectsData;
 const subjects = filter(allSubjects, el => el.value !== "");
@@ -78,7 +79,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
           <FieldLabel label="Class Name" {...restProps} fiedlName="name" initialValue={defaultName}>
-            <Input placeholder="Enter the name of your class" />
+            <TextInputStyled placeholder="Enter the name of your class" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -86,7 +87,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
           <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
-            <DatePicker
+            <DatePickerStyled
               data-cy="startDate"
               format="DD MMM, YYYY"
               placeholder="Open Date"
@@ -104,7 +105,7 @@ const RightFields = ({
             fiedlName="endDate"
             initialValue={moment(defaultEndDate || classEndDate)}
           >
-            <DatePicker
+            <DatePickerStyled
               data-cy="endDate"
               format="DD MMM, YYYY"
               placeholder="End Date"
@@ -124,24 +125,24 @@ const RightFields = ({
             initialValue={defaultGrade}
             disabled={!!cleverId}
           >
-            <Select placeholder="Select Grades" mode="multiple" disabled={!!cleverId}>
+            <SelectInputStyled placeholder="Select Grades" mode="multiple" disabled={!!cleverId}>
               {allGrades.map(el => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
         <Col xs={12}>
           <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject} disabled={!!cleverId}>
-            <Select placeholder="Select Subject" onSelect={updateSubject} disabled={!!cleverId}>
+            <SelectInputStyled placeholder="Select Subject" onSelect={updateSubject} disabled={!!cleverId}>
               {subjects.map(el => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -154,7 +155,7 @@ const RightFields = ({
             initialValue={defaultStandardSetIds || []}
             {...restProps}
           >
-            <Select
+            <SelectInputStyled
               showSearch
               mode="multiple"
               optionFilterProp="children"
@@ -173,7 +174,7 @@ const RightFields = ({
                   </Select.Option>
                 ))
               )}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -185,7 +186,7 @@ const RightFields = ({
         <Col xs={24}>
           <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
             <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={defaultCourse.id || ""}>
-              <Select
+              <SelectInputStyled
                 placeholder="Select Course"
                 showSearch
                 defaultActiveFirstOption={false}
@@ -200,19 +201,19 @@ const RightFields = ({
                 {courseOptions.map(el => (
                   <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </FieldLabel>
           </FeaturesSwitch>
         </Col>
         <Col xs={12}>
           <FieldLabel label="School" {...restProps} fiedlName="institutionId" initialValue={defaultSchool || ""}>
-            <Select placeholder="Select School">
+            <SelectInputStyled placeholder="Select School">
               {schoolList.map(el => (
                 <Select.Option key={el._id} value={el._id}>
                   {el.name}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
         <Col xs={12}>

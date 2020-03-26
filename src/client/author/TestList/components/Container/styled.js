@@ -4,18 +4,35 @@ import {
   greyThemeDark1,
   greyThemeLight,
   mediumDesktopExactWidth,
-  placeholderGray,
   textColor,
-  themeColor
+  themeColor,
+  greyThemeLighter
 } from "@edulastic/colors";
 import { Card, FlexContainer } from "@edulastic/common";
-import { Affix, Pagination } from "antd";
+import { Affix, Pagination, Input } from "antd";
 import styled from "styled-components";
 
 export const ScrollBox = styled.div`
   padding-right: 30px;
   & > div {
     padding: 20px 0px 5px;
+  }
+`;
+
+export const SearchInput = styled(Input.Search)`
+  .ant-input {
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
+    border-radius: 2px;
+    height: 40px;
+    font-size: ${props => props.theme.smallFontSize};
+
+    @media (max-width: ${mediumDesktopExactWidth}) {
+      font-size: ${props => props.theme.smallLinkFontSize};
+    }
+  }
+  svg {
+    fill: ${themeColor};
   }
 `;
 
@@ -29,20 +46,6 @@ export const Container = styled.div`
   right: 0;
   height: 100%;
   overflow: auto;
-
-  .ant-input {
-    font-size: ${props => props.theme.bodyFontSize};
-    letter-spacing: 0.2px;
-    color: ${placeholderGray};
-    ::placeholder {
-      font-size: ${props => props.theme.smallFontSize};
-      color: ${placeholderGray};
-
-      @media (max-width: ${mediumDesktopExactWidth}) {
-        font-size: ${props => props.theme.smallLinkFontSize};
-      }
-    }
-  }
 
   .ant-input-suffix {
     font-size: 15px;

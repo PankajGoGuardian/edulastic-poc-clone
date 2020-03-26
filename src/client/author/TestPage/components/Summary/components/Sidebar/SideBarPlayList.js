@@ -1,27 +1,19 @@
-import React, { useState, useEffect, createRef, useMemo } from "react";
-import PropTypes from "prop-types";
-import { Select, Row, Col, message } from "antd";
-import { uniqBy } from "lodash";
-import { ChromePicker } from "react-color";
 import { tagsApi } from "@edulastic/api";
-
-import { selectsData } from "../../../common";
-import {
-  SummaryInput,
-  SummarySelect,
-  SummaryTextArea,
-  SummaryDiv,
-  ColorBox,
-  SummaryButton
-} from "../../common/SummaryForm";
-import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
-
+import { FieldLabel, SelectInputStyled, TextAreaInputStyled, TextInputStyled } from "@edulastic/common";
+import { Col, message, Row, Select } from "antd";
+import { uniqBy } from "lodash";
+import PropTypes from "prop-types";
+import React, { createRef, useEffect, useMemo, useState } from "react";
+import { ChromePicker } from "react-color";
+import connect from "react-redux/lib/connect/connect";
+import { IPAD_LANDSCAPE_WIDTH } from "../../../../../../assessment/constants/others";
 import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
-import SummaryHeader from "../SummaryHeader/SummaryHeader";
-import { IPAD_LANDSCAPE_WIDTH } from "../../../../../../assessment/constants/others";
-import connect from "react-redux/lib/connect/connect";
 import { changePlaylistThemeAction } from "../../../../../PlaylistPage/ducks";
+import { selectsData } from "../../../common";
+import { ColorBox, SummaryButton, SummaryDiv } from "../../common/SummaryForm";
+import SummaryHeader from "../SummaryHeader/SummaryHeader";
+import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from "./styled";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -32,13 +24,14 @@ export const renderAnalytics = (title, Icon) => (
 
 const PlayListDescription = ({ onChangeField, description }) => (
   <>
-    <MainTitle>Description</MainTitle>
-    <SummaryTextArea
+    <FieldLabel>Description</FieldLabel>
+    <TextAreaInputStyled
       isPlaylist
       value={description}
       onChange={e => onChangeField("description", e.target.value)}
       size="large"
       placeholder="Enter a description"
+      height="187px"
     />
   </>
 );
@@ -138,29 +131,31 @@ const Sidebar = ({
       </Col>
       <Row gutter={16}>
         <Col xl={12}>
-          <MainTitle>{"Playlist Name"}</MainTitle>
-          <SummaryInput
+          <FieldLabel>Playlist Name</FieldLabel>
+          <TextInputStyled
             value={title}
             data-cy="testname"
             onChange={e => onChangeField("title", e.target.value)}
             size="large"
-            placeholder={`Enter a playlist name`}
+            placeholder="Enter a playlist name"
             ref={playListTitleInput}
+            margin="0px 0px 15px"
           />
           {title !== undefined && !title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
           {windowWidth <= IPAD_LANDSCAPE_WIDTH && (
             <PlayListDescription onChangeField={onChangeField} description={description} />
           )}
-          <MainTitle>Grade</MainTitle>
-          <SummarySelect
+          <FieldLabel>Grade</FieldLabel>
+          <SelectInputStyled
             data-cy="gradeSelect"
             mode="multiple"
             size="large"
-            style={{ width: "100%" }}
             placeholder="Please select"
             defaultValue={grades}
             onChange={onChangeGrade}
             optionFilterProp="children"
+            margin="0px 0px 15px"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {selectsData.allGrades.map(({ value, text }) => (
@@ -168,18 +163,19 @@ const Sidebar = ({
                 {text}
               </Select.Option>
             ))}
-          </SummarySelect>
+          </SelectInputStyled>
 
-          <MainTitle>Subject</MainTitle>
-          <SummarySelect
+          <FieldLabel>Subject</FieldLabel>
+          <SelectInputStyled
             data-cy="subjectSelect"
             mode="multiple"
             size="large"
-            style={{ width: "100%" }}
+            margin="0px 0px 15px"
             placeholder="Please select"
             defaultValue={subjects}
             onChange={onChangeSubjects}
             optionFilterProp="children"
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {subjectsList.map(({ value, text }) => (
@@ -187,20 +183,21 @@ const Sidebar = ({
                 {text}
               </Select.Option>
             ))}
-          </SummarySelect>
+          </SelectInputStyled>
 
           {isPublishers && (
             <>
-              <MainTitle>Collections</MainTitle>
-              <SummarySelect
+              <FieldLabel>Collections</FieldLabel>
+              <SelectInputStyled
                 data-cy="collectionsSelect"
                 mode="multiple"
                 size="large"
-                style={{ width: "100%" }}
+                margin="0px 0px 15px"
                 placeholder="Please select"
                 value={filteredCollections.flatMap(c => c.bucketIds)}
                 onChange={onChangeCollection}
                 optionFilterProp="children"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               >
                 {orgCollections.map(o => (
@@ -208,23 +205,24 @@ const Sidebar = ({
                     {`${o.collectionName} - ${o.name}`}
                   </Select.Option>
                 ))}
-              </SummarySelect>
+              </SelectInputStyled>
             </>
           )}
 
-          <MainTitle>Tags</MainTitle>
-          <SummarySelect
+          <FieldLabel>Tags</FieldLabel>
+          <SelectInputStyled
             data-cy="tagsSelect"
             className="tagsSelect"
             mode="multiple"
             size="large"
-            style={{ marginBottom: "10px", width: "100%" }}
+            margin="0px 0px 15px"
             optionLabelProp="title"
             placeholder="Please select"
             value={tags.map(t => t._id)}
             onSearch={searchTags}
             onSelect={selectTags}
             onDeselect={deselectTags}
+            getPopupContainer={triggerNode => triggerNode.parentNode}
             filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
           >
             {!!searchValue.trim() ? (
@@ -234,12 +232,12 @@ const Sidebar = ({
             ) : (
               ""
             )}
-            {newAllTagsData.map(({ tagName, _id }, index) => (
+            {newAllTagsData.map(({ tagName, _id }) => (
               <Select.Option key={_id} value={_id} title={tagName}>
                 {tagName}
               </Select.Option>
             ))}
-          </SummarySelect>
+          </SelectInputStyled>
           {!!searchValue.length && !searchValue.trim().length && (
             <p style={{ color: "red" }}>Please enter valid characters.</p>
           )}
@@ -247,7 +245,7 @@ const Sidebar = ({
         <Col xl={12}>
           <Row>
             <Col xs={12}>
-              <MainTitle>TEXT COLOR</MainTitle>
+              <FieldLabel>TEXT COLOR</FieldLabel>
               <SummaryDiv>
                 <ColorBox data-cy="image-text-box-color-picker" background={textColor} />
                 <SummaryButton onClick={() => onChangeColor("isTextColorPickerVisible", true)}>CHOOSE</SummaryButton>
@@ -265,7 +263,7 @@ const Sidebar = ({
               </SummaryDiv>
             </Col>
             <Col xs={12}>
-              <MainTitle>BACKGROUND COLOR</MainTitle>
+              <FieldLabel>BACKGROUND COLOR</FieldLabel>
               <SummaryDiv>
                 <ColorBox data-cy="image-text-box-color-picker" background={backgroundColor} />
                 <SummaryButton onClick={() => onChangeColor("isBackgroundColorPickerVisible", true)}>

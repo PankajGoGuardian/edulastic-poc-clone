@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
-import { themeColor, secondaryTextColor } from "@edulastic/colors";
+import { secondaryTextColor } from "@edulastic/colors";
 
 export const Block = styled.div`
   display: flex;
@@ -13,54 +13,6 @@ export const Block = styled.div`
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
-  }
-
-  .ant-input {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: #434b5d;
-    padding-left: 20px;
-  }
-
-  .ant-select-selection__choice {
-    height: 23px !important;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    background: ${themeColor}20;
-    color: ${themeColor};
-    font-weight: 600;
-    margin-top: 9px !important;
-  }
-
-  .ant-select-selection__rendered {
-    padding-left: 9px;
-    margin-left: 0;
-  }
-
-  .ant-select-selection__choice__content {
-    font-size: 11px;
-    letter-spacing: 0.2px;
-    color: #0083be;
-    font-weight: bold;
-    height: 23px;
-    display: flex;
-    align-items: center;
-  }
-
-  .tagsSelect .ant-select-selection__choice__content {
-    text-transform: none;
-  }
-
-  .ant-select-remove-icon svg {
-    fill: ${themeColor};
-    width: 12px;
-    height: 12px;
-  }
-
-  textarea {
-    height: 116px;
   }
 `;
 

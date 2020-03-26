@@ -1,88 +1,20 @@
-import styled from "styled-components";
-import { Modal, Menu } from "antd";
 import {
-  mediumDesktopWidth,
-  themeColor,
-  fadedGrey,
-  mainBgColor,
-  lightGreySecondary,
-  textColor,
   black,
-  title,
-  white,
-  themeColorTagsBg,
-  themeColorLighter,
+  fadedGrey,
+  lightGreySecondary,
+  mainBgColor,
+  mediumDesktopWidth,
   tabGrey,
-  smallDesktopWidth,
-  greyThemeLighter,
-  greyThemeLight
+  textColor,
+  themeColor,
+  title,
+  white
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
+import { Menu, Modal } from "antd";
+import styled from "styled-components";
 
-export const FilterContainer = styled.div`
-  .ant-select-selection {
-    background: ${greyThemeLighter};
-    border: 1px solid ${greyThemeLight};
-    padding: 2px 3px;
-    border-radius: 2px;
-  }
-  .ant-select,
-  .ant-input,
-  .ant-input-number {
-    min-width: 100px;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  .ant-select-lg {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: ${title};
-    .ant-select-selection--multiple {
-      .ant-select-selection__rendered {
-        li.ant-select-selection__choice {
-          height: 24px;
-          line-height: 24px;
-          margin-top: 7px;
-
-          @media (max-width: ${smallDesktopWidth}) {
-            height: 20px;
-            line-height: 20px;
-          }
-        }
-      }
-    }
-  }
-
-  .ant-select-selection__choice {
-    border-radius: 4px;
-    border: solid 1px ${themeColorLighter}22;
-    background-color: ${themeColorTagsBg};
-    height: 24px;
-  }
-
-  .ant-select-selection__choice__content {
-    font-size: 10px;
-    font-weight: bold;
-    letter-spacing: 0.2px;
-    color: ${themeColor};
-    opacity: 1;
-    text-transform: uppercase;
-  }
-
-  .ant-select-remove-icon {
-    svg {
-      fill: ${themeColor};
-    }
-  }
-
-  .ant-select-arrow-icon {
-    font-size: 14px;
-    svg {
-      fill: ${themeColor};
-    }
-  }
-`;
+export const FilterContainer = styled.div``;
 
 export const StyledBoldText = styled.p`
   font-weight: 600;
@@ -93,14 +25,25 @@ export const StyledBoldText = styled.p`
 `;
 
 export const NewFolderButton = styled(Button)`
-  min-height: 30px;
-  min-width: 140px;
-  margin-top: 10px;
-  padding: 2px;
-  display: flex;
-  justify-content: space-evenly;
+  min-height: 40px;
+  width: 100%;
+  padding: 0px;
+  border: none;
+  font-size: 12px;
+  justify-content: flex-start;
+  &:hover,
   &:focus {
-    outline: unset;
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+  & > span {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    svg {
+      margin-left: 15px;
+    }
   }
 `;
 

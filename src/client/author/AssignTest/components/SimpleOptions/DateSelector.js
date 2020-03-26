@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { test as testConst, assignmentStatusOptions } from "@edulastic/constants";
 import { Col, Row } from "antd";
 import { StyledRow, ColLabel, StyledDatePicker, Label } from "./styled";
+import { FieldLabel, DatePickerStyled } from "@edulastic/common";
 
 const DateSelector = ({ startDate, endDate, changeField, passwordPolicy, forClassLevel, status }) => {
   const disabledStartDate = startDate => {
@@ -22,18 +23,16 @@ const DateSelector = ({ startDate, endDate, changeField, passwordPolicy, forClas
 
   return (
     <React.Fragment>
-      <StyledRow gutter={32} mb="20px">
+      <StyledRow gutter={32} mb="15px">
         <Col span={12}>
           <Row>
-            <ColLabel span={24}>
-              <Label>OPEN DATE</Label>
-            </ColLabel>
             <Col span={24}>
-              <StyledDatePicker
+              <FieldLabel>OPEN DATE</FieldLabel>
+              <DatePickerStyled
                 allowClear={false}
                 data-cy="startDate"
-                style={{ width: "100%" }}
                 size="large"
+                style={{ width: "100%" }}
                 disabledDate={disabledStartDate}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
@@ -50,11 +49,9 @@ const DateSelector = ({ startDate, endDate, changeField, passwordPolicy, forClas
         </Col>
         <Col span={12}>
           <Row>
-            <ColLabel span={24}>
-              <Label>CLOSE DATE</Label>
-            </ColLabel>
             <Col span={24}>
-              <StyledDatePicker
+              <FieldLabel>CLOSE DATE</FieldLabel>
+              <DatePickerStyled
                 allowClear={false}
                 data-cy="closeDate"
                 style={{ width: "100%" }}

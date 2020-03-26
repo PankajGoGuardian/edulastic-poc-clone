@@ -37,6 +37,7 @@ import {
   PaginationWrapper,
   ScrollbarWrapper,
   ScrollBox,
+  SearchInput,
   SearchModalContainer,
   StyleChangeWrapper
 } from "../../../TestList/components/Container/styled";
@@ -420,7 +421,7 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <Input.Search
+                      <SearchInput
                         placeholder="Search by skills and keywords"
                         onChange={this.handleSearchInputChange}
                         size="large"

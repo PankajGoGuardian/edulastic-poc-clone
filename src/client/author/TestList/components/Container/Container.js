@@ -6,9 +6,9 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import moment from "moment";
-import { Button, Row, Input, Spin, message, Dropdown, Menu } from "antd";
+import { Button, Row, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
-import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
+import { withWindowSizes, FlexContainer, TextInputStyled } from "@edulastic/common";
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
 import { greyish, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -28,7 +28,8 @@ import {
   StyleChangeWrapper,
   CardBox,
   StyledCountText,
-  ItemsMenu
+  ItemsMenu,
+  SearchInput
 } from "./styled";
 
 import CardWrapper from "../CardWrapper/CardWrapper";
@@ -941,7 +942,7 @@ class TestList extends Component {
         )}
         <Container>
           <MobileFilter>
-            <Input
+            <TextInputStyled
               placeholder="Search by skills and keywords"
               onChange={this.handleSearchInputChange}
               size="large"
@@ -1024,7 +1025,7 @@ class TestList extends Component {
                 <ScrollbarWrapper>
                   <PerfectScrollbar>
                     <ScrollBox>
-                      <Input.Search
+                      <SearchInput
                         placeholder="Search by skills and keywords"
                         onChange={this.handleSearchInputChange}
                         size="large"

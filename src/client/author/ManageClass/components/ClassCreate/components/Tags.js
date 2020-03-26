@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Select, message } from "antd";
 import { tagsApi } from "@edulastic/api";
-import { FieldLabel } from "./index";
+import { SelectInputStyled } from "@edulastic/common";
+import { message, Select } from "antd";
 import { uniq } from "lodash";
+import React, { useState } from "react";
+import { FieldLabel } from "./index";
 
 const Tags = props => {
   const { tags = [], allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
@@ -46,7 +47,7 @@ const Tags = props => {
   return (
     <>
       <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={tags.map(tag => tag._id)}>
-        <Select
+        <SelectInputStyled
           data-cy="tagsSelect"
           mode="multiple"
           style={{ marginBottom: 0 }}
@@ -69,7 +70,7 @@ const Tags = props => {
               {tagName}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
       </FieldLabel>
     </>
   );

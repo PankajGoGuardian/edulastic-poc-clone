@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { filter, isArray, isEmpty, debounce } from "lodash";
+import { TextInputStyled, DatePickerStyled, SelectInputStyled } from "@edulastic/common";
+import { Col, Select } from "antd";
+import { debounce, filter, isArray, isEmpty } from "lodash";
 import * as moment from "moment";
-import { Input, Select, DatePicker, Col } from "antd";
-import { FieldLabel } from "./components";
-import { StyledFlexContainer, StandardsValidationMSG } from "./styled";
-import selectsData from "../../../TestPage/components/common/selectsData";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import selectsData from "../../../TestPage/components/common/selectsData";
+import { FieldLabel } from "./components";
 import Tags from "./components/Tags";
+import { StandardsValidationMSG, StyledFlexContainer } from "./styled";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -65,7 +66,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
           <FieldLabel label="Class Name" {...restProps} fiedlName="name">
-            <Input placeholder="Enter the name of your class" maxLength="256" />
+            <TextInputStyled placeholder="Enter the name of your class" maxLength="256" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -73,7 +74,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
           <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
-            <DatePicker
+            <DatePickerStyled
               data-cy="startDate"
               format="DD MMM, YYYY"
               placeholder="Open Date"
@@ -84,7 +85,12 @@ const RightFields = ({
         </Col>
         <Col xs={12}>
           <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
-            <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" disabledDate={disabledEndDate} />
+            <DatePickerStyled
+              data-cy="endDate"
+              format="DD MMM, YYYY"
+              placeholder="End Date"
+              disabledDate={disabledEndDate}
+            />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -92,7 +98,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
           <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={[]}>
-            <Select
+            <SelectInputStyled
               showSearch
               placeholder="Select Grades"
               optionFilterProp="children"
@@ -104,18 +110,18 @@ const RightFields = ({
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
         <Col xs={12}>
           <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={[]}>
-            <Select placeholder="Select Subject" onSelect={updateSubject}>
+            <SelectInputStyled placeholder="Select Subject" onSelect={updateSubject}>
               {subjects.map(el => (
                 <Select.Option key={el.value} value={el.value}>
                   {el.text}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -123,7 +129,7 @@ const RightFields = ({
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
           <FieldLabel label="Standards Set" {...restProps} fiedlName="standardSets" initialValue={[]}>
-            <Select
+            <SelectInputStyled
               showSearch
               mode="multiple"
               optionFilterProp="children"
@@ -141,7 +147,7 @@ const RightFields = ({
                   </Select.Option>
                 ))
               )}
-            </Select>
+            </SelectInputStyled>
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
@@ -152,7 +158,7 @@ const RightFields = ({
         <Col xs={24}>
           <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
             <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={[]}>
-              <Select
+              <SelectInputStyled
                 placeholder="Select Course"
                 showSearch
                 defaultActiveFirstOption={false}
@@ -166,7 +172,7 @@ const RightFields = ({
                 {courseList.map(el => (
                   <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number}`}</Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </FieldLabel>
           </FeaturesSwitch>
         </Col>
@@ -181,13 +187,13 @@ const RightFields = ({
         {isDropdown && (
           <Col xs={12}>
             <FieldLabel label="School" {...restProps} fiedlName="institutionId">
-              <Select placeholder="Select School">
+              <SelectInputStyled placeholder="Select School">
                 {schoolList.map(el => (
                   <Select.Option key={el._id} value={el._id}>
                     {el.name}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectInputStyled>
             </FieldLabel>
           </Col>
         )}

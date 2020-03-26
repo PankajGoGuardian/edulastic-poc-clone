@@ -105,6 +105,8 @@ export const SearchInput = styled(Input.Search)`
   .ant-input {
     background: ${greyThemeLighter};
     border: 1px solid ${greyThemeLight};
+    border-radius: 2px;
+    height: 40px;
     font-size: ${props => props.theme.smallFontSize};
 
     @media (max-width: ${mediumDesktopExactWidth}) {

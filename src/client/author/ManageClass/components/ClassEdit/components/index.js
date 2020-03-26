@@ -2,7 +2,7 @@ import React from "react";
 import * as moment from "moment";
 import PropTypes from "prop-types";
 import { Form } from "antd";
-import { Field, Optional } from "./styled";
+import { Field, Optional, Label } from "./styled";
 
 export const FieldLabel = ({
   label,
@@ -39,10 +39,10 @@ export const FieldLabel = ({
 
   return (
     <Field>
-      <legend>
+      <Label>
         {label}
         {optional && <Optional>(Optional)</Optional>}
-      </legend>
+      </Label>
       <Form.Item>
         {getFieldDecorator(fiedlName, {
           rules: validations[fiedlName],

@@ -16,6 +16,14 @@ export { default as Button } from "./src/components/Button";
 export { default as EduButton } from "./src/components/EduButton";
 export { default as Checkbox } from "./src/components/Checkbox";
 export { default as CheckboxLabel, CheckBoxGrp } from "./src/components/CheckboxLabel";
+export {
+  TextInputStyled,
+  SelectInputStyled,
+  DatePickerStyled,
+  TextAreaInputStyled,
+  NumberInputStyled,
+  FieldLabel
+} from "./src/components/InputStyles";
 export { default as Card } from "./src/components/Card";
 export { default as MainContentWrapper } from "./src/components/MainContentWrapper";
 export { default as HeaderTabs } from "./src/components/HeaderTabs";

@@ -5,6 +5,7 @@ import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudenPlaylist from "../../../../framework/student/studentPlaylist";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
 
+// TODO:  As there is no difference between normal teachet and CE flows in case of customization we are restricting CE flow only until the feature changes
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customization`, () => {
   const playlistlibraryPage = new PlayListLibrary();
   const testlibraryPage = new TestLibrary();
@@ -63,6 +64,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
   });
 
   context(">allowing customization- drop", () => {
+    /* customizing CE playlist will create new copy and changes made will reflect only at teacher and student side not at CE side */
     before(">create playlist", () => {
       playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
         playlistid = id;
@@ -81,6 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.clickOnPlayListCardById(playlistid);
         playlistlibraryPage.header.clickOnUseThis(true).then(id => {
           customplaylist = id;
+          expect(customplaylist).to.not.eq(playlistid);
         });
       });
       it(">customize-'add a test from other module and verify'", () => {
@@ -281,6 +284,104 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.searchByCollection(collection);
         playlistlibraryPage.clickOnPlayListCardById(playlistid);
         playlistlibraryPage.reviewTab.getTestByTestByModule(2, 2).should("not.exist");
+      });
+    });
+  });
+  context(">not allowing customization- drop", () => {
+    /* not allowing customization will not create new  copy after customize and changes made at CE side will reflect to every one who has  acces to playlist(teachers and students) */
+    before(">create playlist", () => {
+      cy.login("publisher", contentEditor.email, contentEditor.pass);
+      playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
+        playlistid = id;
+      });
+    });
+
+    it(">verify shared playlist", () => {
+      cy.login("teacher", teacher.email, teacher.pass);
+      playlistlibraryPage.searchByCollection(collection);
+      playlistlibraryPage.clickOnPlayListCardById(playlistid);
+      playlistlibraryPage.header.clickOnUseThis().then(() => {
+        playlistlibraryPage.playlistCustom.getModuleRowByModule(1);
+        cy.url().should("contain", playlistid);
+      });
+      /* can't customize */
+      playlistlibraryPage.playlistCustom.getManageContentButton().should("not.exist");
+    });
+    it(">drop playlist to the class", () => {
+      playlistlibraryPage.header.clickOnDropPlalist();
+      playlistlibraryPage.searchAndClickOnDropDownByClass("Class");
+      playlistlibraryPage.clickDoneDropPlaylist();
+    });
+    it(">verify student side", () => {
+      cy.login("student", students.email, students.pass);
+      assignmentsPage.sidebar.clickOnPlaylistLibrary();
+      studentplaylistPage.clickOpenDroppedPlaylist();
+      studentplaylistPage.clickOnViewPlaylistById(playlistid);
+
+      studentplaylistPage.clickExpandByModule(1);
+      studentplaylistPage.getTestsInModuleByModule(1).should("have.length", 2);
+
+      studentplaylistPage.clickExpandByModule(2);
+      studentplaylistPage.getTestsInModuleByModule(2).should("have.length", 2);
+    });
+    /* when customization is off changes made at CE side  should reflect at teacher and student side  */
+    context(">edit by owner", () => {
+      before(">create new test", () => {
+        cy.login("publisher", contentEditor.email, contentEditor.pass);
+        testlibraryPage.createTest(testToCreate).then(id => {
+          newtest = id;
+        });
+      });
+      before(">edit the playlist", () => {
+        playlistlibraryPage.seachAndClickPlayListById(playlistid);
+        playlistlibraryPage.header.clickOnEdit();
+
+        /* add new test module 2 */
+        playlistlibraryPage.header.clickOnAddTests();
+        playlistlibraryPage.searchFilter.clearAll();
+        playlistlibraryPage.addTestTab.addTestByIdByModule(newtest, 2);
+
+        /* delete a test from module 1 */
+        playlistlibraryPage.header.clickOnReview();
+        playlistlibraryPage.playlistCustom.clickExpandByModule(1);
+        playlistlibraryPage.playlistCustom.clickOnDeleteByTestByModule(1, 2);
+        playlistlibraryPage.header.clickOnPublish();
+      });
+      it(">verify at teacher side", () => {
+        cy.login("teacher", teacher.email, teacher.pass);
+        playlistlibraryPage.searchByCollection(collection);
+        playlistlibraryPage.clickOnPlayListCardById(playlistid);
+        playlistlibraryPage.header.clickOnUseThis().then(() => {
+          playlistlibraryPage.playlistCustom.clickExpandByModule(1);
+          cy.url().should("contain", playlistid);
+        });
+
+        /* verify deleted test */
+        playlistlibraryPage.playlistCustom.getTestsInModuleByModule(1).should("have.length", 1);
+        playlistlibraryPage.playlistCustom.getTestByTestByModule(1, 2).should("not.exist");
+
+        /* verify new test */
+        playlistlibraryPage.playlistCustom.clickExpandByModule(2);
+        playlistlibraryPage.playlistCustom.getTestsInModuleByModule(2).should("have.length", 3);
+      });
+      it(">verify at student side", () => {
+        cy.login("student", students.email, students.pass);
+        assignmentsPage.sidebar.clickOnPlaylistLibrary();
+        studentplaylistPage.clickOpenDroppedPlaylist();
+        studentplaylistPage.clickOnViewPlaylistById(playlistid);
+
+        /* verify deleted test */
+        studentplaylistPage.clickExpandByModule(1);
+        studentplaylistPage.getTestsInModuleByModule(1).should("have.length", 1);
+
+        /* verify new test */
+        studentplaylistPage.clickExpandByModule(2);
+        studentplaylistPage.getTestsInModuleByModule(2).should("have.length", 3);
+      });
+      it(">attempt test added by owner", () => {
+        studentplaylistPage.clickOnPractiseByTestByMod(2, 3);
+        studenttestPage.attemptQuestionsByQueType(qType, attemptdata);
+        studenttestPage.clickSubmitButton();
       });
     });
   });

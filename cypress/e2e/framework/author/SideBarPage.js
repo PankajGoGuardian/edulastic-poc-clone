@@ -7,7 +7,11 @@ export default class TeacherSideBar {
 
   // *** ACTIONS START ***
 
-  clickOnDashboard = () => cy.get('[data-cy="Dashboard"]').click({ force: true });
+  clickOnDashboard = () => {
+    cy.route("POST", "**/search/courses").as("searchCourse");
+    cy.get('[data-cy="Dashboard"]').click({ force: true });
+    //  cy.wait("@searchCourse");
+  };
 
   clickOnPlayListLibrary = () => {
     cy.server();

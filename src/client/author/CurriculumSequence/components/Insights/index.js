@@ -80,9 +80,14 @@ const Insights = ({
     if (overallProgressCheck && termId) {
       getStudentProgressRequestAction({ termId, insights: true });
     } else if (playlistId && termId) {
-      getStudentProgressRequestAction({ termId, playlistId, insights: true });
+      if (filters.modules.length) {
+        const playlistModuleIds = filters.modules.map(i => i.key).join(",");
+        getStudentProgressRequestAction({ termId, playlistId, playlistModuleIds, insights: true });
+      } else {
+        getStudentProgressRequestAction({ termId, playlistId, insights: true });
+      }
     }
-  }, [overallProgressCheck, playlistId]);
+  }, [overallProgressCheck, playlistId, filters.modules]);
 
   const { metricInfo: progressInfo } = get(studentProgress, "data.result", {});
   const [trendData, trendCount] = useGetBandData(progressInfo || [], "student", [], "", defaultBandInfo);

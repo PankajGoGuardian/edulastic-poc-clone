@@ -1,8 +1,12 @@
 import React from "react";
 
-const TrendArrow = ({ cx = 0, cy = 0, color, trendAngle = 0, transformOrigin }) => (
-  <g transform={`translate(${cx} ${cy}) rotate(${-trendAngle - 90})`} transform-origin={transformOrigin}>
-    <path d="M0,0V18.385" transform="translate(4.065 3.536)" fill="none" stroke={color} stroke-width="2" />
+const TrendArrow = ({ cx = 0, cy = 0, color, trendAngle = 0, transformOrigin = "inherit" }) => (
+  <g
+    transform={`translate(${cx} ${cy}) rotate(${-trendAngle - 90})`}
+    transform-origin={transformOrigin}
+    pointerEvents="bounding-box"
+  >
+    <path d="M0,0V18.385" transform="translate(4.065 3.536)" fill="none" stroke={color} strokeWidth="2" />
     <g transform="translate(7.565 26.438) rotate(180)" fill={color}>
       <path
         d="M 6.129451751708984 5.499964714050293 L 0.8705185651779175 5.499964714050293 L 3.499985218048096 0.9923245310783386 L 6.129451751708984 5.499964714050293 Z"

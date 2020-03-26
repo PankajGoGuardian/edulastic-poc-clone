@@ -27,14 +27,14 @@ const ScatterLabel = props => {
   return isGrouped ? (
     <g onClick={e => handleCircleClick(e, item.studentIds, color)}>
       <circle cx={cx} cy={cy} r={12} fill={lightGrey7} />
-      <text x={cx} y={cy + 4} fill={white} text-anchor="middle" font-size="11" font-weight="bold" textAnchor="middle">
+      <text x={cx} y={cy + 4} fontSize="11" fontWeight="bold" textAnchor="middle" fill={white}>
         {count}
       </text>
     </g>
   ) : (
     <g onClick={e => handleArrowClick(e, studentId)}>
       {isActive && (
-        <text x={nameX} y={cy} font-size="12" font-weight="bold" textAnchor="end" fill={color}>
+        <text x={nameX} y={cy} fontSize="12" fontWeight="bold" textAnchor="end" fill={color}>
           {name}
         </text>
       )}
@@ -65,8 +65,6 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
     aspect: 1
   };
   const scatterChartProps = {
-    width: "100%",
-    height: "100%",
     margin: { top: -1, right: -1, bottom: -1, left: -1 },
     onClick: () => {
       toggleActiveData({ activeData, setActiveData, allActive: !allActive });

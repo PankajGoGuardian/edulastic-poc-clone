@@ -7,8 +7,8 @@ import { getUserRole } from "../../../../src/selectors/user";
 import { greyThemeDark1, fadedGrey, themeColor } from "@edulastic/colors";
 import { IconFolderAll, IconFolderDeactive, IconFolderNew } from "@edulastic/icons";
 
-const GroupContainer = ({ name, Icon, onClickAction, isActive }) => (
-  <StyledCol span={24} padding="9px 18px" onClick={onClickAction} isActive={isActive}>
+const GroupContainer = ({ id, name, Icon, onClickAction, isActive }) => (
+  <StyledCol key={`group_filter_${id}`} span={24} padding="9px 18px" onClick={onClickAction} isActive={isActive}>
     <Icon />
     <StyledSpan fontStyle="11px/15px" padding="0 0 0 20px">
       <Tooltip placement="right" title={name}>

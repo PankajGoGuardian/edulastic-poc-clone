@@ -38,7 +38,7 @@ const handleGroupsChange = (selected, prevFilters, updateFilters) =>
   });
 
 const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
-  <StyledRow type="flex" gutter={[0, 10]} style={{ "margin-bottom": "20px" }}>
+  <StyledRow type="flex" gutter={[0, 10]} style={{ marginBottom: "20px" }}>
     <Col span={24}>
       <StyledSpan>{label}</StyledSpan>
     </Col>

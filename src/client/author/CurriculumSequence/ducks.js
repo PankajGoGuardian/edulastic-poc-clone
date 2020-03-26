@@ -707,20 +707,7 @@ function* duplicateManageContentSaga({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    const { customize, isStudent, _id: originalId, onChange, groupId, title: originalTitle, authors = [] } = payload;
-    const currentUserId = yield select(state => state?.user?.user?._id);
-    const canEdit = authors.find(x => x._id === currentUserId);
-    let duplicatedPlaylist;
-    if (originalId && !isStudent && customize && !canEdit) {
-      duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
-        _id: originalId,
-        title: originalTitle,
-        forUseThis: true
-      });
-    } else {
-      duplicatedPlaylist = payload;
-    }
-    const { _id, title, grades, subjects } = duplicatedPlaylist;
+    const { _id, title, grades, subjects, groupId, onChange, isStudent } = payload;
     yield call(userContextApi.setLastUsedPlayList, { _id, title, grades, subjects });
     yield call(userContextApi.setRecentUsedPlayLists, { _id, title, grades, subjects });
     yield put(receiveLastPlayListAction());

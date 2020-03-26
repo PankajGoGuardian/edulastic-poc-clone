@@ -4,7 +4,20 @@ import ReviewItem from "../ReviewItem";
 import DragHandle from "./DragHandle";
 import { DragCrad, ReviewItemWrapper } from "./styled";
 
-export default SortableElement(({ item, onSelect, selected, isCollapse, removeItem, isEditable, ...rest }) => {
+const Item = SortableElement(props => {
+  const { onSelect, data, isEditable, selected, expand } = props;
+  return (
+    <DragCrad>
+      {!expand && <DragHandle onSelect={onSelect} isEditable={isEditable} selected={selected} indx={data.key} />}
+      <ReviewItemWrapper>
+        <ReviewItem {...props} />
+      </ReviewItemWrapper>
+    </DragCrad>
+  );
+});
+
+export default props => {
+  const { item, onSelect, selected, isCollapse, removeItem, disabled, ...rest } = props;
   const [expand, toggleExpand] = useState(false);
 
   const toggleExpandRow = () => toggleExpand(!expand);
@@ -24,20 +37,15 @@ export default SortableElement(({ item, onSelect, selected, isCollapse, removeIt
   }, [isCollapse]);
 
   return (
-    <DragCrad>
-      {!expand && <DragHandle onSelect={handleSelect} isEditable={isEditable} selected={checked} indx={item.key} />}
-      <ReviewItemWrapper>
-        <ReviewItem
-          data={item}
-          {...rest}
-          isEditable={isEditable}
-          onDelete={handleDelete}
-          toggleExpandRow={toggleExpandRow}
-          selected={checked}
-          onSelect={handleSelect}
-          expand={expand}
-        />
-      </ReviewItemWrapper>
-    </DragCrad>
+    <Item
+      {...rest}
+      data={item}
+      selected={checked}
+      expand={expand}
+      disabled={disabled || expand}
+      onDelete={handleDelete}
+      toggleExpandRow={toggleExpandRow}
+      onSelect={handleSelect}
+    />
   );
-});
+};

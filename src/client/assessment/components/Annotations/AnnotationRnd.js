@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
 import produce from "immer";
-
+import { Popover } from "antd";
+import { Ellipsis, MathSpan, measureText } from "@edulastic/common";
 import { getAdjustedV1AnnotationCoordinatesForDB } from "../Graph/common/utils";
 
-import { FroalaInput } from "./styled/styled_components";
+import { Container } from "./styled/Container";
 import { ValueWrapper } from "./styled/ValueWrapper";
 
 const resizeDisable = {
@@ -65,12 +66,7 @@ class AnnotationsRnd extends Component {
             return modifiedAnnotation;
           }
           if (isV1Migrated && v1Dimenstions) {
-            const co = getAdjustedV1AnnotationCoordinatesForDB(
-              adjustedHeightWidth,
-              layout,
-              annotation,
-              v1Dimenstions
-            );
+            const co = getAdjustedV1AnnotationCoordinatesForDB(adjustedHeightWidth, layout, annotation, v1Dimenstions);
             annotation.position.x = co.x;
             annotation.position.y = co.y;
             annotation.size.width = co.width;
@@ -160,7 +156,7 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, disableDragging, isAbove, bounds, noBorder } = this.props;
+    const { question, disableDragging, isAbove, bounds } = this.props;
     if (!question || !question.annotations) return null;
 
     const annotations = question.annotations || [];
@@ -172,6 +168,20 @@ class AnnotationsRnd extends Component {
             const { x, y } = annotation.position || { x: i * 50, y: 0 };
             const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
             const { value } = annotation;
+
+            const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(value, {
+              maxWidth: width,
+              height,
+              fontSize: "1rem"
+            });
+
+            // we are adding 10px for some reason in measure method.
+            // so we should reduce 10px here.
+            const isOverHight = contentHeight - 5 > height;
+            const isOverWidth = contentWidth - 10 > width;
+            const showPopover = isOverHight || isOverWidth;
+
+            const content = <MathSpan dangerouslySetInnerHTML={{ __html: value }} noPadding />;
 
             return (
               <StyledRnd
@@ -185,22 +195,22 @@ class AnnotationsRnd extends Component {
                   width
                 }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
-                onResizeStop={(e, dir, ref, delta) =>
-                  this.handleAnnotationSize(delta, annotation.id)
-                }
+                onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
                 style={{
-                  zIndex: isAbove ? 20 : 10,
-                  border: noBorder || disableDragging ? "none" : "1px solid #efefef",
-                  pointerEvents: disableDragging ? "none" : "auto"
+                  zIndex: isAbove ? 20 : 10
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
                 bounds={bounds || "parent"}
                 className="annotation"
               >
-                <FroalaInput noBorder {...this.props} isRnd>
-                  <ValueWrapper dangerouslySetInnerHTML={{ __html: value }} />
-                </FroalaInput>
+                <Container noBorder {...this.props} isRnd>
+                  <ValueWrapper isOverHight={isOverHight}>
+                    {showPopover && <Popover content={content}>{content}</Popover>}
+                    {showPopover && <Ellipsis noPadding top="unset" bottom="2px" />}
+                    {!showPopover && content}
+                  </ValueWrapper>
+                </Container>
               </StyledRnd>
             );
           })}

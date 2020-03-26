@@ -20,6 +20,10 @@
     "question": {
       "composeQuestion": "Question",
       "questionPlaceholder": "Enter your question"
+    },
+    "annotation": {
+      "annotations": "Annotations",
+      "addAnnotation": "Add new Annotation"
     }
   },
   "component": {

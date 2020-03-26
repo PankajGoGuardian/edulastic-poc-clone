@@ -4,13 +4,10 @@ import PropTypes from "prop-types";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-
+import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import Annotation from "./Annotation";
-import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
-import { AnnotationsStyle } from "./styled/styled_components";
 import { Subtitle } from "../../styled/Subtitle";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class Annotations extends Component {
   ref = createRef();
@@ -79,26 +76,24 @@ class Annotations extends Component {
     );
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    // TODO: focus on last added field
-  }
-
   render() {
-    const { question, editable } = this.props;
+    const { question, editable, t } = this.props;
     const { handleUpdateAnnotation, handleRemoveAnnotation } = this;
 
     const annotations = question.annotations || [];
 
     return (
-      <AnnotationsStyle ref={this.ref}>
-        <Subtitle id={getFormattedAttrId(`${question?.title}-Annotations`)}>Annotations</Subtitle>
+      <div ref={this.ref} data-cy="annotations-container">
+        <Subtitle id={getFormattedAttrId(`${question?.title}-Annotations`)}>
+          {t("common.annotation.annotations")}
+        </Subtitle>
 
         {editable && (
-          <EditAnnotationsContainer>
+          <div>
             <CustomStyleBtn margin="0px 0px 15px" onClick={this.handleClick}>
-              ADD NEW ANNOTATION
+              {t("common.annotation.addAnnotation")}
             </CustomStyleBtn>
-            {annotations.map((annotation, i) => (
+            {annotations.map(annotation => (
               <Annotation
                 key={annotation.id}
                 index={annotation.id}
@@ -107,9 +102,9 @@ class Annotations extends Component {
                 {...annotation}
               />
             ))}
-          </EditAnnotationsContainer>
+          </div>
         )}
-      </AnnotationsStyle>
+      </div>
     );
   }
 }
@@ -117,6 +112,7 @@ class Annotations extends Component {
 Annotations.propTypes = {
   editable: PropTypes.bool,
   transformable: PropTypes.bool,
+  t: PropTypes.func.isRequired,
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired
 };

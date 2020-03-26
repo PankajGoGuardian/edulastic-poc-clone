@@ -103,7 +103,7 @@ const Insights = ({
   };
 
   return loading ? (
-    <Spin style={{ "margin-top": "400px" }} />
+    <Spin style={{ marginTop: "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
       <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>

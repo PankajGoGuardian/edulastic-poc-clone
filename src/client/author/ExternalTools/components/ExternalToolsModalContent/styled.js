@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { themeColor } from "@edulastic/common";
+import { themeColor } from "@edulastic/colors";
 import { Row, Input, Select } from "antd";
 
 export const StyledContentRow = styled(Row)`

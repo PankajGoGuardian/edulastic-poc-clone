@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
  *  @returns {number}
  */
 const getZoomedResponsiveWidth = ({ windowWidth, diff, zoomLevel }) => {
-  const minWidth = 480;
+  const minWidth = 370;
   const defaultContentWidth = 900;
   const [containerWidth, updateWidth] = useState(windowWidth - diff);
 
@@ -34,7 +34,7 @@ const getZoomedResponsiveWidth = ({ windowWidth, diff, zoomLevel }) => {
       responsiveWidth -= 12;
     }
     updateWidth(responsiveWidth);
-  }, [zoomLevel]);
+  }, [zoomLevel, windowWidth]);
 
   return containerWidth;
 };

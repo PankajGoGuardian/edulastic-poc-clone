@@ -12,7 +12,7 @@ export const ToolForm = ({ data, deleteData, onEdit }) => {
           </Col>
           <StyledColRight span={12}>
             <Icon type="edit" theme="filled" onClick={onEdit} />
-            <Icon type="delete" theme="filled" onClick={() => deleteData(data._id)} />
+            <Icon type="delete" theme="filled" onClick={deleteData} />
           </StyledColRight>
         </StyledRow>
       </div>

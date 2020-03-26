@@ -253,6 +253,14 @@ const updateExternalTools = ({ orgId, orgType = "district", externalToolId, body
     })
     .then(result => result.data.result.externalTools);
 
+const deleteExternalTools = ({ orgId, orgType = "district", externalToolId }) =>
+  api
+    .callApi({
+      url: `${prefix}/general/${orgId}/external-tools/${externalToolId}?orgType=${orgType}`,
+      method: "delete"
+    })
+    .then(result => result.data.result.externalTools);
+
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -281,5 +289,6 @@ export default {
   getOrgDetailsByShortNameAndOrgType,
   getExternalTools,
   createExternalTools,
-  updateExternalTools
+  updateExternalTools,
+  deleteExternalTools
 };

@@ -41,6 +41,7 @@ const AssessmentPlayerSkinWrapper = ({
           isDocbased={!isUndefined(docUrl)}
           handleMagnifier={handleMagnifier}
           showMagnifier={showMagnifier}
+          enableMagnifier={enableMagnifier}
         />
       );
     } else if (playerSkinType == "sbac") {

@@ -15,23 +15,12 @@ const menuItems = {
   enableAnswerMask: "Enable Answer Masking"
 };
 const SettingMenu = ({ user: { firstName }, onSettingsChange, showMagnifier, enableMagnifier }) => {
-  const [setting, setSetting] = useState({
-    enableMagnifier: false,
-    showLineReaderMask: false
-  });
-  const handleSettingsChange = e => {
-    setSetting({
-      ...setting,
-      [e.key]: !setting[e.key]
-    });
-    onSettingsChange(e);
-  };
   const menu = (
-    <StyledMenu onClick={handleSettingsChange}>
+    <StyledMenu onClick={onSettingsChange}>
       {Object.keys(menuItems).map(key => (
         <Menu.Item key={key} disabled={key === "enableMagnifier" && !showMagnifier}>
           {menuItems[key]}
-          {setting[key] && <FontAwesomeIcon icon={faCheck} />}
+          {key === "enableMagnifier" && enableMagnifier && <FontAwesomeIcon icon={faCheck} />}
         </Menu.Item>
       ))}
       <Menu.Divider />

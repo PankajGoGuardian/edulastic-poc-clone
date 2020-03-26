@@ -15,7 +15,8 @@ const copyDomOnClickOfElements = [
   "graph-toolbar-left li",
   "left-collapse-btn",
   "right-collapse-btn",
-  "mq-editable-field"
+  "mq-editable-field",
+  "froala-wrapper .fr-command"
 ];
 
 const copyDomOnHoverOfElements = [
@@ -25,6 +26,10 @@ const copyDomOnHoverOfElements = [
 
 const copyDomOnBlurOfElements = [
   "ant-input"
+];
+
+const copyDOmOnScrollOfElements = [
+  "froala-wrapper .fr-wrapper"
 ];
 
 const Magnifier = ({
@@ -119,7 +124,16 @@ const Magnifier = ({
           elm.addEventListener("blur", cloneDom(className));
         }
       })
-    })
+    });
+
+    copyDOmOnScrollOfElements.forEach((className, i) => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.addEventListener("scroll", scrollElement(className, i));
+        }
+      })
+    });
   }
 
   const removeAttachedEvents = () => {
@@ -148,7 +162,25 @@ const Magnifier = ({
           elm.removeEventListener("blur", cloneDom(className));
         }
       })
-    })
+    });
+
+    copyDOmOnScrollOfElements.forEach((className, i) => {
+      const elms = document.querySelectorAll(`.unzoom-container-wrapper .${className}`);
+      elms.forEach(elm => {
+        if (elm) {
+          elm.removeEventListener("scroll", scrollElement(className, i));
+        }
+      })
+    });
+  }
+
+  const scrollElement = (className, index) => {
+    const cls = className;
+    const  i = index;
+    return (e) => {
+      const elms = document.querySelectorAll(`.zoomed-container-wrapper .${cls}`);
+      elms[i]?.scrollTo(0, e.target.scrollTop);
+    }
   }
 
   /*

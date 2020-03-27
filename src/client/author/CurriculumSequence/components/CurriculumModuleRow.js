@@ -539,7 +539,7 @@ class ModuleRow extends Component {
                     !isStudent &&
                     (totalAssigned ? (
                       <StyledCol span={8} justify="flex-end">
-                        {customize && hasEditAccess && (
+                        {hasEditAccess && (
                           <StyledLabel
                             textColor={themeColor}
                             fontStyle="9px/13px Open Sans"
@@ -814,8 +814,7 @@ class ModuleRow extends Component {
                                       justify="flex-end"
                                       paddingRight="0"
                                     >
-                                      {customize &&
-                                        hasEditAccess &&
+                                      {hasEditAccess &&
                                         (!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                           <StyledLabel
                                             textColor={themeColor}

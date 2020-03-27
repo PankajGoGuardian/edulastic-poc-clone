@@ -76,7 +76,7 @@ function* saveRubricSaga({ payload }) {
         maxScore: payload.maxScore
       })
     );
-    yield put(addRubricToRecentlyUsedAction(payload.rubricData));
+    yield put(addRubricToRecentlyUsedAction(data));
     yield put(setItemLevelScoreFromRubricAction(false));
     if (payload.rubricData.status === "draft") yield call(message.success, "Rubric is saved as draft");
     else if (payload.rubricData.status === "published") yield call(message.success, "Rubric is saved and published");

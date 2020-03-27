@@ -1,47 +1,38 @@
-import React, { Component } from "react";
+import { Col, Form, Icon, Popover } from "antd";
+import { get } from "lodash";
 import PropTypes from "prop-types";
+import React from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-
-import { CopyToClipboard } from "react-copy-to-clipboard";
-
-import ImageUpload from "../ImageUpload/ImageUpload";
-import EditableLabel from "../EditableLabel/EditableLabel";
-
-import {
-  receiveDistrictProfileAction,
-  updateDistrictProfileAction,
-  setDistrictValueAction,
-  createDistrictProfileAction
-} from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
-
-import { Form, Icon, Popover } from "antd";
-const FormItem = Form.Item;
-
 import {
-  StyledFormDiv,
-  StyledDivBg,
-  StyledDivMain,
-  StyledRow,
-  StyledRowLogo,
-  StyledRowAnn,
-  StyledTextArea,
-  SaveButton,
-  StyledUrlButton,
-  StyledPopoverContent,
-  PopoverCloseButton,
-  StyledDistrictUrl,
-  FormFlexContainer,
+  createDistrictProfileAction,
+  receiveDistrictProfileAction,
+  setDistrictValueAction,
+  updateDistrictProfileAction
+} from "../../ducks";
+import { ProfileImgWrapper, RightContainer } from "../Container/styled";
+import EditableLabel from "../EditableLabel/EditableLabel";
+import ImageUpload from "../ImageUpload/ImageUpload";
+import {
+  ColumnSpacer,
+  EditableLabelDiv,
   FormColumnLeft,
   FormColumnRight,
-  ColumnSpacer,
+  FormFlexContainer,
+  HeaderRow,
+  InputWithUrl,
+  PopoverCloseButton,
+  StyledDistrictUrl,
+  StyledDivMain,
+  StyledFormDiv,
   StyledFormItem,
-  EditableLabelDiv,
-  InputWithUrl
+  StyledPopoverContent,
+  StyledRowLogo,
+  StyledTextArea,
+  StyledUrlButton
 } from "./styled";
-import { ProfileImgWrapper, RightContainer } from "../Container/styled";
 
 class DistrictProfileForm extends React.Component {
   constructor(props) {
@@ -172,12 +163,12 @@ class DistrictProfileForm extends React.Component {
           <Form>
             <ProfileImgWrapper>
               <ImageUpload
-                width={"200px"}
-                height={"200px"}
+                width="200px"
+                height="200px"
                 imgSrc={districtProfile.logo}
-                keyName={"logo"}
+                keyName="logo"
                 updateImgUrl={this.updateImgSrc}
-                labelStr={"logo image"}
+                labelStr="logo image"
                 ref={this.childRefArr[7].component}
                 requiredStatus={false}
                 form={this.props.form}
@@ -186,14 +177,32 @@ class DistrictProfileForm extends React.Component {
             </ProfileImgWrapper>
             <RightContainer>
               <StyledDivMain>
+                <HeaderRow type="flex" align="middle" justify="space-between">
+                  <Col span={12}>
+                    <h3>{districtProfile.name}</h3>
+                  </Col>
+                  <Col span={12} style={{ textAlign: "right" }}>
+                    <Popover
+                      trigger="click"
+                      visible={popoverVisible}
+                      content={popoverContent}
+                      onVisibleChange={this.handleVisibleChange}
+                      placement="bottomRight"
+                    >
+                      <StyledUrlButton type="primary" ghost>
+                        District Url
+                      </StyledUrlButton>
+                    </Popover>
+                  </Col>
+                </HeaderRow>
                 <StyledRowLogo>
                   <ImageUpload
                     imgSrc={districtProfile.pageBackground}
                     updateImgUrl={this.updateImgSrc}
-                    keyName={"pageBackground"}
-                    width={"100%"}
-                    height={"180px"}
-                    labelStr={"page background"}
+                    keyName="pageBackground"
+                    width="100%"
+                    height="180px"
+                    labelStr="page background"
                     ref={this.childRefArr[6].component}
                     requiredStatus={false}
                     form={this.props.form}
@@ -205,37 +214,27 @@ class DistrictProfileForm extends React.Component {
                     <InputWithUrl>
                       <EditableLabel
                         value={districtProfile.shortName}
-                        valueName={"District Short Name"}
+                        valueName="District Short Name"
                         maxLength={10}
                         requiredStatus
                         setProfileValue={this.updateProfileValue}
                         updateEditing={this.setEditing}
-                        type={"text"}
+                        type="text"
                         ref={this.childRefArr[1].component}
                         isSpaceEnable={false}
                         form={this.props.form}
                         isInputEnabled={isInputEnabled}
                         flexGrow={1}
                       />
-                      <Popover
-                        trigger="click"
-                        visible={popoverVisible}
-                        content={popoverContent}
-                        onVisibleChange={this.handleVisibleChange}
-                      >
-                        <StyledUrlButton type="primary" ghost>
-                          (District Url)
-                        </StyledUrlButton>
-                      </Popover>
                     </InputWithUrl>
                     <EditableLabel
                       value={districtProfile.city}
-                      valueName={"City"}
+                      valueName="City"
                       maxLength={40}
                       requiredStatus={false}
                       setProfileValue={this.updateProfileValue}
                       updateEditing={this.setEditing}
-                      type={"text"}
+                      type="text"
                       ref={this.childRefArr[2].component}
                       isSpaceEnable={true}
                       form={this.props.form}
@@ -243,12 +242,12 @@ class DistrictProfileForm extends React.Component {
                     />
                     <EditableLabel
                       value={districtProfile.state}
-                      valueName={"State"}
+                      valueName="State"
                       maxLength={40}
                       requiredStatus={false}
                       setProfileValue={this.updateProfileValue}
                       updateEditing={this.setEditing}
-                      type={"text"}
+                      type="text"
                       ref={this.childRefArr[3].component}
                       isSpaceEnable={true}
                       isInputEnabled={isInputEnabled}
@@ -256,12 +255,12 @@ class DistrictProfileForm extends React.Component {
                     />
                     <EditableLabel
                       value={districtProfile.zip}
-                      valueName={"Zip"}
+                      valueName="Zip"
                       maxLength={20}
                       requiredStatus={false}
                       setProfileValue={this.updateProfileValue}
                       updateEditing={this.setEditing}
-                      type={"text"}
+                      type="text"
                       ref={this.childRefArr[4].component}
                       isSpaceEnable={true}
                       isInputEnabled={isInputEnabled}
@@ -272,12 +271,12 @@ class DistrictProfileForm extends React.Component {
                   <FormColumnRight>
                     <EditableLabel
                       value={districtProfile.nces}
-                      valueName={"NCES Code"}
+                      valueName="NCES Code"
                       maxLength={100}
                       requiredStatus={false}
                       setProfileValue={this.updateProfileValue}
                       updateEditing={this.setEditing}
-                      type={"text"}
+                      type="text"
                       ref={this.childRefArr[5].component}
                       isSpaceEnable={true}
                       form={this.props.form}

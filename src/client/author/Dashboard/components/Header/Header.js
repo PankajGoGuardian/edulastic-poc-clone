@@ -52,10 +52,10 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
-        <StyledEduButton isGhost onClick={launchHangout}>
-          <IconHangouts height={21} width={19} />
-          Launch Hangout
-        </StyledEduButton>
+        {/*<StyledEduButton isGhost onClick={launchHangout}>*/}
+        {/*  <IconHangouts height={21} width={19} />*/}
+        {/*  Launch Hangout*/}
+        {/*</StyledEduButton>*/}
         {!premium && (
           <PopoverWrapper>
             <Popover

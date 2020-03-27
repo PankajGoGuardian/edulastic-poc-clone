@@ -49,17 +49,17 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
-          {!!classListWithHangouts.length && (
-            <StyledEduButton
-              height="40px"
-              style={{ "margin-right": "20px" }}
-              isGhost
-              onClick={() => setShowHangoutsModal(true)}
-            >
-              <IconHangouts height={23} width={20} />
-              Join Hangout
-            </StyledEduButton>
-          )}
+          {/*{!!classListWithHangouts.length && (*/}
+          {/*  <StyledEduButton*/}
+          {/*    height="40px"*/}
+          {/*    style={{ "margin-right": "20px" }}*/}
+          {/*    isGhost*/}
+          {/*    onClick={() => setShowHangoutsModal(true)}*/}
+          {/*  >*/}
+          {/*    <IconHangouts height={23} width={20} />*/}
+          {/*    Join Hangout*/}
+          {/*  </StyledEduButton>*/}
+          {/*)}*/}
           <StudentSlectCommon />
           <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption />
         </Row>

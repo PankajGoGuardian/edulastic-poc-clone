@@ -2191,3 +2191,7 @@ div[class*="_pendo"] button {
 .picker-dialog-bg {
   z-index: 1003 !important;
 }
+
+.pdfContextMenuDocBased {
+  z-index: 1001;
+}

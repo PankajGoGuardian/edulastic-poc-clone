@@ -115,7 +115,12 @@ const ThumbnailsItem = ({
           "These pages contain one or more questions or annotations. Rotating the page may result this content positioned incorrectly."
         }
       </Modal>
-      <Dropdown overlay={contextMenu} disabled={viewMode !== "edit"} trigger={["contextMenu"]}>
+      <Dropdown
+        overlayClassName="pdfContextMenuDocBased"
+        overlay={contextMenu}
+        disabled={viewMode !== "edit"}
+        trigger={["contextMenu"]}
+      >
         <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
           <PagePreview rotate={rotate}>
             {url && (

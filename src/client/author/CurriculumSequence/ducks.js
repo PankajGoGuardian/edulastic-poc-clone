@@ -876,7 +876,7 @@ function structureWorkData(workData, statusData) {
           const currentStatus = currentStatusArray.find(
             s =>
               (s.derivedFrom === "STANDARDS" && s.standardIdentifiers.includes(i.standardIdentifier)) ||
-              s.derivedFrom === "TESTS"
+              (s.derivedFrom === "TESTS" && s.resourceId === i.testId)
           );
           if (currentStatus) {
             const { masteryRange, studentTestActivities, users } = currentStatus;

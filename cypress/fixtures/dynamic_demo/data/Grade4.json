@@ -1,0 +1,899 @@
+[
+  {
+    "tags": "EDUM-222",
+    "collection": "Spark Math",
+    "name": "Grade-4-\"Lines Segments and Angles\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-223",
+    "collection": "Spark Math",
+    "name": "Grade-4-Properties of Two-Dimensional Figures",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-224",
+    "collection": "Spark Math",
+    "name": "Grade-4-Classifying Triangles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-225",
+    "collection": "Spark Math",
+    "name": "Grade-4-Identifying 2-D Figures",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-226",
+    "collection": "Spark Math",
+    "name": "Grade-4-Identifying 2-D Figures Using Angles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-227",
+    "collection": "Spark Math",
+    "name": "Grade-4-Identifying 2-D Figures Using Sides",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-228",
+    "collection": "Spark Math",
+    "name": "Grade-4-Lines of Symmetry Assign",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.G.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.G"
+    }
+  },
+  {
+    "tags": "EDUM-229",
+    "collection": "Spark Math",
+    "name": "Grade-4-Converting Units of Time",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-230",
+    "collection": "Spark Math",
+    "name": "Grade-4-Customary & Metric Capacity",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-231",
+    "collection": "Spark Math",
+    "name": "Grade-4-Customary & Metric Weight",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-232",
+    "collection": "Spark Math",
+    "name": "Grade-4-Customary Length",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-233",
+    "collection": "Spark Math",
+    "name": "Grade-4-Metric Length",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-234",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems Involving Intervals of Time",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-235",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems Involving Length and Distance",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-236",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems Involving Masses and Liquid Volumes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-237",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems Involving Money",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-238",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Areas and Missing Side Lengths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-239",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Perimeters and Missing Side Lengths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-240",
+    "collection": "Spark Math",
+    "name": "Grade-4-The Relationship Between Area and Perimeter",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-241",
+    "collection": "Spark Math",
+    "name": "Grade-4-Addition and Subtraction of Fractions Using Line Plots",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.B.4"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-242",
+    "collection": "Spark Math",
+    "name": "Grade-4-Understanding Angle Measures and Circles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.C.5.a"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-243",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solving Problems Involving Angle Measures and Circles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.C.5.b"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-244",
+    "collection": "Spark Math",
+    "name": "Grade-4-Measuring Angles with a Protractor",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.C.6"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-245",
+    "collection": "Spark Math",
+    "name": "Grade-4-Adding and Subtracting Angles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.MD.C.7"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.MD"
+    }
+  },
+  {
+    "tags": "EDUM-246",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplying by Powers of Ten",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-247",
+    "collection": "Spark Math",
+    "name": "Grade-4-Relating Place Value and Multiples of 10",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-248",
+    "collection": "Spark Math",
+    "name": "Grade-4-Comparing Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-249",
+    "collection": "Spark Math",
+    "name": "Grade-4-Express Numbers: Standard or Expanded Form to Words",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-250",
+    "collection": "Spark Math",
+    "name": "Grade-4-Express Numbers: Standard or Word Form to Expanded Form",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-251",
+    "collection": "Spark Math",
+    "name": "Grade-4-Ordering Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-252",
+    "collection": "Spark Math",
+    "name": "Grade-4-\"State Numbers: Expanded Word Visual and Standard Forms\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-253",
+    "collection": "Spark Math",
+    "name": "Grade-4-Estimating Products and Quotients",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-254",
+    "collection": "Spark Math",
+    "name": "Grade-4-Estimating Sums and Differences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-255",
+    "collection": "Spark Math",
+    "name": "Grade-4-Rounding Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-256",
+    "collection": "Spark Math",
+    "name": "Grade-4-Rounding Whole Numbers Using Representations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-257",
+    "collection": "Spark Math",
+    "name": "Grade-4-Addition and Subtraction Using Standard Algorithm",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.4"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-258",
+    "collection": "Spark Math",
+    "name": "Grade-4-Area Models to Multiply",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-259",
+    "collection": "Spark Math",
+    "name": "Grade-4-Base-Ten Blocks to Multiply",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-260",
+    "collection": "Spark Math",
+    "name": "Grade-4-Basic Multiplication Review with Arrays",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-261",
+    "collection": "Spark Math",
+    "name": "Grade-4-Equations and Multiplication",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-262",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solve Word Problems Using Multiplication Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-263",
+    "collection": "Spark Math",
+    "name": "Grade-4-Relating Multiplication and Division",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.6"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-264",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solve Word Problems Involving Division",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.6"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-265",
+    "collection": "Spark Math",
+    "name": "Grade-4-Understanding Division Using Models and Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NBT.B.6"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-266",
+    "collection": "Spark Math",
+    "name": "Grade-4-Creating Equivalent Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-267",
+    "collection": "Spark Math",
+    "name": "Grade-4-Identifying Equivalent Fractions Using Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-268",
+    "collection": "Spark Math",
+    "name": "Grade-4-Strategies for Comparing Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-269",
+    "collection": "Spark Math",
+    "name": "Grade-4-Joining and Separating Parts of the Same Whole",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.3.a"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-270",
+    "collection": "Spark Math",
+    "name": "Grade-4-Representing Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.3.b"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-271",
+    "collection": "Spark Math",
+    "name": "Grade-4-Addition and Subtraction of Mixed Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.3.c"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-272",
+    "collection": "Spark Math",
+    "name": "Grade-4-Strategies for Adding and Subtracting Mixed Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.3.c"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-273",
+    "collection": "Spark Math",
+    "name": "Grade-4-Addition and Subtraction of Fractions with Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.3.d"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-274",
+    "collection": "Spark Math",
+    "name": "Grade-4-Fractions as Multiples",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.4.a"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-275",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplication of a Fraction by a Whole Number",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.4.b"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-276",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solve Word Problems: Multiply a Fraction & Whole Number",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.B.4.c"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-277",
+    "collection": "Spark Math",
+    "name": "Grade-4-Fractions: Denominator of 10 or 100",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.C.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-278",
+    "collection": "Spark Math",
+    "name": "Grade-4-Decimal Notation and Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.C.6"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-279",
+    "collection": "Spark Math",
+    "name": "Grade-4-Comparing Decimals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.NF.C.7"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.NF"
+    }
+  },
+  {
+    "tags": "EDUM-280",
+    "collection": "Spark Math",
+    "name": "Grade-4-Understanding Multiplicative Comparisons",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.A.1"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-281",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplication and Division to Solve Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-282",
+    "collection": "Spark Math",
+    "name": "Grade-4-\"Relate: Multiply & Divide Multiply & Add\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.A.2"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-283",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solve Problems Using the Four Operations (No Estimation)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-284",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solve Problems Using the Four Operations & Estimation",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.A.3"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-285",
+    "collection": "Spark Math",
+    "name": "Grade-4-Factors",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.B.4"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-286",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiples and Divisibility",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.B.4"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-287",
+    "collection": "Spark Math",
+    "name": "Grade-4-Understanding Prime and Composite Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.B.4"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-288",
+    "collection": "Spark Math",
+    "name": "Grade-4-Identifying Number Patterns",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.C.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-289",
+    "collection": "Spark Math",
+    "name": "Grade-4-Number Patterns and Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.C.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  },
+  {
+    "tags": "EDUM-290",
+    "collection": "Spark Math",
+    "name": "Grade-4-Shape Patterns",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["4.OA.C.5"],
+      "grade": ["Grade 4"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "4.OA"
+    }
+  }
+]

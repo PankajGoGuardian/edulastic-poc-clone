@@ -1,0 +1,730 @@
+[
+  {
+    "tags": "EDUM-36",
+    "collection": "Spark Math",
+    "name": "Grade-1-Attributes of Shapes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.G.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.G"
+    }
+  },
+  {
+    "tags": "EDUM-37",
+    "collection": "Spark Math",
+    "name": "Grade-1-Relating 2-D & 3-D Shapes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.G.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.G"
+    }
+  },
+  {
+    "tags": "EDUM-38",
+    "collection": "Spark Math",
+    "name": "Grade-1-Partitioning Circles into 2 or 4 Equal Shares",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.G.A.2"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.G"
+    }
+  },
+  {
+    "tags": "EDUM-39",
+    "collection": "Spark Math",
+    "name": "Grade-1-Partitioning Rectangles into 2 or 4 Equal Shares",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.G.A.2"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.G"
+    }
+  },
+  {
+    "tags": "EDUM-40",
+    "collection": "Spark Math",
+    "name": "Grade-1-Ordering and Comparing Lengths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-41",
+    "collection": "Spark Math",
+    "name": "Grade-1-Comparing Length and Measuring with Nonstandard Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.A.2"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-42",
+    "collection": "Spark Math",
+    "name": "Grade-1-Telling Time: Analog to Digital Clocks",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-43",
+    "collection": "Spark Math",
+    "name": "Grade-1-Telling Time: Digital to Analog Clocks",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-44",
+    "collection": "Spark Math",
+    "name": "Grade-1-Data Sets and Picture Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-45",
+    "collection": "Spark Math",
+    "name": "Grade-1-Data Sets and Tally Charts",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.MD.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.MD"
+    }
+  },
+  {
+    "tags": "EDUM-46",
+    "collection": "Spark Math",
+    "name": "Grade-1-Counting Back",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-47",
+    "collection": "Spark Math",
+    "name": "Grade-1-Counting Forward",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-48",
+    "collection": "Spark Math",
+    "name": "Grade-1-Naming Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-49",
+    "collection": "Spark Math",
+    "name": "Grade-1-Bundles and Singles (20 - 99)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.a"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-50",
+    "collection": "Spark Math",
+    "name": "Grade-1-Circled Groups and Left Overs (20 - 99)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.a"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-51",
+    "collection": "Spark Math",
+    "name": "Grade-1-Counting and Place Value from 20 to 99",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.a"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-52",
+    "collection": "Spark Math",
+    "name": "Grade-1-Counting and Place Value from 11 to 19",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.b"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-53",
+    "collection": "Spark Math",
+    "name": "Grade-1-Naming Numbers from 11 to 19",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.b"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-54",
+    "collection": "Spark Math",
+    "name": "Grade-1-Ten Frames Through 19",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.b"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-55",
+    "collection": "Spark Math",
+    "name": "Grade-1-Decade Numbers (10 - 90)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.2.c"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-56",
+    "collection": "Spark Math",
+    "name": "Grade-1-Comparing with Symbols (11 - 19)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-57",
+    "collection": "Spark Math",
+    "name": "Grade-1-Comparing with Symbols (11 - 99)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-58",
+    "collection": "Spark Math",
+    "name": "Grade-1-Equal or Not Equal (11 - 19)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-59",
+    "collection": "Spark Math",
+    "name": "Grade-1-Equal or Not Equal (11 - 99)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-60",
+    "collection": "Spark Math",
+    "name": "Grade-1-Greater or Less (10 - 20)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-61",
+    "collection": "Spark Math",
+    "name": "Grade-1-Greater or Less (All Two-Digit Numbers)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-62",
+    "collection": "Spark Math",
+    "name": "Grade-1-More or Less (1 - 19)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-63",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding Two Two-Digit Numbers No Regrouping",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-64",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding Two Two-Digit Numbers with Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-65",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding Two-Digit and One-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-66",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding Two-Digit and One-Digit Numbers with Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-67",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding with Decade Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-68",
+    "collection": "Spark Math",
+    "name": "Grade-1-Ten Less",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.5"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-69",
+    "collection": "Spark Math",
+    "name": "Grade-1-Ten More",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.5"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-70",
+    "collection": "Spark Math",
+    "name": "Grade-1-Subtract Multiples of 10",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.NBT.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-71",
+    "collection": "Spark Math",
+    "name": "Grade-1-Add To: Find the Change",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-72",
+    "collection": "Spark Math",
+    "name": "Grade-1-Add To: Find the Sum",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-73",
+    "collection": "Spark Math",
+    "name": "Grade-1-Put Together: Find the Missing Addend",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-74",
+    "collection": "Spark Math",
+    "name": "Grade-1-Put Together: Find the Sum",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-75",
+    "collection": "Spark Math",
+    "name": "Grade-1-Take From: Change Unknown",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-76",
+    "collection": "Spark Math",
+    "name": "Grade-1-Take From: Find the Difference",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.1"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-77",
+    "collection": "Spark Math",
+    "name": "Grade-1-Add To: Find the Sum of 3 Whole Numbers Within 20",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.A.2"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-78",
+    "collection": "Spark Math",
+    "name": "Grade-1-Associative Property of Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-79",
+    "collection": "Spark Math",
+    "name": "Grade-1-The Commutative and Identity Properties",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.B.3"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-80",
+    "collection": "Spark Math",
+    "name": "Grade-1-Relate Addition and Subtraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.B.4"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-81",
+    "collection": "Spark Math",
+    "name": "Grade-1-Count On to Add and Count Back to Subtract; Count All",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.5"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-82",
+    "collection": "Spark Math",
+    "name": "Grade-1-Add and Subtract Within 20 Using Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-83",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding Up to 20",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-84",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding with a Number Line Within 20",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-85",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding with Base Ten Within 20",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-86",
+    "collection": "Spark Math",
+    "name": "Grade-1-Adding with Ten Frames Within 20",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.C.6"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-87",
+    "collection": "Spark Math",
+    "name": "Grade-1-Identify True Addition or Subtraction Number Sentences",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.D.7"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-88",
+    "collection": "Spark Math",
+    "name": "Grade-1-Finding the Unknown Addend",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.D.8"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-89",
+    "collection": "Spark Math",
+    "name": "Grade-1-Finding the Unknown Change",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.D.8"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-90",
+    "collection": "Spark Math",
+    "name": "Grade-1-Finding the Unknown Difference",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.D.8"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  },
+  {
+    "tags": "EDUM-91",
+    "collection": "Spark Math",
+    "name": "Grade-1-Finding the Unknown Sum",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["1.OA.D.8"],
+      "grade": ["Grade 1"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "1.OA"
+    }
+  }
+]

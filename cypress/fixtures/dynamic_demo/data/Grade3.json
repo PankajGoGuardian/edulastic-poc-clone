@@ -1,0 +1,795 @@
+[
+  {
+    "tags": "EDUM-161",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Quadrilaterals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.G.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.G"
+    }
+  },
+  {
+    "tags": "EDUM-162",
+    "collection": "Spark Math",
+    "name": "Grade-3-Partitioned Shapes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.G.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.G"
+    }
+  },
+  {
+    "tags": "EDUM-163",
+    "collection": "Spark Math",
+    "name": "Grade-3-Addition & Subtraction of Time Intervals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-164",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Time Using Clocks",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-165",
+    "collection": "Spark Math",
+    "name": "Grade-3-Estimating & Measuring Volume and Mass",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-166",
+    "collection": "Spark Math",
+    "name": "Grade-3-Word Problems Involving Mass and Volume",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-167",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Problems With Scaled Bar Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.B.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-168",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Problems with Scaled Picture Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.B.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-169",
+    "collection": "Spark Math",
+    "name": "Grade-3-Representing Data Sets That Involve Length",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.B.4"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-170",
+    "collection": "Spark Math",
+    "name": "Grade-3-Find Areas of Squares and Rectangles with Unit Squares",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.5.a"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-171",
+    "collection": "Spark Math",
+    "name": "Grade-3-Comparing Areas",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.5.b"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-172",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Area of Rectangles Made up of Unit Squares",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.6"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-173",
+    "collection": "Spark Math",
+    "name": "Grade-3-\"Length Width and Area\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.7.a"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-174",
+    "collection": "Spark Math",
+    "name": "Grade-3-Multiplying to Find the Area of Rectangles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.7.b"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-175",
+    "collection": "Spark Math",
+    "name": "Grade-3-Area Models and the Distributive Property",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.7.c"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-176",
+    "collection": "Spark Math",
+    "name": "Grade-3-Decomposing Rectilinear Figures to Find the Area",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.C.7.d"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-177",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Perimeter Mathematically",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.D.8"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-178",
+    "collection": "Spark Math",
+    "name": "Grade-3-Using Perimeter in Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.MD.D.8"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.MD"
+    }
+  },
+  {
+    "tags": "EDUM-179",
+    "collection": "Spark Math",
+    "name": "Grade-3-Place Value and Rounding to the 10s and 100s",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-180",
+    "collection": "Spark Math",
+    "name": "Grade-3-Rounding and Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-181",
+    "collection": "Spark Math",
+    "name": "Grade-3-Rounding Using Number Lines and Rounding Hills",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-182",
+    "collection": "Spark Math",
+    "name": "Grade-3-Adding in Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-183",
+    "collection": "Spark Math",
+    "name": "Grade-3-Addition and Subtraction (Mixed Practice)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-184",
+    "collection": "Spark Math",
+    "name": "Grade-3-Subtraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-185",
+    "collection": "Spark Math",
+    "name": "Grade-3-Multiplication by Multiples of 10",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NBT.A.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-186",
+    "collection": "Spark Math",
+    "name": "Grade-3-Advanced Sets and Groups",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-187",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fractions and Area Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-188",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fractions and Length Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-189",
+    "collection": "Spark Math",
+    "name": "Grade-3-Introduction to Set Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-190",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fractions with Number Lines 0-1",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.2.a"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-191",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fractions with Number Lines 0-4",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.2.b"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-192",
+    "collection": "Spark Math",
+    "name": "Grade-3-Equivalent Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.3.a"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-193",
+    "collection": "Spark Math",
+    "name": "Grade-3-Simple Equivalent Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.3.b"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-194",
+    "collection": "Spark Math",
+    "name": "Grade-3-Whole Numbers as Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.3.c"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-195",
+    "collection": "Spark Math",
+    "name": "Grade-3-Comparing Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.NF.A.3.d"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.NF"
+    }
+  },
+  {
+    "tags": "EDUM-196",
+    "collection": "Spark Math",
+    "name": "Grade-3-Multiplication Sentences and Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-197",
+    "collection": "Spark Math",
+    "name": "Grade-3-Relating Multiplication and Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.1"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-198",
+    "collection": "Spark Math",
+    "name": "Grade-3-Relate Division and Subtraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-199",
+    "collection": "Spark Math",
+    "name": "Grade-3-Understanding Division and Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.2"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-200",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Division Visually",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-201",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Multiplication and Division Verbally",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-202",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Multiplication Visually",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.3"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-203",
+    "collection": "Spark Math",
+    "name": "Grade-3-\"Identifying Missing Divisors Dividends and Equations\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.4"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-204",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Missing Factors and Equations: Multiplication",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.4"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-205",
+    "collection": "Spark Math",
+    "name": "Grade-3-Related Multiplication and Division Facts",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.A.4"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-206",
+    "collection": "Spark Math",
+    "name": "Grade-3-Applying Properties of Operations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.5"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-207",
+    "collection": "Spark Math",
+    "name": "Grade-3-Associative Property",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.5"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-208",
+    "collection": "Spark Math",
+    "name": "Grade-3-Commutative Property",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.5"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-209",
+    "collection": "Spark Math",
+    "name": "Grade-3-Distributive Property",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.5"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-210",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identity and Zero Property",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.5"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-211",
+    "collection": "Spark Math",
+    "name": "Grade-3-Relating Division to Multiplication",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.6"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-212",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solve Division Problems with Visuals and Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.B.6"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-213",
+    "collection": "Spark Math",
+    "name": "Grade-3-Applying Multiplication Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.C.7"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-214",
+    "collection": "Spark Math",
+    "name": "Grade-3-Doubles and Halves (Division Problems)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.C.7"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-215",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fluently Solve Division Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.C.7"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-216",
+    "collection": "Spark Math",
+    "name": "Grade-3-Fluently Solve Multiplication Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.C.7"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-217",
+    "collection": "Spark Math",
+    "name": "Grade-3-Solving Word Problems Using Equations & Estimation",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.D.8"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-218",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identify Arithmetic Patterns Using Multiplication Tables",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.D.9"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-219",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Arithmetic Patterns Using a Hundreds Chart",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.D.9"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-220",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Arithmetic Patterns Using Addition Tables",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.D.9"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  },
+  {
+    "tags": "EDUM-221",
+    "collection": "Spark Math",
+    "name": "Grade-3-Identifying Patterns",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["3.OA.D.9"],
+      "grade": ["Grade 3"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "3.OA"
+    }
+  }
+]

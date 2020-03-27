@@ -1,0 +1,769 @@
+[
+  {
+    "tags": "EDUM-291",
+    "collection": "Spark Math",
+    "name": "Grade-4-Ordered Pairs and Figures",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-292",
+    "collection": "Spark Math",
+    "name": "Grade-4-Plotting Points on a Coordinate Plane",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-293",
+    "collection": "Spark Math",
+    "name": "Grade-4-Interpret Ordered Pairs in the Context of a Situation",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-294",
+    "collection": "Spark Math",
+    "name": "Grade-4-Categorizing 2D Shapes (Exclusive Definition of Trapezoid)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.B.3"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-295",
+    "collection": "Spark Math",
+    "name": "Grade-4-Categorizing 2D Shapes (Inclusive Definition of Trapezoid)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.B.3"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-296",
+    "collection": "Spark Math",
+    "name": "Grade-4-Hierarchies of 2D Shapes (Exclusive Definition of Trapezoid)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.B.4"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-297",
+    "collection": "Spark Math",
+    "name": "Grade-4-Hierarchies of 2D Shapes (Inclusive Definition of Trapezoid)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.G.B.4"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.G"
+    }
+  },
+  {
+    "tags": "EDUM-298",
+    "collection": "Spark Math",
+    "name": "Grade-4-Classifying Units of Measure",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-299",
+    "collection": "Spark Math",
+    "name": "Grade-4-Convert Customary or Metric Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-300",
+    "collection": "Spark Math",
+    "name": "Grade-4-Solving Problems with Fractional Data on Line Plots",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.B.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-301",
+    "collection": "Spark Math",
+    "name": "Grade-4-Understand the Relationship: Cubic Units and Volume",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.3.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-302",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Volume of Solid Figures Using Unit Cubes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.3.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-303",
+    "collection": "Spark Math",
+    "name": "Grade-4-Measuring Volume by Counting Unit Cubes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.4"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-304",
+    "collection": "Spark Math",
+    "name": "Grade-4-Find the Volume of Rectangular Prisms Using Unit Cubes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.5.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-305",
+    "collection": "Spark Math",
+    "name": "Grade-4-Find the Volume of Rectangular Prisms Using a Formula",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.5.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-306",
+    "collection": "Spark Math",
+    "name": "Grade-4-Find the Volume of Composite Figures",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.MD.C.5.c"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.MD"
+    }
+  },
+  {
+    "tags": "EDUM-307",
+    "collection": "Spark Math",
+    "name": "Grade-4-Expressing Multi-Digit Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-308",
+    "collection": "Spark Math",
+    "name": "Grade-4-Place Value and Multi-Digit Decimals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-309",
+    "collection": "Spark Math",
+    "name": "Grade-4-Place Value and Multi-Digit Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-310",
+    "collection": "Spark Math",
+    "name": "Grade-4-\"Decimals Whole Numbers and Powers of 10\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-311",
+    "collection": "Spark Math",
+    "name": "Grade-4-Whole Numbers and Powers of 10",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-312",
+    "collection": "Spark Math",
+    "name": "Grade-4-Expressing Place Value Through Thousandths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.3.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-313",
+    "collection": "Spark Math",
+    "name": "Grade-4-Comparing and Ordering Multi-Digit Decimals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.3.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-314",
+    "collection": "Spark Math",
+    "name": "Grade-4-Rounding Multi-Digit Decimals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.A.4"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-315",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplication with Multi-Digit Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.5"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-316",
+    "collection": "Spark Math",
+    "name": "Grade-4-Dividing Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.6"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-317",
+    "collection": "Spark Math",
+    "name": "Grade-4-Addition of Decimals to the Hundredths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.7"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-318",
+    "collection": "Spark Math",
+    "name": "Grade-4-Division of Decimals to the Hundredths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.7"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-319",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplication of Decimals to the Hundredths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.7"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-320",
+    "collection": "Spark Math",
+    "name": "Grade-4-Subtraction of Decimals to the Hundredths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NBT.B.7"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-321",
+    "collection": "Spark Math",
+    "name": "Grade-4-Adding Fractions and Mixed Numbers with Unlike Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-322",
+    "collection": "Spark Math",
+    "name": "Grade-4-Adding Fractions with Unlike Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-323",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Equivalent Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-324",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Equivalent Mixed Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-325",
+    "collection": "Spark Math",
+    "name": "Grade-4-Relating Mixed Numbers & Fractions Greater than One",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-326",
+    "collection": "Spark Math",
+    "name": "Grade-4-Subtracting Fractions with Unlike Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-327",
+    "collection": "Spark Math",
+    "name": "Grade-4-Subtracting Mixed Numbers with Unlike Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-328",
+    "collection": "Spark Math",
+    "name": "Grade-4-Add and Subtract Fractions with Visual Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-329",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems: Add & Subtract Fractions with Like Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-330",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems: Add & Subtract Fractions with Unlike Denominators",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-331",
+    "collection": "Spark Math",
+    "name": "Grade-4-Divide Whole Numbers with Fractional Quotients: Visual Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.3"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-332",
+    "collection": "Spark Math",
+    "name": "Grade-4-Expressing Division Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.3"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-333",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiply a Fraction by a Fraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.4.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-334",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiply a Mixed Number by a Fraction or a Mixed Number",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.4.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-335",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiply a Whole Number by a Fraction or a Mixed Number",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.4.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-336",
+    "collection": "Spark Math",
+    "name": "Grade-4-Area of Rectangles with Fractional Side Lengths",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.4.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-337",
+    "collection": "Spark Math",
+    "name": "Grade-4-Comparing Products",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.5.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-338",
+    "collection": "Spark Math",
+    "name": "Grade-4-Effects of Multiplying by a Fraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.5.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-339",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplying Mixed Numbers by Fractions and Mixed Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.6"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-340",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplying Two Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.6"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-341",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplying Whole Numbers and Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.6"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-342",
+    "collection": "Spark Math",
+    "name": "Grade-4-Multiplying Whole Numbers and Mixed Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.6"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-343",
+    "collection": "Spark Math",
+    "name": "Grade-4-Division of Unit Fractions by Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.7.a"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-344",
+    "collection": "Spark Math",
+    "name": "Grade-4-Division of Whole Numbers by Unit Fractions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.7.b"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-345",
+    "collection": "Spark Math",
+    "name": "Grade-4-Word Problems: Divide Unit Fractions & Whole Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.NF.B.7.c"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.NF"
+    }
+  },
+  {
+    "tags": "EDUM-346",
+    "collection": "Spark Math",
+    "name": "Grade-4-Evaluate Numerical Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.OA.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.OA"
+    }
+  },
+  {
+    "tags": "EDUM-347",
+    "collection": "Spark Math",
+    "name": "Grade-4-Evaluate Numerical Expressions: Advanced",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.OA.A.1"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.OA"
+    }
+  },
+  {
+    "tags": "EDUM-348",
+    "collection": "Spark Math",
+    "name": "Grade-4-Writing Numerical Expressions",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.OA.A.2"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.OA"
+    }
+  },
+  {
+    "tags": "EDUM-349",
+    "collection": "Spark Math",
+    "name": "Grade-4-Finding Rules that Represent Patterns",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["5.OA.B.3"],
+      "grade": ["Grade 5"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "5.OA"
+    }
+  }
+]

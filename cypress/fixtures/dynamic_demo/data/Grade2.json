@@ -1,0 +1,899 @@
+[
+  {
+    "tags": "EDUM-92",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identifying Polygons and 3-D Shapes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.G.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.G"
+    }
+  },
+  {
+    "tags": "EDUM-93",
+    "collection": "Spark Math",
+    "name": "Grade-2-Recognizing Polygons and 3-D Shapes",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.G.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.G"
+    }
+  },
+  {
+    "tags": "EDUM-94",
+    "collection": "Spark Math",
+    "name": "Grade-2-Understanding Rectangles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.G.A.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.G"
+    }
+  },
+  {
+    "tags": "EDUM-95",
+    "collection": "Spark Math",
+    "name": "Grade-2-Partitioning Circles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.G.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.G"
+    }
+  },
+  {
+    "tags": "EDUM-96",
+    "collection": "Spark Math",
+    "name": "Grade-2-Partitioning Rectangles",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.G.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.G"
+    }
+  },
+  {
+    "tags": "EDUM-97",
+    "collection": "Spark Math",
+    "name": "Grade-2-Measuring Objects",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-98",
+    "collection": "Spark Math",
+    "name": "Grade-2-Bar Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.D.10"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-99",
+    "collection": "Spark Math",
+    "name": "Grade-2-Picture Graphs",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.D.10"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-100",
+    "collection": "Spark Math",
+    "name": "Grade-2-Using Different Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.A.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-101",
+    "collection": "Spark Math",
+    "name": "Grade-2-Estimating Measures with Customary Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-102",
+    "collection": "Spark Math",
+    "name": "Grade-2-Estimating Measures with Metric Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-103",
+    "collection": "Spark Math",
+    "name": "Grade-2-Comparing Measurements",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.A.4"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-104",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding and Subtracting Lengths Using Measuring Tools",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-105",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Up to 100 in Word Problems: Lengths in Same Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-106",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtracting Up to 100 in Word Problems: Lengths in Same Units",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-107",
+    "collection": "Spark Math",
+    "name": "Grade-2-Finding the Sum or Difference Using a Number Line",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.B.6"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-108",
+    "collection": "Spark Math",
+    "name": "Grade-2-Recognize Time",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.C.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-109",
+    "collection": "Spark Math",
+    "name": "Grade-2-Comparing Money",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.C.8"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-110",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identifying Money and Calculating Cents",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.C.8"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-111",
+    "collection": "Spark Math",
+    "name": "Grade-2-Word Problems and Money",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.C.8"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-112",
+    "collection": "Spark Math",
+    "name": "Grade-2-Measurements and Line Plots",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.MD.D.9"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.MD"
+    }
+  },
+  {
+    "tags": "EDUM-113",
+    "collection": "Spark Math",
+    "name": "Grade-2-100 as a Bundle of 10s",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-114",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Hundreds Tens and Ones\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-115",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Place Value to 1000 with Base Ten Blocks\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-116",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Place Value to 1000 with Place Value Charts\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-117",
+    "collection": "Spark Math",
+    "name": "Grade-2-Place Value to 100 with Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-118",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Place Value to 100: Tens Ones and Various Forms\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-119",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Skip Count By 2 5 10\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-120",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Skip Count by 5 10 100\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-121",
+    "collection": "Spark Math",
+    "name": "Grade-2-\"Read and Write Numbers to 1000\"",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-122",
+    "collection": "Spark Math",
+    "name": "Grade-2-Read and Write Numbers to 100",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-123",
+    "collection": "Spark Math",
+    "name": "Grade-2-Reading and Writing Numbers with Visual Models",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-124",
+    "collection": "Spark Math",
+    "name": "Grade-2-Comparing Two Three-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.A.4"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-125",
+    "collection": "Spark Math",
+    "name": "Grade-2-One- and Two-Digit Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-126",
+    "collection": "Spark Math",
+    "name": "Grade-2-One- and Two-Digit Subtraction with Regrouping",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-127",
+    "collection": "Spark Math",
+    "name": "Grade-2-Properties of Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-128",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtract Two- and One-Digit Without Regrouping: Tens and Ones",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-129",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtract with Two Digits and No Regrouping: Tens and Ones",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-130",
+    "collection": "Spark Math",
+    "name": "Grade-2-Two-Digit and Two-Digit Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.5"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-131",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Lots of Numbers Using Place Value",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.6"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-132",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Lots of Numbers Using Properties of Addition",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.6"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-133",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Three-Digit and Two- or One-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-134",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Three-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-135",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Two Three-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-136",
+    "collection": "Spark Math",
+    "name": "Grade-2-Adding Up To 3 Digits with Base Ten and Number Lines",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-137",
+    "collection": "Spark Math",
+    "name": "Grade-2-Problem Solving with Subtracting Three-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-138",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtracting Three-Digit and Two- or One-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-139",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtracting Two Three-Digit Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-140",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtracting Two-Digit Numbers Using Base-Ten Blocks",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-141",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtracting Up To Three Digits (Base Ten and Number Lines)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.7"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-142",
+    "collection": "Spark Math",
+    "name": "Grade-2-Counting by 100s",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.8"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-143",
+    "collection": "Spark Math",
+    "name": "Grade-2-Counting by 10s",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.8"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-144",
+    "collection": "Spark Math",
+    "name": "Grade-2-Strategies to Solve Addition or Subtraction",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.NBT.B.9"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.NBT"
+    }
+  },
+  {
+    "tags": "EDUM-145",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identify the Missing Number in Subtraction Problems (One Step)",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-146",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identify the Sum Numerically Using One-Step Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-147",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identifying the Difference in One-Step Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-148",
+    "collection": "Spark Math",
+    "name": "Grade-2-Solving Addition Word Problems with Mixed Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-149",
+    "collection": "Spark Math",
+    "name": "Grade-2-Solving One-Step Word Problems with Missing Addends",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-150",
+    "collection": "Spark Math",
+    "name": "Grade-2-Solving Two-Step Addition and Subtraction Word Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-151",
+    "collection": "Spark Math",
+    "name": "Grade-2-Solving Two-Step Addition Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.A.1"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-152",
+    "collection": "Spark Math",
+    "name": "Grade-2-Applying Addition Strategies",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.B.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-153",
+    "collection": "Spark Math",
+    "name": "Grade-2-Doubling and Compensating to Solve Addition Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.B.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-154",
+    "collection": "Spark Math",
+    "name": "Grade-2-Fact Families and Related Facts",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.B.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-155",
+    "collection": "Spark Math",
+    "name": "Grade-2-Strategies to Solve Subtraction Problems",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.B.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-156",
+    "collection": "Spark Math",
+    "name": "Grade-2-Subtract Using Visuals",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.B.2"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-157",
+    "collection": "Spark Math",
+    "name": "Grade-2-Identifying Even and Odd Numbers Visually",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.C.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-158",
+    "collection": "Spark Math",
+    "name": "Grade-2-Understanding Even and Odd Numbers",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.C.3"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-159",
+    "collection": "Spark Math",
+    "name": "Grade-2-Arrays and Equations",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.C.4"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  },
+  {
+    "tags": "EDUM-160",
+    "collection": "Spark Math",
+    "name": "Grade-2-Rows and How Many in a Row",
+    "deliveryCount": 10,
+    "standard": {
+      "standardsToSelect": ["2.OA.C.4"],
+      "grade": ["Grade 2"],
+      "subject": "Mathematics",
+      "standardSet": "Math - Common Core",
+      "standardsGroup": "2.OA"
+    }
+  }
+]

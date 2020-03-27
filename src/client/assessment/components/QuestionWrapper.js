@@ -259,6 +259,7 @@ class QuestionWrapper extends Component {
   };
 
   fillSections = (section, label, el, sectionId) => {
+    if (typeof el !== "object") return;
     this.setState(state => {
       const sectionState = state[section];
       const found = sectionState.filter(block => block.label === label);
@@ -267,7 +268,7 @@ class QuestionWrapper extends Component {
         // update of section offset in array
         return {
           [section]: sectionState.filter(block => {
-            if (el.label === label) {
+            if (block.label === label) {
               block.el = el;
             }
             return block;

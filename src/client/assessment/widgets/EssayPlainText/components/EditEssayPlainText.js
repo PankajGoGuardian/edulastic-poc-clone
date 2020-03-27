@@ -5,15 +5,11 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { updateVariables } from "../../../utils/variables";
 
-import WordLimitAndCount from "../../../components/WordLimitAndCount";
-import Scoring from "../../../containers/WidgetOptions/components/Scoring";
 import { ContentArea } from "../../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
-import Question from "../../../components/Question";
-import { CheckboxLabel } from "../../../styled/CheckboxWithLabel";
 
 const EditEssayPlainText = ({
   item,
@@ -49,39 +45,6 @@ const EditEssayPlainText = ({
         setQuestionData={setQuestionData}
       />
 
-      <Question
-        section="main"
-        label={t("component.essayText.scoring")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        <Scoring
-          isSection={false}
-          t={t}
-          scoringTypes={[]}
-          questionData={item}
-          advancedAreOpen={advancedAreOpen}
-        >
-          <WordLimitAndCount
-            onChange={handleItemChangeChange}
-            selectValue={item.showWordLimit}
-            inputValue={item.maxWord}
-            advancedAreOpen={advancedAreOpen}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-            title={item?.title}
-            showHeading={false}
-          />
-
-          <CheckboxLabel
-            defaultChecked={item.showWordCount}
-            onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
-          >
-            {t("component.essayText.showWordCheckbox")}
-          </CheckboxLabel>
-        </Scoring>
-      </Question>
-
       {advancedLink}
 
       <Options
@@ -89,6 +52,7 @@ const EditEssayPlainText = ({
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        handleItemChangeChange={handleItemChangeChange}
       />
     </ContentArea>
   );

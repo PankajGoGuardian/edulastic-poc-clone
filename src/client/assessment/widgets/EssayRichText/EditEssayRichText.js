@@ -16,7 +16,6 @@ import Question from "../../components/Question";
 import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
-import Scoring from "../../containers/WidgetOptions/components/Scoring";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
 
@@ -88,23 +87,6 @@ const EditEssayRichText = ({
         >
           {t("component.essayText.showWordCheckbox")}
         </CheckboxLabel>
-      </Question>
-
-      <Question
-        section="main"
-        label={t("component.essayText.scoring")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        item={item}
-      >
-        <Scoring
-          setQuestionData={setQuestionData}
-          t={t}
-          scoringTypes={[]}
-          questionData={item}
-          advancedAreOpen={advancedAreOpen}
-          item={item}
-        />
       </Question>
 
       {advancedLink}

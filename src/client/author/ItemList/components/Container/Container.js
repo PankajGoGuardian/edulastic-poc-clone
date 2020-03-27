@@ -322,12 +322,17 @@ class Contaier extends Component {
     return count;
   };
 
+  onClickNewTest = () => {
+    const { createTestFromCart } = this.props;
+    createTestFromCart();
+  };
+
   renderCartButton = () => {
-    const { approveOrRejectMultipleItem, createTestFromCart } = this.props;
+    const { approveOrRejectMultipleItem } = this.props;
 
     return (
       <>
-        <CartButton onClick={createTestFromCart} buttonText="New Test" />
+        <CartButton onClick={this.onClickNewTest} buttonText="New Test" />
         <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
           <CartButton
             onClick={() => approveOrRejectMultipleItem({ status: "rejected" })}

@@ -455,7 +455,7 @@ class CurriculumSequence extends Component {
     } = this.props;
 
     // check Current user's edit permission
-    const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x._id === currentUserId);
+    const hasEditAccess = destinationCurriculumSequence?.authors?.find(x => x?._id === currentUserId);
 
     const isNotStudentOrParent = !(role === "student" || role === "parent");
 
@@ -598,7 +598,8 @@ class CurriculumSequence extends Component {
     const isAuthoringFlowReview = current === "review";
 
     const enableCustomize =
-      ((customize && urlHasUseThis && isNotStudentOrParent) || (customize && isNotStudentOrParent)) &&
+      (((customize || hasEditAccess) && urlHasUseThis && isNotStudentOrParent) ||
+        ((customize || hasEditAccess) && isNotStudentOrParent)) &&
       destinationCurriculumSequence &&
       !isAuthoringFlowReview;
 

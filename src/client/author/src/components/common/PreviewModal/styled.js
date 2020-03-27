@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, EduButton } from "@edulastic/common";
 import {
   desktopWidth,
   white,
@@ -285,6 +285,25 @@ export const StyledText = styled(Text)`
   padding-right: 15px;
   @media (max-width: ${mediumDesktopWidth}) {
     display: none;
+  }
+`;
+
+export const RejectButton = styled(EduButton)`
+  &.ant-btn.ant-btn-primary {
+    svg {
+      trasition: none;
+    }
+    &:hover,
+    &[disabled] {
+      border-color: ${red} !important;
+      background: #fff !important;
+      span {
+        color: ${red};
+      }
+      svg {
+        fill: ${red} !important;
+      }
+    }
   }
 `;
 

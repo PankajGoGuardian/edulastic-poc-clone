@@ -67,7 +67,7 @@ const Actions = ({
         {t("component.item.itemCount")}
       </Label>
       <Dropdown overlay={menu} placement="bottomCenter">
-        <EduButton height="30px" width="120px" isGhost>
+        <EduButton height="30px" width="150px" isGhost>
           {t("component.item.actions")}
         </EduButton>
       </Dropdown>
@@ -102,7 +102,7 @@ export default compose(
 )(Actions);
 
 const DropMenu = styled(Menu)`
-  width: 120px;
+  width: 150px;
 `;
 
 const MenuItems = styled(Menu.Item)`

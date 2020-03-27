@@ -26,6 +26,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
   const [selectedGroupId, selectGroupId] = useState("");
 
   const selectedGroup = classListWithHangouts.find(c => c._id === selectedGroupId);
+  const hangoutLink = selectedGroup?.hangoutLink;
 
   useEffect(() => {
     loadAllClasses();
@@ -44,17 +45,23 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
         selected={selectedGroup}
         classList={classListWithHangouts}
         description="Select the class that you want to join for the Hangout session."
+        hangoutLink={hangoutLink}
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
         <Row type="flex" align="middle">
-          <StudentSlectCommon />
-          <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption />
           {!!classListWithHangouts.length && (
-            <StyledEduButton height="40px" isGhost onClick={() => setShowHangoutsModal(true)}>
+            <StyledEduButton
+              height="40px"
+              style={{ "margin-right": "20px" }}
+              isGhost
+              onClick={() => setShowHangoutsModal(true)}
+            >
               <IconHangouts height={23} width={20} />
               Join Hangout
             </StyledEduButton>
           )}
+          <StudentSlectCommon />
+          <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption />
         </Row>
       </MainHeader>
       <MainContentWrapper>

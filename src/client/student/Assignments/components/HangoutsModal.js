@@ -3,7 +3,9 @@ import styled from "styled-components";
 import { Modal, Row, Col, Spin, Select, Checkbox } from "antd";
 import { IconClose } from "@edulastic/icons";
 import { EduButton } from "@edulastic/common";
+import GoogleLogin from "react-google-login";
 import { greyThemeDark1, greyThemeLight, greyThemeLighter, lightGrey9, darkGrey2, themeColor } from "@edulastic/colors";
+import { scopes } from "../../../author/ManageClass/components/ClassListContainer/ClassCreatePage";
 
 const HangoutsModal = ({
   title,
@@ -13,75 +15,93 @@ const HangoutsModal = ({
   onSelect,
   checked,
   onCheckUncheck,
+  hangoutLink,
   onOk,
+  onError,
   onCancel,
   loading,
   classList = [],
   isStudent
-}) => {
-  return (
-    <StyledModal visible={visible} footer={null} onCancel={onCancel}>
-      {loading ? (
-        <Spin size="small" />
-      ) : (
-        <Row type="flex" align="middle" gutter={[20, 20]}>
-          <StyledCol span={24} justify="space-between">
-            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
-              {title}
-            </StyledDiv>
-            <IconClose height={20} width={20} onClick={onCancel} />
+}) => (
+  <StyledModal visible={visible} footer={null} onCancel={onCancel}>
+    {loading ? (
+      <Spin size="small" />
+    ) : (
+      <Row type="flex" align="middle" gutter={[20, 20]}>
+        <StyledCol span={24} justify="space-between">
+          <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
+            {title}
+          </StyledDiv>
+          <IconClose height={20} width={20} onClick={onCancel} />
+        </StyledCol>
+        <StyledCol span={24} marginBottom="20px" justify="left">
+          <StyledDiv color={darkGrey2}>{description}</StyledDiv>
+        </StyledCol>
+        <StyledCol span={24} marginBottom="30px">
+          <StyledSelect
+            placeholder="Select Class"
+            dropdownStyle={{ zIndex: 2000 }}
+            defaultValue={selected?._id}
+            onChange={onSelect}
+          >
+            {classList.map(({ _id, name }) => (
+              <Select.Option key={_id} value={_id}>
+                {name}
+              </Select.Option>
+            ))}
+          </StyledSelect>
+        </StyledCol>
+        {!isStudent && selected?.googleId && (
+          <StyledCol span={24} marginBottom="25px" justify="left">
+            <Checkbox checked={checked} onChange={onCheckUncheck}>
+              <StyledDiv fontStyle="11px/15px Open Sans">SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM</StyledDiv>
+            </Checkbox>
           </StyledCol>
-          <StyledCol span={24} marginBottom="20px" justify="left">
-            <StyledDiv color={darkGrey2}>{description}</StyledDiv>
-          </StyledCol>
-          <StyledCol span={24} marginBottom="30px">
-            <StyledSelect
-              placeholder="Select Class"
-              dropdownStyle={{ zIndex: 2000 }}
-              defaultValue={selected?._id}
-              onChange={onSelect}
+        )}
+        <StyledCol span={24} marginBottom="10px">
+          <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
+            Cancel
+          </EduButton>
+          {isStudent || hangoutLink ? (
+            <EduButton
+              height="40px"
+              width="200px"
+              href={hangoutLink}
+              target="_blank"
+              disabled={!selected}
+              style={{ "margin-left": "20px" }}
             >
-              {classList.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </StyledSelect>
-          </StyledCol>
-          {/* TODO: Remove "false" when the feature is ready to be deployed */}
-          {isStudent && false && (
-            <StyledCol span={24} marginBottom="25px" justify="left">
-              <Checkbox checked={checked} onChange={onCheckUncheck}>
-                <StyledDiv fontStyle="11px/15px Open Sans">SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM</StyledDiv>
-              </Checkbox>
-            </StyledCol>
-          )}
-          <StyledCol span={24} marginBottom="10px">
-            <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
-              Cancel
+              Join
             </EduButton>
-            {isStudent ? (
-              <EduButton
-                height="40px"
-                width="200px"
-                href={selected?.hangoutLink}
-                target="_blank"
-                disabled={!selected}
-                style={{ "margin-left": "20px" }}
-              >
-                Join
-              </EduButton>
-            ) : (
-              <EduButton height="40px" width="200px" onClick={onOk} style={{ "margin-left": "20px" }}>
-                Launch
-              </EduButton>
-            )}
-          </StyledCol>
-        </Row>
-      )}
-    </StyledModal>
-  );
-};
+          ) : (
+            <GoogleLogin
+              clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+              developerKey={process.env.POI_APP_GOOGLE_KEY}
+              render={renderProps => (
+                <>
+                  <EduButton
+                    height="40px"
+                    width="200px"
+                    onClick={renderProps.onClick}
+                    style={{ "margin-left": "20px" }}
+                  >
+                    Launch
+                  </EduButton>
+                </>
+              )}
+              scope={scopes}
+              discoveryDocs={["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]}
+              onSuccess={onOk}
+              onFailure={onError}
+              prompt="consent"
+              responseType="code"
+            />
+          )}
+        </StyledCol>
+      </Row>
+    )}
+  </StyledModal>
+);
 
 export default HangoutsModal;
 

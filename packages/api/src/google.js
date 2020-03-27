@@ -21,7 +21,17 @@ const syncClass = data =>
     })
     .then(result => result.data.result);
 
+const postGoogleClassRoomAnnouncement = data =>
+  api
+    .callApi({
+      url: `${prefix}/announcement`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   getCourseList,
-  syncClass
+  syncClass,
+  postGoogleClassRoomAnnouncement
 };

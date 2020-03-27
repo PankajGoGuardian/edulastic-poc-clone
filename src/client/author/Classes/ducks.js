@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { push } from "connected-react-router";
-import { groupApi, userApi } from "@edulastic/api";
+import { googleApi, groupApi, userApi } from "@edulastic/api";
 import { message } from "antd";
 import { keyBy } from "lodash";
 
@@ -34,7 +34,8 @@ const ARCHIVE_CLASS_ERROR = "[class ] archive class error";
 
 const SAVE_HANGOUT_EVENT_REQUEST = "[class] save hangout event request";
 const SAVE_HANGOUT_EVENT_SUCCESS = "[class] save hangout event success";
-const SAVE_HANGOUT_EVENT_ERROR = "[class ] save hangout event error";
+const SAVE_HANGOUT_EVENT_ERROR = "[class] save hangout event error";
+const SET_OPEN_HANGOUT_MEETING = "[class] set open hangout meeting";
 
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST);
 export const receiveClassListSuccessAction = createAction(RECEIVE_CLASSLIST_SUCCESS);
@@ -66,6 +67,8 @@ export const saveHangoutEventRequestAction = createAction(SAVE_HANGOUT_EVENT_REQ
 export const saveHangoutEventSuccessAction = createAction(SAVE_HANGOUT_EVENT_SUCCESS);
 export const saveHangoutEventErrorAction = createAction(SAVE_HANGOUT_EVENT_ERROR);
 
+export const setHangoutOpenMeetingAction = createAction(SET_OPEN_HANGOUT_MEETING);
+
 // selectors
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
@@ -81,6 +84,11 @@ export const getBulkEditSelector = createSelector(
 export const getSavedGroupHangoutEvent = createSelector(
   stateClassSelector,
   state => state.savedHangoutEvent
+);
+
+export const openHangoutMeeting = createSelector(
+  stateClassSelector,
+  state => state.openMeeting
 );
 
 // reducers
@@ -108,7 +116,8 @@ const initialState = {
   },
   archiving: false,
   archiveError: null,
-  archiveSuccess: null
+  archiveSuccess: null,
+  openMeeting: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -230,11 +239,14 @@ export const reducer = createReducer(initialState, {
     state.saving = true;
   },
   [SAVE_HANGOUT_EVENT_SUCCESS]: (state, { payload }) => {
-    state.saving = false;
+    state.openMeeting = true;
     state.savedHangoutEvent = payload.savedGroup;
   },
   [SAVE_HANGOUT_EVENT_ERROR]: state => {
     state.saving = false;
+  },
+  [SET_OPEN_HANGOUT_MEETING]: (state, { payload }) => {
+    state.openMeeting = payload.status;
   }
 });
 
@@ -326,7 +338,14 @@ function* archiveClassSaga({ payload }) {
 
 function* saveHangoutEventSaga({ payload }) {
   try {
+    const postMeeting = payload.postMeeting;
+    delete payload.postMeeting;
     const savedGroup = yield call(groupApi.saveHangoutEvent, payload);
+    if (postMeeting) {
+      const postedMeeting = yield call(googleApi.postGoogleClassRoomAnnouncement, {
+        groupId: payload.groupId
+      });
+    }
     const successMessage = "Hangout event saved successfully";
     yield call(message.success, successMessage);
     yield put(saveHangoutEventSuccessAction({ savedGroup }));

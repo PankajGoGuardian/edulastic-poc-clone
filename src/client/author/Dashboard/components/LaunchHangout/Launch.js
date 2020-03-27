@@ -1,35 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
-import { EduButton, WithResources } from "@edulastic/common";
-import HangoutsModal from "../../../../student/Assignments/components/HangoutsModal";
-
+import { message } from "antd";
 import { getLaunchHangoutStatus, launchHangoutClose } from "../../duck";
+import HangoutsModal from "../../../../student/Assignments/components/HangoutsModal";
 import { getClasses } from "../../../../student/Login/ducks";
-import { getSavedGroupHangoutEvent, saveHangoutEventRequestAction } from "../../../Classes/ducks";
+import {
+  getSavedGroupHangoutEvent,
+  openHangoutMeeting,
+  saveHangoutEventRequestAction,
+  setHangoutOpenMeetingAction
+} from "../../../Classes/ducks";
 
-const GOOGLE_SDK_URL = "https://apis.google.com/js/api.js";
-
-const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHangoutEvent, savedGroupHangoutInfo }) => {
+const Launch = ({
+  closeLaunchHangout,
+  isOpenLaunch,
+  classList = [],
+  saveHangoutEvent,
+  savedGroupHangoutInfo,
+  openMeeting,
+  setOpenMeeting
+}) => {
   const [groupId, setGroupId] = useState("");
   const [launching, setLaunching] = useState(false);
+  const [postMeeting, setPostMeeting] = useState(true);
+
+  const closePopUp = () => {
+    setLaunching(false);
+    closeLaunchHangout();
+  };
+
+  useEffect(() => {
+    if (openMeeting) {
+      if (savedGroupHangoutInfo && savedGroupHangoutInfo.hangoutLink) {
+        window.open(`${savedGroupHangoutInfo.hangoutLink}`, "_blank");
+      }
+      setOpenMeeting({ status: false });
+      closePopUp();
+    }
+  }, [openMeeting]);
 
   const selectedGroup = classList.find(group => group._id === groupId);
-
-  const saveHangoutLink = (hangoutLink, event) => {
-    if (hangoutLink) {
+  const hangoutLink =
+    selectedGroup && selectedGroup.hangoutLink
+      ? selectedGroup.hangoutLink
+      : savedGroupHangoutInfo && savedGroupHangoutInfo.hangoutLink && savedGroupHangoutInfo._id === groupId
+      ? savedGroupHangoutInfo.hangoutLink
+      : undefined;
+  const saveHangoutLink = (_hangoutLink, event) => {
+    if (_hangoutLink) {
       const calendarEventData = JSON.stringify(event);
-      saveHangoutEvent({ groupId, hangoutLink, calendarEventData });
-      closePopUp();
-      window.open(`${hangoutLink}`, "_blank");
+      const { googleId } = selectedGroup;
+      saveHangoutEvent({
+        groupId,
+        hangoutLink: _hangoutLink,
+        calendarEventData,
+        postMeeting: postMeeting && !!googleId
+      });
     } else {
       setLaunching(false);
       console.log(`Something went wrong, please try again after some time.`);
     }
   };
   const createCalendarEvent = () => {
-    const { code, name, _id } = selectedGroup;
+    const { code, name, _id, googleId } = selectedGroup;
     const requestId = _id;
     const currentDate = new Date();
     const startDate = new Date(
@@ -62,7 +96,7 @@ const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHango
       },
       conferenceData: {
         createRequest: {
-          requestId: requestId
+          requestId
         }
       }
     };
@@ -76,87 +110,55 @@ const Launch = ({ t, closeLaunchHangout, isOpenLaunch, classList = [], saveHango
         sendUpdates: "all",
         supportsAttachments: false
       })
-      .execute(function(event) {
-        saveHangoutLink(event.hangoutLink, event);
+      .execute(_event => {
+        saveHangoutLink(_event.hangoutLink, _event);
       });
   };
 
-  const googleSignInCallback = () => {
-    window.Promise.resolve(window.gapi.auth2.getAuthInstance().signIn()).then(() => {
-      authenticate();
-    });
-  };
-  const authenticate = () => {
-    if (window.gapi.auth2.getAuthInstance().isSignedIn && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      createCalendarEvent();
-    } else {
-      googleSignInCallback();
-    }
+  const handleError = err => {
+    if (err?.err !== "popup_closed_by_user") message.error("Failed to launch Hangout");
+    console.log("error", err);
   };
 
   const launchHangout = () => {
     setLaunching(true);
-    if (selectedGroup && selectedGroup.hangoutLink) {
+    if (hangoutLink) {
       closePopUp();
-      window.open(`${selectedGroup.hangoutLink}`, "_blank");
+      window.open(`${hangoutLink}`, "_blank");
       return;
     }
+
     const CLIENT_ID = process.env.POI_APP_GOOGLE_CLIENT_ID;
     const API_KEY = process.env.POI_APP_GOOGLE_API_KEY;
     if (CLIENT_ID && API_KEY) {
-      // Array of API discovery doc URLs for APIs used by the quickstart
-      const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-      // Authorization scopes required by the API; multiple scopes can be
-      // included, separated by spaces.
-      const SCOPES = "https://www.googleapis.com/auth/calendar " + "https://www.googleapis.com/auth/calendar.events";
-      window.gapi.client
-        .init({
-          apiKey: API_KEY,
-          clientId: CLIENT_ID,
-          discoveryDocs: DISCOVERY_DOCS,
-          scope: SCOPES
-        })
-        .then(authenticate, error => {
-          setLaunching(false);
-          console.log(error);
-        });
+      const loadGapiClient = new Promise(resolve => {
+        window.gapi.load("client:auth2", resolve);
+      });
+      loadGapiClient.then(() => window.gapi.client.load("calendar", "v3", createCalendarEvent), handleError);
     } else {
+      message.error("Google API is not configuration");
       console.log(`Google API configuration not found`);
     }
   };
 
-  const isGoogleReady = () => {
-    return !!window.gapi;
-  };
-
-  const onApiLoad = () => {
-    if (isGoogleReady()) {
-      window.gapi.load("auth");
-      window.gapi.load("client");
-    }
-  };
-
-  const closePopUp = () => {
-    setLaunching(false);
-    closeLaunchHangout();
-  };
-
   return (
-    <WithResources resources={[GOOGLE_SDK_URL]} fallBack={<></>} onLoaded={onApiLoad}>
-      <HangoutsModal
-        visible={isOpenLaunch}
-        onCancel={closePopUp}
-        onOk={launchHangout}
-        loading={launching}
-        title="Launch Hangout"
-        onSelect={setGroupId}
-        selected={selectedGroup}
-        checked={false}
-        onCheckUncheck={() => {}}
-        classList={classList.filter(c => c.active)}
-        description="Select the class that you want to invite for the Hangout session."
-      />
-    </WithResources>
+    <HangoutsModal
+      visible={isOpenLaunch}
+      onCancel={closePopUp}
+      onOk={launchHangout}
+      onError={handleError}
+      hangoutLink={hangoutLink}
+      loading={launching}
+      title="Launch Hangout"
+      onSelect={setGroupId}
+      selected={selectedGroup}
+      checked={postMeeting}
+      onCheckUncheck={() => {
+        setPostMeeting(!postMeeting);
+      }}
+      classList={classList.filter(c => c.active)}
+      description="Select the class that you want to invite for the Hangout session."
+    />
   );
 };
 
@@ -172,10 +174,12 @@ export default connect(
   state => ({
     isOpenLaunch: getLaunchHangoutStatus(state),
     savedGroupHangoutInfo: getSavedGroupHangoutEvent(state),
-    classList: getClasses(state)
+    classList: getClasses(state),
+    openMeeting: openHangoutMeeting(state)
   }),
   {
     closeLaunchHangout: launchHangoutClose,
-    saveHangoutEvent: saveHangoutEventRequestAction
+    saveHangoutEvent: saveHangoutEventRequestAction,
+    setOpenMeeting: setHangoutOpenMeetingAction
   }
 )(Launch);

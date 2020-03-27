@@ -5,10 +5,10 @@ import { StyledCard } from "../styled";
 
 const Placeholder = ({ style }) => {
   return (
-    <PlaceholderCard class="placeholder">
+    <PlaceholderCard className="placeholder">
       <StyledCard>
-        <div class="placeholder-heading" />
-        <div class="placeholder-content" />
+        <div className="placeholder-heading" />
+        <div className="placeholder-content" />
       </StyledCard>
     </PlaceholderCard>
   );

@@ -33,7 +33,8 @@ const PlayListHeader = ({
   t,
   match,
   history,
-  headingSubContent
+  headingSubContent,
+  isSparkMath
 }) => {
   const handleNavChange = val => {
     const { playlistId } = match.params;
@@ -50,17 +51,19 @@ const PlayListHeader = ({
       <HeaderMidContainer>
         <StyledTabs>
           {match?.params?.playlistId &&
-            playlistPageNavButtons.map(({ value, text, path }) => (
-              <HeaderTabs
-                style={currentPath === path ? { cursor: "not-allowed" } : { cursor: "pointer" }}
-                dataCy={value}
-                isActive={currentPath === path}
-                linkLabel={text}
-                key={value}
-                onClickHandler={() => handleNavChange(value)}
-                isPlaylist
-              />
-            ))}
+            playlistPageNavButtons
+              .filter(({ value }) => !(value === "recommendations" && !isSparkMath))
+              .map(({ value, text, path }) => (
+                <HeaderTabs
+                  style={currentPath === path ? { cursor: "not-allowed" } : { cursor: "pointer" }}
+                  dataCy={value}
+                  isActive={currentPath === path}
+                  linkLabel={text}
+                  key={value}
+                  onClickHandler={() => handleNavChange(value)}
+                  isPlaylist
+                />
+              ))}
         </StyledTabs>
       </HeaderMidContainer>
       {!!activeEnrolledClasses.length && (
@@ -81,7 +84,8 @@ const enhance = compose(
   connect(state => ({
     activeClasses: getFilteredClassesSelector(state),
     studentPlaylists: state?.studentPlaylist?.playlists,
-    title: state?.curriculumSequence?.destinationCurriculumSequence?.title
+    title: state?.curriculumSequence?.destinationCurriculumSequence?.title,
+    isSparkMath: state?.curriculumSequence?.destinationCurriculumSequence?.isSparkMath
   }))
 );
 

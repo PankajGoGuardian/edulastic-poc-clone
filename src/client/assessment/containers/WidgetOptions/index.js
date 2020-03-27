@@ -2,10 +2,13 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { evaluationType } from "@edulastic/constants";
+import { CheckboxLabel } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
 import Scoring from "./components/Scoring";
 import Variables from "./components/Variables";
 import Question from "../../components/Question";
+import WordLimitAndCount from "../../components/WordLimitAndCount";
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch];
 
@@ -44,7 +47,9 @@ class WidgetOptions extends Component {
       advancedAreOpen,
       showSelect,
       renderExtra,
-      item
+      item,
+      handleItemChangeChange,
+      t
     } = this.props;
 
     return (
@@ -59,13 +64,32 @@ class WidgetOptions extends Component {
             advancedAreOpen={advancedAreOpen}
           >
             <Scoring
-              scoringTypes={scoringTypes}
+              scoringTypes={[]}
+              isSection={false}
               fillSections={fillSections}
               cleanSections={cleanSections}
               advancedAreOpen={advancedAreOpen}
               showSelect={showSelect}
               item={item}
             />
+
+            <WordLimitAndCount
+              onChange={handleItemChangeChange}
+              selectValue={item.showWordLimit}
+              inputValue={item.maxWord}
+              advancedAreOpen={advancedAreOpen}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+              title={item?.title}
+              showHeading={false}
+            />
+
+            <CheckboxLabel
+              defaultChecked={item.showWordCount}
+              onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
+            >
+              {t("component.essayText.showWordCheckbox")}
+            </CheckboxLabel>
           </Question>
         )}
         {showVariables && (
@@ -82,4 +106,4 @@ class WidgetOptions extends Component {
   }
 }
 
-export default WidgetOptions;
+export default withNamespaces("assessment")(WidgetOptions);

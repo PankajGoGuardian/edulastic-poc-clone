@@ -12,7 +12,7 @@ import Extras from "../../containers/Extras";
 
 import LayoutComponent from "./LayoutComponent";
 
-const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen }) => {
+const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen, handleItemChangeChange }) => {
   const [act, setAct] = useState(item.formattingOptions || []);
 
   useEffect(() => {
@@ -23,13 +23,16 @@ const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen }) => {
 
   return (
     <WidgetOptions
-      showScoring={false}
+      showScoring
+      scoringTypes={[]}
+      questionData={item}
       outerStyle={{ marginTop: 40 }}
       title={t("common.options.title")}
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
       item={item}
+      handleItemChangeChange={handleItemChangeChange}
     >
       <LayoutComponent
         item={item}

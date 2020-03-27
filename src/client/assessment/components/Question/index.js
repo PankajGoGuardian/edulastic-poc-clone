@@ -23,12 +23,14 @@ class Question extends Component {
     const { fillSections, section, label, sectionId, visible } = this.props;
 
     const { current: node } = this.node;
-
-    if (!node) return false;
+    if (typeof node !== "object") return false;
     if (visible === false) return false;
 
     fillSections(section, label, node, sectionId);
 
+    // fix me
+    // i keep running indefinitely
+    // not sure why it is required.
     this.setState({
       intervalID: setInterval(() => {
         this.updateVariablesOfSection();
@@ -55,7 +57,6 @@ class Question extends Component {
     const { current: node } = this.node;
 
     if (!node) return false;
-
     if (node.clientHeight !== el.clientHeight || node.offsetTop !== el.offsetTop) {
       fillSections(section, label, node);
 

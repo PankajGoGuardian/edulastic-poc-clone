@@ -10,17 +10,18 @@ import LayoutComponent from "./LayoutComponent";
 
 class Options extends Component {
   render() {
-    const { item, advancedAreOpen, fillSections, cleanSections, t } = this.props;
+    const { item, advancedAreOpen, fillSections, cleanSections, t, handleItemChangeChange } = this.props;
 
     return (
       <WidgetOptions
-        showScoring={false}
+        showScoring
         outerStyle={{ marginTop: 40 }}
         title={t("common.options.title")}
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
         item={item}
+        handleItemChangeChange={handleItemChangeChange}
       >
         <LayoutComponent
           item={item}

@@ -893,6 +893,7 @@ class ModuleRow extends Component {
                                   <EduButton
                                     isGhost
                                     height="22px"
+                                    width="124px"
                                     style={{ padding: "0px 15px" }}
                                     onClick={() => this.viewTest(moduleData?.contentId)}
                                   >

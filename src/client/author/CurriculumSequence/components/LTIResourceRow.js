@@ -45,7 +45,7 @@ const ResourceRow = ({ isStudent, data, mode, urlHasUseThis, deleteTest, moduleI
         </ModuleDataName>
       </Col>
       <StyledCol span={urlHasUseThis ? 17 : 14}>
-        <AssignmentButton style={!isStudent ? { marginRight: "31px" } : null}>
+        <AssignmentButton style={!isStudent && urlHasUseThis ? { marginRight: "31px" } : null}>
           <Button onClick={() => showResource(data.contentId)} style={{ width: "124px" }}>
             VIEW
           </Button>

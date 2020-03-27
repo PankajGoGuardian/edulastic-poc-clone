@@ -13,6 +13,15 @@ export const StyledFormDiv = styled.div`
   }
 `;
 
+export const HeaderRow = styled(Row)`
+  padding: 0px 0px 10px;
+  h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0px;
+  }
+`;
+
 export const StyledDivBg = styled.div`
   width: 360px;
   padding-right: 40px;
@@ -23,7 +32,7 @@ export const StyledDivMain = styled.div`
   background-color: ${white};
   border: 1px solid #b6b6cc;
   border-radius: 10px;
-  padding: 30px;
+  padding: 15px 25px;
   overflow: hidden;
 `;
 

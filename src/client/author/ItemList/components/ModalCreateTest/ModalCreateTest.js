@@ -1,12 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Input, message, Row, Col } from "antd";
 
 import Modal from "../../../src/components/common/Modal";
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { createTestFromCartAction } from "../../ducks";
-import styled from "styled-components";
 
 const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, selectedItems }) => {
   const inputRef = useRef(null);

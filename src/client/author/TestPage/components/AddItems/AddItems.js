@@ -407,6 +407,7 @@ class AddItems extends PureComponent {
                     type="secondary"
                     size="large"
                     onClick={this.handleCreateNewItem}
+                    noHover
                   >
                     <IconPlusCircle color={themeColor} width={15} height={15} />
                     <span>Create new Item</span>

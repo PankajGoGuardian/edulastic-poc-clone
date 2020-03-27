@@ -31,8 +31,7 @@ import { markQuestionLabel, transformGradeBookResponse } from "../ClassBoard/Tra
 import { setTeacherEditedScore } from "../ExpressGrader/ducks";
 import { setCurrentTestActivityIdAction } from "../src/actions/classBoard";
 import { hasRandomQuestions } from "../ClassBoard/utils";
-import { REQUEST_SCRATCH_PAD_SUCCESS } from "../../assessment/reducers/userWork";
-import { LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
+import { LOAD_SCRATCH_PAD, SAVE_USER_WORK } from "../../assessment/constants/actions";
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
 
@@ -60,11 +59,16 @@ function* receiveClassResponseSaga({ payload }) {
 
 function* loadAttachmentsFromServer(filter) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, filter);
+    const { referrerId, referrerId2, uqaId } = filter;
+    // perf optimisation
+    // call the api only if data is not present in the store
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
+    const scratchpadData = {};
     for (const attachment of attachments) {
-      const { data: scratchPad, referrerId2: testItemId } = attachment;
-      yield put({ type: REQUEST_SCRATCH_PAD_SUCCESS, payload: { scratchPad, testItemId } });
+      const { data } = attachment;
+      scratchpadData[uqaId] = data.scratchpad;
     }
+    yield put({ type: SAVE_USER_WORK, payload: scratchpadData });
   } catch (error) {
     console.error("error from attachmentAPI", error);
   }
@@ -72,8 +76,8 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId =>
-      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId })
+    testItemsIdArray.map(({ testItemId, uqaId }) =>
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId, uqaId })
     )
   );
 }
@@ -83,8 +87,8 @@ function* receiveStudentResponseSaga({ payload }) {
     const studentResponse = yield call(classResponseApi.studentResponse, payload);
     const { questionActivities = [] } = studentResponse;
     const scratchpadUsedItems = questionActivities
-      .filter(activity => activity?.scratchPad?.scratchpad || false)
-      .map(activity => activity.testItemId);
+      .filter(activity => activity.qType === "highlightImage" && activity?.scratchPad?.scratchpad === true)
+      .map(activity => ({ uqaId: activity._id, testItemId: activity.testItemId }));
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
@@ -251,6 +255,19 @@ function* receiveClassQuestionSaga({ payload }) {
       feedbackResponse = yield call(classResponseApi.questionClassItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);
+    }
+    const scratchpadUsedItems = feedbackResponse
+      .filter(activity => activity.qType === "highlightImage" && activity?.scratchPad?.scratchpad === true)
+      .map(activity => ({
+        uqaId: activity._id,
+        testItemId: activity.testItemId,
+        testActivityId: activity.testActivityId
+      }));
+    for (const item of scratchpadUsedItems) {
+      yield fork(getAttachmentsForItems, {
+        testActivityId: item.testActivityId,
+        testItemsIdArray: [item]
+      });
     }
     yield put({
       type: RECEIVE_CLASS_QUESTION_SUCCESS,

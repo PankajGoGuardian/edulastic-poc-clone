@@ -37,7 +37,10 @@ const FeedbackWrapper = ({
   return (
     <StyledFeedbackWrapper
       style={{
-        width: showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview ? "265px" : theme?.twoColLayout?.second,
+        width:
+          showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview
+            ? "265px"
+            : theme?.twoColLayout?.second,
         minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : ""
       }}
     >
@@ -81,7 +84,7 @@ const FeedbackWrapper = ({
 
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   ${({ style }) => style};
 `;
 

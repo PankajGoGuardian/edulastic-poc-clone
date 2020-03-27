@@ -141,7 +141,8 @@ function* saveUserResponse({ payload }) {
       scratchPadUsed = Object.keys(_userWork.scratchpad).some(key => _userWork.scratchpad[key].length > 0);
     }
     if (scratchPadUsed) {
-      userWorkData = { ...userWorkData, scratchpad: true };
+      const { height, width } = yield select(state => state.scratchpad);
+      userWorkData = { ...userWorkData, scratchpad: true, dimensions: { height, width } };
       shouldSaveOrUpdateAttachment = true;
     }
     activity.userWork = userWorkData;

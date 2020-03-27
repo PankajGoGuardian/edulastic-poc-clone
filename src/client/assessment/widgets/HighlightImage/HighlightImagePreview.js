@@ -43,7 +43,8 @@ const HighlightImagePreview = ({
   theme,
   viewComponent,
   clearClicked,
-  isPrintPreview
+  isPrintPreview,
+  hideInternalOverflow
 }) => {
   const canvas = useRef(null);
   const canvasContainerRef = useRef(null);
@@ -84,7 +85,6 @@ const HighlightImagePreview = ({
     img.src = userAnswer;
     img.onload = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
       context.drawImage(img, 0, 0, img.width, img.height);
       setCtx(context);
     };
@@ -117,7 +117,7 @@ const HighlightImagePreview = ({
       context.lineCap = "round";
       drawImage(context);
     }
-  }, [file]);
+  }, [file, userAnswer]);
 
   useLayoutEffect(() => {
     if (canvasContainerRef.current && canvas.current) {
@@ -201,7 +201,12 @@ const HighlightImagePreview = ({
   }, [clearClicked]);
 
   return (
-    <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""} ref={containerRef}>
+    <PreviewContainer
+      hideInternalOverflow={hideInternalOverflow}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+      ref={containerRef}
+    >
       <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
         {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
           <Scratch clearClicked={clearClicked} />

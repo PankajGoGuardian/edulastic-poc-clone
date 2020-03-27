@@ -5,6 +5,7 @@ import { testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 import { SAVE_USER_WORK } from "../../assessment/constants/actions";
+import { updateScratchpadAction } from "../../common/ducks/scratchpad";
 
 export const SUBMIT_RESPONSE = "[expressGraderAnswers] submit";
 
@@ -110,23 +111,25 @@ function* submitResponse({ payload }) {
 
 function* scratchPadLoadSaga({ payload }) {
   try {
-    const { testActivityId, testItemId, callback } = payload;
-    if (testActivityId && testItemId) {
+    const { testActivityId, testItemId, qActId, callback } = payload;
+    const userWork = yield select(state => state.userWork.present);
+    if (!userWork[qActId] && testActivityId && testItemId) {
+      yield put(updateScratchpadAction({ loading: true }));
       const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
         referrerId: testActivityId,
         referrerId2: testItemId
       });
       const scratchpadData = {};
       for (const attachment of attachments) {
-        const { data, referrerId2: _testItemId } = attachment;
-        scratchpadData[_testItemId] = data;
+        const { data } = attachment;
+        scratchpadData[qActId] = data.scratchpad;
       }
-
       yield put({ type: SAVE_USER_WORK, payload: scratchpadData });
+      yield put(updateScratchpadAction({ loading: false }));
+    }
 
-      if (callback) {
-        yield call(callback);
-      }
+    if (callback) {
+      yield call(callback);
     }
   } catch (e) {
     console.error(e);

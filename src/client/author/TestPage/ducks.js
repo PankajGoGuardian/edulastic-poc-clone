@@ -1492,7 +1492,6 @@ function* checkAnswerSaga({ payload }) {
       evaluationObject = yield getEvaluation(payload.id, scoring[payload.id]);
     }
     const { evaluation, score, maxScore } = evaluationObject;
-    console.log("what is evaluation object", evaluationObject);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

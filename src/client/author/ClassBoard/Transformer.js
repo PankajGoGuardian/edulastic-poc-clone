@@ -45,8 +45,7 @@ export const markQuestionLabel = testItems => {
 export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
   for (const testItemId of testItemIds) {
-    const questions =
-      (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
+    const questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
     if (!questions.length) {
       qids = [
         ...qids,
@@ -170,12 +169,7 @@ export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
   return 0;
 };
 
-const getSkippedStatusOfQuestion = (
-  testItemId,
-  questionActivitiesMap,
-  testItems,
-  questionActivityId
-) => {
+const getSkippedStatusOfQuestion = (testItemId, questionActivitiesMap, testItems, questionActivityId) => {
   const questionActivities = Object.values(questionActivitiesMap);
   const questions = questionActivities.filter(o => o.testItemId === testItemId);
   const item = testItems.find(o => o._id === testItemId);
@@ -264,9 +258,7 @@ export const transformGradeBookResponse = (
    */
   testItemsData = testItemsData.map(testItem => {
     if (testItem.data) {
-      testItem.data.questions = testItem.data.questions.filter(
-        q => q.type !== questionType.SECTION_LABEL
-      );
+      testItem.data.questions = testItem.data.questions.filter(q => q.type !== questionType.SECTION_LABEL);
       testItem.rows = testItem.rows.map(row => {
         row.widgets = row.widgets.filter(w => w.type !== questionType.SECTION_LABEL);
         return row;
@@ -284,9 +276,7 @@ export const transformGradeBookResponse = (
   const questionActivitiesGrouped = groupBy(testQuestionActivities, "testItemId");
 
   for (const itemId of Object.keys(questionActivitiesGrouped)) {
-    const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(
-      x => x.graded === false
-    );
+    const notGradedQuestionActivities = questionActivitiesGrouped[itemId].filter(x => x.graded === false);
 
     const { itemLevelScoring } = testItemsDataKeyed[itemId];
     if (itemLevelScoring) {
@@ -379,31 +369,14 @@ export const transformGradeBookResponse = (
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
-        const score =
-          (questionActivitiesRaw &&
-            questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) ||
-          0;
+        const score = (questionActivitiesRaw && questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) || 0;
 
-        const questionActivitiesIndexed =
-          (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
+        const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
         const questionActivitiesKeyedByItemId =
           (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.testItemId)) || {};
 
         const questionActivities = qids.map(
-          (
-            {
-              id: el,
-              weight,
-              qids: _qids,
-              disabled,
-              testItemId,
-              maxScore,
-              barLabel,
-              qLabel,
-              _id: qActId
-            },
-            index
-          ) => {
+          ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel, _id: qActId }, index) => {
             const _id = el;
             const currentQuestionActivity =
               questionActivitiesIndexed[el] || questionActivitiesKeyedByItemId[testItemId];
@@ -439,12 +412,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               ...remainingProps
             } = currentQuestionActivity;
-            skipped = getSkippedStatusOfQuestion(
-              testItemId,
-              questionActivitiesIndexed,
-              testItemsData,
-              el
-            );
+            skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
 
             if (score > 0 && skipped) {
               skipped = false;
@@ -474,7 +442,8 @@ export const transformGradeBookResponse = (
               qLabel,
               barLabel,
               pendingEvaluation,
-              userId: studentId
+              userId: studentId,
+              qActId: currentQuestionActivity._id
             };
           }
         );

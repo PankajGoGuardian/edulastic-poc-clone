@@ -78,6 +78,7 @@ const PlayerContentArea = ({
                 history={history}
                 viewComponent="practicePlayer"
                 enableMagnifier={enableMagnifier}
+                updateScratchpadtoStore
               />
             )}
             {testItemState === "check" && (

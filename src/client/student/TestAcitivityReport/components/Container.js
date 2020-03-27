@@ -8,7 +8,12 @@ import { AnswerContext } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
-import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/TestItem";
+import {
+  getItemSelector,
+  itemHasUserWorkSelector,
+  questionActivityFromFeedbackSelector,
+  userWorkFromQuestionActivitySelector
+} from "../../sharedDucks/TestItem";
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
 import { getQuestionsSelector } from "../../../author/sharedDucks/questions";
 import { getEvaluationSelector } from "../../../assessment/selectors/answers";
@@ -22,7 +27,9 @@ const ReportListContent = ({
   hasUserWork,
   passages = [],
   questions,
-  evaluation
+  evaluation,
+  questionActivity,
+  userWork
 }) => {
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
@@ -45,6 +52,14 @@ const ReportListContent = ({
   const closeModal = () => setModal(false);
   const hasCollapseButtons =
     itemRows.length > 1 && itemRows.flatMap(_item => _item.widgets).find(_item => _item.widgetType === "resource");
+
+  const {
+    qType,
+    scratchPad: { scratchpad: scratchpadUsed = false, dimensions: previousDimensions = {} } = {}
+  } = questionActivity;
+  const showScratchpadByDefault = qType === "highlightImage" && scratchpadUsed;
+  const previouscratchPadDimensions = showScratchpadByDefault ? previousDimensions : null;
+  const history = showScratchpadByDefault ? userWork : {};
   return (
     <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -67,6 +82,9 @@ const ReportListContent = ({
               isStudentReport
               viewComponent="studentReport"
               evaluation={evaluation}
+              previouscratchPadDimensions={previouscratchPadDimensions}
+              showScratchpadByDefault={showScratchpadByDefault}
+              history={history}
             />
             {/* we may need to bring hint button back */}
             {/* <PaddingDiv>
@@ -79,10 +97,13 @@ const ReportListContent = ({
           closeTestPreviewModal={closeModal}
           passages={passages}
           test={{ itemGroups: [{ items: [item] }] }}
-          showScratchPad={hasUserWork && showModal}
+          showScratchPad={userWork && showModal}
           isShowStudentWork
           LCBPreviewModal
           isStudentReport
+          studentReportModal
+          questionActivities={[questionActivity]}
+          testActivityId={testActivityById._id}
         />
       </AnswerContext.Provider>
     </AssignmentsContent>
@@ -95,7 +116,9 @@ export default connect(
     passages: state.studentReport.passages,
     hasUserWork: itemHasUserWorkSelector(state),
     testActivityById: get(state, `[studentReport][testActivity]`, {}),
-    evaluation: getEvaluationSelector(state, {})
+    evaluation: getEvaluationSelector(state, {}),
+    questionActivity: questionActivityFromFeedbackSelector(state),
+    userWork: userWorkFromQuestionActivitySelector(state)
   }),
   null
 )(ReportListContent);

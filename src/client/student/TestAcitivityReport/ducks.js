@@ -8,12 +8,12 @@ import {
   ADD_ITEM_EVALUATION,
   LOAD_ANSWERS,
   LOAD_SCRATCH_PAD,
-  REMOVE_ANSWERS
+  REMOVE_ANSWERS,
+  SAVE_USER_WORK
 } from "../../assessment/constants/actions";
 import { receiveTestByIdSuccess, getQuestions } from "../../author/TestPage/ducks";
 import { markQuestionLabel } from "../../assessment/Transformer";
 import { loadQuestionsAction } from "../../author/sharedDucks/questions";
-import { REQUEST_SCRATCH_PAD_SUCCESS } from "../../assessment/reducers/userWork";
 
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 export const SET_STUDENT_ITEMS = "[studentItems] set Student items";
@@ -23,12 +23,16 @@ export const SET_FEEDBACK = "[studentItems] set feedback";
 export const loadTestActivityReportAction = createAction(LOAD_TEST_ACTIVITY_REPORT);
 export const setFeedbackReportAction = createAction(SET_FEEDBACK);
 
-function* loadAttachmentsFromServer(filter) {
+function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, filter);
-    for (const attachment of attachments) {
-      const { data: scratchPad, referrerId2: testItemId } = attachment;
-      yield put({ type: REQUEST_SCRATCH_PAD_SUCCESS, payload: { scratchPad, testItemId } });
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, { referrerId, referrerId2 });
+    if (attachments.length > 0) {
+      const scratchpadData = {};
+      for (const attachment of attachments) {
+        const { data = {} } = attachment;
+        scratchpadData[qActId] = data.scratchpad;
+      }
+      yield put({ type: SAVE_USER_WORK, payload: scratchpadData });
     }
   } catch (error) {
     console.log("error from attachmentAPI", error);
@@ -37,8 +41,8 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(testItemId =>
-      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId })
+    testItemsIdArray.map(({ testItemId, qActId }) =>
+      call(loadAttachmentsFromServer, { referrerId: testActivityId, referrerId2: testItemId, qActId })
     )
   );
 }
@@ -72,8 +76,8 @@ function* loadTestActivityReport({ payload }) {
     });
     const { questionActivities = [] } = reports;
     const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
-      if (activity?.scratchPad?.scratchpad || false) {
-        items.push(activity.testItemId);
+      if (activity?.scratchPad?.scratchpad === true) {
+        items.push({ testItemId: activity.testItemId, qActId: activity._id });
       }
       return items;
     }, []);

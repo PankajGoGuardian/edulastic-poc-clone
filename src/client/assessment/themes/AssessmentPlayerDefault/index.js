@@ -317,6 +317,7 @@ class AssessmentPlayerDefault extends React.Component {
       showMagnifier,
       handleMagnifier,
       enableMagnifier,
+      scratchpadActivity,
       showHints
     } = this.props;
     const {
@@ -559,12 +560,14 @@ class AssessmentPlayerDefault extends React.Component {
                     fillColor={fillColor}
                     fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
-                    history={scratchPad}
+                    history={LCBPreviewModal ? scratchpadActivity.data : scratchPad}
+                    previouscratchPadDimensions={LCBPreviewModal ? scratchpadActivity.dimensions : null}
                     preview={preview}
                     evaluation={evaluation}
                     changePreviewTab={changePreview}
                     saveHintUsage={this.saveHintUsage}
                     enableMagnifier={enableMagnifier}
+                    updateScratchpadtoStore
                   />
                 )}
                 {testItemState === "check" && (
@@ -627,6 +630,31 @@ class AssessmentPlayerDefault extends React.Component {
   }
 }
 
+function getScratchPadfromActivity(state, props) {
+  const { LCBPreviewModal = false, studentReportModal = false, questionActivities = [], testActivityId = "" } = props;
+  if (LCBPreviewModal || studentReportModal) {
+    const { userWork, studentTestItems } = state;
+    let items;
+    let currentItem;
+    if (studentReportModal) {
+      items = studentTestItems.items;
+      currentItem = studentTestItems.current;
+    } else {
+      items = props.items;
+      currentItem = props.currentItem;
+    }
+    const itemId = items[currentItem]._id;
+    const questionActivity =
+      questionActivities.find(act => act.testItemId === itemId && act.testActivityId === testActivityId) || {};
+    const { scratchPad: { dimensions } = {} } = questionActivity;
+    questionActivity.qActId = questionActivity.qActId || questionActivity._id;
+    const userWorkData = userWork.present[questionActivity.qActId] || {};
+    const scratchPadData = { data: userWorkData, dimensions };
+    return scratchPadData;
+  }
+  return null;
+}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,
@@ -649,7 +677,8 @@ const enhance = compose(
       zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme,
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
-      scratchpadData: state.scratchpad
+      scratchpadData: state.scratchpad,
+      scratchpadActivity: getScratchPadfromActivity(state, ownProps)
     }),
     {
       changePreview: changePreviewAction,

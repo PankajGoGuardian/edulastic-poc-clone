@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useRef, useState, useEffect, Fragment, useContext } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import produce from "immer";
@@ -12,6 +13,7 @@ import CurvedLine from "./components/CurveLine";
 import MeasureTools from "./components/MeasureTools";
 import TextInput from "./components/TextInput";
 import { normalizeTouchEvent } from "../../../utils/helpers";
+import { updateScratchpadAction } from "../../../../common/ducks/scratchpad";
 
 const SvgDraw = ({
   lineColor,
@@ -26,7 +28,14 @@ const SvgDraw = ({
   fromFreeFormNotes,
   fontFamily,
   height: svgHeight,
-  zoom
+  zoom,
+  updateScratchpadData,
+  updateScratchpadtoStore,
+  viewBoxProps,
+  viewAtStudentRes,
+  LCBPreviewModal,
+  previousDimensions,
+  showScratchpadByDefault
 }) => {
   const svg = useDisableDragScroll();
   const [points, setPoints] = useState([]);
@@ -782,8 +791,23 @@ const SvgDraw = ({
       if (svg.current && containerRef) {
         // get dimensions of container only after content is loaded
         const { scrollHeight, scrollWidth } = containerRef;
-        svg.current.style.height = `${scrollHeight}px`;
-        svg.current.style.width = `${scrollWidth}px`;
+        let updatedHeight = `${scrollHeight}px`;
+        let updatedWidth = `${scrollWidth}px`;
+        if (showScratchpadByDefault && !LCBPreviewModal) {
+          updatedHeight = "100%";
+          updatedWidth = "100%";
+        } else if (LCBPreviewModal) {
+          const { height, width } = previousDimensions;
+          updatedWidth = `${width}px`;
+          updatedHeight = `${height}px`;
+        }
+
+        svg.current.style.height = updatedHeight;
+        svg.current.style.width = updatedWidth;
+
+        if (updateScratchpadtoStore) {
+          updateScratchpadData({ height: scrollHeight, width: scrollWidth });
+        }
       }
     });
   }, [containerRef, svg.current]);
@@ -800,6 +824,7 @@ const SvgDraw = ({
       )}
       <svg
         ref={svg}
+        {...viewBoxProps}
         {...getSvgHandlers()}
         style={{
           position,
@@ -808,7 +833,7 @@ const SvgDraw = ({
           height: svgHeight || "100%",
           width: "100%",
           background: "transparent",
-          display: scratchPadMode ? "block" : "none",
+          display: showScratchpadByDefault || scratchPadMode ? "block" : "none",
           pointerEvents: activeMode === "" ? "none" : "all",
           zIndex: mouseClicked || dragStart || activeMode === "" ? 40 : 40,
           transformOrigin: "left top",
@@ -928,7 +953,14 @@ SvgDraw.defaultProps = {
   fontFamily: ""
 };
 
-export default SvgDraw;
+const mapDispatchToProps = {
+  updateScratchpadData: updateScratchpadAction
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SvgDraw);
 
 const Path = styled.path`
   stroke-linecap: round;

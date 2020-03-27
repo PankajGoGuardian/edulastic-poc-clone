@@ -28,7 +28,9 @@ const AssessmentPlayer = ({
   showTools,
   startAssessment,
   passages,
-  playlistId
+  playlistId,
+  studentReportModal,
+  ...restProps
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -68,6 +70,8 @@ const AssessmentPlayer = ({
         showTools={showTools}
         showScratchPad={isShowStudentWork}
         passages={passages}
+        studentReportModal={studentReportModal}
+        {...restProps}
       />
     );
   }

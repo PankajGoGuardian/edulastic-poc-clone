@@ -63,6 +63,7 @@ import Hints from "./Hints";
 import Explanation from "./Common/Explanation";
 import { isRichTextFieldEmpty } from "../../author/questionUtils";
 import { EDIT } from "../constants/constantsForQuestions";
+import ShowUserWork from "./Common/ShowUserWork";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -434,7 +435,7 @@ class QuestionWrapper extends Component {
                 display: "flex",
                 boxShadow: "none",
                 paddingRight: layoutType === COMPACT ? "100px" : null,
-                border: isLCBView ? "1px solid #DADAE4" : null
+                border: isLCBView && !restProps.showScratchpadByDefault ? "1px solid #DADAE4" : null
               }}
               flowLayout={type === questionType.CODING && view === "preview" ? true : flowLayout}
               twoColLayout={showCollapseBtn || showFeedback ? null : theme?.twoColLayout}
@@ -467,35 +468,30 @@ class QuestionWrapper extends Component {
                   </InstructionsContainer>
                 )}
 
-                {showFeedback && timeSpent ? (
+                {!restProps.viewAtStudentRes && showFeedback && timeSpent ? (
                   <>
                     <TimeSpentWrapper>
                       {!!showStudentWork && (
-                        <ShowStudentWorkBtn
-                          onClick={() => {
-                            if (isQuestionView || isExpressGrader) {
-                              // load the data from server and then show
-                              loadScratchPad({
-                                testActivityId: data.activity.testActivityId,
-                                testItemId: data.activity.testItemId,
-                                callback: () => showStudentWork()
-                              });
-                            } else {
-                              // show the data using store
-                              showStudentWork();
-                            }
+                        <ShowUserWork
+                          style={{ marginRight: "1rem" }}
+                          onClickHandler={() => {
+                            // load the data from server and then show
+                            loadScratchPad({
+                              testActivityId: data.activity.testActivityId,
+                              testItemId: data.activity.testItemId,
+                              qActId: data.activity.qActId || data.activity._id,
+                              callback: () => showStudentWork()
+                            });
                           }}
                         >
                           Show student work
-                        </ShowStudentWorkBtn>
+                        </ShowUserWork>
                       )}
                       <FontAwesomeIcon icon={faClock} aria-hidden="true" />
                       {round(timeSpent / 1000, 1)}s
                     </TimeSpentWrapper>
                   </>
-                ) : (
-                  ""
-                )}
+                ) : null}
                 {rubricDetails && studentReportFeedbackVisible && (
                   <RubricTableWrapper>
                     <span>Graded Rubric</span>

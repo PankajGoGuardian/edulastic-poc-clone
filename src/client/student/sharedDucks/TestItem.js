@@ -46,6 +46,7 @@ export const getCurrentItemSelector = state => state[module].current;
 export const getItemCountSelector = state => state[module].items.length;
 export const getItemsSelector = state => state[module].items;
 export const getTestFeedbackSelector = state => state.testFeedback;
+export const userWorkSelector = state => state.userWork.present;
 
 export const getItemSelector = createSelector(
   getItemsSelector,
@@ -63,6 +64,30 @@ export const itemHasUserWorkSelector = createSelector(
   }
 );
 
+export const questionActivityFromFeedbackSelector = createSelector(
+  getItemSelector,
+  getTestFeedbackSelector,
+  (item, questionActivities) => {
+    if (item) {
+      const questionActivity = questionActivities.find(act => act.testItemId === item._id) || {};
+      return questionActivity;
+    }
+    return {};
+  }
+);
+
+export const userWorkFromQuestionActivitySelector = createSelector(
+  questionActivityFromFeedbackSelector,
+  userWorkSelector,
+  (questionActivity, userWork) => {
+    if (questionActivity) {
+      return userWork[questionActivity._id];
+    }
+
+    return {};
+  }
+);
+
 export const FeedbackByQIdSelector = createSelector(
   getTestFeedbackSelector,
   testFeedback => keyBy(testFeedback, "qid")
@@ -73,8 +98,5 @@ export const getMaxScoreFromCurrentItem = state => {
   if (currentItem?.itemLevelScoring) {
     return currentItem?.itemLevelScore;
   }
-  return currentItem?.data?.questions?.reduce(
-    (acc, q) => q.validation.validResponse.score + acc,
-    0
-  );
+  return currentItem?.data?.questions?.reduce((acc, q) => q.validation.validResponse.score + acc, 0);
 };

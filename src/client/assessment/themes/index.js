@@ -83,7 +83,9 @@ const AssessmentContainer = ({
   showMagnifier,
   updateTestPlayer,
   enableMagnifier,
-  hideHints
+  studentReportModal,
+  hideHints,
+  ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -245,7 +247,9 @@ const AssessmentContainer = ({
     playerSkinType,
     showMagnifier,
     handleMagnifier,
-    enableMagnifier
+    enableMagnifier,
+    studentReportModal,
+    ...restProps
   };
 
   useEffect(() => {

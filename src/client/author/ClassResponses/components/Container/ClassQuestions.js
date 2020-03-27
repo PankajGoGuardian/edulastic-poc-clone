@@ -28,7 +28,10 @@ function Preview({
   passages,
   isQuestionView,
   isExpressGrader,
-  isLCBView
+  isLCBView,
+  questionActivity,
+  scratchpadProps,
+  userWork
 }) {
   const rows = getRows(item, false);
   const questions = get(item, ["data", "questions"], []);
@@ -41,6 +44,14 @@ function Preview({
   }
   const testItemID = passages?.[0]?.testItems?.[0] || ""; // pass testItemId in which passage was used
   const answerContextConfig = useContext(AnswerContext);
+  const showScratchpadByDefault =
+    questionActivity && questionActivity.qType === "highlightImage" && questionActivity.scratchPad?.scratchpad === true;
+
+  const viewAtStudentRes = showScratchpadByDefault;
+  const target = isExpressGrader || isQuestionView ? "_id" : "qActId";
+  const history = showScratchpadByDefault ? userWork[questionActivity[target]] : {};
+  const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
+  const timeSpent = showScratchpadByDefault ? (questionActivity.timeSpent / 1000).toFixed(1) : null;
   return (
     <StyledFlexContainer
       key={item._id}
@@ -66,6 +77,13 @@ function Preview({
         isQuestionView={isQuestionView}
         isExpressGrader={isExpressGrader}
         isLCBView={isLCBView}
+        showScratchpadByDefault={showScratchpadByDefault}
+        viewAtStudentRes={viewAtStudentRes}
+        timeSpent={timeSpent}
+        {...scratchpadProps}
+        previouscratchPadDimensions={previouscratchPadDimensions}
+        history={history}
+        saveHistory={() => {}}
       />
     </StyledFlexContainer>
   );
@@ -316,7 +334,9 @@ class ClassQuestions extends Component {
       isLCBView,
       testItemsData,
       testData,
-      qIndex
+      qIndex,
+      scratchpadProps,
+      testActivityId
     } = this.props;
     const testItems = this.getTestItems();
     const { expressGrader: isExpressGrader = false } = this.context;
@@ -334,17 +354,15 @@ class ClassQuestions extends Component {
     const testItemsPreview = testItems.map((item, index) => {
       let showStudentWork = null;
       let scractchPadUsed = userWork[item._id];
-      if (isQuestionView) {
-        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPadPresent || false);
-      } else {
-        scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
-      }
+
+      scractchPadUsed = item.data.questions.some(question => question?.activity?.scratchPad?.scratchpad);
       if (scractchPadUsed) {
         showStudentWork = () => this.showStudentWork(item);
       }
       if (testData.isDocBased) {
         showStudentWork = () => this.setState({ showDocBasedPlayer: true });
       }
+      const questionActivity = questionActivities.find(act => act.testItemId === item._id);
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
@@ -357,6 +375,9 @@ class ClassQuestions extends Component {
           isQuestionView={isQuestionView}
           isExpressGrader={isExpressGrader}
           isLCBView={isLCBView}
+          questionActivity={questionActivity}
+          scratchpadProps={scratchpadProps}
+          userWork={userWork}
         />
       );
     });
@@ -408,6 +429,8 @@ class ClassQuestions extends Component {
           isShowStudentWork
           isStudentReport
           LCBPreviewModal
+          questionActivities={questionActivities}
+          testActivityId={testActivityId || currentStudent.testActivityId}
         />
         {testData.isDocBased ? (
           <StyledModal
@@ -440,7 +463,8 @@ export default connect(
     testData: get(state, ["author_classboard_testActivity", "data", "test"]),
     passages: get(state, ["author_classboard_testActivity", "data", "passageData"], []),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.currentStudent.studentId),
-    userWork: get(state, ["userWork", "present"], {})
+    userWork: get(state, ["userWork", "present"], {}),
+    scratchpadProps: state.scratchpad
   }),
   {
     loadScratchPad: loadScratchPadAction,

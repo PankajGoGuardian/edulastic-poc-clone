@@ -62,7 +62,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
   context(">Verify Differentiation Tab", () => {
     before("Use Playlist and navigate to Differentiation Tab", () => {
       cy.login("teacher", teacher.email, teacher.password);
-      sidebar.clickOnRecentUsedPlayList("PlayList for Automation - Recommendation feature");
+      sidebar.clickOnRecentUsedPlayList();
       differentiationPage.clickOnDifferentiationTab();
     });
 

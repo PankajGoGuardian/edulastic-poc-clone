@@ -115,7 +115,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
         });
       }); // todo
     });
-
     context(">drop complete playlist-'by class'", () => {
       before(">create playlist", () => {
         playlistdata.moduledata.module1 = testids.slice(0, 2);
@@ -175,6 +174,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
             playlistId = id;
           });
         });
+        before(">set customization", () => {
+          playlistlibraryPage.header.clickOnEdit();
+          playlistlibraryPage.header.clickOnSettings();
+          playlistlibraryPage.setCustomization();
+          playlistlibraryPage.header.clickOnPublish();
+        });
         it(">hide the module", () => {
           playlistlibraryPage.header.clickOnUseThis();
           playlistlibraryPage.reviewTab.clickHideModuleByModule(1);
@@ -211,6 +216,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
             playlistId = id;
           });
         });
+        before(">set customization", () => {
+          playlistlibraryPage.header.clickOnEdit();
+          playlistlibraryPage.header.clickOnSettings();
+          playlistlibraryPage.setCustomization();
+          playlistlibraryPage.header.clickOnPublish();
+        });
         it(">hide test", () => {
           playlistlibraryPage.header.clickOnUseThis();
           playlistlibraryPage.reviewTab.clickHideTestByModule(1, 4);
@@ -239,7 +250,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
         });
       });
     });
-
     context(">show module/test-'edit after drop'", () => {
       context(">create and drop", () => {
         before("create play list", () => {
@@ -251,6 +261,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list drop teacher 
           playlistlibraryPage.createPlayListWithTests(playlistdata).then(id => {
             playlistId = id;
           });
+        });
+        before(">set customization", () => {
+          playlistlibraryPage.header.clickOnEdit();
+          playlistlibraryPage.header.clickOnSettings();
+          playlistlibraryPage.setCustomization();
+          playlistlibraryPage.header.clickOnPublish();
           playlistlibraryPage.header.clickOnUseThis();
         });
         before(">hide test in a module-'module-1 with 1 test'", () => {

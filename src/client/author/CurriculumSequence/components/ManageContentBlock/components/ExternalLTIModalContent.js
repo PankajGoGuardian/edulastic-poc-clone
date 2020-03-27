@@ -1,10 +1,22 @@
 import React, { useState } from "react";
-import { Input, Select, Row, Col } from "antd";
-import { CheckboxLabel } from "@edulastic/common";
+import { Input, Select, Row, Col, Form } from "antd";
+import { CheckboxLabel, EduButton } from "@edulastic/common";
 import styled from "styled-components";
 import { themeColor } from "@edulastic/colors";
+import { ButtonsContainer, StyledModal, ModalFormItem, CancelButton, OkButton } from "../../../../../common/styled";
 
-export const ExternalLTIModalContent = ({ data, externalToolsProviders, onChange, isAddNew, setAddNew }) => {
+export const ExternalLTIModal = ({
+  externalToolsProviders,
+  onChange,
+  isAddNew,
+  setAddNew,
+  isShowExternalLTITool,
+  onModalClose,
+  addLTIResource,
+  form
+}) => {
+  const { getFieldDecorator } = form;
+
   const getToolProviderOptions = () => {
     return (
       externalToolsProviders &&
@@ -36,134 +48,183 @@ export const ExternalLTIModalContent = ({ data, externalToolsProviders, onChange
     onChange("data.toolProvider", value);
   };
 
+  const handleAddResource = () => {
+    form.validateFields((err, row) => {
+      if (!err) {
+        addLTIResource();
+      }
+    });
+  };
+
   return (
-    <Col span={24}>
+    <StyledModal
+      title="External LTI Resource"
+      visible={isShowExternalLTITool}
+      onCancel={onModalClose}
+      footer={[
+        <ButtonsContainer>
+          <CancelButton onClick={onModalClose}>CANCEL</CancelButton>,
+          <OkButton onClick={handleAddResource}>ADD RESOURCE</OkButton>
+        </ButtonsContainer>
+      ]}
+    >
       {!isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>TOOL PROVIDER</StyledLabel>
-          <StyledSelect
-            placeholder="Select a tool"
-            value={data.data?.toolProvider}
-            onChange={value => handleOnChange("data.toolProvider", value)}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {getToolProviderOptions()}
-            <Select.Option value="add-new">Add New Resource</Select.Option>
-          </StyledSelect>
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="TOOL PROVIDER">
+              {getFieldDecorator("addNewResource", {
+                validateTrigger: ["onBlur"],
+                rules: [
+                  {
+                    required: true,
+                    message: "Please select a tool provider"
+                  }
+                ]
+              })(
+                <StyledSelect
+                  placeholder="Select a tool"
+                  onChange={value => handleOnChange("data.toolProvider", value)}
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                >
+                  {getToolProviderOptions()}
+                  <Select.Option value="add-new">Add New Resource</Select.Option>
+                </StyledSelect>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
-      <StyledContentRow>
-        <StyledLabel>TITLE</StyledLabel>
-        <StyledInput
-          placeholder="Enter a title"
-          value={data.contentTitle}
-          onChange={e => onChange("contentTitle", e.target.value)}
-        />
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>URL</StyledLabel>
-        <StyledInput
-          placeholder="Enter a URL"
-          value={data.data?.url}
-          onChange={e => onChange("data.url", e.target.value)}
-        />
-      </StyledContentRow>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="TITLE">
+            {getFieldDecorator("title", {
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input title"
+                }
+              ]
+            })(<StyledInput placeholder="Enter a title" onChange={e => onChange("contentTitle", e.target.value)} />)}
+          </ModalFormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="URL">
+            {getFieldDecorator("url", {
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input a url"
+                }
+              ]
+            })(<StyledInput placeholder="Enter a URL" onChange={e => onChange("data.url", e.target.value)} />)}
+          </ModalFormItem>
+        </Col>
+      </Row>
+
       {isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>CONSUMER KEY</StyledLabel>
-          <StyledInput
-            placeholder="Enter a consumer key"
-            value={data.data?.consumerKey}
-            onChange={e => onChange("data.consumerKey", e.target.value)}
-          />
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="CONSUMER KEY">
+              {getFieldDecorator("consumerKey", {
+                validateTrigger: ["onBlur"],
+                rules: [
+                  {
+                    required: true,
+                    message: "Please enter consumer key"
+                  }
+                ]
+              })(
+                <StyledInput
+                  placeholder="Enter a consumer key"
+                  onChange={e => onChange("data.consumerKey", e.target.value)}
+                />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
 
       {isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>SHARED SECRET</StyledLabel>
-          <StyledInput
-            placeholder="Enter a shared secret"
-            value={data.data?.sharedSecret}
-            onChange={e => onChange("data.sharedSecret", e.target.value)}
-          />
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="SHARED SECRET">
+              {getFieldDecorator("secret", {
+                validateTrigger: ["onBlur"],
+                rules: [
+                  {
+                    required: true,
+                    message: "Please enter shared secret"
+                  }
+                ]
+              })(
+                <StyledInput
+                  placeholder="Enter a shared secret"
+                  onChange={e => onChange("data.sharedSecret", e.target.value)}
+                />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
 
       {isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>PRIVACY</StyledLabel>
-          <StyledSelect
-            placeholder="Select privacy"
-            value={data.data?.privacy}
-            onChange={value => onChange("data.privacy", value)}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {getPrivacyOptions()}
-          </StyledSelect>
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="PRIVACY">
+              <StyledSelect
+                placeholder="Select privacy"
+                onChange={value => onChange("data.privacy", value)}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {getPrivacyOptions()}
+              </StyledSelect>
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
 
       {isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>CONFIGURATION TYPE</StyledLabel>
-          <StyledSelect
-            placeholder="Select configuration type"
-            value={data.data?.configurationType}
-            onChange={value => onChange("data.configurationType", value)}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {getConfigTypeOptions()}
-          </StyledSelect>
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="CONFIGURATION TYPE">
+              <StyledSelect
+                placeholder="Select configuration type"
+                onChange={value => onChange("data.configurationType", value)}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {getConfigTypeOptions()}
+              </StyledSelect>
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
 
       {isAddNew && (
-        <StyledContentRow>
-          <StyledLabel>MATCH BY</StyledLabel>
-          <StyledSelect
-            placeholder="Select match by"
-            value={data.data?.matchBy}
-            onChange={value => onChange("data.matchBy", value)}
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-          >
-            {getMatchByOptions()}
-          </StyledSelect>
-        </StyledContentRow>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="MATCH BY">
+              <StyledSelect
+                placeholder="Select match by"
+                onChange={value => onChange("data.matchBy", value)}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {getMatchByOptions()}
+              </StyledSelect>
+            </ModalFormItem>
+          </Col>
+        </Row>
       )}
-      {/* <StyledContentRow>
-        <StyledLabel>CUSTOM PARAMETERS</StyledLabel>
-        <StyledInput
-          placeholder="Enter a custom parameters"
-          value={data.data?.customParams}
-          onChange={e => onChange("data.customParams", e.target.value)}
-        />
-      </StyledContentRow>
-      <StyledContentRow>
-        <CheckboxLabel
-          checked={data.data?.enableGrading}
-          onChange={() => onChange("data.enableGrading", !data.data?.enableGrading)}
-        >
-          ENABLE GRADING
-        </CheckboxLabel>
-      </StyledContentRow> */}
-    </Col>
+    </StyledModal>
   );
 };
 
-const StyledContentRow = styled(Row)`
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  padding: 10px 0 5px 0;
-`;
-
-const StyledLabel = styled.label`
-  font-size: 11px;
-  margin-bottom: 9px;
-  height: 15px;
-  font-weight: 600;
-`;
+const ExternalLTIModalForm = Form.create()(ExternalLTIModal);
+export default ExternalLTIModalForm;
 
 const StyledInput = styled(Input)`
   .ant-input {

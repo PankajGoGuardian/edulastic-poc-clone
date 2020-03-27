@@ -16,7 +16,7 @@ import {
 import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { getUserOrgId } from "../../../src/selectors/user";
-import { ExternalToolsModalContent } from "../ExternalToolsModalContent/ExternalToolsModalContent";
+import ExternalToolsModal from "../ExternalToolsModalContent/ExternalToolsModalContent";
 import { set, cloneDeep } from "lodash";
 
 const menuActive = { mainMenu: "Content", subMenu: "ExternalTools" };
@@ -125,21 +125,13 @@ class ExternalTools extends Component {
           <StyledSearch placeholder="Search External Tools" />
           <EduButton height="40px">Search</EduButton>
         </ExternalToolsSearchHeader>
-        <CustomModal
-          title="External LTI Resource"
-          visible={isModalVisible}
-          onCancel={this.onModalClose}
-          footer={[
-            <EduButton isGhost height="40px" onClick={this.onModalClose}>
-              CANCEL
-            </EduButton>,
-            <EduButton height="40px" onClick={this.onSave}>
-              SAVE
-            </EduButton>
-          ]}
-        >
-          <ExternalToolsModalContent data={data} onChange={this.onChange} />
-        </CustomModal>
+        <ExternalToolsModal
+          isModalVisible={isModalVisible}
+          data={data}
+          onChange={this.onChange}
+          onSave={this.onSave}
+          onModalClose={this.onModalClose}
+        />
         <StyledList
           split={false}
           header={ETPHeader({ addExternalTool: this.addExternalTool })}

@@ -28,7 +28,7 @@ import {
 } from "./styled";
 import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
 import ManageModulesModal from "../ManageModulesModal";
-import { ExternalLTIModalContent } from "./components/ExternalLTIModalContent";
+import ExternalLTIModalForm from "./components/ExternalLTIModalContent";
 import { submitLTIForm } from "../CurriculumModuleRow";
 
 // Static resources data
@@ -360,27 +360,16 @@ const ManageContentBlock = props => {
         )}
 
         {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
-        <CustomModal
-          title="External LTI Resource"
-          visible={isShowExternalLTITool}
-          onCancel={onModalClose}
-          footer={[
-            <EduButton isGhost height="40px" onClick={onModalClose}>
-              CANCEL
-            </EduButton>,
-            <EduButton height="40px" onClick={addLTIResource}>
-              ADD RESOURCE
-            </EduButton>
-          ]}
-        >
-          <ExternalLTIModalContent
-            data={externalLTIModal}
-            externalToolsProviders={externalToolsProviders}
-            onChange={(key, value) => changeExternalLTIModal({ key, value })}
-            isAddNew={isAddNew}
-            setAddNew={setAddNew}
-          />
-        </CustomModal>
+
+        <ExternalLTIModalForm
+          onModalClose={onModalClose}
+          isShowExternalLTITool={isShowExternalLTITool}
+          externalToolsProviders={externalToolsProviders}
+          onChange={(key, value) => changeExternalLTIModal({ key, value })}
+          isAddNew={isAddNew}
+          setAddNew={setAddNew}
+          addLTIResource={addLTIResource}
+        />
       </ManageContentContainer>
       <ModalWrapper
         footer={null}

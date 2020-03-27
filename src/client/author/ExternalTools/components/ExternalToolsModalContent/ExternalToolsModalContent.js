@@ -1,8 +1,10 @@
 import React from "react";
-import { StyledContentRow, StyledInput, StyledLabel, StyledSelect } from "./styled";
-import { Col, Select } from "antd";
+import { StyledInput, StyledSelect } from "./styled";
+import { Select, Row, Col, Form } from "antd";
+import { ButtonsContainer, StyledModal, ModalFormItem, CancelButton, OkButton } from "../../../../common/styled";
 
-export const ExternalToolsModalContent = ({ data, onChange }) => {
+export const ExternalLTIModal = ({ data, isModalVisible, onChange, onSave, onModalClose, form }) => {
+  const { getFieldDecorator } = form;
   const getPrivacyOptions = () => {
     return [
       <Select.Option key={1} value={1}>
@@ -42,73 +44,152 @@ export const ExternalToolsModalContent = ({ data, onChange }) => {
     ];
   };
 
+  const handleAddResource = () => {
+    form.validateFields((err, row) => {
+      if (!err) {
+        onSave();
+      }
+    });
+  };
+
   return (
-    <Col span={24}>
-      <StyledContentRow>
-        <StyledLabel>TOOL NAME</StyledLabel>
-        <StyledInput
-          placeholder="Enter a tool Name"
-          value={data.toolName}
-          onChange={e => onChange("toolName", e.target.value)}
-        />
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>CONSUMER KEY</StyledLabel>
-        <StyledInput
-          placeholder="Enter a Consumer Key"
-          value={data.settings.consumerKey}
-          onChange={e => onChange("settings.consumerKey", e.target.value)}
-        />
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>SHARED SECRET</StyledLabel>
-        <StyledInput
-          placeholder="Enter a Shared Secret"
-          value={data.settings.sharedSecret}
-          onChange={e => onChange("settings.sharedSecret", e.target.value)}
-        />
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>PRIVACY</StyledLabel>
-        <StyledSelect
-          placeholder="Select privacy"
-          value={data.settings.privacy || undefined}
-          onChange={value => onChange("settings.privacy", value)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {getPrivacyOptions()}
-        </StyledSelect>
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>CONFIGURATION TYPE</StyledLabel>
-        <StyledSelect
-          placeholder="Select a configuration Type"
-          value={data.settings.configurationType || undefined}
-          onChange={value => onChange("settings.configurationType", value)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {getConfigTypeOptions()}
-        </StyledSelect>
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>MATCH BY</StyledLabel>
-        <StyledSelect
-          placeholder="Select match by"
-          value={data.settings.matchBy || undefined}
-          onChange={value => onChange("settings.matchBy", value)}
-          getPopupContainer={triggerNode => triggerNode.parentNode}
-        >
-          {getMatchByOptions()}
-        </StyledSelect>
-      </StyledContentRow>
-      <StyledContentRow>
-        <StyledLabel>DOMAIN/URL</StyledLabel>
-        <StyledInput
-          placeholder="Enter a URL"
-          value={data.settings.url}
-          onChange={e => onChange("settings.url", e.target.value)}
-        />
-      </StyledContentRow>
-    </Col>
+    <StyledModal
+      title="External LTI Resource"
+      visible={isModalVisible}
+      onCancel={onModalClose}
+      footer={[
+        <ButtonsContainer>
+          <CancelButton onClick={onModalClose}>CANCEL</CancelButton>,
+          <OkButton onClick={handleAddResource}>SAVE</OkButton>
+        </ButtonsContainer>
+      ]}
+    >
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="TOOL NAME">
+            {getFieldDecorator("name", {
+              initialValue: data.toolName,
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input tool name"
+                }
+              ]
+            })(<StyledInput placeholder="Enter a tool Name" onChange={e => onChange("toolName", e.target.value)} />)}
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="CONSUMER KEY">
+            {getFieldDecorator("consumerKey", {
+              initialValue: data.settings.consumerKey,
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input consumer key"
+                }
+              ]
+            })(
+              <StyledInput
+                placeholder="Enter a Consumer Key"
+                onChange={e => onChange("settings.consumerKey", e.target.value)}
+              />
+            )}
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="SHARED SECRET">
+            {getFieldDecorator("sharedSecret", {
+              initialValue: data.settings.sharedSecret,
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input shared secret"
+                }
+              ]
+            })(
+              <StyledInput
+                placeholder="Enter a Shared Secret"
+                onChange={e => onChange("settings.sharedSecret", e.target.value)}
+              />
+            )}
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="PRIVACY">
+            <StyledSelect
+              placeholder="Select privacy"
+              value={data.settings.privacy || undefined}
+              onChange={value => onChange("settings.privacy", value)}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {getPrivacyOptions()}
+            </StyledSelect>
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="CONFIGURATION TYPE">
+            <StyledSelect
+              placeholder="Select a configuration Type"
+              value={data.settings.configurationType || undefined}
+              onChange={value => onChange("settings.configurationType", value)}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {getConfigTypeOptions()}
+            </StyledSelect>
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="MATCH BY">
+            <StyledSelect
+              placeholder="Select match by"
+              value={data.settings.matchBy || undefined}
+              onChange={value => onChange("settings.matchBy", value)}
+              getPopupContainer={triggerNode => triggerNode.parentNode}
+            >
+              {getMatchByOptions()}
+            </StyledSelect>
+          </ModalFormItem>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="DOMAIN/URL">
+            {getFieldDecorator("url", {
+              initialValue: data.settings.url,
+              validateTrigger: ["onBlur"],
+              rules: [
+                {
+                  required: true,
+                  message: "Please input a domain/url"
+                }
+              ]
+            })(
+              <StyledInput placeholder="Enter a DOMAIN/URL" onChange={e => onChange("settings.url", e.target.value)} />
+            )}
+          </ModalFormItem>
+        </Col>
+      </Row>
+    </StyledModal>
   );
 };
+const ExternalLTIModalForm = Form.create()(ExternalLTIModal);
+export default ExternalLTIModalForm;

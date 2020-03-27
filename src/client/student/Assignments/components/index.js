@@ -49,7 +49,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
         <Row type="flex" align="middle">
           <StudentSlectCommon />
           <ClassSelect t={t} classList={activeEnrolledClasses} showAllClassesOption />
-          {classListWithHangouts.length && (
+          {!!classListWithHangouts.length && (
             <StyledEduButton height="40px" isGhost onClick={() => setShowHangoutsModal(true)}>
               <IconHangouts height={23} width={20} />
               Join Hangout

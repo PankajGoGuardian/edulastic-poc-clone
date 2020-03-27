@@ -35,6 +35,7 @@ import { setUserAnswerAction } from "../../actions/answers";
 import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
+import { showHintsAction } from "../../actions/userInteractions";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -49,9 +50,7 @@ class AssessmentPlayerDefault extends React.Component {
       history: 0,
       calculateMode: `${settings.calcType}_${settings.calcProvider}`,
       currentToolMode: [0],
-      showHints: false,
       enableCrossAction: false,
-      zoomFactor: 1,
       minWidth: 480,
       defaultContentWidth: 900,
       defaultHeaderHeight: 62
@@ -70,6 +69,7 @@ class AssessmentPlayerDefault extends React.Component {
     gotoQuestion: PropTypes.any.isRequired,
     itemRows: PropTypes.array.isRequired,
     evaluation: PropTypes.any.isRequired,
+    showHints: PropTypes.func.isRequired,
     checkAnswer: PropTypes.func.isRequired,
     history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
@@ -111,13 +111,6 @@ class AssessmentPlayerDefault extends React.Component {
     } else {
       this.setState({ currentToolMode });
     }
-  };
-
-  showHideHints = () => {
-    this.setState(prevState => ({
-      ...prevState,
-      showHints: !prevState.showHints
-    }));
   };
 
   changeTabItemState = value => {
@@ -221,6 +214,14 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
+  saveHintUsage = hintUsage => {
+    const { saveHintUsageData, currentItem, items } = this.props;
+    saveHintUsageData({
+      itemId: items[currentItem]?._id,
+      hintUsage
+    });
+  };
+
   handleUndo = () => {
     const { undoScratchPad } = this.props;
     const { history } = this.state;
@@ -272,8 +273,6 @@ class AssessmentPlayerDefault extends React.Component {
     const { currentItem } = this.props;
     if (currentItem !== previousProps.currentItem) {
       this.scrollContainer.current.scrollTop = 0;
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ showHints: false });
     }
   }
 
@@ -317,7 +316,8 @@ class AssessmentPlayerDefault extends React.Component {
       changePreview,
       showMagnifier,
       handleMagnifier,
-      enableMagnifier
+      enableMagnifier,
+      showHints
     } = this.props;
     const {
       testItemState,
@@ -325,7 +325,6 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
       calculateMode,
-      // showHints,
       enableCrossAction,
       minWidth,
       defaultContentWidth,
@@ -453,7 +452,7 @@ class AssessmentPlayerDefault extends React.Component {
             checkAnswer={() => this.changeTabItemState("check")}
             toggleBookmark={() => toggleBookmark(item._id)}
             isBookmarked={isBookmarked}
-            handletoggleHints={this.showHideHints}
+            handletoggleHints={showHints}
             onClickSetting={() => {
               this.setState({ isToolbarModalVisible: true });
             }}
@@ -508,7 +507,7 @@ class AssessmentPlayerDefault extends React.Component {
                 isNonAutoGradable={isNonAutoGradable}
                 toggleBookmark={() => toggleBookmark(item._id)}
                 isBookmarked={isBookmarked}
-                handletoggleHints={this.showHideHints}
+                handletoggleHints={showHints}
                 changeTool={this.changeTool}
               />
             </FeaturesSwitch>
@@ -564,6 +563,7 @@ class AssessmentPlayerDefault extends React.Component {
                     preview={preview}
                     evaluation={evaluation}
                     changePreviewTab={changePreview}
+                    saveHintUsage={this.saveHintUsage}
                     enableMagnifier={enableMagnifier}
                   />
                 )}
@@ -593,6 +593,7 @@ class AssessmentPlayerDefault extends React.Component {
                     fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
+                    saveHintUsage={this.saveHintUsage}
                     changePreviewTab={changePreview}
                     enableMagnifier={enableMagnifier}
                   />
@@ -661,7 +662,8 @@ const enhance = compose(
       clearUserWork: clearUserWorkAction,
       updateScratchPad: updateScratchpadAction,
       resetScratchPadData: resetScratchPadDataAction,
-      updateTestPlayer: updateTestPlayerAction
+      updateTestPlayer: updateTestPlayerAction,
+      showHints: showHintsAction
     }
   )
 );

@@ -14,7 +14,9 @@ import {
   SET_TEST_LOADING_ERROR,
   SAVE_USER_RESPONSE,
   SAVE_USER_RESPONSE_SUCCESS,
-  SAVE_USER_RESPONSE_ERROR
+  SAVE_USER_RESPONSE_ERROR,
+  SHOW_HINTS,
+  Hide_HINTS
 } from "../constants/actions";
 
 const initialState = {
@@ -25,6 +27,7 @@ const initialState = {
   title: "",
   error: false,
   loading: true,
+  showHints: false,
   settings: {},
   isDocBased: false,
   answerCheckByItemId: {},
@@ -101,7 +104,7 @@ const test = (state = initialState, { payload, type }) => {
         error: false,
         loading: payload
       };
-    case COUNT_CHECK_ANSWER:
+    case COUNT_CHECK_ANSWER: {
       const answerCheckCount = state.answerCheckByItemId[payload.itemId]
         ? state.answerCheckByItemId[payload.itemId]
         : 0;
@@ -112,6 +115,7 @@ const test = (state = initialState, { payload, type }) => {
           [payload.itemId]: answerCheckCount + 1
         }
       };
+    }
     case SET_PASSWORD_VALIDATE_STATUS:
       return {
         ...state,
@@ -129,10 +133,9 @@ const test = (state = initialState, { payload, type }) => {
       };
     case SAVE_USER_RESPONSE:
       if (!payload.autoSave) {
-        return { ...state, savingResponse: true };
-      } else {
-        return state;
+        return { ...state, savingResponse: true, showHints: false };
       }
+      return state;
     case SAVE_USER_RESPONSE_SUCCESS:
       return { ...state, savingResponse: false };
     case SAVE_USER_RESPONSE_ERROR:
@@ -144,6 +147,10 @@ const test = (state = initialState, { payload, type }) => {
           qId: payload
         }
       };
+    case SHOW_HINTS:
+      return { ...state, showHints: true };
+    case Hide_HINTS:
+      return { ...state, showHints: false };
     default:
       return state;
   }

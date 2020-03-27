@@ -60,6 +60,7 @@ import PreviewRubricTable from "../../author/GradingRubric/Components/common/Pre
 import { Coding } from "../widgets/Coding";
 
 import Hints from "./Hints";
+import Explanation from "./Common/Explanation";
 import { isRichTextFieldEmpty } from "../../author/questionUtils";
 import { EDIT } from "../constants/constantsForQuestions";
 
@@ -307,6 +308,7 @@ class QuestionWrapper extends Component {
       setQuestionData,
       changePreviewTab,
       qIndex,
+      itemIndex,
       windowWidth,
       flowLayout,
       isPresentationMode,
@@ -328,7 +330,7 @@ class QuestionWrapper extends Component {
       isExpressGrader,
       theme,
       isLCBView,
-      hideHintButton,
+      isGrade,
       enableMagnifier,
       ...restProps
     } = this.props;
@@ -500,7 +502,15 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
-                {view === "preview" && !hideHintButton && <Hints question={data} enableMagnifier={enableMagnifier} />}
+                {view === "preview" && !isGrade && (
+                  <Hints
+                    question={data}
+                    enableMagnifier={enableMagnifier}
+                    isStudent={userRole === "student"}
+                    itemIndex={itemIndex}
+                  />
+                )}
+                {(isGrade || isLCBView) && <Explanation question={data} isGrade={isGrade} />}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>
@@ -533,6 +543,7 @@ QuestionWrapper.propTypes = {
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
+  saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any
 };
 
@@ -554,6 +565,7 @@ QuestionWrapper.defaultProps = {
   flowLayout: false,
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
+  saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false
 };

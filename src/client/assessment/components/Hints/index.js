@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import {
   EduButton,
@@ -8,20 +9,38 @@ import {
   QuestionSubLabel as SubLabel,
   MathFormulaDisplay
 } from "@edulastic/common";
-import { themeColor, lightFadedBlack, mainTextColor, backgroundGrey, greenDark } from "@edulastic/colors";
+import { themeColor, mainTextColor } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { saveHintUsageAction } from "../../actions/userInteractions";
 
-const Hints = ({ question, showHints, enableMagnifier }) => {
+const Hints = ({ question, showHints, enableMagnifier, isStudent, itemIndex, saveHintUsage }) => {
   if (question.type === "passage") {
     return null;
   }
 
-  const { hints = [] } = question;
+  const { hints = [], id } = question;
+  const hintContRef = useRef();
+
   const validHints = hints?.filter(hint => hint?.label);
   const hintCount = validHints.length;
+  const [showCount, updateShowCount] = useState(0);
 
-  const initialCount = showHints ? hintCount : 0;
-  const [showCount, updateShowCount] = useState(initialCount);
+  const showHintHandler = () => updateShowCount(1);
+
+  const showMoreHints = () => updateShowCount(showCount + 1);
+
+  useEffect(() => {
+    if (itemIndex === 0 && showCount === 0 && showHints) {
+      updateShowCount(1);
+      if (hintContRef.current) {
+        setTimeout(() => {
+          hintContRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+        }, 500);
+      }
+    } else {
+      updateShowCount(0);
+    }
+  }, [showHints, itemIndex]);
 
   useEffect(() => {
     if (enableMagnifier) {
@@ -30,56 +49,57 @@ const Hints = ({ question, showHints, enableMagnifier }) => {
         if (dragElements.length > 0) {
           document.querySelectorAll(".unzoom-container-wrapper .hint-container").forEach((elm, i) => {
             dragElements[i].innerHTML = elm.innerHTML;
-          })
+          });
         }
       }, 500);
     }
+    if (showCount === 1) {
+      saveHintUsage({
+        event: "HintClicked",
+        id,
+        time: Date.now()
+      });
+    }
   }, [showCount]);
-  const showHintHandler = () => updateShowCount(1);
-
-  const showMoreHints = () => updateShowCount(showCount + 1);
 
   return (
     hintCount > 0 && (
-      <div data-cy="hint-container" className="hint-container">
-        <QuestionLabel>
-          <QuestionText>{question.barLabel}</QuestionText> - Hints
-        </QuestionLabel>
-
+      <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef}>
+        {!!showCount && <QuestionLabel> Hints</QuestionLabel>}
         {!!showCount &&
           validHints.map(
             ({ value, label }, index) =>
               index + 1 <= showCount && (
-                <HintContainer key={value}>
+                <HintItem key={value}>
                   <LabelWrapper>
                     <HintLabel>
-                      <Label marginBottom="0px">Hint</Label>
                       <Label marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
                     </HintLabel>
                   </LabelWrapper>
-                  <HintContent>
-                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
-                  </HintContent>
-                </HintContainer>
+                  <div>
+                    <HintContent>
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+                    </HintContent>
+                    {index + 1 === showCount && showCount < hintCount && (
+                      <ShowMoreHint onClick={showMoreHints}>+ Get Another Hint {`1/${hintCount}`}</ShowMoreHint>
+                    )}
+                  </div>
+                </HintItem>
               )
           )}
-        <HintActionCont>
-          {!showCount && (
-            <ShowHint height="30px" isGhost onClick={showHintHandler}>
-              Show Hints
-            </ShowHint>
-          )}
-          {!!showCount && showCount < hintCount && (
-            <ShowMoreHint onClick={showMoreHints}>+ Get Another Hint {`1/${hintCount}`}</ShowMoreHint>
-          )}
-        </HintActionCont>
-      </div>
+        {!showCount && (
+          <ShowHint height="30px" width="110px" isGhost onClick={showHintHandler} isStudent={isStudent}>
+            Show Hints
+          </ShowHint>
+        )}
+      </HintCont>
     )
   );
 };
 
 Hints.propTypes = {
   question: PropTypes.object
+  //
 };
 
 Hints.defaultProps = {
@@ -88,13 +108,25 @@ Hints.defaultProps = {
   }
 };
 
-export default Hints;
+export default connect(
+  state => ({
+    showHints: state.test.showHints
+  }),
+  {
+    saveHintUsage: saveHintUsageAction
+  }
+)(Hints);
 
-const HintContainer = styled(FlexContainer)`
+const HintCont = styled.div`
+  margin: 16px 0px;
+`;
+
+const HintItem = styled(FlexContainer)`
   width: 100%;
   margin-top: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 const HintLabel = styled(SubLabel)`
@@ -106,17 +138,13 @@ const HintLabel = styled(SubLabel)`
 
 const HintContent = styled.div`
   width: 100%;
-  padding: 8px;
-  border-left: 3px solid ${lightFadedBlack};
+  padding: 8px 16px;
+  border-left: 3px solid ${themeColor};
   justify-content: flex-start;
 `;
 
-const HintActionCont = styled.div`
-  margin-left: 48px;
-`;
-
 const ShowHint = styled(EduButton)`
-  margin-left: 0px;
+  margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
 `;
 
 const ShowMoreHint = styled.div`
@@ -125,6 +153,7 @@ const ShowMoreHint = styled.div`
   text-transform: uppercase;
   color: ${themeColor};
   font-size: 0.8em;
+  padding: 8px 16px;
 `;
 
 const QuestionLabel = styled.div`
@@ -132,12 +161,4 @@ const QuestionLabel = styled.div`
   font-weight: 700;
   font-size: 16px;
   padding-bottom: 1rem;
-  padding-left: 11px;
-  border-bottom: 0.05rem solid ${backgroundGrey};
-`;
-
-const QuestionText = styled.span`
-  font-weight: 700;
-  font-size: 16px;
-  color: ${greenDark};
 `;

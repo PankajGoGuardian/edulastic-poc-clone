@@ -84,9 +84,7 @@ class ClozeText extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter(
-            (response, i) => i !== index
-          );
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -134,10 +132,7 @@ class ClozeText extends Component {
               const { id, value, index } = ans;
               const splitWidth = Math.max(value.split("").length * 9, 100);
               const width = Math.min(splitWidth, 400);
-              const ind = findIndex(
-                draft.uiStyle.responsecontainerindividuals,
-                container => container.id === id
-              );
+              const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
               if (ind === -1) {
                 draft.uiStyle.responsecontainerindividuals.push({
                   id,
@@ -230,20 +225,13 @@ class ClozeText extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      itemForPreview,
-      uiStyle
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
 
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
 
-    const allowSingleLetterMistake =
-      item && item.validation ? item.validation.allowSingleLetterMistake : false;
+    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
     const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
     const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper;
@@ -254,19 +242,11 @@ class ClozeText extends Component {
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
     const isShowAnswer = previewTab === "show" && !expressGrader;
     return (
-      <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-        fallBack={<span />}
-        onLoaded={() => null}
-      >
+      <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />} onLoaded={() => null}>
         {view === "edit" && (
           <ContentArea data-cy="question-area">
             <div className="authoring">
-              <Authoring
-                item={itemForEdit}
-                cleanSections={cleanSections}
-                fillSections={fillSections}
-              />
+              <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
               <Question
                 section="main"
                 label={t("component.correctanswers.setcorrectanswers")}
@@ -303,10 +283,7 @@ class ClozeText extends Component {
 
                   <CheckboxLabel
                     onChange={() =>
-                      this.handleValidationOptionsChange(
-                        "allowSingleLetterMistake",
-                        !allowSingleLetterMistake
-                      )
+                      this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
                     }
                     checked={!!allowSingleLetterMistake}
                   >
@@ -347,6 +324,7 @@ class ClozeText extends Component {
           <Wrapper
             overflowProps={disableResponse ? { maxWidth: "100%", overflowX: "auto" } : {}}
             paddingProps={{ paddingBottom: "1rem" }}
+            borderRadius="0px"
           >
             <Display
               checkAnswer={isCheckAnswer}

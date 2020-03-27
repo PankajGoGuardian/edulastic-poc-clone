@@ -61,8 +61,7 @@ const ReportListContent = ({
               scrolling={item.scrolling}
               releaseScore={releaseScore}
               showFeedback
-              hideHintButton
-              showExplanation
+              isGrade
               showCollapseBtn
               disableResponse
               isStudentReport

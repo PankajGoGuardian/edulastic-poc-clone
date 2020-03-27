@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
 import React, { useRef } from "react";
-import { get } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import { Hints, ScrollContext } from "@edulastic/common";
+import { ScrollContext } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import TestItemPreview from "../../components/TestItemPreview";
 import PlayerFooter from "./PlayerFooter";
@@ -26,7 +25,6 @@ const PlayerContentArea = ({
   t,
   unansweredQuestionCount,
   items,
-  showHints,
   testItemState,
   setHighlights,
   setCrossAction,
@@ -102,7 +100,6 @@ const PlayerContentArea = ({
                 enableMagnifier={enableMagnifier}
               />
             )}
-            {showHints && <Hints questions={get(item, [`data`, `questions`], [])} enableMagnifier={enableMagnifier} />}
           </MainContent>
         </ScrollContext.Provider>
         {playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase() && (

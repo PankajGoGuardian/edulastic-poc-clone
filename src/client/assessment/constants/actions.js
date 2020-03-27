@@ -85,6 +85,7 @@ export const FILE_UPLOAD_ERROR = "[test] upload file error";
 export const SAVE_USER_WORK = "[userWork] save userWork";
 export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
 export const CLEAR_USER_WORK = "[userWork] clear userWork";
+export const SAVE_HINT_USAGE = "[hintUsage] save hintUsage";
 
 // Test Level User Work
 export const SAVE_TEST_LEVEL_USER_WORK = "[testUserWork] save userWork";
@@ -102,3 +103,7 @@ export const SET_STASH_INDEX = "[graphTools] set stash index";
 export const SAVE_TESTLET_LOG = "[testlet] save testlet log";
 export const SAVE_TESTLET_LOG_SUCCESS = "[testlet] save testlet success";
 export const SAVE_TESTLET_LOG_FAILURE = "[testlet] save testlet failure";
+
+// hints
+export const SHOW_HINTS = "[hints] show hints";
+export const Hide_HINTS = "[hints] hide hints";

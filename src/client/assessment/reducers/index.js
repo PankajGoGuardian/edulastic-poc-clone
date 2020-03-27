@@ -10,10 +10,12 @@ import shuffledOptions from "./shuffledOptions";
 import graphTools from "./graphTools";
 import bookmarks from "../sharedDucks/bookmark";
 import testUserWork from "./testUserWork";
+import userInteractions from "./userInteractions";
 
 const assessmentReducers = {
   userWork, // Item/Question level userWork
   testUserWork, // test level userWork
+  userInteractions,
   test,
   items,
   answers,

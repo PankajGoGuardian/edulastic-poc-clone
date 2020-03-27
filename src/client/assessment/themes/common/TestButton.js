@@ -37,15 +37,14 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       )}
-      {/* we may need to bring hint button back */}
-      {/* {showHintButton(questions) ? (
+      {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
             <StyledIconLightBulb />
             <span>{t("common.test.hint")}</span>
           </StyledButton>
         </Tooltip>
-      ) : null} */}
+      ) : null}
 
       <Tooltip placement="top" title="Bookmark">
         <StyledButton onClick={toggleBookmark} active={isBookmarked}>

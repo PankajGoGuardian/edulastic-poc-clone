@@ -35,6 +35,7 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 
 import { updateScratchpadAction } from "../../../common/ducks/scratchpad";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
+import { showHintsAction } from "../../actions/userInteractions";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -62,7 +63,6 @@ class AssessmentPlayerSimple extends React.Component {
 
   state = {
     showExitPopup: false,
-    showHints: false,
     testItemState: "",
     toolsOpenStatus: [0],
     history: 0,
@@ -113,7 +113,8 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   openExitPopup = () => {
-    this.props.updateTestPlayer({ enableMagnifier: false });
+    const { updateTestPlayer } = this.props;
+    updateTestPlayer({ enableMagnifier: false });
     this.setState({ showExitPopup: true });
   };
 
@@ -133,12 +134,6 @@ class AssessmentPlayerSimple extends React.Component {
     }
   };
 
-  showHideHints = () => {
-    this.setState(prevState => ({
-      showHints: !prevState.showHints
-    }));
-  };
-
   // if scratchpad data is present on mount, then open scratchpad
   componentDidMount() {
     const { scratchPad, updateScratchpad } = this.props;
@@ -154,7 +149,6 @@ class AssessmentPlayerSimple extends React.Component {
     const { currentItem, scratchPad, updateScratchpad } = this.props;
     if (currentItem !== previousProps.currentItem) {
       const toolsOpenStatus = scratchPad ? [5] : [];
-      this.setState({ showHints: false, testItemState: "" });
       updateScratchpad({ toolsOpenStatus, activeMode: "" });
     }
   }
@@ -244,9 +238,10 @@ class AssessmentPlayerSimple extends React.Component {
       skippedInOrder,
       zoomLevel,
       windowWidth,
-      scratchPadData
+      scratchPadData,
+      showHints
     } = this.props;
-    const { showExitPopup, showHints, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
+    const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
 
     const { activeMode, deleteMode, currentColor, fillColor, lineWidth } = scratchPadData;
 
@@ -273,7 +268,7 @@ class AssessmentPlayerSimple extends React.Component {
             theme={themeToPass}
             dropdownOptions={dropdownOptions}
             onOpenExitPopup={this.openExitPopup}
-            onshowHideHints={this.showHideHints}
+            onshowHideHints={showHints}
             checkAnswer={() => this.changeTabItemState("check")}
             toggleToolsOpenStatus={this.toggleToolsOpenStatus}
             toolsOpenStatus={toolsOpenStatus}
@@ -313,7 +308,6 @@ class AssessmentPlayerSimple extends React.Component {
               previewTab={previewTab}
               dropdownOptions={dropdownOptions}
               items={items}
-              showHints={showHints}
               settings={settings}
               testItemState={testItemState}
               t={t}
@@ -380,7 +374,8 @@ const enhance = compose(
       redoScratchPad: ActionCreators.redo,
       setUserAnswer: setUserAnswerAction,
       updateScratchpad: updateScratchpadAction,
-      updateTestPlayer: updateTestPlayerAction
+      updateTestPlayer: updateTestPlayerAction,
+      showHints: showHintsAction
     }
   )
 );

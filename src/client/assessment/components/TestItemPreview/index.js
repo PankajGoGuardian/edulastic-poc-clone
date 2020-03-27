@@ -14,9 +14,6 @@ import { Container, Divider, CollapseBtn } from "./styled/Container";
 import FeedbackWrapper from "../FeedbackWrapper";
 import SvgDraw from "../../themes/AssessmentPlayerDefault/SvgDraw";
 
-import Hints from "../Hints";
-import Explanation from "../Common/Explanation";
-
 class TestItemPreview extends Component {
   static propTypes = {
     cols: PropTypes.array.isRequired,
@@ -76,10 +73,20 @@ class TestItemPreview extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left className="left-collapse-btn">
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.setCollapseView("left")}
+            left
+            className="left-collapse-btn"
+          >
             <IconArrowLeft />
           </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right className="right-collapse-btn">
+          <CollapseBtn
+            collapseDirection={collapseDirection}
+            onClick={() => this.setCollapseView("right")}
+            right
+            className="right-collapse-btn"
+          >
             <IconArrowRight />
           </CollapseBtn>
         </div>
@@ -95,10 +102,7 @@ class TestItemPreview extends Component {
       isPresentationMode,
       questions,
       isPrintPreview,
-      showCollapseBtn,
-      hideHintButton,
-      showExplanation,
-      enableMagnifier
+      showCollapseBtn
     } = this.props;
     const displayFeedback = index == 0;
     const question = questions[widget.reference];
@@ -115,8 +119,6 @@ class TestItemPreview extends Component {
           isStudentReport={isStudentReport}
           isPresentationMode={isPresentationMode}
         />
-        {hideHintButton && <Hints question={question} showHints enableMagnifier={enableMagnifier} />}
-        {showExplanation && <Explanation question={question} />}
       </>
     );
   };

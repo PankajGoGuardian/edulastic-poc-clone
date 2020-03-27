@@ -15,18 +15,14 @@ import { evaluateAnswer } from "../actions/evaluation";
 import { changePreview as changePreviewAction } from "../actions/view";
 import { getQuestionsByIdSelector } from "../selectors/questions";
 import { testLoadingSelector } from "../selectors/test";
-import {
-  getAnswersArraySelector,
-  getAnswersListSelector,
-  getUserAnswerSelector,
-  getUserPrevAnswerSelector
-} from "../selectors/answers";
+import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/answers";
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
 import AssessmentPlayerTestlet from "./AssessmentPlayerTestlet";
 import { CHECK, CLEAR } from "../constants/constantsForQuestions";
 import { updateTestPlayerAction } from "../../author/sharedDucks/testPlayer";
+import { hideHintsAction } from "../actions/userInteractions";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {
@@ -86,7 +82,8 @@ const AssessmentContainer = ({
   testSettings,
   showMagnifier,
   updateTestPlayer,
-  enableMagnifier
+  enableMagnifier,
+  hideHints
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -105,7 +102,7 @@ const AssessmentContainer = ({
     window.localStorage.assessmentLastTime = lastTime.current;
     setCurrentItem(Number(qid));
     if (enableMagnifier) {
-      updateTestPlayer({enableMagnifier: false});
+      updateTestPlayer({ enableMagnifier: false });
     }
   }, [qid]);
 
@@ -149,6 +146,7 @@ const AssessmentContainer = ({
 
   const gotoQuestion = index => {
     if (preview) {
+      hideHints();
       setCurrentItem(index);
     } else {
       const previewTab = getPreviewTab(index);
@@ -177,7 +175,7 @@ const AssessmentContainer = ({
       });
     }
     if (enableMagnifier) {
-      updateTestPlayer({enableMagnifier: false});
+      updateTestPlayer({ enableMagnifier: false });
     }
   };
 
@@ -197,7 +195,7 @@ const AssessmentContainer = ({
   const moveToPrev = () => {
     if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
     if (enableMagnifier) {
-      updateTestPlayer({enableMagnifier: false});
+      updateTestPlayer({ enableMagnifier: false });
     }
   };
 
@@ -218,7 +216,7 @@ const AssessmentContainer = ({
     }
   }, 1000 * 30);
 
-  const handleMagnifier = () => updateTestPlayer({enableMagnifier: !enableMagnifier});
+  const handleMagnifier = () => updateTestPlayer({ enableMagnifier: !enableMagnifier });
   const props = {
     saveCurrentAnswer,
     items,
@@ -321,9 +319,7 @@ AssessmentContainer.propTypes = {
   LCBPreviewModal: PropTypes.any.isRequired,
   testType: PropTypes.string.isRequired,
   testletConfig: PropTypes.object,
-  test: PropTypes.object,
-  playerSkinType: PropTypes.string,
-  showMagnifier: PropTypes.bool
+  test: PropTypes.object
 };
 
 AssessmentContainer.defaultProps = {
@@ -365,7 +361,8 @@ const enhance = compose(
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,
-      updateTestPlayer: updateTestPlayerAction
+      updateTestPlayer: updateTestPlayerAction,
+      hideHints: hideHintsAction
     }
   )
 );

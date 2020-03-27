@@ -51,7 +51,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout) => {
+  renderTabContent = (widget, flowLayout, itemIndex) => {
     const {
       preview,
       LCBPreviewModal,
@@ -97,6 +97,7 @@ class TestItemCol extends Component {
           type={widget.type}
           view="preview"
           qIndex={qIndex}
+          itemIndex={itemIndex}
           previewTab={previewTab || preview}
           timespent={timespent}
           questionId={widget.reference}

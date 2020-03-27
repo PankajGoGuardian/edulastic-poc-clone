@@ -121,13 +121,14 @@ function* saveUserResponse({ payload }) {
 
     const testItemId = currentItem._id;
     const _userWork = yield select(({ userWork }) => userWork.present[testItemId]);
-
+    const userInteractions = yield select(({ userInteractions }) => userInteractions[testItemId]);
     const activity = {
       answers: itemAnswers,
       testItemId,
       assignmentId,
       testActivityId: userTestActivityId,
       groupId,
+      interactions: userInteractions,
       timesSpent,
       shuffledOptions: shuffles,
       bookmarked

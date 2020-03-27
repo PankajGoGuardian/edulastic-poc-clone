@@ -27,9 +27,7 @@ import {
   IconArrow,
   MobileLeftSide,
   MobileRightSide,
-  SyledSpan,
-  StyledFlex,
-  StyledText
+  RejectButton
 } from "./styled";
 import { deleteItemAction, getItemDeletingSelector } from "../../../../ItemDetail/ducks";
 import {
@@ -293,20 +291,16 @@ class AuthorTestItemPreview extends Component {
             <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="hidden">
               <>
                 {item.status === "inreview" ? (
-                  <EduButton
+                  <RejectButton
                     title="Reject"
                     isGhost
                     height="28px"
                     onClick={this.handleReject}
-                    type={isRejectMode ? "primary" : ""}
+                    disabled={isRejectMode}
                   >
-                    <StyledFlex>
-                      <SyledSpan>
-                        <Icon type="stop" color={red} />
-                      </SyledSpan>
-                      <StyledText style={{ color: isRejectMode ? white : themeColor }}>Reject</StyledText>
-                    </StyledFlex>
-                  </EduButton>
+                    <Icon type="stop" color={red} />
+                    <span>Reject</span>
+                  </RejectButton>
                 ) : null}
                 {item.status === "inreview" || item.status === "rejected" ? (
                   <EduButton
@@ -315,12 +309,8 @@ class AuthorTestItemPreview extends Component {
                     height="28px"
                     onClick={() => this.handleApproveOrRejectSingleItem("published")}
                   >
-                    <StyledFlex>
-                      <SyledSpan>
-                        <Icon type="check" color={themeColor} />
-                      </SyledSpan>
-                      <StyledText>Approve</StyledText>
-                    </StyledFlex>
+                    <Icon type="check" color={themeColor} />
+                    <span>Approve</span>
                   </EduButton>
                 ) : null}
               </>

@@ -5,8 +5,19 @@ import { MathFormulaDisplay, EduButton } from "@edulastic/common";
 import { mainTextColor, backgroundGrey, lightGrey9 } from "@edulastic/colors";
 
 const Explanation = ({ question, isGrade }) => {
-  const [show, updateShow] = useState(isGrade);
   const { sampleAnswer } = question;
+  if (
+    !sampleAnswer ||
+    question.type === "passage" ||
+    question.type === "passageWithQuestions" ||
+    question.type === "video" ||
+    question.type === "resource" ||
+    question.type === "text"
+  ) {
+    return null;
+  }
+
+  const [show, updateShow] = useState(isGrade);
 
   const onClickHandler = () => updateShow(true);
 

@@ -13,19 +13,42 @@ import { themeColor, mainTextColor } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { saveHintUsageAction } from "../../actions/userInteractions";
 
-const Hints = ({ question, showHints, enableMagnifier, isStudent, itemIndex, saveHintUsage }) => {
-  if (question.type === "passage") {
+const Hints = ({
+  question,
+  showHints,
+  enableMagnifier,
+  isStudent,
+  itemIndex,
+  saveHintUsage,
+  isLCBView,
+  isExpressGrader
+}) => {
+  const { hints = [], id } = question;
+  const validHints = hints?.filter(hint => hint?.label);
+  const hintCount = validHints.length;
+
+  if (
+    !hintCount ||
+    question.type === "passage" ||
+    question.type === "passageWithQuestions" ||
+    question.type === "video" ||
+    question.type === "resource" ||
+    question.type === "text"
+  ) {
     return null;
   }
 
-  const { hints = [], id } = question;
   const hintContRef = useRef();
 
-  const validHints = hints?.filter(hint => hint?.label);
-  const hintCount = validHints.length;
   const [showCount, updateShowCount] = useState(0);
 
-  const showHintHandler = () => updateShowCount(1);
+  const showHintHandler = () => {
+    if (isLCBView || isExpressGrader) {
+      updateShowCount(hintCount);
+    } else {
+      updateShowCount(1);
+    }
+  };
 
   const showMoreHints = () => updateShowCount(showCount + 1);
 
@@ -65,7 +88,7 @@ const Hints = ({ question, showHints, enableMagnifier, isStudent, itemIndex, sav
   return (
     hintCount > 0 && (
       <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef}>
-        {!!showCount && <QuestionLabel> Hints</QuestionLabel>}
+        {!!showCount && <QuestionLabel>Hint</QuestionLabel>}
         {!!showCount &&
           validHints.map(
             ({ value, label }, index) =>
@@ -89,7 +112,7 @@ const Hints = ({ question, showHints, enableMagnifier, isStudent, itemIndex, sav
           )}
         {!showCount && (
           <ShowHint height="30px" width="110px" isGhost onClick={showHintHandler} isStudent={isStudent}>
-            Show Hints
+            Show Hint
           </ShowHint>
         )}
       </HintCont>

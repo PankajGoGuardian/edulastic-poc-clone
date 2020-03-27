@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
 import { questionType } from "@edulastic/constants";
-import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round } from "lodash";
@@ -11,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidthMax, smallDesktopWidth, themeColor, borderGrey2 } from "@edulastic/colors";
+import { mobileWidthMax, smallDesktopWidth, borderGrey2 } from "@edulastic/colors";
 import { withWindowSizes, ItemDetailContext, COMPACT } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../../theme";
@@ -131,14 +130,6 @@ const QuestionContainer = styled.div`
   .print-preview-feedback {
     width: 100%;
     padding: 0 35px;
-  }
-`;
-
-const ShowStudentWorkBtn = styled(Button)`
-  margin-right: 15px;
-  &:hover,
-  &:focus {
-    color: ${themeColor};
   }
 `;
 
@@ -505,9 +496,11 @@ class QuestionWrapper extends Component {
                     enableMagnifier={enableMagnifier}
                     isStudent={userRole === "student"}
                     itemIndex={itemIndex}
+                    isLCBView={isLCBView}
+                    isExpressGrader={isExpressGrader}
                   />
                 )}
-                {(isGrade || isLCBView) && <Explanation question={data} isGrade={isGrade} />}
+                {(isGrade || isLCBView || isExpressGrader) && <Explanation question={data} isGrade={isGrade} />}
               </StyledFlexContainer>
             </PaperWrapper>
           </QuestionContainer>

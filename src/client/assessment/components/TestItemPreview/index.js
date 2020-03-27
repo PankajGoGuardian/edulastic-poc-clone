@@ -106,8 +106,12 @@ class TestItemPreview extends Component {
       isPresentationMode,
       questions,
       isPrintPreview,
-      showCollapseBtn
+      showCollapseBtn,
+      isExpressGrader
     } = this.props;
+    if (index > 0 && isExpressGrader) {
+      return null;
+    }
     const displayFeedback = index == 0;
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);

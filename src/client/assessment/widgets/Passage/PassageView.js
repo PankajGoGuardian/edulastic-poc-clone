@@ -170,7 +170,7 @@ const PassageView = ({
       clearUserWork(); // clearing the userWork at author side.
     }
   }, [previewTab]); // run everytime the previewTab is changed
-  console.log(previewTab);
+
   return (
     <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<div />} onLoaded={loadInit}>
       {item.instructorStimulus && !flowLayout && (

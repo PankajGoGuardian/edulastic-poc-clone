@@ -47,7 +47,6 @@ const FeedbackWrapper = ({
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
         <FeedbackRight
           data-cy="feedBackRight"
-          // eslint-disable-next-line
           twoColLayout={theme?.twoColLayout}
           showCollapseBtn={showCollapseBtn}
           disabled={disabled}
@@ -84,18 +83,18 @@ const FeedbackWrapper = ({
 
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
-  /* padding-bottom: 10px; */
   ${({ style }) => style};
+  /* padding-bottom: 10px; */
 `;
 
 FeedbackWrapper.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object,
   showFeedback: PropTypes.bool,
   displayFeedback: PropTypes.bool,
-  isPrintPreview: PropTypes.bool,
-  showCollapseBtn: PropTypes.bool,
-  prevQActivityForQuestion: PropTypes.object,
-  isStudentReport: PropTypes.bool,
+  isPrintPreview: PropTypes.bool.isRequired,
+  showCollapseBtn: PropTypes.bool.isRequired,
+  prevQActivityForQuestion: PropTypes.object.isRequired,
+  isStudentReport: PropTypes.bool.isRequired,
   isPresentationMode: PropTypes.bool
 };
 FeedbackWrapper.defaultProps = {

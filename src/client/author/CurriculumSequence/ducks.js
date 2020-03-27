@@ -863,8 +863,24 @@ function* fetchDifferentiationStudentListSaga({ payload }) {
   }
 }
 
-function structureWorkData(workData, statusData) {
+function structureWorkData(workData, statusData, firstLoad = false) {
   const newState = produce(workData, draft => {
+    if (firstLoad) {
+      Object.keys(statusData).forEach(recommentdationKey => {
+        const testRecommendations = statusData[recommentdationKey]
+          .filter(x => x.derivedFrom === "TESTS")
+          .map(({ resourceId, resourceName }) => ({
+            testId: resourceId,
+            description: resourceName
+          }));
+
+        const lowerCasekey = recommentdationKey.toLowerCase();
+        draft[lowerCasekey] = draft[lowerCasekey] || [];
+
+        draft[lowerCasekey].push(...testRecommendations);
+      });
+    }
+
     Object.keys(draft).forEach(type => {
       const currentStatusArray = statusData[type.toUpperCase()];
       if (!currentStatusArray) {
@@ -904,7 +920,7 @@ function* fetchDifferentiationWorkSaga({ payload }) {
       groupId: payload.groupId
     });
     yield put(updateWorkStatusDataAction(statusData));
-    const structuredData = structureWorkData(workData, statusData);
+    const structuredData = structureWorkData(workData, statusData, true);
     yield put(setDifferentiationWorkAction(structuredData));
     yield put(updateFetchWorkLoadingStateAction(false));
   } catch (err) {

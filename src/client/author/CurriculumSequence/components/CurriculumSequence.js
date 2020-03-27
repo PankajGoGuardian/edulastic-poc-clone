@@ -748,7 +748,7 @@ class CurriculumSequence extends Component {
 
               <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
                 <ContentContainer urlHasUseThis={urlHasUseThis}>
-                  {isStudent && !!dateKeys.length && (
+                  {isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath && (
                     <SubTopBar>
                       <SubTopBarContainer
                         style={{

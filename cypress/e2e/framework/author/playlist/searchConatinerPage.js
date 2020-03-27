@@ -10,7 +10,24 @@ export default class PlayListSearchContainer {
 
   getKeywordsSearchBar = () => cy.get('[placeholder="Search by keywords"]').should("be.visible");
 
-  getStandardSearchBar = () => cy.get('[placeholder="Search by standards"]').should("be.visible");
+  getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
+
+  getTestFilter = () => cy.get('[data-cy="test-filter"]');
+
+  getAuthoredbyMeFolder = () => cy.get('[class *= "FilterContainer"]').contains("Authored by me");
+
+  getEntireLibrary = () => cy.get('[class *= "FilterContainer"]').contains("Entire Library");
+
+  setGrade = grade => {
+    CypressHelper.selectDropDownByAttribute("test-grade", grade);
+  };
+  setSubject = subject => {
+    CypressHelper.selectDropDownByAttribute("test-subject", subject);
+  };
+
+  setStatus = status => {
+    CypressHelper.selectDropDownByAttribute("test-status", status);
+  };
 
   getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 

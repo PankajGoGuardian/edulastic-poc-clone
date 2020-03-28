@@ -1,0 +1,338 @@
+[
+  {
+    "tags": "EDUM-36",
+    "name": "Grade-1-Attributes of Shapes",
+    "id": "5e7f22d9cecd830008b11e44",
+    "standard": ["1.G.A.1"]
+  },
+  {
+    "tags": "EDUM-37",
+    "name": "Grade-1-Relating 2-D & 3-D Shapes",
+    "id": "5e7f22fccecd830008b11e47",
+    "standard": ["1.G.A.1"]
+  },
+  {
+    "tags": "EDUM-38",
+    "name": "Grade-1-Partitioning Circles into 2 or 4 Equal Shares",
+    "id": "5e7f231fcecd830008b11e4a",
+    "standard": ["1.G.A.2"]
+  },
+  {
+    "tags": "EDUM-39",
+    "name": "Grade-1-Partitioning Rectangles into 2 or 4 Equal Shares",
+    "id": "5e7f2344884071000790bab8",
+    "standard": ["1.G.A.2"]
+  },
+  {
+    "tags": "EDUM-40",
+    "name": "Grade-1-Ordering and Comparing Lengths",
+    "id": "5e7f2366884071000790babb",
+    "standard": ["1.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-41",
+    "name": "Grade-1-Comparing Length and Measuring with Nonstandard Units",
+    "id": "5e7f2389884071000790babe",
+    "standard": ["1.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-42",
+    "name": "Grade-1-Telling Time: Analog to Digital Clocks",
+    "id": "5e7f23aa884071000790bac1",
+    "standard": ["1.MD.B.3"]
+  },
+  {
+    "tags": "EDUM-43",
+    "name": "Grade-1-Telling Time: Digital to Analog Clocks",
+    "id": "5e7f23cececd830008b11e4d",
+    "standard": ["1.MD.B.3"]
+  },
+  {
+    "tags": "EDUM-44",
+    "name": "Grade-1-Data Sets and Picture Graphs",
+    "id": "5e7f23f3cecd830008b11e50",
+    "standard": ["1.MD.C.4"]
+  },
+  {
+    "tags": "EDUM-45",
+    "name": "Grade-1-Data Sets and Tally Charts",
+    "id": "5e7f2419884071000790bac4",
+    "standard": ["1.MD.C.4"]
+  },
+  {
+    "tags": "EDUM-46",
+    "name": "Grade-1-Counting Back",
+    "id": "5e7f243d6150c90007383723",
+    "standard": ["1.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-47",
+    "name": "Grade-1-Counting Forward",
+    "id": "5e7f245f6150c90007383726",
+    "standard": ["1.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-48",
+    "name": "Grade-1-Naming Numbers",
+    "id": "5e7f24836150c90007383729",
+    "standard": ["1.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-49",
+    "name": "Grade-1-Bundles and Singles (20 - 99)",
+    "id": "5e7f24ac6150c9000738372c",
+    "standard": ["1.NBT.B.2.a"]
+  },
+  {
+    "tags": "EDUM-50",
+    "name": "Grade-1-Circled Groups and Left Overs (20 - 99)",
+    "id": "5e7f24d1cecd830008b11e53",
+    "standard": ["1.NBT.B.2.a"]
+  },
+  {
+    "tags": "EDUM-51",
+    "name": "Grade-1-Counting and Place Value from 20 to 99",
+    "id": "5e7f24f5cecd830008b11e56",
+    "standard": ["1.NBT.B.2.a"]
+  },
+  {
+    "tags": "EDUM-52",
+    "name": "Grade-1-Counting and Place Value from 11 to 19",
+    "id": "5e7f251bcecd830008b11e59",
+    "standard": ["1.NBT.B.2.b"]
+  },
+  {
+    "tags": "EDUM-53",
+    "name": "Grade-1-Naming Numbers from 11 to 19",
+    "id": "5e7f2541884071000790bac7",
+    "standard": ["1.NBT.B.2.b"]
+  },
+  {
+    "tags": "EDUM-54",
+    "name": "Grade-1-Ten Frames Through 19",
+    "id": "5e7f2565884071000790baca",
+    "standard": ["1.NBT.B.2.b"]
+  },
+  {
+    "tags": "EDUM-55",
+    "name": "Grade-1-Decade Numbers (10 - 90)",
+    "id": "5e7f2588884071000790bacd",
+    "standard": ["1.NBT.B.2.c"]
+  },
+  {
+    "tags": "EDUM-56",
+    "name": "Grade-1-Comparing with Symbols (11 - 19)",
+    "id": "5e7f25ae884071000790bad0",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-57",
+    "name": "Grade-1-Comparing with Symbols (11 - 99)",
+    "id": "5e7f25d1cecd830008b11e5c",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-58",
+    "name": "Grade-1-Equal or Not Equal (11 - 19)",
+    "id": "5e7f25f5cecd830008b11e5f",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-59",
+    "name": "Grade-1-Equal or Not Equal (11 - 99)",
+    "id": "5e7f2613cecd830008b11e62",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-60",
+    "name": "Grade-1-Greater or Less (10 - 20)",
+    "id": "5e7f2631cecd830008b11e65",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-61",
+    "name": "Grade-1-Greater or Less (All Two-Digit Numbers)",
+    "id": "5e7f264fcecd830008b11e68",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-62",
+    "name": "Grade-1-More or Less (1 - 19)",
+    "id": "5e7f266dcecd830008b11e6b",
+    "standard": ["1.NBT.B.3"]
+  },
+  {
+    "tags": "EDUM-63",
+    "name": "Grade-1-Adding Two Two-Digit Numbers No Regrouping",
+    "id": "5e7f268f884071000790bad3",
+    "standard": ["1.NBT.C.4"]
+  },
+  {
+    "tags": "EDUM-64",
+    "name": "Grade-1-Adding Two Two-Digit Numbers with Visuals",
+    "id": "not_created",
+    "standard": ["1.NBT.C.4"]
+  },
+  {
+    "tags": "EDUM-65",
+    "name": "Grade-1-Adding Two-Digit and One-Digit Numbers",
+    "id": "5e7f26cececd830008b11e6e",
+    "standard": ["1.NBT.C.4"]
+  },
+  {
+    "tags": "EDUM-66",
+    "name": "Grade-1-Adding Two-Digit and One-Digit Numbers with Visuals",
+    "id": "5e7f26f16150c9000738372f",
+    "standard": ["1.NBT.C.4"]
+  },
+  {
+    "tags": "EDUM-67",
+    "name": "Grade-1-Adding with Decade Numbers",
+    "id": "5e7f27186150c90007383732",
+    "standard": ["1.NBT.C.4"]
+  },
+  {
+    "tags": "EDUM-68",
+    "name": "Grade-1-Ten Less",
+    "id": "5e7f273d126d980007c29366",
+    "standard": ["1.NBT.C.5"]
+  },
+  {
+    "tags": "EDUM-69",
+    "name": "Grade-1-Ten More",
+    "id": "5e7f275f6150c90007383738",
+    "standard": ["1.NBT.C.5"]
+  },
+  {
+    "tags": "EDUM-70",
+    "name": "Grade-1-Subtract Multiples of 10",
+    "id": "5e7f27866150c9000738373b",
+    "standard": ["1.NBT.C.6"]
+  },
+  {
+    "tags": "EDUM-71",
+    "name": "Grade-1-Add To: Find the Change",
+    "id": "5e7f27ab6150c9000738373e",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-72",
+    "name": "Grade-1-Add To: Find the Sum",
+    "id": "5e7f27d06150c90007383741",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-73",
+    "name": "Grade-1-Put Together: Find the Missing Addend",
+    "id": "5e7f27f76150c90007383744",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-74",
+    "name": "Grade-1-Put Together: Find the Sum",
+    "id": "5e7f281d6150c90007383747",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-75",
+    "name": "Grade-1-Take From: Change Unknown",
+    "id": "5e7f2840cecd830008b11e71",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-76",
+    "name": "Grade-1-Take From: Find the Difference",
+    "id": "5e7f28666150c9000738374a",
+    "standard": ["1.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-77",
+    "name": "Grade-1-Add To: Find the Sum of 3 Whole Numbers Within 20",
+    "id": "5e7f288acecd830008b11e74",
+    "standard": ["1.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-78",
+    "name": "Grade-1-Associative Property of Addition",
+    "id": "5e7f28b3cecd830008b11e77",
+    "standard": ["1.OA.B.3"]
+  },
+  {
+    "tags": "EDUM-79",
+    "name": "Grade-1-The Commutative and Identity Properties",
+    "id": "5e7f28db6150c9000738374d",
+    "standard": ["1.OA.B.3"]
+  },
+  {
+    "tags": "EDUM-80",
+    "name": "Grade-1-Relate Addition and Subtraction",
+    "id": "5e7f2901126d980007c29369",
+    "standard": ["1.OA.B.4"]
+  },
+  {
+    "tags": "EDUM-81",
+    "name": "Grade-1-Count On to Add and Count Back to Subtract; Count All",
+    "id": "5e7f29276150c90007383750",
+    "standard": ["1.OA.C.5"]
+  },
+  {
+    "tags": "EDUM-82",
+    "name": "Grade-1-Add and Subtract Within 20 Using Strategies",
+    "id": "5e7f294d126d980007c2936c",
+    "standard": ["1.OA.C.6"]
+  },
+  {
+    "tags": "EDUM-83",
+    "name": "Grade-1-Adding Up to 20",
+    "id": "5e7f29706150c90007383753",
+    "standard": ["1.OA.C.6"]
+  },
+  {
+    "tags": "EDUM-84",
+    "name": "Grade-1-Adding with a Number Line Within 20",
+    "id": "5e7f2995126d980007c2936f",
+    "standard": ["1.OA.C.6"]
+  },
+  {
+    "tags": "EDUM-85",
+    "name": "Grade-1-Adding with Base Ten Within 20",
+    "id": "5e7f29bb6150c90007383756",
+    "standard": ["1.OA.C.6"]
+  },
+  {
+    "tags": "EDUM-86",
+    "name": "Grade-1-Adding with Ten Frames Within 20",
+    "id": "5e7f29e06150c90007383759",
+    "standard": ["1.OA.C.6"]
+  },
+  {
+    "tags": "EDUM-87",
+    "name": "Grade-1-Identify True Addition or Subtraction Number Sentences",
+    "id": "5e7f2a026150c9000738375c",
+    "standard": ["1.OA.D.7"]
+  },
+  {
+    "tags": "EDUM-88",
+    "name": "Grade-1-Finding the Unknown Addend",
+    "id": "5e7f2a286150c9000738375f",
+    "standard": ["1.OA.D.8"]
+  },
+  {
+    "tags": "EDUM-89",
+    "name": "Grade-1-Finding the Unknown Change",
+    "id": "5e7f2a4c126d980007c29372",
+    "standard": ["1.OA.D.8"]
+  },
+  {
+    "tags": "EDUM-90",
+    "name": "Grade-1-Finding the Unknown Difference",
+    "id": "5e7f2a72126d980007c29375",
+    "standard": ["1.OA.D.8"]
+  },
+  {
+    "tags": "EDUM-91",
+    "name": "Grade-1-Finding the Unknown Sum",
+    "id": "5e7f2a9666280e00072b5542",
+    "standard": ["1.OA.D.8"]
+  }
+]

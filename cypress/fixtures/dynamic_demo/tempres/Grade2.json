@@ -1,0 +1,356 @@
+[
+  {
+    "tags": "EDUM-291",
+    "name": "Grade-5-Ordered Pairs and Figures",
+    "id": "5e7f2abc66280e00072b5545",
+    "standard": ["5.G.A.1"]
+  },
+  {
+    "tags": "EDUM-292",
+    "name": "Grade-5-Plotting Points on a Coordinate Plane",
+    "id": "5e7f2adf66280e00072b5548",
+    "standard": ["5.G.A.1"]
+  },
+  {
+    "tags": "EDUM-293",
+    "name": "Grade-5-Interpret Ordered Pairs in the Context of a Situation",
+    "id": "5e7f2b0266280e00072b554b",
+    "standard": ["5.G.A.2"]
+  },
+  {
+    "tags": "EDUM-294",
+    "name": "Grade-5-Categorizing 2D Shapes (Exclusive Definition of Trapezoid)",
+    "id": "5e7f2b2466280e00072b554e",
+    "standard": ["5.G.B.3"]
+  },
+  {
+    "tags": "EDUM-295",
+    "name": "Grade-5-Categorizing 2D Shapes (Inclusive Definition of Trapezoid)",
+    "id": "5e7f2b4b969fb2000790a095",
+    "standard": ["5.G.B.3"]
+  },
+  {
+    "tags": "EDUM-296",
+    "name": "Grade-5-Hierarchies of 2D Shapes (Exclusive Definition of Trapezoid)",
+    "id": "5e7f2b72969fb2000790a098",
+    "standard": ["5.G.B.4"]
+  },
+  {
+    "tags": "EDUM-297",
+    "name": "Grade-5-Hierarchies of 2D Shapes (Inclusive Definition of Trapezoid)",
+    "id": "5e7f2b9a969fb2000790a09b",
+    "standard": ["5.G.B.4"]
+  },
+  {
+    "tags": "EDUM-298",
+    "name": "Grade-5-Classifying Units of Measure",
+    "id": "5e7f2bc166280e00072b5551",
+    "standard": ["5.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-299",
+    "name": "Grade-5-Convert Customary or Metric Units",
+    "id": "5e7f2bf0969fb2000790a09e",
+    "standard": ["5.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-300",
+    "name": "Grade-5-Solving Problems with Fractional Data on Line Plots",
+    "id": "5e7f2c18969fb2000790a0a1",
+    "standard": ["5.MD.B.2"]
+  },
+  {
+    "tags": "EDUM-301",
+    "name": "Grade-5-Understand the Relationship: Cubic Units and Volume",
+    "id": "5e7f2c3e66280e00072b5554",
+    "standard": ["5.MD.C.3.a"]
+  },
+  {
+    "tags": "EDUM-302",
+    "name": "Grade-5-Finding Volume of Solid Figures Using Unit Cubes",
+    "id": "5e7f2c6666280e00072b5557",
+    "standard": ["5.MD.C.3.b"]
+  },
+  {
+    "tags": "EDUM-303",
+    "name": "Grade-5-Measuring Volume by Counting Unit Cubes",
+    "id": "5e7f2c9266280e00072b555a",
+    "standard": ["5.MD.C.4"]
+  },
+  {
+    "tags": "EDUM-304",
+    "name": "Grade-5-Find the Volume of Rectangular Prisms Using Unit Cubes",
+    "id": "5e7f2cc1969fb2000790a0a4",
+    "standard": ["5.MD.C.5.a"]
+  },
+  {
+    "tags": "EDUM-305",
+    "name": "Grade-5-Find the Volume of Rectangular Prisms Using a Formula",
+    "id": "5e7f2ced6150c90007383762",
+    "standard": ["5.MD.C.5.b"]
+  },
+  {
+    "tags": "EDUM-306",
+    "name": "Grade-5-Find the Volume of Composite Figures",
+    "id": "5e7f2d139e59220007585241",
+    "standard": ["5.MD.C.5.c"]
+  },
+  {
+    "tags": "EDUM-307",
+    "name": "Grade-5-Expressing Multi-Digit Whole Numbers",
+    "id": "5e7f2d3d9e59220007585245",
+    "standard": ["5.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-308",
+    "name": "Grade-5-Place Value and Multi-Digit Decimals",
+    "id": "5e7f2d649e5922000758524b",
+    "standard": ["5.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-309",
+    "name": "Grade-5-Place Value and Multi-Digit Whole Numbers",
+    "id": "5e7f2d8b969fb2000790a0a7",
+    "standard": ["5.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-310",
+    "name": "Grade-5-\"Decimals Whole Numbers and Powers of 10\"",
+    "id": "5e7f2db5969fb2000790a0aa",
+    "standard": ["5.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-311",
+    "name": "Grade-5-Whole Numbers and Powers of 10",
+    "id": "5e7f2ddd969fb2000790a0ae",
+    "standard": ["5.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-312",
+    "name": "Grade-5-Expressing Place Value Through Thousandths",
+    "id": "5e7f2e064a65a30008fdf0b4",
+    "standard": ["5.NBT.A.3.a"]
+  },
+  {
+    "tags": "EDUM-313",
+    "name": "Grade-5-Comparing and Ordering Multi-Digit Decimals",
+    "id": "5e7f2e2e969fb2000790a0b1",
+    "standard": ["5.NBT.A.3.b"]
+  },
+  {
+    "tags": "EDUM-314",
+    "name": "Grade-5-Rounding Multi-Digit Decimals",
+    "id": "5e7f2e56969fb2000790a0b4",
+    "standard": ["5.NBT.A.4"]
+  },
+  {
+    "tags": "EDUM-315",
+    "name": "Grade-5-Multiplication with Multi-Digit Whole Numbers",
+    "id": "5e7f2e7b969fb2000790a0b7",
+    "standard": ["5.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-316",
+    "name": "Grade-5-Dividing Whole Numbers",
+    "id": "5e7f2ea14a65a30008fdf0b7",
+    "standard": ["5.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-317",
+    "name": "Grade-5-Addition of Decimals to the Hundredths",
+    "id": "5e7f2ec2969fb2000790a0ba",
+    "standard": ["5.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-318",
+    "name": "Grade-5-Division of Decimals to the Hundredths",
+    "id": "5e7f2ee44a65a30008fdf0ba",
+    "standard": ["5.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-319",
+    "name": "Grade-5-Multiplication of Decimals to the Hundredths",
+    "id": "5e7f2f074a65a30008fdf0bd",
+    "standard": ["5.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-320",
+    "name": "Grade-5-Subtraction of Decimals to the Hundredths",
+    "id": "5e7f2f2806ef880008396f77",
+    "standard": ["5.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-321",
+    "name": "Grade-5-Adding Fractions and Mixed Numbers with Unlike Denominators",
+    "id": "not_created",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-322",
+    "name": "Grade-5-Adding Fractions with Unlike Denominators",
+    "id": "5e7f2f6806ef880008396f7a",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-323",
+    "name": "Grade-5-Finding Equivalent Fractions",
+    "id": "5e7f2f8c06ef880008396f7d",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-324",
+    "name": "Grade-5-Finding Equivalent Mixed Numbers",
+    "id": "5e7f2fb09e5922000758524e",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-325",
+    "name": "Grade-5-Relating Mixed Numbers & Fractions Greater than One",
+    "id": "5e7f2fd86150c90007383765",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-326",
+    "name": "Grade-5-Subtracting Fractions with Unlike Denominators",
+    "id": "5e7f2ffc25d98900076889ed",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-327",
+    "name": "Grade-5-Subtracting Mixed Numbers with Unlike Denominators",
+    "id": "5e7f302325d98900076889f0",
+    "standard": ["5.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-328",
+    "name": "Grade-5-Add and Subtract Fractions with Visual Models",
+    "id": "5e7f304825d98900076889f3",
+    "standard": ["5.NF.A.2"]
+  },
+  {
+    "tags": "EDUM-329",
+    "name": "Grade-5-Word Problems: Add & Subtract Fractions with Like Denominators",
+    "id": "5e7f306c25d98900076889f6",
+    "standard": ["5.NF.A.2"]
+  },
+  {
+    "tags": "EDUM-330",
+    "name": "Grade-5-Word Problems: Add & Subtract Fractions with Unlike Denominators",
+    "id": "not_created",
+    "standard": ["5.NF.A.2"]
+  },
+  {
+    "tags": "EDUM-331",
+    "name": "Grade-5-Divide Whole Numbers with Fractional Quotients: Visual Models",
+    "id": "not_created",
+    "standard": ["5.NF.B.3"]
+  },
+  {
+    "tags": "EDUM-332",
+    "name": "Grade-5-Expressing Division Problems",
+    "id": "5e7f30e225d98900076889f9",
+    "standard": ["5.NF.B.3"]
+  },
+  {
+    "tags": "EDUM-333",
+    "name": "Grade-5-Multiply a Fraction by a Fraction",
+    "id": "5e7f311025d98900076889fc",
+    "standard": ["5.NF.B.4.a"]
+  },
+  {
+    "tags": "EDUM-334",
+    "name": "Grade-5-Multiply a Mixed Number by a Fraction or a Mixed Number",
+    "id": "5e7f314106ef880008396f81",
+    "standard": ["5.NF.B.4.a"]
+  },
+  {
+    "tags": "EDUM-335",
+    "name": "Grade-5-Multiply a Whole Number by a Fraction or a Mixed Number",
+    "id": "5e7f316e06ef880008396f84",
+    "standard": ["5.NF.B.4.a"]
+  },
+  {
+    "tags": "EDUM-336",
+    "name": "Grade-5-Area of Rectangles with Fractional Side Lengths",
+    "id": "5e7f319ad85fac000750ada5",
+    "standard": ["5.NF.B.4.b"]
+  },
+  {
+    "tags": "EDUM-337",
+    "name": "Grade-5-Comparing Products",
+    "id": "5e7f31ca5a72e8000862035d",
+    "standard": ["5.NF.B.5.a"]
+  },
+  {
+    "tags": "EDUM-338",
+    "name": "Grade-5-Effects of Multiplying by a Fraction",
+    "id": "5e7f31f59e59220007585251",
+    "standard": ["5.NF.B.5.b"]
+  },
+  {
+    "tags": "EDUM-339",
+    "name": "Grade-5-Multiplying Mixed Numbers by Fractions and Mixed Numbers",
+    "id": "5e7f3223d85fac000750ada8",
+    "standard": ["5.NF.B.6"]
+  },
+  {
+    "tags": "EDUM-340",
+    "name": "Grade-5-Multiplying Two Fractions",
+    "id": "5e7f324f5a72e80008620361",
+    "standard": ["5.NF.B.6"]
+  },
+  {
+    "tags": "EDUM-341",
+    "name": "Grade-5-Multiplying Whole Numbers and Fractions",
+    "id": "5e7f32805a72e80008620364",
+    "standard": ["5.NF.B.6"]
+  },
+  {
+    "tags": "EDUM-342",
+    "name": "Grade-5-Multiplying Whole Numbers and Mixed Numbers",
+    "id": "5e7f32b29e59220007585254",
+    "standard": ["5.NF.B.6"]
+  },
+  {
+    "tags": "EDUM-343",
+    "name": "Grade-5-Division of Unit Fractions by Whole Numbers",
+    "id": "not_created",
+    "standard": ["5.NF.B.7.a"]
+  },
+  {
+    "tags": "EDUM-344",
+    "name": "Grade-5-Division of Whole Numbers by Unit Fractions",
+    "id": "5e7f33cb9e59220007585257",
+    "standard": ["5.NF.B.7.b"]
+  },
+  {
+    "tags": "EDUM-345",
+    "name": "Grade-5-Word Problems: Divide Unit Fractions & Whole Numbers",
+    "id": "5e7f3408d85fac000750adac",
+    "standard": ["5.NF.B.7.c"]
+  },
+  {
+    "tags": "EDUM-346",
+    "name": "Grade-5-Evaluate Numerical Expressions",
+    "id": "5e7f34429e5922000758525d",
+    "standard": ["5.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-347",
+    "name": "Grade-5-Evaluate Numerical Expressions: Advanced",
+    "id": "5e7f347b9e59220007585260",
+    "standard": ["5.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-348",
+    "name": "Grade-5-Writing Numerical Expressions",
+    "id": "5e7f34b29e59220007585263",
+    "standard": ["5.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-349",
+    "name": "Grade-5-Finding Rules that Represent Patterns",
+    "id": "5e7f34e5d85fac000750adaf",
+    "standard": ["5.OA.B.3"]
+  }
+]

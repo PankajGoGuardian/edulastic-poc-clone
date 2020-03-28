@@ -1,0 +1,368 @@
+[
+  {
+    "tags": "EDUM-161",
+    "name": "Grade-3-Identifying Quadrilaterals",
+    "id": "5e7efa89fa4c6500086ca661",
+    "standard": ["3.G.A.1"]
+  },
+  {
+    "tags": "EDUM-162",
+    "name": "Grade-3-Partitioned Shapes",
+    "id": "5e7efab2e86c790007571db4",
+    "standard": ["3.G.A.1"]
+  },
+  {
+    "tags": "EDUM-163",
+    "name": "Grade-3-Addition & Subtraction of Time Intervals",
+    "id": "5e7efadae86c790007571db7",
+    "standard": ["3.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-164",
+    "name": "Grade-3-Identifying Time Using Clocks",
+    "id": "5e7efb05e86c790007571dba",
+    "standard": ["3.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-165",
+    "name": "Grade-3-Estimating & Measuring Volume and Mass",
+    "id": "5e7efb32e86c790007571dbd",
+    "standard": ["3.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-166",
+    "name": "Grade-3-Word Problems Involving Mass and Volume",
+    "id": "5e7efb5ffa4c6500086ca664",
+    "standard": ["3.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-167",
+    "name": "Grade-3-Solving Problems With Scaled Bar Graphs",
+    "id": "5e7efb90fa4c6500086ca667",
+    "standard": ["3.MD.B.3"]
+  },
+  {
+    "tags": "EDUM-168",
+    "name": "Grade-3-Solving Problems with Scaled Picture Graphs",
+    "id": "5e7efbc5e86c790007571dc0",
+    "standard": ["3.MD.B.3"]
+  },
+  {
+    "tags": "EDUM-169",
+    "name": "Grade-3-Representing Data Sets That Involve Length",
+    "id": "5e7efbf4fa4c6500086ca66a",
+    "standard": ["3.MD.B.4"]
+  },
+  {
+    "tags": "EDUM-170",
+    "name": "Grade-3-Find Areas of Squares and Rectangles with Unit Squares",
+    "id": "5e7efc25fa4c6500086ca66d",
+    "standard": ["3.MD.C.5.a"]
+  },
+  {
+    "tags": "EDUM-171",
+    "name": "Grade-3-Comparing Areas",
+    "id": "5e7efc57fa4c6500086ca670",
+    "standard": ["3.MD.C.5.b"]
+  },
+  {
+    "tags": "EDUM-172",
+    "name": "Grade-3-Identifying Area of Rectangles Made up of Unit Squares",
+    "id": "5e7efc85e86c790007571dc3",
+    "standard": ["3.MD.C.6"]
+  },
+  {
+    "tags": "EDUM-173",
+    "name": "Grade-3-\"Length Width and Area\"",
+    "id": "5e7efcb8e86c790007571dc6",
+    "standard": ["3.MD.C.7.a"]
+  },
+  {
+    "tags": "EDUM-174",
+    "name": "Grade-3-Multiplying to Find the Area of Rectangles",
+    "id": "5e7efceefa4c6500086ca673",
+    "standard": ["3.MD.C.7.b"]
+  },
+  {
+    "tags": "EDUM-175",
+    "name": "Grade-3-Area Models and the Distributive Property",
+    "id": "5e7efd23fa4c6500086ca676",
+    "standard": ["3.MD.C.7.c"]
+  },
+  {
+    "tags": "EDUM-176",
+    "name": "Grade-3-Decomposing Rectilinear Figures to Find the Area",
+    "id": "5e7efd59fa4c6500086ca679",
+    "standard": ["3.MD.C.7.d"]
+  },
+  {
+    "tags": "EDUM-177",
+    "name": "Grade-3-Identifying Perimeter Mathematically",
+    "id": "5e7efd8cfa4c6500086ca67c",
+    "standard": ["3.MD.D.8"]
+  },
+  {
+    "tags": "EDUM-178",
+    "name": "Grade-3-Using Perimeter in Word Problems",
+    "id": "5e7efdbffa4c6500086ca67f",
+    "standard": ["3.MD.D.8"]
+  },
+  {
+    "tags": "EDUM-179",
+    "name": "Grade-3-Place Value and Rounding to the 10s and 100s",
+    "id": "5e7efdf1e86c790007571dc9",
+    "standard": ["3.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-180",
+    "name": "Grade-3-Rounding and Word Problems",
+    "id": "5e7efe25fa4c6500086ca682",
+    "standard": ["3.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-181",
+    "name": "Grade-3-Rounding Using Number Lines and Rounding Hills",
+    "id": "5e7efe59fa4c6500086ca685",
+    "standard": ["3.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-182",
+    "name": "Grade-3-Adding in Equations",
+    "id": "5e7efe90e86c790007571dcc",
+    "standard": ["3.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-183",
+    "name": "Grade-3-Addition and Subtraction (Mixed Practice)",
+    "id": "5e7efecae86c790007571dcf",
+    "standard": ["3.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-184",
+    "name": "Grade-3-Subtraction",
+    "id": "5e7efefde86c790007571dd2",
+    "standard": ["3.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-185",
+    "name": "Grade-3-Multiplication by Multiples of 10",
+    "id": "5e7eff37fa4c6500086ca688",
+    "standard": ["3.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-186",
+    "name": "Grade-3-Advanced Sets and Groups",
+    "id": "5e7eff6dfa4c6500086ca68b",
+    "standard": ["3.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-187",
+    "name": "Grade-3-Fractions and Area Models",
+    "id": "5e7effa1fa4c6500086ca68e",
+    "standard": ["3.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-188",
+    "name": "Grade-3-Fractions and Length Models",
+    "id": "5e7effdbfa4c6500086ca691",
+    "standard": ["3.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-189",
+    "name": "Grade-3-Introduction to Set Models",
+    "id": "5e7f0016e86c790007571dd5",
+    "standard": ["3.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-190",
+    "name": "Grade-3-Fractions with Number Lines 0-1",
+    "id": "5e7f004de86c790007571dd8",
+    "standard": ["3.NF.A.2.a"]
+  },
+  {
+    "tags": "EDUM-191",
+    "name": "Grade-3-Fractions with Number Lines 0-4",
+    "id": "5e7f0085e86c790007571ddb",
+    "standard": ["3.NF.A.2.b"]
+  },
+  {
+    "tags": "EDUM-192",
+    "name": "Grade-3-Equivalent Fractions",
+    "id": "5e7f00bafa4c6500086ca694",
+    "standard": ["3.NF.A.3.a"]
+  },
+  {
+    "tags": "EDUM-193",
+    "name": "Grade-3-Simple Equivalent Fractions",
+    "id": "5e7f00ede86c790007571dde",
+    "standard": ["3.NF.A.3.b"]
+  },
+  {
+    "tags": "EDUM-194",
+    "name": "Grade-3-Whole Numbers as Fractions",
+    "id": "5e7f0128e86c790007571de1",
+    "standard": ["3.NF.A.3.c"]
+  },
+  {
+    "tags": "EDUM-195",
+    "name": "Grade-3-Comparing Fractions",
+    "id": "5e7f015ffa4c6500086ca697",
+    "standard": ["3.NF.A.3.d"]
+  },
+  {
+    "tags": "EDUM-196",
+    "name": "Grade-3-Multiplication Sentences and Word Problems",
+    "id": "5e7f019efa4c6500086ca69d",
+    "standard": ["3.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-197",
+    "name": "Grade-3-Relating Multiplication and Addition",
+    "id": "5e7f01d2fa4c6500086ca6a0",
+    "standard": ["3.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-198",
+    "name": "Grade-3-Relate Division and Subtraction",
+    "id": "5e7f0211fa4c6500086ca6a3",
+    "standard": ["3.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-199",
+    "name": "Grade-3-Understanding Division and Word Problems",
+    "id": "5e7f024be86c790007571de4",
+    "standard": ["3.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-200",
+    "name": "Grade-3-Solving Division Visually",
+    "id": "5e7f0288e86c790007571de7",
+    "standard": ["3.OA.A.3"]
+  },
+  {
+    "tags": "EDUM-201",
+    "name": "Grade-3-Solving Multiplication and Division Verbally",
+    "id": "5e7f02c5e86c790007571dea",
+    "standard": ["3.OA.A.3"]
+  },
+  {
+    "tags": "EDUM-202",
+    "name": "Grade-3-Solving Multiplication Visually",
+    "id": "5e7f02fee86c790007571ded",
+    "standard": ["3.OA.A.3"]
+  },
+  {
+    "tags": "EDUM-203",
+    "name": "Grade-3-\"Identifying Missing Divisors Dividends and Equations\"",
+    "id": "5e7f03405d5cf0000765a150",
+    "standard": ["3.OA.A.4"]
+  },
+  {
+    "tags": "EDUM-204",
+    "name": "Grade-3-Identifying Missing Factors and Equations: Multiplication",
+    "id": "5e7f037fe86c790007571df0",
+    "standard": ["3.OA.A.4"]
+  },
+  {
+    "tags": "EDUM-205",
+    "name": "Grade-3-Related Multiplication and Division Facts",
+    "id": "5e7f03bbe86c790007571df3",
+    "standard": ["3.OA.A.4"]
+  },
+  {
+    "tags": "EDUM-206",
+    "name": "Grade-3-Applying Properties of Operations",
+    "id": "5e7f03f2e86c790007571df6",
+    "standard": ["3.OA.B.5"]
+  },
+  {
+    "tags": "EDUM-207",
+    "name": "Grade-3-Associative Property",
+    "id": "5e7f042e5d5cf0000765a153",
+    "standard": ["3.OA.B.5"]
+  },
+  {
+    "tags": "EDUM-208",
+    "name": "Grade-3-Commutative Property",
+    "id": "5e7f04655d5cf0000765a156",
+    "standard": ["3.OA.B.5"]
+  },
+  {
+    "tags": "EDUM-209",
+    "name": "Grade-3-Distributive Property",
+    "id": "5e7f04985d5cf0000765a159",
+    "standard": ["3.OA.B.5"]
+  },
+  {
+    "tags": "EDUM-210",
+    "name": "Grade-3-Identity and Zero Property",
+    "id": "5e7f04d05d5cf0000765a15c",
+    "standard": ["3.OA.B.5"]
+  },
+  {
+    "tags": "EDUM-211",
+    "name": "Grade-3-Relating Division to Multiplication",
+    "id": "5e7f05095d5cf0000765a15f",
+    "standard": ["3.OA.B.6"]
+  },
+  {
+    "tags": "EDUM-212",
+    "name": "Grade-3-Solve Division Problems with Visuals and Word Problems",
+    "id": "5e7f0546e86c790007571dfc",
+    "standard": ["3.OA.B.6"]
+  },
+  {
+    "tags": "EDUM-213",
+    "name": "Grade-3-Applying Multiplication Strategies",
+    "id": "5e7f05795d5cf0000765a162",
+    "standard": ["3.OA.C.7"]
+  },
+  {
+    "tags": "EDUM-214",
+    "name": "Grade-3-Doubles and Halves (Division Problems)",
+    "id": "5e7f05b45d5cf0000765a165",
+    "standard": ["3.OA.C.7"]
+  },
+  {
+    "tags": "EDUM-215",
+    "name": "Grade-3-Fluently Solve Division Problems",
+    "id": "5e7f05f05d5cf0000765a168",
+    "standard": ["3.OA.C.7"]
+  },
+  {
+    "tags": "EDUM-216",
+    "name": "Grade-3-Fluently Solve Multiplication Problems",
+    "id": "5e7f062ae86c790007571dff",
+    "standard": ["3.OA.C.7"]
+  },
+  {
+    "tags": "EDUM-217",
+    "name": "Grade-3-Solving Word Problems Using Equations & Estimation",
+    "id": "5e7f065e5d5cf0000765a16b",
+    "standard": ["3.OA.D.8"]
+  },
+  {
+    "tags": "EDUM-218",
+    "name": "Grade-3-Identify Arithmetic Patterns Using Multiplication Tables",
+    "id": "5e7f06985d5cf0000765a16e",
+    "standard": ["3.OA.D.9"]
+  },
+  {
+    "tags": "EDUM-219",
+    "name": "Grade-3-Identifying Arithmetic Patterns Using a Hundreds Chart",
+    "id": "5e7f06d15d5cf0000765a171",
+    "standard": ["3.OA.D.9"]
+  },
+  {
+    "tags": "EDUM-220",
+    "name": "Grade-3-Identifying Arithmetic Patterns Using Addition Tables",
+    "id": "5e7f07075d5cf0000765a174",
+    "standard": ["3.OA.D.9"]
+  },
+  {
+    "tags": "EDUM-221",
+    "name": "Grade-3-Identifying Patterns",
+    "id": "5e7f073ee86c790007571e02",
+    "standard": ["3.OA.D.9"]
+  }
+]

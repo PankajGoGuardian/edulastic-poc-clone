@@ -102,6 +102,7 @@ export default class GroupItemsPage {
     CypressHelper.selectDropDownByAttribute("standardSet-Select", standardSet);
     cy.wait("@browseStandards");
   };
+
   selectGrade = grade => {
     //this.clearAllGrades();
     cy.server();
@@ -116,12 +117,14 @@ export default class GroupItemsPage {
     cy.server();
     cy.route("POST", "**/search/browse-standards").as("browseStandards");
 
-    cy.get('[data-cy="grade-Select"]')
-      .find('[data-icon="close"]')
-      .each(ele => {
-        cy.wrap(ele).click();
-        //cy.wait("@browseStandards");
-      });
+    cy.get('[data-cy="grade-Select"]').then($ele => {
+      if ($ele.find('[data-icon="close"]').length > 0) {
+        cy.wrap($ele)
+          .find('[data-icon="close"]')
+          .click({ multiple: true });
+        // cy.wait("@browseStandards");
+      }
+    });
   };
 
   selectStandardsBySubGradeStandardSet = (subject, Grade, standardSet, standards, standardsGroup) => {

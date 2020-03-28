@@ -1,0 +1,416 @@
+[
+  {
+    "tags": "EDUM-92",
+    "name": "Grade-2-Identifying Polygons and 3-D Shapes",
+    "id": "5e7eef75310d1a0007081369",
+    "standard": ["2.G.A.1"]
+  },
+  {
+    "tags": "EDUM-93",
+    "name": "Grade-2-Recognizing Polygons and 3-D Shapes",
+    "id": "5e7eefa7769f16000815e190",
+    "standard": ["2.G.A.1"]
+  },
+  {
+    "tags": "EDUM-94",
+    "name": "Grade-2-Understanding Rectangles",
+    "id": "5e7eefdb769f16000815e193",
+    "standard": ["2.G.A.2"]
+  },
+  {
+    "tags": "EDUM-95",
+    "name": "Grade-2-Partitioning Circles",
+    "id": "5e7ef007769f16000815e196",
+    "standard": ["2.G.A.3"]
+  },
+  {
+    "tags": "EDUM-96",
+    "name": "Grade-2-Partitioning Rectangles",
+    "id": "5e7ef033769f16000815e199",
+    "standard": ["2.G.A.3"]
+  },
+  {
+    "tags": "EDUM-97",
+    "name": "Grade-2-Measuring Objects",
+    "id": "5e7ef060769f16000815e19c",
+    "standard": ["2.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-98",
+    "name": "Grade-2-Bar Graphs",
+    "id": "5e7ef08c769f16000815e19f",
+    "standard": ["2.MD.D.10"]
+  },
+  {
+    "tags": "EDUM-99",
+    "name": "Grade-2-Picture Graphs",
+    "id": "5e7ef0b9310d1a000708136c",
+    "standard": ["2.MD.D.10"]
+  },
+  {
+    "tags": "EDUM-100",
+    "name": "Grade-2-Using Different Units",
+    "id": "5e7ef0e8769f16000815e1a2",
+    "standard": ["2.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-101",
+    "name": "Grade-2-Estimating Measures with Customary Units",
+    "id": "5e7ef117310d1a000708136f",
+    "standard": ["2.MD.A.3"]
+  },
+  {
+    "tags": "EDUM-102",
+    "name": "Grade-2-Estimating Measures with Metric Units",
+    "id": "5e7ef143310d1a0007081372",
+    "standard": ["2.MD.A.3"]
+  },
+  {
+    "tags": "EDUM-103",
+    "name": "Grade-2-Comparing Measurements",
+    "id": "5e7ef16b310d1a0007081375",
+    "standard": ["2.MD.A.4"]
+  },
+  {
+    "tags": "EDUM-104",
+    "name": "Grade-2-Adding and Subtracting Lengths Using Measuring Tools",
+    "id": "5e7ef198310d1a0007081378",
+    "standard": ["2.MD.B.5"]
+  },
+  {
+    "tags": "EDUM-105",
+    "name": "Grade-2-Adding Up to 100 in Word Problems: Lengths in Same Units",
+    "id": "5e7ef1c5310d1a000708137b",
+    "standard": ["2.MD.B.5"]
+  },
+  {
+    "tags": "EDUM-106",
+    "name": "Grade-2-Subtracting Up to 100 in Word Problems: Lengths in Same Units",
+    "id": "5e7ef1f4310d1a000708137e",
+    "standard": ["2.MD.B.5"]
+  },
+  {
+    "tags": "EDUM-107",
+    "name": "Grade-2-Finding the Sum or Difference Using a Number Line",
+    "id": "5e7ef224310d1a0007081381",
+    "standard": ["2.MD.B.6"]
+  },
+  {
+    "tags": "EDUM-108",
+    "name": "Grade-2-Recognize Time",
+    "id": "5e7ef251310d1a0007081384",
+    "standard": ["2.MD.C.7"]
+  },
+  {
+    "tags": "EDUM-109",
+    "name": "Grade-2-Comparing Money",
+    "id": "5e7ef27a769f16000815e1a5",
+    "standard": ["2.MD.C.8"]
+  },
+  {
+    "tags": "EDUM-110",
+    "name": "Grade-2-Identifying Money and Calculating Cents",
+    "id": "5e7ef2a4769f16000815e1a8",
+    "standard": ["2.MD.C.8"]
+  },
+  {
+    "tags": "EDUM-111",
+    "name": "Grade-2-Word Problems and Money",
+    "id": "5e7ef2d1310d1a0007081387",
+    "standard": ["2.MD.C.8"]
+  },
+  {
+    "tags": "EDUM-112",
+    "name": "Grade-2-Measurements and Line Plots",
+    "id": "5e7ef2fafa4c6500086ca62b",
+    "standard": ["2.MD.D.9"]
+  },
+  {
+    "tags": "EDUM-113",
+    "name": "Grade-2-100 as a Bundle of 10s",
+    "id": "5e7ef322fa4c6500086ca62e",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-114",
+    "name": "Grade-2-\"Hundreds Tens and Ones\"",
+    "id": "5e7ef34c310d1a000708138a",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-115",
+    "name": "Grade-2-\"Place Value to 1000 with Base Ten Blocks\"",
+    "id": "5e7ef376310d1a000708138d",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-116",
+    "name": "Grade-2-\"Place Value to 1000 with Place Value Charts\"",
+    "id": "5e7ef39ffa4c6500086ca631",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-117",
+    "name": "Grade-2-Place Value to 100 with Visuals",
+    "id": "5e7ef3c7310d1a0007081390",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-118",
+    "name": "Grade-2-\"Place Value to 100: Tens Ones and Various Forms\"",
+    "id": "5e7ef3ef310d1a0007081393",
+    "standard": ["2.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-119",
+    "name": "Grade-2-\"Skip Count By 2 5 10\"",
+    "id": "5e7ef417310d1a0007081396",
+    "standard": ["2.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-120",
+    "name": "Grade-2-\"Skip Count by 5 10 100\"",
+    "id": "5e7ef43f310d1a0007081399",
+    "standard": ["2.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-121",
+    "name": "Grade-2-\"Read and Write Numbers to 1000\"",
+    "id": "5e7ef466fa4c6500086ca634",
+    "standard": ["2.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-122",
+    "name": "Grade-2-Read and Write Numbers to 100",
+    "id": "5e7ef48f310d1a000708139c",
+    "standard": ["2.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-123",
+    "name": "Grade-2-Reading and Writing Numbers with Visual Models",
+    "id": "5e7ef4b7fa4c6500086ca637",
+    "standard": ["2.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-124",
+    "name": "Grade-2-Comparing Two Three-Digit Numbers",
+    "id": "5e7ef4dd769f16000815e1ab",
+    "standard": ["2.NBT.A.4"]
+  },
+  {
+    "tags": "EDUM-125",
+    "name": "Grade-2-One- and Two-Digit Addition",
+    "id": "5e7ef504fa4c6500086ca63a",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-126",
+    "name": "Grade-2-One- and Two-Digit Subtraction with Regrouping",
+    "id": "5e7ef52bfa4c6500086ca63d",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-127",
+    "name": "Grade-2-Properties of Addition",
+    "id": "5e7ef551769f16000815e1ae",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-128",
+    "name": "Grade-2-Subtract Two- and One-Digit Without Regrouping: Tens and Ones",
+    "id": "5e7ef576769f16000815e1b1",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-129",
+    "name": "Grade-2-Subtract with Two Digits and No Regrouping: Tens and Ones",
+    "id": "5e7ef59ce86c790007571d87",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-130",
+    "name": "Grade-2-Two-Digit and Two-Digit Addition",
+    "id": "5e7ef5c0e86c790007571d8a",
+    "standard": ["2.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-131",
+    "name": "Grade-2-Adding Lots of Numbers Using Place Value",
+    "id": "5e7ef5e6e86c790007571d8d",
+    "standard": ["2.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-132",
+    "name": "Grade-2-Adding Lots of Numbers Using Properties of Addition",
+    "id": "5e7ef60be86c790007571d90",
+    "standard": ["2.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-133",
+    "name": "Grade-2-Adding Three-Digit and Two- or One-Digit Numbers",
+    "id": "5e7ef630e86c790007571d93",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-134",
+    "name": "Grade-2-Adding Three-Digit Numbers",
+    "id": "5e7ef654fa4c6500086ca640",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-135",
+    "name": "Grade-2-Adding Two Three-Digit Numbers",
+    "id": "5e7ef678fa4c6500086ca643",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-136",
+    "name": "Grade-2-Adding Up To 3 Digits with Base Ten and Number Lines",
+    "id": "5e7ef69dfa4c6500086ca646",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-137",
+    "name": "Grade-2-Problem Solving with Subtracting Three-Digit Numbers",
+    "id": "5e7ef6c4769f16000815e1b7",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-138",
+    "name": "Grade-2-Subtracting Three-Digit and Two- or One-Digit Numbers",
+    "id": "5e7ef6eb769f16000815e1ba",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-139",
+    "name": "Grade-2-Subtracting Two Three-Digit Numbers",
+    "id": "5e7ef70f769f16000815e1bd",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-140",
+    "name": "Grade-2-Subtracting Two-Digit Numbers Using Base-Ten Blocks",
+    "id": "5e7ef736769f16000815e1c0",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-141",
+    "name": "Grade-2-Subtracting Up To Three Digits (Base Ten and Number Lines)",
+    "id": "5e7ef75b769f16000815e1c3",
+    "standard": ["2.NBT.B.7"]
+  },
+  {
+    "tags": "EDUM-142",
+    "name": "Grade-2-Counting by 100s",
+    "id": "5e7ef77ffa4c6500086ca649",
+    "standard": ["2.NBT.B.8"]
+  },
+  {
+    "tags": "EDUM-143",
+    "name": "Grade-2-Counting by 10s",
+    "id": "5e7ef7a5e86c790007571d96",
+    "standard": ["2.NBT.B.8"]
+  },
+  {
+    "tags": "EDUM-144",
+    "name": "Grade-2-Strategies to Solve Addition or Subtraction",
+    "id": "5e7ef7c9e86c790007571d99",
+    "standard": ["2.NBT.B.9"]
+  },
+  {
+    "tags": "EDUM-145",
+    "name": "Grade-2-Identify the Missing Number in Subtraction Problems (One Step)",
+    "id": "not_created",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-146",
+    "name": "Grade-2-Identify the Sum Numerically Using One-Step Word Problems",
+    "id": "5e7ef817e86c790007571d9c",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-147",
+    "name": "Grade-2-Identifying the Difference in One-Step Word Problems",
+    "id": "5e7ef842e86c790007571d9f",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-148",
+    "name": "Grade-2-Solving Addition Word Problems with Mixed Strategies",
+    "id": "5e7ef86cfa4c6500086ca64c",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-149",
+    "name": "Grade-2-Solving One-Step Word Problems with Missing Addends",
+    "id": "5e7ef896fa4c6500086ca64f",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-150",
+    "name": "Grade-2-Solving Two-Step Addition and Subtraction Word Problems",
+    "id": "5e7ef8bfe86c790007571da2",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-151",
+    "name": "Grade-2-Solving Two-Step Addition Problems",
+    "id": "5e7ef8ebfa4c6500086ca652",
+    "standard": ["2.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-152",
+    "name": "Grade-2-Applying Addition Strategies",
+    "id": "5e7ef913fa4c6500086ca655",
+    "standard": ["2.OA.B.2"]
+  },
+  {
+    "tags": "EDUM-153",
+    "name": "Grade-2-Doubling and Compensating to Solve Addition Problems",
+    "id": "5e7ef93de86c790007571da5",
+    "standard": ["2.OA.B.2"]
+  },
+  {
+    "tags": "EDUM-154",
+    "name": "Grade-2-Fact Families and Related Facts",
+    "id": "5e7ef969fa4c6500086ca658",
+    "standard": ["2.OA.B.2"]
+  },
+  {
+    "tags": "EDUM-155",
+    "name": "Grade-2-Strategies to Solve Subtraction Problems",
+    "id": "5e7ef992e86c790007571da8",
+    "standard": ["2.OA.B.2"]
+  },
+  {
+    "tags": "EDUM-156",
+    "name": "Grade-2-Subtract Using Visuals",
+    "id": "5e7ef9bbe86c790007571dab",
+    "standard": ["2.OA.B.2"]
+  },
+  {
+    "tags": "EDUM-157",
+    "name": "Grade-2-Identifying Even and Odd Numbers Visually",
+    "id": "5e7ef9e4fa4c6500086ca65b",
+    "standard": ["2.OA.C.3"]
+  },
+  {
+    "tags": "EDUM-158",
+    "name": "Grade-2-Understanding Even and Odd Numbers",
+    "id": "5e7efa11fa4c6500086ca65e",
+    "standard": ["2.OA.C.3"]
+  },
+  {
+    "tags": "EDUM-159",
+    "name": "Grade-2-Arrays and Equations",
+    "id": "5e7efa38e86c790007571dae",
+    "standard": ["2.OA.C.4"]
+  },
+  {
+    "tags": "EDUM-160",
+    "name": "Grade-2-Rows and How Many in a Row",
+    "id": "5e7efa61e86c790007571db1",
+    "standard": ["2.OA.C.4"]
+  }
+]

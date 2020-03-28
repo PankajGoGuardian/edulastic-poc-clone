@@ -1,0 +1,416 @@
+[
+  {
+    "tags": "EDUM-222",
+    "name": "Grade-4-\"Lines Segments and Angles\"",
+    "id": "5e7f077be86c790007571e05",
+    "standard": ["4.G.A.1"]
+  },
+  {
+    "tags": "EDUM-223",
+    "name": "Grade-4-Properties of Two-Dimensional Figures",
+    "id": "5e7f07abe86c790007571e08",
+    "standard": ["4.G.A.1"]
+  },
+  {
+    "tags": "EDUM-224",
+    "name": "Grade-4-Classifying Triangles",
+    "id": "5e7f07d85d5cf0000765a177",
+    "standard": ["4.G.A.2"]
+  },
+  {
+    "tags": "EDUM-225",
+    "name": "Grade-4-Identifying 2-D Figures",
+    "id": "5e7f08135d5cf0000765a17a",
+    "standard": ["4.G.A.2"]
+  },
+  {
+    "tags": "EDUM-226",
+    "name": "Grade-4-Identifying 2-D Figures Using Angles",
+    "id": "5e7f0842e86c790007571e0b",
+    "standard": ["4.G.A.2"]
+  },
+  {
+    "tags": "EDUM-227",
+    "name": "Grade-4-Identifying 2-D Figures Using Sides",
+    "id": "5e7f08735d5cf0000765a17d",
+    "standard": ["4.G.A.2"]
+  },
+  {
+    "tags": "EDUM-228",
+    "name": "Grade-4-Lines of Symmetry Assign",
+    "id": "5e7f08a4e86c790007571e11",
+    "standard": ["4.G.A.3"]
+  },
+  {
+    "tags": "EDUM-229",
+    "name": "Grade-4-Converting Units of Time",
+    "id": "5e7f08dc5d5cf0000765a180",
+    "standard": ["4.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-230",
+    "name": "Grade-4-Customary & Metric Capacity",
+    "id": "5e7f090be86c790007571e14",
+    "standard": ["4.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-231",
+    "name": "Grade-4-Customary & Metric Weight",
+    "id": "5e7f093be86c790007571e17",
+    "standard": ["4.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-232",
+    "name": "Grade-4-Customary Length",
+    "id": "5e7f096c5d5cf0000765a183",
+    "standard": ["4.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-233",
+    "name": "Grade-4-Metric Length",
+    "id": "5e7f09a15d5cf0000765a186",
+    "standard": ["4.MD.A.1"]
+  },
+  {
+    "tags": "EDUM-234",
+    "name": "Grade-4-Word Problems Involving Intervals of Time",
+    "id": "5e7f09d05d5cf0000765a189",
+    "standard": ["4.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-235",
+    "name": "Grade-4-Word Problems Involving Length and Distance",
+    "id": "5e7f0a08e86c790007571e1a",
+    "standard": ["4.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-236",
+    "name": "Grade-4-Word Problems Involving Masses and Liquid Volumes",
+    "id": "5e7f0a41e86c790007571e1d",
+    "standard": ["4.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-237",
+    "name": "Grade-4-Word Problems Involving Money",
+    "id": "5e7f0a6fe86c790007571e20",
+    "standard": ["4.MD.A.2"]
+  },
+  {
+    "tags": "EDUM-238",
+    "name": "Grade-4-Finding Areas and Missing Side Lengths",
+    "id": "5e7f0aa45d5cf0000765a18c",
+    "standard": ["4.MD.A.3"]
+  },
+  {
+    "tags": "EDUM-239",
+    "name": "Grade-4-Finding Perimeters and Missing Side Lengths",
+    "id": "5e7f0ad1e86c790007571e26",
+    "standard": ["4.MD.A.3"]
+  },
+  {
+    "tags": "EDUM-240",
+    "name": "Grade-4-The Relationship Between Area and Perimeter",
+    "id": "5e7f0b04e86c790007571e29",
+    "standard": ["4.MD.A.3"]
+  },
+  {
+    "tags": "EDUM-241",
+    "name": "Grade-4-Addition and Subtraction of Fractions Using Line Plots",
+    "id": "5e7f0b3a5d5cf0000765a18f",
+    "standard": ["4.MD.B.4"]
+  },
+  {
+    "tags": "EDUM-242",
+    "name": "Grade-4-Understanding Angle Measures and Circles",
+    "id": "5e7f0b68e86c790007571e2c",
+    "standard": ["4.MD.C.5.a"]
+  },
+  {
+    "tags": "EDUM-243",
+    "name": "Grade-4-Solving Problems Involving Angle Measures and Circles",
+    "id": "5e7f0b9e5d5cf0000765a192",
+    "standard": ["4.MD.C.5.b"]
+  },
+  {
+    "tags": "EDUM-244",
+    "name": "Grade-4-Measuring Angles with a Protractor",
+    "id": "5e7f0bd35d5cf0000765a195",
+    "standard": ["4.MD.C.6"]
+  },
+  {
+    "tags": "EDUM-245",
+    "name": "Grade-4-Adding and Subtracting Angles",
+    "id": "5e7f0bfde86c790007571e2f",
+    "standard": ["4.MD.C.7"]
+  },
+  {
+    "tags": "EDUM-246",
+    "name": "Grade-4-Multiplying by Powers of Ten",
+    "id": "5e7f0c285d5cf0000765a198",
+    "standard": ["4.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-247",
+    "name": "Grade-4-Relating Place Value and Multiples of 10",
+    "id": "5e7f0c515d5cf0000765a19b",
+    "standard": ["4.NBT.A.1"]
+  },
+  {
+    "tags": "EDUM-248",
+    "name": "Grade-4-Comparing Whole Numbers",
+    "id": "5e7f0c795d5cf0000765a19e",
+    "standard": ["4.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-249",
+    "name": "Grade-4-Express Numbers: Standard or Expanded Form to Words",
+    "id": "5e7f0ca15d5cf0000765a1a1",
+    "standard": ["4.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-250",
+    "name": "Grade-4-Express Numbers: Standard or Word Form to Expanded Form",
+    "id": "5e7f0ccc5d5cf0000765a1a4",
+    "standard": ["4.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-251",
+    "name": "Grade-4-Ordering Numbers",
+    "id": "5e7f0cf55d5cf0000765a1a7",
+    "standard": ["4.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-252",
+    "name": "Grade-4-\"State Numbers: Expanded Word Visual and Standard Forms\"",
+    "id": "5e7f0d1ee86c790007571e32",
+    "standard": ["4.NBT.A.2"]
+  },
+  {
+    "tags": "EDUM-253",
+    "name": "Grade-4-Estimating Products and Quotients",
+    "id": "5e7f0d505d5cf0000765a1aa",
+    "standard": ["4.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-254",
+    "name": "Grade-4-Estimating Sums and Differences",
+    "id": "5e7f0d7ae86c790007571e35",
+    "standard": ["4.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-255",
+    "name": "Grade-4-Rounding Whole Numbers",
+    "id": "5e7f0da4e86c790007571e38",
+    "standard": ["4.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-256",
+    "name": "Grade-4-Rounding Whole Numbers Using Representations",
+    "id": "5e7f0dcce86c790007571e3b",
+    "standard": ["4.NBT.A.3"]
+  },
+  {
+    "tags": "EDUM-257",
+    "name": "Grade-4-Addition and Subtraction Using Standard Algorithm",
+    "id": "5e7f0e025d5cf0000765a1b0",
+    "standard": ["4.NBT.B.4"]
+  },
+  {
+    "tags": "EDUM-258",
+    "name": "Grade-4-Area Models to Multiply",
+    "id": "5e7f0e32e86c790007571e3e",
+    "standard": ["4.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-259",
+    "name": "Grade-4-Base-Ten Blocks to Multiply",
+    "id": "5e7f0e62e86c790007571e41",
+    "standard": ["4.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-260",
+    "name": "Grade-4-Basic Multiplication Review with Arrays",
+    "id": "5e7f0e8fe86c790007571e44",
+    "standard": ["4.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-261",
+    "name": "Grade-4-Equations and Multiplication",
+    "id": "5e7f0ec5cecd830008b11def",
+    "standard": ["4.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-262",
+    "name": "Grade-4-Solve Word Problems Using Multiplication Strategies",
+    "id": "5e7f0efe884071000790ba67",
+    "standard": ["4.NBT.B.5"]
+  },
+  {
+    "tags": "EDUM-263",
+    "name": "Grade-4-Relating Multiplication and Division",
+    "id": "5e7f0f2bcecd830008b11df2",
+    "standard": ["4.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-264",
+    "name": "Grade-4-Solve Word Problems Involving Division",
+    "id": "5e7f0f53884071000790ba6a",
+    "standard": ["4.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-265",
+    "name": "Grade-4-Understanding Division Using Models and Strategies",
+    "id": "5e7f0f7c884071000790ba6d",
+    "standard": ["4.NBT.B.6"]
+  },
+  {
+    "tags": "EDUM-266",
+    "name": "Grade-4-Creating Equivalent Fractions",
+    "id": "5e7f0fb2cecd830008b11df5",
+    "standard": ["4.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-267",
+    "name": "Grade-4-Identifying Equivalent Fractions Using Visuals",
+    "id": "5e7f0fdb884071000790ba70",
+    "standard": ["4.NF.A.1"]
+  },
+  {
+    "tags": "EDUM-268",
+    "name": "Grade-4-Strategies for Comparing Fractions",
+    "id": "5e7f1003884071000790ba73",
+    "standard": ["4.NF.A.2"]
+  },
+  {
+    "tags": "EDUM-269",
+    "name": "Grade-4-Joining and Separating Parts of the Same Whole",
+    "id": "5e7f102b884071000790ba76",
+    "standard": ["4.NF.B.3.a"]
+  },
+  {
+    "tags": "EDUM-270",
+    "name": "Grade-4-Representing Fractions",
+    "id": "5e7f1054cecd830008b11df8",
+    "standard": ["4.NF.B.3.b"]
+  },
+  {
+    "tags": "EDUM-271",
+    "name": "Grade-4-Addition and Subtraction of Mixed Numbers",
+    "id": "5e7f108d884071000790ba79",
+    "standard": ["4.NF.B.3.c"]
+  },
+  {
+    "tags": "EDUM-272",
+    "name": "Grade-4-Strategies for Adding and Subtracting Mixed Numbers",
+    "id": "5e7f10b5cecd830008b11dfb",
+    "standard": ["4.NF.B.3.c"]
+  },
+  {
+    "tags": "EDUM-273",
+    "name": "Grade-4-Addition and Subtraction of Fractions with Visuals",
+    "id": "5e7f10eccecd830008b11dfe",
+    "standard": ["4.NF.B.3.d"]
+  },
+  {
+    "tags": "EDUM-274",
+    "name": "Grade-4-Fractions as Multiples",
+    "id": "5e7f1115884071000790ba7c",
+    "standard": ["4.NF.B.4.a"]
+  },
+  {
+    "tags": "EDUM-275",
+    "name": "Grade-4-Multiplication of a Fraction by a Whole Number",
+    "id": "5e7f1143884071000790ba7f",
+    "standard": ["4.NF.B.4.b"]
+  },
+  {
+    "tags": "EDUM-276",
+    "name": "Grade-4-Solve Word Problems: Multiply a Fraction & Whole Number",
+    "id": "5e7f116bcecd830008b11e01",
+    "standard": ["4.NF.B.4.c"]
+  },
+  {
+    "tags": "EDUM-277",
+    "name": "Grade-4-Fractions: Denominator of 10 or 100",
+    "id": "5e7f119fcecd830008b11e04",
+    "standard": ["4.NF.C.5"]
+  },
+  {
+    "tags": "EDUM-278",
+    "name": "Grade-4-Decimal Notation and Fractions",
+    "id": "5e7f11c9d7480800075a6215",
+    "standard": ["4.NF.C.6"]
+  },
+  {
+    "tags": "EDUM-279",
+    "name": "Grade-4-Comparing Decimals",
+    "id": "5e7f11f6d7480800075a6218",
+    "standard": ["4.NF.C.7"]
+  },
+  {
+    "tags": "EDUM-280",
+    "name": "Grade-4-Understanding Multiplicative Comparisons",
+    "id": "5e7f121ececd830008b11e07",
+    "standard": ["4.OA.A.1"]
+  },
+  {
+    "tags": "EDUM-281",
+    "name": "Grade-4-Multiplication and Division to Solve Word Problems",
+    "id": "5e7f1254884071000790ba82",
+    "standard": ["4.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-282",
+    "name": "Grade-4-\"Relate: Multiply & Divide Multiply & Add\"",
+    "id": "5e7f1280cecd830008b11e0a",
+    "standard": ["4.OA.A.2"]
+  },
+  {
+    "tags": "EDUM-283",
+    "name": "Grade-4-Solve Problems Using the Four Operations (No Estimation)",
+    "id": "5e7f12aececd830008b11e0d",
+    "standard": ["4.OA.A.3"]
+  },
+  {
+    "tags": "EDUM-284",
+    "name": "Grade-4-Solve Problems Using the Four Operations & Estimation",
+    "id": "5e7f12d7cecd830008b11e10",
+    "standard": ["4.OA.A.3"]
+  },
+  {
+    "tags": "EDUM-285",
+    "name": "Grade-4-Factors",
+    "id": "5e7f1300cecd830008b11e13",
+    "standard": ["4.OA.B.4"]
+  },
+  {
+    "tags": "EDUM-286",
+    "name": "Grade-4-Multiples and Divisibility",
+    "id": "5e7f1327884071000790ba85",
+    "standard": ["4.OA.B.4"]
+  },
+  {
+    "tags": "EDUM-287",
+    "name": "Grade-4-Understanding Prime and Composite Numbers",
+    "id": "5e7f1360884071000790ba88",
+    "standard": ["4.OA.B.4"]
+  },
+  {
+    "tags": "EDUM-288",
+    "name": "Grade-4-Identifying Number Patterns",
+    "id": "5e7f1388884071000790ba8b",
+    "standard": ["4.OA.C.5"]
+  },
+  {
+    "tags": "EDUM-289",
+    "name": "Grade-4-Number Patterns and Word Problems",
+    "id": "5e7f13b6884071000790ba8e",
+    "standard": ["4.OA.C.5"]
+  },
+  {
+    "tags": "EDUM-290",
+    "name": "Grade-4-Shape Patterns",
+    "id": "5e7f13e2884071000790ba91",
+    "standard": ["4.OA.C.5"]
+  }
+]

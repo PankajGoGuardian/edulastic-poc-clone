@@ -2,7 +2,7 @@
   {
     "tags": "EDUM-291",
     "collection": "Spark Math",
-    "name": "Grade-4-Ordered Pairs and Figures",
+    "name": "Grade-5-Ordered Pairs and Figures",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.A.1"],
@@ -15,7 +15,7 @@
   {
     "tags": "EDUM-292",
     "collection": "Spark Math",
-    "name": "Grade-4-Plotting Points on a Coordinate Plane",
+    "name": "Grade-5-Plotting Points on a Coordinate Plane",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.A.1"],
@@ -28,7 +28,7 @@
   {
     "tags": "EDUM-293",
     "collection": "Spark Math",
-    "name": "Grade-4-Interpret Ordered Pairs in the Context of a Situation",
+    "name": "Grade-5-Interpret Ordered Pairs in the Context of a Situation",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.A.2"],
@@ -41,7 +41,7 @@
   {
     "tags": "EDUM-294",
     "collection": "Spark Math",
-    "name": "Grade-4-Categorizing 2D Shapes (Exclusive Definition of Trapezoid)",
+    "name": "Grade-5-Categorizing 2D Shapes (Exclusive Definition of Trapezoid)",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.B.3"],
@@ -54,7 +54,7 @@
   {
     "tags": "EDUM-295",
     "collection": "Spark Math",
-    "name": "Grade-4-Categorizing 2D Shapes (Inclusive Definition of Trapezoid)",
+    "name": "Grade-5-Categorizing 2D Shapes (Inclusive Definition of Trapezoid)",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.B.3"],
@@ -67,7 +67,7 @@
   {
     "tags": "EDUM-296",
     "collection": "Spark Math",
-    "name": "Grade-4-Hierarchies of 2D Shapes (Exclusive Definition of Trapezoid)",
+    "name": "Grade-5-Hierarchies of 2D Shapes (Exclusive Definition of Trapezoid)",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.B.4"],
@@ -80,7 +80,7 @@
   {
     "tags": "EDUM-297",
     "collection": "Spark Math",
-    "name": "Grade-4-Hierarchies of 2D Shapes (Inclusive Definition of Trapezoid)",
+    "name": "Grade-5-Hierarchies of 2D Shapes (Inclusive Definition of Trapezoid)",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.G.B.4"],
@@ -93,7 +93,7 @@
   {
     "tags": "EDUM-298",
     "collection": "Spark Math",
-    "name": "Grade-4-Classifying Units of Measure",
+    "name": "Grade-5-Classifying Units of Measure",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.A.1"],
@@ -106,7 +106,7 @@
   {
     "tags": "EDUM-299",
     "collection": "Spark Math",
-    "name": "Grade-4-Convert Customary or Metric Units",
+    "name": "Grade-5-Convert Customary or Metric Units",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.A.1"],
@@ -119,7 +119,7 @@
   {
     "tags": "EDUM-300",
     "collection": "Spark Math",
-    "name": "Grade-4-Solving Problems with Fractional Data on Line Plots",
+    "name": "Grade-5-Solving Problems with Fractional Data on Line Plots",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.B.2"],
@@ -132,7 +132,7 @@
   {
     "tags": "EDUM-301",
     "collection": "Spark Math",
-    "name": "Grade-4-Understand the Relationship: Cubic Units and Volume",
+    "name": "Grade-5-Understand the Relationship: Cubic Units and Volume",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.3.a"],
@@ -145,7 +145,7 @@
   {
     "tags": "EDUM-302",
     "collection": "Spark Math",
-    "name": "Grade-4-Finding Volume of Solid Figures Using Unit Cubes",
+    "name": "Grade-5-Finding Volume of Solid Figures Using Unit Cubes",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.3.b"],
@@ -158,7 +158,7 @@
   {
     "tags": "EDUM-303",
     "collection": "Spark Math",
-    "name": "Grade-4-Measuring Volume by Counting Unit Cubes",
+    "name": "Grade-5-Measuring Volume by Counting Unit Cubes",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.4"],
@@ -171,7 +171,7 @@
   {
     "tags": "EDUM-304",
     "collection": "Spark Math",
-    "name": "Grade-4-Find the Volume of Rectangular Prisms Using Unit Cubes",
+    "name": "Grade-5-Find the Volume of Rectangular Prisms Using Unit Cubes",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.5.a"],
@@ -184,7 +184,7 @@
   {
     "tags": "EDUM-305",
     "collection": "Spark Math",
-    "name": "Grade-4-Find the Volume of Rectangular Prisms Using a Formula",
+    "name": "Grade-5-Find the Volume of Rectangular Prisms Using a Formula",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.5.b"],
@@ -197,7 +197,7 @@
   {
     "tags": "EDUM-306",
     "collection": "Spark Math",
-    "name": "Grade-4-Find the Volume of Composite Figures",
+    "name": "Grade-5-Find the Volume of Composite Figures",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.MD.C.5.c"],
@@ -210,7 +210,7 @@
   {
     "tags": "EDUM-307",
     "collection": "Spark Math",
-    "name": "Grade-4-Expressing Multi-Digit Whole Numbers",
+    "name": "Grade-5-Expressing Multi-Digit Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.1"],
@@ -223,7 +223,7 @@
   {
     "tags": "EDUM-308",
     "collection": "Spark Math",
-    "name": "Grade-4-Place Value and Multi-Digit Decimals",
+    "name": "Grade-5-Place Value and Multi-Digit Decimals",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.1"],
@@ -236,7 +236,7 @@
   {
     "tags": "EDUM-309",
     "collection": "Spark Math",
-    "name": "Grade-4-Place Value and Multi-Digit Whole Numbers",
+    "name": "Grade-5-Place Value and Multi-Digit Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.1"],
@@ -249,7 +249,7 @@
   {
     "tags": "EDUM-310",
     "collection": "Spark Math",
-    "name": "Grade-4-\"Decimals Whole Numbers and Powers of 10\"",
+    "name": "Grade-5-\"Decimals Whole Numbers and Powers of 10\"",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.2"],
@@ -262,7 +262,7 @@
   {
     "tags": "EDUM-311",
     "collection": "Spark Math",
-    "name": "Grade-4-Whole Numbers and Powers of 10",
+    "name": "Grade-5-Whole Numbers and Powers of 10",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.2"],
@@ -275,7 +275,7 @@
   {
     "tags": "EDUM-312",
     "collection": "Spark Math",
-    "name": "Grade-4-Expressing Place Value Through Thousandths",
+    "name": "Grade-5-Expressing Place Value Through Thousandths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.3.a"],
@@ -288,7 +288,7 @@
   {
     "tags": "EDUM-313",
     "collection": "Spark Math",
-    "name": "Grade-4-Comparing and Ordering Multi-Digit Decimals",
+    "name": "Grade-5-Comparing and Ordering Multi-Digit Decimals",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.3.b"],
@@ -301,7 +301,7 @@
   {
     "tags": "EDUM-314",
     "collection": "Spark Math",
-    "name": "Grade-4-Rounding Multi-Digit Decimals",
+    "name": "Grade-5-Rounding Multi-Digit Decimals",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.A.4"],
@@ -314,7 +314,7 @@
   {
     "tags": "EDUM-315",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplication with Multi-Digit Whole Numbers",
+    "name": "Grade-5-Multiplication with Multi-Digit Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.5"],
@@ -327,7 +327,7 @@
   {
     "tags": "EDUM-316",
     "collection": "Spark Math",
-    "name": "Grade-4-Dividing Whole Numbers",
+    "name": "Grade-5-Dividing Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.6"],
@@ -340,7 +340,7 @@
   {
     "tags": "EDUM-317",
     "collection": "Spark Math",
-    "name": "Grade-4-Addition of Decimals to the Hundredths",
+    "name": "Grade-5-Addition of Decimals to the Hundredths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.7"],
@@ -353,7 +353,7 @@
   {
     "tags": "EDUM-318",
     "collection": "Spark Math",
-    "name": "Grade-4-Division of Decimals to the Hundredths",
+    "name": "Grade-5-Division of Decimals to the Hundredths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.7"],
@@ -366,7 +366,7 @@
   {
     "tags": "EDUM-319",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplication of Decimals to the Hundredths",
+    "name": "Grade-5-Multiplication of Decimals to the Hundredths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.7"],
@@ -379,7 +379,7 @@
   {
     "tags": "EDUM-320",
     "collection": "Spark Math",
-    "name": "Grade-4-Subtraction of Decimals to the Hundredths",
+    "name": "Grade-5-Subtraction of Decimals to the Hundredths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NBT.B.7"],
@@ -392,7 +392,7 @@
   {
     "tags": "EDUM-321",
     "collection": "Spark Math",
-    "name": "Grade-4-Adding Fractions and Mixed Numbers with Unlike Denominators",
+    "name": "Grade-5-Adding Fractions and Mixed Numbers with Unlike Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -405,7 +405,7 @@
   {
     "tags": "EDUM-322",
     "collection": "Spark Math",
-    "name": "Grade-4-Adding Fractions with Unlike Denominators",
+    "name": "Grade-5-Adding Fractions with Unlike Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -418,7 +418,7 @@
   {
     "tags": "EDUM-323",
     "collection": "Spark Math",
-    "name": "Grade-4-Finding Equivalent Fractions",
+    "name": "Grade-5-Finding Equivalent Fractions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -431,7 +431,7 @@
   {
     "tags": "EDUM-324",
     "collection": "Spark Math",
-    "name": "Grade-4-Finding Equivalent Mixed Numbers",
+    "name": "Grade-5-Finding Equivalent Mixed Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -444,7 +444,7 @@
   {
     "tags": "EDUM-325",
     "collection": "Spark Math",
-    "name": "Grade-4-Relating Mixed Numbers & Fractions Greater than One",
+    "name": "Grade-5-Relating Mixed Numbers & Fractions Greater than One",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -457,7 +457,7 @@
   {
     "tags": "EDUM-326",
     "collection": "Spark Math",
-    "name": "Grade-4-Subtracting Fractions with Unlike Denominators",
+    "name": "Grade-5-Subtracting Fractions with Unlike Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -470,7 +470,7 @@
   {
     "tags": "EDUM-327",
     "collection": "Spark Math",
-    "name": "Grade-4-Subtracting Mixed Numbers with Unlike Denominators",
+    "name": "Grade-5-Subtracting Mixed Numbers with Unlike Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.1"],
@@ -483,7 +483,7 @@
   {
     "tags": "EDUM-328",
     "collection": "Spark Math",
-    "name": "Grade-4-Add and Subtract Fractions with Visual Models",
+    "name": "Grade-5-Add and Subtract Fractions with Visual Models",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.2"],
@@ -496,7 +496,7 @@
   {
     "tags": "EDUM-329",
     "collection": "Spark Math",
-    "name": "Grade-4-Word Problems: Add & Subtract Fractions with Like Denominators",
+    "name": "Grade-5-Word Problems: Add & Subtract Fractions with Like Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.2"],
@@ -509,7 +509,7 @@
   {
     "tags": "EDUM-330",
     "collection": "Spark Math",
-    "name": "Grade-4-Word Problems: Add & Subtract Fractions with Unlike Denominators",
+    "name": "Grade-5-Word Problems: Add & Subtract Fractions with Unlike Denominators",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.A.2"],
@@ -522,7 +522,7 @@
   {
     "tags": "EDUM-331",
     "collection": "Spark Math",
-    "name": "Grade-4-Divide Whole Numbers with Fractional Quotients: Visual Models",
+    "name": "Grade-5-Divide Whole Numbers with Fractional Quotients: Visual Models",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.3"],
@@ -535,7 +535,7 @@
   {
     "tags": "EDUM-332",
     "collection": "Spark Math",
-    "name": "Grade-4-Expressing Division Problems",
+    "name": "Grade-5-Expressing Division Problems",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.3"],
@@ -548,7 +548,7 @@
   {
     "tags": "EDUM-333",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiply a Fraction by a Fraction",
+    "name": "Grade-5-Multiply a Fraction by a Fraction",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.4.a"],
@@ -561,7 +561,7 @@
   {
     "tags": "EDUM-334",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiply a Mixed Number by a Fraction or a Mixed Number",
+    "name": "Grade-5-Multiply a Mixed Number by a Fraction or a Mixed Number",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.4.a"],
@@ -574,7 +574,7 @@
   {
     "tags": "EDUM-335",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiply a Whole Number by a Fraction or a Mixed Number",
+    "name": "Grade-5-Multiply a Whole Number by a Fraction or a Mixed Number",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.4.a"],
@@ -587,7 +587,7 @@
   {
     "tags": "EDUM-336",
     "collection": "Spark Math",
-    "name": "Grade-4-Area of Rectangles with Fractional Side Lengths",
+    "name": "Grade-5-Area of Rectangles with Fractional Side Lengths",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.4.b"],
@@ -600,7 +600,7 @@
   {
     "tags": "EDUM-337",
     "collection": "Spark Math",
-    "name": "Grade-4-Comparing Products",
+    "name": "Grade-5-Comparing Products",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.5.a"],
@@ -613,7 +613,7 @@
   {
     "tags": "EDUM-338",
     "collection": "Spark Math",
-    "name": "Grade-4-Effects of Multiplying by a Fraction",
+    "name": "Grade-5-Effects of Multiplying by a Fraction",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.5.b"],
@@ -626,7 +626,7 @@
   {
     "tags": "EDUM-339",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplying Mixed Numbers by Fractions and Mixed Numbers",
+    "name": "Grade-5-Multiplying Mixed Numbers by Fractions and Mixed Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.6"],
@@ -639,7 +639,7 @@
   {
     "tags": "EDUM-340",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplying Two Fractions",
+    "name": "Grade-5-Multiplying Two Fractions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.6"],
@@ -652,7 +652,7 @@
   {
     "tags": "EDUM-341",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplying Whole Numbers and Fractions",
+    "name": "Grade-5-Multiplying Whole Numbers and Fractions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.6"],
@@ -665,7 +665,7 @@
   {
     "tags": "EDUM-342",
     "collection": "Spark Math",
-    "name": "Grade-4-Multiplying Whole Numbers and Mixed Numbers",
+    "name": "Grade-5-Multiplying Whole Numbers and Mixed Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.6"],
@@ -678,7 +678,7 @@
   {
     "tags": "EDUM-343",
     "collection": "Spark Math",
-    "name": "Grade-4-Division of Unit Fractions by Whole Numbers",
+    "name": "Grade-5-Division of Unit Fractions by Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.7.a"],
@@ -691,7 +691,7 @@
   {
     "tags": "EDUM-344",
     "collection": "Spark Math",
-    "name": "Grade-4-Division of Whole Numbers by Unit Fractions",
+    "name": "Grade-5-Division of Whole Numbers by Unit Fractions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.7.b"],
@@ -704,7 +704,7 @@
   {
     "tags": "EDUM-345",
     "collection": "Spark Math",
-    "name": "Grade-4-Word Problems: Divide Unit Fractions & Whole Numbers",
+    "name": "Grade-5-Word Problems: Divide Unit Fractions & Whole Numbers",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.NF.B.7.c"],
@@ -717,7 +717,7 @@
   {
     "tags": "EDUM-346",
     "collection": "Spark Math",
-    "name": "Grade-4-Evaluate Numerical Expressions",
+    "name": "Grade-5-Evaluate Numerical Expressions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.OA.A.1"],
@@ -730,7 +730,7 @@
   {
     "tags": "EDUM-347",
     "collection": "Spark Math",
-    "name": "Grade-4-Evaluate Numerical Expressions: Advanced",
+    "name": "Grade-5-Evaluate Numerical Expressions: Advanced",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.OA.A.1"],
@@ -743,7 +743,7 @@
   {
     "tags": "EDUM-348",
     "collection": "Spark Math",
-    "name": "Grade-4-Writing Numerical Expressions",
+    "name": "Grade-5-Writing Numerical Expressions",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.OA.A.2"],
@@ -756,7 +756,7 @@
   {
     "tags": "EDUM-349",
     "collection": "Spark Math",
-    "name": "Grade-4-Finding Rules that Represent Patterns",
+    "name": "Grade-5-Finding Rules that Represent Patterns",
     "deliveryCount": 10,
     "standard": {
       "standardsToSelect": ["5.OA.B.3"],

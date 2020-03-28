@@ -18,8 +18,8 @@ describe(` >>item groups`, () => {
   before("Login and create new items", () => {
     cy.login("publisher", "author2.sparkmath@edulastic.com", "welcome");
   });
-  /* , testData2, testData3, testData4, testData5 */
-  [testData1].forEach((testData, ind) => {
+  /* , testData3, testData4, testData5 */
+  [testData1, testData5].forEach((testData, ind) => {
     describe(`grade-${ind + 1}`, () => {
       const test_name = [];
       testData.forEach((data, index) => {
@@ -31,8 +31,7 @@ describe(` >>item groups`, () => {
               name: data.name,
               collections: "Spark Math - SparkMath for Playlist",
               grade: data.grade,
-              subject: "Math",
-              tags: data.tags
+              subject: "Math"
             });
           });
           it(`>create test`, () => {
@@ -53,6 +52,7 @@ describe(` >>item groups`, () => {
               obj.id = tets_id;
               obj.standard = data.standard.standardsToSelect;
               test_name.push(obj);
+              cy.writeFile(`cypress/fixtures/dynamic_demo/tempres/Grade${ind + 1}.json`, test_name);
             });
           });
         });
@@ -61,7 +61,7 @@ describe(` >>item groups`, () => {
       context("Write", () => {
         it("write", () => {
           cy.wait(1).then(() => {
-            cy.writeFile(`cypress/fixtures/dynamic_demo/results/Grade${ind + 1}.json`, test_name);
+            cy.writeFile(`cypress/fixtures/dynamic_demo/results/Grade${ind + 6}.json`, test_name);
           });
         });
       });

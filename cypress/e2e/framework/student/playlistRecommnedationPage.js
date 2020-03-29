@@ -36,9 +36,10 @@ export class PlayListRecommendation {
 
   // *** APPHELPERS START ***
 
+  // @testId - to be passed when test is added from manage content
   veryRecommendationRow = ({
     assignmentName,
-    id,
+    testId,
     type,
     recommendationNumber = 1,
     standardIds,
@@ -47,27 +48,32 @@ export class PlayListRecommendation {
     score
   }) => {
     const masteryText = `${mastery || "0"}%`;
-    id
-      ? this.getRecommendationRowById(id).as("recommendedRow")
+    testId
+      ? this.getRecommendationRowById(testId).as("recommendedRow")
       : this.getRecommendationRowByAssignmentName(assignmentName).as("recommendedRow");
 
     // title
     cy.get("@recommendedRow")
       .find('[data-cy="assignmentName"]')
-      .should("have.text", `${this.recommendedType[type]} #${recommendationNumber} - ${assignmentName}`);
+      .should(
+        "have.text",
+        testId ? assignmentName : `${this.recommendedType[type]} #${recommendationNumber} - ${assignmentName}`
+      );
 
     // work type
     cy.get("@recommendedRow")
       .find('[data-cy="recommendationType"]')
       .should("have.text", type);
     // standardIds
-    standardIds.forEach(std => {
-      cy.get("@recommendedRow")
-        .find('[data-cy="assignmentName"]')
-        .next()
-        .find(".ant-tag")
-        .should("contain.text", std);
-    });
+    if (!testId && standardIds) {
+      standardIds.forEach(std => {
+        cy.get("@recommendedRow")
+          .find('[data-cy="assignmentName"]')
+          .next()
+          .find(".ant-tag")
+          .should("contain.text", std);
+      });
+    }
     // progress text
     cy.get("@recommendedRow")
       .find(".ant-progress-text")

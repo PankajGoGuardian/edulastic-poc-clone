@@ -172,5 +172,11 @@
     "subject": ["Math"],
     "collections": "Spark Math - Spark Math Bucket",
     "itemKeys": ["MCQ_TF.10", "MCQ_TF.10"]
+  },
+  "PLAYLIST_RECOMMENDATION": {
+    "name": "Recommedation Work",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_TF.1", "MCQ_TF.1"]
   }
 }

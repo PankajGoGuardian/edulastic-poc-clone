@@ -44,12 +44,20 @@ export default class DifferentiationPage {
 
   getChallengeStandardsRows = () => this.getChallengeWorkContainer().find(".ant-table-row-level-0");
 
+  getAllTableRows = () => cy.get(".ant-table-row-level-0");
+
   // checkbox
 
   getCheckBoxForStandard = standard =>
     cy
       .get("@rows")
       .contains(standard)
+      .closest("tr")
+      .find('input[type="checkbox"]');
+
+  getCheckBoxByTestName = testName =>
+    this.getAllTableRows()
+      .contains(testName)
       .closest("tr")
       .find('input[type="checkbox"]');
 
@@ -174,6 +182,8 @@ export default class DifferentiationPage {
 
   clickOnAddChallengeork = () => cy.get('[data-cy="addButton-CHALLENGE"]').click();
 
+  checkCheckBoxByTestName = testName => this.getCheckBoxByTestName(testName).check({ force: true });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -290,10 +300,10 @@ export default class DifferentiationPage {
       .should("contain.text", count);
   };
 
-  verifyStandardRowByStandard = ({ type, standardId, avgMastery, notStartedCount, added = false }) => {
+  verifyStandardRow = ({ type, standardId, testName, avgMastery, notStartedCount, added = false }) => {
     cy.get(`[data-cy="table-${type}"]`)
       .find(".ant-table-row-level-0")
-      .contains(standardId)
+      .contains(standardId || testName)
       .closest("tr")
       .find("td")
       .then($ele => {

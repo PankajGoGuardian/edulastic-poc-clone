@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+    <defs>
+        <style>.a{fill:none;}.b,.c{stroke:none;}.c{fill:#707070;}</style>
+    </defs>
+    <g class="a">
+        <path class="b" d="M0,0H22V22H0Z"/>
+        <path class="c" d="M 1.5 1.5 L 1.5 20.5 L 20.5 20.5 L 20.5 1.5 L 1.5 1.5 M 0 0 L 22 0 L 22 22 L 0 22 L 0 0 Z"/>
+    </g>
+</svg>

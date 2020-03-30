@@ -50,6 +50,7 @@ const symbols = [
   { value: "intermediate", label: "Intermediate" },
   { value: "advanced_matrices", label: "Advanced (Matrices)" },
   { value: "advanced_trignometry", label: "Advanced (Trignometry)" },
+  { value: "geometry", label: "Advanced (Geometry)" },
   { value: "units_si", label: "Units (SI)" },
   { value: "units_us", label: "Units (US)" },
   { value: "all", label: "Full" }

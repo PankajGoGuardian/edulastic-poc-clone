@@ -177,19 +177,7 @@ export const StandardsGradebookTable = ({
         title: idToName[tableDdFilters.compareBy],
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
-        sorter: (a, b) => {
-          if (a.compareBy === "studentId") {
-            const firstUserName = a.compareByLabel.split(" ");
-            const secondUserName = b.compareByLabel.split(" ");
-
-            return (
-              (firstUserName[1] || "").localeCompare(secondUserName[1] || "") ||
-              (firstUserName[0] || "").localeCompare(secondUserName[0] || "")
-            );
-          }
-
-          return a.compareByLabel.localeCompare(b.compareByLabel);
-        },
+        sorter: (a, b) => a.compareByLabel.toLowerCase().localeCompare(b.compareByLabel.toLowerCase()),
         render: (data, record) => {
           return record.compareBy === "studentId" ? (
             <Link to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}>

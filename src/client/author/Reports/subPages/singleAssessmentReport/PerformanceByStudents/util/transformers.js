@@ -82,6 +82,12 @@ export const getProficiency = (item, bandInfo) => {
   }
 };
 
+export const getFormattedName = name => {
+  const nameArr = (name || "").trim().split(" ");
+  const lName = nameArr.splice(nameArr.length - 1)[0];
+  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+};
+
 export const normaliseTableData = (rawData, data) => {
   const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
 
@@ -116,7 +122,7 @@ export const normaliseTableData = (rawData, data) => {
 
     return {
       ...studentMetric,
-      student: `${studentMetric.firstName} ${studentMetric.lastName}`,
+      student: getFormattedName(`${studentMetric.firstName || ""} ${studentMetric.lastName || ""}`),
       proficiencyBand,
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
@@ -161,8 +167,9 @@ const filterStudents = (rawData, appliedFilters, range, selectedProficiency) => 
 export const getTableData = (rawData, appliedFilters, range, selectedProficiency = "All") => {
   const filteredData = filterStudents(rawData, appliedFilters, range, selectedProficiency);
   const normalisedData = normaliseTableData(rawData, filteredData);
-  const sortedData = orderBy(normalisedData, ["totalScore"], ["desc"]);
-
+  const sortedData = orderBy(normalisedData, ["totalScore"], ["desc"]).sort((a, b) =>
+    a.student.toLowerCase().localeCompare(b.student.toLowerCase())
+  );
   return sortedData;
 };
 
@@ -175,8 +182,7 @@ export const getSorter = (columnType, columnKey) => {
       return (a, b) => a[columnKey].localeCompare(b[columnKey]);
     case "name":
       // primary sort is on lastName & secondary sort is on firstName
-      return (a, b) =>
-        (a.lastName || "").localeCompare(b.lastName || "") || (a.firstName || "").localeCompare(b.firstName || "");
+      return (a, b) => a.student.toLowerCase().localeCompare(b.student.toLowerCase());
     default:
       return null;
   }

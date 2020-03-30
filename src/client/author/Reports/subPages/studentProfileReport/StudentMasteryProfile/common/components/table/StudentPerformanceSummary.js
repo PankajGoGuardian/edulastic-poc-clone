@@ -100,13 +100,21 @@ const columns = [
 const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, expandAllRows, setExpandAllRows }) => {
   const [expandedRows, setExpandedRows] = useState([]);
 
-  const handleExpandedRowsChange = rowIndex => {
+  const handleExpandedRowsChange = (rowIndex, totalCount) => {
+    let expandedCount = 0;
     setExpandedRows(state => {
       if (state.includes(rowIndex)) {
+        expandedCount = state.length - 1;
         return state.filter(item => item !== rowIndex);
       }
+      expandedCount = state.length + 1;
       return [...state, rowIndex];
     });
+    if (expandedCount === 0) {
+      setExpandAllRows(false);
+    } else if (expandedCount === totalCount) {
+      setExpandAllRows(true);
+    }
   };
 
   const filteredDomains = map(
@@ -127,11 +135,6 @@ const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, ex
     expandAllRows ? setExpandedRows([...Array(filteredDomains).keys()]) : setExpandedRows([]);
   }, [expandAllRows]);
 
-  useEffect(() => {
-    expandedRows.length === 0 ? setExpandAllRows(false) : null;
-    expandedRows.length === filteredDomains.length ? setExpandAllRows(true) : null;
-  }, [expandedRows]);
-
   return (
     <Row>
       <Col>
@@ -144,7 +147,7 @@ const StudentPerformanceSummary = ({ data, selectedMastery, expandedRowProps, ex
           expandedRowRender={() => <StudentMasteryTable {...expandedRowProps} />}
           expandRowByClick={true}
           onRow={record => ({
-            onClick: () => handleExpandedRowsChange(record.rowIndex)
+            onClick: () => handleExpandedRowsChange(record.rowIndex, filteredDomains.length)
           })}
           expandedRowKeys={expandedRows}
         />

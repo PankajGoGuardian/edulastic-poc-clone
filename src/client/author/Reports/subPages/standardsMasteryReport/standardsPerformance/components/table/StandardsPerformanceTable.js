@@ -113,7 +113,7 @@ export const getColumns = (compareBy, analyseByKey, domains, scaleInfo, selected
       title: compareBy.title,
       dataIndex: "name",
       key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
+      sorter: (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data, record) => {
         return compareBy.title === "Student" ? (
           <Link to={`/author/reports/student-profile-summary/student/${record.id}?termId=${filters?.termId}`}>

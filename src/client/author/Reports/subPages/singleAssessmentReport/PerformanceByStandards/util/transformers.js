@@ -78,10 +78,9 @@ export const compareByColumns = {
   },
   [compareByMode.STUDENTS]: {
     title: "Student",
-    dataIndex: "studentId",
+    dataIndex: "studentName",
     key: "studentId",
-    sorter: (a, b) => a["lastName"].localeCompare(b["lastName"]),
-    render: (studentId, student) => `${student.firstName} ${student.lastName}`
+    sorter: (a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
   },
   [compareByMode.RACE]: {
     title: "Race",
@@ -113,6 +112,12 @@ export const compareByColumns = {
     key: "iepStatus",
     render: capitalize
   }
+};
+
+export const getFormattedName = name => {
+  const nameArr = (name || "").trim().split(" ");
+  const lName = nameArr.splice(nameArr.length - 1)[0];
+  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
 };
 
 export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));

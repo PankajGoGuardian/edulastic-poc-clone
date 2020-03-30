@@ -104,6 +104,11 @@ export const groupedByDomain = (metricInfo = [], maxScore, scaleInfo = [], selec
 };
 
 // Table data utils
+const getFormattedName = name => {
+  const nameArr = (name || "").trim().split(" ");
+  const lName = nameArr.splice(nameArr.length - 1)[0];
+  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+};
 
 const getRowInfo = (dataSource, compareByKey, value) => {
   switch (compareByKey) {
@@ -119,7 +124,7 @@ const getRowInfo = (dataSource, compareByKey, value) => {
 const getRowName = (compareByKey, rowInfo = {}) => {
   switch (compareByKey) {
     case "studentId":
-      return `${rowInfo.firstName} ${rowInfo.lastName}`;
+      return getFormattedName(`${rowInfo.firstName || ""} ${rowInfo.lastName || ""}`);
     case "teacherId":
       return `${rowInfo.teacherName}`;
     case "schoolId":
@@ -169,7 +174,7 @@ export const getTableData = (metricInfo = [], appliedFilters, filterData, scaleI
     );
   }
 
-  return filteredData.sort((a, b) => a.name.localeCompare(b.name));
+  return filteredData.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 };
 
 // Table column related utils

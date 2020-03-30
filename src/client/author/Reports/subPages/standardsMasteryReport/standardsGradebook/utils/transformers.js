@@ -42,6 +42,12 @@ export const analyseByToKeyToRender = {
   masteryScore: "fm"
 };
 
+const getFormattedName = name => {
+  const nameArr = (name || "").trim().split(" ");
+  const lName = nameArr.splice(nameArr.length - 1)[0];
+  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+};
+
 export const getFilterDropDownData = (arr, role) => {
   let schoolGrp, teacherGrp, groupGrp;
   let schoolArr, teacherArr, groupArr;
@@ -146,7 +152,9 @@ export const getDenormalizedData = rawData => {
         obj = {
           ...obj,
           ...studInfoMap[item.studentId],
-          studentName: studInfoMap[item.studentId].firstName + " " + studInfoMap[item.studentId].lastName,
+          [idToLabel.studentId]: getFormattedName(
+            `${studInfoMap[item.studentId].firstName || ""} ${studInfoMap[item.studentId].lastName || ""}`
+          ),
           groupIds: studInfoMap[item.studentId].groupIds.split(",")
         };
         let groupIdsMap = keyBy(obj.groupIds);
@@ -235,7 +243,9 @@ export const getFilteredDenormalizedData = (denormalizedData, filters, role) => 
     }
     return false;
   });
-  return filteredDenormalizedData.sort((a, b) => a.standard.localeCompare(b.standard));
+  return filteredDenormalizedData
+    .sort((a, b) => a.standard.localeCompare(b.standard))
+    .sort((a, b) => a[idToLabel.studentId].toLowerCase().localeCompare(b[idToLabel.studentId].toLowerCase()));
 };
 
 export const getChartData = (filteredDenormalizedData, masteryScale, filters, role) => {

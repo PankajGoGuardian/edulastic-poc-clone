@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { uniqBy, round, reduce } from "lodash";
+import { uniqBy, map, round, reduce } from "lodash";
 
 import {
   compareByColumns,
   analyzeByMode,
   viewByMode,
   getMasteryLevel,
-  getOverallRawScore
+  getOverallRawScore,
+  getFormattedName
 } from "../../util/transformers";
 import { getHSLFromRange1, getOverallScore, downloadCSV } from "../../../../../common/util";
 import { StyledTable } from "../../../../../common/styled";
@@ -296,12 +297,18 @@ const PerformanceAnalysisTable = ({
 
   const columns = getAnalysisColumns();
 
+  // format the student names in the data & sort in ascending order
+  const dataSource = map(tableData, d => ({
+    ...d,
+    studentName: getFormattedName(`${d.firstName || ""} ${d.lastName || ""}`)
+  })).sort((a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()));
+
   return (
     <CsvTable
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
       tableToRender={AnalysisTable}
-      dataSource={tableData}
+      dataSource={dataSource}
       columns={columns}
     />
   );

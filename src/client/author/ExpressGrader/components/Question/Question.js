@@ -60,7 +60,9 @@ class Question extends Component {
         item.data.questions = item.data.questions.filter(({ id }) => id === record._id);
         item.rows = item.rows.map(row => ({
           ...row,
-          widgets: row.widgets.filter(({ reference }) => reference === record._id)
+          widgets: row.widgets.filter(
+            ({ reference, widgetType }) => reference === record._id || widgetType === "resource"
+          )
         }));
       });
       return draft;

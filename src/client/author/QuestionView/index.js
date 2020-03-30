@@ -109,7 +109,9 @@ class QuestionViewContainer extends Component {
         item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
         item.rows = item.rows.map(row => ({
           ...row,
-          widgets: row.widgets.filter(({ reference }) => reference === question.id)
+          widgets: row.widgets.filter(
+            ({ reference, widgetType }) => reference === question.id || widgetType === "resource"
+          )
         }));
       });
       return draft;

@@ -325,7 +325,8 @@ class Container extends Component {
     const { rows, preview, item: itemProps, passage, view } = this.props;
     const item = itemProps || {};
     const allRows = item.passageId ? [passage.structure, ...rows] : rows;
-    let _questions = keyBy(item.data.questions, "id");
+    // TODO: check item.data is not defined while saving in preview mode
+    let _questions = { ...keyBy(item?.data?.questions, "id"), ...keyBy(item?.data?.resources, "id") };
     if (item.passageId) {
       const _passage = keyBy(passage.data, "id");
       _questions = { ..._questions, ..._passage };

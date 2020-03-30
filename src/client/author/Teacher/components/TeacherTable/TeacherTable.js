@@ -598,6 +598,7 @@ class TeacherTable extends Component {
                     <Option value="username">Username</Option>
                     <Option value="email">Email</Option>
                     <Option value="status">Status</Option>
+                    <Option value="school">School</Option>
                     {/* TO DO: Uncomment after backend is done */}
                     {/* <Option value="institutionNames">School</Option> */}
                   </StyledFilterSelect>

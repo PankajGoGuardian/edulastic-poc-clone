@@ -1,13 +1,11 @@
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { getFormattedAttrId, ItemLevelContext } from "@edulastic/common";
-import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
-import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
-import { Label } from "../../styled/WidgetOptions/Label";
-import Display from "./Display";
+import { EDIT } from "../../../../constants/constantsForQuestions";
+import { Label } from "../../../../styled/WidgetOptions/Label";
+import { CorrectAnswerHeader, PointsInput } from "../../../../styled/CorrectAnswerHeader";
+import Display from "../../Display";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -17,28 +15,12 @@ class CorrectAnswer extends Component {
     t: PropTypes.func.isRequired,
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
-    maxRespCount: PropTypes.number.isRequired,
-    imagescale: PropTypes.bool,
-    configureOptions: PropTypes.object.isRequired,
+    hasGroupResponses: PropTypes.bool.isRequired,
     uiStyle: PropTypes.object.isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    responses: PropTypes.array.isRequired,
-    showDashedBorder: PropTypes.bool.isRequired,
-    backgroundColor: PropTypes.string.isRequired,
-    imageAlterText: PropTypes.string.isRequired,
-    imageWidth: PropTypes.number.isRequired,
-    item: PropTypes.object.isRequired,
-    imageHeight: PropTypes.number,
-    imageOptions: PropTypes.object
+    item: PropTypes.object.isRequired
   };
 
   static contextType = ItemLevelContext;
-
-  static defaultProps = {
-    imagescale: false,
-    imageHeight: 0,
-    imageOptions: {}
-  };
 
   constructor(props) {
     super(props);
@@ -66,30 +48,13 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const {
-      t,
-      options,
-      stimulus,
-      response,
-      imageUrl,
-      responses,
-      configureOptions,
-      imageAlterText,
-      imageWidth,
-      imagescale,
-      uiStyle,
-      showDashedBorder,
-      backgroundColor,
-      maxRespCount,
-      imageHeight,
-      imageOptions,
-      item
-    } = this.props;
+    const { t, options, stimulus, response, hasGroupResponses, item, uiStyle } = this.props;
     const { responseScore } = this.state;
+    const itemLevelScoring = this.context;
     return (
       <div>
-        {this.context || (
-          <CorrectAnswerHeader>
+        {itemLevelScoring || (
+          <CorrectAnswerHeader mb="15px">
             <Label>{t("component.correctanswers.points")}</Label>
             <PointsInput
               id={getFormattedAttrId(`${item?.title}-${t("component.correctanswers.points")}`)}
@@ -100,7 +65,6 @@ class CorrectAnswer extends Component {
               disabled={false}
               min={0}
               step={0.5}
-              data-cy="point-field"
             />
           </CorrectAnswerHeader>
         )}
@@ -108,34 +72,18 @@ class CorrectAnswer extends Component {
           preview
           setAnswers
           dragHandler
-          item={item}
           options={options}
           uiStyle={uiStyle}
-          imagescale={imagescale}
-          question={stimulus}
-          showDashedBorder={showDashedBorder}
-          responseContainers={responses}
-          maxRespCount={maxRespCount}
-          imageUrl={imageUrl}
-          backgroundColor={backgroundColor}
+          stimulus={stimulus}
+          item={item}
           userSelections={response.value}
-          imageAlterText={imageAlterText}
-          imageWidth={imageWidth}
-          imageHeight={imageHeight}
-          configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
-          imageOptions={imageOptions}
+          hasGroupResponses={hasGroupResponses}
+          view={EDIT}
         />
       </div>
     );
   }
 }
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  connect(state => ({
-    item: getQuestionDataSelector(state)
-  }))
-);
-
-export default enhance(CorrectAnswer);
+export default withNamespaces("assessment")(CorrectAnswer);

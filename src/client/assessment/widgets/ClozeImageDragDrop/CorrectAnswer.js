@@ -1,11 +1,10 @@
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
+import { getFormattedAttrId, ItemLevelContext } from "@edulastic/common";
 import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class CorrectAnswer extends Component {
   static propTypes = {

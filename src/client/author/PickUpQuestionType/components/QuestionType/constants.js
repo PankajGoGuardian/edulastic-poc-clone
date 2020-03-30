@@ -1521,6 +1521,49 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
+      type: "fill-blanks",
+      cardImage: FBClozeDropDown,
+      stimulus: "Pick the right options in the dropdown below",
+      data: {
+        title: "Editing Task",
+        type: questionType.EDITING_TASK,
+        stimulus: `
+          <p>Pick the right options in the dropdown below.</p>
+          <p>Sample question text with &nbsp;
+            <response responseindex="1" id=${uuids[0]} contenteditable="false"></response>&nbsp;and&nbsp;
+            <response responseindex="2" id=${uuids[1]} contenteditable="false"></response>&nbsp;
+          </p>`,
+        responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
+        uiStyle: {
+          responsecontainerposition: "bottom",
+          fontsize: "normal",
+          stemNumeration: "",
+          widthpx: 140,
+          heightpx: 35,
+          wordwrap: false,
+          responsecontainerindividuals: []
+        },
+        options: {
+          [uuids[0]]: [defaultOptions[0], defaultOptions[1]],
+          [uuids[1]]: [defaultOptions[2], defaultOptions[3]]
+        },
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: []
+          },
+          altResponses: []
+        },
+        displayStyle: {
+          value: "toggle",
+          option: "dashedline"
+        },
+        hints: [{ value: uuids[0], label: "" }]
+      },
+      onSelectQuestionType
+    },
+    {
       type: "graphing",
       cardImage: GRGraphing,
       data: {

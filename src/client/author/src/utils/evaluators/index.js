@@ -47,6 +47,7 @@ const evaluators = {
   [questionType.MULTIPLE_CHOICE]: multipleChoice,
   [questionType.ORDER_LIST]: orderList,
   [questionType.CLOZE_TEXT]: clozeText,
+  [questionType.EDITING_TASK]: clozeText,
   [questionType.CLOZE_DROP_DOWN]: clozeText,
   [questionType.CLOZE_IMAGE_DRAG_DROP]: clozeImageDragDrop,
   [questionType.CLOZE_IMAGE_DROP_DOWN]: clozeImageDropDown,

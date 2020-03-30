@@ -61,6 +61,7 @@ export { default as QuestionContentWrapper } from "./src/components/QuestionCont
 export { default as ProgressBar } from "./src/components/ProgressBar";
 export { RadioBtn, RadioGrp } from "./src/components/RadioButton";
 export { default as Label } from "./src/components/Label";
+export { default as CustomPrompt } from "./src/components/CustomPrompt";
 
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
@@ -85,7 +86,8 @@ export {
   templateHasImage,
   getImageDimensions,
   getImageUrl,
-  getSelectionRect
+  getSelectionRect,
+  getFormattedAttrId
 } from "./src/helpers";
 
 // contexts
@@ -94,6 +96,7 @@ export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 export { default as ScrollContext } from "./src/contexts/ScrollContext";
 export { default as HorizontalScrollContext } from "./src/contexts/HorizontalScrollContext";
 export { default as RefContext } from "./src/contexts/RefContext";
+export { default as ItemLevelContext } from "./src/contexts/ItemLevelContext";
 
 // custom hook
 export { default as useRealtimeV2 } from "./src/customHooks/useRealtimeV2";

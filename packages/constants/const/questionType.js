@@ -23,6 +23,7 @@ const ORDER_LIST = "orderList";
 const MULTIPLE_CHOICE = "multipleChoice";
 const CLOZE_TEXT = "clozeText";
 const CLOZE_DROP_DOWN = "clozeDropDown";
+const EDITING_TASK = "editingTask";
 const TOKEN_HIGHLIGHT = "tokenhighlight";
 const HOTSPOT = "hotspot";
 const SHADING = "shading";
@@ -64,6 +65,7 @@ const selectsData = [
   { value: MULTIPLE_CHOICE, text: "Multiple Choice" },
   { value: CLOZE_TEXT, text: "Cloze Text" },
   { value: CLOZE_DROP_DOWN, text: "Cloze Drop Down" },
+  { value: EDITING_TASK, text: "Editing Task" },
   { value: TOKEN_HIGHLIGHT, text: "Token Highlight" },
   { value: HOTSPOT, text: "Hotspot" },
   { value: SHADING, text: "Shading" },
@@ -121,5 +123,6 @@ module.exports = {
   TRUE_OR_FALSE,
   SECTION_LABEL,
   FRACTION_EDITOR,
+  EDITING_TASK,
   CODING
 };

@@ -25,6 +25,7 @@ import { ClozeDragDrop } from "../widgets/ClozeDragDrop";
 import { ClozeImageDragDrop } from "../widgets/ClozeImageDragDrop";
 import { ClozeImageDropDown } from "../widgets/ClozeImageDropDown";
 import { ClozeImageText } from "../widgets/ClozeImageText";
+import { ClozeEditingTask } from "../widgets/ClozeEditingTask";
 import { Graph } from "./Graph";
 import { ClozeDropDown } from "../widgets/ClozeDropDown";
 import { ClozeText } from "../widgets/ClozeText";
@@ -211,6 +212,8 @@ const getQuestion = type => {
       return ClozeDropDown;
     case questionType.CLOZE_TEXT:
       return ClozeText;
+    case questionType.EDITING_TASK:
+      return ClozeEditingTask;
     case questionType.PASSAGE:
       return Passage;
     case questionType.VIDEO:

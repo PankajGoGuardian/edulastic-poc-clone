@@ -7,15 +7,18 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { withWindowSizes, EduButton } from "@edulastic/common";
-import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
+import {
+  withWindowSizes,
+  EduButton,
+  getFormattedAttrId,
+  ItemLevelContext as HideScoringBlackContext,
+  CustomPrompt,
+  ScrollContext
+} from "@edulastic/common";
+import styled from "styled-components";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
-
-import CustomPrompt from "@edulastic/common/src/components/CustomPrompt";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
-import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
@@ -38,7 +41,6 @@ import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink, QuestionContentWrapper } from "./styled";
-import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {

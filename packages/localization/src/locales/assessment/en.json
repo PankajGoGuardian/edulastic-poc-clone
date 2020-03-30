@@ -32,6 +32,10 @@
     "addANewHint": "Add a new hint",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
+      "preFilled": "Pre-Filled",
+      "highlight": "Highlight",
+      "dashedline": "Dashed line",
+      "displayStyle": "Display Style",
       "choiceMaxWidth": "Choice Max Width",
       "choiceMinWidth": "Choice Min Width",
       "autoexpandoninput": "AUTO EXPAND ON INPUT",

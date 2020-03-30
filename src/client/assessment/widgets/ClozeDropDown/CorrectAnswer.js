@@ -1,12 +1,11 @@
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
+import { getFormattedAttrId, ItemLevelContext } from "@edulastic/common";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { CorrectAnswerHeader, PointsInput } from "../../styled/CorrectAnswerHeader";
 import { Label } from "../../styled/WidgetOptions/Label";
 import Display from "./Display";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -50,16 +49,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const {
-      t,
-      options,
-      stimulus,
-      response,
-      hasGroupResponses,
-      item,
-      configureOptions,
-      uiStyle
-    } = this.props;
+    const { t, options, stimulus, response, hasGroupResponses, item, configureOptions, uiStyle } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (

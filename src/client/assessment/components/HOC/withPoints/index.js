@@ -1,12 +1,11 @@
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
-import ItemLevelContext from "../../../../author/QuestionEditor/components/Container/QuestionContext";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerHeader";
-import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import React, { useContext } from "react";
+import { getFormattedAttrId, ItemLevelContext } from "@edulastic/common";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerHeader";
 import { getCurrentQuestionSelector } from "../../../../author/sharedDucks/questions";
 
 export default WrappedComponent => {

@@ -1239,7 +1239,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 const ContentContainer = styled.div`
-  width: calc(100% - 335px);
+  width: calc(100% - 415px);
   margin: 0px auto;
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;

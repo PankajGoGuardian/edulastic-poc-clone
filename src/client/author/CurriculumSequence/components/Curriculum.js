@@ -148,7 +148,7 @@ const AssignmentItemContainer = styled.div`
 
 const DragHandle = styled.div`
   color: ${themeColor};
-  width: 40px;
+  min-width: 40px;
   display: flex;
   align-items: flex-start;
   justify-content: center;

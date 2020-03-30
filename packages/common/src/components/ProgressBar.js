@@ -15,6 +15,7 @@ const ProgressBar = styled(Progress)`
     color: ${props => props.color || greyThemeDark1};
     letter-spacing: 0.2px;
     font-weight: 600;
+  }
 `;
 
 export default ProgressBar;

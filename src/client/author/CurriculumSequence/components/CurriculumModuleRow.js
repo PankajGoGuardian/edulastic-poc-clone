@@ -425,13 +425,21 @@ class ModuleRow extends Component {
           >
             <ModuleHeader>
               <ModuleCount>{moduleIndex + 1}</ModuleCount>
-              <AntRow type="flex" gutter={20} style={{ width: "calc(100% - 25px)" }}>
-                <Col span={urlHasUseThis ? 7 : 24} style={moduleInlineStyle}>
+              <AntRow type="flex" gutter={20} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
+                <Col
+                  style={{
+                    ...moduleInlineStyle,
+                    width: urlHasUseThis ? "calc(100% - 640px)" : "calc(100% - 25px)",
+                    marginRight: urlHasUseThis && "auto"
+                  }}
+                >
                   <StyledLabel fontStyle="14/19px Open Sans" fontWeight="normal" textColor={lightGrey5}>
                     Module {moduleIndex + 1}
                   </StyledLabel>
                   <ModuleTitleWrapper>
-                    <ModuleTitle data-cy="module-name">{title}</ModuleTitle>
+                    <Tooltip title={title}>
+                      <ModuleTitle data-cy="module-name">{title}</ModuleTitle>
+                    </Tooltip>
                     <ModuleTitlePrefix>
                       {!hideEditOptions && (
                         <Icon
@@ -449,7 +457,7 @@ class ModuleRow extends Component {
                 </Col>
                 {urlHasUseThis && (
                   <>
-                    <Col span={4} style={moduleInlineStyle}>
+                    <Col style={{ ...moduleInlineStyle, width: "130px" }}>
                       <StyledLabel textColor={lightGrey5}>PROFICIENCY</StyledLabel>
                       {/* TODO: Method to find Progress Percentage */}
                       <ProgressBar
@@ -460,7 +468,7 @@ class ModuleRow extends Component {
                       />
                     </Col>
                     {!isStudent ? (
-                      <Col span={3} style={moduleInlineStyle}>
+                      <Col style={{ ...moduleInlineStyle, width: "130px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           SUBMITTED
                         </StyledLabel>
@@ -477,7 +485,7 @@ class ModuleRow extends Component {
                         </StyledLabel>
                       </Col>
                     ) : (
-                      <Col span={2}>
+                      <Col style={{ width: "90px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           SCORE
                         </StyledLabel>
@@ -495,7 +503,7 @@ class ModuleRow extends Component {
                       </Col>
                     )}
                     {!isStudent ? (
-                      <Col span={2} style={moduleInlineStyle}>
+                      <Col style={{ ...moduleInlineStyle, width: "90px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           CLASSES
                         </StyledLabel>
@@ -510,7 +518,7 @@ class ModuleRow extends Component {
                         </StyledLabel>
                       </Col>
                     ) : (
-                      <Col span={4}>
+                      <Col style={{ width: "130px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           TIME SPENT
                         </StyledLabel>
@@ -535,43 +543,42 @@ class ModuleRow extends Component {
                         <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
                       </StyledLabel>
                     </StyledCol>
-                  ) : (
-                    !isStudent &&
-                    (totalAssigned ? (
-                      <StyledCol span={8} justify="flex-end">
-                        {hasEditAccess && (
-                          <StyledLabel
-                            textColor={themeColor}
-                            fontStyle="9px/13px Open Sans"
-                            fontWeight="Bold"
-                            padding="10px 20px 10px 0px"
-                            data-cy={module.hidden ? "show-module" : "hide-module"}
-                            onClick={event => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                              this.toggleModule(module, moduleIndex);
-                            }}
-                          >
-                            {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
-                          </StyledLabel>
-                        )}
-                        <StyledTag
-                          data-cy="AssignWholeModule"
-                          bgColor={themeColor}
-                          onClick={() => (!module.hidden ? assignModule(module) : {})}
-                          style={moduleInlineStyle}
-                          width="156px"
-                          height="32px"
-                          bgColor={themeColor}
+                  ) : isStudent ? (
+                    <div style={{ width: "175px" }} />
+                  ) : totalAssigned ? (
+                    <StyledCol width="275px" marginLeft="auto" justify="flex-end">
+                      {hasEditAccess && (
+                        <StyledLabel
+                          textColor={themeColor}
+                          fontStyle="9px/13px Open Sans"
+                          fontWeight="Bold"
+                          padding="10px 20px 10px 0px"
+                          data-cy={module.hidden ? "show-module" : "hide-module"}
+                          onClick={event => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            this.toggleModule(module, moduleIndex);
+                          }}
                         >
-                          ASSIGN MODULE
-                        </StyledTag>
-                      </StyledCol>
-                    ) : (
-                      <StyledCol span={8} justify="flex-end" style={moduleInlineStyle}>
-                        <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
-                      </StyledCol>
-                    ))
+                          {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
+                        </StyledLabel>
+                      )}
+                      <StyledTag
+                        data-cy="AssignWholeModule"
+                        bgColor={themeColor}
+                        onClick={() => (!module.hidden ? assignModule(module) : {})}
+                        style={moduleInlineStyle}
+                        width="156px"
+                        height="32px"
+                        bgColor={themeColor}
+                      >
+                        ASSIGN MODULE
+                      </StyledTag>
+                    </StyledCol>
+                  ) : (
+                    <StyledCol width="175px" justify="flex-end" style={moduleInlineStyle}>
+                      <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
+                    </StyledCol>
                   ))}
               </AntRow>
             </ModuleHeader>
@@ -699,7 +706,13 @@ class ModuleRow extends Component {
                             />
                           ) : (
                             <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
-                              <Col span={urlHasUseThis ? 7 : 10} style={rowInlineStyle}>
+                              <Col
+                                style={{
+                                  ...rowInlineStyle,
+                                  width: urlHasUseThis ? "calc(100% - 640px)" : "calc(100% - 130px)",
+                                  marginRight: urlHasUseThis && "auto"
+                                }}
+                              >
                                 <ModuleDataWrapper>
                                   <ModuleDataName
                                     onClick={() =>
@@ -743,7 +756,7 @@ class ModuleRow extends Component {
                               </Col>
                               {urlHasUseThis ? (
                                 <>
-                                  <StyledCol span={4} style={rowInlineStyle}>
+                                  <StyledCol width="130px" style={rowInlineStyle}>
                                     {/* TODO: Method to display progress for assignments */}
                                     <ProgressBar
                                       strokeColor={getProgressColor(progressData?.progress)}
@@ -753,7 +766,7 @@ class ModuleRow extends Component {
                                     />
                                   </StyledCol>
                                   {!isStudent ? (
-                                    <StyledCol span={3} style={rowInlineStyle} justify="center">
+                                    <StyledCol width="130px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
                                         textColor={greyThemeDark1}
                                         fontStyle="12px/17px Open Sans"
@@ -765,7 +778,7 @@ class ModuleRow extends Component {
                                       </StyledLabel>
                                     </StyledCol>
                                   ) : (
-                                    <StyledCol span={2} style={rowInlineStyle} justify="center">
+                                    <StyledCol width="90px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
                                         textColor={greyThemeDark1}
                                         fontStyle="12px/17px Open Sans"
@@ -780,7 +793,7 @@ class ModuleRow extends Component {
                                     </StyledCol>
                                   )}
                                   {!isStudent ? (
-                                    <StyledCol span={2} style={rowInlineStyle} justify="center">
+                                    <StyledCol width="90px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
                                         textColor={greyThemeDark1}
                                         fontStyle="12px/17px Open Sans"
@@ -792,7 +805,7 @@ class ModuleRow extends Component {
                                       </StyledLabel>
                                     </StyledCol>
                                   ) : (
-                                    <StyledCol span={4} style={rowInlineStyle} justify="center">
+                                    <StyledCol width="130px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
                                         textColor={greyThemeDark1}
                                         fontStyle="12px/17px Open Sans"
@@ -807,9 +820,8 @@ class ModuleRow extends Component {
 
                                   {!isStudent ? (
                                     <StyledCol
-                                      width="260px"
+                                      width="275px"
                                       marginLeft="auto"
-                                      span={8}
                                       align="flex-start"
                                       justify="flex-end"
                                       paddingRight="0"
@@ -878,7 +890,7 @@ class ModuleRow extends Component {
                                     </StyledCol>
                                   ) : (
                                     !moduleData.hidden && (
-                                      <StyledCol span={7} justify="flex-end">
+                                      <StyledCol width="175px" justify="flex-end">
                                         <AssignmentButton assigned={false}>
                                           <Button data-cy={uta.text} onClick={uta.action}>
                                             {uta.text}
@@ -889,7 +901,7 @@ class ModuleRow extends Component {
                                   )}
                                 </>
                               ) : (
-                                <StyledCol span={14} style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <StyledCol width="130px" style={{ display: "flex", justifyContent: "flex-end" }}>
                                   <EduButton
                                     isGhost
                                     height="22px"
@@ -1163,6 +1175,9 @@ const ModuleTitle = styled.div`
   color: ${darkGrey2};
   font-size: 18px;
   font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
 export const EllipsisContainer = styled.div`

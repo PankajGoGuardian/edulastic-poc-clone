@@ -61,8 +61,6 @@ const AssessmentPlayerSkinWrapper = ({
         <DocBasedPlayerHeader
           {...restProps}
           handleMagnifier={handleMagnifier}
-          enableMagnifier={enableMagnifier}
-          showMagnifier={showMagnifier}
         />
       );
     } else if (defaultAP) {

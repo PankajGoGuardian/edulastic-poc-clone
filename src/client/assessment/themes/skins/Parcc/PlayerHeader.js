@@ -144,7 +144,7 @@ const PlayerHeader = ({
               <FlexContainer>
                 <SettingMenu
                   onSettingsChange={onSettingsChange}
-                  showMagnifier={showMagnifier}
+                  showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
                 />
               </FlexContainer>

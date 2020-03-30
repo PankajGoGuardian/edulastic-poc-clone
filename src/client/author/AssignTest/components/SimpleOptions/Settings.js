@@ -592,7 +592,7 @@ const Settings = ({
           <div>
             <Block id="accessibility">
               <Title>Accessibility</Title>
-              <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
+              {!isDocBased && <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
                 {Object.keys(accessibilities).map(item => (
                   <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
                     <Col span={12}>
@@ -610,7 +610,7 @@ const Settings = ({
                     </Col>
                   </StyledRowSettings>
                 ))}
-              </RadioWrapper>
+              </RadioWrapper>}
             </Block>
           </div>
         )}

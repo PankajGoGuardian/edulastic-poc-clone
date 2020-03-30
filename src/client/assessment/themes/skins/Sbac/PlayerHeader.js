@@ -170,7 +170,7 @@ const PlayerHeader = ({
                 zoomLevel={zoomLevel}
                 isDocbased={isDocbased}
                 handleMagnifier={handleMagnifier}
-                showMagnifier={showMagnifier}
+                showMagnifier={isDocbased ? false : showMagnifier}
                 enableMagnifier={enableMagnifier}
               />
             </HeaderWrapper>

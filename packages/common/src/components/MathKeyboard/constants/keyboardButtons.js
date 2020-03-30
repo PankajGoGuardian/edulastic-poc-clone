@@ -43,6 +43,26 @@ import Group1058 from "../keyboardButtons/1058.svg";
 import Group1030v2 from "../keyboardButtons/1030v2.svg";
 import Group2357 from "../keyboardButtons/2357.svg";
 import Group1043 from "../keyboardButtons/1043.svg";
+// geometry
+import Group3171 from "../keyboardButtons/3171.svg";
+import Group2744 from "../keyboardButtons/2744.svg";
+import Group3169 from "../keyboardButtons/3169.svg";
+import Group3173 from "../keyboardButtons/3173.svg";
+import Group3163 from "../keyboardButtons/3163.svg";
+import Group6101 from "../keyboardButtons/6101.svg";
+import Group3174 from "../keyboardButtons/3174.svg";
+import Group3181 from "../keyboardButtons/3181.svg";
+import Group3167 from "../keyboardButtons/3167.svg";
+import Group3172 from "../keyboardButtons/3172.svg";
+import Group3175 from "../keyboardButtons/3175.svg";
+import Group3168 from "../keyboardButtons/3168.svg";
+import Group1053 from "../keyboardButtons/1053.svg";
+import Group3176 from "../keyboardButtons/3176.svg";
+import Group6104 from "../keyboardButtons/6104.svg";
+import Group6102 from "../keyboardButtons/6102.svg";
+import Group6103 from "../keyboardButtons/6103.svg";
+import Group3180 from "../keyboardButtons/3180.svg";
+import Group3170 from "../keyboardButtons/3170.svg";
 
 export const CustomImage = styled.img.attrs({ className: "keyboardButton" })`
   width: ${({ width }) => (width ? `${width}px` : "25px")};
@@ -159,26 +179,122 @@ const GENERAL = [
 
 const GEOMETRY = [
   {
-    handler: "⊥",
-    label: "⊥",
+    handler: "\\perp",
+    label: <CustomImage src={Group3171} width={16} height={16} role="presentation" />,
     types: ["all", "geometry"],
     command: "cmd"
   },
   {
-    handler: "∥",
-    label: "∥",
+    handler: "\\angle",
+    label: <CustomImage src={Group2744} width={12} height={12} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\triangle",
+    label: <CustomImage src={Group3169} width={16} height={16} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\degree",
+    label: <CustomImage src={Group3173} width={8} height={8} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\parallel",
+    label: <CustomImage src={Group3163} width={16} height={16} role="presentation" />,
     types: ["all", "geometry"],
     command: "cmd"
   },
   {
-    handler: "∦",
-    label: "∦",
+    handler: "\\text{m}\\angle", // or \\measuredangle
+    label: <CustomImage src={Group6101} width={24} height={24} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\odot",
+    label: <CustomImage src={Group3170} width={16} height={16} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "'",
+    label: <CustomImage src={Group3174} width={8} height={8} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\nparallel",
+    label: <CustomImage src={Group3181} width={16} height={16} role="presentation" />,
     types: ["all", "geometry"],
     command: "cmd"
   },
   {
-    handler: "\\underset{\\sim}{\\mathbf{}}",
+    handler: "\\sim",
+    label: <CustomImage src={Group3167} width={16} height={16} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\parallelogram",
+    label: <CustomImage src={Group3172} width={24} height={24} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: '"',
+    label: <CustomImage src={Group3175} width={8} height={8} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\underset{\\sim}{\\mathbf{}}", // not working
     label: <CustomImage src={Group1052} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\cong",
+    label: <CustomImage src={Group3168} width={12} height={12} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\overarc{}", // not working
+    label: <CustomImage src={Group1053} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\pi",
+    label: <CustomImage src={Group3176} width={12} height={12} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\overline{}",
+    label: <CustomImage src={Group6104} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\overrightarrow{}",
+    label: <CustomImage src={Group6102} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\overleftrightarrow{}", // not working
+    label: <CustomImage src={Group6103} role="presentation" />,
+    types: ["all", "geometry"],
+    command: "write"
+  },
+  {
+    handler: "\\square",
+    label: <CustomImage src={Group3180} width={16} height={16} role="presentation" />,
     types: ["all", "geometry"],
     command: "write"
   }
@@ -602,15 +718,7 @@ const BASIC = [
   {
     handler: "[",
     label: <CustomImage src={Group944v2} role="presentation" />,
-    types: [
-      "all",
-      "basic",
-      "intermediate",
-      "advanced_matrices",
-      "advanced_trignometry",
-      "algebra",
-      "grouping"
-    ],
+    types: ["all", "basic", "intermediate", "advanced_matrices", "advanced_trignometry", "algebra", "grouping"],
     command: "cmd",
     name: "squareBrackets"
   },
@@ -632,15 +740,7 @@ const BASIC = [
     handler: "^",
     labelcy: "super",
     label: <CustomImage src={Group942} role="presentation" />,
-    types: [
-      "all",
-      "basic",
-      "intermediate",
-      "general",
-      "advanced_matrices",
-      "advanced_trignometry",
-      "chemistry"
-    ],
+    types: ["all", "basic", "intermediate", "general", "advanced_matrices", "advanced_trignometry", "chemistry"],
     command: "cmd"
   },
   {

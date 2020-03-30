@@ -372,6 +372,9 @@ class QuestionWrapper extends Component {
 
     const { rubrics: rubricDetails } = data;
     const rubricFeedback = data?.activity?.rubricFeedback;
+
+    const { calculatedHeight, fullHeight } = restProps;
+
     return (
       <ThemeProvider
         theme={{
@@ -399,7 +402,7 @@ class QuestionWrapper extends Component {
             noPadding={noPadding}
             isFlex
             data-cy="question-container"
-            style={{ width: "100%", height: restProps.fullHeight ? "100%" : null }}
+            style={{ width: "100%", height: calculatedHeight || (fullHeight ? "100%" : null) }}
           >
             {view === EDIT && showQuestionMenu && (
               <QuestionMenuWrapper>

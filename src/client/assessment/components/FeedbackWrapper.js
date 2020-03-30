@@ -19,7 +19,8 @@ const FeedbackWrapper = ({
   data,
   prevQActivityForQuestion = {},
   isStudentReport,
-  isPresentationMode
+  isPresentationMode,
+  height
 }) => {
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
@@ -41,7 +42,8 @@ const FeedbackWrapper = ({
           showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview
             ? "265px"
             : theme?.twoColLayout?.second,
-        minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : ""
+        minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : "",
+        height
       }}
     >
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
@@ -84,7 +86,7 @@ const FeedbackWrapper = ({
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
   ${({ style }) => style};
-  /* padding-bottom: 10px; */
+  padding-bottom: 10px;
 `;
 
 FeedbackWrapper.propTypes = {

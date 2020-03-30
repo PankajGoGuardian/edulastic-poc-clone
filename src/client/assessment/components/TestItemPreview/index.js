@@ -98,7 +98,7 @@ class TestItemPreview extends Component {
     );
   };
 
-  renderFeedback = (widget, index) => {
+  renderFeedback = (widget, index, colIndex) => {
     const {
       showFeedback,
       previousQuestionActivity = [],
@@ -107,40 +107,70 @@ class TestItemPreview extends Component {
       questions,
       isPrintPreview,
       showCollapseBtn,
-      isExpressGrader
+      isExpressGrader,
+      isQuestionView,
+      multipartItem,
+      isPassageWithQuestions,
+      itemLevelScoring,
+      // isLCBView,
+      cols
     } = this.props;
-    if (index > 0 && isExpressGrader) {
-      return null;
+    // if (index > 0 && (isExpressGrader || isQuestionView)) {
+    //   return null;
+    // }
+    let shouldShow;
+    let height;
+    if (multipartItem && !itemLevelScoring && !isPassageWithQuestions) {
+      // stacked view
+      // need to show separate feeback blocks for each question
+      shouldShow = true;
+      const allWidgets = cols.flatMap(col => col.widgets);
+      height = `${100 / allWidgets.length}%`;
+    } else if (isPassageWithQuestions) {
+      // Feedback not supported for passages with item level scoring off
+      //  will be fixed with EV-12830
+      shouldShow = index === 0;
+      height = "100%";
+    } else {
+      // multipart with item level scoring is true
+      // or single question view
+      // show only one feedback block, with full height
+      shouldShow = index === 0 && colIndex === 0;
+      height = `100%`;
     }
-    const displayFeedback = index == 0;
+
+    const displayFeedback = shouldShow;
+
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
-    return (
-      <>
-        <FeedbackWrapper
-          showFeedback={showFeedback}
-          displayFeedback={displayFeedback}
-          isPrintPreview={isPrintPreview}
-          showCollapseBtn={showCollapseBtn}
-          prevQActivityForQuestion={prevQActivityForQuestion}
-          data={{ ...question, smallSize: true }}
-          isStudentReport={isStudentReport}
-          isPresentationMode={isPresentationMode}
-        />
-      </>
-    );
+    return displayFeedback ? (
+      <FeedbackWrapper
+        showFeedback={showFeedback}
+        displayFeedback={displayFeedback}
+        isPrintPreview={isPrintPreview}
+        showCollapseBtn={showCollapseBtn}
+        prevQActivityForQuestion={prevQActivityForQuestion}
+        data={{ ...question, smallSize: true }}
+        isStudentReport={isStudentReport}
+        isPresentationMode={isPresentationMode}
+        height={height}
+      />
+    ) : null;
   };
 
-  renderFeedbacks = () => {
+  renderFeedbacks = showStackedView => {
     const { cols } = this.props;
     const { value } = this.state;
-    return cols.map(col =>
+    return cols.map((col, colIndex) =>
       col.widgets
         .filter(widget => widget.type !== questionType.SECTION_LABEL && widget.widgetType !== "resource")
         .map((widget, i) => (
           <React.Fragment key={i}>
-            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderFeedback(widget, i)}
-            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i)}
+            {col.tabs &&
+              !!col.tabs.length &&
+              value === widget.tabIndex &&
+              this.renderFeedback(widget, i, colIndex, showStackedView)}
+            {col.tabs && !col.tabs.length && this.renderFeedback(widget, i, colIndex, showStackedView)}
           </React.Fragment>
         ))
     );
@@ -231,6 +261,22 @@ class TestItemPreview extends Component {
     const borderProps = showScratchpadByDefault
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};
+
+    const { multipartItem, itemLevelScoring, isPassageWithQuestions } = restProps;
+
+    let showStackedView = false;
+
+    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
+      if (multipartItem && !itemLevelScoring) {
+        showStackedView = true;
+      }
+    }
+
+    let dataSource = cols;
+    if (!showStackedView && (isQuestionView || isExpressGrader)) {
+      dataSource = dataSource.filter(col => (col.widgets || []).length > 0);
+    }
+    const isSingleQuestionView = dataSource.flatMap(col => col.widgets).length === 1;
     return (
       <ThemeProvider theme={{ ...themes.default, twoColLayout: theme?.twoColLayout }}>
         <div
@@ -238,7 +284,7 @@ class TestItemPreview extends Component {
             ...borderProps,
             display: "flex",
             alignSelf: !LCBPreviewModal && "stretch",
-            height: (LCBPreviewModal || isStudentAttempt) && "100%",
+            height: LCBPreviewModal && "100%",
             width: "100%",
             overflow: "auto",
             flexDirection: viewAtStudentRes ? "column" : "row",
@@ -258,15 +304,23 @@ class TestItemPreview extends Component {
           >
             <ScrollContext.Provider value={{ getScrollElement: () => this.containerRef.current }}>
               <ScratchPadContext.Provider value={{ getContainer: () => this.containerRef.current }}>
-                <div style={{ width: "100%", height: "100%", ...transformProps, display: "flex" }}>
-                  {cols.map((col, i) => {
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    ...transformProps,
+                    display: "flex",
+                    flexDirection: showStackedView ? "column" : "row"
+                  }}
+                >
+                  {dataSource.map((col, i) => {
                     const hideColumn =
                       (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
                     if (hideColumn && showCollapseButtons) return "";
+                    const isOnlyPassage = col.widgets.every(widget => widget.type === "passage");
+                    const widgetCount = col.widgets.length;
                     const fullHeight =
-                      (isExpressGrader || isLCBView) &&
-                      i === 0 &&
-                      col.widgets.every(widget => widget.type === "passage");
+                      ((isExpressGrader || isLCBView) && (i === 0 && isOnlyPassage)) || widgetCount === 1;
                     return (
                       <>
                         {(i > 0 || collapseDirection === "left") &&
@@ -294,8 +348,10 @@ class TestItemPreview extends Component {
                           LCBPreviewModal={LCBPreviewModal}
                           previewTab={previewTab}
                           fullHeight={fullHeight}
+                          isSingleQuestionView={isSingleQuestionView}
                           hideInternalOverflow={hideInternalOverflow}
                           testReviewStyle={{ height: fullHeight ? "100%" : "auto", paddingTop: 0 }}
+                          showStackedView={showStackedView}
                         />
                         {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                       </>
@@ -340,7 +396,7 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        {this.renderFeedbacks()}
+        <div>{this.renderFeedbacks(showStackedView)}</div>
       </ThemeProvider>
     );
   }

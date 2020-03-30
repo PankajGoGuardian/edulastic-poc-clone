@@ -51,7 +51,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout, itemIndex) => {
+  renderTabContent = (widget, flowLayout, itemIndex, showStackedView, totalWidgets) => {
     const {
       preview,
       LCBPreviewModal,
@@ -70,6 +70,7 @@ class TestItemCol extends Component {
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
+    const { fullHeight } = restProps;
     if (!question) {
       return <div />;
     }
@@ -86,7 +87,8 @@ class TestItemCol extends Component {
           position: "relative",
           paddingTop: "0px",
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          height: showStackedView ? `${100 / totalWidgets}%` : fullHeight ? "100%" : "auto"
         }}
         className="question-tab-container"
       >
@@ -109,6 +111,7 @@ class TestItemCol extends Component {
           prevQActivityForQuestion={prevQActivityForQuestion}
           LCBPreviewModal={LCBPreviewModal}
           displayFeedback={displayFeedback}
+          calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
           fullMode
           {...restProps}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
@@ -120,16 +123,23 @@ class TestItemCol extends Component {
   render() {
     const { col, style, windowWidth, colCount, colIndex, testReviewStyle = {}, ...restProps } = this.props;
     const { value } = this.state;
-    const width =
-      restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
-        ? `calc(${col.dimension} + 280px)`
-        : col.dimension || "auto";
+    const { showStackedView, fullHeight, isSingleQuestionView } = restProps;
+    const derivedWidth = showStackedView || isSingleQuestionView ? "100%" : null;
+    const width = derivedWidth
+      ? "100%"
+      : restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
+      ? `calc(${col.dimension} + 280px)`
+      : col.dimension || "auto";
+
     return (
       <Container
         className="test-item-col"
         value={value}
         style={style}
         width={width}
+        height={showStackedView ? `${100 / colCount}%` : fullHeight ? "100%" : "auto"}
+        showStackedView={showStackedView}
+        colCount={colCount}
         hasCollapseButtons={
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }
@@ -160,16 +170,25 @@ class TestItemCol extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer style={testReviewStyle}>
+        <WidgetContainer
+          data-cy="widgetContainer"
+          style={{
+            ...testReviewStyle,
+            height: showStackedView || fullHeight ? "100%" : "auto",
+            alignItems: fullHeight && "flex-start"
+          }}
+        >
           {col.widgets
             .filter(widget => widget.type !== questionType.SECTION_LABEL)
-            .map((widget, i) => (
+            .map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
                   value === widget.tabIndex &&
-                  this.renderTabContent(widget, col.flowLayout, i)}
-                {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
+                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
+                {col.tabs &&
+                  !col.tabs.length &&
+                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
               </React.Fragment>
             ))}
         </WidgetContainer>

@@ -52,6 +52,10 @@ function Preview({
   const history = showScratchpadByDefault ? userWork[questionActivity[target]] : {};
   const previouscratchPadDimensions = showScratchpadByDefault ? questionActivity.scratchPad.dimensions : null;
   const timeSpent = showScratchpadByDefault ? (questionActivity.timeSpent / 1000).toFixed(1) : null;
+
+  const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item;
+  const scoringProps = { multipartItem, itemLevelScoring, isPassageWithQuestions };
+
   return (
     <StyledFlexContainer
       key={item._id}
@@ -84,6 +88,7 @@ function Preview({
         previouscratchPadDimensions={previouscratchPadDimensions}
         history={history}
         saveHistory={() => {}}
+        {...scoringProps}
       />
     </StyledFlexContainer>
   );

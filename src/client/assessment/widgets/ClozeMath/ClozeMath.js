@@ -119,11 +119,8 @@ const ClozeMath = ({
 
   return (
     <WithResources
-      resources={[
-        `${AppConfig.jqueryPath}/jquery.min.js`,
-        `${AppConfig.mathquillPath}/mathquill.css`,
-        `${AppConfig.mathquillPath}/mathquill.min.js`
-      ]}
+      criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      resources={[`${AppConfig.mathquillPath}/mathquill.css`, `${AppConfig.mathquillPath}/mathquill.min.js`]}
       fallBack={<span />}
       onLoaded={() => {}}
     >

@@ -26,66 +26,75 @@ window[LOADING_RESOURCES] = {};
  */
 const getResourcesNotLoaded = resources => {
   const allResources = Array.isArray(resources) ? resources : [resources];
-  return allResources.filter(x => !window[NAMESPACE][x]);
+
+  // we check for both loading yet and already loaded since do not want to retrigger them
+  return allResources.filter(a => a).filter(x => !window[NAMESPACE][x] && !window[LOADING_RESOURCES][x]);
 };
 
 /**
- * return a promise, that will be resolve when the resource is loaded.
- * @param {String} resource
+ * return a promise, that will be resolved when the resource is loaded.
+ * @param {string|string[]} resources
  */
-const addToQueue = resource => {
-  // lexical scoping is noice!!
-  let resolvePromise;
+const loadResources = (resources = []) => {
+  // filter out the loading & loaded resouces
+  const targetResources = getResourcesNotLoaded(resources);
 
-  // once the resource is loaded, we need to resolve the promise.
-  const resourcePromise = new Promise(resolve => {
-    resolvePromise = resolve;
+  if (!targetResources.length) return Promise.resolve();
+
+  targetResources.forEach(resource => {
+    window[LOADING_RESOURCES][resource] = true;
   });
 
-  if (!window[LOADING_RESOURCES][resource]) {
-    window[LOADING_RESOURCES][resource] = [];
+  return load(targetResources, { returnPromise: true, async: true, numRetries: 1 })
+    .then(() => {
+      targetResources.forEach(resource => {
+        window[LOADING_RESOURCES][resource] = false;
+        // flag the resource as already loaded!
+        window[NAMESPACE][resource] = true;
+      });
+    })
+    .catch(pathsNotFound => {
+      // replace them from the global context as never loaded and see if next render will invoke them,
+      // we already retried once.
+      pathsNotFound.forEach(resource => {
+        window[LOADING_RESOURCES][resource] = false;
+        window[NAMESPACE][resource] = false;
+      });
 
-    load([resource], { returnPromise: true }).then(() => {
-      // once the resource is loaded, tell em all components that "your needs are met"
-      (window[LOADING_RESOURCES][resource] || []).forEach(resolve => resolve());
-      // flag the resource as already loaded!
-      window[NAMESPACE][resource] = true;
+      throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
     });
-    // does failing needs to be handled?
-  }
-
-  window[LOADING_RESOURCES][resource].push(resolvePromise);
-
-  // return the promise.
-  return resourcePromise;
 };
 
 /**
- *
- * @param {string|string[]} resources
- * @param {Function=} onLoaded
+ * Hook to leverage external script dependencies into your component
+ * @param {string|string[]} criticalResources Dependencies that needs to be loaded first, the order is synchronous.
+ * @param {string|string[]} resources Resources that follow the criticalResources to load
+ * @param {Function=} onLoaded callback to use post resources being loaded.
  */
-export const useResources = (resources, onLoaded) => {
+export const useResources = (criticalResources, resources, onLoaded) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const resourcesToLoad = getResourcesNotLoaded(resources);
-    // array of promises that are waiting on the resource laoded!
-    const allResources = resourcesToLoad.map(addToQueue);
-
-    // if all resources are loaded..
-    Promise.all(allResources).then(() => {
-      if (onLoaded) onLoaded();
-      setLoaded(true);
-    });
+    // first resolve the critical resources, if specified
+    loadResources(criticalResources)
+      .then(() => loadResources(resources)) // then remaining resources
+      .then(() => {
+        if (onLoaded) onLoaded();
+        setLoaded(true);
+      });
   }, [resources]);
+
   return loaded;
 };
 
-export function WithResourcesHOC({ resources, fallBack }) {
+/**
+ * HOC to leverage external script dependencies by wrapping your component
+ *
+ */
+export function WithResourcesHOC({ criticalResources, resources, fallBack }) {
   return function resourceLoaded(WrappedComponent) {
     return props => {
-      const loaded = useResources(resources);
+      const loaded = useResources(criticalResources, resources);
 
       if (!loaded) {
         return fallBack;
@@ -95,8 +104,8 @@ export function WithResourcesHOC({ resources, fallBack }) {
   };
 }
 
-export function WithResources({ resources, fallBack, children, onLoaded }) {
-  const loaded = useResources(resources, onLoaded);
+export function WithResources({ criticalResources, resources, fallBack, children, onLoaded }) {
+  const loaded = useResources(criticalResources, resources, onLoaded);
   if (!loaded) {
     return fallBack;
   }

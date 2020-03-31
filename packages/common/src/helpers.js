@@ -734,6 +734,13 @@ export const getImageDimensions = url =>
     image.src = url;
   });
 
+/** A small utiltiy to help Resolve promises sequentially */
+const executePromisesInSequence = promises =>
+  promises.reduce(
+    (agg, promise) => agg.then(result => promise.then(Array.prototype.concat.bind(result))),
+    Promise.resolve([])
+  );
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -753,5 +760,6 @@ export default {
   isMobileDevice,
   measureText,
   getFormattedAttrId,
-  getSelectionRect
+  getSelectionRect,
+  executePromisesInSequence
 };

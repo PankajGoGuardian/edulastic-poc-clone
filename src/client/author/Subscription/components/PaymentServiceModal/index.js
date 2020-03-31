@@ -1,7 +1,6 @@
 import React from "react";
 import { WithResources } from "@edulastic/common";
-import { StripeProvider } from "react-stripe-elements";
-import { Elements } from "react-stripe-elements";
+import { StripeProvider, Elements } from "react-stripe-elements";
 import PaymentForm from "./components/PaymentForm";
 import { StyledPaymentServiceModal, StyledSpan, StyledTitle } from "./styled";
 

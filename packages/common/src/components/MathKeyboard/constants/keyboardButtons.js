@@ -209,7 +209,7 @@ const GEOMETRY = [
     command: "cmd"
   },
   {
-    handler: "\\text{m}\\angle", // or \\measuredangle
+    handler: "\\text{m}\\angle",
     label: <CustomImage src={Group6101} width={24} height={24} role="presentation" />,
     types: ["all", "geometry"],
     command: "write"
@@ -251,10 +251,10 @@ const GEOMETRY = [
     command: "write"
   },
   {
-    handler: "\\underset{\\sim}{\\mathbf{}}", // not working
+    handler: "\\undersim",
     label: <CustomImage src={Group1052} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
     handler: "\\cong",
@@ -263,10 +263,10 @@ const GEOMETRY = [
     command: "write"
   },
   {
-    handler: "\\overarc{}", // not working
+    handler: "\\overarc",
     label: <CustomImage src={Group1053} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
     handler: "\\pi",
@@ -275,22 +275,22 @@ const GEOMETRY = [
     command: "write"
   },
   {
-    handler: "\\overline{}",
+    handler: "\\overline",
     label: <CustomImage src={Group6104} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
-    handler: "\\overrightarrow{}",
+    handler: "\\overrightarrow",
     label: <CustomImage src={Group6102} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
-    handler: "\\overleftrightarrow{}", // not working
+    handler: "\\overleftrightarrow",
     label: <CustomImage src={Group6103} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
     handler: "\\square",

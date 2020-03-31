@@ -82,11 +82,7 @@ const AssessmentDetails = ({
         <StatusWrapper>
           {type === "assignment" ? (
             <React.Fragment>
-              <StatusButton
-                isPaused={isPaused}
-                isSubmitted={started || resume}
-                assignment={type === "assignment"}
-              >
+              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
                 <span data-cy="status">{status}</span>
               </StatusButton>
               {safeBrowser && (
@@ -179,24 +175,23 @@ const Thumbnail = React.memo(styled.img`
   border-radius: 10px;
   height: 90px;
   object-fit: cover;
-  
-  @media(max-width: ${largeDesktopWidth}) {
+
+  @media (max-width: ${largeDesktopWidth}) {
     width: 130px;
     height: 77px;
   }
-  @media(max-width: ${desktopWidth}) {
+  @media (max-width: ${desktopWidth}) {
     width: 100px;
     height: 90px;
     object-fit: contain;
   }
-  
-  @media(max-width: ${mobileWidthMax}) {
+
+  @media (max-width: ${mobileWidthMax}) {
     width: calc(100% - 14px);
     height: 90.5px;
     display: block;
     margin: 0 auto;
   }
- }
 `);
 
 const AssignmentTitle = React.memo(styled.span`
@@ -215,8 +210,8 @@ const AssignmentTitle = React.memo(styled.span`
 `);
 
 const CardDetails = React.memo(styled(Col)`
-  @media (max-width: ${extraDesktopWidth}) {
-    width: 35vw;
+  @media (min-width: ${extraDesktopWidth}) {
+    width: 22vw;
   }
 
   @media (max-width: ${extraDesktopWidth}) {

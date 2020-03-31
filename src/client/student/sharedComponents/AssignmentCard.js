@@ -9,13 +9,14 @@ import {
   smallDesktopWidth,
   lightGreySecondary,
   largeDesktopWidth,
-  desktopWidth
+  desktopWidth,
+  black
 } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
-import { Row, Col, message } from "antd";
+import { Row, Col, message, Icon } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
 //  components
@@ -91,7 +92,10 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     class: clazz = [],
     maxAttempts = 1,
     title,
-    thumbnail
+    thumbnail,
+    timedAssignment,
+    pauseAllowed,
+    allowedTime
   } = data;
 
   const currentClassList = clazz.filter(cl => cl._id === classId);
@@ -270,6 +274,13 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         isPaused={isPaused}
         lastAttempt={lastAttempt}
       />
+      {timedAssignment && (
+        <TimeIndicator>
+          <Icon className="timerIcon" color={black} type={theme.assignment.cardTimeIconType} />
+          <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
+        </TimeIndicator>
+      )}
+
       <ButtonAndDetail>
         <DetailContainer>
           <AttemptDetails isValidAttempt={isValidAttempt}>
@@ -466,4 +477,20 @@ const Title = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${props => props.theme.smallLinkFontSize};
   }
+`;
+
+const TimeIndicator = styled.div`
+  width: 125px;
+  margin: auto;
+
+  .timerIcon {
+    transform: scale(1.2);
+  }
+`;
+
+const StyledLabel = styled.label`
+  margin-left: 10px;
+  text-transform: uppercase;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
 `;

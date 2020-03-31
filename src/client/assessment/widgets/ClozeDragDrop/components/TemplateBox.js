@@ -80,7 +80,9 @@ const TemplateBox = ({ resprops, id }) => {
   const boxHeight = response ? height : responseBtnStyle.heightpx;
   const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(label, style);
   const getContent = (inPopover = false) => (
-    <MathSpan style={inPopover ? draggableContainerStyle : {}} dangerouslySetInnerHTML={{ __html: label }} />
+    <div style={{ maxWidth: Dimensions.popoverMaxWidth, overflow: "auto" }}>
+      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+    </div>
   );
   const widthOverflow = contentWidth > style.maxWidth;
   const heightOverflow = imageDimensions.height > boxHeight || contentHeight > boxHeight;

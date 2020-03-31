@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { MathSpan } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { Popover } from "antd";
 
@@ -66,7 +67,16 @@ const CorrectAnswerBoxLayout = ({
                 const getContent = (inPopover = false) => {
                   const height = inPopover ? "auto" : btnStyle.height;
                   return (
-                    <div key={itemId} className="response-btn check-answer showanswer" style={{ ...btnStyle, height }}>
+                    <div
+                      key={itemId}
+                      className="response-btn check-answer showanswer"
+                      style={{
+                        ...btnStyle,
+                        height,
+                        overflow: inPopover && "auto",
+                        maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
+                      }}
+                    >
                       <span className="index" style={{ alignSelf: "stretch" }}>
                         {getStemNumeration(stemNumeration, index)}
                       </span>
@@ -91,7 +101,16 @@ const CorrectAnswerBoxLayout = ({
             const getContent = (inPopover = false) => {
               const height = inPopover ? "auto" : btnStyle.height;
               return (
-                <div key={index} className="response-btn check-answer showanswer" style={{ ...btnStyle, height }}>
+                <div
+                  key={index}
+                  className="response-btn check-answer showanswer"
+                  style={{
+                    ...btnStyle,
+                    height,
+                    overflow: inPopover && "auto",
+                    maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth
+                  }}
+                >
                   <span className="index" style={{ alignSelf: "stretch" }}>
                     {getStemNumeration(stemNumeration, index)}
                   </span>

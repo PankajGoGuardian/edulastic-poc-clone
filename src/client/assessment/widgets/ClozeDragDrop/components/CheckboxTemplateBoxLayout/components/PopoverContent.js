@@ -20,23 +20,29 @@ const PopoverContent = ({
 }) => {
   const indexStr = getStemNumeration(stemNumeration, index);
   return (
-    <div fontSize={fontSize} className={className} style={{ position: "relative", maxWidth: response.maxWidth }}>
+    <div
+      fontSize={fontSize}
+      className={className}
+      style={{ position: "relative", maxWidth: response.popoverMaxWidth, overflow: "auto" }}
+    >
       <div
         className="index index-box"
         style={{ display: checkAnswer && !isExpressGrader ? "none" : "flex", alignSelf: "stretch", height: "auto" }}
       >
         {indexStr}
       </div>
-      <div className="text container" style={{ "white-space": "normal" }}>
-        <div>{answer}</div>
-        <IconWrapper
-          rightPosition={0}
-          correct={status === "right"}
-          style={{ top: "50%", transform: "translateY(-50%)" }}
-        >
-          {answer && status === "right" && <RightIcon />}
-          {answer && status === "wrong" && <WrongIcon />}
-        </IconWrapper>
+      <div className="text container" style={{ "white-space": "normal", width: "unset", overflow: "unset" }}>
+        <div style={{ display: "inline-flex" }}>
+          {answer}
+          <IconWrapper
+            rightPosition={0}
+            correct={status === "right"}
+            style={{ position: "relative", top: "5px", right: "-5px" }}
+          >
+            {answer && status === "right" && <RightIcon />}
+            {answer && status === "wrong" && <WrongIcon />}
+          </IconWrapper>
+        </div>
       </div>
     </div>
   );

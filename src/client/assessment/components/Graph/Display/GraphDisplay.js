@@ -737,7 +737,7 @@ GraphDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
-  zoomLevel: PropTypes.number
+  zoomLevel: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 GraphDisplay.defaultProps = {

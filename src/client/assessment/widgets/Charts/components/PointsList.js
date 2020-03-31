@@ -90,7 +90,7 @@ class PointsList extends Component {
         </Row>
 
         {points.map((dot, index) => (
-          <Fragment>
+          <Fragment key={`points-${index}`}>
             <ColoredRow gutter={isShowFractionField ? 10 : 30}>
               <Col md={isShowFractionField ? 3 : 5}>
                 <RowLabel>{`${t("component.chart.point")} ${index + 1}`}</RowLabel>
@@ -104,12 +104,7 @@ class PointsList extends Component {
                 />
               </Col>
               <Col md={4}>
-                <CustomInput
-                  index={index}
-                  type="number"
-                  value={dot.y}
-                  handleChange={handleChange}
-                />
+                <CustomInput index={index} type="number" value={dot.y} handleChange={handleChange} />
               </Col>
               <Col md={4}>
                 <SelectInputStyled

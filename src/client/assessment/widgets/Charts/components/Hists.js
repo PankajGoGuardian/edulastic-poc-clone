@@ -132,15 +132,17 @@ const Hists = ({
               height={isHovered(index) ? 5 : 1}
             />
           )}
-          {labelIsVisible(index) && <VxText
-            textAnchor="middle"
-            verticalAnchor="start"
-            x={getCenterX(index) + (step - 2) / 2}
-            y={height}
-            width={70}
-          >
-            {dot.x}
-          </VxText>}
+          {labelIsVisible(index) && (
+            <VxText
+              textAnchor="middle"
+              verticalAnchor="start"
+              x={getCenterX(index) + (step - 2) / 2}
+              y={height}
+              width={70}
+            >
+              {dot.x}
+            </VxText>
+          )}
         </Fragment>
       ))}
     </Fragment>
@@ -152,7 +154,7 @@ Hists.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number.isRequired,
+  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,

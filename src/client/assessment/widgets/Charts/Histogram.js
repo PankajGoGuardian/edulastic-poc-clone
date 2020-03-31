@@ -189,7 +189,7 @@ Histogram.propTypes = {
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
-    showGridlines: PropTypes.bool
+    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
   }).isRequired,
   view: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
@@ -197,7 +197,7 @@ Histogram.propTypes = {
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired,
   toggleBarDragging: PropTypes.func,
-  margin: PropTypes.object.isRequired
+  margin: PropTypes.object
 };
 
 Histogram.defaultProps = {

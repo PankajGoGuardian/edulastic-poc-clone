@@ -45,6 +45,6 @@ export const CustomInput = ({ type, value: propsValue, index, handleChange }) =>
 CustomInput.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
-  index: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
+  index: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   handleChange: PropTypes.func.isRequired
 };

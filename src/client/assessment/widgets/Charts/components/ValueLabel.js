@@ -45,7 +45,7 @@ ValueLabel.propTypes = {
   getActivePoint: PropTypes.func.isRequired,
   getActivePointValue: PropTypes.func.isRequired,
   getActiveFractionFormat: PropTypes.func,
-  active: PropTypes.number.isRequired
+  active: PropTypes.number
 };
 
 ValueLabel.defaultProps = {

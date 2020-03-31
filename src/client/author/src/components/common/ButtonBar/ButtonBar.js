@@ -40,7 +40,6 @@ import {
   RightSide
 } from "./styled_components";
 
-
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
     const { onChangeView, clearEvaluation, onSaveScrollTop, view: currentView, changePreviewTab } = this.props;
@@ -161,7 +160,7 @@ class ButtonBar extends Component {
                           onClick={onSave}
                         >
                           <IconSaveNew />
-                           SAVE
+                          SAVE
                         </EduButton>
                       </Tooltip>
                     </>
@@ -325,11 +324,11 @@ ButtonBar.propTypes = {
   onSaveScrollTop: PropTypes.func.isRequired,
   disableSave: PropTypes.func,
   onCancel: PropTypes.func.isRequired,
-  onPublishTestItem: PropTypes.func.isRequired,
-  showPublishButton: PropTypes.bool.isRequired,
+  onPublishTestItem: PropTypes.func,
+  showPublishButton: PropTypes.bool,
   view: PropTypes.string.isRequired,
   hasAuthorPermission: PropTypes.bool,
-  itemStatus: PropTypes.any.isRequired,
+  itemStatus: PropTypes.any,
   showMetaData: PropTypes.bool,
   showAuditTrail: PropTypes.bool,
   permissions: PropTypes.object.isRequired

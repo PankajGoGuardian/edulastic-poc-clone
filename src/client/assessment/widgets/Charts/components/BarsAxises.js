@@ -36,12 +36,14 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, act
       {lines.map((_, index) => {
         const x = getConstantX(index);
         return (
-          <Fragment>
+          <Fragment key={`bar-axis-${index}`}>
             {displayAxisLabel && (
               <g transform={`translate(${getConstantX(index)}, ${height})`}>
-                {labelIsVisible(index) && <VxText textAnchor="middle" verticalAnchor="start" width={70}>
-                  {lines[index].x}
-                </VxText>}
+                {labelIsVisible(index) && (
+                  <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                    {lines[index].x}
+                  </VxText>
+                )}
               </g>
             )}
             {displayGridlines && <Line x1={x} y1={margin} x2={x} y2={y2} strokeWidth={2} />}

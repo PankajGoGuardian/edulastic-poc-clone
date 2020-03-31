@@ -87,6 +87,7 @@ const Circles = ({
           {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
+              key={`circle-inner-${ind}`}
               cx={getCenterX(index) + step / 2}
               cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 20}
               r={yAxisStep / 2 - 5}
@@ -150,7 +151,7 @@ Circles.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number.isRequired,
+  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,

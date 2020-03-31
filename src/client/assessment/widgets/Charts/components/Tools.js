@@ -46,7 +46,7 @@ export const Tools = ({ controls, tools, setTool, getHandlerByControlName, justi
 };
 
 Tools.propTypes = {
-  tools: PropTypes.array,
+  tools: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   controls: PropTypes.array,
   justifyContent: PropTypes.string,
   getHandlerByControlName: PropTypes.func,

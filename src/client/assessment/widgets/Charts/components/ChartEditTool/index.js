@@ -44,20 +44,21 @@ const ChartEditTool = ({ item, setQuestionData }) => {
           )}
         </ToolButton>
       </Wrapper>
-      <Wrapper side="right">
+      {/* TODO: Implement the zoom tool, and then enable the zoom buttons */}
+      {/* <Wrapper side="right">
         <ToolButton onClick={onToolButtonClick(PLUS_TOOL)}>
           <IconPlus />
         </ToolButton>
         <ToolButton onClick={onToolButtonClick(MINUS_TOOL)}>
           <IconMinus />
         </ToolButton>
-      </Wrapper>
+      </Wrapper> */}
     </>
   );
 };
 
 ChartEditTool.propTypes = {
-  item: PropTypes.string.isRequired,
+  item: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   setQuestionData: PropTypes.func.isRequired
 };
 

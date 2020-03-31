@@ -27,7 +27,7 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop, isLine }) =
         const y = convertUnitToPx(dot, gridParams) + paddingTop;
 
         return (
-          <Fragment>
+          <Fragment key={`horizontal-line-${index}`}>
             <g transform={`translate(0, ${y})`}>
               {displayLabel(index) && (
                 <AxisLabel fractionFormat={fractionFormat} value={dot} textAnchor="start" verticalAnchor="middle" />

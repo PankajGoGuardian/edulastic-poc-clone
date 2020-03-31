@@ -191,7 +191,7 @@ BarChart.propTypes = {
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
-    showGridlines: PropTypes.bool
+    showGridlines: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
@@ -200,7 +200,7 @@ BarChart.propTypes = {
   correct: PropTypes.array.isRequired,
   toggleBarDragging: PropTypes.func,
   showAnswer: PropTypes.bool.isRequired,
-  margin: PropTypes.object.isRequired
+  margin: PropTypes.object
 };
 
 BarChart.defaultProps = {

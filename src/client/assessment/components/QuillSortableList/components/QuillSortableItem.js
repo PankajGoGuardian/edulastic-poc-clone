@@ -56,7 +56,7 @@ const QuillSortableItem = SortableElement(
 );
 
 QuillSortableItem.propTypes = {
-  t: PropTypes.func.isRequired,
+  t: PropTypes.func,
   toolbarId: PropTypes.string,
   styleType: PropTypes.string,
   columns: PropTypes.number.isRequired,

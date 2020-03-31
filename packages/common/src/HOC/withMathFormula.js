@@ -57,8 +57,8 @@ export const withMathFormula = WrappedComponent => {
   MathFormulaWrapped.propTypes = {
     dangerouslySetInnerHTML: PropTypes.object,
     className: PropTypes.string,
-    isCollapse: PropTypes.bool.isRequired,
-    fontSize: PropTypes.number.isRequired,
+    isCollapse: PropTypes.bool,
+    fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     theme: PropTypes.object.isRequired,
     style: PropTypes.object
   };

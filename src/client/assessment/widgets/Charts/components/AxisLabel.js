@@ -33,7 +33,7 @@ const AxisLabel = ({ value, fractionFormat, textAnchor = "middle", verticalAncho
 };
 
 AxisLabel.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   fractionFormat: PropTypes.string
 };
 

@@ -207,7 +207,7 @@ LineChart.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number,
     pointStyle: PropTypes.string,
-    showGridlines: PropTypes.bool
+    showGridlines: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
   }).isRequired,
   disableResponse: PropTypes.bool,
   deleteMode: PropTypes.bool,
@@ -215,7 +215,7 @@ LineChart.propTypes = {
   view: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired,
   toggleBarDragging: PropTypes.func,
-  margin: PropTypes.object.isRequired
+  margin: PropTypes.object
 };
 
 LineChart.defaultProps = {

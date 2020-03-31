@@ -496,7 +496,7 @@ Container.propTypes = {
   onCompleteItemCreation: PropTypes.func,
   windowWidth: PropTypes.number.isRequired,
   location: PropTypes.object.isRequired,
-  testName: PropTypes.string.isRequired,
+  testName: PropTypes.string,
   toggleModalAction: PropTypes.func.isRequired,
   onSaveScrollTop: PropTypes.func.isRequired,
   savedWindowScrollTop: PropTypes.number,

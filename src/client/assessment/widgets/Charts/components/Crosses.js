@@ -158,7 +158,7 @@ Crosses.propTypes = {
   bars: PropTypes.array.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  activeIndex: PropTypes.number.isRequired,
+  activeIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   gridParams: PropTypes.shape({
     width: PropTypes.number,

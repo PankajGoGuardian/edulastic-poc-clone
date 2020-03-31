@@ -23,12 +23,14 @@ const VerticalLines = ({ lines, gridParams, displayAxisLabel, displayGridlines, 
       {lines.map((dot, index) => {
         const x = getConstantX(index);
         return (
-          <Fragment>
+          <Fragment key={`vertical-line-${index}`}>
             {displayAxisLabel && (
               <g transform={`translate(${getConstantX(index)},${height})`}>
-                {labelIsVisible(index) && <VxText textAnchor="middle" verticalAnchor="start" width={70}>
-                  {dot.x}
-                </VxText>}
+                {labelIsVisible(index) && (
+                  <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                    {dot.x}
+                  </VxText>
+                )}
               </g>
             )}
             {displayGridlines && <Line x1={x} y1={margin} x2={x} y2={y2} strokeWidth={2} />}

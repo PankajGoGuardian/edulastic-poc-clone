@@ -459,7 +459,7 @@ NumberLinePlotContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  graphData: PropTypes.string.isRequired,
+  graphData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,

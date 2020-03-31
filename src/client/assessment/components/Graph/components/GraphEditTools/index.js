@@ -212,7 +212,7 @@ class GraphEditTools extends Component {
 
 GraphEditTools.propTypes = {
   side: PropTypes.string,
-  graphData: PropTypes.string.isRequired,
+  graphData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   setQuestionData: PropTypes.func.isRequired,
   layout: PropTypes.object.isRequired,
   equations: PropTypes.array,

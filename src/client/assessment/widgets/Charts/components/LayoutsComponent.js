@@ -33,7 +33,7 @@ const InputField = ({ name, value, onChange, type = "number", t }) => (
 
 InputField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string
@@ -44,14 +44,14 @@ InputField.defaultProps = {
 };
 
 const CheckboxField = ({ t, onChange, value, name }) => (
-  <CheckboxLabel onChange={onChange} checked={value} textTransform="uppercase">
+  <CheckboxLabel onChange={onChange} checked={!!value} textTransform="uppercase">
     {t(`component.chart.${name}`)}
   </CheckboxLabel>
 );
 
 CheckboxField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired
 };

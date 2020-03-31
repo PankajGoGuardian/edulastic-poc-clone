@@ -282,6 +282,16 @@ class Scoring extends Component {
             </Col>
           </Row>
         )}
+
+        {questionData.rubrics && userFeatures.gradingrubrics && (
+          <StyledTag>
+            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
+            <span onClick={() => dissociateRubricFromQuestion()}>
+              <Icon type="close" />
+            </span>
+          </StyledTag>
+        )}
+
         <Row gutter={24} mb="0">
           <Col md={12}>
             <CheckboxLabel
@@ -308,14 +318,6 @@ class Scoring extends Component {
               </WidgetFRInput>
             </Col>
           </Row>
-        )}
-        {questionData.rubrics && userFeatures.gradingrubrics && (
-          <StyledTag>
-            <span onClick={() => this.handleViewRubric(questionData.rubrics._id)}>{questionData.rubrics.name}</span>
-            <span onClick={() => dissociateRubricFromQuestion()}>
-              <Icon type="close" />
-            </span>
-          </StyledTag>
         )}
 
         {children}

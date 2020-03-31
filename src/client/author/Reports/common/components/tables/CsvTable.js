@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { convertTableToCSV } from "../../util";
 
 const defaultPagination = {
-  pageSize: 10
+  pageSize: 50
 };
 
 const CsvTable = ({
@@ -23,7 +23,7 @@ const CsvTable = ({
   let _columns = [...columns];
 
   if (pagination && typeof _pagination.pageSize === "undefined") {
-    _pagination.pageSize = 10;
+    _pagination.pageSize = 50;
   }
 
   if (isCsvDownloading) {

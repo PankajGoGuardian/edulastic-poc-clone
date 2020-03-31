@@ -1,7 +1,7 @@
 import React from "react";
 
 const defaultPagination = {
-  pageSize: 10
+  pageSize: 50
 };
 
 const PrintableTable = ({ component, isPrinting, dataSource, pagination = defaultPagination, ...props }) => {

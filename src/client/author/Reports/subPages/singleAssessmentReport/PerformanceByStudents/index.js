@@ -57,7 +57,7 @@ const PerformanceByStudents = ({
   });
 
   const [pagination, setPagination] = useState({
-    defaultPageSize: 15,
+    defaultPageSize: 50,
     current: 0
   });
 

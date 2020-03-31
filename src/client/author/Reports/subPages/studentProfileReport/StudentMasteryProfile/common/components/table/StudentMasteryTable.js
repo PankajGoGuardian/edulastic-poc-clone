@@ -175,7 +175,6 @@ const StudentMasteryTable = ({
           tableToRender={StyledTable}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
-          pagination={false}
         />
       </Col>
     </Row>

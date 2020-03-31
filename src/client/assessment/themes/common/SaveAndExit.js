@@ -64,6 +64,7 @@ const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   height: ${props => props.theme.default.headerToolbarButtonWidth};
   width: ${props => props.theme.default.headerToolbarButtonHeight};
+  border: ${({ theme }) => `1px solid ${theme.default.headerRightButtonBgColor}`};
 
   svg {
     top: 50%;
@@ -88,9 +89,11 @@ const StyledButton = styled(Button)`
 
   &:hover,
   &:active {
-    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
+    background: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    color: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    border: ${({ theme }) => `solid 1px ${theme.default.headerRightButtonBgColor}`};
     svg {
-      fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
+      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
     }
   }
 
@@ -108,6 +111,7 @@ const StyledButton = styled(Button)`
 export const SaveAndExitButton = styled(StyledButton)`
   width: auto;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
+  border: ${({ theme }) => `1px solid ${theme.default.headerRightButtonBgColor}`};
   color: ${({ theme }) => theme.default.headerRightButtonIconColor};
   font-size: 12px;
   font-weight: 600;
@@ -127,8 +131,12 @@ export const SaveAndExitButton = styled(StyledButton)`
 
   &:hover,
   &:focus {
-    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
-    color: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    background: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    color: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    border: ${({ theme }) => `solid 1px ${theme.default.headerRightButtonBgColor}`};
+    svg {
+      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    }
   }
 
   span {

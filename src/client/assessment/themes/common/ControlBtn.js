@@ -6,10 +6,16 @@ const Back = styled(Button)`
   height: 40px;
   width: 40px;
   border-radius: 4px;
-  background-color: ${props =>
-    props.skin
-      ? props.theme.default.headerButtonActiveBgColor
-      : props.theme.widgets.assessmentPlayers.controlBtnSecondaryColor};
+  background: ${({ theme, skin }) =>
+    skin
+      ? theme.widgets.assessmentPlayers.mainContentBgColor
+      : theme.widgets.assessmentPlayers.controlBtnPrimaryColor}; /* white or green */
+  color: ${({ theme, skin }) =>
+    skin ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor : theme.widgets.assessmentPlayers.mainContentBgColor};
+  border: ${({ theme, skin }) =>
+    skin
+      ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`
+      : `1px solid ${theme.widgets.assessmentPlayers.controlBtnPrimaryColor}`};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border: none;
   color: ${props => props.theme.default.headerButtonIconActiveColor};
@@ -25,13 +31,11 @@ const Back = styled(Button)`
   margin-left: 10px;
   cursor: normal;
 
-  &:hover {
-    background: ${props => props.theme.default.headerButtonBgHoverColor};
-    i {
-      svg {
-        fill: ${props => props.theme.header.headerButtonHoverColor};
-      }
-    }
+  &:hover,
+  &:focus {
+    background: ${({ theme, skin }) => (skin ? theme.widgets.assessmentPlayers.controlBtnPrimaryColor : "")};
+    color: ${({ theme, skin }) => (skin ? theme.widgets.assessmentPlayers.mainContentBgColor : "")};
+    border: ${({ theme, skin }) => (skin ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}` : "")};
   }
 
   &[disabled] {
@@ -98,7 +102,6 @@ const Back = styled(Button)`
     svg {
       width: 15px;
       height: 15px;
-      fill: ${props => props.theme.default.headerButtonIconColor};
     }
   }
 
@@ -133,19 +136,17 @@ const Back = styled(Button)`
 `;
 
 const Next = styled(Button)`
-  background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
-  color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
-  border: none;
+  background: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
+  color: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+  border: ${({ theme }) => `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
   height: 40px;
   width: 100px;
   margin-left: 5px;
-  &:hover {
-    background: ${({ theme }) => theme.default.headerRightButtonBgHoverColor};
-    color: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  }
+  &:hover,
   &:focus {
-    background: ${props => props.theme.widgets.assessmentPlayers.mainContentBgColor};
-    color: ${props => props.theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    background: ${({ theme }) => theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
+    color: ${({ theme }) => theme.widgets.assessmentPlayers.mainContentBgColor};
+    border: ${({ theme }) => `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
   }
 `;
 export default {

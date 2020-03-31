@@ -50,6 +50,12 @@ export const getMathHtml = latex => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(latex);
+  /**
+   * Katex doesn't support overarc and parallelogram
+   * we will use overgroup for overarc,
+   * and will use Unicode Character “▱” (U+25B1) for parallelogram
+   */
+  _latex = _latex.replace(/overarc/g, "overgroup").replace(/\\parallelogram/g, "\\text{▱}");
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,
@@ -98,8 +104,7 @@ export const replaceMathHtmlWithLatexes = val => {
 };
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
-  const escapeRegExp = string =>
-    string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
+  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
   const regexTemplate = new RegExp(
     escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
     "g"

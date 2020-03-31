@@ -30,7 +30,24 @@ export class PlayListRecommendation {
 
   clickOnPracticeById = resourceId => this.getPracticeButtonById(resourceId).click();
 
-  clickOnPracticeByAssignmentName = assignmentName => this.getPracticeButtonByAssignmentName(assignmentName).click();
+  clickOnPracticeByAssignmentName = assignmentName => {
+    cy.server();
+    cy.route("GET", "**/test/**").as("practiceTest");
+    this.getPracticeButtonByAssignmentName(assignmentName).click();
+    return cy.wait("@practiceTest").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      let itemGroupArray = xhr.response.body.result.itemGroups;
+      let testItems = [];
+      itemGroupArray.forEach(obj => {
+        const group = [];
+        obj.items.forEach(itm => {
+          group.push(itm._id);
+        });
+        testItems.push(group);
+      });
+      return testItems;
+    });
+  };
 
   // *** ACTIONS END ***
 

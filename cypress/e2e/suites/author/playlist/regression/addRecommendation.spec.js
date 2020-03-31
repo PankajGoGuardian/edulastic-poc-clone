@@ -8,7 +8,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 
 const { PLAYLIST_RECOMMENDATION } = require("../../../../../fixtures/testAuthoring");
-
+const testItemsInStandard = require("../../../../../fixtures/recommendationTestItems");
 const { _ } = Cypress;
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendations`, () => {
@@ -102,8 +102,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
         standardIds: [standardId]
       });
 
-      // attempt TODO: assertion on items of dynamic test
-      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1);
+      // assertion on items of dynamic test
+      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1).then(reviewTestItems => {
+        reviewTestItems.forEach(itemsArray => {
+          itemsArray.forEach(itmId => {
+            expect(itmId).to.be.oneOf(testItemsInStandard.standardTestItemsMapping[0].testItemIds);
+          });
+        });
+      });
 
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
@@ -188,8 +194,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
         standardIds: [standardId]
       });
 
-      // attempt TODO: assertion on items of dynamic test
-      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1);
+      //  assertion on items of dynamic test
+      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1).then(practiceTestItems => {
+        practiceTestItems.forEach(itemsArray => {
+          itemsArray.forEach(itmId => {
+            expect(itmId).to.be.oneOf(testItemsInStandard.standardTestItemsMapping[2].testItemIds);
+          });
+        });
+      });
 
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
@@ -274,8 +286,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Playlist Recommendation
         standardIds: [standardId]
       });
 
-      // attempt TODO: assertion on items of dynamic test
-      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1);
+      //  assertion on items of dynamic test
+      studentRecommendationTab.clickOnPracticeByAssignmentName(assignment1).then(challengeTestItems => {
+        challengeTestItems.forEach(itemsArray => {
+          itemsArray.forEach(itmId => {
+            expect(itmId).to.be.oneOf(testItemsInStandard.standardTestItemsMapping[1].testItemIds);
+          });
+        });
+      });
+
       for (let q = 1; q <= 2; q++) {
         // TODO: attempt with actual response once items are identified
         studentTestPage.clickOnNext();

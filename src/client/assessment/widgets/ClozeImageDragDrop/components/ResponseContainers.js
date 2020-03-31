@@ -1,7 +1,6 @@
 import React from "react";
 import { withTheme } from "styled-components";
 import { response } from "@edulastic/constants";
-import striptags from "striptags";
 import { DragDrop } from "@edulastic/common";
 import { get } from "lodash";
 import { Pointer } from "../../../styled/Pointer";
@@ -9,6 +8,7 @@ import { Point } from "../../../styled/Point";
 import { Triangle } from "../../../styled/Triangle";
 
 import AnswerContainer from "../AnswerContainer";
+import { Container } from "./Container";
 
 const { DragItem, DropContainer } = DragDrop;
 
@@ -47,44 +47,53 @@ const ResponseContainers = ({
           : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
         : 0,
       borderRadius: 5,
-      overflow: "hidden"
+      display: "flex"
     };
 
     return btnStyle;
   };
 
-  return responseContainers.map((container, index) => (
-    <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>
-      {container.label && (
-        <span className="sr-only" role="heading">
-          Drop target {container.label}
-        </span>
-      )}
-      {get(userAnswers, `[${index}].value`, []).map((answer, item_index) => {
-        const title = striptags(answer) || null;
-        return (
-          <DragItem
-            style={dragItemStyle}
-            key={item_index}
-            title={title}
-            data={{ option: answer, fromContainerIndex: index, fromRespIndex: item_index }}
+  return responseContainers.map((container, index) => {
+    const answers = get(userAnswers, `[${index}].value`, []).join(" ");
+    return (
+      <div style={{ position: "relative" }}>
+        <DropContainer key={container.id} style={getContainerStyle(container)} drop={onDrop} index={index}>
+          {container.label && (
+            <span className="sr-only" role="heading">
+              Drop target {container.label}
+            </span>
+          )}
+          <Container
+            fontSize={fontSize}
+            index={index}
+            height={container.height}
+            width={container.width}
+            answers={answers}
           >
-            <AnswerContainer
-              height={container.height || "auto"}
-              width={container.width || "auto"}
-              isWrapText={isWrapText}
-              fontSize={fontSize}
-              answer={answer}
-            />
-          </DragItem>
-        );
-      })}
-      <Pointer className={container.pointerPosition} width={container.width}>
-        <Point />
-        <Triangle />
-      </Pointer>
-    </DropContainer>
-  ));
+            {get(userAnswers, `[${index}].value`, []).map((answer, item_index) => (
+              <DragItem
+                style={dragItemStyle}
+                key={item_index}
+                data={{ option: answer, fromContainerIndex: index, fromRespIndex: item_index }}
+              >
+                <AnswerContainer
+                  height={container.height || "auto"}
+                  width={container.width || "auto"}
+                  isWrapText={isWrapText}
+                  fontSize={fontSize}
+                  answer={answer}
+                />
+              </DragItem>
+            ))}
+          </Container>
+          <Pointer className={container.pointerPosition} width={container.width}>
+            <Point />
+            <Triangle />
+          </Pointer>
+        </DropContainer>
+      </div>
+    );
+  });
 };
 
 export default withTheme(ResponseContainers);

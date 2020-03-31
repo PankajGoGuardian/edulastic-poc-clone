@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
@@ -14,6 +14,7 @@ import { Triangle } from "../../../../styled/Triangle";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
+import { WithPopover } from "./WithPopover";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const { DropContainer } = DragDrop;
@@ -37,15 +38,10 @@ const CheckboxTemplateBox = ({
   lessMinWidth,
   imageWidth,
   imageHeight,
-  isPrintMode
+  isPrintMode,
+  fontSize
 }) => {
-  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
-
-  const handleHover = () => {
-    if (showAnswer && lessMinWidth) {
-      toggleIndexVisibility(!showIndex);
-    }
-  };
+  const { height: respHeight, width: respWidth, left: respLeft, top: respTop } = responseContainer;
 
   const status = evaluation[index] ? "right" : "wrong";
 
@@ -55,9 +51,9 @@ const CheckboxTemplateBox = ({
     evaluation[index] !== undefined;
 
   const btnStyle = {
-    widthpx: responseContainer.width,
-    top: isPrintMode ? `${(responseContainer.top / imageHeight) * 100}%` : responseContainer.top,
-    left: isPrintMode ? `${(responseContainer.left / imageWidth) * 100}%` : responseContainer.left,
+    widthpx: respWidth,
+    top: isPrintMode ? `${(respTop / imageHeight) * 100}%` : respTop,
+    left: isPrintMode ? `${(respLeft / imageWidth) * 100}%` : respLeft,
     position: "absolute",
     borderRadius: 5
   };
@@ -88,23 +84,11 @@ const CheckboxTemplateBox = ({
       indexStr = index + 1;
   }
 
-  const dragItemStyle = {
-    border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-    padding: lessMinWidth ? "0px 2px" : "0px 5px",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    width: "max-content",
-    minWidth: response.minWidth,
-    maxWidth: lessMinWidth ? "80%" : "90%", // adjusting content(mainly images) alongwith the padding
-    overflow: "hidden",
-    height: "100%"
-  };
-
   const dropContainerStyle = {
     ...btnStyle,
-    width: isPrintMode ? `${(responseContainer.width / imageWidth) * 100}%` : responseContainer.width,
-    height: isPrintMode ? `${(responseContainer.height / imageHeight) * 100}%` : responseContainer.height,
-    minWidth: lessMinWidth ? parseInt(responseContainer.width, 10) + 4 : response.minWidthShowAnswer,
+    width: isPrintMode ? `${(respWidth / imageWidth) * 100}%` : respWidth,
+    height: isPrintMode ? `${(respHeight / imageHeight) * 100}%` : respHeight,
+    minWidth: lessMinWidth ? parseInt(respWidth, 10) + 4 : response.minWidthShowAnswer,
     maxWidth: response.maxWidth,
     background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
   };
@@ -118,7 +102,7 @@ const CheckboxTemplateBox = ({
         {isChecked && status === "right" && <RightIcon />}
         {isChecked && status === "wrong" && <WrongIcon />}
       </IconWrapper>
-      <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+      <Pointer className={responseContainer.pointerPosition} width={respWidth}>
         <Point />
         <Triangle />
       </Pointer>
@@ -148,13 +132,24 @@ const CheckboxTemplateBox = ({
     ? {
         borderRadius: 5,
         justifyContent: lessMinWidth ? "flex-start" : "center",
-        width: isPrintMode ? "" : responseContainer.width,
-        height: isPrintMode ? "" : responseContainer.height
+        width: isPrintMode ? "" : respWidth,
+        height: isPrintMode ? "" : respHeight
       }
-    : { width: isPrintMode ? "" : responseContainer.width, height: isPrintMode ? "" : responseContainer.height };
+    : { width: isPrintMode ? "" : respWidth, height: isPrintMode ? "" : respHeight };
+
+  const userAnswer = userSelections[index]?.value?.join(" ") || "";
 
   return (
-    <div onMouseEnter={handleHover} onMouseLeave={handleHover}>
+    <WithPopover
+      fontSize={fontSize}
+      containerDimensions={{ width: respWidth, height: respHeight }}
+      index={index}
+      userAnswer={userAnswer}
+      status={status}
+      checkAnswer={checkAnswer}
+      className={containerClassName}
+      indexStr={indexStr}
+    >
       <DropContainer
         index={index}
         style={dropContainerStyle}
@@ -173,7 +168,7 @@ const CheckboxTemplateBox = ({
             isSnapFitValues={isSnapFitValues}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
-            dragItemStyle={dragItemStyle}
+            // dragItemStyle={dragItemStyle}
             lessMinWidth={lessMinWidth}
             className={containerClassName}
             status={status}
@@ -183,12 +178,12 @@ const CheckboxTemplateBox = ({
                 ? {
                     borderRadius: 5,
                     justifyContent: lessMinWidth ? "flex-start" : "center",
-                    width: isPrintMode ? "" : responseContainer.width,
-                    height: isPrintMode ? "" : responseContainer.height
+                    width: isPrintMode ? "" : respWidth,
+                    height: isPrintMode ? "" : respHeight
                   }
                 : {
-                    width: isPrintMode ? "" : responseContainer.width,
-                    height: isPrintMode ? "" : responseContainer.height
+                    width: isPrintMode ? "" : respWidth,
+                    height: isPrintMode ? "" : respHeight
                   }
             }
             isExpressGrader={isExpressGrader}
@@ -196,7 +191,7 @@ const CheckboxTemplateBox = ({
         </div>
         {isSnapFitValues && icons}
       </DropContainer>
-    </div>
+    </WithPopover>
   );
 };
 

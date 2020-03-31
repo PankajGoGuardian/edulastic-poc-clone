@@ -580,6 +580,7 @@ class Display extends Component {
             isPrintMode={isPrintMode}
             imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
             imageWidth={previewContainerWidth}
+            fontSize={fontSize}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>

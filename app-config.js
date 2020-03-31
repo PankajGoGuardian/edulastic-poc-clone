@@ -9,9 +9,16 @@ const ttsChoicesPath = `${cdnURI}/tts`;
 const desmosPath = `${thirdPartyLibPath}/desmos/v1.2`;
 const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`;
 const sentryWhiteListURLRegex = appEnv === "production" ? /edulastic\.com/ : /snapwiz\.net/;
-const segmentURI = process.env.POI_SEGMENT_URI || `${thirdPartyLibPath}/segmentjs/v4.2.1/analytics.js`;
+
+const segmentURI = process.env.POI_APP_SEGMENT_URI || `${thirdPartyLibPath}/segmentjs/v4.2.2/analytics.js`;
+const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || "4.2.2";
+const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";
+const segmentHashSecret = process.env.POI_APP_SEGMENT_HASH_SECRET || "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH";
 
 export default {
+  segmentHashSecret,
+  isSegmentEnabled,
+  segmentVersion,
   segmentURI,
   cdnURI,
   appEnv,

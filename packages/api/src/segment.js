@@ -1,9 +1,9 @@
 import { get, without, countBy } from "lodash";
 import { createHmac } from "crypto-browserify";
+import AppConfig from "../../../app-config";
 
 const allowedRoles = ["teacher", "school-admin", "district-admin"];
 const minFeatures = 5;
-const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";
 
 const getUserDetails = ({
   email,
@@ -32,7 +32,7 @@ const getUserDetails = ({
 });
 
 const analyticsIdentify = ({ user }) => {
-  if (!isSegmentEnabled) {
+  if (!AppConfig.isSegmentEnabled) {
     return;
   }
   if (user) {
@@ -62,7 +62,7 @@ const analyticsIdentify = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
+            user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
               .update(userId)
               .digest("hex")
           }
@@ -73,7 +73,7 @@ const analyticsIdentify = ({ user }) => {
 };
 
 const unloadIntercom = ({ user }) => {
-  if (!isSegmentEnabled) {
+  if (!AppConfig.isSegmentEnabled) {
     return;
   }
   if (user) {
@@ -88,7 +88,7 @@ const unloadIntercom = ({ user }) => {
             // Keep your secret key safe! Never commit it directly to your repository,
             // client-side code, or anywhere a third party can find it.
             // send it from backend ???
-            user_hash: createHmac("sha256", "fFVeUFIXqHL8U7snPw-Ds_Qe9v7qPKDgO-F1B36A")
+            user_hash: createHmac("sha256", AppConfig.segmentHashSecret)
               .update(userId)
               .digest("hex")
           }

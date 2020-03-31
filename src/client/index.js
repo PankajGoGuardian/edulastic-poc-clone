@@ -74,7 +74,7 @@ smoothscroll.polyfill();
         a.parentNode.insertBefore(n, a);
         analytics._loadOptions = e;
       };
-      analytics.SNIPPET_VERSION = "4.2.2";
+      analytics.SNIPPET_VERSION = AppConfig.segmentVersion;
       analytics.load();
     }
 })();

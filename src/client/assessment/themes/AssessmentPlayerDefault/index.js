@@ -35,7 +35,7 @@ import { setUserAnswerAction } from "../../actions/answers";
 import { updateScratchpadAction, resetScratchPadDataAction } from "../../../common/ducks/scratchpad";
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
-import { showHintsAction } from "../../actions/userInteractions";
+import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -692,6 +692,7 @@ const enhance = compose(
       updateScratchPad: updateScratchpadAction,
       resetScratchPadData: resetScratchPadDataAction,
       updateTestPlayer: updateTestPlayerAction,
+      saveHintUsageData: saveHintUsageAction,
       showHints: showHintsAction
     }
   )

@@ -11,7 +11,6 @@ import {
 } from "@edulastic/common";
 import { themeColor, mainTextColor } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
-import { saveHintUsageAction } from "../../actions/userInteractions";
 
 const Hints = ({
   question,
@@ -131,14 +130,9 @@ Hints.defaultProps = {
   }
 };
 
-export default connect(
-  state => ({
-    showHints: state.test.showHints
-  }),
-  {
-    saveHintUsage: saveHintUsageAction
-  }
-)(Hints);
+export default connect(state => ({
+  showHints: state.test.showHints
+}))(Hints);
 
 const HintCont = styled.div`
   margin: 16px 0px;

@@ -324,6 +324,7 @@ class QuestionWrapper extends Component {
       loadScratchPad,
       isQuestionView,
       isExpressGrader,
+      saveHintUsage,
       theme,
       isLCBView,
       isGrade,
@@ -500,6 +501,7 @@ class QuestionWrapper extends Component {
                   <Hints
                     question={data}
                     enableMagnifier={enableMagnifier}
+                    saveHintUsage={saveHintUsage}
                     isStudent={userRole === "student"}
                     itemIndex={itemIndex}
                     isLCBView={isLCBView}

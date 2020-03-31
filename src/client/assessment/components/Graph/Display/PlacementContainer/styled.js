@@ -206,43 +206,47 @@ export const JSXBox = styled.div`
 `;
 
 export const LabelTop = WithMathFormula(styled.div`
-  height: 20px;
-  line-height: 20px;
+  height: 1.4rem;
+  line-height: 1rem;
   top: 0;
   left: 0;
   text-align: center;
+  vertical-align: middle;
   position: absolute;
   width: 100%;
 `);
 export const LabelBottom = WithMathFormula(styled.div`
-  height: 20px;
-  line-height: 20px;
+  height: 1.4rem;
+  line-height: 1rem;
   bottom: 0;
   left: 0;
   text-align: center;
+  vertical-align: middle;
   position: absolute;
   width: 100%;
 `);
 export const LabelRight = WithMathFormula(styled.div`
-  height: 20px;
-  line-height: 20px;
+  height: 1.4rem;
+  line-height: 1rem;
   transform: rotate(90deg);
   transform-origin: top right;
   bottom: 0;
   left: 0;
   text-align: center;
+  vertical-align: middle;
   position: absolute;
   width: 100%;
   padding-left: 40px;
 `);
 export const LabelLeft = WithMathFormula(styled.div`
-  height: 20px;
-  line-height: 20px;
+  height: 1.4rem;
+  line-height: 1rem;
   transform: rotate(-90deg);
   transform-origin: top left;
   bottom: 0;
   left: 0;
   text-align: center;
+  vertical-align: middle;
   position: absolute;
   width: 100%;
   padding-right: 40px;

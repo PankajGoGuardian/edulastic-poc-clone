@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { Row, Col } from "antd";
-
+import { Row, Col, Dropdown, Menu } from "antd";
+import { EduButton } from "@edulastic/common";
 import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
@@ -21,6 +21,7 @@ import { Placeholder } from "../../../common/components/loader";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
+import AddToGroupModal from "./components/AddToGroupModal";
 import {
   getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles
@@ -42,6 +43,14 @@ const PerformanceByStudents = ({
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
     performanceBandProfiles[0]?.performanceBand;
+
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
+
+  const [selectedRowKeys, onSelectChange] = useState([]);
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  };
 
   const [ddfilter, setDdFilter] = useState({
     gender: "all",
@@ -104,6 +113,17 @@ const PerformanceByStudents = ({
 
   const testName = get(settings, "selectedTest.title", "");
 
+  const menu = (
+    <Menu>
+      <Menu.Item key="add-to-group" onClick={() => setShowAddToGroupModal(true)}>
+        Add to Group
+      </Menu.Item>
+      {/* <Menu.Item key="remove-from-group">
+        Remove from Group
+      </Menu.Item> */}
+    </Menu>
+  );
+
   return (
     <>
       {loading ? (
@@ -113,6 +133,14 @@ const PerformanceByStudents = ({
         </>
       ) : (
         <UpperContainer>
+          <AddToGroupModal
+            title="Add To Group"
+            description="Add selected students to an existing group or create a new one"
+            onSubmit={() => {}}
+            visible={showAddToGroupModal}
+            onCancel={() => setShowAddToGroupModal(false)}
+            classList={[]}
+          />
           <StyledCard>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -134,6 +162,13 @@ const PerformanceByStudents = ({
                 <StyledH3>Student Performance | {testName}</StyledH3>
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
+                <StyledDropDownContainer padding="5px 0">
+                  <Dropdown overlay={menu}>
+                    <EduButton height="32px" width="180px">
+                      Actions
+                    </EduButton>
+                  </Dropdown>
+                </StyledDropDownContainer>
                 <StyledDropDownContainer>
                   <ControlDropDown
                     prefix={"Proficiency Band - "}
@@ -151,6 +186,7 @@ const PerformanceByStudents = ({
                   onCsvConvert={onCsvConvert}
                   columns={_columns}
                   dataSource={tableData}
+                  rowSelection={rowSelection}
                   colouredCellsNo={4}
                   rightAligned={6}
                   pagination={pagination}

@@ -19,7 +19,8 @@ export const UpperContainer = styled.div`
 `;
 
 export const StyledDropDownContainer = styled.div`
-  .control-dropdown {
+  padding: ${props => props.padding || "0px"};
+  button {
     margin-bottom: 15px;
   }
 `;

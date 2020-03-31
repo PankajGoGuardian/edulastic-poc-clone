@@ -520,16 +520,11 @@ const EditClassification = ({
               <CustomStyleBtn onClick={deleteBgImg}>{t("component.classification.deleteBackImage")}</CustomStyleBtn>
             </FlexContainer>
           ) : (
-            <Dragger
-              className="super-dragger styled-dragger"
-              {...uploadProps}
-              style={{ padding: 0, margin: 0, background: "transparent" }}
-              showUploadList={false}
-            >
+            <Upload {...uploadProps} showUploadList={false}>
               <CustomStyleBtn id={getFormattedAttrId(`${item?.title}-${t("component.classification.addBackImage")}`)}>
                 {t("component.classification.addBackImage")}
               </CustomStyleBtn>
-            </Dragger>
+            </Upload>
           )}
         </Question>
 

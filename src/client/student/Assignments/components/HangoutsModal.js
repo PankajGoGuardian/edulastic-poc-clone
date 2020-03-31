@@ -23,7 +23,7 @@ const HangoutsModal = ({
   classList = [],
   isStudent
 }) => (
-  <StyledModal visible={visible} footer={null} onCancel={onCancel}>
+  <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
     {loading ? (
       <Spin size="small" />
     ) : (
@@ -34,10 +34,10 @@ const HangoutsModal = ({
           </StyledDiv>
           <IconClose height={20} width={20} onClick={onCancel} />
         </StyledCol>
-        <StyledCol span={24} marginBottom="20px" justify="left">
+        <StyledCol span={24} marginBottom="5px" justify="left">
           <StyledDiv color={darkGrey2}>{description}</StyledDiv>
         </StyledCol>
-        <StyledCol span={24} marginBottom="30px">
+        <StyledCol span={24} marginBottom={!isStudent && selected?.googleId ? "5px" : "20px"}>
           <StyledSelect
             placeholder="Select Class"
             dropdownStyle={{ zIndex: 2000 }}
@@ -52,13 +52,13 @@ const HangoutsModal = ({
           </StyledSelect>
         </StyledCol>
         {!isStudent && selected?.googleId && (
-          <StyledCol span={24} marginBottom="25px" justify="left">
+          <StyledCol span={24} marginBottom="15px" justify="left">
             <Checkbox checked={checked} onChange={onCheckUncheck}>
               <StyledDiv fontStyle="11px/15px Open Sans">SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM</StyledDiv>
             </Checkbox>
           </StyledCol>
         )}
-        <StyledCol span={24} marginBottom="10px">
+        <StyledCol span={24}>
           <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
             Cancel
           </EduButton>

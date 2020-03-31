@@ -10,7 +10,7 @@ import { questionType as constantsQuestionType, questionType } from "@edulastic/
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
-import { Row, Col, Layout, Button, Pagination } from "antd";
+import { Row, Col, Layout, Button, Pagination, message } from "antd";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -272,6 +272,10 @@ class Container extends Component {
   };
 
   handleDeletePassageWidget = widgetIndex => {
+    if (widgetIndex === 0) {
+      message.error("There should be at least one passage in item");
+      return null;
+    }
     const { deleteWidgetFromPassage } = this.props;
     deleteWidgetFromPassage(widgetIndex);
   };

@@ -865,7 +865,7 @@ export function* updateItemSaga({ payload }) {
     if (payload.testId) {
       data.testId = testId;
     }
-    const { itemLevelScoring } = data;
+    const { itemLevelScoring, isPassageWithQuestions } = data;
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE, questionType.TEXT];
@@ -889,6 +889,11 @@ export function* updateItemSaga({ payload }) {
     }
 
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
+
+    if (isPassageWithQuestions && !questions.length) {
+      message.error("Cannot save without questions");
+      return null;
+    }
     questions = produce(questions, draft => {
       draft.map((q, index) => {
         const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(q);
@@ -940,6 +945,14 @@ export function* updateItemSaga({ payload }) {
       }
     }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {};
+    const { structure } = passageData;
+    if (structure) {
+      const { widgets = [] } = structure;
+      if (isPassageWithQuestions && !widgets.length) {
+        message.error("Cannot save without passages");
+        return null;
+      }
+    }
     // return;
     const [{ testId, ...item }] = yield all([
       call(testItemsApi.updateById, payload.id, data, payload.testId),

@@ -136,7 +136,12 @@ const BarChart = ({
       ref={targetRef}
     >
       <g transform={`translate(${margin.left}, ${margin.top})`}>
-        <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} active={active} />
+        <BarsAxises
+          lines={data}
+          gridParams={gridParams}
+          displayGridlines={displayVerticalLines(showGridlines)}
+          active={active}
+        />
 
         <HorizontalLines
           paddingTop={20}
@@ -161,12 +166,14 @@ const BarChart = ({
 
         <ArrowPair getActivePoint={getActivePoint} />
 
-        <ValueLabel
-          getActivePoint={getActivePoint}
-          getActivePointValue={getActivePointValue}
-          getActiveFractionFormat={getActiveFractionFormat}
-          active={active}
-        />
+        {gridParams.displayPositionOnHover && (
+          <ValueLabel
+            getActivePoint={getActivePoint}
+            getActivePointValue={getActivePointValue}
+            getActiveFractionFormat={getActiveFractionFormat}
+            active={active}
+          />
+        )}
       </g>
     </svg>
   );

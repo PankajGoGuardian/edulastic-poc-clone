@@ -168,12 +168,14 @@ const LineChart = ({
 
         <ArrowPair getActivePoint={getActivePoint} />
 
-        <ValueLabel
-          getActivePoint={getActivePoint}
-          getActivePointValue={getActivePointValue}
-          getActiveFractionFormat={getActiveFractionFormat}
-          active={active}
-        />
+        {gridParams.displayPositionOnHover && (
+          <ValueLabel
+            getActivePoint={getActivePoint}
+            getActivePointValue={getActivePointValue}
+            getActiveFractionFormat={getActiveFractionFormat}
+            active={active}
+          />
+        )}
 
         <Points
           item={item}

@@ -164,12 +164,14 @@ const Histogram = ({
 
         <ArrowPair getActivePoint={getActivePoint} />
 
-        <ValueLabel
-          getActivePoint={getActivePoint}
-          getActivePointValue={getActivePointValue}
-          getActiveFractionFormat={getActiveFractionFormat}
-          active={active}
-        />
+        {gridParams.displayPositionOnHover && (
+          <ValueLabel
+            getActivePoint={getActivePoint}
+            getActivePointValue={getActivePointValue}
+            getActiveFractionFormat={getActiveFractionFormat}
+            active={active}
+          />
+        )}
       </g>
     </svg>
   );

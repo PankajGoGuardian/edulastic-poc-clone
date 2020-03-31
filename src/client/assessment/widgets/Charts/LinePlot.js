@@ -138,12 +138,9 @@ const LinePlot = ({
 
       <ArrowPair getActivePoint={getActivePoint} />
 
-      <ValueLabel
-        getActivePoint={getActivePoint}
-        getActivePointValue={getActivePointValue}
-        active={active}
-        gridParams={gridParams}
-      />
+      {gridParams.displayPositionOnHover && (
+        <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
+      )}
     </svg>
   );
 };

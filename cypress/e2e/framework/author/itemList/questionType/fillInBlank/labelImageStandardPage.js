@@ -221,7 +221,7 @@ class LabelImageStandardPage {
 
   checkAddedAnswers = (index, text) => this.getAddedAnsByindex(index).should("contain.text", text);
 
-  getPointsEditor = () => cy.get('[id="label-image-with-drag-&-drop-points"]');
+  getPointsEditor = () => cy.get('[id="label-image-with-text-points"]');
 
   updatePoints = points => this.getPointsEditor().type(`{selectall}${points}`);
 
@@ -283,7 +283,7 @@ class LabelImageStandardPage {
 
   getShuffleResponse = () => cy.get('[data-cy="shuffle-check"]');
 
-  getShuffleDropDown = () => cy.get('[data-cy="multi"]').should("be.visible");
+  getShuffleDropDown = () => cy.get('[data-cy="shuffle-options"]');
 
   getTransparentResponse = () => cy.get('[data-cy="transparent-check"]');
 
@@ -292,61 +292,57 @@ class LabelImageStandardPage {
   addNewChoiceOnResponse(resIndex) {
     const selector = `[data-cy=add-new-ch-res-${resIndex}]`;
     cy.get(selector)
-      .should("be.visible")
+      //.should("be.visible")
       .click();
     return this;
   }
 
   getChoiceByIndexRes = (resIndex, choiceIndex) => {
-    const selector = `[data-cy=choice-response-${resIndex}]`;
+    const selector = `[data-cy="choice-response-container_${resIndex}"]`;
+    // const selector = `[data-cy="choice_prefix_${resIndex}"]`;
     return cy
       .get(selector)
-      .children()
-      .find(`[data-cy=edit_prefix_${choiceIndex}]`);
+      .find(`[data-cy="choice_prefix_${choiceIndex}"]`)
+      .find("input");
   };
 
-  getAllChoicesRes = resIndex => {
-    const selector = `[data-cy=choice-response-${resIndex}]`;
-    return cy
-      .get(selector)
-      .children()
-      .first()
-      .next()
-      .children();
-  };
+  getAllChoicesRes = resIndex =>
+    // const selector = `[data-cy=choice-response-${resIndex}]`;
+    cy.get(`[data-cy="choice-response-container_${resIndex}"]>div`).then($element => {
+      if ($element.find(".sortable-item-container").length > 0)
+        return cy.wrap($element.find(".sortable-item-container"));
+      else return [];
+    });
 
   deleteChoiceIndexRes = (resIndex, choiceIndex) => {
-    const selector = `[data-cy=choice-response-${resIndex}]`;
+    const selector = `[data-cy="choice-response-container_${resIndex}"]`;
     return cy
       .get(selector)
-      .children()
       .find(`[data-cy=choice_prefix_${choiceIndex}]`)
-      .find('[data-cy="deleteButton"]')
+      .find("svg")
       .click();
   };
 
   checkAddedAnswersRes(resIndex, value) {
-    const selector = `[data-cy=dropdown-board-${resIndex}]`;
+    const selector = `[data-cy="dropdown-res-${resIndex}"]`;
     cy.get(selector)
-      .next()
       .should("be.visible")
-      .click()
       .click();
+
     cy.contains("li", value);
     return this;
   }
 
   getDropDownByRes = resIndex => {
-    const selector = `[data-cy=dropdown-board-${resIndex}]`;
-    return cy
-      .get(selector)
-      .next()
-      .should("be.visible");
+    const selector = `[data-cy="dropdown-res-${resIndex}"]`;
+    return cy.get(selector);
+    // .next()
+    // .should("be.visible");
   };
 
   getDropDownMenuItem = (resIndex, itemIndex) => {
     const selector = `[data-cy=dropdown-res-item-${resIndex}-${itemIndex}]`;
-    return cy.get(selector).should("be.visible");
+    return cy.get(selector); // .should("be.visible");
   };
 
   checkShuffled = (resIndex, content) => {

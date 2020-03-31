@@ -6,6 +6,7 @@ import { questionType, questionGroup, questionTypeKey } from "../../../../consta
 
 class ClozeDropDownPage {
   constructor() {
+    this.editItemPage = new EditItemPage();
     this.editToolBar = new EditToolBar();
     this.header = new Header();
     this.templateMarkupBar = new TemplateMarkupBar();
@@ -45,9 +46,7 @@ class ClozeDropDownPage {
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.contains("ADVANCED OPTIONS")
-      .should("be.visible")
-      .click();
+    this.editItemPage.showAdvancedOptions();
     return this;
   }
 
@@ -77,9 +76,7 @@ class ClozeDropDownPage {
   getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
 
   addAlternate() {
-    cy.get('[data-cy="tabs"]')
-      .find("button")
-      .click({ force: true });
+    cy.get('[data-cy="alternative"]').click({ force: true });
     return this;
   }
 
@@ -102,9 +99,13 @@ class ClozeDropDownPage {
   };
 
   // on preview
-  getResponseOnPreview = () => cy.get(".response-btn").should("be.visible");
+  getResponseOnPreviewByIndex = index =>
+    cy
+      .get('[data-cy="answer-box"]')
+      .eq(index - 1)
+      .should("be.visible");
 
-  getShowAnsBoxOnPreview = () => cy.get(".correctanswer-box").should("be.visible");
+  getShowAnsBoxOnPreview = () => cy.get(".response-btn").should("be.visible");
 
   createQuestion = (queKey = "default", queIndex = 0, onlyItem = true) => {
     const item = new EditItemPage();

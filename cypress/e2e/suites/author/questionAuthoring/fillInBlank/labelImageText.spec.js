@@ -8,7 +8,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     group: "Fill in the Blanks",
     queType: "Label Image with Text",
     queText: "Indian state known as garden spice is:",
-    choices: ["Answer0", "Answer1", "Answer2"],
+    choices: [],
     alterate: ["KL"],
     extlink: "www.testdomain.com",
     formattext: "formattedtext",
@@ -64,22 +64,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
 
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
-          question
-            .getDropZoneImageContainer()
-            .find("img")
-            .should("have.attr", "src");
+          cy.wait(3000); // wait to image render
         });
       });
 
       it(" > Width(px)", () => {
         question.changeImageWidth(queData.imageWidth);
-        question.getImageWidth().should("have.attr", "width", queData.imageWidth);
+        question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
-      it(" > Image alternative text", () => {
+      /*  it(" > Image alternative text", () => {
         question.inputImageAlternate(queData.imageAlternate);
         question.checkImageAlternate(queData.imageAlternate);
-      });
+      }); */
 
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
@@ -124,8 +121,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Update points", () => {
         question
           .getPointsEditor()
-          .clear()
-          .type(`${queData.points}`)
+          .type(`{selectall}${queData.points}`)
           .should("have.value", queData.points)
           .type("{uparrow}")
           .type("{uparrow}")
@@ -134,6 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
       it(" > Add correct Answers", () => {
         question.getAnswersFieldOnTextPage().each(($el, index) => {
+          queData.choices.push(`Answer${index}`);
           cy.wrap($el)
             .type(queData.choices[index])
             .should("have.value", queData.choices[index]);
@@ -177,14 +174,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
             .should("have.value", queData.choices[index]);
         });
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .children()
-              .should("contain", "score: 3/3");
-          });
+        preview.checkScore("3/3");
       });
 
       it(" > Click on ShowAnswer", () => {
@@ -224,8 +214,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
-      question.header.save();
-      editItem.getEditButton().click();
+      question.header.saveAndgetId().then(id => {
+        cy.saveItemDetailToDelete(id);
+        cy.server();
+        cy.route("PUT", "**/publish?status=published").as("publish");
+        cy.get('[data-cy="publishItem"]').click();
+        cy.contains("span", "PROCEED").click({ force: true });
+        cy.wait("@publish");
+
+        // edit
+        itemList.searchFilters.clearAll();
+        itemList.searchFilters.getAuthoredByMe();
+        itemList.clickOnViewItemById(id);
+        itemList.itemPreview.clickEditOnPreview();
+        testItemId = id;
+      });
     });
 
     context(" > [Tc_403]:Tc_2 => Upload image", () => {
@@ -246,10 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         }); */
 
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
-          question
-            .getDropZoneImageContainer()
-            .find("img")
-            .should("have.attr", "src");
+          cy.wait(3000); // wait to image render
         });
 
         // test with local image
@@ -264,13 +264,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
       it(" > Width(px)", () => {
         question.changeImageWidth(queData.imageWidth);
-        question.getImageWidth().should("have.attr", "width", queData.imageWidth);
+        question.getImageWidth().should("have.css", "width", `${queData.imageWidth}px`);
       });
 
-      it(" > Image alternative text", () => {
+      /* it(" > Image alternative text", () => {
         question.inputImageAlternate(queData.imageAlternate);
         question.checkImageAlternate(queData.imageAlternate);
-      });
+      }); */
 
       it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
@@ -315,8 +315,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       it(" > Update points", () => {
         question
           .getPointsEditor()
-          .clear()
-          .type(`${queData.points}`)
+          .type(`{selectall}${queData.points}`)
           .should("have.value", queData.points)
           .type("{uparrow}")
           .type("{uparrow}")
@@ -353,7 +352,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
     context(" > [Tc_406]:Tc_5 => Save Question", () => {
       it(" > Click on save button", () => {
-        question.header.save();
+        question.header.save(true);
         cy.url().should("contain", "item-detail");
       });
     });
@@ -368,14 +367,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
             .should("have.value", queData.choices[index]);
         });
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .children()
-              .should("contain", "score: 3/3");
-          });
+        preview.checkScore("3/3");
       });
 
       it(" > Click on ShowAnswer", () => {
@@ -411,19 +403,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
   });
 
   context(" > [Tc_410]:Tc_1 => Delete option", () => {
-    before("create dummy question to delete", () => {
-      editItem.createNewItem();
-      // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
-      question.header.save();
+    before(" > Click on delete button in Item Details page", () => {
+      itemList.sidebar.clickOnItemBank();
+      itemList.searchFilters.clearAll();
+      itemList.searchFilters.getAuthoredByMe();
     });
-
     it(" > Click on delete button in Item Details page", () => {
-      editItem
-        .getDelButton()
-        .should("have.length", 1)
-        .click()
-        .should("have.length", 0);
+      itemList.clickOnViewItemById(testItemId);
+      itemList.itemPreview.clickOnDeleteOnPreview();
+      itemList.itemPreview.closePreiview();
+      itemList.verifyAbsenceOfitemById(testItemId);
     });
   });
 });

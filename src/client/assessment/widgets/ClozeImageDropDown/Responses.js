@@ -131,7 +131,7 @@ class Response extends Component {
         cleanSections={cleanSections}
       >
         {options.map((option, index) => (
-          <PaddingDiv top={index > 0 ? "30" : "0"}>
+          <PaddingDiv top={index > 0 ? "30" : "0"} data-cy={`choice-response-container_${index}`}>
             <Subtitle
               id={getFormattedAttrId(`${item?.title}-${t("component.cloze.imageDropDown.response")} ${index + 1}`)}
             >

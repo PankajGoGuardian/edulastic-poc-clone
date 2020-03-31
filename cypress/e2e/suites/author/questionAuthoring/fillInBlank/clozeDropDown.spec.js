@@ -3,6 +3,7 @@ import ClozeDropDownPage from "../../../../framework/author/itemList/questionTyp
 import FileHelper from "../../../../framework/util/fileHelper";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import { SCORING_TYPE } from "../../../../framework/constants/questionAuthoring";
+import { queColor } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Drop Down" type question`, () => {
   const queData = {
@@ -42,7 +43,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       // enter question
       question
         .getQuestionEditor()
-        .clear()
+        .click()
+        .type("{selectall}{backspace}", { force: true })
         .type(queData.queText)
         .should("have.text", queData.queText)
         .click();
@@ -72,15 +74,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       preview = editItem.header.preview();
       // enter right ans and validate
       question.setChoiceForResponseIndex(0, queData.correctAns);
-
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
-
-          question.getResponseOnPreview().should("have.class", "right");
-        });
+      preview.checkScore("1/1");
+      question.getResponseOnPreviewByIndex(1).should("have.css", "background-color", queColor.LIGHT_GREEN);
 
       preview
         .getClear()
@@ -91,20 +86,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       // enter wrong ans and validate
       question.setChoiceForResponseIndex(0, queData.choices[0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/1");
+      preview.checkScore("0/1");
 
-          question.getResponseOnPreview().should("have.class", "wrong");
-        });
+      question.getResponseOnPreviewByIndex(1).should("have.css", "background-color", queColor.LIGHT_RED);
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get(".right .wrong").should("have.length", 0);
+          cy.get('[data-cy="answer-box"]').should("have.length", 0);
         });
       // show ans and verify
       preview
@@ -127,7 +117,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
 
       question
         .getQuestionEditor()
-        .clear()
+        .click()
+        .type("{selectall}{backspace}", { force: true })
         .type(queData.queText)
         .should("have.text", queData.queText);
 
@@ -155,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         .getClear()
         .click()
         .then(() => {
-          cy.get("div.right,div.wrong").should("have.length", 0);
+          cy.get('[data-cy="answer-box"]').should("have.length", 0);
           preview.header.edit();
         });
     });
@@ -176,12 +167,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][1]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/1");
-        });
+      preview.checkScore("1/1");
 
       preview.header.edit();
 
@@ -195,29 +181,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][1]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/2");
-        });
+      preview.checkScore("1/2");
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("div.right,div.wrong").should("have.length", 0);
+          cy.get('[data-cy="answer-box"]').should("have.length", 0);
         });
 
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/2");
-        });
+      preview.checkScore("0/2");
     });
 
     /*  it(" > [clz_dropdown_scoring]: Test score with min score if attempted", () => {
@@ -250,29 +226,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][0]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 0/6");
-        });
+      preview.checkScore("0/6");
 
       preview
         .getClear()
         .click()
         .then(() => {
-          cy.get("div.right,div.wrong").should("have.length", 0);
+          cy.get('[data-cy="answer-box"]').should("have.length", 0);
         });
 
       question.setChoiceForResponseIndex(0, queData.forScoringChoices[0][1]);
       question.setChoiceForResponseIndex(1, queData.forScoringChoices[1][0]);
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 1/6");
-        });
+      preview.checkScore("1/6");
     });
 
     /*  it(" > [clz_dropdown_scoring]: Test score with max score", () => {

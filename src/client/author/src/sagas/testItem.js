@@ -5,6 +5,7 @@ import { testItemsApi } from "@edulastic/api";
 import { LOCATION_CHANGE, push } from "connected-react-router";
 import { questionType } from "@edulastic/constants";
 import { evaluateItem } from "../utils/evalution";
+import { Effects } from "@edulastic/common";
 
 import {
   CREATE_TEST_ITEM_REQUEST,
@@ -115,9 +116,7 @@ function* evaluateAnswers({ payload }) {
     const correctDropdownAnswer = _get(question, "validation.validResponse.dropdown.value", []);
     const correctMathUnitAnswer = _get(question, "validation.validResponse.mathUnits.value", []);
 
-    const altAnswers = _get(question, "validation.altResponses", []).map(
-      altAns => _get(altAns, "value", []).length
-    );
+    const altAnswers = _get(question, "validation.altResponses", []).map(altAns => _get(altAns, "value", []).length);
 
     yield put({
       type: CLEAR_ITEM_EVALUATION,
@@ -239,7 +238,7 @@ function* testItemLocationChangeSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
-    yield takeEvery(UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
+    yield Effects.throttleAction(10000, UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
     yield takeEvery(CHECK_ANSWER, evaluateAnswers),
     yield takeEvery(CHANGE_VIEW, setAnswerSaga),
     yield takeEvery(SHOW_ANSWER, showAnswers),

@@ -12,6 +12,7 @@ import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import produce from "immer";
+import { Effects } from "@edulastic/common";
 import {
   loadQuestionsAction,
   addItemsQuestionAction,
@@ -1441,7 +1442,7 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
-    yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
+    yield Effects.throttleAction(10000, UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(UPDATE_ITEM_DOC_BASED_REQUEST, updateItemDocBasedSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),

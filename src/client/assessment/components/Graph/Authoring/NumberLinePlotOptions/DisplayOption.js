@@ -54,18 +54,23 @@ const DisplayOptions = ({ t, uiStyle, canvas, fontSizeList, numberlineAxis, setO
       <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.minWidth")}</Label>
-          <TextInputStyled type="text" name="layoutWidth" onChange={handleInputChange} value={uiStyle.layoutWidth} />
+          <TextInputStyled type="number" name="layoutWidth" onChange={handleInputChange} value={uiStyle.layoutWidth} />
         </Col>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.height")}</Label>
-          <TextInputStyled type="text" name="layoutHeight" onChange={handleInputChange} value={uiStyle.layoutHeight} />
+          <TextInputStyled
+            type="number"
+            name="layoutHeight"
+            onChange={handleInputChange}
+            value={uiStyle.layoutHeight}
+          />
         </Col>
       </Row>
       <Row gutter={24}>
         <Col md={12}>
           <Label>{t("component.graphing.layoutoptions.linemargin")}</Label>
           <TextInputStyled
-            type="text"
+            type="number"
             name="margin"
             placeholder="0"
             value={canvas.margin === 0 ? null : canvas.margin}

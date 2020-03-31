@@ -189,3 +189,13 @@ export const getManageTabLabelSelector = createSelector(
     return "Manage School";
   }
 );
+
+export const getSaSchoolsSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "schools", [])
+);
+
+export const getSaSchoolsSortedSelector = createSelector(
+  getSaSchoolsSelector,
+  schools => schools.sort((a, b) => a.name?.localeCompare(b.name))
+);

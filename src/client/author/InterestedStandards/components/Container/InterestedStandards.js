@@ -49,8 +49,12 @@ class InterestedStandards extends Component {
   }
 
   componentDidMount() {
-    const { loadInterestedStandards, userOrgId, getCurriculums } = this.props;
-    loadInterestedStandards({ orgId: userOrgId });
+    const { loadInterestedStandards, userOrgId, getCurriculums, role, schoolId } = this.props;
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
+    loadInterestedStandards({
+      orgId: isSchoolLevel ? schoolId : userOrgId,
+      orgType: isSchoolLevel ? "institution" : "district"
+    });
     getCurriculums();
   }
 
@@ -101,7 +105,7 @@ class InterestedStandards extends Component {
   };
 
   updateMyStandardSets = updatedStandards => {
-    const { userOrgId, curriculums, updateInterestedStandards } = this.props;
+    const { userOrgId, curriculums, updateInterestedStandards, role, schoolId } = this.props;
     const curriculumsData = [];
     for (let i = 0; i < updatedStandards.length; i++) {
       const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
@@ -111,9 +115,10 @@ class InterestedStandards extends Component {
         subject: selStandards[0].subject
       });
     }
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
     const standardsData = {
-      orgId: userOrgId,
-      orgType: "district",
+      orgId: isSchoolLevel ? schoolId : userOrgId,
+      orgType: isSchoolLevel ? "institution" : "district",
       curriculums: curriculumsData
     };
     updateInterestedStandards(standardsData);
@@ -135,7 +140,6 @@ class InterestedStandards extends Component {
     const { loading, updating, saving, history, curriculums, interestedStaData, role } = this.props;
     const readOnly = role === roleuser.SCHOOL_ADMIN;
     const showSpin = loading || updating || saving;
-
     const { standardSetsModalVisible } = this.state;
     const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
     let isDisableSaveBtn = true;
@@ -158,7 +162,7 @@ class InterestedStandards extends Component {
         for (let j = 0; j < selectedStandards[i].length; j++) {
           subjectStandards.push(
             <StyledSubjectLine>
-              {readOnly ? null : (
+              {(selectedStandards[i][j]?.orgType !== "district" || !readOnly) && (
                 <StyledSubjectCloseButton onClick={e => this.closeCurriculum(e, selectedStandards[i][j]._id)}>
                   <Icon type="close" />
                 </StyledSubjectCloseButton>
@@ -190,40 +194,30 @@ class InterestedStandards extends Component {
             )}
             <Row>
               <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
-                <StyledCheckbox
-                  disabled={readOnly}
-                  onChange={this.updatePreferences}
-                  name="showAllStandards"
-                  checked={showAllStandards}
-                >
+                <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
                   Show all standards to the users
                 </StyledCheckbox>
                 <StyledCheckbox
-                  disabled={readOnly}
                   onChange={this.updatePreferences}
                   name="includeOtherStandards"
                   checked={includeOtherStandards}
                 >
                   Include other standards opted by the users
                 </StyledCheckbox>
-                {readOnly ? null : (
-                  <Button
-                    style={{ width: "260px" }}
-                    type="primary"
-                    onClick={this.showMyStandardSetsModal}
-                    shape="round"
-                    ghost
-                  >
-                    Select your standard sets
-                  </Button>
-                )}
+                <Button
+                  style={{ width: "260px" }}
+                  type="primary"
+                  onClick={this.showMyStandardSetsModal}
+                  shape="round"
+                  ghost
+                >
+                  Select your standard sets
+                </Button>
               </Col>
               <Col span={12}>
-                {readOnly ? null : (
-                  <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
-                    Save
-                  </StyledSaveButton>
-                )}
+                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
+                  Save
+                </StyledSaveButton>
               </Col>
             </Row>
 
@@ -251,6 +245,7 @@ const enhance = compose(
       loading: get(state, ["interestedStandardsReducer", "loading"], false),
       saving: get(state, ["interestedStandardsReducer", "saving"], false),
       updating: get(state, ["interestedStandardsReducer", "updating"], false),
+      schoolId: get(state, "user.saSettingsSchool"),
       userOrgId: getUserOrgId(state),
       curriculums: getCurriculumsListSelector(state),
       role: getUserRole(state)

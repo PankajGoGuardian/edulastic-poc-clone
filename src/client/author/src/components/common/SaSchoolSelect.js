@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { setSettingsSaSchoolAction } from "../../../../student/Login/ducks";
 import { Row, Col, Select } from "antd";
 import { get } from "lodash";
+import { setSettingsSaSchoolAction } from "../../../../student/Login/ducks";
+import { getSaSchoolsSortedSelector } from "../../selectors/user";
 
 function SaSchoolSelect({ schools, selected, setSchool, role }) {
   return role === "school-admin" ? (
@@ -20,7 +21,7 @@ function SaSchoolSelect({ schools, selected, setSchool, role }) {
 
 export default connect(
   state => ({
-    schools: get(state, "user.user.orgData.schools", []),
+    schools: getSaSchoolsSortedSelector(state),
     role: get(state, "user.user.role"),
     selected: get(state, "user.saSettingsSchool")
   }),

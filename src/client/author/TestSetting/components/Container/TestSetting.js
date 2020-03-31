@@ -70,8 +70,9 @@ class TestSetting extends Component {
     /**
      * school selection is changed
      */
-    if (prevProps.schoolId != this.props.schoolId && this.props.schoolId) {
-      loadTestSetting({ orgType: "institution", orgId: this.props.schoolId });
+    const { schoolId, loadTestSetting } = this.props;
+    if (prevProps.schoolId != schoolId && schoolId) {
+      loadTestSetting({ orgType: "institution", orgId: schoolId });
     }
   }
 

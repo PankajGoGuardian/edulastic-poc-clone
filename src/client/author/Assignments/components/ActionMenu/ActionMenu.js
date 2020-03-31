@@ -65,7 +65,10 @@ const ActionMenu = ({
     <Container>
       <StyledMenu>
         <Menu.Item data-cy="assign" key="assign">
-          <Link to={`/author/assignments/${currentTestId}`} rel="noopener noreferrer">
+          <Link
+            to={{ pathname: `/author/assignments/${currentTestId}`, state: { fromAssignments: true } }}
+            rel="noopener noreferrer"
+          >
             <img alt="icon" src={responsiveIcon} />
             <SpaceElement />
             Assign

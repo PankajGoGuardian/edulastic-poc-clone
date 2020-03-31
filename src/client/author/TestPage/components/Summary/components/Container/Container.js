@@ -73,7 +73,7 @@ const Summary = ({
     const filteredCollections = orgCollections
       .filter(item => bucketIds.includes(item.bucketId))
       .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
-    !test.collections.length && filteredCollections.length && onChangeCollection(null, filteredCollections);
+    !test?.collections?.length && filteredCollections?.length && onChangeCollection(null, filteredCollections);
   }, [lastUsedCollectionList]);
 
   const breadcrumbData = [

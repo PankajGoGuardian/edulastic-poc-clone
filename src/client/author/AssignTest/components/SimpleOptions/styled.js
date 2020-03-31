@@ -390,3 +390,8 @@ export const Title = styled.div`
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
 `;
+
+export const TimeSpentInput = styled(Input)`
+  width: 30%;
+  margin: 0 30px;
+`;

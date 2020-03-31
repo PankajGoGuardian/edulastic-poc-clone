@@ -1,5 +1,6 @@
-import { Anchor, Radio, Select, Input, Button } from "antd";
+import { Anchor, Radio, Select, Input, Button, Col } from "antd";
 import styled from "styled-components";
+import { titleColor } from "@edulastic/colors";
 
 import {
   mobileWidth,
@@ -307,4 +308,14 @@ export const RadioWrapper = styled(Block)`
       }
     }
   }
+`;
+
+export const StyledCol = styled(Col)`
+  display: flex;
+  align-items: center;
+`;
+
+export const Label = styled.label`
+  font-weight: 600;
+  color: ${titleColor};
 `;

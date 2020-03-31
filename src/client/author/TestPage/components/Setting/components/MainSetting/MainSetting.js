@@ -1,8 +1,8 @@
-import { blueBorder, green, red, themeColor } from "@edulastic/colors";
+import { blueBorder, green, red, themeColor, lightGrey9 } from "@edulastic/colors";
 import { CheckboxLabel, RadioBtn, withWindowScroll, SelectInputStyled, TextInputStyled } from "@edulastic/common";
 import { roleuser, test as testContants } from "@edulastic/constants";
-import { IconCaretDown } from "@edulastic/icons";
-import { Anchor, Col, Input, message, Row, Radio, Select, Switch } from "antd";
+import { IconCaretDown, IconInfo } from "@edulastic/icons";
+import { Anchor, Col, Input, message, Row, Radio, Select, Switch, Tooltip } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -38,7 +38,9 @@ import {
   StyledSelect,
   Title,
   RadioGroup,
-  RadioWrapper
+  RadioWrapper,
+  StyledCol,
+  Label
 } from "./styled";
 import SubscriptionsBlock from "./SubscriptionsBlock";
 
@@ -244,6 +246,20 @@ class MainSetting extends Component {
     this.updateTestData("passwordExpireIn")(value);
   };
 
+  updateTimedTest = attr => value => {
+    const { totalItems, setTestData } = this.props;
+    if (value) {
+      setTestData({
+        [attr]: value,
+        allowedTime: totalItems * 60 * 1000
+      });
+      return;
+    }
+    setTestData({
+      [attr]: value
+    });
+  };
+
   render() {
     const { enable, showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
     const {
@@ -284,7 +300,10 @@ class MainSetting extends Component {
       standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
-      showMagnifier = true
+      showMagnifier = true,
+      timedAssignment,
+      allowedTime,
+      pauseAllowed
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -323,6 +342,9 @@ class MainSetting extends Component {
         return settingCategoriesFeatureMap[category.id];
       }
     });
+
+    // TODO: assessmentSuperPowersTimedTest should be coming from BE, remove this once BE is updated
+    availableFeatures.push("assessmentSuperPowersTimedTest");
 
     const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
     const skinTypes = {
@@ -708,6 +730,71 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
+
+            {availableFeatures.includes("assessmentSuperPowersTimedTest") && (
+              <Block id="timed-test" smallSize={isSmallSize}>
+                <Title>Timed Test</Title>
+                <Body smallSize={isSmallSize}>
+                  <Row gutter="16">
+                    <StyledCol span={12}>
+                      <Switch
+                        disabled={!owner || !isEditable}
+                        defaultChecked={false}
+                        checked={timedAssignment}
+                        data-cy="timedAssignment"
+                        onChange={this.updateTimedTest("timedAssignment")}
+                      />
+                      {timedAssignment && (
+                        <>
+                          <TextInputStyled
+                            type="number"
+                            width="100px"
+                            size="large"
+                            style={{ margin: "0 30px" }}
+                            value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
+                            onChange={e => this.updateTestData("allowedTime")(e.target.value * 60 * 1000)}
+                            min={1}
+                            max={300}
+                            step={1}
+                          />
+                          <Label>Minutes</Label>
+                        </>
+                      )}
+                    </StyledCol>
+                    <Col
+                      span={12}
+                      justify="end"
+                      style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+                    >
+                      <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
+                        <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
+                      </Tooltip>
+                    </Col>
+                  </Row>
+                  {timedAssignment && (
+                    <>
+                      <br />
+                      <CheckboxLabel
+                        disabled={!owner || !isEditable}
+                        checked={pauseAllowed}
+                        data-cy="pauseAllowed"
+                        onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
+                      >
+                        Allow Students to exit test without submitting
+                      </CheckboxLabel>
+                    </>
+                  )}
+                  <Description>
+                    {" Select "}
+                    <BlueText> ON </BlueText>
+                    , If you want to set a time limit on the test. Adjust the minutes accordingly.
+                    <br />
+                    If yes, please also enter the time limit for the Test.
+                  </Description>
+                </Body>
+              </Block>
+            )}
+
             {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
               <Block id="test-content-visibility" smallSize={isSmallSize}>
                 <Title>Item content visibility to Teachers</Title>
@@ -981,7 +1068,8 @@ export default connect(
     performanceBandsData: get(state, ["performanceBandReducer", "profiles"], []),
     isReleaseScorePremium: getReleaseScorePremiumSelector(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    premium: state?.user?.user?.features?.premium
+    premium: state?.user?.user?.features?.premium,
+    totalItems: state?.tests?.entity?.summary?.totalItems
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Col, Radio, Select, Icon, Input, message } from "antd";
-import { green, red, blueBorder, themeColor } from "@edulastic/colors";
+import { Row, Col, Radio, Select, Icon, Input, message, Tooltip, Modal } from "antd";
+import { green, red, blueBorder, themeColor, lightGrey9 } from "@edulastic/colors";
 import { test, roleuser } from "@edulastic/constants";
 import { RadioBtn, CheckboxLabel } from "@edulastic/common";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -23,7 +23,8 @@ import {
   Block,
   StyledRadioGroup,
   RadioWrapper,
-  Title
+  Title,
+  TimeSpentInput
 } from "./styled";
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 import SubscriptionsBlock from "../../../TestPage/components/Setting/components/MainSetting/SubscriptionsBlock";
@@ -34,7 +35,7 @@ import { getUserRole } from "../../../src/selectors/user";
 import TestTypeSelector from "./TestTypeSelector";
 import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
-import { IconCaretDown } from "@edulastic/icons";
+import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
@@ -66,7 +67,9 @@ const Settings = ({
   isDocBased,
   forClassLevel = false,
   disableAnswerOnPaper,
-  premium
+  premium,
+  totalItems,
+  location
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -75,6 +78,14 @@ const Settings = ({
     message: ""
   });
   const [showAdvancedOption, toggleAdvancedOption] = useState(false);
+  const [assignmentLevelFlow, setAssignmentLevelFlow] = useState(false);
+
+  useEffect(() => {
+    if (location?.state?.fromAssignments) {
+      setAssignmentLevelFlow(true);
+    }
+  }, []);
+
   const advancedHandler = () => toggleAdvancedOption(!showAdvancedOption);
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {
@@ -134,6 +145,33 @@ const Settings = ({
     overRideSettings("passwordExpireIn", value);
   };
 
+  const updateTimedTestAttrs = (attr, value) => {
+    if (location?.state?.fromAssignments && assignmentLevelFlow) {
+      Modal.confirm({
+        title: "Do you want to Proceed ?",
+        content: "Changes made in Timed Assignment will impact all Students who are In Progress or Not Started.",
+        onOk: () => {
+          if (attr === "timedAssignment" && value) overRideSettings("allowedTime", totalItems * 60 * 1000);
+          overRideSettings(attr, value);
+          setAssignmentLevelFlow(false);
+          Modal.destroyAll();
+        },
+        onCancel: () => {
+          setAssignmentLevelFlow(true);
+        },
+        okText: "Proceed",
+        okType: "primary",
+        centered: true,
+        okButtonProps: {
+          type: "ghost"
+        }
+      });
+      return;
+    }
+    if (attr === "timedAssignment" && value) overRideSettings("allowedTime", totalItems * 60 * 1000);
+    overRideSettings(attr, value);
+  };
+
   const {
     markAsDone = tempTestSettings.markAsDone,
     releaseScore = tempTestSettings.releaseScore,
@@ -153,7 +191,10 @@ const Settings = ({
     standardGradingScale = tempTestSettings.standardGradingScale,
     testContentVisibility = tempTestSettings.testContentVisibility || testContentVisibilityOptions.ALWAYS,
     passwordExpireIn = tempTestSettings.passwordExpireIn || 15 * 60,
-    showMagnifier = tempTestSettings.showMagnifier
+    showMagnifier = tempTestSettings.showMagnifier,
+    timedAssignment = tempTestSettings.timedAssignment,
+    allowedTime = tempTestSettings.allowedTime,
+    pauseAllowed = tempTestSettings.pauseAllowed
   } = assignmentSettings;
 
   return (
@@ -540,6 +581,63 @@ const Settings = ({
           </StyledRowSettings>
         </FeaturesSwitch>
         {/* Evaluation Method */}
+
+        {/* Timed TEST */}
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersTimeSpent"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersTimeSpent"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16} height="40">
+            <Col span={12}>
+              <Label>TIMED TEST</Label>
+            </Col>
+            <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
+              <Row style={{ display: "flex", alignItems: "center" }}>
+                <AlignSwitchRight
+                  size="small"
+                  defaultChecked={false}
+                  checked={timedAssignment}
+                  onChange={value => updateTimedTestAttrs("timedAssignment", value)}
+                />
+                {timedAssignment && (
+                  <>
+                    <TimeSpentInput
+                      onChange={e => updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000)}
+                      size="large"
+                      value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
+                      type="number"
+                      min={1}
+                      max={300}
+                      step={1}
+                    />
+                    <Label>MINUTES</Label>
+                  </>
+                )}
+              </Row>
+              <Row>
+                {timedAssignment && (
+                  <CheckBoxWrapper>
+                    <CheckboxLabel
+                      checked={pauseAllowed}
+                      onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
+                    >
+                      <Label>Allow Students to exit test without submitting</Label>
+                    </CheckboxLabel>
+                  </CheckBoxWrapper>
+                )}
+              </Row>
+            </Col>
+            <Col span={2} justify="end" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+              <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
+                <IconInfo color={lightGrey9} style={{ cursor: "pointer" }} />
+              </Tooltip>
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
+        {/* Timed TEST */}
+
         {/* Test Content visibility */}
         {(userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN) && (
           <StyledRowSettings gutter={16}>
@@ -623,7 +721,9 @@ export default connect(
   state => ({
     userRole: getUserRole(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    premium: state?.user?.user?.features?.premium
+    premium: state?.user?.user?.features?.premium,
+    totalItems: state?.tests?.entity?.summary?.totalItems,
+    location: state?.router?.location
   }),
   null
 )(Settings);

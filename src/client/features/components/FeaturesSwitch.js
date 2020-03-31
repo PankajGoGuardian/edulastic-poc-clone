@@ -38,7 +38,8 @@ const FeaturesSwitch = props => {
     });
   });
 
-  return isAccessible
+  // TODO: Remove once BE is fixed
+  return isAccessible || props.inputFeatures === "assessmentSuperPowersTimeSpent"
     ? _children
     : actionOnInaccessible === "disabled"
     ? _children

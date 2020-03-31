@@ -19,6 +19,7 @@ module.exports = {
     { id: "require-password", title: "Require Password" },
     { id: "check-answer-tries-per-question", title: "Check Answer Tries Per Question" },
     { id: "evaluation-method", title: "Evaluation Method" },
+    { id: "timed-test", title: "Timed Test" },
     { id: "test-content-visibility", title: "Item content visibility to Teachers", adminFeature: true },
     { id: "performance-bands", title: "Performance Bands" },
     { id: "standards-proficiency", title: "Standards Proficiency" },
@@ -44,6 +45,7 @@ module.exports = {
     "answer-on-paper": "assessmentSuperPowersAnswerOnPaper",
     "require-password": "assessmentSuperPowersRequirePassword",
     "evaluation-method": "assessmentSuperPowersEvaluationMethod",
+    "timed-test": "assessmentSuperPowersTimedTest",
     "check-answer-tries-per-question": "assessmentSuperPowersCheckAnswerTries",
     "performance-bands": "performanceBands"
   },

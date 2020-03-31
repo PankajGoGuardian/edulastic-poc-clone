@@ -220,6 +220,11 @@ class Item extends Component {
       }
     }
 
+    const btnStyle = {
+      margin: "0px",
+      padding: "5px 10px"
+    };
+
     const allowDuplicate = allowDuplicateCheck(collections, orgCollections, isPlaylist ? "playList" : "test");
     return (
       <>
@@ -256,24 +261,24 @@ class Item extends Component {
               <Stars isPlaylist={isPlaylist} />
               <ButtonWrapper className="showHover">
                 {owner && status === "draft" && (
-                  <EduButton height="32px" onClick={this.moveToItem}>
+                  <EduButton style={btnStyle} height="32px" onClick={this.moveToItem}>
                     Edit
                   </EduButton>
                 )}
-                {allowDuplicate && status !== "draft" && (
-                  <EduButton height="32px" onClick={this.duplicate}>
-                    Duplicate
+                {status === "published" && (
+                  <EduButton style={btnStyle} height="32px" onClick={this.assignTest}>
+                    Assign
                   </EduButton>
                 )}
                 {(status === "published" || status === "draft") && (
-                  <EduButton height="32px" onClick={e => this.showPreviewModal(testId, e)}>
-                    Preview
-                  </EduButton>
-                )}
-                {status === "published" && (
-                  <EduButton height="32px" onClick={this.assignTest}>
-                    Assign
-                  </EduButton>
+                  <>
+                    <EduButton style={btnStyle} height="32px" onClick={e => this.showPreviewModal(testId, e)}>
+                      Preview
+                    </EduButton>
+                    <EduButton style={btnStyle} height="32px" onClick={this.openModal}>
+                      More
+                    </EduButton>
+                  </>
                 )}
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&

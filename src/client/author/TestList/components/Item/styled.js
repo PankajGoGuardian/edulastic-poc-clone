@@ -1,13 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import {
-  darkGrey,
-  lightGrey,
-  themeColor,
-  red,
-  cardTitleColor,
-  titleColor
-} from "@edulastic/colors";
+import { darkGrey, lightGrey, themeColor, red, cardTitleColor, titleColor } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -44,11 +37,7 @@ export const Container = styled(Card)`
         border-radius: 4px;
         opacity: 0.3;
         background: url(${props =>
-          props.isPlaylist
-            ? props.src
-              ? props.src
-              : "https://cdn2.edulastic.com/default/default-test-1.jpg"
-            : ""});
+          props.isPlaylist ? (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg") : ""});
       }
     }
   }
@@ -254,8 +243,7 @@ export const Header = styled.div`
   height: 100px;
   padding: 10px 15px;
   position: relative;
-  background: url(${props =>
-    props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg"});
+  background: url(${props => (props.src ? props.src : "https://cdn2.edulastic.com/default/default-test-1.jpg")});
   background-repeat: no-repeat;
   background-size: cover;
   &:hover {

@@ -30,6 +30,15 @@ import staticDropDownData from "../../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
 import { StyledFilterWrapper, StyledGoButton } from "../../../../../common/styled";
 
+const defaultStatus = { key: "DONE", title: "Completed" };
+const defaultSubject = { key: "All", title: "All Subjects" };
+const defaultGrade = { key: "All", title: "All Grades" };
+const defaultCourse = { key: "All", title: "All Courses" };
+const defaultGroup = { key: "All", title: "All Groups" };
+const defaultSchool = { key: "All", title: "All Schools" };
+const defaultTeacher = { key: "All", title: "All Teachers" };
+const defaultAssessment = { key: "All", title: "All Assignment Types" };
+
 const SingleAssessmentReportFilters = ({
   MARFilterData,
   filters,
@@ -47,7 +56,8 @@ const SingleAssessmentReportFilters = ({
   setPrevMARFilterDataAction,
   prevMARFilterData,
   loading,
-  performanceBandRequired
+  performanceBandRequired,
+  inputFeatures
 }) => {
   const profiles = MARFilterData?.data?.result?.bandInfo || [];
   const getTitleByTestId = testId => {
@@ -95,40 +105,23 @@ const SingleAssessmentReportFilters = ({
       schoolYear.find((item, index) => item.key === search.termId) ||
       schoolYear.find((item, index) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
-    const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
-      key: "All",
-      title: "All Subjects"
-    };
-    const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || {
-      key: "All",
-      title: "All Grades"
-    };
-    const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || {
-      key: "All",
-      title: "All Courses"
-    };
-    const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
-      key: "All",
-      title: "All Groups"
-    };
-    let urlSchoolId = { key: "All", title: "All Schools" };
-    let urlTeacherId = { key: "All", title: "All Teachers" };
+    const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || defaultSubject;
+    const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || defaultGrade;
+    const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || defaultCourse;
+    const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || defaultGroup;
+    let urlSchoolId = defaultSchool;
+    let urlTeacherId = defaultTeacher;
     if (role !== "teacher") {
-      urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
-        key: "All",
-        title: "All Schools"
-      };
-      urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || {
-        key: "All",
-        title: "All Teachers"
-      };
+      urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || defaultSchool;
+      urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || defaultTeacher;
     }
     const urlAssessmentType = staticDropDownData.assessmentType.find(
       (item, index) => item.key === search.assessmentType
-    ) || {
-      key: "All",
-      title: "All Assignment Types"
-    };
+    ) || defaultAssessment;
+
+    const urlStatus = staticDropDownData.statuses.find(
+      item => item.key === search.status
+    ) || defaultStatus;
 
     const testIdsArr = [].concat(search.testIds?.split(",") || []);
 
@@ -143,7 +136,8 @@ const SingleAssessmentReportFilters = ({
       schoolId: urlSchoolId.key,
       teacherId: urlTeacherId.key,
       assessmentType: urlAssessmentType.key,
-      testIds: urlTestIds.length ? urlTestIds.join(",") : ""
+      testIds: urlTestIds.length ? urlTestIds.join(",") : "",
+      status: urlStatus.key
     };
 
     dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters);
@@ -181,7 +175,8 @@ const SingleAssessmentReportFilters = ({
         groupId: filters.groupId,
         schoolId: filters.schoolId,
         teacherId: filters.teacherId,
-        assessmentType: filters.assessmentType
+        assessmentType: filters.assessmentType,
+        status: filters.status
       },
       testIds,
       role
@@ -268,6 +263,14 @@ const SingleAssessmentReportFilters = ({
     let obj = {
       ...filters,
       assessmentType: selected.key
+    };
+    setFiltersAction(obj);
+  };
+
+  const updateStatusDropDownCB = selected => {
+    const obj = {
+      ...filters,
+      status: selected.key
     };
     setFiltersAction(obj);
   };
@@ -389,6 +392,15 @@ const SingleAssessmentReportFilters = ({
               placeholder="All Assessments"
             />
           </Col>
+          { inputFeatures !== "singleAssessmentReport" && <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={{ key: filters.status }}
+              selectCB={updateStatusDropDownCB}
+              data={staticDropDownData.statuses}
+              prefix="Status"
+              showPrefixOnSelected={false}
+            />
+            </Col> }
           <Col className={"single-assessment-report-go-button-container"}>
             <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
               Go

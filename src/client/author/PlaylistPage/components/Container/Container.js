@@ -197,7 +197,7 @@ class Container extends PureComponent {
         return false;
       }).length > 0;
 
-    if (!hasContent) return message.error("Please add some content to this unit.");
+    if (!hasContent) return message.warning("This module has no test.");
 
     const { expandedModules } = this.state;
     if (expandedModules.indexOf(moduleId) === -1) {

@@ -7,6 +7,7 @@ const runMatrixPageTests = queData => {
   const editItem = new EditItemPage();
   const question = new ChoiceMatrixPage();
   const itemList = new ItemListPage();
+  let cont = 0;
 
   before(() => {
     cy.login();
@@ -223,8 +224,8 @@ const runMatrixPageTests = queData => {
       question
         .getStemColumnTitle()
         // .should("be.visible")
-        .clear()
-        .type(text)
+
+        .type(`{selectall}${text}`)
         .should("contain", text);
 
       question.checkTableTitle(text);
@@ -251,7 +252,7 @@ const runMatrixPageTests = queData => {
         .type(`{selectall}${width}`, { force: true })
         .should("have.value", `${width}`);
 
-      question.checkTableColumnWidth(0, width);
+      question.checkTableColumnWidth(1, width);
     });
     it("should be able to change stem width if inline style selected", () => {
       const width = 200;
@@ -262,7 +263,6 @@ const runMatrixPageTests = queData => {
         .should("be.visible")
         .type(`{selectall}${width}`, { force: true })
         .should("have.value", `${width}`);
-
       question.checkTableColumnWidth(0, width);
     });
     it("should be able to change stem width if table style selected and Numerical Stem numeration selected", () => {
@@ -391,7 +391,7 @@ const runMatrixPageTests = queData => {
   });
 
   context("Scoring Block test", () => {
-    before("visit items page and select question type", () => {
+    beforeEach("visit items page and select question type", () => {
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
@@ -439,12 +439,7 @@ const runMatrixPageTests = queData => {
         question.markAnswerInput(index, element + 1, "input");
       });
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 16/16");
-        });
+      preview.checkScore("16/16");
 
       preview.getClear().click();
 
@@ -452,12 +447,7 @@ const runMatrixPageTests = queData => {
         question.markAnswerInput(index, element + 1, "input");
       });
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 8/16");
-        });
+      preview.checkScore("16/16");
     });
 
     /*  it("test score with min score if attempted", () => {
@@ -482,24 +472,38 @@ const runMatrixPageTests = queData => {
         });
     }); */
 
-    it("test score with partial match, multiple responses and penalty", () => {
+    it("test score with partial match and penalty", () => {
       // question.getMinScore().clear();
-
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
+      question.selectScoringType("Partial match");
+      question.getPoints().type("{selectall}8");
       question
         .getPenalty()
         .clear()
-        .type(4);
+        .type("{selectall}4");
+      const preview = question.header.preview();
+      queData.forScoringAltAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "label");
+      });
 
-      question.selectScoringType("Partial match");
+      preview.checkScore("2/8");
+    });
+    it("test score multiple responses", () => {
+      // question.getMinScore().clear();
+      question.clickOnAdvancedOptions();
+      question.getPoints().type("{selectall}5");
+
+      queData.forScoringCorrectAns.forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
 
       cy.contains("Multiple responses").click();
 
-      cy.get("tbody > tr")
-        .eq(1)
-        .find("td")
-        .eq(1)
-        .find("label")
-        .click();
+      [0, 0].forEach((element, index) => {
+        question.markAnswerInput(index, element + 1, "input");
+      });
 
       const preview = question.header.preview();
 
@@ -507,12 +511,7 @@ const runMatrixPageTests = queData => {
         question.markAnswerInput(index, element + 1, "label");
       });
 
-      preview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          preview.getAntMsg().should("contain", "score: 6/16");
-        });
+      preview.checkScore("0/5");
     });
 
     /* it("test score with max score", () => {
@@ -616,9 +615,7 @@ const runMatrixPageTests = queData => {
           .click();
       });
 
-      preview.getCheckAnswer().click({ force: true });
-
-      preview.getAntMsg().should("contain", "score: 1/1");
+      preview.checkScore("1/1");
 
       preview.getClear().click();
 
@@ -632,7 +629,7 @@ const runMatrixPageTests = queData => {
 
       preview.getCheckAnswer().click({ force: true });
 
-      preview.getAntMsg().should("contain", "score: 0/1");
+      preview.checkScore("0/1");
     });
   });
 };

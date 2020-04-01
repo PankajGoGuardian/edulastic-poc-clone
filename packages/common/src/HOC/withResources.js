@@ -33,37 +33,35 @@ const getResourcesNotLoaded = resources => {
 
 /**
  * return a promise, that will be resolved when the resource is loaded.
- * @param {string|string[]} resources
+ * @param {string[]} resources
  */
-const loadResources = (resources = [], rejectWhileEmpty = false) => {
-  // filter out the loading & loaded resouces
-  const targetResources = getResourcesNotLoaded(resources);
+const loadResources = (resources = []) => {
+  if (!resources.length) return Promise.resolve();
 
-  if (!targetResources.length)
-    return rejectWhileEmpty ? Promise.reject(new Error("empty-resources")) : Promise.resolve();
-
-  targetResources.forEach(resource => {
+  resources.forEach(resource => {
     window[LOADING_RESOURCES][resource] = true;
   });
 
-  return load(targetResources, { returnPromise: true, async: true, numRetries: 1 })
-    .then(() => {
-      targetResources.forEach(resource => {
-        window[LOADING_RESOURCES][resource] = false;
-        // flag the resource as already loaded!
-        window[NAMESPACE][resource] = true;
-      });
-    })
-    .catch(pathsNotFound => {
-      // replace them from the global context as never loaded and see if next render will invoke them,
-      // we already retried once.
-      pathsNotFound.forEach(resource => {
-        window[LOADING_RESOURCES][resource] = false;
-        window[NAMESPACE][resource] = false;
-      });
-
-      throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
+  const returnPromise = load(resources, { returnPromise: true, async: true, numRetries: 1 }).then(() => {
+    resources.forEach(resource => {
+      window[LOADING_RESOURCES][resource] = false;
+      // flag the resource as already loaded!
+      window[NAMESPACE][resource] = true;
     });
+  });
+
+  returnPromise.catch(pathsNotFound => {
+    // replace them from the global context as never loaded and see if next render will invoke them,
+    // we already retried once.
+    pathsNotFound.forEach(resource => {
+      window[LOADING_RESOURCES][resource] = false;
+      window[NAMESPACE][resource] = false;
+    });
+
+    throw new Error(`Some resources could not be loaded ${pathsNotFound}`);
+  });
+
+  return returnPromise;
 };
 
 /**
@@ -75,19 +73,30 @@ const loadResources = (resources = [], rejectWhileEmpty = false) => {
 export const useResources = (criticalResources, resources, onLoaded) => {
   const [loaded, setLoaded] = useState(false);
 
+  const targetCriticalResources = getResourcesNotLoaded(criticalResources);
+  const targetResources = getResourcesNotLoaded(resources);
+
   useEffect(() => {
-    // first resolve the critical resources, if specified
-    loadResources(criticalResources)
-      .then(() => loadResources(resources, true)) // then remaining resources
-      .then(() => {
-        if (onLoaded) onLoaded();
-        setLoaded(true);
-      })
-      .catch(error => {
-        if (error.message !== "empty-resources") {
+    const handleOnLoad = () => {
+      if (onLoaded) onLoaded();
+      setLoaded(true);
+    };
+
+    if (!targetCriticalResources.length && !targetResources.length) {
+      // if both are empty, then the fragments are loaded already
+      handleOnLoad();
+    } else {
+      // TODO: refactor with async/await.
+      // first resolve the critical resources, if specified
+      loadResources(targetCriticalResources)
+        .then(() => loadResources(targetResources)) // then remaining resources
+        .then(() => {
+          handleOnLoad();
+        })
+        .catch(error => {
           console.error(error);
-        }
-      });
+        });
+    }
   }, []); // treat it like componentDidMount
 
   return loaded;

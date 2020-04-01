@@ -2,15 +2,26 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { Row, Col, Dropdown, Menu } from "antd";
+import * as moment from "moment";
+import { Row, Col, Dropdown, Menu, message } from "antd";
 import { EduButton } from "@edulastic/common";
+import { groupApi } from "@edulastic/api";
 import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
   getReportsPerformanceByStudentsLoader
 } from "./ducks";
-import { getUserRole } from "../../../../../student/Login/ducks";
+import { getUserId, getUserRole } from "../../../../../student/Login/ducks";
 import { getCsvDownloadingState } from "../../../ducks";
+import {
+  addGroupAction,
+  fetchGroupsAction,
+  getGroupsSelector,
+  groupsLoadingSelector
+} from "../../../../sharedDucks/groups";
+import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
+import { getUserOrgData } from "../../../../src/selectors/user";
+
 import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
 import { downloadCSV } from "../../../common/util";
 
@@ -38,7 +49,14 @@ const PerformanceByStudents = ({
   selectedPerformanceBand,
   performanceByStudents,
   getPerformanceByStudents,
-  settings
+  settings,
+  fetchGroups,
+  groupList,
+  loadingGroups,
+  addToGroups,
+  enrollStudentsToGroup,
+  orgData,
+  userId
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
@@ -69,6 +87,10 @@ const PerformanceByStudents = ({
     defaultPageSize: 50,
     current: 0
   });
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -124,6 +146,46 @@ const PerformanceByStudents = ({
     </Menu>
   );
 
+  const handleModalOnSubmit = async (group, isNew = false) => {
+    const { districtId, terms, defaultSchool } = orgData;
+    const term = terms.length && terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
+    const studentIds = tableData.filter((_, index) => selectedRowKeys.includes(index)).map(d => d.studentId);
+    setShowAddToGroupModal(false);
+    let groupInfo = {};
+    if (studentIds.length) {
+      // fetch group info for new / existing group
+      if (isNew) {
+        try {
+          groupInfo = await groupApi.createGroup({
+            type: "custom",
+            ...group,
+            startDate: moment().format("x"),
+            endDate: moment(term ? term.endDate : moment().add(1, "year")).format("x"),
+            districtId,
+            institutionId: defaultSchool,
+            grades: [],
+            subject: "Other Subjects",
+            standardSets: [],
+            tags: [],
+            parent: { id: userId },
+            owners: [userId]
+          });
+        } catch ({ data: { message: errorMessage } }) {
+          message.error(errorMessage);
+        }
+        addToGroups(groupInfo);
+      } else {
+        groupInfo = groupList.find(g => group.key === g._id);
+      }
+      // enroll students to group
+      enrollStudentsToGroup({
+        classCode: groupInfo.code,
+        studentIds,
+        districtId
+      });
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -136,10 +198,11 @@ const PerformanceByStudents = ({
           <AddToGroupModal
             title="Add To Group"
             description="Add selected students to an existing group or create a new one"
-            onSubmit={() => {}}
             visible={showAddToGroupModal}
+            onSubmit={handleModalOnSubmit}
             onCancel={() => setShowAddToGroupModal(false)}
-            classList={[]}
+            groupList={groupList}
+            loading={loadingGroups}
           />
           <StyledCard>
             <Row type="flex" justify="start">
@@ -229,10 +292,17 @@ const enhance = connect(
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
-    performanceByStudents: getReportsPerformanceByStudents(state)
+    performanceByStudents: getReportsPerformanceByStudents(state),
+    groupList: getGroupsSelector(state),
+    loadingGroups: groupsLoadingSelector(state),
+    orgData: getUserOrgData(state),
+    userId: getUserId(state)
   }),
   {
-    getPerformanceByStudents: getPerformanceByStudentsRequestAction
+    getPerformanceByStudents: getPerformanceByStudentsRequestAction,
+    fetchGroups: fetchGroupsAction,
+    addToGroups: addGroupAction,
+    enrollStudentsToGroup: requestEnrolExistingUserToClassAction
   }
 );
 

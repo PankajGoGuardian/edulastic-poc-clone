@@ -1,18 +1,29 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Modal, Row, Col, Spin, Select, Checkbox, Input } from "antd";
+import { Modal, Row, Col, Spin, Select, Checkbox, Input, message } from "antd";
 import { IconClose } from "@edulastic/icons";
 import { SelectInputStyled, EduButton } from "@edulastic/common";
 import { greyThemeDark1, darkGrey2 } from "@edulastic/colors";
 
-const AddToGroupModal = ({ title, description, visible, onSubmit, onCancel, loading, classList = [] }) => {
+const AddToGroupModal = ({ title, description, visible, onSubmit, onCancel, loading, groupList = [] }) => {
   const [selected, setSelected] = useState({});
   const [checked, toggleChecked] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
 
-  const handleOnSubmit = () =>
-    onSubmit(checked ? { key: "", name: groupName, description: groupDescription } : selected);
+  const handleOnSubmit = () => {
+    if (checked) {
+      if (!groupName) {
+        message.error("Enter a group name for the new group");
+      } else if (groupList.find(g => g.name === groupName)) {
+        message.error("Group with that name already exists");
+      } else {
+        onSubmit({ name: groupName, description: groupDescription }, true);
+      }
+    } else {
+      onSubmit(selected);
+    }
+  };
 
   return (
     <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
@@ -44,7 +55,7 @@ const AddToGroupModal = ({ title, description, visible, onSubmit, onCancel, load
                 dropdownStyle={{ zIndex: 2000 }}
                 labelInValue
               >
-                {classList.map(({ _id, name }) => (
+                {groupList.map(({ _id, name }) => (
                   <Select.Option key={_id} value={_id}>
                     {name}
                   </Select.Option>
@@ -55,7 +66,7 @@ const AddToGroupModal = ({ title, description, visible, onSubmit, onCancel, load
           {checked && (
             <StyledCol span={24} justify="space-between">
               <StyledDiv> Group Name: </StyledDiv>
-              <Input style={{ width: "400px" }} value={groupName} onChange={e => setGroupName(e.target.value)} />
+              <Input style={{ width: "400px" }} value={groupName} onChange={e => setGroupName(e.target.value.trim())} />
             </StyledCol>
           )}
           {checked && (
@@ -72,7 +83,13 @@ const AddToGroupModal = ({ title, description, visible, onSubmit, onCancel, load
             <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
               Cancel
             </EduButton>
-            <EduButton height="40px" width="200px" onClick={handleOnSubmit} style={{ "margin-left": "20px" }}>
+            <EduButton
+              height="40px"
+              width="200px"
+              onClick={handleOnSubmit}
+              style={{ "margin-left": "20px" }}
+              disabled={!checked && !selected.key}
+            >
               {checked ? "Create Group" : "Add to Group"}
             </EduButton>
           </StyledCol>

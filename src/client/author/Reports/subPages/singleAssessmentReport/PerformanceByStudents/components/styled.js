@@ -26,6 +26,11 @@ export const StyledDropDownContainer = styled.div`
 `;
 export const StyledTable = styled(Table)`
   .ant-table-body {
+    .ant-checkbox {
+      .ant-checkbox-inner {
+        border-collapse: collapse;
+      }
+    }
     table {
       thead {
         tr {

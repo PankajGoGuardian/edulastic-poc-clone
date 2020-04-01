@@ -456,6 +456,14 @@ class ComposeQuestion extends Component {
 
         draft.responses.push(newResponseContainer);
 
+        draft.validation.validResponse.value = draft.validation.validResponse.value || [];
+        draft.validation.validResponse.value.push(null);
+
+        draft.validation.altResponses.forEach(resp => {
+          resp.value = resp.value || [];
+          resp.value.push(null);
+        });
+
         updateVariables(draft);
       })
     );

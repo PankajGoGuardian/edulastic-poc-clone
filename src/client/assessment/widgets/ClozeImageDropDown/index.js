@@ -100,14 +100,11 @@ class ClozeImageDropDown extends Component {
       produce(item, draft => {
         const response = {
           score: 1,
-          value: []
+          value: new Array(draft.responses.length).fill("")
         };
 
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
-        } else {
-          draft.validation.altResponses = [response];
-        }
+        draft.validation.altResponses = draft.validation.altResponses || [];
+        draft.validation.altResponses.push(response);
       })
     );
   };

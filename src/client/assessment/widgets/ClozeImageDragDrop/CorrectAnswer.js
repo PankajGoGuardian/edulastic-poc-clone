@@ -59,6 +59,8 @@ class CorrectAnswer extends Component {
 
   handleMultiSelect = answers => {
     const { onUpdateValidationValue } = this.props;
+    // replace the empty values in the value with null
+    answers = Array.from(answers, answer => answer || null);
     onUpdateValidationValue(answers);
   };
 

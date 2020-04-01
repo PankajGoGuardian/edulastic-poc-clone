@@ -1,9 +1,41 @@
 import { questionType, question } from "@edulastic/constants";
-import { get, isString } from "lodash";
+import { get, isString, isEmpty } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
 
 const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE, VIDEO, TEXT, PASSAGE } = questionType;
+
+export const isRichTextFieldEmpty = text => {
+  if (!text) {
+    return true;
+  }
+  if (templateHasImage(text)) {
+    return false;
+  }
+
+  if (text.includes(`<span class="input__math"`)) {
+    return false;
+  }
+
+  let _text = striptags(text);
+  _text = _text.replace(/&nbsp;/g, " ");
+  if (!_text || (_text && !_text.trim())) {
+    return true;
+  }
+  return false;
+};
+
+export const isMathTextFieldEmpty = text => {
+  if (!text) {
+    return true;
+  }
+
+  const _text = text.replace(/\\/g, "");
+  if (!_text || (_text && !_text.trim())) {
+    return true;
+  }
+  return false;
+};
 
 /**
  * check for options in "expressionMultipart" type.
@@ -22,7 +54,7 @@ const expressionMultipartOptionsCheck = item => {
     if (!opt.length) {
       return true;
     }
-    const hasEmptyOptions = opt.some(opt => !opt || (opt && !opt.trim()));
+    const hasEmptyOptions = opt.some(_opt => !_opt || (_opt && !_opt.trim()));
     if (hasEmptyOptions) return true;
   }
 
@@ -32,29 +64,29 @@ const expressionMultipartOptionsCheck = item => {
     const { dropdown, mathUnits, textinput, value } = validResponse;
 
     if (dropdown && dropdown.value) {
-      for (let opt of dropdown.value) {
+      for (const opt of dropdown.value) {
         if (!opt.value || (opt.value && !opt.value.trim())) {
           return true;
         }
       }
     }
     if (mathUnits && mathUnits.value) {
-      for (let opt of mathUnits.value) {
+      for (const opt of mathUnits.value) {
         if (isMathTextFieldEmpty(opt.value) || !opt.options.unit) {
           return true;
         }
       }
     }
     if (textinput && textinput.value) {
-      for (let opt of textinput.value) {
+      for (const opt of textinput.value) {
         if (!opt.value || (opt.value && !opt.value.trim())) {
           return true;
         }
       }
     }
     if (value && value.length) {
-      for (let opt of value) {
-        for (let _opt of opt) {
+      for (const opt of value) {
+        for (const _opt of opt) {
           if (isMathTextFieldEmpty(_opt.value)) {
             return true;
           }
@@ -93,11 +125,9 @@ const multipleChoiceOptionsCheck = ({ options = [] }) => {
   if (options.length === 0) return true;
 
   // item should have a label, and label should not be empty
-  return options.some(opt => {
-    return (
-      (opt.hasOwnProperty("label") && isRichTextFieldEmpty(opt.label)) || (isString(opt) && isRichTextFieldEmpty(opt))
-    );
-  });
+  return options.some(
+    opt => (opt.label !== undefined && isRichTextFieldEmpty(opt.label)) || (isString(opt) && isRichTextFieldEmpty(opt))
+  );
 };
 
 const videoCheck = item => {
@@ -131,7 +161,7 @@ const passageCheck = i => {
     return "Passage cannot be empty.";
   }
   if (i.paginated_content) {
-    for (let o of i.pages) {
+    for (const o of i.pages) {
       if (isRichTextFieldEmpty(o)) {
         return "Passage cannot be empty.";
       }
@@ -166,36 +196,217 @@ const hasEmptyFields = item => {
   }
 };
 
-export const isRichTextFieldEmpty = text => {
-  if (!text) {
-    return true;
-  }
-  if (templateHasImage(text)) {
-    return false;
-  }
+const emptyFieldsValidator = {
+  [questionType.CLOZE_IMAGE_DROP_DOWN](item) {
+    const { options = [] } = item;
+    if (!options.length) {
+      return [true, "Options cannot be empty"];
+    }
+    const hasEmpty = options.some(option => !option.length || option.some(val => isRichTextFieldEmpty(val)));
+    if (hasEmpty) {
+      return [true, "Options have empty values"];
+    }
+    return [false, ""];
+  },
+  [questionType.CLOZE_IMAGE_DRAG_DROP](item) {
+    const { options = [] } = item;
 
-  if (text.includes(`<span class="input__math"`)) {
-    return false;
-  }
+    if (!options.length) {
+      return [true, `options cannot be empty`];
+    }
+    const hasEmptyKey = options.some(k => isRichTextFieldEmpty(k));
+    if (hasEmptyKey) {
+      return [true, `options have empty values`];
+    }
+    return [false, ""];
+  },
+  [questionType.SORT_LIST](item) {
+    const { source = [] } = item;
+    if (!source.length) {
+      return [true, "List cannot be empty"];
+    }
+    const _hasEmptyFields = source.some(option => isRichTextFieldEmpty(option));
+    if (_hasEmptyFields) {
+      return [true, "List has empty values"];
+    }
+    return [false, ""];
+  },
+  [questionType.MATCH_LIST](item) {
+    const { list = [], possibleResponses = [], groupPossibleResponses = false, possibleResponseGroups = [] } = item;
 
-  let _text = striptags(text);
-  _text = _text.replace(/&nbsp;/g, " ");
-  if (!_text || (_text && !_text.trim())) {
-    return true;
+    if (!list.length) {
+      return [true, "List cannot be empty"];
+    }
+    if (!groupPossibleResponses && !possibleResponses.length) {
+      return [true, "Possible responses cannot be empty"];
+    }
+    if (groupPossibleResponses && !possibleResponseGroups.length) {
+      return [true, "Response Groups cannot be empty"];
+    }
+    const hasEmptyListField = list.some(option => isRichTextFieldEmpty(option));
+    if (hasEmptyListField) {
+      return [true, "List has empty values"];
+    }
+    if (!groupPossibleResponses) {
+      const hasEmptyResponses = possibleResponses.some(resp => isRichTextFieldEmpty(resp.label));
+      if (hasEmptyResponses) {
+        return [true, "Response fields cannot be empty"];
+      }
+    }
+    if (groupPossibleResponses) {
+      const hasEmptyResponses = possibleResponseGroups.some(group => {
+        const { responses = [] } = group;
+        if (!responses.length) {
+          return true;
+        }
+        return responses.some(resp => isRichTextFieldEmpty(resp.label));
+      });
+      if (hasEmptyResponses) {
+        return [true, "Responses cannot be empty"];
+      }
+    }
+    return [false, ""];
+  },
+  [questionType.CLASSIFICATION](item) {
+    const { possibleResponses = [] } = item;
+    const hasEmpty = possibleResponses.some(resp => {
+      const { value = "" } = resp;
+      return isRichTextFieldEmpty(value);
+    });
+    if (hasEmpty) {
+      return [true, "responses cannot be empty"];
+    }
+    return [false, ""];
+  },
+  [questionType.ORDER_LIST](item) {
+    const { list } = item;
+    const hasEmpty = list.some(val => isRichTextFieldEmpty(val));
+    if (hasEmpty) {
+      return [true, "List items cannot have empty values"];
+    }
+    return [false, ""];
   }
-  return false;
 };
 
-export const isMathTextFieldEmpty = text => {
-  if (!text) {
-    return true;
+const itemHasIncompleteFields = item => {
+  if (emptyFieldsValidator[item.type]) {
+    return emptyFieldsValidator[item.type](item);
   }
+  return [false];
+};
 
-  let _text = text.replace(/\\/g, "");
-  if (!_text || (_text && !_text.trim())) {
-    return true;
+const answerValidator = {
+  generalValidator(answers) {
+    const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans)));
+    return hasEmpty;
+  },
+  [questionType.CHOICE_MATRIX](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.MULTIPLE_CHOICE](answers) {
+    // able to save giving empty value as options from UI (fixed)
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.CLOZE_TEXT](answers) {
+    const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans.value)));
+    return hasEmpty;
+  },
+  [questionType.CLOZE_IMAGE_TEXT](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.CLOZE_DROP_DOWN](answers) {
+    const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => isEmpty(ans.value)));
+    return hasEmpty;
+  },
+  [questionType.CLOZE_IMAGE_DROP_DOWN](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.CLOZE_DRAG_DROP](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.CLOZE_IMAGE_DRAG_DROP](answers) {
+    const hasEmpty = answers.some(
+      answer =>
+        isEmpty(answer.value) ||
+        answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value) || ans.value.some(a => isEmpty(a)))
+    );
+    return hasEmpty;
+  },
+  [questionType.SORT_LIST](answers) {
+    const hasEmpty = answers.some(answer => isEmpty(answer.value));
+    // needs update
+    // able to delete all options and able to save
+    return hasEmpty;
+  },
+  [questionType.MATCH_LIST](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.ORDER_LIST](answers) {
+    const hasEmpty = this[questionType.SORT_LIST](answers);
+    return hasEmpty;
+  },
+  [questionType.CLASSIFICATION](answers) {
+    const hasEmpty = this.generalValidator(answers);
+    return hasEmpty;
+  },
+  [questionType.SHADING](answers) {
+    const hasEmpty = answers.some(answer => isEmpty(answer.value) || answer.value.some(ans => ans.length === 0));
+    return hasEmpty;
+  },
+  [questionType.TOKEN_HIGHLIGHT](answers) {
+    const hasEmpty = this[questionType.SORT_LIST](answers);
+    return hasEmpty;
+  },
+  [questionType.MATH](answers) {
+    const hasEmpty = this[questionType.CLOZE_IMAGE_DRAG_DROP](answers);
+    return hasEmpty;
+  },
+  [questionType.GRAPH](answers) {
+    const hasEmpty = this[questionType.SORT_LIST](answers);
+    return hasEmpty;
+  },
+  [questionType.FRACTION_EDITOR](answers) {
+    const hasEmpty = answers.some(answer => answer.value === undefined);
+    return hasEmpty;
+  },
+  [questionType.EXPRESSION_MULTIPART](answers) {
+    // on removing the responses it does not remove from the validation
+    // math with unit we are able to save without providing unit
+    // TODO: fix it in UI maybe
+    const hasEmpty = answers.some(answer => {
+      const textInputs = answer.textinput?.value || [];
+      const dropdowns = answer.dropdown?.value || [];
+      const mathInputs = answer.value?.[0] || [];
+      const mathUnitInputs = [answer.mathUnits?.value?.[0] || {}];
+      const allInputs = [...textInputs, ...dropdowns, ...mathInputs, ...mathUnitInputs];
+      const hasEmptyAnswerValues = !allInputs.length || this[questionType.SORT_LIST](allInputs);
+      return hasEmptyAnswerValues;
+    });
+    return hasEmpty;
+  },
+  [questionType.SHORT_TEXT](answers) {
+    return this[questionType.SORT_LIST](answers);
+  },
+  [questionType.HOTSPOT](answers) {
+    return this[questionType.SORT_LIST](answers);
   }
-  return false;
+};
+
+// TODO create a list of all question types where validation is stored
+// check the structure of validation for all such question types
+// make the helper generic to support all such question types
+const hasEmptyAnswers = item => {
+  if (questionType.manuallyGradableQn.includes(item.type)) return false;
+  const correctAnswers = [item?.validation?.validResponse, ...(item?.validation?.altResponses || [])];
+  const hasEmpty = answerValidator[item.type]?.(correctAnswers);
+
+  return hasEmpty;
 };
 
 /**
@@ -214,32 +425,39 @@ export const isIncompleteQuestion = item => {
     return [false];
   }
 
+  const [hasIncompleteFields, errorMessage] = itemHasIncompleteFields(item);
+  if (hasIncompleteFields) {
+    return [true, errorMessage];
+  }
+
   // item doesnt have a stimulus?
   if (isRichTextFieldEmpty(item.stimulus)) {
     return [true, "Question text should not be empty"];
   }
 
-  if (hasEmptyAnswers(item)) return [true, "Correct Answers should be set"];
-
   // if  empty options are present
-  if (item.options && hasEmptyOptions(item)) return [true, "Answer choices should not be empty"];
+  if (item.options && hasEmptyOptions(item)) {
+    return [true, "Answer choices should not be empty"];
+  }
   // if not yet returned with an error, then it should be a fine question!
 
+  if (!questionType.manuallyGradableQn.includes(item.type)) {
+    const { score } = item?.validation?.validResponse || {};
+
+    if (score === undefined) {
+      return [true, "Score needs to be set"];
+    }
+    if (parseInt(score, 10) === 0) {
+      return [true, "Score cannot be zero"];
+    }
+  }
+
   // check for empty correct answers
+  if (hasEmptyAnswers(item)) return [true, "Correct Answers should be set"];
+
   return [false];
 };
 
-// TODO create a list of all question types where validation is stored
-// check the structure of validation for all such question types
-// make the helper generic to support all such question types
-const hasEmptyAnswers = item => {
-  if (item.type === questionType.GRAPH || item.type === questionType.SHORT_TEXT) {
-    const correctAnswers = [item?.validation?.validResponse, ...item?.validation?.altResponses];
-    return !correctAnswers.every(answer => answer?.value?.length);
-  }
-
-  return false;
-};
 /**
  * Checks if the question has improper dynamic parameter config
  * - if there are no dynamic variables in the stimulus, but option is selected

@@ -495,6 +495,19 @@ class Authoring extends Component {
 
         draft.responses.push(newResponseContainer);
 
+        draft.validation.validResponse.value = draft.validation.validResponse.value || [];
+        /**
+         * since new response box is added
+         * need to add dummy value in validation to keep in sync
+         * user can change the value later by typing in values
+         */
+        draft.validation.validResponse.value.push("");
+
+        draft.validation.altResponses.forEach(resp => {
+          resp.value = resp.value || [];
+          resp.value.push("");
+        });
+
         updateVariables(draft);
       })
     );

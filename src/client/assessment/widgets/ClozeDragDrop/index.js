@@ -72,14 +72,11 @@ class ClozeDragDrop extends Component {
       produce(item, draft => {
         const response = {
           score: 1,
-          value: []
+          value: new Array(draft.responseIds.length).fill(null)
         };
 
-        if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses.push(response);
-        } else {
-          draft.validation.altResponses = [response];
-        }
+        draft.validation.altResponses = draft.validation.altResponses || [];
+        draft.validation.altResponses.push(response);
       })
     );
   };

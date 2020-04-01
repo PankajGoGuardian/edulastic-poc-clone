@@ -62,18 +62,35 @@ const Sidebar = ({
   features = {},
   orgCollections,
   onChangeCollection,
-  collections = []
+  collections = [],
+  populatedCollections
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], "tagName");
   const subjectsList = selectsData.allSubjects.slice(1);
   const [searchValue, setSearchValue] = useState("");
+  const [loadDefaultCollections, setLoadDefaultCollections] = useState(true);
   const playListTitleInput = createRef();
   const isPublishers = !!(features.isPublisherAuthor || features.isCurator);
+
   useEffect(() => {
     if (playListTitleInput.current) {
       playListTitleInput.current.input.focus();
     }
   }, []);
+
+  const setDefaultCollections = () => {
+    setLoadDefaultCollections(false);
+    onChangeCollection(null, populatedCollections);
+  };
+
+  // set last used collections as the default collection if test collection is empty initially
+  loadDefaultCollections && !collections.length && populatedCollections.length && setDefaultCollections();
+
+  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
+    collections,
+    orgCollections
+  ]);
+
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
@@ -110,10 +127,6 @@ const Sidebar = ({
     }
   };
 
-  const filteredCollections = useMemo(() => collections.filter(c => orgCollections.some(o => o._id === c._id)), [
-    collections,
-    orgCollections
-  ]);
   return (
     <Block>
       <Col span={24}>

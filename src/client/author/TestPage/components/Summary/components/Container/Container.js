@@ -46,7 +46,7 @@ const Summary = ({
   getAllTags,
   allTagsData,
   allPlaylistTagsData,
-  lastUsedCollectionList,
+  lastUsedCollections,
   orgCollections,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
@@ -67,14 +67,6 @@ const Summary = ({
   useEffect(() => {
     getAllTags({ type: isPlaylist ? "playlist" : "test" });
   }, []);
-
-  useEffect(() => {
-    const bucketIds = lastUsedCollectionList.flatMap(c => c.bucketIds);
-    const filteredCollections = orgCollections
-      .filter(item => bucketIds.includes(item.bucketId))
-      .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
-    !test?.collections?.length && filteredCollections?.length && onChangeCollection(null, filteredCollections);
-  }, [lastUsedCollectionList]);
 
   const breadcrumbData = [
     {
@@ -99,6 +91,12 @@ const Summary = ({
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
 
+  // pre-populate collections
+  const bucketIds = lastUsedCollections.flatMap(c => c.bucketIds);
+  const populatedCollections = orgCollections
+    .filter(item => bucketIds.includes(item.bucketId))
+    .map(({ _id, bucketId }) => ({ props: { _id, value: bucketId } }));
+
   return (
     <Container>
       <SecondHeader>
@@ -122,6 +120,7 @@ const Summary = ({
         analytics={test.analytics}
         collections={test.collections}
         orgCollections={orgCollections}
+        populatedCollections={populatedCollections}
         onChangeField={handleChangeField}
         windowWidth={windowWidth}
         grades={grades}
@@ -175,7 +174,6 @@ Summary.propTypes = {
 };
 
 const enhance = compose(
-  memo,
   withWindowSizes,
   withNamespaces("author"),
   connect(
@@ -187,7 +185,7 @@ const enhance = compose(
       allPlaylistTagsData: getAllTagsSelector(state, "playlist"),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       features: getUserFeatures(state),
-      lastUsedCollectionList: getlastUsedCollectionListSelector(state),
+      lastUsedCollections: getlastUsedCollectionListSelector(state),
       orgCollections: getItemBucketsSelector(state)
     }),
     {

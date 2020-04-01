@@ -18,8 +18,9 @@ import { usefetchProgressHook } from "../common/hooks";
 import { useGetBandData } from "./hooks";
 import { filterAccordingToRole } from "../../../common/util";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 
-import { downloadCSV } from "../../../common/util";
+import { getFormattedName, downloadCSV } from "../../../common/util";
 
 const DefaultBandInfo = [
   {
@@ -64,6 +65,18 @@ const StudentProgress = ({
   usefetchProgressHook(settings, getStudentProgressRequestAction);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [selectedTrend, setSelectedTrend] = useState("");
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
+  const [selectedRowKeys, onSelectChange] = useState([]);
+  const [checkedStudents, toggleCheckedStudents] = useState([]);
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: ({ id }) =>
+      toggleCheckedStudents(
+        checkedStudents.includes(id) ? checkedStudents.filter(i => i !== id) : [...checkedStudents, id]
+      )
+  };
 
   const { metricInfo = [] } = get(studentProgress, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", {});
@@ -83,20 +96,33 @@ const StudentProgress = ({
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
   const onCsvConvert = data => downloadCSV(`Student Progress.csv`, data);
 
+  const dataSource = data
+    .map(d => ({ ...d, studentName: getFormattedName(d.studentName) }))
+    .sort((a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()));
+
   return (
     <>
+      <AddToGroupModal
+        groupType="custom"
+        visible={showAddToGroupModal}
+        onCancel={() => setShowAddToGroupModal(false)}
+        checkedStudents={checkedStudents}
+        studentList={dataSource}
+      />
       <TrendStats
         heading="How well are students progressing ?"
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
+        setShowAddToGroupModal={setShowAddToGroupModal}
         renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
       <TrendTable
         filters={filters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
-        data={data}
+        data={dataSource}
+        rowSelection={rowSelection}
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}

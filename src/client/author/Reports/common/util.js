@@ -214,6 +214,12 @@ export const downloadCSV = (filename, data) => {
   document.body.removeChild(link);
 };
 
+export const getFormattedName = name => {
+  const nameArr = (name || "").trim().split(" ");
+  const lName = nameArr.splice(nameArr.length - 1)[0];
+  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
+};
+
 export const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {
   const assignments = map(studentStandardData, data => {
     const score = round(percentage(data.obtainedScore, data.maxScore));

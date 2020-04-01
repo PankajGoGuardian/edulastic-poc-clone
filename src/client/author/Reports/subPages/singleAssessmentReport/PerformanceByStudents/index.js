@@ -2,25 +2,15 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import * as moment from "moment";
 import { Row, Col, Dropdown, Menu, message } from "antd";
 import { EduButton } from "@edulastic/common";
-import { groupApi } from "@edulastic/api";
 import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
   getReportsPerformanceByStudentsLoader
 } from "./ducks";
-import { getUserId, getUserRole } from "../../../../../student/Login/ducks";
+import { getUserRole } from "../../../../../student/Login/ducks";
 import { getCsvDownloadingState } from "../../../ducks";
-import {
-  addGroupAction,
-  fetchGroupsAction,
-  getGroupsSelector,
-  groupsLoadingSelector
-} from "../../../../sharedDucks/groups";
-import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
-import { getUserOrgData } from "../../../../src/selectors/user";
 
 import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
 import { downloadCSV } from "../../../common/util";
@@ -32,7 +22,7 @@ import { Placeholder } from "../../../common/components/loader";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/SimpleBarChartContainer";
-import AddToGroupModal from "./components/AddToGroupModal";
+import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 import {
   getSAFFilterSelectedPerformanceBandProfile,
   getSAFFilterPerformanceBandProfiles
@@ -49,25 +39,23 @@ const PerformanceByStudents = ({
   selectedPerformanceBand,
   performanceByStudents,
   getPerformanceByStudents,
-  settings,
-  fetchGroups,
-  groupList,
-  loadingGroups,
-  addToGroups,
-  enrollStudentsToGroup,
-  orgData,
-  userId
+  settings
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
     performanceBandProfiles[0]?.performanceBand;
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
-
   const [selectedRowKeys, onSelectChange] = useState([]);
+  const [checkedStudents, toggleCheckedStudents] = useState([]);
+
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange
+    onChange: onSelectChange,
+    onSelect: ({ id }) =>
+      toggleCheckedStudents(
+        checkedStudents.includes(id) ? checkedStudents.filter(i => i !== id) : [...checkedStudents, id]
+      )
   };
 
   const [ddfilter, setDdFilter] = useState({
@@ -87,10 +75,6 @@ const PerformanceByStudents = ({
     defaultPageSize: 50,
     current: 0
   });
-
-  useEffect(() => {
-    fetchGroups();
-  }, []);
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -146,46 +130,6 @@ const PerformanceByStudents = ({
     </Menu>
   );
 
-  const handleModalOnSubmit = async (group, isNew = false) => {
-    const { districtId, terms, defaultSchool } = orgData;
-    const term = terms.length && terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
-    const studentIds = tableData.filter((_, index) => selectedRowKeys.includes(index)).map(d => d.studentId);
-    setShowAddToGroupModal(false);
-    let groupInfo = {};
-    if (studentIds.length) {
-      // fetch group info for new / existing group
-      if (isNew) {
-        try {
-          groupInfo = await groupApi.createGroup({
-            type: "custom",
-            ...group,
-            startDate: moment().format("x"),
-            endDate: moment(term ? term.endDate : moment().add(1, "year")).format("x"),
-            districtId,
-            institutionId: defaultSchool,
-            grades: [],
-            subject: "Other Subjects",
-            standardSets: [],
-            tags: [],
-            parent: { id: userId },
-            owners: [userId]
-          });
-        } catch ({ data: { message: errorMessage } }) {
-          message.error(errorMessage);
-        }
-        addToGroups(groupInfo);
-      } else {
-        groupInfo = groupList.find(g => group.key === g._id);
-      }
-      // enroll students to group
-      enrollStudentsToGroup({
-        classCode: groupInfo.code,
-        studentIds,
-        districtId
-      });
-    }
-  };
-
   return (
     <>
       {loading ? (
@@ -196,13 +140,11 @@ const PerformanceByStudents = ({
       ) : (
         <UpperContainer>
           <AddToGroupModal
-            title="Add To Group"
-            description="Add selected students to an existing group or create a new one"
+            groupType="custom"
             visible={showAddToGroupModal}
-            onSubmit={handleModalOnSubmit}
             onCancel={() => setShowAddToGroupModal(false)}
-            groupList={groupList}
-            loading={loadingGroups}
+            checkedStudents={checkedStudents}
+            studentList={tableData}
           />
           <StyledCard>
             <Row type="flex" justify="start">
@@ -292,17 +234,10 @@ const enhance = connect(
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     selectedPerformanceBand: getSAFFilterSelectedPerformanceBandProfile(state),
-    performanceByStudents: getReportsPerformanceByStudents(state),
-    groupList: getGroupsSelector(state),
-    loadingGroups: groupsLoadingSelector(state),
-    orgData: getUserOrgData(state),
-    userId: getUserId(state)
+    performanceByStudents: getReportsPerformanceByStudents(state)
   }),
   {
-    getPerformanceByStudents: getPerformanceByStudentsRequestAction,
-    fetchGroups: fetchGroupsAction,
-    addToGroups: addGroupAction,
-    enrollStudentsToGroup: requestEnrolExistingUserToClassAction
+    getPerformanceByStudents: getPerformanceByStudentsRequestAction
   }
 );
 

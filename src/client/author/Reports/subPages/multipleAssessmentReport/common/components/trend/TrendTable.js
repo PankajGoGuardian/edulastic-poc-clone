@@ -28,12 +28,6 @@ const formatText = (test, type) => {
   return test[type];
 };
 
-const getFormattedName = name => {
-  const nameArr = (name || "").trim().split(" ");
-  const lName = nameArr.splice(nameArr.length - 1)[0];
-  return nameArr.length ? lName + ", " + nameArr.join(" ") : lName;
-};
-
 const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
 };
@@ -190,6 +184,7 @@ const getColumns = (
 const TrendTable = ({
   filters = {},
   data,
+  rowSelection,
   rawMetric,
   testData,
   analyseBy,
@@ -203,12 +198,6 @@ const TrendTable = ({
   const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent, filters);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
 
-  // format the concerned name in the data
-  const keyword = compareByMap[compareBy.key];
-  const dataSource = map(data, d => ({ ...d, [keyword]: getFormattedName(d[keyword]) })).sort((a, b) =>
-    a[keyword].toLowerCase().localeCompare(b[keyword].toLowerCase())
-  );
-
   return (
     <StyledCard>
       <Row>
@@ -218,8 +207,9 @@ const TrendTable = ({
       </Row>
       <TableContainer>
         <CsvTable
-          dataSource={dataSource}
+          dataSource={data}
           columns={columns}
+          rowSelection={rowSelection}
           colouredCellsNo={values(groupedAvailableTests).length}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}

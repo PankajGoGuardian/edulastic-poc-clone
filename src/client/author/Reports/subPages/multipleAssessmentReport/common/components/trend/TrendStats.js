@@ -1,14 +1,27 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Row, Col } from "antd";
+import { Row, Col, Menu, Dropdown } from "antd";
+
+import { EduButton } from "@edulastic/common";
 
 import { StyledCard, StyledH3 } from "../../../../../common/styled";
 import TrendCard from "./TrendCard";
 import { trendTypes } from "../../utils/constants";
 
-const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading }) => {
+const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, setShowAddToGroupModal }) => {
   const trends = Object.keys(trendTypes);
+
+  const menu = (
+    <Menu>
+      <Menu.Item key="add-to-group" onClick={() => setShowAddToGroupModal(true)}>
+        Add to Group
+      </Menu.Item>
+      {/* <Menu.Item key="remove-from-group">
+        Remove from Group
+      </Menu.Item> */}
+    </Menu>
+  );
 
   return (
     <UpperContainer>
@@ -17,7 +30,19 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <StyledH3>{heading}</StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col
+            xs={24}
+            sm={24}
+            md={12}
+            lg={12}
+            xl={12}
+            style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
+          >
+            <Dropdown overlay={menu}>
+              <EduButton height="32px" width="180px">
+                Actions
+              </EduButton>
+            </Dropdown>
             {renderFilters()}
           </Col>
         </Row>

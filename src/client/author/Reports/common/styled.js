@@ -123,7 +123,14 @@ export const StyledTable = styled(Table)`
   // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
   // Import this and add USE CASE SPECIFIC CSS
 
-  .ant-table-body,
+  .ant-table-body {
+    .ant-checkbox {
+      .ant-checkbox-inner {
+        border-collapse: collapse;
+      }
+    }
+  }
+  ,
   .ant-table-scroll {
     .ant-table-header {
       // mozilla

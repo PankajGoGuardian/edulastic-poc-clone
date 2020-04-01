@@ -35,11 +35,12 @@ const getResourcesNotLoaded = resources => {
  * return a promise, that will be resolved when the resource is loaded.
  * @param {string|string[]} resources
  */
-const loadResources = (resources = []) => {
+const loadResources = (resources = [], rejectWhileEmpty = false) => {
   // filter out the loading & loaded resouces
   const targetResources = getResourcesNotLoaded(resources);
 
-  if (!targetResources.length) return Promise.resolve();
+  if (!targetResources.length)
+    return rejectWhileEmpty ? Promise.reject(new Error("empty-resources")) : Promise.resolve();
 
   targetResources.forEach(resource => {
     window[LOADING_RESOURCES][resource] = true;
@@ -77,12 +78,17 @@ export const useResources = (criticalResources, resources, onLoaded) => {
   useEffect(() => {
     // first resolve the critical resources, if specified
     loadResources(criticalResources)
-      .then(() => loadResources(resources)) // then remaining resources
+      .then(() => loadResources(resources, true)) // then remaining resources
       .then(() => {
         if (onLoaded) onLoaded();
         setLoaded(true);
+      })
+      .catch(error => {
+        if (error.message !== "empty-resources") {
+          console.error(error);
+        }
       });
-  }, [resources]);
+  }, []); // treat it like componentDidMount
 
   return loaded;
 };

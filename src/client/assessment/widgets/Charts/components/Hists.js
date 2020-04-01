@@ -104,6 +104,15 @@ const Hists = ({
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
+          <rect
+            fill="transparent"
+            x={getCenterX(index)}
+            y={0}
+            onMouseEnter={handleMouse(index)}
+            onMouseLeave={handleMouse(null)}
+            width={step - 2}
+            height={height + margin}
+          />
           {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
           <Bar
             onClick={deleteMode ? () => saveAnswer(index) : () => {}}

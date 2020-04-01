@@ -23,7 +23,7 @@ const Bars = ({
   saveAnswer,
   showAnswer
 }) => {
-  const { margin, yAxisMin } = gridParams;
+  const { height, margin, yAxisMin } = gridParams;
   const { chart_data = {} } = item;
   const { data = [] } = chart_data;
 
@@ -63,6 +63,15 @@ const Bars = ({
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment key={`bar-${index}`}>
+          <rect
+            fill="transparent"
+            x={getCenterX(index)}
+            y={0}
+            onMouseEnter={handleMouse(index)}
+            onMouseLeave={handleMouse(null)}
+            width={step - 2}
+            height={height + margin}
+          />
           {showAnswer && isRenderIcons && renderValidationIcons(index)}
           <Bar
             onMouseEnter={handleMouse(index)}

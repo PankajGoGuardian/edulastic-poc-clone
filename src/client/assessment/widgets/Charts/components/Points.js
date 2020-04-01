@@ -21,7 +21,8 @@ const Points = ({
   correct,
   paddingTop
 }) => {
-  const { margin, pointStyle } = gridParams;
+  const { height, margin, pointStyle } = gridParams;
+
   const { chart_data = {} } = item;
   const { data = [] } = chart_data;
 
@@ -54,6 +55,15 @@ const Points = ({
         (dot, index) =>
           ((view !== EDIT && !data[index].notInteractive) || view === EDIT) && (
             <Fragment key={`dot-point-${index}`}>
+              <rect
+                fill="transparent"
+                x={getCenterX(index) - step * 0.5}
+                y={0}
+                onMouseEnter={handleMouseAction(index)}
+                onMouseLeave={handleMouseAction(null)}
+                width={step - 2}
+                height={height + margin}
+              />
               {(previewTab === SHOW || previewTab === CHECK) && isRenderIcons && renderValidationIcons(index)}
               {pointStyle === "cross" ? (
                 <Cross

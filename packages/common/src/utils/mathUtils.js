@@ -51,11 +51,18 @@ export const getMathHtml = latex => {
    */
   _latex = addSpaceMatrixFraction(latex);
   /**
-   * Katex doesn't support overarc and parallelogram
-   * we will use overgroup for overarc,
-   * and will use Unicode Character “▱” (U+25B1) for parallelogram
+   * Katex doesn't support the below commands
+   * |--- mathQuill --|---- Katex -----|
+   * |    overarc     |   overgroup    |
+   * |  parallelogram |     text{▱}    |
+   * |    undersim    | underset{\\sim}|
+   * |---------------------------------|
    */
-  _latex = _latex.replace(/overarc/g, "overgroup").replace(/\\parallelogram/g, "\\text{▱}");
+  _latex = _latex
+    .replace(/overarc/g, "overgroup")
+    .replace(/\\parallelogram/g, "\\text{▱}")
+    .replace(/\\undersim/g, "\\underset{\\sim}");
+
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,

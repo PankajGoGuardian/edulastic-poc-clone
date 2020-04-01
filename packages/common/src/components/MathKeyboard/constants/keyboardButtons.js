@@ -63,6 +63,8 @@ import Group6102 from "../keyboardButtons/6102.svg";
 import Group6103 from "../keyboardButtons/6103.svg";
 import Group3180 from "../keyboardButtons/3180.svg";
 import Group3170 from "../keyboardButtons/3170.svg";
+import Group2751 from "../keyboardButtons/2751.svg";
+import Group2478 from "../keyboardButtons/2478.svg";
 
 export const CustomImage = styled.img.attrs({ className: "keyboardButton" })`
   width: ${({ width }) => (width ? `${width}px` : "25px")};
@@ -115,6 +117,18 @@ const GENERAL = [
     label: ":",
     types: ["all", "general"],
     command: "cmd"
+  },
+  {
+    handler: '"',
+    label: <CustomImage src={Group3175} width={8} height={8} role="presentation" />,
+    types: ["all", "general"],
+    command: "write"
+  },
+  {
+    handler: "'",
+    label: <CustomImage src={Group3174} width={8} height={8} role="presentation" />,
+    types: ["all", "general"],
+    command: "write"
   },
   {
     handler: "%",
@@ -221,10 +235,10 @@ const GEOMETRY = [
     command: "write"
   },
   {
-    handler: "'",
-    label: <CustomImage src={Group3174} width={8} height={8} role="presentation" />,
+    handler: "\\theta",
+    label: <CustomImage src={Group2478} width={14} height={14} role="presentation" />,
     types: ["all", "geometry"],
-    command: "write"
+    command: "cmd"
   },
   {
     handler: "\\nparallel",
@@ -245,10 +259,10 @@ const GEOMETRY = [
     command: "write"
   },
   {
-    handler: '"',
-    label: <CustomImage src={Group3175} width={8} height={8} role="presentation" />,
-    types: ["all", "geometry"],
-    command: "write"
+    handler: "\\equiv",
+    label: <CustomImage src={Group2751} width={12} height={12} role="presentation" />,
+    types: ["geometry"],
+    command: "cmd"
   },
   {
     handler: "\\undersim",

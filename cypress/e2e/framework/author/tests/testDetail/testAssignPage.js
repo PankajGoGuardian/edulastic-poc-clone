@@ -22,6 +22,14 @@ export default class TestAssignPage {
 
   getCalenderOk = () => cy.get(".ant-calendar-ok-btn");
 
+  getTimeSettingSwitch = () => cy.get('[data-cy="assignment-time-switch"]');
+
+  getTimeSettingTextBox = () => cy.get('[data-cy="assignment-time"]');
+
+  getAssignmentTimeSettingInfo = () => cy.get('[inputfeatures="assessmentSuperPowersTimeSpent"]').find("svg");
+
+  getAllowPuase = () => cy.get('[data-cy="pause-allowed"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -225,6 +233,45 @@ export default class TestAssignPage {
       .find('[value="automatically"]')
       .check();
 
+  makeAssignmentTimed = () =>
+    this.getTimeSettingSwitch().then($ele => {
+      if (!$ele.hasClass("ant-switch-checked"))
+        cy.wrap($ele)
+          .click()
+          .should("have.class", "ant-switch-checked");
+    });
+
+  setAssignmentTime = time => {
+    // time in mns
+    this.makeAssignmentTimed();
+    this.getTimeSettingTextBox().type(time);
+  };
+
+  removeAssignmentTime = () =>
+    this.getTimeSettingSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked"))
+        cy.wrap($ele)
+          .click()
+          .should("not.have.class", "ant-switch-checked");
+    });
+
+  checkAllowPuase = () =>
+    this.getTimeSettingSwitch().then($ele => {
+      expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
+      this.getAllowPuase().check();
+    });
+
+  uncheckAllowPause = () =>
+    this.getTimeSettingSwitch().then($ele => {
+      expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
+      this.getAllowPuase().uncheck();
+    });
+
+  makeAssignmentTimed = () =>
+    this.getTimeSettingSwitch().then($ele => {
+      if ($ele.hasClass("ant-switch-checked")) $ele.click();
+    });
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -234,6 +281,18 @@ export default class TestAssignPage {
     cy.route("POST", "**/api/group/search").as("classes");
     cy.visit(`/author/assignments/${id}`);
     cy.wait("@classes");
+  };
+
+  verifyDefaultTimeForTest = questionCount =>
+    this.getTimeSettingTextBox().should("have.text", `${questionCount} minutes`);
+
+  verifyInfoAboutTestTime = () => {
+    this.getAssignmentTimeSettingInfo()
+      .scrollIntoView()
+      .trigger("mouseover");
+    cy.get(".ant-tooltip-inner").contains(
+      "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
+    );
   };
 
   // *** APPHELPERS END ***

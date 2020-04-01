@@ -741,7 +741,7 @@ class MainSetting extends Component {
                         disabled={!owner || !isEditable}
                         defaultChecked={false}
                         checked={timedAssignment}
-                        data-cy="timedAssignment"
+                        data-cy="assignment-time-switch"
                         onChange={this.updateTimedTest("timedAssignment")}
                       />
                       {timedAssignment && (
@@ -750,6 +750,7 @@ class MainSetting extends Component {
                             type="number"
                             width="100px"
                             size="large"
+                            data-cy="assignment-time"
                             style={{ margin: "0 30px" }}
                             value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
                             onChange={e => this.updateTestData("allowedTime")(e.target.value * 60 * 1000)}
@@ -777,7 +778,7 @@ class MainSetting extends Component {
                       <CheckboxLabel
                         disabled={!owner || !isEditable}
                         checked={pauseAllowed}
-                        data-cy="pauseAllowed"
+                        data-cy="pause-allowed"
                         onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
                       >
                         Allow Students to exit test without submitting

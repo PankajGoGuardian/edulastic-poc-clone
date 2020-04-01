@@ -88,4 +88,6 @@ export default class CypressHelper {
   static checkObjectInEquality = (obj1, obj2, message = "Not Equal") => {
     expect(obj1, `${obj1} ${message} ${obj2}`).not.to.deep.eq(obj2);
   };
+
+  static minutesToSeconds = minutes => minutes * 60000;
 }

@@ -595,6 +595,7 @@ const Settings = ({
             <Col span={10} style={{ display: "flex", flexDirection: "column" }}>
               <Row style={{ display: "flex", alignItems: "center" }}>
                 <AlignSwitchRight
+                  data-cy="assignment-time-switch"
                   size="small"
                   defaultChecked={false}
                   checked={timedAssignment}
@@ -605,6 +606,7 @@ const Settings = ({
                     <TimeSpentInput
                       onChange={e => updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000)}
                       size="large"
+                      data-cy="assignment-time"
                       value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
                       type="number"
                       min={1}
@@ -619,6 +621,7 @@ const Settings = ({
                 {timedAssignment && (
                   <CheckBoxWrapper>
                     <CheckboxLabel
+                      data-cy="pause-allowed"
                       checked={pauseAllowed}
                       onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
                     >

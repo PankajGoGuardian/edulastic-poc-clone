@@ -66,6 +66,11 @@ class AssignmentsPage {
 
   getStatusByPosition = pos => cy.get('[data-cy="status"]').eq(pos);
 
+  getTimeAvailableForAssignmentById = testid =>
+    this.getAssignmentByTestId(testid)
+      .find(".anticon-clock-circle")
+      .next();
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -188,13 +193,16 @@ class AssignmentsPage {
 
   verifyPresenceOfTest = id => cy.get("body").should("have.descendants", `[data-cy="test-${id}"]`);
 
-  // *** APPHELPERS END ***
-
   reviewSubmittedTestById = id => {
     this.getReviewButtonById(id).click({ force: true });
   };
 
   verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
+
+  verifyTimeAvalableForTestById = (testid, time) =>
+    this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time}  minutes`);
+
+  // *** APPHELPERS END ***
 }
 
 export default AssignmentsPage;

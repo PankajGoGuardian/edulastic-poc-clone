@@ -12,11 +12,13 @@ export default class PlayListSearchContainer {
 
   getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 
-  getTestFilter = () => cy.get('[data-cy="test-filter"]');
+  getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
 
-  getAuthoredbyMeFolder = () => cy.get('[class *= "FilterContainer"]').contains("Authored by me");
+  getFilterButton = () => cy.get('[data-cy="test-filter"]');
 
-  getEntireLibrary = () => cy.get('[class *= "FilterContainer"]').contains("Entire Library");
+  /* ACTIONS START*/
+
+  getSharedWithMe = () => cy.get('[class *= "FilterContainer"]').contains("Shared with me");
 
   setGrade = grade => {
     CypressHelper.selectDropDownByAttribute("test-grade", grade);
@@ -29,18 +31,33 @@ export default class PlayListSearchContainer {
     CypressHelper.selectDropDownByAttribute("test-status", status);
   };
 
-  getTestInSearchResultsById = id => this.getSearchContainer().find(`[data-cy="${id}"]`);
+  setCollection = collection => {
+    CypressHelper.selectDropDownByAttribute("test-collection", collection);
+  };
 
-  getFilterButton = () => cy.get('[data-cy="test-filter"]');
-
-  /* ACTIONS */
   clickOnKeyword = () => this.getKeywords().click();
 
   clickOnStandard = () => this.getStandards().click();
 
-  clickFilterButton = () => this.getFilterButton().click();
+  clickOnAuthoredbyMeFolder = () =>
+    cy
+      .get('[class *= "FilterContainer"]')
+      .contains("Authored by me")
+      .click();
 
-  selectCollection = collection => CypressHelper.selectDropDownByAttribute("test-collection", collection);
+  clickOnEntireLibrary = () =>
+    cy
+      .get('[class *= "FilterContainer"]')
+      .contains("Entire Library")
+      .click();
+
+  clickOnSharedWithMe = () =>
+    cy
+      .get('[class *= "FilterContainer"]')
+      .contains("Shared with me")
+      .click();
+
+  clickOnTestFilter = () => cy.get('[data-cy="test-filter"]').click();
 
   typeInSearchBar = text => {
     this.routeTestSearch();
@@ -49,6 +66,16 @@ export default class PlayListSearchContainer {
       .type(text);
     this.waitForTestSearch();
   };
+
+  verifySearchResultVisible = testId => {
+    this.getTestInSearchResultsById(testId).should("be.visible");
+  };
+
+  VerififySearchResultNotVisible = testId => {
+    this.getTestInSearchResultsById(testId).should("not.be.visible");
+  };
+
+  /* ACTIONS END*/
 
   /* APP HELPERS */
   routeTestSearch = () => {

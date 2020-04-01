@@ -1,5 +1,4 @@
-import PlayListLibrary from "../../../../framework/author/playlist/playListLibrary";
-//import Playlist from "../../../../framework/author/playlist/playListCustomization";
+import playlistCustom from "../../../../framework/author/playlist/playListCustomizationPage";
 import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TeacherSideBar from "../../../../framework/author/SideBarPage";
 
@@ -9,15 +8,24 @@ describe("Playlist customization", () => {
     pass: "snapwiz"
   };
 
-  const playListLibrary = new PlayListLibrary();
-  //const container = new PlayListSearchContainer();
+  const playListCustomization = new playlistCustom();
   const testToCreate = ["search_1", "search_2"];
-  const originalTestIds = [];
   const testName = "test search 1 ";
   const testId = {
     testId1: "5e70b870c513dc0008b25fde",
     testId2: "5e70b89ac513dc0008b25fe0",
-    testId3: "5e7c920bc76d000007405675"
+    testId3: "5e832816702a3600074b2edc",
+    testId4: "5e7c920bc76d000007405675",
+    testId5: "5e831ac97c24fd0007a20255",
+    testId6: "5e832e48252e620008b24043",
+    testId7: "5e832e77252e620008b24047",
+    testId8: "5e8478a6fd94480008873f85"
+  };
+  const collection = {
+    col1: "School Library",
+    col2: "District Library",
+    col3: "Public Library",
+    col4: "Private Library"
   };
   const testStandard = {
     standard1: "8.G.C.9",
@@ -62,100 +70,149 @@ describe("Playlist customization", () => {
       cy.login("teacher", "playschooltecaher@snapwiz.com", "snapwiz");
       sidebar.clickOnRecentUsedPlayList("Test Search Playlist");
     });
-
     it("ManageContent toggle", () => {
       cy.contains("Summary").should("be.visible");
-      playListLibrary.playlistCustom.clickOnManageContent();
-      playListLibrary.playlistCustom.searchContainer.getKeywordsSearchBar();
-      playListLibrary.playlistCustom.getManageContentButton().click();
+      playListCustomization.clickOnManageContent();
+      playListCustomization.searchContainer.getKeywordsSearchBar();
+      playListCustomization.getManageContentButton().click();
       cy.contains("Summary").should("be.visible");
     });
   });
 
   context("Search from search bar", () => {
     before("Go to Resource Container", () => {
-      playListLibrary.playlistCustom.clickOnManageContent();
+      playListCustomization.clickOnManageContent();
     });
-
     it("search By Name", () => {
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testName}`);
-      playListLibrary.playlistCustom.searchContainer
+      playListCustomization.searchContainer.typeInSearchBar(`${testName}`);
+      playListCustomization.searchContainer
         .getTestInSearchResultsById(`${testId.testId1}`)
         .should("contain", `${testName}`);
     });
     it("Search by Id", () => {
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testId.testId2}`);
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId2}`)
-        .should("be.visible");
+      playListCustomization.searchContainer.typeInSearchBar(`${testId.testId2}`);
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
     });
     it("Search By standard", () => {
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testStandard.standard1}`);
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId1}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId2}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testStandard.standard2}`);
-      playListLibrary.playlistCustom.searchContainer.getSearchContainer().should("contain", "test search 2 ");
+      playListCustomization.searchContainer.typeInSearchBar(`${testStandard.standard1}`);
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.typeInSearchBar(`${testStandard.standard2}`);
+      playListCustomization.searchContainer.getSearchContainer().should("contain", "test search 2 ");
     });
     it("Search by Tag", () => {
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testTag.tag1}`);
-      playListLibrary.playlistCustom.searchContainer.getSearchContainer(`${testId.testId1}`).should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.typeInSearchBar(`${testTag.tag2}`);
-      playListLibrary.playlistCustom.searchContainer.getSearchContainer().should("contain", "No Data");
+      playListCustomization.searchContainer.typeInSearchBar(`${testTag.tag1}`);
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.typeInSearchBar(`${testTag.tag2}`);
+      playListCustomization.searchContainer.getSearchContainer().should("contain", "No Data");
     });
   });
 
-  context("search from folder", () => {
-    it("Authored By Me", () => {
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.getAuthoredbyMeFolder().click();
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId1}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.setGrade("Grade 4");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId1}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.setSubject("Mathematics");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId2}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.setStatus("Draft");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId3}`)
-        .should("be.visible");
+  context("search from Authored by me folder", () => {
+    it("Verifiy grade,subject and status filter", () => {
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.clickOnAuthoredbyMeFolder();
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setGrade("Grade 4");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setStatus("Draft");
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId4}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setStatus("Published");
+      playListCustomization.searchContainer.setSubject("Mathematics");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
     });
+    it("Verify collection dropdwon", () => {
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col1}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col3}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col4}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId6}`);
+    });
+  });
 
-    it("Entire library", () => {
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.getEntireLibrary().click();
-      playListLibrary.playlistCustom.searchContainer.setStatus("All");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId2}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.setSubject("Mathematics");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId1}`)
-        .should("be.visible");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer.setGrade("Grade 8");
-      playListLibrary.playlistCustom.searchContainer.getTestFilter().click();
-      playListLibrary.playlistCustom.searchContainer
-        .getTestInSearchResultsById(`${testId.testId1}`)
-        .should("be.visible");
+  context("search from Entire Library folder", () => {
+    it("Verify collection dropdwon", () => {
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col1}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col3}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setCollection(`${collection.col4}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId6}`);
+    });
+    it("Verify grade, subject", () => {
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.clickOnEntireLibrary();
+      playListCustomization.searchContainer.setStatus("All");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId4}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setGrade("Grade 8");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setSubject("Mathematics");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId5}`);
+      playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
+      playListCustomization.getManageContentButton().click();
+    });
+  });
+  context("search from Shared with me folder", () => {
+    it("Shared with Me", () => {
+      playListCustomization.clickOnManageContent();
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.clickOnSharedWithMe();
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId6}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setGrade("Grade 8");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId6}`);
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setSubject("ELA");
+      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId7}`);
     });
   });
 });

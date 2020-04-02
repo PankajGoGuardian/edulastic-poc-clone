@@ -196,7 +196,7 @@ const Thumbnail = React.memo(styled.img`
 
 const AssignmentTitle = React.memo(styled.span`
   font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
-  max-width: 176px;
+  max-width: 30vw;
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -239,6 +239,8 @@ const CardDetails = React.memo(styled(Col)`
 `);
 
 const CardTitle = React.memo(styled.div`
+  display: inline-flex;
+  overflow: visible;
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   font-size: ${props => props.theme.assignment.cardTitleFontSize};
   font-weight: bold;

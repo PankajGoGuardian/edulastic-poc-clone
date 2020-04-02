@@ -69,6 +69,7 @@ class AssignmentsPage {
   getTimeAvailableForAssignmentById = testid =>
     this.getAssignmentByTestId(testid)
       .find(".anticon-clock-circle")
+      .eq(1)
       .next();
 
   // *** ELEMENTS END ***
@@ -200,7 +201,7 @@ class AssignmentsPage {
   verifyAssignmentIslocked = () => cy.get('[data-cy="lockAssignment"]').should("exist");
 
   verifyTimeAvalableForTestById = (testid, time) =>
-    this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time}  minutes`);
+    this.getTimeAvailableForAssignmentById(testid).should("contain.text", `${time} minutes`);
 
   // *** APPHELPERS END ***
 }

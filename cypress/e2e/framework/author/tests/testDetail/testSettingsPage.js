@@ -94,7 +94,7 @@ export default class TestSettings {
   setAssignmentTime = time => {
     // time in mns
     this.makeAssignmentTimed();
-    this.getTimeSettingTextBox().type(time);
+    this.getTimeSettingTextBox().type(`{selectall}${time}`);
   };
 
   removeAssignmentTime = () =>
@@ -120,13 +120,13 @@ export default class TestSettings {
 
   // *** APPHELPERS START ***
 
-  verifyDefaultTimeForTest = questionCount =>
-    this.getTimeSettingTextBox().should("have.text", `${questionCount} minutes`);
+  verifyTimeAssignedForTest = questionCount => this.getTimeSettingTextBox().should("have.value", `${questionCount}`);
 
   verifyInfoAboutTestTime = () => {
     this.getAssignmentTimeSettingInfo()
       .scrollIntoView()
       .trigger("mouseover");
+    cy.wait(500);
     cy.get(".ant-tooltip-inner").contains(
       "The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time."
     );

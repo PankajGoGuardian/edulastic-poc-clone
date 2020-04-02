@@ -1,4 +1,4 @@
-import { questionType, question } from "@edulastic/constants";
+import { questionType, question, customTags } from "@edulastic/constants";
 import { get, isString, isEmpty } from "lodash";
 import striptags from "striptags";
 import { templateHasImage } from "@edulastic/common";
@@ -10,6 +10,10 @@ export const isRichTextFieldEmpty = text => {
     return true;
   }
   if (templateHasImage(text)) {
+    return false;
+  }
+
+  if (customTags.some(tag => text.includes(tag))) {
     return false;
   }
 
@@ -383,7 +387,7 @@ const answerValidator = {
       const textInputs = answer.textinput?.value || [];
       const dropdowns = answer.dropdown?.value || [];
       const mathInputs = answer.value?.[0] || [];
-      const mathUnitInputs = [answer.mathUnits?.value?.[0] || {}];
+      const mathUnitInputs = [answer.mathUnits?.value?.[0] || {}].filter(_answer => !isEmpty(_answer));
       const allInputs = [...textInputs, ...dropdowns, ...mathInputs, ...mathUnitInputs];
       const hasEmptyAnswerValues = !allInputs.length || this[questionType.SORT_LIST](allInputs);
       return hasEmptyAnswerValues;

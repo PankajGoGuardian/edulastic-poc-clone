@@ -205,9 +205,7 @@ class Template extends Component {
         if (_validation.validResponse.value) {
           _validation.altResponses.map(alt_res => {
             if (!alt_res.value) {
-              alt_res.value = {
-                value: []
-              };
+              alt_res.value = [];
             }
             if (_validation.validResponse.value.length > alt_res.value.length) {
               alt_res.value.push(last(_validation.validResponse.value));

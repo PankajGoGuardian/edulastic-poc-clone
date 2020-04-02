@@ -26,6 +26,7 @@ import StudentsList from "./StudentsList";
 import { ButtonWrapper, GoogleClassSyncModal, StyledButton } from "./styled";
 import CanvasSyncModal from "./CanvasSyncModal";
 import { EduButton } from "@edulastic/common";
+import GroupStudentList from "./GroupStudentList";
 
 const ClassDetails = ({
   selectedClass,
@@ -159,26 +160,38 @@ const ClassDetails = ({
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={breadCrumbData} style={{ position: "unset" }} />
 
-            <MainInfo
-              entity={selectedClass}
-              fetchClassList={fetchClassList}
-              viewAssessmentHandler={viewAssessmentHandler}
-              isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-              allowGoogleLogin={allowGoogleLogin}
-              syncGCModal={() => setOpenGCModal(true)}
-              archiveClass={archiveClass}
-              allowCanvasLogin={allowCanvasLogin}
-              syncCanvasModal={syncCanvasModal}
-            />
+            {selectedClass.type == "class" && (
+              <>
+                <MainInfo
+                  entity={selectedClass}
+                  fetchClassList={fetchClassList}
+                  viewAssessmentHandler={viewAssessmentHandler}
+                  isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+                  allowGoogleLogin={allowGoogleLogin}
+                  syncGCModal={() => setOpenGCModal(true)}
+                  archiveClass={archiveClass}
+                  allowCanvasLogin={allowCanvasLogin}
+                  syncCanvasModal={syncCanvasModal}
+                />
 
-            <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
+                <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
+                <StudentsList
+                  selectStudent
+                  selectedClass={selectedClass}
+                  allowGoogleLogin={allowGoogleLogin}
+                  allowCanvasLogin={allowCanvasLogin}
+                />
+              </>
+            )}
 
-            <StudentsList
-              selectStudent
-              selectedClass={selectedClass}
-              allowGoogleLogin={allowGoogleLogin}
-              allowCanvasLogin={allowCanvasLogin}
-            />
+            {selectedClass.type == "custom" && (
+              <GroupStudentList
+                selectStudent
+                selectedClass={selectedClass}
+                allowGoogleLogin={allowGoogleLogin}
+                allowCanvasLogin={allowCanvasLogin}
+              />
+            )}
           </MainContentWrapper>
         </>
       )}

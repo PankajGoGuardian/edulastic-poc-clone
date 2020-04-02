@@ -12,8 +12,10 @@ import { fetchClassListAction } from "../../ducks";
 import { scopes } from "./ClassCreatePage";
 import { ButtonsWrapper } from "./styled";
 import { withNamespaces } from "react-i18next";
+import { HeaderTabs } from "@edulastic/common";
+import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 
-const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn, t }) => {
+const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn, t, currentTab, onClickHandler }) => {
   const handleLoginSucess = data => {
     fetchClassList({ data });
   };
@@ -21,8 +23,36 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn, t }) =
   const handleError = err => {
     console.log("error", err);
   };
+
+  const pageNavButtons = [
+    {
+      icon: null,
+      value: "class",
+      text: "Classes"
+    },
+    {
+      icon: null,
+      value: "group",
+      text: "Groups"
+    }
+  ];
+
   return (
     <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
+      <StyledTabs>
+        {pageNavButtons.map(({ value, text }, index) => {
+          return (
+            <HeaderTabs
+              style={currentTab === value ? { cursor: "not-allowed" } : { cursor: "pointer" }}
+              dataCy={value}
+              isActive={currentTab === value}
+              linkLabel={text}
+              key={value}
+              onClickHandler={() => onClickHandler(value)}
+            />
+          );
+        })}
+      </StyledTabs>
       <ButtonsWrapper>
         {allowGoogleLogin !== false && (
           <GoogleLogin

@@ -33,11 +33,9 @@ const ClassList = ({
   setAssignmentFilters
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
-  const findGrade = (_grade = []) =>
-    allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
+  const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
-  const findSubject = _subject =>
-    find(allSubjects, item => item.value === _subject) || { text: _subject };
+  const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
   const findTags = row =>
     get(row, "tags", [])
       .map(_o => _o.tagName)
@@ -45,6 +43,7 @@ const ClassList = ({
 
   const [filterClass, setFilterClass] = useState(null);
   const [classGroups, setClassGroups] = useState([]);
+  const [currentTab, setCurrentTab] = useState("class");
 
   useEffect(() => {
     setClassGroups(groups);
@@ -160,11 +159,7 @@ const ClassList = ({
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => Number(a.assignmentCount) - Number(b.assignmentCount),
       render: (assignmentCount = 0, record) => (
-        <Tooltip
-          onClick={getAssignmentsByClass(record?._id)}
-          title={assignmentCount}
-          placement="bottom"
-        >
+        <Tooltip onClick={getAssignmentsByClass(record?._id)} title={assignmentCount} placement="bottom">
           {assignmentCount}
         </Tooltip>
       )
@@ -188,40 +183,69 @@ const ClassList = ({
     }
   ];
 
+  const onClickHandler = value => {
+    setCurrentTab(value);
+  };
+
   return (
     <>
-      <Header groups={groups} setShowDetails={setShowDetails} archiveGroups={archiveGroups} />
+      <Header
+        groups={groups}
+        setShowDetails={setShowDetails}
+        archiveGroups={archiveGroups}
+        currentTab={currentTab}
+        onClickHandler={onClickHandler}
+      />
       <MainContentWrapper>
-        <SubHeader>
-          <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
-          <ClassSelector
-            groups={groups}
-            archiveGroups={archiveGroups}
-            setClassGroups={setClassGroups}
-            filterClass={filterClass}
-            setFilterClass={setFilterClass}
-          />
-        </SubHeader>
+        {currentTab === "class" && (
+          <SubHeader>
+            <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
+
+            <ClassSelector
+              groups={groups}
+              archiveGroups={archiveGroups}
+              setClassGroups={setClassGroups}
+              filterClass={filterClass}
+              setFilterClass={setFilterClass}
+            />
+          </SubHeader>
+        )}
         <TableWrapper>
-          <GoogleBanner
-            syncClassLoading={syncClassLoading}
-            showBanner={showBanner}
-            setShowDetails={setShowDetails}
-          />
-          {classGroups.length > 0 ? (
+          {currentTab === "class" && (
+            <>
+              <GoogleBanner
+                syncClassLoading={syncClassLoading}
+                showBanner={showBanner}
+                setShowDetails={setShowDetails}
+              />
+              {classGroups.length > 0 ? (
+                <ClassListTable
+                  columns={columns}
+                  dataSource={classGroups.filter(({ type }) => type === "class")}
+                  rowKey={rowKey}
+                  onRow={onRow}
+                  pagination={classGroups.length > 10}
+                />
+              ) : (
+                <ClassCreatePage
+                  filterClass={filterClass}
+                  recentInstitute={recentInstitute}
+                  user={user}
+                  fetchClassList={fetchClassList}
+                />
+              )}
+            </>
+          )}
+
+          {currentTab === "group" && (
             <ClassListTable
-              columns={columns}
-              dataSource={classGroups}
+              columns={columns.filter(({ dataIndex }) =>
+                ["name", "studentCount", "assignmentCount"].includes(dataIndex)
+              )}
+              dataSource={classGroups.filter(({ type }) => type === "custom")}
               rowKey={rowKey}
               onRow={onRow}
               pagination={classGroups.length > 10}
-            />
-          ) : (
-            <ClassCreatePage
-              filterClass={filterClass}
-              recentInstitute={recentInstitute}
-              user={user}
-              fetchClassList={fetchClassList}
             />
           )}
         </TableWrapper>

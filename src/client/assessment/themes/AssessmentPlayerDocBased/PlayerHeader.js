@@ -28,7 +28,8 @@ const PlayerHeader = ({
   onChangeTool,
   handleMagnifier,
   enableMagnifier,
-  showMagnifier
+  showMagnifier,
+  timedAssignment
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const { calcType } = settings;

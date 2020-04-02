@@ -55,7 +55,8 @@ const PlayerHeader = ({
   toolsOpenStatus,
   handleMagnifier,
   showMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  timedAssignment
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -139,6 +140,7 @@ const PlayerHeader = ({
                   changeCaculateMode={changeCaculateMode}
                   qType={qType}
                   isDocbased={isDocbased}
+                  timedAssignment={timedAssignment}
                 />
               </FlexContainer>
               <FlexContainer>
@@ -171,7 +173,8 @@ const enhance = compose(
   withNamespaces("student"),
   connect(
     state => ({
-      settings: state.test.settings
+      settings: state.test.settings,
+      timedAssignment: state.test?.settings?.timedAssignment
     }),
     null
   )

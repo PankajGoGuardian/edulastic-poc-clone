@@ -52,7 +52,8 @@ const PlayerHeader = ({
   previewPlayer,
   handleMagnifier,
   enableMagnifier,
-  showMagnifier
+  showMagnifier,
+  timedAssignment
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -143,6 +144,7 @@ const PlayerHeader = ({
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
                     showMagnifier={showMagnifier}
+                    timedAssignment={timedAssignment}
                   />
                 )}
               </MainActionWrapper>
@@ -164,7 +166,8 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      settings: state.test.settings
+      settings: state.test.settings,
+      timedAssignment: state.test?.settings?.timedAssignment
     }),
     null
   )

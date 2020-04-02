@@ -8,7 +8,14 @@ import { FlexContainer } from "@edulastic/common";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
 
-const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, showZoomBtn, onSubmit }) => (
+const SaveAndExit = ({
+  finishTest,
+  previewPlayer,
+  setSettingsModalVisibility,
+  showZoomBtn,
+  onSubmit,
+  pauseAllowed = true
+}) => (
   <FlexContainer marginLeft="30px">
     {showZoomBtn && (
       <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
@@ -16,17 +23,18 @@ const SaveAndExit = ({ finishTest, previewPlayer, setSettingsModalVisibility, sh
       </StyledButton>
     )}
 
-    {previewPlayer ? (
-      <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
-        <IconCircleLogout />
-        EXIT
-      </SaveAndExitButton>
-    ) : (
-      <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
-        <IconCircleLogout />
-        SAVE & EXIT
-      </SaveAndExitButton>
-    )}
+    {pauseAllowed &&
+      (previewPlayer ? (
+        <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
+          <IconCircleLogout />
+          EXIT
+        </SaveAndExitButton>
+      ) : (
+        <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
+          <IconCircleLogout />
+          SAVE & EXIT
+        </SaveAndExitButton>
+      ))}
     {onSubmit && (
       <StyledButton onClick={onSubmit}>
         <IconSend />
@@ -51,7 +59,9 @@ SaveAndExit.defaultProps = {
 };
 
 export default connect(
-  null,
+  state => ({
+    pauseAllowed: state.test?.settings?.pauseAllowed
+  }),
   {
     setSettingsModalVisibility: setSettingsModalVisibilityAction
   }

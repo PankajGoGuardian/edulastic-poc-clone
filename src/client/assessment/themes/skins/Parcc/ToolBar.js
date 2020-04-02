@@ -8,6 +8,7 @@ import { IconCalculator, IconClose, IconScratchPad } from "@edulastic/icons";
 import { extraDesktopWidthMax, white } from "@edulastic/colors";
 import { Container } from "./styled";
 import { themes } from "../../../../theme";
+import TimedTestTimer from "../../common/TimedTestTimer";
 
 const {
   playerSkin: { parcc }
@@ -15,7 +16,15 @@ const {
 const { tools } = parcc;
 
 const { calculatorTypes } = test;
-const ToolBar = ({ settings = {}, tool = [], changeCaculateMode, changeTool, qType, isDocbased = false }) => {
+const ToolBar = ({
+  settings = {},
+  tool = [],
+  changeCaculateMode,
+  changeTool,
+  qType,
+  isDocbased = false,
+  timedAssignment
+}) => {
   const toolbarHandler = value => changeTool(value);
 
   const handleCalculateMode = value => {
@@ -54,6 +63,7 @@ const ToolBar = ({ settings = {}, tool = [], changeCaculateMode, changeTool, qTy
           </StyledButton>
         </Tooltip>
       )}
+      {timedAssignment && <TimedTestTimer />}
     </Container>
   );
 };

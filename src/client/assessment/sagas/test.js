@@ -204,7 +204,10 @@ function* loadTest({ payload }) {
       playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
       showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
       endDate: testActivity?.assignmentSettings?.endDate,
-      closePolicy: testActivity?.assignmentSettings?.closePolicy
+      closePolicy: testActivity?.assignmentSettings?.closePolicy,
+      timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
+      allowedTime: testActivity?.assignmentSettings?.allowedTime,
+      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed
     };
 
     const answerCheckByItemId = {};

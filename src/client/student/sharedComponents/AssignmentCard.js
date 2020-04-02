@@ -10,13 +10,14 @@ import {
   lightGreySecondary,
   largeDesktopWidth,
   desktopWidth,
-  black
+  black,
+  themeColor
 } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
-import { Row, Col, message, Icon } from "antd";
+import { Row, Col, message, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
 //  components
@@ -143,6 +144,42 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     if (endDate < Date.now()) {
       return message.error("Test is expired");
     }
+
+    if (!resume && timedAssignment) {
+      const content = pauseAllowed ? (
+        <p>
+          {" "}
+          This is a timed assignment which should be finished within the time limit set for this assignment. The time
+          limit for this assignment is <span style={{ fontWeight: 700 }}> {allowedTime / (60 * 1000)} minutes</span>. Do
+          you want to continue?
+        </p>
+      ) : (
+        <p>
+          {" "}
+          This is a timed assignment which should be finished within the time limit set for this assignment. The time
+          limit for this assignment is <span style={{ fontWeight: 700 }}> {allowedTime / (60 * 1000)} minutes</span>. Do
+          you want to continue?
+        </p>
+      );
+
+      Modal.confirm({
+        title: "Do you want to Continue ?",
+        content,
+        onOk: () => {
+          if (attemptCount < maxAttempts) startAssignment({ testId, assignmentId, testType, classId });
+          Modal.destroyAll();
+        },
+        okText: "Continue",
+        // okType: "danger",
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor }
+        }
+      });
+      return;
+    }
+
     if (resume) {
       resumeAssignment({
         testId,

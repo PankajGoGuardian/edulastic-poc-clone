@@ -107,3 +107,9 @@ export const SAVE_TESTLET_LOG_FAILURE = "[testlet] save testlet failure";
 // hints
 export const SHOW_HINTS = "[hints] show hints";
 export const Hide_HINTS = "[hints] hide hints";
+
+// test timer
+export const START_TIMER = "[timed-test] start timer";
+export const DEC_TIMER = "[timed-test] decrement timer by 1s";
+export const STOP_TIMER = "[timed-test] stop/pause timer";
+export const RESET_TIMER = "[timed-test] reset timer";

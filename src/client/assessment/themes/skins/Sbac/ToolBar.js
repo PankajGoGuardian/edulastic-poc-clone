@@ -5,6 +5,7 @@ import { Tooltip } from "../../../../common/utils/helpers";
 import { test, questionType } from "@edulastic/constants";
 import { IconCalculator, IconClose, IconScratchPad, IconSearch } from "@edulastic/icons";
 import { Container, StyledButton, StyledIcon } from "./styled";
+import TimedTestTimer from "../../common/TimedTestTimer";
 
 const { calculatorTypes } = test;
 
@@ -21,7 +22,8 @@ const ToolBar = ({
   isDocbased,
   handleMagnifier,
   showMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  timedAssignment
 }) => {
   const [zoom, setZoom] = useState(0);
   const toolbarHandler = value => changeTool(value);
@@ -96,6 +98,7 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
+      {timedAssignment && <TimedTestTimer />}
     </Container>
   );
 };

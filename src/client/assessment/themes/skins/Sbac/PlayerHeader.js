@@ -66,7 +66,8 @@ const PlayerHeader = ({
   toolsOpenStatus,
   handleMagnifier,
   showMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  timedAssignment
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1);
@@ -172,6 +173,7 @@ const PlayerHeader = ({
                 handleMagnifier={handleMagnifier}
                 showMagnifier={isDocbased ? false : showMagnifier}
                 enableMagnifier={enableMagnifier}
+                timedAssignment={timedAssignment}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>
@@ -218,7 +220,8 @@ const enhance = compose(
     state => ({
       settings: state.test.settings,
       showUserTTS: get(state, "user.user.tts", "no"),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      timedAssignment: state.test?.settings?.timedAssignment
     }),
     {
       setZoomLevel: setZoomLevelAction

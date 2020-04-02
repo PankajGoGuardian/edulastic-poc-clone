@@ -16,6 +16,7 @@ import MainWrapper from "./MainWrapper";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
+import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import ReportIssuePopover from "../common/ReportIssuePopover";
@@ -318,7 +319,11 @@ class AssessmentPlayerDefault extends React.Component {
       handleMagnifier,
       enableMagnifier,
       scratchpadActivity,
-      showHints
+      showHints,
+      timedAssignment = false,
+      currentAssignmentTime = null,
+      stopTimerFlag = false,
+      groupId
     } = this.props;
     const {
       testItemState,
@@ -421,6 +426,8 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0;
     }
 
+    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -470,6 +477,7 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
+            timedAssignment={timedAssignment}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
               <Tools
@@ -527,6 +535,7 @@ class AssessmentPlayerDefault extends React.Component {
                 settings={settings}
               />
             )}
+            {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
             <Main
               skin
               zoomed={isZoomApplied}
@@ -678,7 +687,10 @@ const enhance = compose(
       selectedTheme: state.ui.selectedTheme,
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       scratchpadData: state.scratchpad,
-      scratchpadActivity: getScratchPadfromActivity(state, ownProps)
+      scratchpadActivity: getScratchPadfromActivity(state, ownProps),
+      timedAssignment: state.test?.settings?.timedAssignment,
+      currentAssignmentTime: state.test?.currentAssignmentTime,
+      stopTimerFlag: state.test?.stopTimerFlag
     }),
     {
       changePreview: changePreviewAction,

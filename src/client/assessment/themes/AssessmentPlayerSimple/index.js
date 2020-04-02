@@ -20,7 +20,7 @@ import { Container, CalculatorContainer } from "../common";
 import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
-
+import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
@@ -239,7 +239,11 @@ class AssessmentPlayerSimple extends React.Component {
       zoomLevel,
       windowWidth,
       scratchPadData,
-      showHints
+      showHints,
+      timedAssignment = false,
+      currentAssignmentTime = null,
+      stopTimerFlag = false,
+      groupId
     } = this.props;
     const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
 
@@ -258,6 +262,7 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
+    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -280,6 +285,7 @@ class AssessmentPlayerSimple extends React.Component {
             bookmarks={bookmarksInOrder}
             skipped={skippedInOrder}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
+            timedAssignment={timedAssignment}
           >
             {scratchPadMode && !previewPlayer && (
               <Tools
@@ -334,6 +340,7 @@ class AssessmentPlayerSimple extends React.Component {
               onClose={this.hideExitPopup}
               finishTest={this.finishTest}
             />
+            {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
@@ -363,7 +370,10 @@ const enhance = compose(
       previousQuestionActivities: get(state, "previousQuestionActivity", {}),
       bookmarksInOrder: bookmarksByIndexSelector(state),
       skippedInOrder: getSkippedAnswerSelector(state),
-      scratchPadData: state.scratchpad
+      scratchPadData: state.scratchpad,
+      timedAssignment: state.test?.settings?.timedAssignment,
+      currentAssignmentTime: state.test?.currentAssignmentTime,
+      stopTimerFlag: state.test?.stopTimerFlag
     }),
     {
       checkAnswer: checkAnswerEvaluation,

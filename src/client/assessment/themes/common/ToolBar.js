@@ -14,6 +14,7 @@ import {
 } from "@edulastic/icons";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { Tooltip } from "../../../common/utils/helpers";
+import TimedTestTimer from "./TimedTestTimer";
 
 const { calculatorTypes } = test;
 class ToolBar extends Component {
@@ -31,7 +32,7 @@ class ToolBar extends Component {
   };
 
   render() {
-    const { settings, tool, qType, handleMagnifier, enableMagnifier, showMagnifier } = this.props;
+    const { settings, tool, qType, handleMagnifier, enableMagnifier, showMagnifier, timedAssignment } = this.props;
     const { calcType } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -89,6 +90,7 @@ class ToolBar extends Component {
             </StyledButton>
           </Tooltip>
         )}
+        {timedAssignment && <TimedTestTimer />}
       </Container>
     );
   }

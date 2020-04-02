@@ -15,6 +15,7 @@ import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { Container, CalculatorContainer } from "../common";
 import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
+import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 
 // player theme
 import { themes } from "../../../theme";
@@ -89,7 +90,17 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const { theme, items, currentItem, selectedTheme = "default", settings } = this.props;
+    const {
+      theme,
+      items,
+      currentItem,
+      selectedTheme = "default",
+      settings,
+      timedAssignment = false,
+      currentAssignmentTime = null,
+      stopTimerFlag = false,
+      groupId
+    } = this.props;
     const { showExitPopup, currentTool } = this.state;
     const item = items[currentItem];
     if (!item) {
@@ -102,6 +113,8 @@ class AssessmentPlayerTestlet extends React.Component {
     // themeToPass = playersZoomTheme(themeToPass);
     const { calcProvider, calcType } = settings;
     const calculateMode = calcProvider && calcType !== "NONE" ? `${calcType}_${calcProvider}` : false;
+    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={currentTool}>
@@ -113,6 +126,7 @@ class AssessmentPlayerTestlet extends React.Component {
             calculateMode={calculateMode}
             onSubmitAnswer={this.submitAnswer}
             saveTestletLog={this.saveTestletLog}
+            timedAssignment={timedAssignment}
           />
           <SubmitConfirmation
             settings={settings}
@@ -120,6 +134,7 @@ class AssessmentPlayerTestlet extends React.Component {
             onClose={this.hideExitPopup}
             finishTest={this.finishTest}
           />
+          {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}
@@ -141,7 +156,10 @@ export default connect(
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
     zoomLevel: state.ui.zoomLevel,
-    selectedTheme: state.ui.selectedTheme
+    selectedTheme: state.ui.selectedTheme,
+    timedAssignment: state.test?.settings?.timedAssignment,
+    currentAssignmentTime: state.test?.currentAssignmentTime,
+    stopTimerFlag: state.test?.stopTimerFlag
   }),
   {
     checkAnswer: checkAnswerEvaluation,

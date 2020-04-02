@@ -159,10 +159,10 @@ const Settings = ({
           setAssignmentLevelFlow(true);
         },
         okText: "Proceed",
-        okType: "primary",
         centered: true,
+        width: 500,
         okButtonProps: {
-          type: "ghost"
+          style: { background: themeColor }
         }
       });
       return;

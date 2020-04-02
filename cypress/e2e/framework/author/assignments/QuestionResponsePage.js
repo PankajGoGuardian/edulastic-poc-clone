@@ -109,7 +109,7 @@ export default class QuestionResponsePage {
     cy.wait("@overall-feedback");
   };
 
-  getScoreByAttempt = (attemptData, points, questionType, attemptType) => {
+  getScoreByAttempt = (attemptData, points, questionType, attemptType, penalty = 0) => {
     let score = 0;
     const { right, partialCorrect } = attemptData;
     switch (questionType) {
@@ -120,10 +120,16 @@ export default class QuestionResponsePage {
         if (attemptType === attemptTypes.RIGHT) score = points;
         else if (attemptType === attemptTypes.PARTIAL_CORRECT) {
           let correctChoices = 0;
+          let incorrectChoices = 0;
           partialCorrect.forEach(ch => {
             if (right.indexOf(ch) >= 0) correctChoices++;
+            else incorrectChoices++;
           });
-          score = Cypress._.round((correctChoices / right.length) * points, 2);
+          score = Cypress._.round(
+            (correctChoices / right.length) * points - (incorrectChoices / right.length) * penalty,
+            2
+          );
+          if (score < 0) score = 0;
         }
         break;
 

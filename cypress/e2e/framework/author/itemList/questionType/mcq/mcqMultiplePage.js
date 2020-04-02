@@ -40,7 +40,7 @@ class MCQMultiplePage extends MCQStandardPage {
       }
 
       if (setAns) {
-        const { correct, points, evaluation } = setAns;
+        const { correct, points, evaluation, penalty } = setAns;
         // uncheck default ans
         this.getAllAnsChoicesLabel()
           .find("input:checked")
@@ -62,6 +62,7 @@ class MCQMultiplePage extends MCQStandardPage {
           cy.get('[data-cy="scoringType"]').scrollIntoView();
           // this.getEnableAutoScoring().click({ force: true });
           CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
+          if (penalty) this.getPanalty().type(`{selectAll}${penalty}`);
         }
 
         // this.header.save();

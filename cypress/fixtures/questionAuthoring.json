@@ -142,6 +142,24 @@
           "grade": "Kindergarten"
         }
       ]
+    },
+    "4": {
+      "quetext": "This is MCQ_MULTI.4 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match", "penalty": 1 },
+      "attemptData": {
+        "right": ["right-1", "right-2"],
+        "wrong": "wrong-1",
+        "partialCorrect": ["right-2", "wrong-1"]
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "MCQ_TF": {

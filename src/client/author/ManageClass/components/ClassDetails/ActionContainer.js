@@ -15,9 +15,7 @@ import { connect } from "react-redux";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import * as moment from "moment";
-import AddStudentModal from "./AddStudent/AddStudentModal";
 import { EduButton } from "@edulastic/common";
-import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
@@ -26,7 +24,6 @@ import {
 } from "../../ducks";
 import { getUserOrgData, getUserOrgId } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import ResetPwd from "./ResetPwd/ResetPwd";
 import {
@@ -40,7 +37,12 @@ import {
   RedirectButton
 } from "./styled";
 import { getSchoolPolicy, receiveSchoolPolicyAction } from "../../../DistrictPolicy/ducks";
+
+import AddStudentModal from "./AddStudent/AddStudentModal";
+import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
+import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
+import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGroupModal";
 
 const modalStatus = {};
 
@@ -249,6 +251,8 @@ const ActionContainer = ({
       case "addCoTeacher":
         toggleModal("addCoTeacher");
         break;
+      case "addToGroup":
+        toggleModal("addToGroup");
       default:
         break;
     }
@@ -295,6 +299,14 @@ const ActionContainer = ({
         isOpen={isOpen.addCoTeacher}
         selectedClass={selectedClass}
         handleCancel={() => toggleModal("addCoTeacher")}
+      />
+
+      <AddToGroupModal
+        type="group"
+        visible={isOpen.addToGroup}
+        onCancel={() => toggleModal("addToGroup")}
+        checkedStudents={selectedStudent.map(s => s._id)}
+        studentList={studentsList}
       />
 
       <AddStudentDivider>
@@ -353,6 +365,10 @@ const ActionContainer = ({
                     <span>Add a Co-Teacher</span>
                   </MenuItems>
                 ) : null}
+                <MenuItems key="addToGroup">
+                  <IconPlus />
+                  <span>Add To Group</span>
+                </MenuItems>
               </DropMenu>
             }
             placement="bottomRight"

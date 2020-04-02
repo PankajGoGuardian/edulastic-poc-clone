@@ -120,12 +120,12 @@ const SingleAssessmentReportContainer = props => {
         <Route
           exact
           path={`/author/reports/performance-by-standards/test/:testId?`}
-          render={_props => <PerformanceByStandards {..._props} settings={settings} />}
+          render={_props => <PerformanceByStandards {..._props} settings={settings} pageTitle={props.loc} />}
         />
         <Route
           exact
           path={`/author/reports/performance-by-students/test/:testId?`}
-          render={_props => <PerformanceByStudents {..._props} showFilter={props.showFilter} settings={settings} />}
+          render={_props => <PerformanceByStudents {..._props} showFilter={props.showFilter} settings={settings} pageTitle={props.loc} />}
         />
       </FeaturesSwitch>
     </>

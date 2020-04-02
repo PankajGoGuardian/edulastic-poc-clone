@@ -316,7 +316,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       },
       { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
     );
-
+    
     let scorePercentUnrounded = (_item.totalTotalScore / _item.totalMaxScore) * 100;
     scorePercentUnrounded = !isNaN(scorePercentUnrounded) ? scorePercentUnrounded : 0;
 
@@ -379,6 +379,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       return ___item;
     });
 
+    const { testActivityId, assignmentId, groupId } = groupedData[item][0];
     _item = {
       ..._item,
       compareBy: compareBy,
@@ -396,7 +397,10 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       masteryName,
       color,
       sisId: groupedData[item][0].sisId,
-      standardsInfo
+      standardsInfo,
+      testActivityId,
+      assignmentId,
+      groupId
     };
 
     if (_item.compareBy === "studentId") {
@@ -426,7 +430,6 @@ export const getTableData = (filteredDenormalizedData, masteryScale, compareBy, 
 
   let groupedData = groupBy(filteredDenormalizedData.filter(item => (item[compareBy] ? true : false)), compareBy);
   let analysedData = getAnalysedData(groupedData, compareBy, masteryScale);
-
   let filteredData = filterByMasteryLevel(analysedData, masteryLevel);
   return filteredData;
 };

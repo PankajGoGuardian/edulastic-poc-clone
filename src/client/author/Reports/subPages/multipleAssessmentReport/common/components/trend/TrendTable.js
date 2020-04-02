@@ -15,6 +15,7 @@ import TrendColumn from "./TrendColumn";
 import dropDownData from "../../static/json/dropDownData.json";
 import { compareByMap } from "../../utils/trend";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { reportLinkColor } from "../../utils/constants";
 
 const formatText = (test, type) => {
   if (test[type] === null || typeof test[type] === "undefined") return "N/A";
@@ -28,7 +29,30 @@ const formatText = (test, type) => {
   return test[type];
 };
 
-const getCol = (text, backgroundColor) => {
+const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, test) => {
+  if (isCellClickable && text) {
+    const { assignmentId, groupId, testActivityId } = test.records[0];
+
+    return <StyledCell style={{ backgroundColor }}>
+      <Link style={{color: reportLinkColor}} to={{
+        pathname: `/author/classboard/${assignmentId}/${groupId}/test-activity/${testActivityId}`,
+        state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+          breadCrumb: [
+            {
+              title: "REPORTS",
+              to: "/author/reports"
+            },
+            {
+              title: pageTitle,
+              to: `${location.pathname}${location.search}`
+            }
+          ]
+        }
+      }}>
+        {text}
+      </Link>
+    </StyledCell>;
+  }
   return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
 };
 
@@ -68,7 +92,10 @@ const getColumns = (
   compareBy = {},
   customColumns = [],
   toolTipContent,
-  filters = {}
+  filters = {},
+  isCellClickable,
+  location,
+  pageTitle
 ) => {
   const groupedTests = groupBy(testData, "testId");
   const groupedAvailableTests = groupBy(rawMetric, "testId");
@@ -107,7 +134,7 @@ const getColumns = (
         );
 
         return (
-          <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color)} />
+          <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color, isCellClickable, pageTitle, location, record.tests[testId])} />
         );
       }
     };
@@ -193,9 +220,12 @@ const TrendTable = ({
   heading,
   toolTipContent,
   isCsvDownloading,
-  onCsvConvert
+  onCsvConvert,
+  isCellClickable,
+  location,
+  pageTitle
 }) => {
-  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent, filters);
+  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent, filters, isCellClickable, location, pageTitle);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
 
   return (

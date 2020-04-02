@@ -24,9 +24,9 @@ const AssessmentChart = ({
     return currentBarData.testName || "";
   };
 
-  const _onBarClickCB = key => {
+  const _onBarClickCB = (key, args = {}) => {
     const clickedBarData = find(dataWithColors, item => item[xDataKey] === key) || {};
-    onBarClickCB(clickedBarData);
+    onBarClickCB(clickedBarData, args);
   };
 
   const getTooltipJSX = (payload, barIndex) => {

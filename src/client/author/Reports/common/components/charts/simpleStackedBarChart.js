@@ -123,7 +123,7 @@ export const SimpleStackedBarChart = ({
   };
 
   const onBarClick = args => {
-    onBarClickCB(args[xAxisDataKey]);
+    onBarClickCB(args[xAxisDataKey], args);
   };
 
   const onResetClick = () => {

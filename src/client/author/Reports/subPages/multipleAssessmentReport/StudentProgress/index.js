@@ -53,7 +53,9 @@ const StudentProgress = ({
   settings,
   loading,
   role,
-  filters
+  filters,
+  pageTitle,
+  location
 }) => {
   const profiles = MARFilterData?.data?.result?.bandInfo || [];
 
@@ -128,6 +130,9 @@ const StudentProgress = ({
         analyseBy={analyseBy}
         rawMetric={metricInfo}
         customColumns={customTableColumns}
+        isCellClickable
+        location={location}
+        pageTitle={pageTitle}
         toolTipContent={(record, columnValue) => {
           return (
             <>

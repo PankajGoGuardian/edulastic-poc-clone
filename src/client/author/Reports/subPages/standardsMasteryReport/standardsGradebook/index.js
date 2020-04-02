@@ -56,7 +56,9 @@ const StandardsGradebook = ({
   filters,
   getStudentStandardsAction,
   studentStandardData,
-  loadingStudentStandard
+  loadingStudentStandard,
+  location,
+  pageTitle
 }) => {
   const [ddfilter, setDdFilter] = useState({
     schoolId: "all",
@@ -196,6 +198,8 @@ const StandardsGradebook = ({
               filters={filters}
               handleOnClickStandard={handleOnClickStandard}
               standardsData={standardsData}
+              location={location}
+              pageTitle={pageTitle}
             />
           </TableContainer>
           {showStudentAssignmentModal && (

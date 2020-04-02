@@ -51,7 +51,10 @@ const StudentProfileSummary = ({
   studentProfileSummary,
   getStudentProfileSummaryRequestAction,
   bandInfoSelected,
-  selectedStandardProficiency
+  selectedStandardProficiency,
+  location,
+  pageTitle,
+  history
 }) => {
   const { selectedStudent } = settings;
   const bandInfo = bandInfoSelected;
@@ -84,6 +87,24 @@ const StudentProfileSummary = ({
       });
     }
   }, [settings]);
+
+  const _onBarClickCB = (key, args) => {
+    history.push({
+      pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
+      state: { // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+        breadCrumb: [
+          {
+            title: "REPORTS",
+            to: "/author/reports"
+          },
+          {
+            title: pageTitle,
+            to: `${location.pathname}${location.search}`
+          }
+        ]
+      }
+    })
+  };
 
   if (loading) {
     return (
@@ -131,7 +152,7 @@ const StudentProfileSummary = ({
             </StudentDetailsContainer>
           </StyledCol>
           <Col xs={24} sm={24} md={18} lg={18} xl={19}>
-            <AssessmentChart data={data} studentInformation={studentClassInfo} xTickTooltipPosition={400} />
+            <AssessmentChart data={data} studentInformation={studentClassInfo} xTickTooltipPosition={400} onBarClickCB={_onBarClickCB} />
           </Col>
         </Row>
       </StyledCard>

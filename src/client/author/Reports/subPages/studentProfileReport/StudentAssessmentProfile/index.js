@@ -24,7 +24,10 @@ const StudentAssessmentProfile = ({
   studentAssessmentProfile,
   getStudentAssessmentProfileRequestAction,
   isCsvDownloading,
-  bandInfoSelected: bandInfo
+  bandInfoSelected: bandInfo,
+  location,
+  pageTitle,
+  history
 }) => {
   const { selectedStudent } = settings;
 
@@ -54,7 +57,7 @@ const StudentAssessmentProfile = ({
   const studentInformation = studentClassData[0] || {};
   const studentName = getStudentName(selectedStudent, studentInformation);
 
-  const onTestSelect = item => setSelectedTests(toggleItem(selectedTests, item.uniqId));
+  const onTestSelect = (item, record) => setSelectedTests(toggleItem(selectedTests, item.uniqId));
   const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${studentName}.csv`, data);
 
   if (loading) {
@@ -99,6 +102,8 @@ const StudentAssessmentProfile = ({
           data={tableData}
           studentName={studentName}
           selectedTests={selectedTests}
+          location={location}
+          pageTitle={pageTitle}
         />
       </StyledCard>
     </>

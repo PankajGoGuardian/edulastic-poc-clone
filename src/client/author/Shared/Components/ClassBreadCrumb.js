@@ -8,31 +8,55 @@ import { getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getUserRole } from "../../../student/Login/ducks";
 import { getUserOrgId } from "../../src/selectors/user";
 
-const ClassBreadBrumb = ({ data, districtId, userRole }) => (
-  <PaginationInfo xs={24} md={8}>
-    <RecentLink to="/author/assignments">RECENTS ASSIGNMENTS</RecentLink>
-    {data?.testName && (
-      <>
-        &nbsp;{"/"}&nbsp;
-        <Tooltip title={data.testName}>
-          <AnchorLink
-            to={userRole === "teacher" ? "/author/assignments" : `/author/assignments/${districtId}/${data.testId}`}
-          >
-            {data.testName}
-          </AnchorLink>
-        </Tooltip>
-      </>
-    )}
-    {data?.className && (
-      <>
-        &nbsp;{"/"}&nbsp;
-        <Tooltip title={data.className}>
-          <Anchor>{data.className}</Anchor>
-        </Tooltip>
-      </>
-    )}
-  </PaginationInfo>
-);
+const ClassBreadBrumb = ({ data, districtId, userRole, breadCrumb }) => {
+  if (breadCrumb) {
+    return (
+      <PaginationInfo xs={24} md={8}>
+        {breadCrumb.map((bc, i) => {
+          const title = bc.title?.replace(/-/g, " ")?.toUpperCase();
+          return (
+            <>
+              {i !== 0 && <>&nbsp;/&nbsp;</>}
+              <Tooltip title={title}>
+                <AnchorLink
+                  to={bc.to}
+                >
+                  {title}
+                </AnchorLink>
+              </Tooltip>
+            </>
+          )
+      })}
+      </PaginationInfo>
+    );
+  };
+
+  return (
+    <PaginationInfo xs={24} md={8}>
+      <RecentLink to="/author/assignments">RECENTS ASSIGNMENTS</RecentLink>
+      {data?.testName && (
+        <>
+          &nbsp;{"/"}&nbsp;
+          <Tooltip title={data.testName}>
+            <AnchorLink
+              to={userRole === "teacher" ? "/author/assignments" : `/author/assignments/${districtId}/${data.testId}`}
+            >
+              {data.testName}
+            </AnchorLink>
+          </Tooltip>
+        </>
+      )}
+      {data?.className && (
+        <>
+          &nbsp;{"/"}&nbsp;
+          <Tooltip title={data.className}>
+            <Anchor>{data.className}</Anchor>
+          </Tooltip>
+        </>
+      )}
+    </PaginationInfo>
+  )
+};
 
 export default connect(
   state => ({

@@ -5,6 +5,7 @@ import { max, min, filter, map, find, orderBy, ceil, groupBy, sumBy, floor, forE
 import { filterData, getHSLFromRange1, filterAccordingToRole, formatDate } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
+import { reportLinkColor } from "../../../multipleAssessmentReport/common/utils/constants";
 
 export const getInterval = maxValue => min([maxValue, 9]);
 
@@ -197,11 +198,27 @@ const getDisplayValue = (columnType, text) => {
   }
 };
 
-const getCellContents = ({ printData, colorKey }) => {
+const getCellContents = ({ printData, colorKey, ...restProps }) => {
+  const { columnKey, record, pageTitle, location } = restProps;
+
+  if (columnKey === "studentScore") {
+    return (
+      <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey)) }}>
+        <Link style={{ color: reportLinkColor }} to={{
+          pathname:`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+          state: {
+            breadCrumb: getBreadCrumb(location, pageTitle)
+          }
+        }}>
+          {printData}
+        </Link>
+      </div>
+    );
+  }
   return <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey)) }}>{printData}</div>;
 };
 
-const getColorCell = (columnKey, columnType, assessmentName) => (text, record) => {
+const getColorCell = (columnKey, columnType, assessmentName, location = {}, pageTitle) => (text, record) => {
   const toolTipText = record => {
     let lastItem = {
       title: "District: ",
@@ -242,11 +259,27 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
       placement="top"
       title={toolTipText(record)}
       getCellContents={getCellContents}
+      columnKey={columnKey}
+      record={record}
+      location={location}
+      pageTitle={pageTitle}
     />
   );
 };
 
-export const getColumns = (columns, assessmentName, role) => {
+// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+const getBreadCrumb = (location, pageTitle) => ([
+  {
+    title: "REPORTS",
+    to: "/author/reports"
+  },
+  {
+    title: pageTitle,
+    to: `${location.pathname}${location.search}`
+  }
+]);
+
+export const getColumns = (columns, assessmentName, role, location, pageTitle) => {
   const filteredColumns = filterAccordingToRole(columns, role);
 
   return next(filteredColumns, columnsDraft => {
@@ -259,12 +292,26 @@ export const getColumns = (columns, assessmentName, role) => {
         data
       );
 
+    // column 4 defined assessmentScore
+    columnsDraft[4].render = (data, record) => {
+      if (data === "Absent") return data;
+      return (
+        <Link style={{ color: reportLinkColor }} to={{
+          pathname:`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+          state: {
+            breadCrumb: getBreadCrumb(location, pageTitle)
+          }
+        }}>
+          {data}
+        </Link>
+      );
+    }
     forEach(columnsDraft, column => {
       if (column.sortable) {
         column.sorter = getSorter(column.type, column.dataIndex);
       }
       if (column.showToolTip) {
-        column.render = getColorCell(column.dataIndex, column.type, assessmentName);
+        column.render = getColorCell(column.dataIndex, column.type, assessmentName, location, pageTitle);
       }
     });
   });

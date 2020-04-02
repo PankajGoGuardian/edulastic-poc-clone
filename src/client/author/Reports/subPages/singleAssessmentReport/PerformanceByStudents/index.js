@@ -39,7 +39,9 @@ const PerformanceByStudents = ({
   selectedPerformanceBand,
   performanceByStudents,
   getPerformanceByStudents,
-  settings
+  settings,
+  location = { pathname: "" },
+  pageTitle
 }) => {
   const bandInfo =
     performanceBandProfiles.find(profile => profile._id === selectedPerformanceBand)?.performanceBand ||
@@ -115,7 +117,7 @@ const PerformanceByStudents = ({
 
   const onCsvConvert = data => downloadCSV(`Performance by Students.csv`, data);
 
-  const _columns = getColumns(columns, res && res.testName, role);
+  const _columns = getColumns(columns, res && res.testName, role, location, pageTitle);
 
   const testName = get(settings, "selectedTest.title", "");
 
@@ -197,6 +199,8 @@ const PerformanceByStudents = ({
                   pagination={pagination}
                   onChange={setPagination}
                   tableToRender={StyledTable}
+                  location={location}
+                  pageTitle={pageTitle}
                 />
               </Col>
             </Row>

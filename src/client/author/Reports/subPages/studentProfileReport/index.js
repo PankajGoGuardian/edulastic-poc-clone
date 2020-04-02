@@ -90,12 +90,12 @@ const StudentProfileReportContainer = props => {
         <Route
           exact
           path={`/author/reports/student-assessment-profile/student/:studentId?`}
-          render={_props => <StudentAssessmentProfile {..._props} settings={settings} />}
+          render={_props => <StudentAssessmentProfile {..._props} settings={settings} pageTitle={props.loc} />}
         />
         <Route
           exact
           path={`/author/reports/student-profile-summary/student/:studentId?`}
-          render={_props => <StudentProfileSummary {..._props} settings={settings} />}
+          render={_props => <StudentProfileSummary {..._props} settings={settings} pageTitle={props.loc} />}
         />
       </FeaturesSwitch>
     </>

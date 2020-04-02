@@ -7,9 +7,29 @@ import TableTooltipRow from "../../../../../../common/components/tooltip/TableTo
 import { StyledTable, StyledCell } from "../../../../../../common/styled";
 import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
+import { reportLinkColor } from "../../../../../multipleAssessmentReport/common/utils/constants";
 
-const getCol = (text, backgroundColor) => {
-  const value = text === undefined || text === null ? "N/A" : `${text}%`;
+const getCol = (text, backgroundColor, columnKey, location, pageTitle, record) => {
+  let value = text === undefined || text === null ? "N/A" : `${text}%`;
+  if (columnKey === "score") {
+    value = <Link style={{ color: reportLinkColor }} to={{
+      pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+      state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+        breadCrumb: [
+          {
+            title: "REPORTS",
+            to: "/author/reports"
+          },
+          {
+            title: pageTitle,
+            to: `${location.pathname}${location.search}`
+          }
+        ]
+      }
+    }}>
+      {value}
+    </Link>
+  };
   return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
 };
 
@@ -72,7 +92,7 @@ const tableColumns = [
   }
 ];
 
-const getColumns = (studentName = "") => {
+const getColumns = (studentName = "", location, pageTitle) => {
   return [
     ...tableColumns,
     {
@@ -108,7 +128,7 @@ const getColumns = (studentName = "") => {
           <CustomTableTooltip
             placement="top"
             title={toolTipText()}
-            getCellContents={() => getCol(score, getHSLFromRange1(score))}
+            getCellContents={() => getCol(score, getHSLFromRange1(score), "score", location, pageTitle, record)}
           />
         );
       }
@@ -116,8 +136,8 @@ const getColumns = (studentName = "") => {
   ];
 };
 
-const AssessmentTable = ({ data, studentName, selectedTests, isCsvDownloading, onCsvConvert }) => {
-  const columns = getColumns(studentName);
+const AssessmentTable = ({ data, studentName, selectedTests, isCsvDownloading, onCsvConvert, location, pageTitle }) => {
+  const columns = getColumns(studentName, location, pageTitle);
 
   const filteredData = filter(data, test => {
     return selectedTests.length ? includes(selectedTests, test.uniqId) : true;

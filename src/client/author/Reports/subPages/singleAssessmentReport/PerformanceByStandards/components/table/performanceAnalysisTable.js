@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { uniqBy, map, round, reduce } from "lodash";
-
+import { Link } from "react-router-dom";
 import {
   compareByColumns,
   analyzeByMode,
@@ -15,6 +15,7 @@ import { StyledTable } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { reportLinkColor } from "../../../../multipleAssessmentReport/common/utils/constants";
 
 const columnHashMap = {
   teacher: "teacherName",
@@ -44,7 +45,9 @@ const PerformanceAnalysisTable = ({
   selectedDomains,
   tableData,
   totalPoints,
-  isCsvDownloading
+  isCsvDownloading,
+  location = { pathname: "" },
+  pageTitle
 }) => {
   const formatScore = (score, analyzeBy) => {
     switch (analyzeBy) {
@@ -130,7 +133,20 @@ const PerformanceAnalysisTable = ({
       dataIndex: "overall",
       key: "overall",
       sorter: (a, b) => getAverage(a) - getAverage(b),
-      render: (recordId, record) => getOverallValue(record.standardMetrics, analyzeBy)
+      render: (recordId, record) => {
+        const path = {
+          pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+          state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+            breadCrumb: [{
+            to: "/author/reports",
+            title: "REPORTS"
+          }, {
+            to: `${location.pathname}${location.search}`,
+            title: pageTitle
+          }]}
+        };
+        return <Link to={path} style={{ color: reportLinkColor }}>{getOverallValue(record.standardMetrics, analyzeBy)}</Link>
+      }
     };
   };
 

@@ -612,7 +612,8 @@ class ClassBoard extends Component {
       hasRandomQuestions,
       isLoading,
       t,
-      history
+      history,
+      location
     } = this.props;
 
     const {
@@ -744,7 +745,7 @@ class ClassBoard extends Component {
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb />
+            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb}/>
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton

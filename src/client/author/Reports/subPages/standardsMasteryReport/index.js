@@ -97,7 +97,7 @@ const StandardsMasteryReportContainer = props => {
       <Route
         exact
         path={`/author/reports/standards-gradebook`}
-        render={_props => <StandardsGradebook {..._props} settings={gradebookSettings} />}
+        render={_props => <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={props.loc} />}
       />
       <Route
         exact

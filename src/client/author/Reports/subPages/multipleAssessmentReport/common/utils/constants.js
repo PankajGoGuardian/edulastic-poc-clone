@@ -12,3 +12,5 @@ export const trendTypes = {
     rotation: 135
   }
 };
+
+export const reportLinkColor = "rgba(0, 0, 0, 0.65)";

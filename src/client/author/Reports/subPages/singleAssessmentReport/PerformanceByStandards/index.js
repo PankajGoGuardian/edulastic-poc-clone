@@ -49,7 +49,9 @@ const PerformanceByStandards = ({
   interestedCurriculums,
   isCsvDownloading,
   selectedStandardProficiencyProfile,
-  standardProficiencyProfiles
+  standardProficiencyProfiles,
+  location,
+  pageTitle
 }) => {
   const scaleInfo = useMemo(
     () =>
@@ -282,6 +284,8 @@ const PerformanceByStandards = ({
           selectedDomains={selectedDomains}
           totalPoints={totalPoints}
           isCsvDownloading={isCsvDownloading}
+          location={location}
+          pageTitle={pageTitle}
         />
       </StyledCard>
     </>

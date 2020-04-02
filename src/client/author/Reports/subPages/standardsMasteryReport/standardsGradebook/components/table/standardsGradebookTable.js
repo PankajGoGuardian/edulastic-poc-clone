@@ -22,6 +22,7 @@ import {
 } from "../../utils/transformers";
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
+import { reportLinkColor } from "../../../../multipleAssessmentReport/common/utils/constants";
 
 export const StandardsGradebookTable = ({
   filteredDenormalizedData,
@@ -31,7 +32,9 @@ export const StandardsGradebookTable = ({
   role,
   filters = {},
   handleOnClickStandard,
-  standardsData
+  standardsData,
+  location,
+  pageTitle
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
@@ -197,7 +200,27 @@ export const StandardsGradebookTable = ({
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy];
           return a[key] - b[key];
         },
-        render: data => (tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data)
+        render: (data, record) => {
+          return (
+            <Link style={{color: reportLinkColor}} to={{
+              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+              state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                breadCrumb: [
+                  {
+                    title: "REPORTS",
+                    to: "/author/reports"
+                  },
+                  {
+                    title: pageTitle,
+                    to: `${location.pathname}${location.search}`
+                  }
+                ]
+              }
+            }}>
+              {tableDdFilters.analyseBy === "score(%)" ? `${data}%` : data}
+            </Link>
+          )
+        }
       },
       {
         title: "SIS ID",

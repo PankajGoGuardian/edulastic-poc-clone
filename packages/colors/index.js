@@ -14,6 +14,7 @@ export const themeLightGrayBgColor = "#F1F1F1";
 
 export const greyThemeDark1 = "#434B5D";
 export const greyThemeDark2 = "#878A91";
+export const greyThemeDark3 = "#69727e";
 export const greyThemeLight = "#b9b9b9";
 export const greyLight1 = "#e8e8e8";
 export const greyThemeLighter = "#f8f8f8";
@@ -45,7 +46,7 @@ export const greyDarken = "#979BA1";
 export const titleColor = darkGrey2;
 export const greyScoreCardTitleColor = "#aaafb5";
 export const cardTitleColor = "#aaafb5";
-export const linkColor = "#69727e";
+export const linkColor = greyThemeDark3;
 export const linkColor1 = lightGrey9;
 export const someGreyColor1 = "#c0c0c0";
 export const labelGrey = "#9B9B9B";

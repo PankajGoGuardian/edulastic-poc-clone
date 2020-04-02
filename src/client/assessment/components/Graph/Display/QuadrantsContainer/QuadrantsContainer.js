@@ -5,6 +5,7 @@ import { cloneDeep, isEqual, sortBy } from "lodash";
 import produce from "immer";
 
 import { WithResources } from "@edulastic/common";
+import { greyThemeDark3, greenDark6 } from "@edulastic/colors";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
@@ -41,7 +42,22 @@ import AppConfig from "../../../../../../../app-config";
 const trueColor = "#1fe3a1";
 const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
-const bgColor = "#69727e";
+const bgColor = greyThemeDark3;
+
+const colorMap = type => {
+  switch (type) {
+    case "point":
+      return "brown";
+    case "xaxis":
+    case "yaxis":
+    case "dashed":
+      return "black";
+    case "area":
+      return greenDark6;
+    default:
+      return defaultColor;
+  }
+};
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -246,6 +262,9 @@ class GraphContainer extends PureComponent {
         ...defaultPointParameters(),
         ...pointParameters
       });
+
+      this.setPriorityColors();
+
       this._graph.setAxesParameters({
         x: {
           ...defaultAxesParameters(),
@@ -270,7 +289,6 @@ class GraphContainer extends PureComponent {
         this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
       }
 
-      this.setPriorityColor();
       this.setElementsToGraph();
     }
 
@@ -330,6 +348,8 @@ class GraphContainer extends PureComponent {
         });
       }
 
+      this.setPriorityColors();
+
       if (
         !isEqual(xAxesParameters, prevProps.xAxesParameters) ||
         !isEqual(yAxesParameters, prevProps.yAxesParameters)
@@ -376,7 +396,6 @@ class GraphContainer extends PureComponent {
         }
       }
 
-      this.setPriorityColor();
       this.setElementsToGraph(prevProps, refreshElements);
     }
 
@@ -385,13 +404,29 @@ class GraphContainer extends PureComponent {
     }
   }
 
-  setPriorityColor() {
-    const { bgShapes, toolbar } = this.props;
+  // Note: Manipulating the data inside the props is considered safe here
+  // as there is no change being made to the props value (a reference) in this case
+  setPriorityColors() {
+    const { bgShapes, toolbar, elements, xAxesParameters, yAxesParameters } = this.props;
     const { drawingPrompt } = toolbar;
-
     if (bgShapes || drawingPrompt === "byTools") {
-      this._graph.setPriorityColor(defaultColor);
+      let prev = colorMap();
+      elements.forEach(el => {
+        if (el.subElement && prev) {
+          el.priorityColor = prev;
+        } else {
+          el.priorityColor = colorMap(el.dashed ? "dashed" : el.type);
+          prev = el.priorityColor;
+        }
+      });
+      xAxesParameters.strokeColor = colorMap("xaxis");
+      yAxesParameters.strokeColor = colorMap("yaxis");
     } else {
+      elements.forEach(el => {
+        el.priorityColor = null;
+      });
+      xAxesParameters.strokeColor = defaultColor;
+      yAxesParameters.strokeColor = defaultColor;
       this._graph.setPriorityColor(null);
     }
   }

@@ -206,7 +206,7 @@ class StudentTable extends Component {
     if (role === "school-admin") {
       loadSchoolPolicy(schoolId);
     } else {
-      loadDistrictPolicy({ orgId: userOrgId });
+      loadDistrictPolicy({ orgId: userOrgId, orgType: "district" });
     }
     if (!isEmpty(dataPassedWithRoute)) {
       this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);

@@ -93,3 +93,15 @@ export const StyledButton = styled(Button)`
 export const ButtonText = styled(Text)`
   color: ${green};
 `;
+
+export const DropdownWrapper = styled.div`
+  width: 360px;
+  display: flex;
+  .ant-select {
+    width: 200px;
+  }
+  .ant-select-selection {
+    border: 1px solid #40b394;
+    color: #40b394;
+  }
+`;

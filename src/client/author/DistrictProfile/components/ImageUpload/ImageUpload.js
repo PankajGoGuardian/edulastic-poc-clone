@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { uploadToS3 } from "../../../src/utils/upload";
-import { aws } from "@edulastic/constants";
+import { aws, roleuser } from "@edulastic/constants";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
 import { setImageUploadingStatusAction } from "../../ducks";
@@ -10,6 +10,7 @@ import { setImageUploadingStatusAction } from "../../ducks";
 import { StyledUploadContainer, StyledUpload, StyledImg, Camera, ImageUploadButton } from "./styled";
 
 import { message } from "antd";
+import { getUserRole } from "../../../src/selectors/user";
 
 class ImageUpload extends Component {
   constructor(props) {
@@ -45,9 +46,9 @@ class ImageUpload extends Component {
   };
 
   render() {
-    const { width, height, labelStr, imgSrc, keyName, isInputEnabled } = this.props;
+    const { width, height, labelStr, imgSrc, keyName, isInputEnabled, role } = this.props;
     const isImageEmpty = imgSrc == null || imgSrc.length == 0 ? true : false;
-
+    const isDA = role === roleuser.DISTRICT_ADMIN;
     return (
       <>
         <StyledUploadContainer keyName={keyName}>
@@ -77,8 +78,7 @@ class ImageUpload extends Component {
           </Camera>
         ) : isInputEnabled ? (
           <ImageUploadButton type="primary" onClick={this.clickFileOpen}>
-            {" "}
-            Change District {labelStr}{" "}
+            {isDA ? `Change District ${labelStr}` : `Change School ${labelStr}`}
           </ImageUploadButton>
         ) : null}
       </>
@@ -88,7 +88,9 @@ class ImageUpload extends Component {
 
 const enhance = compose(
   connect(
-    null,
+    state => ({
+      role: getUserRole(state)
+    }),
     {
       setUploadingStatus: setImageUploadingStatusAction
     },

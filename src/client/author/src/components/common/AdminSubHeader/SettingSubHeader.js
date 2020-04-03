@@ -60,7 +60,7 @@ class AdminSubHeader extends Component {
 export default connect(
   state => ({
     role: getUserRole(state),
-    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false)
+    schoolLevelAdminSettings: get(state, "districtPolicyReducer.schoolData.schoolAdminSettingsAccess", false)
   }),
   {}
 )(AdminSubHeader);

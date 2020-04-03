@@ -86,7 +86,7 @@ class DistrictPolicyForm extends Component {
     if (role === "school-admin") {
       loadSchoolPolicy(schoolId);
     } else {
-      loadDistrictPolicy({ orgId: userOrgId });
+      loadDistrictPolicy({ orgId: userOrgId, orgType: "district" });
     }
   }
 

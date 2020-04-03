@@ -197,5 +197,5 @@ export const getSaSchoolsSelector = createSelector(
 
 export const getSaSchoolsSortedSelector = createSelector(
   getSaSchoolsSelector,
-  schools => schools.sort((a, b) => a.name?.localeCompare(b.name))
+  schools => schools.sort((a, b) => a.name.localeCompare(b.name))
 );

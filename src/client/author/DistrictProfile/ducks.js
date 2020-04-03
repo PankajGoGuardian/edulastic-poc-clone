@@ -18,6 +18,9 @@ const SET_DISTRICT_PROFILE_VALUE = "[districtProfile] set data value";
 const SET_IMAGE_LOADING_STATUS = "[districtProfile] set image uploading status";
 
 export const receiveDistrictProfileAction = createAction(RECEIVE_DISTRICT_PROFILE_REQUEST);
+export const receiveSchoolProfileAction = schoolId => {
+  return receiveDistrictProfileAction({ orgType: "institution", orgId: schoolId });
+};
 export const receiveDistrictProfileSuccessAction = createAction(RECEIVE_DISTRICT_PROFILE_SUCCESS);
 export const receiveDistrictProfileErrorAction = createAction(RECEIVE_DISTRICT_PROFILE_ERROR);
 export const updateDistrictProfileAction = createAction(UPDATE_DISTRICT_PROFILE_REQUEST);

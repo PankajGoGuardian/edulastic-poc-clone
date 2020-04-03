@@ -5,12 +5,14 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { roleuser } from "@edulastic/constants";
+import { getUserOrgId, getUserRole, getSaSchoolsSortedSelector } from "../../../src/selectors/user";
 import {
   createDistrictProfileAction,
   receiveDistrictProfileAction,
   setDistrictValueAction,
-  updateDistrictProfileAction
+  updateDistrictProfileAction,
+  receiveSchoolProfileAction
 } from "../../ducks";
 import { ProfileImgWrapper, RightContainer } from "../Container/styled";
 import EditableLabel from "../EditableLabel/EditableLabel";
@@ -58,8 +60,13 @@ class DistrictProfileForm extends React.Component {
   }
 
   componentDidMount() {
-    const { loadDistrictProfile, userOrgId } = this.props;
-    loadDistrictProfile({ orgId: userOrgId });
+    const { loadDistrictProfile, loadSchoolProfile, userOrgId, role, schoolId } = this.props;
+    if (role === roleuser.SCHOOL_ADMIN) {
+      loadSchoolProfile(schoolId);
+    }
+    if (role === roleuser.DISTRICT_ADMIN) {
+      loadDistrictProfile({ orgId: userOrgId, orgType: "district" });
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -80,7 +87,9 @@ class DistrictProfileForm extends React.Component {
     } else
       return {
         districtProfile: nextProps.districtProfile,
-        districtUrl: `${window.location.origin}/district/${nextProps.districtProfile.shortName}`
+        districtUrl: `${window.location.origin}/${nextProps.role === roleuser.DISTRICT_ADMIN ? "district" : "school"}/${
+          nextProps.districtProfile.shortName
+        }`
       };
   }
 
@@ -108,7 +117,7 @@ class DistrictProfileForm extends React.Component {
   updateProfileValue = (valueName, value) => {
     let districtProfile = { ...this.state.districtProfile };
 
-    if (valueName === "District Short Name") {
+    if (valueName === "District Short Name" || valueName === "School Short Name") {
       districtProfile.shortName = value;
       this.setState({ districtUrl: `${window.location.origin}/district/${value}` });
     } else if (valueName === "City") {
@@ -137,11 +146,9 @@ class DistrictProfileForm extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { districtProfile } = this.state;
-    const { districtUrl, popoverVisible, editing } = this.state;
-    const { isInputEnabled } = this.props;
-    let btnTitle = "Save";
-    if (districtProfile._id === undefined) btnTitle = "Create";
-
+    const { districtUrl, popoverVisible } = this.state;
+    const { isInputEnabled, role, schools, schoolId } = this.props;
+    const isDA = role === roleuser.DISTRICT_ADMIN;
     const popoverContent = (
       <React.Fragment>
         <StyledPopoverContent>
@@ -152,36 +159,35 @@ class DistrictProfileForm extends React.Component {
             </PopoverCloseButton>
           </CopyToClipboard>
         </StyledPopoverContent>
-        <p>Share this URL with users of your disctrict.</p>
+        <p>Share this URL with users of your {isDA ? "disctrict" : "school"}.</p>
       </React.Fragment>
     );
 
     return (
       <StyledFormDiv>
-        {!this.props.districtProfile ||
-        (this.props.districtProfile && Object.keys(this.props.districtProfile).length === 0) ? null : (
-          <Form>
-            <ProfileImgWrapper>
-              <ImageUpload
-                width="200px"
-                height="200px"
-                imgSrc={districtProfile.logo}
-                keyName="logo"
-                updateImgUrl={this.updateImgSrc}
-                labelStr="logo image"
-                ref={this.childRefArr[7].component}
-                requiredStatus={false}
-                form={this.props.form}
-                isInputEnabled={isInputEnabled}
-              />
-            </ProfileImgWrapper>
-            <RightContainer>
-              <StyledDivMain>
-                <HeaderRow type="flex" align="middle" justify="space-between">
-                  <Col span={12}>
-                    <h3>{districtProfile.name}</h3>
-                  </Col>
-                  <Col span={12} style={{ textAlign: "right" }}>
+        <Form>
+          <ProfileImgWrapper>
+            <ImageUpload
+              width="200px"
+              height="200px"
+              imgSrc={districtProfile.logo}
+              keyName="logo"
+              updateImgUrl={this.updateImgSrc}
+              labelStr="logo image"
+              ref={this.childRefArr[7].component}
+              requiredStatus={false}
+              form={this.props.form}
+              isInputEnabled={isInputEnabled}
+            />
+          </ProfileImgWrapper>
+          <RightContainer>
+            <StyledDivMain>
+              <HeaderRow type="flex" align="middle" justify="space-between">
+                <Col span={12}>
+                  <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
+                </Col>
+                <Col span={12} style={{ textAlign: "right" }}>
+                  {districtProfile.shortName && (
                     <Popover
                       trigger="click"
                       visible={popoverVisible}
@@ -190,122 +196,122 @@ class DistrictProfileForm extends React.Component {
                       placement="bottomRight"
                     >
                       <StyledUrlButton type="primary" ghost>
-                        District Url
+                        {isDA ? "District Url" : "School Url"}
                       </StyledUrlButton>
                     </Popover>
-                  </Col>
-                </HeaderRow>
-                <StyledRowLogo>
-                  <ImageUpload
-                    imgSrc={districtProfile.pageBackground}
-                    updateImgUrl={this.updateImgSrc}
-                    keyName="pageBackground"
-                    width="100%"
-                    height="180px"
-                    labelStr="page background"
-                    ref={this.childRefArr[6].component}
+                  )}
+                </Col>
+              </HeaderRow>
+              <StyledRowLogo>
+                <ImageUpload
+                  imgSrc={districtProfile.pageBackground}
+                  updateImgUrl={this.updateImgSrc}
+                  keyName="pageBackground"
+                  width="100%"
+                  height="180px"
+                  labelStr="page background"
+                  ref={this.childRefArr[6].component}
+                  requiredStatus={false}
+                  form={this.props.form}
+                  isInputEnabled={isInputEnabled}
+                />
+              </StyledRowLogo>
+              <FormFlexContainer>
+                <FormColumnLeft>
+                  <InputWithUrl>
+                    <EditableLabel
+                      value={districtProfile.shortName}
+                      valueName={isDA ? "District Short Name" : "School Short Name"}
+                      maxLength={10}
+                      requiredStatus
+                      setProfileValue={this.updateProfileValue}
+                      updateEditing={this.setEditing}
+                      type="text"
+                      ref={this.childRefArr[1].component}
+                      isSpaceEnable={false}
+                      form={this.props.form}
+                      isInputEnabled={isInputEnabled}
+                      flexGrow={1}
+                    />
+                  </InputWithUrl>
+                  <EditableLabel
+                    value={districtProfile.city}
+                    valueName="City"
+                    maxLength={40}
                     requiredStatus={false}
+                    setProfileValue={this.updateProfileValue}
+                    updateEditing={this.setEditing}
+                    type="text"
+                    ref={this.childRefArr[2].component}
+                    isSpaceEnable={true}
                     form={this.props.form}
                     isInputEnabled={isInputEnabled}
                   />
-                </StyledRowLogo>
-                <FormFlexContainer>
-                  <FormColumnLeft>
-                    <InputWithUrl>
-                      <EditableLabel
-                        value={districtProfile.shortName}
-                        valueName="District Short Name"
-                        maxLength={10}
-                        requiredStatus
-                        setProfileValue={this.updateProfileValue}
-                        updateEditing={this.setEditing}
-                        type="text"
-                        ref={this.childRefArr[1].component}
-                        isSpaceEnable={false}
-                        form={this.props.form}
-                        isInputEnabled={isInputEnabled}
-                        flexGrow={1}
-                      />
-                    </InputWithUrl>
-                    <EditableLabel
-                      value={districtProfile.city}
-                      valueName="City"
-                      maxLength={40}
-                      requiredStatus={false}
-                      setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
-                      type="text"
-                      ref={this.childRefArr[2].component}
-                      isSpaceEnable={true}
-                      form={this.props.form}
-                      isInputEnabled={isInputEnabled}
-                    />
-                    <EditableLabel
-                      value={districtProfile.state}
-                      valueName="State"
-                      maxLength={40}
-                      requiredStatus={false}
-                      setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
-                      type="text"
-                      ref={this.childRefArr[3].component}
-                      isSpaceEnable={true}
-                      isInputEnabled={isInputEnabled}
-                      form={this.props.form}
-                    />
-                    <EditableLabel
-                      value={districtProfile.zip}
-                      valueName="Zip"
-                      maxLength={20}
-                      requiredStatus={false}
-                      setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
-                      type="text"
-                      ref={this.childRefArr[4].component}
-                      isSpaceEnable={true}
-                      isInputEnabled={isInputEnabled}
-                      form={this.props.form}
-                    />
-                  </FormColumnLeft>
-                  <ColumnSpacer />
-                  <FormColumnRight>
-                    <EditableLabel
-                      value={districtProfile.nces}
-                      valueName="NCES Code"
-                      maxLength={100}
-                      requiredStatus={false}
-                      setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
-                      type="text"
-                      ref={this.childRefArr[5].component}
-                      isSpaceEnable={true}
-                      form={this.props.form}
-                      isInputEnabled={isInputEnabled}
-                    />
-                    <EditableLabelDiv>
-                      <label>District Announcement</label>
-                      <StyledFormItem>
-                        {getFieldDecorator("announcement", {
-                          initialValue: districtProfile.announcement,
-                          rules: [{ required: false, message: "Please input your announcement" }]
-                        })(
-                          <StyledTextArea
-                            rows={9}
-                            onChange={this.changeAnnouncement}
-                            onBlur={isInputEnabled ? this.onInputBlur : null} // edit state
-                            readOnly={!isInputEnabled} // edit state
-                            className={!isInputEnabled ? "not-editing-input" : null} // edit state
-                            disabled={!isInputEnabled} // edit state
-                          />
-                        )}
-                      </StyledFormItem>
-                    </EditableLabelDiv>
-                  </FormColumnRight>
-                </FormFlexContainer>
-              </StyledDivMain>
-            </RightContainer>
-          </Form>
-        )}
+                  <EditableLabel
+                    value={districtProfile.state}
+                    valueName="State"
+                    maxLength={40}
+                    requiredStatus={false}
+                    setProfileValue={this.updateProfileValue}
+                    updateEditing={this.setEditing}
+                    type="text"
+                    ref={this.childRefArr[3].component}
+                    isSpaceEnable={true}
+                    isInputEnabled={isInputEnabled}
+                    form={this.props.form}
+                  />
+                  <EditableLabel
+                    value={districtProfile.zip}
+                    valueName="Zip"
+                    maxLength={20}
+                    requiredStatus={false}
+                    setProfileValue={this.updateProfileValue}
+                    updateEditing={this.setEditing}
+                    type="text"
+                    ref={this.childRefArr[4].component}
+                    isSpaceEnable={true}
+                    isInputEnabled={isInputEnabled}
+                    form={this.props.form}
+                  />
+                </FormColumnLeft>
+                <ColumnSpacer />
+                <FormColumnRight>
+                  <EditableLabel
+                    value={districtProfile.nces}
+                    valueName="NCES Code"
+                    maxLength={100}
+                    requiredStatus={false}
+                    setProfileValue={this.updateProfileValue}
+                    updateEditing={this.setEditing}
+                    type="text"
+                    ref={this.childRefArr[5].component}
+                    isSpaceEnable={true}
+                    form={this.props.form}
+                    isInputEnabled={isInputEnabled}
+                  />
+                  <EditableLabelDiv>
+                    <label>{isDA ? "District Announcement" : "School Announcement"}</label>
+                    <StyledFormItem>
+                      {getFieldDecorator("announcement", {
+                        initialValue: districtProfile.announcement,
+                        rules: [{ required: false, message: "Please input your announcement" }]
+                      })(
+                        <StyledTextArea
+                          rows={9}
+                          onChange={this.changeAnnouncement}
+                          onBlur={isInputEnabled ? this.onInputBlur : null} // edit state
+                          readOnly={!isInputEnabled} // edit state
+                          className={!isInputEnabled ? "not-editing-input" : null} // edit state
+                          disabled={!isInputEnabled} // edit state
+                        />
+                      )}
+                    </StyledFormItem>
+                  </EditableLabelDiv>
+                </FormColumnRight>
+              </FormFlexContainer>
+            </StyledDivMain>
+          </RightContainer>
+        </Form>
       </StyledFormDiv>
     );
   }
@@ -317,10 +323,14 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      districtProfile: get(state, ["districtProfileReducer", "data"], {})
+      districtProfile: get(state, ["districtProfileReducer", "data"], {}),
+      role: getUserRole(state),
+      schoolId: get(state, "user.saSettingsSchool"),
+      schools: getSaSchoolsSortedSelector(state)
     }),
     {
       loadDistrictProfile: receiveDistrictProfileAction,
+      loadSchoolProfile: receiveSchoolProfileAction,
       createDistrictProfile: createDistrictProfileAction,
       updateDistrictProfile: updateDistrictProfileAction,
       setDistrictValue: setDistrictValueAction
@@ -331,5 +341,6 @@ export default enhance(DistrictProfileFormContainer);
 
 DistrictProfileForm.propTypes = {
   loadDistrictProfile: PropTypes.func.isRequired,
+  loadSchoolProfile: PropTypes.func.isRequired,
   updateDistrictProfile: PropTypes.func.isRequired
 };

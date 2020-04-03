@@ -6,6 +6,7 @@ import { Layout, Spin } from "antd";
 import { connect } from "react-redux";
 import { Progress, ErrorHandler } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
+import { roleuser } from "@edulastic/constants";
 import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { get } from "lodash";
 import { themes } from "../../theme";
@@ -13,7 +14,7 @@ import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
 import { getUserOrgId, getUserRole } from "./selectors/user";
-import { receiveDistrictPolicyAction } from "../DistrictPolicy/ducks";
+import { receiveDistrictPolicyAction, receiveSchoolPolicyAction } from "../DistrictPolicy/ducks";
 import ImportTest from "../ImportTest";
 import NotFound from "../../NotFound";
 
@@ -79,12 +80,25 @@ const ContentBuckets = lazy(() => import("../ContentBuckets"));
 const Collections = lazy(() => import("../ContentCollections"));
 const ExternalTools = lazy(() => import("../ExternalTools"));
 // eslint-disable-next-line react/prop-types
-const Author = ({ match, history, location, role, orgId, districtProfileLoading, loadDistrictPolicy }) => {
+const Author = ({
+  match,
+  history,
+  location,
+  role,
+  orgId,
+  districtProfileLoading,
+  loadDistrictPolicy,
+  loadSchoolPolicy,
+  schoolId
+}) => {
   useEffect(() => {
-    if (orgId && ["school-admin", "district-admin"].includes(role)) {
-      loadDistrictPolicy({ orgId });
+    if (role === roleuser.SCHOOL_ADMIN && schoolId) {
+      loadSchoolPolicy(schoolId);
     }
-  }, [orgId]);
+    if (role === roleuser.DISTRICT_ADMIN && orgId) {
+      loadDistrictPolicy({ orgId, orgType: "district" });
+    }
+  }, [orgId, schoolId]);
 
   const themeToPass = themes.default;
 
@@ -494,10 +508,12 @@ export default connect(
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     districtProfile: get(state, ["districtProfileReducer", "data"], {}),
-    districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false)
+    districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false),
+    schoolId: get(state, "user.saSettingsSchool")
   }),
   {
-    loadDistrictPolicy: receiveDistrictPolicyAction
+    loadDistrictPolicy: receiveDistrictPolicyAction,
+    loadSchoolPolicy: receiveSchoolPolicyAction
   }
 )(Author);
 

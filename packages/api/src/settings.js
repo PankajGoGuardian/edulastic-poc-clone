@@ -4,10 +4,10 @@ const api = new API();
 const prefix = "/setting";
 
 // District Profile
-const getDistrictProfile = ({ orgId }) =>
+const getDistrictProfile = ({ orgId, orgType }) =>
   api
     .callApi({
-      url: `${prefix}/general/${orgId}?orgType=district`,
+      url: `${prefix}/general/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);

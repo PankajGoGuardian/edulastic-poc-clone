@@ -10,7 +10,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { getAuthorCollectionMap } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
 import {
   AddButtonStyled,
   ViewButton as ViewButtonContainer,
@@ -161,7 +161,9 @@ class ListItem extends Component {
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
-    const standardsIdentifiers = standards.map(item => item.identifier);
+    const standardsIdentifiers = isPlaylist
+      ? flattenPlaylistStandards(_source?.modules)
+      : standards.map(item => item.identifier);
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
     const isInCart = !!selectedTests.find(o => o._id === item._id);
@@ -275,13 +277,9 @@ class ListItem extends Component {
 
             <Footer span={24}>
               <TagsWrapper span={12}>
-                {!isPlaylist && (
-                  <>
-                    <Tags tags={tags} show={1} key="tags" />
-                    {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
-                    <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
-                  </>
-                )}
+                <Tags tags={tags} show={1} key="tags" />
+                {tags.length && standardsIdentifiers.length ? <span style={{ marginRight: "10px" }} /> : ""}
+                <Tags tags={standardsIdentifiers} show={1} key="standards" isStandards />
                 <TestStatusWrapper status={testStatus || _source?.status} checkUser={false}>
                   {({ children, ...rest }) => (
                     <TestStatus

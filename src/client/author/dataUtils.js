@@ -1,4 +1,5 @@
-import { get, keyBy } from "lodash";
+import { get, keyBy, uniqBy, uniq } from "lodash";
+import produce from "immer";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { questionType } from "@edulastic/constants";
 import { UserIcon } from "./ItemList/components/Item/styled";
@@ -120,7 +121,12 @@ export const getQuestionType = item => {
  * @param curriculumId is the current filter used
  */
 
-export const getInterestedStandards = (summary = {}, interestedCurriculums) => {
+export const getInterestedStandards = (summary, interestedCurriculums) => {
+  if (summary?.groupSummary?.length) {
+    produce(summary, draft => {
+      draft.standards = uniqBy(draft.groupSummary.flatMap(item => item.standards || []), "identifier");
+    });
+  }
   if (!summary.standards || !summary.standards.length) return [];
   const curriculumId = getFromLocalStorage("defaultCurriculumIdSelected") || "";
   //removing all multiStandard mappings
@@ -140,6 +146,11 @@ export const getInterestedStandards = (summary = {}, interestedCurriculums) => {
     }
   }
   return interestedStandards;
+};
+
+export const flattenPlaylistStandards = (modules = []) => {
+  const standardz = modules?.flatMap(m => m?.data?.flatMap(d => d?.standardIdentifiers))?.filter(item => !!item) || [];
+  return uniq(standardz);
 };
 
 export const setDefaultInterests = newInterest => {

@@ -40,7 +40,7 @@ import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { TestStatus } from "../ListItem/styled";
-import { getAuthorCollectionMap } from "../../../dataUtils";
+import { getAuthorCollectionMap, flattenPlaylistStandards } from "../../../dataUtils";
 import { DeleteItemModal } from "../DeleteItemModal/deleteItemModal";
 import { approveOrRejectSingleTestRequestAction } from "../../ducks";
 import TestStatusWrapper from "../TestStatusWrapper/testStatusWrapper";
@@ -186,20 +186,6 @@ class Item extends Component {
       standards = [],
       orgData: { itemBanks }
     } = this.props;
-    const standardsIdentifiers = standards.map(i => i.identifier) || [];
-
-    if (isPlaylist) {
-      const standardz =
-        _source?.modules?.map(m => m?.data?.map(d => d?.standardIdentifiers).filter(x => x !== undefined)) || [];
-      (standardz || []).forEach((x = []) => {
-        x.forEach((y = []) => {
-          y.forEach(z => {
-            standardsIdentifiers.push([z]);
-          });
-        });
-      });
-    }
-
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
     const { isOpenModal, currentTestId, isPreviewModalVisible, isDeleteModalOpen } = this.state;
@@ -293,7 +279,7 @@ class Item extends Component {
 
             {isPlaylist && (
               <TagsWrapper>
-                <Tags show={2} tags={standardsIdentifiers} key="standards" isStandards />
+                <Tags show={2} tags={flattenPlaylistStandards(_source?.modules)} key="standards" isStandards />
                 <Tags show={2} tags={_source.tags || tags} key="tags" />
               </TagsWrapper>
             )}

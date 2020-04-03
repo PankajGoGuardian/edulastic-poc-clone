@@ -63,7 +63,7 @@ const Actions = ({
   return (
     <FlexContainer>
       <Label>
-        <spna>{numberOfSelectedItems || 0}</spna>
+        <span>{numberOfSelectedItems || 0} </span>
         {t("component.item.itemCount")}
       </Label>
       <Dropdown overlay={menu} placement="bottomCenter">

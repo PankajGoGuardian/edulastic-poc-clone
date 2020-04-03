@@ -366,8 +366,8 @@ class ViewModal extends React.Component {
                     <ListHeaderCell>Qs</ListHeaderCell>
                     <ListHeaderCell>POINTS</ListHeaderCell>
                   </ListHeader>
-                  {summary &&
-                    getInterestedStandards(summary, interestedCurriculums).map(
+                  {!!summary?.standards?.length &&
+                    summary.standards.map(
                       data =>
                         !data.isEquivalentStandard && (
                           <ListRow>

@@ -316,16 +316,18 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton
-                  isGhost
-                  IconBtn
-                  title="Publish Test"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
-                  <IconSend />
-                </EduButton>
+                !editEnable && (
+                  <EduButton
+                    isGhost
+                    IconBtn
+                    title="Publish Test"
+                    data-cy="publish"
+                    onClick={handlePublish}
+                    disabled={isTestLoading}
+                  >
+                    <IconSend />
+                  </EduButton>
+                )
               )
             ) : null}
             {features.isCurator && testStatus === "inreview" && (
@@ -385,6 +387,11 @@ const TestPageHeader = ({
             {showCancelButton && (
               <EduButton data-cy="assign" onClick={() => setCancelState(true)}>
                 CANCEL
+              </EduButton>
+            )}
+            {showShareButton && owner && showPublishButton && isDirectOwner && !isPlaylist && editEnable && (
+              <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
+                PUBLISH
               </EduButton>
             )}
           </RightFlexContainer>

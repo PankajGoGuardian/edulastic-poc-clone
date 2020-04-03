@@ -67,7 +67,6 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
     gotoSummary: PropTypes.func,
     showAnser: PropTypes.func.isRequired,
     openPreviewModal: PropTypes.func.isRequired,

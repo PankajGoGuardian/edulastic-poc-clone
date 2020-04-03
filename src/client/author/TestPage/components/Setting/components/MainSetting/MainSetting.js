@@ -343,9 +343,6 @@ class MainSetting extends Component {
       }
     });
 
-    // TODO: assessmentSuperPowersTimedTest should be coming from BE, remove this once BE is updated
-    availableFeatures.push("assessmentSuperPowersTimedTest");
-
     const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
     const skinTypes = {
       ...playerSkinTypes,

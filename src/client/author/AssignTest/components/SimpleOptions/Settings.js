@@ -583,9 +583,9 @@ const Settings = ({
 
         {/* Timed TEST */}
         <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersTimeSpent"
+          inputFeatures="assessmentSuperPowersTimedTest"
           actionOnInaccessible="hidden"
-          key="assessmentSuperPowersTimeSpent"
+          key="assessmentSuperPowersTimedTest"
           gradeSubject={gradeSubject}
         >
           <StyledRowSettings gutter={16} height="40">

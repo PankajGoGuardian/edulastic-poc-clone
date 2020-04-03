@@ -26,7 +26,7 @@ export default class TestAssignPage {
 
   getTimeSettingTextBox = () => cy.get('[data-cy="assignment-time"]');
 
-  getAssignmentTimeSettingInfo = () => cy.get('[inputfeatures="assessmentSuperPowersTimeSpent"]').find("svg");
+  getAssignmentTimeSettingInfo = () => cy.get('[inputfeatures="assessmentSuperPowersTimedTest"]').find("svg");
 
   getAllowPuase = () => cy.get('[data-cy="pause-allowed"]');
 

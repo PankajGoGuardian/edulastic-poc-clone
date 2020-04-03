@@ -39,7 +39,7 @@ const FeaturesSwitch = props => {
   });
 
   // TODO: Remove once BE is fixed
-  return isAccessible || props.inputFeatures === "assessmentSuperPowersTimeSpent"
+  return isAccessible
     ? _children
     : actionOnInaccessible === "disabled"
     ? _children

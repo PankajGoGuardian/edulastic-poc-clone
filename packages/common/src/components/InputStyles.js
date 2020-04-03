@@ -139,10 +139,12 @@ export const SelectInputStyled = styled(Select)`
             background: ${themeColor}33;
             color: ${themeColor};
             font-weight: 600;
-            margin: 5px;
+            margin: 5px 0 5px 5px;
           }
           .ant-select-selection__choice__content {
             font-size: 10px;
+            display: flex;
+            align-items: center;
             font-weight: bold;
             letter-spacing: 0.2px;
             color: ${themeColor};

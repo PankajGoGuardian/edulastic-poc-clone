@@ -120,7 +120,7 @@ const ActionMenu = ({
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={classIcon} />
             <SpaceElement />
-            Edit Test
+            Edit and Regrade
           </StyledLink>
         </Menu.Item>
         {isAssignmentOwner || isDistrictAdmin ? (

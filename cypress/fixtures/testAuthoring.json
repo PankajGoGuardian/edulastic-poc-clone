@@ -146,6 +146,12 @@
     "subject": ["Math"],
     "itemKeys": ["MCQ_MULTI.3", "MCQ_MULTI.1"]
   },
+  "TEST_SETTING_ItemLevelEvaluation": {
+    "name": "TEST ItemLevelEvaluation",
+    "grade": ["Kindergarten"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_MULTI.default", "MCQ_MULTI.3", "MCQ_MULTI.4"]
+  },
   "TEST_ITEM_GROUPS": {
     "name": "Test Item Group",
     "grade": ["Kindergarten"],

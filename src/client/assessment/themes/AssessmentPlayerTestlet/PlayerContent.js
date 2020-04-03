@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { find, isObject, isArray, isEmpty } from "lodash";
+import { isEqual, find, isObject, isArray, isEmpty } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import PlayerHeader from "./PlayerHeader";
@@ -46,30 +46,11 @@ const PlayerContent = ({
   const [currentScoring, setCurrentScoring] = useState(false);
   const [unlockNext, setUnlockNext] = useState(false);
 
-  const handleScrollPage = e => {
-    const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
-    if (page) {
-      page.scrollTo(0, e.target.scrollTop);
-    }
-  };
-
-  const handleScrollPanel = e => {
-    const panel = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".winsight-panel");
-    if (panel) {
-      panel.scrollTo(0, e.target.scrollTop);
-    }
-  };
-
-  const applyStyleToElements = () => {
-    const win = document.defaultView;
-    if (win.getComputedStyle) {
-      // apply style from actual dom to magnified dom for specific class type
-      const magnifiedElems = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelectorAll(
-        ".pages .end"
-      );
-      frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end").forEach((elm, i) => {
-        magnifiedElems[i].style.display = win.getComputedStyle(elm).display;
-      });
+  const showMagnifier = () => {
+    updateTestPlayer({ enableMagnifier: true });
+    if (frameRefForMagnifier.current) {
+      setTimeout(attachDettachHandlerOnTab, 1000);
+      copyDom();
     }
   };
 
@@ -91,63 +72,76 @@ const PlayerContent = ({
         });
       }
     }, 1000);
-  };
+  }
 
   const attachDettachHandlerOnTab = (type = "attach") => {
     const elems = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".tabbed .tab") || [];
-    elems.forEach(elm => {
+    elems.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
     const pages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages");
-    pages.forEach(elm => {
-      type === "attach"
-        ? elm.addEventListener("scroll", handleScrollPage)
-        : elm.removeEventListener("scroll", handleScrollPage);
+    pages.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("scroll", handleScrollPage) : elm.removeEventListener("scroll", handleScrollPage);
     });
 
-    // add scroll event to panel
+    //add scroll event to panel
     const panels = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-panel");
-    panels.forEach(elm => {
-      type === "attach"
-        ? elm.addEventListener("scroll", handleScrollPanel)
-        : elm.removeEventListener("scroll", handleScrollPanel);
+    panels.forEach((elm) => {
+      type === "attach" ? elm.addEventListener("scroll", handleScrollPanel) : elm.removeEventListener("scroll", handleScrollPanel);
     });
 
     const buttons = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".winsight-button");
-    buttons.forEach(elm => {
+    buttons.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
     const options = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".option");
-    options.forEach(elm => {
+    options.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
 
     // attach click events to accordions
     const accordions = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".accordion");
-    accordions.forEach(elm => {
+    accordions.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
 
-    // attach click event to dropdowns
+    //attach click event to dropdowns
     const dropdowns = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".selectTrigger");
-    dropdowns.forEach(elm => {
+    dropdowns.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
 
-    // attach click event to passage
+    //attach click event to passage
     const passages = frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".passageSelection");
-    passages.forEach(elm => {
+    passages.forEach((elm) => {
       type === "attach" ? elm.addEventListener("click", copyDom) : elm.removeEventListener("click", copyDom);
     });
-  };
+  }
 
-  const showMagnifier = () => {
-    updateTestPlayer({ enableMagnifier: true });
-    if (frameRefForMagnifier.current) {
-      setTimeout(attachDettachHandlerOnTab, 1000);
-      copyDom();
+  const applyStyleToElements = () => {
+    const win = document.defaultView;
+    if (win.getComputedStyle){
+      //apply style from actual dom to magnified dom for specific class type
+      const magnifiedElems = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end");
+      frameRef.current?.contentWindow?.document?.body?.querySelectorAll(".pages .end").forEach((elm, i) => {
+        magnifiedElems[i].style.display = win.getComputedStyle(elm).display;
+      })
     }
-  };
+  }
+
+  const handleScrollPage = (e) => {
+    const page = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".pages");
+    if (page) {
+      page.scrollTo(0, e.target.scrollTop);
+    }
+  }
+
+  const handleScrollPanel = (e) => {
+    const panel = frameRefForMagnifier.current?.contentWindow?.document?.body?.querySelector(".winsight-panel");
+    if (panel) {
+      panel.scrollTo(0, e.target.scrollTop);
+    }
+  }
 
   const hideMagnifier = () => {
     updateTestPlayer({ enableMagnifier: false });
@@ -162,8 +156,8 @@ const PlayerContent = ({
     }
   };
 
-  const findItemIdMap = scoringId =>
-    find(testletConfig.mapping, ({ testletItemId }) => testletItemId.includes(scoringId));
+  const findItemIdMap = cPageIds =>
+    find(testletConfig.mapping, ({ testletItemId }) => isEqual(testletItemId, cPageIds));
 
   const findTestletValue = testletId => {
     const { response: testletResponse } = frameController;
@@ -226,7 +220,7 @@ const PlayerContent = ({
 
     for (const scoringId in currentPageIds) {
       if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-        const currentItem = findItemIdMap(scoringId);
+        const currentItem = findItemIdMap([scoringId]);
         if (!currentItem) {
           continue;
         }
@@ -479,37 +473,38 @@ const PlayerContent = ({
     }
   }, [currentPage]);
 
-  const zoomedContent = () => (
-    <>
-      <PlayerHeader
-        title={title}
-        dropdownOptions={testletItems}
-        currentPage={currentPage}
-        onOpenExitPopup={openExitPopup}
-        onNextQuestion={nextQuestion}
-        unlockNext={unlockNext}
-        onPrevQuestion={prevQuestion}
-        previewPlayer={previewPlayer}
-        enableMagnifier={enableMagnifier}
-        {...restProps}
-        handleMagnifier={handleMagnifier}
-      />
-      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${testletConfig.testletId}_magnifier`}>
-          {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletConfig.testletURL && (
-            <iframe
-              ref={frameRefForMagnifier}
-              id={`${testletConfig.testletId}_magnifier`}
-              src={testletConfig.testletURL}
-              title="testlet player"
-            />
-          )}
-        </MainContent>
-      </Main>
-    </>
-  );
-
+  const zoomedContent = () => {
+    return (
+      <>
+        <PlayerHeader
+          title={title}
+          dropdownOptions={testletItems}
+          currentPage={currentPage}
+          onOpenExitPopup={openExitPopup}
+          onNextQuestion={nextQuestion}
+          unlockNext={unlockNext}
+          onPrevQuestion={prevQuestion}
+          previewPlayer={previewPlayer}
+          enableMagnifier={enableMagnifier}
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+        />
+        <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+          <MainContent id={`${testletConfig.testletId}_magnifier`}>
+            {LCBPreviewModal && currentScoring && <OverlayDiv />}
+            {testletConfig.testletURL && (
+              <iframe
+                ref={frameRefForMagnifier}
+                id={`${testletConfig.testletId}_magnifier`}
+                src={testletConfig.testletURL}
+                title="testlet player"
+              />
+            )}
+          </MainContent>
+        </Main>
+      </>
+    );
+  };
   return (
     <Magnifier
       enable={enableMagnifier}

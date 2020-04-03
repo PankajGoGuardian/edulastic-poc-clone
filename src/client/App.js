@@ -204,7 +204,7 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
-        (path[0] && path[0].toLocaleLowerCase() === "district") ||
+        (path[0] && ["district", "school"].includes(path[0].toLocaleLowerCase())) ||
         this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/fwd") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
@@ -267,9 +267,16 @@ class App extends Component {
                 redirectPath={defaultRoute}
               />
               <LoggedOutRoute
-                path="/district/:districtShortName"
+                path="/district/:orgShortName"
                 component={DistrictRoutes}
                 redirectPath={defaultRoute}
+                orgType="district"
+              />
+              <LoggedOutRoute
+                path="/school/:orgShortName"
+                component={DistrictRoutes}
+                redirectPath={defaultRoute}
+                orgType="school"
               />
               <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
               <LoggedOutRoute

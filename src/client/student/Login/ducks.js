@@ -582,6 +582,12 @@ const getLoggedOutUrl = () => {
     const restOfPath = arr.join("/");
     return `/district/${restOfPath}`;
   }
+  if (path[0] && path[0].toLocaleLowerCase() === "school" && path[1]) {
+    const arr = [...path];
+    arr.shift();
+    const restOfPath = arr.join("/");
+    return `/school/${restOfPath}`;
+  }
   if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];
   }

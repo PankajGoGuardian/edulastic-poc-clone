@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { trim, get } from "lodash";
+import { trim } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import { withWindowSizes } from "@edulastic/common";
+import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
+import { themeColor, white } from "@edulastic/colors";
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -47,8 +49,6 @@ import studentBg from "../../assets/bg-student.png";
 import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
 import { MAX_TAB_WIDTH, LARGE_DESKTOP_WIDTH } from "../../../author/src/constants/others";
-import { IconLock, IconHash, IconUser, IconMail } from "@edulastic/icons";
-import { themeColor, white } from "@edulastic/colors";
 
 const FormItem = Form.Item;
 const GOOGLE = "google";
@@ -176,9 +176,8 @@ class StudentSignup extends React.Component {
       form: { getFieldDecorator, getFieldError },
       t,
       isSignupUsingDaURL,
-      generalSettings,
-      districtPolicy,
-      districtShortName
+      orgShortName,
+      orgType
     } = this.props;
 
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
@@ -189,7 +188,7 @@ class StudentSignup extends React.Component {
       (this.state.signupError.usernameOrEmail && (
         <span>
           Username/Email already exists. Please{" "}
-          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
             sign in
           </Link>{" "}
           to your account.
@@ -286,7 +285,7 @@ class StudentSignup extends React.Component {
   };
 
   renderFormHeader = () => {
-    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName } = this.props;
+    const { t, isSignupUsingDaURL, districtPolicy } = this.props;
     return (
       <FormHead>
         <h3 align="center">
@@ -315,11 +314,7 @@ class StudentSignup extends React.Component {
   renderGoogleORMSOForm = () => {
     const {
       form: { getFieldDecorator, getFieldError },
-      t,
-      isSignupUsingDaURL,
-      generalSettings,
-      districtPolicy,
-      districtShortName
+      t
     } = this.props;
 
     const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
@@ -347,7 +342,7 @@ class StudentSignup extends React.Component {
   };
 
   render() {
-    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, windowWidth } = this.props;
+    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType, windowWidth } = this.props;
 
     const { method } = this.state;
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
@@ -377,7 +372,7 @@ class StudentSignup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -398,7 +393,7 @@ class StudentSignup extends React.Component {
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictTeacherSignupUrl(districtShortName)
+                              ? getDistrictTeacherSignupUrl(orgShortName, orgType)
                               : getPartnerTeacherSignupUrl(partner)
                           }
                         >
@@ -459,7 +454,7 @@ class StudentSignup extends React.Component {
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictTeacherSignupUrl(districtShortName)
+                              ? getDistrictTeacherSignupUrl(orgShortName, orgType)
                               : getPartnerTeacherSignupUrl(partner)
                           }
                         >

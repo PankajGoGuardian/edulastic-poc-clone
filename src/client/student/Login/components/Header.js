@@ -12,7 +12,7 @@ import {
   isDistrictPolicyAllowed
 } from "../../../common/utils/helpers";
 
-const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShortName, generalSettings }) => (
+const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, orgShortName, generalSettings, orgType }) => (
   <RegistrationHeader type="flex" align="middle">
     <Col span={12}>
       <img
@@ -28,7 +28,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
             <Col>
               <StyledCustomTooltip placement="bottom" title={generalSettings.announcement} trigger="click">
                 <Button icon="bell" type="link" className="district-announcement-button">
-                  District Announcement
+                  {orgType === "district" ? "District Announcement" : "School Announcement"}
                 </Button>
               </StyledCustomTooltip>
             </Col>
@@ -52,7 +52,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
             to={
               isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
               isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
-                ? getDistrictGetStartedUrl(districtShortName)
+                ? getDistrictGetStartedUrl(orgShortName, orgType)
                 : getPartnerGetStartedUrl(Partners)
             }
           >

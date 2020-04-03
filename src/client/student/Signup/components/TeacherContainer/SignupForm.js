@@ -156,7 +156,8 @@ class Signup extends React.Component {
       image,
       isSignupUsingDaURL,
       districtPolicy,
-      districtShortName,
+      orgShortName,
+      orgType,
       googleLoginAction,
       cleverLoginAction,
       msoLoginAction,
@@ -180,7 +181,7 @@ class Signup extends React.Component {
       (this.state.signupError.email && (
         <span>
           Email already exists. Please{" "}
-          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
             sign in
           </Link>{" "}
           to your account.
@@ -198,7 +199,7 @@ class Signup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -224,7 +225,7 @@ class Signup extends React.Component {
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictStudentSignupUrl(districtShortName)
+                              ? getDistrictStudentSignupUrl(orgShortName, orgType)
                               : getPartnerStudentSignupUrl(partner)
                           }
                         >
@@ -408,7 +409,7 @@ class Signup extends React.Component {
                         <Link
                           to={
                             isSignupUsingDaURL
-                              ? getDistrictStudentSignupUrl(districtShortName)
+                              ? getDistrictStudentSignupUrl(orgShortName, orgType)
                               : getPartnerStudentSignupUrl(partner)
                           }
                         >

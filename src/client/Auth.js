@@ -4,12 +4,12 @@ import { withRouter, Redirect } from "react-router";
 import { get } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { roleuser } from "@edulastic/constants";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
 import { CleverUnauthorizedPopup } from "./student/SsoLogin/CleverUnauthorizedPopup";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
-import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { roleuser } from "@edulastic/constants";
 
 const GetStarted = lazy(() =>
   import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
@@ -18,7 +18,7 @@ const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login
 
 const SsoLogin = lazy(() => import(/* webpackChunkName:"SSo Login" */ "./student/SsoLogin"));
 
-const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
+const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
   if (location.hash !== "#signup" && location.hash !== "#login") {
     window.location.hash = "#login";
   }
@@ -30,21 +30,25 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
       user.user.role === roleuser.DISTRICT_ADMIN)
   ) {
     return <Redirect exact to="/author/dashboard" />;
-  } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
+  }
+  if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
-  } else if (location?.state?.showCleverUnauthorized) {
+  }
+  if (location?.state?.showCleverUnauthorized) {
     return (
       <>
         <Login
           isSignupUsingDaURL={isSignupUsingDaURL}
           generalSettings={generalSettings}
           districtPolicy={districtPolicy}
-          districtShortName={districtShortName}
+          orgShortName={orgShortName}
+          orgType={orgType}
         />
-        <CleverUnauthorizedPopup visible={true} footer={null} />
+        <CleverUnauthorizedPopup visible footer={null} />
       </>
     );
-  } else if (location.pathname.toLocaleLowerCase().includes("auth")) {
+  }
+  if (location.pathname.toLocaleLowerCase().includes("auth")) {
     return (
       <>
         {!user || (user && !user.isAuthenticated) ? (
@@ -57,9 +61,10 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
               isSignupUsingDaURL={isSignupUsingDaURL}
               generalSettings={generalSettings}
               districtPolicy={districtPolicy}
-              districtShortName={districtShortName}
+              orgShortName={orgShortName}
+              orgType={orgType}
             />
-            <SelectRolePopup visible={true} footer={null} />
+            <SelectRolePopup visible footer={null} />
           </>
         )}
       </>
@@ -74,14 +79,16 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
       isSignupUsingDaURL={isSignupUsingDaURL}
       generalSettings={generalSettings}
       districtPolicy={districtPolicy}
-      districtShortName={districtShortName}
+      orgShortName={orgShortName}
+      orgType={orgType}
     />
   ) : (
     <Login
       isSignupUsingDaURL={isSignupUsingDaURL}
       generalSettings={generalSettings}
       districtPolicy={districtPolicy}
-      districtShortName={districtShortName}
+      orgShortName={orgShortName}
+      orgType={orgType}
     />
   );
 };

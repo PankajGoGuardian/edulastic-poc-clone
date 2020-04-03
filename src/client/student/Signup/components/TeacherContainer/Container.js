@@ -26,14 +26,15 @@ const Container = ({
   isSignupUsingDaURL,
   generalSettings,
   districtPolicy,
-  districtShortName,
+  orgShortName,
   logout,
   invitedUser = false,
   invitedUserDetails = {},
   getCanvasCourseListRequest,
   getCanvasSectionListRequest,
   canvasCourseList,
-  canvasSectionList
+  canvasSectionList,
+  orgType
 }) => {
   const { isAuthenticated, signupStatus } = user;
   const allowCanvas = sessionStorage.getItem("signupFlow") === "canvas";
@@ -85,7 +86,8 @@ const Container = ({
           isSignupUsingDaURL={isSignupUsingDaURL}
           generalSettings={generalSettings}
           districtPolicy={districtPolicy}
-          districtShortName={districtShortName}
+          orgShortName={orgShortName}
+          orgType={orgType}
           invitedUser={invitedUser}
           invitedUserDetails={invitedUserDetails}
         />
@@ -103,7 +105,8 @@ const Container = ({
           isSignupUsingDaURL={isSignupUsingDaURL}
           generalSettings={generalSettings}
           districtPolicy={districtPolicy}
-          districtShortName={districtShortName}
+          orgShortName={orgShortName}
+          orgType={orgType}
           allowCanvas={allowCanvas}
           schoolchange={schoolchange}
         />

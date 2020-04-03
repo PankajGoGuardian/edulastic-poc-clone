@@ -32,7 +32,7 @@ import studentBg from "../../assets/small-bg-student.png";
 import teacherBg from "../../assets/small-bg-teacher.png";
 import adminBg from "../../assets/small-bg-adm.png";
 
-const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
+const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
   const partnerKey = getPartnerKeyFromUrl(location.pathname);
   const partner = Partners[partnerKey];
   return (
@@ -45,7 +45,9 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
         </Col>
         <Col span={12} align="right">
           <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
-          <StyledLink to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+          <StyledLink
+            to={isSignupUsingDaURL ? getDistrictLoginUrl(orgShortName, orgType) : getPartnerLoginUrl(partner)}
+          >
             {t("common.signinbtn")}
           </StyledLink>
         </Col>
@@ -73,7 +75,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
                   data-cy="student"
                   to={
                     isSignupUsingDaURL
-                      ? getDistrictStudentSignupUrl(districtShortName)
+                      ? getDistrictStudentSignupUrl(orgShortName, orgType)
                       : getPartnerStudentSignupUrl(partner)
                   }
                   xs={24}
@@ -87,7 +89,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
                   data-cy="teacher"
                   to={
                     isSignupUsingDaURL
-                      ? getDistrictTeacherSignupUrl(districtShortName)
+                      ? getDistrictTeacherSignupUrl(orgShortName, orgType)
                       : getPartnerTeacherSignupUrl(partner)
                   }
                   xs={24}

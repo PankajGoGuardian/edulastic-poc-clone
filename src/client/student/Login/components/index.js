@@ -14,7 +14,7 @@ const Wrapper = styled(Layout)`
   overflow: hidden;
 `;
 
-const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
+const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, orgShortName, orgType }) => {
   let partnerCheck = getPartnerKeyFromUrl(location.pathname);
   return (
     <Wrapper>
@@ -34,14 +34,16 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtSh
           Partners={Partners[partnerCheck]}
           isSignupUsingDaURL={isSignupUsingDaURL}
           districtPolicy={districtPolicy}
-          districtShortName={districtShortName}
+          orgShortName={orgShortName}
+          orgType={orgType}
           generalSettings={generalSettings}
         />
         <LoginContainer
           Partners={Partners[partnerCheck]}
           isSignupUsingDaURL={isSignupUsingDaURL}
           districtPolicy={districtPolicy}
-          districtShortName={districtShortName}
+          orgShortName={orgShortName}
+          orgType={orgType}
           generalSettings={generalSettings}
         />
       </LoginWrapper>

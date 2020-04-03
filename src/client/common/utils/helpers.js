@@ -91,20 +91,20 @@ export const getPartnerKeyFromUrl = pathname => {
   return "login";
 };
 
-export const getDistrictLoginUrl = districtShortName => {
-  return `/district/${districtShortName}`;
+export const getDistrictLoginUrl = (orgShortName, orgType) => {
+  return `/${orgType}/${orgShortName}`;
 };
 
-export const getDistrictTeacherSignupUrl = districtShortName => {
-  return `/district/${districtShortName}/signup`;
+export const getDistrictTeacherSignupUrl = (orgShortName, orgType) => {
+  return `/${orgType}/${orgShortName}/signup`;
 };
 
-export const getDistrictStudentSignupUrl = districtShortName => {
-  return `/district/${districtShortName}/studentsignup`;
+export const getDistrictStudentSignupUrl = (orgShortName, orgType) => {
+  return `/${orgType}/${orgShortName}/studentsignup`;
 };
 
-export const getDistrictGetStartedUrl = districtShortName => {
-  return `/district/${districtShortName}/getstarted`;
+export const getDistrictGetStartedUrl = (orgShortName, orgType) => {
+  return `/${orgType}/${orgShortName}/getstarted`;
 };
 
 export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name) => {

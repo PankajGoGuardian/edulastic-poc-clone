@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { isLoggedInForLoggedOutRoute } from "../utils/helpers";
 
-const LoggedOutRoute = ({ component: Component, user, redirectPath, ...rest }) => (
+const LoggedOutRoute = ({ component: Component, user, redirectPath, orgType, ...rest }) => (
   <Route
     {...rest}
     render={props =>
       !isLoggedInForLoggedOutRoute(user) ? (
-        <Component {...props} />
+        <Component {...props} orgType={orgType} />
       ) : (
         <Redirect to={{ pathname: redirectPath, state: { from: props.location } }} />
       )

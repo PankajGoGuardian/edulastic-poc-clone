@@ -88,6 +88,7 @@ class AssignTest extends React.Component {
       limit: 1000
     });
     const isAdmin = userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN;
+
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.updateAssignmentNew({
@@ -103,13 +104,27 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
           : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON : ASSESSMENT,
-        playerSkinType: testSettings.playerSkinType
+        playerSkinType: testSettings.playerSkinType,
+        timedAssignment: testSettings?.timedAssignment,
+        ...(testSettings?.timedAssignment
+          ? {
+              allowedTime: testSettings?.allowedTime,
+              pauseAllowed: testSettings?.pauseAllowed
+            }
+          : {})
       });
     } else {
       this.updateAssignmentNew({
         testType: isAdmin ? COMMON : ASSESSMENT,
         openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy,
-        playerSkinType: testSettings.playerSkinType
+        playerSkinType: testSettings.playerSkinType,
+        timedAssignment: testSettings?.timedAssignment,
+        ...(testSettings?.timedAssignment
+          ? {
+              allowedTime: testSettings?.allowedTime,
+              pauseAllowed: testSettings?.pauseAllowed
+            }
+          : {})
       });
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);

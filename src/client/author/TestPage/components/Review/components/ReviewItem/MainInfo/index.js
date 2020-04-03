@@ -22,7 +22,7 @@ class MainInfo extends React.Component {
     const newHtml = helpers.sanitizeForReview(data.stimulus) || "";
     return (
       <FlexContainer data-cy-item-index={index} data-cy={data.id} style={{ justifyContent: "space-between" }}>
-        <Stimulus dangerouslySetInnerHTML={{ __html: newHtml }} />
+        <Stimulus dangerouslySetInnerHTML={{ __html: newHtml }} onClick={() => handlePreview(data.id)} />
         <FlexContainer
           style={{ width: "200px" }}
           flexDirection="column"

@@ -8,6 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { CheckboxLabel } from "@edulastic/common";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import { ScratchPadIcon } from "./styled";
 
 import {
   StyledCardContiner,
@@ -110,6 +111,16 @@ class DisneyCardContainer extends Component {
           color: "",
           status: ""
         };
+
+        let hasUsedScratchPad = false;
+        student?.questionActivities.every(questionActivity => {
+          // check if this breaks after we find a true value.
+          if (questionActivity?.scratchPad?.scratchpad === true) {
+            hasUsedScratchPad = true;
+            return false;
+          }
+          return true;
+        });
 
         if (student.status === "notStarted") {
           status.status = "Not Started";
@@ -242,6 +253,7 @@ class DisneyCardContainer extends Component {
                   </Row>
                   <Row>
                     <Col>
+                      {hasUsedScratchPad && <ScratchPadIcon />}
                       {student.redirected && (
                         <i
                           data-cy="redirected"

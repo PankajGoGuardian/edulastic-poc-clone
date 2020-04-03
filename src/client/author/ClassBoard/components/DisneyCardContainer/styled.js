@@ -13,7 +13,7 @@ import {
   extraDesktopWidthMax,
   yellow1
 } from "@edulastic/colors";
-import { IconExclamationMark } from "@edulastic/icons";
+import { IconExclamationMark, IconScratchPad } from "@edulastic/icons";
 
 import { themes } from "../../../../theme";
 
@@ -74,8 +74,7 @@ export const StyledCard = styled(Card)`
     padding: 20px;
   }
   &:hover {
-    box-shadow: ${props =>
-      props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)"};
+    box-shadow: ${props => (props.isClickEnable ? "8px 4px 10px rgba(0,0,0,0.1)" : "0px 3px 10px rgba(0,0,0,0.1)")};
   }
 
   @media (min-width: ${mobileWidth}) and (max-width: 767px) {
@@ -302,4 +301,9 @@ export const RightAlignedCol = styled(Col)`
   flex-direction: column;
   align-items: flex-end;
   margin-left: auto;
+`;
+
+export const ScratchPadIcon = styled(IconScratchPad)`
+  fill: ${themeColor};
+  margin-right: 2px;
 `;

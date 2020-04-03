@@ -410,6 +410,7 @@ export const transformGradeBookResponse = (
               // eslint-disable-next-line no-shadow
               graded,
               pendingEvaluation,
+              scratchPad,
               ...remainingProps
             } = currentQuestionActivity;
             skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
@@ -443,7 +444,8 @@ export const transformGradeBookResponse = (
               barLabel,
               pendingEvaluation,
               userId: studentId,
-              qActId: currentQuestionActivity._id
+              qActId: currentQuestionActivity._id,
+              scratchPad
             };
           }
         );

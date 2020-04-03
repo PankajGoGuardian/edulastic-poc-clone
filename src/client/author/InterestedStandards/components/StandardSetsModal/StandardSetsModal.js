@@ -1,9 +1,12 @@
-import { CheckboxLabel } from "@edulastic/common";
-import { Col, Form, Modal, Select } from "antd";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { keyBy } from "lodash";
+import { CheckboxLabel } from "@edulastic/common";
+import { Col, Modal, Select } from "antd";
 import { FlexContainer } from "../../../../assessment/themes/common";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { MyStandardInput, StyledRow, SubjectContainer, SubjectSelect } from "./styled";
+import { getUserRole } from "../../../src/selectors/user";
 
 const Option = Select.Option;
 
@@ -63,15 +66,21 @@ class StandardSetsModal extends Component {
   };
 
   render() {
-    const { standardList, interestedStaData, modalVisible } = this.props;
-    const { selSubject, searchStr } = this.state;
+    const { standardList, interestedStaData, modalVisible, role } = this.props;
+    const { selSubject, searchStr, selectedStandards } = this.state;
 
-    let filteredStandardList = standardList.filter(item => item.subject === selSubject || selSubject === "");
-    filteredStandardList = filteredStandardList.filter(
-      item => item.curriculum.toLowerCase().indexOf(searchStr.toLowerCase()) != -1
+    const filteredStandardList = standardList.filter(
+      item =>
+        (item.subject === selSubject || selSubject === "") &&
+        item.curriculum.toLowerCase().indexOf(searchStr.toLowerCase()) != -1
     );
+    const selectedStandardById = keyBy(interestedStaData.curriculums, "_id");
+
     const standardsSetNames = filteredStandardList.map(row => {
-      return row.curriculum;
+      return {
+        name: row.curriculum,
+        _id: row._id
+      };
     });
 
     return (
@@ -110,14 +119,15 @@ class StandardSetsModal extends Component {
         <StyledRow>
           <Col span={24}>
             <SubjectContainer>
-              {standardsSetNames.map(standardSetName => (
+              {standardsSetNames.map(standard => (
                 <FlexContainer>
                   <CheckboxLabel
-                    onChange={() => this.changeStandards(standardSetName)}
-                    checked={this.state.selectedStandards.includes(standardSetName)}
-                    key={standardSetName}
+                    onChange={() => this.changeStandards(standard.name)}
+                    checked={selectedStandards.includes(standard.name)}
+                    key={standard.name}
+                    disabled={selectedStandardById[standard._id]?.orgType === "district" && role === "school-admin"}
                   >
-                    {standardSetName}
+                    {standard.name}
                   </CheckboxLabel>
                 </FlexContainer>
               ))}
@@ -129,5 +139,6 @@ class StandardSetsModal extends Component {
   }
 }
 
-const StandardSetsModalForm = Form.create()(StandardSetsModal);
-export default StandardSetsModal;
+export default connect(state => ({
+  role: getUserRole(state)
+}))(StandardSetsModal);

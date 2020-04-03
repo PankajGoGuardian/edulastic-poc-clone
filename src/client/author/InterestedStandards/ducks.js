@@ -1,7 +1,10 @@
 import { createAction, createReducer } from "redux-starter-kit";
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { get, keyBy } from "lodash";
 import { settingsApi } from "@edulastic/api";
+import { roleuser } from "@edulastic/constants";
 import { message } from "antd";
+import { getUserRole } from "../src/selectors/user";
 
 // action types
 const RECEIVE_INTERESTED_STANDARDS_REQUEST = "[interested standards] receive data request";
@@ -101,9 +104,26 @@ function* receiveInterestedStandardsSaga({ payload }) {
 
 function* updateInterestedStandardsSaga({ payload }) {
   try {
+    const role = yield select(getUserRole);
+    const curriculums = yield select(state => get(state, ["interestedStandardsReducer", "data", "curriculums"], []));
+    let daSelectedCurriculums = [];
+    if (role === roleuser.SCHOOL_ADMIN && payload.orgType === "institution") {
+      const curriculumById = keyBy(curriculums, "_id");
+      const saSelectedCurriulums = payload.curriculums.filter(item => curriculumById[item._id]?.orgType !== "district");
+      daSelectedCurriculums = payload.curriculums
+        .filter(item => curriculumById[item._id]?.orgType === "district")
+        .map(c => ({ ...c, orgType: "district" }));
+      payload.curriculums = saSelectedCurriulums;
+    }
     const updateInterestedStandards = yield call(settingsApi.updateInterestedStandards, payload);
-    yield put(updateInterestedStandardsSuccessAction(updateInterestedStandards));
+    yield put(
+      updateInterestedStandardsSuccessAction({
+        ...updateInterestedStandards,
+        curriculums: [...updateInterestedStandards.curriculums, ...daSelectedCurriculums]
+      })
+    );
   } catch (err) {
+    console.log(err);
     const errorMessage = "Update Interested Standards is failing";
     yield call(message.error, errorMessage);
     yield put(updateInterestedStandardsErrorAction({ error: errorMessage }));

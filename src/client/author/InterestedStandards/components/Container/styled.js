@@ -73,3 +73,13 @@ export const StyledSubjectCloseButton = styled.a`
 export const StyledCheckbox = styled(Checkbox)`
   margin: 0px 0px 10px 0px !important;
 `;
+
+export const DropdownWrapper = styled.div`
+  .ant-select {
+    width: 200px;
+  }
+  .ant-select-selection {
+    border: 1px solid #40b394;
+    color: #40b394;
+  }
+`;

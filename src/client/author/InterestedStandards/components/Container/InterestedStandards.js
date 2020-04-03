@@ -17,7 +17,8 @@ import {
   StyledSubjectCloseButton,
   StyledSubjectContent,
   StyledCheckbox,
-  InterestedStandardsDiv
+  InterestedStandardsDiv,
+  DropdownWrapper
 } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -35,6 +36,7 @@ import {
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Interested Standards" };
@@ -51,9 +53,11 @@ class InterestedStandards extends Component {
   componentDidMount() {
     const { loadInterestedStandards, userOrgId, getCurriculums, role, schoolId } = this.props;
     const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
+    const orgId = isSchoolLevel ? schoolId : userOrgId;
+    const orgType = isSchoolLevel ? "institution" : "district";
     loadInterestedStandards({
-      orgId: isSchoolLevel ? schoolId : userOrgId,
-      orgType: isSchoolLevel ? "institution" : "district"
+      orgId,
+      orgType
     });
     getCurriculums();
   }
@@ -74,11 +78,15 @@ class InterestedStandards extends Component {
   };
 
   saveInterestedStandards = () => {
-    const { updateInterestedStandards, interestedStaData, userOrgId } = this.props;
+    const { updateInterestedStandards, interestedStaData, userOrgId, schoolId, role } = this.props;
     const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
+
+    const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
+    const orgId = isSchoolLevel ? schoolId : userOrgId;
+    const orgType = isSchoolLevel ? "institution" : "district";
     let saveData = {
-      orgId: interestedStaData.orgId || userOrgId,
-      orgType: interestedStaData.orgType || "district",
+      orgId,
+      orgType,
       showAllStandards,
       includeOtherStandards,
       curriculums: []
@@ -116,24 +124,34 @@ class InterestedStandards extends Component {
       });
     }
     const isSchoolLevel = role === roleuser.SCHOOL_ADMIN;
+    const orgId = isSchoolLevel ? schoolId : userOrgId;
+    const orgType = isSchoolLevel ? "institution" : "district";
     const standardsData = {
-      orgId: isSchoolLevel ? schoolId : userOrgId,
-      orgType: isSchoolLevel ? "institution" : "district",
+      orgId,
+      orgType,
       curriculums: curriculumsData
     };
     updateInterestedStandards(standardsData);
     this.hideMyStandardSetsModal();
   };
 
-  closeCurriculum = (e, id) => {
+  closeCurriculum = (id, disableClose) => {
     const { deleteStandard } = this.props;
-    deleteStandard(id);
+    if (!disableClose) deleteStandard(id);
   };
 
   updatePreferences = e => {
     const { updateStandardsPreferences } = this.props;
     const { checked, name } = e.target;
     updateStandardsPreferences({ name, value: checked });
+  };
+
+  handleSchoolSelect = schoolId => {
+    const { loadInterestedStandards } = this.props;
+    loadInterestedStandards({
+      orgId: schoolId,
+      orgType: "institution"
+    });
   };
 
   render() {
@@ -160,13 +178,15 @@ class InterestedStandards extends Component {
       for (let i = 0; i < selectedStandards.length; i++) {
         const subjectStandards = [];
         for (let j = 0; j < selectedStandards[i].length; j++) {
+          const disableClose = selectedStandards[i][j]?.orgType === "district" && readOnly;
           subjectStandards.push(
             <StyledSubjectLine>
-              {(selectedStandards[i][j]?.orgType !== "district" || !readOnly) && (
-                <StyledSubjectCloseButton onClick={e => this.closeCurriculum(e, selectedStandards[i][j]._id)}>
-                  <Icon type="close" />
-                </StyledSubjectCloseButton>
-              )}
+              <StyledSubjectCloseButton
+                disabled={disableClose}
+                onClick={() => this.closeCurriculum(selectedStandards[i][j]._id, disableClose)}
+              >
+                <Icon type="close" />
+              </StyledSubjectCloseButton>
               <p>{selectedStandards[i][j].name}</p>
             </StyledSubjectLine>
           );
@@ -215,6 +235,11 @@ class InterestedStandards extends Component {
                 </Button>
               </Col>
               <Col span={12}>
+                <Col span={8}>
+                  <DropdownWrapper>
+                    <SaSchoolSelect onChange={this.handleSchoolSelect} />
+                  </DropdownWrapper>
+                </Col>
                 <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
                   Save
                 </StyledSaveButton>
@@ -224,13 +249,15 @@ class InterestedStandards extends Component {
             <StyledSubjectContent>
               <Col span={24}>{standardsList}</Col>
             </StyledSubjectContent>
-            <StandardSetModal
-              modalVisible={standardSetsModalVisible}
-              saveMyStandardsSet={this.updateMyStandardSets}
-              closeModal={this.hideMyStandardSetsModal}
-              standardList={curriculums}
-              interestedStaData={interestedStaData}
-            />
+            {standardSetsModalVisible && (
+              <StandardSetModal
+                modalVisible={standardSetsModalVisible}
+                saveMyStandardsSet={this.updateMyStandardSets}
+                closeModal={this.hideMyStandardSetsModal}
+                standardList={curriculums}
+                interestedStaData={interestedStaData}
+              />
+            )}
           </StyledLayout>
         </StyledContent>
       </InterestedStandardsDiv>

@@ -1591,7 +1591,8 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     const {
       performanceBandProfiles,
       standardsProficiencyProfiles,
-      defaultTestTypeProfiles: defaultTestProfiles
+      defaultTestTypeProfiles: defaultTestProfiles,
+      partialScore
     } = defaultTestSettings;
     yield put(receivePerformanceBandSuccessAction(performanceBandProfiles));
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles));
@@ -1605,6 +1606,14 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       defaultTestProfiles
     })?.standardProficiency;
     yield put(updateAssingnmentSettingsAction({ performanceBand, standardGradingScale }));
+    const testData = yield select(getTestSelector);
+    if ((!testData._id || !testData.title) && partialScore === false) {
+      yield put(
+        setTestDataAction({
+          scoringType: test.evalTypeLabels.ALL_OR_NOTHING
+        })
+      );
+    }
   } catch (e) {
     yield call(message.error("Get default settings failed"));
   }

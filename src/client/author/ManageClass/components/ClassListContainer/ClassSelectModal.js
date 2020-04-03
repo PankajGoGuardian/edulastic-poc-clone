@@ -4,7 +4,7 @@ import { themeColorLight } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
 import { Select, Input, message } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable } from "./styled";
+import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable, InstitutionSelectWrapper } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 
 const ClassListModal = ({
@@ -21,7 +21,7 @@ const ClassListModal = ({
   googleAllowedInstitutions
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedInstitution, setInstitution] = useState(null);
+  const [selectedInstitution, setInstitution] = useState(undefined);
   // clear selected class while modal changes
   useEffect(() => {
     const selRows = [];
@@ -248,22 +248,26 @@ const ClassListModal = ({
           </p>
           {googleAllowedInstitutions.length > 1 && (
             <>
-              <p>We found the account is linked to multiple Institutions. Please select the one for synced classes.</p>
-              <StyledSelect
-                width="170px"
-                showSearch
-                filterOption={(input, option) =>
-                  option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                placeholder="Select Institution"
-                getPopupContainer={triggerNode => triggerNode.parentNode}
-                value={selectedInstitution}
-                onChange={value => setInstitution(value)}
-              >
-                {googleAllowedInstitutions.map(i => (
-                  <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
-                ))}
-              </StyledSelect>
+              <InstitutionSelectWrapper>
+                <label>
+                  We found the account is linked to multiple Institutions. Please select the one for synced classes.
+                </label>
+                <StyledSelect
+                  width="170px"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  placeholder="Select Institution"
+                  getPopupContainer={triggerNode => triggerNode.parentNode}
+                  value={selectedInstitution}
+                  onChange={value => setInstitution(value)}
+                >
+                  {googleAllowedInstitutions.map(i => (
+                    <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+                  ))}
+                </StyledSelect>
+              </InstitutionSelectWrapper>
             </>
           )}
         </>

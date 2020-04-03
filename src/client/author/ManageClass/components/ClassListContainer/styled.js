@@ -482,3 +482,17 @@ export const GoogleClassroomTable = styled(Table)`
 export const ClassStatusDropdown = styled(Dropdown)`
   height: 30px;
 `;
+
+export const InstitutionSelectWrapper = styled.div`
+  margin-top: 10px;
+  > label {
+    font-size: 15px;
+    margin-right: 10px;
+    display: inline-block;
+  }
+  .ant-select-selection {
+    > .ant-select-arrow {
+      font-size: unset !important;
+    }
+  }
+`;

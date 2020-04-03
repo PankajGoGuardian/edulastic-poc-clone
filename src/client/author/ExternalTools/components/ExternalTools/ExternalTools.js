@@ -11,7 +11,8 @@ import {
   getFormData,
   fetchExternalToolProviderAction,
   deleteExternalToolProviderAction,
-  saveExternalToolProviderAction
+  saveExternalToolProviderAction,
+  searchExternalToolProviderAction
 } from "../../ducks";
 import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -50,7 +51,8 @@ const initialState = {
       domain: "",
       customParams: ""
     }
-  }
+  },
+  searchTerm: ""
 };
 
 const getInitailState = () => {
@@ -110,9 +112,15 @@ class ExternalTools extends Component {
     });
   };
 
+  searchTool = () => {
+    const { userOrgId, searchExternalToolProvider } = this.props;
+    const { searchTerm } = this.state;
+    searchExternalToolProvider({ orgId: userOrgId, searchTerm });
+  };
+
   render() {
     const { formData, user, deleteExternalToolProvider, history, userOrgId } = this.props;
-    const { isModalVisible, data } = this.state;
+    const { isModalVisible, data, searchTerm } = this.state;
     return (
       <MainContainer>
         <SubHeaderWrapper>
@@ -122,8 +130,14 @@ class ExternalTools extends Component {
         </SubHeaderWrapper>
         <ContentSubHeader active={menuActive} history={history} />
         <ExternalToolsSearchHeader>
-          <StyledSearch placeholder="Search External Tools" />
-          <EduButton height="40px">Search</EduButton>
+          <StyledSearch
+            placeholder="Search External Tools"
+            value={searchTerm}
+            onChange={e => this.setState({ searchTerm: e.target.value })}
+          />
+          <EduButton height="40px" onClick={this.searchTool}>
+            Search
+          </EduButton>
         </ExternalToolsSearchHeader>
         <ExternalToolsModal
           isModalVisible={isModalVisible}
@@ -161,7 +175,8 @@ const enhance = compose(
     {
       fetchExternalToolProviders: fetchExternalToolProviderAction,
       deleteExternalToolProvider: deleteExternalToolProviderAction,
-      saveData: saveExternalToolProviderAction
+      saveData: saveExternalToolProviderAction,
+      searchExternalToolProvider: searchExternalToolProviderAction
     }
   )
 );

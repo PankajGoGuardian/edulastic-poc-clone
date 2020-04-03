@@ -3,11 +3,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Pagination, message, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
-import { themeColor, white, red } from "@edulastic/colors";
-import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
-import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
+import { themeColor, red } from "@edulastic/colors";
+import { Tabs, EduButton, withWindowSizes, ScrollContext } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
-import { get } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { themes } from "../../../../../theme";
@@ -333,13 +331,9 @@ class AuthorTestItemPreview extends Component {
       passageTestItems,
       clearView,
       page,
-      handleShowHints,
-      showHints,
       toggleReportIssue,
       onlySratchpad
     } = this.props;
-    const hints = get(item, "data.questions.[0].hints", []);
-    const showHintsBtn = hints.length > 0 ? hints[0].label : false;
 
     return (
       <>
@@ -361,12 +355,6 @@ class AuthorTestItemPreview extends Component {
           style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
           <ScoreBlock customStyle={{ left: "-5px" }} />
-          {/* we may need to bring hint button back */}
-          {/* {page !== "itemAuthoring" && showHintsBtn && (
-            <EduButton height="28px" isGhost={!showHints} onClick={handleShowHints}>
-              Hint
-            </EduButton>
-          )} */}
           {isAnswerBtnVisible && (
             <>
               <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>
@@ -524,7 +512,7 @@ class AuthorTestItemPreview extends Component {
     const { collapseDirection } = this.state;
 
     return (
-      <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
+      <>
         {cols.map((col, i) => {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
@@ -537,14 +525,16 @@ class AuthorTestItemPreview extends Component {
                 style={onlySratchpad ? { boxShadow: "none" } : {}}
               >
                 {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                {this.renderColumns(col, i, sectionQue, resourceCount)}
+                <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
+                  {this.renderColumns(col, i, sectionQue, resourceCount)}
+                </Container>
               </ColumnContentArea>
               {collapseDirection === "right" && this.renderCollapseButtons(i)}
             </>
           );
         })}
         {children}
-      </Container>
+      </>
     );
   };
 

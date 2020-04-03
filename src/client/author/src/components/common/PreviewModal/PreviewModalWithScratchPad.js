@@ -122,7 +122,6 @@ const PreviewModalWithScratchPad = ({
             onColorChange={handleColorChange}
             lineWidth={lineWidth}
             className="review-scratchpad"
-            scratchpadResponsiveHeight={scrollContainerRef.current.clientHeight}
             style={{ minHeight: "auto" }}
           />
         )}

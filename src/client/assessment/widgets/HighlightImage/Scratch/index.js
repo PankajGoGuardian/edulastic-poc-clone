@@ -1,27 +1,22 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
-import { hexToRGB, ScratchPadContext } from "@edulastic/common";
+import { hexToRGB } from "@edulastic/common";
+import { message } from "antd";
 import Tools from "../../../themes/AssessmentPlayerDefault/Tools";
 import SvgDraw from "../../../themes/AssessmentPlayerDefault/SvgDraw";
-import { message } from "antd";
 
-const Scratch = ({ clearClicked }) => {
+const getScratchComponents = ({ clearClicked }) => {
   const [fillColor, setFillColor] = useState("#ff0000");
   const [currentColor, setCurrentColor] = useState("#ff0000");
   const [currentFont, setCurrentFont] = useState("");
   const [activeMode, setActiveMode] = useState("");
   const [deleteMode, setDeletMode] = useState(false);
   const [lineWidth, setLineWidth] = useState(6);
-  const [toolBoxStyle, setToolBoxStyle] = useState(null);
 
   const [preset, setPreset] = useState(null);
   const [past, setPast] = useState([]);
   const [future, setFuture] = useState([]);
-
-  const { getContainer } = useContext(ScratchPadContext);
-
-  const containerRef = getContainer();
 
   const addData = history => {
     if (preset) {
@@ -90,59 +85,50 @@ const Scratch = ({ clearClicked }) => {
     }
   }, [clearClicked]);
 
-  useEffect(() => {
-    if (containerRef) {
-      const { left } = containerRef.getBoundingClientRect();
-      setToolBoxStyle({
-        top: "50%",
-        left: left - 40, // -40 is width of toolbox
-        transform: "translateY(-50%)"
-      });
-    }
-  }, [containerRef]);
-
-  return (
-    <>
-      {toolBoxStyle && (
-        <Tools
-          fillColor={fillColor}
-          deleteMode={deleteMode}
-          currentColor={currentColor}
-          activeMode={activeMode}
-          undo={handleUndo}
-          redo={handleRedo}
-          lineWidth={lineWidth}
-          containerStyle={toolBoxStyle}
-          onChangeSize={handleChangeSize}
-          onChangeLineWidth={setLineWidth}
-          onToolChange={handleScratchToolChange}
-          onChangeFont={handleChangeFont}
-          currentFont={currentFont}
-          onFillColorChange={obj => setFillColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
-          onColorChange={obj => setCurrentColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
-        />
-      )}
-      <SvgDraw
-        scratchPadMode
-        activeMode={activeMode}
-        lineColor={currentColor}
-        deleteMode={deleteMode}
-        lineWidth={lineWidth}
-        fillColor={fillColor}
-        fontFamily={currentFont}
-        saveHistory={addData}
-        history={preset}
-        height="100%"
-        top="0"
-        left="0"
-        position="absolute"
-      />
-    </>
+  const DrawingTool = ({ left, top }) => (
+    <Tools
+      isWorksheet
+      fillColor={fillColor}
+      deleteMode={deleteMode}
+      currentColor={currentColor}
+      activeMode={activeMode}
+      undo={handleUndo}
+      redo={handleRedo}
+      lineWidth={lineWidth}
+      containerStyle={{ left, top }}
+      onChangeSize={handleChangeSize}
+      onChangeLineWidth={setLineWidth}
+      onToolChange={handleScratchToolChange}
+      onChangeFont={handleChangeFont}
+      currentFont={currentFont}
+      onFillColorChange={obj => setFillColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
+      onColorChange={obj => setCurrentColor(hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100))}
+    />
   );
+
+  const DrawingPannel = () => (
+    <SvgDraw
+      scratchPadMode
+      activeMode={activeMode}
+      lineColor={currentColor}
+      deleteMode={deleteMode}
+      lineWidth={lineWidth}
+      fillColor={fillColor}
+      fontFamily={currentFont}
+      saveHistory={addData}
+      history={preset}
+      height="100%"
+      top="0"
+      left="0"
+      position="absolute"
+    />
+  );
+
+  return [DrawingTool, DrawingPannel];
 };
 
-Scratch.propTypes = {
+getScratchComponents.propTypes = {
   clearClicked: PropTypes.bool.isRequired
 };
 
-export default Scratch;
+export default getScratchComponents;

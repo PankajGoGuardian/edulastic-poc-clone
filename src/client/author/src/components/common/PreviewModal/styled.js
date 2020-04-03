@@ -19,6 +19,7 @@ export const Container = styled.div`
   justify-content: space-between;
   overflow: auto;
   width: 100%;
+  height: 100%;
   &.scratchpad-wrapper {
     input {
       position: absolute;
@@ -102,7 +103,7 @@ export const ColumnContentArea = styled.div`
   height: ${props => (props.isAuthoring ? "auto" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "flex")};
   flex-direction: column;
-  flex-basis: 100%;,
+  flex-basis: 100%;
   ${({ style }) => style};
 `;
 
@@ -291,7 +292,7 @@ export const StyledText = styled(Text)`
 export const RejectButton = styled(EduButton)`
   &.ant-btn.ant-btn-primary {
     svg {
-      trasition: none;
+      transition: none;
     }
     &:hover,
     &[disabled] {

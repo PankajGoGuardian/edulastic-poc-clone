@@ -19,12 +19,12 @@ const handleRotateStyles = {
 
 const MeasureTools = () => {
   const [centimeterPosition, setCentimeterPosition] = useState({
-    x: 200,
+    x: 0,
     y: 10
   });
 
   const [protractorPosition, setProtractorPosition] = useState({
-    x: 380,
+    x: 0,
     y: 125
   });
 

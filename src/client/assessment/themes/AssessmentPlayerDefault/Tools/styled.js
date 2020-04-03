@@ -9,22 +9,24 @@ import {
   extraDesktopWidthMax
 } from "@edulastic/colors";
 
-const toolBoxDimension = {
-  width: "40px",
-  height: "511px"
+export const toolBoxDimension = {
+  width: 40,
+  height: 520
 };
 
 export const ToolBox = styled(FlexContainer)`
-  width: ${toolBoxDimension.width};
-  min-height: ${toolBoxDimension.height};
+  width: ${`${toolBoxDimension.width}px`};
   position: ${props => (props.isWorksheet ? "absolute" : "fixed")};
   background: transparent;
   z-index: 1000;
   border-radius: 4px;
   padding: 0;
+  height: ${props => `${props.height}px`};
+  max-height: ${`${toolBoxDimension.height}px`};
   display: ${props => (props.review && !props.testMode ? "none" : "")};
   top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.xs + 30)}px;
   left: ${props => (props.isWorksheet ? 12 : 0)}px;
+  visibility: ${({ isToolBarVisible }) => (isToolBarVisible ? "visible" : "hidden")};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.md + 30)}px;
@@ -44,11 +46,12 @@ export const Label = styled.div`
 `;
 
 export const StyledButton = styled(Button).attrs({ className: "drawing-tool-button" })`
-  margin-bottom: 8px;
+  margin-bottom: ${({ noMargin }) => (noMargin ? "" : "8px")};
   box-shadow: none !important;
   background: ${props => props.theme.default.sideToolbarBgColor};
   height: 40px;
   width: 40px;
+  flex-shrink: 0;
   position: relative;
   border: none !important;
 
@@ -98,8 +101,9 @@ export const customizeIcon = icon => styled(icon)`
 
 export const ActiveToolBoxContainer = styled(FlexContainer)`
   border-radius: 4px;
-  width: ${toolBoxDimension.width};
-  min-height: ${toolBoxDimension.height};
+  height: 100%;
+  width: ${`${toolBoxDimension.width}px`};
+  max-height: ${`${toolBoxDimension.height}px`};
   background: ${props => props.theme.default.sideToolbarBgColor};
   ${({ style }) => style};
   & .drawing-tool-button {
@@ -113,10 +117,6 @@ export const Block = styled.div`
 
 export const ExpandWrapper = styled.div`
   display: flex;
-  min-height: auto !important;
-  position: absolute;
-  left: 0;
-  bottom: -48px;
   ${({ style }) => style};
   button {
     margin-right: 8px;

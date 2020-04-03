@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect, useContext, Fragment } from "react";
 import PropTypes from "prop-types";
 import { isNaN } from "lodash";
 import { compose } from "redux";
@@ -11,12 +11,14 @@ import {
   QuestionNumberLabel,
   isMobileDevice,
   AnswerContext,
+  ScrollContext,
   FlexContainer,
   QuestionLabelWrapper,
   QuestionSubLabel,
   QuestionContentWrapper
 } from "@edulastic/common";
 
+import get from "lodash/get";
 import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { canvasDimensions } from "@edulastic/constants";
@@ -28,7 +30,7 @@ import { CanvasContainer } from "./styled/CanvasContainer";
 import DEFAULT_IMAGE from "../../assets/highlightImageBackground.svg";
 import { s3ImageBucketPath } from "../../../config";
 
-import Scratch from "./Scratch";
+import getScratchComponents from "./Scratch";
 
 const isMobile = isMobileDevice();
 
@@ -200,47 +202,64 @@ const HighlightImagePreview = ({
     }
   }, [clearClicked]);
 
+  const { getScrollElement } = useContext(ScrollContext);
+  const scrollContainerElement = getScrollElement();
+
+  useEffect(() => {
+    if (scrollContainerElement) {
+      scrollContainerElement.style.marginLeft = "58px";
+      scrollContainerElement.style.width = "calc(100% - 58px)";
+    }
+  }, [scrollContainerElement]);
+
+  const [DrawingTool, DrawingPannel] = getScratchComponents({ clearClicked });
+  const left = get(scrollContainerElement, "offsetLeft", 0) - 48;
+  const top = get(scrollContainerElement, "offsetTop", 0);
+
+  const showDrawing = viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup";
+
   return (
-    <PreviewContainer
-      hideInternalOverflow={hideInternalOverflow}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-      ref={containerRef}
-    >
+    <Fragment>
       <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
-        {(viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup") && (
-          <Scratch clearClicked={clearClicked} />
-        )}
-        <CanvasContainer
-          ref={canvasContainerRef}
-          minHeight={canvasDimensions.maxHeight}
-          width={`${canvasContainerWidth}px`}
-          isPrintPreview={isPrintPreview}
+        {showDrawing && <DrawingTool left={left} top={top} />}
+        <PreviewContainer
+          hideInternalOverflow={hideInternalOverflow}
+          padding={smallSize}
+          boxShadow={smallSize ? "none" : ""}
+          ref={containerRef}
         >
-          <FlexContainer justifyContent="flex-start" alignItems="baseline">
-            <QuestionLabelWrapper>
-              {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
-              {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
-            </QuestionLabelWrapper>
-            <QuestionContentWrapper>
-              {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-              {renderImage()}
-              {enableQuestionLevelScratchPad && (
-                <canvas
-                  onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
-                  onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
-                  onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
-                  onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
-                  onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-                  onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
-                  ref={canvas}
-                />
-              )}
-            </QuestionContentWrapper>
-          </FlexContainer>
-        </CanvasContainer>
+          {showDrawing && <DrawingPannel />}
+          <CanvasContainer
+            ref={canvasContainerRef}
+            minHeight={canvasDimensions.maxHeight}
+            width={`${canvasContainerWidth}px`}
+            isPrintPreview={isPrintPreview}
+          >
+            <FlexContainer justifyContent="flex-start" alignItems="baseline">
+              <QuestionLabelWrapper>
+                {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
+                {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
+              </QuestionLabelWrapper>
+              <QuestionContentWrapper>
+                {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+                {renderImage()}
+                {enableQuestionLevelScratchPad && (
+                  <canvas
+                    onMouseDown={!disableDrawing ? onCanvasMouseDown : () => {}}
+                    onTouchStart={!disableDrawing ? onCanvasMouseDown : () => {}}
+                    onMouseUp={!disableDrawing ? onCanvasMouseUp : () => {}}
+                    onTouchEnd={!disableDrawing ? onCanvasMouseUp : () => {}}
+                    onMouseMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+                    onTouchMove={!disableDrawing ? onCanvasMouseMove : () => {}}
+                    ref={canvas}
+                  />
+                )}
+              </QuestionContentWrapper>
+            </FlexContainer>
+          </CanvasContainer>
+        </PreviewContainer>
       </ScratchPadContext.Provider>
-    </PreviewContainer>
+    </Fragment>
   );
 };
 

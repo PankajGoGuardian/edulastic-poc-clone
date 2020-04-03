@@ -49,15 +49,11 @@ class MathInput extends React.PureComponent {
     if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
       shouldHideKeyboard = false;
     }
-
     if (
       shouldHideKeyboard &&
       this.containerRef.current &&
       !this.containerRef.current.contains(e.target) &&
-      mathFieldFocus &&
-      !jQuery(".keyboard")
-        .get(0)
-        ?.contains(e.target)
+      mathFieldFocus
     ) {
       onFocus(false);
       this.setState({ mathFieldFocus: false }, this.handleBlur);
@@ -270,6 +266,7 @@ class MathInput extends React.PureComponent {
         fontStyle={symbols[0] === "units_si" || symbols[0] === "units_us" ? "normal" : "italic"}
         width={style.width}
         fontSize={style.fontSize}
+        ref={this.containerRef}
       >
         <Popover
           content={keypad}
@@ -280,7 +277,6 @@ class MathInput extends React.PureComponent {
           getPopupContainer={trigger => trigger.parentNode}
         >
           <div
-            ref={this.containerRef}
             onFocus={() => {
               onFocus(true);
               this.setState({ mathFieldFocus: true }, onInnerFieldClick);

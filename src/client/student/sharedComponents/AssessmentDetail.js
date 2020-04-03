@@ -24,6 +24,7 @@ const AssessmentDetails = ({
   thumbnail,
   theme,
   testType,
+  titleMaxWidth,
   t,
   started,
   resume,
@@ -53,7 +54,9 @@ const AssessmentDetails = ({
       <CardDetails>
         <CardTitle>
           <Tooltip title={title}>
-            <AssignmentTitle data-cy="testTitle">{title}</AssignmentTitle>
+            <AssignmentTitle data-cy="testTitle" maxWidth={titleMaxWidth}>
+              {title}
+            </AssignmentTitle>
           </Tooltip>
           <Tooltip title={t(`common.toolTip.${testType}`)}>
             <TestType data-cy="testType" type={testType}>
@@ -201,17 +204,11 @@ const Thumbnail = React.memo(styled.img`
 
 const AssignmentTitle = React.memo(styled.span`
   font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
-  max-width: 30vw;
+  max-width: ${props => props.maxWidth || "28vw"};
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  @media (max-width: ${smallDesktopWidth}) {
-    max-width: 125px;
-  }
-  @media (max-width: ${desktopWidth}) {
-    max-width: 98px;
-  }
 `);
 
 const CardDetails = React.memo(styled(Col)`

@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { all, call, takeLatest, put } from "redux-saga/effects";
-import { contentImportApi, extractContent } from "@edulastic/api";
+import { contentImportApi } from "@edulastic/api";
 import { uploadToS3 } from "@edulastic/common";
 import { aws } from "@edulastic/constants";
 import { groupBy } from "lodash";

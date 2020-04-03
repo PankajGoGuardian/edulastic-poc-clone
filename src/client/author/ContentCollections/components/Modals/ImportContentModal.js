@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { uniqBy } from "lodash";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Button, Input, Select, Radio, Upload, Icon, Spin } from "antd";
-
+import { Button, Input, Select, Radio, Upload, Icon, Spin, message } from "antd";
 import styled from "styled-components";
+import { RadioBtn, RadioGrp } from "@edulastic/common";
 import {
   themeColor,
   whiteSmoke,
@@ -15,6 +16,7 @@ import {
   themeColorTagsBg,
   green
 } from "@edulastic/colors";
+import { tagsApi } from "@edulastic/api";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import {
   fetchCollectionListRequestAction,
@@ -26,9 +28,8 @@ import {
   signedUrlFetchingSelector,
   importStatusSelector
 } from "../../ducks";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
+import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../TestPage/ducks";
 
-const { Option } = Select;
 const { Dragger } = Upload;
 
 const NEW_COLLECTION = "new collection";
@@ -49,16 +50,20 @@ const ImportContentModal = ({
   getSignedUrlData,
   setSignedUrl,
   signedUrlFetching,
-  closeModel
+  closeModel,
+  getAllTags,
+  allTagsData,
+  addNewTag
 }) => {
   const [selectedCollectionName, setSelectedCollectionName] = useState();
 
   const [selectedBucketId, setSelectedBucketId] = useState("");
-  const [importType, setImportType] = useState(NEW_COLLECTION);
+  const [importType, setImportType] = useState(EXISTING_COLLECTION);
   const [uploadType, setUploadType] = useState(UPLOAD_ZIP);
   const [selectedFormat, setSelectedFormat] = useState("qti");
   const [testItemStatus, setItemStatus] = useState(TestItemStatus.PUBLISHED);
-
+  const [searchValue, setSearchValue] = useState("");
+  const [tags, setSelectedTags] = useState([]);
   const handleUpload = ({ file, fileList }) => {
     if (file.type !== "application/zip") {
       return;
@@ -90,10 +95,52 @@ const ImportContentModal = ({
   useEffect(() => {
     setSelectedCollectionName();
     setSelectedBucketId();
-    setImportType(NEW_COLLECTION);
+    setImportType(EXISTING_COLLECTION);
     setUploadType(UPLOAD_ZIP);
     setItemStatus(TestItemStatus.PUBLISHED);
   }, [visible]);
+
+  useEffect(() => {
+    getAllTags({ type: "testitem" });
+  }, []);
+
+  const newAllTagsData = uniqBy([...allTagsData, ...tags], "_id");
+
+  const selectTags = async id => {
+    let newTag = {};
+    if (id === searchValue) {
+      const tempSearchValue = searchValue;
+      setSearchValue("");
+      try {
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: "testitem"
+        });
+        newTag = { _id, tagName };
+        addNewTag({ tag: newTag, tagType: "testitem" });
+      } catch (e) {
+        message.error("Saving tag failed");
+      }
+    } else {
+      newTag = newAllTagsData.find(tag => tag._id === id);
+    }
+    const newTags = [...tags, newTag];
+    setSelectedTags(newTags);
+    setSearchValue("");
+  };
+
+  const deselectTags = id => {
+    const newTags = tags.filter(tag => tag._id !== id);
+    setSelectedTags(newTags);
+  };
+
+  const searchTags = async value => {
+    if (newAllTagsData.some(tag => tag.tagName === value || tag.tagName === value.trim())) {
+      setSearchValue("");
+    } else {
+      setSearchValue(value);
+    }
+  };
 
   const Footer = (
     <StyledFooter>
@@ -101,22 +148,37 @@ const ImportContentModal = ({
         CANCEL
       </NoButton>
       <YesButton
-        onClick={() =>
+        onClick={() => {
+          if (importType === EXISTING_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
+            return message.warn("Please select a collection");
+          }
+
+          if (importType === NEW_COLLECTION && (!selectedCollectionName || !selectedCollectionName.trim())) {
+            return message.warn("Please enter the collection name");
+          }
+
+          if (!getSignedUrlData) {
+            return message.warn("File not found");
+          }
+
           handleResponse({
             selectedCollectionName,
             selectedBucketId,
             selectedFormat,
             signedUrl: getSignedUrlData,
             testItemStatus,
-            createTest: false
-          })
-        }
+            createTest: false,
+            selectedTags: tags
+          });
+        }}
       >
         CREATE
       </YesButton>
     </StyledFooter>
   );
   const Title = [<Heading>Import Content</Heading>];
+
+  const selectedTags = useMemo(() => tags.map(t => t._id), [tags]);
 
   return (
     <StyledModal title={Title} visible={visible} footer={Footer} onCancel={() => closeModel()} width={400}>
@@ -136,6 +198,37 @@ const ImportContentModal = ({
             <Select.Option value="qti">QTI</Select.Option>
             <Select.Option value="webct">WebCT</Select.Option>
           </SelectStyled>
+        </FieldRow>
+        <FieldRow>
+          <lable>TAGS</lable>
+          <SelectStyled
+            className="tagsSelect"
+            mode="multiple"
+            optionLabelProp="title"
+            placeholder="Please select"
+            value={selectedTags}
+            onSearch={searchTags}
+            onSelect={selectTags}
+            onDeselect={deselectTags}
+            getPopupContainer={trigger => trigger.parentNode}
+            filterOption={(input, option) => option.props.title.toLowerCase().includes(input.trim().toLowerCase())}
+          >
+            {searchValue.trim() ? (
+              <Select.Option key={0} value={searchValue} title={searchValue}>
+                {`${searchValue} (Create new Tag)`}
+              </Select.Option>
+            ) : (
+              ""
+            )}
+            {newAllTagsData.map(({ tagName, _id }) => (
+              <Select.Option key={_id} value={_id} title={tagName}>
+                {tagName}
+              </Select.Option>
+            ))}
+          </SelectStyled>
+          {!!searchValue.length && !searchValue.trim().length && (
+            <p style={{ color: "red" }}>Please enter valid characters.</p>
+          )}
         </FieldRow>
         <FieldRow>
           <label>Status</label>
@@ -187,7 +280,7 @@ const ImportContentModal = ({
           ) : (
             <Input
               value={getSignedUrlData}
-              onBlur={e => setSignedUrl(e.target.value)}
+              onChange={e => setSignedUrl(e.target.value)}
               placeholder="Enter aws s3 bucket url"
             />
           )}
@@ -203,12 +296,15 @@ const ConnectedImportContentModal = connect(
     collectionList: getCollectionListSelector(state),
     getSignedUrlData: getSignedUrlSelector(state),
     signedUrlFetching: signedUrlFetchingSelector(state),
-    importStatus: importStatusSelector(state)
+    importStatus: importStatusSelector(state),
+    allTagsData: getAllTagsSelector(state, "testitem")
   }),
   {
     fetchCollectionListRequest: fetchCollectionListRequestAction,
     getSignedUrl: getSignedUrlRequestAction,
-    setSignedUrl: getSignedUrlSuccessAction
+    setSignedUrl: getSignedUrlSuccessAction,
+    getAllTags: getAllTagsAction,
+    addNewTag: addNewTagAction
   }
 )(ImportContentModal);
 

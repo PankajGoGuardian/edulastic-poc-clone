@@ -4,7 +4,9 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { collectionsApi, contentImportApi } from "@edulastic/api";
 import { uploadToS3 } from "@edulastic/common";
+import { push } from "react-router-redux";
 import { aws } from "@edulastic/constants";
+import { UPLOAD_STATUS, JOB_STATUS } from "../ImportTest/ducks";
 
 const ContentFolders = {
   qti: aws.s3Folders.QTI_IMPORT,
@@ -35,6 +37,12 @@ const GET_SIGNED_URL_ERROR = "[collection] get signed url error";
 const IMPORT_TEST_REQUEST = "[collection] import test to collection request";
 const IMPORT_TEST_SUCCESS = "[collection] import test to collection success";
 const IMPORT_TEST_ERROR = "[collection] import test to collection error";
+const IMPORT_CONTENT_JOBIDS = "[collection] set import content jobIds";
+const SET_CI_SUCCESS_MESSAGE = "[collection] set success message";
+const SET_UPLOAD_CONTENT_STATUS = "[collection] set upload test status";
+const SET_CI_JOBS_DATA = "[collection] set jobs response data";
+const GET_CONTENT_IMPORT_PROGRESS = "[collection] get import progress action";
+const SET_IS_CONTENT_IMPORTING = "[collection] is content getting imported";
 
 // actions
 export const createCollectionRequestAction = createAction(CREATE_NEW_COLLECTION_REQUEST);
@@ -61,8 +69,13 @@ export const getSignedUrlFailedAction = createAction(GET_SIGNED_URL_ERROR);
 export const importTestToCollectionRequestAction = createAction(IMPORT_TEST_REQUEST);
 export const importTestToCollectionSuccessAction = createAction(IMPORT_TEST_SUCCESS);
 export const importTestToCollectionFailedAction = createAction(IMPORT_TEST_ERROR);
-
-const initialState = {
+export const setImportContentJobIdsAction = createAction(IMPORT_CONTENT_JOBIDS);
+export const setCISuccessMessageAction = createAction(SET_CI_SUCCESS_MESSAGE);
+export const uploadContentStatusAction = createAction(SET_UPLOAD_CONTENT_STATUS);
+export const setCIJobsDataAction = createAction(SET_CI_JOBS_DATA);
+export const contentImportProgressAction = createAction(GET_CONTENT_IMPORT_PROGRESS);
+export const setIsContentImportingAction = createAction(SET_IS_CONTENT_IMPORTING);
+export const initialState = {
   creating: false,
   fetchingCollections: false,
   fetchingPermissions: false,
@@ -75,7 +88,11 @@ const initialState = {
   signedUrl: "",
   signedUrlFetching: false,
   importStatus: "",
-  importing: false
+  importing: false,
+  isSuccess: true,
+  status: "INITIATE",
+  jobIds: [],
+  error: {}
 };
 
 // reducer
@@ -143,8 +160,8 @@ export const reducer = createReducer(initialState, {
   [GET_SIGNED_URL_REQUEST]: state => {
     state.signedUrlFetching = true;
   },
-  [GET_SIGNED_URL_SUCCESS]: (state, { payload }) => {
-    state.signedUrl = payload;
+  [GET_SIGNED_URL_SUCCESS]: (state, { payload = "" }) => {
+    state.signedUrl = payload.trim();
     state.signedUrlFetching = false;
   },
   [GET_SIGNED_URL_ERROR]: state => {
@@ -155,10 +172,29 @@ export const reducer = createReducer(initialState, {
   },
   [IMPORT_TEST_SUCCESS]: (state, { payload }) => {
     state.importStatus = payload;
-    state.importing = false;
   },
   [GET_SIGNED_URL_ERROR]: state => {
     state.importing = false;
+  },
+  [IMPORT_CONTENT_JOBIDS]: (state, { payload }) => {
+    state.jobIds = payload;
+  },
+  [SET_CI_SUCCESS_MESSAGE]: (state, { payload }) => {
+    state.successMessage = payload;
+    state.isSuccess = true;
+  },
+  [IMPORT_TEST_ERROR]: (state, { payload }) => {
+    state.error = payload;
+    state.isSuccess = false;
+  },
+  [SET_UPLOAD_CONTENT_STATUS]: (state, { payload }) => {
+    state.status = payload;
+  },
+  [SET_CI_JOBS_DATA]: (state, { payload }) => {
+    state.jobsData = payload;
+  },
+  [SET_IS_CONTENT_IMPORTING]: (state, { payload }) => {
+    state.importing = payload;
   }
 });
 
@@ -275,24 +311,37 @@ export function* importTestToCollectionSaga({ payload }) {
       selectedFormat: type,
       signedUrl,
       createTest = true,
-      testItemStatus = "published"
+      testItemStatus = "published",
+      selectedTags = []
     } = payload;
+    yield put(push("/author/import-content"));
+    yield put(uploadContentStatusAction(UPLOAD_STATUS.INITIATE));
+    sessionStorage.setItem("testUploadStatus", UPLOAD_STATUS.INITIATE);
+    yield put(setCISuccessMessageAction("Started creating the items"));
+    yield put(setIsContentImportingAction(true));
+
     const response = yield call(contentImportApi.contentImport, {
       files: [signedUrl],
       type,
       collectionName: selectedCollectionName,
       createTest,
-      testItemStatus
+      testItemStatus,
+      testItemTags: selectedTags
     });
     if (response?.jobIds?.length) {
       yield put(importTestToCollectionSuccessAction(response.jobIds));
-      yield call(message.success, "Successfully uploaded");
+      yield put(setImportContentJobIdsAction(response.jobIds));
+      sessionStorage.setItem("jobIds", JSON.stringify(response.jobIds));
+      yield put(setCISuccessMessageAction("Completed creating the items"));
     } else {
       yield put(importTestToCollectionFailedAction("Failed uploading"));
+      yield put(setIsContentImportingAction(false));
       yield call(message.error, "Uploading failed");
     }
   } catch (e) {
+    console.log(e);
     yield put(importTestToCollectionFailedAction(e?.data || {}));
+    yield put(setIsContentImportingAction(false));
     yield call(message.error, "Error while importing collection data");
   }
 }
@@ -308,6 +357,20 @@ export function* getSignedUrlSaga({ payload }) {
   }
 }
 
+function* getContentImportProgressSaga({ payload: jobIds }) {
+  try {
+    const response = yield call(contentImportApi.contentImportProgress, { jobIds });
+    yield put(setCIJobsDataAction(response));
+    if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
+      yield put(uploadContentStatusAction(UPLOAD_STATUS.DONE));
+      yield put(setIsContentImportingAction(false));
+    }
+  } catch (e) {
+    console.log({ e });
+    return message.error("Failed to fetch progress status");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_NEW_COLLECTION_REQUEST, createCollectionRequestSaga),
@@ -319,7 +382,8 @@ export function* watcherSaga() {
     yield takeEvery(EDIT_PERMISSION_REQUEST, editPermissionRequestSaga),
     yield takeEvery(DELETE_PERMISSION_REQUEST, deletePermissionRequestSaga),
     yield takeLatest(GET_SIGNED_URL_REQUEST, getSignedUrlSaga),
-    yield takeLatest(IMPORT_TEST_REQUEST, importTestToCollectionSaga)
+    yield takeLatest(IMPORT_TEST_REQUEST, importTestToCollectionSaga),
+    yield takeLatest(GET_CONTENT_IMPORT_PROGRESS, getContentImportProgressSaga)
   ]);
 }
 
@@ -380,6 +444,36 @@ export const getSignedUrlSelector = createSelector(
 export const importStatusSelector = createSelector(
   stateSelector,
   state => state.importStatus
+);
+
+export const contentImportJobIds = createSelector(
+  stateSelector,
+  state => state.jobIds
+);
+
+export const contentImportSuccessMessage = createSelector(
+  stateSelector,
+  state => state.successMessage
+);
+
+export const contentImportError = createSelector(
+  stateSelector,
+  state => state.error
+);
+
+export const uploadContnentStatus = createSelector(
+  stateSelector,
+  state => state.status
+);
+
+export const isContentImportSuccess = createSelector(
+  stateSelector,
+  state => state.isSuccess
+);
+
+export const contentImportJobsData = createSelector(
+  stateSelector,
+  state => state.jobsData
 );
 
 export const importingLoaderSelector = createSelector(

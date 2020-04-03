@@ -491,6 +491,7 @@ const Author = ({
                     <Route exact path="/author/content/collections" component={Collections} />
                     <Route exact path="/author/content/tools" component={ExternalTools} />
                     <Route exact path="/author/import-test" component={ImportTest} />
+                    <Route exact path="/author/import-content" component={ImportTest} />
                     <Route component={NotFound} />
                   </Switch>
                 </Suspense>

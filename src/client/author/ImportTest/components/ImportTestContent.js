@@ -10,28 +10,60 @@ import UploadTest from "./UploadTest";
 import ImportInprogress from "./ImportInProgress";
 import ImportDone from "./ImportDone";
 import { uploadTestStatusAction, setJobIdsAction, qtiImportProgressAction, UPLOAD_STATUS } from "../ducks";
+import { setImportContentJobIdsAction, uploadContentStatusAction } from "../../ContentCollections/ducks";
 
-const ImportTestContent = ({ uploadTestStatus, setJobIds, status }) => {
+const ImportTestContent = ({
+  uploadTestStatus,
+  setJobIds,
+  status,
+  location: { pathname },
+  setContentImportJobIds,
+  uploadContnentStatus,
+  history
+}) => {
   useEffect(() => {
     const currentStatus = sessionStorage.getItem("testUploadStatus");
     const sessionJobs = sessionStorage.getItem("jobIds");
     if (currentStatus) {
-      uploadTestStatus(currentStatus);
-      setJobIds(sessionJobs ? JSON.parse(sessionJobs) : []);
+      if (pathname === "/author/import-content") {
+        setContentImportJobIds(sessionJobs ? JSON.parse(sessionJobs) : []);
+        uploadContnentStatus(currentStatus);
+      } else {
+        uploadTestStatus(currentStatus); // upload progress
+        setJobIds(sessionJobs ? JSON.parse(sessionJobs) : []);
+      }
     }
   }, []);
-  const breadcrumbData = [
-    {
-      title: "RECENT ASSIGNMENTS",
-      to: "/author/assignments"
-    },
-    {
-      title: "IMPORT TEST",
-      to: ""
-    }
-  ];
+  const breadcrumbData =
+    pathname === "/author/import-content"
+      ? [
+          {
+            title: "MANAGE DISTRICT",
+            to: "/author/content/collections"
+          },
+          {
+            title: "IMPORT CONTENT",
+            to: ""
+          }
+        ]
+      : [
+          {
+            title: "RECENT ASSIGNMENTS",
+            to: "/author/assignments"
+          },
+          {
+            title: "IMPORT TEST",
+            to: ""
+          }
+        ];
 
   const getComponentBySatus = () => {
+    const path = pathname;
+    if (status === UPLOAD_STATUS.STANDBY && path === "/author/import-content") {
+      history.push("/author/content/collections");
+      return null;
+    }
+
     switch (true) {
       case status === UPLOAD_STATUS.STANDBY:
         return <UploadTest />;
@@ -60,14 +92,19 @@ const ImportTestContent = ({ uploadTestStatus, setJobIds, status }) => {
 };
 
 ImportTestContent.propTypes = {
-  status: PropTypes.string.isRequired,
-  jobIds: PropTypes.array.isRequired
+  status: PropTypes.string.isRequired
 };
 
-const mapStateToProps = ({ admin: { importTest } }) => ({
-  status: importTest.status,
-  jobIds: importTest.jobIds
-});
+const mapStateToProps = state => {
+  if (state?.router?.location?.pathname === "/author/import-content") {
+    const { collectionsReducer } = state;
+    return { status: collectionsReducer?.status || "" };
+  }
+  const {
+    admin: { importTest }
+  } = state;
+  return { status: importTest.status };
+};
 
 export default withNamespaces("qtiimport")(
   withRouter(
@@ -76,7 +113,9 @@ export default withNamespaces("qtiimport")(
       {
         uploadTestStatus: uploadTestStatusAction,
         setJobIds: setJobIdsAction,
-        qtiImportProgress: qtiImportProgressAction
+        setContentImportJobIds: setImportContentJobIdsAction,
+        qtiImportProgress: qtiImportProgressAction,
+        uploadContnentStatus: uploadContentStatusAction
       }
     )(ImportTestContent)
   )

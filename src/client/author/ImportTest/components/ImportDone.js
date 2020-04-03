@@ -1,3 +1,4 @@
+import { compose } from "redux";
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -16,27 +17,64 @@ import {
   getJobIdsSelector,
   qtiImportProgressAction
 } from "../ducks";
-import { compose } from "redux";
+import {
+  contentImportJobIds,
+  uploadContnentStatus,
+  contentImportProgressAction,
+  contentImportJobsData,
+  uploadContentStatusAction,
+  setImportContentJobIdsAction
+} from "../../ContentCollections/ducks";
 
-const ImportDone = ({ t, jobsData, setJobIds, uploadTestStatus, status, jobIds, qtiImportProgress, history }) => {
+const ImportDone = ({
+  t,
+  jobsData,
+  setJobIds,
+  uploadTestStatus,
+  status,
+  jobIds,
+  qtiImportProgress,
+  contentImportProgress,
+  history,
+  location: { pathname: path },
+  setUploadContnentStatus,
+  setImportContentJobIds
+}) => {
   const items = jobsData.flatMap(job => job?.testItems || []) || [];
   const testIds = jobsData.map(({ testId }) => testId);
   useEffect(() => {
     if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
-      qtiImportProgress(jobIds);
+      if (path === "/author/import-content") {
+        contentImportProgress(jobIds);
+      } else {
+        qtiImportProgress(jobIds);
+      }
     }
   }, []);
+
   const continueToTest = () => {
-    setJobIds([]);
-    uploadTestStatus(UPLOAD_STATUS.STANDBY);
-    sessionStorage.removeItem("qtiTags");
-    history.push(`/author/tests/tab/review/id/${testIds[0]}`);
+    if (path === "/author/import-content") {
+      setUploadContnentStatus(UPLOAD_STATUS.INITIATE);
+      setImportContentJobIds([]);
+      history.push("/author/content/collections");
+    } else {
+      uploadTestStatus(UPLOAD_STATUS.STANDBY);
+      sessionStorage.removeItem("qtiTags");
+      history.push(`/author/tests/tab/review/id/${testIds[0]}`);
+      setJobIds([]);
+    }
   };
 
   const handleRetry = () => {
-    setJobIds([]);
-    uploadTestStatus(UPLOAD_STATUS.STANDBY);
-    sessionStorage.removeItem("qtiTags");
+    if (path === "/author/import-content") {
+      setUploadContnentStatus(UPLOAD_STATUS.INITIATE);
+      setImportContentJobIds([]);
+      history.push("/author/content/collections");
+    } else {
+      setJobIds([]);
+      uploadTestStatus(UPLOAD_STATUS.STANDBY);
+      sessionStorage.removeItem("qtiTags"); // TODO: what it does
+    }
   };
 
   const ContinueBtn = (
@@ -88,19 +126,35 @@ ImportDone.propTypes = {
   jobsData: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => {
+  const path = state?.router?.location?.pathname;
+  if (path === "/author/import-content") {
+    return {
+      jobsData: contentImportJobsData(state),
+      status: uploadContnentStatus(state),
+      jobIds: contentImportJobIds(state)
+    };
+  }
+
+  return {
+    jobsData: getJobsDataSelector(state),
+    status: getUploadStatusSelector(state),
+    jobIds: getJobIdsSelector(state)
+  };
+};
+
 export default compose(
   withNamespaces("qtiimport"),
   withRouter,
   connect(
-    state => ({
-      jobsData: getJobsDataSelector(state),
-      status: getUploadStatusSelector(state),
-      jobIds: getJobIdsSelector(state)
-    }),
+    mapStateToProps,
     {
       uploadTestStatus: uploadTestStatusAction,
       setJobIds: setJobIdsAction,
-      qtiImportProgress: qtiImportProgressAction
+      qtiImportProgress: qtiImportProgressAction,
+      contentImportProgress: contentImportProgressAction,
+      setUploadContnentStatus: uploadContentStatusAction,
+      setImportContentJobIds: setImportContentJobIdsAction
     }
   )
 )(ImportDone);

@@ -40,10 +40,11 @@ const Container = ({
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname);
   const partner = Partners[partnerKey];
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [school, setSchool] = useState(null);
   const userInfo = get(user, "user", {});
 
   const handleAuthorization = async () => {
-    const result = await canvasApi.getCanvasAuthURI();
+    const result = await canvasApi.getCanvasAuthURI(school.schoolId);
     if (!result.userAuthenticated) {
       const subscriptionTopic = `canvas:${userInfo.districtId}_${userInfo._id}_${userInfo.username ||
         userInfo.email ||
@@ -63,6 +64,10 @@ const Container = ({
   useEffect(() => {
     if (signupStatus === 2 && !isAuthorized && allowCanvas) handleAuthorization();
   }, [signupStatus, allowCanvas]);
+
+  const schoolchange = value => {
+    setSchool(value);
+  };
 
   if (!isAuthenticated) {
     return (
@@ -100,6 +105,7 @@ const Container = ({
           districtPolicy={districtPolicy}
           districtShortName={districtShortName}
           allowCanvas={allowCanvas}
+          schoolchange={schoolchange}
         />
       )}
       {signupStatus === 2 && !allowCanvas && (

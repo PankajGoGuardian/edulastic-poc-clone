@@ -11,7 +11,7 @@ const ClassListContainer = ({
   groupsLoading,
   googleCourseList,
   courseList,
-  allowGoogleLogin,
+  googleAllowedInstitutions,
   closeModal,
   syncClassResponse,
   showBanner,
@@ -40,6 +40,7 @@ const ClassListContainer = ({
         updateGoogleCourseList={updateGoogleCourseList}
         syncClass={syncClass}
         selectedGroups={selectedGroups}
+        googleAllowedInstitutions={googleAllowedInstitutions}
       />
       <ShowSyncDetailsModal
         syncClassResponse={syncClassResponse}

@@ -3,10 +3,10 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/canvas";
 
-const getCanvasAuthURI = () =>
+const getCanvasAuthURI = institutionId =>
   api
     .callApi({
-      url: `${prefix}/sso-details`,
+      url: `${prefix}/sso-details?institutionId=${institutionId}`,
       method: "get"
     })
     .then(result => result.data.result);

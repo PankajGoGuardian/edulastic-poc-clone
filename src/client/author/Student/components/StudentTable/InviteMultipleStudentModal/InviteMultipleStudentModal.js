@@ -57,9 +57,7 @@ const { Option } = Select;
 class InviteMultipleStudentModal extends Component {
   constructor(props) {
     super(props);
-    const {
-      orgData: { searchAndAddStudents = false }
-    } = props;
+    const { searchAndAddStudents = false } = props;
     this.state = {
       placeHolderVisible: true,
       curSel: "google",
@@ -224,11 +222,21 @@ class InviteMultipleStudentModal extends Component {
   };
 
   render() {
-    const { modalVisible, orgData, studentsList, selectedClass, role, policy, t, form } = this.props;
+    const {
+      modalVisible,
+      orgData,
+      studentsList,
+      selectedClass,
+      role,
+      policy,
+      t,
+      form,
+      searchAndAddStudents = false
+    } = this.props;
     const { getFieldDecorator } = form;
     const { googleUsernames = true, office365Usernames = true, firstNameAndLastName = true } = policy;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll, searchViewVisible } = this.state;
-    const { searchAndAddStudents = false, schools = [] } = orgData || {};
+    const { schools = [] } = orgData || {};
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Select, Input, message, Button } from "antd";
+import { themeColorLight } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
+import { Select, Input, message } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect, GoogleClassroomModal, GoogleClassroomTable } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { themeColorLight } from "@edulastic/colors";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { EduButton } from "@edulastic/common";
 
 const ClassListModal = ({
   visible,
@@ -18,10 +17,11 @@ const ClassListModal = ({
   setShowBanner,
   syncClassLoading,
   updateGoogleCourseList,
-  state
+  state,
+  googleAllowedInstitutions
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [selectedInstitution, setInstitution] = useState(null);
   // clear selected class while modal changes
   useEffect(() => {
     const selRows = [];
@@ -30,6 +30,10 @@ const ClassListModal = ({
     });
     setSelectedRows(selRows);
   }, [visible]);
+
+  useEffect(() => {
+    if (googleAllowedInstitutions.length === 1) setInstitution(googleAllowedInstitutions[0].institutionId);
+  }, [googleAllowedInstitutions]);
 
   const handleStandardsChange = (index, key, value, options) => {
     let standardSets = options.map(option => {
@@ -217,7 +221,10 @@ const ClassListModal = ({
     const selected = groups.filter((_, index) => selectedRows.includes(index));
 
     if (selected && selected.length) {
-      syncClass(selected);
+      if (!selectedInstitution) {
+        return message.error("Please select an institution.");
+      }
+      syncClass({ classList: selected, institutionId: selectedInstitution });
       close();
       setShowBanner(true);
     } else {
@@ -239,6 +246,26 @@ const ClassListModal = ({
             Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
             successful, Students accounts will be automatically created in Edulastic.{" "}
           </p>
+          {googleAllowedInstitutions.length > 1 && (
+            <>
+              <p>We found the account is linked to multiple Institutions. Please select the one for synced classes.</p>
+              <StyledSelect
+                width="170px"
+                showSearch
+                filterOption={(input, option) =>
+                  option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                placeholder="Select Institution"
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={selectedInstitution}
+                onChange={value => setInstitution(value)}
+              >
+                {googleAllowedInstitutions.map(i => (
+                  <Select.Option key={i.institutionId}>{i.institutionName}</Select.Option>
+                ))}
+              </StyledSelect>
+            </>
+          )}
         </>
       }
       okText="IMPORT"

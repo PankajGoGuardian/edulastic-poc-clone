@@ -63,7 +63,8 @@ const ActionContainer = ({
   setSelectedStudents,
   cleverId,
   loadSchoolPolicy,
-  policy
+  policy,
+  searchAndAddStudents
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -399,6 +400,7 @@ const ActionContainer = ({
               loadStudents={loadStudents}
               features={features}
               policy={policy}
+              searchAndAddStudents={searchAndAddStudents}
             />
           )}
         </ButtonsWrapper>

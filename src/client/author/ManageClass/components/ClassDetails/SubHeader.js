@@ -31,10 +31,10 @@ const SubHeader = ({
   history,
   allowCanvasLogin,
   syncCanvasModal,
-  user
+  user,
+  institutionId
 }) => {
   const [showModal, setShowModal] = useState(false);
-
   const handleLoginSuccess = data => {
     fetchClassList({ data, showModal: false });
   };
@@ -66,7 +66,7 @@ const SubHeader = ({
 
   const handleSyncWithCanvas = async () => {
     try {
-      const result = await canvasApi.getCanvasAuthURI();
+      const result = await canvasApi.getCanvasAuthURI(institutionId);
       if (!result.userAuthenticated) {
         const subscriptionTopic = `canvas:${user.districtId}_${user._id}_${user.username || user.email || ""}`;
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)

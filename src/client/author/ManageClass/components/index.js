@@ -25,6 +25,7 @@ import {
 import ClassListContainer from "./ClassListContainer";
 import { getDictCurriculumsAction } from "../../src/actions/dictionaries";
 import { receiveSearchCourseAction } from "../../Courses/ducks";
+import { getGoogleAllowedInstitionPoliciesSelector } from "../../src/selectors/user";
 
 const ManageClass = ({
   fetchGroups,
@@ -36,7 +37,7 @@ const ManageClass = ({
   isLoading,
   state,
   syncClassLoading,
-  allowGoogleLogin,
+  googleAllowedInstitutions,
   archiveGroups,
   setClass,
   fetchClassListLoading,
@@ -77,7 +78,7 @@ const ManageClass = ({
       syncClassLoading={syncClassLoading}
       isModalVisible={isModalVisible}
       closeModal={closeModal}
-      allowGoogleLogin={allowGoogleLogin}
+      googleAllowedInstitutions={googleAllowedInstitutions}
       groups={groups}
       showBanner={showBanner}
       showDetails={showDetails}
@@ -109,7 +110,7 @@ const enhance = compose(
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),
       districtId: get(state, "user.user.orgData.districtId"),
-      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       isGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       syncClassResponse: get(state, "manageClass.syncClassResponse", {}),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),

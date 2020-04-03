@@ -17,6 +17,7 @@ import BreadCrumb from "../../../src/components/Breadcrumb";
 import { getUserDetails } from "../../../../student/Login/ducks";
 import Header from "./Header";
 import { setAssignmentFiltersAction } from "../../../src/actions/assignments";
+import { getGoogleAllowedInstitionPoliciesSelector } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -30,7 +31,8 @@ const ClassList = ({
   history,
   user,
   fetchClassList,
-  setAssignmentFilters
+  setAssignmentFilters,
+  googleAllowedInstitutions
 }) => {
   const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
@@ -232,6 +234,7 @@ const ClassList = ({
                   recentInstitute={recentInstitute}
                   user={user}
                   fetchClassList={fetchClassList}
+                  googleAllowedInstitutions={googleAllowedInstitutions}
                 />
               )}
             </>
@@ -264,7 +267,8 @@ const enhance = compose(
   connect(
     state => ({
       institutions: get(state, "user.user.orgData.schools"),
-      user: getUserDetails(state)
+      user: getUserDetails(state),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state)
     }),
     {
       fetchClassList: fetchClassListAction,

@@ -82,7 +82,8 @@ const JoinSchool = ({
   schoolTeachers,
   setPreviousAutoSuggestSchoolsContent,
   t,
-  allowCanvas
+  allowCanvas,
+  schoolchange
 }) => {
   const { email, firstName, middleName, lastName, currentSignUpState } = userInfo;
   const [selected, setSchool] = useState(null);
@@ -210,6 +211,10 @@ const JoinSchool = ({
       setSchool(newSchool._id);
     }
   }, [newSchool]);
+
+  useEffect(() => {
+    schoolchange(selected);
+  }, [selected]);
 
   const dropdownSchoolData = useMemo(() => {
     const approvedSchool = schools.filter(school => school.isApproved === true);

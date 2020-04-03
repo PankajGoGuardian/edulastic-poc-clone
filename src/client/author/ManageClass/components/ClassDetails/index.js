@@ -2,7 +2,7 @@ import { MainContentWrapper } from "@edulastic/common";
 import { Input, message, Spin } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
@@ -34,14 +34,12 @@ const ClassDetails = ({
   fetchClassList,
   isUserGoogleLoggedIn,
   history,
-  allowGoogleLogin,
   syncClassLoading,
   fetchClassListLoading,
   classLoaded,
   match,
   syncClassUsingCode,
   archiveClass,
-  allowCanvasLogin,
   getCanvasCourseListRequest,
   getCanvasSectionListRequest,
   canvasCourseList,
@@ -49,7 +47,14 @@ const ClassDetails = ({
   syncClassWithCanvas,
   user
 }) => {
-  const { _id, name, cleverId } = selectedClass;
+  const { _id, name, cleverId, institutionId } = selectedClass;
+  const { allowGoogleClassroom: allowGoogleLogin, allowCanvas: allowCanvasLogin, searchAndAddStudents } = useMemo(
+    () =>
+      user?.orgData?.policies?.institutions?.find(i => i.institutionId === institutionId) ||
+      user?.orgData?.policies?.district ||
+      {},
+    [user?.orgData?.policies, institutionId]
+  );
   const [disabled, setDisabled] = useState(selectedClass && !selectedClass.googleCode);
   const [showCanvasSyncModal, setCanvasSyncModalVisibility] = useState(false);
   const googleCode = React.createRef();
@@ -80,7 +85,8 @@ const ClassDetails = ({
     if (googleCode.current.state.value) {
       syncClassUsingCode({
         googleCode: googleCode.current.state.value,
-        groupId: selectedClass._id
+        groupId: selectedClass._id,
+        institutionId
       });
     } else {
       message.error("Enter valid google classroom code");
@@ -174,7 +180,12 @@ const ClassDetails = ({
                   syncCanvasModal={syncCanvasModal}
                 />
 
-                <ActionContainer loadStudents={loadStudents} history={history} cleverId={cleverId} />
+                <ActionContainer
+                  loadStudents={loadStudents}
+                  history={history}
+                  cleverId={cleverId}
+                  searchAndAddStudents={searchAndAddStudents}
+                />
                 <StudentsList
                   selectStudent
                   selectedClass={selectedClass}
@@ -212,7 +223,6 @@ const enhance = compose(
       selectedClass: get(state, "manageClass.entity"),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
-      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       allowCanvasLogin: get(state, "user.user.orgData.allowCanvas", false),
       syncClassLoading: get(state, "manageClass.syncClassLoading"),
       classLoaded: get(state, "manageClass.classLoaded"),

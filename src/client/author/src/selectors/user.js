@@ -199,3 +199,30 @@ export const getSaSchoolsSortedSelector = createSelector(
   getSaSchoolsSelector,
   schools => schools.sort((a, b) => a.name.localeCompare(b.name))
 );
+
+export const getOrgPoliciesSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "policies", {})
+);
+
+export const getInstitutionPoliciesSelector = createSelector(
+  getSaSchoolsSelector,
+  getOrgPoliciesSelector,
+  (schools, policies) =>
+    schools.map(s => {
+      let schoolPolicy = policies?.institutions?.find(i => i.institutionId === s._id);
+      if (!schoolPolicy) {
+        schoolPolicy = policies?.district;
+      }
+      return {
+        ...schoolPolicy,
+        institutionId: s._id,
+        institutionName: s.name
+      };
+    })
+);
+
+export const getGoogleAllowedInstitionPoliciesSelector = createSelector(
+  getInstitutionPoliciesSelector,
+  state => state.filter(s => !!s.allowGoogleClassroom)
+);

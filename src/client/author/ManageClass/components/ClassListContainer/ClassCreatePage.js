@@ -18,7 +18,7 @@ export const scopes = [
   "https://www.googleapis.com/auth/classroom.announcements"
 ].join(" ");
 
-const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassList }) => {
+const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassList, googleAllowedInstitutions }) => {
   const { name } = recentInstitute;
 
   const handleLoginSucess = data => {
@@ -29,27 +29,24 @@ const ClassCreatePage = ({ filterClass, recentInstitute = {}, user, fetchClassLi
     console.log("error", err);
   };
 
-  const {
-    isUserGoogleLoggedIn,
-    orgData: { allowGoogleClassroom }
-  } = user;
+  const { isUserGoogleLoggedIn } = user;
   return (
     <>
       <ClassCreateContainer>
         {filterClass === "Archive Classes" ? (
-          <NoClassNotification heading={"No archived classes"} description={"You have no archived classes available"} />
+          <NoClassNotification heading="No archived classes" description="You have no archived classes available" />
         ) : (
           <>
             <NoClassNotification
-              heading={"No active classes"}
-              description={`No active classes yet.You are currently a teacher in`}
+              heading="No active classes"
+              description="No active classes yet.You are currently a teacher in"
               data={name}
             />
             <ButtonsContainer>
-              <Link to={"/author/manageClass/createClass"}>
+              <Link to="/author/manageClass/createClass">
                 <EduButton>CREATE NEW CLASS</EduButton>
               </Link>
-              {allowGoogleClassroom !== false && (
+              {googleAllowedInstitutions.length > 0 && (
                 <GoogleLogin
                   clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                   render={renderProps => (

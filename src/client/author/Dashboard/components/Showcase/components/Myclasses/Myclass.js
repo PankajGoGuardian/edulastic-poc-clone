@@ -16,6 +16,7 @@ import CardTextContent from "./components/CardTextContent/cardTextContent";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 import { CardBox } from "./styled";
 import Launch from "../../../LaunchHangout/Launch";
+import { getGoogleAllowedInstitionPoliciesSelector } from "../../../../../src/selectors/user";
 
 const Card = ({ data }) => (
   <CardBox data-cy={data.name}>
@@ -38,7 +39,7 @@ const MyClasses = ({
   getDictCurriculums,
   receiveSearchCourse,
   districtId,
-  allowGoogleLogin
+  googleAllowedInstitutions
 }) => {
   useEffect(() => {
     getTeacherDashboard();
@@ -71,7 +72,7 @@ const MyClasses = ({
           fetchClassList={fetchClassList}
           history={history}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-          allowGoogleLogin={allowGoogleLogin}
+          allowGoogleLogin={googleAllowedInstitutions.length > 0}
         />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
@@ -87,7 +88,7 @@ export default compose(
     state => ({
       classData: state.dashboardTeacher.data,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
-      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: get(state, "user.user.orgData.districtId"),
       loading: state.dashboardTeacher.loading

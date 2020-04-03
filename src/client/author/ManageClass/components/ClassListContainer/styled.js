@@ -262,7 +262,7 @@ export const ClassListTable = styled(Table)`
   }
 `;
 export const StyledSelect = styled(Select)`
-  width: 100%;
+  width: ${({ width }) => width || "100%"};
 `;
 
 export const BannerDiv = styled.div`

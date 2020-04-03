@@ -9,13 +9,12 @@ import { CorrectAnswerHeader, PointsInput } from "../../../styled/CorrectAnswerH
 import { getCurrentQuestionSelector } from "../../../../author/sharedDucks/questions";
 
 export default WrappedComponent => {
-  const hocComponent = ({ points, onChangePoints, t, title, ...props }) => {
+  const hocComponent = ({ points, onChangePoints, t, title, width = "", placement = {}, ...props }) => {
     const itemLevelScoring = useContext(ItemLevelContext);
-
     return (
       <React.Fragment>
         {itemLevelScoring || (
-          <CorrectAnswerHeader mb="15px">
+          <CorrectAnswerHeader mb="15px" placement={placement}>
             <Label>{t("component.correctanswers.points")}</Label>
             <PointsInput
               type="number"
@@ -27,6 +26,7 @@ export default WrappedComponent => {
                   onChangePoints(+e.target.value);
                 }
               }}
+              width={width}
               step={0.5}
               size="large"
               min={0.5}

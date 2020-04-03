@@ -6,6 +6,8 @@ export const CorrectAnswerHeader = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  position: ${({ placement }) => placement?.position || "relative"};
+  top: ${({ placement }) => placement?.top || null};
   margin-top: ${props => props.mt || "0px"};
   margin-bottom: ${props => props.mb || "0px"};
   label {
@@ -17,6 +19,7 @@ export const CorrectAnswerHeader = styled.div`
 export const PointsInput = styled(Input)`
   &.ant-input {
     min-width: 230px;
+    width: ${({ width }) => width || null};
     background: #f8f8fb;
     border: 1px solid ${greyThemeLight};
     max-height: 40px;

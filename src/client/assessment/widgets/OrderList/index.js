@@ -162,11 +162,14 @@ const OrderList = ({
       })
     );
   };
-
+  // providing props width with value 230px same as min-width provided in PointsInput
+  // fixes the issue with PointsInput taking full width
   const renderOptions = view === EDIT && scrollContainer && (
     <OptionsContainer styleType={styleType}>
       <OptionsList
         fontSize={fontSize}
+        width="230px"
+        placement={{ position: "absolute", top: "70px" }}
         axis={axis}
         data-cy="match-option-list"
         prefix="options2"

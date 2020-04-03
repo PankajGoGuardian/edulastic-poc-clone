@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Button } from "antd";
 import { Redirect } from "react-router-dom";
+import { EduButton } from "@edulastic/common";
 import { StyledH3 } from "../author/Reports/common/styled";
 import { ConfirmationModal as KidModal } from "../author/src/components/common/ConfirmationModal";
-import { getFromSessionStorage } from "../../../packages/api/src/utils/Storage";
+import { getFromSessionStorage, getFromLocalStorage } from "../../../packages/api/src/utils/Storage";
 
 const Kid = ({ redirectPath, location }) => {
   const [textCopied, setTextCopied] = useState(false);
   const [cancelled, setCancelled] = useState(false);
 
   // tokenKey is stored in the form => user:<user_id>:role:<role>
-  let items = getFromSessionStorage("tokenKey");
+  let items = getFromSessionStorage("tokenKey") || getFromLocalStorage("defaultTokenKey");
   items = items ? items.split(":") : [];
 
   // set data to be displayed
@@ -19,7 +19,9 @@ const Kid = ({ redirectPath, location }) => {
     tid: getFromSessionStorage("tid") || "",
     kid: getFromSessionStorage("kid") || "",
     user: items.length > 0 && items[0] === "user" ? items[1] : "",
-    role: items.length > 2 && items[2] === "role" ? items[3] : ""
+    role: items.length > 2 && items[2] === "role" ? items[3] : "",
+    host: window.location.host,
+    dateTime: new Date().toString()
   };
 
   const onCancelHandler = () => {
@@ -44,8 +46,8 @@ const Kid = ({ redirectPath, location }) => {
   };
 
   const footer = [
-    <Button onClick={() => copyToClipboard("debugData")}>Copy</Button>,
-    textCopied ? <StyledAlert> Copied! </StyledAlert> : null
+    <EduButton onClick={() => copyToClipboard("debugData")}> Copy </EduButton>,
+    textCopied && <StyledAlert> Copied! </StyledAlert>
   ];
 
   return cancelled ? (
@@ -67,7 +69,9 @@ const Kid = ({ redirectPath, location }) => {
               `  tid:\t"${displayData.tid}",`,
               `  kid:\t"${displayData.kid}",`,
               `  user:\t"${displayData.user}",`,
-              `  role:\t"${displayData.role}"`,
+              `  role:\t"${displayData.role}",`,
+              `  host:\t"${displayData.host}",`,
+              `  date:\t"${displayData.dateTime}"`,
               `}`
             ].join("\n")}
           </pre>

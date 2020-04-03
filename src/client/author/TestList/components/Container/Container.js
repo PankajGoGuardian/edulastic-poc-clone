@@ -100,10 +100,15 @@ import Actions from "../../../ItemList/components/Actions";
 import SelectCollectionModal from "../../../ItemList/components/Actions/SelectCollection";
 import { withNamespaces } from "react-i18next";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
+import { getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
 // like seprating out filter and test rendering into two, and connect them to only what is required.
+
+const setBlockstyleInSession = blockstyle => {
+  sessionStorage.setItem("testLibraryBlockstyle", blockstyle);
+};
 
 class TestList extends Component {
   static propTypes = {
@@ -146,7 +151,7 @@ class TestList extends Component {
 
   state = {
     standardQuery: "",
-    blockStyle: "tile",
+    blockstyle: "tile",
     showCreateModuleModal: false,
     showManageModuleModal: false,
     showConfirmRemoveModal: false,
@@ -160,13 +165,20 @@ class TestList extends Component {
 
   static getDerivedStateFromProps = (props, prevState) => {
     const { features, mode } = props;
-    if (features.isCurator && mode !== "embedded" && !prevState.blockStyleConfigured) {
+    const localBlockstyle = getFromSessionStorage("testLibraryBlockstyle");
+    if (localBlockstyle) {
       return {
         ...prevState,
-        blockStyle: "horizontal",
-        blockStyleConfigured: true
+        blockstyle: localBlockstyle
+      };
+    } else if (features.isCurator && mode !== "embedded") {
+      setBlockstyleInSession("horizontal");
+      return {
+        ...prevState,
+        blockstyle: "horizontal"
       };
     }
+    setBlockstyleInSession("tile");
     return prevState;
   };
 
@@ -216,6 +228,7 @@ class TestList extends Component {
     }
 
     this.updateFilterState(searchFilters, true);
+
     if (mode === "embedded") {
       const selectedTests = [];
       const { modules } = playlist;
@@ -229,8 +242,9 @@ class TestList extends Component {
       this.setState({
         selectedTests,
         editFlow,
-        blockStyle: "horizontal"
+        blockstyle: "horizontal"
       });
+      setBlockstyleInSession("horizontal");
       receiveTests({
         page: 1,
         limit,
@@ -405,10 +419,11 @@ class TestList extends Component {
     receiveTests({ page: 1, limit, search: emptyFilters });
   };
 
-  handleStyleChange = blockStyle => {
+  handleStyleChange = blockstyle => {
     this.setState({
-      blockStyle
+      blockstyle
     });
+    setBlockstyleInSession(blockstyle);
   };
 
   showFilterHandler = () => {
@@ -693,7 +708,7 @@ class TestList extends Component {
       interestedCurriculums,
       playlist = {}
     } = this.props;
-    const { blockStyle, selectedTests, markedTests } = this.state;
+    const { blockstyle, selectedTests, markedTests } = this.state;
     const markedTestsList = markedTests.map(data => data._id);
     const moduleTitleMap = {};
     const modulesMap =
@@ -723,7 +738,7 @@ class TestList extends Component {
     const GridCountInARow = windowWidth >= 1600 ? 4 : 3;
     const countModular = new Array(GridCountInARow - (tests.length % GridCountInARow)).fill(1);
 
-    if (blockStyle === "tile") {
+    if (blockstyle === "tile") {
       return (
         <Row type="flex" justify={windowWidth > 575 ? "space-between" : "center"}>
           {tests.map((item, index) => (
@@ -859,7 +874,7 @@ class TestList extends Component {
     } = this.props;
 
     const {
-      blockStyle,
+      blockstyle,
       isShowFilter,
       showManageModuleModal,
       showAddTestInModules,
@@ -926,14 +941,14 @@ class TestList extends Component {
                   onClick={() => this.handleStyleChange("tile")}
                   width={18}
                   height={18}
-                  color={blockStyle === "tile" ? greyThemeLight : greyLight1}
+                  color={blockstyle === "tile" ? greyThemeLight : greyLight1}
                 />
                 <IconList
                   data-cy="listView"
                   onClick={() => this.handleStyleChange("horizontal")}
                   width={18}
                   height={18}
-                  color={blockStyle === "horizontal" ? greyThemeLight : greyLight1}
+                  color={blockstyle === "horizontal" ? greyThemeLight : greyLight1}
                 />
               </StyleChangeWrapper>
             )}
@@ -1074,13 +1089,13 @@ class TestList extends Component {
                     </StyledButton>
                   </BtnActionsContainer>
                 )}
-                {mode !== "embedded" && blockStyle === "horizontal" && <Actions type="TEST" />}
+                {mode !== "embedded" && blockstyle === "horizontal" && <Actions type="TEST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 20px" }}>
-                <CardContainer type={blockStyle}>
+                <CardContainer type={blockstyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper
-                    type={blockStyle}
+                    type={blockstyle}
                     current={page}
                     total={count}
                     pageSize={limit}

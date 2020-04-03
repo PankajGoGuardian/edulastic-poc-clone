@@ -145,11 +145,12 @@ const StandardsFilters = ({
 
     // check if domainId in url is in the array if not select the first one
 
-    const domainIdsKeys = keyBy(search.domainIds?.split(","));
-    let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
-    if (!urlDomainId.length) {
-      urlDomainId = domains.filter((item, index) => index > 0);
-    }
+    let urlDomainId = domains;
+    // const domainIdsKeys = keyBy(search.domainIds?.split(","));
+    // let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
+    // if (!urlDomainId.length) {
+    //   urlDomainId = domains.filter((item, index) => index > 0);
+    // }
 
     let _filters = {
       ...filters,

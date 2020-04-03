@@ -176,3 +176,8 @@ export const getPolicies = createSelector(
   getDistrictPolicy,
   (role, schoolPolicy = {}, districtPolicy = {}) => (role === "school-admin" ? schoolPolicy : districtPolicy)
 );
+
+export const getSchoolAdminSettingsAccess = createSelector(
+  getPolicies,
+  state => state.schoolAdminSettingsAccess
+);

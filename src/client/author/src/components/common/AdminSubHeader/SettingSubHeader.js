@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { SubHeaderWrapper, StyledTabPane, StyledSubMenu } from "./styled";
 import { getUserRole } from "../../../selectors/user";
 import { get } from "lodash";
+import { getSchoolAdminSettingsAccess } from "../../../../DistrictPolicy/ducks";
 
 class AdminSubHeader extends Component {
   static propTypes = {
@@ -60,7 +61,7 @@ class AdminSubHeader extends Component {
 export default connect(
   state => ({
     role: getUserRole(state),
-    schoolLevelAdminSettings: get(state, "districtPolicyReducer.schoolData.schoolAdminSettingsAccess", false)
+    schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state)
   }),
   {}
 )(AdminSubHeader);

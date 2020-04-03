@@ -7,6 +7,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getManageTabLabelSelector, getUserRole } from "../../../selectors/user";
 import { AdminHeaderContent, StyledTabPane, StyledTabs } from "./styled";
+import { getSchoolAdminSettingsAccess } from "../../../../DistrictPolicy/ducks";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -80,7 +81,7 @@ class AdminHeader extends Component {
 export default connect(
   state => ({
     role: getUserRole(state),
-    schoolLevelAdminSettings: get(state, "districtPolicyReducer.schoolData.schoolAdminSettingsAccess", false),
+    schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
     manageTabLabel: getManageTabLabelSelector(state)
   }),
   {}

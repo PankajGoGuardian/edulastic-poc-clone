@@ -14,6 +14,7 @@ import AdminSubHeader from "../../../src/components/common/AdminSubHeader/Settin
 import DistrictPolicyForm from "../DistrictPolicyForm/DistrictPolicyForm";
 import { DistrictPolicyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
+import { getSchoolAdminSettingsAccess } from "../../ducks";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "District Policies" };
@@ -55,7 +56,7 @@ const enhance = compose(
     loading: get(state, ["districtPolicyReducer", "loading"], []),
     updating: get(state, ["districtPolicyReducer", "updating"], []),
     creating: get(state, ["districtPolicyReducer", "creating"], []),
-    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false),
+    schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
     role: getUserRole(state)
   }))
 );

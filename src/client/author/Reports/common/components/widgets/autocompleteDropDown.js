@@ -8,6 +8,8 @@ import { useInternalEffect } from "../../hooks/useInternalEffect";
 import { black } from "@edulastic/colors";
 
 import { StyledAutocompleteDropDownContainer } from "../../styled";
+import GroupIcon from "../../../assets/group.svg";
+import ClassIcon from "../../../assets/class.svg";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -76,9 +78,11 @@ const AutocompleteDropDown = ({
         {datum.map((item, index) => {
           const isSelected = selected.key === item.key;
           const className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
-
           return (
             <Option key={item.key} title={item.title} className={className}>
+              {prefix === "Class" && item.groupType && (
+                <img src={item.groupType === "custom" ? GroupIcon : ClassIcon} alt="" />
+              )}
               {item.title}
             </Option>
           );

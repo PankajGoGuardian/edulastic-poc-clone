@@ -33,7 +33,8 @@ const processFilteredGroupIds = (orgDataArr, currentFilter) => {
   let groupIdArr = Object.keys(byGroupId).map((item, index) => {
     return {
       key: byGroupId[item][0].groupId,
-      title: byGroupId[item][0].groupName
+      title: byGroupId[item][0].groupName,
+      groupType: byGroupId[item][0].groupType
     };
   });
   groupIdArr.unshift({

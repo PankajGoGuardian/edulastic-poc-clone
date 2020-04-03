@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { debounce, uniq } from "lodash";
+import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin, message } from "antd";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
@@ -66,6 +66,7 @@ import Item from "../../../ItemList/components/Item/Item";
 import { PaginationInfo, ItemsMenu } from "../../../TestList/components/Container/styled";
 import { getDefaultInterests, setDefaultInterests } from "../../../dataUtils";
 import HeaderFilter from "../../../ItemList/components/HeaderFilter";
+import PreviewModal from "../../../src/components/common/PreviewModal";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -92,6 +93,10 @@ class AddItems extends PureComponent {
     onSaveTestId: PropTypes.func.isRequired,
     createTestItem: PropTypes.func.isRequired,
     gotoSummary: PropTypes.func.isRequired
+  };
+
+  state = {
+    itemIndexForPreview: null
   };
 
   componentDidMount() {
@@ -126,7 +131,7 @@ class AddItems extends PureComponent {
       ...applyAuthoredFilter,
       subject: selectedSubjects[0] || subject,
       grades: uniq([...selectedGrades, ...grades]),
-      curriculumId: parseInt(curriculumId) || ""
+      curriculumId: parseInt(curriculumId, 10) || ""
     };
 
     this.updateFilterState(search);
@@ -299,8 +304,6 @@ class AddItems extends PureComponent {
       windowWidth,
       addItemToCart,
       userId,
-      checkAnswer,
-      showAnswer,
       interestedCurriculums,
       testItemsList,
       setDataAndSave,
@@ -320,7 +323,7 @@ class AddItems extends PureComponent {
         />
       );
     }
-    return items.map(item => (
+    return items.map((item, index) => (
       <Item
         key={`Item_${item._id}`}
         item={item}
@@ -330,8 +333,6 @@ class AddItems extends PureComponent {
         onToggleToCart={addItemToCart}
         selectedToCart={selectedRows ? selectedRows.includes(item._id) : false}
         interestedCurriculums={interestedCurriculums}
-        checkAnswer={checkAnswer}
-        showAnswer={showAnswer}
         search={search}
         test={test}
         testItemsList={testItemsList}
@@ -341,10 +342,63 @@ class AddItems extends PureComponent {
         selectedRows={selectedRows}
         gotoSummary={gotoSummary}
         page="addItems"
+        openPreviewModal={this.openPreviewModal(index)}
         setCurrentGroupIndex={setCurrentGroupIndex}
       />
     ));
   };
+
+  openPreviewModal = itemIndex => () => {
+    this.setState({ itemIndexForPreview: itemIndex });
+  };
+
+  closePreviewModal = () => {
+    this.setState({ itemIndexForPreview: null });
+  };
+
+  checkItemAnswer = () => {
+    const { checkAnswer } = this.props;
+    checkAnswer({ ...this.selectedItem, isItem: true });
+  };
+
+  showItemAnswer = () => {
+    const { showAnswer } = this.props;
+    showAnswer(this.selectedItem);
+  };
+
+  prevItem = () => {
+    const { itemIndexForPreview } = this.state;
+    const prevItemIndex = itemIndexForPreview - 1;
+    if (prevItemIndex < 0) {
+      return;
+    }
+    this.setState({ itemIndexForPreview: prevItemIndex });
+  };
+
+  nextItem = () => {
+    const { items } = this.props;
+    const { itemIndexForPreview } = this.state;
+    const nextItemIndex = itemIndexForPreview + 1;
+    if (nextItemIndex > items.length - 1) {
+      return;
+    }
+    this.setState({ itemIndexForPreview: nextItemIndex });
+  };
+
+  get selectedItem() {
+    const { items } = this.props;
+    const { itemIndexForPreview } = this.state;
+    const item = get(items, `[${itemIndexForPreview}]`, false);
+    if (!item) {
+      return item;
+    }
+    return { ...item, isItem: true, id: item._id };
+  }
+
+  get owner() {
+    const { userId } = this.props;
+    return get(this.selectedItem, "authors", []).some(x => x._id === userId);
+  }
 
   render() {
     const {
@@ -426,6 +480,25 @@ class AddItems extends PureComponent {
                   {this.renderItems()}
                   {count > 10 && <PaginationContainer>{this.renderPagination()}</PaginationContainer>}
                 </ScrollbarContainer>
+              )}
+
+              {this.selectedItem && (
+                <PreviewModal
+                  isVisible={!!this.selectedItem}
+                  page="itemList"
+                  showAddPassageItemToTestButton
+                  showEvaluationButtons
+                  data={this.selectedItem}
+                  isEditable={this.owner}
+                  owner={this.owner}
+                  testId={test?._id}
+                  isTest={!!test}
+                  prevItem={this.prevItem}
+                  nextItem={this.nextItem}
+                  onClose={this.closePreviewModal}
+                  checkAnswer={this.checkItemAnswer}
+                  showAnswer={this.showItemAnswer}
+                />
               )}
             </ContentWrapper>
           </Element>

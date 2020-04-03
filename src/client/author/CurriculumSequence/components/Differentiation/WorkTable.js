@@ -7,6 +7,7 @@ import { IconUser } from "@edulastic/icons";
 import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import { TableContainer, StyledTable, TableHeader, Tag, StyledSlider, TableSelect } from "./style";
 import { ResouceIcon } from "../ResourceItem/index";
+import Tags from "../../../src/components/common/Tags";
 
 const WorkTable = ({
   type,
@@ -57,6 +58,7 @@ const WorkTable = ({
         addTestToDifferentiation({
           type: type.toLowerCase(),
           testId: item?.id,
+          testStandards: item?.standardIdentifiers || [],
           masteryRange,
           title: item?.contentTitle
         });
@@ -160,7 +162,15 @@ const WorkTable = ({
       dataIndex: "standardIdentifier",
       key: "standardIdentifier",
       render: (s, record) => {
-        return record.testId ? <ResouceIcon type="tests" /> : <Tag marginRight="10px">{s}</Tag>;
+        return record.testId ? (
+          record?.testStandards?.length ? (
+            <Tags tags={record.testStandards} show={1} />
+          ) : (
+            <ResouceIcon type="tests" />
+          )
+        ) : (
+          <Tag marginRight="10px">{s}</Tag>
+        );
       }
     },
     {

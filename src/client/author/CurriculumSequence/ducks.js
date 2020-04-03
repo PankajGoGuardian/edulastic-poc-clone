@@ -869,9 +869,10 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       Object.keys(statusData).forEach(recommentdationKey => {
         const testRecommendations = statusData[recommentdationKey]
           .filter(x => x.derivedFrom === "TESTS")
-          .map(({ resourceId, resourceName }) => ({
+          .map(({ resourceId, resourceName, testStandards }) => ({
             testId: resourceId,
-            description: resourceName
+            description: resourceName,
+            testStandards
           }));
 
         const lowerCasekey = recommentdationKey.toLowerCase();
@@ -1664,12 +1665,18 @@ export default createReducer(initialState, {
     state.differentiationWork = payload;
   },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
-    const { type, testId, masteryRange, title } = payload;
+    const { type, testId, masteryRange, title, testStandards } = payload;
     const alreadyPresent = Object.keys(state.differentiationWork)
       .flatMap(x => state.differentiationWork?.[x] || [])
       .find(x => x?.testId === testId);
     if (!alreadyPresent) {
-      state.differentiationWork[type].push({ testId, description: title, status: "RECOMMENDED", masteryRange });
+      state.differentiationWork[type].push({
+        testId,
+        description: title,
+        status: "RECOMMENDED",
+        masteryRange,
+        testStandards
+      });
     }
   },
   [UPDATE_WORK_STATUS_DATA]: (state, { payload }) => {

@@ -49,16 +49,7 @@ const PerformanceByStudents = ({
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [selectedRowKeys, onSelectChange] = useState([]);
-  const [checkedStudents, toggleCheckedStudents] = useState([]);
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    onSelect: ({ id }) =>
-      toggleCheckedStudents(
-        checkedStudents.includes(id) ? checkedStudents.filter(i => i !== id) : [...checkedStudents, id]
-      )
-  };
+  const [checkedStudents, setCheckedStudents] = useState({});
 
   const [ddfilter, setDdFilter] = useState({
     gender: "all",
@@ -104,6 +95,39 @@ const PerformanceByStudents = ({
     return getTableData(res, ddfilter, range, selectedProficiency.key);
   }, [res, ddfilter, range, selectedProficiency.key]);
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: ({ studentId, testActivityId }) => {
+      let tids = checkedStudents[studentId];
+      if (tids?.length) {
+        if (tids.includes(testActivityId)) {
+          tids = tids.filter(tid => tid !== testActivityId);
+          setCheckedStudents({ ...checkedStudents, [studentId]: tids });
+        } else {
+          setCheckedStudents({ ...checkedStudents, [studentId]: [...tids, testActivityId] });
+        }
+      } else {
+        setCheckedStudents({ ...checkedStudents, [studentId]: [testActivityId] });
+      }
+    },
+    onSelectAll: flag => {
+      if (flag) {
+        const res = {};
+        tableData.forEach(ele => {
+          if (res[ele.studentId]) {
+            res[ele.studentId].push(ele.testActivityId);
+          } else {
+            res[ele.studentId] = [ele.testActivityId];
+          }
+        });
+        setCheckedStudents(res);
+      } else {
+        setCheckedStudents({});
+      }
+    }
+  };
+
   const filterDropDownCB = (event, selected, comData) => {
     setDdFilter({
       ...ddfilter,
@@ -132,6 +156,10 @@ const PerformanceByStudents = ({
     </Menu>
   );
 
+  const checkedStudentsForModal = tableData
+    .filter(d => checkedStudents[d.studentId] && checkedStudents[d.studentId][0] === d.testActivityId)
+    .map(({ studentId, firstName, lastName, username }) => ({ _id: studentId, firstName, lastName, username }));
+
   return (
     <>
       {loading ? (
@@ -145,8 +173,7 @@ const PerformanceByStudents = ({
             groupType="custom"
             visible={showAddToGroupModal}
             onCancel={() => setShowAddToGroupModal(false)}
-            checkedStudents={checkedStudents}
-            studentList={tableData}
+            checkedStudents={checkedStudentsForModal}
           />
           <StyledCard>
             <Row type="flex" justify="start">

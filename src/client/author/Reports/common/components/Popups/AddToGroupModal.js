@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
 import * as moment from "moment";
-import { Modal, Row, Col, Spin, Select, Checkbox, Input, message } from "antd";
-
-import { IconClose } from "@edulastic/icons";
+import { Modal, Row, Col, Spin, Select, Input, message, Icon } from "antd";
+import { IoMdCloseCircle } from "react-icons/io";
+import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
 import { SelectInputStyled, EduButton } from "@edulastic/common";
-import { greyThemeDark1, darkGrey2 } from "@edulastic/colors";
-import { groupApi } from "@edulastic/api";
+import { backgrounds, borderGrey4, greyThemeDark1, darkGrey2, lightGrey5, themeColor, white } from "@edulastic/colors";
+import { groupApi, enrollmentApi } from "@edulastic/api";
 
 import {
   addGroupAction,
@@ -19,12 +20,25 @@ import { getUserId } from "../../../../../student/Login/ducks";
 import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
 import { getUserOrgData } from "../../../../src/selectors/user";
 
+const ScrollElement = ({ item, onClick, ticked }) => (
+  <div className="scrollbar-element" onClick={() => onClick(item._id)}>
+    <div className="scrollbar-select">
+      <StyledDiv color={darkGrey2} spacing="0.26px" fontStyle="14px/19px Open Sans">
+        {item.firstName || ""} {item.lastName || ""}
+      </StyledDiv>
+      <StyledDiv color={lightGrey5} spacing="0.2px">
+        {item.username || ""}
+      </StyledDiv>
+    </div>
+    <IconCorrect color={ticked ? themeColor : greyThemeDark1} />
+  </div>
+);
+
 const AddToGroupModal = ({
   visible,
   onCancel,
   groupType = "custom",
   checkedStudents,
-  // studentList, //TODO: fetch & filter students from group that belong in this list (needs discussion)
   loading,
   fetchGroups,
   groupList,
@@ -33,9 +47,11 @@ const AddToGroupModal = ({
   orgData,
   userId
 }) => {
-  const [selectedStudents, setSelectedStudents] = useState(checkedStudents);
+  const [studentList, setStudentList] = useState([]);
+  const [studentsToAdd, setStudentsToAdd] = useState([]);
+  const [studentsToRemove, setStudentsToRemove] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState({});
-  const [checked, toggleChecked] = useState(false);
+  const [isNewGroup, toggleIsNewGroup] = useState(false);
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
 
@@ -44,15 +60,55 @@ const AddToGroupModal = ({
   }, []);
 
   useEffect(() => {
-    setSelectedStudents(checkedStudents);
-  }, [checkedStudents]);
+    if (visible && selectedGroup.key) {
+      (async () => {
+        const { students } = await enrollmentApi.fetch(selectedGroup.key);
+        setStudentList(students.filter(s => s.enrollmentStatus));
+      })();
+    }
+  }, [selectedGroup, visible]);
+
+  useEffect(() => {
+    if (visible) {
+      const sIds = studentList.map(s => s._id);
+      setStudentsToAdd(checkedStudents.filter(c => !sIds.includes(c._id)).map(c => c._id));
+    }
+  }, [checkedStudents, studentList, visible]);
+
+  const studentLeftList = checkedStudents
+    .filter(c => !studentList.find(s => s._id === c._id))
+    .map(item => (
+      <ScrollElement
+        key={`sal-${item._id}`}
+        item={item}
+        ticked={studentsToAdd.includes(item._id)}
+        onClick={sId => {
+          setStudentsToAdd(
+            studentsToAdd.includes(sId) ? studentsToAdd.filter(id => id !== sId) : [...studentsToAdd, sId]
+          );
+        }}
+      />
+    ));
+
+  const studentRightList = studentList.map(item => (
+    <ScrollElement
+      key={`srl-${item._id}`}
+      item={item}
+      ticked={!studentsToRemove.includes(item._id)}
+      onClick={sId => {
+        setStudentsToRemove(
+          studentsToRemove.includes(sId) ? studentsToRemove.filter(id => id !== sId) : [...studentsToRemove, sId]
+        );
+      }}
+    />
+  ));
 
   const addStudents = async (group = {}) => {
     const { districtId, terms, defaultSchool } = orgData;
     const term = terms.length && terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
-    if (selectedStudents.length) {
+    if (studentsToAdd.length) {
       // fetch group info for new / existing group
-      if (checked) {
+      if (isNewGroup) {
         try {
           group = await groupApi.createGroup({
             type: groupType,
@@ -79,24 +135,44 @@ const AddToGroupModal = ({
       // enroll students to group
       enrollStudentsToGroup({
         classCode: group.code,
-        studentIds: selectedStudents,
+        studentIds: studentsToAdd,
         districtId
       });
+      setStudentsToAdd([]);
     }
-    onCancel();
+  };
+
+  const removeStudents = async () => {
+    const group = groupList.find(g => selectedGroup.key === g._id);
+    if (studentsToRemove.length) {
+      try {
+        const data = await enrollmentApi.removeStudents({
+          classCode: group.code,
+          studentIds: studentsToRemove,
+          districtId: orgData.districtId
+        });
+        message.success(data.data.result);
+      } catch ({ data: { message: errorMessage } }) {
+        message.error(errorMessage);
+      }
+      setStudentsToRemove([]);
+    }
   };
 
   const handleOnSubmit = () => {
-    if (checked) {
+    if (isNewGroup) {
       if (!groupName || !groupDescription) {
         message.error("Group name & description cannot be empty for the new group");
       } else if (groupList.find(g => g.name === groupName)) {
         message.error("Group or class with that name already exists");
       } else {
         addStudents();
+        onCancel();
       }
     } else {
       addStudents();
+      removeStudents();
+      onCancel();
     }
   };
 
@@ -110,28 +186,52 @@ const AddToGroupModal = ({
       {loading ? (
         <Spin size="small" />
       ) : (
-        <Row type="flex" align="middle" gutter={[20, 20]}>
+        <Row type="flex" align="middle" gutter={[20, 15]}>
           <StyledCol span={24} justify="space-between">
-            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
-              Add To Group
+            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700} spacing="-1.1px">
+              Add / Remove students from groups
             </StyledDiv>
             <IconClose height={20} width={20} onClick={onCancel} />
           </StyledCol>
-          <StyledCol span={24} marginBottom="5px" justify="left">
-            <StyledDiv color={darkGrey2}>Add selected students to an existing group or create a new one</StyledDiv>
+          <StyledCol span={24} marginBottom="20px" justify="left">
+            <StyledDiv fontStyle="14px/19px Open Sans" color={darkGrey2}>
+              Select student group to add or remove selected students
+            </StyledDiv>
           </StyledCol>
-          <StyledCol span={24} marginBottom={"10px"} justify="left">
-            <Checkbox checked={checked} onChange={() => toggleChecked(!checked)}>
-              <StyledDiv fontStyle="11px/15px Open Sans">CREATE A NEW GROUP</StyledDiv>
-            </Checkbox>
-          </StyledCol>
-          {!checked && (
-            <StyledCol span={24} marginBottom="20px">
+          {/* TODO: Support for Intervention Set */}
+          {/* {true && (
+              <StyledCol span={24} justify="left">
+                <StyledDiv width="120px"> INTERVENTION SET </StyledDiv>
+                <SelectInputStyled
+                  showSearch
+                  placeholder="Select set"
+                  cache="false"
+                  onChange={() => { }}
+                  width="326px"
+                  dropdownStyle={{ zIndex: 2000 }}
+                  labelInValue
+                >
+                  {[].map(({ _id, name }) => (
+                    <Select.Option key={_id} value={_id}>
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+                <StyledEduButton height="40px" width="192px" onClick={() => { }} style={{ "marginLeft": "10px" }} isGhost>
+                  <IconPlusCircle width={20} height={20} />
+                ADD NEW
+              </StyledEduButton>
+              </StyledCol>
+            )} */}
+          {!isNewGroup ? (
+            <StyledCol span={24} marginBottom="5px" justify="left">
+              <StyledDiv width="120px"> STUDENT GROUP </StyledDiv>
               <SelectInputStyled
                 showSearch
-                placeholder="Select a group"
+                placeholder="Select group"
                 cache="false"
                 onChange={setSelectedGroup}
+                width="326px"
                 dropdownStyle={{ zIndex: 2000 }}
                 labelInValue
               >
@@ -141,36 +241,80 @@ const AddToGroupModal = ({
                   </Select.Option>
                 ))}
               </SelectInputStyled>
+              <StyledEduButton
+                height="40px"
+                width="192px"
+                onClick={() => toggleIsNewGroup(!isNewGroup)}
+                style={{ marginLeft: "10px" }}
+                isGhost
+              >
+                <IconPlusCircle width={20} height={20} />
+                ADD NEW
+              </StyledEduButton>
             </StyledCol>
+          ) : (
+            <Col span={24}>
+              <Row type="flex" align="middle" gutter={[0, 10]}>
+                <StyledCol span={24} justify="left">
+                  <StyledDiv width="120px"> Group Name: </StyledDiv>
+                  <Input
+                    style={{ width: "528px", height: "40px" }}
+                    value={groupName}
+                    onChange={e => setGroupName(e.target.value.trim())}
+                  />
+                  <StyledEduButton
+                    height="40px"
+                    width="192px"
+                    onClick={() => toggleIsNewGroup(!isNewGroup)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <IoMdCloseCircle size={25} />
+                    CANCEL
+                  </StyledEduButton>
+                </StyledCol>
+                <StyledCol span={24} marginBottom="5px" justify="left">
+                  <StyledDiv width="120px"> Group Description: </StyledDiv>
+                  <Input
+                    style={{ width: "528px", height: "40px" }}
+                    value={groupDescription}
+                    onChange={e => setGroupDescription(e.target.value)}
+                  />
+                </StyledCol>
+              </Row>
+            </Col>
           )}
-          {checked && (
-            <StyledCol span={24} justify="space-between">
-              <StyledDiv> Group Name: </StyledDiv>
-              <Input style={{ width: "400px" }} value={groupName} onChange={e => setGroupName(e.target.value.trim())} />
-            </StyledCol>
-          )}
-          {checked && (
-            <StyledCol span={24} marginBottom="20px" justify="space-between">
-              <StyledDiv> Group Description: </StyledDiv>
-              <Input
-                style={{ width: "400px" }}
-                value={groupDescription}
-                onChange={e => setGroupDescription(e.target.value)}
-              />
-            </StyledCol>
-          )}
+
+          <StyledCol span={24} marginBottom="15px" justify="space-between">
+            <div>
+              <StyledDiv> SELECTED STUDENTS </StyledDiv>
+              <ScrollbarContainer>
+                <PerfectScrollbar>{studentLeftList || <div />}</PerfectScrollbar>
+              </ScrollbarContainer>
+            </div>
+            <Row>
+              <IconLeft />
+              <IconRight />
+            </Row>
+            <div>
+              <StyledDiv> STUDENTS ALREADY IN GROUP </StyledDiv>
+              <ScrollbarContainer>
+                <PerfectScrollbar>{studentRightList || <div />}</PerfectScrollbar>
+              </ScrollbarContainer>
+            </div>
+          </StyledCol>
+
           <StyledCol span={24}>
-            <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ "margin-left": "0px" }}>
+            <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ marginLeft: "0px" }}>
               Cancel
             </EduButton>
             <EduButton
               height="40px"
               width="200px"
               onClick={handleOnSubmit}
-              style={{ "margin-left": "20px" }}
-              disabled={!checked && !selectedGroup.key}
+              style={{ marginLeft: "20px" }}
+              disabled={!isNewGroup && !selectedGroup.key}
             >
-              {checked ? "Create Group" : "Add to Group"}
+              {isNewGroup ? "Create Group" : "Update Group Membership"}
             </EduButton>
           </StyledCol>
         </Row>
@@ -194,8 +338,9 @@ export default connect(
 )(AddToGroupModal);
 
 const StyledModal = styled(Modal)`
+  min-width: 996px;
   .ant-modal-content {
-    width: 630px;
+    width: 996px;
     .ant-modal-close {
       display: none;
     }
@@ -222,7 +367,71 @@ const StyledDiv = styled.div`
   display: inline;
   text-align: left;
   white-space: nowrap;
-  font: ${props => props.fontStyle || "14px/19px Open Sans"};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font: ${props => props.fontStyle || "11px/14px Open Sans"};
   font-weight: ${props => props.fontWeight || 600};
   color: ${props => props.color || greyThemeDark1};
+  width: ${props => props.width || "auto"};
+  spacing: ${props => props.spacing || "0px"};
+`;
+
+const StyledEduButton = styled(EduButton)`
+  span {
+    margin: 0 45px 0 30px;
+  }
+  svg {
+    .b {
+      fill: ${white};
+    }
+  }
+  &:hover,
+  &:focus {
+    .b {
+      fill: ${themeColor};
+    }
+  }
+`;
+
+const ScrollbarContainer = styled.div`
+  padding: 20px 0;
+  border-radius: 10px;
+  margin-top: 15px;
+  background-color: ${backgrounds.default};
+  .scrollbar-container {
+    padding: 0 20px;
+    width: 428px;
+    height: 380px;
+    .scrollbar-element {
+      width: 100%;
+      height: 50px;
+      cursor: pointer;
+      margin-bottom: 5px;
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 26px;
+      border-radius: 5px;
+      text-align: center;
+      background-color: white;
+      border: 1px solid ${borderGrey4};
+      .scrollbar-select {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+      }
+    }
+  }
+`;
+
+const IconLeft = styled(IconCarets.IconCaretLeft)`
+  color: ${themeColor};
+  margin: -1px;
+  font-size: 12px;
+`;
+
+const IconRight = styled(IconCarets.IconCaretRight)`
+  color: ${themeColor};
+  margin: -2px;
+  font-size: 12px;
 `;

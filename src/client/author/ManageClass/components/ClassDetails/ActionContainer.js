@@ -306,8 +306,7 @@ const ActionContainer = ({
         type="group"
         visible={isOpen.addToGroup}
         onCancel={() => toggleModal("addToGroup")}
-        checkedStudents={selectedStudent.map(s => s._id)}
-        studentList={studentsList}
+        checkedStudents={selectedStudent}
       />
 
       <AddStudentDivider>

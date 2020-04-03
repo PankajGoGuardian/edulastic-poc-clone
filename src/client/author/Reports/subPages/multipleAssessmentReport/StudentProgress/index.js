@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { get, head, capitalize } from "lodash";
+import { get, head } from "lodash";
 import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { getReportsMARFilterData, getFiltersSelector } from "../common/filterDataDucks";
@@ -69,16 +69,7 @@ const StudentProgress = ({
   const [selectedTrend, setSelectedTrend] = useState("");
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false);
   const [selectedRowKeys, onSelectChange] = useState([]);
-  const [checkedStudents, toggleCheckedStudents] = useState([]);
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    onSelect: ({ id }) =>
-      toggleCheckedStudents(
-        checkedStudents.includes(id) ? checkedStudents.filter(i => i !== id) : [...checkedStudents, id]
-      )
-  };
+  const [checkedStudents, setCheckedStudents] = useState([]);
 
   const { metricInfo = [] } = get(studentProgress, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", {});
@@ -102,14 +93,27 @@ const StudentProgress = ({
     .map(d => ({ ...d, studentName: getFormattedName(d.studentName) }))
     .sort((a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()));
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: ({ id }) =>
+      setCheckedStudents(
+        checkedStudents.includes(id) ? checkedStudents.filter(i => i !== id) : [...checkedStudents, id]
+      ),
+    onSelectAll: flag => setCheckedStudents(flag ? dataSource.map(d => d.id) : [])
+  };
+
+  const checkedStudentsForModal = dataSource
+    .filter(d => checkedStudents.includes(d.id))
+    .map(({ id, firstName, lastName, username }) => ({ _id: id, firstName, lastName, username }));
+
   return (
     <>
       <AddToGroupModal
         groupType="custom"
         visible={showAddToGroupModal}
         onCancel={() => setShowAddToGroupModal(false)}
-        checkedStudents={checkedStudents}
-        studentList={dataSource}
+        checkedStudents={checkedStudentsForModal}
       />
       <TrendStats
         heading="How well are students progressing ?"

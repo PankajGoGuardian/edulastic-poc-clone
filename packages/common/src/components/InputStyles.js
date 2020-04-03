@@ -38,7 +38,7 @@ const inputCommonStyle = {
   outline: "0"
 };
 
-export const TextInputStyled = styled(Input)`
+export const TextInputStyled = styled(props => <Input maxLength="128" {...props} />)`
   &.ant-input {
     ${inputCommonStyle};
     ${props => props.style};
@@ -51,7 +51,7 @@ export const TextInputStyled = styled(Input)`
   }
 `;
 
-export const TextAreaInputStyled = styled(Input.TextArea)`
+export const TextAreaInputStyled = styled(props => <Input.TextArea maxLength="2048" {...props} />)`
   &.ant-input {
     ${inputCommonStyle};
     padding: 15px;

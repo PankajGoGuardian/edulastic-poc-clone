@@ -4,7 +4,7 @@ import { test, roleuser, questionType, test as testConst, assignmentPolicyOption
 import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy, round } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
 import moment from "moment";
 import nanoid from "nanoid";
@@ -1508,7 +1508,7 @@ function* checkAnswerSaga({ payload }) {
     yield put({
       type: SET_ITEM_SCORE,
       payload: {
-        score,
+        score: round(score, 2),
         maxScore,
         showScore: true
       }

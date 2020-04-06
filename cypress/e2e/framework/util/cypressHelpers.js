@@ -89,5 +89,5 @@ export default class CypressHelper {
     expect(obj1, `${obj1} ${message} ${obj2}`).not.to.deep.eq(obj2);
   };
 
-  static minutesToSeconds = minutes => minutes * 60000;
+  static minutesToMiliSeconds = minutes => minutes * 60000;
 }

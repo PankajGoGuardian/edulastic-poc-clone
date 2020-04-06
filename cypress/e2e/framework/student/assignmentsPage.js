@@ -72,6 +72,24 @@ class AssignmentsPage {
       .eq(1)
       .next();
 
+  getOkOnPopUp = () =>
+    cy
+      .get(".ant-modal-confirm-btns")
+      .find("button")
+      .last();
+
+  verifyTimeAndClickOkOnPopUp = time => {
+    cy.wait(500);
+    this.getTimeOnPopUP()
+      .parent()
+      .should(
+        "contain.text",
+        ` This is a timed assignment which should be finished within the time limit set for this assignment. The time limit for this assignment is  ${time} minutes. Do you want to continue?`
+      );
+    return this.getOkOnPopUp().click();
+  };
+
+  getTimeOnPopUP = () => cy.get('[data-cy="test-time"]');
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -93,7 +111,11 @@ class AssignmentsPage {
     return cy.wait("@gettest").then(() => new StudentTestPage());
   }
 
-  clickOnAssigmentByTestId = (testId, pass) => {
+  clickOnAssigmentByTestId = (testId, options = { pass: false, time: false }) => {
+    /* {
+      pass: "password in string"
+      timedAssignment: "Time in minutes/string"
+    } */
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
 
@@ -101,13 +123,15 @@ class AssignmentsPage {
       .should("be.visible")
       .find('[data-cy="assignmentButton"]')
       .click({ force: true });
-    if (pass) {
-      this.enterPassword(pass);
+    if (options.time) this.verifyTimeAndClickOkOnPopUp(options.time);
+    if (options.pass) {
+      this.enterPassword(options.pass);
       this.clickOnStartAfterPassword();
     }
 
     return cy.wait("@gettest").then(xhr => {
       cy.get('[data-cy="next"]'); // waiting for page rendering
+      // TODO: trim the return value to result, so that method can be reused
       return cy.wait(1).then(() => xhr.response.body.result.itemGroups);
     });
   };

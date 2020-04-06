@@ -75,6 +75,10 @@ class StudentTestPage {
 
   getInputsLabelText = () => cy.get(".template_box").find("input");
 
+  getCountDown = () => cy.get('[class^="TimedTestTimer"]').find("label");
+
+  getOkOnTimeoutPopUp = () => cy.get('[class^="AssignmentTimeEndedAlert"]').find("button");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -176,6 +180,13 @@ class StudentTestPage {
 
   clickOnCalcuator = () => this.getCalculatorButton().click();
 
+  clickOkOnTimeOutPopUp = () => {
+    cy.server();
+    cy.route("GET", "**/test-activity/*").as("load-reports");
+    this.getOkOnTimeoutPopUp().click();
+    cy.wait("@load-reports");
+    return cy.url().should("include", "/home/grades");
+  };
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

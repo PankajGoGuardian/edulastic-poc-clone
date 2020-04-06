@@ -51,15 +51,17 @@ const QuestionLabel = styled.div`
   font-weight: 700;
   font-size: 16px;
   padding-top: 1rem;
-  padding-bottom: 1rem;
-  padding-left: 0px 11px;
+  padding-bottom: 1.5rem;
+  padding-left: 11px;
   border-bottom: 0.05rem solid ${backgroundGrey};
 `;
 
 const SolutionText = styled.div`
   text-align: left;
-  padding-left: 28px;
+  margin-top: 18px;
+  padding-left: 38px;
   letter-spacing: 0;
+  line-height: 2;
   color: ${lightGrey9};
   opacity: 1;
 `;

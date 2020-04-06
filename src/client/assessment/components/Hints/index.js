@@ -9,7 +9,7 @@ import {
   QuestionSubLabel as SubLabel,
   MathFormulaDisplay
 } from "@edulastic/common";
-import { themeColor, mainTextColor } from "@edulastic/colors";
+import { themeColor, mainTextColor, backgroundGrey } from "@edulastic/colors";
 import { Label } from "../../styled/WidgetOptions/Label";
 
 const Hints = ({
@@ -141,7 +141,8 @@ const HintCont = styled.div`
 const HintItem = styled(FlexContainer)`
   width: 100%;
   margin-top: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  padding-left: 34px;
   justify-content: flex-start;
   align-items: flex-start;
 `;
@@ -177,5 +178,8 @@ const QuestionLabel = styled.div`
   color: ${mainTextColor};
   font-weight: 700;
   font-size: 16px;
-  padding-bottom: 1rem;
+  padding: 1rem 0 1.5rem 11px;
+  margin-bottom: 16px;
+  border-bottom: 0.05rem solid ${backgroundGrey};
 `;
+

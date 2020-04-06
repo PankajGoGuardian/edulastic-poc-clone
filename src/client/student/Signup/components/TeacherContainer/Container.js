@@ -34,7 +34,8 @@ const Container = ({
   getCanvasSectionListRequest,
   canvasCourseList,
   canvasSectionList,
-  orgType
+  orgType,
+  institutionIds
 }) => {
   const { isAuthenticated, signupStatus } = user;
   const allowCanvas = sessionStorage.getItem("signupFlow") === "canvas";
@@ -45,7 +46,7 @@ const Container = ({
   const userInfo = get(user, "user", {});
 
   const handleAuthorization = async () => {
-    const result = await canvasApi.getCanvasAuthURI(school.schoolId);
+    const result = await canvasApi.getCanvasAuthURI(school?.schoolId || institutionIds[0]);
     if (!result.userAuthenticated) {
       const subscriptionTopic = `canvas:${userInfo.districtId}_${userInfo._id}_${userInfo.username ||
         userInfo.email ||
@@ -145,7 +146,8 @@ const enhance = compose(
     state => ({
       user: state.user,
       canvasCourseList: get(state, "manageClass.canvasCourseList", []),
-      canvasSectionList: get(state, "manageClass.canvasSectionList", [])
+      canvasSectionList: get(state, "manageClass.canvasSectionList", []),
+      institutionIds: get(state, "user.user.institutionIds", [])
     }),
     {
       logout: logoutAction,

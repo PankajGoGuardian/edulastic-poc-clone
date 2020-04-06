@@ -461,23 +461,16 @@ function* saveSubjectGradeSaga({ payload }) {
 function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
   try {
     const result = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, payload.data);
-    const { generalSettings, districtPolicy, districtShortName } = result;
+    const { generalSettings, districtPolicy } = result;
 
     if (generalSettings && districtPolicy) {
       yield put({
         type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS,
         payload: { generalSettings, districtPolicy }
       });
-    } else if (districtShortName) {
-      const data = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, {
-        shortName: districtShortName,
-        orgType: "district"
-      });
-      yield put(push(`/district/${districtShortName}`));
-      yield put({
-        type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS,
-        payload: { generalSettings: data.generalSettings, districtPolicy: data.districtPolicy }
-      });
+      if (generalSettings.orgType === "district") {
+        yield put(push(`/${generalSettings.orgType}/${generalSettings.shortName}`));
+      }
     } else {
       throw payload.error.message;
     }

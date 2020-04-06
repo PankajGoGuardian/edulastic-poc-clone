@@ -29,7 +29,7 @@ export const Container = styled.div`
 export const WidgetContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: ${({ alignItems = "" }) => alignItems || ""};
   > div {
     padding: 0;
   }

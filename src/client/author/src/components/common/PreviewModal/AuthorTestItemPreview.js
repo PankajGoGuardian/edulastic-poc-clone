@@ -411,7 +411,7 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer>
+        <WidgetContainer alignItems="flex-start">
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&

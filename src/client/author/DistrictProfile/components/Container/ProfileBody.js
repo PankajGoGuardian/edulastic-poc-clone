@@ -13,7 +13,7 @@ import {
   title,
   white
 } from "@edulastic/colors";
-import { MainContentWrapper } from "@edulastic/common";
+import { FieldLabel, MainContentWrapper, SelectInputStyled } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Form, Icon, Input, Select, Tag } from "antd";
 import produce from "immer";
@@ -28,6 +28,7 @@ import {
   removeInterestedCurriculumsAction,
   removeSchoolAction,
   resetMyPasswordAction,
+  updateDefaultSettingsAction,
   updateInterestedCurriculumsAction,
   updateUserDetailsAction
 } from "../../../../student/Login/ducks";
@@ -39,6 +40,8 @@ import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
 import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
 import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import Photo from "./Photo";
+import { selectsData } from "../../../TestPage/components/common";
+import Switch from "antd/lib/switch";
 
 const FormItem = Form.Item;
 class ProfileBody extends React.Component {
@@ -52,17 +55,29 @@ class ProfileBody extends React.Component {
     showStandardSetsModal: false,
     showEmailConfirmModal: false,
     showSaveStandSetsBtn: false,
-    interestedCurriculums: []
+    interestedCurriculums: [],
+    defaultGrades: [],
+    defaultSubjects: [],
+    autoShareGCAssignment: undefined,
+    showDefaultSettingSave: false
   };
 
   static getDerivedStateFromProps(props, state) {
-    const { interestedCurriculums } = props.user.orgData;
-    if (!state.showSaveStandSetsBtn && !isEqual(interestedCurriculums, state.interestedCurriculums)) {
-      return {
-        interestedCurriculums: interestedCurriculums
-      };
+    const { interestedCurriculums, defaultGrades, defaultSubjects, autoShareGCAssignment } = props.user.orgData;
+    const derivedStateProps = {};
+    if (state.defaultGrades.length === 0 && defaultGrades.length) {
+      Object.assign(derivedStateProps, { defaultGrades });
     }
-    return null;
+    if (state.defaultSubjects.length === 0 && defaultSubjects.length) {
+      Object.assign(derivedStateProps, { defaultSubjects });
+    }
+    if (state.autoShareGCAssignment === undefined) {
+      Object.assign(derivedStateProps, { autoShareGCAssignment });
+    }
+    if (!state.showSaveStandSetsBtn && !isEqual(interestedCurriculums, state.interestedCurriculums)) {
+      Object.assign(derivedStateProps, { interestedCurriculums });
+    }
+    return Object.keys(derivedStateProps).length ? derivedStateProps : null;
   }
 
   handleSubmit = e => {
@@ -176,6 +191,40 @@ class ProfileBody extends React.Component {
 
     updateInterestedCurriculums(standardsData);
     this.hideMyStandardSetsModal();
+  };
+
+  saveSettings = () => {
+    const { updateDefaultSettings, user } = this.props;
+    const { defaultGrades, defaultSubjects, autoShareGCAssignment } = this.state;
+    const settingsToUpdate = {
+      orgId: user._id,
+      orgType: "teacher",
+      defaultGrades,
+      defaultSubjects,
+      autoShareGCAssignment
+    };
+    updateDefaultSettings(settingsToUpdate);
+    this.setState({ showDefaultSettingSave: false });
+  };
+
+  onSettingChange = (value, field) => {
+    this.setState({ showDefaultSettingSave: true });
+    switch (field) {
+      case "grade": {
+        this.setState({ defaultGrades: value });
+        break;
+      }
+      case "subject": {
+        this.setState({ defaultSubjects: value });
+        break;
+      }
+      case "autoSync": {
+        this.setState({ autoShareGCAssignment: value });
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   handleSaveStandardSets = () => {
@@ -362,9 +411,13 @@ class ProfileBody extends React.Component {
       showDeleteSchoolModal,
       showStandardSetsModal,
       showEmailConfirmModal,
-      showSaveStandSetsBtn
+      showSaveStandSetsBtn,
+      defaultGrades = [],
+      defaultSubjects = [],
+      autoShareGCAssignment = false,
+      showDefaultSettingSave = false
     } = this.state;
-
+    const subjectsList = selectsData.allSubjects.slice(1);
     const interestedStaData = {
       curriculums: user.orgData.interestedCurriculums
     };
@@ -497,6 +550,64 @@ class ProfileBody extends React.Component {
                     </SelectSetsButton>
                   </StandardSetsButtons>
                 </SchoolWrapper>
+                <SchoolWrapper>
+                  <Block>
+                    <StyledDiv>
+                      <Title>Default Settings</Title>
+                      {showDefaultSettingSave && (
+                        <SaveDefaultSettingsBtn onClick={this.saveSettings}>SAVE</SaveDefaultSettingsBtn>
+                      )}
+                    </StyledDiv>
+                    <FieldLabel>{t("common.title.interestedGrade")}</FieldLabel>
+                    <SelectInputStyled
+                      data-cy="gradeSelect"
+                      mode="multiple"
+                      size="large"
+                      placeholder="Please select"
+                      defaultValue={defaultGrades}
+                      onChange={value => this.onSettingChange(value, "grade")}
+                      optionFilterProp="children"
+                      getPopupContainer={trigger => trigger.parentNode}
+                      margin="0px 0px 15px"
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {selectsData.allGrades.map(({ value, text }) => (
+                        <Select.Option key={value} value={value}>
+                          {text}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                    <FieldLabel>{t("common.title.interestedSubject")}</FieldLabel>
+                    <SelectInputStyled
+                      data-cy="subjectSelect"
+                      mode="multiple"
+                      size="large"
+                      margin="0px 0px 15px"
+                      placeholder="Please select"
+                      defaultValue={defaultSubjects}
+                      onChange={value => this.onSettingChange(value, "subject")}
+                      optionFilterProp="children"
+                      getPopupContainer={trigger => trigger.parentNode}
+                      filterOption={(input, option) =>
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {subjectsList.map(({ value, text }) => (
+                        <Select.Option key={value} value={value}>
+                          {text}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                    <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>
+                    <Switch
+                      style={{ width: "30px" }}
+                      defaultChecked={autoShareGCAssignment}
+                      onChange={checked => this.onSettingChange(checked, "autoSync")}
+                    />
+                  </Block>
+                </SchoolWrapper>
               </>
             )}
           </RightContainer>
@@ -550,7 +661,8 @@ const enhance = compose(
       updateInterestedCurriculums: updateInterestedCurriculumsAction,
       getDictCurriculums: getDictCurriculumsAction,
       removeSchool: removeSchoolAction,
-      removeInterestedCurriculum: removeInterestedCurriculumsAction
+      removeInterestedCurriculum: removeInterestedCurriculumsAction,
+      updateDefaultSettings: updateDefaultSettingsAction
     }
   )
 );
@@ -562,6 +674,23 @@ ProfileBody.propTypes = {
   t: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
+
+const StyledDiv = styled.div`
+  padding-bottom: 15px;
+`;
+
+export const Block = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  margin-right: 0;
+
+  :last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+`;
 
 const ProfileWrapper = styled(Wrapper)`
   padding: 0px;
@@ -839,6 +968,13 @@ const SelectSetsButton = styled(EditProfileButton)`
 `;
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
+  margin: 5px 0px 5px 15px;
+  :hover{
+    color ${themeColor};
+  }
+`;
+
+const SaveDefaultSettingsBtn = styled(SelectSetsButton)`
   margin: 5px 0px 5px 15px;
   :hover{
     color ${themeColor};

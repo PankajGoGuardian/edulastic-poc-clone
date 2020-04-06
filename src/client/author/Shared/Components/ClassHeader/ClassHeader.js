@@ -33,7 +33,7 @@ import {
   showScoreSelector
 } from "../../../ClassBoard/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
+import { googleSyncAssignmentAction, toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import {
   canvasSyncGradesAction,
   closeAssignmentAction,
@@ -243,7 +243,8 @@ class ClassHeader extends Component {
       hasRandomQuestions,
       orgClasses,
       orgData,
-      canvasSyncGrades
+      canvasSyncGrades,
+      googleSyncAssignment
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -258,10 +259,10 @@ class ClassHeader extends Component {
         : closed
         ? "DONE"
         : assignmentStatus;
-
-    const { canvasCode, canvasCourseSectionCode } = orgClasses.find(({ _id }) => _id === classId) || {};
+    const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
+      orgClasses.find(({ _id }) => _id === classId) || {};
     const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
-
+    const showSyncWithGoogleClassroom = groupGoogleId && orgData.allowGoogleClassroom;
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -322,6 +323,11 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption && assignmentStatusForDisplay !== "NOT OPEN" && (
           <MenuItems key="key6" onClick={() => canvasSyncGrades({ assignmentId, groupId: classId })}>
             Canvas Grade Sync
+          </MenuItems>
+        )}
+        {showSyncWithGoogleClassroom && (
+          <MenuItems key="key7" onClick={() => googleSyncAssignment({ assignmentId, groupId: classId })}>
+            Sync with Google Classroom
           </MenuItems>
         )}
       </DropMenu>
@@ -551,7 +557,8 @@ const enhance = compose(
       studentUnselectAll: gradebookUnSelectAllAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleViewPassword: toggleViewPasswordAction,
-      canvasSyncGrades: canvasSyncGradesAction
+      canvasSyncGrades: canvasSyncGradesAction,
+      googleSyncAssignment: googleSyncAssignmentAction
     }
   )
 );

@@ -7,8 +7,14 @@ import {
   FETCH_CURRENT_ASSIGNMENT,
   TOGGLE_RELEASE_GRADE_SETTINGS,
   SET_ASSIGNMENT_FILTER,
-  ADVANCED_ASSIGNMENT_VIEW
+  ADVANCED_ASSIGNMENT_VIEW,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST
 } from "../constants/actions";
+
+export const googleSyncAssignmentAction = payload => ({
+  type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  payload
+});
 
 export const receiveAssignmentsAction = payload => ({
   type: RECEIVE_ASSIGNMENTS_REQUEST,

@@ -26,7 +26,10 @@
       "student": "Student Information",
       "emailAlreadyExistsMessage": "Email/Username already exists.",
       "invalidEmailMessage": "Please provide valid Username or Email id",
-      "emailLengthMessage": "Must less than 256 characters!"
+      "emailLengthMessage": "Must less than 256 characters!",
+      "interestedGrade": "Interested Grade",
+      "interestedSubject": "Interested Subject",
+      "autoShareWithGC": "Auto Share Assignments with Google Classroom"
     }
   }
 }

@@ -145,6 +145,15 @@ const getDifferentiationStudentList = ({ assignmentId, groupId }) =>
     })
     .then(result => result.data.result);
 
+const syncWithGoogleClassroom = data =>
+  api
+    .callApi({
+      url: `${prefix}/google-classroom-share`,
+      method: "POST",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   update,
@@ -161,5 +170,6 @@ export default {
   redirect,
   validateAssignmentPassword,
   updateClassSettings,
-  getDifferentiationStudentList
+  getDifferentiationStudentList,
+  syncWithGoogleClassroom
 };

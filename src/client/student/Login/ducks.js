@@ -78,6 +78,10 @@ export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested c
 export const GET_CURRENT_DISTRICT_USERS_REQUEST = "[user] get current district users request";
 export const GET_CURRENT_DISTRICT_USERS_SUCCESS = "[user] get current district users success";
 
+export const UPDATE_DEFAULT_SETTINGS_REQUEST = "[user] update default settings request";
+export const UPDATE_DEFAULT_SETTINGS_SUCCESS = "[user] update default settings success";
+export const UPDATE_DEFAULT_SETTINGS_FAILED = "[user] update default settings failed";
+
 export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
 
 // actions
@@ -118,6 +122,7 @@ export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_
 export const getCurrentDistrictUsersAction = createAction(GET_CURRENT_DISTRICT_USERS_REQUEST);
 export const getCurrentDistrictUsersSuccessAction = createAction(GET_CURRENT_DISTRICT_USERS_SUCCESS);
 export const changeChildAction = createAction(CHANGE_CHILD);
+export const updateDefaultSettingsAction = createAction(UPDATE_DEFAULT_SETTINGS_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -305,6 +310,21 @@ export default createReducer(initialState, {
   },
   [JOIN_CLASS_REQUEST_SUCCESS]: (state, { payload }) => {
     state.user.orgData.classList.push(payload);
+  },
+  [UPDATE_DEFAULT_SETTINGS_REQUEST]: state => {
+    state.updatingDefaultSettings = true;
+  },
+  [UPDATE_DEFAULT_SETTINGS_SUCCESS]: (state, { payload }) => {
+    state.updatingDefaultSettings = false;
+    const { defaultGrades, defaultSubjects, autoShareGCAssignment } = payload;
+    Object.assign(state.user.orgData, {
+      defaultGrades,
+      defaultSubjects,
+      autoShareGCAssignment
+    });
+  },
+  [UPDATE_DEFAULT_SETTINGS_FAILED]: state => {
+    state.updatingDefaultSettings = false;
   }
 });
 
@@ -1108,6 +1128,18 @@ function* changeChildSaga({ payload }) {
   }
 }
 
+function* updateDefaultSettingsSaga({ payload }) {
+  try {
+    yield call(settingsApi.updateInterestedStandards, payload);
+    yield call(message.success, "Default settings updated successfully.");
+    yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload });
+  } catch (e) {
+    yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED });
+    console.error(e);
+    yield call(message.error, "Failed to update default settings.");
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -1137,4 +1169,5 @@ export function* watcherSaga() {
   yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
   yield takeLatest(GET_CURRENT_DISTRICT_USERS_REQUEST, getCurrentDistrictUsersSaga);
   yield takeLatest(CHANGE_CHILD, changeChildSaga);
+  yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga);
 }

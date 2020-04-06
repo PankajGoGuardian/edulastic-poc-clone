@@ -12,36 +12,33 @@ class MatchListPage {
   }
 
   // question content
+
+  getQuestionText = () =>
+    cy
+      .get(".fr-element")
+      .first()
+      .find("p");
+
   getListInputs = () =>
     cy
-      .get('[data-cy="list-container"]')
-      .next()
-      .find("div .ql-editor");
+      .get('[data-cy="sortable-list-container"]')
+      .first()
+      .find('[contenteditable="true"]');
 
-  getAddInputButton = () =>
-    cy
-      .contains("span", "Add new")
-      .closest("button")
-      .first();
+  getAddInputButton = () => cy.get('[data-cy="addButton"]').contains("Add new");
 
   getListDeleteByIndex = index => cy.get(`[data-cy="deleteprefix${index}"]`);
 
   getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
 
-  getGroupResponsesCheckbox = () =>
-    cy
-      .contains("span", "Group possible responses")
-      .closest("label")
-      .should("be.visible");
+  getGroupResponsesCheckbox = () => cy.contains("span", "Group possible responses").closest("label");
+  //.should("be.visible");
 
   getGroupContainerByIndex = index => cy.get(`[data-cy="group-container-${index}"]`);
 
   getTitleInputByIndex = index => {
     const group = this.getGroupContainerByIndex(index);
-    return group
-      .contains("div", "Title")
-      .next()
-      .should("be.visible");
+    return group.find("input").first();
   };
 
   getAddNewChoiceByIndex = index => {
@@ -51,11 +48,7 @@ class MatchListPage {
 
   getChoiceListByGroup = index => {
     const group = this.getGroupContainerByIndex(index);
-    return group
-      .find('[data-cy="group-choices"]')
-      .children()
-      .first()
-      .children();
+    return group.find('[data-cy="quillSortableItem"]');
   };
 
   deleteChoiceByGroup = (gIndex, index) => {
@@ -63,7 +56,13 @@ class MatchListPage {
     return this;
   };
 
-  getChoiceEditorByGroup = (gIndex, index) => cy.get(`#idgroup${gIndex}${index}`);
+  getChoiceEditorByGroup = (gIndex, index) => {
+    const group = this.getGroupContainerByIndex(gIndex);
+    return group
+      .find('[data-cy="quillSortableItem"]')
+      .eq(index)
+      .find('[contenteditable="true"]');
+  };
 
   getDragDropBox = () => cy.contains("h3", "Drag & Drop the answer").next();
 
@@ -77,7 +76,11 @@ class MatchListPage {
 
   getItemByIndex = index => cy.get('[data-cy="drag-drop-board-undefined"]').find(`[data-cy="drag-drop-item-${index}"]`);
 
-  getDragDropItemByIndex = index => cy.get(`[data-cy="drag-drop-item-${index}"]`);
+  getDragDropItemByIndex = index =>
+    cy
+      .get('[class^="CorrectAnswersContainer"]')
+      .find(`.drag-drop-item-match-list`)
+      .first();
 
   getDragDropBoardByIndex = index => cy.get(`[data-cy="drag-drop-board-${index}"]`).find(">div");
 
@@ -155,11 +158,11 @@ class MatchListPage {
   }
 
   getUppercaseAlphabetOption() {
-    return Helpers.getElement("upper-alpha");
+    return Helpers.getElement("uppercase");
   }
 
   getLowercaseAlphabetOption() {
-    return Helpers.getElement("lower-alpha");
+    return Helpers.getElement("lowercase");
   }
 
   checkFontSize(fontSize) {
@@ -175,6 +178,7 @@ class MatchListPage {
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
     cy.get('[data-cy="scoringType"]')
+      .scrollIntoView()
       .should("be.visible")
       .click();
 
@@ -230,6 +234,12 @@ class MatchListPage {
 
     this.header.edit();
   }
+
+  dragDummyChoice = () =>
+    cy
+      .get(`.drag-drop-item-match-list`)
+      .last()
+      .trigger("dragstart", {});
 }
 
 export default MatchListPage;

@@ -6,7 +6,7 @@ class Helpers {
       case "small":
         return withRem ? "0.8rem" : "11px";
       case "normal":
-        return withRem ? "1rem" : "14px";
+        return withRem ? "1rem" : "16px";
       case "large":
         return withRem ? "1.2rem" : "17px";
       case "xlarge":

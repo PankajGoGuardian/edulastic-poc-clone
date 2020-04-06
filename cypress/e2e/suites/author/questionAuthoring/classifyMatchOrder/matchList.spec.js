@@ -13,6 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
     correctAns: "India",
     list: ["List1", "List2", "List3"],
     choices: ["Choice1", "Choice2", "Choice3"],
+    edited: ["Choice11", "Choice21", "Choice31"],
     forScoring: ["Choice B", "Choice A", "Choice C"],
     extlink: "www.testdomain.com",
     testtext: "testtext",
@@ -39,7 +40,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
     });
-
+    it(" > question text", () => {
+      question.getQuestionText().type("{selectall}question");
+    });
     context(" > TC_74 => List", () => {
       it(" > Edit the list existing names", () => {
         question.getListInputs().each(($el, index) => {
@@ -54,12 +57,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       it(" > Add new list items", () => {
         question
           .getAddInputButton()
-          .click()
+          .click({ force: true })
           .then(() => {
             question.getListInputs().should("have.length", queData.list.length + 1);
             question
               .getListDeleteByIndex(queData.list.length)
-              .click()
+              .click({ force: true })
               .then(() => {
                 question.getListInputs().should("have.length", queData.list.length);
               });
@@ -103,16 +106,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
             .click();
           question
             .getChoiceEditorByGroup(0, index)
-            .next()
-            .find("div .ql-editor")
-            .clear()
-            .type(ch)
+            .type(`{selectall}${ch}`)
             .should("be.visible");
           question
             .getDragDropBox()
             .contains("p", ch)
             .should("be.visible");
         });
+        question.getAddNewChoiceByIndex(0).click({ force: true });
+        question
+          .getChoiceEditorByGroup(0, 3)
+          .type(`{selectall}dummy`)
+          .should("be.visible");
       });
 
       it(" > Add new group", () => {
@@ -128,6 +133,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
+          .parent()
           .next()
           .should("be.visible")
           .click()
@@ -146,13 +152,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2")
+          .should("have.value", "1.5")
+          .type("{downarrow}")
+          .should("have.value", "1")
           .blur();
       });
-
       it(" > Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
+          question.getDragDropItemByIndex(index).scrollIntoView();
           question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index}`);
+          cy.get(`.drag-drop-item-match-list`)
+            .last()
+            .trigger("dragstart", {});
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
@@ -172,7 +183,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     context(" > TC_77 => Save question", () => {
       it(" > Click on save button", () => {
-        question.header.save();
+        question.header.saveAndgetId().then(id => {
+          testItemId = id;
+        });
         cy.url().should("contain", "item-detail");
       });
     });
@@ -180,23 +193,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
     context(" > TC_78 => Preview Items", () => {
       it(" > Click on preview", () => {
         preview = editItem.header.preview();
-        cy.get("body").contains("span", "Check Answer");
 
         queData.choices.forEach((ch, index) => {
           question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index}`);
+          cy.get(`.drag-drop-item-match-list`)
+            .last()
+            .trigger("dragstart", {});
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
 
       it(" > Click on Check answer", () => {
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .children()
-              .should("contain", "score: 2/2");
-          });
+        preview.checkScore("1/1");
       });
 
       it(" > Click on Show Answers", () => {
@@ -227,9 +235,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   context(" > Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.createNewItem();
-      // add new question
-      editItem.chooseQuestion(queData.group, queData.queType);
+      editItem.sideBar.clickOnItemBank();
+      itemList.searchFilters.clearAll();
+      itemList.searchFilters.getAuthoredByMe();
+      itemList.clickOnViewItemById(testItemId);
+      itemList.itemPreview.clickEditOnPreview();
     });
 
     context(" > TC_81 => List", () => {
@@ -246,12 +256,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       it(" > Add new list items", () => {
         question
           .getAddInputButton()
-          .click()
+          .click({ force: true })
           .then(() => {
             question.getListInputs().should("have.length", queData.list.length + 1);
             question
               .getListDeleteByIndex(queData.list.length)
-              .click()
+              .click({ force: true })
               .then(() => {
                 question.getListInputs().should("have.length", queData.list.length);
               });
@@ -261,8 +271,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     context(" > TC_81 => Group possible responses", () => {
       it(" > Check the group possible responses checkbox", () => {
-        question.getGroupResponsesCheckbox().click();
-
         question
           .getGroupResponsesCheckbox()
           .find("input")
@@ -288,23 +296,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
           })
           .should("have.length", 0);
 
-        queData.choices.forEach((ch, index) => {
+        queData.edited.forEach((ch, index) => {
           question
             .getAddNewChoiceByIndex(0)
             .should("be.visible")
             .click();
           question
             .getChoiceEditorByGroup(0, index)
-            .next()
-            .find("div .ql-editor")
-            .clear()
-            .type(ch)
+            .type(`{selectall}${ch}`)
             .should("be.visible");
           question
             .getDragDropBox()
             .contains("p", ch)
             .should("be.visible");
         });
+        question.getAddNewChoiceByIndex(0).click({ force: true });
+        question
+          .getChoiceEditorByGroup(0, 3)
+          .type(`{selectall}dummy`)
+          .should("be.visible");
       });
 
       it(" > Add new group", () => {
@@ -320,6 +330,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
+          .parent()
           .next()
           .should("be.visible")
           .click()
@@ -338,13 +349,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2")
+          .should("have.value", "1.5")
           .blur();
       });
 
       it(" > Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
+          question.getDragDropItemByIndex(index).scrollIntoView();
           question.getDragDropItemByIndex(index).customDragDrop(`#drag-drop-board-${index}`);
+          cy.get(`.drag-drop-item-match-list`)
+            .last()
+            .trigger("dragstart", {});
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
@@ -364,13 +379,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     context(" > TC_83 => Save question", () => {
       it(" > Click on save button", () => {
-        question.header.save();
+        question.header.save(true);
         cy.url().should("contain", "item-detail");
       });
     });
   });
 
-  context(" > Delete the question after creation", () => {
+  /* context.skip(" > Delete the question after creation", () => {
     context(" > TC_84 => Delete option", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
@@ -387,7 +402,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
           .should("have.length", 0);
       });
     });
-  });
+  }); */
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
@@ -398,6 +413,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     beforeEach(() => {
       editItem.header.edit();
+      editItem.showAdvancedOptions();
       // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
@@ -407,7 +423,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     describe(" > Layout", () => {
       it(" > should be able to select top response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -420,7 +436,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkResponseContainerPosition("top");
       });
       it(" > should be able to select bottom response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -433,7 +449,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkResponseContainerPosition("bottom");
       });
       it(" > should be able to select left response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -446,7 +462,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkResponseContainerPosition("left");
       });
       it(" > should be able to select right response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -459,7 +475,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkResponseContainerPosition("right");
       });
       it(" > should be able to select numerical stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -471,7 +487,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         select.should("contain", "Numerical");
       });
       it(" > should be able to select Uppercase Alphabet stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -483,7 +499,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         select.should("contain", "Uppercase Alphabet");
       });
       it(" > should be able to select Lowercase Alphabet stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -495,7 +511,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         select.should("contain", "Lowercase Alphabet");
       });
       it(" > should be able to select small font size", () => {
-        const select = question.getFontSizeSelect();
+        const select = question.getFontSizeSelect().scrollIntoView();
         const { name, font } = Helpers.fontSize("small");
 
         select.should("be.visible").click();
@@ -509,7 +525,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkFontSize(font);
       });
       it(" > should be able to select normal font size", () => {
-        const select = question.getFontSizeSelect();
+        const select = question.getFontSizeSelect().scrollIntoView();
         const { name, font } = Helpers.fontSize("normal");
 
         select.should("be.visible").click();
@@ -523,7 +539,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkFontSize(font);
       });
       it(" > should be able to select large font size", () => {
-        const select = question.getFontSizeSelect();
+        const select = question.getFontSizeSelect().scrollIntoView();
         const { name, font } = Helpers.fontSize("large");
 
         select.should("be.visible").click();
@@ -537,7 +553,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkFontSize(font);
       });
       it(" > should be able to select extra large font size", () => {
-        const select = question.getFontSizeSelect();
+        const select = question.getFontSizeSelect().scrollIntoView();
         const { name, font } = Helpers.fontSize("xlarge");
 
         select.should("be.visible").click();
@@ -551,7 +567,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         question.checkFontSize(font);
       });
       it(" > should be able to select huge font size", () => {
-        const select = question.getFontSizeSelect();
+        const select = question.getFontSizeSelect().scrollIntoView();
         const { name, font } = Helpers.fontSize("xxlarge");
 
         select.should("be.visible").click();
@@ -572,6 +588,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
+
+      question
+        .getGroupResponsesCheckbox()
+        .find("input")
+        .check({ force: true })
+        .should("be.checked");
+
+      question.getAddNewChoiceByIndex(0).click({ force: true });
+      question
+        .getChoiceEditorByGroup(0, 3)
+        .type(`{selectall}dummy`)
+        .should("be.visible");
     });
 
     afterEach(() => {
@@ -582,7 +610,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       question.header.edit();
     });
 
-    it(" > Test score with max score", () => {
+    /*   it(" > Test score with max score", () => {
       question
         .getMaxScore()
         .clear()
@@ -591,17 +619,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       preview = question.header.preview();
 
       preview.checkScore("0/10");
-    });
+    }); */
 
     it(" > Test score with alternate and min score if attempted", () => {
-      question.getMaxScore().clear();
+      // question.getMaxScore().clear();
 
-      question.getEnableAutoScoring().click();
+      // question.getEnableAutoScoring().click();
 
-      question
+      /*  question
         .getMinScore()
         .clear()
-        .type(2);
+        .type(2); */
 
       question
         .getPontsInput()
@@ -620,50 +648,83 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
         .clear()
         .type("12{del}");
 
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.dragDummyChoice();
 
       preview = question.header.preview();
 
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.dragDummyChoice();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.dragDummyChoice();
 
       preview.checkScore("12/12");
 
+      preview.clickOnClear();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.dragDummyChoice();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.dragDummyChoice();
+
+      preview.checkScore("0/12");
+
       preview.getClear().click();
 
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
 
-      preview.checkScore("9/12");
-
-      preview.getClear().click();
-
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
-
-      preview.checkScore("2/12");
+      preview.checkScore("0/12");
     });
 
     it(" > Test score with partial match and panalty", () => {
-      question.getAddedAlternate().click();
+      question
+        .getAddedAlternate()
+        .then($el => {
+          cy.wrap($el).click();
+        })
+        .should("not.exist");
+      question
+        .getPontsInput()
+        .clear()
+        .type("{selectall}9");
+
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.dragDummyChoice();
+
+      editItem.showAdvancedOptions();
+
+      question.selectScoringType("Partial match");
 
       question
         .getPanalty()
         .clear()
-        .type(3);
-
-      question.getMinScore().clear();
-
-      question.selectScoringType("Partial match");
+        .type(`{selectall}3`);
 
       preview = question.header.preview();
 
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
-      question.getItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${0}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${2}`);
+      question.dragDummyChoice();
+      question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${1}`);
+      question.dragDummyChoice();
 
       preview.checkScore("1/9");
     });

@@ -1,7 +1,7 @@
 require("dotenv").config();
 const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
-const ReactRefreshPlugin = require("react-refresh-webpack-plugin");
+const ReactRefreshPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
 const path = require("path");

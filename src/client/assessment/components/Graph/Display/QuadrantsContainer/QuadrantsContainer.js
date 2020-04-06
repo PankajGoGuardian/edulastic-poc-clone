@@ -5,7 +5,7 @@ import { cloneDeep, isEqual, sortBy } from "lodash";
 import produce from "immer";
 
 import { WithResources } from "@edulastic/common";
-import { greyThemeDark3, greenDark6 } from "@edulastic/colors";
+import { greyThemeDark3, darkGrey2 } from "@edulastic/colors";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
@@ -44,16 +44,19 @@ const errorColor = "#ee1658";
 const defaultColor = "#00b2ff";
 const bgColor = greyThemeDark3;
 
+// TODO: Add support for user-based colorMap to replace these defaults
+
 const colorMap = type => {
   switch (type) {
     case "point":
-      return "brown";
+      return "#005ce6"; // dark blue
     case "xaxis":
     case "yaxis":
-    case "dashed":
       return "black";
+    case "dashed":
+      return darkGrey2; // dark bluish grey
     case "area":
-      return greenDark6;
+      return "#cc7537"; // light brown
     default:
       return defaultColor;
   }

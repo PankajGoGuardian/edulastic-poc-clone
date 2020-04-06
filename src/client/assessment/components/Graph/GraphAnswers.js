@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Select } from "antd";
-import { cloneDeep } from "lodash";
+import { capitalize, cloneDeep } from "lodash";
 
 import { TabContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -139,27 +139,55 @@ class GraphAnswers extends Component {
       handleNumberlineChange
     } = this.props;
 
+    const selectedValue = graphData.validation.ignore_repeated_shapes;
+
     if (graphData.graphType === "quadrants" || graphData.graphType === "firstQuadrant") {
       return (
         <Fragment>
           <Row marginTop={15} gutter={24}>
-            <Col span={8}>
+            {/* 
+              NOTE: Slicing of the array is done to keep the functionality of ignoring repeated shapes together but split into two options -
+              1 - Ignore Repeated Shapes (yes/no) => yes should default to "Compare by slope" on "yes"
+              2 - Compare By (slope / points) => on selecting ignore repeated shapes, the default option gets selected automatically
+            */}
+            <Col span={6}>
               <Label>Ignore repeated shapes</Label>
               <SelectInputStyled
                 data-cy="ignoreRepeatedShapes"
                 onChange={val => handleSelectIgnoreRepeatedShapes(val)}
-                options={getIgnoreRepeatedShapesOptions()}
+                options={getIgnoreRepeatedShapesOptions().slice(0, 2)}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
-                value={graphData.validation.ignore_repeated_shapes || "no"}
+                value={selectedValue || "no"}
               >
-                {getIgnoreRepeatedShapesOptions().map(option => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
+                {getIgnoreRepeatedShapesOptions()
+                  .slice(0, 2)
+                  .map(option => (
+                    <Select.Option data-cy={option.value} key={option.value}>
+                      {capitalize(option.value)}
+                    </Select.Option>
+                  ))}
               </SelectInputStyled>
             </Col>
-            <Col span={4}>
+            <Col span={6}>
+              <Label>Compare by</Label>
+              <SelectInputStyled
+                onChange={val => handleSelectIgnoreRepeatedShapes(val)}
+                options={getIgnoreRepeatedShapesOptions().slice(1)}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+                value={!selectedValue || selectedValue === "no" ? undefined : selectedValue}
+                placeholder="No"
+                disabled={!selectedValue || selectedValue === "no"}
+              >
+                {getIgnoreRepeatedShapesOptions()
+                  .slice(1)
+                  .map(option => (
+                    <Select.Option data-cy={option.value} key={option.value}>
+                      {option.label}
+                    </Select.Option>
+                  ))}
+              </SelectInputStyled>
+            </Col>
+            <Col span={6}>
               <Label>Ignore labels</Label>
               <SelectInputStyled
                 data-cy="ignoreLabels"

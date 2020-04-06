@@ -58,8 +58,12 @@ export const SelectInputStyled = styled(Select)`
           padding: 0px 30px 0px 15px;
           line-height: ${props => props.height || "30px"};
           margin: 0px;
+          width: 100%;
           .ant-select-selection-selected-value {
             padding: 0px;
+          }
+          .ant-select-selection__placeholder {
+            margin-left: 10px;
           }
         }
       }

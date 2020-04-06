@@ -5,11 +5,9 @@ import styled from "styled-components";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
-import { black } from "@edulastic/colors";
-
+import { IconGroup, IconClass } from "@edulastic/icons";
+import { black, greyThemeDark1 } from "@edulastic/colors";
 import { StyledAutocompleteDropDownContainer } from "../../styled";
-import GroupIcon from "../../../assets/group.svg";
-import ClassIcon from "../../../assets/class.svg";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -80,9 +78,13 @@ const AutocompleteDropDown = ({
           const className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
           return (
             <Option key={item.key} title={item.title} className={className}>
-              {prefix === "Class" && item.groupType && (
-                <img src={item.groupType === "custom" ? GroupIcon : ClassIcon} alt="" />
-              )}
+              {prefix === "Class" &&
+                item.groupType &&
+                (item.groupType === "custom" ? (
+                  <IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />
+                ) : (
+                  <IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 3px" />
+                ))}
               {item.title}
             </Option>
           );

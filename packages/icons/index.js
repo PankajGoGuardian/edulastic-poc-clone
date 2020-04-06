@@ -220,3 +220,5 @@ export { default as IconExpand } from "./src/IconExpand";
 export { default as IconAccessibility } from "./src/IconAccessibility";
 export { default as IconCanvasBook } from "./src/IconCanvasBook";
 export { default as IconHangouts } from "./src/IconHangouts";
+export { default as IconGroup } from "./src/IconGroup";
+export { default as IconClass } from "./src/IconClass";

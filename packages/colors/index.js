@@ -31,6 +31,7 @@ export const lightGrey6 = "#848993";
 export const lightGrey7 = "#949ca4";
 export const lightGrey8 = "#dbdbdb";
 export const lightGrey9 = "#6a737f";
+export const lightGrey10 = "#a6a7aa";
 export const darkGrey = "#a3a0a0";
 export const darkGrey1 = "#b5b5b5";
 export const darkGrey2 = "#304050";

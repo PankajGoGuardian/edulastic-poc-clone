@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { IoIosPeople, IoIosPerson } from "react-icons/io";
 import { Col, Select } from "antd";
 import styled from "styled-components";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
+import { IconGroup, IconClass } from "@edulastic/icons";
+import { lightGrey10 } from "@edulastic/colors";
 import { StyledRow } from "./styled";
 
 const dropdownStyle = {
@@ -41,9 +42,9 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDesel
             <Select.Option data-cy="class" key={data._id} value={data._id} name={data.name}>
               <OptionWrapper>
                 {data.type === "custom" ? (
-                  <IoIosPeople size={18} style={{ marginRight: "10px" }} />
+                  <IconGroup width={20} height={19} color={lightGrey10} margin="0 10px 0 0" />
                 ) : (
-                  <IoIosPerson size={16} style={{ marginRight: "10px" }} />
+                  <IconClass width={13} height={14} color={lightGrey10} margin="0 13px 0 3px" />
                 )}
                 <span>{data.name}</span>
               </OptionWrapper>

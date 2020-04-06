@@ -96,7 +96,7 @@ class PreviewModal extends React.Component {
 
     if (isTest) {
       updateTestAndNavigate({
-        pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}/`,
+        pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
         fadeSidebar: true,
         regradeFlow,
         previousTestId: test.previousTestId

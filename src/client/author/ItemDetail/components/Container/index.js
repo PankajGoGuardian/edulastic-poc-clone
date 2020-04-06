@@ -94,10 +94,8 @@ const ItemDetailContainer = ({
       </div>
     );
 
-  const showPublishButton =
-    (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
-  const hasAuthorPermissions =
-    item && item.authors && item.authors.some(author => author._id === currentUserId);
+  const showPublishButton = (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
+  const hasAuthorPermissions = item && item.authors && item.authors.some(author => author._id === currentUserId);
 
   const allProps = {
     ...props,

@@ -31,14 +31,14 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDesel
             fetchStudents({ classId });
           }}
           onDeselect={onDeselect}
-          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option) => option?.props?.name?.toLowerCase()?.indexOf(input?.toLowerCase()) >= 0}
           value={selectedGroups}
           getPopupContainer={trigger => trigger.parentNode}
           margin="0px 0px 10px"
           dropdownStyle={dropdownStyle}
         >
           {group.map(data => (
-            <Select.Option data-cy="class" key={data._id} value={data._id}>
+            <Select.Option data-cy="class" key={data._id} value={data._id} name={data.name}>
               <OptionWrapper>
                 {data.type === "custom" ? (
                   <IoIosPeople size={18} style={{ marginRight: "10px" }} />

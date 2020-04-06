@@ -116,12 +116,13 @@ class SimpleOptions extends React.Component {
       });
       return;
     }
-    if (field === "endDate") {
+    if (field === "endDate" || field === "dueDate") {
       const { startDate } = assignment;
       if (value === null) {
         value = moment(startDate).add("days", 7);
       }
     }
+
     const nextAssignment = produce(assignment, state => {
       switch (field) {
         case "startDate":
@@ -227,7 +228,9 @@ class SimpleOptions extends React.Component {
       assignment,
       updateOptions,
       userRole,
-      specificStudents
+      specificStudents,
+      changeDateSelection,
+      selectedDateOption
     } = this.props;
     const changeField = curry(this.onChange);
     let { openPolicy } = selectsData;
@@ -263,8 +266,11 @@ class SimpleOptions extends React.Component {
           <DateSelector
             startDate={assignment.startDate}
             endDate={assignment.endDate}
+            dueDate={assignment.dueDate}
             changeField={changeField}
             passwordPolicy={assignment.passwordPolicy}
+            changeRadioGrop={changeDateSelection}
+            selectedOption={selectedDateOption}
           />
 
           <StyledRow gutter={32} mb="15px">

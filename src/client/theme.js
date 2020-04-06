@@ -167,6 +167,8 @@ const chartGridColor = "#e4e4e4";
 const chartAxisLabelColor = "#aaafb5";
 const chartTickColor = "#434b5d";
 const chartStockColor = "#42d184";
+const pastDueTagBackground = "#F6C7D5";
+const pastDueTagColor = "#CE5A7C";
 
 const HeaderHeight = {
   xs: 62,
@@ -396,7 +398,9 @@ export const defaultTheme = {
     headerLightBulbIconHeight: `13px`,
     headerBookmarkIconWidth: `11px`,
     headerBookmarkIconHeight: `12px`,
-    headerLeftButtonBgHoverColor: buttonBackgroundColor
+    headerLeftButtonBgHoverColor: buttonBackgroundColor,
+    pastDueTagBackground,
+    pastDueTagColor
   },
   header: {
     headerBgColor: white, // greenDark

@@ -18,6 +18,18 @@
       "itemc": "[Choice C]",
       "itemb": "[Choice B]",
       "itema": "[Choice A]"
+    },
+    "assignTest": {
+      "dueDatePlaceholder": "Select Due Date",
+      "openDatePlaceholder": "Select Open Date",
+      "closeDatePlaceholder": "Select Close Date",
+      "openDateTitle": "OPEN DATE",
+      "dueDateTitle": "DUE DATE FOR STUDENTS",
+      "closeDateTitle": "CLOSE DATE",
+      "dateRadioGroup": {
+        "openClose": "Use Open and Close Date",
+        "openCloseDue": "Use Open, Due and Close Date"
+      }
     }
   },
 

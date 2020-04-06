@@ -31,3 +31,19 @@ export const setStatusBgColor = ({ selectedTheme, filter, theme, enabled }) => {
   }
   return theme.headerFilters.headerSelectedFilterBgColor;
 };
+
+export const formatStudentPastDueTag = data => {
+  const { dueDate, status, endDate } = data;
+  let date = moment();
+  if (status === "submitted") {
+    date = moment(endDate);
+  }
+  const hoursPassed = date.diff(moment(dueDate), "hours");
+  const days = Math.floor(hoursPassed/24);
+  if (days >= 1) {
+    return `PAST DUE (${days} DAY${days > 1 ? "S" : ""})`;
+  } else if (date.valueOf() > dueDate) {
+    return "PAST DUE";
+  }
+  return null;
+}

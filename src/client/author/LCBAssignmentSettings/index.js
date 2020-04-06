@@ -59,8 +59,7 @@ function LCBAssignmentSettings({
 
   const [showSettings, setShowSettings] = useState(false);
 
-  const { startDate, endDate, status } = assignment?.["class"]?.[0] || {};
-  console.log({ startDate, endDate });
+  const { startDate, endDate, status, dueDate } = assignment?.["class"]?.[0] || {};
   const changeField = key => value => {
     if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
       message.info("Please select your prefered start date");
@@ -95,6 +94,7 @@ function LCBAssignmentSettings({
             <DateSelector
               startDate={moment(startDate)}
               endDate={moment(endDate)}
+              dueDate={dueDate ? moment(dueDate) : undefined}
               changeField={changeField}
               forClassLevel
               status={status}

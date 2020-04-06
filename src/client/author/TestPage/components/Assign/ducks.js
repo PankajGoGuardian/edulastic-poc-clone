@@ -207,6 +207,7 @@ function* saveAssignment({ payload }) {
     }
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
+    const dueDate = payload.dueDate && moment(payload.dueDate).valueOf();
 
     const userRole = yield select(getUserRole);
     const isTestLet = test.testType === testContants.type.TESTLET;
@@ -223,6 +224,7 @@ function* saveAssignment({ payload }) {
           ...payload,
           startDate,
           endDate,
+          dueDate,
           testType: testTypeUpdated,
           ...visibility,
           testId

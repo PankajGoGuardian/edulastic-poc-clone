@@ -61,12 +61,12 @@ const openPolicyForAdmin = [
 ];
 
 const closePolicy = [
-  { value: "Automatically on Due Date", text: "Automatically on Due Date" },
+  { value: "Automatically on Due Date", text: "Automatically on Close Date" },
   { value: "Close Manually in Class", text: "Close Manually in Class" }
 ];
 
 const closePolicyForAdmin = [
-  { value: "Automatically on Due Date", text: "Automatically on Due Date" },
+  { value: "Automatically on Due Date", text: "Automatically on Close Date" },
   { value: "Close Manually by Admin", text: "Close Manually by Admin" }
 ];
 

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { isEmpty, get, keyBy } from "lodash";
+import { isEmpty, get, keyBy, omit } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
 import { fetchGroupMembersAction, getStudentsSelector, resetStudentAction } from "../../../sharedDucks/groups";
@@ -53,7 +53,8 @@ class AssignTest extends React.Component {
     super(props);
     this.state = {
       isAdvancedView: props.userRole !== "teacher" ? true : false,
-      specificStudents: false
+      specificStudents: false,
+      selectedDateOption: false
     };
   }
 
@@ -94,6 +95,7 @@ class AssignTest extends React.Component {
       this.updateAssignmentNew({
         startDate: moment(),
         endDate: moment().add("days", 7),
+        dueDate: moment().add("days", 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
         testId: match.params.testId,
@@ -157,6 +159,8 @@ class AssignTest extends React.Component {
       message.error("Please select at least one class to assign.");
     } else if (assignment.endDate < Date.now()) {
       message.error("Please Enter a future end date. ");
+    } else if ( this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
+        message.error("Entered due date should not be greater than end date.")
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
       message.error("Please select the student");
     } else {
@@ -230,8 +234,23 @@ class AssignTest extends React.Component {
     updateAssignmentSettings(newSettings);
   };
 
+  changeDateSelection = e => {
+    const { value } = e.target;
+    this.setState({ selectedDateOption: value }, () => {
+      const { assignmentSettings: assignment } = this.props;
+      let dueDate = "";
+      if (value) {
+        dueDate = assignment.endDate;
+      }
+      this.updateAssignmentNew({
+        ...assignment,
+        dueDate
+      });
+    });
+  }
+
   render() {
-    const { isAdvancedView, specificStudents } = this.state;
+    const { isAdvancedView, specificStudents, selectedDateOption } = this.state;
     const { assignmentSettings: assignment } = this.props;
     const {
       classList,
@@ -295,6 +314,8 @@ class AssignTest extends React.Component {
               onClassFieldChange={this.onClassFieldChange}
               specificStudents={specificStudents}
               toggleSpecificStudents={this.toggleSpecificStudents}
+              changeDateSelection={this.changeDateSelection}
+              selectedDateOption={selectedDateOption}
             />
           )}
         </Container>

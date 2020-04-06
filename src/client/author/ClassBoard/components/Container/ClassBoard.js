@@ -965,6 +965,7 @@ class ClassBoard extends Component {
                   classId={classId}
                   studentSelect={this.onSelectCardOne}
                   endDate={additionalData.endDate || additionalData.closedDate}
+                  dueDate={additionalData.dueDate}
                   closed={additionalData.closed}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected, testActivityId) => {

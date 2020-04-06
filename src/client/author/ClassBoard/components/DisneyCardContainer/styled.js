@@ -18,6 +18,7 @@ import { IconExclamationMark, IconScratchPad } from "@edulastic/icons";
 import { themes } from "../../../../theme";
 
 const classBoardTheme = themes.default.classboard;
+const { pastDueTagBackground, pastDueTagColor } = themes.default.default;
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
@@ -134,6 +135,7 @@ export const PaginationInfoF = styled(StyledFlexContainer)`
   flex: 100%;
   align-items: center;
   margin-bottom: 28px;
+  align-items: flex-start;
 `;
 
 export const PaginationInfoS = styled(StyledFlexContainer)`
@@ -315,4 +317,19 @@ export const StyledIconCol = styled(Col)`
   min-width: 19px;
   padding: 2px;
   text-align: center;
+`;
+
+export const StatusRow = styled.div`
+  height: 18px;
+  overflow: hidden;
+  flex-basis: 50%;
+  background: ${pastDueTagBackground};
+  color: ${pastDueTagColor};
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: bold;
+  line-height: 16px;
+  padding: 3px 12px;
+  border-radius: 5px;
+  margin-top: 3px;
 `;

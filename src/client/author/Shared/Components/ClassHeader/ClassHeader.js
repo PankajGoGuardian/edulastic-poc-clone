@@ -248,8 +248,9 @@ class ClassHeader extends Component {
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const { endDate, startDate, releaseScore, isPaused = false, open, closed, canCloseClass } = additionalData;
-    const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
+    const { endDate, startDate, releaseScore, isPaused = false, open, closed, canCloseClass, dueDate } = additionalData;
+    const dueOn = dueDate || endDate;
+    const dueOnDate = Number.isNaN(dueOn) ? new Date(dueOn) : new Date(parseInt(dueOn, 10));
     const { assignmentId, classId } = match.params;
     const canPause =
       (startDate || open) && !closed && (endDate > Date.now() || !endDate) && canCloseClass.includes(classId);
@@ -371,7 +372,7 @@ class ClassHeader extends Component {
             <StyledParaSecond data-cy="assignmentStatusForDisplay">
               {assignmentStatusForDisplay}
               {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
-              <div>{!!additionalData.endDate && `(Due on ${moment(dueDate).format("MMM DD, YYYY")})`}</div>
+              <div>{!!(dueDate || endDate) && `(Due on ${moment(dueOnDate).format("MMM DD, YYYY")})`}</div>
             </StyledParaSecond>
           </div>
         </TitleWrapper>

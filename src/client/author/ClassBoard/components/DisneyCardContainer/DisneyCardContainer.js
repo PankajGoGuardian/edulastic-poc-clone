@@ -35,11 +35,14 @@ import {
   StyledParaSS,
   StyledParaSSS,
   RightAlignedCol,
-  ExclamationMark
+  ExclamationMark,
+  StatusRow
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName } from "../../Transformer";
 import { isItemVisibiltySelector, testActivtyLoadingSelector } from "../../ducks";
+import { formatStudentPastDueTag } from "../../../../student/utils";
+
 class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
@@ -81,7 +84,8 @@ class DisneyCardContainer extends Component {
       enrollmentStatus,
       isItemsVisible,
       closed,
-      t
+      t,
+      dueDate
     } = this.props;
 
     const noDataNotification = () => {
@@ -97,7 +101,6 @@ class DisneyCardContainer extends Component {
     };
 
     const showLoader = () => <Spin size="small" />;
-
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -171,6 +174,12 @@ class DisneyCardContainer extends Component {
             ""
           );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
+        const pastDueTag = dueDate && status.status !== "Absent" ? formatStudentPastDueTag({
+          status: student.status,
+          dueDate,
+          endDate: student.endDate
+        }) : null;
+
         const studentData = (
           <StyledCard
             data-cy={`student-card-${name}`}
@@ -220,17 +229,20 @@ class DisneyCardContainer extends Component {
                     {name}
                   </StyledParaF>
                   {student.present ? (
-                    <StyledParaS
-                      isLink={viewResponseStatus.includes(status.status)}
-                      data-cy="studentStatus"
-                      color={status.color}
-                      onClick={e =>
-                        viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
-                      }
-                    >
-                      {enrollMentFlag}
-                      {status.status}
-                    </StyledParaS>
+                    <>
+                      <StyledParaS
+                        isLink={viewResponseStatus.includes(status.status)}
+                        data-cy="studentStatus"
+                        color={status.color}
+                        onClick={e =>
+                          viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                        }
+                      >
+                        {enrollMentFlag}
+                        {status.status}
+                      </StyledParaS>
+                      {pastDueTag && <StatusRow>{pastDueTag}</StatusRow>}
+                    </>
                   ) : (
                     <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                   )}

@@ -473,7 +473,8 @@ export const transformGradeBookResponse = (
           score,
           testActivityId,
           redirected,
-          questionActivities
+          questionActivities,
+          endDate: testActivity.endDate
         };
       }
     )

@@ -46,6 +46,7 @@ export const getCurrentAssignmentSelector = createSelector(
     return {
       startDate: moment(),
       endDate: moment().add("days", 7),
+      dueDate: moment().add("days", 7),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
       class: []

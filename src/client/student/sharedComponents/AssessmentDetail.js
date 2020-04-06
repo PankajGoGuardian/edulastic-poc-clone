@@ -12,7 +12,10 @@ import {
   desktopWidth
 } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
-import { formatDateAndTime } from "../utils";
+import { formatDateAndTime, formatStudentPastDueTag } from "../utils";
+import { themes } from "../../theme";
+
+const { pastDueTagBackground, pastDueTagColor } = themes.default.default;
 
 const {
   studentAssignmentConstants: { assignmentStatus }
@@ -35,7 +38,8 @@ const AssessmentDetails = ({
   graded = assignmentStatus.GRADED,
   absent,
   isPaused,
-  lastAttempt
+  lastAttempt,
+  isDueDate
 }) => {
   const status =
     started || resume
@@ -43,6 +47,11 @@ const AssessmentDetails = ({
       : `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
 
   const { endDate } = lastAttempt;
+  const pastDueTag = isDueDate && !absent && formatStudentPastDueTag({
+    status: started || graded ? "submitted" : "inprogress",
+    dueDate,
+    endDate
+  });
 
   return (
     <Wrapper>
@@ -102,6 +111,7 @@ const AssessmentDetails = ({
               </span>
             </StatusButton>
           )}
+          {pastDueTag && <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow> }
         </StatusWrapper>
       </CardDetails>
     </Wrapper>
@@ -358,3 +368,16 @@ const TestType = React.memo(styled.span`
   display: inline-block;
   vertical-align: top;
 `);
+
+const StatusRow = styled.div`
+  height: 25px;
+  overflow: hidden;
+  background: ${pastDueTagBackground};
+  color: ${pastDueTagColor};
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 6px 24px;
+  border-radius: 5px;
+  margin-left: 6px;
+`;

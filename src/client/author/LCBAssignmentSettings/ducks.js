@@ -38,7 +38,7 @@ const slice = createSlice({
     },
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload;
-      if (["startDate", "endDate"].includes(key)) {
+      if (["startDate", "endDate", "dueDate"].includes(key)) {
         state.assignment.class[0][key] = value.valueOf();
         state.updateSettings[key] = value.valueOf();
       } else {
@@ -121,7 +121,7 @@ function* loadAssignmentSaga({ payload }) {
 
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {};
-  const { openPolicy, closePolicy, releaseScore, startDate, endDate, calcType } = assignment;
+  const { openPolicy, closePolicy, releaseScore, startDate, endDate, calcType, dueDate } = assignment;
   return omitBy(
     {
       openPolicy,
@@ -129,7 +129,8 @@ function getSettingsSelector(state) {
       releaseScore,
       startDate,
       endDate,
-      calcType
+      calcType,
+      dueDate
     },
     isUndefined
   );

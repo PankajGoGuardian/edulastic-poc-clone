@@ -96,7 +96,8 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     thumbnail,
     timedAssignment,
     pauseAllowed,
-    allowedTime
+    allowedTime,
+    dueDate
   } = data;
 
   const currentClassList = clazz.filter(cl => cl._id === classId);
@@ -306,13 +307,14 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         type={type}
         started={attempted}
         resume={resume}
-        dueDate={endDate}
+        dueDate={dueDate || endDate}
         startDate={startDate}
         safeBrowser={safeBrowser}
         graded={graded}
         absent={absent}
         isPaused={isPaused}
         lastAttempt={lastAttempt}
+        isDueDate={!!dueDate}
       />
       {timedAssignment && (
         <TimeIndicator>

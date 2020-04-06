@@ -114,7 +114,6 @@ class Container extends Component {
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
-
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && !item.multipartItem) {
       history.replace({
         pathname: isTestFlow
@@ -196,7 +195,18 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow, rows } = this.props;
+    const {
+      match,
+      history,
+      t,
+      changeView,
+      modalItemId,
+      navigateToPickupQuestionType,
+      isTestFlow,
+      rows,
+      item
+    } = this.props;
+
     changeView("edit");
 
     if (modalItemId) {
@@ -205,6 +215,12 @@ class Container extends Component {
     }
     const { widgets = [] } = rows[rowIndex];
     const columnHasResource = widgets.length > 0 && widgets.some(widget => widget.widgetType === "resource");
+    // there is 2 col layout, only allow to add questions on the right panel
+    // can add only resources/instructions in the left
+
+    const isMultiDimensionalLayout = rows.length > 1;
+    const { multipartItem: isMultipartItem } = item;
+
     history.push({
       pathname: isTestFlow
         ? `/author/tests/${match.params.testId}/createItem/${match.params.id}/pickup-questiontype`
@@ -215,7 +231,9 @@ class Container extends Component {
         rowIndex,
         tabIndex,
         testItemId: isTestFlow ? match.params.itemId : match.params.id,
-        columnHasResource: rows.length > 1 && rowIndex === 0 && columnHasResource
+        columnHasResource: rows.length > 1 && rowIndex === 0 && columnHasResource,
+        isMultiDimensionalLayout,
+        isMultipartItem
       }
     });
   };
@@ -658,6 +676,8 @@ class Container extends Component {
               setItemLevelScoring={setItemLevelScoring}
               isPassageQuestion={isPassageQuestion}
               questionsCount={qLength}
+              isMultiDimensionLayout={rows.length > 1}
+              isMultipart={item.multipartItem}
             />
           )}
           <ItemHeader

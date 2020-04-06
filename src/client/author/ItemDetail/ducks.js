@@ -457,30 +457,62 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
     pull(newState.qids, qid);
   });
 
-const updateDimension = (state, { left, right }) => {
-  const newState = cloneDeep(state);
-  newState.item.rows[0].dimension = left;
+const updateDimension = (state, { left, right, ...rest }) => {
+  const {
+    item: { rows = [] }
+  } = state;
+  if (rows.length > 0 && rows[0].dimension === left) {
+    /**
+     * fixing page crash here when same option is clicked
+     * separate bug is to be logged for fixing page crash
+     * will ideally prevent in from the action being called in that
+     */
 
-  if (left === "100%") {
-    newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...newState.item.rows[1].widgets];
-    newState.item.rows.length = 1;
-  } else {
-    // if its a pasage type. left is passage and right is the testItem
-    if (newState.item.passageId) {
-      newState.item.rows[0].dimension = right;
-      newState.passage.structure.dimension = left;
-    } else if (!newState.item.rows[1]) {
-      // normal multipart
-      newState.item.rows[1] = {
-        tabs: [],
-        dimension: right,
-        widgets: []
-      };
-    } else {
-      newState.item.rows[1].dimension = right;
-    }
+    return state;
   }
-  return newState;
+
+  /**
+   * https://snapwiz.atlassian.net/browse/EV-12853 (comments)
+   *
+   * allow only resources to be added to the left column
+   * allow only questions to be added to the right column
+   *
+   * below manipulations cater this
+   */
+  return produce(state, newState => {
+    newState.item.rows[0].dimension = left;
+
+    if (left === "100%") {
+      //  if coming from 2 col layout to 1 col layout
+      //  shifting all the widgets back in the first column
+      if (newState.item.rows[1]) {
+        newState.item.rows[0].widgets = newState.item.rows[0].widgets || [];
+        newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...(newState.item.rows[1].widgets || [])];
+      }
+      newState.item.rows.length = 1;
+    } else {
+      // if its a pasage type. left is passage and right is the testItem
+      if (newState.item.passageId) {
+        newState.item.rows[0].dimension = right;
+        newState.passage.structure.dimension = left;
+      } else if (!newState.item.rows[1]) {
+        // normal multipart
+
+        const firstRowWidgets = newState.item.rows[0].widgets;
+        const resources = firstRowWidgets.filter(widget => widget.widgetType !== "question");
+        const questions = firstRowWidgets.filter(widget => widget.widgetType === "question");
+
+        newState.item.rows[0].widgets = resources; // keep only the resources at the left panel
+        newState.item.rows[1] = {
+          tabs: [],
+          dimension: right,
+          widgets: questions // keep only questions on the right column
+        };
+      } else {
+        newState.item.rows[1].dimension = right;
+      }
+    }
+  });
 };
 
 const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {

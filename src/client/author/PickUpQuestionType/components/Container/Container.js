@@ -79,10 +79,16 @@ class Container extends Component {
     } = this.props;
 
     const { testId, itemId, id } = match.params;
-    const { columnHasResource = false } = history.location?.state || {};
-    if (columnHasResource && !["rulers-calculators", "instruction"].includes(selectedCategory)) {
-      message.warning(` Please add instructions on the left and all the associated questions on the right.`);
-      return;
+    const { isMultiDimensionalLayout = false, rowIndex } = history.location?.state || {};
+
+    const resourceSelected = ["rulers-calculators", "instruction"].includes(selectedCategory);
+    const questionSelected = !resourceSelected;
+
+    if (isMultiDimensionalLayout) {
+      if ((rowIndex === 0 && questionSelected) || (rowIndex !== 0 && resourceSelected)) {
+        message.warning(` Please add resources on the left and all the associated questions on the right.`);
+        return;
+      }
     }
     // in case of combination multipart
     if (data.type === questionType.COMBINATION_MULTIPART) {
@@ -238,6 +244,7 @@ class Container extends Component {
       itemDetails = {}
     } = this.props;
     const { mobileViewShow, isShowCategories } = this.state;
+    const { multipartItem } = itemDetails;
 
     if (!itemDetails._id) {
       if (pathname.includes("/author/tests")) {
@@ -301,10 +308,12 @@ class Container extends Component {
                     <IconWrite />
                     Writing
                   </Menu.Item>
-                  <Menu.Item key="read">
-                    <IconRead />
-                    Reading
-                  </Menu.Item>
+                  {!multipartItem && (
+                    <Menu.Item key="read">
+                      <IconRead />
+                      Reading
+                    </Menu.Item>
+                  )}
                   <Menu.Item key="highlight">
                     <IconTarget />
                     Highlight
@@ -409,10 +418,12 @@ class Container extends Component {
                 <IconWrite />
                 Writing
               </Menu.Item>
-              <Menu.Item key="read" onClick={this.toggleCategories}>
-                <IconRead />
-                Reading
-              </Menu.Item>
+              {!multipartItem && (
+                <Menu.Item key="read" onClick={this.toggleCategories}>
+                  <IconRead />
+                  Reading
+                </Menu.Item>
+              )}
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
                 <IconTarget />
                 Highlight

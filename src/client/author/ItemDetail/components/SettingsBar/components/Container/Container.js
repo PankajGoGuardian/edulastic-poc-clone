@@ -130,7 +130,9 @@ class Container extends Component {
       setItemLevelScoring,
       questionsCount,
       isSingleQuestion = false,
-      isMultipart
+      isMultipart,
+      isMultiDimensionLayout,
+      isPassageQuestion
     } = this.props;
     const singleLayout = type === layouts[0].value;
 
@@ -161,7 +163,7 @@ class Container extends Component {
           onChangeRight={this.handleChangeRightTab}
           checkedLeft={useTabsLeft}
           checkedRight={useTabsRight}
-          disableRight={singleLayout}
+          disableRight={singleLayout || (isMultipart && !isPassageQuestion && isMultiDimensionLayout)}
         />
         <SettingsFlowLayout
           onChangeLeft={this.handleChangeLeftFlowLayout}

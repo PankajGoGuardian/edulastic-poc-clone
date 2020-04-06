@@ -85,11 +85,7 @@ const AssessmentDetails = ({
         <StatusWrapper>
           {type === "assignment" ? (
             <React.Fragment>
-              <StatusButton
-                isPaused={isPaused}
-                isSubmitted={started || resume}
-                assignment={type === "assignment"}
-              >
+              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
                 <span data-cy="status">{status}</span>
               </StatusButton>
               {safeBrowser && (
@@ -204,11 +200,21 @@ const Thumbnail = React.memo(styled.img`
 
 const AssignmentTitle = React.memo(styled.span`
   font-size: ${props => props.theme.assignment.cardAssingmnetTitleFontSize};
-  max-width: ${props => props.maxWidth || "28vw"};
+  max-width: ${props => props.maxWidth || "24vw"};
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  ${props =>
+    props.maxWidth === "60vw" &&
+    `
+    @media (max-width: ${largeDesktopWidth}) {
+      max-width: 55vw;
+    }
+    @media (min-width: ${extraDesktopWidth}) {
+      max-width: 65vw;
+    }
+  `}
 `);
 
 const CardDetails = React.memo(styled(Col)`

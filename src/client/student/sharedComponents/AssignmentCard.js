@@ -250,7 +250,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     </React.Fragment>
   );
 
-  const titleMaxWidth = isValidAttempt ? (timedAssignment ? "30vw" : "24vw") : "30vw";
+  const titleMaxWidth = isValidAttempt ? (timedAssignment ? "30vw" : "24vw") : "60vw";
 
   return (
     <CardWrapper data-cy={`test-${data.testId}`}>

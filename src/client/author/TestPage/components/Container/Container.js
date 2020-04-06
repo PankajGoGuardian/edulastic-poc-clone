@@ -34,7 +34,8 @@ import {
   duplicateTestRequestAction,
   getReleaseScorePremiumSelector,
   approveOrRejectSingleTestRequestAction,
-  updateLastUsedCollectionListAction
+  updateLastUsedCollectionListAction,
+  removeTestEntityAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -155,7 +156,8 @@ class Container extends PureComponent {
     editEnable: false,
     showShareModal: false,
     isShowFilter: true,
-    showCancelButton: false
+    showCancelButton: false,
+    testLoaded: false
   };
 
   gotoTab = tab => {
@@ -217,6 +219,7 @@ class Container extends PureComponent {
     }
 
     if (match.params.id && match.params.id != "undefined") {
+      this.setState({ testLoaded: false });
       receiveTestById(match.params.id, true, editAssigned);
     } else if (!_location?.state?.persistStore) {
       // currently creating test do nothing
@@ -245,12 +248,24 @@ class Container extends PureComponent {
     getDefaultTestSettings();
   }
 
+  componentWillUnmount() {
+    this.props.removeTestEntity();
+  }
+
   componentDidUpdate(prevProps) {
-    const { receiveItemDetailById, test } = this.props;
+    const { receiveItemDetailById, test, history } = this.props;
+
     if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
       const testItem = test.itemGroups?.[0].items?.[0] || {};
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
+    }
+    const { editAssigned = false } = history.location.state || this.state;
+    if (editAssigned && test?._id && !this.state.testLoaded) {
+      this.onEnableEdit();
+    }
+    if (test._id && !this.state.testLoaded) {
+      this.setState({ testLoaded: true });
     }
   }
 
@@ -843,7 +858,8 @@ const enhance = compose(
       getDefaultTestSettings: getDefaultTestSettingsAction,
       duplicateTest: duplicateTestRequestAction,
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
-      updateLastUsedCollectionList: updateLastUsedCollectionListAction
+      updateLastUsedCollectionList: updateLastUsedCollectionListAction,
+      removeTestEntity: removeTestEntityAction
     }
   )
 );

@@ -856,6 +856,7 @@ export function* deleteItemSaga({ payload }) {
 export function* updateItemSaga({ payload }) {
   try {
     const { addToTest } = payload;
+    const oldTestId = payload?.locationState?.previousTestId;
     if (!payload.keepData) {
       // avoid data part being put into db
       delete payload.data.data;
@@ -1015,7 +1016,7 @@ export function* updateItemSaga({ payload }) {
         yield put(setCreatedItemToTestAction(item));
         yield put(
           push({
-            pathname: `/author/tests/tab/addItems/id/${payload.testId}`,
+            pathname: `/author/tests/tab/review/id/${payload.testId}${oldTestId ? `/old/${oldTestId}` : ""}`,
             state: {
               isAuthoredNow: true
             }

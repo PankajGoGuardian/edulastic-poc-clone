@@ -119,6 +119,7 @@ export const UPDATE_TEST_ERROR = "[tests] update test error";
 
 export const RECEIVE_TEST_BY_ID_REQUEST = "[tests] receive test by id request";
 export const RECEIVE_TEST_BY_ID_SUCCESS = "[tests] receive test by id success";
+export const REMOVE_TEST_ENTITY = "[tests] remove entity";
 export const RECEIVE_TEST_BY_ID_ERROR = "[tests] receive test by id error";
 
 export const SET_TEST_DATA = "[tests] set test data";
@@ -181,6 +182,7 @@ export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 export const setTestsLoadingAction = createAction(SET_LOADING_TEST_PAGE);
 export const duplicateTestRequestAction = createAction(DUPLICATE_TEST_REQUEST);
 export const updateTestAndNavigateAction = createAction(UPDATE_TEST_AND_NAVIGATE);
+export const removeTestEntityAction = createAction(REMOVE_TEST_ENTITY);
 export const approveOrRejectSingleTestRequestAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_REQUEST);
 export const approveOrRejectSingleTestSuccessAction = createAction(APPROVE_OR_REJECT_SINGLE_TEST_SUCCESS);
 export const updateGroupDataAction = createAction(UPDATE_GROUP_DATA);
@@ -585,6 +587,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...payload.entity
         },
         updated: state.createdItems.length > 0
+      };
+    case REMOVE_TEST_ENTITY:
+      return {
+        ...state,
+        entity: createBlankTest()
       };
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };

@@ -22,6 +22,9 @@ class AdminHeader extends Component {
       case "District Profile":
         history.push(`/author/districtprofile`);
         return;
+      case "School Profile":
+        history.push(`/author/schoolprofile`);
+        return;
       case "Schools":
         history.push(`/author/Schools`);
         return;
@@ -60,7 +63,10 @@ class AdminHeader extends Component {
       <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>
           <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
-            <StyledTabPane tab={isDA ? "District Profile" : "School Profile"} key="District Profile" />
+            <StyledTabPane
+              tab={isDA ? "District Profile" : "School Profile"}
+              key={isDA ? "District Profile" : "School Profile"}
+            />
             <StyledTabPane tab={SchoolTabtext} key="Schools" />
             <StyledTabPane tab="Users" key="Users" />
             <StyledTabPane tab="Classes" key="Classes" />

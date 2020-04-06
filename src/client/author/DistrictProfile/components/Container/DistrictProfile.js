@@ -14,7 +14,6 @@ import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
 import { receiveSchoolProfileAction } from "../../ducks";
 
 const title = "Manage District";
-const menuActive = { mainMenu: "District Profile", subMenu: "" };
 
 class DistrictProfile extends Component {
   state = {
@@ -99,6 +98,10 @@ class DistrictProfile extends Component {
   render() {
     const { history, role } = this.props;
     const { isInputEnabled } = this.state;
+    const menuActive = {
+      mainMenu: role === roleuser.SCHOOL_ADMIN ? "School Profile" : "District Profile",
+      subMenu: ""
+    };
     return (
       <FeaturesSwitch
         inputFeatures={role === roleuser.SCHOOL_ADMIN ? "manageSchool" : "manageDistrict"}

@@ -104,7 +104,7 @@ const menuItems = [
   {
     label: "Manage School",
     icon: IconSettings,
-    path: "author/districtprofile",
+    path: "author/schoolprofile",
     allowedPathPattern: [/schools/],
     role: ["school-admin"]
   }

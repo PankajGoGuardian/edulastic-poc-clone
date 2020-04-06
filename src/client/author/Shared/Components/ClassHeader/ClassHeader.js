@@ -262,7 +262,6 @@ class ClassHeader extends Component {
     const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
       orgClasses.find(({ _id }) => _id === classId) || {};
     const showSyncGradesWithCanvasOption = canvasCode && canvasCourseSectionCode && orgData.allowCanvas;
-    const showSyncWithGoogleClassroom = groupGoogleId && orgData.allowGoogleClassroom;
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -325,7 +324,7 @@ class ClassHeader extends Component {
             Canvas Grade Sync
           </MenuItems>
         )}
-        {showSyncWithGoogleClassroom && (
+        {groupGoogleId && (
           <MenuItems key="key7" onClick={() => googleSyncAssignment({ assignmentId, groupId: classId })}>
             Sync with Google Classroom
           </MenuItems>

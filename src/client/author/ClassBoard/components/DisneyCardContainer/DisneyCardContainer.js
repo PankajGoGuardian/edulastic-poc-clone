@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
-import { themeColorLighter, yellow, red } from "@edulastic/colors";
+import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { CheckboxLabel } from "@edulastic/common";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
-import { ScratchPadIcon } from "./styled";
+import { ScratchPadIcon, StyledIconCol } from "./styled";
 
 import {
   StyledCardContiner,
@@ -251,18 +251,23 @@ class DisneyCardContainer extends Component {
                       />
                     </Col>
                   </Row>
-                  <Row>
-                    <Col>
-                      {hasUsedScratchPad && <ScratchPadIcon />}
-                      {student.redirected && (
+                  <Row style={{ display: "flex" }}>
+                    {hasUsedScratchPad && (
+                      <StyledIconCol>
+                        <ScratchPadIcon />
+                      </StyledIconCol>
+                    )}
+                    {student.redirected && (
+                      <StyledIconCol>
                         <i
                           data-cy="redirected"
                           title="Assessment is redirected to the student. The most recent response will be shown"
                           className="fa fa-external-link"
                           aria-hidden="true"
+                          style={{ color: themeColor }}
                         />
-                      )}
-                    </Col>
+                      </StyledIconCol>
+                    )}
                   </Row>
                 </RightAlignedCol>
               </PaginationInfoF>

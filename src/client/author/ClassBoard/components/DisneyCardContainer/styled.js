@@ -304,6 +304,15 @@ export const RightAlignedCol = styled(Col)`
 `;
 
 export const ScratchPadIcon = styled(IconScratchPad)`
+  margin: 2px 0;
   fill: ${themeColor};
-  margin-right: 2px;
+  &:hover {
+    fill: ${themeColor};
+  }
+`;
+
+export const StyledIconCol = styled(Col)`
+  min-width: 19px;
+  padding: 2px;
+  text-align: center;
 `;

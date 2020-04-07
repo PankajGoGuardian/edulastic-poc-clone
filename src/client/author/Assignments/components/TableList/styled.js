@@ -268,7 +268,7 @@ export const AssignedImg = styled.img`
 `;
 
 export const TypeIcon = styled.span`
-  display: inline-block;
+  float: left;
   width: 18px;
   height: 18px;
   max-width: 18px;
@@ -280,7 +280,18 @@ export const TypeIcon = styled.span`
   font-weight: 600;
   font-size: ${props => props.theme.bodyFontSize};
   line-height: 17px;
-  padding-left: 1px;
+`;
+
+export const TimedTestIndicator = styled.span`
+  width: 80px;
+  height: 18px;
+  max-width: 80px;
+  font-weight: 700;
+  margin-left: 8px;
+  i {
+    padding-right: 6px;
+    transform: scale(1.3);
+  }
 `;
 
 export const ExpandDivdier = styled.div`

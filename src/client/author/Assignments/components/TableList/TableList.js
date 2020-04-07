@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { isEmpty, find, get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown, Tooltip, Spin } from "antd";
+import { Dropdown, Tooltip, Spin, Icon as AntdIcon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -33,7 +33,8 @@ import {
   GreyFont,
   ExpandedTable,
   ActionsWrapper,
-  TitleCase
+  TitleCase,
+  TimedTestIndicator
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
@@ -75,6 +76,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   action: "",
   classId: data.classId,
   testType: data.testType,
+  timedAssignment: data.timedAssignment && data.allowedTime,
   hasAutoSelectGroups: testItem.hasAutoSelectGroups
 });
 
@@ -126,18 +128,27 @@ const TableList = ({
       {
         dataIndex: "testType",
         width: "10%",
-        render: (_, row) =>
-          row && row.testType === test.type.PRACTICE ? (
-            <TypeIcon data-cy="type" type="p">
-              P
-            </TypeIcon>
-          ) : row.testType === test.type.ASSESSMENT ? (
-            <TypeIcon data-cy="type">A</TypeIcon>
-          ) : (
-            <TypeIcon data-cy="type" type="c">
-              C
-            </TypeIcon>
-          )
+        render: (_, row) => (
+          <>
+            {row && row.testType === test.type.PRACTICE ? (
+              <TypeIcon data-cy="type" type="p">
+                P
+              </TypeIcon>
+            ) : row.testType === test.type.ASSESSMENT ? (
+              <TypeIcon data-cy="type">A</TypeIcon>
+            ) : (
+              <TypeIcon data-cy="type" type="c">
+                C
+              </TypeIcon>
+            )}
+            {row.timedAssignment && (
+              <TimedTestIndicator data-cy="type" type="p">
+                <AntdIcon type="clock-circle" />
+                {row.timedAssignment / (60 * 1000)}min
+              </TimedTestIndicator>
+            )}
+          </>
+        )
       },
       {
         dataIndex: "assigned",

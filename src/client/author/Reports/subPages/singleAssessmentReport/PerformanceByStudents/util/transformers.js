@@ -6,6 +6,7 @@ import { filterData, getHSLFromRange1, filterAccordingToRole, formatDate } from 
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
 import { reportLinkColor } from "../../../multipleAssessmentReport/common/utils/constants";
+import moment from "moment";
 
 export const getInterval = maxValue => min([maxValue, 9]);
 
@@ -133,6 +134,7 @@ export const normaliseTableData = (rawData, data) => {
       studentScore,
       classAvg,
       assessmentScore,
+      submittedDate: formatDate(studentMetric.submittedDate),
       assessmentDate: formatDate(studentMetric.timestamp)
     };
   });
@@ -183,7 +185,11 @@ export const getSorter = (columnType, columnKey) => {
       return (a, b) => a[columnKey].localeCompare(b[columnKey]);
     case "name":
       // primary sort is on lastName & secondary sort is on firstName
-      return (a, b) => a.student.toLowerCase().localeCompare(b.student.toLowerCase());
+      return (a, b) => a[columnKey].toLowerCase().localeCompare(b[columnKey].toLowerCase());
+    case "date":
+      return (a, b) => (moment(a[columnKey]).isBefore(b[columnKey]) ? -1 : 1);
+    case "score":
+      return (a, b) => a.totalScore / a.maxScore - b.totalScore / b.maxScore;
     default:
       return null;
   }
@@ -204,12 +210,17 @@ const getCellContents = ({ printData, colorKey, ...restProps }) => {
   if (columnKey === "studentScore") {
     return (
       <div style={{ backgroundColor: getHSLFromRange1(parseInt(colorKey)) }}>
-        <Link style={{ color: reportLinkColor }} to={{
-          pathname:`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-          state: {
-            breadCrumb: getBreadCrumb(location, pageTitle)
-          }
-        }}>
+        <Link
+          style={{ color: reportLinkColor }}
+          to={{
+            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+              record.testActivityId
+            }`,
+            state: {
+              breadCrumb: getBreadCrumb(location, pageTitle)
+            }
+          }}
+        >
           {printData}
         </Link>
       </div>
@@ -268,7 +279,7 @@ const getColorCell = (columnKey, columnType, assessmentName, location = {}, page
 };
 
 // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-const getBreadCrumb = (location, pageTitle) => ([
+const getBreadCrumb = (location, pageTitle) => [
   {
     title: "REPORTS",
     to: "/author/reports"
@@ -277,7 +288,7 @@ const getBreadCrumb = (location, pageTitle) => ([
     title: pageTitle,
     to: `${location.pathname}${location.search}`
   }
-]);
+];
 
 export const getColumns = (columns, assessmentName, role, location, pageTitle) => {
   const filteredColumns = filterAccordingToRole(columns, role);
@@ -292,20 +303,25 @@ export const getColumns = (columns, assessmentName, role, location, pageTitle) =
         data
       );
 
-    // column 4 defined assessmentScore
-    columnsDraft[4].render = (data, record) => {
+    // column 5 defined assessmentScore
+    columnsDraft[5].render = (data, record) => {
       if (data === "Absent") return data;
       return (
-        <Link style={{ color: reportLinkColor }} to={{
-          pathname:`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-          state: {
-            breadCrumb: getBreadCrumb(location, pageTitle)
-          }
-        }}>
+        <Link
+          style={{ color: reportLinkColor }}
+          to={{
+            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${
+              record.testActivityId
+            }`,
+            state: {
+              breadCrumb: getBreadCrumb(location, pageTitle)
+            }
+          }}
+        >
           {data}
         </Link>
       );
-    }
+    };
     forEach(columnsDraft, column => {
       if (column.sortable) {
         column.sorter = getSorter(column.type, column.dataIndex);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { get, head } from "lodash";
 import { connect } from "react-redux";
+import moment from "moment";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { getReportsMARFilterData, getFiltersSelector } from "../common/filterDataDucks";
 import { getUserRole } from "../../../../src/selectors/user";
@@ -12,7 +13,7 @@ import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 import { Placeholder } from "../../../common/components/loader";
 
 import dropDownData from "./static/json/dropDownData.json";
-import tableColumns from "./static/json/tableColumns.json";
+import staticTableColumns from "./static/json/tableColumns.json";
 
 import { usefetchProgressHook } from "../common/hooks";
 import { useGetBandData } from "./hooks";
@@ -20,7 +21,7 @@ import { filterAccordingToRole } from "../../../common/util";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
 import AddToGroupModal from "../../../common/components/Popups/AddToGroupModal";
 
-import { getFormattedName, downloadCSV } from "../../../common/util";
+import { getFormattedName, downloadCSV, formatDate } from "../../../common/util";
 
 const DefaultBandInfo = [
   {
@@ -43,6 +44,16 @@ const DefaultBandInfo = [
 const compareBy = {
   key: "student",
   title: "Student"
+};
+
+const addSubmittedDateColumn = columns => {
+  columns.push({
+    key: "submittedDate",
+    title: "Submitted Date",
+    dataIndex: "submittedDate",
+    sorter: (a, b) => (moment(a.submittedDate).isBefore(b.submittedDate) ? -1 : 1)
+  });
+  return columns;
 };
 
 const StudentProgress = ({
@@ -84,13 +95,18 @@ const StudentProgress = ({
     );
   }
 
+  const tableColumns = addSubmittedDateColumn(staticTableColumns);
   const customTableColumns = filterAccordingToRole(tableColumns, role);
 
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
   const onCsvConvert = data => downloadCSV(`Student Progress.csv`, data);
 
   const dataSource = data
-    .map(d => ({ ...d, studentName: getFormattedName(d.studentName) }))
+    .map(d => ({
+      ...d,
+      studentName: getFormattedName(d.studentName),
+      submittedDate: formatDate(d.submittedDate)
+    }))
     .sort((a, b) => a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()));
 
   const rowSelection = {

@@ -21,6 +21,7 @@ class ParentController extends MessageController {
     this.playerStateHandler = null;
     this.setCurrentScoring = null;
     this.handleLog = null;
+    this.submitTest = null;
   }
 
   /*********** set callback for updating React component and Redux */
@@ -33,6 +34,7 @@ class ParentController extends MessageController {
     this.playerStateHandler = callbacks.playerStateHandler;
     this.setCurrentScoring = callbacks.setCurrentScoring;
     this.handleLog = callbacks.handleLog;
+    this.submitTest = callbacks.submitTest;
   }
 
   /********************** call from testlet ************************/
@@ -53,6 +55,13 @@ class ParentController extends MessageController {
   onLastPage() {
     // reach last page, change next button to submit button
     console.log("parent :: testlet reaches the last page...");
+  }
+
+  onSubmit() {
+    // submit page
+    if (this.submitTest) {
+      this.submitTest();
+    }
   }
 
   // get response data from testlet

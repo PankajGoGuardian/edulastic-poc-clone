@@ -8,6 +8,16 @@ import ProgressContainer from "./ProgressContainer";
 import { ContainerRight, FlexDisplay, HeaderPracticePlayer, PlayerTitle } from "./styled";
 import Tools from "./Tools";
 
+const getButtonText = (currentPage, pages, hasSubmitButton) => {
+  if (currentPage <= 1) {
+    return "Start";
+  }
+  if (currentPage <= pages?.length && hasSubmitButton) {
+    return "Submit";
+  }
+  return "Next";
+};
+
 const PlayerHeader = ({
   title,
   dropdownOptions,
@@ -19,7 +29,8 @@ const PlayerHeader = ({
   changeTool,
   calculateMode,
   handleMagnifier,
-  enableMagnifier
+  enableMagnifier,
+  hasSubmitButton
 }) => (
   <Fragment>
     <HeaderPracticePlayer>
@@ -39,18 +50,15 @@ const PlayerHeader = ({
           <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
           <ContainerRight>
             <FlexDisplay>
-              {currentPage > 1 && (
-                <EduButton isGhost height="40px" onClick={onNextQuestion} title="Next" disabled={!unlockNext}>
-                  <span>Next</span>
-                  <IconGraphRightArrow />
-                </EduButton>
-              )}
-              {currentPage <= 1 && (
-                <EduButton isGhost height="40px" onClick={onNextQuestion} title="Start">
-                  <span>Start</span>
-                  <IconGraphRightArrow />
-                </EduButton>
-              )}
+              <EduButton
+                isGhost
+                height="40px"
+                onClick={onNextQuestion}
+                disabled={!unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length}
+              >
+                <span>{getButtonText(currentPage, dropdownOptions, hasSubmitButton)}</span>
+                <IconGraphRightArrow />
+              </EduButton>
               <EduButton isGhost IconBtn height="40px" title="Exit" onClick={onOpenExitPopup}>
                 <IconLogout />
               </EduButton>

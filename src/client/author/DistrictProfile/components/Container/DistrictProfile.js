@@ -1,4 +1,5 @@
 import { EduButton } from "@edulastic/common";
+import { IconSaveNew, IconPencilEdit } from "@edulastic/icons";
 import { Layout } from "antd";
 import { get, pickBy } from "lodash";
 import React, { Component, Fragment } from "react";
@@ -12,6 +13,7 @@ import { Spacer, StyledLayout, SubHeader, DropdownWrapper } from "./styled";
 import { getUserRole, getSaSchoolsSortedSelector } from "../../../src/selectors/user";
 import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
 import { receiveSchoolProfileAction } from "../../ducks";
+import { getSchoolAdminSettingsAccess } from "../../../DistrictPolicy/ducks";
 
 const title = "Manage District";
 
@@ -71,32 +73,14 @@ class DistrictProfile extends Component {
     });
   };
 
-  showButtons = isInputEnabled => (
-    <>
-      <DropdownWrapper>
-        <SaSchoolSelect onChange={this.props.loadSchoolProfile} />
-      </DropdownWrapper>
-      {!isInputEnabled ? (
-        <Fragment>
-          <EduButton type="primary" onClick={this.handleEditClick}>
-            Edit
-          </EduButton>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <EduButton isGhost onClick={this.handleEditClick}>
-            Cancel
-          </EduButton>
-          <EduButton type="primary" onClick={this.handleFormSubmit}>
-            Save
-          </EduButton>
-        </Fragment>
-      )}
-    </>
+  showButtons = () => (
+    <DropdownWrapper>
+      <SaSchoolSelect onChange={this.props.loadSchoolProfile} />
+    </DropdownWrapper>
   );
 
   render() {
-    const { history, role } = this.props;
+    const { history, role, isSAlevelSettingsAccess } = this.props;
     const { isInputEnabled } = this.state;
     const menuActive = {
       mainMenu: role === roleuser.SCHOOL_ADMIN ? "School Profile" : "District Profile",
@@ -108,10 +92,29 @@ class DistrictProfile extends Component {
         actionOnInaccessible="hidden"
       >
         <Layout>
-          <AdminHeader title={title} active={menuActive} history={history} />
+          <AdminHeader title={title} active={menuActive} history={history}>
+            {(isSAlevelSettingsAccess || role === roleuser.DISTRICT_ADMIN) &&
+              (!isInputEnabled ? (
+                <Fragment>
+                  <EduButton type="primary" onClick={this.handleEditClick}>
+                    <IconPencilEdit />
+                    Edit
+                  </EduButton>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <EduButton isGhost onClick={this.handleEditClick}>
+                    Cancel
+                  </EduButton>
+                  <EduButton type="primary" onClick={this.handleFormSubmit}>
+                    <IconSaveNew /> Save
+                  </EduButton>
+                </Fragment>
+              ))}
+          </AdminHeader>
           <SubHeader>
             <Spacer />
-            {this.showButtons(isInputEnabled)}
+            {this.showButtons()}
           </SubHeader>
           <StyledLayout>
             <DistrictProfileForm isInputEnabled={isInputEnabled} wrappedComponentRef={this.saveFormRef} />
@@ -131,7 +134,8 @@ const enhance = compose(
       imageUploading: get(state, ["districtProfileReducer", "imageUploading"], false),
       role: getUserRole(state),
       schoolId: get(state, "user.saSettingsSchool"),
-      schools: getSaSchoolsSortedSelector(state)
+      schools: getSaSchoolsSortedSelector(state),
+      isSAlevelSettingsAccess: getSchoolAdminSettingsAccess(state)
     }),
     {
       loadSchoolProfile: receiveSchoolProfileAction

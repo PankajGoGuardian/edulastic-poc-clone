@@ -56,7 +56,7 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel } = this.props;
+    const { active, count = 0, role, schoolLevelAdminSettings, manageTabLabel, children } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     const isDA = role === roleuser.DISTRICT_ADMIN;
     return (
@@ -78,6 +78,7 @@ class AdminHeader extends Component {
               <StyledTabPane tab="Settings" key="Settings" />
             ) : null}
           </StyledTabs>
+          {children}
         </AdminHeaderContent>
       </MainHeader>
     );

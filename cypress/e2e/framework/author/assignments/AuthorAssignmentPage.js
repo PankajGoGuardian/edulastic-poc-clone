@@ -172,6 +172,16 @@ class AuthorAssignmentPage {
     });
   };
 
+  clickOnLCBbyTestId = testId => {
+    cy.server();
+    cy.route("GET", "**/assignments/**").as("assignment");
+    this.getAssignmentRowsTestById(testId)
+      .find('[data-cy="lcb"]')
+      .click();
+    cy.wait("@assignment");
+    cy.get('[data-cy="studentName"]').should("have.length.greaterThan", 0);
+  };
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

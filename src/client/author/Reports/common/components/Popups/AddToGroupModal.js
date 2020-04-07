@@ -21,7 +21,7 @@ import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollme
 import { getUserOrgData } from "../../../../src/selectors/user";
 
 const ScrollElement = ({ item, onClick, ticked }) => (
-  <div className="scrollbar-element" onClick={() => onClick(item._id)}>
+  <div data-cy={`${item.lastName}, ${item.firstName}`} className="scrollbar-element" onClick={() => onClick(item._id)}>
     <div className="scrollbar-select">
       <StyledDiv color={darkGrey2} spacing="0.26px" fontStyle="14px/19px Open Sans">
         {item.firstName || ""} {item.lastName || ""}
@@ -30,7 +30,7 @@ const ScrollElement = ({ item, onClick, ticked }) => (
         {item.username || ""}
       </StyledDiv>
     </div>
-    <IconCorrect color={ticked ? themeColor : greyThemeDark1} />
+    <IconCorrect data-cy={`isSelected-${ticked}`} color={ticked ? themeColor : greyThemeDark1} />
   </div>
 );
 
@@ -227,6 +227,7 @@ const AddToGroupModal = ({
             <StyledCol span={24} marginBottom="5px" justify="left">
               <StyledDiv width="120px"> STUDENT GROUP </StyledDiv>
               <SelectInputStyled
+                data-cy="selectStudentGroup"
                 showSearch
                 placeholder="Select group"
                 cache="false"
@@ -242,6 +243,7 @@ const AddToGroupModal = ({
                 ))}
               </SelectInputStyled>
               <StyledEduButton
+                data-cy="addNew"
                 height="40px"
                 width="192px"
                 onClick={() => toggleIsNewGroup(!isNewGroup)}
@@ -258,11 +260,13 @@ const AddToGroupModal = ({
                 <StyledCol span={24} justify="left">
                   <StyledDiv width="120px"> Group Name: </StyledDiv>
                   <Input
+                    data-cy="groupName"
                     style={{ width: "528px", height: "40px" }}
                     value={groupName}
                     onChange={e => setGroupName(e.target.value.trim())}
                   />
                   <StyledEduButton
+                    data-cy="cancelButton"
                     height="40px"
                     width="192px"
                     onClick={() => toggleIsNewGroup(!isNewGroup)}
@@ -275,6 +279,7 @@ const AddToGroupModal = ({
                 <StyledCol span={24} marginBottom="5px" justify="left">
                   <StyledDiv width="120px"> Group Description: </StyledDiv>
                   <Input
+                    data-cy="groupDescription"
                     style={{ width: "528px", height: "40px" }}
                     value={groupDescription}
                     onChange={e => setGroupDescription(e.target.value)}
@@ -287,7 +292,7 @@ const AddToGroupModal = ({
           <StyledCol span={24} marginBottom="15px" justify="space-between">
             <div>
               <StyledDiv> SELECTED STUDENTS </StyledDiv>
-              <ScrollbarContainer>
+              <ScrollbarContainer data-cy="students-left">
                 <PerfectScrollbar>{studentLeftList || <div />}</PerfectScrollbar>
               </ScrollbarContainer>
             </div>
@@ -297,17 +302,25 @@ const AddToGroupModal = ({
             </Row>
             <div>
               <StyledDiv> STUDENTS ALREADY IN GROUP </StyledDiv>
-              <ScrollbarContainer>
+              <ScrollbarContainer data-cy="students-right">
                 <PerfectScrollbar>{studentRightList || <div />}</PerfectScrollbar>
               </ScrollbarContainer>
             </div>
           </StyledCol>
 
           <StyledCol span={24}>
-            <EduButton height="40px" width="200px" isGhost onClick={onCancel} style={{ marginLeft: "0px" }}>
+            <EduButton
+              data-cy="cancelGroup"
+              height="40px"
+              width="200px"
+              isGhost
+              onClick={onCancel}
+              style={{ marginLeft: "0px" }}
+            >
               Cancel
             </EduButton>
             <EduButton
+              data-cy="createGroup"
               height="40px"
               width="200px"
               onClick={handleOnSubmit}

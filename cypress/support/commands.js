@@ -221,7 +221,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snapwiz") => {
+Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snapwiz", testsToExclude = []) => {
   const asgnIds = [];
   const testAssign = [];
   let authToken;
@@ -249,7 +249,7 @@ Cypress.Commands.add("deleteAllAssignments", (student, teacher, password = "snap
         asgnIds.push(assignment);
       });
       tests.forEach(test => {
-        testAssign.push(test._id);
+        if (testsToExclude.indexOf(test._id) === -1) testAssign.push(test._id);
       });
       console.log("All Assignments = ", asgnIds);
       console.log("All Tests = ", testAssign);

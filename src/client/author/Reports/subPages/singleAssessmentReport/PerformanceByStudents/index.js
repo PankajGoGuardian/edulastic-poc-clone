@@ -198,7 +198,7 @@ const PerformanceByStudents = ({
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <StyledDropDownContainer padding="5px 0">
                   <Dropdown overlay={menu}>
-                    <EduButton height="32px" width="180px">
+                    <EduButton data-cy="actions" height="32px" width="180px">
                       Actions
                     </EduButton>
                   </Dropdown>

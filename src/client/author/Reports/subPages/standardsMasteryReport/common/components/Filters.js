@@ -323,6 +323,7 @@ const StandardsFilters = ({
 
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
+  const selectedProficiencyId = useMemo(() => scaleInfo.find(s => s.default)?._id || "", [scaleInfo]);
   const standardProficiencyList = useMemo(() => scaleInfo.map(s => ({ key: s._id, title: s.name })), [scaleInfo]);
 
   return (
@@ -366,7 +367,7 @@ const StandardsFilters = ({
           </Col>
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <ControlDropDown
-              by={filters.profileId}
+              by={filters.profileId || selectedProficiencyId}
               selectCB={updateStandardProficiencyDropDownCB}
               data={standardProficiencyList}
               prefix="Standard Proficiency"

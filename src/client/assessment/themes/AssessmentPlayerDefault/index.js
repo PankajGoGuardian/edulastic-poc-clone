@@ -247,6 +247,8 @@ class AssessmentPlayerDefault extends React.Component {
 
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
+      // coming from a different question
+      // initialise/reset state values
       const currentToolMode = [];
       if (next.scratchPad && !prevState.currentToolMode) {
         currentToolMode.push(5);
@@ -260,7 +262,8 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode,
         cloneCurrentItem: next.currentItem,
         history: 0,
-        enableCrossAction: currentToolMode.indexOf(3) !== -1
+        enableCrossAction: currentToolMode.indexOf(3) !== -1,
+        testItemState: "" // start in clear preview mode (attemptable mode)
       };
       return nextState;
     }
@@ -276,6 +279,12 @@ class AssessmentPlayerDefault extends React.Component {
       this.setState({ showHints: false });
     }
   }
+
+  handleChangePreview = () => {
+    const { changePreview = () => {} } = this.props;
+    // change the player state to clear mode (attemptable mode)
+    this.setState({ testItemState: "" }, () => changePreview());
+  };
 
   render() {
     const {
@@ -593,7 +602,7 @@ class AssessmentPlayerDefault extends React.Component {
                     fontFamily={currentFont}
                     saveHistory={this.saveHistory("scratchpad")}
                     history={scratchPad}
-                    changePreviewTab={changePreview}
+                    changePreviewTab={this.handleChangePreview}
                     enableMagnifier={enableMagnifier}
                   />
                 )}

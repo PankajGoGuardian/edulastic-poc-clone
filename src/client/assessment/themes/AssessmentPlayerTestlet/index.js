@@ -10,6 +10,7 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { setTestUserWorkAction, saveTestletStateAction, saveTestletLogAction } from "../../actions/testUserWork";
 import { setUserAnswerAction } from "../../actions/answers";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
+import { finishTestAcitivityAction } from "../../actions/test";
 
 // components
 import { Container, CalculatorContainer } from "../common";
@@ -149,6 +150,7 @@ export default connect(
     setTestUserWork: setTestUserWorkAction, // save to redux
     saveTestletState: saveTestletStateAction, // save to db,
     saveTestletLog: saveTestletLogAction, // save logs to db
-    updateTestPlayer: updateTestPlayerAction
+    updateTestPlayer: updateTestPlayerAction,
+    submitTest: finishTestAcitivityAction
   }
 )(withNamespaces("common")(AssessmentPlayerTestlet));

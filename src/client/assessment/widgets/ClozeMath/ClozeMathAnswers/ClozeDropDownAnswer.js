@@ -49,6 +49,7 @@ const AnswerSelect = styled(SelectInputStyled)`
 
   .ant-select-selection__rendered {
     min-height: ${responseDimensions.minHeight}px;
+    max-width: 100%;
   }
 `;
 
@@ -107,8 +108,20 @@ class ClozeDropDownAnswer extends Component {
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
         const prevOption = draft.options[dropDownId][itemIndex];
+        /**
+         * https://snapwiz.atlassian.net/browse/EV-12606
+         *
+         * we need to take the option, having most number of characters,
+         * and then we need to compare if the current value entered has more characters than the previous choices
+         * and take the maximum of the two.
+         * and then calculate the width based on the maximum, and set the width to the dropdown
+         */
         draft.options[dropDownId][itemIndex] = e.target.value;
-        const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
+        const maxLength = draft.options[dropDownId].reduce(
+          (currentMaxLength, option) => Math.max(currentMaxLength, option.length),
+          0
+        );
+        const splitWidth = Math.max(Math.max(maxLength, e.target.value.length) * 14, 140);
         const width = Math.min(splitWidth, 400);
         const drpdwnIndex = findIndex(draft.responseIds.dropDowns, drpdwn => drpdwn.id === dropDownId);
         const ind = findIndex(draft.responseContainers, cont => cont.id === dropDownId);

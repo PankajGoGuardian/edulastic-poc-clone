@@ -1,17 +1,32 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useRef, useLayoutEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import { dashBorderColor, mobileWidthLarge } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const ChoiceContainer = ({ title, children, direction, choiceWidth }) => (
-  <Container direction={direction} choiceWidth={choiceWidth}>
-    {title && <Subtitle direction={direction}>{title}</Subtitle>}
-    {children}
-  </Container>
-);
+const ChoiceContainer = ({ title, children, direction, choiceWidth }) => {
+  const ContainerRef = useRef(null);
+
+  const [containerHeight, setContainerHeight] = useState(140);
+
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      if (ContainerRef) {
+        const { height } = ContainerRef.current.getBoundingClientRect();
+        setContainerHeight(height);
+      }
+    });
+  }, [ContainerRef.current]);
+
+  return (
+    <Container minHeight={containerHeight} direction={direction} choiceWidth={choiceWidth} ref={ContainerRef}>
+      {title && <Subtitle direction={direction}>{title}</Subtitle>}
+      {children}
+    </Container>
+  );
+};
 
 ChoiceContainer.propTypes = {
   title: PropTypes.string.isRequired,
@@ -30,7 +45,7 @@ export default ChoiceContainer;
 const Container = styled.div`
   padding: 22px 12px;
   break-inside: avoid;
-  min-height: 140px;
+  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : "140px")};
   background-color: ${dashBorderColor};
 
   ${({ direction, choiceWidth }) => {

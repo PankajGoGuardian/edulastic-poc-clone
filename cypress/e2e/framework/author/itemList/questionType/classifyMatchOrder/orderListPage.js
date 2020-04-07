@@ -12,9 +12,10 @@ class OrderListPage {
   // question content
   getListInputs = () =>
     cy
-      .get('[data-cy="list-container"]')
-      .next()
-      .find("div .ql-editor");
+      .get("[data-cy=sortable-list-container]")
+      .first()
+      .find("[data-cy=quillSortableItem]")
+      .find("[contenteditable=true]");
 
   getAddInputButton = () =>
     cy
@@ -36,6 +37,12 @@ class OrderListPage {
       .click();
     return this;
   };
+
+  getQuestionText = () =>
+    cy
+      .get(".fr-element")
+      .first()
+      .find("p");
 
   getAddedAlternate = () => cy.get('[data-cy="del-alter"]');
 
@@ -96,11 +103,11 @@ class OrderListPage {
   }
 
   getUppercaseAlphabetOption() {
-    return Helpers.getElement("upper-alpha");
+    return Helpers.getElement("uppercase");
   }
 
   getLowercaseAlphabetOption() {
-    return Helpers.getElement("lower-alpha");
+    return Helpers.getElement("lowercase");
   }
 
   getSortableListContainer() {
@@ -115,6 +122,7 @@ class OrderListPage {
       case "button":
       case "list":
         this.getSortableListContainer()
+          .children()
           .children("div")
           .each($el => {
             cy.wrap($el)
@@ -124,6 +132,7 @@ class OrderListPage {
         break;
       case "inline":
         this.getSortableListContainer()
+          .children()
           .children("div")
           .each($el => {
             cy.wrap($el)

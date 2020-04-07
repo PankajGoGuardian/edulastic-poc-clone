@@ -259,21 +259,14 @@ export const ViewButtonStyled = styled(ButtonStyle)`
 `;
 
 export const AddButtonStyled = styled(ButtonStyle)`
-  margin-left: 10px;
-  background: ${white};
-  color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-  border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
+  padding: 0px;
+  height: auto;
+  width: auto;
+  border: none;
+  box-shadow: none;
   &:hover,
   &:focus {
     color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
-  }
-  @media (max-width: ${tabletWidth}) {
-    &.ant-btn:before {
-      content: ${({ selectedToCart }) => (selectedToCart ? `"_"` : "")};
-      font-size: 30px;
-      display: inline-block;
-      line-height: 10px;
-    }
   }
 `;
 

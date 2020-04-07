@@ -262,13 +262,17 @@ class ListItem extends Component {
                       <IconEye /> {t("component.item.view")}
                     </ViewButtonStyled>
                     <AddButtonStyled
-                      selectedToCart={isInCart}
                       onClick={e => {
                         e.stopPropagation();
-                        isInCart ? onRemoveFromCart(item) : onAddToCart(item);
                       }}
                     >
-                      {isInCart ? "Remove" : <IconPlus />}
+                      <CheckboxLabel
+                        checked={isInCart}
+                        ml="24px"
+                        onChange={e => {
+                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                        }}
+                      />
                     </AddButtonStyled>
                   </ViewButtonContainer>
                 )}

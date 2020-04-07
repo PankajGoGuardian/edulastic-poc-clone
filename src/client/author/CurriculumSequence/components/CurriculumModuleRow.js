@@ -218,7 +218,7 @@ class ModuleRow extends Component {
 
     if (isAssigned) {
       // TODO: filter out the assignments in assignmentRows by classIds in case of multiple assignments
-      const { testType, assignmentId, classId } = assignmentRows[0] || {};
+      const { testType, assignmentId, classId, maxAttempts } = assignmentRows[0] || {};
       uta = {
         testId,
         classId,
@@ -231,7 +231,8 @@ class ModuleRow extends Component {
           moduleId,
           playlistId
         },
-        redirect: uta.redirect
+        redirect: uta.redirect,
+        attempts: uta.totalAttempts
       };
       const isRedirected = assignmentRows.find(el => el.redirect);
       if (isRedirected && uta.redirect) {
@@ -245,6 +246,12 @@ class ModuleRow extends Component {
             pathname: `/home/class/${uta.classId}/test/${uta.testId}/testActivityReport/${uta.testActivityId}`,
             fromPlayList: true
           });
+        if (uta.attempts < maxAttempts) {
+          uta.retake = {
+            text: "RETAKE",
+            action: () => startAssignment(uta)
+          };
+        }
       } else if (uta.taStatus === testActivityStatus.ABSENT && uta.utaAssignmentId) {
         uta.text = "ABSENT";
       } else if (uta.testActivityId && uta.utaAssignmentId) {
@@ -608,7 +615,7 @@ class ModuleRow extends Component {
                   const progressData = getProgressData(playlistMetrics, _id, contentId, assignments);
 
                   const assignmentRows = assignments.flatMap(assignment => {
-                    const { testType, _id: assignmentId } = assignment;
+                    const { testType, _id: assignmentId, maxAttempts } = assignment;
                     return assignment.class.map(
                       ({
                         name,
@@ -630,7 +637,8 @@ class ModuleRow extends Component {
                         classId,
                         gradedNumber,
                         submittedCount: inGradingNumber + gradedNumber,
-                        redirect
+                        redirect,
+                        maxAttempts
                       })
                     );
                   });
@@ -890,13 +898,24 @@ class ModuleRow extends Component {
                                     </StyledCol>
                                   ) : (
                                     !moduleData.hidden && (
-                                      <StyledCol width="175px" justify="flex-end">
-                                        <AssignmentButton assigned={false}>
-                                          <Button data-cy={uta.text} onClick={uta.action}>
-                                            {uta.text}
-                                          </Button>
-                                        </AssignmentButton>
-                                      </StyledCol>
+                                      <>
+                                        <StyledCol width={uta.retake ? "130px" : "175px"} justify="flex-end">
+                                          <AssignmentButton assigned={false}>
+                                            <Button data-cy={uta.text} onClick={uta.action}>
+                                              {uta.text}
+                                            </Button>
+                                          </AssignmentButton>
+                                        </StyledCol>
+                                        {uta.retake && (
+                                          <StyledCol width="130px" justify="flex-end">
+                                            <AssignmentButton assigned={false}>
+                                              <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
+                                                {uta.retake.text}
+                                              </Button>
+                                            </AssignmentButton>
+                                          </StyledCol>
+                                        )}
+                                      </>
                                     )
                                   )}
                                 </>

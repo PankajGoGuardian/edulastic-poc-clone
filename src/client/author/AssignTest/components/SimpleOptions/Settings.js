@@ -37,6 +37,7 @@ import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
 import { IconCaretDown } from "@edulastic/icons";
 import { isUndefined } from "lodash";
 
+const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const {
   calculatorKeys,
@@ -518,9 +519,9 @@ const Settings = ({
                 onChange={e => overRideSettings("scoringType", e.target.value)}
                 value={scoringType}
               >
-                {Object.keys(evalTypes).map(item => (
+                {evalTypeKeys.map(item => (
                   <RadioBtn value={item} data-cy={item} key={item}>
-                    {evalTypes[item]}
+                    <Label>{evalTypes[item]}</Label>
                   </RadioBtn>
                 ))}
               </AlignRight>
@@ -591,27 +592,25 @@ const Settings = ({
           <div>
             <Block id="accessibility">
               <Title>Accessibility</Title>
-              {!isDocBased && (
-                <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
-                  {Object.keys(accessibilities).map(item => (
-                    <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
-                      <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
-                      </Col>
-                      <Col span={12}>
-                        <StyledRadioGroup
-                          disabled={forClassLevel}
-                          onChange={e => overRideSettings("showMagnifier", e.target.value)}
-                          defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
-                        >
-                          <Radio value>ENABLE</Radio>
-                          <Radio value={false}>DISABLE</Radio>
-                        </StyledRadioGroup>
-                      </Col>
-                    </StyledRowSettings>
-                  ))}
-                </RadioWrapper>
-              )}
+              <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
+                {Object.keys(accessibilities).map(item => (
+                  <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
+                    <Col span={12}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                    </Col>
+                    <Col span={12}>
+                      <StyledRadioGroup
+                        disabled={forClassLevel}
+                        onChange={e => overRideSettings("showMagnifier", e.target.value)}
+                        defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
+                      >
+                        <Radio value>ENABLE</Radio>
+                        <Radio value={false}>DISABLE</Radio>
+                      </StyledRadioGroup>
+                    </Col>
+                  </StyledRowSettings>
+                ))}
+              </RadioWrapper>
             </Block>
           </div>
         )}

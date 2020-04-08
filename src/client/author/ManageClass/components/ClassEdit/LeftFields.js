@@ -6,7 +6,7 @@ import Uploader from "./Uploader";
 import { tagsApi } from "@edulastic/api";
 
 const LeftField = props => {
-  const { thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
+  const { type, thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
   const [thumbnail, setThumbnail] = useState(thumbnailUri);
   const [searchValue, setSearchValue] = useState("");
   const selectTags = async id => {
@@ -44,9 +44,11 @@ const LeftField = props => {
     }
   };
 
+  const titlePrefix = type === "custom" ? "Group" : "Class";
+
   return (
     <>
-      <FieldLabel label="Class Image" optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>
+      <FieldLabel label={`${titlePrefix} Image`} optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>
         <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
     </>

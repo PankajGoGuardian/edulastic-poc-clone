@@ -9,7 +9,7 @@ import { fetchClassListAction, getSelectedClass } from "../../ducks";
 import { EditButton } from "./styled";
 
 const Header = ({ onEdit, activeClass, selectedClass }) => {
-  const { name, institutionName = "", districtName = "" } = selectedClass;
+  const { name, type, institutionName = "", districtName = "" } = selectedClass;
 
   const headingSubContent = (
     <span>
@@ -22,7 +22,7 @@ const Header = ({ onEdit, activeClass, selectedClass }) => {
     <MainHeader headingText={name} headingSubContent={headingSubContent} flexDirection="column" alignItems="flex-start">
       {activeClass ? (
         <EduButton onClick={onEdit} data-cy="editClass">
-          Edit Class
+          Edit {type === "custom" ? "Group" : "Class"}
         </EduButton>
       ) : null}
     </MainHeader>

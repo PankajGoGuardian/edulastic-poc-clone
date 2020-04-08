@@ -18,7 +18,7 @@ import { setMARSettingsAction, getReportsMARSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const MultipleAssessmentReportContainer = props => {
-  const { settings, setMARSettingsAction, loc: pageTitle } = props;
+  const { settings, setMARSettingsAction, loc: pageTitle, setShowHeader } = props;
 
   useEffect(() => {
     return () => {
@@ -90,17 +90,26 @@ const MultipleAssessmentReportContainer = props => {
       <Route
         exact
         path={`/author/reports/peer-progress-analysis/`}
-        render={_props => <PeerProgressAnalysis {..._props} settings={settings} />}
+        render={_props => {
+          setShowHeader(true);
+          return <PeerProgressAnalysis {..._props} settings={settings} />;
+        }}
       />
       <Route
         exact
         path={`/author/reports/student-progress/`}
-        render={_props => <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} />}
+        render={_props => {
+          setShowHeader(true);
+          return <StudentProgress {..._props} settings={settings} pageTitle={pageTitle} />;
+        }}
       />
       <Route
         exact
         path={`/author/reports/performance-over-time/`}
-        render={_props => <PerformanceOverTime {..._props} settings={settings} />}
+        render={_props => {
+          setShowHeader(true);
+          return <PerformanceOverTime {..._props} settings={settings} />;
+        }}
       />
     </>
   );

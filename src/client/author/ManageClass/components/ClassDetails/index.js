@@ -47,7 +47,7 @@ const ClassDetails = ({
   syncClassWithCanvas,
   user
 }) => {
-  const { _id, name, cleverId, institutionId } = selectedClass;
+  const { _id, name, type, cleverId, institutionId } = selectedClass;
   const { allowGoogleClassroom: allowGoogleLogin, allowCanvas: allowCanvasLogin, searchAndAddStudents } = useMemo(
     () =>
       user?.orgData?.policies?.institutions?.find(i => i.institutionId === institutionId) ||
@@ -105,10 +105,19 @@ const ClassDetails = ({
       to: "/author/manageClass"
     },
     {
-      title: `${name}`,
-      to: `/author/manageClass/${_id}`
+      title: "GROUPS",
+      to: "/author/manageClass",
+      state: { currentTab: "group" }
     }
   ];
+
+  const getBreadCrumbData = () => {
+    const classBreadCrumb = {
+      title: `${name}`,
+      to: `/author/manageClass/${_id}`
+    };
+    return type === "class" ? [breadCrumbData[0], classBreadCrumb] : [...breadCrumbData, classBreadCrumb];
+  };
 
   const viewAssessmentHandler = () => {};
 
@@ -164,9 +173,9 @@ const ClassDetails = ({
           )}
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
           <MainContentWrapper>
-            <BreadCrumb ellipsis="calc(100% - 200px)" data={breadCrumbData} style={{ position: "unset" }} />
+            <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />
 
-            {selectedClass.type == "class" && (
+            {type == "class" && (
               <>
                 <MainInfo
                   entity={selectedClass}
@@ -195,7 +204,7 @@ const ClassDetails = ({
               </>
             )}
 
-            {selectedClass.type == "custom" && (
+            {type == "custom" && (
               <GroupStudentList
                 selectStudent
                 selectedClass={selectedClass}

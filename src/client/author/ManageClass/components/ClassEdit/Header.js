@@ -9,8 +9,11 @@ import { fetchClassListAction } from "../../ducks";
 import { ButtonsWrapper } from "./styled";
 import { withNamespaces } from "react-i18next";
 
-const Header = ({ classId, t }) => (
-  <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
+const Header = ({ classId, type, t }) => (
+  <MainHeader
+    Icon={IconManage}
+    headingText={type === "custom" ? t("common.manageGroupTitle") : t("common.manageClassTitle")}
+  >
     <ButtonsWrapper>
       <Link to={`/author/manageClass/${classId}`}>
         <EduButton height="40px" isGhost data-cy="cancel">
@@ -18,7 +21,7 @@ const Header = ({ classId, t }) => (
         </EduButton>
       </Link>
       <EduButton height="40px" data-cy="updateClass" htmlType="submit">
-        Update Class
+        Update {type === "custom" ? "" : "Class"}
       </EduButton>
     </ButtonsWrapper>
   </MainHeader>

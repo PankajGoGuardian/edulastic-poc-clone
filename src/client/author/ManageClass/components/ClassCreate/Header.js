@@ -7,19 +7,22 @@ import { IconManage } from "@edulastic/icons";
 // ducks
 import { fetchClassListAction } from "../../ducks";
 // components
-import { ButtonsWrapper, CancelClassBtn, SaveClassBtn } from "./styled";
+import { ButtonsWrapper } from "./styled";
 import { withNamespaces } from "react-i18next";
 
-const Header = ({ t }) => (
-  <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
+const Header = ({ t, type, exitPath }) => (
+  <MainHeader
+    Icon={IconManage}
+    headingText={type === "group" ? t("common.manageGroupTitle") : t("common.manageClassTitle")}
+  >
     <ButtonsWrapper>
-      <Link to="/author/manageClass">
+      <Link to={exitPath || "/author/manageClass"}>
         <EduButton isGhost data-cy="cancel">
           Cancel
         </EduButton>
       </Link>
       <EduButton data-cy="saveClass" htmlType="submit">
-        Save Class
+        Save {type === "group" ? "" : "Class"}
       </EduButton>
     </ButtonsWrapper>
   </MainHeader>

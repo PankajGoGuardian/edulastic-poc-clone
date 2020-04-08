@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import * as moment from "moment";
-import { Modal, Row, Col, Spin, Select, Input, message, Icon } from "antd";
-import { IoMdCloseCircle } from "react-icons/io";
+import { Modal, Row, Col, Spin, Select, message } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
 import { SelectInputStyled, EduButton } from "@edulastic/common";
 import { backgrounds, borderGrey4, greyThemeDark1, darkGrey2, lightGrey5, themeColor, white } from "@edulastic/colors";
-import { groupApi, enrollmentApi } from "@edulastic/api";
+import { enrollmentApi } from "@edulastic/api";
 
-import {
-  addGroupAction,
-  fetchGroupsAction,
-  getGroupsSelector,
-  groupsLoadingSelector
-} from "../../../../sharedDucks/groups";
-import { getUserId } from "../../../../../student/Login/ducks";
+import { fetchGroupsAction, getGroupsSelector, groupsLoadingSelector } from "../../../../sharedDucks/groups";
 import { requestEnrolExistingUserToClassAction } from "../../../../ClassEnrollment/ducks";
-import { getUserOrgData } from "../../../../src/selectors/user";
+
+const getParentUrl = urlList => {
+  // urlList[2] decides the origin of the createClass route
+  switch (urlList[2]) {
+    case "reports":
+      // equivalent to /author/reports/<report-type>
+      return urlList.slice(0, 4).join("/");
+    case "manageClass":
+    default:
+      return "/author/manageClass";
+  }
+};
 
 const ScrollElement = ({ item, onClick, ticked }) => (
   <div data-cy={`${item.lastName}, ${item.firstName}`} className="scrollbar-element" onClick={() => onClick(item._id)}>
@@ -42,18 +47,14 @@ const AddToGroupModal = ({
   loading,
   fetchGroups,
   groupList,
-  addToGroups,
   enrollStudentsToGroup,
-  orgData,
-  userId
+  match,
+  history
 }) => {
   const [studentList, setStudentList] = useState([]);
   const [studentsToAdd, setStudentsToAdd] = useState([]);
   const [studentsToRemove, setStudentsToRemove] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState({});
-  const [isNewGroup, toggleIsNewGroup] = useState(false);
-  const [groupName, setGroupName] = useState("");
-  const [groupDescription, setGroupDescription] = useState("");
 
   useEffect(() => {
     fetchGroups();
@@ -103,83 +104,29 @@ const AddToGroupModal = ({
     />
   ));
 
-  const addStudents = async (group = {}) => {
-    const { districtId, terms, defaultSchool } = orgData;
-    const term = terms.length && terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
+  const handleOnSubmit = async () => {
+    const group = groupList.find(g => selectedGroup.key === g._id);
+    const { code: classCode, districtId } = group;
+    // add students
     if (studentsToAdd.length) {
-      // fetch group info for new / existing group
-      if (isNewGroup) {
-        try {
-          group = await groupApi.createGroup({
-            type: groupType,
-            name: groupName,
-            description: groupDescription,
-            startDate: moment().format("x"),
-            endDate: moment(term ? term.endDate : moment().add(1, "year")).format("x"),
-            districtId,
-            institutionId: defaultSchool,
-            grades: [],
-            subject: "Other Subjects",
-            standardSets: [],
-            tags: [],
-            parent: { id: userId },
-            owners: [userId]
-          });
-        } catch ({ data: { message: errorMessage } }) {
-          message.error(errorMessage);
-        }
-        addToGroups(group);
-      } else {
-        group = groupList.find(g => selectedGroup.key === g._id);
-      }
-      // enroll students to group
-      enrollStudentsToGroup({
-        classCode: group.code,
-        studentIds: studentsToAdd,
-        districtId
-      });
+      enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd });
       setStudentsToAdd([]);
     }
-  };
-
-  const removeStudents = async () => {
-    const group = groupList.find(g => selectedGroup.key === g._id);
+    // remove students
     if (studentsToRemove.length) {
       try {
-        const data = await enrollmentApi.removeStudents({
-          classCode: group.code,
-          studentIds: studentsToRemove,
-          districtId: orgData.districtId
-        });
+        const data = await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
         message.success(data.data.result);
       } catch ({ data: { message: errorMessage } }) {
         message.error(errorMessage);
       }
       setStudentsToRemove([]);
     }
-  };
-
-  const handleOnSubmit = () => {
-    if (isNewGroup) {
-      if (!groupName || !groupDescription) {
-        message.error("Group name & description cannot be empty for the new group");
-      } else if (groupList.find(g => g.name === groupName)) {
-        message.error("Group or class with that name already exists");
-      } else {
-        addStudents();
-        onCancel();
-      }
-    } else {
-      addStudents();
-      removeStudents();
-      onCancel();
-    }
+    // close modal
+    onCancel();
   };
 
   const filteredGroups = (groupList || []).filter(g => g.type === groupType);
-  // TODO: this does not work as the students belonging to the table
-  // need to fetch the students in that group, to be done as part of the mock update
-  // const filteredStudentList = (studentList || []).filter(s => s.groupId === selectedGroup._id);
 
   return (
     <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
@@ -223,71 +170,42 @@ const AddToGroupModal = ({
               </StyledEduButton>
               </StyledCol>
             )} */}
-          {!isNewGroup ? (
-            <StyledCol span={24} marginBottom="5px" justify="left">
-              <StyledDiv width="120px"> STUDENT GROUP </StyledDiv>
-              <SelectInputStyled
-                data-cy="selectStudentGroup"
-                showSearch
-                placeholder="Select group"
-                cache="false"
-                onChange={setSelectedGroup}
-                width="326px"
-                dropdownStyle={{ zIndex: 2000 }}
-                labelInValue
-              >
-                {filteredGroups.map(({ _id, name }) => (
-                  <Select.Option key={_id} value={_id}>
-                    {name}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-              <StyledEduButton
-                data-cy="addNew"
-                height="40px"
-                width="192px"
-                onClick={() => toggleIsNewGroup(!isNewGroup)}
-                style={{ marginLeft: "10px" }}
-                isGhost
-              >
-                <IconPlusCircle width={20} height={20} />
-                ADD NEW
-              </StyledEduButton>
-            </StyledCol>
-          ) : (
-            <Col span={24}>
-              <Row type="flex" align="middle" gutter={[0, 10]}>
-                <StyledCol span={24} justify="left">
-                  <StyledDiv width="120px"> Group Name: </StyledDiv>
-                  <Input
-                    data-cy="groupName"
-                    style={{ width: "528px", height: "40px" }}
-                    value={groupName}
-                    onChange={e => setGroupName(e.target.value.trim())}
-                  />
-                  <StyledEduButton
-                    data-cy="cancelButton"
-                    height="40px"
-                    width="192px"
-                    onClick={() => toggleIsNewGroup(!isNewGroup)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <IoMdCloseCircle size={25} />
-                    CANCEL
-                  </StyledEduButton>
-                </StyledCol>
-                <StyledCol span={24} marginBottom="5px" justify="left">
-                  <StyledDiv width="120px"> Group Description: </StyledDiv>
-                  <Input
-                    data-cy="groupDescription"
-                    style={{ width: "528px", height: "40px" }}
-                    value={groupDescription}
-                    onChange={e => setGroupDescription(e.target.value)}
-                  />
-                </StyledCol>
-              </Row>
-            </Col>
-          )}
+          <StyledCol span={24} marginBottom="5px" justify="left">
+            <StyledDiv width="120px"> STUDENT GROUP </StyledDiv>
+            <SelectInputStyled
+              data-cy="selectStudentGroup"
+              showSearch
+              placeholder="Select group"
+              cache="false"
+              onChange={setSelectedGroup}
+              width="326px"
+              dropdownStyle={{ zIndex: 2000 }}
+              labelInValue
+            >
+              {filteredGroups.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+            <StyledEduButton
+              data-cy="addNew"
+              height="40px"
+              width="192px"
+              onClick={() => {
+                const parentUrl = getParentUrl(match.url.split("/"));
+                history.push({
+                  pathname: `${parentUrl}/createClass/`,
+                  state: { type: "group", exitPath: match.url }
+                });
+              }}
+              style={{ marginLeft: "10px" }}
+              isGhost
+            >
+              <IconPlusCircle width={20} height={20} />
+              ADD NEW
+            </StyledEduButton>
+          </StyledCol>
 
           <StyledCol span={24} marginBottom="15px" justify="space-between">
             <div>
@@ -325,9 +243,9 @@ const AddToGroupModal = ({
               width="200px"
               onClick={handleOnSubmit}
               style={{ marginLeft: "20px" }}
-              disabled={!isNewGroup && !selectedGroup.key}
+              disabled={!selectedGroup.key}
             >
-              {isNewGroup ? "Create Group" : "Update Group Membership"}
+              Update Group Membership
             </EduButton>
           </StyledCol>
         </Row>
@@ -336,18 +254,18 @@ const AddToGroupModal = ({
   );
 };
 
-export default connect(
-  state => ({
-    groupList: getGroupsSelector(state),
-    loading: groupsLoadingSelector(state),
-    orgData: getUserOrgData(state),
-    userId: getUserId(state)
-  }),
-  {
-    fetchGroups: fetchGroupsAction,
-    addToGroups: addGroupAction,
-    enrollStudentsToGroup: requestEnrolExistingUserToClassAction
-  }
+export default compose(
+  withRouter,
+  connect(
+    state => ({
+      groupList: getGroupsSelector(state),
+      loading: groupsLoadingSelector(state)
+    }),
+    {
+      fetchGroups: fetchGroupsAction,
+      enrollStudentsToGroup: requestEnrolExistingUserToClassAction
+    }
+  )
 )(AddToGroupModal);
 
 const StyledModal = styled(Modal)`

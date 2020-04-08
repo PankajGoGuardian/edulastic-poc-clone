@@ -4,22 +4,20 @@ import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { isEmpty, find, get, pickBy, identity } from "lodash";
+import { capitalize, isEmpty, find, get, pickBy, identity } from "lodash";
 import { Form, Spin, Row } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { createClassAction, getSelectedSubject, setSubjectAction } from "../../ducks";
 // selectors
-import {
-  getCurriculumsListSelector,
-  getFormattedCurriculumsSelector
-} from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 
 // componentes
 import Header from "./Header";
+import BreadCrumb from "../../../src/components/Breadcrumb";
 import LeftFields from "./LeftFields";
 import RightFields from "./RightFields";
 import { Container, FormTitle, LeftContainer, RightContainer } from "./styled";
@@ -73,7 +71,7 @@ class ClassCreate extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, userId, userOrgData, allTagsData } = this.props;
+    const { form, userId, userOrgData, allTagsData, location } = this.props;
     const { districtId } = userOrgData;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -89,7 +87,7 @@ class ClassCreate extends React.Component {
         });
 
         values.districtId = districtId;
-        values.type = "class";
+        values.type = location?.state?.type === "group" ? "custom" : "class";
 
         values.parent = { id: userId };
         values.owners = [userId];
@@ -139,6 +137,52 @@ class ClassCreate extends React.Component {
     searchCourseList(searchTerms);
   };
 
+  getBreadCrumbData = () => {
+    const { match, location } = this.props;
+    const { type, exitPath } = location?.state || {};
+    const pathList = match.url.split("/");
+    let breadCrumbData = [];
+
+    const createClassBreadCrumb = {
+      title: `Create ${type}`,
+      to: match.url,
+      state: { type, exitPath }
+    };
+
+    // pathList[2] determines the origin of the ClassCreate component
+    switch (pathList[2]) {
+      case "reports":
+        breadCrumbData = [
+          {
+            title: "Reports",
+            to: "/author/reports"
+          },
+          {
+            // pathList[3] contains the report-type
+            title: pathList[3].split("-").join(" "),
+            to: exitPath
+          }
+        ];
+        return [...breadCrumbData, createClassBreadCrumb];
+      case "manageClass":
+      default:
+        breadCrumbData = [
+          {
+            title: "MANAGE CLASS",
+            to: "/author/manageClass"
+          },
+          {
+            title: "GROUPS",
+            to: "/author/manageClass",
+            state: { currentTab: "group" }
+          }
+        ];
+        return type === "class"
+          ? [breadCrumbData[0], createClassBreadCrumb]
+          : [...breadCrumbData, createClassBreadCrumb];
+    }
+  };
+
   render() {
     const {
       form,
@@ -153,21 +197,34 @@ class ClassCreate extends React.Component {
       entity,
       allTagsData,
       addNewTag,
-      history
+      history,
+      location
     } = this.props;
+
+    const { type, exitPath } = location?.state || {};
+
     const { _id: classId, tags } = entity;
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
     const { defaultSchool, schools } = userOrgData;
     const { submitted } = this.state;
     if (!creating && submitted && isEmpty(error)) {
-      history.push(`/author/manageClass/${classId}`);
+      if (exitPath) {
+        history.push(exitPath);
+      } else {
+        history.push(`/author/manageClass/${classId}`);
+      }
     }
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header />
+        <Header type={type || "class"} exitPath={exitPath} />
         <Spin spinning={creating}>
+          <BreadCrumb
+            ellipsis="calc(100% - 200px)"
+            data={this.getBreadCrumbData()}
+            style={{ position: "unset", margin: "20px 0 0 30px" }}
+          />
           <Container padding="30px">
-            <FormTitle>Class Details</FormTitle>
+            <FormTitle>{capitalize(type || "class")} Details</FormTitle>
             <Row gutter={36}>
               <LeftContainer xs={8}>
                 <LeftFields
@@ -177,6 +234,7 @@ class ClassCreate extends React.Component {
                   setFieldsValue={setFieldsValue}
                   allTagsData={allTagsData}
                   addNewTag={addNewTag}
+                  type={type || "class"}
                 />
               </LeftContainer>
               <RightContainer xs={16}>
@@ -197,6 +255,7 @@ class ClassCreate extends React.Component {
                   setFieldsValue={setFieldsValue}
                   allTagsData={allTagsData}
                   addNewTag={addNewTag}
+                  type={type || "class"}
                 />
               </RightContainer>
             </Row>

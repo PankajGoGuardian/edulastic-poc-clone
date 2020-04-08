@@ -71,10 +71,10 @@ const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedI
             responseType="code"
           />
         )}
-        <Link to="/author/manageClass/createClass" data-cy="createClass">
+        <Link to={{ pathname: "/author/manageClass/createClass", state: { type: currentTab } }} data-cy="createClass">
           <EduButton>
             <IconPlusCircle />
-            <span>Create Class</span>
+            <span>Create {currentTab}</span>
           </EduButton>
         </Link>
       </ButtonsWrapper>

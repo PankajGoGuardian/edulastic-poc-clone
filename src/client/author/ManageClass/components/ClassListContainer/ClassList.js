@@ -29,6 +29,7 @@ const ClassList = ({
   showBanner,
   institutions,
   history,
+  location,
   user,
   fetchClassList,
   setAssignmentFilters,
@@ -45,7 +46,7 @@ const ClassList = ({
 
   const [filterClass, setFilterClass] = useState(null);
   const [classGroups, setClassGroups] = useState([]);
-  const [currentTab, setCurrentTab] = useState("class");
+  const [currentTab, setCurrentTab] = useState(location?.state?.currentTab || "class");
 
   useEffect(() => {
     setClassGroups(groups);
@@ -182,8 +183,15 @@ const ClassList = ({
     {
       title: "MANAGE CLASS",
       to: "/author/manageClass"
+    },
+    {
+      title: "GROUPS",
+      to: "/author/manageClass",
+      state: { currentTab: "group" }
     }
   ];
+
+  const getBreadCrumbData = () => (currentTab === "class" ? [breadCrumbData[0]] : breadCrumbData);
 
   const onClickHandler = value => {
     setCurrentTab(value);
@@ -199,10 +207,9 @@ const ClassList = ({
         onClickHandler={onClickHandler}
       />
       <MainContentWrapper>
-        {currentTab === "class" && (
-          <SubHeader>
-            <BreadCrumb data={breadCrumbData} style={{ position: "unset" }} />
-
+        <SubHeader>
+          <BreadCrumb data={getBreadCrumbData()} style={{ position: "unset" }} />
+          {currentTab === "class" && (
             <ClassSelector
               groups={groups}
               archiveGroups={archiveGroups}
@@ -210,8 +217,8 @@ const ClassList = ({
               filterClass={filterClass}
               setFilterClass={setFilterClass}
             />
-          </SubHeader>
-        )}
+          )}
+        </SubHeader>
         <TableWrapper>
           {currentTab === "class" && (
             <>

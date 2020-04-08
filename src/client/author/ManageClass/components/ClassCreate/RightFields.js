@@ -24,6 +24,7 @@ const RightFields = ({
   selectedSubject,
   userOrgData,
   clearStandards,
+  type,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment());
@@ -65,15 +66,31 @@ const RightFields = ({
     <>
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
-          <FieldLabel label="Class Name" {...restProps} fiedlName="name">
-            <TextInputStyled placeholder="Enter the name of your class" maxLength="256" />
+          <FieldLabel label={`${type} name`} {...restProps} fiedlName="name">
+            <TextInputStyled placeholder={`Enter the name of your ${type}`} maxLength="256" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
 
+      {type === "group" && (
+        <StyledFlexContainer gutter={24}>
+          <Col xs={24}>
+            <FieldLabel label={"Descripition"} {...restProps} fiedlName="description">
+              <TextInputStyled placeholder={`Enter ${type} description`} maxLength="512" />
+            </FieldLabel>
+          </Col>
+        </StyledFlexContainer>
+      )}
+
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
-          <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
+          <FieldLabel
+            label={`${type} start date`}
+            optional
+            fiedlName="startDate"
+            initialValue={startDate}
+            {...restProps}
+          >
             <DatePickerStyled
               data-cy="startDate"
               format="DD MMM, YYYY"
@@ -84,7 +101,13 @@ const RightFields = ({
           </FieldLabel>
         </Col>
         <Col xs={12}>
-          <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
+          <FieldLabel
+            label={`${type} end date`}
+            optional
+            {...restProps}
+            fiedlName="endDate"
+            initialValue={moment(endDate)}
+          >
             <DatePickerStyled
               data-cy="endDate"
               format="DD MMM, YYYY"

@@ -16,7 +16,7 @@ import { setSMRSettingsAction, getReportsSMRSettings } from "./ducks";
 import { resetAllReportsAction } from "../../common/reportsRedux";
 
 const StandardsMasteryReportContainer = props => {
-  const { gradebookSettings, setSMRSettingsAction, premium } = props;
+  const { gradebookSettings, setSMRSettingsAction, premium, setShowHeader } = props;
 
   const firstRender = useRef(true);
 
@@ -97,12 +97,18 @@ const StandardsMasteryReportContainer = props => {
       <Route
         exact
         path={`/author/reports/standards-gradebook`}
-        render={_props => <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={props.loc} />}
+        render={_props => {
+          setShowHeader(true);
+          return <StandardsGradebook {..._props} settings={gradebookSettings} pageTitle={props.loc} />;
+        }}
       />
       <Route
         exact
         path={`/author/reports/standards-performance-summary`}
-        render={_props => <StandardsPerfromance {..._props} settings={gradebookSettings} />}
+        render={_props => {
+          setShowHeader(true);
+          return <StandardsPerfromance {..._props} settings={gradebookSettings} />;
+        }}
       />
     </>
   );

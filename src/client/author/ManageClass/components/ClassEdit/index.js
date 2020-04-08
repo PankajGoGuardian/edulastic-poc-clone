@@ -12,15 +12,13 @@ import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
 import { updateClassAction, fetchStudentsByIdAction, setSubjectAction } from "../../ducks";
 
 // selectors
-import {
-  getCurriculumsListSelector,
-  getFormattedCurriculumsSelector
-} from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction } from "../../../Courses/ducks";
 
 // componentes
 import Header from "./Header";
+import BreadCrumb from "../../../src/components/Breadcrumb";
 import LeftFields from "./LeftFields";
 import RightFields from "./RightFields";
 import { Container, FormTitle, LeftContainer, RightContainer } from "./styled";
@@ -58,14 +56,7 @@ class ClassEdit extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      curriculums,
-      getCurriculums,
-      selctedClass,
-      loadStudents,
-      match,
-      getAllTags
-    } = this.props;
+    const { curriculums, getCurriculums, selctedClass, loadStudents, match, getAllTags } = this.props;
     if (isEmpty(selctedClass)) {
       const { classId } = match.params;
       loadStudents({ classId });
@@ -85,7 +76,7 @@ class ClassEdit extends React.Component {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props;
         const { standardSets, endDate, startDate, tags } = values;
-        const { _id: classId } = selctedClass;
+        const { _id: classId, type } = selctedClass;
 
         const updatedStandardsSets = standardSets.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -96,7 +87,7 @@ class ClassEdit extends React.Component {
         });
 
         values.districtId = districtId;
-        values.type = "class";
+        values.type = type;
 
         values.parent = { id: userId };
         values.owners = [userId];
@@ -142,6 +133,31 @@ class ClassEdit extends React.Component {
     });
   };
 
+  getBreadCrumbData = ({ classId, name, type }) => {
+    const breadCrumbData = [
+      {
+        title: "MANAGE CLASS",
+        to: "/author/manageClass"
+      },
+      {
+        title: "GROUPS",
+        to: "/author/manageClass",
+        state: { currentTab: "group" }
+      }
+    ];
+    const editClassBreadCrumb = [
+      {
+        title: `${name}`,
+        to: `/author/manageClass/${classId}`
+      },
+      {
+        title: `Edit ${type === "custom" ? "Group" : "Class"}`,
+        to: `/author/manageClass/${classId}/edit`
+      }
+    ];
+    return type === "class" ? [breadCrumbData[0], ...editClassBreadCrumb] : [...breadCrumbData, ...editClassBreadCrumb];
+  };
+
   render() {
     const {
       curriculums,
@@ -165,6 +181,8 @@ class ClassEdit extends React.Component {
       thumbnail = "",
       tags = [],
       name,
+      type,
+      description,
       startDate,
       endDate,
       grades,
@@ -181,10 +199,15 @@ class ClassEdit extends React.Component {
 
     return (
       <Form onSubmit={this.handleSubmit} style={{ position: "relative" }}>
-        <Header classId={classId} />
+        <Header classId={classId} type={type} />
         <Spin spinning={updating}>
+          <BreadCrumb
+            ellipsis="calc(100% - 200px)"
+            data={this.getBreadCrumbData({ classId, name, type })}
+            style={{ position: "unset", margin: "20px 0 0 30px" }}
+          />
           <Container>
-            <FormTitle>Class Details</FormTitle>
+            <FormTitle>{type === "custom" ? "Group" : "Class"} Details</FormTitle>
             <Row gutter={36}>
               <LeftContainer xs={8}>
                 <LeftFields
@@ -192,11 +215,13 @@ class ClassEdit extends React.Component {
                   getFieldValue={getFieldValue}
                   thumbnailUri={thumbnail}
                   setFieldsValue={setFieldsValue}
+                  type={type}
                 />
               </LeftContainer>
               <RightContainer xs={16}>
                 <RightFields
                   defaultName={name}
+                  defaultDescription={description}
                   defaultStartDate={startDate}
                   defaultEndDate={endDate}
                   defaultGrade={grades}
@@ -220,6 +245,7 @@ class ClassEdit extends React.Component {
                   setFieldsValue={setFieldsValue}
                   allTagsData={allTagsData}
                   addNewTag={addNewTag}
+                  type={type}
                 />
               </RightContainer>
             </Row>

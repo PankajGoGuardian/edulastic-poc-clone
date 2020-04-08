@@ -23,6 +23,7 @@ const RightFields = ({
   searchCourse,
   isSearching,
   defaultName,
+  defaultDescription,
   defaultStartDate,
   defaultEndDate,
   defaultGrade,
@@ -36,6 +37,7 @@ const RightFields = ({
   filteredCurriculums,
   clearStandards,
   cleverId,
+  type,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
@@ -74,19 +76,37 @@ const RightFields = ({
   const disabledEndDateHandler1 = current => current && current < moment(startDate).subtract(1, "d");
   const disabledEndDateHandler2 = current => current && current < moment();
 
+  const titlePrefix = type === "custom" ? "group" : "class";
+
   return (
     <>
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
-          <FieldLabel label="Class Name" {...restProps} fiedlName="name" initialValue={defaultName}>
+          <FieldLabel label={`${titlePrefix} name`} {...restProps} fiedlName="name" initialValue={defaultName}>
             <TextInputStyled placeholder="Enter the name of your class" />
           </FieldLabel>
         </Col>
       </StyledFlexContainer>
 
+      {type === "custom" && (
+        <StyledFlexContainer gutter={24}>
+          <Col xs={24}>
+            <FieldLabel label="Description" {...restProps} fiedlName="description" initialValue={defaultDescription}>
+              <TextInputStyled placeholder={`Enter ${titlePrefix} description`} />
+            </FieldLabel>
+          </Col>
+        </StyledFlexContainer>
+      )}
+
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
-          <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
+          <FieldLabel
+            label={`${titlePrefix} start date`}
+            optional
+            fiedlName="startDate"
+            initialValue={startDate}
+            {...restProps}
+          >
             <DatePickerStyled
               data-cy="startDate"
               format="DD MMM, YYYY"
@@ -99,7 +119,7 @@ const RightFields = ({
         </Col>
         <Col xs={12}>
           <FieldLabel
-            label="Class End Date"
+            label={`${titlePrefix} end date`}
             optional
             {...restProps}
             fiedlName="endDate"

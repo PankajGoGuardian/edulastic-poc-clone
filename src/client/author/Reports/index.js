@@ -24,9 +24,11 @@ import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessment
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
 import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
+import ClassCreate from "../ManageClass/components/ClassCreate";
 
 const Container = props => {
   const { isCsvDownloading, isPrinting, match } = props;
+  const [showHeader, setShowHeader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const reportType = props?.match?.params?.reportType || "standard-reports";
   const groupName = navigation.locToData[reportType].group;
@@ -114,25 +116,45 @@ const Container = props => {
 
   return (
     <PrintableScreen>
-      <CustomizedHeaderWrapper
-        breadcrumbsData={headerSettings.breadcrumbData}
-        title={headerSettings.title}
-        onShareClickCB={headerSettings.onShareClickCB}
-        onPrintClickCB={headerSettings.onPrintClickCB}
-        onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
-        onRefineResultsCB={headerSettings.onRefineResultsCB}
-        navigationItems={headerSettings.navigationItems}
-        activeNavigationKey={reportType}
+      <Route
+        exact
+        path="/author/reports/:reportType/createClass"
+        component={() => {
+          setShowHeader(false);
+          return <ClassCreate />;
+        }}
       />
+      {showHeader && (
+        <CustomizedHeaderWrapper
+          breadcrumbsData={headerSettings.breadcrumbData}
+          title={headerSettings.title}
+          onShareClickCB={headerSettings.onShareClickCB}
+          onPrintClickCB={headerSettings.onPrintClickCB}
+          onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
+          onRefineResultsCB={headerSettings.onRefineResultsCB}
+          navigationItems={headerSettings.navigationItems}
+          activeNavigationKey={reportType}
+        />
+      )}
       <StyledReportsContentContainer>
         {reportType === "custom-reports" ? (
           <Route
             exact
             path={match.path}
-            render={_props => <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
+            render={_props => {
+              setShowHeader(true);
+              return <CustomReports {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />;
+            }}
           />
         ) : reportType === "standard-reports" ? (
-          <Route exact path={match.path} component={() => <Reports premium={props.premium} />} />
+          <Route
+            exact
+            path={match.path}
+            component={() => {
+              setShowHeader(true);
+              return <Reports premium={props.premium} />;
+            }}
+          />
         ) : null}
         <Route
           path={[
@@ -143,14 +165,17 @@ const Container = props => {
             `/author/reports/performance-by-standards/test/`,
             `/author/reports/performance-by-students/test/`
           ]}
-          render={_props => (
-            <SingleAssessmentReportContainer
-              {..._props}
-              showFilter={expandFilter}
-              loc={reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
+          render={_props => {
+            setShowHeader(true);
+            return (
+              <SingleAssessmentReportContainer
+                {..._props}
+                showFilter={expandFilter}
+                loc={reportType}
+                updateNavigation={setNavigationItems}
+              />
+            );
+          }}
         />
         <Route
           path={[
@@ -164,6 +189,7 @@ const Container = props => {
               showFilter={showFilter}
               loc={reportType}
               updateNavigation={setNavigationItems}
+              setShowHeader={setShowHeader}
             />
           )}
         />
@@ -176,6 +202,7 @@ const Container = props => {
               showFilter={expandFilter}
               loc={reportType}
               updateNavigation={setNavigationItems}
+              setShowHeader={setShowHeader}
             />
           )}
         />
@@ -185,18 +212,24 @@ const Container = props => {
             `/author/reports/student-assessment-profile/student/`,
             `/author/reports/student-profile-summary/student/`
           ]}
-          render={_props => (
-            <StudentProfileReportContainer
-              {..._props}
-              showFilter={showFilter}
-              loc={reportType}
-              updateNavigation={setNavigationItems}
-            />
-          )}
+          render={_props => {
+            setShowHeader(true);
+            return (
+              <StudentProfileReportContainer
+                {..._props}
+                showFilter={showFilter}
+                loc={reportType}
+                updateNavigation={setNavigationItems}
+              />
+            );
+          }}
         />
         <Route
           path="/author/reports/custom-reports/:id"
-          render={_props => <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />}
+          render={_props => {
+            setShowHeader(true);
+            return <CustomReportIframe {..._props} setDynamicBreadcrumb={setDynamicBreadcrumb} />;
+          }}
         />
       </StyledReportsContentContainer>
     </PrintableScreen>

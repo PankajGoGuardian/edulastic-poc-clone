@@ -12,7 +12,7 @@ export default props => {
 
   return (
     <>
-      <FieldLabel label="Class Image" {...props} fiedlName="thumbnail" initialValue={thumbnail}>
+      <FieldLabel label={`${props.type} Image`} {...props} fiedlName="thumbnail" initialValue={thumbnail}>
         <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
     </>

@@ -101,6 +101,7 @@ function* updateDictrictProfileSaga({ payload }) {
   try {
     const updateDistrictProfile = yield call(settingsApi.updateDistrictProfile, payload);
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
+    yield call(message.success, "Profile changes saved successfully.");
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
     yield call(message.error, errorMessage);
@@ -112,6 +113,7 @@ function* createDictrictProfileSaga({ payload }) {
   try {
     const createdDistrictProfile = yield call(settingsApi.createDistrictProfile, payload);
     yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
+    yield call(message.success, "Profile changes saved successfully.");
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
     yield call(message.error, errorMessage);

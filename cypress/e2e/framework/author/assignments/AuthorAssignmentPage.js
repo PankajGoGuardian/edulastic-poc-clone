@@ -109,9 +109,9 @@ class AuthorAssignmentPage {
       .should("be.eq", item);
   };
 
-  clickOnEditTest = () => {
+  clickOnEditTest = (isUsed = false) => {
     cy.server();
-    cy.route("PUT", "**/test/**").as("newVersion");
+    cy.route("PUT", "**/test/**").as("new-version");
     cy.route("GET", "**/default-test-settings/*").as("testdrafted");
 
     this.clickOnActions();
@@ -124,8 +124,13 @@ class AuthorAssignmentPage {
           .contains("span", "PROCEED")
           .click({ force: true });
         cy.wait("@testdrafted").then(xhr => {
-          assert(xhr.status === 200, "Test versioned");
+          assert(xhr.status === 200);
         });
+        if (isUsed)
+          cy.wait("@new-version").then(xhr => {
+            assert(xhr.status === 200, "Test versioned");
+            cy.saveTestDetailToDelete(xhr.response.body.result._id);
+          });
       });
     cy.wait(2000);
   };

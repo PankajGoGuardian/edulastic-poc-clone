@@ -189,13 +189,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
       it("Edit Test after attempt-Regrade", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
-        authorAssignmentPage.clickOnEditTest();
+        authorAssignmentPage.clickOnEditTest(true);
         // Remove Last item
         testReviewTab.clickOnCheckBoxByItemId(itemIds[itemIds.length - 1]);
         itemIds.pop();
         testReviewTab.clickOnRemoveSelected();
         testLibraryPage.header.clickOnPublishButton(isAssigned);
-        regrade.regradeSelection(true, true);
         regrade.applyRegrade();
       });
       it("Verify After Edit-Regrade", () => {

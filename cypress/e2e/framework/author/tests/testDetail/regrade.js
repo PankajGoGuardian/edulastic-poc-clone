@@ -7,6 +7,7 @@ export default class Regrade {
   }
 
   // *** ELEMENTS START ***
+  getCancelRegrade = () => cy.get('[data-cy="cancelRegrade"]');
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -42,6 +43,11 @@ export default class Regrade {
     cy.get("[data-cy='applyRegrade']").click({ force: true });
     cy.wait("@regrade").then(xhr => expect(xhr.status).to.eq(200));
     cy.contains("Success!");
+  };
+
+  canclelRegrade = () => {
+    this.getCancelRegrade().click();
+    cy.contains("Share With Others");
   };
 
   // *** ACTIONS END ***

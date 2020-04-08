@@ -1,10 +1,10 @@
 /* eslint-disable default-case */
-import { now } from "moment";
 import TestHeader from "./header";
 import searchFiltersPage from "../../searchFiltersPage";
 import Header from "../../itemList/itemDetail/header";
 import QuestionResponsePage from "../../assignments/QuestionResponsePage";
 import StudentTestPage from "../../../student/studentTestPage";
+import PreviewItemPopup from "../../itemList/itemPreview";
 
 export default class TestReviewTab {
   constructor() {
@@ -13,6 +13,7 @@ export default class TestReviewTab {
     this.itemHeader = new Header();
     this.qrp = new QuestionResponsePage();
     this.studentTestPage = new StudentTestPage();
+    this.previewItemPopUp = new PreviewItemPopup();
   }
 
   // *** ELEMENTS START ***
@@ -83,33 +84,6 @@ export default class TestReviewTab {
       // .contains("Preview")
       .find('[data-cy="preview" ]')
       .click();
-
-  previewAndEditById = id => {
-    cy.server();
-    cy.route("GET", "**/api/testitem/**").as("editItem");
-    this.clickOnPreview(id);
-    cy.get('[data-cy="question-container"]')
-      .parent()
-      .parent()
-      .parent()
-      .children()
-      .eq(0)
-      .contains("edit")
-      .click();
-    cy.wait("@editItem");
-  };
-
-  previewAndDuplicateById = id => {
-    this.clickOnPreview(id);
-    cy.get('[data-cy="question-container"]')
-      .parent()
-      .parent()
-      .parent()
-      .parent()
-      .prev()
-      .contains("Duplicate")
-      .click();
-  };
 
   previewQuestById = id => {
     this.getQueCardByItemIdInCollapsed(id)

@@ -16,12 +16,13 @@ export default class TestHeader {
     return new TestSummayTab();
   };
 
-  clickOnAddItems = (assignmentActions = false) => {
+  clickOnAddItems = () => {
     cy.server();
-    cy.route("POST", "**/search/**").as("search");
+    cy.route("POST", "**/search/items").as("search-items");
+    cy.route("POST", "**/search/browse-standards").as("search-standards");
+
     cy.get('[data-cy="addItems"]').click({ force: true });
-    if (assignmentActions) cy.wait("@search");
-    return cy.wait("@search").then(() => new TestAddItemTab());
+    return cy.wait("@search-items").then(() => new TestAddItemTab());
   };
 
   clickOnReview = () => {
@@ -63,11 +64,12 @@ export default class TestHeader {
     cy.route("PUT", "**/test/**/publish").as("published");
     cy.route("PUT", "**/test/*").as("saveTest");
     cy.get('[data-cy="publish"]').click();
-    if (!assigned) {
-      cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
-      return cy.wait("@published").then(xhr => {
-        expect(xhr.status).to.eq(200);
-        // TODO: revisit here and refactor
+
+    cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
+    return cy.wait("@published").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      // TODO: revisit here and refactor
+      if (!assigned) {
         if (Cypress.$('[data-cy="Assignments"]').length === 1) {
           return cy.contains("Share With Others").then(() => {
             return JSON.stringify(xhr.url)
@@ -78,8 +80,8 @@ export default class TestHeader {
           return JSON.stringify(xhr.url)
             .split("/")
             .reverse()[1];
-      });
-    }
+      }
+    });
   };
 
   clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });

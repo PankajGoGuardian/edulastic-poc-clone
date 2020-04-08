@@ -123,7 +123,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         itemsInTest.pop();
         // Publish
         testReviewTab.testheader.clickOnPublishButton(isAssigned);
-        regrade.regradeSelection(true);
         // Apply Regrade And Verify At Student1 Side
         regrade.applyRegrade();
         OriginalTestId = newTestId;
@@ -210,8 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         //Update Points
         testReviewTab.updatePointsByID(item1, updatedPoints);
         // Publish
-        testAddItemTab.header.clickOnPublishButton(isAssigned, true);
-        regrade.regradeSelection(true);
+        testAddItemTab.header.clickOnPublishButton(isAssigned);
         regrade.applyRegrade();
         OriginalTestId = newTestId;
       });
@@ -221,6 +219,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       assignmentsPage.verifyAssignedTestID(newTestId, assignedTest);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
       studentTestPage.getQuestionByIndex(0);
+
       studentTestPage.attemptQuestionsByQueType(questionType, attempt);
       studentTestPage.submitTest();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);

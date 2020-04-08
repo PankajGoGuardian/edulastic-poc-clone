@@ -114,7 +114,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
         testSummayTab.selectGrade(grade);
         testSummayTab.selectSubject(subject);
         testSummayTab.header.clickOnPublishButton(isAssigned);
-        regrade.regradeSelection(false);
+        regrade.canclelRegrade();
         cy.login("student", Student1.email, Student1.pass);
         assignmentsPage.verifyAssignedTestID(assignedTest, newTestId);
         assignmentsPage.verifyTestNameById(testName, assignedTest);
@@ -130,7 +130,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Edit After Use- Wi
       testLibraryPage.getVersionedTestID().then(id => {
         newTestId = id;
         // Edit Question Text From Review Tab
-        testReviewTab.previewAndEditById(item3);
+        testReviewTab.previewQuestById(item3);
+        testReviewTab.previewItemPopUp.clickEditOnPreview();
         mcqTrueFalsePage.setQuestionEditorText("Edited Text");
         // It will create new version of item
         testReviewTab.itemHeader.saveAndgetId(true).then(item => {

@@ -190,7 +190,7 @@ const PlayerContent = ({
       const { currentPageIds } = frameController;
       const scoringIds = Object.keys(currentPageIds);
       if (!isEmpty(scoringIds)) {
-        const currentItem = findItemIdMap([scoringIds[0]]);
+        const currentItem = findItemIdMap(scoringIds[0]);
         if (currentItem) {
           const timeSpent = Date.now() - lastTime.current;
           onSubmitAnswer(currentItem.uuid, timeSpent, groupId);

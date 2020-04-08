@@ -2,8 +2,7 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
-import { CenteredText } from "@edulastic/common";
-
+import { CenteredText, MathFormulaDisplay } from "@edulastic/common";
 import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
 import { getStemNumeration } from "../../../utils/helpers";
@@ -128,7 +127,7 @@ const TableRow = ({
             marginTop="0"
           >
             {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
-              <div
+              <MathFormulaDisplay
                 style={{
                   display: "flex",
                   alignItems: "baseline",

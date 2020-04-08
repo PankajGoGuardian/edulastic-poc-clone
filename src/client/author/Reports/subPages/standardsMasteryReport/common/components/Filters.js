@@ -145,7 +145,7 @@ const StandardsFilters = ({
 
     // check if domainId in url is in the array if not select the first one
 
-    let urlDomainId = domains;
+    let urlDomainId = domains.length > 1 ? domains.slice(1) : domains;
     // const domainIdsKeys = keyBy(search.domainIds?.split(","));
     // let urlDomainId = domains.filter((item, index) => domainIdsKeys[item.key]);
     // if (!urlDomainId.length) {

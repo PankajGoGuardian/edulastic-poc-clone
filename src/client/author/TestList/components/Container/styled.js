@@ -201,6 +201,7 @@ export const PaginationInfo = styled.div`
   font-weight: 600;
   font-size: 13px;
   text-transform: uppercase;
+  white-space: nowrap;
   span:first-child {
     background: ${greyThemeLight};
     padding: 2px 25px;
@@ -215,8 +216,8 @@ export const FiltersWrapper = styled.div`
   justify-self: center;
   margin-right: auto;
   margin-left: 10px;
-  max-width: 20%;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   .ant-tag {
     color: #686f75;
     background: #bac3ca;
@@ -224,5 +225,6 @@ export const FiltersWrapper = styled.div`
     border: none;
     font-weight: bold;
     border-radius: 6px;
+    margin-bottom: 5px;
   }
 `;

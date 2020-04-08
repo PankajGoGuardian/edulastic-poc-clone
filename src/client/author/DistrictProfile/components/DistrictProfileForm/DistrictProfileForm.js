@@ -42,7 +42,8 @@ class DistrictProfileForm extends React.Component {
     this.state = {
       popoverVisible: false,
       editing: false,
-      districtUrl: ""
+      districtUrl: "",
+      districtProfile: {}
     };
 
     this.childRefArr = [];
@@ -69,28 +70,18 @@ class DistrictProfileForm extends React.Component {
     }
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.districtProfile == null || Object.keys(nextProps.districtProfile).length === 0) {
-      return {
-        districtProfile: {
-          logo: "",
-          pageBackground: "",
-          name: "",
-          shortName: "",
-          city: "",
-          state: "",
-          zip: "",
-          nces: "",
-          announcement: ""
-        }
-      };
-    } else
-      return {
-        districtProfile: nextProps.districtProfile,
-        districtUrl: `${window.location.origin}/${nextProps.role === roleuser.DISTRICT_ADMIN ? "district" : "school"}/${
-          nextProps.districtProfile.shortName
-        }`
-      };
+  componentDidUpdate(prevProps) {
+    const { isInputEnabled, districtProfile, form } = this.props;
+    if (prevProps.isInputEnabled !== isInputEnabled && isInputEnabled) {
+      this.setState({ districtProfile });
+    }
+    if (
+      (prevProps.isInputEnabled !== isInputEnabled ||
+        districtProfile.announcement !== prevProps.districtProfile.announcement) &&
+      !isInputEnabled
+    ) {
+      form.setFieldsValue({ announcement: districtProfile.announcement });
+    }
   }
 
   handleVisibleChange = visible => {
@@ -104,14 +95,13 @@ class DistrictProfileForm extends React.Component {
     } else if (keyName === "logo") {
       districtProfile.logo = imgSrc;
     }
-    this.props.setDistrictValue(districtProfile);
+    this.setState({ districtProfile });
   };
 
   updateProfileName = newName => {
     let districtProfile = { ...this.state.districtProfile };
     districtProfile.name = newName;
-    this.setState({ editing: false });
-    this.props.setDistrictValue(districtProfile);
+    this.setState({ editing: false, districtProfile });
   };
 
   updateProfileValue = (valueName, value) => {
@@ -129,8 +119,7 @@ class DistrictProfileForm extends React.Component {
     } else if (valueName === "NCES Code") {
       districtProfile.nces = value;
     }
-    this.setState({ editing: false });
-    this.props.setDistrictValue(districtProfile);
+    this.setState({ editing: false, districtProfile });
   };
 
   setEditing = value => {
@@ -138,16 +127,20 @@ class DistrictProfileForm extends React.Component {
   };
 
   changeAnnouncement = e => {
-    let districtProfile = { ...this.state.districtProfile };
+    const districtProfile = { ...this.state.districtProfile };
     districtProfile.announcement = e.target.value;
-    this.props.setDistrictValue(districtProfile);
+    this.setState({ districtProfile });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { districtProfile } = this.state;
-    const { districtUrl, popoverVisible } = this.state;
     const { isInputEnabled, role, schools, schoolId } = this.props;
+    const { districtProfile } = isInputEnabled ? this.state : this.props;
+    const { popoverVisible } = this.state;
+    const districtUrl = `${window.location.origin}/${role === roleuser.DISTRICT_ADMIN ? "district" : "school"}/${
+      districtProfile?.shortName
+    }`;
+
     const isDA = role === roleuser.DISTRICT_ADMIN;
     const popoverContent = (
       <React.Fragment>
@@ -170,7 +163,7 @@ class DistrictProfileForm extends React.Component {
             <ImageUpload
               width="200px"
               height="200px"
-              imgSrc={districtProfile.logo}
+              imgSrc={districtProfile.logo || ""}
               keyName="logo"
               updateImgUrl={this.updateImgSrc}
               labelStr="logo image"
@@ -187,7 +180,7 @@ class DistrictProfileForm extends React.Component {
                   <h3>{isDA ? districtProfile.name : schools.find(item => item._id === schoolId)?.name || ""}</h3>
                 </Col>
                 <Col span={12} style={{ textAlign: "right" }}>
-                  {districtProfile.shortName && (
+                  {this.props.districtProfile?.shortName && (
                     <Popover
                       trigger="click"
                       visible={popoverVisible}
@@ -204,7 +197,7 @@ class DistrictProfileForm extends React.Component {
               </HeaderRow>
               <StyledRowLogo>
                 <ImageUpload
-                  imgSrc={districtProfile.pageBackground}
+                  imgSrc={districtProfile.pageBackground || ""}
                   updateImgUrl={this.updateImgSrc}
                   keyName="pageBackground"
                   width="100%"
@@ -220,7 +213,7 @@ class DistrictProfileForm extends React.Component {
                 <FormColumnLeft>
                   <InputWithUrl>
                     <EditableLabel
-                      value={districtProfile.shortName}
+                      value={districtProfile.shortName || ""}
                       valueName={isDA ? "District Short Name" : "School Short Name"}
                       maxLength={10}
                       requiredStatus
@@ -235,7 +228,7 @@ class DistrictProfileForm extends React.Component {
                     />
                   </InputWithUrl>
                   <EditableLabel
-                    value={districtProfile.city}
+                    value={districtProfile.city || ""}
                     valueName="City"
                     maxLength={40}
                     requiredStatus={false}
@@ -248,7 +241,7 @@ class DistrictProfileForm extends React.Component {
                     isInputEnabled={isInputEnabled}
                   />
                   <EditableLabel
-                    value={districtProfile.state}
+                    value={districtProfile.state || ""}
                     valueName="State"
                     maxLength={40}
                     requiredStatus={false}
@@ -261,7 +254,7 @@ class DistrictProfileForm extends React.Component {
                     form={this.props.form}
                   />
                   <EditableLabel
-                    value={districtProfile.zip}
+                    value={districtProfile.zip || ""}
                     valueName="Zip"
                     maxLength={20}
                     requiredStatus={false}
@@ -277,7 +270,7 @@ class DistrictProfileForm extends React.Component {
                 <ColumnSpacer />
                 <FormColumnRight>
                   <EditableLabel
-                    value={districtProfile.nces}
+                    value={districtProfile.nces || ""}
                     valueName="NCES Code"
                     maxLength={100}
                     requiredStatus={false}
@@ -293,7 +286,7 @@ class DistrictProfileForm extends React.Component {
                     <label>{isDA ? "District Announcement" : "School Announcement"}</label>
                     <StyledFormItem>
                       {getFieldDecorator("announcement", {
-                        initialValue: districtProfile.announcement,
+                        initialValue: districtProfile.announcement || "",
                         rules: [{ required: false, message: "Please input your announcement" }]
                       })(
                         <StyledTextArea

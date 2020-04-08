@@ -21,8 +21,15 @@ class EditableLabel extends React.Component {
     };
   }
 
+  componentDidUpdate() {
+    const { form, valueName, value } = this.props;
+    if (value !== form.getFieldValue(valueName)) {
+      form.setFieldsValue({ [valueName]: value });
+    }
+  }
+
   setRequiredStatus = () => {
-    const { value } = this.state;
+    const { value } = this.props;
     const { requiredStatus, valueName } = this.props;
     if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
@@ -34,7 +41,7 @@ class EditableLabel extends React.Component {
   };
 
   onInputBlur = () => {
-    const { value, validateStatus } = this.state;
+    const { value, validateStatus } = this.props;
     const { requiredStatus, valueName, setProfileValue, isSpaceEnable } = this.props;
 
     this.setState({
@@ -114,14 +121,14 @@ class EditableLabel extends React.Component {
   };
 
   render() {
-    const { value, validateStatus, validateMsg } = this.state;
-    const { valueName, requiredStatus, isInputEnabled, flexGrow = "" } = this.props;
+    const { validateStatus, validateMsg } = this.state;
+    const { valueName, requiredStatus, isInputEnabled, flexGrow = "", value } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     return (
       <EditableLabelDiv flexGrow={flexGrow}>
         <label>{valueName}</label>
-        <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal">
+        <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal" value={value}>
           {getFieldDecorator(valueName, {
             initialValue: value,
             rules: [
@@ -138,6 +145,7 @@ class EditableLabel extends React.Component {
               onChange={this.handleChange}
               placeholder={valueName}
               ref={this.inputRef}
+              value={value}
             />
           )}
         </StyledFormItem>

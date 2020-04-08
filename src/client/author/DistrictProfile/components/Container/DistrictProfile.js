@@ -34,7 +34,8 @@ class DistrictProfile extends Component {
     event.preventDefault();
 
     const { childRefArr } = this.formRef;
-    const { userOrgId, districtProfile, form, createDistrictProfile, updateDistrictProfile } = this.formRef.props;
+    const { userOrgId, form, createDistrictProfile, updateDistrictProfile } = this.formRef.props;
+    const { districtProfile } = this.formRef.state;
     const { logo, pageBackground, name, shortName, city, state, zip, nces, announcement } = districtProfile;
     const { role, schoolId, schools } = this.props;
     const selectedSchoolData = schools?.find(item => item?._id === schoolId);
@@ -75,7 +76,12 @@ class DistrictProfile extends Component {
 
   showButtons = () => (
     <DropdownWrapper>
-      <SaSchoolSelect onChange={this.props.loadSchoolProfile} />
+      <SaSchoolSelect
+        onChange={value => {
+          this.props.loadSchoolProfile(value);
+          this.setState({ isInputEnabled: false });
+        }}
+      />
     </DropdownWrapper>
   );
 

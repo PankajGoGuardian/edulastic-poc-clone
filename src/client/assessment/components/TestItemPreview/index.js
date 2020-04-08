@@ -387,9 +387,7 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        <div style={{ position: "relative", width: showStackedView && "315px" }}>
-          {this.renderFeedbacks(showStackedView)}
-        </div>
+        <div style={{ position: "relative", "min-width": "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
       </ThemeProvider>
     );
   }

@@ -11,7 +11,8 @@ const AssessmentChart = ({
   onBarClickCB,
   onResetClickCB,
   studentInformation = {},
-  xTickTooltipPosition = 460
+  xTickTooltipPosition = 460,
+  isBarClickable = false
 }) => {
   const xDataKey = "uniqId";
 
@@ -60,6 +61,7 @@ const AssessmentChart = ({
       onBarClickCB={_onBarClickCB}
       onResetClickCB={onResetClickCB}
       filter={selectedTests}
+      isBarClickable={isBarClickable}
     />
   );
 };
@@ -72,8 +74,8 @@ AssessmentChart.propTypes = {
 };
 
 AssessmentChart.defaultProps = {
-  onBarClickCB: () => {},
   onResetClickCB: () => {},
+  onBarClickCB: () => {},
   selectedTests: []
 };
 

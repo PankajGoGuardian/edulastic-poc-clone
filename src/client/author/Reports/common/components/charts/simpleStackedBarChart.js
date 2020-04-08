@@ -59,7 +59,8 @@ export const SimpleStackedBarChart = ({
   lineDotProps = {},
   lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   lineYTickFormatter = _yTickFormatter,
-  lineYAxisLabel = ""
+  lineYAxisLabel = "",
+  isBarClickable = false
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -164,7 +165,7 @@ export const SimpleStackedBarChart = ({
   };
 
   return (
-    <StyledStackedBarChartContainer>
+    <StyledStackedBarChartContainer clickable={isBarClickable}>
       <a
         onClick={onResetClick}
         style={Object.keys(filter).length > 0 ? { visibility: "visible" } : { visibility: "hidden" }}
@@ -349,5 +350,8 @@ const StyledStackedBarChartContainer = styled.div`
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
     stroke-opacity: 0;
+  }
+  .recharts-rectangle {
+    cursor: ${({clickable}) => clickable ? "pointer" : "default"}!important;
   }
 `;

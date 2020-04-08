@@ -355,8 +355,8 @@ class AuthorTestItemPreview extends Component {
           justifyContent="flex-end"
           style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
-          
-//          Using conditional flag, because ScoreBlock is also being used in author preview tab.
+          {/* Using conditional flag, because ScoreBlock is also being used in author preview tab. */}
+
           {viewComponent === "authorPreviewPopup" ? <ScoreBlock customStyle={{ left: "-5px" }} /> : null}
 
           {isAnswerBtnVisible && (

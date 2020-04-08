@@ -11,18 +11,18 @@ const getCanvasAuthURI = institutionId =>
     })
     .then(result => result.data.result);
 
-const fetchCourseList = () =>
+const fetchCourseList = institutionId =>
   api
     .callApi({
-      url: `${prefix}/course-list`,
+      url: `${prefix}/course-list?institutionId=${institutionId}`,
       method: "get"
     })
     .then(result => result.data.result);
 
-const fetchCourseSectionList = courseIds =>
+const fetchCourseSectionList = ({ allCourseIds, institutionId }) =>
   api
     .callApi({
-      url: `${prefix}/course-section-list?courseIds=${courseIds.toString()}`,
+      url: `${prefix}/course-section-list?courseIds=${allCourseIds.toString()}&institutionId=${institutionId}`,
       method: "get"
     })
     .then(result => result.data.result);

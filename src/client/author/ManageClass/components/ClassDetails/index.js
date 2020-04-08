@@ -169,6 +169,7 @@ const ClassDetails = ({
               canvasCourseSectionCode={+selectedClass.canvasCourseSectionCode || null}
               user={user}
               groupId={selectedClass._id}
+              institutionId={institutionId}
             />
           )}
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />

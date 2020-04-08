@@ -123,6 +123,7 @@ const Container = ({
             getCanvasSectionListRequest={getCanvasSectionListRequest}
             canvasCourseList={canvasCourseList}
             canvasSectionList={canvasSectionList}
+            institutionId={school?.schoolId || institutionIds[0]}
           />
         </Col>
       )}

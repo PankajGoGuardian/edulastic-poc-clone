@@ -35,7 +35,8 @@ const CanvasBulkAddClass = ({
   bulkSyncCanvasStatus,
   courseList,
   isFetchingCanvasData,
-  signupSuccess
+  signupSuccess,
+  institutionId
 }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -45,13 +46,13 @@ const CanvasBulkAddClass = ({
   useEffect(() => {
     getDictCurriculums();
     receiveSearchCourse({ districtId: user.districtId });
-    getCanvasCourseListRequest();
+    getCanvasCourseListRequest(institutionId);
   }, []);
 
   useEffect(() => {
     if (canvasCourseList.length) {
       const allCourseIds = canvasCourseList.map(c => c.id);
-      getCanvasSectionListRequest(allCourseIds);
+      getCanvasSectionListRequest({ allCourseIds, institutionId });
     }
   }, [canvasCourseList]);
 

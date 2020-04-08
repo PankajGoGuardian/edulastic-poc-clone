@@ -556,9 +556,9 @@ function* syncClassUsingCode({ payload }) {
   }
 }
 
-function* getCanvasCourseListRequestSaga() {
+function* getCanvasCourseListRequestSaga({ payload }) {
   try {
-    const courseList = yield call(canvasApi.fetchCourseList);
+    const courseList = yield call(canvasApi.fetchCourseList, payload);
     if (courseList.length === 0) {
       yield call(message.info, "No course found in your Canvas account.");
       yield put(getCanvasCourseListFailedAction());

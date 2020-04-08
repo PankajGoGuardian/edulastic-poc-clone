@@ -17,21 +17,22 @@ const CanvasSyncModal = ({
   canvasCode,
   canvasCourseSectionCode,
   user,
-  groupId
+  groupId,
+  institutionId
 }) => {
   const [course, setCourse] = useState(canvasCode);
   const [section, setSection] = useState(canvasCourseSectionCode);
   const [idDisabled, setIsDisabled] = useState(!!canvasCode && !!canvasCourseSectionCode);
 
   useEffect(() => {
-    getCanvasCourseListRequest();
+    getCanvasCourseListRequest(institutionId);
     if (course && section) {
-      getCanvasSectionListRequest([course]);
+      getCanvasSectionListRequest({ institutionId, allCourseIds: [course] });
     }
   }, []);
 
   const handleCourseChange = value => {
-    getCanvasSectionListRequest([value]);
+    getCanvasSectionListRequest({ institutionId, allCourseIds: [value] });
     setCourse(value);
     setSection("");
   };

@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, keyBy, set } from "lodash";
+import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -93,7 +93,8 @@ class Review extends PureComponent {
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: "",
-    hasStickyHeader: false
+    hasStickyHeader: false,
+    indexForPreview: 0
   };
 
   componentWillUnmount() {
@@ -278,14 +279,44 @@ class Review extends PureComponent {
   };
 
   handlePreviewTestItem = data => {
-    const { resetItemScore } = this.props;
+    const { resetItemScore, testItems } = this.props;
+    const indexForPreview = findIndex(testItems, ite => ite._id === data);
     this.setState({
-      item: { id: data }
+      item: { id: data },
+      indexForPreview
     });
     // clear the item score in the store, if while adding item, check/show answer was clicked
     // EV-12256
     resetItemScore();
     this.setModalVisibility(true);
+  };
+
+  nextItem = () => {
+    const { indexForPreview } = this.state;
+    const { testItems, resetItemScore } = this.props;
+    const nextItemIndex = indexForPreview + 1;
+    if (nextItemIndex > testItems.length - 1) {
+      return;
+    }
+    resetItemScore();
+    this.setState({
+      item: { id: testItems[nextItemIndex]._id },
+      indexForPreview: nextItemIndex
+    });
+  };
+
+  prevItem = () => {
+    const { indexForPreview } = this.state;
+    const { testItems, resetItemScore } = this.props;
+    const prevItemIndex = indexForPreview - 1;
+    if (prevItemIndex < 0) {
+      return;
+    }
+    resetItemScore();
+    this.setState({
+      item: { id: testItems[prevItemIndex]._id },
+      indexForPreview: prevItemIndex
+    });
   };
 
   closeModal = () => {
@@ -487,6 +518,8 @@ class Review extends PureComponent {
               questions={questions}
               checkAnswer={() => checkAnswer(item)}
               showAnswer={() => showAnswer(item)}
+              prevItem={this.prevItem}
+              nextItem={this.nextItem}
               showEvaluationButtons
             />
           )}

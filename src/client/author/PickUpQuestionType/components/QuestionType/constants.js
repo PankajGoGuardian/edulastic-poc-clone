@@ -1376,6 +1376,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [{ id: uuids[0], index: 0, value: "Answer 1" }, { id: uuids[1], index: 1, value: "Answer 2" }]
           },
+          mixAndMatch: true,
           altResponses: []
         },
         hints: [{ value: uuids[0], label: "" }]
@@ -2371,6 +2372,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         options: {},
         validation: {
           scoringType: "exactMatch",
+          mixAndMatch: true,
           validResponse: {
             score: 1,
             value: [

@@ -368,7 +368,10 @@ const answerValidator = {
     return hasEmpty;
   },
   [questionType.MATH](answers) {
-    const hasEmpty = this[questionType.CLOZE_IMAGE_DRAG_DROP](answers);
+    if (!answers.length) return true;
+    const hasEmpty = answers.some(answer => {
+      return answer.value.length === 0 || answer.value.some(ans => isEmpty(ans) || isEmpty(ans.value));
+    });
     return hasEmpty;
   },
   [questionType.GRAPH](answers) {

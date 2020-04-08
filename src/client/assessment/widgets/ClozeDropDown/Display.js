@@ -24,6 +24,7 @@ import { getFontSize } from "../../utils/helpers";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import Instructions from "../../components/Instructions";
 import ChoicesBox from "./ChoicesBox";
 
 class ClozeDropDownDisplay extends Component {
@@ -145,8 +146,7 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
-    const hasAltAnswers =
-      item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
+    const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
 
     const answerBox =
       showAnswer || isExpressGrader ? (
@@ -188,12 +188,8 @@ class ClozeDropDownDisplay extends Component {
       changePreviewTab,
       responsecontainerindividuals,
       cAnswers: get(item, "validation.validResponse.value", []),
-      userSelections:
-        item && item.activity && item.activity.userResponse
-          ? item.activity.userResponse
-          : userSelections,
-      evaluation:
-        item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+      userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
+      evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
     const displayOptions = orderBy(item.responseIds, ["index"]).map(option => options[option.id]);
     const questionContent = (
@@ -204,9 +200,7 @@ class ClozeDropDownDisplay extends Component {
           showWarnings
           components={{
             textdropdown:
-              showAnswer || checkAnswer || isPrint || isPrintPreview
-                ? CheckboxTemplateBoxLayout
-                : ChoicesBox,
+              showAnswer || checkAnswer || isPrint || isPrintPreview ? CheckboxTemplateBoxLayout : ChoicesBox,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -224,22 +218,15 @@ class ClozeDropDownDisplay extends Component {
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
             {!!question && (
-              <Stimulus
-                qIndex={qIndex}
-                smallSize={smallSize}
-                dangerouslySetInnerHTML={{ __html: question }}
-              />
+              <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
             )}
             {!question && questionContent}
           </QuestionTitleWrapper>
           {question && questionContent}
           {(isPrint || isPrintPreview) && (
-            <DisplayOptions
-              options={displayOptions}
-              responseIds={item.responseIds}
-              style={{ marginTop: "50px" }}
-            />
+            <DisplayOptions options={displayOptions} responseIds={item.responseIds} style={{ marginTop: "50px" }} />
           )}
+          {view !== EDIT && <Instructions item={item} />}
           {answerBox}
         </QuestionContentWrapper>
       </FlexContainer>
@@ -317,9 +304,7 @@ const QuestionTitleWrapper = styled.div`
 const ContentWrapper = styled.div`
   padding: ${props => (props.view === EDIT ? 15 : 0)}px;
   border: ${props =>
-    props.view === EDIT
-      ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}`
-      : null};
+    props.view === EDIT ? `solid 1px ${props.theme.widgets.clozeText.questionContainerBorderColor}` : null};
   border-radius: ${props => (props.view === EDIT ? 10 : 0)}px;
   width: 100%;
 

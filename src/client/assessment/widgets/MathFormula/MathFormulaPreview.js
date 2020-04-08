@@ -16,7 +16,7 @@ import {
   QuestionContentWrapper
 } from "@edulastic/common";
 
-import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
+import { SHOW, CHECK, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 
 import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
 import MathInputStatus from "./components/MathInputStatus/index";
@@ -27,6 +27,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import Instructions from "../../components/Instructions";
 import Spinner from "./components/Spinner";
 
 class MathFormulaPreview extends Component {
@@ -227,7 +228,8 @@ class MathFormulaPreview extends Component {
       userAnswer,
       disableResponse,
       answerContextConfig,
-      showCalculatingSpinner
+      showCalculatingSpinner,
+      view
     } = this.props;
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
@@ -385,7 +387,7 @@ class MathFormulaPreview extends Component {
                 )}
               </FlexContainer>
             )}
-
+            {view && view !== EDIT && <Instructions item={item} />}
             {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
               <CorrectAnswerBox
                 answer={

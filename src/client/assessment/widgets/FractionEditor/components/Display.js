@@ -16,7 +16,8 @@ import {
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
-import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
+import Instructions from "../../../components/Instructions";
+import { CLEAR, SHOW, EDIT } from "../../../constants/constantsForQuestions";
 import CorrectAnswerBox from "./CorrectAnswerBox";
 import SwitchWrapper from "../styled/SwitchWrapper";
 
@@ -30,6 +31,7 @@ const Display = ({
   userAnswer,
   changePreviewTab,
   isReviewTab,
+  view,
   t
 }) => {
   const { fractionProperties = {}, annotations = [] } = item;
@@ -73,14 +75,9 @@ const Display = ({
           </FlexContainer>
           {hasAnnotations && answerContext.isAnswerModifiable && (
             <FlexContainer>
-              <span style={{ marginRight: "5px" }}>
-                {t("component.fractionEditor.showAnnotations")}
-              </span>
+              <span style={{ marginRight: "5px" }}>{t("component.fractionEditor.showAnnotations")}</span>
               <SwitchWrapper>
-                <Switch
-                  defaultChecked={showAnnotations}
-                  onChange={checked => toggleAnnotationsVibility(checked)}
-                />
+                <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
               </SwitchWrapper>
             </FlexContainer>
           )}
@@ -98,12 +95,7 @@ const Display = ({
           justifyContent="flex-start"
           alignItems="center"
         >
-          <FlexContainer
-            alignItems="flex-start"
-            flexDirection="row"
-            flexWrap="wrap"
-            justifyContent="flex-start"
-          >
+          <FlexContainer alignItems="flex-start" flexDirection="row" flexWrap="wrap" justifyContent="flex-start">
             {Array(count)
               .fill()
               .map((_, index) =>
@@ -135,10 +127,9 @@ const Display = ({
                 )
               )}
           </FlexContainer>
-          {showAnnotations && (
-            <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />
-          )}
+          {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
         </FlexContainer>
+        {view && view !== EDIT && <Instructions item={item} />}
         {previewTab === SHOW && (
           <CorrectAnswerBox
             fractionProperties={fractionProperties}

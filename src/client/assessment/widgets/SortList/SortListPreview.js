@@ -15,8 +15,8 @@ import {
 import { withNamespaces } from "@edulastic/localization";
 import { ChoiceDimensions } from "@edulastic/constants";
 
-import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
-
+import { SHOW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
+import Instructions from "../../components/Instructions";
 import DropContainer from "../../components/DropContainer";
 
 import ShowCorrect from "./components/ShowCorrect";
@@ -46,6 +46,7 @@ const SortListPreview = ({
   t,
   smallSize,
   item,
+  view,
   userAnswer,
   saveAnswer,
   showQuestionNumber,
@@ -358,6 +359,7 @@ const SortListPreview = ({
               </FlexCol>
             </FlexContainer>
           </Container>
+          {view && view !== EDIT && <Instructions item={item} />}
           {(previewTab === SHOW || isReviewTab) && (
             <ShowCorrect
               source={source}

@@ -25,7 +25,7 @@ import {
   CHECK,
   SHOW
 } from "../../constants/constantsForQuestions";
-
+import Instructions from "../../components/Instructions";
 import { Subtitle } from "../../styled/Subtitle";
 
 import ShadesView from "./components/ShadesView";
@@ -201,6 +201,7 @@ const ShadingPreview = ({
               />
             )}
           </FlexContainer>
+          {view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW && (
             <Fragment>
               <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>

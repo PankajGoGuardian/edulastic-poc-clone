@@ -106,9 +106,7 @@ class MultipleChoice extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
-          draft.validation.altResponses = draft.validation.altResponses.filter(
-            (response, i) => i !== index
-          );
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -160,10 +158,7 @@ class MultipleChoice extends Component {
         };
 
         if (name === "multipleResponses" && value === false) {
-          draft.validation.validResponse.value = draft.validation.validResponse.value.reduce(
-            reduceResponses,
-            []
-          );
+          draft.validation.validResponse.value = draft.validation.validResponse.value.reduce(reduceResponses, []);
           draft.validation.altResponses = draft.validation.altResponses.map(res => {
             res.value = res.value.reduce(reduceResponses, []);
             return res;
@@ -197,13 +192,7 @@ class MultipleChoice extends Component {
       ...restProps
     } = this.props;
     const { correctTab } = this.state;
-    const {
-      previewStimulus,
-      previewDisplayOptions,
-      itemForEdit,
-      uiStyle,
-      multipleResponses
-    } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle, multipleResponses } = this.getRenderData();
     const isV1Multipart = get(col, "isV1Multipart", false);
     const fontSize = getFontSize(uiStyle?.fontsize);
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
@@ -293,6 +282,7 @@ class MultipleChoice extends Component {
                   qSubLabel={item.qSubLabel}
                   testItem={testItem}
                   styleType="primary"
+                  item={item}
                   fontSize={fontSize}
                   {...restProps}
                 />

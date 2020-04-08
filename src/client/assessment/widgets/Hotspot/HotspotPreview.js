@@ -13,8 +13,8 @@ import {
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { PREVIEW, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
-
+import { PREVIEW, CLEAR, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
+import Instructions from "../../components/Instructions";
 import BlockContainer from "./styled/BlockContainer";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
@@ -71,11 +71,7 @@ const HotspotPreview = ({
   });
 
   return (
-    <StyledPaperWrapper
-      style={{ fontSize }}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <StyledPaperWrapper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <FlexContainer justifyContent="flex-start" alignItems="baseline" width="100%">
         <QuestionLabelWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>}
@@ -111,13 +107,10 @@ const HotspotPreview = ({
                 ))}
             </Svg>
           </BlockContainer>
-
+          {view !== EDIT && <Instructions item={item} />}
           {previewTab === "show" && !smallSize && (
             <Fragment>
-              <CorrectAnswersContainer
-                title={t("component.graphing.correctAnswer")}
-                minWidth={`${width + 24}px`}
-              >
+              <CorrectAnswersContainer title={t("component.graphing.correctAnswer")} minWidth={`${width + 24}px`}>
                 <BlockContainer
                   data-cy="hotspotMap"
                   style={{ maxWidth }}
@@ -144,9 +137,7 @@ const HotspotPreview = ({
               </CorrectAnswersContainer>
               {altAnswers &&
                 altAnswers.map((altAnswer, i) => (
-                  <CorrectAnswersContainer
-                    title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}
-                  >
+                  <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
                     <BlockContainer
                       data-cy="hotspotMap"
                       style={{ maxWidth }}
@@ -154,13 +145,7 @@ const HotspotPreview = ({
                       height={+height}
                       justifyContent="center"
                     >
-                      <ImageContainer
-                        src={source}
-                        width={+width}
-                        height={+height}
-                        left={0}
-                        top={0}
-                      />
+                      <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                       <Svg data-cy="answer-container" width={+width} height={+height}>
                         {areas &&
                           areas.map((area, altIndex) => (

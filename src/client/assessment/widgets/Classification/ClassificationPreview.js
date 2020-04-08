@@ -29,7 +29,7 @@ import DragItem from "./components/DragItem";
 import { ResponseContainer } from "./components/ResponseContainer";
 import ChoiceContainer from "./components/ChoiceContainer";
 import CorrectAnswers from "./components/CorrectAnswers";
-
+import Instructions from "../../components/Instructions";
 import getMaxMinWidth from "./getMaxMinWidth";
 
 const {
@@ -450,6 +450,7 @@ const ClassificationPreview = ({
                 </ChoiceContainer>
               )}
             </div>
+            {view !== EDIT && <Instructions item={item} />}
             {previewTab === SHOW || isReviewTab ? (
               <ChoiceContainer>
                 <CorrectAnswers

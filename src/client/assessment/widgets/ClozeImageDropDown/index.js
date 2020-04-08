@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
 
-import { Checkbox, AnswerContext } from "@edulastic/common";
+import { AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -20,9 +20,7 @@ import Question from "../../components/Question";
 import Display from "./Display";
 import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
-import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
-import { AdditionalContainer } from "./styled/AdditionalContainer";
 import { ContentArea } from "../../styled/ContentArea";
 import { StyledPaperWrapper } from "../../styled/Widget";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";
@@ -297,6 +295,7 @@ class ClozeImageDropDown extends Component {
               qIndex={qIndex}
               imageOptions={item.imageOptions}
               isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
+              view={view}
               {...restProps}
             />
           </Wrapper>

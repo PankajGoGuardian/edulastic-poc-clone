@@ -23,7 +23,8 @@ import { ChoiceDimensions } from "@edulastic/constants";
 import { HorizontalScrollContainer } from "@edulastic/common/src/components/DragScrollContainer";
 
 import DropContainer from "../../components/DropContainer";
-import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
+import Instructions from "../../components/Instructions";
+import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import DragItem from "./components/DragItem";
 import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
@@ -515,6 +516,9 @@ const MatchListPreview = ({
               </CheckboxLabel>
             </FlexContainer>
           )}
+          <div style={{ ...wrapperStyle, alignItems: "flex-start" }}>
+            {view !== EDIT && <Instructions item={item} />}
+          </div>
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
               <StyledCorrectAnswersContainer

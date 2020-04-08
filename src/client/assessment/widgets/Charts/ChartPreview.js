@@ -31,6 +31,7 @@ import { QuestionTitleWrapper } from "./styled/QuestionNumber";
 import { Tools } from "./components/Tools";
 import ChartEditTool from "./components/ChartEditTool";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Instructions from "../../components/Instructions";
 
 const ChartPreview = ({
   item,
@@ -194,9 +195,7 @@ const ChartPreview = ({
   );
 
   const getPreviewData = () =>
-    data.map(({ x, y, ...rest }, index) =>
-      answerIsActual() ? { ...userAnswer[index], ...rest } : { x, y, ...rest }
-    );
+    data.map(({ x, y, ...rest }, index) => (answerIsActual() ? { ...userAnswer[index], ...rest } : { x, y, ...rest }));
 
   return (
     <>
@@ -210,10 +209,7 @@ const ChartPreview = ({
           {view === PREVIEW && (
             <Fragment>
               <QuestionTitleWrapper>
-                <Stimulus
-                  style={{ maxWidth: "100%" }}
-                  dangerouslySetInnerHTML={{ __html: item.stimulus }}
-                />
+                <Stimulus style={{ maxWidth: "100%" }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
               </QuestionTitleWrapper>
             </Fragment>
           )}
@@ -241,6 +237,9 @@ const ChartPreview = ({
               />
               {view === EDIT && <ChartEditTool item={item} setQuestionData={setQuestionData} />}
             </ChartContainer>
+
+            {view !== EDIT && <Instructions item={item} />}
+
             {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
               <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
                 <ChartContainer>
@@ -266,9 +265,7 @@ const ChartPreview = ({
               previewTab === SHOW &&
               altAnswerData.length > 0 &&
               altAnswerData.map((ans, index) => (
-                <CorrectAnswersContainer
-                  title={`${t("component.chart.alternateAnswer")} ${index + 1}`}
-                >
+                <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
                   <ChartContainer>
                     <CurrentChart
                       name={name}

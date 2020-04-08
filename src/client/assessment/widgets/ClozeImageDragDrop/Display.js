@@ -29,6 +29,8 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
+import Instructions from "../../components/Instructions";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 import {
   StyledContainer,
@@ -373,7 +375,8 @@ class Display extends Component {
       studentReport,
       getHeading,
       isPrint,
-      isPrintPreview
+      isPrintPreview,
+      view
     } = this.props;
     const isPrintMode = isPrint || isPrintPreview;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -679,6 +682,7 @@ class Display extends Component {
                   </RightResponseContainer>
                 </RightContainer>
               )}
+              {view && view !== EDIT && <Instructions item={item} />}
               {answerBox}
               <DragPreview />
             </QuestionContentWrapper>

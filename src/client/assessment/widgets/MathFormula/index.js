@@ -129,6 +129,7 @@ const MathFormula = ({
             cleanSections={cleanSections}
             changePreview={changePreview}
             answerContextConfig={answerContextConfig}
+            view={view}
             {...restProps}
           />
         </Wrapper>

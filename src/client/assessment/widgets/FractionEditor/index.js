@@ -84,6 +84,7 @@ const FractionEditor = props => {
           disableResponse={disableResponse}
           changePreviewTab={changePreviewTab}
           isReviewTab={isReviewTab}
+          view={view}
         />
       )}
     </>

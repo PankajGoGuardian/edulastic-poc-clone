@@ -16,8 +16,8 @@ import {
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { CHECK, SHOW, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
-
+import { CHECK, SHOW, PREVIEW, CLEAR, EDIT } from "../../constants/constantsForQuestions";
+import Instructions from "../../components/Instructions";
 import { SmallContainer } from "./styled/SmallContainer";
 import { SmallStim } from "./styled/SmallStim";
 import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
@@ -104,9 +104,7 @@ const ShortTextPreview = ({
         </QuestionLabelWrapper>
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-            )}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           {smallSize && (
             <SmallContainer>
@@ -128,9 +126,7 @@ const ShortTextPreview = ({
               size="large"
               {...getSpellCheckAttributes(item.spellcheck)}
             />
-            {isCharacterMap && (
-              <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>
-            )}
+            {isCharacterMap && <Addon onClick={() => setShowCharacterMap(!showCharacterMap)}>á</Addon>}
             {isCharacterMap && showCharacterMap && (
               <CharacterMap
                 characters={item.characterMap}
@@ -145,7 +141,7 @@ const ShortTextPreview = ({
               />
             )}
           </InputWrapper>
-
+          {view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW && (
             <>
               <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>

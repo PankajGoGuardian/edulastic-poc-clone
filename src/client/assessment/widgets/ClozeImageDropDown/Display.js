@@ -27,9 +27,12 @@ import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
 import QuestionOptions from "./QuestionOptions";
+import Instructions from "../../components/Instructions";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 class Display extends Component {
   containerRef = React.createRef();
+
   selectChange = (value, index) => {
     const { onChange: changeAnswers, userSelections } = this.props;
     changeAnswers(
@@ -145,7 +148,8 @@ class Display extends Component {
       isExpressGrader,
       isReviewTab,
       isPrint,
-      isPrintPreview
+      isPrintPreview,
+      view
     } = this.props;
     const { shuffleOptions } = configureOptions;
     const { maxHeight, maxWidth } = clozeImage;
@@ -382,6 +386,7 @@ class Display extends Component {
             >
               <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
               {(isPrintPreview || isPrint) && <QuestionOptions options={newOptions} />}
+              {view && view !== EDIT && <Instructions item={item} />}
               {answerBox}
             </TemplateBoxContainer>
           </QuestionContentWrapper>

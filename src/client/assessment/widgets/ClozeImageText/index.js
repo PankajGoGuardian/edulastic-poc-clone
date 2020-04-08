@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, get } from "lodash";
 import produce from "immer";
 
-import { Checkbox, AnswerContext, WithResources } from "@edulastic/common";
+import { AnswerContext, WithResources } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -15,7 +15,6 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
-import { OptionsContainer } from "./styled/OptionsContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
 import Options from "./components/Options";
 import Display from "./Display";
@@ -297,6 +296,7 @@ class ClozeImageText extends Component {
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 maxRespCount={item.maxRespCount}
                 isExpressGrader={expressGrader && previewTab === "show"}
+                view={view}
                 {...restProps}
               />
             </Wrapper>

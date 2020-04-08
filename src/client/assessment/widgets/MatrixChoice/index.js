@@ -32,6 +32,7 @@ import { ContentArea } from "../../styled/ContentArea";
 import { PREVIEW, EDIT, SHOW, CLEAR } from "../../constants/constantsForQuestions";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { StyledPaperWrapper } from "../../styled/Widget";
+import Instructions from "../../components/Instructions";
 
 const EmptyWrapper = styled.div`
   max-width: 100%;
@@ -193,6 +194,8 @@ const MatrixChoice = ({
               </div>
             </QuestionContentWrapper>
           </FlexContainer>
+
+          {view !== EDIT && <Instructions item={item} />}
 
           {(previewTab === SHOW || isReviewTab) && (
             <Fragment>

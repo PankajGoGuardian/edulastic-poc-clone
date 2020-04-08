@@ -31,7 +31,7 @@ import Options from "./components/Options";
 import { getFontSize, getStemNumeration } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
-
+import Instructions from "../../components/Instructions";
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -318,6 +318,7 @@ const OrderList = ({
                 />
               )}
 
+              {view !== EDIT && <Instructions item={item} />}
               {previewTab === SHOW || isReviewTab ? (
                 <Fragment>
                   <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>

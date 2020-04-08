@@ -27,6 +27,8 @@ import { AnswerContainer } from "./styled/AnswerContainer";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import Instructions from "../../components/Instructions";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 const { DragPreview } = DragDrop;
 const { maxWidth: choiceDefaultMaxW, minWidth: choiceDefaultMinW } = ChoiceDimensions;
@@ -104,11 +106,7 @@ class ClozeDragDropDisplay extends Component {
         } else {
           for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
             if (newResponses[groupIndex].options[i].value === groupData) {
-              if (
-                userSelections &&
-                userSelections[index] !== null &&
-                typeof userSelections[index] === "object"
-              ) {
+              if (userSelections && userSelections[index] !== null && typeof userSelections[index] === "object") {
                 newResponses[userSelections[index].group].options.push({
                   value: uuid(),
                   label: userSelections[index].data
@@ -193,12 +191,7 @@ class ClozeDragDropDisplay extends Component {
     });
 
   getInitialResponses = props => {
-    const {
-      hasGroupResponses,
-      configureOptions,
-      userSelections: userSelectionsProp,
-      options
-    } = props;
+    const { hasGroupResponses, configureOptions, userSelections: userSelectionsProp, options } = props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const userSelections = userSelectionsProp || [];
 
@@ -319,8 +312,7 @@ class ClozeDragDropDisplay extends Component {
       overflow: "hidden"
     };
 
-    const templateBoxLayout =
-      checkAnswer || showAnswer || isReviewTab ? CheckboxTemplateBoxLayout : TemplateBox;
+    const templateBoxLayout = checkAnswer || showAnswer || isReviewTab ? CheckboxTemplateBoxLayout : TemplateBox;
 
     const resProps = {
       options,
@@ -351,9 +343,7 @@ class ClozeDragDropDisplay extends Component {
         <div
           className={`template_box ${smallSize ? "small" : ""}`}
           style={{
-            fontSize: smallSize
-              ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize
-              : fontSize
+            fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
           <JsxParser
@@ -411,8 +401,7 @@ class ClozeDragDropDisplay extends Component {
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
-    const horizontallyAligned =
-      responsecontainerposition === "left" || responsecontainerposition === "right";
+    const horizontallyAligned = responsecontainerposition === "left" || responsecontainerposition === "right";
 
     const answerContainerStyle = {
       minWidth: dragItemMaxWidth + 62,
@@ -422,11 +411,7 @@ class ClozeDragDropDisplay extends Component {
     const responseBoxStyle = {
       height: "100%",
       width:
-        showAnswer || isReviewTab
-          ? 0
-          : horizontallyAligned
-          ? dragItemMaxWidth + 62
-          : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+        showAnswer || isReviewTab ? 0 : horizontallyAligned ? dragItemMaxWidth + 62 : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
       flexShrink: 0,
       borderRadius: smallSize ? 0 : 10,
       marginRight: responsecontainerposition === "left" ? 15 : null,
@@ -472,20 +457,17 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <TextWrappedDiv style={{ fontSize }} ref={this.previewWrapperRef}>
-        <HorizontalScrollContext.Provider
-          value={{ getScrollElement: () => this.previewWrapperRef.current }}
-        >
+        <HorizontalScrollContext.Provider value={{ getScrollElement: () => this.previewWrapperRef.current }}>
           <FlexContainer justifyContent="flex-start" alignItems="baseline">
             <QuestionLabelWrapper>
-              {showQuestionNumber && !flowLayout ? (
-                <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
-              ) : null}
+              {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel> : null}
               {item.qSubLabel && <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>}
             </QuestionLabelWrapper>
 
             <QuestionContentWrapper>
               <QuestionTitleWrapper>{!question && questionContent}</QuestionTitleWrapper>
               {question && questionContent}
+              {view !== EDIT && <Instructions item={item} />}
               {answerBox}
               <DragPreview />
             </QuestionContentWrapper>

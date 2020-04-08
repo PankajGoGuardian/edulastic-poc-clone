@@ -28,9 +28,11 @@ import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { getFontSize } from "../../utils/helpers";
 import ClozeTextInput from "../../components/ClozeTextInput";
+import Instructions from "../../components/Instructions";
 import { Pointer } from "../../styled/Pointer";
 import { Triangle } from "../../styled/Triangle";
 import { Point } from "../../styled/Point";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 class Display extends Component {
   constructor(props) {
@@ -54,10 +56,7 @@ class Display extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       this.setState({
-        userAnswers:
-          nextProps.userSelections && nextProps.userSelections.length
-            ? [...nextProps.userSelections]
-            : []
+        userAnswers: nextProps.userSelections && nextProps.userSelections.length ? [...nextProps.userSelections] : []
       });
     }
   }
@@ -176,7 +175,8 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
-      isExpressGrader
+      isExpressGrader,
+      view
     } = this.props;
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers } = this.state;
@@ -210,11 +210,7 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
-        <StyledPreviewContainer
-          data-cy="image-text-answer-board"
-          width={canvasWidth}
-          height={canvasHeight}
-        >
+        <StyledPreviewContainer data-cy="image-text-answer-board" width={canvasWidth} height={canvasHeight}>
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -259,10 +255,7 @@ class Display extends Component {
                 }
                 style={{ ...btnStyle }}
               >
-                <Pointer
-                  className={responseContainer.pointerPosition}
-                  width={responseContainer.width}
-                >
+                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />
                 </Pointer>
@@ -313,8 +306,7 @@ class Display extends Component {
         isExpressGrader={isExpressGrader}
       />
     );
-    const templateBoxLayout =
-      showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altResponses = validation.altResponses || [];
     const correctAnswerBoxLayout = (
       <React.Fragment>
@@ -350,6 +342,7 @@ class Display extends Component {
             <TemplateBoxContainer flexDirection="column">
               <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
             </TemplateBoxContainer>
+            {view && view !== EDIT && <Instructions item={item} />}
             {answerBox}
           </QuestionContentWrapper>
         </FlexContainer>

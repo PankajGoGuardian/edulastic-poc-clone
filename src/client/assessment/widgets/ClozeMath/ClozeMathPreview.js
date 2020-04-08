@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
 import { helpers, AnswerContext } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
-import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
+import { SHOW, CHECK, CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
@@ -18,6 +18,7 @@ import ClozeDropDownAnswerDisplay from "./ClozeMathDisplay/ClozeDropDownAnswerDi
 import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay";
 import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import Instructions from "../../components/Instructions";
 
 const getFontSize = size => {
   switch (size) {
@@ -89,7 +90,9 @@ const ClozeMathPreview = ({
       setTimeout(() => {
         const questionWrapper = document.querySelector(".zoomed-container-wrapper .question-wrapper .jsx-parser p");
         if (questionWrapper) {
-          questionWrapper.innerHTML = document.querySelector(".unzoom-container-wrapper .question-wrapper .jsx-parser p").innerHTML;
+          questionWrapper.innerHTML = document.querySelector(
+            ".unzoom-container-wrapper .question-wrapper .jsx-parser p"
+          ).innerHTML;
         }
       }, 1000);
     }
@@ -199,6 +202,7 @@ const ClozeMathPreview = ({
         }}
         jsx={newHtml}
       />
+      {type !== EDIT && <Instructions item={item} />}
       {(isExpressGrader || type === SHOW) && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}

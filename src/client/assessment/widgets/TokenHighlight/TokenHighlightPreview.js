@@ -17,7 +17,7 @@ import {
   QuestionLabelWrapper
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-
+import Instructions from "../../components/Instructions";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
 import { StyledPaperWrapper } from "../../styled/Widget";
@@ -128,9 +128,7 @@ const TokenHighlightPreview = ({
       if (answers.filter(answer => answer.selected).length !== 0) {
         setAnswers([
           ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
-          ...answers.filter(
-            (answer, i) => answer.selected && validArray[i].selected !== answer.selected
-          )
+          ...answers.filter((answer, i) => answer.selected && validArray[i].selected !== answer.selected)
         ]);
       }
     } else if (previewTab === CLEAR && !isCheck) {
@@ -185,8 +183,7 @@ const TokenHighlightPreview = ({
   };
 
   const getClass = index =>
-    answers.find(elem => elem.index === index) &&
-    answers.find(elem => elem.index === index).selected
+    answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
       ? "active-word token answer"
       : "token answer";
 
@@ -197,8 +194,7 @@ const TokenHighlightPreview = ({
   const getStyles = (index, correctAnswers = []) => {
     const _answers = correctAnswers.length > 0 ? correctAnswers : answers;
     const condition =
-      _answers.find(elem => elem.index === index) &&
-      _answers.find(elem => elem.index === index).selected;
+      _answers.find(elem => elem.index === index) && _answers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -291,9 +287,7 @@ const TokenHighlightPreview = ({
         </QuestionLabelWrapper>
         <QuestionContentWrapper>
           <QuestionTitleWrapper>
-            {view === PREVIEW && !smallSize && (
-              <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-            )}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           <div>
             {!isExpressGrader &&
@@ -307,11 +301,7 @@ const TokenHighlightPreview = ({
                     className={getClass(i)}
                   />
                 ) : (
-                  <MathSpan
-                    className="token without-cursor"
-                    dangerouslySetInnerHTML={{ __html: el.value }}
-                    key={i}
-                  />
+                  <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
                 )
               )}
 
@@ -326,15 +316,11 @@ const TokenHighlightPreview = ({
                     className={getClassNameForExpressGrader(i)}
                   />
                 ) : (
-                  <MathSpan
-                    className="token without-cursor"
-                    dangerouslySetInnerHTML={{ __html: el.value }}
-                    key={i}
-                  />
+                  <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
                 )
               )}
           </div>
-
+          {view && view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW &&
             allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
               const title =

@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Stimulus, QuestionNumberLabel, FlexContainer, QuestionSubLabel } from "@edulastic/common";
+import Instructions from "../../../../components/Instructions";
+import { EDIT } from "../../../../constants/constantsForQuestions";
 
 import Options from "./components/Options";
 // import { QuestionTitleWrapper } from "./styled/Label";
@@ -29,9 +31,7 @@ const Display = ({
       {!flowLayout && (
         <>
           <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start">
-            {showQuestionNumber && (
-              <QuestionNumberLabel fontSize={fontSize}>{qLabel}</QuestionNumberLabel>
-            )}
+            {showQuestionNumber && <QuestionNumberLabel fontSize={fontSize}>{qLabel}</QuestionNumberLabel>}
             {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
           </FlexContainer>
 
@@ -48,6 +48,7 @@ const Display = ({
               item={item}
               {...restProps}
             />
+            {view !== EDIT && <Instructions item={item} />}
           </FlexContainer>
         </>
       )}

@@ -61,7 +61,6 @@ import { Coding } from "../widgets/Coding";
 
 import Hints from "./Hints";
 import Explanation from "./Common/Explanation";
-import { isRichTextFieldEmpty } from "../../author/questionUtils";
 import { EDIT } from "../constants/constantsForQuestions";
 import ShowUserWork from "./Common/ShowUserWork";
 
@@ -336,8 +335,6 @@ class QuestionWrapper extends Component {
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
-    const scoringInstructions = data?.scoringInstructions || "";
-    const isScoringInstructionsEnabled = data?.isScoringInstructionsEnabled || false;
     const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
@@ -460,12 +457,6 @@ class QuestionWrapper extends Component {
                   isPrintPreview={isPrintPreview}
                   {...userAnswerProps}
                 />
-                {view !== EDIT && isScoringInstructionsEnabled && !isRichTextFieldEmpty(scoringInstructions) && (
-                  <InstructionsContainer>
-                    <i style={{ lineHeight: "24px" }} className="fa fa-info-circle" aria-hidden="true" />
-                    <span style={{ marginLeft: "10px" }} dangerouslySetInnerHTML={{ __html: scoringInstructions }} />
-                  </InstructionsContainer>
-                )}
 
                 {!restProps.viewAtStudentRes && showFeedback && timeSpent ? (
                   <>
@@ -619,12 +610,4 @@ const RubricTableWrapper = styled.div`
     margin: 0px 16px 10px;
     text-transform: uppercase;
   }
-`;
-
-const InstructionsContainer = styled.div`
-  display: flex;
-  border: 1px solid ${borderGrey2};
-  border-radius: 4px;
-  margin: 1rem 0;
-  padding: 10px;
 `;

@@ -25,9 +25,10 @@ import DisplayOptions from "../../ClozeImageDropDown/QuestionOptions";
 import { getFontSize } from "../../../utils/helpers";
 import { withCheckAnswerButton } from "../../../components/HOC/withCheckAnswerButton";
 import MathSpanWrapper from "../../../components/MathSpanWrapper";
+import Instructions from "../../../components/Instructions";
 import { ContentWrapper } from "../styled/ContentWrapper";
 import { QuestionTitleWrapper } from "../styled/QuestionTitleWrapper";
-
+import { EDIT } from "../../../constants/constantsForQuestions";
 import { displayStyles } from "../constants";
 
 const { DragPreview } = DragDrop;
@@ -204,6 +205,7 @@ class EditingTypeDisplay extends Component {
           </QuestionTitleWrapper>
           {question && questionContent}
           {(isPrint || isPrintPreview) && <DisplayOptions options={displayOptions} style={{ marginTop: "50px" }} />}
+          {view !== EDIT && <Instructions item={item} />}
           {(showAnswer || isExpressGrader) && (
             <React.Fragment>
               <CorrectAnswerBoxLayout

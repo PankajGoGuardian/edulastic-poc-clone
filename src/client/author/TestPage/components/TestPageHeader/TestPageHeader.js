@@ -19,6 +19,7 @@ import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { get } from "lodash";
 import { getUserFeatures, getUserId, getUserRole } from "../../../../student/Login/ducks";
 import ConfirmCancelTestEditModal from "../../../src/components/common/ConfirmCancelTestEditModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
@@ -188,6 +189,12 @@ const TestPageHeader = ({
     onPublish();
   };
 
+  const handleRegrade = () => {
+    setCurrentAction("publish");
+    onRegradeConfirm();
+    return true;
+  };
+
   const handleAssign = () => {
     if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
       setCurrentAction("assign");
@@ -257,6 +264,8 @@ const TestPageHeader = ({
     </TestStatus>
   );
 
+  const isRegradeFlow = test.isInEditAndRegrade || test.isUsed;
+
   return (
     <>
       <EditTestModal
@@ -317,7 +326,8 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                !editEnable && (
+                !editEnable &&
+                !isRegradeFlow && (
                   <EduButton
                     isGhost
                     IconBtn
@@ -390,9 +400,20 @@ const TestPageHeader = ({
                 CANCEL
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton && isDirectOwner && !isPlaylist && editEnable && (
-              <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
-                PUBLISH
+            {showShareButton &&
+              owner &&
+              showPublishButton &&
+              isDirectOwner &&
+              !isPlaylist &&
+              editEnable &&
+              !isRegradeFlow && (
+                <EduButton title="Publish Test" data-cy="publish" onClick={handlePublish} disabled={isTestLoading}>
+                  PUBLISH
+                </EduButton>
+              )}
+            {isRegradeFlow && !showEditButton && !showDuplicateButton && (
+              <EduButton title="Publish Test" data-cy="publish" onClick={handleRegrade} disabled={isTestLoading}>
+                REGRADE
               </EduButton>
             )}
           </RightFlexContainer>
@@ -422,16 +443,18 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               ) : (
-                <EduButton
-                  isGhost
-                  IconBtn
-                  title="Publish Test"
-                  data-cy="publish"
-                  onClick={handlePublish}
-                  disabled={isTestLoading}
-                >
-                  <IconSend />
-                </EduButton>
+                !isRegradeFlow && (
+                  <EduButton
+                    isGhost
+                    IconBtn
+                    title="Publish Test"
+                    data-cy="publish"
+                    onClick={handlePublish}
+                    disabled={isTestLoading}
+                  >
+                    <IconSend />
+                  </EduButton>
+                )
               )
             ) : null}
             {features.isCurator && testStatus === "inreview" && (

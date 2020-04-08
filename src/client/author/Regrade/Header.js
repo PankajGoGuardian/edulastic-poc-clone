@@ -1,21 +1,20 @@
 import React from "react";
-import { FlexContainer } from "@edulastic/common";
-import HeaderWrapper from "../src/mainContent/headerWrapper";
-import { Title, ApplyButton } from "./styled";
+import { FlexContainer, MainHeader, EduButton } from "@edulastic/common";
+import { Title } from "./styled";
 
 const Header = ({ onApplySettings, onCancelRegrade }) => {
   return (
-    <HeaderWrapper>
+    <MainHeader>
       <Title>Regrade</Title>
       <FlexContainer>
-        <ApplyButton data-cy="cancelRegrade" onClick={onCancelRegrade}>
+        <EduButton data-cy="cancelRegrade" onClick={onCancelRegrade}>
           Cancel
-        </ApplyButton>
-        <ApplyButton data-cy="applyRegrade" onClick={onApplySettings}>
-          Apply
-        </ApplyButton>
+        </EduButton>
+        <EduButton data-cy="applyRegrade" onClick={onApplySettings}>
+          Publish & Regrade
+        </EduButton>
       </FlexContainer>
-    </HeaderWrapper>
+    </MainHeader>
   );
 };
 

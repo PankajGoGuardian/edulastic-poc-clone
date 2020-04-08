@@ -47,3 +47,14 @@ export const InputsWrapper = styled.div`
 export const OptionTitle = styled.h3`
   font-weight: bold;
 `;
+
+export const SecondHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  .ant-btn {
+    background: transparent;
+    height: 24px;
+    margin-left: 17px;
+  }
+`;

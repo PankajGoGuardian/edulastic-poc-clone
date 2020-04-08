@@ -23,7 +23,7 @@ import { loadQuestionsAction, getQuestionsArraySelector, UPDATE_QUESTION } from 
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
-import { getUserRole, getUserOrgData } from "../src/selectors/user";
+import { getUserRole, getUserOrgData, getUserIdSelector } from "../src/selectors/user";
 import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
 import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
 import {
@@ -942,10 +942,20 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select(state => state.tests);
     const createdItems = yield select(getTestCreatedItemsSelector);
-    const entity = yield call(testsApi.getById, payload.id, {
+    let entity = yield call(testsApi.getById, payload.id, {
       data: true,
       requestLatest: payload.requestLatest
     });
+    const userId = yield select(getUserIdSelector);
+    // For assignment edit flow duplicate the test if user doesnt have author permission
+    if (payload.editAssigned && !entity.isInEditAndRegrade && !entity.authors.some(item => item._id === userId)) {
+      const duplicate = yield call(assignmentApi.duplicateAssignment, {
+        _id: entity._id,
+        title: entity.title,
+        isInEditAndRegrade: true
+      });
+      entity = { ...duplicate, itemGroups: entity.itemGroups, passages: entity.passages };
+    }
     entity.passages = [...entity.passages, ...differenceBy(tests.entity.passages, entity.passages, "_id")];
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
     if (entity._id !== payload.id && !payload?.isPlaylist) {
@@ -1011,6 +1021,7 @@ function* receiveTestByIdSaga({ payload }) {
       })
     );
   } catch (err) {
+    console.log({ err });
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
       yield put(push("/author/tests"));
@@ -1197,6 +1208,7 @@ function* updateTestDocBasedSaga({ payload }) {
 
 function* updateRegradeDataSaga({ payload }) {
   try {
+    yield call(testsApi.publishTest, payload.newTestId);
     yield call(assignmentApi.regrade, payload);
     yield call(message.success, "Success update");
     yield put(push(`/author/regrade/${payload.newTestId}/success`));
@@ -1297,11 +1309,13 @@ function* publishTestSaga({ payload }) {
 function* publishForRegrade({ payload }) {
   try {
     const _test = yield select(getTestSelector);
+    if (_test.isUsed && !test.isInEditAndRegrade) {
+      _test.isInEditAndRegrade = true;
+    }
     yield call(_test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
       payload: { id: payload, data: _test, assignFlow: true }
     });
     const newTestId = yield select(getTestIdSelector);
-    yield call(testsApi.publishTest, newTestId);
     yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${_test.previousTestId}`));
   } catch (error) {
     console.error(error);

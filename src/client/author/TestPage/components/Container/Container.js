@@ -538,7 +538,7 @@ class Container extends PureComponent {
   };
 
   handleSave = () => {
-    const { test = {}, updateTest, createTest, currentTab, updateLastUsedCollectionList } = this.props;
+    const { test = {}, updateTest, createTest, currentTab, updateLastUsedCollectionList, history } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
     }
@@ -553,6 +553,9 @@ class Container extends PureComponent {
     updateLastUsedCollectionList(test.collections);
 
     if (test._id) {
+      if (history.location.state?.editAssigned && test.isUsed) {
+        newTest.isInEditAndRegrade = true;
+      }
       updateTest(test._id, { ...newTest, currentTab });
     } else {
       createTest({ ...newTest, currentTab });
@@ -693,7 +696,11 @@ class Container extends PureComponent {
   handleDuplicateTest = async e => {
     e && e.stopPropagation();
     const { history, test } = this.props;
-    const duplicateTest = await assignmentApi.duplicateAssignment(test);
+    const duplicateTest = await assignmentApi.duplicateAssignment({
+      _id: test._id,
+      title: test.title,
+      isInEditAndRegrade: test.isUsed
+    });
     history.push(`/author/tests/${duplicateTest._id}`);
     this.setState({ editEnable: true });
   };
@@ -742,7 +749,7 @@ class Container extends PureComponent {
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
-    const { showCancelButton = false } = history.location.state || this.state || {};
+    const showCancelButton = history.location.state?.showCancelButton || test.isInEditAndRegrade;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
@@ -751,7 +758,11 @@ class Container extends PureComponent {
     const showDuplicateButton =
       testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner && allowDuplicate;
     const showEditButton =
-      testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner && !showCancelButton;
+      testStatus &&
+      testStatus === statusConstants.PUBLISHED &&
+      !editEnable &&
+      owner &&
+      !history.location.state?.showCancelButton;
 
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));

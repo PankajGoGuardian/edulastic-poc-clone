@@ -84,10 +84,14 @@ const fetchTestActivities = (assignmentId, groupId) =>
     })
     .then(result => result.data.result);
 
-const duplicateAssignment = ({ _id, title }) =>
+const duplicateAssignment = ({ _id, title, isInEditAndRegrade = false }) =>
   api
     .callApi({
-      url: `test/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}`,
+      url: `test/${_id}/duplicate`,
+      params: {
+        title: `${title}-${moment().format("MM/DD/YYYY HH:mm")}`,
+        isInEditAndRegrade
+      },
       method: "post"
     })
     .then(result => result.data.result);

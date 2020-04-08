@@ -8,6 +8,8 @@ import { setRegradeSettingsDataAction } from "../TestPage/ducks";
 import Header from "./Header";
 import MainContent from "./MainContent";
 import { get } from "lodash";
+import BreadCrumb from "../src/components/Breadcrumb";
+import { SecondHeader } from "./styled";
 
 const RegradeTypes = {
   ALL: "All your assignments",
@@ -66,12 +68,39 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
   };
 
   const onCancelRegrade = () => {
-    history.push(`/author/tests/${newTestId}/publish`);
+    history.push({
+      pathname: `/author/tests/tab/review/id/${newTestId}`,
+      state: {
+        editAssigned: true,
+        showCancelButton: true
+      }
+    });
   };
+  const breadcrumbData = [
+    {
+      title: "tests",
+      to: "/author/tests"
+    },
+    {
+      title: assignments[0]?.title,
+      to: `/author/tests/tab/review/id/${newTestId}`,
+      state: {
+        editAssigned: true,
+        showCancelButton: true
+      }
+    },
+    {
+      title: "Regrade",
+      to: ""
+    }
+  ];
 
   return (
     <Fragment>
       <Header onApplySettings={onApplySettings} onCancelRegrade={onCancelRegrade} />
+      <SecondHeader>
+        <BreadCrumb data={breadcrumbData} style={{ position: "unset" }} />
+      </SecondHeader>
       <MainContent
         assignments={assignments}
         RegradeTypes={RegradeTypes}

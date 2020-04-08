@@ -2,13 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const TabContainer = ({ children, style, padding, className }) => {
+const TabContainer = React.forwardRef((props, ref) => {
+  const { children, style, padding, className } = props;
   return (
-    <Container padding={padding} style={style} className={className}>
+    <Container ref={ref} padding={padding} style={style} className={className}>
       {children}
     </Container>
   );
-};
+});
 
 TabContainer.propTypes = {
   children: PropTypes.any.isRequired,

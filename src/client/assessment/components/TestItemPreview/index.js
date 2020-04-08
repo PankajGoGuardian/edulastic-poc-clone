@@ -98,7 +98,7 @@ class TestItemPreview extends Component {
     );
   };
 
-  renderFeedback = (widget, index, colIndex) => {
+  renderFeedback = (widget, index, colIndex, stackedView) => {
     const {
       showFeedback,
       previousQuestionActivity = [],
@@ -107,36 +107,27 @@ class TestItemPreview extends Component {
       questions,
       isPrintPreview,
       showCollapseBtn,
-      isExpressGrader,
-      isQuestionView,
-      multipartItem,
-      isPassageWithQuestions,
-      itemLevelScoring,
-      // isLCBView,
-      cols
+      isPassageWithQuestions
     } = this.props;
-    // if (index > 0 && (isExpressGrader || isQuestionView)) {
-    //   return null;
-    // }
+
     let shouldShow;
-    let height;
-    if (multipartItem && !itemLevelScoring && !isPassageWithQuestions) {
+    let shoudlTakeDimensionsFromStore;
+    if (stackedView) {
       // stacked view
       // need to show separate feeback blocks for each question
       shouldShow = true;
-      const allWidgets = cols.flatMap(col => col.widgets);
-      height = `${100 / allWidgets.length}%`;
+      shoudlTakeDimensionsFromStore = true;
     } else if (isPassageWithQuestions) {
       // Feedback not supported for passages with item level scoring off
       //  will be fixed with EV-12830
       shouldShow = index === 0;
-      height = "100%";
+      shoudlTakeDimensionsFromStore = false;
     } else {
       // multipart with item level scoring is true
       // or single question view
-      // show only one feedback block, with full height
+      // show only one feedback block
       shouldShow = index === 0 && colIndex === 0;
-      height = `100%`;
+      shoudlTakeDimensionsFromStore = false;
     }
 
     const displayFeedback = shouldShow;
@@ -153,7 +144,7 @@ class TestItemPreview extends Component {
         data={{ ...question, smallSize: true }}
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
-        height={height}
+        shoudlTakeDimensionsFromStore={shoudlTakeDimensionsFromStore}
       />
     ) : null;
   };
@@ -396,7 +387,9 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        <div>{this.renderFeedbacks(showStackedView)}</div>
+        <div style={{ position: "relative", width: showStackedView && "315px" }}>
+          {this.renderFeedbacks(showStackedView)}
+        </div>
       </ThemeProvider>
     );
   }

@@ -11,6 +11,7 @@ import { Container, WidgetContainer } from "./styled/Container";
 import { MobileRightSide } from "./styled/MobileRightSide";
 import { MobileLeftSide } from "./styled/MobileLeftSide";
 import { IconArrow } from "./styled/IconArrow";
+import TabContainer from "./TabContainer";
 
 class TestItemCol extends Component {
   state = {
@@ -81,16 +82,12 @@ class TestItemCol extends Component {
 
     const displayFeedback = true;
     return (
-      <Tabs.TabContainer
-        style={{
-          ...testReviewStyle,
-          position: "relative",
-          paddingTop: "0px",
-          display: "flex",
-          flexDirection: "column",
-          height: showStackedView ? `${100 / totalWidgets}%` : fullHeight ? "100%" : "auto"
-        }}
-        className="question-tab-container"
+      <TabContainer
+        updatePositionToStore={showStackedView && widget.widgetType === "question"}
+        questionId={widget.reference}
+        fullHeight={fullHeight}
+        testReviewStyle={testReviewStyle}
+        minHeight={showStackedView && widget.widgetType === "question" && "458px"}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== "resource"}
@@ -116,7 +113,7 @@ class TestItemCol extends Component {
           {...restProps}
           style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
         />
-      </Tabs.TabContainer>
+      </TabContainer>
     );
   };
 
@@ -137,7 +134,7 @@ class TestItemCol extends Component {
         value={value}
         style={style}
         width={width}
-        height={showStackedView ? `${100 / colCount}%` : fullHeight ? "100%" : "auto"}
+        height={fullHeight ? "100%" : "auto"}
         showStackedView={showStackedView}
         colCount={colCount}
         hasCollapseButtons={

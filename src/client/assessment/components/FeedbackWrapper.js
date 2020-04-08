@@ -20,7 +20,8 @@ const FeedbackWrapper = ({
   prevQActivityForQuestion = {},
   isStudentReport,
   isPresentationMode,
-  height
+  dimensions,
+  shoudlTakeDimensionsFromStore
 }) => {
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
@@ -34,6 +35,26 @@ const FeedbackWrapper = ({
     color: data.activity && data.activity.color,
     icon: data.activity && data.activity.icon
   };
+
+  let dimensionProps = { height: "100%" };
+
+  /**
+   * as per https://snapwiz.atlassian.net/browse/EV-12821
+   *
+   * if its a multipart item, with item level scoring off
+   * the container dimesions for the question block is stored in store
+   * need to take the dimensions from store and set it to the feedback block
+   */
+  if (shoudlTakeDimensionsFromStore && dimensions) {
+    dimensionProps = {
+      position: "absolute",
+      top: `${dimensions.top}px`,
+      right: 0,
+      width: "100%",
+      height: `${dimensions.height}px`
+    };
+  }
+
   const { score: prevScore, maxScore: prevMaxScore, feedback: prevFeedback, correct } = prevQActivityForQuestion;
   return (
     <StyledFeedbackWrapper
@@ -43,7 +64,7 @@ const FeedbackWrapper = ({
             ? "265px"
             : theme?.twoColLayout?.second,
         minWidth: studentReportFeedbackVisible && displayFeedback && !isPrintPreview ? "320px" : "",
-        height
+        ...dimensionProps
       }}
     >
       {showFeedback && !isPassageOrVideoType && displayFeedback && !studentReportFeedbackVisible && !isPrintPreview && (
@@ -109,8 +130,9 @@ FeedbackWrapper.defaultProps = {
 const enhance = compose(
   withTheme,
   connect(
-    state => ({
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+    (state, ownProps) => ({
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      dimensions: get(state, ["feedback", ownProps.data?.id], null)
     }),
     null
   )

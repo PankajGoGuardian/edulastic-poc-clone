@@ -3,6 +3,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import ClassificationPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification" type question`, () => {
   const queData = {
@@ -43,7 +44,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
     beforeEach(() => {
       editItem.header.edit();
-      // editItem.showAdvancedOptions(); // UI toggle has been removed
+      editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {
@@ -52,7 +53,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
     describe(" > Layout", () => {
       it(" > should be able to select top response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -65,7 +66,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.checkResponseContainerPosition("top");
       });
       it(" > should be able to select bottom response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -78,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.checkResponseContainerPosition("bottom");
       });
       it(" > should be able to select left response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -91,7 +92,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.checkResponseContainerPosition("left");
       });
       it(" > should be able to select right response container position", () => {
-        const select = question.getResponseContainerPositionSelect();
+        const select = question.getResponseContainerPositionSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -104,7 +105,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.checkResponseContainerPosition("right");
       });
       it(" > should be able to select numerical stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
@@ -116,36 +117,26 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", "Numerical");
       });
       it(" > should be able to select Uppercase Alphabet stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
-        question
-          .getUppercaseAlphabetOption()
-          .should("be.visible")
-          .click();
+        question.getUppercaseAlphabetOption().click();
 
         select.should("contain", "Uppercase Alphabet");
       });
       it(" > should be able to select Lowercase Alphabet stem numeration", () => {
-        const select = question.getStemNumerationSelect();
+        const select = question.getStemNumerationSelect().scrollIntoView();
 
         select.should("be.visible").click();
 
-        question
-          .getLowercaseAlphabetOption()
-          .should("be.visible")
-          .click();
+        question.getLowercaseAlphabetOption().click();
 
         select.should("contain", "Lowercase Alphabet");
       });
       it(" > should be able to change row titles width", () => {
         const width = "133px";
-
-        question
-          .getRowTitlesWidthInput()
-          .should("be.visible")
-          .type(`{selectall}${width}`);
+        question.getRowTitlesWidthInput().type(`{selectall}${width}`);
 
         question.checkRowTitlesWidth(width);
       });
@@ -183,70 +174,85 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getSmallFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize(font);
       });
       it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getNormalFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize(font);
       });
       it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getLargeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize(font);
       });
       it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getExtraLargeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize(font);
       });
       it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getHugeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize(font);
       });
     });
@@ -303,19 +309,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
 
       it(" > Add new column", () => {
-        question
-          .getColumnAddButton()
-          .click()
-          .then(() => {
-            question
-              .getColumnTitleInptuList()
-              .should("have.length", queData.columnTitles.length + 1)
-              .last()
-              .click()
-              .clear()
-              .type("Last")
-              .should("contain", "Last");
-          });
+        CypressHelper.selectDropDownByAttribute("coloumn-dropdown-list-2", "3");
+        question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length + 1);
+        /* .last()
+        .click()
+        .clear()
+        .type("Last")
+        .should("contain", "Last"); */
       });
 
       it(" > Delete existing column", () => {
@@ -405,10 +405,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
             .click();
           question
             .getChoiceEditorByGroup(0, index)
-            .next()
-            .find("div .ql-editor")
-            .clear()
-            .type(ch)
+            .type(`{selectall}${ch}`)
             .should("be.visible");
           question
             .getDragDropBox()
@@ -430,6 +427,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
+          .parent()
           .next()
           .should("be.visible")
           .click()
@@ -448,7 +446,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2")
+          .should("have.value", "1.5")
           .blur();
       });
 
@@ -491,14 +489,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
 
       it(" > Click on Check answer", () => {
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            cy.get("body")
-              .children()
-              .should("contain", "score: 2/2");
-          });
+        preview.checkScore("2/2");
       });
 
       it(" > Click on Show Answers", () => {
@@ -680,10 +671,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
             .click();
           question
             .getChoiceEditorByGroup(0, index)
-            .next()
-            .find("div .ql-editor")
-            .clear()
-            .type(ch)
+            .type(`{selectall}${ch}`)
             .should("be.visible");
           question
             .getDragDropBox()
@@ -705,6 +693,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
+          .parent()
           .next()
           .should("be.visible")
           .click()
@@ -723,7 +712,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .type("{selectall}1")
           .should("have.value", "1")
           .type("{uparrow}")
-          .should("have.value", "2")
+          .should("have.value", "1.5")
           .blur();
       });
 
@@ -794,25 +783,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       // question.clickOnAdvancedOptions();
     });
 
-    it(" > test score with max score", () => {
-      // question.clickOnAdvancedOptions();
-
-      question
-        .getMaxScore()
-        .clear()
-        .type(1);
-
-      const preiview = question.header.preview();
-
-      preiview
-        .getCheckAnswer()
-        .click()
-        .then(() => {
-          cy.get("body")
-            .children()
-            .should("contain", "score: 0/10");
-        });
-    });
+    /*  it(" > test score with max score", () => {
+       // question.clickOnAdvancedOptions();
+ 
+       question
+         .getMaxScore()
+         .clear()
+         .type(1);
+ 
+       const preiview = question.header.preview();
+ 
+       preiview
+         .getCheckAnswer()
+         .click()
+         .then(() => {
+           cy.get("body")
+             .children()
+             .should("contain", "score: 0/10");
+         });
+     }); */
 
     it(" > test score with min score if attemted", () => {
       question.getMaxScore().clear();

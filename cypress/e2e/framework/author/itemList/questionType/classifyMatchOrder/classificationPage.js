@@ -22,7 +22,7 @@ class ClassificationPage {
 
   getDropDownListRow = index => cy.get(`[data-cy="row-dropdown-list-${index}"]`);
 
-  getColumnTitleInptuList = () => cy.get('[data-cy="column-container"]').find("div .ql-editor");
+  getColumnTitleInptuList = () => cy.get('[data-cy="column-container"]').find(".fr-element");
 
   getColumnAddButton = () =>
     cy
@@ -38,7 +38,7 @@ class ClassificationPage {
   getRowTitleInputByIndex = index =>
     cy
       .get('[data-cy="row-container"]')
-      .find("div .ql-editor")
+      .find("fr-element")
       .eq(index);
 
   getRowAddButton = () =>
@@ -60,10 +60,7 @@ class ClassificationPage {
 
   getTitleInputByIndex = index => {
     const group = this.getGroupContainerByIndex(index);
-    return group
-      .contains("div", "Title")
-      .next()
-      .should("be.visible");
+    return group.find("input").should("be.visible");
   };
 
   getAddNewChoiceByIndex = index => {
@@ -85,7 +82,13 @@ class ClassificationPage {
     return this;
   };
 
-  getChoiceEditorByGroup = (gIndex, index) => cy.get(`#idgroup${gIndex}${index}`);
+  getChoiceEditorByGroup = (gIndex, index) => {
+    const group = this.getGroupContainerByIndex(gIndex);
+    return group
+      .find('[data-cy="quillSortableItem"]')
+      .eq(index)
+      .find('[contenteditable="true"]');
+  };
 
   getDragDropBox = () => cy.contains("h3", "Drag & Drop the answer").next();
 
@@ -136,7 +139,7 @@ class ClassificationPage {
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
-  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
+  getMaxScore = () => cy.get('[data-cy="points"]').should("be.visible");
 
   clickOnAdvancedOptions = () => {
     cy.contains("span", "Advanced Options")
@@ -212,21 +215,20 @@ class ClassificationPage {
   }
 
   getUppercaseAlphabetOption() {
-    return Helpers.getElement("upper-alpha");
+    return Helpers.getElement("uppercase");
   }
 
   getLowercaseAlphabetOption() {
-    return Helpers.getElement("lower-alpha");
+    return Helpers.getElement("lowercase");
   }
 
   getRowTitlesWidthInput() {
-    return Helpers.getElement("rowTitlesWidthInput");
+    return Helpers.getElement("classification-row-dropdown");
   }
 
   getRowHeaderInput() {
-    return Helpers.getElement("rowHeaderInput")
-      .next()
-      .find(".ql-editor");
+    return Helpers.getElement("rowHeaderInput").next();
+    //.find(".ql-editor");
   }
 
   getMaximumResponsesPerCellInput() {

@@ -99,6 +99,7 @@ function* updateTestSettingSaga({ payload }) {
   try {
     const updateTestSetting = yield call(settingsApi.updateTestSetting, payload);
     yield put(updateTestSettingSuccessAction(updateTestSetting));
+    yield call(message.success, "Test Settings saved successfully.");
   } catch (err) {
     const errorMessage = "Update Test Setting is failing";
     yield call(message.error, errorMessage);
@@ -110,6 +111,7 @@ function* createTestSettingSaga({ payload }) {
   try {
     const createTestSetting = yield call(settingsApi.createTestSetting, payload);
     yield put(createTestSettingSuccessAction(createTestSetting));
+    yield call(message.success, "Test Settings saved successfully.");
   } catch (err) {
     const errorMessage = "Create Test Setting is failing";
     yield call(message.error, errorMessage);

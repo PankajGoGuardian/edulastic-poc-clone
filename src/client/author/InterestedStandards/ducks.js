@@ -122,6 +122,7 @@ function* updateInterestedStandardsSaga({ payload }) {
         curriculums: [...updateInterestedStandards.curriculums, ...daSelectedCurriculums]
       })
     );
+    yield call(message.success, "Interested Standards saved successfully.");
   } catch (err) {
     console.log(err);
     const errorMessage = "Update Interested Standards is failing";
@@ -134,6 +135,7 @@ function* saveInterestedStandardsSaga({ payload }) {
   try {
     const saveInterestedStandards = yield call(settingsApi.saveInterestedStandards, payload);
     yield put(saveInterestedStandardsSuccessAction(saveInterestedStandards));
+    yield call(message.success, "Interested Standards saved successfully.");
   } catch (err) {
     const errorMessage = "Save Interested Standards is failing";
     yield call(message.error, errorMessage);

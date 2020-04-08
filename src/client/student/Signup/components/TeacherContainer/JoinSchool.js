@@ -336,7 +336,9 @@ const JoinSchool = ({
           </FlexWrapper>
         </Col>
       </JoinSchoolBody>
-      {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
+      {showModal ? (
+        <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} homeSchool />
+      ) : null}
     </>
   );
 };

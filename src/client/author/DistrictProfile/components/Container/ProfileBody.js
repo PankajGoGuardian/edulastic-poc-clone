@@ -17,7 +17,7 @@ import { FieldLabel, MainContentWrapper, SelectInputStyled } from "@edulastic/co
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Form, Icon, Input, Select, Tag } from "antd";
 import produce from "immer";
-import { isEqual, map, omit } from "lodash";
+import { isEqual, map, omit, get } from "lodash";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -417,6 +417,14 @@ class ProfileBody extends React.Component {
       autoShareGCAssignment = false,
       showDefaultSettingSave = false
     } = this.state;
+    // checking if institution policy/ district policy is enabled
+    // OR teacher with home school and having any google sync classroom
+    const institutionPolicies = get(user, "orgData.policies.institutions", []);
+    const googleClassRoomAllowed =
+      (institutionPolicies.length
+        ? !!institutionPolicies.filter(p => p.allowGoogleClassroom).length
+        : get(user, "orgData.policies.district.allowGoogleClassroom", false)) ||
+      (user.orgData.districtStatus === 2 && !!user.orgData.classList.filter(c => !!c.googleId).length);
     const subjectsList = selectsData.allSubjects.slice(1);
     const interestedStaData = {
       curriculums: user.orgData.interestedCurriculums
@@ -600,12 +608,14 @@ class ProfileBody extends React.Component {
                         </Select.Option>
                       ))}
                     </SelectInputStyled>
-                    <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>
-                    <Switch
-                      style={{ width: "30px" }}
-                      defaultChecked={autoShareGCAssignment}
-                      onChange={checked => this.onSettingChange(checked, "autoSync")}
-                    />
+                    {googleClassRoomAllowed && [
+                      <FieldLabel>{t("common.title.autoShareWithGC")}</FieldLabel>,
+                      <Switch
+                        style={{ width: "30px" }}
+                        defaultChecked={autoShareGCAssignment}
+                        onChange={checked => this.onSettingChange(checked, "autoSync")}
+                      />
+                    ]}
                   </Block>
                 </SchoolWrapper>
               </>

@@ -86,9 +86,9 @@ const buttons = [
   "fontSize",
   "indent",
   "outdent",
+  "math",
   "paragraphFormat",
   "insertTable",
-  "math",
   "insertImage",
   "insertLink",
   "align",
@@ -124,7 +124,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
   XS: {
     moreText: {
       buttons,
-      buttonsVisible: 6
+      buttonsVisible: 7
     }
   }
 };

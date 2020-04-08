@@ -48,7 +48,11 @@ class AdminHeader extends Component {
       //   history.push(`/author/Groups`);
       //   return;
       case "Settings":
-        history.push(`/author/settings/districtpolicies`);
+        if (role === roleuser.DISTRICT_ADMIN) {
+          history.push(`/author/settings/districtpolicies`);
+        } else {
+          history.push(`/author/settings/schoolpolicies`);
+        }
         return;
       case "Content":
         history.push(`/author/content/collections`);

@@ -18,6 +18,9 @@ class AdminSubHeader extends Component {
       case "District Policies":
         history.push(`/author/settings/districtpolicies`);
         return;
+      case "School Policies":
+        history.push(`/author/settings/schoolpolicies`);
+        return;
       case "Test Settings":
         history.push(`/author/settings/testsettings`);
         return;
@@ -44,7 +47,7 @@ class AdminSubHeader extends Component {
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
             {role === "district-admin" ? <StyledTabPane tab="District Policies" key="District Policies" /> : null}
             {role === "school-admin" && schoolLevelAdminSettings ? (
-              <StyledTabPane tab="School Policies" key="District Policies" />
+              <StyledTabPane tab="School Policies" key="School Policies" />
             ) : null}
             <StyledTabPane tab="Test Settings" key="Test Settings" />
             <StyledTabPane tab="Term" key="Term" />

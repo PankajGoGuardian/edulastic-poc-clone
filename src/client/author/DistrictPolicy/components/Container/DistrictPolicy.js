@@ -17,7 +17,6 @@ import { getUserRole } from "../../../src/selectors/user";
 import { getSchoolAdminSettingsAccess } from "../../ducks";
 
 const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "District Policies" };
 
 class DistrictPolicy extends Component {
   constructor(props) {
@@ -29,6 +28,11 @@ class DistrictPolicy extends Component {
     const showSpin = loading || updating || creating;
     const showSettings =
       (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) || role === roleuser.DISTRICT_ADMIN;
+    const menuActive = {
+      mainMenu: "Settings",
+      subMenu: role === roleuser.DISTRICT_ADMIN ? "District Policies" : "School Policies"
+    };
+
     return (
       <DistrictPolicyDiv>
         <AdminHeader title={title} active={menuActive} history={history} />

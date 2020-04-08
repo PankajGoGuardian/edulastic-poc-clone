@@ -475,6 +475,7 @@ const Author = ({
                     <Route exact path="/author/settings/testsettings" component={TestSetting} />
                     <Route exact path="/author/settings/term" component={Term} />
                     <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />
+                    <Route exact path="/author/settings/schoolpolicies" component={DistrictPolicy} />
                     <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
                     <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
                     <Route exact path="/author/schools" component={Schools} />

@@ -332,7 +332,8 @@ class AuthorTestItemPreview extends Component {
       clearView,
       page,
       toggleReportIssue,
-      onlySratchpad
+      onlySratchpad,
+      viewComponent = ""
     } = this.props;
 
     return (
@@ -354,7 +355,10 @@ class AuthorTestItemPreview extends Component {
           justifyContent="flex-end"
           style={onlySratchpad ? { visibility: "hidden", position: "relative" } : { position: "relative" }}
         >
-          <ScoreBlock customStyle={{ left: "-5px" }} />
+          
+//          Using conditional flag, because ScoreBlock is also being used in author preview tab.
+          {viewComponent === "authorPreviewPopup" ? <ScoreBlock customStyle={{ left: "-5px" }} /> : null}
+
           {isAnswerBtnVisible && (
             <>
               <EduButton isGhost height="28px" data-cy="check-answer-btn" onClick={handleCheckAnswer}>

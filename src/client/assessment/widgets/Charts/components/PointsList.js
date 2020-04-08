@@ -112,6 +112,7 @@ class PointsList extends Component {
                   value={dot.labelVisibility || SHOW_ALWAYS}
                   onSelect={value => handleChange(index)("labelVisibility", value)}
                   getPopupContainer={triggerNode => triggerNode.parentNode}
+                  dropdownStyle={{ textAlign: "left" }}
                 >
                   {this.getHoverSettings().map((setting, i) => (
                     <SelectInputStyled.Option key={`setting-${i}`} value={setting.value}>
@@ -127,6 +128,7 @@ class PointsList extends Component {
                     value={dot.labelFractionFormat || FRACTION_FORMATS.decimal}
                     onSelect={value => handleChange(index)("labelFractionFormat", value)}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    dropdownStyle={{ textAlign: "left" }}
                   >
                     {this.getFractionFormatSettings().map((setting, i) => (
                       <SelectInputStyled.Option key={`setting-${i}`} value={setting.value}>

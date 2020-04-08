@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType, questionType } from "@edulastic/constants";
-import { withWindowSizes, AnswerContext } from "@edulastic/common";
+import { withWindowSizes, AnswerContext, ScrollContext } from "@edulastic/common";
 import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection, keyBy } from "lodash";
 import { Row, Col, Layout, Button, Pagination, message } from "antd";
@@ -96,6 +96,8 @@ class Container extends Component {
     collapseDirection: "",
     showHints: false
   };
+
+  editModeContainerRef = React.createRef();
 
   componentDidMount() {
     const { clearAnswers, changePreviewTab, location, changeView } = this.props;
@@ -513,50 +515,52 @@ class Container extends Component {
     const collapseRight = collapseDirection === "right";
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-        <ItemDetailWrapper padding="0px">
-          {passageWithQuestions && (
-            <ItemDetailRow
-              row={passage.structure}
-              key="0"
-              view={view}
-              rowIndex="0"
-              itemData={passage}
-              count={1}
-              isPassageQuestion
-              onEditWidget={this.handleEditPassageWidget}
-              handleAddToPassage={this.handleAddToPassage}
-              onDeleteWidget={this.handleDeletePassageWidget}
-              hideColumn={collapseLeft}
-              isCollapsed={!!collapseDirection}
-              useTabsLeft={useTabsLeft}
-            />
-          )}
-          {rows.map((row, i) => (
-            <>
-              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
+        <ScrollContext.Provider value={{ getScrollElement: () => this.editModeContainerRef.current }}>
+          <ItemDetailWrapper ref={this.editModeContainerRef} id="testing 1" padding="0px">
+            {passageWithQuestions && (
               <ItemDetailRow
-                key={passage ? i + 1 : i}
-                row={row}
+                row={passage.structure}
+                key="0"
                 view={view}
-                rowIndex={i}
-                previewTab="show"
-                itemData={item}
-                count={rows.length}
-                onAdd={this.handleAdd}
-                windowWidth={windowWidth}
-                onDeleteWidget={this.handleDeleteWidget(i)}
-                onEditWidget={this.handleEditWidget}
-                onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                hideColumn={
-                  (collapseLeft && !passageWithQuestions && i === 0) ||
-                  (collapseRight && (i === 1 || passageWithQuestions))
-                }
+                rowIndex="0"
+                itemData={passage}
+                count={1}
+                isPassageQuestion
+                onEditWidget={this.handleEditPassageWidget}
+                handleAddToPassage={this.handleAddToPassage}
+                onDeleteWidget={this.handleDeletePassageWidget}
+                hideColumn={collapseLeft}
                 isCollapsed={!!collapseDirection}
                 useTabsLeft={useTabsLeft}
               />
-            </>
-          ))}
-        </ItemDetailWrapper>
+            )}
+            {rows.map((row, i) => (
+              <>
+                {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
+                <ItemDetailRow
+                  key={passage ? i + 1 : i}
+                  row={row}
+                  view={view}
+                  rowIndex={i}
+                  previewTab="show"
+                  itemData={item}
+                  count={rows.length}
+                  onAdd={this.handleAdd}
+                  windowWidth={windowWidth}
+                  onDeleteWidget={this.handleDeleteWidget(i)}
+                  onEditWidget={this.handleEditWidget}
+                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                  hideColumn={
+                    (collapseLeft && !passageWithQuestions && i === 0) ||
+                    (collapseRight && (i === 1 || passageWithQuestions))
+                  }
+                  isCollapsed={!!collapseDirection}
+                  useTabsLeft={useTabsLeft}
+                />
+              </>
+            ))}
+          </ItemDetailWrapper>
+        </ScrollContext.Provider>
       </AnswerContext.Provider>
     );
   };

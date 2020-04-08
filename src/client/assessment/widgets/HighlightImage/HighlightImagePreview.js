@@ -206,7 +206,9 @@ const HighlightImagePreview = ({
   const scrollContainerElement = getScrollElement();
 
   useEffect(() => {
-    if (scrollContainerElement) {
+    // intially, scroll container is window object at author preview
+    // style wont be available for the window object
+    if (scrollContainerElement?.style) {
       scrollContainerElement.style.marginLeft = "58px";
       scrollContainerElement.style.width = "calc(100% - 58px)";
     }
@@ -217,7 +219,6 @@ const HighlightImagePreview = ({
   const top = get(scrollContainerElement, "offsetTop", 0);
 
   const showDrawing = viewComponent === "editQuestion" || viewComponent === "authorPreviewPopup";
-
   return (
     <Fragment>
       <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>

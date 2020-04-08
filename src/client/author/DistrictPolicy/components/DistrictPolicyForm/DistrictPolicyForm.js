@@ -316,7 +316,7 @@ class DistrictPolicyForm extends Component {
       : districtPolicy.classlink
       ? _3RDPARTYINTEGRATION.classlink
       : _3RDPARTYINTEGRATION.none;
-    let saveBtnStr = "Create";
+    let saveBtnStr = "Save";
     if (districtPolicy.hasOwnProperty("_id")) {
       saveBtnStr = "Save";
     }

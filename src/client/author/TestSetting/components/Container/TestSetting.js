@@ -130,7 +130,7 @@ class TestSetting extends Component {
     } = this.props;
 
     const { testSetting } = this.state;
-    const btnSaveStr = testSetting.hasOwnProperty("_id") ? "Save" : "Create";
+    const btnSaveStr = "Save";
 
     const performanceBandOptions = performanceBandProfiles.map(x => (
       <Select.Option key={x._id} value={x._id}>

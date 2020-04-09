@@ -33,25 +33,31 @@ const getCol = (text, backgroundColor, isCellClickable, pageTitle, location, tes
   if (isCellClickable && text) {
     const { assignmentId, groupId, testActivityId } = test.records[0];
 
-    return <StyledCell style={{ backgroundColor }}>
-      <Link style={{color: reportLinkColor}} to={{
-        pathname: `/author/classboard/${assignmentId}/${groupId}/test-activity/${testActivityId}`,
-        state: {// this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-          breadCrumb: [
-            {
-              title: "REPORTS",
-              to: "/author/reports"
-            },
-            {
-              title: pageTitle,
-              to: `${location.pathname}${location.search}`
+    return (
+      <StyledCell style={{ backgroundColor }}>
+        <Link
+          style={{ color: reportLinkColor }}
+          to={{
+            pathname: `/author/classboard/${assignmentId}/${groupId}/test-activity/${testActivityId}`,
+            state: {
+              // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+              breadCrumb: [
+                {
+                  title: "REPORTS",
+                  to: "/author/reports"
+                },
+                {
+                  title: pageTitle,
+                  to: `${location.pathname}${location.search}`
+                }
+              ]
             }
-          ]
-        }
-      }}>
-        {text}
-      </Link>
-    </StyledCell>;
+          }}
+        >
+          {text}
+        </Link>
+      </StyledCell>
+    );
   }
   return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
 };
@@ -108,7 +114,7 @@ const getColumns = (
     return {
       key: testId,
       title: assessmentName,
-      assessmentDate: test.assessmentDate,
+      startDate: test.startDate,
       align: "right",
       className: "normal-text",
       dataIndex: "tests",
@@ -134,7 +140,11 @@ const getColumns = (
         );
 
         return (
-          <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color, isCellClickable, pageTitle, location, record.tests[testId])} />
+          <CustomTableTooltip
+            placement="top"
+            title={toolTipText()}
+            getCellContents={() => getCol(value, color, isCellClickable, pageTitle, location, record.tests[testId])}
+          />
         );
       }
     };
@@ -178,7 +188,7 @@ const getColumns = (
             testName: currentTestName
           };
         }).sort((a, b) => {
-          return a.records[0].assessmentDate - b.records[0].assessmentDate;
+          return a.records[0].startDate - b.records[0].startDate;
         });
 
         return <TrendColumn type={record.trend} tests={augmentedTests} />;
@@ -203,7 +213,7 @@ const getColumns = (
 
   return columns.concat(
     dynamicColumns.sort((a, b) => {
-      return a.assessmentDate - b.assessmentDate;
+      return a.startDate - b.startDate;
     })
   );
 };
@@ -225,7 +235,18 @@ const TrendTable = ({
   location,
   pageTitle
 }) => {
-  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent, filters, isCellClickable, location, pageTitle);
+  const columns = getColumns(
+    testData,
+    rawMetric,
+    analyseBy,
+    compareBy,
+    customColumns,
+    toolTipContent,
+    filters,
+    isCellClickable,
+    location,
+    pageTitle
+  );
   const groupedAvailableTests = groupBy(rawMetric, "testId");
 
   return (

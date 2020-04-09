@@ -25,7 +25,7 @@ const staticFields = [
     dataIndex: "assessmentDateFormatted",
     className: "assessmentDate",
     sorter: (a, b) => {
-      return a.assessmentDate - b.assessmentDate;
+      return a.startDate - b.startDate;
     }
   },
   {

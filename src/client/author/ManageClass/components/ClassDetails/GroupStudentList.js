@@ -112,11 +112,11 @@ const GroupStudentsList = ({ students, selectedStudent, setSelectedStudents, upd
             <DropMenu onClick={event => handleActionMenuClick(event, user)}>
               <MenuItems key="editStudent">
                 <IconPencilEdit />
-                <span>Edit Stduent</span>
+                <span>Edit Student</span>
               </MenuItems>
               <MenuItems key="deleteStudent">
                 <IconRemove />
-                <span>Remove Students</span>
+                <span>Remove Student</span>
               </MenuItems>
             </DropMenu>
           }
@@ -129,6 +129,7 @@ const GroupStudentsList = ({ students, selectedStudent, setSelectedStudents, upd
   ];
 
   const rowKey = recode => recode.email || recode.username;
+  const filteredStudents = students.filter(s => s.enrollmentStatus && !(s.enrollmentStatus == 0));
 
   return (
     <TableWrapper>
@@ -141,7 +142,7 @@ const GroupStudentsList = ({ students, selectedStudent, setSelectedStudents, upd
         stds={selectedStudent}
         isEdit={true}
       />
-      <StudentsTable columns={columns} dataSource={students} rowKey={rowKey} pagination={false} />
+      <StudentsTable columns={columns} dataSource={filteredStudents} rowKey={rowKey} pagination={false} />
     </TableWrapper>
   );
 };

@@ -49,11 +49,5 @@
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }
-  ],
-  "statuses": [
-    { "key": "All", "title": "All Statuses" },
-    { "key": "DONE", "title": "Completed" },
-    { "key": "IN PROGRESS,IN GRADING", "title": "In Progress/In Grading " },
-    { "key": "NOT OPEN", "title": "Not Started" }
   ]
 }

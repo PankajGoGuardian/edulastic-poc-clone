@@ -116,7 +116,7 @@ const Launch = ({
   };
 
   const handleError = err => {
-    if (err?.err !== "popup_closed_by_user") message.error("Failed to launch Hangout");
+    if (err?.err !== "popup_closed_by_user") message.error("Failed to launch Hangouts");
     console.log("error", err);
   };
 
@@ -149,7 +149,7 @@ const Launch = ({
       onError={handleError}
       hangoutLink={hangoutLink}
       loading={launching}
-      title="Launch Hangout"
+      title="Launch Hangouts"
       onSelect={setGroupId}
       selected={selectedGroup}
       checked={postMeeting}
@@ -157,7 +157,7 @@ const Launch = ({
         setPostMeeting(!postMeeting);
       }}
       classList={classList.filter(c => c.active)}
-      description="Select the class that you want to invite for the Hangout session."
+      description="Select the class that you want to invite for the Hangouts session."
     />
   );
 };

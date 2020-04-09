@@ -40,11 +40,11 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
         isStudent
         visible={showHangoutsModal}
         onCancel={() => setShowHangoutsModal(false)}
-        title="Join Hangout"
+        title="Join Hangouts"
         onSelect={selectGroupId}
         selected={selectedGroup}
         classList={classListWithHangouts}
-        description="Select the class that you want to join for the Hangout session."
+        description="Select the class that you want to join for the Hangouts session."
         hangoutLink={hangoutLink}
       />
       <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboardTitle")}>
@@ -57,7 +57,7 @@ const Assignments = ({ activeClasses, loadAllClasses, loading, currentChild, t }
               onClick={() => setShowHangoutsModal(true)}
             >
               <IconHangouts height={23} width={20} />
-              Join Hangout
+              Join Hangouts
             </StyledEduButton>
           )}
           <StudentSlectCommon />

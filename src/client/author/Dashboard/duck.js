@@ -7,8 +7,8 @@ import { createSelector } from "reselect";
 const RECEIVE_TEACHER_DASHBOARD_REQUEST = "[dashboard teacher] receive data request";
 const RECEIVE_TEACHER_DASHBOARD_SUCCESS = "[dashboard teacher] receive data success";
 const RECEIVE_TEACHER_DASHBOARD_ERROR = "[dashboard teacher] receive data error";
-const LAUNCH_HANGOUT_OPEN = "[dashboard teacher] launch hangout open";
-const LAUNCH_HANGOUT_CLOSE = "[dashboard teacher] launch hangout close";
+const LAUNCH_HANGOUT_OPEN = "[dashboard teacher] launch hangouts open";
+const LAUNCH_HANGOUT_CLOSE = "[dashboard teacher] launch hangouts close";
 
 export const receiveTeacherDashboardAction = createAction(RECEIVE_TEACHER_DASHBOARD_REQUEST);
 export const receiveTeacherDashboardSuccessAction = createAction(RECEIVE_TEACHER_DASHBOARD_SUCCESS);

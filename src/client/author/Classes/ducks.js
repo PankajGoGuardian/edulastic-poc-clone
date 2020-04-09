@@ -32,10 +32,10 @@ const ARCHIVE_CLASS_REQUEST = "[class] archive class request";
 const ARCHIVE_CLASS_SUCCESS = "[class] archive class success";
 const ARCHIVE_CLASS_ERROR = "[class ] archive class error";
 
-const SAVE_HANGOUT_EVENT_REQUEST = "[class] save hangout event request";
-const SAVE_HANGOUT_EVENT_SUCCESS = "[class] save hangout event success";
-const SAVE_HANGOUT_EVENT_ERROR = "[class] save hangout event error";
-const SET_OPEN_HANGOUT_MEETING = "[class] set open hangout meeting";
+const SAVE_HANGOUT_EVENT_REQUEST = "[class] save hangouts event request";
+const SAVE_HANGOUT_EVENT_SUCCESS = "[class] save hangouts event success";
+const SAVE_HANGOUT_EVENT_ERROR = "[class] save hangouts event error";
+const SET_OPEN_HANGOUT_MEETING = "[class] set open hangouts meeting";
 
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST);
 export const receiveClassListSuccessAction = createAction(RECEIVE_CLASSLIST_SUCCESS);
@@ -346,11 +346,11 @@ function* saveHangoutEventSaga({ payload }) {
         groupId: payload.groupId
       });
     }
-    const successMessage = "Hangout event saved successfully";
+    const successMessage = "Hangouts event saved successfully";
     yield call(message.success, successMessage);
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
-    const errorMessage = "Hangout event save is failing";
+    const errorMessage = "Hangouts event save is failing";
     yield call(message.error, errorMessage);
     yield put(saveHangoutEventErrorAction());
   }

@@ -2,7 +2,16 @@ import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { CONSTANT } from "../config";
-import { isInPolygon, getLineFunc, getCircleFunc, getEllipseFunc, getHyperbolaFunc, getParabolaFunc } from "../utils";
+import {
+  isInPolygon,
+  getLineFunc,
+  getCircleFunc,
+  getEllipseFunc,
+  getHyperbolaFunc,
+  getParabolaFunc,
+  getEquationFromApiLatex,
+  fixApiLatex
+} from "../utils";
 import {
   Equation,
   Exponent,
@@ -439,6 +448,10 @@ function updateShading(board, areaPoint, shapes) {
     .filter(el => availableTypes.includes(el.type) && !el.latexIsBroken)
     .map(item => {
       if (item.latex) {
+        // fix apiLatex if not fixed already
+        const apiLatex = getEquationFromApiLatex(item.apiLatex);
+        item.fixedLatex = item.fixedLatex || fixApiLatex(apiLatex);
+        // parse & evaluate the math equation
         const func = parse(item.fixedLatex.latexFunc);
         return (x, y) => func.eval({ x, y }) > 0;
       }

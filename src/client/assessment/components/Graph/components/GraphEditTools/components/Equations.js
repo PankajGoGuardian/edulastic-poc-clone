@@ -71,7 +71,7 @@ class Equations extends Component {
                   .toString(36)
                   .substr(2, 9)}`,
                 latex,
-                apiLatex: result
+                apiLatex: result[0]
               });
             })
           );
@@ -83,7 +83,7 @@ class Equations extends Component {
         setEquations(
           produce(equations, draft => {
             draft[index].latex = latex;
-            draft[index].apiLatex = result;
+            draft[index].apiLatex = result[0];
           })
         );
       })

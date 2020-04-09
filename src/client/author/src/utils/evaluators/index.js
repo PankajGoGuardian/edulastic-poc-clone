@@ -1,6 +1,5 @@
 import { questionType } from "@edulastic/constants";
-import { evaluateApi, graphEvaluateApi } from "@edulastic/api";
-import { produce } from "immer";
+import { evaluateApi } from "@edulastic/api";
 
 import {
   multipleChoice,

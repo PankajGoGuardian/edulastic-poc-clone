@@ -49,7 +49,8 @@ import {
   getEventName,
   isTouchDevice,
   getAllObjectsUnderMouse,
-  getLabel
+  getLabel,
+  getEquationFromApiLatex
 } from "./utils";
 import _events from "./events";
 
@@ -960,6 +961,7 @@ class Board {
       fixed = false,
       bg = false
     } = settings;
+
     switch (object._type) {
       case 14:
       case JXG.OBJECT_TYPE_POINT:
@@ -1486,7 +1488,7 @@ class Board {
             labelHTML: [labelPoint3, labelPoint2, labelPoint1]
           });
         } else {
-          object.apiLatex = object.apiLatex.split("],[")[0].replace("[", "");
+          object.apiLatex = getEquationFromApiLatex(object.apiLatex);
           return Equation.create(this, object);
         }
 

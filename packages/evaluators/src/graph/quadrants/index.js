@@ -274,12 +274,6 @@ const buildGraphApiResponse = (elements = []) => {
 };
 
 const checkEquations = async (answer, userResponse) => {
-  // const apiResult = await graphEvaluateApi.evaluate({
-  //   input: "[['line',[(2.0,2.0),(0.0,4.0)]]],['dashed'],[(6.0,0.0)]",
-  //   expected: "[['eqn','x+y \\gt 4']],['dashed'],[(5,0)]",
-  //   checks: "evaluateGraphEquations"
-  // });
-
   const apiResult = await evaluateApi({
     input: buildGraphApiResponse(userResponse),
     expected: buildGraphApiResponse(answer),

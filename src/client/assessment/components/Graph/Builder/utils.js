@@ -553,6 +553,12 @@ export function getAvailablePositions(board, element, isStacked) {
   return result;
 }
 
+export const getEquationFromApiLatex = apiLatex => {
+  // NOTE: object.apiLatex should be a string such that -
+  // "[-x+y-2=0],[['line',[(0,2),(1,3)]]]" >> transforms to >> "-x+y-2=0"
+  return apiLatex.split("],[")[0].replace("[", "");
+};
+
 export function fixApiLatex(latex) {
   let splitExpr = latex.split("<=");
   if (splitExpr.length === 2) {

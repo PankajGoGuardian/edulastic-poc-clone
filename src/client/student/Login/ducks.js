@@ -152,9 +152,11 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
-  if (payload.role === "school-admin" && get(payload, "orgData.schools[0]._id")) {
+  let schools = payload?.orgData?.schools || [];
+  schools = schools.sort((a, b) => a.name.localeCompare(b.name));
+  if (payload.role === "school-admin" && schools.length) {
     // setting first school as default on initial load
-    state.saSettingsSchool = get(payload, "orgData.schools[0]._id");
+    state.saSettingsSchool = schools[0]._id;
   }
   state.isAuthenticated = true;
   state.authenticating = false;

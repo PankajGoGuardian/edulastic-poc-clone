@@ -180,6 +180,7 @@ const AddToGroupModal = ({
               onChange={setSelectedGroup}
               width="326px"
               dropdownStyle={{ zIndex: 2000 }}
+              notFoundContent="No Groups Found"
               labelInValue
             >
               {filteredGroups.map(({ _id, name }) => (

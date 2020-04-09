@@ -4,6 +4,8 @@ import TestLibrary from "../../../../framework/author/tests/testLibraryPage";
 import TestSummayTab from "../../../../framework/author/tests/testDetail/testSummaryTab";
 import TestHeader from "../../../../framework/author/tests/testDetail/header";
 import FileHelper from "../../../../framework/util/fileHelper";
+import CypressHelper from "../../../../framework/util/cypressHelpers";
+
 const userData = require("../../../../../fixtures/users");
 const quesData = require("../../../../../fixtures/questionAuthoring");
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -32,6 +34,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
 
   context(">searching in draft state", () => {
     before(">login as author and create tests in draft-state", () => {
+      cy.getAllTestsAndDelete(Author.email);
+      cy.getAllItemsAndDelete(Author.email);
       cy.login("teacher", Author.email, Author.pass);
       tests.forEach((test, i) => {
         testLibrary.createTest(testToCreate[i], false).then(id => {
@@ -104,7 +108,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
-          searchFilters.typeInSearchBox(id);
+          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -144,7 +148,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
-          searchFilters.typeInSearchBox(id);
+          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.checkforNonExistanceOfTest(id);
         });
       });
@@ -195,7 +199,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
           searchFilters.getSearchTextBox().clear({ force: true });
-          searchFilters.typeInSearchBox(id);
+          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
@@ -238,7 +242,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {
           searchFilters.getSearchTextBox().clear({ force: true });
-          searchFilters.typeInSearchBox(id);
+          searchFilters.typeInSearchBox(CypressHelper.getShortId(id));
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });

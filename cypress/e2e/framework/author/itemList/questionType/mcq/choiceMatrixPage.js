@@ -45,14 +45,18 @@ class ChoiceMatrixStandardPage {
       .clear({ force: true })
       .type(text);
 
-  markAnswerInput = (index, element, target) =>
-    cy
-      .get("tbody > tr")
-      .eq(index)
-      .find("td")
-      .eq(element)
-      .find(target)
-      .click();
+  markAnswerInput = (index, element, target) => {
+    cy.get('[data-cy="title"]').then(() => {
+      if (Cypress.$('[title="Choice matrix - labels"]').length === 1) element++;
+
+      cy.get("tbody > tr")
+        .eq(index)
+        .find("td")
+        .eq(element)
+        .find(target)
+        .click({ force: true });
+    });
+  };
 
   // choices
   getChoiceByIndex(index) {
@@ -82,7 +86,7 @@ class ChoiceMatrixStandardPage {
   addNewChoice() {
     cy.get(":nth-child(2) > [data-cy=addButton]")
       .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   }
 
@@ -113,7 +117,7 @@ class ChoiceMatrixStandardPage {
   addNewSteam() {
     cy.get(":nth-child(3) > [data-cy=addButton]")
       .should("be.visible")
-      .click();
+      .click({ force: true });
     return this;
   }
 
@@ -171,8 +175,8 @@ class ChoiceMatrixStandardPage {
 
   deleteAlternate() {
     cy.get('[data-cy="del-alter"]')
-      .should("be.visible")
-      .click();
+      // .should("be.visible")
+      .click({ force: true });
 
     // switch back to correct ans tab
     /* cy.get("[data-cy=correct]")
@@ -201,10 +205,12 @@ class ChoiceMatrixStandardPage {
       .as("matrixStyle");
 
     cy.get(selectOp)
+      .scrollIntoView()
       // .should("be.visible")
-      .click();
+      .click({ force: true });
 
     cy.get("@matrixStyle")
+      .scrollIntoView()
       .find(".ant-select-selection-selected-value")
       .should("contain", option);
 
@@ -215,11 +221,11 @@ class ChoiceMatrixStandardPage {
     const selectOp = `[data-cy="${this.stemNumerationOption[option]}"]`;
     cy.get('[data-cy="stemNum"]')
       // .should("be.visible")
-      .click();
+      .click({ force: true });
 
     cy.get(selectOp)
       // .should("be.visible")
-      .click();
+      .click({ force: true });
 
     cy.get('[data-cy="stemNum"]')
       .find(".ant-select-selection-selected-value")
@@ -236,7 +242,7 @@ class ChoiceMatrixStandardPage {
 
     cy.get(selectOp)
       .should("be.visible")
-      .click();
+      .click({ force: true });
 
     cy.get('[data-cy="fontSizeSelect"]')
       .find(".ant-select-selection-selected-value")
@@ -384,7 +390,7 @@ class ChoiceMatrixStandardPage {
   getStemColumnTitle() {
     return Helpers.getElement("stemColumnTitle")
       .next()
-      .find(".ql-editor");
+      .find('[contenteditable="true"]');
   }
 
   checkTableTitle(text) {
@@ -414,7 +420,7 @@ class ChoiceMatrixStandardPage {
   getOptionRowTitle() {
     return Helpers.getElement("optionRowTitle")
       .next()
-      .find(".ql-editor");
+      .find('[contenteditable="true"]');
   }
 
   getStemWidth() {

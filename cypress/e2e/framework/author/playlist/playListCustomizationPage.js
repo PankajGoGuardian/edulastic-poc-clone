@@ -6,6 +6,7 @@ class PlaylistCustom extends PlayListReview {
     super();
     this.searchContainer = new PlayListSearchContainer();
   }
+
   /* GET ELEMENTS */
   getManageContentButton = () => cy.get('[data-cy="manage-content"]');
 

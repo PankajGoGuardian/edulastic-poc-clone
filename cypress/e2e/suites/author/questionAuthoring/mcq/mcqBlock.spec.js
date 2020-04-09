@@ -278,8 +278,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
     });
@@ -556,8 +555,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
     });

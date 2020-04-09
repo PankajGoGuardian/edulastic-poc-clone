@@ -37,8 +37,8 @@ class MCQTrueFalsePage extends MCQStandardPage {
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
-              .clear({ force: true })
-              .type(choice, { force: true });
+              .click()
+              .type(`{selectall}${choice}`, { force: true });
           });
         });
       }

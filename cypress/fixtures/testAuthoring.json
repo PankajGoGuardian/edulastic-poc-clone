@@ -69,24 +69,24 @@
     "itemKeys": ["MCQ_STD.2", "MCQ_TF.1", "MCQ_MULTI.2"]
   },
   "search_1": {
-    "name": "Search Assessment 01",
+    "name": "Search 01",
     "grade": ["Grade 10"],
     "subject": ["Social Studies"],
     "itemKeys": ["MCQ_TF.1"],
     "tags": ["abc", "xyz"]
   },
   "search_2": {
-    "name": "Search Assessment 02",
+    "name": "Search 02",
     "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_TF.default"],
     "tags": ["xyz", "pqr"]
   },
   "search_3": {
-    "name": "Search Assessment 03",
+    "name": "Search 03",
     "grade": ["Kindergarten"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_MULTI.2", "CHOICE_STD.1", "CLOZE_DROPDOWN.default"],
+    "itemKeys": ["MCQ_TF.default"],
     "tags": ["pqr", "abc", "tuv"]
   },
   "EDIT_ASSIGNED_TEST": {

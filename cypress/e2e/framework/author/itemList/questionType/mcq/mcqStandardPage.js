@@ -59,12 +59,12 @@ class MCQStandardPage {
     return cy
       .get('[data-cy="quillSortableItem"]')
       .eq(index)
-      .find(".fr-element");
+      .find('[contenteditable="true"]');
   };
 
   deleteChoiceByIndex(index) {
     const selector = `[data-cy=deleteprefix${index}]`;
-    cy.get(selector).click();
+    cy.get(selector).click({ force: true });
     return this;
   }
 
@@ -72,7 +72,7 @@ class MCQStandardPage {
     cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find(".fr-element");
+      .find('[data-cy="quillSortableItem"]');
   // .find(".ql-editor");
 
   getAllAnsChoicesLabel = () => cy.get('[data-cy="anwer-labels"]');

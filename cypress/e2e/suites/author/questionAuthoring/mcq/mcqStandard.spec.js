@@ -10,9 +10,7 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 
-describe(`${FileHelper.getSpecName(
-  Cypress.spec.name
-)} >> Author "Multiple choice - standard" type question`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choice - standard" type question`, () => {
   const queData = {
     group: "Multiple Choice",
     queType: "Multiple choice - standard",
@@ -274,8 +272,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
 
@@ -561,8 +558,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
 

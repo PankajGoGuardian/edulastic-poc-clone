@@ -11,9 +11,7 @@ import {
   ORIENTATION
 } from "../../../../framework/constants/questionAuthoring";
 
-describe(`${FileHelper.getSpecName(
-  Cypress.spec.name
-)} >> Author "True or false" type question`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false" type question`, () => {
   const queData = {
     group: "Multiple Choice",
     queType: "True or false",
@@ -229,8 +227,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
 
@@ -469,8 +466,7 @@ describe(`${FileHelper.getSpecName(
         question
           .getAllAnsChoicesLabel()
           .eq(0)
-          .find("input")
-          .next()
+          .find(".labelOnly")
           .should("have.text", option.key);
       });
 

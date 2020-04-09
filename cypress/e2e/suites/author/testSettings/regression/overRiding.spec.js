@@ -97,7 +97,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
       /* Over-ride Max-Attempt to 1 */
       testAssignPage.setMaxAttempt("1");
       /* Over-ride Release Policy To Release Score and Responses */
-      testAssignPage.setReleasePolicy(releaseType.DONT_RELEASE);
+      testAssignPage.setReleasePolicy(releaseType.WITH_RESPONSE);
       /* De-Select the Shuffle questions and choices */
       testAssignPage.deselectShuffleChoices();
       testAssignPage.deselectShuffleQuestions();
@@ -123,7 +123,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> over riding test settin
         cy.login("student", Student1.email, Student1.pass);
 
         /* Verifying Static Password */
-        assignmentsPage.clickOnAssigmentByTestId(OriginalTestId, staticPassword);
+        assignmentsPage.clickOnAssigmentByTestId(OriginalTestId, { pass: staticPassword });
         studentTestPage.clickOnCalcuator();
 
         /* Verifying Calculator Type */

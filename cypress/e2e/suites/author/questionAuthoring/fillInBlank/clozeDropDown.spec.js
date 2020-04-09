@@ -217,8 +217,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
     it(" > [clz_dropdown_scoring]: Test score with partial match and penalty", () => {
       // question.getMinScore().clear();
       question.clickOnAdvancedOptions();
-      question.getPanalty().type(2);
       question.selectScoringType(SCORING_TYPE.PARTIAL);
+      question.getPanalty().type(2);
       question.getPoints().type("{selectall}4");
       question.getAlternates().click();
       question.getPoints().type("{selectall}6");

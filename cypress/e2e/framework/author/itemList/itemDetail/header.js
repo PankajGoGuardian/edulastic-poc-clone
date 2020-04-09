@@ -81,7 +81,7 @@ class Header {
     // isOld=false === isNew=true
     cy.server();
     if (!isOld) cy.route("POST", "**/testitem").as("saveItem");
-    else cy.route("PUT", "**/api/testitem").as("saveItem");
+    else cy.route("PUT", "**/api/testitem/*").as("saveItem");
     cy.get('[data-cy="saveButton"]')
       .should("be.visible")
       .click();

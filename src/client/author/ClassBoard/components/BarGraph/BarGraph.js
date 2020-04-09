@@ -333,7 +333,7 @@ class BarGraph extends Component {
           }}
         />
 
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer width="99%" height={240}>
           {hasRandomQuestions && isBoth ? (
             <OnScreenNotification>
               The questions for each student have been dynamically selected and as a result, question based comparison

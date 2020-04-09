@@ -11,8 +11,7 @@ import {
   getFormData,
   fetchExternalToolProviderAction,
   deleteExternalToolProviderAction,
-  saveExternalToolProviderAction,
-  searchExternalToolProviderAction
+  saveExternalToolProviderAction
 } from "../../ducks";
 import { getUser, getManageTabLabelSelector } from "../../../src/selectors/user";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -81,6 +80,22 @@ class ExternalTools extends Component {
     ];
   };
 
+  getFilteredData = () => {
+    const words = this.state.searchTerm.split(" ").filter(t => t);
+    // search the presence of every search word in the order of its occurrence
+    return this.props.formData.filter(({ toolName }) => {
+      let pos = 0,
+        flag = true;
+      // return false if either of the search term is not found
+      words.every(w => {
+        const nextPos = toolName.indexOf(w, pos);
+        nextPos !== -1 ? (pos = nextPos + w.length) : (flag = false);
+        return flag;
+      });
+      return flag;
+    });
+  };
+
   onModalClose = () => {
     this.setState({
       isModalVisible: false
@@ -112,15 +127,10 @@ class ExternalTools extends Component {
     });
   };
 
-  searchTool = () => {
-    const { userOrgId, searchExternalToolProvider } = this.props;
-    const { searchTerm } = this.state;
-    searchExternalToolProvider({ orgId: userOrgId, searchTerm });
-  };
-
   render() {
-    const { formData, user, deleteExternalToolProvider, history, userOrgId } = this.props;
+    const { user, deleteExternalToolProvider, history, userOrgId } = this.props;
     const { isModalVisible, data, searchTerm } = this.state;
+    const dataSource = this.getFilteredData();
     return (
       <MainContainer>
         <SubHeaderWrapper>
@@ -135,7 +145,7 @@ class ExternalTools extends Component {
             value={searchTerm}
             onChange={e => this.setState({ searchTerm: e.target.value })}
           />
-          <EduButton height="40px" onClick={this.searchTool}>
+          <EduButton height="40px" onClick={() => this.setState({ searchTerm })}>
             Search
           </EduButton>
         </ExternalToolsSearchHeader>
@@ -149,7 +159,7 @@ class ExternalTools extends Component {
         <StyledList
           split={false}
           header={ETPHeader({ addExternalTool: this.addExternalTool })}
-          dataSource={formData}
+          dataSource={dataSource}
           renderItem={(tool, i) => (
             <ToolForm
               key={i}
@@ -175,8 +185,7 @@ const enhance = compose(
     {
       fetchExternalToolProviders: fetchExternalToolProviderAction,
       deleteExternalToolProvider: deleteExternalToolProviderAction,
-      saveData: saveExternalToolProviderAction,
-      searchExternalToolProvider: searchExternalToolProviderAction
+      saveData: saveExternalToolProviderAction
     }
   )
 );

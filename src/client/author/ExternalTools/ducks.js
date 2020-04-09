@@ -12,7 +12,6 @@ const FETCH_EXTERNAL_TOOL_PROVIDER_FAILURE = "[External Tool Provider] fetch too
 const DELETE_EXTERNAL_TOOL_PROVIDER = "[External Tool Provider] delete tool";
 const SAVE_EXTERNAL_TOOL_PROVIDER = "[External Tool Provider] save tool provider";
 const UPDATE_EXTERNAL_TOOL_PROVIDER = "[External Tool Provider] update tool provider";
-const SEARCH_EXTERNAL_TOOL_PROVIDER = "[External Tool Provider] search tool provider";
 
 export const fetchExternalToolProviderAction = createAction(FETCH_EXTERNAL_TOOL_PROVIDER);
 // export const fetchExternalToolProviderBeginAction = createAction(FETCH_EXTERNAL_TOOL_PROVIDER_BEGIN);
@@ -21,7 +20,6 @@ export const fetchExternalToolProviderFailureAction = createAction(FETCH_EXTERNA
 export const deleteExternalToolProviderAction = createAction(DELETE_EXTERNAL_TOOL_PROVIDER);
 export const saveExternalToolProviderAction = createAction(SAVE_EXTERNAL_TOOL_PROVIDER);
 export const updateExternalToolProviderAction = createAction(UPDATE_EXTERNAL_TOOL_PROVIDER);
-export const searchExternalToolProviderAction = createAction(SEARCH_EXTERNAL_TOOL_PROVIDER);
 
 const initialState = {
   data: []
@@ -92,28 +90,11 @@ function* deleteExternalToolProviderSaga({ payload }) {
   }
 }
 
-function* searchExternalToolProviderSaga({ payload }) {
-  try {
-    const { orgId, searchTerm } = payload;
-    const toolsList = yield call(settingsApi.getExternalTools, { orgId });
-    let newList = [];
-    toolsList.forEach(tool => {
-      if (tool.toolName.toLowerCase().startsWith(searchTerm.toLowerCase())) {
-        newList.push(tool);
-      }
-    });
-    yield put(fetchExternalToolProviderSuccessAction(newList));
-  } catch (err) {
-    yield call(message.error, "Unable to Search Tool");
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     yield takeEvery(FETCH_EXTERNAL_TOOL_PROVIDER, fetchExternalToolProviderSaga),
     yield takeEvery(SAVE_EXTERNAL_TOOL_PROVIDER, saveExternalToolProviderSaga),
-    yield takeEvery(DELETE_EXTERNAL_TOOL_PROVIDER, deleteExternalToolProviderSaga),
-    yield takeEvery(SEARCH_EXTERNAL_TOOL_PROVIDER, searchExternalToolProviderSaga)
+    yield takeEvery(DELETE_EXTERNAL_TOOL_PROVIDER, deleteExternalToolProviderSaga)
   ]);
 }
 

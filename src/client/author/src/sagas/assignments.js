@@ -18,7 +18,9 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
   RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
   RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
 } from "../constants/actions";
 import { getUserRole } from "../selectors/user";
 
@@ -167,10 +169,16 @@ function* updateAssignmetSaga({ payload }) {
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
     yield call(assignmentApi.syncWithGoogleClassroom, payload);
+    yield put({
+      type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
+    });
     yield call(message.success, "Assignment posted to google classroom successfully");
   } catch (error) {
     const errorMessage =
       error?.data?.message || "Assignment failed to sync with google classroom. Please try after sometime.";
+    yield put({
+      type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
+    });
     yield call(message.error, errorMessage);
   }
 }

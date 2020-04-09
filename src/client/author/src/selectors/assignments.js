@@ -76,3 +76,8 @@ export const getAssignmentFilterSelector = createSelector(
   stateSelector,
   state => state.filter
 );
+
+export const getAssignmentSyncInProgress = createSelector(
+  stateSelector,
+  state => state.syncWithGoogleClassroomInProgress
+);

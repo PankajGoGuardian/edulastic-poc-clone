@@ -46,7 +46,7 @@ import {
 } from "../../../src/actions/classBoard";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
-import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
+import { getAssignmentSyncInProgress, getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
 import {
   CaretUp,
@@ -244,7 +244,8 @@ class ClassHeader extends Component {
       orgClasses,
       orgData,
       canvasSyncGrades,
-      googleSyncAssignment
+      googleSyncAssignment,
+      syncWithGoogleClassroomInProgress
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -326,7 +327,11 @@ class ClassHeader extends Component {
           </MenuItems>
         )}
         {groupGoogleId && (
-          <MenuItems key="key7" onClick={() => googleSyncAssignment({ assignmentId, groupId: classId })}>
+          <MenuItems
+            key="key7"
+            onClick={() => googleSyncAssignment({ assignmentId, groupId: classId })}
+            disabled={syncWithGoogleClassroomInProgress}
+          >
             Sync with Google Classroom
           </MenuItems>
         )}
@@ -544,7 +549,8 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
-      orgData: getOrgDataSelector(state)
+      orgData: getOrgDataSelector(state),
+      syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

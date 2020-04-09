@@ -15,7 +15,10 @@ import {
   TOGGLE_DELETE_ASSIGNMENT_MODAL,
   DELETE_ASSIGNMENT_REQUEST,
   DELETE_ASSIGNMENT_REQUEST_SUCCESS,
-  DELETE_ASSIGNMENT_REQUEST_FAILED
+  DELETE_ASSIGNMENT_REQUEST_FAILED,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { find, keyBy } from "lodash";
@@ -35,7 +38,8 @@ const initialState = {
   toggleReleaseGradeSettings: false,
   currentAssignment: {},
   filtering: false,
-  isAdvancedView: false
+  isAdvancedView: false,
+  syncWithGoogleClassroomInProgress: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -122,6 +126,21 @@ const reducer = (state = initialState, { type, payload }) => {
           };
         }
       }
+    case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST:
+      return {
+        ...state,
+        syncWithGoogleClassroomInProgress: true
+      };
+    case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS:
+      return {
+        ...state,
+        syncWithGoogleClassroomInProgress: false
+      };
+    case SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR:
+      return {
+        ...state,
+        syncWithGoogleClassroomInProgress: false
+      };
     default:
       return state;
   }

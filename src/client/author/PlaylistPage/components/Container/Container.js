@@ -440,6 +440,7 @@ class Container extends PureComponent {
           okText="PUBLISH"
         />
         <ShareModal
+          shareLabel={"PLAYLIST URL"}
           isVisible={showShareModal}
           testId={testId}
           isPlaylist={true}

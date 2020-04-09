@@ -315,6 +315,7 @@ class Container extends React.Component {
     return (
       <>
         <ShareModal
+          shareLabel={"TEST URL"}
           isVisible={showShareModal}
           testId={testId}
           hasPremiumQuestion={hasPremiumQuestion}

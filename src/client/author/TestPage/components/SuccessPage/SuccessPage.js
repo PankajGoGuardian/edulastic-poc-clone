@@ -166,6 +166,7 @@ class SuccessPage extends React.Component {
     return (
       <div>
         <ShareModal
+          shareLabel={"TEST URL"}
           isVisible={isShareModalVisible}
           testId={_id}
           hasPremiumQuestion={hasPremiumQuestion}

@@ -781,6 +781,7 @@ class Container extends PureComponent {
         />
         {this.renderModal()}
         <ShareModal
+          shareLabel={"TEST URL"}
           isVisible={showShareModal}
           testId={testId}
           hasPremiumQuestion={hasPremiumQuestion}

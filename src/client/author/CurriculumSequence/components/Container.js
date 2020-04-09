@@ -319,6 +319,7 @@ class CurriculumContainer extends Component {
     return (
       <>
         <ShareModal
+          shareLabel={"PLAYLIST URL"}
           isVisible={showShareModal}
           isPublished={destinationCurriculumSequence.status === statusConstants.PUBLISHED}
           testId={destinationCurriculumSequence._id}

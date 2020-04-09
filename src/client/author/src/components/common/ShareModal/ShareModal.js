@@ -241,6 +241,7 @@ class ShareModal extends React.Component {
   render() {
     const { sharedType, permission, _permissionKeys, currentUser } = this.state;
     const {
+      shareLabel,
       isVisible,
       onClose,
       userList = [],
@@ -273,7 +274,7 @@ class ShareModal extends React.Component {
         <ModalContainer>
           <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
           <ShareBlock>
-            <ShareLabel>TEST URL</ShareLabel>
+            <ShareLabel>{shareLabel || "TEST URL"}</ShareLabel>
             <FlexContainer>
               <TitleCopy copyable={{ text: sharableURL }}>
                 <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>

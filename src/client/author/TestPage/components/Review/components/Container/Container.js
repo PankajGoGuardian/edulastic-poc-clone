@@ -460,7 +460,7 @@ class Review extends PureComponent {
               </Col>
             </Row>
           )}
-          <ReviewContentWrapper gutter={30}>
+          <ReviewContentWrapper>
             <ReviewLeftContainer lg={24} xl={18}>
               <Paper padding="15px 0px" style={{ overflow: "hidden" }} ref={this.listWrapperRef}>
                 <ReviewItems

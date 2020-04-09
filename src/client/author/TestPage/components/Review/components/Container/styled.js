@@ -5,7 +5,8 @@ import {
   desktopWidth,
   smallDesktopWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  grey
 } from "@edulastic/colors";
 import { Col, Row } from "antd";
 
@@ -55,12 +56,16 @@ export const ReviewContentWrapper = styled(Row)`
 `;
 
 export const ReviewLeftContainer = styled(Col)`
+  padding-right: 15px;
   @media (max-width: 1199px) {
     order: 2;
   }
 `;
 
 export const ReviewSummaryWrapper = styled(Col)`
+  padding: 0px 15px;
+  border: 1px solid ${grey};
+  border-radius: 8px;
   @media (max-width: 1199px) {
     order: 1;
     width: 100%;

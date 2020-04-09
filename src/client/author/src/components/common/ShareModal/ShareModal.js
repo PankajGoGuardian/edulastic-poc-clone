@@ -447,10 +447,6 @@ const ModalContainer = styled.div`
       fill: ${themeColor};
     }
   }
-  @media (max-width: ${MAX_TAB_WIDTH - 1}px) {
-    width: 90vw;
-    padding: 5px;
-  }
 `;
 
 const ShareBlock = styled.div`

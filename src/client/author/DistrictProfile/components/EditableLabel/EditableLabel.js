@@ -21,10 +21,13 @@ class EditableLabel extends React.Component {
     };
   }
 
-  componentDidUpdate() {
-    const { form, valueName, value } = this.props;
+  componentDidUpdate(prevProps) {
+    const { form, valueName, value, requiredStatus, isInputEnabled } = this.props;
     if (value !== form.getFieldValue(valueName)) {
       form.setFieldsValue({ [valueName]: value });
+    }
+    if (requiredStatus && isInputEnabled !== prevProps.isInputEnabled && !isInputEnabled) {
+      this.setState({ validateStatus: "success", validateMsg: "" });
     }
   }
 
@@ -38,6 +41,22 @@ class EditableLabel extends React.Component {
         editing: true
       });
     }
+  };
+
+  validateFields = (rule, value, callback) => {
+    const { requiredStatus, valueName } = this.props;
+    if (requiredStatus && !value) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `Please input your ${valueName}`
+      });
+    } else {
+      this.setState({
+        validateStatus: "success",
+        validateMsg: ``
+      });
+    }
+    callback();
   };
 
   onInputBlur = () => {
@@ -128,12 +147,16 @@ class EditableLabel extends React.Component {
     return (
       <EditableLabelDiv flexGrow={flexGrow}>
         <label>{valueName}</label>
-        <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal" value={value}>
+        <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal">
           {getFieldDecorator(valueName, {
             initialValue: value,
             rules: [
               {
-                required: requiredStatus
+                required: requiredStatus,
+                message: `Please input your ${valueName}`
+              },
+              {
+                validator: this.validateFields
               }
             ]
           })(
@@ -145,7 +168,6 @@ class EditableLabel extends React.Component {
               onChange={this.handleChange}
               placeholder={valueName}
               ref={this.inputRef}
-              value={value}
             />
           )}
         </StyledFormItem>

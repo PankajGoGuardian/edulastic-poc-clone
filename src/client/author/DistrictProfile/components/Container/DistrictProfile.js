@@ -41,7 +41,7 @@ class DistrictProfile extends Component {
     const selectedSchoolData = schools?.find(item => item?._id === schoolId);
     if (!childRefArr.length) return null;
 
-    form.validateFields(errors => {
+    form.validateFieldsAndScroll(errors => {
       if (errors) {
         return null;
       }

@@ -406,8 +406,13 @@ function* login({ payload }) {
   const _payload = { ...payload };
   const generalSettings = yield select(signupGeneralSettingsSelector);
   if (generalSettings) {
-    _payload.districtId = generalSettings.orgId;
-    _payload.districtName = generalSettings.name;
+    if (generalSettings.orgType === "institution") {
+      _payload.institutionId = generalSettings.orgId;
+      _payload.institutionName = generalSettings.name;
+    } else {
+      _payload.districtId = generalSettings.orgId;
+      _payload.districtName = generalSettings.name;
+    }
   }
 
   try {

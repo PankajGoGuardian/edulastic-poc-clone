@@ -1,51 +1,45 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter } from "react-router-dom";
-import { get } from "lodash";
+import { themeColor } from "@edulastic/colors";
+import { EduButton } from "@edulastic/common";
 import { test } from "@edulastic/constants";
+import { IconLock, IconPencilEdit } from "@edulastic/icons";
+import { Divider } from "antd";
+import { get } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
 import {
-  receiveTestByIdAction,
-  getTestSelector,
-  getUserListSelector as getTestSharedListSelector
-} from "../../../TestPage/ducks";
-
+  getPlaylistSelector,
+  getUserListSelector as getPlayListSharedListSelector,
+  receivePlaylistByIdAction
+} from "../../../PlaylistPage/ducks";
+import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
+import BreadCrumb from "../../../src/components/Breadcrumb";
 import ListHeader from "../../../src/components/common/ListHeader";
+import ShareModal from "../../../src/components/common/ShareModal";
+import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { getTestSelector, getUserListSelector as getTestSharedListSelector, receiveTestByIdAction } from "../../ducks";
 import {
   Container,
-  AssignButton,
-  SecondHeader,
   FlexContainerWrapper,
   FlexContainerWrapperLeft,
   FlexContainerWrapperRight,
-  FlexTitle,
-  FlexTextWrapper,
-  FlexText,
+  FlexShareBox,
   FlexShareContainer,
   FlexShareTitle,
-  FlexShareBox,
   FlexShareWithBox,
+  FlexText,
+  FlexTextWrapper,
+  FlexTitle,
   IconWrapper,
-  TitleCopy,
+  ImageWrapper,
+  SecondHeader,
   ShareUrlDiv,
-  ImageWrapper
+  TitleCopy
 } from "./styled";
-import {
-  getPlaylistSelector,
-  receivePlaylistByIdAction,
-  getUserListSelector as getPlayListSharedListSelector
-} from "../../../PlaylistPage/ducks";
-import BreadCrumb from "../../../src/components/Breadcrumb";
-import { IconPencilEdit, IconLock } from "@edulastic/icons";
-import { themeColor } from "@edulastic/colors";
-import ShareModal from "../../../src/components/common/ShareModal";
-import { Divider } from "antd";
-import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
-import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
-import { getCollectionsSelector } from "../../../src/selectors/user";
-import { hasUserGotAccessToPremiumItem } from "../../../dataUtils";
-import { EduButton } from "@edulastic/common";
 
 const { statusConstants, passwordPolicy } = test;
 
@@ -211,9 +205,12 @@ class SuccessPage extends React.Component {
                     </FlexText>
                   ) : (
                     <FlexText>
-                      Your students can begin work on this assessment right away.You can monitor student progress and
+                      Your students can begin work on this assessment right away. You can monitor their progress and
                       responses by clicking on the &nbsp;
-                      <span style={{ color: themeColor }}>View Response</span>&nbsp; button.
+                      <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
+                        View Response
+                      </span>
+                      &nbsp; button.
                     </FlexText>
                   )}
                   <Divider />

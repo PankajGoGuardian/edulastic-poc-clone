@@ -38,6 +38,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
   let qType;
   let num;
   let OriginalTestId;
+  let testVersionId;
   let points = [1, 1, 0.5];
   before("login and create new items and test", () => {
     cy.deleteAllAssignments(Student.email, Teacher.email, Teacher.pass);
@@ -68,7 +69,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
       testAssignPage.clickOnAssign();
     });
   });
-  context(">verifying at student side", () => {
+
+  context(">verifying at student side for Test-Evaluation Method set at Override Settings", () => {
     it(">verify student attempt", () => {
       cy.login("student", Student.email, Student.pass);
       assignmentsPage.clickOnAssigmentByTestId(OriginalTestId);
@@ -82,6 +84,50 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> Test Setting-Item Level
     });
     it(">verify Student Score", () => {
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
+      itemsInTest.forEach((item, ind) => {
+        reportsPage.selectQuestion(`Q${ind + 1}`);
+        reportsPage.getScore().should("contain.text", points[ind]);
+      });
+    });
+  });
+
+  context(`>Test settings -set evaluation Method and assign`, () => {
+    before(() => {
+      cy.deleteAllAssignments(Student.email, Teacher.email, Teacher.pass);
+      cy.login("teacher", Teacher.email, Teacher.pass);
+      testLibraryPage.seachTestAndGotoReviewById(OriginalTestId);
+      testLibraryPage.publishedToDraftAssigned();
+      testLibraryPage.getVersionedTestID().then(newTestId => {
+        testVersionId = newTestId;
+      });
+      testLibraryPage.header.clickOnSettings();
+    });
+    it(">Set Evaluation Method", () => {
+      testSettings.clickOnEvalByType(evalMethod);
+      testLibraryPage.header.clickOnAssign();
+    });
+    it(">assign the test", () => {
+      testAssignPage.selectClass("Item Level Evaluation Class");
+      testAssignPage.selectTestType("Class Assessment");
+      testAssignPage.clickOnEntireClass();
+      testAssignPage.clickOnAssign();
+    });
+  });
+
+  context(">verifying at student side for Test-Evaluation Method set at Test Settings", () => {
+    it(">verify student attempt", () => {
+      cy.login("student", Student.email, Student.pass);
+      assignmentsPage.clickOnAssigmentByTestId(testVersionId);
+      studentTestPage.attemptQuestion(questionType[0], attemptTypes.RIGHT, attempt[0]);
+      studentTestPage.clickOnNext();
+      studentTestPage.attemptQuestion(questionType[1], attemptTypes.PARTIAL_CORRECT, attempt[1]);
+      studentTestPage.clickOnNext();
+      studentTestPage.attemptQuestion(questionType[2], attemptTypes.PARTIAL_CORRECT, attempt[2]);
+      studentTestPage.clickOnNext();
+      studentTestPage.submitTest();
+    });
+    it(">verify Student Score", () => {
+      assignmentsPage.reviewSubmittedTestById(testVersionId);
       itemsInTest.forEach((item, ind) => {
         reportsPage.selectQuestion(`Q${ind + 1}`);
         reportsPage.getScore().should("contain.text", points[ind]);

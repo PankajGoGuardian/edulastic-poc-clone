@@ -23,7 +23,9 @@ const ToolBar = ({
   changeTool,
   qType,
   isDocbased = false,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   const toolbarHandler = value => changeTool(value);
 
@@ -63,7 +65,9 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {timedAssignment && <TimedTestTimer />}
+      {timedAssignment && (
+        <TimedTestTimer utaId={utaId} groupId={groupId} fgColor={tools.svgColor} bgColor={tools.color} />
+      )}
     </Container>
   );
 };

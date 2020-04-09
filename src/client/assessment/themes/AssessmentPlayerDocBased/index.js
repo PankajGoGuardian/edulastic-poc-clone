@@ -12,7 +12,6 @@ import { questionType } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
 import { Container, CalculatorContainer } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 import PlayerHeader from "./PlayerHeader";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
@@ -81,7 +80,7 @@ class AssessmentPlayerDocBased extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
-    saveCurrentAnswer();
+    saveCurrentAnswer({ pausing: true });
     history.push("/home/assignments");
   };
 
@@ -135,10 +134,7 @@ class AssessmentPlayerDocBased extends React.Component {
       settings,
       playerSkinType,
       showMagnifier,
-      timedAssignment = false,
-      currentAssignmentTime = null,
-      stopTimerFlag = false,
-      groupId
+      timedAssignment = false
     } = this.props;
 
     const item = items[0];
@@ -152,7 +148,6 @@ class AssessmentPlayerDocBased extends React.Component {
 
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme };
     const extraPaddingTop = playerSkinType === "parcc" ? 35 : playerSkinType === "sbac" ? 29 : 0;
-    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -199,7 +194,6 @@ class AssessmentPlayerDocBased extends React.Component {
               onClose={this.hideExitPopup}
               finishTest={this.finishTest}
             />
-            {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool("calculator")}
@@ -222,9 +216,7 @@ const enhance = compose(
       loading: testLoadingSelector(state),
       selectedTheme: state.ui.selectedTheme,
       settings: state.test.settings,
-      timedAssignment: state.test?.settings?.timedAssignment,
-      currentAssignmentTime: state.test?.currentAssignmentTime,
-      stopTimerFlag: state.test?.stopTimerFlag
+      timedAssignment: state.test?.settings?.timedAssignment
     }),
     {
       changeView: changeViewAction,

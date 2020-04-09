@@ -16,11 +16,7 @@ import {
   SAVE_USER_RESPONSE_SUCCESS,
   SAVE_USER_RESPONSE_ERROR,
   SHOW_HINTS,
-  Hide_HINTS,
-  START_TIMER,
-  DEC_TIMER,
-  STOP_TIMER,
-  RESET_TIMER
+  Hide_HINTS
 } from "../constants/actions";
 
 const initialState = {
@@ -157,14 +153,6 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, showHints: true };
     case Hide_HINTS:
       return { ...state, showHints: false };
-    case START_TIMER:
-      return { ...state, currentAssignmentTime: payload, stopTimerFlag: false };
-    case DEC_TIMER:
-      return { ...state, currentAssignmentTime: state.currentAssignmentTime - 1000 };
-    case STOP_TIMER:
-      return { ...state, stopTimerFlag: true };
-    case RESET_TIMER:
-      return { ...state, currentAssignmentTime: null, stopTimerFlag: false };
     default:
       return state;
   }

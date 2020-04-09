@@ -20,7 +20,6 @@ import { Container, CalculatorContainer } from "../common";
 import PlayerMainContentArea from "./PlayerMainContentArea";
 
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 import { themes } from "../../../theme";
 import assessmentPlayerTheme from "./themeStyle";
 import { unansweredQuestionCountSelector } from "../../../student/TestAttemptReview/ducks";
@@ -124,7 +123,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
-    saveCurrentAnswer({ shouldClearUserWork: true });
+    saveCurrentAnswer({ shouldClearUserWork: true, pausing: true });
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
     } else if (history?.location?.state?.playlistRecommendationsFlow) {
@@ -243,7 +242,8 @@ class AssessmentPlayerSimple extends React.Component {
       timedAssignment = false,
       currentAssignmentTime = null,
       stopTimerFlag = false,
-      groupId
+      groupId,
+      utaId
     } = this.props;
     const { showExitPopup, testItemState, enableCrossAction, toolsOpenStatus } = this.state;
 
@@ -262,7 +262,6 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1;
-    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -286,6 +285,8 @@ class AssessmentPlayerSimple extends React.Component {
             skipped={skippedInOrder}
             qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
             timedAssignment={timedAssignment}
+            utaId={utaId}
+            groupId={groupId}
           >
             {scratchPadMode && !previewPlayer && (
               <Tools
@@ -340,7 +341,6 @@ class AssessmentPlayerSimple extends React.Component {
               onClose={this.hideExitPopup}
               finishTest={this.finishTest}
             />
-            {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

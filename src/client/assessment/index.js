@@ -82,16 +82,26 @@ const AssessmentPlayer = ({
     return <RequirePassword />;
   }
   const groupId = match.params.groupId || "";
+  const utaId = match.params?.utaId;
   return (
     <Switch>
       <Route
         path={`${match.url}/qid/:qid`}
-        render={() => <ThemeContainer passages={passages} defaultAP={defaultAP} url={match.url} groupId={groupId} />}
+        render={() => (
+          <ThemeContainer passages={passages} utaId={utaId} defaultAP={defaultAP} url={match.url} groupId={groupId} />
+        )}
       />
       <Route
         path={`${match.url}`}
         render={() => (
-          <ThemeContainer passages={passages} defaultAP={defaultAP} url={match.url} testletType groupId={groupId} />
+          <ThemeContainer
+            passages={passages}
+            utaId={utaId}
+            defaultAP={defaultAP}
+            url={match.url}
+            testletType
+            groupId={groupId}
+          />
         )}
       />
     </Switch>

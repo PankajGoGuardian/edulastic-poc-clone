@@ -20,6 +20,7 @@ import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../
 import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
+import * as firebase from "firebase";
 
 // types
 export const LOGIN = "[auth] login";
@@ -412,6 +413,8 @@ function* login({ payload }) {
   try {
     const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
+    const firebaseUser = yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken);
+    //console.log(firebaseUser); // remove it while merging in dev
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     TokenStorage.updateKID(user.kid);

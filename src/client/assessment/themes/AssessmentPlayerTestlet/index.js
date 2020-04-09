@@ -16,7 +16,6 @@ import { finishTestAcitivityAction } from "../../actions/test";
 import { Container, CalculatorContainer } from "../common";
 import PlayerContent from "./PlayerContent";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 
 // player theme
 import { themes } from "../../../theme";
@@ -114,7 +113,6 @@ class AssessmentPlayerTestlet extends React.Component {
     // themeToPass = playersZoomTheme(themeToPass);
     const { calcProvider, calcType } = settings;
     const calculateMode = calcProvider && calcType !== "NONE" ? `${calcType}_${calcProvider}` : false;
-    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -135,7 +133,6 @@ class AssessmentPlayerTestlet extends React.Component {
             onClose={this.hideExitPopup}
             finishTest={this.finishTest}
           />
-          {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}

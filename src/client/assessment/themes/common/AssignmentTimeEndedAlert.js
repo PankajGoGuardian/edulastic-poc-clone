@@ -1,18 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import styled, { withTheme } from "styled-components";
 import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { resetAssignmentTimer } from "../../../assessment/actions/userInteractions";
 import { finishTestAcitivityAction } from "../../actions/test";
 
-const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, resetAssignmentTimer, groupId }) => {
-  const handleDefaultSubmit = () => {
-    resetAssignmentTimer();
-    autoSubmitTest(groupId);
-  };
+const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, groupId, history, utaId }) => {
+  useEffect(() => {
+    autoSubmitTest({ groupId, preventRouteChange: true, testActivityId: utaId });
+  }, []);
 
   return (
     <Modal
@@ -34,7 +33,7 @@ const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, resetAssig
         <Title>Alert</Title>
         <TitleDescription>You have utilized the time allocated for the assignment</TitleDescription>
         <ButtonContainer>
-          <StyledButton type="primary" btnType={2} onClick={handleDefaultSubmit}>
+          <StyledButton type="primary" btnType={2} onClick={() => history.push("/home/grades")}>
             OK
           </StyledButton>
         </ButtonContainer>
@@ -50,10 +49,10 @@ AssignmentTimeEndedAlert.propTypes = {
 
 const enhance = compose(
   withTheme,
+  withRouter,
   connect(
     null,
     {
-      resetAssignmentTimer,
       autoSubmitTest: finishTestAcitivityAction
     }
   )

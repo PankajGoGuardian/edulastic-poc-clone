@@ -16,7 +16,6 @@ import MainWrapper from "./MainWrapper";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 import ReportIssuePopover from "../common/ReportIssuePopover";
@@ -145,7 +144,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
-    saveCurrentAnswer({ shouldClearUserWork: true });
+    saveCurrentAnswer({ shouldClearUserWork: true, pausing: true });
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
     } else {
@@ -332,7 +331,8 @@ class AssessmentPlayerDefault extends React.Component {
       timedAssignment = false,
       currentAssignmentTime = null,
       stopTimerFlag = false,
-      groupId
+      groupId,
+      utaId
     } = this.props;
     const {
       testItemState,
@@ -435,8 +435,6 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0;
     }
 
-    const assignmentTimeEnded = timedAssignment && currentAssignmentTime === 0 && stopTimerFlag;
-
     return (
       /**
        * zoom only in student side, otherwise not
@@ -449,7 +447,7 @@ class AssessmentPlayerDefault extends React.Component {
             LCBPreviewModal={LCBPreviewModal}
             headerHeight={headerHeight}
             isMobile={isMobile}
-            key={currentItem}
+            // key={currentItem}
             currentItem={currentItem}
             gotoQuestion={gotoQuestion}
             options={dropdownOptions}
@@ -487,6 +485,8 @@ class AssessmentPlayerDefault extends React.Component {
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
             timedAssignment={timedAssignment}
+            utaId={utaId}
+            groupId={groupId}
           >
             {scratchPadMode && (!previewPlayer || showTools) && (
               <Tools
@@ -544,7 +544,6 @@ class AssessmentPlayerDefault extends React.Component {
                 settings={settings}
               />
             )}
-            {assignmentTimeEnded && <AssignmentTimeEndedAlert isVisible={assignmentTimeEnded} groupId={groupId} />}
             <Main
               skin
               zoomed={isZoomApplied}

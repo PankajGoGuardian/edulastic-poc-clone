@@ -14,6 +14,7 @@ import { Tooltip } from "../../../common/utils/helpers";
 import { Container, StyledButton, CaculatorIcon } from "../common/ToolBar";
 import { MAX_MOBILE_WIDTH } from "../../constants/others";
 import { IconSearch } from "@edulastic/icons";
+import TimedTestTimer from "../common/TimedTestTimer";
 
 const { calculatorTypes } = test;
 
@@ -29,7 +30,9 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   showMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH;
   const { calcType } = settings;
@@ -71,6 +74,7 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
+                  {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
                 </Container>
               </MainActionWrapper>
               {!isMobile && rightButtons}

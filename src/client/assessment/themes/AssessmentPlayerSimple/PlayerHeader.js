@@ -53,7 +53,9 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   showMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false);
 
@@ -145,6 +147,8 @@ const PlayerHeader = ({
                     enableMagnifier={enableMagnifier}
                     showMagnifier={showMagnifier}
                     timedAssignment={timedAssignment}
+                    utaId={utaId}
+                    groupId={groupId}
                   />
                 )}
               </MainActionWrapper>

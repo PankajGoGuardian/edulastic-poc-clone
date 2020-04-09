@@ -57,7 +57,9 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   showMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   const rightButtons = <SaveAndExit previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />;
 
@@ -154,6 +156,8 @@ const PlayerHeader = ({
                         enableMagnifier={enableMagnifier}
                         showMagnifier={showMagnifier}
                         timedAssignment={timedAssignment}
+                        utaId={utaId}
+                        groupId={groupId}
                       />
                     )}
                   </ToolTipContainer>

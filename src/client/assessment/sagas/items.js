@@ -1,4 +1,3 @@
-import { delay } from "redux-saga";
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { message } from "antd";
@@ -17,13 +16,10 @@ import {
   SAVE_USER_RESPONSE_ERROR,
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS,
-  CLEAR_USER_WORK,
-  START_TIMER,
-  DEC_TIMER
+  CLEAR_USER_WORK
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
-import { decrementTimerAction, stopAssignmentTimerAction } from "../actions/userInteractions";
 
 function* receiveItemsSaga() {
   try {
@@ -73,7 +69,7 @@ export const getQuestionIds = item => {
 function* saveUserResponse({ payload }) {
   try {
     const ts = payload.timeSpent || 0;
-    const { autoSave, shouldClearUserWork = false, isPlaylist = false, callback } = payload;
+    const { autoSave, shouldClearUserWork = false, isPlaylist = false, callback, pausing } = payload;
     const itemIndex = payload.itemId;
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
@@ -150,7 +146,7 @@ function* saveUserResponse({ payload }) {
       shouldSaveOrUpdateAttachment = true;
     }
     activity.userWork = userWorkData;
-    yield call(testItemActivityApi.create, activity, autoSave);
+    yield call(testItemActivityApi.create, activity, autoSave, pausing);
     const userId = yield select(state => state?.user?.user?._id);
     if (shouldSaveOrUpdateAttachment) {
       const update = {
@@ -217,31 +213,10 @@ function* loadUserResponse({ payload }) {
   }
 }
 
-function* timerCountdown({ payload }) {
-  try {
-    const stopTimerFlag = yield select(state => state.test?.stopTimerFlag);
-    const currentAssignmentTime = yield select(state => state.test?.currentAssignmentTime);
-
-    if (currentAssignmentTime === 0) {
-      yield put(stopAssignmentTimerAction());
-      return;
-    }
-
-    if (!stopTimerFlag) {
-      yield call(delay, 1000);
-      yield put(decrementTimerAction());
-    }
-  } catch (e) {
-    console.error("Error in timed-test-timer ", e);
-  }
-}
-
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield takeLatest(SAVE_USER_RESPONSE, saveUserResponse),
-    yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
-    yield takeLatest(START_TIMER, timerCountdown),
-    yield takeLatest(DEC_TIMER, timerCountdown)
+    yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse)
   ]);
 }

@@ -410,9 +410,11 @@ function* loadPreviousResponses(payload) {
   }
 }
 
-function* submitTest({ payload: classId }) {
+function* submitTest({ payload }) {
   try {
-    const testActivityId = yield select(state => state.test && state.test.testActivityId);
+    const [classId, preventRouteChange] =
+      typeof payload === "string" ? [payload] : [payload.groupId, payload.preventRouteChange];
+    const testActivityId = yield select(state => state.test && state.test.testActivityId) || payload.testActivityId;
     const groupId = classId || (yield select(getCurrentGroupWithAllClasses));
     if (testActivityId === "test") {
       return;
@@ -442,6 +444,7 @@ function* submitTest({ payload: classId }) {
         push({ pathname: `/home/playlist/${prevLocationState?.playlistId}`, state: { currentGroupId: groupId } })
       );
     }
+    if (preventRouteChange) return;
     return yield put(push("/home/grades"));
   } catch (err) {
     if (err.status === 403) {

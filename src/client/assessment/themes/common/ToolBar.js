@@ -32,7 +32,17 @@ class ToolBar extends Component {
   };
 
   render() {
-    const { settings, tool, qType, handleMagnifier, enableMagnifier, showMagnifier, timedAssignment } = this.props;
+    const {
+      settings,
+      tool,
+      qType,
+      handleMagnifier,
+      enableMagnifier,
+      showMagnifier,
+      timedAssignment,
+      utaId,
+      groupId
+    } = this.props;
     const { calcType } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
@@ -90,7 +100,7 @@ class ToolBar extends Component {
             </StyledButton>
           </Tooltip>
         )}
-        {timedAssignment && <TimedTestTimer />}
+        {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       </Container>
     );
   }

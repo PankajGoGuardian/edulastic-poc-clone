@@ -15,6 +15,11 @@ const segmentVersion = process.env.POI_APP_SEGMENT_VERSION || "4.2.2";
 const isSegmentEnabled = process.env.POI_APP_ENABLE_SEGMENT === "true";
 const segmentHashSecret = process.env.POI_APP_SEGMENT_HASH_SECRET || "ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH";
 
+export const firebaseConfig = {
+  apiKey: process.env.POI_APP_FIREBASE_API_KEY /*|| "AIzaSyA_2mdY_l-tHgy5LvQigdNmVmqABdx7458" */,
+  authDomain: process.env.POI_APP_FIREBASE_AUTH_DOMAIN /*|| "ev2-dev-88215.firebaseapp.com"*/,
+  projectId: process.env.POI_APP_FIREBASE_PROJECT_ID /*|| "ev2-dev-88215"*/
+};
 export default {
   segmentHashSecret,
   isSegmentEnabled,

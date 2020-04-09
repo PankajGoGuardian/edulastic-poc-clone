@@ -67,7 +67,9 @@ const PlayerHeader = ({
   handleMagnifier,
   showMagnifier,
   enableMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1);
@@ -174,6 +176,9 @@ const PlayerHeader = ({
                 showMagnifier={isDocbased ? false : showMagnifier}
                 enableMagnifier={enableMagnifier}
                 timedAssignment={timedAssignment}
+                utaId={utaId}
+                groupId={groupId}
+                header={header}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

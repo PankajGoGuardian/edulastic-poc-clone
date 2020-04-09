@@ -23,7 +23,10 @@ const ToolBar = ({
   handleMagnifier,
   showMagnifier,
   enableMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId,
+  header
 }) => {
   const [zoom, setZoom] = useState(0);
   const toolbarHandler = value => changeTool(value);
@@ -98,7 +101,7 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {timedAssignment && <TimedTestTimer />}
+      {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} fgColor={header?.logoColor} />}
     </Container>
   );
 };

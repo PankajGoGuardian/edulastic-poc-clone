@@ -485,38 +485,40 @@ const PlayerContent = ({
     }
   }, [currentPage]);
 
-  const zoomedContent = () => (
-    <>
-      <PlayerHeader
-        title={title}
-        dropdownOptions={testletItems}
-        currentPage={currentPage}
-        onOpenExitPopup={openExitPopup}
-        onNextQuestion={nextQuestion}
-        unlockNext={unlockNext}
-        onPrevQuestion={prevQuestion}
-        previewPlayer={previewPlayer}
-        enableMagnifier={enableMagnifier}
-        {...restProps}
-        hasSubmitButton={hasSubmitButton}
-        handleMagnifier={handleMagnifier}
-      />
-      <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
-        <MainContent id={`${testletConfig.testletId}_magnifier`}>
-          {LCBPreviewModal && currentScoring && <OverlayDiv />}
-          {testletConfig.testletURL && (
-            <iframe
-              ref={frameRefForMagnifier}
-              id={`${testletConfig.testletId}_magnifier`}
-              src={testletConfig.testletURL}
-              title="testlet player"
-            />
-          )}
-        </MainContent>
-      </Main>
-    </>
-  );
-
+  const zoomedContent = () => {
+    return (
+      <>
+        <PlayerHeader
+          title={title}
+          dropdownOptions={testletItems}
+          currentPage={currentPage}
+          onOpenExitPopup={openExitPopup}
+          onNextQuestion={nextQuestion}
+          unlockNext={unlockNext}
+          onPrevQuestion={prevQuestion}
+          previewPlayer={previewPlayer}
+          enableMagnifier={enableMagnifier}
+          {...restProps}
+          hasSubmitButton={hasSubmitButton}
+          handleMagnifier={handleMagnifier}
+          groupId={groupId}
+        />
+        <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
+          <MainContent id={`${testletConfig.testletId}_magnifier`}>
+            {LCBPreviewModal && currentScoring && <OverlayDiv />}
+            {testletConfig.testletURL && (
+              <iframe
+                ref={frameRefForMagnifier}
+                id={`${testletConfig.testletId}_magnifier`}
+                src={testletConfig.testletURL}
+                title="testlet player"
+              />
+            )}
+          </MainContent>
+        </Main>
+      </>
+    );
+  };
   return (
     <Magnifier
       enable={enableMagnifier}
@@ -540,6 +542,7 @@ const PlayerContent = ({
         handleMagnifier={handleMagnifier}
         enableMagnifier={enableMagnifier}
         hasSubmitButton={hasSubmitButton}
+        groupId={groupId}
       />
       <Main skinB="true" LCBPreviewModal={LCBPreviewModal}>
         <MainContent>

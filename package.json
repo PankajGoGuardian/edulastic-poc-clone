@@ -21,6 +21,7 @@
     "execute": "ts-node --compiler-options '{react-outside-event\"lib\":[\"ESNext\"]}' ",
     "build": "node --max-old-space-size=4096 node_modules/poi/bin/cli.js --prod --parallel",
     "start": "APP_MODE_DEV=1 poi --serve --open",
+    "doc:start": "DOC_MODE=1 APP_MODE_DEV=1 poi src/doc/index.html --serve --open",
     "prod-serve": "serve -s dist -p 3001",
     "test": "jest --coverage && ava",
     "jest": "jest",
@@ -45,7 +46,7 @@
     "cy:generate-report": "marge --no-code --cdn=true -o=cypress/reports -f=Cypress_Test_Report --ts=fullDate cypress/reports/cypress-report.json",
     "publish-evaluators": "git subtree push --prefix packages/evaluators git@github.com:snapwiz/edu-eval.git master",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "STORYBOOK_ENABLED=1 NODE_ENV=development start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
@@ -74,6 +75,7 @@
     "eslint-plugin-cypress": "^2.1.2",
     "faker": "^4.1.0",
     "fetch-mock": "^7.2.5",
+    "firebase": "^7.13.2",
     "font-awesome": "^4.7.0",
     "froala-editor": "^3.1.0",
     "history": "^4.7.2",

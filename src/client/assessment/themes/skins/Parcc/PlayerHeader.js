@@ -56,7 +56,9 @@ const PlayerHeader = ({
   handleMagnifier,
   showMagnifier,
   enableMagnifier,
-  timedAssignment
+  timedAssignment,
+  utaId,
+  groupId
 }) => {
   const totalQuestions = options.length;
   const totalBookmarks = bookmarks.filter(b => b).length;
@@ -139,8 +141,11 @@ const PlayerHeader = ({
                   calcBrands={calcBrands}
                   changeCaculateMode={changeCaculateMode}
                   qType={qType}
+                  utaId={utaId}
                   isDocbased={isDocbased}
                   timedAssignment={timedAssignment}
+                  utaId={utaId}
+                  groupId={groupId}
                 />
               </FlexContainer>
               <FlexContainer>

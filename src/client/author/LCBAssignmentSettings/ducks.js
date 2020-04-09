@@ -47,10 +47,7 @@ const slice = createSlice({
         if (key === "openPolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE) {
           set(state.assignment, "class[0].startDate", Date.now());
           state.updateSettings.startDate = Date.now();
-        } else if (
-          key === "closePolicy" &&
-          value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
-        ) {
+        } else if (key === "closePolicy" && value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE) {
           const newDueDate = new Date(
             get(state.assignment, "class[0].startDate", Date.now()) + 1000 * 60 * 60 * 24 * 7
           );
@@ -121,7 +118,17 @@ function* loadAssignmentSaga({ payload }) {
 
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {};
-  const { openPolicy, closePolicy, releaseScore, startDate, endDate, calcType, dueDate } = assignment;
+  const {
+    openPolicy,
+    closePolicy,
+    releaseScore,
+    startDate,
+    endDate,
+    calcType,
+    dueDate,
+    allowedTime,
+    pauseAllowed
+  } = assignment;
   return omitBy(
     {
       openPolicy,
@@ -130,7 +137,9 @@ function getSettingsSelector(state) {
       startDate,
       endDate,
       calcType,
-      dueDate
+      dueDate,
+      allowedTime,
+      pauseAllowed
     },
     isUndefined
   );

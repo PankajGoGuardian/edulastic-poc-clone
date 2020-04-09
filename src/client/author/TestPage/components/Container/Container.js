@@ -249,7 +249,9 @@ class Container extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.props.removeTestEntity();
+    const { match, removeTestEntity } = this.props;
+    // clear test entity only on edit and regrade flow
+    if (match.params.id) removeTestEntity();
   }
 
   componentDidUpdate(prevProps) {

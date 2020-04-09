@@ -251,31 +251,35 @@ class ListItem extends Component {
                     <CheckboxLabel onChange={e => handleCheckboxAction(e, item._id)} checked={checked} />
                   </div>
                 )}
-                {!isPlaylist && mode !== "embedded" && (userRole === roleuser.DISTRICT_ADMIN || isPublisherUser) && (
-                  <ViewButtonContainer>
-                    <ViewButtonStyled
-                      onClick={e => {
-                        e.stopPropagation();
-                        this.showPreviewModal(item._id);
-                      }}
-                    >
-                      <IconEye /> {t("component.item.view")}
-                    </ViewButtonStyled>
-                    <AddButtonStyled
-                      onClick={e => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <CheckboxLabel
-                        checked={isInCart}
-                        ml="24px"
-                        onChange={e => {
-                          isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                {!isPlaylist &&
+                  mode !== "embedded" &&
+                  (userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.TEACHER || isPublisherUser) && (
+                    <ViewButtonContainer>
+                      <ViewButtonStyled
+                        onClick={e => {
+                          e.stopPropagation();
+                          this.showPreviewModal(item._id);
                         }}
-                      />
-                    </AddButtonStyled>
-                  </ViewButtonContainer>
-                )}
+                      >
+                        <IconEye /> {t("component.itemlist.preview")}
+                      </ViewButtonStyled>
+                      {userRole !== roleuser.TEACHER && (
+                        <AddButtonStyled
+                          onClick={e => {
+                            e.stopPropagation();
+                          }}
+                        >
+                          <CheckboxLabel
+                            checked={isInCart}
+                            ml="24px"
+                            onChange={e => {
+                              isInCart ? onRemoveFromCart(item) : onAddToCart(item);
+                            }}
+                          />
+                        </AddButtonStyled>
+                      )}
+                    </ViewButtonContainer>
+                  )}
               </Outer>
             </Col>
 

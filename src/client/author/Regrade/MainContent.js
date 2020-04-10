@@ -8,15 +8,9 @@ const Group = Radio.Group;
 const ACTIONS = {
   SKIP: "SKIP",
   SCORE: "SCORE",
-  MANUAL: "MANUAL"
+  MANUAL: "MANUAL",
+  DISCARD: "DISCARD"
 };
-const ActionKeys = ["SKIP", "SCORE", "MANUAL"];
-const settings = {
-  addedQuestion: "Added Questions",
-  correctAnsChanged: "Correct Answers Changed",
-  choicesChanged: "Choices Changed"
-};
-const settingKeys = ["addedQuestion", "correctAnsChanged", "choicesChanged"];
 
 const MainContent = ({
   assignments,
@@ -39,22 +33,7 @@ const MainContent = ({
     regradeSettingsChange(newSettings);
     setAssignmentOptions(value);
   };
-
-  const CreateRadioButtonGroup = ({ children, label }) => (
-    <InputsWrapper>
-      <Row>
-        <OptionTitle>{children}</OptionTitle>
-      </Row>
-      <Group defaultValue={regradeSettings.options[label]} onChange={e => onUpdateSettings(label, e.target.value)}>
-        {ActionKeys.map(item => (
-          <Row key={item}>
-            <Radio value={item}>{ACTIONS[item]}</Radio>
-          </Row>
-        ))}
-      </Group>
-    </InputsWrapper>
-  );
-
+  const { choicesChanged, removedQuestion, addedQuestion } = regradeSettings.options;
   return (
     <Container>
       <h2>
@@ -74,14 +53,41 @@ const MainContent = ({
         regradeType={assigmentOptions}
         regradeSettings={regradeSettings}
       />
-      {settingKeys.map(item => (
-        <CreateRadioButtonGroup key={item} label={item}>
-          {settings[item]}
-        </CreateRadioButtonGroup>
-      ))}
-      {regradeSettings.options.removedQuestion == "DISCARD" && (
-        <p style={{ textAlign: "center" }}>REMOVED QUESTIONS WILL BE DISCARDED</p>
-      )}
+      <InputsWrapper>
+        <Row>
+          <OptionTitle>Added Items</OptionTitle>
+        </Row>
+        <Group defaultValue={addedQuestion} onChange={e => onUpdateSettings("addedQuestion", e.target.value)}>
+          <Row key={"addedQuestion"}>
+            <Radio value={ACTIONS.SKIP}>Give 0 points</Radio>
+            <Radio value={ACTIONS.SCORE}>Give full points</Radio>
+            <Radio value={ACTIONS.MANUAL}>Manually grade</Radio>
+          </Row>
+        </Group>
+      </InputsWrapper>
+      <InputsWrapper>
+        <Row>
+          <OptionTitle>Edit Items</OptionTitle>
+        </Row>
+        <Group defaultValue={choicesChanged} onChange={e => onUpdateSettings("choicesChanged", e.target.value)}>
+          <Row key={"choicesChanged"}>
+            <Radio value={ACTIONS.SKIP}>Skip grading</Radio>
+            <Radio value={ACTIONS.SCORE}>Rescore automatially</Radio>
+            <Radio value={ACTIONS.MANUAL}>Mark for Manual grading</Radio>
+          </Row>
+        </Group>
+      </InputsWrapper>
+      <InputsWrapper>
+        <Row>
+          <OptionTitle>Remove Items</OptionTitle>
+        </Row>
+        <Group defaultValue={removedQuestion} onChange={e => onUpdateSettings("removedQuestion", e.target.value)}>
+          <Row key={"removedQuestion"}>
+            <Radio value={ACTIONS.DISCARD}>Discard from asssignment</Radio>
+          </Row>
+        </Group>
+      </InputsWrapper>
+      {removedQuestion == ACTIONS.DISCARD && <p style={{ textAlign: "center" }}>REMOVED QUESTIONS WILL BE DISCARDED</p>}
     </Container>
   );
 };

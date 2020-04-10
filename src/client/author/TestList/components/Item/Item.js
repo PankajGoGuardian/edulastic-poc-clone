@@ -91,7 +91,12 @@ class Item extends Component {
     if (isPlaylist) {
       history.push(`/author/playlists/${item._id}#review`);
     } else {
-      history.push(`/author/tests/tab/review/id/${item._id}`);
+      history.push({
+        pathname: `/author/tests/tab/review/id/${item._id}`,
+        state: {
+          editTestFlow: true
+        }
+      });
     }
   };
 

@@ -20,7 +20,7 @@ const RegradeKeys = ["ALL", "THIS_SCHOOL_YEAR", "SPECIFIC"];
 
 const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSettings, districtId, history }) => {
   const { oldTestId, newTestId } = match.params;
-
+  const { state: _locationState } = history.location;
   const settings = {
     newTestId: newTestId,
     oldTestId: oldTestId,
@@ -70,24 +70,25 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
   const onCancelRegrade = () => {
     history.push({
       pathname: `/author/tests/tab/review/id/${newTestId}`,
-      state: {
-        editAssigned: true,
-        showCancelButton: true
-      }
+      state: _locationState
     });
   };
+  const userFlowUrl = _locationState?.editAssigned
+    ? {
+        title: "Assignments",
+        to: "/author/assignments"
+      }
+    : {
+        title: "Tests",
+        to: "/author/tests"
+      };
+
   const breadcrumbData = [
-    {
-      title: "tests",
-      to: "/author/tests"
-    },
+    userFlowUrl,
     {
       title: assignments[0]?.title,
       to: `/author/tests/tab/review/id/${newTestId}`,
-      state: {
-        editAssigned: true,
-        showCancelButton: true
-      }
+      state: _locationState
     },
     {
       title: "Regrade",

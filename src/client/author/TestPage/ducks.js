@@ -1316,7 +1316,13 @@ function* publishForRegrade({ payload }) {
       payload: { id: payload, data: _test, assignFlow: true }
     });
     const newTestId = yield select(getTestIdSelector);
-    yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${_test.previousTestId}`));
+    const locationState = yield select(({ router }) => router.location.state);
+    yield put(
+      push({
+        pathname: `/author/assignments/regrade/new/${newTestId}/old/${_test.previousTestId}`,
+        state: locationState
+      })
+    );
   } catch (error) {
     console.error(error);
     message.error(error?.data?.message || "publish failed.");

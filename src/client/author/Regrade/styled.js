@@ -42,6 +42,9 @@ export const StyledTable = styled(Table)`
 
 export const InputsWrapper = styled.div`
   margin-top: 20px;
+  .ant-radio-wrapper {
+    display: block;
+  }
 `;
 
 export const OptionTitle = styled.h3`

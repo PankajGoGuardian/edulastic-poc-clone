@@ -43,7 +43,8 @@ const PlayerContentArea = ({
   saveHistory,
   history,
   evaluation,
-  enableMagnifier
+  enableMagnifier,
+  changePreview
 }) => {
   const scrollContainerRef = useRef();
   const item = items[currentItem];
@@ -99,6 +100,7 @@ const PlayerContentArea = ({
                 history={history}
                 evaluation={evaluation}
                 enableMagnifier={enableMagnifier}
+                changePreviewTab={changePreview}
               />
             )}
           </MainContent>

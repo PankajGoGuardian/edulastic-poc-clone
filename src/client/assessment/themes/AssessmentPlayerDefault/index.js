@@ -36,6 +36,7 @@ import { updateScratchpadAction, resetScratchPadDataAction } from "../../../comm
 import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction, saveHintUsageAction } from "../../actions/userInteractions";
+import { CLEAR } from "../../constants/constantsForQuestions";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -282,7 +283,7 @@ class AssessmentPlayerDefault extends React.Component {
   handleChangePreview = () => {
     const { changePreview = () => {} } = this.props;
     // change the player state to clear mode (attemptable mode)
-    this.setState({ testItemState: "" }, () => changePreview());
+    this.setState({ testItemState: "" }, () => changePreview(CLEAR));
   };
 
   render() {

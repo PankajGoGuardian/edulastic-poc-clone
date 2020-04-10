@@ -35,6 +35,7 @@ import AssessmentPlayerSkinWrapper from "../AssessmentPlayerSkinWrapper";
 import { updateScratchpadAction } from "../../../common/ducks/scratchpad";
 import { updateTestPlayerAction } from "../../../author/sharedDucks/testPlayer";
 import { showHintsAction } from "../../actions/userInteractions";
+import { CLEAR } from "../../constants/constantsForQuestions";
 
 class AssessmentPlayerSimple extends React.Component {
   static propTypes = {
@@ -77,7 +78,8 @@ class AssessmentPlayerSimple extends React.Component {
     if (nextProps.currentItem !== prevState.currentItem) {
       return {
         enableCrossAction: false,
-        currentItem: nextProps.currentItem
+        currentItem: nextProps.currentItem,
+        testItemState: "" // coming from a different question, reset to clear view
       };
     }
     return null;
@@ -219,6 +221,12 @@ class AssessmentPlayerSimple extends React.Component {
     }
   };
 
+  handleChangePreview = () => {
+    const { changePreview = () => {} } = this.props;
+    // change the player state to clear mode (attemptable mode)
+    this.setState({ testItemState: "" }, () => changePreview(CLEAR));
+  };
+
   render() {
     const {
       theme,
@@ -334,6 +342,7 @@ class AssessmentPlayerSimple extends React.Component {
               fillColor={fillColor}
               saveHistory={this.saveHistory("scratchpad")}
               history={scratchPad}
+              changePreview={this.handleChangePreview}
             />
             <SubmitConfirmation
               settings={settings}

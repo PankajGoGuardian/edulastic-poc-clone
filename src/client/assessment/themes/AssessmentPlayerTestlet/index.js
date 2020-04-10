@@ -65,7 +65,11 @@ class AssessmentPlayerTestlet extends React.Component {
 
   finishTest = () => {
     const { history } = this.props;
-    history.push("/home/assignments");
+    if (navigator.userAgent.includes("SEB")) {
+      history.push("/student/seb-quit-confirm");
+    } else {
+      history.push("/home/assignments");
+    }
   };
 
   changeTool = tool => {

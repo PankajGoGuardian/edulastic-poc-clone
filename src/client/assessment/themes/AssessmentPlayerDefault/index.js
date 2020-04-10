@@ -148,6 +148,8 @@ class AssessmentPlayerDefault extends React.Component {
     saveCurrentAnswer({ shouldClearUserWork: true, pausing: true });
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
+    } else if (navigator.userAgent.includes("SEB")) {
+      history.push("/student/seb-quit-confirm");
     } else {
       history.push("/home/assignments");
     }

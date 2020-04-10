@@ -130,6 +130,8 @@ class AssessmentPlayerSimple extends React.Component {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`);
     } else if (history?.location?.state?.playlistRecommendationsFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}/recommendations`);
+    } else if (navigator.userAgent.includes("SEB")) {
+      history.push("/student/seb-quit-confirm");
     } else {
       history.push("/home/assignments");
     }

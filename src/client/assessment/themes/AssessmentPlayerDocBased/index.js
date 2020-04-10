@@ -81,7 +81,11 @@ class AssessmentPlayerDocBased extends React.Component {
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props;
     saveCurrentAnswer({ pausing: true });
-    history.push("/home/assignments");
+    if (navigator.userAgent.includes("SEB")) {
+      history.push("/student/seb-quit-confirm");
+    } else {
+      history.push("/home/assignments");
+    }
   };
 
   handlePause = () => {

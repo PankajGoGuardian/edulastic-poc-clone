@@ -6,6 +6,7 @@ import { MathSpan, FlexContainer, DragDrop } from "@edulastic/common";
 import { StyledResponseDiv } from "../styled/ResponseBox";
 import { ChoiceItem, DragHandler } from "../../../components/ChoiceItem";
 import { DropContainerTitle } from "../../../components/DropContainerTitle";
+import { WithPopover as ResponseWithPopover } from "./WithPopover";
 
 const { DragItem, DropContainer } = DragDrop;
 
@@ -66,10 +67,11 @@ const ResponseBoxLayout = ({
                             const { value, label = "" } = option;
                             return (
                               <DragItem id={`response-item-${index}`} key={value} data={`${value}_${index}`}>
-                                <ChoiceItem style={itemStyle}>
-                                  {dragHandler && <DragHandler />}
-                                  <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                                </ChoiceItem>
+                                <ResponseWithPopover
+                                  showDragHandler={dragHandler}
+                                  containerStyle={itemStyle}
+                                  userAnswer={label}
+                                />
                               </DragItem>
                             );
                           })}
@@ -83,13 +85,10 @@ const ResponseBoxLayout = ({
 
             {!hasGroupResponses &&
               responses.map((option, index) => {
-                const { label, value } = option;
+                const { label = "", value } = option;
                 return (
                   <DragItem id={`response-item-${index}`} key={value} data={value}>
-                    <ChoiceItem style={itemStyle}>
-                      {dragHandler && <DragHandler />}
-                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-                    </ChoiceItem>
+                    <ResponseWithPopover showDragHandler={dragHandler} containerStyle={itemStyle} userAnswer={label} />
                   </DragItem>
                 );
               })}

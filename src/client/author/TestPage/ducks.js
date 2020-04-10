@@ -966,7 +966,8 @@ function* receiveTestByIdSaga({ payload }) {
     const createdItems = yield select(getTestCreatedItemsSelector);
     let entity = yield call(testsApi.getById, payload.id, {
       data: true,
-      requestLatest: payload.requestLatest
+      requestLatest: payload.requestLatest,
+      editAndRegrade: payload.editAssigned
     });
     const userId = yield select(getUserIdSelector);
     const typeOfAuthor = authorType(userId, entity);

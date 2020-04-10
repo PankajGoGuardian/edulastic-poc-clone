@@ -129,7 +129,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
 
   // if duedate is not passed get max due date from classAssessments
   if (!dueDate) {
-    const maxCurrentClass = currentClassList && currentClassList.length > 0 ? maxBy(currentClassList, "dueDate") : {};
+    const maxCurrentClass = (currentClassList?.length && maxBy(currentClassList, "dueDate")) || {};
     dueDate = maxCurrentClass.dueDate;
   }
 

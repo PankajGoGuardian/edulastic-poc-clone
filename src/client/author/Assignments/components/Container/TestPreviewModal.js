@@ -16,6 +16,7 @@ const TestPreviewModal = ({
   isStudentReport,
   passages,
   studentReportModal,
+  currentAssignmentId,
   ...restProps
 }) => {
   useEffect(() => {
@@ -48,6 +49,7 @@ const TestPreviewModal = ({
         showTools={!isStudentReport}
         isShowStudentWork={isShowStudentWork}
         studentReportModal={studentReportModal}
+        currentAssignmentId={currentAssignmentId}
         {...restProps}
       />
     </StyledModal>

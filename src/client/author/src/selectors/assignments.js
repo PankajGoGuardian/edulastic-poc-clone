@@ -16,6 +16,11 @@ export const getAssignmentsSelector = createSelector(
   state => state.assignments || []
 );
 
+export const getAssignmentTestsSelector = createSelector(
+  getEntitiesSelector,
+  state => state.tests || []
+);
+
 export const getAssignmentsSummary = createSelector(
   stateSelector,
   state => state.summaryEntities

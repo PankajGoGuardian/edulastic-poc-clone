@@ -26,14 +26,16 @@ const ActionMenu = ({
   toggleDeleteModal = () => {},
   row = {},
   userId = "",
-  userRole = ""
+  userRole = "",
+  assignmentTest
 }) => {
   const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
-
   const assignmentDetails = getAssignmentDetails();
-
   const currentTestId = assignmentDetails.testId;
   const currentAssignmentId = assignmentDetails._id;
+  const shouldSendAssignmentId =
+    assignmentTest.testType === test.type.COMMON || !assignmentTest.authors.find(a => a._id === userId);
+
   const createDuplicateAssignment = () => {
     duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title }).then(testItem => {
       const duplicateTestId = testItem._id;
@@ -84,7 +86,11 @@ const ActionMenu = ({
           </Menu.Item>
         )}
 
-        <Menu.Item data-cy="preview" key="preview" onClick={() => showPreviewModal(currentTestId)}>
+        <Menu.Item
+          data-cy="preview"
+          key="preview"
+          onClick={() => showPreviewModal(currentTestId, shouldSendAssignmentId ? currentAssignmentId : null)}
+        >
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={viewIcon} />
             <SpaceElement />

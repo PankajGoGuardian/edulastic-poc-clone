@@ -39,6 +39,7 @@ import {
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { getUserIdSelector } from "../../../src/selectors/user";
+import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 
 const convertTableData = (data, assignments = [], index) => ({
   name: data.title,
@@ -97,7 +98,8 @@ const TableList = ({
   windowWidth,
   toggleDeleteModal,
   userId = "",
-  status = ""
+  status = "",
+  assignmentTests
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -340,28 +342,32 @@ const TableList = ({
       title: renderFilter(),
       dataIndex: "action",
       width: "10%",
-      render: (_, row) => (
-        <ActionDiv onClick={e => e.stopPropagation()}>
-          <Dropdown
-            overlay={ActionMenu({
-              onOpenReleaseScoreSettings,
-              currentAssignment: row?.currentAssignment || {},
-              history,
-              showPreviewModal,
-              toggleEditModal,
-              toggleDeleteModal,
-              row,
-              userId
-            })}
-            placement="bottomRight"
-            trigger={["click"]}
-          >
-            <EduButton height="28px" width="100%" isGhost data-cy="actions">
-              ACTIONS
-            </EduButton>
-          </Dropdown>
-        </ActionDiv>
-      ),
+      render: (_, row) => {
+        const assignmentTest = assignmentTests.find(at => at._id === row.testId);
+        return (
+          <ActionDiv onClick={e => e.stopPropagation()}>
+            <Dropdown
+              overlay={ActionMenu({
+                onOpenReleaseScoreSettings,
+                currentAssignment: row?.currentAssignment || {},
+                history,
+                showPreviewModal,
+                toggleEditModal,
+                toggleDeleteModal,
+                row,
+                userId,
+                assignmentTest
+              })}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <EduButton height="28px" width="100%" isGhost data-cy="actions">
+                ACTIONS
+              </EduButton>
+            </Dropdown>
+          </ActionDiv>
+        );
+      },
       onCell: () => ({
         onMouseEnter: () => enableExtend(),
         onMouseLeave: () => disableExtend()
@@ -463,7 +469,8 @@ const enhance = compose(
     state => ({
       loading: get(state, "author_assignments.loading"),
       folderData: getFolderSelector(state),
-      userId: getUserIdSelector(state)
+      userId: getUserIdSelector(state),
+      assignmentTests: getAssignmentTestsSelector(state)
     }),
     {}
   )

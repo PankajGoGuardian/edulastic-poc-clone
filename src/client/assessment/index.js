@@ -30,6 +30,7 @@ const AssessmentPlayer = ({
   passages,
   playlistId,
   studentReportModal,
+  currentAssignmentId,
   ...restProps
 }) => {
   useEffect(() => {
@@ -38,7 +39,17 @@ const AssessmentPlayer = ({
     // if its from a modal that maybe showing the answer, then dont reset the answer.
     if (!LCBPreviewModal) startAssessment();
     // if showing student work dont genrate question labels again
-    loadTest({ testId, testActivityId, preview, demo, test, groupId, isShowStudentWork, playlistId });
+    loadTest({
+      testId,
+      testActivityId,
+      preview,
+      demo,
+      test,
+      groupId,
+      isShowStudentWork,
+      playlistId,
+      currentAssignmentId
+    });
   }, [testId]);
 
   const confirmBeforeQuitting = e => {

@@ -8,16 +8,15 @@ import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import produce from "immer";
-import { FlexContainer , EduButton } from "@edulastic/common";
+import { FlexContainer, EduButton } from "@edulastic/common";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
-import { getAssignmentsSummary } from "../../../src/selectors/assignments";
+import { getAssignmentsSummary, getAssignmentTestsSelector } from "../../../src/selectors/assignments";
 import { getFolderSelector } from "../../../src/selectors/folder";
 import ActionMenu from "../ActionMenu/ActionMenu";
 
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getUserIdSelector, getUserRole } from "../../../src/selectors/user";
-
 
 class AdvancedTable extends Component {
   state = {
@@ -121,8 +120,10 @@ class AdvancedTable extends Component {
             showPreviewModal,
             toggleEditModal,
             userId = "",
-            userRole = ""
+            userRole = "",
+            assignmentTests
           } = this.props;
+          const assignmentTest = assignmentTests.find(at => at._id === row.testId);
           return (
             <ActionDiv data-cy="testActions">
               <Dropdown
@@ -134,12 +135,15 @@ class AdvancedTable extends Component {
                   showPreviewModal,
                   toggleEditModal,
                   userId,
-                  userRole
+                  userRole,
+                  assignmentTest
                 })}
                 placement="bottomRight"
                 trigger={["click"]}
               >
-                <EduButton height="28px" width="100%" isGhost height data-cy="testActions">ACTIONS</EduButton>
+                <EduButton height="28px" width="100%" isGhost height data-cy="testActions">
+                  ACTIONS
+                </EduButton>
               </Dropdown>
             </ActionDiv>
           );
@@ -280,7 +284,8 @@ const enhance = compose(
       loading: get(state, "author_assignments.loading"),
       folderData: getFolderSelector(state),
       userId: getUserIdSelector(state),
-      userRole: getUserRole(state)
+      userRole: getUserRole(state),
+      assignmentTests: getAssignmentTestsSelector(state)
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction

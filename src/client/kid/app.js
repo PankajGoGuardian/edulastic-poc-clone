@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import { Redirect } from "react-router-dom";
 import { EduButton } from "@edulastic/common";
 import { StyledH3 } from "../author/Reports/common/styled";
 import { ConfirmationModal as KidModal } from "../author/src/components/common/ConfirmationModal";
 import { getFromSessionStorage, getFromLocalStorage } from "../../../packages/api/src/utils/Storage";
+import { fetchUserAction } from "../student/Login/ducks";
 
-const Kid = ({ redirectPath, location }) => {
+const Kid = ({ location, fetchUser }) => {
   const [textCopied, setTextCopied] = useState(false);
   const [cancelled, setCancelled] = useState(false);
+
+  useEffect(() => fetchUser, []);
 
   // tokenKey is stored in the form => user:<user_id>:role:<role>
   let items = getFromSessionStorage("tokenKey") || getFromLocalStorage("defaultTokenKey");
@@ -51,7 +55,7 @@ const Kid = ({ redirectPath, location }) => {
   ];
 
   return cancelled ? (
-    <Redirect to={{ pathname: redirectPath, state: { from: location } }} />
+    <Redirect to={{ pathname: "/", state: { from: location } }} />
   ) : (
     <KidModal
       textAlign="left"
@@ -81,7 +85,10 @@ const Kid = ({ redirectPath, location }) => {
   );
 };
 
-export default Kid;
+export default connect(
+  () => {},
+  { fetchUser: fetchUserAction }
+)(Kid);
 
 const StyledAlert = styled(StyledH3)`
   margin: 9px 20px 0px 20px;

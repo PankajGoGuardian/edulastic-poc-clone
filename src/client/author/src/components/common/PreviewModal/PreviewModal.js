@@ -214,10 +214,22 @@ class PreviewModal extends React.Component {
     const { nextItem, prevItem } = this.props;
     return (
       <>
-        <Nav.BackArrow onClick={prevItem} position="absolute">
+        <Nav.BackArrow
+          onClick={() => {
+            this.clearView();
+            prevItem();
+          }}
+          position="absolute"
+        >
           <FontAwesomeIcon icon={faAngleLeft} />
         </Nav.BackArrow>
-        <Nav.NextArrow onClick={nextItem} position="absolute">
+        <Nav.NextArrow
+          onClick={() => {
+            this.clearView();
+            nextItem();
+          }}
+          position="absolute"
+        >
           <FontAwesomeIcon icon={faAngleRight} />
         </Nav.NextArrow>
       </>

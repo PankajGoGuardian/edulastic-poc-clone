@@ -27,14 +27,14 @@ const ActionMenu = ({
   row = {},
   userId = "",
   userRole = "",
-  assignmentTest
+  assignmentTest = {}
 }) => {
   const getAssignmentDetails = () => (!Object.keys(currentAssignment).length ? row : currentAssignment);
   const assignmentDetails = getAssignmentDetails();
   const currentTestId = assignmentDetails.testId;
   const currentAssignmentId = assignmentDetails._id;
   const shouldSendAssignmentId =
-    assignmentTest.testType === test.type.COMMON || !assignmentTest.authors.find(a => a._id === userId);
+    assignmentTest.testType === test.type.COMMON || !assignmentTest?.authors?.find(a => a._id === userId);
 
   const createDuplicateAssignment = () => {
     duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title }).then(testItem => {

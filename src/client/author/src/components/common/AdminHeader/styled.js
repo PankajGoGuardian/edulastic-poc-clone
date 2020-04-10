@@ -7,7 +7,8 @@ import {
   tabletWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  largeDesktopWidth
+  largeDesktopWidth,
+  smallDesktopWidth
 } from "@edulastic/colors";
 
 const { TabPane } = Tabs;
@@ -67,6 +68,12 @@ export const StyledTitle = styled.h1`
 
 export const StyledTabs = styled(Tabs)`
   width: 100%;
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 650px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 500px;
+  }
   &.ant-tabs {
     height: 52px;
     margin-bottom: -11px;

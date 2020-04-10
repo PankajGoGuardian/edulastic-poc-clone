@@ -66,7 +66,12 @@ class AdminHeader extends Component {
     return (
       <MainHeader Icon={IconSettings} headingText={manageTabLabel} mobileHeaderHeight={100}>
         <AdminHeaderContent>
-          <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
+          <StyledTabs
+            type="card"
+            tabPosition="top"
+            defaultActiveKey={active.mainMenu}
+            onTabClick={this.onHeaderTabClick}
+          >
             <StyledTabPane
               tab={isDA ? "District Profile" : "School Profile"}
               key={isDA ? "District Profile" : "School Profile"}

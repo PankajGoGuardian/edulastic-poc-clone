@@ -108,14 +108,14 @@ class DistrictProfile extends Component {
                   </EduButton>
                 </Fragment>
               ) : (
-                <Fragment>
+                <div style={{ display: "flex" }}>
                   <EduButton isGhost onClick={this.handleEditClick}>
                     Cancel
                   </EduButton>
                   <EduButton type="primary" onClick={this.handleFormSubmit}>
                     <IconSaveNew /> Save
                   </EduButton>
-                </Fragment>
+                </div>
               ))}
           </AdminHeader>
           <SubHeader>

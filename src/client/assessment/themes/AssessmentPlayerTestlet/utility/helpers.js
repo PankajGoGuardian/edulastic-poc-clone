@@ -97,7 +97,7 @@ export const getPoinstFromString = (expression, labels = []) => {
     return expression.reduce((points, exp) => {
       const point = getPoint(exp);
       return [...points, ...point];
-    });
+    }, []);
   }
   return [];
 };

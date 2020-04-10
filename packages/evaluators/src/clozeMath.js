@@ -2,6 +2,7 @@ import { flatten, groupBy, identity, get, maxBy, cloneDeep } from "lodash";
 import { evaluationType } from "@edulastic/constants";
 import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
+import { filterEmptyAnswers } from "./helpers/filterEmptyUserAnswers";
 
 // combine unit and value for the clozeMath type Math w/Unit
 
@@ -79,6 +80,9 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
   let maxScore = 0;
   const allEvaluations = [];
 
+  const _maths = filterEmptyAnswers({ type: "maths", userAnswers: maths });
+  const _mathUnits = filterEmptyAnswers({ type: "mathWithUnits", userAnswers: mathUnits });
+
   const validAnswers = [validResponse, ...altResponses];
   for (let i = 0; i < validAnswers.length; i++) {
     let evaluations = {};
@@ -113,7 +117,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
 
     if (validAnswers[i].value) {
       const mathEvaluation = await mathEval({
-        userResponse: maths,
+        userResponse: _maths,
         validation: {
           scoringType: evaluationType.EXACT_MATCH,
           validResponse: validAnswers[i]
@@ -124,7 +128,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
 
     if (validAnswers[i].mathUnits) {
       const mathEvaluation = await mathEval({
-        userResponse: mathUnits,
+        userResponse: _mathUnits,
         validation: {
           scoringType: evaluationType.EXACT_MATCH,
           validResponse: validAnswers[i].mathUnits

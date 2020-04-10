@@ -31,6 +31,8 @@ var _math = require("./math");
 
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 
+var _filterEmptyUserAnswers = require("./helpers/filterEmptyUserAnswers");
+
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
   if (Object.getOwnPropertySymbols) {
@@ -204,6 +206,8 @@ var normalEvaluator = function normalEvaluator(_ref2) {
     score,
     maxScore,
     allEvaluations,
+    _maths,
+    _mathUnits,
     validAnswers,
     i,
     evaluations,
@@ -249,12 +253,20 @@ var normalEvaluator = function normalEvaluator(_ref2) {
           score = 0;
           maxScore = 0;
           allEvaluations = [];
+          _maths = (0, _filterEmptyUserAnswers.filterEmptyAnswers)({
+            type: "maths",
+            userAnswers: maths
+          });
+          _mathUnits = (0, _filterEmptyUserAnswers.filterEmptyAnswers)({
+            type: "mathWithUnits",
+            userAnswers: mathUnits
+          });
           validAnswers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
           i = 0;
 
-        case 8:
+        case 10:
           if (!(i < validAnswers.length)) {
-            _context3.next = 36;
+            _context3.next = 38;
             break;
           }
 
@@ -298,14 +310,14 @@ var normalEvaluator = function normalEvaluator(_ref2) {
           }
 
           if (!validAnswers[i].value) {
-            _context3.next = 20;
+            _context3.next = 22;
             break;
           }
 
-          _context3.next = 18;
+          _context3.next = 20;
           return _regenerator["default"].awrap(
             mathEval({
-              userResponse: maths,
+              userResponse: _maths,
               validation: {
                 scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: validAnswers[i]
@@ -313,20 +325,20 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             })
           );
 
-        case 18:
+        case 20:
           mathEvaluation = _context3.sent;
           evaluations = _objectSpread({}, evaluations, {}, mathEvaluation);
 
-        case 20:
+        case 22:
           if (!validAnswers[i].mathUnits) {
-            _context3.next = 25;
+            _context3.next = 27;
             break;
           }
 
-          _context3.next = 23;
+          _context3.next = 25;
           return _regenerator["default"].awrap(
             mathEval({
-              userResponse: mathUnits,
+              userResponse: _mathUnits,
               validation: {
                 scoringType: _constants.evaluationType.EXACT_MATCH,
                 validResponse: validAnswers[i].mathUnits
@@ -334,11 +346,11 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             })
           );
 
-        case 23:
+        case 25:
           _mathEvaluation = _context3.sent;
           evaluations = _objectSpread({}, evaluations, {}, _mathEvaluation);
 
-        case 25:
+        case 27:
           correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
           answersCount =
             (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
@@ -363,12 +375,12 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             score: currentScore
           });
 
-        case 33:
+        case 35:
           i++;
-          _context3.next = 8;
+          _context3.next = 10;
           break;
 
-        case 36:
+        case 38:
           selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
           if (score === 0) {
@@ -391,7 +403,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
             maxScore: maxScore
           });
 
-        case 41:
+        case 43:
         case "end":
           return _context3.stop();
       }

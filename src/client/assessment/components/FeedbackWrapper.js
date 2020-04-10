@@ -26,6 +26,8 @@ const FeedbackWrapper = ({
   const { rubrics: rubricDetails } = data;
   const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
+  const { validation: { unscored: isPracticeQuestion = false } = {} } = data;
+
   const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
   const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
   const userId = get(data, "activity.userId");
@@ -77,6 +79,7 @@ const FeedbackWrapper = ({
           studentId={userId}
           studentName={studentName}
           rubricDetails={rubricDetails}
+          isPracticeQuestion={isPracticeQuestion}
           {...presentationModeProps}
         />
       )}
@@ -92,7 +95,12 @@ const FeedbackWrapper = ({
       )}
       {/* STUDENT REPORT PAGE FEEDBACK */}
       {studentReportFeedbackVisible && displayFeedback && !isPrintPreview && (
-        <StudentReportFeedback qLabel={data.barLabel} qId={data.id} style={{ width: "100%" }} />
+        <StudentReportFeedback
+          isPracticeQuestion={isPracticeQuestion}
+          qLabel={data.barLabel}
+          qId={data.id}
+          style={{ width: "100%" }}
+        />
       )}
       {showFeedback && isPrintPreview && <PrintPreviewScore disabled={disabled} data={data} />}
       {showFeedback && isPrintPreview && (

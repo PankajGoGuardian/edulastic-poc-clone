@@ -9,9 +9,15 @@ import { FeedbackByQIdSelector, getMaxScoreFromCurrentItem } from "../../sharedD
 import ProfileImage from "../../assets/Profile.png";
 
 // TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, style }) => {
+const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuestion, style }) => {
   const { score = 0, maxScore = itemMaxScore, feedback, graded, skipped = true } = question[qId] || {};
 
+  let _score = skipped ? 0 : parseFloat(score.toFixed(2));
+  if (!graded || isPracticeQuestion) {
+    _score = "";
+  }
+
+  const _maxScore = isPracticeQuestion ? "" : maxScore;
   return (
     <FeedbackWrapper style={style}>
       <FeedbackText>
@@ -23,8 +29,8 @@ const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, style }) => {
             <IconCheck />
           </IconCheckWrapper>
           <ScoreWrapper>
-            <Score data-cy="score">{skipped ? 0 : graded ? parseFloat(score.toFixed(2)) : <div>&nbsp;</div>}</Score>
-            <Total data-cy="maxscore">{maxScore}</Total>
+            <Score data-cy="score">{_score}</Score>
+            <Total data-cy="maxscore">{_maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
             <FeedbackGiven data-cy="feedback">{feedback && feedback.text}</FeedbackGiven>

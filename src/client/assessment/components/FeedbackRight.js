@@ -232,7 +232,8 @@ class FeedbackRight extends Component {
       showCollapseBtn,
       rubricDetails,
       user,
-      disabled
+      disabled,
+      isPracticeQuestion
     } = this.props;
     const { score, maxScore, feedback, showPreviewRubric, changed } = this.state;
     let rubricMaxScore = 0;
@@ -259,6 +260,24 @@ class FeedbackRight extends Component {
       title = null;
     }
 
+    let _score = adaptiveRound(score || 0);
+    if (
+      isPracticeQuestion ||
+      (activity &&
+        activity.graded === false &&
+        (activity.score === 0 || isUndefined(activity.score)) &&
+        !score &&
+        !changed &&
+        !activity.skipped)
+    ) {
+      _score = "";
+    }
+
+    let _maxScore = rubricMaxScore || maxScore;
+    if (isPracticeQuestion) {
+      _maxScore = "";
+    }
+
     return (
       <StyledCardTwo
         twoColLayout={twoColLayout}
@@ -273,23 +292,14 @@ class FeedbackRight extends Component {
               data-cy="scoreInput"
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
-              value={
-                activity &&
-                activity.graded === false &&
-                (activity.score === 0 || isUndefined(activity.score)) &&
-                !score &&
-                !changed &&
-                !activity.skipped
-                  ? ""
-                  : adaptiveRound(score || 0)
-              }
-              disabled={isPresentationMode}
+              value={_score}
+              disabled={isPresentationMode || isPracticeQuestion}
               ref={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
               tabIndex={0}
             />
-            <TextPara>{rubricMaxScore || maxScore}</TextPara>
+            <TextPara>{_maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
         {showGradingRubricButton && (

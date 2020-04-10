@@ -83,6 +83,7 @@ const buttons = [
   "bold",
   "italic",
   "underline",
+  "insertVideo",
   "fontSize",
   "indent",
   "outdent",
@@ -307,15 +308,18 @@ const CustomEditor = ({
     {
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
+      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed"],
       imageDefaultDisplay: "inline",
       linkAlwaysBlank: true, // adding to make link always open in blank
       zIndex: 999,
       imageDefaultWidth: imageDefaultWidth,
+      videoDefaultWidth: 200,
       initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
       toolbarButtonsSM,
       toolbarButtonsXS,
+      videoResponsive: true,
       tableResizerOffset: 10,
       tableResizingLimit: 50,
       toolbarInline: true,

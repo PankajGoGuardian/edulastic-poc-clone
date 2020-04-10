@@ -134,11 +134,18 @@ class SortListPage {
     this.header.edit();
   }
 
+  getQuestionText = () =>
+    cy
+      .get(".fr-element")
+      .first()
+      .find("p");
+
   getListInputs = () =>
     cy
-      .get('[data-cy="sortable-list-container"]')
+      .get("[data-cy=sortable-list-container]")
       .first()
-      .find("div .ql-editor");
+      .find("[data-cy=quillSortableItem]")
+      .find("[contenteditable=true]");
 
   getAddInputButton = () =>
     cy
@@ -166,7 +173,7 @@ class SortListPage {
     cy
       .get(`[data-cy="sortable-list-container"]`)
       .last()
-      .find("div .ql-editor");
+      .find("[data-cy=quillSortableItem]");
 
   addAlternate = () => {
     cy.get('[data-cy="alternate"]')
@@ -185,12 +192,16 @@ class SortListPage {
 
   dragAndDropFromAnswerToBoard = (sLabel, sIndex, tIndex) => {
     cy.get(`#drag-drop-board-${sIndex}`)
+      .find('[class^="TextEmpty"]')
+      .should("not.exist");
+    cy.get(`#drag-drop-board-${sIndex}`)
       .customDragDrop(`#drag-drop-board-${tIndex}-target`)
       .then(() => {
-        this.getSourceBoard()
-          .contains("p", sLabel)
-          .should("not.exist");
-        this.getTargetBoard()
+        cy.get(`#drag-drop-board-${tIndex}-target`).trigger("dragend");
+        cy.get(`#drag-drop-board-${sIndex}`)
+          .find('[class^="TextEmpty"]')
+          .should("exist");
+        cy.get(`#drag-drop-board-${tIndex}-target`)
           .contains("p", sLabel)
           .should("be.visible");
       });
@@ -201,6 +212,7 @@ class SortListPage {
     cy.get(`#drag-drop-board-${tIndex}-target`)
       .customDragDrop(`#drag-drop-board-${sIndex}-target`)
       .then(() => {
+        cy.get(`#drag-drop-board-${sIndex}-target`).trigger("dragend");
         cy.get(`#drag-drop-board-${tIndex}-target`)
           .contains("p", sLabel)
           .should("be.visible");

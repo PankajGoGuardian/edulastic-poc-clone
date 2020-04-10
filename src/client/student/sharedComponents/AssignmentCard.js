@@ -127,6 +127,14 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     ).closedDate;
   }
 
+  // if duedate is not passed get max due date from classAssessments 
+  if (!dueDate) {
+    const maxCurrentClass =
+    currentClassList && currentClassList.length > 0
+      ? maxBy(currentClassList, "dueDate") : {};
+    dueDate = maxCurrentClass.dueDate;
+  }
+
   const lastAttempt = maxBy(reports, o => parseInt(o.createdAt)) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;

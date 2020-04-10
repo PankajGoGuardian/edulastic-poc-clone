@@ -26,6 +26,7 @@ import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
 import V1Redirect from "./author/V1Redirect";
 import Kid from "./kid/app";
+import NotificationListener from "./HangoutVideoCallNotification";
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type;
 // route wise splitting
@@ -238,7 +239,7 @@ class App extends Component {
         <Modal title="App Update" visible={this.state.showAppUpdate} onOk={this.handleOk} onCancel={this.handleCancel}>
           A newer version of app is available. do you want to refresh?
         </Modal>
-
+        <NotificationListener />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>

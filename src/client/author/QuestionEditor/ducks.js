@@ -345,6 +345,12 @@ export const getQuestionIds = item => {
   return questionIds;
 };
 
+const updateItemWithAlignmentDetails = (itemDetail = {}, alignments = []) => {
+  itemDetail.grades = alignments[0]?.grades || [];
+  alignments[0]?.subject ? itemDetail.subjects.push(alignments[0].subject) : null;
+  alignments[0]?.curriculumId ? itemDetail.curriculums.push(alignments[0].curriculumId.toString()) : null;
+};
+
 export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
 
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
@@ -374,6 +380,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     }
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
+    const alignments = yield select(getDictionariesAlignmentsSelector);
 
     const [isIncomplete, errMsg] = isIncompleteQuestion(question);
     if (isIncomplete) return message.error(errMsg);
@@ -395,6 +402,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     }
 
     const locationState = yield select(state => state.router.location.state);
+    updateItemWithAlignmentDetails(itemDetail, alignments);
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 };
     const { id } = question;
@@ -496,7 +504,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     });
     yield call(message.success, "Item is saved as draft", 2);
 
-    const alignments = yield select(getDictionariesAlignmentsSelector);
     const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store
     let recentStandardsList = yield select(getRecentStandardsListSelector);

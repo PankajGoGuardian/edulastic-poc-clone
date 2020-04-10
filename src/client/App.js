@@ -258,7 +258,7 @@ class App extends Component {
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
               <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
-              <Route exact path="/kid" render={props => <Kid {...props} redirectPath={defaultRoute} />} />
+              <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />
               <Route
                 exact

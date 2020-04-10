@@ -134,6 +134,18 @@ const AddToGroupModal = ({
     }
   };
 
+  const handleAddNew = () => {
+    if (checkedStudents.length) {
+      const parentUrl = getParentUrl(match.url.split("/"));
+      history.push({
+        pathname: `${parentUrl}/createClass/`,
+        state: { type: groupTypeText, studentIds: checkedStudents.map(s => s._id), exitPath: match.url }
+      });
+    } else {
+      message.warning(`Select one or more students to add to ${groupTypeText}`);
+    }
+  };
+
   const filteredGroups = (groupList || []).filter(g => g.type === groupType);
 
   return (
@@ -201,13 +213,7 @@ const AddToGroupModal = ({
               data-cy="addNew"
               height="40px"
               width="192px"
-              onClick={() => {
-                const parentUrl = getParentUrl(match.url.split("/"));
-                history.push({
-                  pathname: `${parentUrl}/createClass/`,
-                  state: { type: groupTypeText, exitPath: match.url }
-                });
-              }}
+              onClick={handleAddNew}
               style={{ marginLeft: "10px" }}
               isGhost
             >

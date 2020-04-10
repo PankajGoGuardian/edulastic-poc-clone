@@ -9,6 +9,7 @@ import { googleApi, groupApi, enrollmentApi, userApi, canvasApi } from "@edulast
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
 
 import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
+import { requestEnrolExistingUserToClassAction } from "../ClassEnrollment/ducks";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -403,8 +404,15 @@ function* fetchStudentsByClassId({ payload }) {
 
 function* receiveCreateClassRequest({ payload }) {
   try {
-    const result = yield call(groupApi.createGroup, payload);
-    message.success(`${result.name} is created. Please add students to your class and begin using Edulastic.`);
+    const { studentIds, ...rest } = payload;
+    const result = yield call(groupApi.createGroup, rest);
+    const { name, type, code: classCode, districtId } = result;
+    if (studentIds?.length) {
+      message.success(`${name} ${type === "custom" ? "group" : "class"} is created`);
+      yield put(requestEnrolExistingUserToClassAction({ name, type, classCode, districtId, studentIds }));
+    } else {
+      message.success(`${name} is created. Please add students to your class and begin using Edulastic.`);
+    }
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
   } catch ({ data: { message: errorMessage } }) {

@@ -72,7 +72,10 @@ function* enrolExistingUserToClass({ payload }) {
     const { classCode, districtId, studentIds, type, name } = payload;
     const res = yield call(enrollmentApi.SearchAddEnrolMultiStudents, { classCode, districtId, studentIds });
     if (res)
-      yield call(message.success, `Students enrolled to ${type === "class" ? "class" : "group"} ${name} successfully`);
+      yield call(
+        message.success,
+        `Students enrolled to ${type === "custom" ? "group" : "class"} ${name || ""} successfully`
+      );
   } catch (error) {
     yield call(message.error, "Add user failed");
   }

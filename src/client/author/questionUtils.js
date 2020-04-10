@@ -424,7 +424,7 @@ const hasEmptyAnswers = item => {
  *  @returns {Array} - returns a tuple containing a boolean, which flags
  *  a question as complete or incomplete, and if incomplete, teh reason is the second element
  */
-export const isIncompleteQuestion = item => {
+export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   // if its a resource type question just return.
   if (question.resourceTypeQuestions.includes(item.type)) {
     const _hasEmptyFields = hasEmptyFields(item);
@@ -451,11 +451,16 @@ export const isIncompleteQuestion = item => {
   if (!questionType.manuallyGradableQn.includes(item.type)) {
     const { score } = item?.validation?.validResponse || {};
 
-    if (score === undefined) {
-      return [true, "Score needs to be set"];
-    }
-    if (parseInt(score, 10) === 0) {
-      return [true, "Score cannot be zero"];
+    // when item level scoring is on score is removed from the validation object
+    // so we should not validate question level score
+    const validateQuestionScore = itemLevelScoring === false;
+    if (validateQuestionScore) {
+      if (score === undefined) {
+        return [true, "Score needs to be set"];
+      }
+      if (parseInt(score, 10) === 0) {
+        return [true, "Score cannot be zero"];
+      }
     }
   }
 

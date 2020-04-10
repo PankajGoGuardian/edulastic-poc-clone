@@ -382,7 +382,8 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const itemDetail = yield select(getItemDetailSelector);
     const alignments = yield select(getDictionariesAlignmentsSelector);
 
-    const [isIncomplete, errMsg] = isIncompleteQuestion(question);
+    const { itemLevelScoring = false } = itemDetail;
+    const [isIncomplete, errMsg] = isIncompleteQuestion(question, itemLevelScoring);
     if (isIncomplete) return message.error(errMsg);
 
     const [hasImproperConfig, warningMsg, shouldUncheck] = hasImproperDynamicParamsConfig(question);

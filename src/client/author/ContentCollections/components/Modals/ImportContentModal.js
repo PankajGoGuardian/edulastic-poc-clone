@@ -65,16 +65,18 @@ const ImportContentModal = ({
   const [searchValue, setSearchValue] = useState("");
   const [tags, setSelectedTags] = useState([]);
   const handleUpload = ({ file, fileList }) => {
-    if (file.type !== "application/zip") {
-      return;
-    }
+    // TODO: Please uncoment after checking file type for windows
+    // if (file.type !== "application/zip") {
+    //   return;
+    // }
+
     getSignedUrl({ file: fileList[0], selectedFormat });
   };
 
   const uploadProps = {
     beforeUpload: () => false,
     onChange: handleUpload,
-    accept: "application/zip",
+    accept: ".zip, zip, application/zip",
     multiple: false,
     showUploadList: false
   };

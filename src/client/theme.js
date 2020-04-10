@@ -69,6 +69,7 @@ const checkColor = "#5EB500";
 const closeColor = "#DD2E44";
 const questionTextColor = title;
 const questionTextBorderColor = "#d9d9d9";
+const questionLabelColor = "#8ed863";
 const triangleBottomColor = "#000000";
 const uploadIcon = "#E6E6E6";
 const zoneDropFontColor = "#E6E6E6";
@@ -256,6 +257,7 @@ export const allThemeVars = {
   checkColor,
   closeColor,
   questionTextColor,
+  questionLabelColor,
   triangleBottomColor,
   uploadIcon,
   zoneDropFontColor,

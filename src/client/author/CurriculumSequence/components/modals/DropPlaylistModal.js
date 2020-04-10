@@ -221,7 +221,7 @@ const DropPlaylistModal = props => {
   return (
     <StyledPurchaseLicenseModal
       visible={visible}
-      title={<h3 style={{ fontWeight: 700 }}>DropPlaylist</h3>}
+      title={<h3 style={{ fontWeight: 700 }}>AirDrop Playlist</h3>}
       onCancel={closeModal}
       footer={[getFooterComponent({ dropPlaylist })]}
       centered

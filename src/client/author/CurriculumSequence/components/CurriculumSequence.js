@@ -709,7 +709,7 @@ class CurriculumSequence extends Component {
                   )}
                   {urlHasUseThis && isTeacher && !isPublisherUser && (
                     <EduButton data-cy="drop-playlist" onClick={this.openDropPlaylistModal}>
-                      DROP PLAYLIST
+                      AIRDROP PLAYLIST
                     </EduButton>
                   )}
 

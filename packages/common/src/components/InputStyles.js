@@ -95,7 +95,7 @@ export const SelectInputStyled = styled(Select)`
       font-size: ${props => props.fontSize || "13px"};
       width: ${props => props.width || "100%"};
       height: ${props => props.height || "100%"};
-      min-height: 40px;
+      min-height: ${props => props.height || "40px"};
       padding: ${props => props.padding || "0px"};
       border-radius: 2px;
       font-weight: 600;

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { useRef } from "react";
 import { Select } from "antd";
 
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, SelectInputStyled } from "@edulastic/common";
 import { SelectContainer } from "./styled/SelectContainer";
 
 const AnswerDropdown = ({
@@ -32,8 +32,9 @@ const AnswerDropdown = ({
       backgroundColor={backgroundColor}
       isPrintPreview={isPrintPreview}
     >
-      <Select
+      <SelectInputStyled
         style={style}
+        height="100%"
         placeholder={placeholder}
         disabled={disabled}
         data-cy={`dropdown-res-${responseIndex}`}
@@ -49,7 +50,7 @@ const AnswerDropdown = ({
             <MathSpan dangerouslySetInnerHTML={{ __html: item.label }} />
           </Select.Option>
         ))}
-      </Select>
+      </SelectInputStyled>
     </SelectContainer>
   );
 };

@@ -4,6 +4,7 @@ import { MathFormulaDisplay } from "@edulastic/common";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
+import { greyThemeLight } from "@edulastic/colors";
 
 const AnswerBox = ({ checked, correct, userAnswer, indexStr, inPopover, showIndex, lessMinWidth, ...rest }) => (
   <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>
@@ -27,6 +28,7 @@ const Container = styled.div`
   vertical-align: middle;
   cursor: pointer;
   border-radius: 4px;
+  border: 1px solid ${greyThemeLight};
   background: ${({ theme, checked, correct }) => {
     if (!checked) {
       return theme.widgets.clozeDropDown.boxNoAnswerBgColor;

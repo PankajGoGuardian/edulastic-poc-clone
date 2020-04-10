@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
-import { MathSpan } from "@edulastic/common";
+import { MathSpan, SelectInputStyled } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -96,12 +96,13 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
   };
   return (
     <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
-      <Select
+      <SelectInputStyled
         value={userAnswer?.value}
         style={{
           ...styles,
           overflow: "hidden"
         }}
+        height={heightpx || btnStyle.height}
         placeholder={individualPlacholder || placeholder}
         getPopupContainer={triggerNode => triggerNode.parentNode}
         data-cy="drop_down_select"
@@ -115,7 +116,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
               <MathSpan dangerouslySetInnerHTML={{ __html: response }} />
             </Option>
           ))}
-      </Select>
+      </SelectInputStyled>
     </SelectWrapper>
   );
 };

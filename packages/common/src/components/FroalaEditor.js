@@ -319,6 +319,7 @@ const CustomEditor = ({
       tableResizerOffset: 10,
       tableResizingLimit: 50,
       toolbarInline: true,
+      tooltips: false,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `#froalaToolbarContainer-${toolbarId}` : undefined,
       placeholderText: placeholder,

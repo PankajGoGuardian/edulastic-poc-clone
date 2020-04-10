@@ -10,7 +10,6 @@ import { Upload } from "antd";
 import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
-import { LARGE_DESKTOP_WIDTH } from "../../../../assessment/constants/others";
 
 class Uploader extends React.Component {
   state = {};
@@ -36,10 +35,9 @@ class Uploader extends React.Component {
 
   render() {
     const { windowWidth, url } = this.props;
-    const height = windowWidth >= LARGE_DESKTOP_WIDTH ? 216 : this.props.height;
     const uploadButton = (
-      <Container height={height}>
-        <Image height={height} src={url} alt="Test" />
+      <Container>
+        <Image src={url} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
@@ -57,9 +55,9 @@ class Uploader extends React.Component {
     return (
       <UploadWrapper>
         <Upload {...props}>
-          <Container height={height}>
-            <ImageContainer height={height}>
-              {imageUrl ? <Image height={height} src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
+          <Container>
+            <ImageContainer>
+              {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
             </ImageContainer>
             <Camera>
               <IconPhotoCamera color={white} width="20px" />
@@ -73,13 +71,8 @@ class Uploader extends React.Component {
 
 Uploader.propTypes = {
   url: PropTypes.string.isRequired,
-  height: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
   setThumbnailUrl: PropTypes.func.isRequired
-};
-
-Uploader.defaultProps = {
-  height: 160
 };
 
 const enhance = compose(
@@ -93,7 +86,7 @@ const enhance = compose(
 export default enhance(Uploader);
 
 const Container = styled.div`
-  min-height: ${props => props.height}px;
+  min-height: 207px;
   width: 100%;
   position: relative;
 `;
@@ -113,7 +106,7 @@ const UploadWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: ${props => props.height}px;
+  height: 207px;
   border-radius: 5px;
 `;
 
@@ -133,7 +126,7 @@ const Camera = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
-  min-height: ${props => props.height}px;
+  min-height: 207px;
   overflow: hidden;
   border-radius: 5px;
 `;

@@ -78,6 +78,13 @@ class ClassCreate extends React.Component {
         const { createClass, curriculums } = this.props;
         const { standardSets, endDate, startDate, courseId, grades, subject, tags } = values;
 
+        // default start and end date
+        const term =
+          userOrgData.terms.length &&
+          userOrgData.terms.find(term => term.endDate > Date.now() && term.startDate < Date.now());
+        const defaultStartDate = moment(),
+          defaultEndDate = term ? term.endDate : defaultStartDate.add(1, "year");
+
         const updatedStandardsSets = standardSets?.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
           return {
@@ -90,9 +97,9 @@ class ClassCreate extends React.Component {
         values.type = location?.state?.type === "group" ? "custom" : "class";
         values.parent = { id: userId };
         values.owners = [userId];
-        values.standardSets = updatedStandardsSets;
-        values.endDate = moment(endDate).format("x");
-        values.startDate = moment(startDate).format("x");
+        values.standardSets = updatedStandardsSets || [];
+        values.endDate = moment(endDate || defaultEndDate).format("x");
+        values.startDate = moment(startDate || defaultStartDate).format("x");
         values.courseId = isEmpty(courseId) ? "" : courseId;
         values.grades = isEmpty(grades) ? ["O"] : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;

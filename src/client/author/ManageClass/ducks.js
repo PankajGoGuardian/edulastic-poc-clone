@@ -407,11 +407,12 @@ function* receiveCreateClassRequest({ payload }) {
     const { studentIds, ...rest } = payload;
     const result = yield call(groupApi.createGroup, rest);
     const { name, type, code: classCode, districtId } = result;
+    const typeText = type === "custom" ? "group" : "class";
     if (studentIds?.length) {
-      message.success(`${name} ${type === "custom" ? "group" : "class"} is created`);
+      message.success(`${name} ${typeText} is created`);
       yield put(requestEnrolExistingUserToClassAction({ name, type, classCode, districtId, studentIds }));
     } else {
-      message.success(`${name} is created. Please add students to your class and begin using Edulastic.`);
+      message.success(`${name} is created. Please add students to your ${typeText} and begin using Edulastic.`);
     }
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));

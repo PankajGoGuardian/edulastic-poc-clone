@@ -88,7 +88,45 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
 
-      {type === "custom" && (
+      {type === "class" ? (
+        <StyledFlexContainer gutter={24}>
+          <Col xs={12}>
+            <FieldLabel
+              label={`${titlePrefix} start date`}
+              optional
+              fiedlName="startDate"
+              initialValue={startDate}
+              {...restProps}
+            >
+              <DatePickerStyled
+                data-cy="startDate"
+                format="DD MMM, YYYY"
+                placeholder="Open Date"
+                disabledDate={disabledStartDateHandler}
+                onChange={onStartDateChangeHandler}
+                disabled={moment(startDate) < moment() || !!cleverId ? true : false}
+              />
+            </FieldLabel>
+          </Col>
+          <Col xs={12}>
+            <FieldLabel
+              label={`${titlePrefix} end date`}
+              optional
+              {...restProps}
+              fiedlName="endDate"
+              initialValue={moment(defaultEndDate || classEndDate)}
+            >
+              <DatePickerStyled
+                data-cy="endDate"
+                format="DD MMM, YYYY"
+                placeholder="End Date"
+                disabledDate={moment(startDate) < moment() ? disabledEndDateHandler2 : disabledEndDateHandler1}
+                disabled={!!cleverId}
+              />
+            </FieldLabel>
+          </Col>
+        </StyledFlexContainer>
+      ) : (
         <StyledFlexContainer gutter={24}>
           <Col xs={24}>
             <FieldLabel label="Description" {...restProps} fiedlName="description" initialValue={defaultDescription}>
@@ -97,44 +135,6 @@ const RightFields = ({
           </Col>
         </StyledFlexContainer>
       )}
-
-      <StyledFlexContainer gutter={24}>
-        <Col xs={12}>
-          <FieldLabel
-            label={`${titlePrefix} start date`}
-            optional
-            fiedlName="startDate"
-            initialValue={startDate}
-            {...restProps}
-          >
-            <DatePickerStyled
-              data-cy="startDate"
-              format="DD MMM, YYYY"
-              placeholder="Open Date"
-              disabledDate={disabledStartDateHandler}
-              onChange={onStartDateChangeHandler}
-              disabled={moment(startDate) < moment() || !!cleverId ? true : false}
-            />
-          </FieldLabel>
-        </Col>
-        <Col xs={12}>
-          <FieldLabel
-            label={`${titlePrefix} end date`}
-            optional
-            {...restProps}
-            fiedlName="endDate"
-            initialValue={moment(defaultEndDate || classEndDate)}
-          >
-            <DatePickerStyled
-              data-cy="endDate"
-              format="DD MMM, YYYY"
-              placeholder="End Date"
-              disabledDate={moment(startDate) < moment() ? disabledEndDateHandler2 : disabledEndDateHandler1}
-              disabled={!!cleverId}
-            />
-          </FieldLabel>
-        </Col>
-      </StyledFlexContainer>
 
       <StyledFlexContainer gutter={24}>
         <Col xs={12}>
@@ -167,41 +167,43 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
 
-      <StyledFlexContainer gutter={24}>
-        <Col xs={24}>
-          <FieldLabel
-            label="Standards Set"
-            fiedlName="standardSets"
-            initialValue={defaultStandardSetIds || []}
-            {...restProps}
-          >
-            <SelectInputStyled
-              showSearch
-              mode="multiple"
-              optionFilterProp="children"
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              placeholder="Select Standards"
-              disabled={!!cleverId}
+      {type === "class" && (
+        <StyledFlexContainer gutter={24}>
+          <Col xs={24}>
+            <FieldLabel
+              label="Standards Set"
+              fiedlName="standardSets"
+              initialValue={defaultStandardSetIds || []}
+              {...restProps}
             >
-              {!subject ? (
-                <Select.Option key="subject_first" value="subject_first" disabled>
-                  <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
-                </Select.Option>
-              ) : (
-                filteredCurriculums.map(el => (
-                  <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                    {el.text}
+              <SelectInputStyled
+                showSearch
+                mode="multiple"
+                optionFilterProp="children"
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                placeholder="Select Standards"
+                disabled={!!cleverId}
+              >
+                {!subject ? (
+                  <Select.Option key="subject_first" value="subject_first" disabled>
+                    <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
                   </Select.Option>
-                ))
-              )}
-            </SelectInputStyled>
-          </FieldLabel>
-        </Col>
-      </StyledFlexContainer>
+                ) : (
+                  filteredCurriculums.map(el => (
+                    <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                      {el.text}
+                    </Select.Option>
+                  ))
+                )}
+              </SelectInputStyled>
+            </FieldLabel>
+          </Col>
+        </StyledFlexContainer>
+      )}
+
       {/* TODO: feature switch should be removed and simple show hide should be here
         show course flag will be available in district policy
       */}
-
       <StyledFlexContainer gutter={24}>
         <Col xs={24}>
           <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
@@ -225,21 +227,26 @@ const RightFields = ({
             </FieldLabel>
           </FeaturesSwitch>
         </Col>
-        <Col xs={12}>
-          <FieldLabel label="School" {...restProps} fiedlName="institutionId" initialValue={defaultSchool || ""}>
-            <SelectInputStyled placeholder="Select School">
-              {schoolList.map(el => (
-                <Select.Option key={el._id} value={el._id}>
-                  {el.name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </FieldLabel>
-        </Col>
-        <Col xs={12}>
-          <Tags {...restProps} />
-        </Col>
       </StyledFlexContainer>
+
+      {type === "class" && (
+        <StyledFlexContainer gutter={24}>
+          <Col xs={12}>
+            <FieldLabel label="School" {...restProps} fiedlName="institutionId" initialValue={defaultSchool || ""}>
+              <SelectInputStyled placeholder="Select School">
+                {schoolList.map(el => (
+                  <Select.Option key={el._id} value={el._id}>
+                    {el.name}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </FieldLabel>
+          </Col>
+          <Col xs={12}>
+            <Tags {...restProps} />
+          </Col>
+        </StyledFlexContainer>
+      )}
     </>
   );
 };

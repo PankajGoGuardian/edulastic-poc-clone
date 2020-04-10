@@ -78,7 +78,7 @@ class ClassEdit extends React.Component {
         const { standardSets, endDate, startDate, tags } = values;
         const { _id: classId, type } = selctedClass;
 
-        const updatedStandardsSets = standardSets.map(el => {
+        const updatedStandardsSets = standardSets?.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
           return {
             _id: selectedCurriculum._id,
@@ -88,13 +88,13 @@ class ClassEdit extends React.Component {
 
         values.districtId = districtId;
         values.type = type;
-
         values.parent = { id: userId };
         values.owners = [userId];
 
-        values.standardSets = updatedStandardsSets;
-        values.endDate = moment(endDate).format("x");
-        values.startDate = moment(startDate).format("x");
+        values.institutionId = values.institutionId || selctedClass.institutionId;
+        values.standardSets = updatedStandardsSets || selctedClass.standardSets;
+        values.endDate = moment(endDate).format("x") || selctedClass.startDate;
+        values.startDate = moment(startDate).format("x") || selctedClass.startDate;
         values.tags = tags.map(t => allTagsData.find(o => o._id === t));
 
         const editedClassValues = Object.assign({}, values);
@@ -211,6 +211,9 @@ class ClassEdit extends React.Component {
             <Row gutter={36}>
               <LeftContainer xs={8}>
                 <LeftFields
+                  tags={tags}
+                  addNewTag={addNewTag}
+                  allTagsData={allTagsData}
                   getFieldDecorator={getFieldDecorator}
                   getFieldValue={getFieldValue}
                   thumbnailUri={thumbnail}

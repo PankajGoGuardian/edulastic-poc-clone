@@ -655,7 +655,7 @@ export function* fetchV1Redirect({ payload: id }) {
         subject: user?.orgData?.defaultSubjects
       })
     );
-    const redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
+    const redirectUrl = role === "student" ? "/home/assignments" : "/author/dashboard";
     yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);

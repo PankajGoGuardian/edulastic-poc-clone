@@ -12,12 +12,8 @@ const REQ_ENROL_EXISTING_USER_TO_CLASS = "[class enrollment] request enrol exist
 const SET_PAGE_NO = "[class enrollment] set page number";
 
 export const receiveClassEnrollmentListAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_REQUEST);
-export const receiveClassEnrollmentListSuccessAction = createAction(
-  RECEIVE_CLASSENROLLMENT_LIST_SUCCESS
-);
-export const receiveClassEnrollmentListErrorAction = createAction(
-  RECEIVE_CLASSENROLLMENT_LIST_ERROR
-);
+export const receiveClassEnrollmentListSuccessAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_SUCCESS);
+export const receiveClassEnrollmentListErrorAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_ERROR);
 export const requestEnrolExistingUserToClassAction = createAction(REQ_ENROL_EXISTING_USER_TO_CLASS);
 
 export const setPageNoAction = createAction(SET_PAGE_NO);
@@ -73,8 +69,10 @@ function* receiveClassEnrollmentListSaga({ payload }) {
 
 function* enrolExistingUserToClass({ payload }) {
   try {
-    const res = yield call(enrollmentApi.SearchAddEnrolMultiStudents, payload);
-    if (res) yield call(message.success, "User added to class successfully");
+    const { classCode, districtId, studentIds, type, name } = payload;
+    const res = yield call(enrollmentApi.SearchAddEnrolMultiStudents, { classCode, districtId, studentIds });
+    if (res)
+      yield call(message.success, `Students enrolled to ${type === "class" ? "class" : "group"} ${name} successfully`);
   } catch (error) {
     yield call(message.error, "Add user failed");
   }

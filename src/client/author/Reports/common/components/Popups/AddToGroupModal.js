@@ -51,6 +51,7 @@ const AddToGroupModal = ({
   match,
   history
 }) => {
+  const groupTypeText = groupType === "custom" ? "group" : "class";
   const [studentList, setStudentList] = useState([]);
   const [studentsToAdd, setStudentsToAdd] = useState([]);
   const [studentsToRemove, setStudentsToRemove] = useState([]);
@@ -106,24 +107,31 @@ const AddToGroupModal = ({
 
   const handleOnSubmit = async () => {
     const group = groupList.find(g => selectedGroup.key === g._id);
-    const { code: classCode, districtId } = group;
+    const { code: classCode, districtId, name } = group;
     // add students
     if (studentsToAdd.length) {
-      enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd });
+      enrollStudentsToGroup({ classCode, districtId, studentIds: studentsToAdd, type: groupType, name });
       setStudentsToAdd([]);
+    } else if (checkedStudents.length) {
+      message.success(`Students enrolled to ${groupTypeText} ${name} successfully`);
     }
     // remove students
     if (studentsToRemove.length) {
       try {
         const data = await enrollmentApi.removeStudents({ classCode, districtId, studentIds: studentsToRemove });
-        message.success(data.data.result);
+        message.success(`Students removed from ${groupTypeText} ${name} successfully`);
       } catch ({ data: { message: errorMessage } }) {
         message.error(errorMessage);
       }
       setStudentsToRemove([]);
     }
-    // close modal
-    onCancel();
+    // warning for no action due to lack of - checked students or existing students to remove
+    if (!checkedStudents.length && !studentsToRemove.length) {
+      message.warning(`Select one or more students to add to or remove from ${groupTypeText}`);
+    } else {
+      // close modal
+      onCancel();
+    }
   };
 
   const filteredGroups = (groupList || []).filter(g => g.type === groupType);
@@ -197,7 +205,7 @@ const AddToGroupModal = ({
                 const parentUrl = getParentUrl(match.url.split("/"));
                 history.push({
                   pathname: `${parentUrl}/createClass/`,
-                  state: { type: "group", exitPath: match.url }
+                  state: { type: groupTypeText, exitPath: match.url }
                 });
               }}
               style={{ marginLeft: "10px" }}

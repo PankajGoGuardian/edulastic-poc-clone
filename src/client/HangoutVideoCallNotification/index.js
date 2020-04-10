@@ -11,8 +11,8 @@ const hangoutFirestoreCollectionName = "HangoutsClassEvents";
 const NotificationListener = ({ user }) => {
   const [notificationIds, setNotificationIds] = useState([]);
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
-    db => db.collection(hangoutFirestoreCollectionName).where("studentID", "==", `${user._id}`),
-    [user._id]
+    db => db.collection(hangoutFirestoreCollectionName).where("studentID", "==", `${user?._id}`),
+    [user?._id]
   );
 
   const updateNotificationStatus = (docId, status) => {

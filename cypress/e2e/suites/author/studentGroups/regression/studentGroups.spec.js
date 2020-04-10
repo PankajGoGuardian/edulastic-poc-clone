@@ -63,7 +63,7 @@ const testIdForReport = "5e8af25af51ccb00082a12a6";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () => {
   before(() => {
-    cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
+    //cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
     cy.login("teacher", teacher, password);
   });
 
@@ -139,6 +139,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
       sideBar.clickOnManageClass();
       manageGroup.clickOnGroupTab();
       manageGroup.verifyGroupRowDetails(groups[1].name, studentGroup1.length, 1);
+    });
+  });
+  context.only("> Student removal from existing group", () => {
+    it("Remove student from Group", () => {
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.clickOnGroupRowByName("Group 3");
+      manageGroup.clickOnActionButton("student.5.studentgroup@automation.com");
+      manageGroup.clickonRemoveStudentButton();
+      manageGroup.clickOnRemoveStudentPopupTextbox().type("REMOVE");
+      manageGroup.clickOnRemoveButtonInPopUp();
+    });
+    it("Verify removal in LCB and student group", () => {
+      sideBar.clickOnAssignment();
+      authorAssignmentPage.clickOnLCBbyTestId("5e8f14d6de43a50008737aab");
+      cy.get('[data-cy="studentName"]')
+        .should("have.length", "1")
+        .contains("studentGroup, student.5")
+        .should("not.exist");
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.verifyGroupRowDetails("Group 3 ", "1", "2");
+      manageGroup.clickOnGroupRowByName("Group 3 ");
+      manageGroup.getStudentRow(`${students[5].email}`).should("not.exist");
     });
   });
 

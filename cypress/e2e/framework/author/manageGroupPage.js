@@ -14,13 +14,35 @@ export default class ManageGroupPage extends TeacherManageClassPage {
         return { name, students, assignments };
       });
 
+  removeStudentButton = () => cy.get(".ant-dropdown-menu-item").contains("Remove Student");
+
+  getStudentRow = email => cy.get(`[data-row-key="${email}"]`);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
   clickOnGroupTab = () => cy.get('[data-cy="group"]').click();
 
-  clickOnGroupRowByName = () => this.getClassRowByName().click();
+  clickOnGroupRowByName = groupname => this.getClassRowByName(groupname).click();
+
+  clickOnCreateGroupButton = () => cy.get('[data-cy="createClass"]').click();
+
+  clickOnActionButton = email =>
+    cy
+      .get(`[data-row-key="${email}"]`)
+      .contains("ACTIONS")
+      .click();
+
+  clickonRemoveStudentButton = () => this.removeStudentButton().click();
+
+  clickOnRemoveStudentPopupTextbox = () => cy.get('[class *= "ant-input styled"]').click();
+
+  clickOnRemoveButtonInPopUp = () =>
+    cy
+      .get(".ant-modal-footer")
+      .contains("span", "Yes, Remove Student(s)")
+      .click({ force: true });
 
   // *** ACTIONS END ***
 

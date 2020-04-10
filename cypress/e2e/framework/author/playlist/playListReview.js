@@ -36,7 +36,7 @@ export default class PlayListReview {
 
   getPlaylistGrade = () => cy.get('[data-cy="playlist-grade"]');
 
-  getModuleCompleteStatus = () => cy.get('[data-cy="module-complete"]');
+  getModuleCompleteStatusByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="module-complete"]');
 
   getHideModuleByModule = mod => this.getModuleRowByModule(mod).find('[data-cy="hide-module"]');
 
@@ -105,18 +105,21 @@ export default class PlayListReview {
     this.waitForSave();
     this.getAssignButtonByModule(mod).should("have.css", "opacity", "0.5");
   };
+
   clickShowModuleByModule = mod => {
     this.routeSavePlaylist();
     this.getShowModuleByModule(mod).click();
     this.waitForSave();
     this.getAssignButtonByModule(mod).should("have.css", "opacity", "1");
   };
+
   clickHideTestByModule = (mod, test) => {
     this.routeSavePlaylist();
     this.getHideByTestByModule(mod, test).click();
     this.waitForSave();
     this.getAssignButtonByTestByModule(mod, test).should("have.css", "opacity", "0.5");
   };
+
   clickShowTestByModule = (mod, test) => {
     this.routeSavePlaylist();
     this.getShowByTestByModule(mod, test).click(mod, test);
@@ -164,7 +167,8 @@ export default class PlayListReview {
 
   verifyPlalistSubject = sub => this.getPlaylistSub().should("contain.text", sub);
 
-  verifyModuleCompleteText = () => this.getModuleCompleteStatus().should("have.text", "MODULE COMPLETED");
+  verifyModuleCompleteTextByModule = mod =>
+    this.getModuleCompleteStatusByModule(mod).should("have.text", "MODULE COMPLETED");
 
   /*  shuffleTestByIndexByModule = (mod, sourceTest, targetTest) => {
     this.getDragHandlerByTestByModule(mod, sourceTest).as("source-container");

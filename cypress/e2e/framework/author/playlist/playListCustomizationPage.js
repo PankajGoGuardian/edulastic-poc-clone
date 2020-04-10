@@ -8,12 +8,29 @@ class PlaylistCustom extends PlayListReview {
   }
 
   /* GET ELEMENTS */
+
   getManageContentButton = () => cy.get('[data-cy="manage-content"]');
 
-  clickOnManageContent = () => {
+  getOkWhileCustomize = () =>
+    cy
+      .get(".ant-modal-confirm-btns")
+      .find("button")
+      .contains("span", "OK");
+
+  clickOnManageContent = (customize = false) => {
+    cy.server();
+    cy.route("POST", "**/playlists/**").as("duplicate-playlist");
     this.searchContainer.routeTestSearch();
     this.getManageContentButton().click();
-    this.searchContainer.waitForTestSearch();
+    if (customize) {
+      cy.wait(500);
+      this.getOkWhileCustomize().click({ force: true });
+      return cy.wait("@duplicate-playlist").then(xhr => {
+        this.searchContainer.waitForTestSearch();
+        this.searchContainer.waitForTestSearch();
+        return cy.saveplayListDetailToDelete(xhr.response.body.result._id).then(() => xhr.response.body.result._id);
+      });
+    } else return this.searchContainer.waitForTestSearch();
   };
 
   /* APP HELPERS */

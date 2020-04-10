@@ -80,14 +80,16 @@ export default class PlayListSearchContainer {
   /* APP HELPERS */
   routeTestSearch = () => {
     cy.server();
-    cy.route("POST", "**/search/tests").as("searchTests");
+    cy.route("POST", "**/search/tests").as("search-container-tests");
   };
 
   setFilters = ({ collection }) => {
+    this.routeTestSearch();
     this.clickFilterButton();
     if (collection) this.selectCollection(collection);
     this.clickFilterButton();
+    this.waitForTestSearch();
   };
 
-  waitForTestSearch = () => cy.wait("@searchTests");
+  waitForTestSearch = () => cy.wait("@search-container-tests");
 }

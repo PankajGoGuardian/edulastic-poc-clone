@@ -49,6 +49,7 @@ export default class LCBHeader {
     this.getConfirmationInput().type("CLOSE");
     this.submitConfirmationInput();
     cy.wait("@close").then(xhr => assert(xhr.status === 200, `verify close request ${xhr.status}`));
+    cy.wait("@assignment");
   };
 
   clickOnOpen = () => {

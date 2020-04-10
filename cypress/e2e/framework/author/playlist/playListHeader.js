@@ -43,8 +43,10 @@ export default class PlayListHeader {
   };
 
   clickOnSettings = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("savePlayList");
     this.getSettingsButton().click();
-    return cy.wait(2000);
+    return cy.wait("@savePlayList");
   };
 
   clickOnPublish = () => {
@@ -69,20 +71,11 @@ export default class PlayListHeader {
     this.getShareButton().click();
   };
 
-  clickOnUseThis = (duplicate = false) => {
+  clickOnUseThis = () => {
     cy.server();
     cy.route("GET", "**/playlists/*").as("use-this");
-    cy.route("POST", "**/playlists/**").as("duplicate-playlist");
-
     this.getUseThisButton().click({ force: true });
-
-    if (duplicate)
-      return cy.wait("@duplicate-playlist").then(xhr => {
-        expect(xhr.status).to.eq(200);
-        cy.wait("@use-this");
-        return cy.saveplayListDetailToDelete(xhr.response.body.result._id).then(() => xhr.response.body.result._id);
-      });
-    else return cy.wait("@use-this");
+    return cy.wait("@use-this");
   };
 
   clickOnEdit = () => {

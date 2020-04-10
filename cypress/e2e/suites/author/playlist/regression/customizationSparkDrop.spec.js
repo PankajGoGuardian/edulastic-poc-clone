@@ -81,19 +81,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       it(">search and use", () => {
         playlistlibraryPage.searchByCollection(collection);
         playlistlibraryPage.clickOnPlayListCardById(playlistid);
-        playlistlibraryPage.header.clickOnUseThis(true).then(id => {
+        playlistlibraryPage.header.clickOnUseThis();
+      });
+      it(">customize-'add a test from other module and verify'", () => {
+        playlistlibraryPage.playlistCustom.clickOnManageContent(true).then(id => {
           customplaylist = id;
           expect(customplaylist).to.not.eq(playlistid);
         });
-      });
-      it(">customize-'add a test from other module and verify'", () => {
-        playlistlibraryPage.playlistCustom.clickOnManageContent();
         playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 2, 1);
         playlistlibraryPage.header.clickOnSave();
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
       });
       it(">drop the playlist", () => {
+        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList(false);
         playlistlibraryPage.header.clickOnDropPlalist();
         playlistlibraryPage.searchAndClickOnDropDownByClass("Class");
         playlistlibraryPage.clickDoneDropPlaylist();

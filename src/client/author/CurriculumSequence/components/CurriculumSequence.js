@@ -713,7 +713,11 @@ class CurriculumSequence extends Component {
                     </EduButton>
                   )}
 
-                  {isManageContentActive && <EduButton onClick={updateDestinationPlaylist}>SAVE</EduButton>}
+                  {isManageContentActive && (
+                    <EduButton data-cy="save" onClick={updateDestinationPlaylist}>
+                      SAVE
+                    </EduButton>
+                  )}
                   {isAuthor && !urlHasUseThis && (
                     <Tooltip placement="bottom" title="EDIT">
                       <EduButton isGhost data-cy="edit-playlist" onClick={handleEditClick}>

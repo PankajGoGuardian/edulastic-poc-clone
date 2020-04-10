@@ -96,6 +96,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">author playlist-'add tests'", () => {
       tests.forEach((id, index) => {
         playListLibrary.addTestTab.addTestByIdByModule(id, index + 1);
+        playListLibrary.header.clickOnSave();
       });
     });
     it(">verify review- 'module name and test count'", () => {
@@ -104,7 +105,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
         playListLibrary.reviewTab.clickExpandByModule(index + 1);
         playListLibrary.reviewTab.getModuleNameByModule(index + 1).should("contain", `module-${index + 1}`);
         playListLibrary.reviewTab.verifyNoOfTestByModule(index + 1, 1);
-
         playListLibrary.reviewTab.clickCollapseByModule(index + 1);
       });
     });
@@ -172,7 +172,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">bulk addition and verify review", () => {
       playListLibrary.searchFilter.clearAll();
       playListLibrary.addTestTab.bulkAddByModule(testIds.slice(0, testIds.length / 2), 1);
+      playListLibrary.header.clickOnSave();
       playListLibrary.addTestTab.bulkAddByModule(testIds.slice(testIds.length / 2), 2);
+      playListLibrary.header.clickOnSave();
       playListLibrary.header.clickOnPublish();
 
       playListLibrary.reviewTab.clickExpandByModule(1);
@@ -246,8 +248,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       it(">assign the playlist", () => {
         playListLibrary.reviewTab.clickOnAssignButtonByModule(1);
         playListAssign.selectClass("Class");
-        // TODO: remove below once it is fixed
-        playListAssign.selectOpenPolicy("Automatically on Start Date");
         playListAssign.clickOnAssign();
       });
       it(">playlist progress verification", () => {
@@ -265,6 +265,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
       it(">playlist progress verification", () => {
         playListLibrary.getPlayListAndClickOnUseThisById(playlistId);
+        playListLibrary.reviewTab.verifyModuleCompleteTextByModule(1);
         playListLibrary.reviewTab.verifyModuleProgress(1, 1);
       });
     });
@@ -315,6 +316,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
       });
       it(">playlist progress verification", () => {
         playListLibrary.getPlayListAndClickOnUseThisById(playlistId);
+        playListLibrary.reviewTab.verifyModuleCompleteTextByModule(1);
         playListLibrary.reviewTab.verifyModuleProgress(1, 1);
       });
     });
@@ -352,18 +354,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">verify teacher side-'customized playlist'", () => {
       playListLibrary.seachAndClickPlayListById(playlistId, true);
       playListLibrary.reviewTab.clickExpandByModule(1);
-      playListLibrary.reviewTab.verifyNoOfTestByModule(1, 2);
+      playListLibrary.reviewTab.verifyNoOfTestByModule(1, 3);
       playListLibrary.reviewTab.clickCollapseByModule(1);
     });
     it(">verify teacher side-'assignments page'", () => {
       playListLibrary.sidebar.clickOnAssignment();
-      [testIds[0], testIds[3]].forEach(id => {
+      [testIds[0], testIds[1], testIds[3]].forEach(id => {
         authorAssignmentPage.getAssignmentRowsTestById(id).should("exist");
       });
     });
     it(">verify student side", () => {
       cy.login("student", student.email, student.pass);
-      [testIds[0], testIds[3]].forEach(id => {
+      [testIds[0], testIds[1], testIds[3]].forEach(id => {
         assignmentsPage.getAssignmentByTestId(id).should("exist");
       });
     });

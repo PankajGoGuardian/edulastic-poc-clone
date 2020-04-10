@@ -81,9 +81,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       it(">search and use playlist", () => {
         playlistlibraryPage.searchByCollection(collection);
         playlistlibraryPage.clickOnPlayListCardById(playlisid);
-        playlistlibraryPage.header.clickOnUseThis(true).then(id => {
-          customplaylist = id;
-        });
+        playlistlibraryPage.header.clickOnUseThis();
       });
       it(">assign whole module", () => {
         playlistlibraryPage.playlistCustom.clickOnAssignButtonByModule(1);
@@ -92,7 +90,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       });
       it(">customize-'add new test'", () => {
         playlistlibraryPage.sidebar.clickOnRecentUsedPlayList();
-        playlistlibraryPage.playlistCustom.clickOnManageContent();
+        playlistlibraryPage.playlistCustom.clickOnManageContent(true).then(id => {
+          customplaylist = id;
+          expect(customplaylist).to.not.eq(playlisid);
+        });
         playlistlibraryPage.playlistCustom.searchContainer.setFilters({ collection: "Private Library" });
         playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
         playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
@@ -100,6 +101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
       });
       it(">assign the whole module-'re-assign'", () => {
+        playlistlibraryPage.sidebar.clickOnRecentUsedPlayList(false);
         playlistlibraryPage.reviewTab.clickOnAssignButtonByModule(1);
         playlistlibraryPage.playListAssign.selectClass("Class");
         playlistlibraryPage.playListAssign.clickOnAssign({ duplicate: false });

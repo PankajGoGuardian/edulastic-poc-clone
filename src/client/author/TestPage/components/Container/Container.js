@@ -751,7 +751,6 @@ class Container extends PureComponent {
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
-    const showCancelButton = history.location.state?.showCancelButton || test.isInEditAndRegrade;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
@@ -765,6 +764,8 @@ class Container extends PureComponent {
       !editEnable &&
       owner &&
       !history.location.state?.showCancelButton;
+    const showCancelButton =
+      (history.location.state?.showCancelButton || test.isInEditAndRegrade) && !showEditButton && !showDuplicateButton;
 
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));

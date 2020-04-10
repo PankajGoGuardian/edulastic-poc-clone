@@ -30,8 +30,7 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
     options: {
       removedQuestion: "DISCARD",
       addedQuestion: "SKIP",
-      correctAnsChanged: "SKIP",
-      choicesChanged: "SKIP"
+      editedQuestion: "SKIP"
     }
   };
   const [regradeSettings, regradeSettingsChange] = useState(settings);
@@ -83,18 +82,18 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
         to: "/author/tests"
       };
 
-  const breadcrumbData = [
-    userFlowUrl,
-    {
+  const breadcrumbData = [userFlowUrl];
+  if (!_locationState?.isRedirected) {
+    breadcrumbData.push({
       title: assignments[0]?.title,
       to: `/author/tests/tab/review/id/${newTestId}`,
       state: _locationState
-    },
-    {
-      title: "Regrade",
-      to: ""
-    }
-  ];
+    });
+  }
+  breadcrumbData.push({
+    title: "Regrade",
+    to: ""
+  });
 
   return (
     <Fragment>

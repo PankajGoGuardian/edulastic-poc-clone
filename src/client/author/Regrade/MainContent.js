@@ -33,7 +33,7 @@ const MainContent = ({
     regradeSettingsChange(newSettings);
     setAssignmentOptions(value);
   };
-  const { choicesChanged, removedQuestion, addedQuestion } = regradeSettings.options;
+  const { editedQuestion, removedQuestion, addedQuestion } = regradeSettings.options;
   return (
     <Container>
       <h2>
@@ -69,8 +69,8 @@ const MainContent = ({
         <Row>
           <OptionTitle>Edit Items</OptionTitle>
         </Row>
-        <Group defaultValue={choicesChanged} onChange={e => onUpdateSettings("choicesChanged", e.target.value)}>
-          <Row key={"choicesChanged"}>
+        <Group defaultValue={editedQuestion} onChange={e => onUpdateSettings("editedQuestion", e.target.value)}>
+          <Row key={"editedQuestion"}>
             <Radio value={ACTIONS.SKIP}>Skip grading</Radio>
             <Radio value={ACTIONS.SCORE}>Rescore automatially</Radio>
             <Radio value={ACTIONS.MANUAL}>Mark for Manual grading</Radio>

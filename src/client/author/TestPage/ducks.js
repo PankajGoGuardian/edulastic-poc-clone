@@ -106,6 +106,28 @@ export const getTestGradeAndSubject = (group, testGrades, testSubjects, testTags
   }
   return { testGrades, testSubjects };
 };
+//user is created ? then he is author not authored and in authors list he is co-author
+const authorType = (userId, { createdBy, authors }) => {
+  if (userId === createdBy._id) {
+    return "author";
+  }
+  if (authors.some(item => item._id === userId)) {
+    return "co-author";
+  }
+  return false;
+};
+
+const isRegraded = (typeOfAuthor, entity) => {
+  if (
+    ["co-author", "author"].includes(typeOfAuthor) &&
+    entity._id !== entity.previousTestId &&
+    entity.status === "published" &&
+    entity.isUsed
+  ) {
+    return true;
+  }
+  return false;
+};
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[tests] create test request";
@@ -947,8 +969,20 @@ function* receiveTestByIdSaga({ payload }) {
       requestLatest: payload.requestLatest
     });
     const userId = yield select(getUserIdSelector);
+    const typeOfAuthor = authorType(userId, entity);
+    if (payload.editAssigned && isRegraded(typeOfAuthor, entity)) {
+      const routerState = yield select(({ router }) => router.location.state) || {};
+      yield put(setTestDataAction({ updated: false }));
+      yield put(
+        push({
+          pathname: `/author/assignments/regrade/new/${entity._id}/old/${entity.previousTestId}`,
+          state: { ...routerState, isRedirected: true }
+        })
+      );
+      return;
+    }
     // For assignment edit flow duplicate the test if user doesnt have author permission
-    if (payload.editAssigned && !entity.isInEditAndRegrade && !entity.authors.some(item => item._id === userId)) {
+    if (payload.editAssigned && !entity.isInEditAndRegrade && !typeOfAuthor) {
       const duplicate = yield call(assignmentApi.duplicateAssignment, {
         _id: entity._id,
         title: entity.title,

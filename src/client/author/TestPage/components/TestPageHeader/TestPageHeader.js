@@ -189,7 +189,19 @@ const TestPageHeader = ({
     onPublish();
   };
 
+  const isNotRegradable = () => {
+    const isTeacher = userRole === roleuser.TEACHER;
+    const isAuthorsTest = test.itemGroups.some(group => group.type === "AUTOSELECT") || test.itemGroups.length > 1;
+    console.log(isTeacher, isAuthorsTest);
+    return isTeacher && isAuthorsTest;
+  };
+
   const handleRegrade = () => {
+    if (isNotRegradable()) {
+      //For time being block teacher regrading a authors test is blocked here
+      message.warn("Teacher can not regrade author's test");
+      return onPublish();
+    }
     setCurrentAction("publish");
     onRegradeConfirm();
     return true;

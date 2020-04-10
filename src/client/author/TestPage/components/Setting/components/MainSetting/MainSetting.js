@@ -75,6 +75,8 @@ const testTypes = {
   [PRACTICE]: "Practice"
 };
 
+const { ALL_OR_NOTHING, PARTIAL_CREDIT, ITEM_LEVEL_EVALUATION } = evalTypeLabels;
+
 class MainSetting extends Component {
   constructor(props) {
     super(props);
@@ -700,24 +702,38 @@ class MainSetting extends Component {
                     onChange={e => this.updateTestData("scoringType")(e.target.value)}
                     value={scoringType}
                   >
-                    {Object.keys(evalTypes).map(item => (
-                      <RadioBtn value={item} data-cy={item} key={item}>
-                        {evalTypes[item]}
-                      </RadioBtn>
-                    ))}
-                  </StyledRadioGroup>
-                  {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
-                    <p>
+                    <RadioBtn value={ALL_OR_NOTHING} data-cy={ALL_OR_NOTHING} key={ALL_OR_NOTHING}>
+                      {evalTypes.ALL_OR_NOTHING}
+                    </RadioBtn>
+                    <RadioBtn value={PARTIAL_CREDIT} data-cy={PARTIAL_CREDIT} key={PARTIAL_CREDIT}>
+                      {evalTypes.PARTIAL_CREDIT}
+                    </RadioBtn>
+                    {/* effective margin 9px between checkbox and radio button */}
+                    {/* half of the margin (18px) if checkbox is not getting rendered */}
+                    {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                       <CheckboxLabel
                         disabled={!owner || !isEditable}
                         checked={penalty === false}
                         data-cy="PENALIZE"
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
+                        mt="-9px"
+                        ml="40px"
+                        mb="18px"
                       >
                         Don’t penalize for incorrect selection
                       </CheckboxLabel>
-                    </p>
-                  )}
+                    )}
+                    {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
+                    {/* not setting mb (margin bottom) as it is common component */}
+                    <RadioBtn
+                      value={ITEM_LEVEL_EVALUATION}
+                      data-cy={ITEM_LEVEL_EVALUATION}
+                      key={ITEM_LEVEL_EVALUATION}
+                      style={{ marginBottom: "0px" }}
+                    >
+                      {evalTypes.ITEM_LEVEL_EVALUATION}
+                    </RadioBtn>
+                  </StyledRadioGroup>
                   <Description>
                     Choose if students should be awarded partial credit for their answers or not. If partial credit is
                     allowed, then choose whether the student should be penalized for.

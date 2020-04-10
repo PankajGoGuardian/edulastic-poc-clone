@@ -48,8 +48,8 @@ const ChoicesBox = ({ resprops, id }) => {
   const styles = {
     ...btnStyle,
     overflow: "hidden",
-    width: widthpx || btnStyle.width,
-    height: heightpx || btnStyle.height
+    width: widthpx,
+    height: heightpx
   };
 
   const selectChange = val => {

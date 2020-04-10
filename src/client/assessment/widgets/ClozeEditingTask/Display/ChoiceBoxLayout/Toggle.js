@@ -12,10 +12,9 @@ const Toggle = ({ styles, options, userAnswer, disableResponse, onChange, displa
   const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
 
   const handleChange = ({ target: { value: opIndex } }) => onChange(options[opIndex]);
-
   return (
     <ToggleWrapper>
-      <AnswerBox isDahsline={isDahsline} style={styles}>
+      <AnswerBox isDahsline={isDahsline} style={{ ...styles, width: "auto" }}>
         <AnswerCont dangerouslySetInnerHTML={{ __html: answer }} isHighlight={!isDahsline} />
       </AnswerBox>
       <RadioGroup value={answeredIndex} disabled={disableResponse} onChange={handleChange} isDahsline={isDahsline}>

@@ -34,7 +34,8 @@ import {
   ExpandedTable,
   ActionsWrapper,
   TitleCase,
-  TimedTestIndicator
+  TimedTestIndicator,
+  TypeWrapper
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
@@ -131,7 +132,7 @@ const TableList = ({
         dataIndex: "testType",
         width: "10%",
         render: (_, row) => (
-          <>
+          <TypeWrapper>
             {row && row.testType === test.type.PRACTICE ? (
               <TypeIcon data-cy="type" type="p">
                 P
@@ -149,7 +150,7 @@ const TableList = ({
                 {row.timedAssignment / (60 * 1000)}min
               </TimedTestIndicator>
             )}
-          </>
+          </TypeWrapper>
         )
       },
       {

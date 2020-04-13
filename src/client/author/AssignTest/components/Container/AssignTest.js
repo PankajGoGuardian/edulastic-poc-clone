@@ -106,27 +106,13 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
           : assignmentSettings.closePolicy || assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON : ASSESSMENT,
-        playerSkinType: testSettings.playerSkinType,
-        timedAssignment: testSettings?.timedAssignment,
-        ...(testSettings?.timedAssignment
-          ? {
-              allowedTime: testSettings?.allowedTime,
-              pauseAllowed: testSettings?.pauseAllowed
-            }
-          : {})
+        playerSkinType: testSettings.playerSkinType
       });
     } else {
       this.updateAssignmentNew({
         testType: isAdmin ? COMMON : ASSESSMENT,
         openPolicy: isAdmin ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER : assignmentSettings.openPolicy,
-        playerSkinType: testSettings.playerSkinType,
-        timedAssignment: testSettings?.timedAssignment,
-        ...(testSettings?.timedAssignment
-          ? {
-              allowedTime: testSettings?.allowedTime,
-              pauseAllowed: testSettings?.pauseAllowed
-            }
-          : {})
+        playerSkinType: testSettings.playerSkinType
       });
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);
@@ -159,8 +145,8 @@ class AssignTest extends React.Component {
       message.error("Please select at least one class to assign.");
     } else if (assignment.endDate < Date.now()) {
       message.error("Please Enter a future end date. ");
-    } else if ( this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
-        message.error("Entered due date should not be greater than end date.")
+    } else if (this.state.changeDateSelection && assignment.dueDate > assignment.endDate) {
+      message.error("Entered due date should not be greater than end date.");
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
       message.error("Please select the student");
     } else {
@@ -247,7 +233,7 @@ class AssignTest extends React.Component {
         dueDate
       });
     });
-  }
+  };
 
   render() {
     const { isAdvancedView, specificStudents, selectedDateOption } = this.state;

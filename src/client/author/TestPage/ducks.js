@@ -1327,6 +1327,18 @@ function* publishTestSaga({ payload }) {
       yield call(message.success, "Successfully published");
     }
     if (assignFlow) {
+      let update = { timedAssignment: _test?.timedAssignment };
+      if (_test?.timedAssignment) {
+        update = {
+          ...update,
+          allowedTime: _test?.allowedTime || 10 * 60 * 1000,
+          pauseAllowed: _test?.pauseAllowed || false
+        };
+      }
+      /**
+       * during assign flow , putting default settings
+       */
+      yield put(updateAssingnmentSettingsAction(update));
       yield put(push(`/author/assignments/${id}`));
     } else {
       yield put(push(`/author/tests/${id}/publish`));

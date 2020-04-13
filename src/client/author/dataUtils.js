@@ -123,7 +123,7 @@ export const getQuestionType = item => {
  */
 
 export const getInterestedStandards = (summary, interestedCurriculums) => {
-  let allStandards = [];
+  let allStandards = summary?.standards || [];
   if (summary?.groupSummary?.length) {
     allStandards = uniqBy(summary.groupSummary.flatMap(item => item.standards || []), "identifier");
   }

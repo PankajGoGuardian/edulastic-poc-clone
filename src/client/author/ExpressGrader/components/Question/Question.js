@@ -92,16 +92,14 @@ class Question extends Component {
           studentResponseLoading: this.props.studentResponseLoading
         }}
       >
-        <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-          <ClassQuestions
-            currentStudent={student}
-            questionActivities={studentQuestions}
-            classResponse={{ testItems: selectedItems }}
-            qIndex={qIndex}
-            isPresentationMode={isPresentationMode}
-            testActivityId={record.testActivityId}
-          />
-        </ScratchPadContext.Provider>
+        <ClassQuestions
+          currentStudent={student}
+          questionActivities={studentQuestions}
+          classResponse={{ testItems: selectedItems }}
+          qIndex={qIndex}
+          isPresentationMode={isPresentationMode}
+          testActivityId={record.testActivityId}
+        />
       </AnswerContext.Provider>
     );
   }

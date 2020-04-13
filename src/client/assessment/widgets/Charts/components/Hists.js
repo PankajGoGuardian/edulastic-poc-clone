@@ -148,6 +148,8 @@ const Hists = ({
               x={getCenterX(index) + (step - 2) / 2}
               y={height}
               width={70}
+              onMouseEnter={handleMouse(index)}
+              onMouseLeave={handleMouse(null)}
             >
               {dot.x}
             </VxText>

@@ -75,7 +75,7 @@ const Hints = ({
         }
       }, 500);
     }
-    if (showCount === 1) {
+    if (showCount) {
       saveHintUsage({
         event: "HintClicked",
         id,
@@ -182,4 +182,3 @@ const QuestionLabel = styled.div`
   margin-bottom: 16px;
   border-bottom: 0.05rem solid ${backgroundGrey};
 `;
-

@@ -1,4 +1,4 @@
-import { themeColor } from "@edulastic/colors";
+import { themeColor, lightGrey10 } from "@edulastic/colors";
 import { EduButton, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import {
   IconFolderAll,
@@ -7,7 +7,9 @@ import {
   IconFolderNew,
   // IconDuplicate,
   IconMoreVertical,
-  IconPencilEdit
+  IconPencilEdit,
+  IconGroup,
+  IconClass
 } from "@edulastic/icons";
 import { faArchive } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -540,12 +542,24 @@ class LeftFilter extends React.Component {
                   </Select.Option>
                   {classListActive.map(item => (
                     <Select.Option key={item._id} value={item._id}>
+                      {item.type === "custom" ? (
+                        <IconGroup width={20} height={19} margin="0 10px -5px 0px" color={lightGrey10} />
+                      ) : (
+                        <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+                      )}
                       {item.name}
                     </Select.Option>
                   ))}
                   {classListArchive.map(item => (
                     <Select.Option key={item._id} value={item._id}>
-                      <span style={{ marginRight: "15px" }}>{item.name}</span>
+                      <span style={{ marginRight: "15px" }}>
+                        {item.type === "custom" ? (
+                          <IconGroup width={20} height={19} margin="0 10px -5px 0px" color={lightGrey10} />
+                        ) : (
+                          <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+                        )}
+                        {item.name}
+                      </span>
                       <FontAwesomeIcon icon={faArchive} />
                     </Select.Option>
                   ))}

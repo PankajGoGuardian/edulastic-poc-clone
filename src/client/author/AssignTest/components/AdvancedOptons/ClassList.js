@@ -14,6 +14,8 @@ import { receiveCourseListAction, getCourseListSelector } from "../../../Courses
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getTestSelector } from "../../../TestPage/ducks";
+import { IconGroup, IconClass } from "@edulastic/icons";
+import { lightGrey10 } from "@edulastic/colors";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -32,7 +34,8 @@ const convertTableData = row => ({
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grades || ""
+  grades: row.grades || "",
+  type: row.type
 });
 
 class ClassList extends React.Component {
@@ -53,6 +56,7 @@ class ClassList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      classType: "all",
       searchTerms: {
         institutionIds: [],
         subjects: [],
@@ -119,6 +123,10 @@ class ClassList extends React.Component {
     this.setState({ searchTerms }, this.loadClassList);
   };
 
+  handleClassTypeFilter = key => {
+    this.setState({ classType: key });
+  };
+
   handleSelectAll = checked => {
     const { selectClass, classList } = this.props;
     if (checked) {
@@ -131,9 +139,11 @@ class ClassList extends React.Component {
 
   render() {
     const { classList, schools, courseList, selectClass, selectedClasses } = this.props;
-    const { searchTerms } = this.state;
+    const { searchTerms, classType } = this.state;
 
-    const tableData = classList.map(item => convertTableData(item));
+    const tableData = classList
+      .filter(item => classType === "all" || item.type === classType)
+      .map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
 
     const rowSelection = {
@@ -154,7 +164,17 @@ class ClassList extends React.Component {
         dataIndex: "className",
         key: "className",
         sorter: (a, b) => a.className > b.className,
-        sortDirections: ["descend", "ascend"]
+        sortDirections: ["descend", "ascend"],
+        render: (className, row) => (
+          <div>
+            {row.type === "custom" ? (
+              <IconGroup width={20} height={19} margin="0 10px 0 0px" color={lightGrey10} />
+            ) : (
+              <IconClass width={13} height={14} margin="0 10px 0 0px" color={lightGrey10} />
+            )}
+            {className}
+          </div>
+        )
       },
       {
         title: "TEACHER",
@@ -253,6 +273,26 @@ class ClassList extends React.Component {
             >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
+            </Select>
+          </StyledRowLabel>
+
+          <StyledRowLabel>
+            Show Class/Groups
+            <Select
+              placeholder="All"
+              onChange={this.handleClassTypeFilter}
+              showSearch
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {[
+                { name: "All", value: "all" },
+                { name: "Classes", value: "class" },
+                { name: "Student Groups", value: "custom" }
+              ].map(({ name, value }) => (
+                <Select.Option key={name} value={value}>
                   {name}
                 </Select.Option>
               ))}

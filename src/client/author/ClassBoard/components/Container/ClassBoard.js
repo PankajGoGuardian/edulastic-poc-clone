@@ -82,7 +82,6 @@ import Score from "../Score/Score";
 import {
   BothButton,
   ButtonIconWrap,
-  CheckContainer,
   ClassBoardFeats,
   DropMenu,
   GraphContainer,
@@ -98,7 +97,6 @@ import {
   StudentButtonDiv,
   StudentGrapContainer,
   StyledCard,
-  StyledCheckbox,
   StyledFlexContainer
 } from "./styled";
 
@@ -685,6 +683,7 @@ class ClassBoard extends Component {
     const enableDownload = testActivity.some(item => item.status === "submitted") && isItemsVisible;
 
     const { showScoreImporvement } = this.state;
+
     return (
       <div>
         {showMarkSubmittedPopup && (

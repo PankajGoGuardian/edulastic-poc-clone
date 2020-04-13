@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
-import PropTypes from "prop-types";
-import { find } from "lodash";
+import { LegendContainer, Legends } from "@edulastic/common";
 import { Select } from "antd";
-import { FlexContainer } from "@edulastic/common";
+import { find } from "lodash";
+import PropTypes from "prop-types";
+import React, { Fragment } from "react";
 import { Container, StyledSelect } from "./styled";
 
 const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }) => {
@@ -29,7 +29,8 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
   return (
     <Fragment>
       {students && students.filter(valid).length !== 0 && (
-        <FlexContainer justifyContent="flex-end">
+        <LegendContainer>
+          <Legends />
           <Container>
             <StyledSelect value={user} onChange={onSortChange}>
               {students.map((student, index) => {
@@ -41,7 +42,7 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
               })}
             </StyledSelect>
           </Container>
-        </FlexContainer>
+        </LegendContainer>
       )}
     </Fragment>
   );

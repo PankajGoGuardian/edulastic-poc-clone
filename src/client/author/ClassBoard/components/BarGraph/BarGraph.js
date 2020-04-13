@@ -17,7 +17,7 @@ import {
 } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import memoizeOne from "memoize-one";
-import { scrollTo } from "@edulastic/common";
+import { scrollTo, Legends, LegendContainer } from "@edulastic/common";
 import { MainDiv, StyledCustomTooltip, OnScreenNotification } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion, getItemSummary, getHasRandomQuestionselector } from "../../ducks";
@@ -332,7 +332,11 @@ class BarGraph extends Component {
             visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
           }}
         />
-
+        {isBoth && (
+          <LegendContainer style={{ marginBottom: "-18px", paddingLeft: "80px" }}>
+            <Legends />
+          </LegendContainer>
+        )}
         <ResponsiveContainer width="99%" height={240}>
           {hasRandomQuestions && isBoth ? (
             <OnScreenNotification>

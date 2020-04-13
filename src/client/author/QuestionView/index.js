@@ -7,19 +7,10 @@ import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } 
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, yellow1, white, themeColor } from "@edulastic/colors";
 import { ThemeProvider } from "styled-components";
-import { scrollTo, AnswerContext } from "@edulastic/common";
+import { scrollTo, AnswerContext, Legends, LegendContainer } from "@edulastic/common";
 import { getAvatarName } from "../ClassBoard/Transformer";
 
-import {
-  StyledFlexContainer,
-  StyledCard,
-  LegendContainer,
-  LegendItems,
-  LegendItem,
-  LegendIcon,
-  LegendLabel,
-  TooltipContainer
-} from "./styled";
+import { StyledFlexContainer, StyledCard, TooltipContainer } from "./styled";
 import StudentResponse from "./component/studentResponses/studentResponse";
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
@@ -184,28 +175,7 @@ class QuestionViewContainer extends Component {
         <StyledFlexContainer>
           <StyledCard bordered={false}>
             <LegendContainer>
-              <LegendItems>
-                <LegendItem>
-                  <LegendIcon color={green} />
-                  <LegendLabel>CORRECT</LegendLabel>
-                </LegendItem>
-                <LegendItem>
-                  <LegendIcon color={incorrect} />
-                  <LegendLabel>INCORRECT</LegendLabel>
-                </LegendItem>
-                <LegendItem>
-                  <LegendIcon color={yellow1} />
-                  <LegendLabel>PARTIALLY CORRECT</LegendLabel>
-                </LegendItem>
-                <LegendItem>
-                  <LegendIcon color={dropZoneTitleColor} />
-                  <LegendLabel>SKIPPED</LegendLabel>
-                </LegendItem>
-                <LegendItem>
-                  <LegendIcon color="rgb(56, 150, 190)" />
-                  <LegendLabel>MANUALLY GRADED</LegendLabel>
-                </LegendItem>
-              </LegendItems>
+              <Legends />
               {children}
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>

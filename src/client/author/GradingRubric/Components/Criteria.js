@@ -29,7 +29,7 @@ const Criteria = ({ data, id, currentRubricData, updateRubricData, isEditable, c
     name: `Rating ${index}`,
     desc: "",
     id: v4(),
-    points: index - 1
+    points: ""
   });
 
   const getRatings = () =>

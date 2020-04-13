@@ -19,13 +19,13 @@ const CreateNew = ({ form, updateRubricData, currentRubricData, isEditable, user
         name: "Rating 1",
         desc: "",
         id: v4(),
-        points: 0
+        points: ""
       },
       {
         name: "Rating 2",
         desc: "",
         id: v4(),
-        points: 1
+        points: ""
       }
     ]
   });
@@ -129,12 +129,10 @@ const enhance = compose(
   Form.create(),
   connect(
     state => ({
-      // questionData: getQuestionDataSelector(state)
       currentRubricData: getCurrentRubricDataSelector(state),
       user: getUserDetails(state)
     }),
     {
-      // setQuestionData: setQuestionDataAction
       updateRubricData: updateRubricDataAction
     }
   )

@@ -106,6 +106,10 @@ const UseExisting = ({
             }
             return isValid;
           });
+          if (isValid && uniqueRatings.includes(NaN)) {
+            isValid = false;
+            message.error("Rating point must not be empty.");
+          }
           if (isValid && !uniqueRatings.includes(0)) {
             isValid = false;
             message.error("Rating point must be 0 for at least one rating within a criteria.");

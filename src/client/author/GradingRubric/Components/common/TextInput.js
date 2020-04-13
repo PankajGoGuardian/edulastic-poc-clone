@@ -32,12 +32,12 @@ const TextInput = ({
       updateRubricData(nextState);
     } else if (componentFor === "Rating") {
       if (
-        (textType === "number" && !isNaN(parseFloat(value)) && value >= 0) ||
+        (textType === "number" && ((!isNaN(parseFloat(value)) && value >= 0) || value === "")) ||
         ["text", "textarea"].includes(textType)
       ) {
         nextState = produce(currentRubricData, draftState => {
           draftState.criteria.find(c => c.id === parentId).ratings.find(r => r.id === id)[fieldMapping[textType]] =
-            textType === "number" ? +value : value;
+            textType === "number" ? (value === "" ? value : +value) : value;
         });
         updateRubricData(nextState);
       }
@@ -49,7 +49,7 @@ const TextInput = ({
     if (componentFor === "Criteria") {
       placeholder = "Enter a criteria name";
     } else {
-      if (textType === "number") placeholder = "Points";
+      if (textType === "number") placeholder = "0";
       else placeholder = "Label";
     }
   }

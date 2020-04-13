@@ -70,7 +70,7 @@ export const getTestItemAuthorName = (item, orgCollections) => {
 };
 
 export const getTestItemAuthorIcon = (item, orgCollections) => {
-  let { collections = [] } = item;
+  const { collections = [] } = item;
 
   if (collections.length) {
     // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
@@ -96,7 +96,8 @@ export const getPlaylistAuthorName = item => {
   } = item;
   if (sharedBy && sharedBy[0]) {
     return `${sharedBy[0].name}`;
-  } else return ``;
+  }
+  return ``;
 };
 
 export const getQuestionType = item => {
@@ -104,7 +105,7 @@ export const getQuestionType = item => {
   const resources = get(item, ["data", "resources"], []);
   const hasPassage = resources.some(item => item.type === PASSAGE) || item.passageId;
   if (hasPassage) {
-    //All questions that are linked to passage should show type as passage and question type attached to passage
+    // All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1
       ? [PASSAGE.toUpperCase(), "MULTIPART"]
       : [PASSAGE.toUpperCase(), questions[0] && questions[0].title];
@@ -122,22 +123,22 @@ export const getQuestionType = item => {
  */
 
 export const getInterestedStandards = (summary, interestedCurriculums) => {
+  let allStandards = [];
   if (summary?.groupSummary?.length) {
-    produce(summary, draft => {
-      draft.standards = uniqBy(draft.groupSummary.flatMap(item => item.standards || []), "identifier");
-    });
+    allStandards = uniqBy(summary.groupSummary.flatMap(item => item.standards || []), "identifier");
   }
-  if (!summary.standards || !summary.standards.length) return [];
-  const curriculumId = getFromLocalStorage("defaultCurriculumIdSelected") || "";
-  //removing all multiStandard mappings
-  const authorStandards = summary.standards.filter(item => !item.isEquivalentStandard && item.curriculumId);
 
-  //pick standards matching with interested curriculums
+  if (!allStandards?.length) return [];
+  const curriculumId = getFromLocalStorage("defaultCurriculumIdSelected") || "";
+  // removing all multiStandard mappings
+  const authorStandards = allStandards.filter(item => !item.isEquivalentStandard && item.curriculumId);
+
+  // pick standards matching with interested curriculums
   let interestedStandards = authorStandards.filter(standard =>
     interestedCurriculums.some(interested => interested._id === standard.curriculumId)
   );
 
-  //pick standards based on search if interested standards is empty
+  // pick standards based on search if interested standards is empty
   if (!interestedStandards.length) {
     interestedStandards = authorStandards.filter(standard => standard.curriculumId === curriculumId);
     // use the authored standards if still the interested alignments is empty
@@ -155,7 +156,7 @@ export const flattenPlaylistStandards = (modules = []) => {
 
 export const setDefaultInterests = newInterest => {
   const sessionGlobals = JSON.parse(sessionStorage.getItem("filters[globalSessionFilters]")) || {};
-  //For all subject change reset curriculumIds
+  // For all subject change reset curriculumIds
   const resetCurriculumId = Object.keys(newInterest).includes("subject") ? { curriculumId: "" } : {};
   sessionStorage.setItem(
     "filters[globalSessionFilters]",

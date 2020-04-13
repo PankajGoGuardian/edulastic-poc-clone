@@ -84,6 +84,10 @@ const Hints = ({
     }
   }, [showCount]);
 
+  useEffect(() => {
+    updateShowCount(0);
+  }, [id]);
+
   return (
     hintCount > 0 && (
       <HintCont data-cy="hint-container" className="hint-container" ref={hintContRef}>

@@ -12,7 +12,8 @@ const PlayerSkinSelector = ({
   testType,
   isAdvanceView,
   disabled = false,
-  fullwidth = false
+  fullwidth = false,
+  selectBackgroundWhite = false
 }) => {
   const edulastic = `${playerSkinTypes.edulastic} ${testType.includes("assessment") ? "Test" : "Practice"}`;
   const types = {
@@ -26,6 +27,7 @@ const PlayerSkinSelector = ({
       onChange={onAssignmentTypeChange}
       value={playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase() ? edulastic : playerSkinType}
       disabled={disabled}
+      isBackgroundWhite={selectBackgroundWhite}
     >
       {Object.keys(types).map(key => (
         <Select.Option key={key} value={key}>

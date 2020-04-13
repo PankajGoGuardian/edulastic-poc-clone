@@ -8,6 +8,7 @@ import {
   red,
   largeDesktopWidth,
   linkColor1,
+  greyThemeLighter,
   mobileWidth
 } from "@edulastic/colors";
 
@@ -180,7 +181,7 @@ export const SettingsBtn = styled.span`
 export const StyledSelect = styled(Select)`
   width: 100%;
   .ant-select-selection {
-    background: #f8f8f8;
+    background: ${({ isBackgroundWhite }) => (isBackgroundWhite ? white : greyThemeLighter)};
     min-height: 40px;
     padding: 3px;
     border-radius: 2px;

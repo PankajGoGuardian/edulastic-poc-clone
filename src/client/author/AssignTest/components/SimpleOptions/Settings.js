@@ -195,6 +195,7 @@ const Settings = ({
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed
   } = assignmentSettings;
+  const playerSkinType = assignmentSettings.playerSkinType || testSettings.playerSkinType;
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -712,6 +713,22 @@ const Settings = ({
                     </StyledRowSettings>
                   ))}
                 </RadioWrapper>
+              )}
+              {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
+                <FeaturesSwitch
+                  inputFeatures="selectPlayerSkinType"
+                  actionOnInaccessible="hidden"
+                  key="selectPlayerSkin"
+                  gradeSubject={gradeSubject}
+                >
+                  <PlayerSkinSelector
+                    userRole={userRole}
+                    playerSkinType={playerSkinType}
+                    onAssignmentTypeChange={changeField("playerSkinType")}
+                    testType={assignmentSettings?.testType || testSettings.testType}
+                    selectBackgroundWhite
+                  />
+                </FeaturesSwitch>
               )}
             </Block>
           </div>

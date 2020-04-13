@@ -329,21 +329,6 @@ class SimpleOptions extends React.Component {
               onAssignmentTypeChange={changeField("testType")}
             />
           </FeaturesSwitch>
-          {(assignment.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (
-            <FeaturesSwitch
-              inputFeatures="selectPlayerSkinType"
-              actionOnInaccessible="hidden"
-              key="selectPlayerSkin"
-              gradeSubject={gradeSubject}
-            >
-              <PlayerSkinSelector
-                userRole={userRole}
-                playerSkinType={playerSkinType}
-                onAssignmentTypeChange={changeField("playerSkinType")}
-                testType={assignment.testType || testSettings.testType}
-              />
-            </FeaturesSwitch>
-          )}
           <StyledRowButton gutter={32}>
             <Col>
               <SettingsBtn onClick={this.toggleSettings}>

@@ -81,7 +81,7 @@ class AddCoTeacher extends React.Component {
     const { searchText } = this.state;
     const coTeachers = teachers.filter(
       teacher =>
-        (teacher._id !== primaryTeacherId && teacher.email.includes(searchText)) ||
+        (teacher._id !== primaryTeacherId && teacher.email?.includes(searchText)) ||
         (teacher.firstName && teacher.firstName.includes(searchText))
     );
     const notFoundText = searchText.length ? "No result found" : "Please enter 3 or more characters";

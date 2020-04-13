@@ -57,7 +57,8 @@ class DeleteConfirm extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel, selectedStudent } = this.props;
+    const { isOpen, handleCancel, selectedStudent, selectedClass } = this.props;
+    const { type } = selectedClass;
 
     return (
       <>
@@ -67,7 +68,9 @@ class DeleteConfirm extends React.Component {
             title="Remove Student(s)"
             handleOnOkClick={this.onRemove}
             wordToBeTyped="REMOVE"
-            primaryLabel="Are you sure you want to remove the selected student(s) from the class?"
+            primaryLabel={`Are you sure you want to remove the selected student(s) from the ${
+              type === "class" ? "class" : "group"
+            }?`}
             secondaryLabel={selectedStudent.map(({ firstName = "", lastName = "", _id }) => {
               return (
                 <StyledClassName key={_id}>

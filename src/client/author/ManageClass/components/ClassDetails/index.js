@@ -6,7 +6,6 @@ import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { themeColor } from "@edulastic/colors";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { archiveClassAction } from "../../../Classes/ducks";
 import {
@@ -23,10 +22,9 @@ import ActionContainer from "./ActionContainer";
 import Header from "./Header";
 import MainInfo from "./MainInfo";
 import StudentsList from "./StudentsList";
-import { ButtonWrapper, GoogleClassSyncModal, StyledButton } from "./styled";
+import { ButtonWrapper, GoogleClassSyncModal } from "./styled";
 import CanvasSyncModal from "./CanvasSyncModal";
 import { EduButton } from "@edulastic/common";
-import GroupStudentList from "./GroupStudentList";
 
 const ClassDetails = ({
   selectedClass,
@@ -175,44 +173,31 @@ const ClassDetails = ({
           <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />
+            <MainInfo
+              entity={selectedClass}
+              fetchClassList={fetchClassList}
+              viewAssessmentHandler={viewAssessmentHandler}
+              isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+              allowGoogleLogin={allowGoogleLogin}
+              syncGCModal={() => setOpenGCModal(true)}
+              archiveClass={archiveClass}
+              allowCanvasLogin={allowCanvasLogin}
+              syncCanvasModal={syncCanvasModal}
+            />
 
-            {type == "class" && (
-              <>
-                <MainInfo
-                  entity={selectedClass}
-                  fetchClassList={fetchClassList}
-                  viewAssessmentHandler={viewAssessmentHandler}
-                  isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-                  allowGoogleLogin={allowGoogleLogin}
-                  syncGCModal={() => setOpenGCModal(true)}
-                  archiveClass={archiveClass}
-                  allowCanvasLogin={allowCanvasLogin}
-                  syncCanvasModal={syncCanvasModal}
-                />
-
-                <ActionContainer
-                  loadStudents={loadStudents}
-                  history={history}
-                  cleverId={cleverId}
-                  searchAndAddStudents={searchAndAddStudents}
-                />
-                <StudentsList
-                  selectStudent
-                  selectedClass={selectedClass}
-                  allowGoogleLogin={allowGoogleLogin}
-                  allowCanvasLogin={allowCanvasLogin}
-                />
-              </>
-            )}
-
-            {type == "custom" && (
-              <GroupStudentList
-                selectStudent
-                selectedClass={selectedClass}
-                allowGoogleLogin={allowGoogleLogin}
-                allowCanvasLogin={allowCanvasLogin}
-              />
-            )}
+            <ActionContainer
+              type={type}
+              loadStudents={loadStudents}
+              history={history}
+              cleverId={cleverId}
+              searchAndAddStudents={searchAndAddStudents}
+            />
+            <StudentsList
+              selectStudent
+              selectedClass={selectedClass}
+              allowGoogleLogin={allowGoogleLogin}
+              allowCanvasLogin={allowCanvasLogin}
+            />
           </MainContentWrapper>
         </>
       )}

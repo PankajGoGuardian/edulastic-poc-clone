@@ -77,7 +77,7 @@ class AddCoTeacher extends React.Component {
   }, 1000);
 
   render() {
-    const { isOpen, handleCancel, primaryTeacherId, teachers } = this.props;
+    const { isOpen, handleCancel, primaryTeacherId, teachers, type } = this.props;
     const { searchText } = this.state;
     const coTeachers = teachers.filter(
       teacher =>
@@ -112,8 +112,8 @@ class AddCoTeacher extends React.Component {
         textAlign="left"
       >
         <Description>
-          Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the Test and
-          view reports of your class(es)
+          Invite your colleagues to view and manage your {type === "class" ? "class" : "group"}. Co-teachers can manage
+          enrollment, assign the Test and view reports of your {type === "class" ? "class(es)" : "group(s)"}.
         </Description>
         <Select
           placeholder="Search teacher by name, email or username."

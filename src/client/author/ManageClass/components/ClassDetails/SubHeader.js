@@ -19,6 +19,7 @@ const SubHeader = ({
   name,
   code,
   _id,
+  type,
   active,
   districtId,
   syncGCModal,
@@ -89,80 +90,86 @@ const SubHeader = ({
     <ContainerHeader>
       <RightContent>
         <ClassLink onClick={getAssignmentsByClass(_id)}>VIEW ASSIGNMENT</ClassLink>
-        {allowGoogleLogin !== false &&
-          active === 1 &&
-          (isUserGoogleLoggedIn ? (
-            <i
-              style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
-              title="Sync with Google Classroom"
-              onClick={syncGCModal}
-            >
-              <IconGoogleClassroom width={22} height={22} />
-            </i>
-          ) : !cleverId ? (
-            <GoogleLogin
-              clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-              render={renderProps => (
+        {type === "class" && (
+          <>
+            {allowGoogleLogin !== false &&
+              active === 1 &&
+              (isUserGoogleLoggedIn ? (
                 <i
                   style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
                   title="Sync with Google Classroom"
-                  onClick={renderProps.onClick}
+                  onClick={syncGCModal}
                 >
                   <IconGoogleClassroom width={22} height={22} />
                 </i>
-              )}
-              scope={scopes}
-              onSuccess={handleLoginSuccess}
-              onFailure={handleError}
-              prompt="consent"
-              responseType="code"
-            />
-          ) : null)}
+              ) : !cleverId ? (
+                <GoogleLogin
+                  clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                  render={renderProps => (
+                    <i
+                      style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+                      title="Sync with Google Classroom"
+                      onClick={renderProps.onClick}
+                    >
+                      <IconGoogleClassroom width={22} height={22} />
+                    </i>
+                  )}
+                  scope={scopes}
+                  onSuccess={handleLoginSuccess}
+                  onFailure={handleError}
+                  prompt="consent"
+                  responseType="code"
+                />
+              ) : null)}
 
-        {allowCanvasLogin && active === 1 && (
-          <i
-            style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
-            title="Sync with Canvas Classroom"
-            onClick={handleSyncWithCanvas}
-          >
-            <img
-              alt="Canvas"
-              src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
-              width={22}
-              height={22}
-            />
-          </i>
-        )}
-        {/* hiding icons as of now, after functinality is added these icons will be displayed */}
-        {/* <StyledIcon type="user" fill={greenDark} /> */}
-        {active === 1 && !cleverId && (
-          <Tooltip placement="top" title="Archive Class">
-            <span onClick={() => setShowModal(true)}>
-              <IconArchiveClass width={20} height={20} />
-            </span>
-          </Tooltip>
-        )}
+            {allowCanvasLogin && active === 1 && (
+              <i
+                style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+                title="Sync with Canvas Classroom"
+                onClick={handleSyncWithCanvas}
+              >
+                <img
+                  alt="Canvas"
+                  src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                  width={22}
+                  height={22}
+                />
+              </i>
+            )}
+            {/* hiding icons as of now, after functinality is added these icons will be displayed */}
+            {/* <StyledIcon type="user" fill={greenDark} /> */}
+            {active === 1 && !cleverId && (
+              <Tooltip placement="top" title="Archive Class">
+                <span onClick={() => setShowModal(true)}>
+                  <IconArchiveClass width={20} height={20} />
+                </span>
+              </Tooltip>
+            )}
 
-        {showModal && (
-          <TypeToConfirmModal
-            modalVisible={showModal}
-            title="Archive Class"
-            handleOnOkClick={handleArchiveClass}
-            wordToBeTyped="ARCHIVE"
-            primaryLabel="Are you sure want to archive the following class?"
-            secondaryLabel={
-              <p style={{ margin: "5px 0" }}>
-                <LightGreenSpan>{name}</LightGreenSpan>
-              </p>
-            }
-            closeModal={handleArchiveClassCancel}
-            okButtonText="Archive"
-          />
+            {showModal && (
+              <TypeToConfirmModal
+                modalVisible={showModal}
+                title="Archive Class"
+                handleOnOkClick={handleArchiveClass}
+                wordToBeTyped="ARCHIVE"
+                primaryLabel="Are you sure want to archive the following class?"
+                secondaryLabel={
+                  <p style={{ margin: "5px 0" }}>
+                    <LightGreenSpan>{name}</LightGreenSpan>
+                  </p>
+                }
+                closeModal={handleArchiveClassCancel}
+                okButtonText="Archive"
+              />
+            )}
+          </>
         )}
       </RightContent>
-      <ClassCode>
-        Class Code <span>{code}</span>
-      </ClassCode>
+      {type === "class" && (
+        <ClassCode>
+          Class Code <span>{code}</span>
+        </ClassCode>
+      )}
     </ContainerHeader>
   );
 };

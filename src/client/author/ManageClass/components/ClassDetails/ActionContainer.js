@@ -47,6 +47,7 @@ import AddToGroupModal from "../../../Reports/common/components/Popups/AddToGrou
 const modalStatus = {};
 
 const ActionContainer = ({
+  type,
   updateStudentRequest,
   addStudentRequest,
   selectedClass,
@@ -298,25 +299,28 @@ const ActionContainer = ({
 
       <AddCoTeacher
         isOpen={isOpen.addCoTeacher}
+        type={type}
         selectedClass={selectedClass}
         handleCancel={() => toggleModal("addCoTeacher")}
       />
 
-      <AddToGroupModal
-        type="group"
-        visible={isOpen.addToGroup}
-        onCancel={() => toggleModal("addToGroup")}
-        checkedStudents={selectedStudent}
-      />
+      {type === "class" && (
+        <AddToGroupModal
+          type="group"
+          visible={isOpen.addToGroup}
+          onCancel={() => toggleModal("addToGroup")}
+          checkedStudents={selectedStudent}
+        />
+      )}
 
       <AddStudentDivider>
         <ButtonsWrapper>
-          {active && !cleverId ? (
+          {active && !cleverId && type === "class" && (
             <EduButton height="30px" isGhost data-cy="addStudent" onClick={() => toggleModal("add")}>
               <IconPlusCircle />
               ADD STUDENT
             </EduButton>
-          ) : null}
+          )}
           <EduButton
             height="30px"
             isGhost
@@ -331,44 +335,46 @@ const ActionContainer = ({
             overlay={
               <DropMenu onClick={handleActionMenuClick}>
                 <CaretUp className="fa fa-caret-up" />
-                {textToSpeech ? (
+                {!!textToSpeech && (
                   <MenuItems key="enableSpeech">
                     <IconVolumeUp width={12} />
                     <span>Enable Text to Speech</span>
                   </MenuItems>
-                ) : null}
-                {textToSpeech ? (
+                )}
+                {!!textToSpeech && (
                   <MenuItems key="disableSpeech">
                     <IconNoVolume />
                     <span>Disable Text to Speech</span>
                   </MenuItems>
-                ) : null}
-                {!cleverId ? (
+                )}
+                {!cleverId && (
                   <MenuItems key="deleteStudent">
                     <IconRemove />
                     <span>Remove Students</span>
                   </MenuItems>
-                ) : null}
+                )}
                 <MenuItems key="resetPwd">
                   <IconCircle />
                   <span>Reset Password</span>
                 </MenuItems>
-                {!cleverId ? (
+                {!cleverId && (
                   <MenuItems key="editStudent">
                     <IconPencilEdit />
                     <span>Edit Stduent</span>
                   </MenuItems>
-                ) : null}
-                {addCoTeacher ? (
+                )}
+                {!!addCoTeacher && (
                   <MenuItems key="addCoTeacher">
                     <IconPlus />
                     <span>Add a Co-Teacher</span>
                   </MenuItems>
-                ) : null}
-                <MenuItems key="addToGroup">
-                  <IconPlus />
-                  <span>Add To Group</span>
-                </MenuItems>
+                )}
+                {type === "class" && (
+                  <MenuItems key="addToGroup">
+                    <IconPlus />
+                    <span>Add To Group</span>
+                  </MenuItems>
+                )}
               </DropMenu>
             }
             placement="bottomRight"
@@ -378,11 +384,11 @@ const ActionContainer = ({
             </EduButton>
           </Dropdown>
 
-          {active && !cleverId ? (
+          {active && !cleverId && type === "class" && (
             <EduButton height="30px" data-cy="addMultiStu" onClick={handleAddMultipleStudent}>
               ADD MULTIPLE STUDENTS
             </EduButton>
-          ) : null}
+          )}
 
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal

@@ -33,6 +33,7 @@ const MainInfo = ({
 }) => {
   // eslint-disable-next-line max-len
   const {
+    type,
     thumbnail,
     grades = [],
     subject,
@@ -87,14 +88,16 @@ const MainInfo = ({
               <div>Subject</div>
               <span>{_subject.text}</span>
             </FieldValue>
-            <FieldValue>
-              <div>Standard</div>
-              {standardSets && standardSets.length ? (
-                <span>{standardSets.map(({ name }) => name).join(", ")}</span>
-              ) : (
-                <span>Other</span>
-              )}
-            </FieldValue>
+            {type === "class" && (
+              <FieldValue>
+                <div>Standard</div>
+                {standardSets && standardSets.length ? (
+                  <span>{standardSets.map(({ name }) => name).join(", ")}</span>
+                ) : (
+                  <span>Other</span>
+                )}
+              </FieldValue>
+            )}
             <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
               <FieldValue>
                 <div>Course</div>
@@ -117,47 +120,48 @@ const MainInfo = ({
               ""
             )}
           </MidWrapper>
-          <RightWrapper>
-            <FieldValue>
-              <div>Start Date</div>
-              <span>{moment(startDate).format("MMM DD, YYYY")}</span>
-            </FieldValue>
-            <FieldValue>
-              <div>End Date</div>
-              <span>{moment(endDate).format("MMM DD, YYYY")}</span>
-            </FieldValue>
-            {!!googleId && (
-              <>
+          {type === "class" && (
+            <RightWrapper>
+              <FieldValue>
+                <div>Start Date</div>
+                <span>{moment(startDate).format("MMM DD, YYYY")}</span>
+              </FieldValue>
+              <FieldValue>
+                <div>End Date</div>
+                <span>{moment(endDate).format("MMM DD, YYYY")}</span>
+              </FieldValue>
+              {!!googleId && (
+                <>
+                  <FieldValue>
+                    <div>G. Class-code</div>
+                    <span>{googleCode}</span>
+                  </FieldValue>
+                  <FieldValue>
+                    <div>Last Sync</div>
+                    <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
+                  </FieldValue>
+                </>
+              )}
+              {!!canvasCourseName && (
                 <FieldValue>
-                  <div>G. Class-code</div>
-                  <span>{googleCode}</span>
+                  <div>Canvas Course</div>
+                  <span>{canvasCourseName}</span>
                 </FieldValue>
+              )}
+              {!!canvasCourseSectionName && (
+                <FieldValue>
+                  <div>Canvas Section</div>
+                  <span>{canvasCourseSectionName}</span>
+                </FieldValue>
+              )}
+              {!!lastSyncDate && (
                 <FieldValue>
                   <div>Last Sync</div>
                   <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
                 </FieldValue>
-              </>
-            )}
-
-            {!!canvasCourseName && (
-              <FieldValue>
-                <div>Canvas Course</div>
-                <span>{canvasCourseName}</span>
-              </FieldValue>
-            )}
-            {!!canvasCourseSectionName && (
-              <FieldValue>
-                <div>Canvas Section</div>
-                <span>{canvasCourseSectionName}</span>
-              </FieldValue>
-            )}
-            {!!lastSyncDate && (
-              <FieldValue>
-                <div>Last Sync</div>
-                <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
-              </FieldValue>
-            )}
-          </RightWrapper>
+              )}
+            </RightWrapper>
+          )}
         </FlexDiv>
       </ClassInfoContainer>
     </MainContainer>

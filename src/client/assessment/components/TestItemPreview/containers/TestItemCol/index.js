@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Tabs, AnswerContext } from "@edulastic/common";
 import { questionType } from "@edulastic/constants";
+import { sortBy } from "lodash";
 
 import { MAX_MOBILE_WIDTH } from "../../../../constants/others";
 
@@ -71,7 +72,7 @@ class TestItemCol extends Component {
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
     const question = questions[widget.reference];
     const prevQActivityForQuestion = previousQuestionActivity.find(qa => qa.qid === question.id);
-    const { fullHeight } = restProps;
+    const { fullHeight, isPrintPreview } = restProps;
     if (!question) {
       return <div />;
     }
@@ -111,7 +112,7 @@ class TestItemCol extends Component {
           calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
           fullMode
           {...restProps}
-          style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
+          style={{ ...testReviewStyle, width: "calc(100% - 256px)"}}
         />
       </TabContainer>
     );
@@ -120,17 +121,18 @@ class TestItemCol extends Component {
   render() {
     const { col, style, windowWidth, colCount, colIndex, testReviewStyle = {}, ...restProps } = this.props;
     const { value } = this.state;
-    const { showStackedView, fullHeight, isSingleQuestionView } = restProps;
+    const { showStackedView, fullHeight, isSingleQuestionView, isPrintPreview } = restProps;
     const derivedWidth = showStackedView || isSingleQuestionView ? "100%" : null;
     const width = derivedWidth
       ? "100%"
       : restProps.showFeedback && colCount > 1 && colIndex === colCount - 1
       ? `calc(${col.dimension} + 280px)`
       : col.dimension || "auto";
-
+    const widgets = col.tabs && !!col.tabs.length && isPrintPreview ? sortBy(col.widgets, ["tabIndex"]) : col.widgets;
+    
     return (
       <Container
-        className="test-item-col"
+        className={`test-item-col ${col.tabs.length ? "test-item-tab-container" : ""}`}
         value={value}
         style={style}
         width={width}
@@ -141,32 +143,35 @@ class TestItemCol extends Component {
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }
       >
-        {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
-          <Tabs value={value} onChange={this.handleTabChange}>
-            {col.tabs.map((tab, tabIndex) => (
-              <Tabs.Tab
-                key={tabIndex}
-                label={tab}
-                style={{
-                  width: `calc(${100 / col.tabs.length}% - 10px)`,
-                  textAlign: "center",
-                  padding: "5px 15px"
-                }}
-                {...restProps}
-              />
-            ))}
-          </Tabs>
-        )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
-          <MobileRightSide onClick={() => this.handleTabChange(1)}>
-            <IconArrow type="left" />
-          </MobileRightSide>
-        )}
-        {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
-          <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-            <IconArrow type="right" />
-          </MobileLeftSide>
-        )}
+        {!isPrintPreview && <>
+          {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
+            <Tabs value={value} onChange={this.handleTabChange}>
+              {col.tabs.map((tab, tabIndex) => (
+                <Tabs.Tab
+                  key={tabIndex}
+                  label={tab}
+                  style={{
+                    width: `calc(${100 / col.tabs.length}% - 10px)`,
+                    textAlign: "center",
+                    padding: "5px 15px"
+                  }}
+                  {...restProps}
+                />
+              ))}
+            </Tabs>
+          )}
+          {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
+            <MobileRightSide onClick={() => this.handleTabChange(1)}>
+              <IconArrow type="left" />
+            </MobileRightSide>
+          )}
+          {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
+            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+              <IconArrow type="right" />
+            </MobileLeftSide>
+          )}
+        </>
+        }
         <WidgetContainer
           data-cy="widgetContainer"
           style={{
@@ -175,13 +180,16 @@ class TestItemCol extends Component {
             alignItems: fullHeight && "flex-start"
           }}
         >
-          {col.widgets
+          {widgets
             .filter(widget => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
-                  value === widget.tabIndex &&
+                  value === widget.tabIndex && !isPrintPreview &&
+                  this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
+                {col.tabs &&
+                  !!col.tabs.length && isPrintPreview &&
                   this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
                 {col.tabs &&
                   !col.tabs.length &&

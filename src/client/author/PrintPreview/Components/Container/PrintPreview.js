@@ -122,6 +122,11 @@ PrintPreview.propTypes = {
 };
 
 const QuestionContentArea = styled.div`
+  .test-item-tab-container {
+    .question-wrapper {
+      padding-bottom: 0;
+    }
+  }
   .test-item-col {
     width: 100%;
     .question-container {

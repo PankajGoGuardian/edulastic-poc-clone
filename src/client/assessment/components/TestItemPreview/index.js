@@ -253,7 +253,7 @@ class TestItemPreview extends Component {
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};
 
-    const { multipartItem, itemLevelScoring, isPassageWithQuestions } = restProps;
+    const { multipartItem, itemLevelScoring, isPassageWithQuestions, isPrintPreview } = restProps;
 
     let showStackedView = false;
 
@@ -301,7 +301,7 @@ class TestItemPreview extends Component {
                     height: "100%",
                     ...transformProps,
                     display: "flex",
-                    flexDirection: showStackedView ? "column" : "row"
+                    flexDirection: showStackedView || isPrintPreview ? "column" : "row"
                   }}
                 >
                   {dataSource.map((col, i) => {
@@ -387,7 +387,7 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        <div style={{ position: "relative", "min-width": "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
+        <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
       </ThemeProvider>
     );
   }

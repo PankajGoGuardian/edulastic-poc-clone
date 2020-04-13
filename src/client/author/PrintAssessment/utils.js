@@ -1,4 +1,4 @@
-import { keyBy, identity, flatten, groupBy } from "lodash";
+import { keyBy, identity, flatten, groupBy, sortBy } from "lodash";
 import { questionType } from "@edulastic/constants";
 import { markQuestionLabel } from "../ClassBoard/Transformer";
 
@@ -9,7 +9,15 @@ export const getOrderedQuestionsAndAnswers = (testItems, passages) => {
     // if it's a passage type question, insert passage before the questions
     // also, if the current testItem has same passageId as previous one, dont insert the passage again!
     if (item.passageId && item.passageId !== testItems?.[index - 1]?.passageId) {
-      acc.push(...(passages?.[item.passageId]?.data || []));
+      const passageStructure = passages?.[item.passageId]?.structure;
+      if (passageStructure?.tabs?.length) {
+        const sortedTabContentIds = sortBy(passageStructure.widgets || [], ["tabIndex"]).map(con => con.reference);
+        const data = passages?.[item.passageId]?.data || [];
+        const sortedData = sortedTabContentIds.map(id => data.find(d => d.id === id));
+        acc.push(...sortedData);
+      } else {
+        acc.push(...(passages?.[item.passageId]?.data || []));
+      }
     }
     acc = [...acc, ...(item?.data?.questions || [])];
     return acc;

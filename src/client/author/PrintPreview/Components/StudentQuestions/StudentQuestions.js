@@ -26,7 +26,7 @@ function Preview({ item, passages, evaluation }) {
         questions={questionsKeyed}
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
-        style={{ width: "calc(100% - 120px)" }}
+        style={{ width: "100%" }}
         isPrintPreview
         evaluation={evaluation}
       />

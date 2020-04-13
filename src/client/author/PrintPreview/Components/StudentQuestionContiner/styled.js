@@ -19,7 +19,8 @@ export const InfoItem = styled.p`
 export const StudentQuestionHeader = styled.div`
   display: flex;
   justify-content: flex-end;
-  padding: 15px 25px 0 25px;
+  padding: 15px 25px;
+  border-bottom: 1px solid #c0c0c0;
 `;
 
 export const TimeContainer = styled.div`

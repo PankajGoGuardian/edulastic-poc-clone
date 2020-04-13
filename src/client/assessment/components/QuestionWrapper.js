@@ -488,7 +488,7 @@ class QuestionWrapper extends Component {
                     <PreviewRubricTable data={rubricDetails} rubricFeedback={rubricFeedback} isDisabled />
                   </RubricTableWrapper>
                 )}
-                {view === "preview" && !isGrade && (
+                {view === "preview" && !isGrade && !isPrintPreview && (
                   <Hints
                     question={data}
                     enableMagnifier={enableMagnifier}

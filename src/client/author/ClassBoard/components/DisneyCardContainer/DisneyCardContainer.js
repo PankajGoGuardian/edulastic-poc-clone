@@ -160,7 +160,6 @@ class DisneyCardContainer extends Component {
           return null;
         });
 
-        const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
         const name = isPresentationMode ? student.fakeName : student.studentName || "-";
         /**
          * for differentiating archived students

@@ -56,7 +56,8 @@ const RedirectPopUp = ({
   groupId,
   testActivity
 }) => {
-  const [dueDate, setDueDate] = useState(moment().add(1, "day"));
+  const [endDate, setEndDate] = useState(moment().add(1, "day"));
+  const [dueDate, setDueDate] = useState(endDate);
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
@@ -82,7 +83,7 @@ const RedirectPopUp = ({
   }, [type, selectedStudents]);
 
   const submitAction = useCallback(async () => {
-    if (dueDate < moment()) {
+    if (endDate < moment()) {
       return message.error("Select a Future end Date");
     }
     setLoading(true);
@@ -110,7 +111,8 @@ const RedirectPopUp = ({
             students: type === "entire" ? [] : _selected,
             showPreviousAttempt: showPrevAttempt,
             questionsDelivery: qDeliveryState,
-            endDate: +dueDate
+            endDate: +endDate,
+            dueDate: +dueDate
           })
           .then(() => {
             message.success("Redirect Successful");
@@ -124,7 +126,7 @@ const RedirectPopUp = ({
       }
     }
     setLoading(false);
-  }, [studentsToRedirect, assignmentId, dueDate, groupId, showPrevAttempt, qDeliveryState]);
+  }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState]);
 
   const disabledEndDate = endDate => {
     if (!endDate) {
@@ -132,6 +134,11 @@ const RedirectPopUp = ({
     }
     return endDate < moment().startOf("day");
   };
+
+  const disabledDueDate = useCallback(
+    (dueDate) => dueDate < moment().startOf("day") || dueDate > endDate,
+    [endDate]
+  );
 
   return (
     <ConfirmationModal
@@ -208,7 +215,27 @@ const RedirectPopUp = ({
         </Row>
 
         <Row gutter={24}>
-          <Col span={12}>
+          {additionalData.dueDate ? <Col span={12}>
+            <h4>Due Date</h4>
+            <Row>
+              <DatePicker
+                data-cy="dueDate"
+                allowClear={false}
+                disabledDate={disabledDueDate}
+                style={{ width: "100%", cursor: "pointer" }}
+                value={dueDate}
+                showTime
+                showToday={false}
+                onChange={v => {
+                  if (!v) {
+                    setDueDate(moment().add(1, "day"));
+                  } else {
+                    setDueDate(v);
+                  }
+                }}
+              />
+            </Row>
+          </Col> : <Col span={12}>
             <h4>Questions delivery</h4>
             <Row>
               <Select
@@ -225,7 +252,7 @@ const RedirectPopUp = ({
                 ))}
               </Select>
             </Row>
-          </Col>
+          </Col>}
           <Col span={12}>
             <h4>Close Date</h4>
             <Row>
@@ -234,14 +261,14 @@ const RedirectPopUp = ({
                 allowClear={false}
                 disabledDate={disabledEndDate}
                 style={{ width: "100%", cursor: "pointer" }}
-                value={dueDate}
+                value={endDate}
                 showTime
                 showToday={false}
                 onChange={v => {
                   if (!v) {
-                    setDueDate(moment().add(1, "day"));
+                    setEndDate(moment().add(1, "day"));
                   } else {
-                    setDueDate(v);
+                    setEndDate(v);
                   }
                 }}
               />
@@ -249,6 +276,24 @@ const RedirectPopUp = ({
           </Col>
         </Row>
         <Row gutter={24}>
+          {additionalData.dueDate && <Col span={12}>
+            <h4>Questions delivery</h4>
+            <Row>
+              <Select
+                data-cy="questionDelivery"
+                defaultValue={qDeliveryState}
+                onChange={val => setQDeliveryState(val)}
+                style={{ width: "100%" }}
+                getPopupContainer={triggerNode => triggerNode.parentNode}
+              >
+                {Object.keys(QuestionDelivery).map(item => (
+                  <Option key="1" value={item}>
+                    {QuestionDelivery[item]}
+                  </Option>
+                ))}
+              </Select>
+            </Row>
+          </Col>}
           <Col span={12}>
             <h4>Show Previous attempt</h4>
             <Row>

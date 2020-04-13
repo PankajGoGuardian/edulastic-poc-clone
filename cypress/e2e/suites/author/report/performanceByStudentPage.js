@@ -1,6 +1,12 @@
 import CypressHelper from "../../../framework/util/cypressHelpers";
+import ManageGroupPage from "../../../framework/author/groups/manageGroupPage";
+import GroupPopup from "../../../framework/author/groups/groupPopup";
 
 export default class PerformanceByStudentReport {
+  constructor() {
+    this.groupPopup = new GroupPopup();
+  }
+
   // *** ELEMENTS START ***
 
   getCheckBoxByStudentName = studentName =>
@@ -12,16 +18,6 @@ export default class PerformanceByStudentReport {
   getActionButton = () => cy.get('[data-cy="actions"]');
 
   getGroupSelect = () => cy.get('[data-cy="selectStudentGroup"]');
-
-  getAddNewButton = () => cy.get('[data-cy="addNew"]');
-
-  getGroupNameInput = () => cy.get('[data-cy="groupName"]');
-
-  getGroupDescriptionInput = () => cy.get('[data-cy="groupDescription"]');
-
-  getStudentsAlreadyInGroupContainer = () => cy.get('[data-cy="students-right"]');
-
-  getSelectedStudentsContainer = () => cy.get('[data-cy="students-left"]');
 
   // *** ELEMENTS END ***
 
@@ -49,59 +45,8 @@ export default class PerformanceByStudentReport {
     cy.contains("Add / Remove students from groups");
   };
 
-  // new group
-  clickOnAddNewButton = () => this.getAddNewButton().click();
-
-  enterGroupName = groupName =>
-    this.getGroupNameInput()
-      .clear()
-      .type(groupName);
-
-  enterGroupDescription = groupDescription =>
-    this.getGroupDescriptionInput()
-      .clear()
-      .type(groupDescription);
-
-  clickOnCancel = () => cy.get('[data-cy="cancelButton"]').click();
-
-  // existing group
-  selectGroup = groupName => {
-    cy.server();
-    cy.route("GET", "**/enrollment/class/**").as("getEnrollment");
-    CypressHelper.selectDropDownByAttribute("selectStudentGroup", groupName);
-    cy.wait("@getEnrollment");
-  };
-
-  clickOnCancelGroupCreation = () => cy.get('[data-cy="cancelGroup"]').click();
-
-  clickOnSaveUpdateGroup = (isNew = true) => {
-    cy.server();
-    cy.route("POST", "**/group").as("saveGroup");
-    cy.get('[data-cy="createGroup"]').click();
-
-    if (isNew) {
-      cy.wait("@saveGroup").then(xhr => {
-        expect(xhr.status).to.eq(200);
-        const { _id, institutionId, districtId } = xhr.responseBody.result;
-        const clazz = { districtId };
-        clazz.groupIds = [_id];
-        clazz.institutionIds = [institutionId];
-        cy.saveClassDetailToDelete(clazz);
-      });
-    }
-  };
-
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
-
-  verifyStudentInAddedList = studentName => {
-    this.getStudentsAlreadyInGroupContainer()
-      .find(`[data-cy="${studentName}"]`)
-      .should("be.exist")
-      .find('[data-cy="isSelected-true"]')
-      .should("be.exist");
-  };
-
   // *** APPHELPERS END ***
 }

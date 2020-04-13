@@ -50,9 +50,23 @@ export default class TeacherManageClassPage {
 
   getStudentTextArea = () => cy.get("#students");
 
+  getStudentRowByEmail = email => cy.get(`[data-row-key="${email}"]`);
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
+
+  clickOnActionAddToGroup = () => {
+    cy.get('[data-cy="actions"]').click();
+    cy.contains("Add To Group").click();
+  };
+
+  clickOnClassRowByName = className => this.getClassRowByName(className).click();
+
+  selectStudentCheckBoxByEmail = email =>
+    this.getStudentRowByEmail(email)
+      .find("input")
+      .click({ force: true });
 
   clickOnCreateClass = () => cy.get('[data-cy="createClass"]').click({});
 
@@ -132,7 +146,7 @@ export default class TeacherManageClassPage {
     cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() => cy.wait(10000));
   };
 
-  clickOnSaveClass = () => {
+  clickOnSaveClass = (isGroup = false) => {
     cy.server();
     cy.route("POST", "**/group").as("createClass");
     cy.get('[data-cy="saveClass"]').click();
@@ -144,7 +158,7 @@ export default class TeacherManageClassPage {
       clazz.institutionIds = [institutionId];
       console.log("new class created with _id - ", _id);
       cy.saveClassDetailToDelete(clazz);
-      cy.url().should("contain", _id);
+      if (!isGroup) cy.url().should("contain", _id);
     });
   };
 

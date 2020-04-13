@@ -373,7 +373,7 @@ const ActionContainer = ({
             }
             placement="bottomRight"
           >
-            <EduButton height="30px" isGhost>
+            <EduButton data-cy="actions" height="30px" isGhost>
               ACTIONS
             </EduButton>
           </Dropdown>

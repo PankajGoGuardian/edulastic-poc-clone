@@ -1,9 +1,12 @@
-import CypressHelper from "../util/cypressHelpers";
-import TeacherSideBar from "./SideBarPage";
-import TeacherManageClassPage from "./manageClassPage";
+import CypressHelper from "../../util/cypressHelpers";
+import TeacherSideBar from "../SideBarPage";
+import TeacherManageClassPage from "../manageClassPage";
 
 export default class ManageGroupPage extends TeacherManageClassPage {
   // *** ELEMENTS START ***
+
+  getDescription = () => cy.get("#description");
+
   getGroupRowDetails = groupName =>
     this.getClassRowByName(groupName)
       .find("td")
@@ -23,6 +26,8 @@ export default class ManageGroupPage extends TeacherManageClassPage {
   // *** ACTIONS START ***
 
   clickOnGroupTab = () => cy.get('[data-cy="group"]').click();
+
+  clickOnClassTab = () => cy.get('[data-cy="class"]').click();
 
   clickOnGroupRowByName = groupname => this.getClassRowByName(groupname).click();
 
@@ -44,6 +49,33 @@ export default class ManageGroupPage extends TeacherManageClassPage {
       .contains("span", "Yes, Remove Student(s)")
       .click({ force: true });
 
+  setDescription = description =>
+    this.getDescription()
+      .clear()
+      .type(description);
+
+  fillGroupDetail({ name, description, grade, subject }) {
+    this.setName(name);
+    this.getClassName().should("have.value", name);
+
+    if (description) {
+      this.setDescription(description);
+      this.getDescription().should("have.value", description);
+    }
+
+    if (grade) {
+      this.selectGrade(grade);
+      this.verifyGrade(grade);
+    }
+
+    if (subject) {
+      this.selectSubject(subject);
+      this.verifySubject(subject);
+    }
+  }
+
+  clickOnSaveGroup = () => this.clickOnSaveClass(true);
+
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
@@ -52,7 +84,8 @@ export default class ManageGroupPage extends TeacherManageClassPage {
     this.getGroupRowDetails(groupName).then(({ name, students, assignments }) => {
       expect(name, "verify groupName on manage group tab").to.eq(groupName);
       expect(students, "verify studentcount on manage group tab").to.eq(`${studentCount}`);
-      expect(assignments, "verify assignment count on manage group tab").to.eq(`${assignmentCount}`);
+      if (assignmentCount)
+        expect(assignments, "verify assignment count on manage group tab").to.eq(`${assignmentCount}`);
     });
   };
 

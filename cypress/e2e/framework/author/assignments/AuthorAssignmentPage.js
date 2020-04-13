@@ -8,6 +8,8 @@ class AuthorAssignmentPage {
 
   // *** ELEMENTS START ***
 
+  getAllStudentCard = () => cy.get('[data-cy="studentName"]');
+
   getStatus = () => cy.get('[data-cy="status"]');
 
   getSubmitted = () => cy.get('[data-cy="submitted"]');
@@ -18,7 +20,15 @@ class AuthorAssignmentPage {
 
   getTestRowByTestId = id => cy.get(`[data-test=${id}]`);
 
-  getAssignmentRowsTestById = id => cy.get(`[data-cy=${id}]`).find(".ant-table-row-level-0");
+  getAssignmentRowsTestById = id =>
+    cy
+      .get(`[data-cy=${id}]`)
+      .find(".ant-table-row-level-0")
+      .as("assignmentRow");
+
+  getSubmittedByAssignmentRow = () => cy.get("@assignmentRow").find('[data-cy="submitted"]');
+
+  getClassByAssignmentRow = () => cy.get("@assignmentRow").find('[data-cy="class"]');
 
   // *** ELEMENTS END ***
 
@@ -205,6 +215,12 @@ class AuthorAssignmentPage {
         expect(newUrl).to.include(`tests/tab/review/id/${oldTestId}`);
       })
     );
+
+  verifyAssignmentRowByTestId = (testId, className, submitted = 0, total) => {
+    this.getAssignmentRowsTestById(testId);
+    if (className) this.getClassByAssignmentRow().should("have.text", className);
+    if (total) this.getSubmittedByAssignmentRow().should("have.text", `${submitted} of ${total}`);
+  };
 
   // *** APPHELPERS END ***
 }

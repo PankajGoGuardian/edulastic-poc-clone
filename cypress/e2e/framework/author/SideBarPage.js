@@ -37,10 +37,13 @@ export default class TeacherSideBar {
       .click({ force: true });
 
   clickOnManageClass = () => {
+    cy.server();
+    cy.route("GET", "**/group/mygroups").as("getGroups");
     cy.get('[data-cy="Manage Class"]')
       .click({ force: true })
       .click({ force: true });
-    cy.wait(2000); // UI renders slow
+    cy.wait("@getGroups");
+    // cy.wait(2000); // UI renders slow
   };
 
   clickOnItemBank = () => {

@@ -177,6 +177,9 @@ export const getInitialsFromName = obj => {
 };
 
 export const getDistrictSignOutUrl = generalSettings => {
+  if (generalSettings.orgType === "institution") {
+    return `/school/${generalSettings.shortName}`;
+  }
   return `/district/${generalSettings.shortName}`;
 };
 

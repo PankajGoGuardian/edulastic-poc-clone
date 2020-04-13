@@ -119,7 +119,16 @@ class TestItemCol extends Component {
   };
 
   render() {
-    const { col, style, windowWidth, colCount, colIndex, testReviewStyle = {}, ...restProps } = this.props;
+    const {
+      col,
+      style,
+      windowWidth,
+      colCount,
+      colIndex,
+      testReviewStyle = {},
+      isPassageWithQuestions,
+      ...restProps
+    } = this.props;
     const { value } = this.state;
     const { showStackedView, fullHeight, isSingleQuestionView, isPrintPreview } = restProps;
     const derivedWidth = showStackedView || isSingleQuestionView ? "100%" : null;
@@ -139,6 +148,7 @@ class TestItemCol extends Component {
         height={fullHeight ? "100%" : "auto"}
         showStackedView={showStackedView}
         colCount={colCount}
+        isScrollable={isPassageWithQuestions}
         hasCollapseButtons={
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }

@@ -588,6 +588,7 @@ class AssessmentPlayerDefault extends React.Component {
                     saveHintUsage={this.saveHintUsage}
                     enableMagnifier={enableMagnifier}
                     updateScratchpadtoStore
+                    isPassageWithQuestions={item?.isPassageWithQuestions}
                   />
                 )}
                 {testItemState === "check" && (

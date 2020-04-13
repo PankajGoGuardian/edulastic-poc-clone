@@ -10,6 +10,7 @@ export const Container = styled.div`
   border-radius: ${props => props.hasCollapseButtons && "10px"};
   min-height: ${props => props.hasCollapseButtons && "calc(100vh - 122px)"};
   padding-top: ${props => props.hasCollapseButtons && "15px"};
+  overflow-y: ${props => props.isScrollable && "auto"};
 
   ${({ height }) => height && `height: ${height}`};
   @media (max-width: ${mobileWidth}) {

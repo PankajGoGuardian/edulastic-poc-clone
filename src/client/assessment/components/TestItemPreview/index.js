@@ -344,6 +344,7 @@ class TestItemPreview extends Component {
                           hideInternalOverflow={hideInternalOverflow}
                           testReviewStyle={{ height: fullHeight ? "100%" : "auto", paddingTop: 0 }}
                           showStackedView={showStackedView}
+                          isPassageWithQuestions={isPassageWithQuestions}
                         />
                         {collapseDirection === "right" && showCollapseButtons && this.renderCollapseButtons(i)}
                       </>

@@ -305,7 +305,7 @@ const JoinSchool = ({
                   />
                 )}
                 <Actions>
-                  <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
+                  {!allowCanvas && <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>}
                   {!isSignupUsingDaURL && !districtId ? (
                     <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
                   ) : null}

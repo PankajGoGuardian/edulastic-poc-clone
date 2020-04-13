@@ -222,6 +222,7 @@ class TestItemPreview extends Component {
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn;
     const {
       isLCBView,
+      isReviewTab,
       isExpressGrader,
       viewComponent,
       previouscratchPadDimensions,
@@ -360,9 +361,6 @@ class TestItemPreview extends Component {
                     saveHistory={saveHistory}
                     history={history}
                     fontFamily={fontFamily}
-                    height="100%"
-                    top="0"
-                    left="0"
                     position="absolute"
                     updateScratchpadtoStore={restProps.updateScratchpadtoStore}
                     viewAtStudentRes={viewAtStudentRes}
@@ -387,7 +385,9 @@ class TestItemPreview extends Component {
             </FlexContainer>
           )}
         </div>
-        <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
+        {!isReviewTab && (
+          <div style={{ position: "relative", "min-width": "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
+        )}
       </ThemeProvider>
     );
   }

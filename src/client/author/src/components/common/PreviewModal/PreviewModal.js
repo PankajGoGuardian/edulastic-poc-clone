@@ -357,6 +357,7 @@ class PreviewModal extends React.Component {
                   isAnswerBtnVisible={isAnswerBtnVisible}
                   item={item}
                   page={page}
+                  fullModal={fullModal}
                   showCollapseBtn
                   changePreviewTab={changePreviewMode}
                   onlySratchpad={onlySratchpad}

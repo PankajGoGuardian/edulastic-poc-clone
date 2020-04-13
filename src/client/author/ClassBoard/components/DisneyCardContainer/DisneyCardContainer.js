@@ -174,11 +174,14 @@ class DisneyCardContainer extends Component {
             ""
           );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
-        const pastDueTag = dueDate && status.status !== "Absent" ? formatStudentPastDueTag({
-          status: student.status,
-          dueDate,
-          endDate: student.endDate
-        }) : null;
+        const pastDueTag =
+          dueDate && status.status !== "Absent"
+            ? formatStudentPastDueTag({
+                status: student.status,
+                dueDate,
+                endDate: student.endDate
+              })
+            : null;
 
         const studentData = (
           <StyledCard

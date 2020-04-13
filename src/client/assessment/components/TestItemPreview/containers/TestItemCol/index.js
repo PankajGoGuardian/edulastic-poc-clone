@@ -112,7 +112,7 @@ class TestItemCol extends Component {
           calculatedHeight={showStackedView || fullHeight ? "100%" : "auto"}
           fullMode
           {...restProps}
-          style={{ ...testReviewStyle, width: "calc(100% - 256px)"}}
+          style={{ ...testReviewStyle, width: "calc(100% - 256px)" }}
         />
       </TabContainer>
     );
@@ -129,7 +129,7 @@ class TestItemCol extends Component {
       ? `calc(${col.dimension} + 280px)`
       : col.dimension || "auto";
     const widgets = col.tabs && !!col.tabs.length && isPrintPreview ? sortBy(col.widgets, ["tabIndex"]) : col.widgets;
-    
+
     return (
       <Container
         className={`test-item-col ${col.tabs.length ? "test-item-tab-container" : ""}`}
@@ -143,35 +143,36 @@ class TestItemCol extends Component {
           ["studentReport", "studentPlayer"].includes(restProps.viewComponent) && restProps.showCollapseBtn
         }
       >
-        {!isPrintPreview && <>
-          {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
-            <Tabs value={value} onChange={this.handleTabChange}>
-              {col.tabs.map((tab, tabIndex) => (
-                <Tabs.Tab
-                  key={tabIndex}
-                  label={tab}
-                  style={{
-                    width: `calc(${100 / col.tabs.length}% - 10px)`,
-                    textAlign: "center",
-                    padding: "5px 15px"
-                  }}
-                  {...restProps}
-                />
-              ))}
-            </Tabs>
-          )}
-          {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
-            <MobileRightSide onClick={() => this.handleTabChange(1)}>
-              <IconArrow type="left" />
-            </MobileRightSide>
-          )}
-          {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
-            <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-              <IconArrow type="right" />
-            </MobileLeftSide>
-          )}
-        </>
-        }
+        {!isPrintPreview && (
+          <>
+            {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
+              <Tabs value={value} onChange={this.handleTabChange}>
+                {col.tabs.map((tab, tabIndex) => (
+                  <Tabs.Tab
+                    key={tabIndex}
+                    label={tab}
+                    style={{
+                      width: `calc(${100 / col.tabs.length}% - 10px)`,
+                      textAlign: "center",
+                      padding: "5px 15px"
+                    }}
+                    {...restProps}
+                  />
+                ))}
+              </Tabs>
+            )}
+            {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 0 && (
+              <MobileRightSide onClick={() => this.handleTabChange(1)}>
+                <IconArrow type="left" />
+              </MobileRightSide>
+            )}
+            {col.tabs && windowWidth < MAX_MOBILE_WIDTH && !!col.tabs.length && value === 1 && (
+              <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+                <IconArrow type="right" />
+              </MobileLeftSide>
+            )}
+          </>
+        )}
         <WidgetContainer
           data-cy="widgetContainer"
           style={{
@@ -186,10 +187,12 @@ class TestItemCol extends Component {
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
-                  value === widget.tabIndex && !isPrintPreview &&
+                  value === widget.tabIndex &&
+                  !isPrintPreview &&
                   this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
                 {col.tabs &&
-                  !!col.tabs.length && isPrintPreview &&
+                  !!col.tabs.length &&
+                  isPrintPreview &&
                   this.renderTabContent(widget, col.flowLayout, i, showStackedView, arr.length)}
                 {col.tabs &&
                   !col.tabs.length &&

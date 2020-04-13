@@ -141,9 +141,6 @@ const PreviewModalWithScratchPad = ({
                 lineWidth={lineWidth}
                 fillColor={fillColor}
                 saveHistory={saveHistory("scratchpad")}
-                height={svgHeight ? `${svgHeight}px` : "100%"}
-                top="0"
-                left="0"
                 position="absolute"
                 history={scratchPad}
               />

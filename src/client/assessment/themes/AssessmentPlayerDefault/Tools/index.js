@@ -15,6 +15,7 @@ const showFontArr = [drawTools.DRAW_TEXT, drawTools.DRAW_MATH, drawTools.MOVE_IT
 const Tools = ({
   isWorksheet,
   onToolChange,
+  onChangeEditTool,
   activeMode,
   onFillColorChange,
   fillColor,
@@ -84,7 +85,7 @@ const Tools = ({
                 />
               </>
             )}
-            {drawTools.SELECT_TOOL === activeMode && <SelectToolOptions />}
+            {drawTools.SELECT_TOOL === activeMode && <SelectToolOptions onChangeEditTool={onChangeEditTool} />}
           </FlexContainer>
           <BottomTools undo={undo} redo={redo} onToolChange={onToolChange} deleteMode={deleteMode} />
         </ActiveToolBoxContainer>
@@ -95,6 +96,7 @@ const Tools = ({
 
 Tools.propTypes = {
   onToolChange: PropTypes.func.isRequired,
+  onChangeEditTool: PropTypes.func,
   activeMode: PropTypes.string.isRequired,
   currentColor: PropTypes.string.isRequired,
   onChangeSize: PropTypes.func.isRequired,
@@ -113,6 +115,7 @@ Tools.propTypes = {
 Tools.defaultProps = {
   containerStyle: {},
   onChangeFont: () => null,
+  onChangeEditTool: () => null,
   currentFont: ""
 };
 

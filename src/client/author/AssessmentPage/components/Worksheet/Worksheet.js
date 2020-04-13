@@ -640,8 +640,6 @@ class WorksheetComponent extends React.Component {
         fillColor={fillColor}
         saveHistory={this.saveHistory}
         history={userHistory}
-        height="100%"
-        top={0}
         zoom={this.state.pageZoom}
         position="absolute"
         fontFamily={currentFont}

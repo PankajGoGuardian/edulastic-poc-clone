@@ -10,6 +10,11 @@ const DRAW_TEXT = "drawText";
 const DRAW_MATH = "drawMath";
 const DRAW_MEASURE_TOOL = "drawMeasureTool";
 const SELECT_TOOL = "selectTool";
+const COPY = "copy";
+const PASTE = "paste";
+const CUT = "cut";
+const MOVE_BEHIND = "moveBehind";
+const MOVE_FORWARD = "moveForward";
 
 module.exports = {
   MOVE_ITEM,
@@ -23,5 +28,10 @@ module.exports = {
   DRAW_TEXT,
   DRAW_MATH,
   DRAW_MEASURE_TOOL,
-  SELECT_TOOL
+  SELECT_TOOL,
+  COPY,
+  PASTE,
+  CUT,
+  MOVE_BEHIND,
+  MOVE_FORWARD
 };

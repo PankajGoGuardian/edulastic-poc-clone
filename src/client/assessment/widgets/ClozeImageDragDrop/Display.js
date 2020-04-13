@@ -376,7 +376,8 @@ class Display extends Component {
       getHeading,
       isPrint,
       isPrintPreview,
-      view
+      view,
+      viewComponent
     } = this.props;
     const isPrintMode = isPrint || isPrintPreview;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
@@ -493,7 +494,7 @@ class Display extends Component {
 
     const containerStyle = {
       margin: "auto",
-      overflow: !isPrintMode && "auto",
+      overflow: viewComponent !== "authorPreviewPopup" && !isPrintMode && "auto",
       minWidth: choiceMaxWidth,
       maxWidth: !isPrintMode && (responseposition === "left" || responseposition === "right" ? 1050 : 750),
       flexDirection: isPrintMode ? "column" : "row",

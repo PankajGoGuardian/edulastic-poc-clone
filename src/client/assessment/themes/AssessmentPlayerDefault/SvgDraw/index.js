@@ -11,6 +11,7 @@ import { useDisableDragScroll, measureText, ScratchPadContext } from "@edulastic
 import MathDraw from "./components/MathDraw";
 import CurvedLine from "./components/CurveLine";
 import MeasureTools from "./components/MeasureTools";
+import EditFigures from "./components/EditFigures";
 import TextInput from "./components/TextInput";
 import { normalizeTouchEvent } from "../../../utils/helpers";
 import { updateScratchpadAction } from "../../../../common/ducks/scratchpad";
@@ -19,6 +20,8 @@ const SvgDraw = ({
   lineColor,
   lineWidth,
   activeMode,
+  editToolMode,
+  finishedEdit,
   scratchPadMode,
   history,
   saveHistory: saveWorkHistory,
@@ -27,12 +30,10 @@ const SvgDraw = ({
   position,
   fromFreeFormNotes,
   fontFamily,
-  height: svgHeight,
   zoom,
   updateScratchpadData,
   updateScratchpadtoStore,
   viewBoxProps,
-  viewAtStudentRes,
   LCBPreviewModal,
   previousDimensions,
   showScratchpadByDefault
@@ -88,6 +89,8 @@ const SvgDraw = ({
     fromFreeFormNotes && fromFreeFormNotes[prop] && index < fromFreeFormNotes[prop];
 
   const getSvgRect = () => svg?.current?.getBoundingClientRect() || {};
+
+  const getDrawingContainer = () => svg?.current;
 
   const calcTextPosition = text => {
     const { width, height } = measureText(text.value, { fontSize: `${lineWidth * 3}px` }, "svg", "text");
@@ -830,7 +833,7 @@ const SvgDraw = ({
           position,
           top: 0,
           left: 0,
-          height: svgHeight || "100%",
+          height: "100%",
           width: "100%",
           background: "transparent",
           display: showScratchpadByDefault || scratchPadMode ? "block" : "none",
@@ -928,6 +931,16 @@ const SvgDraw = ({
         lineColor={lineColor}
       />
       {activeMode === drawTools.DRAW_MEASURE_TOOL && <MeasureTools />}
+      {activeMode === drawTools.SELECT_TOOL && (
+        <EditFigures
+          getContainer={getDrawingContainer}
+          workHistory={history}
+          saveHistory={saveHistory}
+          lineWidth={lineWidth}
+          finishedEdit={finishedEdit}
+          editToolMode={editToolMode}
+        />
+      )}
     </Fragment>
   );
 };

@@ -17,9 +17,6 @@ const { Text } = Typography;
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
-  overflow: auto;
-  width: 100%;
-  height: 100%;
   &.scratchpad-wrapper {
     input {
       position: absolute;
@@ -27,6 +24,10 @@ export const Container = styled.div`
   }
 `;
 export const WidgetContainer = styled.div`
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: ${({ alignItems = "" }) => alignItems || ""};
@@ -100,7 +101,8 @@ export const ColumnContentArea = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background: #fff;
   border-radius: 10px;
-  height: ${props => (props.isAuthoring ? "auto" : "70vh")};
+  width: 100%;
+  height: ${({ isAuthoring, fullModal }) => (isAuthoring ? "auto" : fullModal ? "87vh" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "flex")};
   flex-direction: column;
   flex-basis: 100%;

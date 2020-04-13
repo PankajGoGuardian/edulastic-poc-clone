@@ -4,12 +4,15 @@ import { compose } from "redux";
 import { Pagination, message, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, red } from "@edulastic/colors";
-import { Tabs, EduButton, withWindowSizes, ScrollContext } from "@edulastic/common";
+import { questionType } from "@edulastic/constants";
+import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { themes } from "../../../../../theme";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
+import Scratch from "../../../../../assessment/components/Scratch";
+
 import { MAX_MOBILE_WIDTH } from "../../../../../assessment/constants/others";
 
 import {
@@ -41,6 +44,7 @@ import ScoreBlock from "../ScoreBlock";
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
     showFeedback: false,
+    fullModal: false,
     verticalDivider: false,
     scrolling: false,
     style: { padding: 0, display: "flex" },
@@ -375,7 +379,7 @@ class AuthorTestItemPreview extends Component {
             </EduButton>
           )}
 
-          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={() => toggleReportIssue()}>
+          <ReportIssueButton title="Report Issue" type="danger" ghost onClick={toggleReportIssue}>
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueButton>
         </ButtonsWrapper>
@@ -384,8 +388,10 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumns(col, colIndex, sectionQue, resourceCount) {
-    const { style, windowWidth, onlySratchpad, ...restProps } = this.props;
+    const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
     const { value, isRejectMode } = this.state;
+    // will show scratch only in multipart and item preview modal
+    const showScratch = col.widgets.some(w => w.type === questionType.HIGHLIGHT_IMAGE);
     let subCount = 0;
     const columns = (
       <>
@@ -415,7 +421,8 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer alignItems="flex-start">
+        <WidgetContainer ref={this.scrollContainer} data-cy="scroll-conteianer" alignItems="flex-start">
+          {showScratch && <Scratch viewComponent={viewComponent} fullModal={fullModal} />}
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
               {col.tabs &&
@@ -512,7 +519,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumnsContentArea = ({ sectionQue, resourceCount, children = null, ...rest }) => {
-    const { cols, page, onlySratchpad } = this.props;
+    const { cols, page, onlySratchpad, fullModal } = this.props;
     const { collapseDirection } = this.state;
 
     return (
@@ -521,20 +528,19 @@ class AuthorTestItemPreview extends Component {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           return (
-            <>
+            <Container {...rest}>
               {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
               <ColumnContentArea
                 isAuthoring={page === "itemAuthoring"}
                 hide={hideColumn}
+                fullModal={fullModal}
                 style={onlySratchpad ? { boxShadow: "none" } : {}}
               >
                 {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
-                <Container ref={this.scrollContainer} data-cy="scroll-conteianer" {...rest}>
-                  {this.renderColumns(col, i, sectionQue, resourceCount)}
-                </Container>
+                {this.renderColumns(col, i, sectionQue, resourceCount)}
               </ColumnContentArea>
               {collapseDirection === "right" && this.renderCollapseButtons(i)}
-            </>
+            </Container>
           );
         })}
         {children}
@@ -567,9 +573,11 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider value={{ getScrollElement: () => this.scrollContainer.current }}>
-          {isRejectMode || onlySratchpad
-            ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
-            : this.renderColumnsContentArea({ sectionQue, resourceCount })}
+          <ScratchPadContext.Provider value={{ getContainer: () => this.scrollContainer.current }}>
+            {isRejectMode || onlySratchpad
+              ? this.renderColumnContentAreaWithScratchpad(sectionQue, resourceCount)
+              : this.renderColumnsContentArea({ sectionQue, resourceCount })}
+          </ScratchPadContext.Provider>
         </ScrollContext.Provider>
       </ThemeProvider>
     );

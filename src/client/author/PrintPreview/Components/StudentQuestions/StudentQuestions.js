@@ -102,7 +102,9 @@ class StudentQuestions extends Component {
 
       return acc;
     }, {});
-    let testItemsRender = testItems.map(item => <Preview item={item} passages={passages} evaluation={evaluationStatus} />);
+    let testItemsRender = testItems.map(item => (
+      <Preview item={item} passages={passages} evaluation={evaluationStatus} />
+    ));
     return (
       <QuestionDiv
         ref={ref => {

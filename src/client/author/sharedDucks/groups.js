@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
-import { takeLatest, put, call, select } from "redux-saga/effects";
+import { takeEvery, takeLatest, put, call, select } from "redux-saga/effects";
 import { groupApi, enrollmentApi } from "@edulastic/api";
 
 // actions
@@ -138,12 +138,8 @@ function* fetchMembers({ payload }) {
       return;
     }
     let { students = [] } = yield call(enrollmentApi.fetch, classId);
-    students = students.map(student => {
-      student.groupId = classId;
-      return student;
-    });
     setLoadedGroupsAction([...loadedGroups, classId]);
-    yield put(setGroupMemebersAction(students));
+    yield put(setGroupMemebersAction(students.map(student => ({ ...student, groupId: classId }))));
   } catch (err) {
     console.log(err);
   }
@@ -168,6 +164,6 @@ function* fetchMultipleGroupMembers({ payload }) {
 export function* authorGroupsWatcherSaga() {
   yield takeLatest(FETCH_GROUPS, fetchGroups);
   yield takeLatest(FETCH_ARCHIVE_GROUPS, fetchArchiveGroups);
-  yield takeLatest(FETCH_GROUP_MEMBERS, fetchMembers);
+  yield takeEvery(FETCH_GROUP_MEMBERS, fetchMembers);
   yield takeLatest(SET_MULTIPLE_GROUP_MEMBERS, fetchMultipleGroupMembers);
 }

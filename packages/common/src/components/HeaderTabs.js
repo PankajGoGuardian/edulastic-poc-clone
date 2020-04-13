@@ -15,7 +15,6 @@ const HeaderTabs = ({
   icon,
   linkLabel,
   history,
-  isPlaylist = false,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -32,7 +31,7 @@ const HeaderTabs = ({
     <StyledLink id={id} key={key} to={to} onClick={handleOnClick} disabled={disabled} data-cy={dataCy} {...restProps}>
       <StyledAnchor isActive={isActive}>
         {icon}
-        <LinkLabel isPlaylist={isPlaylist}>{linkLabel}</LinkLabel>
+        <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
       </StyledAnchor>
     </StyledLink>
   );
@@ -46,8 +45,7 @@ HeaderTabs.propTypes = {
   isActive: PropTypes.bool.isRequired,
   linkLabel: PropTypes.any.isRequired,
   icon: PropTypes.any.isRequired,
-  onClickHandler: PropTypes.func,
-  isPlaylist: PropTypes.bool
+  onClickHandler: PropTypes.func
 };
 
 HeaderTabs.defaultProps = {
@@ -123,7 +121,7 @@ export const StyledAnchor = styled.div`
 `;
 
 export const LinkLabel = styled.div`
-  padding: ${({ isPlaylist }) => (isPlaylist ? "0 15px" : "0 15px 0 0")};
+  padding: ${({ hasIcon }) => (hasIcon ? "0 15px 0 0" : "0 15px")};
   white-space: nowrap;
   @media (max-width: ${mediumDesktopWidth}) {
     padding: 0px;

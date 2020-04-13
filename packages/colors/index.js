@@ -84,6 +84,7 @@ export const strikeOutHover = "#f7cbcc";
 export const mainBlueColor = "#00b0ff";
 export const blue = "#1774F0";
 export const lightBlue = "#93d8f7";
+export const lightBlue2 = "#e6f7ff";
 export const lightBlue3 = "#3793dc";
 export const lightBlue4 = "#40a1ee";
 export const lightBlue5 = "#91d5dc";

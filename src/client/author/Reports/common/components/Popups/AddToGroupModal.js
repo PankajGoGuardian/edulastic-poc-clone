@@ -7,7 +7,16 @@ import styled from "styled-components";
 import { Modal, Row, Col, Spin, Select, message } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
 import { SelectInputStyled, EduButton } from "@edulastic/common";
-import { backgrounds, borderGrey4, greyThemeDark1, darkGrey2, lightGrey5, themeColor, white } from "@edulastic/colors";
+import {
+  backgrounds,
+  borderGrey4,
+  greyThemeDark1,
+  darkGrey2,
+  lightGrey5,
+  themeColor,
+  lightBlue2,
+  white
+} from "@edulastic/colors";
 import { enrollmentApi } from "@edulastic/api";
 
 import { fetchGroupsAction, getGroupsSelector, groupsLoadingSelector } from "../../../../sharedDucks/groups";
@@ -35,7 +44,7 @@ const ScrollElement = ({ item, onClick, ticked }) => (
         {item.username || ""}
       </StyledDiv>
     </div>
-    <IconCorrect data-cy={`isSelected-${ticked}`} color={ticked ? themeColor : greyThemeDark1} />
+    <IconCorrect data-cy={`isSelected-${ticked}`} color={ticked ? themeColor : white} />
   </div>
 );
 
@@ -365,6 +374,12 @@ const ScrollbarContainer = styled.div`
         display: flex;
         flex-direction: column;
         text-align: left;
+      }
+      &:hover {
+        background-color: ${lightBlue2};
+        svg {
+          fill: ${greyThemeDark1};
+        }
       }
     }
   }

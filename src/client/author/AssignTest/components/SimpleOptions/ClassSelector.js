@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Col, Select } from "antd";
+import { Col, Select, Tooltip } from "antd";
 import styled from "styled-components";
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { IconGroup, IconClass } from "@edulastic/icons";
@@ -40,14 +40,16 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group, onDesel
         >
           {group.map(data => (
             <Select.Option data-cy="class" key={data._id} value={data._id} name={data.name}>
-              <OptionWrapper>
-                {data.type === "custom" ? (
-                  <IconGroup width={20} height={19} color={lightGrey10} margin="0 10px 0 0" />
-                ) : (
-                  <IconClass width={13} height={14} color={lightGrey10} margin="0 13px 0 3px" />
-                )}
-                <span>{data.name}</span>
-              </OptionWrapper>
+              <Tooltip placement="left" title={data.type === "class" ? "Class" : "Group"}>
+                <OptionWrapper>
+                  {data.type === "custom" ? (
+                    <IconGroup width={20} height={19} color={lightGrey10} margin="0 10px 0 0" />
+                  ) : (
+                    <IconClass width={13} height={14} color={lightGrey10} margin="0 13px 0 3px" />
+                  )}
+                  <span>{data.name}</span>
+                </OptionWrapper>
+              </Tooltip>
             </Select.Option>
           ))}
         </SelectInputStyled>
@@ -60,5 +62,6 @@ export default ClassSelector;
 
 const OptionWrapper = styled.div`
   display: inline-flex;
+  width: 100%;
   align-items: center;
 `;

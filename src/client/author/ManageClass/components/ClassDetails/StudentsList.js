@@ -62,6 +62,7 @@ const StudentsList = ({
     {
       title: "TTS Enabled",
       dataIndex: "tts",
+      align: "center",
       render: tts => (
         <span>{tts === "yes" ? <IconCorrect /> : <IconClose color="#ff99bb" width="10px" height="10px" />}</span>
       ),
@@ -72,6 +73,7 @@ const StudentsList = ({
           {
             title: "Google User",
             dataIndex: "lastSigninSSO",
+            align: "center",
             defaultSortOrder: "descend",
             render: (lastSigninSSO, { openIdProvider }) => (
               <span>
@@ -92,6 +94,7 @@ const StudentsList = ({
           {
             title: "Canvas User",
             dataIndex: "canvasId",
+            align: "center",
             defaultSortOrder: "descend",
             render: (canvasId, { openIdProvider }) => (
               <span>
@@ -109,6 +112,7 @@ const StudentsList = ({
     {
       title: "Status",
       dataIndex: "enrollmentStatus",
+      align: "center",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>

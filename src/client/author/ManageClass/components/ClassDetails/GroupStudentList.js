@@ -106,6 +106,7 @@ const GroupStudentsList = ({ students, selectedStudent, setSelectedStudents, upd
     },
     {
       title: "Actions",
+      align: "center",
       render: user => (
         <Dropdown
           overlay={

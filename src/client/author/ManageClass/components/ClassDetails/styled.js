@@ -68,9 +68,6 @@ export const StudentsTable = styled(Table)`
             }
           }
         }
-        & > :nth-last-of-type(-n + 3) {
-          text-align: center;
-        }
       }
     }
     &-tbody {
@@ -87,10 +84,7 @@ export const StudentsTable = styled(Table)`
             background: none;
           }
           font-weight: 550;
-          padding: 10px 16px;
-        }
-        & > :nth-last-of-type(-n + 3) {
-          text-align: center;
+          padding: 10px 10px;
         }
         &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
           background: #f2f3f2;

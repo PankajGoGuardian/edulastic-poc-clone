@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
-import { find, isObject, isArray, isEmpty } from "lodash";
+import { find, isObject, isArray, isEmpty, isString } from "lodash";
 import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import PlayerHeader from "./PlayerHeader";
@@ -356,6 +356,13 @@ const PlayerContent = ({
                 value: el.value,
                 index: i,
                 selected: selections && selections.length ? selections.includes(i) : false
+              }));
+            } else if (isString(testletValue)) {
+              const selected = ALPHABET.indexOf(testletValue);
+              data = (templeWithTokens || []).map((el, i) => ({
+                value: el.value,
+                index: i,
+                selected: selected === i
               }));
             }
           });

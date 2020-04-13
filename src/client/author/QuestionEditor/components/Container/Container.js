@@ -120,7 +120,8 @@ class Container extends Component {
   };
 
   cancelEdit = () => {
-    const { changeQuestionUpdateFlag, testId, history } = this.props;
+    const { changeQuestionUpdateFlag, match, history } = this.props;
+    const { testId } = match.params;
     changeQuestionUpdateFlag(false);
     const testPath = `/author/tests/tab/review/id/${testId || "create"}`;
     // above dispatched action needs to flip the flag, hence setTimeout to get around it

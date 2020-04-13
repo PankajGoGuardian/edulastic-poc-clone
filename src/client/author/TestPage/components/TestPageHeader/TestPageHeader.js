@@ -192,7 +192,6 @@ const TestPageHeader = ({
   const isNotRegradable = () => {
     const isTeacher = userRole === roleuser.TEACHER;
     const isAuthorsTest = test.itemGroups.some(group => group.type === "AUTOSELECT") || test.itemGroups.length > 1;
-    console.log(isTeacher, isAuthorsTest);
     return isTeacher && isAuthorsTest;
   };
 
@@ -208,7 +207,7 @@ const TestPageHeader = ({
   };
 
   const handleAssign = () => {
-    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED) && testAssignments?.length > 0) {
       setCurrentAction("assign");
       return setShowRegradePopup(true);
     }
@@ -276,13 +275,13 @@ const TestPageHeader = ({
     </TestStatus>
   );
 
-  const isRegradeFlow = test.isInEditAndRegrade || test.isUsed;
+  const isRegradeFlow = test.isInEditAndRegrade || (test.isUsed && !!testAssignments.length);
 
   return (
     <>
       <EditTestModal
         visible={openEditPopup}
-        isUsed={isUsed}
+        isUsed={isUsed && !!testAssignments.length}
         onCancel={() => setOpenEditPopup(false)}
         onOk={() => {
           onEnableEdit();

@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import * as moment from "moment";
 
 import { StyledTable } from "./styled";
+import NoDataNotification from "../../common/components/NoDataNotification";
 
 const formatDate = date => moment(date).format("MM-DD-YYYY");
 
 const tbleColumns = [
+  {
+    title: "Class/Group Name",
+    dataIndex: "classes",
+    render: classes => (
+      <div>
+        {classes.map((_class, i) => (
+          <span>
+            {_class.name}
+            {classes.length > 1 && i < classes.length - 1 && ", "}
+          </span>
+        ))}
+      </div>
+    )
+  },
   {
     title: "Assigned By",
     dataIndex: "assigned"
@@ -43,17 +58,25 @@ const AssignmentsTable = ({ assignments, handleSettingsChange, regradeType, regr
       disabled: regradeType !== "SPECIFIC"
     })
   };
-  const tableData = assignments.map(item => ({
-    key: item._id,
-    _id: item._id,
-    class: item.class,
-    students: item.students,
-    openPolicy: item.openPolicy || "",
-    closePolicy: item.closePolicy || "",
-    openDate: item.startDate,
-    closeDate: item.endDate,
-    assigned: item.assignedBy.name
-  }));
+  const tableData = assignments
+    .filter(item => !item.archived)
+    .map(item => ({
+      key: item._id,
+      _id: item._id,
+      class: item.class,
+      students: item.students,
+      openPolicy: item.openPolicy || "",
+      closePolicy: item.closePolicy || "",
+      openDate: item.startDate,
+      closeDate: item.endDate,
+      assigned: item.assignedBy.name,
+      classes: item.class
+    }));
+  if (!tableData.length) {
+    return (
+      <NoDataNotification heading="Assignments not available" description="There are no active assignments found." />
+    );
+  }
   return <StyledTable rowSelection={rowSelection} columns={tbleColumns} dataSource={tableData} />;
 };
 

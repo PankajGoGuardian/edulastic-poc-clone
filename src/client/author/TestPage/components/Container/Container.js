@@ -72,6 +72,7 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
+import { getAssignmentsSelector } from "../../../../student/Reports/ducks";
 
 const { getDefaultImage } = testsApi;
 const {
@@ -243,8 +244,6 @@ class Container extends PureComponent {
     } else {
       setRegradeOldId("");
     }
-    window.onbeforeunload = () => this.beforeUnload();
-
     getDefaultTestSettings();
   }
 
@@ -255,7 +254,7 @@ class Container extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { receiveItemDetailById, test, history } = this.props;
+    const { receiveItemDetailById, test, history, userId } = this.props;
 
     if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
       const testItem = test.itemGroups?.[0].items?.[0] || {};
@@ -263,14 +262,20 @@ class Container extends PureComponent {
       receiveItemDetailById(testItemId);
     }
     const { editAssigned = false } = history.location.state || this.state;
-    if (editAssigned && test?._id && !this.state.testLoaded) {
+    if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade) {
       this.onEnableEdit();
+    }
+    if (editAssigned && test?._id && test.isInEditAndRegrade && !this.state.editEnable) {
+      const canEdit = test.authors?.some(x => x._id === userId);
+      if (canEdit) {
+        this.setState({ editEnable: true });
+      }
     }
     if (test._id && !this.state.testLoaded) {
       this.setState({ testLoaded: true });
     }
   }
-
+  // Make use of the router Prompt Component. No custom beforeunload method is required.
   beforeUnload = () => {
     const {
       test,
@@ -278,7 +283,8 @@ class Container extends PureComponent {
       userId,
       testStatus,
       questionsUpdated,
-      updated
+      updated,
+      history
     } = this.props;
     const { authors, itemGroups, isDocBased } = test;
     const { editEnable } = this.state;
@@ -288,11 +294,12 @@ class Container extends PureComponent {
     if (
       isEditable &&
       itemGroups.flatMap(itemGroup => itemGroup.items || []).length > 0 &&
-      (updated || (questionsUpdated && isDocBased))
+      (updated || (questionsUpdated && isDocBased)) &&
+      !history.location.state?.editAssigned
     ) {
-      return "";
+      return true;
     }
-    return null;
+    return false;
   };
 
   handleNavChange = (value, firstFlow) => () => {
@@ -540,7 +547,15 @@ class Container extends PureComponent {
   };
 
   handleSave = () => {
-    const { test = {}, updateTest, createTest, currentTab, updateLastUsedCollectionList, history } = this.props;
+    const {
+      test = {},
+      updateTest,
+      createTest,
+      currentTab,
+      updateLastUsedCollectionList,
+      history,
+      testAssignments
+    } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
     }
@@ -684,15 +699,15 @@ class Container extends PureComponent {
 
   onEnableEdit = () => {
     const { test, userId, duplicateTest, currentTab } = this.props;
-    const { _id: testId, authors, title } = test;
+    const { _id: testId, authors, title, isUsed } = test;
     const canEdit = authors && authors.some(x => x._id === userId);
-    if (canEdit) {
-      this.handleSave();
-    } else {
-      duplicateTest({ currentTab, title, _id: testId });
-    }
-
     this.setState({ editEnable: true });
+    if (canEdit) {
+      return this.handleSave();
+    }
+    if (!test.isInEditAndRegrade) {
+      duplicateTest({ currentTab, title, _id: testId, isInEditAndRegrade: isUsed });
+    }
   };
 
   handleDuplicateTest = async e => {
@@ -775,7 +790,7 @@ class Container extends PureComponent {
     return (
       <>
         <Prompt
-          when={!!updated}
+          when={this.beforeUnload()}
           message={loc =>
             loc.pathname.startsWith("/author/tests") || "There are unsaved changes. Are you sure you want to leave?"
           }
@@ -851,6 +866,7 @@ const enhance = compose(
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       collections: getCollectionsSelector(state),
       userFeatures: getUserFeatures(state),
+      testAssignments: getAssignmentsSelector(state),
       orgCollections: getItemBucketsSelector(state)
     }),
     {

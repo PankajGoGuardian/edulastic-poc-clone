@@ -117,10 +117,11 @@ const authorType = (userId, { createdBy, authors }) => {
   return false;
 };
 
-const isRegraded = (typeOfAuthor, entity) => {
+const isRegraded = (isAuthor, entity, requestedTestId) => {
   if (
-    ["co-author", "author"].includes(typeOfAuthor) &&
-    entity._id !== entity.previousTestId &&
+    isAuthor &&
+    entity._id !== requestedTestId &&
+    entity.previousTestId === requestedTestId &&
     entity.status === "published" &&
     entity.isUsed
   ) {
@@ -971,7 +972,7 @@ function* receiveTestByIdSaga({ payload }) {
     });
     const userId = yield select(getUserIdSelector);
     const typeOfAuthor = authorType(userId, entity);
-    if (payload.editAssigned && isRegraded(typeOfAuthor, entity)) {
+    if (payload.editAssigned && isRegraded(typeOfAuthor, entity, payload.id)) {
       const routerState = yield select(({ router }) => router.location.state) || {};
       yield put(setTestDataAction({ updated: false }));
       yield put(
@@ -981,15 +982,6 @@ function* receiveTestByIdSaga({ payload }) {
         })
       );
       return;
-    }
-    // For assignment edit flow duplicate the test if user doesnt have author permission
-    if (payload.editAssigned && !entity.isInEditAndRegrade && !typeOfAuthor) {
-      const duplicate = yield call(assignmentApi.duplicateAssignment, {
-        _id: entity._id,
-        title: entity.title,
-        isInEditAndRegrade: true
-      });
-      entity = { ...duplicate, itemGroups: entity.itemGroups, passages: entity.passages };
     }
     entity.passages = [...entity.passages, ...differenceBy(tests.entity.passages, entity.passages, "_id")];
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector);
@@ -1696,8 +1688,8 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
 function* duplicateTestSaga({ payload }) {
   yield put(setTestsLoadingAction(true));
   try {
-    const { _id, title, currentTab } = payload;
-    const data = yield call(assignmentApi.duplicateAssignment, { _id, title });
+    const { _id, title, currentTab, isInEditAndRegrade = false } = payload;
+    const data = yield call(assignmentApi.duplicateAssignment, { _id, title, isInEditAndRegrade });
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`));
     yield put(setTestsLoadingAction(false));
     yield put(receiveTestByIdAction(data._id, true));

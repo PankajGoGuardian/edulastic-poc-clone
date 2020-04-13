@@ -265,7 +265,7 @@ class DisneyCardContainer extends Component {
                   </Row>
                   <Row style={{ display: "flex" }}>
                     {hasUsedScratchPad && (
-                      <StyledIconCol>
+                      <StyledIconCol title="Student has used scratchpad">
                         <ScratchPadIcon />
                       </StyledIconCol>
                     )}

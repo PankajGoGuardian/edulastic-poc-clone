@@ -794,7 +794,7 @@ class MainSetting extends Component {
                         data-cy="pause-allowed"
                         onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
                       >
-                        Allow Students to exit test without submitting
+                        Allow Students to exit assignment without submitting.
                       </CheckboxLabel>
                     </>
                   )}
@@ -803,7 +803,6 @@ class MainSetting extends Component {
                     <BlueText> ON </BlueText>
                     , If you want to set a time limit on the test. Adjust the minutes accordingly.
                     <br />
-                    If yes, please also enter the time limit for the Test.
                   </Description>
                 </Body>
               </Block>

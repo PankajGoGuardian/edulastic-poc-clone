@@ -12,7 +12,7 @@ const getButtonText = (currentPage, pages, hasSubmitButton) => {
   if (currentPage <= 1) {
     return "Start";
   }
-  if (currentPage <= pages?.length && hasSubmitButton) {
+  if (currentPage >= pages?.length && hasSubmitButton) {
     return "Submit";
   }
   return "Next";

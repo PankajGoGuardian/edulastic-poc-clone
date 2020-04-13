@@ -52,13 +52,14 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
             .update({ status: "active", lastResumed: firebase.firestore.FieldValue.serverTimestamp() });
         } else if (doc?.status === "paused") {
           //this shouldn't happen.
+          console.warn("this shouldn't happen. the assignment is already paused");
           handlePaused(history);
         }
       });
   }, []);
 
   useEffect(() => {
-    if (timerPaused) {
+    if (timerPaused && uta?.byTeacher) {
       handlePaused(history);
     }
   }, [timerPaused]);
@@ -95,7 +96,7 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
   );
 };
 
-export default TimedTestTimer;
+export default withRouter(TimedTestTimer);
 
 const TimerWrapper = styled.div`
   display: flex;

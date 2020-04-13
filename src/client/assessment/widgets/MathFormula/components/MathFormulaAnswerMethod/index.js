@@ -578,17 +578,19 @@ const MathFormulaAnswerMethod = ({
               )}
             </Col>
           </Row>
-          <Row gutter={24}>
-            {renderMethodsOptionsGrouped()}
-            {item?.templateDisplay ? (
-              <CheckOption
-                dataCy="use-template"
-                optionKey="useTemplate"
-                options={options}
-                onChange={changeOptions}
-                label="Use template"
-              />
-            ) : null}
+          {renderMethodsOptionsGrouped()}
+          <Row gutter={48}>
+            <Col>
+              {item?.templateDisplay ? (
+                <CheckOption
+                  dataCy="use-template"
+                  optionKey="useTemplate"
+                  options={{ useTemplate }}
+                  onChange={onChangeAllowedOptions}
+                  label="Use template"
+                />
+              ) : null}
+            </Col>
           </Row>
 
           {/* {index + 1 === answer.length && (

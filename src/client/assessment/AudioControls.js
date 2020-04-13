@@ -4,7 +4,7 @@ import { Howl, Howler } from "howler";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { themeColor, white } from "@edulastic/colors";
-import { IconAudioPause, IconStopCircle, IconPlayBig } from "@edulastic/icons";
+import { IconPlayFilled, IconAudioPause, IconStop, IconStopCircle, IconPlayBig } from "@edulastic/icons";
 
 import { curentPlayerDetailsSelector } from "./selectors/test";
 import { setCurrentAudioDetailsAction } from "./actions/test";
@@ -13,9 +13,37 @@ import { EduButton } from "@edulastic/common";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
+const ControlButtons = styled(Button)`
+  width: 40px;
+  height: 40px;
+  padding: 12px;
+  margin-right: 10px;
+  transition: none;
+  background: ${themeColor};
+  &.ant-btn[disabled] {
+    background: ${themeColor};
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${themeColor};
+  }
+
+  i {
+    position: absolute;
+    left: 13px;
+    top: 12px;
+  }
+  &.ant-btn.ant-btn-loading {
+    pointer-events: all;
+    cursor: default;
+  }
+`;
+
 const AudioControls = ({
   item: questionData = {},
   showAudioControls,
+  btnWithText = false,
   audioSrc,
   qId,
   currentPlayingDetails,
@@ -136,27 +164,42 @@ const AudioControls = ({
     : "Play";
   return (
     <AudioButtonsWrapper className={className}>
-      <div style={{ display: showAudioControls ? "none" : "flex" }}>
-        <EduButton height="40px" onClick={handlePlayPauseAudio}>
-          {currentPlayingDetails.qId === qId ? (
-            <>
-              <IconAudioPause />
-              PAUSE
-            </>
-          ) : (
-            !loading && (
+      {!btnWithText ? (
+        <div style={{ display: showAudioControls ? "none" : "block" }}>
+          <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
+            {currentPlayingDetails.qId === qId ? (
+              <IconAudioPause color={white} className="audio-pause" />
+            ) : (
+              !loading && <IconPlayFilled color={white} className="audio-play" />
+            )}
+          </ControlButtons>
+          <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title="Stop">
+            <IconStop color={white} className="audio-stop" />
+          </ControlButtons>
+        </div>
+      ) : (
+        <div style={{ display: showAudioControls ? "none" : "flex" }}>
+          <EduButton height="40px" onClick={handlePlayPauseAudio}>
+            {currentPlayingDetails.qId === qId ? (
               <>
-                <IconPlayBig />
-                PLAY
+                <IconAudioPause />
+                PAUSE
               </>
-            )
-          )}
-        </EduButton>
-        <EduButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
-          <IconStopCircle />
-          STOP
-        </EduButton>
-      </div>
+            ) : (
+              !loading && (
+                <>
+                  <IconPlayBig />
+                  PLAY
+                </>
+              )
+            )}
+          </EduButton>
+          <EduButton height="40px" onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId}>
+            <IconStopCircle />
+            STOP
+          </EduButton>
+        </div>
+      )}
     </AudioButtonsWrapper>
   );
 };

@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider, withTheme } from "styled-components";
-import { questionType } from "@edulastic/constants";
+import { questionType, test } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, round } from "lodash";
@@ -328,6 +328,7 @@ class QuestionWrapper extends Component {
       isLCBView,
       isGrade,
       enableMagnifier,
+      playerSkinType = test.playerSkinTypes.edulastic,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -387,6 +388,7 @@ class QuestionWrapper extends Component {
         <>
           {canShowPlayer ? (
             <AudioControls
+              btnWithText={playerSkinType.toLowerCase() === test.playerSkinTypes.edulastic.toLowerCase()}
               showAudioControls={showAudioControls}
               key={data.id}
               item={data}
@@ -573,7 +575,8 @@ const enhance = compose(
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state),
-      enableMagnifier: state.testPlayer.enableMagnifier
+      enableMagnifier: state.testPlayer.enableMagnifier,
+      playerSkinType: state.test.playerSkinType
     }),
     {
       setQuestionData: setQuestionDataAction,

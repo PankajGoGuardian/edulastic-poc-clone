@@ -7,6 +7,7 @@ import { MathKeyboard, AnswerContext } from "@edulastic/common";
 
 import CheckedBlock from "../CheckedBlock";
 import SelectUnit from "../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
 
 class ClozeMathWithUnit extends React.Component {
   static propTypes = {
@@ -370,6 +371,7 @@ class ClozeMathWithUnit extends React.Component {
             getPopupContainer={triggerNode => triggerNode.parentNode}
             allOptions={allOptions}
             id={id}
+            height={height}
           />
         </InnerWrapper>
       </OuterWrapper>
@@ -402,6 +404,8 @@ const InnerWrapper = styled.div`
   .mq-math-mode {
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
   }
   .mq-editable-field:focus,
   .mq-editable-field:hover,

@@ -6,6 +6,7 @@ import { Select } from "antd";
 import { darkBlue } from "@edulastic/colors";
 import CheckedBlock from "./CheckedBlock";
 import { getStemNumeration } from "../../../utils/helpers";
+import { SelectInputStyled } from "@edulastic/common";
 
 const { Option } = Select;
 
@@ -85,13 +86,20 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <DropdownWrapper ref={dropDownWrapper} width={`${width}px`} height={`${height}px`} menuStyle={menuStyle} isPrintPreview={isPrintPreview}>
-      <Select
+    <DropdownWrapper
+      ref={dropDownWrapper}
+      width={`${width}px`}
+      height={`${height}px`}
+      menuStyle={menuStyle}
+      isPrintPreview={isPrintPreview}
+    >
+      <SelectInputStyled
         disabled={disableResponse}
         onChange={text => save({ value: text, index }, "dropDowns", id)}
         getPopupContainer={triggerNode => triggerNode.parentNode}
         value={val}
         dropdownStyle={uiStyles}
+        height={`${height}px`}
       >
         {options &&
           options[id] &&
@@ -100,7 +108,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
               {option}
             </Option>
           ))}
-      </Select>
+      </SelectInputStyled>
     </DropdownWrapper>
   );
 };
@@ -120,17 +128,11 @@ const DropdownWrapper = styled.span`
   min-height: 35px;
   .ant-select {
     min-width: 120px;
-    margin: 2px 2px 4px;
     width: ${props => props.width};
     height: ${props => props.height};
-    min-height: 35px;
-    vertical-align: middle;
 
-    .ant-select-selection__rendered {
-      line-height: 35px;
-    }
     .ant-select-selection-selected-value {
-      ${({isPrintPreview}) => isPrintPreview ? { color: darkBlue } : {} }
+      ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})}
     }
   }
   .ant-select-dropdown {

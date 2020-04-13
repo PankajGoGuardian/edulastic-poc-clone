@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { find, isEmpty, get } from "lodash";
+import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
+import { AnswerContext, MathKeyboard, StaticMath } from "@edulastic/common";
 import { Popover } from "antd";
+import { find, get, isEmpty } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
 import styled from "styled-components";
-import { MathKeyboard, StaticMath, AnswerContext } from "@edulastic/common";
-
 import CheckedBlock from "./CheckedBlock";
 
 class ClozeMathInput extends React.Component {
@@ -438,6 +438,8 @@ const Wrapper = styled.div`
     ${({ disableResponse }) =>
       disableResponse && `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
     ${({ isPrintPreview }) => isPrintPreview && `background: white; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+    background: ${greyThemeLighter};
+    border: 1px solid ${greyThemeLight};
   }
   .mq-cursor {
     ${({ disableResponse }) => disableResponse && `display: none;`}

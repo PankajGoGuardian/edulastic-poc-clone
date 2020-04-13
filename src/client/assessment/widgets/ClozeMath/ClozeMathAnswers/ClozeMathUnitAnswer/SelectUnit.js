@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
 import { maxBy, indexOf } from "lodash";
-import { MathKeyboard, measureText } from "@edulastic/common";
+import { MathKeyboard, measureText, SelectInputStyled } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { darkBlue } from "@edulastic/colors";
 import { getStemNumeration } from "../../../../utils/helpers";
@@ -68,12 +68,12 @@ const SelectUnit = ({
       width={containerWidth}
       isPrintPreview={isPrintPreview}
     >
-      <Select
+      <SelectInputStyled
         disabled={disabled}
         onChange={onChangeUnit}
         value={value}
         preview={preview}
-        height={height}
+        height={`${height}px`}
         getPopupContainer={getPopupContainer}
         onDropdownVisibleChange={onDropdownVisibleChange}
         dropdownStyle={dropdownStyle}
@@ -84,7 +84,7 @@ const SelectUnit = ({
             {btn.label}
           </Option>
         ))}
-      </Select>
+      </SelectInputStyled>
     </DropDownWrapper>
   );
 };
@@ -150,7 +150,7 @@ const DropDownWrapper = styled.div`
       display: inline-block;
     }
     .ant-select-selection-selected-value {
-      ${({isPrintPreview}) => isPrintPreview ? {color: darkBlue} : {}};
+      ${({ isPrintPreview }) => (isPrintPreview ? { color: darkBlue } : {})};
     }
   }
 `;

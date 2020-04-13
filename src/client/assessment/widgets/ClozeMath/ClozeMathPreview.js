@@ -25,7 +25,7 @@ const getFontSize = size => {
     case "small":
       return "11px";
     case "normal":
-      return "14px";
+      return "16px";
     case "large":
       return "17px";
     case "xlarge":
@@ -244,7 +244,7 @@ ClozeMathPreview.defaultProps = {
 export default withCheckAnswerButton(ClozeMathPreview);
 
 const QuestionWrapper = styled.div`
-  font-size: ${props => props.uiStyles.fontSize || "16px"};
+  font-size: ${props => props.uiStyles.normal || "16px"};
   font-weight: ${props => (props.responseFontScale === "boosted" ? 600 : "normal")};
   position: relative;
   li {

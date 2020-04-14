@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
 import { get } from "lodash";
 
-import { IconPrint, IconTrashAlt } from "@edulastic/icons";
+import { IconPrint, IconTrashAlt, IconBarChart } from "@edulastic/icons";
 import { roleuser, test } from "@edulastic/constants";
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
@@ -121,6 +121,13 @@ const ActionMenu = ({
             <SpaceElement />
             Release Scores
           </StyledLink>
+        </Menu.Item>
+        <Menu.Item key="summary-report">
+          <Link to={`/author/reports/performance-by-students/test/${currentTestId}`}>
+            <IconBarChart />
+            <SpaceElement />
+            View Summary Report
+          </Link>
         </Menu.Item>
         <Menu.Item data-cy="edit-Assignment" key="edit-Assignment" onClick={() => toggleEditModal(true, currentTestId)}>
           <StyledLink target="_blank" rel="noopener noreferrer">

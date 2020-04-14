@@ -110,7 +110,7 @@ const Insights = ({
   return loading ? (
     <Spin style={{ marginTop: "400px" }} />
   ) : (
-    <InsightsContainer type="flex" gutter={[10, 40]} justify="center">
+    <Row type="flex" gutter={[10, 40]} justify="center" style={{ width: "99%", padding: "40px 25px" }}>
       <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
         <InsightsFilters
           data={filterData}
@@ -129,12 +129,12 @@ const Insights = ({
         )}
       </StyledCol>
       <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
-        <StyledRow>
+        <Row style={{ width: "100%" }}>
           {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
           <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} highlighted={highlighted} />
-        </StyledRow>
+        </Row>
       </StyledCol>
-    </InsightsContainer>
+    </Row>
   );
 };
 
@@ -153,14 +153,6 @@ const enhance = connect(
 );
 
 export default enhance(Insights);
-
-const StyledRow = styled(Row)`
-  width: 100%;
-`;
-
-const InsightsContainer = styled(StyledRow)`
-  padding: 40px 25px;
-`;
 
 const StyledCol = styled(Col)`
   display: flex;

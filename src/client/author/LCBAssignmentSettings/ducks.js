@@ -101,12 +101,18 @@ function* loadAssignmentSaga({ payload }) {
      * if class level openPolicy and  closePolicy present,
      * override the top level with class level
      */
-    const { openPolicy, closePolicy } = data.class[0] || {};
+    const { openPolicy, closePolicy, allowedTime, pauseAllowed } = data.class[0] || {};
     if (openPolicy) {
       data.openPolicy = openPolicy;
     }
     if (closePolicy) {
       data.closePolicy = closePolicy;
+    }
+    if (allowedTime) {
+      data.allowedTime = allowedTime;
+    }
+    if (typeof pauseAllowed !== "undefined") {
+      data.pauseAllowed = pauseAllowed;
     }
     yield put(slice.actions.loadAssignmentSucess(data));
   } catch (e) {

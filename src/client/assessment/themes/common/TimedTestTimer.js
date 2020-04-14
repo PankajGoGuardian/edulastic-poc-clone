@@ -66,7 +66,7 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
 
   useInterval(() => {
     if (!timerPaused) {
-      let timeRemaining = 5 * 60 * 1000;
+      let timeRemaining = 0;
       const now = Date.now();
       if (utaStartTime) {
         if (uta?.timeSpent && uta?.lastResumed) {
@@ -81,7 +81,7 @@ const TimedTestTimer = ({ utaId, history, groupId, fgColor, bgColor = "transpare
 
   return (
     <>
-      {uta && (
+      {uta && currentAssignmentTime !== 0 && (
         <TimerWrapper isDanger={currentAssignmentTime <= 120000} fgColor={fgColor} bgColor={bgColor}>
           <Icon type="clock-circle" />
           <Label isDanger={currentAssignmentTime <= 120000} fgColor={fgColor}>

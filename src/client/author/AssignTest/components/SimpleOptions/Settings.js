@@ -37,6 +37,7 @@ import PlayerSkinSelector from "./PlayerSkinSelector";
 import { getDisableAnswerOnPaperSelector } from "../../../TestPage/ducks";
 import { IconCaretDown, IconInfo } from "@edulastic/icons";
 import { isUndefined } from "lodash";
+import { withRouter } from "react-router-dom";
 
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const {
@@ -68,6 +69,7 @@ const Settings = ({
   disableAnswerOnPaper,
   premium,
   totalItems,
+  match,
   location
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
@@ -78,12 +80,7 @@ const Settings = ({
   });
   const [showAdvancedOption, toggleAdvancedOption] = useState(false);
   const [assignmentLevelFlow, setAssignmentLevelFlow] = useState(false);
-
-  useEffect(() => {
-    if (location?.state?.fromAssignments) {
-      setAssignmentLevelFlow(true);
-    }
-  }, []);
+  const [timedTestConfirmed, setTimedtestConfirmed] = useState(false);
 
   const advancedHandler = () => toggleAdvancedOption(!showAdvancedOption);
 
@@ -146,19 +143,18 @@ const Settings = ({
   };
 
   const updateTimedTestAttrs = (attr, value) => {
-    if (location?.state?.fromAssignments && assignmentLevelFlow) {
+    console.log("match", match?.params, timedTestConfirmed);
+    if (match?.params?.assignmentId && match?.params?.classId && !timedTestConfirmed) {
       Modal.confirm({
         title: "Do you want to Proceed ?",
         content: "Changes made in Timed Assignment will impact all Students who are In Progress or Not Started.",
         onOk: () => {
           if (attr === "timedAssignment" && value) overRideSettings("allowedTime", totalItems * 60 * 1000);
           overRideSettings(attr, value);
-          setAssignmentLevelFlow(false);
+          setTimedtestConfirmed(true);
           Modal.destroyAll();
         },
-        onCancel: () => {
-          setAssignmentLevelFlow(true);
-        },
+        onCancel: () => {},
         okText: "Proceed",
         centered: true,
         width: 500,
@@ -600,6 +596,7 @@ const Settings = ({
                   data-cy="assignment-time-switch"
                   size="small"
                   defaultChecked={false}
+                  disabled={forClassLevel}
                   checked={timedAssignment}
                   onChange={value => updateTimedTestAttrs("timedAssignment", value)}
                 />
@@ -752,4 +749,4 @@ export default connect(
     location: state?.router?.location
   }),
   null
-)(Settings);
+)(withRouter(Settings));

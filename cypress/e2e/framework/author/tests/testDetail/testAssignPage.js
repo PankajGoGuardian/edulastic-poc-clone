@@ -28,7 +28,7 @@ export default class TestAssignPage {
 
   getAssignmentTimeSettingInfo = () => cy.get('[inputfeatures="assessmentSuperPowersTimedTest"]').find("svg");
 
-  getAllowPuase = () => cy.get('[data-cy="pause-allowed"]');
+  getAllowExit = () => cy.get('[data-cy="exit-allowed"]');
 
   // *** ELEMENTS END ***
 
@@ -255,16 +255,16 @@ export default class TestAssignPage {
           .should("not.have.class", "ant-switch-checked");
     });
 
-  checkAllowPuase = () =>
+  disableAllowExit = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
-      this.getAllowPuase().check();
+      this.getAllowExit().uncheck();
     });
 
-  uncheckAllowPause = () =>
+  enableAllowExit = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
-      this.getAllowPuase().uncheck();
+      this.getAllowExit().check();
     });
 
   makeAssignmentTimed = () =>

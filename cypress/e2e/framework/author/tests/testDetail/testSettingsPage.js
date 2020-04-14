@@ -28,7 +28,7 @@ export default class TestSettings {
 
   getAssignmentTimeSettingInfo = () => cy.get('[id="timed-test"]').find("svg");
 
-  getAllowPuase = () => cy.get('[data-cy="pause-allowed"]');
+  getAllowExit = () => cy.get('[data-cy="exit-allowed"]');
 
   // *** ELEMENTS END ***
 
@@ -105,16 +105,16 @@ export default class TestSettings {
           .should("not.have.class", "ant-switch-checked");
     });
 
-  checkAllowPuase = () =>
+  enableAllowPuase = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
-      this.getAllowPuase().check();
+      this.getAllowExit().check();
     });
 
-  uncheckAllowPause = () =>
+  disableAllowPause = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.not.have.class("ant-switch-checked");
-      this.getAllowPuase().uncheck();
+      this.getAllowExit().uncheck();
     });
   // *** ACTIONS END ***
 

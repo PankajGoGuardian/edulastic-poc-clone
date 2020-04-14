@@ -3,6 +3,7 @@ import MathEditor from "./mathEditor";
 import { attemptTypes, questionTypeKey as questionType, queColor, CALCULATOR } from "../constants/questionTypes";
 import AssignmentsPage from "./assignmentsPage";
 import { studentSide } from "../constants/assignmentStatus";
+import CypressHelper from "../util/cypressHelpers";
 
 class StudentTestPage {
   constructor() {
@@ -915,6 +916,20 @@ class StudentTestPage {
         break;
     }
   };
+
+  getCountdownText = () => this.getCountDown().invoke("text");
+
+  verifyRemainingTime = hours => {
+    this.getCountdownText().then(time => {
+      const timeInSeconds = CypressHelper.hoursToSeconds(hours);
+      expect(CypressHelper.hoursToSeconds(time), `Expected time in UI is ${hours}`)
+        .to.be.greaterThan(timeInSeconds - 3)
+        .and.to.be.lessThan(timeInSeconds + 3);
+      /* change assertion type */
+    });
+  };
+
+  waitWhileAttempt = hours => cy.wait(CypressHelper.hoursToSeconds(hours) * 1000);
 
   // *** APPHELPERS END ***
 }

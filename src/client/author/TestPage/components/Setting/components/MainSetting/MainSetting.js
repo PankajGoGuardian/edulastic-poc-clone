@@ -794,7 +794,7 @@ class MainSetting extends Component {
                       <br />
                       <CheckboxLabel
                         disabled={!owner || !isEditable}
-                        data-cy="pause-allowed"
+                        data-cy="exit-allowed"
                         onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
                       >
                         Allow Students to exit assignment without submitting.

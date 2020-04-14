@@ -90,4 +90,9 @@ export default class CypressHelper {
   };
 
   static minutesToMiliSeconds = minutes => minutes * 60000;
+
+  static hoursToSeconds = hours =>
+    parseInt(hours.split(":")[0].trim()) * 60 * 60 +
+    parseInt(hours.split(":")[1].trim()) * 60 +
+    parseInt(hours.split(":")[2].trim());
 }

@@ -627,7 +627,7 @@ const Settings = ({
                 {timedAssignment && (
                   <CheckBoxWrapper>
                     <CheckboxLabel
-                      data-cy="pause-allowed"
+                      data-cy="exit-allowed"
                       checked={pauseAllowed}
                       onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
                     >

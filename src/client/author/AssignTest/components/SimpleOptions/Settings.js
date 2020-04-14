@@ -86,6 +86,7 @@ const Settings = ({
   }, []);
 
   const advancedHandler = () => toggleAdvancedOption(!showAdvancedOption);
+
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {
       setPasswordStatus({
@@ -605,7 +606,11 @@ const Settings = ({
                 {timedAssignment && (
                   <>
                     <TimeSpentInput
-                      onChange={e => updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000)}
+                      onChange={e => {
+                        if (e.target.value.length <= 3 && e.target.value <= 300) {
+                          updateTimedTestAttrs("allowedTime", e.target.value * 60 * 1000);
+                        }
+                      }}
                       size="large"
                       data-cy="assignment-time"
                       value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}

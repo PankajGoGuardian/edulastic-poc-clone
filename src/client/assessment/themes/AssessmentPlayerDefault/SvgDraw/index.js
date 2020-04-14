@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef, useState, useEffect, Fragment, useContext } from "react";
+import React, { useRef, useState, useEffect, Fragment, useContext, useLayoutEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
@@ -789,22 +789,20 @@ const SvgDraw = ({
     );
   };
 
-  useEffect(() => {
+  const containerHeight = containerRef?.scrollHeight;
+
+  useLayoutEffect(() => {
     setTimeout(() => {
       if (svg.current && containerRef) {
         // get dimensions of container only after content is loaded
         const { scrollHeight, scrollWidth } = containerRef;
         let updatedHeight = `${scrollHeight}px`;
         let updatedWidth = `${scrollWidth}px`;
-        if (showScratchpadByDefault && !LCBPreviewModal) {
-          updatedHeight = "100%";
-          updatedWidth = "100%";
-        } else if (LCBPreviewModal) {
+        if (showScratchpadByDefault || LCBPreviewModal) {
           const { height, width } = previousDimensions;
           updatedWidth = `${width}px`;
           updatedHeight = `${height}px`;
         }
-
         svg.current.style.height = updatedHeight;
         svg.current.style.width = updatedWidth;
 
@@ -813,7 +811,7 @@ const SvgDraw = ({
         }
       }
     });
-  }, [containerRef, svg.current]);
+  }, [containerRef, containerHeight, svg.current]);
 
   return (
     <Fragment>

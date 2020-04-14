@@ -1,6 +1,7 @@
 import { delay } from "redux-saga";
 import { takeEvery, call, put, all, takeLatest, select, fork } from "redux-saga/effects";
 import { classResponseApi, testActivityApi, attchmentApi as attachmentApi } from "@edulastic/api";
+import { questionType } from "@edulastic/constants";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import {
@@ -233,6 +234,19 @@ function* receiveStudentQuestionSaga({ payload }) {
         yield put(setTeacherEditedScore({ [qid]: score }));
       }
     }
+    const { qType, scratchPad, testItemId, _id: uqaId, testActivityId } = feedbackResponse;
+
+    const userWork = yield select(state => state.userWork?.present || {});
+
+    if (userWork[uqaId] === undefined) {
+      if (qType === questionType.HIGHLIGHT_IMAGE && scratchPad.scratchpad === true) {
+        yield fork(getAttachmentsForItems, {
+          testActivityId,
+          testItemsIdArray: [{ uqaId, testItemId }]
+        });
+      }
+    }
+
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
       payload: feedbackResponse

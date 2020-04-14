@@ -71,7 +71,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
   padding-top: 20px;
   align-items: stretch;
   p {
-    padding: 0px;
+    padding: 2px 0 0 0;
   }
 `;
 

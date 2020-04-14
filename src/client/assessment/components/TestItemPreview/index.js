@@ -169,7 +169,9 @@ class TestItemPreview extends Component {
 
   componentDidMount() {
     if (this.containerRef.current) {
-      const { height: currentHeight, width: currentWidth } = this.containerRef.current.getBoundingClientRect();
+      const elem = this.containerRef.current;
+      const currentHeight = elem.scrollHeight;
+      const currentWidth = elem.scrollWidth;
       const { dimensions } = this.state;
       const { width: previousWidth, height: previousHeight } = dimensions;
       if (previousWidth !== currentWidth || previousHeight !== currentHeight) {
@@ -233,23 +235,8 @@ class TestItemPreview extends Component {
       showScratchpadByDefault
     } = restProps;
 
-    let viewBoxProps = {};
-    let transformProps = {};
-    if (this.containerRef.current && !LCBPreviewModal && showScratchpadByDefault && previouscratchPadDimensions) {
-      const { dimensions } = this.state;
-      const { height: currentHeight, width: currentWidth } = dimensions;
-      const { width: previousWidth, height: previousHeight } = previouscratchPadDimensions;
-      transformProps = {
-        transformOrigin: "top left",
-        transform: `scale(${currentWidth / previousWidth}, ${currentHeight / previousHeight})`
-      };
-      viewBoxProps = {
-        viewBox: ` 0 0 ${previousWidth} ${previousHeight}`,
-        preserveAspectRatio: "none"
-      };
-    }
     const isStudentAttempt = ["studentPlayer", "practicePlayer"].includes(viewComponent);
-    const hideInternalOverflow = isLCBView || isQuestionView;
+    const hideInternalOverflow = isLCBView || isQuestionView || isExpressGrader;
     const borderProps = showScratchpadByDefault
       ? { border: isLCBView ? "1px solid #DADAE4" : "none", borderRadius: "10px" }
       : {};
@@ -280,7 +267,8 @@ class TestItemPreview extends Component {
             width: "100%",
             overflow: "auto",
             flexDirection: viewAtStudentRes ? "column" : "row",
-            background: isExpressGrader && showScratchpadByDefault ? white : null
+            background: isExpressGrader && showScratchpadByDefault ? white : null,
+            "margin-bottom": showScratchpadByDefault && "10px"
           }}
         >
           <Container
@@ -300,7 +288,6 @@ class TestItemPreview extends Component {
                   style={{
                     width: "100%",
                     height: "100%",
-                    ...transformProps,
                     display: "flex",
                     flexDirection: showStackedView || isPrintPreview ? "column" : "row"
                   }}
@@ -367,7 +354,6 @@ class TestItemPreview extends Component {
                     viewAtStudentRes={viewAtStudentRes}
                     LCBPreviewModal={LCBPreviewModal}
                     previousDimensions={previouscratchPadDimensions}
-                    viewBoxProps={viewBoxProps}
                     showScratchpadByDefault={showScratchpadByDefault}
                   />
                 )}
@@ -387,7 +373,9 @@ class TestItemPreview extends Component {
           )}
         </div>
         {!isReviewTab && (
-          <div style={{ position: "relative", "min-width": "265px" }}>{this.renderFeedbacks(showStackedView)}</div>
+          <div style={{ position: "relative", "min-width": !isPrintPreview && "265px" }}>
+            {this.renderFeedbacks(showStackedView)}
+          </div>
         )}
       </ThemeProvider>
     );

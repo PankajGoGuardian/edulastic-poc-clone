@@ -330,15 +330,6 @@ class ShareModal extends React.Component {
                   </RadioBtn>
                 ))}
               </RadioGrp>
-              <EduButton
-                height="32px"
-                data-cy="share-button-pop"
-                onClick={this.handleShare}
-                style={{ display: "inline-flex" }}
-              >
-                <IconShare />
-                SHARE
-              </EduButton>
             </RadioBtnWrapper>
             <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
               {sharedType === "INDIVIDUAL" ? (
@@ -392,8 +383,17 @@ class ShareModal extends React.Component {
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
-            <EduButton height="32px" onClick={onClose} style={{ display: "inline-flex", marginTop: "20px" }}>
-              Done
+            <EduButton height="32px" onClick={onClose} style={{ display: "inline-flex" }}>
+              Cancel
+            </EduButton>
+            <EduButton
+              height="32px"
+              data-cy="share-button-pop"
+              onClick={this.handleShare}
+              style={{ display: "inline-flex" }}
+            >
+              <IconShare />
+              SHARE
             </EduButton>
           </DoneButtonContainer>
         </ModalContainer>
@@ -549,6 +549,7 @@ const ShareButton = styled(Button)`
 const DoneButtonContainer = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 `;
 
 const DoneButton = styled(ShareButton)`

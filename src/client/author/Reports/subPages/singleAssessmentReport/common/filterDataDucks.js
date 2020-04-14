@@ -102,6 +102,7 @@ const initialState = {
     subject: "All",
     grade: "All",
     courseId: "All",
+    classId: "All",
     groupId: "All",
     schoolId: "All",
     teacherId: "All",
@@ -114,19 +115,17 @@ const initialState = {
 };
 
 const setFiltersReducer = (state, { payload }) => {
-  /**
-   * FIXME: need to refactor for simplicity
-   */
   if (payload.filters && payload.orgDataArr) {
     let byGroupId = groupBy(
       payload.orgDataArr.filter((item, index) => {
-        if (
-          item.groupId &&
-          ((item.grades || "")
+        const checkForGrades =
+          (item.grades || "")
             .split(",")
             .filter(g => g.length)
-            .includes(payload.filters.grade) ||
-            payload.filters.grade === "All") &&
+            .includes(payload.filters.grade) || payload.filters.grade === "All";
+        if (
+          item.groupId &&
+          checkForGrades &&
           (item.subject === payload.filters.subject || payload.filters.subject === "All") &&
           (item.courseId === payload.filters.courseId || payload.filters.courseId === "All")
         ) {
@@ -135,21 +134,22 @@ const setFiltersReducer = (state, { payload }) => {
       }),
       "groupId"
     );
-    let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-      return {
-        key: byGroupId[item][0].groupId,
-        title: byGroupId[item][0].groupName
-      };
+    // map filtered class ids & custom group ids by group type
+    let classIds = [],
+      groupIds = [];
+    Object.keys(byGroupId).forEach(item => {
+      const key = byGroupId[item][0].groupId,
+        groupType = byGroupId[item][0].groupType;
+      groupType === "class" ? classIds.push(key) : groupIds.push(key);
     });
-    groupIdArr.unshift({
-      key: "All",
-      title: "All Classes"
-    });
-
-    let isPresent = groupIdArr.find((item, index) => item.key === payload.filters.groupId);
-    if (!isPresent) {
-      payload.filters.groupId = groupIdArr[0].key;
+    // set default filters for missing class id & group id
+    if (!classIds.includes(payload.filters.classId)) {
+      payload.filters.classId = "All";
     }
+    if (!groupIds.includes(payload.filters.groupId)) {
+      payload.filters.groupId = "All";
+    }
+    // update state
     state.filters = { ...payload.filters };
   } else {
     state.filters = { ...payload };
@@ -199,7 +199,6 @@ function* getReportsSARFilterDataRequest({ payload }) {
   try {
     yield put({ type: RESET_REPORTS_SAR_FILTER_DATA });
     const SARFilterData = yield call(reportsApi.fetchSARFilterData, payload);
-
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
       payload: { SARFilterData }

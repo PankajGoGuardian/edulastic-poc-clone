@@ -79,6 +79,7 @@ const initialState = {
     subject: "All",
     grade: "All",
     courseId: "All",
+    classId: "All",
     groupId: "All",
     schoolId: "All",
     teacherId: "All",
@@ -107,21 +108,22 @@ const setFiltersReducer = (state, { payload }) => {
       }),
       "groupId"
     );
-    let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-      return {
-        key: byGroupId[item][0].groupId,
-        title: byGroupId[item][0].groupName
-      };
+    // map filtered class ids & custom group ids by group type
+    let classIds = [],
+      groupIds = [];
+    Object.keys(byGroupId).forEach(item => {
+      const key = byGroupId[item][0].groupId,
+        groupType = byGroupId[item][0].groupType;
+      groupType === "class" ? classIds.push(key) : groupIds.push(key);
     });
-    groupIdArr.unshift({
-      key: "All",
-      title: "All Classes"
-    });
-
-    let isPresent = groupIdArr.find((item, index) => item.key === payload.filters.groupId);
-    if (!isPresent) {
-      payload.filters.groupId = groupIdArr[0].key;
+    // set default filters for missing class id & group id
+    if (!classIds.includes(payload.filters.classId)) {
+      payload.filters.classId = "All";
     }
+    if (!groupIds.includes(payload.filters.groupId)) {
+      payload.filters.groupId = "All";
+    }
+    // update state
     state.filters = { ...payload.filters };
   } else {
     state.filters = { ...payload };

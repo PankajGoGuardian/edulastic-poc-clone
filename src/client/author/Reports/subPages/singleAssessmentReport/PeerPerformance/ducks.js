@@ -80,6 +80,10 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
 
 function* getReportsPeerPerformanceRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.requestFilters.groupIds = [payload.requestFilters.classId, payload.requestFilters.groupId]
+      .filter(i => i)
+      .join(",");
     const {
       data: { result }
     } = yield call(reportsApi.fetchPeerPerformanceReport, payload);

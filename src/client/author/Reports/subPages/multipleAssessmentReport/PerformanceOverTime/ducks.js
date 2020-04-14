@@ -68,6 +68,8 @@ export const reportPerformanceOverTimeReducer = createReducer(initialState, {
 
 function* getReportsPerformanceOverTimeRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.groupIds = [payload.classId, payload.groupId].filter(i => i).join(",");
     let performanceOverTime = yield call(reportsApi.fetchPerformanceOverTimeReport, payload);
     const selectedProfile = yield select(getReportsMARSelectedPerformanceBandProfile);
     const thresholdNameIndexed = keyBy(selectedProfile?.performanceBand || [], "threshold");

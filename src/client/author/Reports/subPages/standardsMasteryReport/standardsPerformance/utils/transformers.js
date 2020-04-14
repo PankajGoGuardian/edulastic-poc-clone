@@ -1,6 +1,11 @@
 import next from "immer";
 import { groupBy, sumBy, round, forEach, get, maxBy, find, map, orderBy, includes, filter } from "lodash";
-import { roundedPercentage, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
+import {
+  roundedPercentage,
+  processClassAndGroupIds,
+  processSchoolIds,
+  processTeacherIds
+} from "../../../../common/util";
 
 const analyseKeys = {
   masteryScore: "Mastery Score",
@@ -15,6 +20,8 @@ const getCompareByKey = compareBy => {
       return "schoolId";
     case "teacher":
       return "teacherId";
+    case "class":
+      return "groupId";
     case "group":
       return "groupId";
     case "student":
@@ -116,8 +123,11 @@ const getRowInfo = (dataSource, compareByKey, value) => {
       return find(dataSource.studInfo, student => student.studentId === value);
     case "teacherId":
     case "schoolId":
-    case "groupId":
       return find(dataSource.orgData, org => org[compareByKey] === value);
+    case "classId":
+      return find(dataSource.orgData, org => org[compareByKey] === value && org.groupType === "class");
+    case "groupId":
+      return find(dataSource.orgData, org => org[compareByKey] === value && org.groupType === "custom");
   }
 };
 
@@ -129,6 +139,7 @@ const getRowName = (compareByKey, rowInfo = {}) => {
       return `${rowInfo.teacherName}`;
     case "schoolId":
       return `${rowInfo.schoolName}`;
+    case "classId":
     case "groupId":
       return `${rowInfo.groupName}`;
   }
@@ -220,19 +231,18 @@ export const getParsedData = (
 };
 
 export const getDropDownData = (orgData = [], role = "") => {
-  const groupdIds = processGroupIds(orgData);
+  const [classIdsArr, groupIdsArr] = processClassAndGroupIds(orgData);
 
-  let dropDownDataOptions = [];
-
-  let filterInitState = {};
+  let dropDownDataOptions = [],
+    filterInitState = {};
 
   if (role !== "teacher") {
     const schoolIds = processSchoolIds(orgData);
-    const groupIds = processTeacherIds(orgData);
+    const teacherIds = processTeacherIds(orgData);
 
     filterInitState = next(filterInitState, draft => {
       draft["schoolId"] = schoolIds[0];
-      draft["teacherId"] = groupIds[0];
+      draft["teacherId"] = teacherIds[0];
     });
 
     dropDownDataOptions = next(dropDownDataOptions, draft => {
@@ -245,22 +255,30 @@ export const getDropDownData = (orgData = [], role = "") => {
         {
           key: "teacherId",
           title: "Teacher",
-          data: groupIds
+          data: teacherIds
         }
       );
     });
   }
 
   dropDownDataOptions = next(dropDownDataOptions, draft => {
-    draft.push({
-      key: "groupId",
-      title: "Class",
-      data: processGroupIds(orgData)
-    });
+    draft.push(
+      {
+        key: "classId",
+        title: "Class",
+        data: classIdsArr
+      },
+      {
+        key: "groupId",
+        title: "Group",
+        data: groupIdsArr
+      }
+    );
   });
 
   filterInitState = next(filterInitState, draft => {
-    draft["groupId"] = groupdIds[0];
+    draft["classId"] = classIdsArr[0];
+    draft["groupId"] = groupIdsArr[0];
   });
 
   return [dropDownDataOptions, filterInitState];

@@ -71,6 +71,10 @@ export const reportResponseFrequencyReducer = createReducer(initialState, {
 
 function* getReportsResponseFrequencyRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.requestFilters.groupIds = [payload.requestFilters.classId, payload.requestFilters.groupId]
+      .filter(i => i)
+      .join(",");
     const {
       data: { result }
     } = yield call(reportsApi.fetchResponseFrequency, payload);

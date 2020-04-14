@@ -78,6 +78,10 @@ export const reportQuestionAnalysisReducer = createReducer(initialState, {
 
 function* getReportsQuestionAnalysisRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.requestFilters.groupIds = [payload.requestFilters.classId, payload.requestFilters.groupId]
+      .filter(i => i)
+      .join(",");
     const {
       data: { result }
     } = yield call(reportsApi.fetchQuestionAnalysisReport, payload);

@@ -66,6 +66,8 @@ export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
 
 function* getReportsPeerProgressAnalysisRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.groupIds = [payload.classId, payload.groupId].filter(i => i).join(",");
     const peerProgressAnalysis = yield call(reportsApi.fetchPeerProgressAnalysisReport, payload);
 
     yield put({

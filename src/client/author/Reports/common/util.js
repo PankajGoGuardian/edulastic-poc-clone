@@ -92,20 +92,54 @@ export const filterData = (data, filter) => {
   return filteredData;
 };
 
-export const processGroupIds = orgDataArr => {
-  let byGroupId = groupBy(orgDataArr.filter((item, index) => (item.groupId ? true : false)), "groupId");
-  let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-    return {
+export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
+  let byGroupId = groupBy(
+    orgDataArr.filter(item => {
+      const checkForGrades =
+        (item.grades || "")
+          .split(",")
+          .filter(g => g.length)
+          .includes(currentFilter.grade) || currentFilter.grade === "All";
+      if (
+        item.groupId &&
+        checkForGrades &&
+        (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
+        (item.courseId === currentFilter.courseId || currentFilter.courseId === "All")
+      ) {
+        return true;
+      }
+    }),
+    "groupId"
+  );
+  let classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }],
+    groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
+  Object.keys(byGroupId).forEach(item => {
+    const ele = {
       key: byGroupId[item][0].groupId,
-      title: byGroupId[item][0].groupName
+      title: byGroupId[item][0].groupName,
+      groupType: byGroupId[item][0].groupType
     };
-  });
-  groupIdArr.unshift({
-    key: "All",
-    title: "All Classes"
+    ele.groupType === "class" ? classIdArr.push(ele) : groupIdArr.push(ele);
   });
 
-  return groupIdArr;
+  return [classIdArr, groupIdArr];
+};
+
+export const processClassAndGroupIds = orgDataArr => {
+  let byGroupId = groupBy(orgDataArr.filter(item => (item.groupId ? true : false)), "groupId");
+  let classIdArr = [{ key: "All", title: "All Classes", groupType: "class" }],
+    groupIdArr = [{ key: "All", title: "All Groups", groupType: "custom" }];
+  Object.keys(byGroupId).forEach(item => {
+    const ele = {
+      key: byGroupId[item][0].groupId,
+      title: byGroupId[item][0].groupName,
+      groupType: byGroupId[item][0].groupType
+    };
+    // differentiate groups and classes into individual arrays
+    ele.groupType === "class" ? classIdArr.push(ele) : groupIdArr.push(ele);
+  });
+
+  return [classIdArr, groupIdArr];
 };
 
 export const processSchoolIds = orgDataArr => {

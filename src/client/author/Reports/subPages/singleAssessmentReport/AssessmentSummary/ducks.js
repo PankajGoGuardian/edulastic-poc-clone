@@ -72,6 +72,10 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
+    // club filter for class & group
+    payload.requestFilters.groupIds = [payload.requestFilters.classId, payload.requestFilters.groupId]
+      .filter(i => i)
+      .join(",");
     const {
       data: { result }
     } = yield call(reportsApi.fetchAssessmentSummaryReport, payload);

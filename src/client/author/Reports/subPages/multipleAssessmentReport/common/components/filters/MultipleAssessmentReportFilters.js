@@ -6,6 +6,9 @@ import { Row, Col, Button } from "antd";
 import { find, get, isEmpty, map } from "lodash";
 import queryString from "query-string";
 
+import { IconGroup, IconClass } from "@edulastic/icons";
+import { greyThemeDark1 } from "@edulastic/colors";
+
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
 import { MultipleSelect } from "../../../../../common/components/widgets/MultipleSelect";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
@@ -50,15 +53,6 @@ const SingleAssessmentReportFilters = ({
   performanceBandRequired
 }) => {
   const profiles = MARFilterData?.data?.result?.bandInfo || [];
-  const getTitleByTestId = testId => {
-    let arr = get(MARFilterData, "data.result.testData", []);
-    let item = arr.find(o => o.testId === testId);
-
-    if (item) {
-      return item.testName;
-    }
-    return "";
-  };
 
   const schoolYear = useMemo(() => {
     let schoolYear = [];
@@ -107,6 +101,10 @@ const SingleAssessmentReportFilters = ({
       key: "All",
       title: "All Courses"
     };
+    const urlClassId = dropDownData.classes.find((item, index) => item.key === search.groupId) || {
+      key: "All",
+      title: "All Classes"
+    };
     const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
       key: "All",
       title: "All Groups"
@@ -139,6 +137,7 @@ const SingleAssessmentReportFilters = ({
       subject: urlSubject.key,
       grade: urlGrade.key,
       courseId: urlCourseId.key,
+      classId: urlClassId.key,
       groupId: urlGroupId.key,
       schoolId: urlSchoolId.key,
       teacherId: urlTeacherId.key,
@@ -178,6 +177,7 @@ const SingleAssessmentReportFilters = ({
         subject: filters.subject,
         grade: filters.grade,
         courseId: filters.courseId,
+        classId: filters.classId,
         groupId: filters.groupId,
         schoolId: filters.schoolId,
         teacherId: filters.teacherId,
@@ -244,6 +244,13 @@ const SingleAssessmentReportFilters = ({
     setFiltersAction(obj);
   };
   const updateClassesDropDownCB = selected => {
+    let obj = {
+      ...filters,
+      classId: selected.key
+    };
+    setFiltersAction(obj);
+  };
+  const updateGroupsDropDownCB = selected => {
     let obj = {
       ...filters,
       groupId: selected.key
@@ -333,9 +340,19 @@ const SingleAssessmentReportFilters = ({
           <Col xs={12} sm={12} md={8} lg={4} xl={4}>
             <AutocompleteDropDown
               prefix="Class"
-              by={filters.groupId}
+              by={filters.classId}
               selectCB={updateClassesDropDownCB}
+              data={dropDownData.classes}
+              dropdownMenuIcon={<IconClass width={13} height={14} color={greyThemeDark1} margin="0 10px 0 0" />}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Group"
+              by={filters.groupId}
+              selectCB={updateGroupsDropDownCB}
               data={dropDownData.groups}
+              dropdownMenuIcon={<IconGroup width={20} height={19} color={greyThemeDark1} margin="0 7px 0 0" />}
             />
           </Col>
           {role !== "teacher" ? (

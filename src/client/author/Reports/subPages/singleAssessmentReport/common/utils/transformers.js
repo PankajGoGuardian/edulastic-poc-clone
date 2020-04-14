@@ -1,4 +1,10 @@
-import { getDropDownTestIds, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
+import {
+  getDropDownTestIds,
+  processClassAndGroupIds,
+  processFilteredClassAndGroupIds,
+  processSchoolIds,
+  processTeacherIds
+} from "../../../../common/util";
 import { get, groupBy } from "lodash";
 
 const processSchoolYear = user => {
@@ -10,39 +16,6 @@ const processSchoolYear = user => {
     });
   }
   return schoolYear;
-};
-
-const processFilteredGroupIds = (orgDataArr, currentFilter) => {
-  let byGroupId = groupBy(
-    orgDataArr.filter((item, index) => {
-      if (
-        item.groupId &&
-        ((item.grades || "")
-          .split(",")
-          .filter(g => g.length)
-          .includes(currentFilter.grade) ||
-          currentFilter.grade === "All") &&
-        (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        (item.courseId === currentFilter.courseId || currentFilter.courseId === "All")
-      ) {
-        return true;
-      }
-    }),
-    "groupId"
-  );
-  let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-    return {
-      key: byGroupId[item][0].groupId,
-      title: byGroupId[item][0].groupName,
-      groupType: byGroupId[item][0].groupType
-    };
-  });
-  groupIdArr.unshift({
-    key: "All",
-    title: "All Classes"
-  });
-
-  return groupIdArr;
 };
 
 const processCourseIds = orgDataArr => {
@@ -67,8 +40,8 @@ export const getDropDownData = (SARFilterData, user) => {
   const orgDataArr = get(SARFilterData, "data.result.orgData", []);
   const testDataArr = get(SARFilterData, "data.result.testData", []);
 
-  // For Group Id
-  let groupIdArr = processGroupIds(orgDataArr);
+  // for class id & group id
+  let [classIdArr, groupIdArr] = processClassAndGroupIds(orgDataArr);
 
   // For Course Id
   let courseIdArr = processCourseIds(orgDataArr);
@@ -87,6 +60,7 @@ export const getDropDownData = (SARFilterData, user) => {
     testDataArr: testDataArr,
 
     schoolYear: schoolYear,
+    classes: classIdArr,
     groups: groupIdArr,
     courses: courseIdArr,
     schools: schoolIdArr,
@@ -102,11 +76,13 @@ export const filteredDropDownData = (SARFilterData, user, currentFilter) => {
   const orgDataArr = get(SARFilterData, "data.result.orgData", []);
   const testDataArr = get(SARFilterData, "data.result.testData", []);
 
-  // For Group Id
-  let groupIdArr = processFilteredGroupIds(orgDataArr, currentFilter);
+  // for class id & group id
+  let [classIdArr, groupIdArr] = processFilteredClassAndGroupIds(orgDataArr, currentFilter);
 
-  let isPresent = groupIdArr.find((item, index) => item.key === currentFilter.groupId);
-  if (!isPresent) {
+  if (!classIdArr.find(item => item.key === currentFilter.classId)) {
+    currentFilter.classId = classIdArr[0];
+  }
+  if (!groupIdArr.find(item => item.key === currentFilter.groupId)) {
     currentFilter.groupId = groupIdArr[0];
   }
 
@@ -127,6 +103,7 @@ export const filteredDropDownData = (SARFilterData, user, currentFilter) => {
     testDataArr: testDataArr,
 
     schoolYear: schoolYear,
+    classes: classIdArr,
     groups: groupIdArr,
     courses: courseIdArr,
     schools: schoolIdArr,
@@ -145,38 +122,37 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
   }
 
   let filtered = _dropDownData.orgDataArr.filter((item, index) => {
+    const checkForClassAndGroup =
+      item.groupType === "class"
+        ? item.groupId === currentFilter.classId || currentFilter.classId === "All"
+        : item.groupId === currentFilter.groupId || currentFilter.groupId === "All";
+    const checkForGrades =
+      (item.grades || "")
+        .split(",")
+        .filter(g => g.length)
+        .includes(currentFilter.grade) || currentFilter.grade === "All";
     if (role !== "teacher") {
       if (
         item.termId === currentFilter.termId &&
         (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        ((item.grades || "")
-          .split(",")
-          .filter(g => g.length)
-          .includes(currentFilter.grade) ||
-          currentFilter.grade === "All") &&
         (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-        (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
         (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
         (item.teacherId === currentFilter.teacherId || currentFilter.teacherId === "All") &&
-        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
+        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All") &&
+        checkForGrades &&
+        checkForClassAndGroup
       ) {
         return true;
       }
-    } else {
-      if (
-        item.termId === currentFilter.termId &&
-        (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-        ((item.grades || "")
-          .split(",")
-          .filter(g => g.length)
-          .includes(currentFilter.grade) ||
-          currentFilter.grade === "All") &&
-        (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-        (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
-        (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
-      ) {
-        return true;
-      }
+    } else if (
+      item.termId === currentFilter.termId &&
+      (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
+      (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
+      (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All") &&
+      checkForGrades &&
+      checkForClassAndGroup
+    ) {
+      return true;
     }
   });
 
@@ -189,7 +165,7 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
   _dropDownData.testDataArr.sort((a, b) => {
     return b.assessmentDate - a.assessmentDate;
   });
-  let arr = _dropDownData.testDataArr.filter((item, index) => (groupIdMap[item.groupId] ? true : false));
+  let arr = _dropDownData.testDataArr.filter(item => groupIdMap[item.groupId]);
   let finalTestIds = [];
   let makeUniqueMap = {};
   for (let item of arr) {

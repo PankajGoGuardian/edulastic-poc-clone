@@ -52,7 +52,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
-        <StyledEduButton isGhost onClick={launchHangout}>
+        <StyledEduButton height="36px" onClick={launchHangout} isGhost>
           <IconHangouts height={21} width={19} />
           Launch Hangouts
         </StyledEduButton>
@@ -113,7 +113,7 @@ export default withNamespaces("header")(
 
 const StyledEduButton = styled(EduButton)`
   span {
-    margin: 0 15px;
+    margin: 0 5px;
   }
   svg {
     .b {

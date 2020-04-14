@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { MathFormulaDisplay } from "@edulastic/common";
+import { greyThemeLight } from "@edulastic/colors";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-import { greyThemeLight } from "@edulastic/colors";
 
 const AnswerBox = ({ checked, correct, userAnswer, indexStr, inPopover, showIndex, lessMinWidth, ...rest }) => (
   <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>

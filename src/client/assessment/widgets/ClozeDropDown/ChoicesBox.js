@@ -2,10 +2,9 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
-import { Select } from "antd";
 import { MathSpan, SelectInputStyled } from "@edulastic/common";
 
-const { Option } = Select;
+const { Option } = SelectInputStyled;
 
 const minWidthMap = {
   xs: 100,
@@ -17,7 +16,7 @@ const minWidthMap = {
 
 const SelectWrapper = styled.span`
   position: relative;
-  margin: 0px 4px 5px 5px;
+  vertical-align: middle;
   display: inline-flex;
   .ant-select-dropdown {
     ${({ dropdownMenuStyle }) => dropdownMenuStyle};
@@ -41,9 +40,19 @@ const SelectWrapper = styled.span`
       display: flex;
       align-items: center;
     }
+  }
+`;
 
-    .ant-select-selection__rendered {
-      max-width: calc(100% - 32px);
+const Select = styled(SelectInputStyled)`
+  &.ant-select {
+    .ant-select-selection {
+      &.ant-select-selection--single {
+        .ant-select-selection__rendered {
+          max-width: calc(100% - 32px);
+          padding: 0px 4px 0px 10px;
+          line-height: 1;
+        }
+      }
     }
   }
 `;
@@ -96,7 +105,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
   };
   return (
     <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
-      <SelectInputStyled
+      <Select
         value={userAnswer?.value}
         style={{
           ...styles,
@@ -116,7 +125,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
               <MathSpan dangerouslySetInnerHTML={{ __html: response }} />
             </Option>
           ))}
-      </SelectInputStyled>
+      </Select>
     </SelectWrapper>
   );
 };

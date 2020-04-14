@@ -103,7 +103,7 @@ class LoginContainer extends React.Component {
     };
 
     return (
-      <LoginContentWrapper>
+      <LoginContentWrapper imageSrc={isSignupUsingDaURL && generalSettings && generalSettings.pageBackground}>
         <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
           <RegistrationBody type="flex" justify={Partners.position}>
             <Col xs={24} sm={18} md={14} lg={9} xl={9}>
@@ -160,11 +160,8 @@ class LoginContainer extends React.Component {
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
-                {isDistrictPolicyAllowed(
-                  isSignupUsingDaURL,
-                  districtPolicy,
-                  "userNameAndPassword"
-                ) || !isSignupUsingDaURL ? (
+                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                !isSignupUsingDaURL ? (
                   <FormBody>
                     <Col span={20} offset={2}>
                       <h5 align="center">{t("common.formboxheading")}</h5>
@@ -187,13 +184,7 @@ class LoginContainer extends React.Component {
                               },
                               {
                                 validator: (rule, value, callback) =>
-                                  isEmailValid(
-                                    rule,
-                                    value,
-                                    callback,
-                                    "both",
-                                    t("common.validation.validemail")
-                                  )
+                                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
                               }
                             ]
                           })(<Input data-cy="email" prefix={<IconMail color={themeColor} />} />)}
@@ -206,13 +197,7 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptypassword")
                               }
                             ]
-                          })(
-                            <Input
-                              data-cy="password"
-                              prefix={<IconLock color={themeColor} />}
-                              type="password"
-                            />
-                          )}
+                          })(<Input data-cy="password" prefix={<IconLock color={themeColor} />} type="password" />)}
                         </FormItem>
                         <FormItem>
                           {getFieldDecorator("remember", {
@@ -272,6 +257,9 @@ export default enhance(LoginForm);
 
 const LoginContentWrapper = styled(Row)`
   position: relative;
+  background-image: ${({ imageSrc }) => (imageSrc ? `url("${imageSrc}")` : "unset")};
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 const RegistrationBody = styled(Row)`

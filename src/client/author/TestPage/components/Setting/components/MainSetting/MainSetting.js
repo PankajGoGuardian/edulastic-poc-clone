@@ -766,7 +766,11 @@ class MainSetting extends Component {
                             data-cy="assignment-time"
                             style={{ margin: "0 30px" }}
                             value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
-                            onChange={e => this.updateTestData("allowedTime")(e.target.value * 60 * 1000)}
+                            onChange={e => {
+                              if (e.target.value.length <= 3 && e.target.value <= 300) {
+                                this.updateTestData("allowedTime")(e.target.value * 60 * 1000);
+                              }
+                            }}
                             min={1}
                             max={300}
                             step={1}
@@ -790,7 +794,6 @@ class MainSetting extends Component {
                       <br />
                       <CheckboxLabel
                         disabled={!owner || !isEditable}
-                        checked={pauseAllowed}
                         data-cy="pause-allowed"
                         onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
                       >

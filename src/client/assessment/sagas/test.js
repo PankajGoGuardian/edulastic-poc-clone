@@ -451,13 +451,16 @@ function* submitTest({ payload }) {
   } catch (err) {
     if (err.status === 403) {
       console.log(err);
-      yield put(push("/home/assignments"));
-      yield put({
-        type: SET_TEST_ACTIVITY_ID,
-        payload: { testActivityId: "" }
-      });
-
-      yield call(message.error, err.data);
+      if (err?.data?.message === "assignment already submitted") {
+        return yield put(push("/home/grades"));
+      } else {
+        yield put(push("/home/assignments"));
+        yield put({
+          type: SET_TEST_ACTIVITY_ID,
+          payload: { testActivityId: "" }
+        });
+        yield call(message.error, err.data);
+      }
     }
   }
 }

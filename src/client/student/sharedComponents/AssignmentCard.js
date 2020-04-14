@@ -14,6 +14,7 @@ import {
   themeColor
 } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
+import { EduButton } from "@edulastic/common";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
@@ -26,6 +27,7 @@ import StartButton from "../Assignments/components/StartButton";
 import ReviewButton from "../Reports/components/ReviewButton";
 import SafeStartAssignButton from "../styled/AssignmentCardButton";
 import Attempt from "./Attempt";
+import { ConfirmationModal } from "../../author/src/components/common/ConfirmationModal";
 
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
@@ -77,6 +79,8 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
   const [showAttempts, setShowAttempts] = useState(false);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
+  const [retakeConfirmation, setRetakeConfirmation] = useState(false);
+  const [showRetakeModal, setShowRetakeModal] = useState(false);
 
   let {
     test = {},
@@ -200,6 +204,14 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     }
   };
 
+  const checkRetakeOrStart = () => {
+    if (!resume && attempted && !retakeConfirmation) {
+      setShowRetakeModal(true);
+    } else {
+      startTest();
+    }
+  };
+
   const { activityReview = true } = data;
   let { releaseScore } = data.class.find(item => item._id === classId) || {};
 
@@ -235,7 +247,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
             startDate={startDate}
             t={t}
             isPaused={isPaused}
-            startTest={startTest}
+            startTest={checkRetakeOrStart}
             attempted={attempted}
             resume={resume}
             classId={classId}
@@ -272,6 +284,12 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
     return 4;
   };
 
+  const onRetakeModalConfirm = () => {
+    setShowRetakeModal(false);
+    setRetakeConfirmation(true);
+    startTest();
+  };
+
   const selectedColSize = 24 / getColSize(type);
   let btnWrapperSize = 24;
   if (type !== "assignment") {
@@ -300,6 +318,22 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
 
   return (
     <CardWrapper data-cy={`test-${data.testId}`}>
+      {showRetakeModal && (
+        <ConfirmationModal
+          title="Retake Assignment"
+          visible={showRetakeModal}
+          destroyOnClose
+          onCancel={() => setShowRetakeModal(false)}
+          footer={[
+            <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
+              Cancel
+            </EduButton>,
+            <EduButton onClick={onRetakeModalConfirm}>Launch</EduButton>
+          ]}
+        >
+          <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>
+        </ConfirmationModal>
+      )}
       <AssessmentDetails
         data-cy={`test-${data.testId}`}
         title={title}

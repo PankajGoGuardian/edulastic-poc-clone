@@ -331,8 +331,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
         testLibraryPage.searchFilters.routeSearch();
         editItemPage.header.saveAndgetId(true).then(itemId => {
           expect(itemId).eq(itemIds[0]);
-          testLibraryPage.searchFilters.waitForSearchResponse();
-          testAddItemTab.header.clickOnReview();
+          // testLibraryPage.searchFilters.waitForSearchResponse();
+          // testAddItemTab.header.clickOnReview();
           // testReviewTab.testheader.clickOnSaveButton(true);
           testReviewTab.verifyQustionById(itemIds[0]);
           testReviewTab.asesrtPointsByid(itemIds[0], points[0]);
@@ -359,8 +359,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Reviewing Items`, () =>
           cy.saveItemDetailToDelete(newItem);
           itemIds.push(newItem);
 
-          testLibraryPage.searchFilters.waitForSearchResponse();
-          testAddItemTab.header.clickOnReview();
+          //  testLibraryPage.searchFilters.waitForSearchResponse();
+          //  testAddItemTab.header.clickOnReview();
           testReviewTab.verifyQustionById(newItem);
           testReviewTab.verifyQustionById(itemIds[0]);
           testReviewTab.getPointsOnQueCardByid(newItem).should("have.value", `${EDITED_POINTS[0]}`);

@@ -281,7 +281,7 @@ class QuestionViewContainer extends Component {
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
-            if (!student.testActivityId) {
+            if (!student.testActivityId || student.status === "absent") {
               return null;
             }
             const qActivities = classQuestion.filter(({ userId }) => userId === student.studentId);

@@ -13,11 +13,10 @@ var _immer = _interopRequireDefault(require("immer"));
 
 var filterEmptyResponses = {
   maths: function maths() {
-    var _maths = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
+    var maths = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     // do not mutate the original answers
     // return a new copy
-    return (0, _immer["default"])(_maths, function(draft) {
+    return (0, _immer["default"])(maths, function(draft) {
       for (var _i = 0, _Object$entries = Object.entries(draft); _i < _Object$entries.length; _i++) {
         var _Object$entries$_i = (0, _slicedToArray2["default"])(_Object$entries[_i], 2),
           key = _Object$entries$_i[0],

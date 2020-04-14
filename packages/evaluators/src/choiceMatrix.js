@@ -1,3 +1,8 @@
+import { rounding as constantsForRoundingOff } from "./const/rounding";
+import { ScoringType } from "./const/scoring";
+
+const { ROUND_DOWN, NONE } = constantsForRoundingOff;
+const { PARTIAL_MATCH } = ScoringType;
 /**
  *
  * @param {Array} allAnswers
@@ -95,7 +100,7 @@ const getAnswerCount = evaluation => {
  */
 const evaluator = ({ userResponse = {}, validation = {} }) => {
   const { value: userAnswers = [] } = userResponse;
-  const { validResponse, altResponses, scoringType, penalty = 0 } = validation;
+  const { validResponse, altResponses, scoringType, penalty = 0, rounding = NONE } = validation;
   const allAnswers = [{ ...validResponse }, ...altResponses];
   let score = 0; // initial score
   const maxScore = getMaxScore(allAnswers);
@@ -107,11 +112,14 @@ const evaluator = ({ userResponse = {}, validation = {} }) => {
   const correctAnswerRows = evaluation.filter(arr => arr.length > 0 && arr.every(ans => ans === true));
   const [correctAnswers, incorrectAnswers] = getAnswerCount(evaluation);
 
-  if (scoringType === "partialMatch") {
+  if (scoringType === PARTIAL_MATCH) {
     const individualScore = maxScore / evaluation.length;
     const correctAnswerScore = Math.min(correctAnswers * individualScore, maxScore);
     const penalisation = incorrectAnswers * penalty;
     score = Math.max(correctAnswerScore - penalisation, 0).toPrecision(2);
+    if (rounding === ROUND_DOWN) {
+      score = Math.floor(score);
+    }
   } else if (correctAnswerRows.length === evaluation.length) {
     // exact match with all answers correct
     score = maxScore;

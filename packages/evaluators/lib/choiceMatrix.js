@@ -13,6 +13,10 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
+var _rounding = require("./const/rounding");
+
+var _scoring = require("./const/scoring");
+
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
   if (Object.getOwnPropertySymbols) {
@@ -44,6 +48,9 @@ function _objectSpread(target) {
   return target;
 }
 
+var ROUND_DOWN = _rounding.rounding.ROUND_DOWN,
+  NONE = _rounding.rounding.NONE;
+var PARTIAL_MATCH = _scoring.ScoringType.PARTIAL_MATCH;
 /**
  *
  * @param {Array} allAnswers
@@ -51,6 +58,7 @@ function _objectSpread(target) {
  * Input: [{ value: [ [0], [1] ] }, { value: [ [1], [1] ] }
  * Output: [ [0,1], [0,1] ]
  */
+
 var getAnswerSet = function getAnswerSet(allAnswers) {
   var answerSet = [];
   allAnswers.forEach(function(answer) {
@@ -160,7 +168,9 @@ var evaluator = function evaluator(_ref) {
     altResponses = validation.altResponses,
     scoringType = validation.scoringType,
     _validation$penalty = validation.penalty,
-    penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
+    penalty = _validation$penalty === void 0 ? 0 : _validation$penalty,
+    _validation$rounding = validation.rounding,
+    rounding = _validation$rounding === void 0 ? NONE : _validation$rounding;
   var allAnswers = [_objectSpread({}, validResponse)].concat((0, _toConsumableArray2["default"])(altResponses));
   var score = 0; // initial score
 
@@ -190,11 +200,15 @@ var evaluator = function evaluator(_ref) {
     correctAnswers = _getAnswerCount2[0],
     incorrectAnswers = _getAnswerCount2[1];
 
-  if (scoringType === "partialMatch") {
+  if (scoringType === PARTIAL_MATCH) {
     var individualScore = maxScore / evaluation.length;
     var correctAnswerScore = Math.min(correctAnswers * individualScore, maxScore);
     var penalisation = incorrectAnswers * penalty;
     score = Math.max(correctAnswerScore - penalisation, 0).toPrecision(2);
+
+    if (rounding === ROUND_DOWN) {
+      score = Math.floor(score);
+    }
   } else if (correctAnswerRows.length === evaluation.length) {
     // exact match with all answers correct
     score = maxScore;

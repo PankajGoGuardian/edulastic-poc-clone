@@ -17,6 +17,71 @@ var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
+function _createForOfIteratorHelper(o) {
+  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
+    if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
+      var i = 0;
+      var F = function F() {};
+      return {
+        s: F,
+        n: function n() {
+          if (i >= o.length) return { done: true };
+          return { done: false, value: o[i++] };
+        },
+        e: function e(_e) {
+          throw _e;
+        },
+        f: F
+      };
+    }
+    throw new TypeError(
+      "Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
+    );
+  }
+  var it,
+    normalCompletion = true,
+    didErr = false,
+    err;
+  return {
+    s: function s() {
+      it = o[Symbol.iterator]();
+    },
+    n: function n() {
+      var step = it.next();
+      normalCompletion = step.done;
+      return step;
+    },
+    e: function e(_e2) {
+      didErr = true;
+      err = _e2;
+    },
+    f: function f() {
+      try {
+        if (!normalCompletion && it["return"] != null) it["return"]();
+      } finally {
+        if (didErr) throw err;
+      }
+    }
+  };
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(n);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+  return arr2;
+}
+
 var rowEvaluation = function rowEvaluation() {
   var answer = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
@@ -45,16 +110,11 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var score = 0;
   var maxScore = 0; // evaluate for each set of possible correct answer.
 
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+  var _iterator = _createForOfIteratorHelper(answers),
+    _step;
 
   try {
-    for (
-      var _iterator = answers[Symbol.iterator](), _step;
-      !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
-      _iteratorNormalCompletion = true
-    ) {
+    for (_iterator.s(); !(_step = _iterator.n()).done; ) {
       var correctAnswer = _step.value;
       var _answer = correctAnswer.value,
         possibleMaxScore = correctAnswer.score; // handle the empty scenario.
@@ -77,18 +137,9 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       }
     }
   } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
+    _iterator.e(err);
   } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-        _iterator["return"]();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
+    _iterator.f();
   }
 
   if (score) {
@@ -121,9 +172,9 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
   var score = 0;
   var maxScore = 0;
   var prevEvaluation = [];
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
+
+  var _iterator2 = _createForOfIteratorHelper(answers),
+    _step2;
 
   try {
     var _loop = function _loop() {
@@ -152,26 +203,13 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       prevEvaluation = evaluation;
     };
 
-    for (
-      var _iterator2 = answers[Symbol.iterator](), _step2;
-      !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done);
-      _iteratorNormalCompletion2 = true
-    ) {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done; ) {
       _loop();
     }
   } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
+    _iterator2.e(err);
   } finally {
-    try {
-      if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-        _iterator2["return"]();
-      }
-    } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
-      }
-    }
+    _iterator2.f();
   }
 
   return {

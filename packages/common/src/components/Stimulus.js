@@ -42,6 +42,16 @@ const Stimulus = withTheme(
       margin: 0;
       padding-top: 2px;
     }
+
+    &.migrated-question {
+      img {
+        /**
+        * @see https://snapwiz.atlassian.net/browse/EV-13239
+        * some migrated questions has images that contains text for title.
+        */
+        max-width: unset !important;
+      }
+    }
   `)
 );
 

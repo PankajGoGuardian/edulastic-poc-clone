@@ -12,6 +12,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import PreviewItemPopup from "../../../../framework/author/itemList/itemPreview";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
+import { regradeOptions } from "../../../../framework/constants/assignmentStatus";
 
 const TEST = "TEST_PREVIEW";
 const testData = require("../../../../../fixtures/testAuthoring");
@@ -194,7 +195,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         testReviewTab.clickOnCheckBoxByItemId(itemIds[itemIds.length - 1]);
         itemIds.pop();
         testReviewTab.clickOnRemoveSelected();
-        testLibraryPage.header.clickOnPublishButton(isAssigned);
+        testLibraryPage.header.clickRegradePublish();
         regrade.applyRegrade();
       });
       it("Verify After Edit-Regrade", () => {
@@ -203,7 +204,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         studentTestPage.verifyNoOfQuestions(itemIds.length);
         studentTestPage.clickOnExitTest();
       });
-      it("Edit Test after attempt- Without Regrade", () => {
+      /*   it("Edit Test after attempt- Without Regrade", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
         testLibraryPage.sidebar.clickOnAssignment();
         authorAssignmentPage.clickOnEditTest();
@@ -225,7 +226,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}Verify Actions Button In A
         assignmentsPage.clickOnReviewButton();
         reportsPage.verifyNoOfQuesInReview(itemIds.length);
         reportsPage.verifyMaxScoreOfQueByIndex(itemIds.length - 1, points[itemIds.length - 1]);
-      });
+      }); */
     });
     context("Unassign", () => {
       before("login as teacher and unassign", () => {

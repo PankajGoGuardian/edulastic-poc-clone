@@ -8,6 +8,8 @@ export default class Regrade {
 
   // *** ELEMENTS START ***
   getCancelRegrade = () => cy.get('[data-cy="cancelRegrade"]');
+
+  getRadioByValue = value => cy.get(`[data-cy="${value}"]`);
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -49,6 +51,8 @@ export default class Regrade {
     this.getCancelRegrade().click();
     cy.contains("Share With Others");
   };
+
+  checkRadioByValue = value => this.getRadioByValue(value).click();
 
   // *** ACTIONS END ***
 

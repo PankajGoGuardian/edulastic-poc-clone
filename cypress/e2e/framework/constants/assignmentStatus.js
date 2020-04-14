@@ -95,3 +95,19 @@ export const recommendationType = {
   PRACTICE: "PRACTICE",
   CHALLENGE: "CHALLENGE"
 };
+
+export const regradeOptions = {
+  edited: {
+    NO_POINTS: "no-points",
+    FULL_POINTS: "full-points",
+    MANUAL_POINTS: "manual-points"
+  },
+  added: {
+    NO_POINTS: "skip-grading",
+    AUTO_POINTS: "restore-grading",
+    MANUAL_POINTS: "manual-grading"
+  },
+  deleted: {
+    REMOVE: "discard-item"
+  }
+};

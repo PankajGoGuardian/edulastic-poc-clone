@@ -134,6 +134,14 @@ class ReportsPage {
     this.getMaxScore().should("contain", maxscore);
   };
 
+  verifyAchievedScoreOfQueByIndex = (index, achievedScore) => {
+    this.clickOnQuestionNo();
+    cy.get(".ant-select-dropdown-menu-item")
+      .eq(index)
+      .click({ force: true });
+    this.getAchievedScore().should("contain", achievedScore);
+  };
+
   verifyNoOfQuesInReview = len => {
     this.clickOnQuestionNo();
     cy.get(".ant-select-dropdown-menu-item").should("have.length", len);

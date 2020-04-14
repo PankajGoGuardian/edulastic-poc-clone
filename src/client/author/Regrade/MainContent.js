@@ -59,9 +59,15 @@ const MainContent = ({
         </Row>
         <Group defaultValue={addedQuestion} onChange={e => onUpdateSettings("addedQuestion", e.target.value)}>
           <Row key={"addedQuestion"}>
-            <Radio value={ACTIONS.SKIP}>Give 0 points</Radio>
-            <Radio value={ACTIONS.SCORE}>Give full points</Radio>
-            <Radio value={ACTIONS.MANUAL}>Manually grade</Radio>
+            <Radio data-cy="no-points" value={ACTIONS.SKIP}>
+              Give 0 points
+            </Radio>
+            <Radio data-cy="full-points" value={ACTIONS.SCORE}>
+              Give full points
+            </Radio>
+            <Radio data-cy="manual-points" value={ACTIONS.MANUAL}>
+              Manually grade
+            </Radio>
           </Row>
         </Group>
       </InputsWrapper>
@@ -71,9 +77,15 @@ const MainContent = ({
         </Row>
         <Group defaultValue={editedQuestion} onChange={e => onUpdateSettings("editedQuestion", e.target.value)}>
           <Row key={"editedQuestion"}>
-            <Radio value={ACTIONS.SKIP}>Skip grading</Radio>
-            <Radio value={ACTIONS.SCORE}>Rescore automatially</Radio>
-            <Radio value={ACTIONS.MANUAL}>Mark for Manual grading</Radio>
+            <Radio data-cy="skip-grading" value={ACTIONS.SKIP}>
+              Skip grading
+            </Radio>
+            <Radio data-cy="restore-grading" value={ACTIONS.SCORE}>
+              Rescore automatially
+            </Radio>
+            <Radio data-cy="manual-grading" value={ACTIONS.MANUAL}>
+              Mark for Manual grading
+            </Radio>
           </Row>
         </Group>
       </InputsWrapper>
@@ -83,7 +95,9 @@ const MainContent = ({
         </Row>
         <Group defaultValue={removedQuestion} onChange={e => onUpdateSettings("removedQuestion", e.target.value)}>
           <Row key={"removedQuestion"}>
-            <Radio value={ACTIONS.DISCARD}>Discard from asssignment</Radio>
+            <Radio data-cy="discard-item" value={ACTIONS.DISCARD}>
+              Discard from asssignment
+            </Radio>
           </Row>
         </Group>
       </InputsWrapper>

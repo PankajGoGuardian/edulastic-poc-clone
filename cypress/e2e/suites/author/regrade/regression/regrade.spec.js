@@ -13,6 +13,7 @@ import StudentTestPage from "../../../../framework/student/studentTestPage";
 import ReportsPage from "../../../../framework/student/reportsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
+import { regradeOptions } from "../../../../framework/constants/assignmentStatus";
 
 const students = {
   Student1: {
@@ -122,7 +123,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         attempt.pop();
         itemsInTest.pop();
         // Publish
-        testReviewTab.testheader.clickOnPublishButton(isAssigned);
+        testReviewTab.testheader.clickRegradePublish();
         // Apply Regrade And Verify At Student1 Side
         regrade.applyRegrade();
         OriginalTestId = newTestId;
@@ -209,7 +210,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         //Update Points
         testReviewTab.updatePointsByID(item1, updatedPoints);
         // Publish
-        testAddItemTab.header.clickOnPublishButton(isAssigned);
+        testAddItemTab.header.clickRegradePublish();
         regrade.applyRegrade();
         OriginalTestId = newTestId;
       });
@@ -227,6 +228,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
       cy.login("student", Student2.email, Student2.pass);
       assignmentsPage.sidebar.clickOnGrades();
       assignmentsPage.reviewSubmittedTestById(OriginalTestId);
+      reportsPage.verifyAchievedScoreOfQueByIndex(0, 0);
       reportsPage.verifyMaxScoreOfQueByIndex(0, updatedPoints);
     });
 
@@ -253,12 +255,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         // verify total scores
         // student1
         lcb.questionResponsePage.selectStudent(Student1.name);
-        lcb.questionResponsePage.getTotalScore().should("have.text", "8");
+        lcb.questionResponsePage.getTotalScore().should("have.text", "2");
         lcb.questionResponsePage.getMaxScore().should("have.text", "8");
 
         //  student2
         lcb.questionResponsePage.selectStudent(Student2.name);
-        lcb.questionResponsePage.getTotalScore().should("have.text", "8");
+        lcb.questionResponsePage.getTotalScore().should("have.text", "2");
         lcb.questionResponsePage.getMaxScore().should("have.text", "8");
       });
 
@@ -280,11 +282,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}With Applying Regrading-Te
         // verify total scores
         // student1
         expressGrader.getGridRowByStudent(Student1.name);
-        expressGrader.verifyScoreAndPerformance("8/8", "100");
+        expressGrader.verifyScoreAndPerformance("2/8", "25");
 
         // student2
         expressGrader.getGridRowByStudent(Student2.name);
-        expressGrader.verifyScoreAndPerformance("8/8", "100");
+        expressGrader.verifyScoreAndPerformance("2/8", "25");
 
         // verify que count
         cy.get(".ant-table-thead > tr")

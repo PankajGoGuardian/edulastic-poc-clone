@@ -7,6 +7,8 @@ export default class TestHeader {
 
   getTestNameInTitle = () => cy.get('[data-cy="title"]');
 
+  getPublishRegradeButton = () => cy.get('[data-cy="publish"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -58,30 +60,32 @@ export default class TestHeader {
     });
   };
 
-  clickOnPublishButton = (assigned = false) => {
-    cy.wait(1000);
+  clickOnPublishButton = () => {
     cy.server();
     cy.route("PUT", "**/test/**/publish").as("published");
-    cy.route("PUT", "**/test/*").as("saveTest");
-    cy.get('[data-cy="publish"]').click();
-
-    cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
+    this.clickRegradePublish();
     return cy.wait("@published").then(xhr => {
       expect(xhr.status).to.eq(200);
       // TODO: revisit here and refactor
-      if (!assigned) {
-        if (Cypress.$('[data-cy="Assignments"]').length === 1) {
-          return cy.contains("Share With Others").then(() => {
-            return JSON.stringify(xhr.url)
-              .split("/")
-              .reverse()[1];
-          });
-        } else
+
+      if (Cypress.$('[data-cy="Assignments"]').length === 1) {
+        return cy.contains("Share With Others").then(() => {
           return JSON.stringify(xhr.url)
             .split("/")
             .reverse()[1];
-      }
+        });
+      } else
+        return JSON.stringify(xhr.url)
+          .split("/")
+          .reverse()[1];
     });
+  };
+
+  clickRegradePublish = () => {
+    cy.server();
+    cy.route("PUT", "**/test/*").as("saveTest");
+    this.getPublishRegradeButton().click();
+    cy.wait("@saveTest").then(xhr => expect(xhr.status).to.eq(200));
   };
 
   clickOnShare = () => cy.get('[data-cy="share"]').click({ force: true });

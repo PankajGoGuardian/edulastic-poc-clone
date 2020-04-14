@@ -299,10 +299,14 @@ function* loadTest({ payload }) {
         }
         // land on the testItems which is next to testItem that is attempted and has the highest index
         // https://snapwiz.atlassian.net/browse/EV-7530 check the comments.
-        if (testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId)) {
+        if (
+          testItemIds.indexOf(item.testItemId) > testItemIds.indexOf(lastAttemptedQuestion.testItemId) &&
+          !item.skipped
+        ) {
           lastAttemptedQuestion = item;
         }
       });
+
       if (Object.keys(scratchPadData).length) {
         yield put({
           type: LOAD_SCRATCH_PAD,
@@ -327,9 +331,12 @@ function* loadTest({ payload }) {
           }
         });
       }
-      if (lastAttendedQuestion !== test.testItems.length - 1) {
+
+      // if not the last question in the test or wasn't skipped then land on next Q
+      if (lastAttendedQuestion !== test.testItems.length - 1 && !lastAttemptedQuestion.skipped) {
         lastAttendedQuestion++;
       }
+
       // load previous responses
       yield put({
         type: LOAD_ANSWERS,

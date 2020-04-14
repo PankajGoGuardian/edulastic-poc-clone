@@ -253,6 +253,7 @@ class MainSetting extends Component {
     if (value) {
       setTestData({
         [attr]: value,
+        pauseAllowed: false,
         allowedTime: totalItems * 60 * 1000
       });
       return;
@@ -307,6 +308,7 @@ class MainSetting extends Component {
       allowedTime,
       pauseAllowed
     } = entity;
+
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
     let validationMessage = "";

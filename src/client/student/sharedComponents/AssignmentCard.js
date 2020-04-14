@@ -164,8 +164,8 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
         <p>
           {" "}
           This is a timed assignment which should be finished within the time limit set for this assignment. The time
-          limit for this assignment is <span style={{ fontWeight: 700 }}> {allowedTime / (60 * 1000)} minutes</span>. Do
-          you want to continue?
+          limit for this assignment is <span style={{ fontWeight: 700 }}> {allowedTime / (60 * 1000)} minutes</span> and
+          you can’t quit in between. Do you want to continue?
         </p>
       );
 

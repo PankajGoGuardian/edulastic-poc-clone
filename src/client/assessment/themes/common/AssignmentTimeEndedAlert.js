@@ -16,8 +16,7 @@ const AssignmentTimeEndedAlert = ({ isVisible, autoSubmitTest, theme, groupId, h
   return (
     <Modal
       open={isVisible}
-      onClose={() => {}}
-      showCloseIcon={false}
+      onClose={() => history.push("/home/grades")}
       styles={{
         modal: {
           maxWidth: "582px",

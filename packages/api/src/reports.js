@@ -50,6 +50,8 @@ const fetchAssignments = () => {
 };
 
 const fetchResponseFrequency = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/response-frequency`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -57,6 +59,8 @@ const fetchResponseFrequency = params => {
 };
 
 const fetchAssessmentSummaryReport = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/assessment-summary`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -64,6 +68,8 @@ const fetchAssessmentSummaryReport = params => {
 };
 
 const fetchPeerPerformanceReport = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/peer-performance`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -71,6 +77,8 @@ const fetchPeerPerformanceReport = params => {
 };
 
 const fetchPerformanceByStandard = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/performance-by-standards`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -78,6 +86,8 @@ const fetchPerformanceByStandard = params => {
 };
 
 const fetchPerformanceByStudentsReport = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/performance-by-students`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -121,6 +131,8 @@ const fetchStandardMasteryBrowseStandards = params => {
 };
 
 const fetchQuestionAnalysisReport = params => {
+  // TODO: move this to respective component
+  params.requestFilters.groupIds = params.requestFilters.groupId;
   return api.callApi({
     url: `/report/question-analysis`,
     params: { ...params.requestFilters, testId: params.testId }
@@ -135,6 +147,8 @@ const fetchMARFilterData = params => {
 };
 
 const fetchPeerProgressAnalysisReport = params => {
+  // TODO: move this to respective component
+  params.groupIds = params.groupId;
   return api.callApi({
     url: `/report/peer-progress-analysis`,
     params
@@ -142,6 +156,8 @@ const fetchPeerProgressAnalysisReport = params => {
 };
 
 const fetchStudentProgressReport = params => {
+  // TODO: move this to respective component
+  params.groupIds = params.groupId;
   return api.callApi({
     url: `/report/student-progress`,
     params
@@ -149,6 +165,8 @@ const fetchStudentProgressReport = params => {
 };
 
 const fetchPerformanceOverTimeReport = params => {
+  // TODO: move this to respective component
+  params.groupIds = params.groupId;
   return api.callApi({
     url: `/report/performance-over-time`,
     params

@@ -514,8 +514,9 @@ class TestList extends Component {
       return;
     }
 
-    if (item?.status === "draft") {
-      message.warning("Draft tests cannot be added");
+    if (item?.status === "draft" || item?.status === "rejected") {
+      const testStatus = item?.status === "draft" ? "Draft" : "Rejected";
+      message.warning(`${testStatus} tests cannot be added`);
       return;
     }
 

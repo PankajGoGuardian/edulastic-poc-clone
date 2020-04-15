@@ -251,7 +251,7 @@ function* saveAssignment({ payload }) {
       allowDuplicates: !!payload.allowDuplicates
     });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
-    const isCanvasClass = assignment.class.some(c => !!c.cnvId);
+    const isCanvasClass = assignment?.class?.some(c => !!c.cnvId);
     yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));

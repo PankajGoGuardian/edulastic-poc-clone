@@ -17,6 +17,7 @@ const { Text } = Typography;
 export const Container = styled.div`
   display: flex;
   justify-content: space-between;
+  width: 100%;
   &.scratchpad-wrapper {
     input {
       position: absolute;

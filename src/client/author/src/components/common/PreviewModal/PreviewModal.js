@@ -541,6 +541,8 @@ export const PlusIcon = styled.span`
   line-height: 1;
 `;
 
-const QuestionWrapper = styled.div``;
+const QuestionWrapper = styled.div`
+  display: flex;
+`;
 
 const ModalContentArea = styled.div``;

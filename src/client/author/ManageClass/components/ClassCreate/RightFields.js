@@ -204,7 +204,13 @@ const RightFields = ({
         </Col>
       </StyledFlexContainer>
       {!isDropdown && (
-        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool} style={{ height: "0px" }}>
+        <FieldLabel
+          {...restProps}
+          fiedlName="institutionId"
+          initialValue={defaultSchool}
+          style={{ height: "0px" }}
+          required={type === "class"}
+        >
           <input type="hidden" />
         </FieldLabel>
       )}

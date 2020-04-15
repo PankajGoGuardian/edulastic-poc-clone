@@ -176,13 +176,15 @@ const WorkTable = ({
     {
       title: "",
       dataIndex: "description",
-      key: "description"
+      key: "description",
+      align: "left"
     },
 
     {
       title: "AVG. Mastery",
       dataIndex: "averageMastery",
       key: "averageMastery",
+      width: "150px",
       render: p => getProgressBar(p)
     },
     {
@@ -196,6 +198,8 @@ const WorkTable = ({
       title: "",
       key: "status",
       dataIndex: "status",
+      width: "145px",
+      align: "center",
       render: s => <Tag>{s}</Tag>
     }
   ];

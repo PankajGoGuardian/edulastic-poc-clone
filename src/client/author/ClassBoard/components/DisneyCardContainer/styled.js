@@ -320,16 +320,18 @@ export const StyledIconCol = styled(Col)`
 `;
 
 export const StatusRow = styled.div`
-  height: 18px;
-  overflow: hidden;
-  flex-basis: 50%;
-  background: ${pastDueTagBackground};
-  color: ${pastDueTagColor};
-  font-size: 9px;
-  text-transform: uppercase;
-  font-weight: bold;
-  line-height: 16px;
-  padding: 3px 12px;
-  border-radius: 5px;
-  margin-top: 3px;
+  span {
+    height: 18px;
+    overflow: hidden;
+    flex-basis: 50%;
+    background: ${pastDueTagBackground};
+    color: ${pastDueTagColor};
+    font-size: 9px;
+    text-transform: uppercase;
+    font-weight: bold;
+    line-height: 16px;
+    padding: 3px 12px;
+    border-radius: 5px;
+    margin-top: 3px;
+  }
 `;

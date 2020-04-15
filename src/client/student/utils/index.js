@@ -1,4 +1,5 @@
 import moment from "moment";
+import { maxBy } from "lodash";
 
 export const normaliseTime = time => {
   let copiedTime = time;
@@ -46,4 +47,11 @@ export const formatStudentPastDueTag = data => {
     return "PAST DUE";
   }
   return null;
+}
+
+export const maxDueDateFromClassess = (classess, studentId) => {
+  //to find all classes have specific student and get max dueDate
+  const studentSpecificClasses = classess.filter(_class => !_class.students.length || _class.students.includes(studentId));
+  const maxCurrentClass = (studentSpecificClasses?.length && maxBy(studentSpecificClasses, "dueDate")) || {};
+  return maxCurrentClass.dueDate;
 }

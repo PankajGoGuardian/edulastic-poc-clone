@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round, shuffle, get } from "lodash";
+import { round, shuffle, get, maxBy } from "lodash";
 import { Col, Row, Spin } from "antd";
 import { themeColorLighter, yellow, red, themeColor } from "@edulastic/colors";
 import { connect } from "react-redux";
@@ -41,7 +41,7 @@ import {
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName } from "../../Transformer";
 import { isItemVisibiltySelector, testActivtyLoadingSelector } from "../../ducks";
-import { formatStudentPastDueTag } from "../../../../student/utils";
+import { formatStudentPastDueTag, maxDueDateFromClassess } from "../../../../student/utils";
 
 class DisneyCardContainer extends Component {
   static propTypes = {
@@ -51,7 +51,8 @@ class DisneyCardContainer extends Component {
     viewResponses: PropTypes.func.isRequired,
     isPresentationMode: PropTypes.bool,
     isLoading: PropTypes.bool,
-    testActivityLoading: PropTypes.bool
+    testActivityLoading: PropTypes.bool,
+    additionalData: PropTypes.object
   };
 
   constructor(props) {
@@ -85,7 +86,9 @@ class DisneyCardContainer extends Component {
       isItemsVisible,
       closed,
       t,
-      dueDate
+      dueDate,
+      detailedClasses,
+      classId
     } = this.props;
 
     const noDataNotification = () => {
@@ -102,7 +105,9 @@ class DisneyCardContainer extends Component {
 
     const showLoader = () => <Spin size="small" />;
     let styledCard = [];
+    const classess = detailedClasses?.filter(({_id}) => _id === classId);
 
+  
     if (testActivity.length > 0) {
       /**
        * FIXME:
@@ -173,14 +178,14 @@ class DisneyCardContainer extends Component {
             ""
           );
         const canShowResponse = isItemsVisible && viewResponseStatus.includes(status.status);
-        const pastDueTag =
-          dueDate && status.status !== "Absent"
-            ? formatStudentPastDueTag({
-                status: student.status,
-                dueDate,
-                endDate: student.endDate
-              })
-            : null;
+        const actualDueDate = maxDueDateFromClassess(classess, student.studentId);
+        const pastDueTag = (actualDueDate || dueDate) && status.status !== "Absent"
+          ? formatStudentPastDueTag({
+              status: student.status,
+              dueDate: actualDueDate || dueDate,
+              endDate: student.endDate
+            })
+          : null;
 
         const studentData = (
           <StyledCard
@@ -243,7 +248,7 @@ class DisneyCardContainer extends Component {
                         {enrollMentFlag}
                         {status.status}
                       </StyledParaS>
-                      {pastDueTag && <StatusRow>{pastDueTag}</StatusRow>}
+                      {pastDueTag && <StatusRow><span>{pastDueTag}</span></StatusRow>}
                     </>
                   ) : (
                     <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>

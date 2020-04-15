@@ -20,6 +20,7 @@ import styled, { withTheme } from "styled-components";
 import { first, maxBy } from "lodash";
 import { Row, Col, message, Icon, Modal } from "antd";
 import { TokenStorage } from "@edulastic/api";
+import { maxDueDateFromClassess } from "../utils";
 
 //  components
 import AssessmentDetails from "./AssessmentDetail";
@@ -75,7 +76,7 @@ const SafeBrowserButton = ({
   );
 };
 
-const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, classId, userRole }) => {
+const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t, type, classId, user: { role: userRole, _id: userId } }) => {
   const [showAttempts, setShowAttempts] = useState(false);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
@@ -133,8 +134,8 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
 
   // if duedate is not passed get max due date from classAssessments
   if (!dueDate) {
-    const maxCurrentClass = (currentClassList?.length && maxBy(currentClassList, "dueDate")) || {};
-    dueDate = maxCurrentClass.dueDate;
+    //to find all classes have specific student and get max dueDate
+    dueDate = maxDueDateFromClassess(currentClassList, userId);
   }
 
   const lastAttempt = maxBy(reports, o => parseInt(o.startDate)) || {};
@@ -419,7 +420,7 @@ const enhance = compose(
   withNamespaces("assignmentCard"),
   connect(
     state => ({
-      userRole: state?.user?.user?.role
+      user: state?.user?.user
     }),
     {
       startAssignment: startAssignmentAction,

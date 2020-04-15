@@ -168,14 +168,15 @@ function* updateAssignmetSaga({ payload }) {
 
 function* syncAssignmentWithGoogleClassroomSaga({ payload = {} }) {
   try {
+    yield call(message.success, "Sharing assignment is in progress");
     yield call(assignmentApi.syncWithGoogleClassroom, payload);
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS
     });
-    yield call(message.success, "Assignment posted to google classroom successfully");
+    yield call(message.success, "Assignment is shared with Google Classroom successfully");
   } catch (error) {
     const errorMessage =
-      error?.data?.message || "Assignment failed to sync with google classroom. Please try after sometime.";
+      error?.data?.message || "Assignment failed to share with google classroom. Please try after sometime.";
     yield put({
       type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
     });

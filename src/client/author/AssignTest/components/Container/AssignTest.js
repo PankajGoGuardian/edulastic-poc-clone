@@ -150,7 +150,11 @@ class AssignTest extends React.Component {
     } else if (assignment?.class[0]?.specificStudents && assignment.class.every(_class => !_class?.students?.length)) {
       message.error("Please select the student");
     } else {
-      saveAssignment(assignment);
+      let updatedAssignment = { ...assignment };
+      if (!this.state.selectedDateOption) {
+        updatedAssignment = omit(updatedAssignment, ["dueDate"]);
+      }
+      saveAssignment(updatedAssignment);
     }
   };
 

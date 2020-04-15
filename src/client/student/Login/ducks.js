@@ -20,7 +20,7 @@ import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../
 import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
-import * as firebase from "firebase";
+import * as firebase from "firebase/app";
 
 // types
 export const LOGIN = "[auth] login";
@@ -404,6 +404,10 @@ export const getUserFeatures = createSelector(
 
 const routeSelector = state => state.router.location.pathname;
 
+function getCurrentFirebaseUser() {
+  return firebase.auth().currentUser?.uid || undefined;
+}
+
 function* login({ payload }) {
   const _payload = { ...payload };
   const generalSettings = yield select(signupGeneralSettingsSelector);
@@ -637,7 +641,8 @@ export function* fetchUser() {
       yield put(push(getLoggedOutUrl()));
       return;
     }
-    const user = yield call(userApi.getUser);
+    const firebaseUser = yield call(getCurrentFirebaseUser);
+    const user = yield call(userApi.getUser, firebaseUser ? undefined : true);
     yield call(segmentApi.analyticsIdentify, { user });
     const key = `${localStorage.getItem("defaultTokenKey")}`;
 

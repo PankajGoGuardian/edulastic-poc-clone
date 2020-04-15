@@ -7,11 +7,14 @@ const prefix = "/user";
 /*
  * api for fetching logged in users details
  */
-const getUser = () =>
+const getUser = (needFirebaseToken = undefined) =>
   api
     .callApi({
       url: `${prefix}/me`,
-      method: "get"
+      method: "get",
+      params: {
+        needFirebaseToken
+      }
     })
     .then(result => result.data.result);
 

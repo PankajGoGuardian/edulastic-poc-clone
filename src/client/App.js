@@ -12,6 +12,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin, Modal, message } from "antd";
 import Joyride from "react-joyride";
+import * as firebase from "firebase/app";
 import { test, signUpState } from "@edulastic/constants";
 import { isMobileDevice, OfflineNotifier } from "@edulastic/common";
 import { TokenStorage } from "@edulastic/api";
@@ -64,6 +65,9 @@ const query = queryString.parse(window.location.search);
 if (query.token && query.userId && query.role) {
   TokenStorage.storeAccessToken(query.token, query.userId, query.role);
   TokenStorage.selectAccessToken(query.userId, query.role);
+  if (query.firebaseToken) {
+    firebase.auth().signInWithCustomToken(query.firebaseToken);
+  }
 } else if (query.userId && query.role) {
   TokenStorage.selectAccessToken(query.userId, query.role);
 }

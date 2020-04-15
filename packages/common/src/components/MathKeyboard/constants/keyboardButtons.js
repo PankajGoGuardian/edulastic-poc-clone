@@ -954,6 +954,30 @@ const ADVANCED_TRIGNOMETRY = [
 
 const UNITS_SI = [
   {
+    handler: "mm^{2}",
+    label: <span role="presentation">mm<sup>2</sup></span>,
+    types: ["all", "units_si"],
+    command: "write"
+  },
+  {
+    handler: "cm^{2}",
+    label: <span role="presentation">cm<sup>2</sup></span>,
+    types: ["all", "units_si"],
+    command: "write"
+  },
+  {
+    handler: "m^{2}",
+    label: <span role="presentation">m<sup>2</sup></span>,
+    types: ["all", "units_si"],
+    command: "write"
+  },
+  {
+    handler: "km^{2}",
+    label: <span role="presentation">km<sup>2</sup></span>,
+    types: ["all", "units_si"],
+    command: "write"
+  },
+  {
     handler: "g",
     label: "g",
     types: ["all", "units_si"],
@@ -1028,6 +1052,30 @@ const UNITS_SI = [
 ];
 
 const UNITS_US = [
+  {
+    handler: "in^{2}",
+    label: <span role="presentation">in<sup>2</sup></span>,
+    types: ["all", "units_us"],
+    command: "write"
+  },
+  {
+    handler: "mi^{2}",
+    label: <span role="presentation">mi<sup>2</sup></span>,
+    types: ["all", "units_us"],
+    command: "write"
+  },
+  {
+    handler: "ft^{2}",
+    label: <span role="presentation">ft<sup>2</sup></span>,
+    types: ["all", "units_us"],
+    command: "write"
+  },
+  {
+    handler: "pt^{2}",
+    label: <span role="presentation">pt<sup>2</sup></span>,
+    types: ["all", "units_us"],
+    command: "write"
+  },
   {
     handler: "feet",
     label: "feet",

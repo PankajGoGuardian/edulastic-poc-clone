@@ -1,5 +1,5 @@
 import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
-import { AnswerContext, MathKeyboard, StaticMath } from "@edulastic/common";
+import { AnswerContext, MathKeyboard, StaticMath, reformatMathInputLatex } from "@edulastic/common";
 import { Popover } from "antd";
 import { find, get, isEmpty } from "lodash";
 import PropTypes from "prop-types";
@@ -217,7 +217,7 @@ class ClozeMathInput extends React.Component {
         responseIds: { maths }
       } = item;
       const { index } = find(maths, res => res.id === id) || {};
-      const newValue = keypressEvent ? latex + key : latex;
+      const newValue = reformatMathInputLatex(keypressEvent ? latex + key : latex);
       if (newValue !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
         save({ value: newValue, index }, "maths", id);
       }

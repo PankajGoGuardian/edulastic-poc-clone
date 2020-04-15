@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { find, isEmpty, get } from "lodash";
 import { Popover } from "antd";
 import styled from "styled-components";
-import { MathKeyboard, AnswerContext } from "@edulastic/common";
+import { MathKeyboard, AnswerContext, reformatMathInputLatex } from "@edulastic/common";
 
 import CheckedBlock from "../CheckedBlock";
 import SelectUnit from "../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
@@ -219,8 +219,7 @@ class ClozeMathWithUnit extends React.Component {
     } = item;
     const { index } = find(mathUnits, res => res.id === id) || {};
 
-    const newValue = keypressEvent ? latex + key : latex;
-
+    const newValue = reformatMathInputLatex(keypressEvent ? latex + key : latex);
     if (newValue !== (_userAnwers[id] ? _userAnwers[id].value || "" : "") || fromUnit) {
       save({ ..._userAnwers[id], value: newValue, index }, "mathUnits", id);
     }

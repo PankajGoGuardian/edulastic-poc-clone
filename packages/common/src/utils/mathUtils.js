@@ -125,3 +125,8 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
   }
   return [];
 };
+
+// Adding any character after '/square' box
+// mathQuill does't added extra space after '/square' key, which is needed to inerpret as square box
+// it might be a bug for MathQuill lib
+export const reformatMathInputLatex = latex => latex.replace(/\\square/g, "\\square ");

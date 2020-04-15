@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import styled from "styled-components";
 import { Popover } from "antd";
-import { MathKeyboard } from "@edulastic/common";
+import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 import { math } from "@edulastic/constants";
 
 import { MathInputStyles } from "./MathInputStyles";
@@ -144,8 +144,8 @@ class MathInput extends React.PureComponent {
     const { onInput: saveAnswer } = this.props;
     const { mathField } = this.state;
 
-    const text = mathField.latex();
-    saveAnswer(text);
+    const text = reformatMathInputLatex(mathField.latex());
+    saveAnswer(text.replace(/\\square/g, "\\square "));
   };
 
   onInput = (key, command = "cmd") => {

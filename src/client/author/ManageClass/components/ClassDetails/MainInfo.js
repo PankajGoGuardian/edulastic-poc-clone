@@ -131,16 +131,10 @@ const MainInfo = ({
                 <span>{moment(endDate).format("MMM DD, YYYY")}</span>
               </FieldValue>
               {!!googleId && (
-                <>
-                  <FieldValue>
-                    <div>G. Class-code</div>
-                    <span>{googleCode}</span>
-                  </FieldValue>
-                  <FieldValue>
-                    <div>Last Sync</div>
-                    <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
-                  </FieldValue>
-                </>
+                <FieldValue>
+                  <div>G. Class-code</div>
+                  <span>{googleCode}</span>
+                </FieldValue>
               )}
               {!!canvasCourseName && (
                 <FieldValue>

@@ -78,14 +78,23 @@ class AssignmentsPage {
       .find("button")
       .last();
 
-  verifyTimeAndClickOkOnPopUp = time => {
+  verifyTimeAndClickOkOnPopUp = (time, exitAllowed) => {
     cy.wait(500);
-    this.getTimeOnPopUP()
-      .parent()
-      .should(
-        "contain.text",
-        ` This is a timed assignment which should be finished within the time limit set for this assignment. The time limit for this assignment is  ${time} minutes. Do you want to continue?`
-      );
+    if (exitAllowed) {
+      this.getTimeOnPopUP()
+        .parent()
+        .should(
+          "contain.text",
+          ` This is a timed assignment which should be finished within the time limit set for this assignment. The time limit for this assignment is  ${time} minutes. Do you want to continue?`
+        );
+    } else {
+      this.getTimeOnPopUP()
+        .parent()
+        .should(
+          "contain.text",
+          ` This is a timed assignment which should be finished within the time limit set for this assignment. The time limit for this assignment is  ${time} minutes and you can’t quit in between. Do you want to continue?`
+        );
+    }
     return this.getOkOnPopUp().click();
   };
 
@@ -111,10 +120,12 @@ class AssignmentsPage {
     return cy.wait("@gettest").then(() => new StudentTestPage());
   }
 
-  clickOnAssigmentByTestId = (testId, options = { pass: false, time: false }) => {
+  clickOnAssigmentByTestId = (testId, options = {}) => {
+    const { pass = false, time = false, exitAllowed = true } = options;
     /* {
       pass: "password in string"
       timedAssignment: "Time in minutes/string"
+      exitAllowed : "boolean"
     } */
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
@@ -123,9 +134,12 @@ class AssignmentsPage {
       .should("be.visible")
       .find('[data-cy="assignmentButton"]')
       .click({ force: true });
-    if (options.time) this.verifyTimeAndClickOkOnPopUp(options.time);
-    if (options.pass) {
-      this.enterPassword(options.pass);
+    if (time) {
+      if (exitAllowed) this.verifyTimeAndClickOkOnPopUp(time, true);
+      else this.verifyTimeAndClickOkOnPopUp(time, false);
+    }
+    if (pass) {
+      this.enterPassword(pass);
       this.clickOnStartAfterPassword();
     }
 

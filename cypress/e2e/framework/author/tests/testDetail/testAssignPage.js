@@ -244,7 +244,7 @@ export default class TestAssignPage {
   setAssignmentTime = time => {
     // time in mns
     this.makeAssignmentTimed();
-    this.getTimeSettingTextBox().type(`{selectall}${time}`);
+    if (time) this.getTimeSettingTextBox().type(`{selectall}${time}`);
   };
 
   removeAssignmentTime = () =>
@@ -258,13 +258,21 @@ export default class TestAssignPage {
   disableAllowExit = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
-      this.getAllowExit().uncheck();
+      this.getAllowExit()
+        .parent()
+        .then($el => {
+          if ($el.hasClass("ant-checkbox-checked")) this.getAllowExit().uncheck({ force: true });
+        });
     });
 
   enableAllowExit = () =>
     this.getTimeSettingSwitch().then($ele => {
       expect($ele, "Time switch should be enabled first").to.have.class("ant-switch-checked");
-      this.getAllowExit().check();
+      this.getAllowExit()
+        .parent()
+        .then($el => {
+          if (!$el.hasClass("ant-checkbox-checked")) this.getAllowExit().check({ force: true });
+        });
     });
 
   makeAssignmentTimed = () =>

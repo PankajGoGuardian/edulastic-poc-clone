@@ -80,6 +80,8 @@ class StudentTestPage {
 
   getOkOnTimeoutPopUp = () => cy.get('[class^="AssignmentTimeEndedAlert"]').find("button");
 
+  getExitButton = () => cy.get("[data-cy=finishTest]");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -120,7 +122,7 @@ class StudentTestPage {
   clickOnExitTest = (onlyPreview = false) => {
     cy.url().then(url => {
       if (Cypress.$('[data-cy="finishTest"]').length === 1) {
-        cy.get("[data-cy=finishTest]")
+        this.getExitButton()
           .should("be.visible")
           .click();
         if (!onlyPreview) this.clickOnProceed();

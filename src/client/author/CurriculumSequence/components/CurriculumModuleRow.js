@@ -19,7 +19,8 @@ import {
   themeColor,
   themeColorLighter,
   titleColor,
-  white
+  white,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { EduButton, ProgressBar } from "@edulastic/common";
 import { testActivityStatus } from "@edulastic/constants";
@@ -44,7 +45,7 @@ import additemsIcon from "../../Assignments/assets/add-items.svg";
 import piechartIcon from "../../Assignments/assets/pie-chart.svg";
 import presentationIcon from "../../Assignments/assets/presentation.svg";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
-import { StyledLabel, StyledTag } from "../../Reports/common/styled";
+import { StyledLabel, StyledTag, HideLinkLabel } from "../../Reports/common/styled";
 import { StatusLabel } from "../../Assignments/components/TableList/styled";
 import Tags from "../../src/components/common/Tags";
 import { getUserRole } from "../../src/selectors/user";
@@ -432,15 +433,16 @@ class ModuleRow extends Component {
           >
             <ModuleHeader>
               <ModuleCount>{moduleIndex + 1}</ModuleCount>
-              <AntRow type="flex" gutter={20} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
-                <Col
+              <AntRow type="flex" gutter={10} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
+                <FirstColumn
+                  urlHasUseThis={urlHasUseThis}
+                  notUseThisWidth="calc(100% - 25px)"
                   style={{
                     ...moduleInlineStyle,
-                    width: urlHasUseThis ? "calc(100% - 640px)" : "calc(100% - 25px)",
                     marginRight: urlHasUseThis && "auto"
                   }}
                 >
-                  <StyledLabel fontStyle="14/19px Open Sans" fontWeight="normal" textColor={lightGrey5}>
+                  <StyledLabel fontWeight="normal" textColor={lightGrey5}>
                     Module {moduleIndex + 1}
                   </StyledLabel>
                   <ModuleTitleWrapper>
@@ -461,7 +463,7 @@ class ModuleRow extends Component {
                   <Tooltip placement="bottom" title={description}>
                     <EllipsisContainer>{description}</EllipsisContainer>
                   </Tooltip>
-                </Col>
+                </FirstColumn>
                 {urlHasUseThis && (
                   <>
                     <Col style={{ ...moduleInlineStyle, width: "130px" }}>
@@ -475,7 +477,7 @@ class ModuleRow extends Component {
                       />
                     </Col>
                     {!isStudent ? (
-                      <Col style={{ ...moduleInlineStyle, width: "130px" }}>
+                      <SubmittedColumn style={{ ...moduleInlineStyle }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           SUBMITTED
                         </StyledLabel>
@@ -490,7 +492,7 @@ class ModuleRow extends Component {
                             ? summaryData[moduleIndex]?.submitted
                             : `${summaryData[moduleIndex].submitted}%`}
                         </StyledLabel>
-                      </Col>
+                      </SubmittedColumn>
                     ) : (
                       <Col style={{ width: "90px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
@@ -510,7 +512,7 @@ class ModuleRow extends Component {
                       </Col>
                     )}
                     {!isStudent ? (
-                      <Col style={{ ...moduleInlineStyle, width: "90px" }}>
+                      <ClassesColumn style={{ ...moduleInlineStyle }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           CLASSES
                         </StyledLabel>
@@ -523,7 +525,7 @@ class ModuleRow extends Component {
                           {/* TODO: Method to find classes */}
                           {summaryData[moduleIndex]?.classes}
                         </StyledLabel>
-                      </Col>
+                      </ClassesColumn>
                     ) : (
                       <Col style={{ width: "130px" }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
@@ -544,16 +546,16 @@ class ModuleRow extends Component {
                 )}
                 {!hideEditOptions &&
                   (completed ? (
-                    <StyledCol span={7} justify="flex-end" style={moduleInlineStyle}>
+                    <LastColumn justify="flex-end" style={moduleInlineStyle}>
                       <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
                         MODULE COMPLETED
                         <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
                       </StyledLabel>
-                    </StyledCol>
+                    </LastColumn>
                   ) : isStudent ? (
                     <div style={{ width: "175px" }} />
                   ) : totalAssigned ? (
-                    <StyledCol width="275px" marginLeft="auto" justify="flex-end">
+                    <LastColumn justify="flex-end">
                       {hasEditAccess && (
                         <StyledLabel
                           textColor={themeColor}
@@ -567,7 +569,7 @@ class ModuleRow extends Component {
                             this.toggleModule(module, moduleIndex);
                           }}
                         >
-                          {module.hidden ? "SHOW MODULE" : "HIDE MODULE"}
+                          {module.hidden ? "SHOW" : "HIDE"}
                         </StyledLabel>
                       )}
                       <StyledTag
@@ -575,17 +577,17 @@ class ModuleRow extends Component {
                         bgColor={themeColor}
                         onClick={() => (!module.hidden ? assignModule(module) : {})}
                         style={moduleInlineStyle}
-                        width="156px"
+                        width="154px"
                         height="32px"
                         bgColor={themeColor}
                       >
                         ASSIGN MODULE
                       </StyledTag>
-                    </StyledCol>
+                    </LastColumn>
                   ) : (
-                    <StyledCol width="175px" justify="flex-end" style={moduleInlineStyle}>
+                    <LastColumn justify="flex-end" style={moduleInlineStyle}>
                       <StyledTag onClick={event => event.stopPropagation()}>NO ASSIGNMENTS</StyledTag>
-                    </StyledCol>
+                    </LastColumn>
                   ))}
               </AntRow>
             </ModuleHeader>
@@ -713,11 +715,12 @@ class ModuleRow extends Component {
                               showResource={this.showResource}
                             />
                           ) : (
-                            <AntRow type="flex" gutter={20} align="top" style={{ width: "calc(100% - 25px)" }}>
-                              <Col
+                            <AntRow type="flex" gutter={10} align="top" style={{ width: "calc(100% - 25px)" }}>
+                              <FirstColumn
+                                urlHasUseThis={urlHasUseThis}
+                                notUseThisWidth="calc(100% - 130px)"
                                 style={{
                                   ...rowInlineStyle,
-                                  width: urlHasUseThis ? "calc(100% - 640px)" : "calc(100% - 130px)",
                                   marginRight: urlHasUseThis && "auto"
                                 }}
                               >
@@ -761,7 +764,7 @@ class ModuleRow extends Component {
                                     isPlaylist
                                   />
                                 </ModuleDataWrapper>
-                              </Col>
+                              </FirstColumn>
                               {urlHasUseThis ? (
                                 <>
                                   <StyledCol width="130px" style={rowInlineStyle}>
@@ -774,17 +777,12 @@ class ModuleRow extends Component {
                                     />
                                   </StyledCol>
                                   {!isStudent ? (
-                                    <StyledCol width="130px" style={rowInlineStyle} justify="center">
-                                      <StyledLabel
-                                        textColor={greyThemeDark1}
-                                        fontStyle="12px/17px Open Sans"
-                                        padding="2px"
-                                        justify="center"
-                                      >
+                                    <SubmittedColumn style={rowInlineStyle}>
+                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
                                         {/* TODO: Method to find submissions for each assignment */}
                                         {progressData?.submitted ? `${progressData?.submitted}%` : "-"}
                                       </StyledLabel>
-                                    </StyledCol>
+                                    </SubmittedColumn>
                                   ) : (
                                     <StyledCol width="90px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
@@ -801,17 +799,12 @@ class ModuleRow extends Component {
                                     </StyledCol>
                                   )}
                                   {!isStudent ? (
-                                    <StyledCol width="90px" style={rowInlineStyle} justify="center">
-                                      <StyledLabel
-                                        textColor={greyThemeDark1}
-                                        fontStyle="12px/17px Open Sans"
-                                        padding="2px"
-                                        justify="center"
-                                      >
+                                    <ClassesColumn style={rowInlineStyle}>
+                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
                                         {/* TODO: Method to find classes for each assignment */}
                                         {progressData?.classes || "-"}
                                       </StyledLabel>
-                                    </StyledCol>
+                                    </ClassesColumn>
                                   ) : (
                                     <StyledCol width="130px" style={rowInlineStyle} justify="center">
                                       <StyledLabel
@@ -827,25 +820,18 @@ class ModuleRow extends Component {
                                   )}
 
                                   {!isStudent ? (
-                                    <StyledCol
-                                      width="275px"
-                                      marginLeft="auto"
-                                      align="flex-start"
-                                      justify="flex-end"
-                                      paddingRight="0"
-                                    >
+                                    <LastColumn align="flex-start" justify="flex-end" paddingRight="0">
                                       {hasEditAccess &&
                                         (!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                                          <StyledLabel
+                                          <HideLinkLabel
                                             textColor={themeColor}
                                             fontStyle="9px/13px Open Sans"
                                             fontWeight="Bold"
-                                            padding="4px 50px 10px 0px"
                                             data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
                                             onClick={() => this.hideTest(module._id, moduleData)}
                                           >
                                             {moduleData.hidden ? "SHOW" : "HIDE"}
-                                          </StyledLabel>
+                                          </HideLinkLabel>
                                         )}
                                       {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
                                         (isAssigned ? (
@@ -886,7 +872,7 @@ class ModuleRow extends Component {
                                           <Dropdown overlay={moreMenu} trigger={["click"]} style={rowInlineStyle}>
                                             <CustomIcon
                                               data-cy="assignmentMoreOptionsIcon"
-                                              marginLeft={20}
+                                              marginLeft={15}
                                               marginRight={15}
                                               align="auto"
                                               style={rowInlineStyle}
@@ -895,7 +881,7 @@ class ModuleRow extends Component {
                                             </CustomIcon>
                                           </Dropdown>
                                         ))}
-                                    </StyledCol>
+                                    </LastColumn>
                                   ) : (
                                     !moduleData.hidden && (
                                       <>
@@ -1167,6 +1153,37 @@ const StyledCol = styled(Col)`
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
+const FirstColumn = styled(Col)`
+  width: ${props => (props.urlHasUseThis ? "calc(100% - 640px)" : props.notUseThisWidth)};
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: ${props => (props.urlHasUseThis ? "calc(100% - 500px)" : props.notUseThisWidth)};
+  }
+`;
+
+const LastColumn = styled(StyledCol)`
+  width: 250px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 220px;
+  }
+`;
+
+const SubmittedColumn = styled(Col)`
+  width: 100px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 80px;
+  }
+`;
+
+const ClassesColumn = styled(Col)`
+  width: 90px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 65px;
+  }
+`;
+
 const ModuleHeader = styled.div`
   display: flex;
   width: 100%;
@@ -1197,6 +1214,10 @@ const ModuleTitle = styled.div`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 14px;
+  }
 `;
 
 export const EllipsisContainer = styled.div`
@@ -1209,11 +1230,15 @@ export const EllipsisContainer = styled.div`
   max-width: 95%;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 12px;
+  }
 `;
 
 export const CustomIcon = styled.span`
   cursor: pointer;
-  margin-right: ${props => props.marginRight || 25}px;
+  margin-right: ${props => props.marginRight || 0}px;
   margin-left: ${props => props.marginLeft || 0}px;
   font-size: 16px;
   align-self: ${props => props.align || "flex-start"};
@@ -1344,6 +1369,9 @@ export const EllipticSpan = styled.span`
     min-width: ${props => props.md || props.width};
     max-width: ${props => props.md || props.width};
   }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
+  }
   @media only screen and (max-width: ${extraDesktopWidth}) {
     min-width: ${props => props.lg || props.width};
     max-width: ${props => props.lg || props.width};
@@ -1356,9 +1384,9 @@ export const EllipticSpan = styled.span`
 
 export const AssignmentIcon = styled.span`
   cursor: pointer;
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 30px;
+  margin-left: 12px;
+  margin-right: ${props => props.marginRight || "0px"};
+  width: 20px;
 `;
 
 const Assignment = styled.div`

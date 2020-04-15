@@ -2,7 +2,15 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Col, Button, Slider, Table } from "antd";
 
-import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
+import {
+  darkGrey,
+  grey,
+  fadedBlack,
+  fadedGrey,
+  lightGreySecondary,
+  themeColor,
+  mediumDesktopExactWidth
+} from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -456,7 +464,7 @@ export const CustomXAxisTickTooltipContainer = styled.div`
 export const StyledTag = styled.div`
   width: ${props => props.width || "auto"};
   padding: ${props => props.padding || "0px 20px"};
-  margin: ${props => props.margin || "2px"};
+  margin: ${props => props.margin || "0px"};
   background: ${props => props.bgColor || themeColor};
   height: ${props => props.height || "24px"};
   color: ${props => props.textColor || "#ffffff"};
@@ -467,6 +475,11 @@ export const StyledTag = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    height: 28px;
+    font-size: 9px;
+  }
 `;
 
 export const StyledLabel = styled.div`
@@ -481,4 +494,13 @@ export const StyledLabel = styled.div`
   letter-spacing: ${props => props.spacing || "0.2px"};
   color: ${props => props.textColor || "grey"};
   text-align: ${props => props.textAlign || "left"};
+  font-size: 14px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 10px;
+  }
+`;
+
+export const HideLinkLabel = styled(StyledLabel)`
+  padding: 4px 20px 10px 0px;
 `;

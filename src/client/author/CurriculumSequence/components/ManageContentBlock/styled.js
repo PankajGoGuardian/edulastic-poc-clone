@@ -8,29 +8,27 @@ import {
   greyThemeLight,
   backgrounds,
   borderGrey4,
-  mainBgColor
+  mainBgColor,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ManageContentOuterWrapper = styled.div`
   width: 400px;
-  min-width: 400px;
-  margin: 20px 30px 40px 0;
   border-radius: 4px;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 340px;
+  }
 `;
 
 export const ManageContentContainer = styled.div`
-  width: 400px;
-  min-width: 400px;
-  margin: 20px 30px 40px 0;
+  width: 100%;
+  margin: 20px 0px;
   background: ${white};
-  padding: 10px 22px;
+  padding: 10px 20px;
   border-radius: 10px;
   border: 1px solid ${borderGrey4};
-
-  @media (max-width: ${smallDesktopWidth}) {
-    margin: 20px 40px 40px 40px;
-  }
 
   .ant-spin {
     position: relative;
@@ -53,6 +51,10 @@ export const ManageContentContainer = styled.div`
         fill: #676e74 !important;
       }
     }
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    padding: 10px 15px;
   }
 `;
 

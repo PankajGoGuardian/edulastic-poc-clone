@@ -73,7 +73,6 @@ class AssignmentDragItem extends Component {
         <Assignment
           key={moduleData.contentId}
           data-cy="moduleAssignment"
-          padding="14px 30px 14px 20px"
           borderRadius="unset"
           boxShadow="unset"
           isDragging={isDragging}
@@ -125,7 +124,7 @@ class AssignmentDragItem extends Component {
                 <Tags tags={standardTags} />
               </WrapperContainer>
               <AssignmentIconsHolder>
-                <AssignmentIcon>
+                <AssignmentIcon marginRight="10px">
                   <CustomIcon>
                     <IconVisualization
                       color={themeColor}
@@ -228,8 +227,7 @@ const Assignment = styled(Row)`
   border: 0;
   cursor: grab;
   border-radius: 0;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0px;
   background: ${({ isDragging }) => (isDragging ? themeColor : white)};
 `;
 

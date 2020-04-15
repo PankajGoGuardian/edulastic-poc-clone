@@ -6,7 +6,7 @@ import { groupBy, isEqual, uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton, FlexContainer, MainHeader, ProgressBar } from "@edulastic/common";
+import { EduButton, FlexContainer, MainHeader, ProgressBar, MainContentWrapper } from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -20,7 +20,8 @@ import {
   tabletWidth,
   themeColor,
   titleColor,
-  white
+  white,
+  mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap, IconPencilEdit, IconPlaylist, IconShare, IconTile } from "@edulastic/icons";
 import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
@@ -741,154 +742,154 @@ class CurriculumSequence extends Component {
             )
           )}
 
-          {currentTab === "playlist" && (
-            <>
-              {isPlaylistDetailsPage && (
-                <ReviewBreadCrumbWrapper>
-                  <SecondHeader>
-                    <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
-                  </SecondHeader>
-                </ReviewBreadCrumbWrapper>
-              )}
+          <MainContentWrapper padding="30px">
+            {currentTab === "playlist" && (
+              <>
+                {isPlaylistDetailsPage && (
+                  <ReviewBreadCrumbWrapper>
+                    <SecondHeader>
+                      <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
+                    </SecondHeader>
+                  </ReviewBreadCrumbWrapper>
+                )}
 
-              <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
-                <ContentContainer urlHasUseThis={urlHasUseThis}>
-                  {isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath && (
+                <StyledFlexContainer width="100%" alignItems="flex-start" justifyContent="flex-start">
+                  <ContentContainer urlHasUseThis={urlHasUseThis}>
+                    {isStudent && !!dateKeys.length && destinationCurriculumSequence?.isSparkMath && (
+                      <SubTopBar>
+                        <SubTopBarContainer
+                          style={{
+                            background: "#2f4151",
+                            padding: "10px 20px",
+                            color: "#fff",
+                            justifyContent: "space-between",
+                            flexDirection: "row",
+                            fontSize: "12px"
+                          }}
+                        >
+                          <div>NEW RECOMMENDATIONS SINCE LAST LOGIN.</div>
+                          <div style={{ cursor: "pointer" }} onClick={this.handleCheckout}>
+                            CHECK IT OUT >>
+                          </div>
+                        </SubTopBarContainer>
+                      </SubTopBar>
+                    )}
                     <SubTopBar>
-                      <SubTopBarContainer
-                        style={{
-                          background: "#2f4151",
-                          padding: "10px 20px",
-                          color: "#fff",
-                          justifyContent: "space-between",
-                          flexDirection: "row",
-                          fontSize: "12px"
-                        }}
-                      >
-                        <div>NEW RECOMMENDATIONS SINCE LAST LOGIN.</div>
-                        <div style={{ cursor: "pointer" }} onClick={this.handleCheckout}>
-                          CHECK IT OUT >>
-                        </div>
+                      <SubTopBarContainer active={isContentExpanded} mode={isManageContentActive ? "embedded" : mode}>
+                        <CurriculumSubHeaderRow>
+                          <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
+                            <SubHeaderDescription>{description}</SubHeaderDescription>
+                          </SubHeaderTitleContainer>
+                          {!enableCustomize && (
+                            <SubHeaderInfoCardWrapper>
+                              {subHeaderIcon1}
+                              {subHeaderIcon2}
+                            </SubHeaderInfoCardWrapper>
+                          )}
+                          {enableCustomize && subHeaderIcon1}
+                          {enableCustomize && subHeaderIcon2}
+                          {enableCustomize && (
+                            <StyledButton
+                              width="135px"
+                              data-cy="manage-content"
+                              onClick={toggleManageContentClick}
+                              isManageContentActive={isManageContentActive}
+                            >
+                              Manage Content
+                            </StyledButton>
+                          )}
+                        </CurriculumSubHeaderRow>
                       </SubTopBarContainer>
                     </SubTopBar>
-                  )}
-                  <SubTopBar>
-                    <SubTopBarContainer active={isContentExpanded} mode={isManageContentActive ? "embedded" : mode}>
-                      <CurriculumSubHeaderRow>
-                        <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
-                          <SubHeaderDescription>{description}</SubHeaderDescription>
-                        </SubHeaderTitleContainer>
-                        {!enableCustomize && (
-                          <SubHeaderInfoCardWrapper>
-                            {subHeaderIcon1}
-                            {subHeaderIcon2}
-                          </SubHeaderInfoCardWrapper>
-                        )}
-                        {enableCustomize && subHeaderIcon1}
-                        {enableCustomize && subHeaderIcon2}
-                        {enableCustomize && (
-                          <StyledButton
-                            width="135px"
-                            data-cy="manage-content"
-                            onClick={toggleManageContentClick}
-                            isManageContentActive={isManageContentActive}
-                          >
-                            Manage Content
-                          </StyledButton>
-                        )}
-                      </CurriculumSubHeaderRow>
-                    </SubTopBarContainer>
-                  </SubTopBar>
-                  <Wrapper active={isContentExpanded}>
-                    {destinationCurriculumSequence && (
-                      <Curriculum
-                        mode={isManageContentActive ? "embedded" : mode}
-                        isManageContentActive={isManageContentActive}
-                        history={history}
-                        status={status}
-                        key={destinationCurriculumSequence._id}
-                        padding={selectContent}
-                        curriculum={destinationCurriculumSequence}
-                        expandedModules={expandedModules}
-                        onCollapseExpand={onCollapseExpand}
-                        onDrop={onDrop}
-                        resetDestination={resetDestination}
-                        modulesStatus={modulesStatus}
-                        customize={customize}
-                        handleRemove={handleRemoveTest}
-                        hideEditOptions={!urlHasUseThis}
-                        onBeginDrag={onBeginDrag}
-                        isReview={isAuthoringFlowReview}
-                        onSortEnd={onSortEnd}
-                        handleTestsSort={handleTestsSort}
-                        urlHasUseThis={urlHasUseThis}
-                        summaryData={summaryData}
-                        playlistMetrics={playlistMetrics}
-                        playlistClassList={playlistClassList}
-                        manageContentDirty={manageContentDirty}
-                        hasEditAccess={hasEditAccess}
-                      />
-                    )}
-                  </Wrapper>
-                </ContentContainer>
-                {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
-                  <ManageContentBlock
-                    testsInPlaylist={testsInPlaylist}
-                    subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
-                    gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
-                    collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
-                  />
-                ) : null}
-                {urlHasUseThis &&
-                  (isManageContentActive ? (
+                    <Wrapper active={isContentExpanded}>
+                      {destinationCurriculumSequence && (
+                        <Curriculum
+                          mode={isManageContentActive ? "embedded" : mode}
+                          isManageContentActive={isManageContentActive}
+                          history={history}
+                          status={status}
+                          key={destinationCurriculumSequence._id}
+                          padding={selectContent}
+                          curriculum={destinationCurriculumSequence}
+                          expandedModules={expandedModules}
+                          onCollapseExpand={onCollapseExpand}
+                          onDrop={onDrop}
+                          resetDestination={resetDestination}
+                          modulesStatus={modulesStatus}
+                          customize={customize}
+                          handleRemove={handleRemoveTest}
+                          hideEditOptions={!urlHasUseThis}
+                          onBeginDrag={onBeginDrag}
+                          isReview={isAuthoringFlowReview}
+                          onSortEnd={onSortEnd}
+                          handleTestsSort={handleTestsSort}
+                          urlHasUseThis={urlHasUseThis}
+                          summaryData={summaryData}
+                          playlistMetrics={playlistMetrics}
+                          playlistClassList={playlistClassList}
+                          manageContentDirty={manageContentDirty}
+                          hasEditAccess={hasEditAccess}
+                        />
+                      )}
+                    </Wrapper>
+                  </ContentContainer>
+                  {isNotStudentOrParent && isManageContentActive && !urlHasUseThis ? (
                     <ManageContentBlock
                       testsInPlaylist={testsInPlaylist}
                       subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
                       gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
                       collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
                     />
-                  ) : (
-                    <SummaryBlock>
-                      <SummaryBlockTitle>Summary</SummaryBlockTitle>
-                      <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
-                      <SummaryPieChart
-                        isStudent={isStudent}
-                        data={summaryData}
-                        totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
-                        colors={COLORS}
+                  ) : null}
+                  {urlHasUseThis &&
+                    (isManageContentActive ? (
+                      <ManageContentBlock
+                        testsInPlaylist={testsInPlaylist}
+                        subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
+                        gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
+                        collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
                       />
-                      <Hr />
-                      <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
-                      <div style={{ width: "80%", margin: "20px auto" }}>
-                        {summaryData?.map(
-                          item =>
-                            ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
-                              <div style={{ opacity: item.hidden ? `.5` : `1` }}>
-                                <Tooltip placement="topLeft" title={item.title || item.name}>
-                                  <ModuleTitle>{item.title || item.name}</ModuleTitle>
-                                </Tooltip>
-                                <ProgressBar
-                                  strokeColor={getProgressColor(item?.value)}
-                                  strokeWidth={13}
-                                  percent={item.value}
-                                  size="small"
-                                  color={item.value ? greyThemeDark1 : lightGrey2}
-                                  format={percent => (percent ? `${percent}%` : "NO DATA")}
-                                  padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
-                                />
-                              </div>
-                            )
-                        )}
-                      </div>
-                    </SummaryBlock>
-                  ))}
-              </StyledFlexContainer>
-            </>
-          )}
-
-          {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
-
-          {currentTab === "differentiation" && isSparkMathPlaylist && <Differentiation />}
+                    ) : (
+                      <SummaryBlock>
+                        <SummaryBlockTitle>Summary</SummaryBlockTitle>
+                        <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+                        <SummaryPieChart
+                          isStudent={isStudent}
+                          data={summaryData}
+                          totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
+                          colors={COLORS}
+                        />
+                        <Hr />
+                        <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
+                        <div style={{ width: "80%", margin: "20px auto" }}>
+                          {summaryData?.map(
+                            item =>
+                              ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
+                                <div style={{ opacity: item.hidden ? `.5` : `1` }}>
+                                  <Tooltip placement="topLeft" title={item.title || item.name}>
+                                    <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                                  </Tooltip>
+                                  <ProgressBar
+                                    strokeColor={getProgressColor(item?.value)}
+                                    strokeWidth={13}
+                                    percent={item.value}
+                                    size="small"
+                                    color={item.value ? greyThemeDark1 : lightGrey2}
+                                    format={percent => (percent ? `${percent}%` : "NO DATA")}
+                                    padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
+                                  />
+                                </div>
+                              )
+                          )}
+                        </div>
+                      </SummaryBlock>
+                    ))}
+                </StyledFlexContainer>
+              </>
+            )}
+            {currentTab === "insights" && <Insights currentPlaylist={destinationCurriculumSequence} />}
+            {currentTab === "differentiation" && isSparkMathPlaylist && <Differentiation />}
+          </MainContentWrapper>
         </CurriculumSequenceWrapper>
         {dropPlaylistModalVisible && (
           <DropPlaylistModal visible={dropPlaylistModalVisible} closeModal={this.closeDropPlaylistModal} />
@@ -987,9 +988,7 @@ const Hr = styled.div`
 
 const SummaryBlock = styled.div`
   width: 400px;
-  min-width: 400px;
   min-height: 760px;
-  margin: 20px 30px 40px 0;
   background: ${white};
   padding-top: 30px;
   border-radius: 4px;
@@ -1004,8 +1003,8 @@ const SummaryBlock = styled.div`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
-    margin: 20px 40px 40px 40px;
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 340px;
   }
 `;
 
@@ -1056,6 +1055,11 @@ const StyledButton = styled.div`
     svg {
       fill: white;
     }
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 9px;
+    height: ${props => props.height || "32px"};
   }
 `;
 
@@ -1113,19 +1117,16 @@ const ModalFooter = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
   width: 100%;
   align-self: ${props => (props.active ? "flex-start" : "center")};
   margin-left: ${props => (props.active ? "0px" : "auto")};
   margin-right: ${props => (props.active ? "0px" : "auto")};
   @media only screen and (max-width: ${largeDesktopWidth}) {
-    padding: 0px 40px;
+    padding: 0px 20px;
     width: 100%;
-  }
-  @media only screen and (max-width: ${desktopWidth}) {
-    padding: 0px 25px;
   }
 `;
 
@@ -1135,7 +1136,7 @@ const CurriculumHeaderButtons = styled(FlexContainer)`
 
 const SubTopBar = styled.div`
   width: ${props => (props.active ? "60%" : "100%")};
-  padding: 0px 30px;
+  padding: 0px;
   margin: auto;
   position: relative;
   @media only screen and (min-width: 1800px) {
@@ -1143,20 +1144,12 @@ const SubTopBar = styled.div`
     margin-left: ${props => (props.active ? "" : "auto")};
     margin-right: ${props => (props.active ? "" : "auto")};
   }
-  @media only screen and (max-width: ${largeDesktopWidth}) {
-    width: 100%;
-    padding: 0px 40px;
-  }
-  @media only screen and (max-width: ${desktopWidth}) {
-    padding: 0px 25px;
-  }
 `;
 
 const SubTopBarContainer = styled.div`
   background: white;
-  padding: 30px 45px;
+  padding: 30px;
   margin-bottom: 10px;
-  margin-top: ${props => (props.mode ? "0px" : "20px")};
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -1212,6 +1205,10 @@ const SubHeaderDescription = styled.p`
   color: ${lightGrey6};
   font-size: 14px;
   text-align: justify;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 13px;
+  }
 `;
 
 const SubHeaderInfoCardWrapper = styled.div`
@@ -1227,13 +1224,22 @@ const SubHeaderInfoCard = styled.div`
     margin-top: 10px;
     margin-left: 0px;
   }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
 `;
 
 const SubHeaderInfoCardText = styled.div`
-  font-family: Open Sans;
   font-weight: 600;
   padding-left: 10px;
   color: ${titleColor};
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 9px;
+  }
 `;
 
 const StyledFlexContainer = styled(FlexContainer)`
@@ -1243,10 +1249,16 @@ const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 const ContentContainer = styled.div`
-  width: calc(100% - 415px);
+  width: calc(100% - 400px);
+  padding-right: 15px;
   margin: 0px auto;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: calc(100% - 340px);
+  }
   @media (max-width: ${smallDesktopWidth}) {
     width: 100%;
+    padding-right: 0px;
   }
 `;
 
@@ -1255,6 +1267,6 @@ const BreadCrumbWrapper = styled.div`
 `;
 
 const ReviewBreadCrumbWrapper = styled.div`
-  padding: 20px 40px 0px 30px;
+  padding: 0px 0px 15px;
   width: 100%;
 `;

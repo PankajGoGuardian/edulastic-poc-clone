@@ -20,7 +20,7 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 export const SubHeader = styled.div`
-  padding: 20px 10px 0px 20px;
+  padding: 15px 0px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -45,7 +45,7 @@ export const SideButtonContainer = styled.div`
 `;
 
 export const BodyContainer = styled.div`
-  padding: 20px 10px 0px 20px;
+  padding: 10px 0px 0px;
   .ant-progress-bg {
     border-radius: 0px;
   }

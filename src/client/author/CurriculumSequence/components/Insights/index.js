@@ -110,7 +110,7 @@ const Insights = ({
   return loading ? (
     <Spin style={{ marginTop: "400px" }} />
   ) : (
-    <Row type="flex" gutter={[10, 40]} justify="center" style={{ width: "99%", padding: "40px 25px" }}>
+    <InsightsContainer type="flex" gutter={10} justify="center">
       <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
         <InsightsFilters
           data={filterData}
@@ -134,7 +134,7 @@ const Insights = ({
           <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} highlighted={highlighted} />
         </Row>
       </StyledCol>
-    </Row>
+    </InsightsContainer>
   );
 };
 
@@ -153,6 +153,10 @@ const enhance = connect(
 );
 
 export default enhance(Insights);
+
+const InsightsContainer = styled(Row)`
+  width: 100%;
+`;
 
 const StyledCol = styled(Col)`
   display: flex;

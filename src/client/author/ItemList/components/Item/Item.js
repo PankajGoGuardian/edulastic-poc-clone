@@ -54,7 +54,7 @@ import PassageConfirmationModal from "../../../TestPage/components/PassageConfir
 import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
-import { getCollectionsSelector } from "../../../src/selectors/user";
+import { getCollectionsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
 
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
@@ -136,7 +136,7 @@ class Item extends Component {
   };
 
   renderDetails = () => {
-    const { item, windowWidth, collections } = this.props;
+    const { item, windowWidth, collections, isPublisherUser } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(_item => _item.tts).map(_item => _item.tts);
     const details = [
@@ -170,7 +170,7 @@ class Item extends Component {
       details.push(ttsStatusSuccess);
     }
 
-    if (hasUserGotAccessToPremiumItem(item.collections, collections)) {
+    if (!isPublisherUser && hasUserGotAccessToPremiumItem(item.collections, collections)) {
       details.unshift({ name: <PremiumTag />, type: "premium" });
     }
 
@@ -490,7 +490,8 @@ const enhance = compose(
       passageItemsCount: getPassageItemsCountSelector(state),
       passageItems: state.tests.passageItems,
       features: getUserFeatures(state),
-      collections: getCollectionsSelector(state)
+      collections: getCollectionsSelector(state),
+      isPublisherUser: isPublisherUserSelector(state)
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

@@ -1,8 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { FlexContainer, PremiumTag } from "@edulastic/common";
 import { IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
+
+import { isPublisherUserSelector } from "../../../../../../src/selectors/user";
 
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
 import Tags from "../../../../../../src/components/common/Tags";
@@ -10,7 +13,7 @@ import Standards from "../../../../../../ItemList/components/Item/Standards";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { MetaTag, DokStyled } from "./styled";
 
-const MetaInfo = ({ data: { item, type, by, id, audio = {}, isPremium = false, dok, tags } }) => (
+const MetaInfo = ({ data: { item, type, by, id, audio = {}, isPremium = false, dok, tags }, isPublisherUser }) => (
   <FlexContainer justifyContent="space-between" style={{ width: "100%", paddingTop: "15px" }}>
     <FlexContainer>
       {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage />}
@@ -22,7 +25,7 @@ const MetaInfo = ({ data: { item, type, by, id, audio = {}, isPremium = false, d
               {t}
             </MetaTag>
           ))}
-          {isPremium ? <PremiumTag key="premium">Premium</PremiumTag> : null}
+          {!isPublisherUser && isPremium && <PremiumTag key="premium">Premium</PremiumTag>}
         </FlexContainer>
       )}
       <CollectionTag collectionName={item?.collectionName} />
@@ -48,4 +51,9 @@ MetaInfo.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-export default MetaInfo;
+export default connect(
+  state => ({
+    isPublisherUser: isPublisherUserSelector(state)
+  }),
+  {}
+)(MetaInfo);

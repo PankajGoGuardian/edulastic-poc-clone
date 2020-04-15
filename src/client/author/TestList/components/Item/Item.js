@@ -35,7 +35,7 @@ import {
   CollectionNameWrapper,
   ThinLine
 } from "./styled";
-import { getOrgDataSelector, getCollectionsSelector } from "../../../src/selectors/user";
+import { getOrgDataSelector, getCollectionsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -189,7 +189,8 @@ class Item extends Component {
       testItemId,
       windowWidth,
       standards = [],
-      orgData: { itemBanks }
+      orgData: { itemBanks },
+      isPublisherUser
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -274,7 +275,7 @@ class Item extends Component {
               </ButtonWrapper>
               {collections.find(o => o.name === "Edulastic Certified") &&
                 getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
-              {!!collections.length && !isPlaylist && <PremiumLabel>$ PREMIUM</PremiumLabel>}
+              {!!collections.length && !isPlaylist && !isPublisherUser && <PremiumLabel>$ PREMIUM</PremiumLabel>}
             </Header>
           }
         >
@@ -362,7 +363,8 @@ const enhance = compose(
   connect(
     state => ({
       orgData: getOrgDataSelector(state),
-      orgCollections: getCollectionsSelector(state)
+      orgCollections: getCollectionsSelector(state),
+      isPublisherUser: isPublisherUserSelector(state)
     }),
     { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )

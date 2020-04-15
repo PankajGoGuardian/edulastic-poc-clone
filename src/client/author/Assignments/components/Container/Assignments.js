@@ -113,8 +113,8 @@ class Assignments extends Component {
     this.setState({ isPreviewModalVisible: false });
   };
 
-  showPreviewModal = (testId, currentAssignmentId) => {
-    this.setState({ isPreviewModalVisible: true, currentTestId: testId, currentAssignmentId });
+  showPreviewModal = (testId, currentAssignmentId, currentAssignmentClass) => {
+    this.setState({ isPreviewModalVisible: true, currentTestId: testId, currentAssignmentId, currentAssignmentClass });
   };
 
   toggleEditModal = (value, currentTestId) => {
@@ -207,7 +207,8 @@ class Assignments extends Component {
       isPreviewModalVisible,
       currentTestId,
       openEditPopup,
-      currentAssignmentId
+      currentAssignmentId,
+      currentAssignmentClass
     } = this.state;
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
@@ -231,6 +232,7 @@ class Assignments extends Component {
           error={error}
           closeTestPreviewModal={this.hidePreviewModal}
           currentAssignmentId={currentAssignmentId}
+          currentAssignmentClass={currentAssignmentClass}
         />
         <ListHeader
           onCreate={this.handleCreate}

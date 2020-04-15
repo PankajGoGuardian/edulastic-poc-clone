@@ -31,6 +31,7 @@ const AssessmentPlayer = ({
   playlistId,
   studentReportModal,
   currentAssignmentId,
+  currentAssignmentClass,
   ...restProps
 }) => {
   useEffect(() => {
@@ -45,7 +46,7 @@ const AssessmentPlayer = ({
       preview,
       demo,
       test,
-      groupId,
+      groupId: groupId || currentAssignmentClass,
       isShowStudentWork,
       playlistId,
       currentAssignmentId

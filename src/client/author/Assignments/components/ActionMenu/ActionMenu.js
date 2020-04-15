@@ -34,7 +34,22 @@ const ActionMenu = ({
   const currentTestId = assignmentDetails.testId;
   const currentAssignmentId = assignmentDetails._id;
   const shouldSendAssignmentId =
-    assignmentTest.testType === test.type.COMMON || !assignmentTest?.authors?.find(a => a._id === userId);
+    assignmentTest?.testType === test.type.COMMON || !assignmentTest?.authors?.find(a => a._id === userId);
+
+  const handleShowPreview = () => {
+    if (
+      [test.testContentVisibility.GRADING, test.testContentVisibility.HIDDEN].includes(
+        assignmentDetails?.testContentVisibility
+      )
+    ) {
+      return message.error("Preview of Items in the test are restricted by the author");
+    }
+    if (shouldSendAssignmentId) {
+      showPreviewModal(currentTestId, currentAssignmentId, assignmentDetails?.classId);
+    } else {
+      showPreviewModal(currentTestId);
+    }
+  };
 
   const createDuplicateAssignment = () => {
     duplicateAssignment({ _id: currentTestId, title: assignmentDetails.title }).then(testItem => {
@@ -86,11 +101,7 @@ const ActionMenu = ({
           </Menu.Item>
         )}
 
-        <Menu.Item
-          data-cy="preview"
-          key="preview"
-          onClick={() => showPreviewModal(currentTestId, shouldSendAssignmentId ? currentAssignmentId : null)}
-        >
+        <Menu.Item data-cy="preview" key="preview" onClick={handleShowPreview}>
           <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={viewIcon} />
             <SpaceElement />

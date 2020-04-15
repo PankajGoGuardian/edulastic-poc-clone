@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import { Row, Col, Dropdown, Menu, message } from "antd";
+import { Row, Col } from "antd";
 import { EduButton } from "@edulastic/common";
+import { IconPlusCircle } from "@edulastic/icons";
 import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
@@ -145,17 +146,6 @@ const PerformanceByStudents = ({
 
   const testName = get(settings, "selectedTest.title", "");
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="add-to-group" onClick={() => setShowAddToGroupModal(true)}>
-        Add to Group
-      </Menu.Item>
-      {/* <Menu.Item key="remove-from-group">
-        Remove from Group
-      </Menu.Item> */}
-    </Menu>
-  );
-
   const checkedStudentsForModal = tableData
     .filter(d => checkedStudents[d.studentId] && checkedStudents[d.studentId][0] === d.testActivityId)
     .map(({ studentId, firstName, lastName, username }) => ({ _id: studentId, firstName, lastName, username }));
@@ -197,11 +187,13 @@ const PerformanceByStudents = ({
               </Col>
               <Col xs={24} sm={24} md={12} lg={12} xl={12} className="dropdown-container">
                 <StyledDropDownContainer padding="5px 0">
-                  <Dropdown overlay={menu}>
-                    <EduButton data-cy="actions" height="32px" width="180px">
-                      Actions
-                    </EduButton>
-                  </Dropdown>
+                  <EduButton
+                    style={{ height: "32px", padding: "0 15px 0 10px" }}
+                    onClick={() => setShowAddToGroupModal(true)}
+                  >
+                    <IconPlusCircle />
+                    Add To Student Group
+                  </EduButton>
                 </StyledDropDownContainer>
                 <StyledDropDownContainer>
                   <ControlDropDown

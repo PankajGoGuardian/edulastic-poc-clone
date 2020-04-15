@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Row, Col, Menu, Dropdown } from "antd";
+import { Row, Col } from "antd";
 
 import { EduButton } from "@edulastic/common";
+import { IconPlusCircle } from "@edulastic/icons";
 
 import { StyledCard, StyledH3 } from "../../../../../common/styled";
 import TrendCard from "./TrendCard";
@@ -11,17 +12,6 @@ import { trendTypes } from "../../utils/constants";
 
 const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading, setShowAddToGroupModal }) => {
   const trends = Object.keys(trendTypes);
-
-  const menu = (
-    <Menu>
-      <Menu.Item key="add-to-group" onClick={() => setShowAddToGroupModal(true)}>
-        Add to Group
-      </Menu.Item>
-      {/* <Menu.Item key="remove-from-group">
-        Remove from Group
-      </Menu.Item> */}
-    </Menu>
-  );
 
   return (
     <UpperContainer>
@@ -38,11 +28,13 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, h
             xl={12}
             style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}
           >
-            <Dropdown overlay={menu}>
-              <EduButton height="32px" width="180px">
-                Actions
-              </EduButton>
-            </Dropdown>
+            <EduButton
+              style={{ height: "32px", padding: "0 15px 0 10px" }}
+              onClick={() => setShowAddToGroupModal(true)}
+            >
+              <IconPlusCircle />
+              Add To Student Group
+            </EduButton>
             {renderFilters()}
           </Col>
         </Row>

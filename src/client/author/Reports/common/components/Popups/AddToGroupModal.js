@@ -6,7 +6,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
 import { Modal, Row, Col, Spin, Select, message } from "antd";
 import { IconClose, IconPlusCircle, IconCorrect, IconCarets } from "@edulastic/icons";
-import { SelectInputStyled, EduButton } from "@edulastic/common";
+import { SelectInputStyled, EduButton, withWindowSizes } from "@edulastic/common";
 import {
   backgrounds,
   borderGrey4,
@@ -15,7 +15,9 @@ import {
   lightGrey5,
   themeColor,
   lightBlue2,
-  white
+  white,
+  largeDesktopWidth,
+  tabletWidth
 } from "@edulastic/colors";
 import { enrollmentApi } from "@edulastic/api";
 
@@ -58,7 +60,8 @@ const AddToGroupModal = ({
   groupList,
   enrollStudentsToGroup,
   match,
-  history
+  history,
+  windowWidth
 }) => {
   const groupTypeText = groupType === "custom" ? "group" : "class";
   const [studentList, setStudentList] = useState([]);
@@ -157,6 +160,11 @@ const AddToGroupModal = ({
 
   const filteredGroups = (groupList || []).filter(g => g.type === groupType);
 
+  // input styles
+  const tabletWidthNum = tabletWidth.match(/[0-9]+/)[0];
+  const selectorWidth = windowWidth > tabletWidthNum ? "326px" : "260px";
+  const addNewButtonWidth = windowWidth > tabletWidthNum ? "192px" : "150px";
+
   return (
     <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
       {loading ? (
@@ -183,7 +191,7 @@ const AddToGroupModal = ({
                   placeholder="Select set"
                   cache="false"
                   onChange={() => { }}
-                  width="326px"
+                  width={selectorWidth}
                   dropdownStyle={{ zIndex: 2000 }}
                   labelInValue
                 >
@@ -193,10 +201,17 @@ const AddToGroupModal = ({
                     </Select.Option>
                   ))}
                 </SelectInputStyled>
-                <StyledEduButton height="40px" width="192px" onClick={() => { }} style={{ "marginLeft": "10px" }} isGhost>
+                <StyledEduButton
+                  data-cy="addNewSet"
+                  height="40px"
+                  width={addNewButtonWidth}
+                  onClick={() => {}}
+                  style={{ marginLeft: "10px" }}
+                  isGhost
+                >
                   <IconPlusCircle width={20} height={20} />
-                ADD NEW
-              </StyledEduButton>
+                  ADD NEW
+                </StyledEduButton>
               </StyledCol>
             )} */}
           <StyledCol span={24} marginBottom="5px" justify="left">
@@ -207,7 +222,7 @@ const AddToGroupModal = ({
               placeholder="Select group"
               cache="false"
               onChange={setSelectedGroup}
-              width="326px"
+              width={selectorWidth}
               dropdownStyle={{ zIndex: 2000 }}
               notFoundContent="No Groups Found"
               labelInValue
@@ -221,7 +236,7 @@ const AddToGroupModal = ({
             <StyledEduButton
               data-cy="addNew"
               height="40px"
-              width="192px"
+              width={addNewButtonWidth}
               onClick={handleAddNew}
               style={{ marginLeft: "10px" }}
               isGhost
@@ -280,6 +295,7 @@ const AddToGroupModal = ({
 
 export default compose(
   withRouter,
+  withWindowSizes,
   connect(
     state => ({
       groupList: getGroupsSelector(state),
@@ -304,7 +320,22 @@ const StyledModal = styled(Modal)`
     }
     .ant-modal-body {
       padding: 24px 46px 32px;
+      @media (max-width: ${largeDesktopWidth}) {
+        padding: 20px 30px 30px;
+      }
     }
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 707px;
+    }
+    @media (max-width: ${tabletWidth}) {
+      width: 600px;
+    }
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    min-width: 707px;
+  }
+  @media (max-width: ${tabletWidth}) {
+    min-width: 600px;
   }
 `;
 
@@ -334,6 +365,9 @@ const StyledDiv = styled.div`
 const StyledEduButton = styled(EduButton)`
   span {
     margin: 0 45px 0 30px;
+    @media (max-width: ${tabletWidth}) {
+      margin: 0 20px 0 15px;
+    }
   }
   svg {
     .b {
@@ -381,7 +415,22 @@ const ScrollbarContainer = styled.div`
           fill: ${greyThemeDark1};
         }
       }
+      @media (max-width: ${tabletWidth}) {
+        padding: 0 20px;
+      }
     }
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 306px;
+      height: 270px;
+    }
+    @media (max-width: ${tabletWidth}) {
+      width: 258px;
+      height: 215px;
+      padding: 0 15px;
+    }
+  }
+  @media (max-width: ${tabletWidth}) {
+    padding: 15px 0;
   }
 `;
 

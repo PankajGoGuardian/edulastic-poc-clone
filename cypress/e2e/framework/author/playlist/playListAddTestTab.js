@@ -114,6 +114,7 @@ export default class PlayListAddTest {
     this.clickOnBulkAdd();
     cy.wait(200);
     this.selectModuleWhileAdding(mod);
+    cy.wait(1000);
   };
 
   verifyCountWhileBulkRemove = (mod, count) =>

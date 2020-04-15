@@ -23,6 +23,7 @@ export default class PlayListSearchContainer {
   setGrade = grade => {
     CypressHelper.selectDropDownByAttribute("test-grade", grade);
   };
+
   setSubject = subject => {
     CypressHelper.selectDropDownByAttribute("test-subject", subject);
   };
@@ -83,11 +84,17 @@ export default class PlayListSearchContainer {
     cy.route("POST", "**/search/tests").as("search-container-tests");
   };
 
-  setFilters = ({ collection }) => {
+  setFilters = ({ collection, authoredByme, SharedWithMe, entireLibrary, grade, subject, status }) => {
     this.routeTestSearch();
-    this.clickFilterButton();
-    if (collection) this.selectCollection(collection);
-    this.clickFilterButton();
+    this.clickOnTestFilter();
+    if (collection) this.setCollection(collection);
+    if (authoredByme) this.clickOnAuthoredbyMeFolder();
+    if (SharedWithMe) this.clickOnSharedWithMe();
+    if (entireLibrary) this.clickOnEntireLibrary();
+    if (grade) this.setGrade(grade);
+    if (subject) this.setSubject(subject);
+    if (status) this.setStatus(status);
+    this.clickOnTestFilter();
     this.waitForTestSearch();
   };
 

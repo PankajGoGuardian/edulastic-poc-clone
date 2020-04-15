@@ -662,7 +662,7 @@ class CurriculumSequence extends Component {
               <Button type="primary" ghost key="back" onClick={this.handleAddCustomContent}>
                 CANCEL
               </Button>
-              <Button key="submit" type="primary" onClick={this.handleAddCustomContent}>
+              <Button data-cy="save" key="submit" type="primary" onClick={this.handleAddCustomContent}>
                 SAVE
               </Button>
             </ModalFooter>

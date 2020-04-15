@@ -110,46 +110,35 @@ describe("Playlist customization", () => {
 
   context("search from Authored by me folder", () => {
     it("Verifiy grade,subject and status filter", () => {
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.clickOnAuthoredbyMeFolder();
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ authoredByme: true });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setGrade("Grade 4");
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ grade: "Grade 4" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setStatus("Draft");
+
+      playListCustomization.searchContainer.setFilters({ status: "Draft" });
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId4}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setStatus("Published");
-      playListCustomization.searchContainer.setSubject("Mathematics");
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ status: "Published", subject: "Mathematics" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
     });
     it("Verify collection dropdwon", () => {
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col1}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ collection: collection.col1 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col2 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId3}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col3}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col3 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col4}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col4 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId6}`);
     });
@@ -157,42 +146,32 @@ describe("Playlist customization", () => {
 
   context("search from Entire Library folder", () => {
     it("Verify collection dropdwon", () => {
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col1}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ collection: collection.col1 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId1}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col2 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId2}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId3}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col3}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col3 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId2}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setCollection(`${collection.col4}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ collection: collection.col4 });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId6}`);
     });
     it("Verify grade, subject", () => {
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.clickOnEntireLibrary();
-      playListCustomization.searchContainer.setStatus("All");
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ entireLibrary: true, status: "All" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId4}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setGrade("Grade 8");
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ grade: "Grade 8" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId3}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setSubject("Mathematics");
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ subject: "Mathematics" });
+
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId5}`);
       playListCustomization.searchContainer.VerififySearchResultNotVisible(`${testId.testId8}`);
       playListCustomization.getManageContentButton().click();
@@ -201,17 +180,13 @@ describe("Playlist customization", () => {
   context("search from Shared with me folder", () => {
     it("Shared with Me", () => {
       playListCustomization.clickOnManageContent();
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.clickOnSharedWithMe();
-      playListCustomization.searchContainer.clickOnTestFilter();
+      playListCustomization.searchContainer.setFilters({ SharedWithMe: true });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId6}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setGrade("Grade 8");
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ grade: "Grade 8" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId6}`);
-      playListCustomization.searchContainer.clickOnTestFilter();
-      playListCustomization.searchContainer.setSubject("ELA");
-      playListCustomization.searchContainer.clickOnTestFilter();
+
+      playListCustomization.searchContainer.setFilters({ subject: "ELA" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId7}`);
     });
   });

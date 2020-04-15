@@ -11,7 +11,7 @@ export default class PlayListHeader {
 
   getPublishButton = () => cy.get('[data-cy="publish"]');
 
-  getSaveButton = () => cy.get('button[btntype="primary"]').contains("SAVE");
+  getSaveButton = () => cy.get('button[data-cy="save"]');
 
   getShareButton = () => cy.get('[data-cy="share"]');
 

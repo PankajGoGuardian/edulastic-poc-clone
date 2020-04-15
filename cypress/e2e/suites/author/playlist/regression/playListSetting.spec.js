@@ -115,7 +115,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>module authoring and ass
           cy.login("student", student.email, student.pass);
         });
         it(`>password- Test ${index + 1}`, () => {
-          assignmentsPage.clickOnAssigmentByTestId(testIds[index], dynamicPassword[index]);
+          assignmentsPage.clickOnAssigmentByTestId(testIds[index], { pass: dynamicPassword[index] });
         });
         it(`>calculator- Test ${index + 1}`, () => {
           studentTestPage.clickOnCalcuator();

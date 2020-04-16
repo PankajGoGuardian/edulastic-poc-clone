@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { darkGrey, lightGrey, themeColor, red, cardTitleColor, titleColor } from "@edulastic/colors";
+import {
+  darkGrey,
+  lightGrey,
+  themeColor,
+  red,
+  cardTitleColor,
+  titleColor,
+  mediumDesktopExactWidth
+} from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -60,9 +68,13 @@ export const CardDescription = styled.div`
 `;
 
 export const TagsWrapper = styled.div`
-  height: 70px;
+  height: ${props => (props.isPlaylist ? "70px" : "55px")};
   overflow: hidden;
   text-align: left;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    height: ${props => (props.isPlaylist ? "70px" : "48px")};
+  }
 `;
 
 export const Footer = styled.div`
@@ -94,6 +106,14 @@ export const Author = styled.div`
       fill: ${darkGrey};
     }
   }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 10px;
+    svg {
+      width: 13px;
+      height: 13px;
+    }
+  }
 `;
 
 export const PlaylistId = styled(Author)`
@@ -115,6 +135,8 @@ export const StatusRow = styled.div`
   span {
     height: 20px;
     float: right;
+    display: flex;
+    align-items: center;
   }
 `;
 
@@ -171,6 +193,10 @@ export const EllipsisWrapper = styled.div`
 export const IconText = styled.span`
   font-size: 12px;
   color: ${cardTitleColor};
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 10px;
+  }
 `;
 export const CardIdWrapper = styled.div`
   color: ${darkGrey};
@@ -186,6 +212,13 @@ export const CardIdWrapper = styled.div`
     height: 13px;
     &:hover {
       fill: ${darkGrey};
+    }
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    svg {
+      width: 11px;
+      height: 11px;
     }
   }
 `;
@@ -253,6 +286,10 @@ export const Header = styled.div`
       align-items: center;
     }
   }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    height: 83px;
+  }
 `;
 Header.displayName = "CardHeader";
 
@@ -280,6 +317,10 @@ export const StyledLink = styled.a`
 
   :hover {
     color: ${themeColor};
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 14px;
   }
 `;
 
@@ -310,6 +351,13 @@ export const MidRow = styled.div`
   label {
     color: #a5acb4;
     font-size: 10px;
+  }
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 11px;
+    label {
+      font-size: 9px;
+    }
   }
 `;
 export const Collection = styled.div`

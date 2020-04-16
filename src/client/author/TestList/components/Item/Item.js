@@ -283,12 +283,12 @@ class Item extends Component {
             <StyledLink title={isPlaylist ? _source?.title : title}>{isPlaylist ? _source?.title : title}</StyledLink>
             {isPlaylist && <StyledDesc title={_source.description}>{_source.description}</StyledDesc>}
 
-            {isPlaylist && (
-              <TagsWrapper>
+            <TagsWrapper isPlaylist={isPlaylist}>
+              {isPlaylist && (
                 <Tags show={2} tags={flattenPlaylistStandards(_source?.modules)} key="standards" isStandards />
-                <Tags show={2} tags={_source.tags || tags} key="tags" />
-              </TagsWrapper>
-            )}
+              )}
+              <Tags show={2} tags={_source.tags || tags} key="tags" />
+            </TagsWrapper>
           </TestInfo>
 
           {!isPlaylist && (
@@ -308,7 +308,7 @@ class Item extends Component {
             </MidRow>
           )}
           {isPlaylist ? <ThinLine /> : null}
-          <Inner style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+          <Inner>
             {authorName && (
               <Author isPlaylist={isPlaylist}>
                 <AuthorWrapper>
@@ -332,7 +332,7 @@ class Item extends Component {
             </StatusRow>
           </Inner>
 
-          <Footer style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+          <Footer>
             {testItemId ? (
               <PlaylistId>
                 <span>#</span>

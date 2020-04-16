@@ -37,7 +37,10 @@ export const SearchInput = styled(Input.Search)`
 `;
 
 export const CardBox = styled.div`
-  width: 280px;
+  width: 225px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 264px;
+  }
 `;
 
 export const Container = styled.div`

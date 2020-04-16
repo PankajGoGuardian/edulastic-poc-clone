@@ -1,7 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { darkBlue, lightBlue, greenDark, lightGreen, white, grey, lightGreen6 } from "@edulastic/colors";
+import {
+  darkBlue,
+  lightBlue,
+  greenDark,
+  lightGreen,
+  white,
+  grey,
+  lightGreen6,
+  mediumDesktopExactWidth
+} from "@edulastic/colors";
 import { Dropdown, Tag } from "antd";
 
 const Tags = ({
@@ -115,5 +124,10 @@ const Label = styled(Tag)`
   ${props => getLabelStyle(props.type)};
   border: none;
   line-height: 16px;
-  margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : 0)} 0;
+  margin: 0 3px ${({ popupContainer }) => (popupContainer ? "6px" : "3px")} 0;
+
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    font-size: 8px;
+    padding: 2px 10px;
+  }
 `;

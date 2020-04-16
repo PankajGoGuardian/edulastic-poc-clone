@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { connect } from "react-redux";
 import { Tag, Popover } from "antd";
 import styled, { css } from "styled-components";
@@ -25,6 +25,7 @@ const filtersTagToBeShown = [
 const allStatus = [...selectsData.allStatus, ...selectsData.extraStatus];
 
 const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList, collectionsList, allTagsData }) => {
+  const containerRef = useRef(null);
   const { curriculumId, standardIds = [], collections = [], tags = [] } = search;
   const curriculum = curriculumById[curriculumId];
   const selectedStandards = useMemo(() => standardsList.elo.filter(s => standardIds.includes(s._id)), [
@@ -53,136 +54,99 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
     }
   };
 
-  const getPopOverContent = (data, type) => {
-    const [first, ...remainingData] = data;
-    return remainingData.map(d => {
-      if (type === "grades")
-        return (
-          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d)}>
-            {["O", "K", "o", "k"].includes(d) ? gradeKeys[d] : `Grade ${d}`}
-          </StyledPopupTag>
-        );
-      if (type === "standardIds") {
-        return (
-          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d._id)}>
-            {d.identifier}
-          </StyledPopupTag>
-        );
-      }
-      if (type === "collections") {
-        return (
-          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d.value)}>
-            {d.text}
-          </StyledPopupTag>
-        );
-      }
-      if (type === "tags") {
-        return (
-          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d._id)}>
-            {d.tagName}
-          </StyledPopupTag>
-        );
-      }
-      return null;
-    });
-  };
+  const getWidthOfTag = tagTitle => tagTitle.length * 7 + 41;
 
-  const getTags = (data, type) => {
-    if (type === "grades" && data.length) {
-      return (
-        <>
-          <Tag closable onClose={e => handleCloseTag(e, type, data[0])}>
-            {["O", "K", "o", "k"].includes(data[0]) ? gradeKeys[data[0]] : `Grade ${data[0]}`}
-          </Tag>
-          {data.length > 1 && (
-            <Popover placement="bottom" content={<>{getPopOverContent(data, type)}</>}>
-              <Tag>{`+${data.length - 1}`}</Tag>
-            </Popover>
-          )}
-        </>
-      );
-    }
-    if (type === "standardIds" && selectedStandards.length) {
-      return (
-        <>
-          <Tag closable onClose={e => handleCloseTag(e, type, selectedStandards[0]._id)}>
-            {selectedStandards[0].identifier}
-          </Tag>
-          {selectedStandards.length > 1 && (
-            <Popover placement="bottom" content={<>{getPopOverContent(selectedStandards, type)}</>}>
-              <Tag>{`+${selectedStandards.length - 1}`}</Tag>
-            </Popover>
-          )}
-        </>
-      );
-    }
-    if (type === "collections" && selectedCollection.length) {
-      return (
-        <>
-          <Tag closable onClose={e => handleCloseTag(e, type, selectedCollection[0].value)}>
-            {selectedCollection[0].text}
-          </Tag>
-          {selectedCollection.length > 1 && (
-            <Popover placement="bottom" content={<>{getPopOverContent(selectedCollection, type)}</>}>
-              <Tag>{`+${selectedCollection.length - 1}`}</Tag>
-            </Popover>
-          )}
-        </>
-      );
-    }
-    if (type === "tags" && selectedTags.length) {
-      return (
-        <>
-          <Tag closable onClose={e => handleCloseTag(e, type, selectedTags[0]._id)}>
-            {selectedTags[0].tagName}
-          </Tag>
-          {selectedTags.length > 1 && (
-            <Popover placement="bottom" content={<>{getPopOverContent(selectedTags, type)}</>}>
-              <Tag>{`+${selectedTags.length - 1}`}</Tag>
-            </Popover>
-          )}
-        </>
-      );
-    }
-    if (type === "curriculumId") {
-      if (curriculum?._id)
-        return (
-          <Tag closable onClose={e => handleCloseTag(e, type)}>
-            {curriculum.curriculum}
-          </Tag>
-        );
-      return null;
-    }
-    if (typeof data === "string" && data?.length) {
-      let label = data;
-      if (type === "questionType") {
-        label = questionTypes.selectsData.find(q => q.value === data)?.text;
-      }
-      if (type === "status") {
-        label = allStatus.find(s => s.value === data)?.text;
-      }
-      return (
-        <Tag closable onClose={e => handleCloseTag(e, type)}>
-          {label}
+  const getTag = (type, d, tagTitle, bodyArr, popOverArray, containerWidthObj) => {
+    const widthOfTag = getWidthOfTag(tagTitle);
+    if (widthOfTag < containerWidthObj.remainingWidth) {
+      containerWidthObj.remainingWidth -= widthOfTag;
+      bodyArr.push(
+        <Tag closable onClose={e => handleCloseTag(e, type, d)}>
+          {tagTitle}
         </Tag>
       );
+    } else {
+      popOverArray.push(
+        <Tag closable onClose={e => handleCloseTag(e, type, d)}>
+          {tagTitle}
+        </Tag>
+      );
+    }
+  };
+
+  const getTags = (data, type, bodyArr, popOverArray, containerWidthObj) => {
+    if (type === "grades" && data.length) {
+      data.forEach(d => {
+        const tagTitle = ["O", "K", "o", "k"].includes(d) ? gradeKeys[d] : `Grade ${d}`;
+        getTag(type, d, tagTitle, bodyArr, popOverArray, containerWidthObj);
+      });
+    }
+    if (type === "standardIds" && selectedStandards.length) {
+      selectedStandards.forEach(s => {
+        const tagTitle = s.identifier;
+        getTag(type, s, tagTitle, bodyArr, popOverArray, containerWidthObj);
+      });
+    }
+    if (type === "collections" && selectedCollection.length) {
+      selectedCollection.forEach(c => {
+        const tagTitle = c.text;
+        getTag(type, c, tagTitle, bodyArr, popOverArray, containerWidthObj);
+      });
+    }
+    if (type === "tags" && selectedTags.length) {
+      selectedTags.forEach(t => {
+        const tagTitle = t.tagName;
+        getTag(type, t, tagTitle, bodyArr, popOverArray, containerWidthObj);
+      });
+    }
+    if (type === "curriculumId") {
+      if (curriculum?._id) {
+        const tagTitle = curriculum.curriculum;
+        getTag(type, undefined, tagTitle, bodyArr, popOverArray, containerWidthObj);
+      }
+    }
+    if (typeof data === "string" && data?.length) {
+      let tagTitle = data;
+      if (type === "questionType") {
+        tagTitle = questionTypes.selectsData.find(q => q.value === data)?.text;
+      }
+      if (type === "status") {
+        tagTitle = allStatus.find(s => s.value === data)?.text;
+      }
+      getTag(type, undefined, tagTitle, bodyArr, popOverArray, containerWidthObj);
     }
     return null;
   };
 
   const getFilters = () => {
-    const arr = [];
+    const bodyArr = [];
+    const popOverArray = [];
+    const containerWidth = containerRef?.current?.offsetWidth - getWidthOfTag("+12");
+    const containerWidthObj = {
+      totalWidth: containerWidth,
+      remainingWidth: containerWidth
+    };
     for (let i = 0; i < filtersTagToBeShown.length; i++) {
       const filterType = filtersTagToBeShown[i];
       const value = search[filterType];
       if (value?.length || typeof value === "number") {
-        arr.push(<>{getTags(value, filterType)}</>);
+        getTags(value, filterType, bodyArr, popOverArray, containerWidthObj);
       }
     }
-    return arr;
+
+    return (
+      <>
+        {bodyArr?.length > 0 && bodyArr.map(e => e)}
+        {popOverArray?.length > 0 && (
+          <Popover content={<>{popOverArray.map(e => e)}</>}>
+            <Tag>{`+${popOverArray.length}`}</Tag>
+          </Popover>
+        )}
+      </>
+    );
   };
 
-  return <FiltersWrapper>{getFilters()}</FiltersWrapper>;
+  return <FiltersWrapper ref={containerRef}>{getFilters()}</FiltersWrapper>;
 };
 
 export default connect((state, ownProps) => ({

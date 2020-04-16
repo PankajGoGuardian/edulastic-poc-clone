@@ -212,6 +212,7 @@ export const PaginationInfo = styled.div`
 `;
 
 export const FiltersWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-self: center;
   margin-right: auto;

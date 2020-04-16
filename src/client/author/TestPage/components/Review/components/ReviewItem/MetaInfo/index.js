@@ -25,7 +25,7 @@ const MetaInfo = ({ data: { item, type, by, id, audio = {}, isPremium = false, d
               {t}
             </MetaTag>
           ))}
-          {!isPublisherUser && isPremium && <PremiumTag key="premium">Premium</PremiumTag>}
+          {!isPublisherUser && !!isPremium && <PremiumTag key="premium">Premium</PremiumTag>}
         </FlexContainer>
       )}
       <CollectionTag collectionName={item?.collectionName} />

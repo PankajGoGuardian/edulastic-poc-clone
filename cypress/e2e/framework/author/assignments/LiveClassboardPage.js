@@ -5,12 +5,14 @@ import QuestionResponsePage from "./QuestionResponsePage";
 import { attemptTypes, queColor } from "../../constants/questionTypes";
 import RediectPopup from "./redirectPopupPage";
 import TeacherSideBar from "../SideBarPage";
+import LCBtestSettings from "./lcbTestSettings";
 
 class LiveClassboardPage {
   constructor() {
     this.header = new LCBHeader();
     this.questionResponsePage = new QuestionResponsePage();
     this.redirectPopup = new RediectPopup();
+    this.settings = new LCBtestSettings();
   }
 
   // *** ELEMENTS START ***

@@ -923,10 +923,11 @@ class StudentTestPage {
 
   verifyRemainingTime = hours => {
     this.getCountdownText().then(time => {
-      const timeInSeconds = CypressHelper.hoursToSeconds(hours);
-      expect(CypressHelper.hoursToSeconds(time), `Expected time in UI is ${hours}`)
-        .to.be.greaterThan(timeInSeconds - 3)
-        .and.to.be.lessThan(timeInSeconds + 3);
+      const timeExpectedInSeconds = CypressHelper.hoursToSeconds(hours);
+      const UITimeInSeconds = CypressHelper.hoursToSeconds(time);
+      expect(UITimeInSeconds, `Expected time in UI is ${timeExpectedInSeconds} in seconds and got ${UITimeInSeconds}`)
+        .to.be.greaterThan(timeExpectedInSeconds - 3)
+        .and.to.be.lessThan(timeExpectedInSeconds + 3);
       /* change assertion type */
     });
   };

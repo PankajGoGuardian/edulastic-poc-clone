@@ -99,6 +99,8 @@ class AssignmentsPage {
   };
 
   getTimeOnPopUP = () => cy.get('[data-cy="test-time"]');
+
+  getLaunchRetakeButton = () => cy.get('[data-cy="launch-retake"]');
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -121,11 +123,12 @@ class AssignmentsPage {
   }
 
   clickOnAssigmentByTestId = (testId, options = {}) => {
-    const { pass = false, time = false, exitAllowed = true } = options;
+    const { pass = false, time = false, isExitAllowed = true, isFirstAttempt = true } = options;
     /* {
       pass: "password in string"
       timedAssignment: "Time in minutes/string"
       exitAllowed : "boolean"
+      isFirstAttempt : "boolean"
     } */
     cy.server();
     cy.route("GET", "**/test/**").as("gettest");
@@ -134,10 +137,14 @@ class AssignmentsPage {
       .should("be.visible")
       .find('[data-cy="assignmentButton"]')
       .click({ force: true });
+
+    if (!isFirstAttempt) this.getLaunchRetakeButton().click({ force: true });
+
     if (time) {
-      if (exitAllowed) this.verifyTimeAndClickOkOnPopUp(time, true);
+      if (isExitAllowed) this.verifyTimeAndClickOkOnPopUp(time, true);
       else this.verifyTimeAndClickOkOnPopUp(time, false);
     }
+
     if (pass) {
       this.enterPassword(pass);
       this.clickOnStartAfterPassword();

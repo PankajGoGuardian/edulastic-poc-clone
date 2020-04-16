@@ -206,12 +206,22 @@ function LCBAssignmentSettings({
             <Row gutter={0}>
               <Col offset={12}>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <EduButton height="40px" width="100%" isGhost onClick={() => resetToDefault()}>
+                  <EduButton
+                    data-cy="lcb-setting-cancel"
+                    height="40px"
+                    width="100%"
+                    isGhost
+                    onClick={() => resetToDefault()}
+                  >
                     CANCEL
                   </EduButton>
                 </Col>
                 <Col span={12} style={{ paddingLeft: "16px" }}>
-                  <EduButton height="40px" onClick={() => updateAssignmentSettings({ classId, assignmentId })}>
+                  <EduButton
+                    data-cy="lcb-setting-update"
+                    height="40px"
+                    onClick={() => updateAssignmentSettings({ classId, assignmentId })}
+                  >
                     UPDATE
                   </EduButton>
                 </Col>

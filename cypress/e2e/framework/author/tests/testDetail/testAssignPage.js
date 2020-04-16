@@ -261,7 +261,10 @@ export default class TestAssignPage {
       this.getAllowExit()
         .parent()
         .then($el => {
-          if ($el.hasClass("ant-checkbox-checked")) this.getAllowExit().uncheck({ force: true });
+          if ($el.hasClass("ant-checkbox-checked"))
+            this.getAllowExit()
+              .uncheck({ force: true })
+              .should("not.be.checked");
         });
     });
 
@@ -271,7 +274,10 @@ export default class TestAssignPage {
       this.getAllowExit()
         .parent()
         .then($el => {
-          if (!$el.hasClass("ant-checkbox-checked")) this.getAllowExit().check({ force: true });
+          if (!$el.hasClass("ant-checkbox-checked"))
+            this.getAllowExit()
+              .check({ force: true })
+              .should("be.checked");
         });
     });
 

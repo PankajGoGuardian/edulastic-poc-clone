@@ -13,6 +13,8 @@ export default class LCBHeader {
 
   getAssignmentStatus = () => cy.get('[data-cy="assignmentStatusForDisplay"]');
 
+  getSettingsTab = () => cy.get('[data-cy="LCBAssignmentSettings"]');
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
@@ -82,7 +84,13 @@ export default class LCBHeader {
     cy.get('[data-cy="viewPassword"]').click();
   };
 
-  // *** ACTIONS END ***
+  clickLCBSettings = () => {
+    cy.server();
+    cy.route("GET", "**/default-test-settings/*").as("load-settings");
+    this.getSettingsTab().click();
+    cy.wait("@load-settings");
+    cy.contains("TEST LEVEL SETTINGS");
+  }; // *** ACTIONS END ***
 
   // *** APPHELPERS START ***
 

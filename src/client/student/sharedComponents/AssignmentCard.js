@@ -337,7 +337,7 @@ const AssignmentCard = memo(({ startAssignment, resumeAssignment, data, theme, t
             <EduButton isGhost onClick={() => setShowRetakeModal(false)}>
               Cancel
             </EduButton>,
-            <EduButton onClick={onRetakeModalConfirm}>Launch</EduButton>
+            <EduButton data-cy="launch-retake" onClick={onRetakeModalConfirm}>Launch</EduButton>
           ]}
         >
           <p>You are going to attempt the assignment again. Are you sure you want to Start?</p>

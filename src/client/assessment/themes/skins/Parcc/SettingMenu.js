@@ -7,6 +7,7 @@ import { StyledButton, StyledDropdown, StyledMenu } from "./styled";
 import { IconUser } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useUtaPauseAllowed } from "../../common/SaveAndExit";
 
 const menuItems = {
   changeColor: "Change the background and foreground color",
@@ -14,7 +15,10 @@ const menuItems = {
   showLineReaderMask: "Show Line Reader Mask",
   enableAnswerMask: "Enable Answer Masking"
 };
-const SettingMenu = ({ user: { firstName }, onSettingsChange, showMagnifier, enableMagnifier }) => {
+const SettingMenu = ({ user: { firstName }, onSettingsChange, showMagnifier, enableMagnifier, utaId }) => {
+  const _pauseAllowed = useUtaPauseAllowed(utaId);
+  const showPause = _pauseAllowed === undefined ? true : _pauseAllowed;
+
   const menu = (
     <StyledMenu onClick={onSettingsChange}>
       {Object.keys(menuItems).map(key => (
@@ -23,8 +27,13 @@ const SettingMenu = ({ user: { firstName }, onSettingsChange, showMagnifier, ena
           {key === "enableMagnifier" && enableMagnifier && <FontAwesomeIcon icon={faCheck} />}
         </Menu.Item>
       ))}
-      <Menu.Divider />
-      <Menu.Item key="save">Save & Exit</Menu.Item>
+
+      {showPause && (
+        <>
+          <Menu.Divider />
+          <Menu.Item key="save">Save & Exit</Menu.Item>
+        </>
+      )}
     </StyledMenu>
   );
 

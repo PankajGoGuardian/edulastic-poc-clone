@@ -12,6 +12,7 @@ import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors
 import { IconBookmark } from "@edulastic/icons";
 import { Tooltip } from "../../../../common/utils/helpers";
 import { Header, FlexContainer, HeaderWrapper, HeaderMainMenu, LogoCompact, MainActionWrapper } from "../../common";
+import { useUtaPauseAllowed } from "../../common/SaveAndExit";
 import AudioControls from "../../../AudioControls";
 import { MAX_MOBILE_WIDTH } from "../../../constants/others";
 import {
@@ -74,6 +75,9 @@ const PlayerHeader = ({
   useEffect(() => {
     return () => setZoomLevel(1);
   }, []);
+
+  const _pauseAllowed = useUtaPauseAllowed(utaId);
+  const showPause = _pauseAllowed === undefined ? true : _pauseAllowed;
 
   const totalQuestions = options.length;
   const totalAnswered = skipped.filter(s => !s).length;
@@ -145,11 +149,13 @@ const PlayerHeader = ({
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: "28px" }}>
-                  <Tooltip placement="top" title="Save & Exit">
-                    <StyledButton onClick={finishTest}>
-                      <StyledIcon type="save" theme="filled" />
-                    </StyledButton>
-                  </Tooltip>
+                  {showPause && (
+                    <Tooltip placement="top" title="Save & Exit">
+                      <StyledButton onClick={finishTest}>
+                        <StyledIcon type="save" theme="filled" />
+                      </StyledButton>
+                    </Tooltip>
+                  )}
                   {canShowPlayer && (
                     <AudioControls
                       showAudioControls={showAudioControls}

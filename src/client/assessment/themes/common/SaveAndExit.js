@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconCircleLogout, IconAccessibility, IconSend } from "@edulastic/icons";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, FireBaseService as Fbs } from "@edulastic/common";
 import { extraDesktopWidthMax, mediumDesktopExactWidth } from "@edulastic/colors";
 import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks";
+import { withRouter } from "react-router-dom";
+
+export function useUtaPauseAllowed(utaId) {
+  const firestoreCollectionName = "timedAssignmentUTAs";
+  const uta = Fbs.useFirestoreRealtimeDocument(db => db.collection(firestoreCollectionName).doc(utaId), [utaId]);
+  const utaPauseAllowed = uta?.pauseAllowed || false;
+  return uta ? utaPauseAllowed : undefined;
+}
 
 const SaveAndExit = ({
   finishTest,
@@ -14,34 +22,39 @@ const SaveAndExit = ({
   setSettingsModalVisibility,
   showZoomBtn,
   onSubmit,
-  pauseAllowed = true
-}) => (
-  <FlexContainer marginLeft="30px">
-    {showZoomBtn && (
-      <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
-        <IconAccessibility />
-      </StyledButton>
-    )}
+  pauseAllowed = true,
+  utaId
+}) => {
+  const _pauseAllowed = useUtaPauseAllowed(utaId);
+  const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed;
+  return (
+    <FlexContainer marginLeft="30px">
+      {showZoomBtn && (
+        <StyledButton title="Visual Assistance" onClick={() => setSettingsModalVisibility(true)}>
+          <IconAccessibility />
+        </StyledButton>
+      )}
 
-    {pauseAllowed &&
-      (previewPlayer ? (
-        <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
-          <IconCircleLogout />
-          EXIT
-        </SaveAndExitButton>
-      ) : (
-        <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
-          <IconCircleLogout />
-          SAVE & EXIT
-        </SaveAndExitButton>
-      ))}
-    {onSubmit && (
-      <StyledButton onClick={onSubmit}>
-        <IconSend />
-      </StyledButton>
-    )}
-  </FlexContainer>
-);
+      {showPause &&
+        (previewPlayer ? (
+          <SaveAndExitButton title="Exit" data-cy="finishTest" onClick={finishTest}>
+            <IconCircleLogout />
+            EXIT
+          </SaveAndExitButton>
+        ) : (
+          <SaveAndExitButton title="Save & Exit" data-cy="finishTest" onClick={finishTest}>
+            <IconCircleLogout />
+            SAVE & EXIT
+          </SaveAndExitButton>
+        ))}
+      {onSubmit && (
+        <StyledButton onClick={onSubmit}>
+          <IconSend />
+        </StyledButton>
+      )}
+    </FlexContainer>
+  );
+};
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,

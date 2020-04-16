@@ -42,6 +42,7 @@ const PlayerHeader = ({
       previewPlayer={previewPlayer}
       finishTest={onOpenExitPopup}
       onSubmit={!previewPlayer ? onSubmit : null}
+      utaId={utaId}
     />
   );
 

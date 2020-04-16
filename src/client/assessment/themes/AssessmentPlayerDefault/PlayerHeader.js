@@ -61,7 +61,7 @@ const PlayerHeader = ({
   utaId,
   groupId
 }) => {
-  const rightButtons = <SaveAndExit previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />;
+  const rightButtons = <SaveAndExit utaId={utaId} previewPlayer={previewPlayer} showZoomBtn finishTest={finishTest} />;
 
   return (
     <CustomAffix>

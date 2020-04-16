@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { Tag, Popover } from "antd";
+import styled, { css } from "styled-components";
 import { test as testsConstants, questionType as questionTypes } from "@edulastic/constants";
-import { FiltersWrapper } from "../../../TestList/components/Container/styled";
 import { curriculumsByIdSelector, standardsSelector } from "../../../src/selectors/dictionaries";
 import { getCollectionsSelector } from "../../../src/selectors/user";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
@@ -58,29 +58,29 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
     return remainingData.map(d => {
       if (type === "grades")
         return (
-          <Tag closable onClose={e => handleCloseTag(e, type, d)}>
+          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d)}>
             {["O", "K", "o", "k"].includes(d) ? gradeKeys[d] : `Grade ${d}`}
-          </Tag>
+          </StyledPopupTag>
         );
       if (type === "standardIds") {
         return (
-          <Tag closable onClose={e => handleCloseTag(e, type, d._id)}>
+          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d._id)}>
             {d.identifier}
-          </Tag>
+          </StyledPopupTag>
         );
       }
       if (type === "collections") {
         return (
-          <Tag closable onClose={e => handleCloseTag(e, type, d.value)}>
+          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d.value)}>
             {d.text}
-          </Tag>
+          </StyledPopupTag>
         );
       }
       if (type === "tags") {
         return (
-          <Tag closable onClose={e => handleCloseTag(e, type, d._id)}>
+          <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d._id)}>
             {d.tagName}
-          </Tag>
+          </StyledPopupTag>
         );
       }
       return null;
@@ -95,7 +95,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
             {["O", "K", "o", "k"].includes(data[0]) ? gradeKeys[data[0]] : `Grade ${data[0]}`}
           </Tag>
           {data.length > 1 && (
-            <Popover content={<>{getPopOverContent(data, type)}</>}>
+            <Popover placement="bottom" content={<>{getPopOverContent(data, type)}</>}>
               <Tag>{`+${data.length - 1}`}</Tag>
             </Popover>
           )}
@@ -109,7 +109,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
             {selectedStandards[0].identifier}
           </Tag>
           {selectedStandards.length > 1 && (
-            <Popover content={<>{getPopOverContent(selectedStandards, type)}</>}>
+            <Popover placement="bottom" content={<>{getPopOverContent(selectedStandards, type)}</>}>
               <Tag>{`+${selectedStandards.length - 1}`}</Tag>
             </Popover>
           )}
@@ -123,7 +123,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
             {selectedCollection[0].text}
           </Tag>
           {selectedCollection.length > 1 && (
-            <Popover content={<>{getPopOverContent(selectedCollection, type)}</>}>
+            <Popover placement="bottom" content={<>{getPopOverContent(selectedCollection, type)}</>}>
               <Tag>{`+${selectedCollection.length - 1}`}</Tag>
             </Popover>
           )}
@@ -137,7 +137,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
             {selectedTags[0].tagName}
           </Tag>
           {selectedTags.length > 1 && (
-            <Popover content={<>{getPopOverContent(selectedTags, type)}</>}>
+            <Popover placement="bottom" content={<>{getPopOverContent(selectedTags, type)}</>}>
               <Tag>{`+${selectedTags.length - 1}`}</Tag>
             </Popover>
           )}
@@ -191,3 +191,29 @@ export default connect((state, ownProps) => ({
   collectionsList: getCollectionsSelector(state),
   allTagsData: getAllTagsSelector(state, ownProps.type)
 }))(HeaderFilter);
+
+const TagsStyle = css`
+  color: #686f75;
+  background: #bac3ca;
+  padding: 2px 10px;
+  border: none;
+  font-weight: bold;
+  border-radius: 6px;
+  margin-bottom: 5px;
+`;
+
+const StyledPopupTag = styled(Tag)`
+  ${TagsStyle};
+`;
+
+export const FiltersWrapper = styled.div`
+  display: flex;
+  justify-self: center;
+  margin-right: auto;
+  margin-left: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  .ant-tag {
+    ${TagsStyle};
+  }
+`;

@@ -1,12 +1,5 @@
 import styled from "styled-components";
-import {
-  desktopWidth,
-  mobileWidth,
-  secondaryTextColor,
-  tabletWidth,
-  white,
-  themeColor
-} from "@edulastic/colors";
+import { desktopWidth, mobileWidth, secondaryTextColor, tabletWidth, white, themeColor } from "@edulastic/colors";
 import { Select } from "antd/lib/index";
 import { EduButton, FlexContainer, Paper } from "@edulastic/common";
 
@@ -34,7 +27,7 @@ export const QuestionsFound = styled.span`
 
 export const ItemsMenu = styled(FlexContainer)`
   background: ${white};
-  align-items: space-between;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 15px 30px;
 

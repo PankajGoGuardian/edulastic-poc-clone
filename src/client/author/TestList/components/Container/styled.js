@@ -188,7 +188,7 @@ export const StyledCountText = styled.div`
 `;
 
 export const ItemsMenu = styled(FlexContainer)`
-  align-items: space-between;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 20px 30px;
 

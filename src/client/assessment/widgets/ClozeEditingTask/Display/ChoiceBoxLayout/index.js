@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { find, get } from "lodash";
+import { find, get, maxBy } from "lodash";
+import { measureText } from "@edulastic/common";
+
 import Toggle from "./Toggle";
 import TextDropdown from "./TextDropdown";
 import TextEntry from "./TextEntry";
@@ -45,11 +47,15 @@ const ChoicesBox = ({ resprops, id }) => {
   const { index } = find(responseIds, response => response.id === id);
   const { heightpx, widthpx, placeholder: iPlaceholder } = responsecontainerindividuals[index] || {};
 
+  const optionsById = get(options, `[${id}]`, []);
+  const maxW = maxBy(optionsById.map(op => measureText(op)), d => d.width) || {};
+
   const styles = {
     ...btnStyle,
     overflow: "hidden",
     width: widthpx,
-    height: heightpx
+    height: heightpx,
+    minWidthpx: maxW.width + 25
   };
 
   const selectChange = val => {
@@ -64,7 +70,7 @@ const ChoicesBox = ({ resprops, id }) => {
     <BoxComponent
       id={id}
       styles={styles}
-      options={get(options, `[${id}]`, [])}
+      options={optionsById}
       placeholder={iPlaceholder || placeholder}
       userAnswer={userAnswer}
       disableResponse={disableResponse}

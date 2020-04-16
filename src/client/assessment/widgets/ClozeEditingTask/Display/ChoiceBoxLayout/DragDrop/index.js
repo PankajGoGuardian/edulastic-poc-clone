@@ -13,6 +13,8 @@ const EditingDragDrop = ({ onChange, userAnswer, styles }) => {
     background: "#f8f8f8",
     border: "1px solid #b9b9b9",
     padding: "0px 8px",
+    minHeight: 24,
+    minWidth: styles.minWidthpx,
     ...styles
   };
 

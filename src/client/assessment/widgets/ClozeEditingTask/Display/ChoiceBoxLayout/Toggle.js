@@ -9,17 +9,18 @@ import { subOptions } from "../../constants";
 const Toggle = ({ styles, options, userAnswer, disableResponse, onChange, displayStyleOption }) => {
   const answer = userAnswer?.value;
   const answeredIndex = fineIndex(options, op => op === answer);
-  const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
-
+  const isDashedline = subOptions.DASHED_LINE === displayStyleOption;
+  // * 10 is toggle button width and +30 is padding
+  const minWidth = options.length * 10 + 30;
   const handleChange = ({ target: { value: opIndex } }) => onChange(options[opIndex]);
   return (
     <ToggleWrapper>
-      <AnswerBox isDahsline={isDahsline} style={{ ...styles, width: "auto" }}>
-        <AnswerCont dangerouslySetInnerHTML={{ __html: answer }} isHighlight={!isDahsline} />
+      <AnswerBox isDashedline={isDashedline} style={{ ...styles, width: "auto", minWidth }}>
+        <AnswerCont dangerouslySetInnerHTML={{ __html: answer }} isHighlight={!isDashedline} />
       </AnswerBox>
-      <RadioGroup value={answeredIndex} disabled={disableResponse} onChange={handleChange} isDahsline={isDahsline}>
+      <RadioGroup value={answeredIndex} disabled={disableResponse} onChange={handleChange} isDashedline={isDashedline}>
         {options.map((_, opIndex) => (
-          <RadioLabel value={opIndex} key={opIndex} />
+          <Radio value={opIndex} key={opIndex} />
         ))}
       </RadioGroup>
     </ToggleWrapper>
@@ -40,7 +41,7 @@ const ToggleWrapper = styled.div`
 const RadioGroup = styled(RadioLabelGroup)`
   position: absolute;
   font-size: 8px;
-  bottom: ${({ isDahsline }) => (isDahsline ? "-14px" : "-4px")};
+  bottom: ${({ isDashedline }) => (isDashedline ? "-14px" : "-4px")};
   & .ant-radio-inner {
     width: 10px;
     height: 10px;
@@ -59,12 +60,18 @@ const RadioGroup = styled(RadioLabelGroup)`
   }
 `;
 
+const Radio = styled(RadioLabel)`
+  &:last-child {
+    margin-right: 0px;
+  }
+`;
+
 const AnswerBox = styled.div`
   padding: 8px 10px;
   display: inline-block;
   vertical-align: middle;
   line-height: 1.2;
-  ${({ isDahsline }) => (isDahsline ? "border-bottom: 2px dashed;" : "")}
+  ${({ isDashedline }) => (isDashedline ? "border-bottom: 2px dashed;" : "")}
 `;
 
 const AnswerCont = styled(MathFormulaDisplay)`

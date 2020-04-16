@@ -11,7 +11,7 @@ const TextDropdown = ({ styles, options, placeholder, userAnswer, disableRespons
   const isDahsline = subOptions.DASHED_LINE === displayStyleOption;
   const { getScrollElement } = useContext(ScrollContext);
   return (
-    <SelectWrapper style={styles}>
+    <SelectWrapper style={{ ...styles, minWidth: styles.minWidthpx }}>
       <Select
         isDahsline={isDahsline}
         value={userAnswer?.value}
@@ -45,6 +45,7 @@ const Select = styled(AntSelect)`
   & .ant-select-selection {
     border: 0px;
     ${({ isDahsline }) => (isDahsline ? "border-bottom: 2px dashed;" : `background: ${green}`)};
+    border-radius: 0px;
   }
 
   & .ant-select-selection__rendered {

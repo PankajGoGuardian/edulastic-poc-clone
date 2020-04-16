@@ -489,7 +489,6 @@ export const StyledLabel = styled.div`
   max-width: ${props => props.maxWidth || props.width};
   justify-content: ${props => props.justify};
   padding: ${props => props.padding || "0px"};
-  font: ${props => props.fontStyle || "11px/15px Open Sans"};
   font-weight: ${props => props.fontWeight || "600"};
   letter-spacing: ${props => props.spacing || "0.2px"};
   color: ${props => props.textColor || "grey"};

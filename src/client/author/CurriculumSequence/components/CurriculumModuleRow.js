@@ -436,7 +436,7 @@ class ModuleRow extends Component {
               <AntRow type="flex" gutter={10} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
                 <FirstColumn
                   urlHasUseThis={urlHasUseThis}
-                  notUseThisWidth="calc(100% - 25px)"
+                  reviewWidth="100%"
                   style={{
                     ...moduleInlineStyle,
                     marginRight: urlHasUseThis && "auto"
@@ -481,12 +481,7 @@ class ModuleRow extends Component {
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           SUBMITTED
                         </StyledLabel>
-                        <StyledLabel
-                          textColor={greyThemeDark1}
-                          fontStyle="12px/17px Open Sans"
-                          padding="4px 0px"
-                          justify="center"
-                        >
+                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
                           {/* TODO: Method to find submissions */}
                           {summaryData[moduleIndex]?.submitted === "-"
                             ? summaryData[moduleIndex]?.submitted
@@ -494,72 +489,56 @@ class ModuleRow extends Component {
                         </StyledLabel>
                       </SubmittedColumn>
                     ) : (
-                      <Col style={{ width: "90px" }}>
+                      <ScoreColumn>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           SCORE
                         </StyledLabel>
-                        <StyledLabel
-                          textColor={greyThemeDark1}
-                          fontStyle="12px/17px Open Sans"
-                          padding="4px 0px"
-                          justify="center"
-                        >
+                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
                           {/* TODO: Method to find sum of scores */}
                           {summaryData[moduleIndex]?.scores >= 0 && summaryData[moduleIndex]?.maxScore
                             ? `${summaryData[moduleIndex]?.scores}/${summaryData[moduleIndex]?.maxScore}`
                             : "-"}
                         </StyledLabel>
-                      </Col>
+                      </ScoreColumn>
                     )}
                     {!isStudent ? (
                       <ClassesColumn style={{ ...moduleInlineStyle }}>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           CLASSES
                         </StyledLabel>
-                        <StyledLabel
-                          textColor={greyThemeDark1}
-                          fontStyle="12px/17px Open Sans"
-                          padding="4px 0px"
-                          justify="center"
-                        >
+                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
                           {/* TODO: Method to find classes */}
                           {summaryData[moduleIndex]?.classes}
                         </StyledLabel>
                       </ClassesColumn>
                     ) : (
-                      <Col style={{ width: "130px" }}>
+                      <TimeColumn>
                         <StyledLabel justify="center" textColor={lightGrey5}>
                           TIME SPENT
                         </StyledLabel>
-                        <StyledLabel
-                          textColor={greyThemeDark1}
-                          fontStyle="12px/17px Open Sans"
-                          padding="4px 0px"
-                          justify="center"
-                        >
+                        <StyledLabel textColor={greyThemeDark1} padding="4px 0px" justify="center">
                           {/* TODO: Method to find Total Time Spent */}
                           {summaryData[moduleIndex]?.timeSpent}
                         </StyledLabel>
-                      </Col>
+                      </TimeColumn>
                     )}
                   </>
                 )}
                 {!hideEditOptions &&
                   (completed ? (
-                    <LastColumn justify="flex-end" style={moduleInlineStyle}>
+                    <LastColumn width={isStudent ? "160px" : null} justify="flex-end" style={moduleInlineStyle}>
                       <StyledLabel data-cy="module-complete" textColor={themeColorLighter} fontWeight="Bold">
                         MODULE COMPLETED
                         <IconVerified color={themeColorLighter} style={{ "margin-left": "20px" }} />
                       </StyledLabel>
                     </LastColumn>
                   ) : isStudent ? (
-                    <div style={{ width: "175px" }} />
+                    <LastColumn width="160px" />
                   ) : totalAssigned ? (
                     <LastColumn justify="flex-end">
                       {hasEditAccess && (
                         <StyledLabel
                           textColor={themeColor}
-                          fontStyle="9px/13px Open Sans"
                           fontWeight="Bold"
                           padding="10px 20px 10px 0px"
                           data-cy={module.hidden ? "show-module" : "hide-module"}
@@ -718,7 +697,7 @@ class ModuleRow extends Component {
                             <AntRow type="flex" gutter={10} align="top" style={{ width: "calc(100% - 25px)" }}>
                               <FirstColumn
                                 urlHasUseThis={urlHasUseThis}
-                                notUseThisWidth="calc(100% - 130px)"
+                                reviewWidth="calc(100% - 160px)"
                                 style={{
                                   ...rowInlineStyle,
                                   marginRight: urlHasUseThis && "auto"
@@ -784,19 +763,14 @@ class ModuleRow extends Component {
                                       </StyledLabel>
                                     </SubmittedColumn>
                                   ) : (
-                                    <StyledCol width="90px" style={rowInlineStyle} justify="center">
-                                      <StyledLabel
-                                        textColor={greyThemeDark1}
-                                        fontStyle="12px/17px Open Sans"
-                                        padding="2px"
-                                        justify="center"
-                                      >
+                                    <ScoreColumn style={rowInlineStyle}>
+                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
                                         {/* TODO: Method to find sum of scores for each assignment */}
                                         {progressData?.scores >= 0 && progressData?.maxScore
                                           ? `${progressData?.scores}/${progressData?.maxScore}`
                                           : "-"}
                                       </StyledLabel>
-                                    </StyledCol>
+                                    </ScoreColumn>
                                   )}
                                   {!isStudent ? (
                                     <ClassesColumn style={rowInlineStyle}>
@@ -806,17 +780,12 @@ class ModuleRow extends Component {
                                       </StyledLabel>
                                     </ClassesColumn>
                                   ) : (
-                                    <StyledCol width="130px" style={rowInlineStyle} justify="center">
-                                      <StyledLabel
-                                        textColor={greyThemeDark1}
-                                        fontStyle="12px/17px Open Sans"
-                                        padding="2px"
-                                        justify="center"
-                                      >
+                                    <TimeColumn style={rowInlineStyle}>
+                                      <StyledLabel textColor={greyThemeDark1} padding="2px" justify="center">
                                         {/* TODO: Method to find Total Time Spent for each assignment */}
                                         {progressData?.timeSpent}
                                       </StyledLabel>
-                                    </StyledCol>
+                                    </TimeColumn>
                                   )}
 
                                   {!isStudent ? (
@@ -825,7 +794,6 @@ class ModuleRow extends Component {
                                         (!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                           <HideLinkLabel
                                             textColor={themeColor}
-                                            fontStyle="9px/13px Open Sans"
                                             fontWeight="Bold"
                                             data-cy={moduleData.hidden ? "make-visible" : "make-hidden"}
                                             onClick={() => this.hideTest(module._id, moduleData)}
@@ -885,28 +853,28 @@ class ModuleRow extends Component {
                                   ) : (
                                     !moduleData.hidden && (
                                       <>
-                                        <StyledCol width={uta.retake ? "130px" : "175px"} justify="flex-end">
+                                        <LastColumn width="160px">
                                           <AssignmentButton assigned={false}>
                                             <Button data-cy={uta.text} onClick={uta.action}>
                                               {uta.text}
                                             </Button>
                                           </AssignmentButton>
-                                        </StyledCol>
+                                        </LastColumn>
                                         {uta.retake && (
-                                          <StyledCol width="130px" justify="flex-end">
+                                          <LastColumn width="160px">
                                             <AssignmentButton assigned={false}>
                                               <Button data-cy={uta.retake.text} onClick={uta.retake.action}>
                                                 {uta.retake.text}
                                               </Button>
                                             </AssignmentButton>
-                                          </StyledCol>
+                                          </LastColumn>
                                         )}
                                       </>
                                     )
                                   )}
                                 </>
                               ) : (
-                                <StyledCol width="130px" style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <LastColumn width="160px">
                                   <EduButton
                                     isGhost
                                     height="22px"
@@ -917,7 +885,7 @@ class ModuleRow extends Component {
                                     <IconVisualization width="14px" height="14px" />
                                     Preview
                                   </EduButton>
-                                </StyledCol>
+                                </LastColumn>
                               )}
                             </AntRow>
                           )}
@@ -932,7 +900,7 @@ class ModuleRow extends Component {
                         >
                           {assignmentRows?.map((assignment, assignmentIndex) => (
                             <StyledRow key={assignmentIndex}>
-                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
+                              <StyledLabel textColor={titleColor}>
                                 <Tooltip placement="bottomLeft" title={assignment?.name}>
                                   <EllipticSpan md="100px" lg="260px" xl="300px" padding="0px 0px 0px 30px">
                                     {assignment?.name}
@@ -957,20 +925,18 @@ class ModuleRow extends Component {
                                 <StyledStatusLabel status={assignment?.status}>{assignment?.status}</StyledStatusLabel>
                               )}
 
-                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor} width="150px">
+                              <StyledLabel textColor={titleColor} width="150px">
                                 {`Submitted ${assignment?.submittedCount || 0} of ${assignment?.assignedCount || 0}`}
                               </StyledLabel>
 
                               {/* TODO: Display percentage completion for each assignment row */}
                               {assignment?.percentage && (
-                                <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor} width="70px">
+                                <StyledLabel textColor={titleColor} width="70px">
                                   {assignment.percentage}
                                 </StyledLabel>
                               )}
 
-                              <StyledLabel fontStyle="14px/19px Open Sans" textColor={titleColor}>
-                                {assignment?.gradedNumber} Graded
-                              </StyledLabel>
+                              <StyledLabel textColor={titleColor}>{assignment?.gradedNumber} Graded</StyledLabel>
 
                               <ActionsWrapper data-cy="PresentationIcon">
                                 <Tooltip placement="bottom" title="LCB">
@@ -1154,17 +1120,18 @@ const StyledCol = styled(Col)`
 `;
 
 const FirstColumn = styled(Col)`
-  width: ${props => (props.urlHasUseThis ? "calc(100% - 640px)" : props.notUseThisWidth)};
+  width: ${props => (props.urlHasUseThis ? "calc(100% - 640px)" : props.reviewWidth)};
   @media (max-width: ${mediumDesktopExactWidth}) {
-    width: ${props => (props.urlHasUseThis ? "calc(100% - 500px)" : props.notUseThisWidth)};
+    width: ${props => (props.urlHasUseThis ? "calc(100% - 500px)" : props.reviewWidth)};
   }
 `;
 
 const LastColumn = styled(StyledCol)`
-  width: 250px;
+  width: ${props => props.width || "250px"};
+  justify-content: flex-end;
 
   @media (max-width: ${mediumDesktopExactWidth}) {
-    width: 220px;
+    width: ${props => props.width || "220px"};
   }
 `;
 
@@ -1176,6 +1143,12 @@ const SubmittedColumn = styled(Col)`
   }
 `;
 
+const TimeColumn = styled(SubmittedColumn)`
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    width: 85px;
+  }
+`;
+
 const ClassesColumn = styled(Col)`
   width: 90px;
 
@@ -1183,6 +1156,8 @@ const ClassesColumn = styled(Col)`
     width: 65px;
   }
 `;
+
+const ScoreColumn = styled(ClassesColumn)``;
 
 const ModuleHeader = styled.div`
   display: flex;

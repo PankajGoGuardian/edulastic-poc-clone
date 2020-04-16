@@ -243,7 +243,6 @@ class App extends Component {
         <Modal title="App Update" visible={this.state.showAppUpdate} onOk={this.handleOk} onCancel={this.handleCancel}>
           A newer version of app is available. do you want to refresh?
         </Modal>
-        <NotificationListener />
         <OfflineNotifier />
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
@@ -261,7 +260,12 @@ class App extends Component {
               ) : null}
               <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
               <PrivateRoute path="/publisher" component={Publisher} redirectPath={redirectRoute} />
-              <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
+              <PrivateRoute
+                path="/home"
+                component={Dashboard}
+                notification={NotificationListener}
+                redirectPath={redirectRoute}
+              />
               <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
               <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute exact path="/resetPassword/" component={ResetPassword} redirectPath={defaultRoute} />

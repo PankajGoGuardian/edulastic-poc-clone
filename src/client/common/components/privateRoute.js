@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { isLoggedInForPrivateRoute } from "../utils/helpers";
 
-const PrivateRoute = ({ component: Component, user, redirectPath, ...rest }) => {
+const PrivateRoute = ({ component: Component, notification: Notification, user, redirectPath, ...rest }) => {
   return (
     <Route
       {...rest}
       render={props =>
         isLoggedInForPrivateRoute(user) ? (
-          <Component {...props} />
+          [<Component {...props} />, Notification ? <Notification /> : null]
         ) : (
           <Redirect to={{ pathname: redirectPath, state: { from: props.location } }} />
         )

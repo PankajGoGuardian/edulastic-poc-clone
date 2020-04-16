@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../author/src/selectors/user";
-import { notificationMessage } from "../common/components/Notification";
+import { destroyNotificationMessage, notificationMessage } from "../common/components/Notification";
 import { FireBaseService as Fbs } from "@edulastic/common";
 import { uniqBy } from "lodash";
 
@@ -71,6 +71,13 @@ const NotificationListener = ({ user }) => {
       }
     });
   };
+
+  useEffect(
+    () => () => {
+      destroyNotificationMessage();
+    },
+    []
+  );
 
   useEffect(() => {
     if (user && user.role === "student") {

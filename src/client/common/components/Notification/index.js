@@ -41,3 +41,7 @@ export const notificationMessage = ({
     onClick: () => onButtonClick()
   });
 };
+
+export const destroyNotificationMessage = () => {
+  notification.destroy();
+};

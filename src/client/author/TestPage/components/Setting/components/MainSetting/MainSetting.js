@@ -249,7 +249,7 @@ class MainSetting extends Component {
   };
 
   updateTimedTest = attr => value => {
-    const { totalItems, setTestData } = this.props;
+    const { totalItems, setTestData, ...otherProps } = this.props;
     if (value) {
       setTestData({
         [attr]: value,
@@ -1087,7 +1087,9 @@ export default connect(
     isReleaseScorePremium: getReleaseScorePremiumSelector(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
     premium: state?.user?.user?.features?.premium,
-    totalItems: state?.tests?.entity?.summary?.totalItems
+    totalItems: state?.tests?.entity?.isDocBased
+      ? state?.tests?.entity?.summary?.totalQuestions
+      : state?.tests?.entity?.summary?.totalItems
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

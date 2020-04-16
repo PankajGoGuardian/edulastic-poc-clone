@@ -745,7 +745,9 @@ export default connect(
     userRole: getUserRole(state),
     disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
     premium: state?.user?.user?.features?.premium,
-    totalItems: state?.tests?.entity?.summary?.totalItems,
+    totalItems: state?.tests?.entity?.isDocBased
+      ? state?.tests?.entity?.summary?.totalQuestions
+      : state?.tests?.entity?.summary?.totalItems,
     location: state?.router?.location
   }),
   null

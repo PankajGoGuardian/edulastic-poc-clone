@@ -130,7 +130,8 @@ export const getAllAssignmentsSelector = createSelector(
         return allClassess.map(clazz => ({
           ...assignment,
           classId: clazz._id,
-          reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || []
+          reports: groupedReports[`${assignment._id}_${clazz._id}`]?.filter(item => item.status !== 0) || [],
+          ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})
         }));
       })
       .filter(assignment => isReport(assignment, classIds));

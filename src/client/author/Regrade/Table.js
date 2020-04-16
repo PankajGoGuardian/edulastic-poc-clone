@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { Spin } from "antd";
 import * as moment from "moment";
 
 import { StyledTable } from "./styled";
 import NoDataNotification from "../../common/components/NoDataNotification";
+import { getIsloadingAssignmentSelector } from "../TestPage/components/Assign/ducks";
 
 const formatDate = date => moment(date).format("MM-DD-YYYY");
 
@@ -45,7 +48,13 @@ const tbleColumns = [
   }
 ];
 
-const AssignmentsTable = ({ assignments, handleSettingsChange, regradeType, regradeSettings }) => {
+const AssignmentsTable = ({
+  assignments,
+  handleSettingsChange,
+  regradeType,
+  regradeSettings,
+  isAssignmentsLoading
+}) => {
   const [list, setNewList] = useState(regradeSettings.assignmentList);
   const rowSelection = {
     selectedRowKeys: regradeType == "SPECIFIC" ? list : [],
@@ -72,6 +81,9 @@ const AssignmentsTable = ({ assignments, handleSettingsChange, regradeType, regr
       assigned: item.assignedBy.name,
       classes: item.class
     }));
+  if (isAssignmentsLoading) {
+    <Spin />;
+  }
   if (!tableData.length) {
     return (
       <NoDataNotification heading="Assignments not available" description="There are no active assignments found." />
@@ -80,4 +92,6 @@ const AssignmentsTable = ({ assignments, handleSettingsChange, regradeType, regr
   return <StyledTable rowSelection={rowSelection} columns={tbleColumns} dataSource={tableData} />;
 };
 
-export default AssignmentsTable;
+export default connect(state => ({
+  isAssignmentsLoading: getIsloadingAssignmentSelector(state)
+}))(AssignmentsTable);

@@ -42,7 +42,7 @@ import {
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector
 } from "../AddItems/ducks";
-import { loadAssignmentsAction } from "../Assign/ducks";
+import { loadAssignmentsAction, getAssignmentsSelector } from "../Assign/ducks";
 import {
   saveCurrentEditingTestIdAction,
   updateItemsDocBasedByIdAction,
@@ -72,7 +72,6 @@ import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 import { allowDuplicateCheck } from "../../../src/utils/permissionCheck";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
 import { hasUserGotAccessToPremiumItem, setDefaultInterests } from "../../../dataUtils";
-import { getAssignmentsSelector } from "../../../../student/Reports/ducks";
 
 const { getDefaultImage } = testsApi;
 const {
@@ -254,24 +253,25 @@ class Container extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { receiveItemDetailById, test, history, userId } = this.props;
+    const { receiveItemDetailById, test, history, userId, isTestLoading } = this.props;
 
     if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
       const testItem = test.itemGroups?.[0].items?.[0] || {};
       const testItemId = typeof testItem === "object" ? testItem._id : testItem;
       receiveItemDetailById(testItemId);
     }
-    const { editAssigned = false } = history.location.state || this.state;
-    if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade) {
+    const { editAssigned = false } = history.location.state || {};
+
+    if (editAssigned && test?._id && !this.state.testLoaded && !test.isInEditAndRegrade && !isTestLoading) {
       this.onEnableEdit();
     }
-    if (editAssigned && test?._id && test.isInEditAndRegrade && !this.state.editEnable) {
+    if (editAssigned && test?._id && !this.state.editEnable && test.isInEditAndRegrade && !isTestLoading) {
       const canEdit = test.authors?.some(x => x._id === userId);
       if (canEdit) {
         this.setState({ editEnable: true });
       }
     }
-    if (test._id && !this.state.testLoaded) {
+    if (test._id && !this.state.testLoaded && !isTestLoading) {
       this.setState({ testLoaded: true });
     }
   }
@@ -762,7 +762,8 @@ class Container extends PureComponent {
       history,
       collections = [],
       userFeatures,
-      currentTab
+      currentTab,
+      testAssignments
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
@@ -773,15 +774,9 @@ class Container extends PureComponent {
     const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");
     const showDuplicateButton =
       testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner && allowDuplicate;
-    const showEditButton =
-      testStatus &&
-      testStatus === statusConstants.PUBLISHED &&
-      !editEnable &&
-      owner &&
-      !history.location.state?.showCancelButton;
+    const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner;
     const showCancelButton =
-      (history.location.state?.showCancelButton || test.isInEditAndRegrade) && !showEditButton && !showDuplicateButton;
-
+      ((test.isUsed && !!testAssignments.length) || test.isInEditAndRegrade) && !showEditButton && !showDuplicateButton;
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 

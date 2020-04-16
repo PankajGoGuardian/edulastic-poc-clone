@@ -38,6 +38,7 @@ import { getDefaultSettings } from "../../common/utils/helpers";
 import { updateAssingnmentSettingsAction } from "../AssignTest/duck";
 import { SET_ITEM_SCORE } from "../src/ItemScore/ducks";
 import { UPLOAD_STATUS, uploadTestStatusAction, setJobIdsAction } from "../ImportTest/ducks";
+import { getIsloadingAssignmentSelector } from "./components/Assign/ducks";
 
 // constants
 
@@ -189,6 +190,7 @@ export const ADD_ITEMS_TO_AUTOSELECT_GROUP = "[test] add items to autoselect gro
 export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage create";
 export const UPDATE_LAST_USED_COLLECTION_LIST = "[test] update recent collections";
 export const UPDATE_CREATING = "[test] create test request initiated";
+export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
 
 // actions
 
@@ -218,6 +220,7 @@ export const setTestPassageAction = createAction(SET_TEST_PASSAGE_AFTER_CREATE);
 export const updateTestEntityAction = createAction(SET_TEST_DATA);
 export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_COLLECTION_LIST);
 export const setIsCreatingAction = createAction(UPDATE_CREATING);
+export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS_LOADING);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -421,6 +424,17 @@ export const getTestsLoadingSelector = createSelector(
   state => state.loading
 );
 
+export const getDefaultSettingsLoadingSelector = createSelector(
+  stateSelector,
+  state => state.isSettingsLoading
+);
+
+export const shouldDisableSelector = createSelector(
+  getTestsLoadingSelector,
+  getIsloadingAssignmentSelector,
+  (testLoading, assignmentsLoading) => testLoading || assignmentsLoading
+);
+
 export const getUserListSelector = createSelector(
   stateSelector,
   state => {
@@ -545,6 +559,7 @@ const initialState = {
   updated: false,
   loading: false,
   creating: false,
+  isSettingsLoading: false,
   thumbnail: "",
   regradeTestId: "",
   createdItems: [],
@@ -890,6 +905,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         creating: payload
+      };
+    case SET_DEFAULT_SETTINGS_LOADING:
+      return {
+        ...state,
+        isSettingsLoading: payload
       };
     default:
       return state;
@@ -1638,6 +1658,7 @@ function* getAllTagsSaga({ payload }) {
 
 function* getDefaultTestSettingsSaga({ payload: testEntity }) {
   try {
+    yield put(setDefaultSettingsLoadingAction(true));
     const role = yield select(getUserRole);
     const orgData = yield select(getUserOrgData);
     let payload = {
@@ -1680,8 +1701,10 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
         })
       );
     }
+    yield put(setDefaultSettingsLoadingAction(false));
   } catch (e) {
     yield call(message.error("Get default settings failed"));
+    yield put(setDefaultSettingsLoadingAction(false));
   }
 }
 

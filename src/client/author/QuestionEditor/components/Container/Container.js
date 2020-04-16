@@ -212,7 +212,8 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { question, testItemId, testId, location, toggleModalAction, isItem, itemFromState } = this.props;
+    const { question, testItemId, location, toggleModalAction, isItem, itemFromState, match } = this.props;
+    const { testId } = match.params;
     const questionTitle =
       question.type !== constantsQuestionType.PASSAGE
         ? question.title

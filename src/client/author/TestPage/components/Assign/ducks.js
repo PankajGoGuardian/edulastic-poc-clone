@@ -115,6 +115,11 @@ const module = "authorTestAssignments";
 
 export const stateSelector = state => state[module];
 
+export const getIsloadingAssignmentSelector = createSelector(
+  stateSelector,
+  state => state.isLoading
+);
+
 const currentSelector = createSelector(
   stateSelector,
   state => state.current

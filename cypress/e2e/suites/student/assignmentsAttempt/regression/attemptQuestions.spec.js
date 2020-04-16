@@ -61,11 +61,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Attempt Questions`, ()
 
           // verify response retained after exit
           assignmentPage.clickOnAssignmentButton();
+          cy.server();
+          cy.route("POST", "**/test-item/*").as("load-question");
           CypressHelper.selectDropDownByAttribute("options", `Question ${i + 1}/${itemKeys.length}`);
+          if (!(i === itemKeys.length - 1)) cy.wait("@load-question");
           studentTestPage.verifyQuestionResponseRetained(queType, RIGHT, attemptData);
 
           // navigate to question from review
           studentTestPage.getQuestionByIndex(itemKeys.length - 1);
+          if (!(i === itemKeys.length - 1)) cy.wait("@load-question");
           studentTestPage.clickOnNext();
           studentTestPage.clickOnReviewQuestion(queNum);
           cy.contains(queNum).should("be.visible");

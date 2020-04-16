@@ -10,6 +10,7 @@ import { setSettingsModalVisibilityAction } from "../../../student/Sidebar/ducks
 import { withRouter } from "react-router-dom";
 
 export function useUtaPauseAllowed(utaId) {
+  utaId = utaId || "undefined";
   const firestoreCollectionName = "timedAssignmentUTAs";
   const uta = Fbs.useFirestoreRealtimeDocument(db => db.collection(firestoreCollectionName).doc(utaId), [utaId]);
   const utaPauseAllowed = uta?.pauseAllowed || false;

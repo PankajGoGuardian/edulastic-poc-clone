@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { Spin } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Switch, Route, withRouter, Prompt } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 // themes
 import ThemeContainer from "./themes/index";
 import { loadTestAction } from "./actions/test";
@@ -95,43 +95,28 @@ const AssessmentPlayer = ({
   }
   const groupId = match.params.groupId || "";
   const utaId = match.params?.utaId;
-
   return (
-    <>
-      <Switch>
-        <Route
-          path={`${match.url}/qid/:qid`}
-          render={() => (
-            <ThemeContainer passages={passages} utaId={utaId} defaultAP={defaultAP} url={match.url} groupId={groupId} />
-          )}
-        />
-
-        <Route
-          path={`${match.url}`}
-          render={() => (
-            <ThemeContainer
-              passages={passages}
-              utaId={utaId}
-              defaultAP={defaultAP}
-              url={match.url}
-              testletType
-              groupId={groupId}
-            />
-          )}
-        />
-      </Switch>
-      <Prompt
-        message={location => {
-          if (
-            location.pathname.match(new RegExp("/student/assessment/.*/class/.*/uta/.*/qid/.*")) ||
-            location.pathname.match(new RegExp("/student/assessment/.*/class/.*/uta/.*/test-summary"))
-          ) {
-            return undefined;
-          }
-          return "You are navigating away and you will quit the assignment. Are you sure?";
-        }}
+    <Switch>
+      <Route
+        path={`${match.url}/qid/:qid`}
+        render={() => (
+          <ThemeContainer passages={passages} utaId={utaId} defaultAP={defaultAP} url={match.url} groupId={groupId} />
+        )}
       />
-    </>
+      <Route
+        path={`${match.url}`}
+        render={() => (
+          <ThemeContainer
+            passages={passages}
+            utaId={utaId}
+            defaultAP={defaultAP}
+            url={match.url}
+            testletType
+            groupId={groupId}
+          />
+        )}
+      />
+    </Switch>
   );
 };
 

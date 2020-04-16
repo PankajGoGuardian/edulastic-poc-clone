@@ -628,7 +628,7 @@ const Settings = ({
                       checked={pauseAllowed}
                       onChange={e => updateTimedTestAttrs("pauseAllowed", e.target.checked)}
                     >
-                      <Label>Allow student to save and continue later</Label>
+                      <Label>Allow Students to exit test without submitting</Label>
                     </CheckboxLabel>
                   </CheckBoxWrapper>
                 )}

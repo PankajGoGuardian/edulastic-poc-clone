@@ -799,7 +799,7 @@ class MainSetting extends Component {
                         data-cy="exit-allowed"
                         onChange={e => this.updateTestData("pauseAllowed")(e.target.checked)}
                       >
-                        Allow Students to exit assignment without submitting.
+                        Allow student to save and continue later.
                       </CheckboxLabel>
                     </>
                   )}

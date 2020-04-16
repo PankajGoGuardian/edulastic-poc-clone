@@ -1066,7 +1066,7 @@ class TestList extends Component {
                   <span>{count}</span> TESTS FOUND
                 </PaginationInfo>
 
-                <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} />
+                <HeaderFilter search={search} handleCloseFilter={this.handleFiltersChange} type="test" />
 
                 {mode === "embedded" && (
                   <BtnActionsContainer>

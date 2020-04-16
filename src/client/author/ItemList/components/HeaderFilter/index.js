@@ -185,9 +185,9 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
   return <FiltersWrapper>{getFilters()}</FiltersWrapper>;
 };
 
-export default connect(state => ({
+export default connect((state, ownProps) => ({
   curriculumById: curriculumsByIdSelector(state),
   standardsList: standardsSelector(state),
   collectionsList: getCollectionsSelector(state),
-  allTagsData: getAllTagsSelector(state, "testitem")
+  allTagsData: getAllTagsSelector(state, ownProps.type)
 }))(HeaderFilter);

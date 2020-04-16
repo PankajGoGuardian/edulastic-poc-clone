@@ -406,6 +406,7 @@ class Contaier extends Component {
                     <HeaderFilter
                       search={search}
                       handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                      type="testitem"
                     />
                     <Actions type="TESTITEM" />
                   </ItemsMenu>

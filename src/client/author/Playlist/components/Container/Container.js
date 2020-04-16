@@ -447,7 +447,7 @@ class TestList extends Component {
                 <PaginationInfo>
                   <span>{count}</span> PLAYLISTS FOUND
                 </PaginationInfo>
-                <HeaderFilter search={playListFilters} handleCloseFilter={this.handleFiltersChange} />
+                <HeaderFilter search={playListFilters} handleCloseFilter={this.handleFiltersChange} type="playlist" />
                 {blockStyle === "horizontal" && <Actions type="PLAYLIST" />}
               </ItemsMenu>
               <PerfectScrollbar style={{ padding: "0 20px" }}>

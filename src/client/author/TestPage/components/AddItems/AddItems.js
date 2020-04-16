@@ -451,6 +451,7 @@ class AddItems extends PureComponent {
                 <HeaderFilter
                   search={search}
                   handleCloseFilter={(type, value) => this.handleSearchFieldChange(type)(value)}
+                  type="testitem"
                 />
                 <FlexContainer alignItems="center" justifyContent="space-between">
                   <span style={{ fontSize: "12px" }}>

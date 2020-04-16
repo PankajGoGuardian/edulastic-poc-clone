@@ -59,7 +59,8 @@ const Tools = ({
       flexDirection="column"
       isToolBarVisible={isToolBarVisible || containerHeight}
       className={className}
-      height={containerHeight}
+      height={`${containerHeight}px`}
+      width={`${toolBoxDimension.width}px`}
       style={{ ...containerStyle, ...style }}
     >
       {activeMode === "" && (

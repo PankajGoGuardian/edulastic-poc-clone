@@ -1,5 +1,5 @@
 import { Paper } from "@edulastic/common";
-import { mobileWidth, desktopWidth, themeColor, white, linkColor } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -22,11 +22,6 @@ export const PreviewContent = styled(Content)`
 
 export const ContentWrapper = styled.div`
   padding: 10px 30px;
-  max-height: calc(100vh - 96px);
-  overflow-y: auto;
-  @media (max-width: ${desktopWidth}) {
-    max-height: calc(100vh - 110px);
-  }
 `;
 
 export const PassageNavigation = styled.div`

@@ -26,7 +26,6 @@ export const Container = styled.div`
 `;
 export const WidgetContainer = styled.div`
   position: relative;
-  overflow: auto;
   width: 100%;
   height: 100%;
   display: flex;
@@ -103,7 +102,6 @@ export const ColumnContentArea = styled.div`
   background: #fff;
   border-radius: 10px;
   width: 100%;
-  height: ${({ isAuthoring, fullModal }) => (isAuthoring ? "auto" : fullModal ? "87vh" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "flex")};
   flex-direction: column;
   flex-basis: 100%;

@@ -186,6 +186,7 @@ class Container extends Component {
           width: isCollapsed ? "90%" : row.dimension
         }}
         hide={hideColumn}
+        data-cy="itemdetail-content"
       >
         {isPassageQuestion && row.tabs?.length === 0 && (
           <AddTabButton tabsBtn onClick={() => addTabs()}>
@@ -236,19 +237,14 @@ class Container extends Component {
             </Tabs>
           </TabContainer>
         )}
-        {!row.widgets.length && dragging && (
-          <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />
-        )}
+        {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
         {this.renderWidgets()}
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
-            <AddNew
-              isAddFirstPart={isAddFirstPart}
-              onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
-            />
+            <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
           </AddButtonContainer>
         )}
         {isPassageQuestion && (

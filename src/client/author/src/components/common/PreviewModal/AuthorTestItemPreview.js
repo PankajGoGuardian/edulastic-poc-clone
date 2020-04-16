@@ -41,6 +41,10 @@ import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
 import ScoreBlock from "../ScoreBlock";
 
+/**
+ * As ItemPreview Modal and MultipartItem are using this component,
+ * we need to set ScrollContext for each case.
+ */
 class AuthorTestItemPreview extends Component {
   static defaultProps = {
     showFeedback: false,
@@ -387,6 +391,29 @@ class AuthorTestItemPreview extends Component {
     );
   };
 
+  getScrollContainerProps = fromContainer => {
+    const { page, fullModal, viewComponent } = this.props;
+    const commonProps = {
+      style: {
+        overflow: "auto"
+      },
+      ref: this.scrollContainer,
+      "data-cy": "scroll-conteianer"
+    };
+    // item preview popup
+    if (viewComponent === "authorPreviewPopup" && !fromContainer) {
+      commonProps.style.height = fullModal ? "87vh" : "70vh";
+      return commonProps;
+    }
+
+    // item detail preview
+    if (page === "itemAuthoring" && fromContainer) {
+      commonProps.style.height = "calc(100vh - 132px)";
+      return commonProps;
+    }
+    return {};
+  };
+
   renderColumns(col, colIndex, sectionQue, resourceCount) {
     const { style, windowWidth, onlySratchpad, viewComponent, fullModal, ...restProps } = this.props;
     const { value, isRejectMode } = this.state;
@@ -421,7 +448,7 @@ class AuthorTestItemPreview extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        <WidgetContainer ref={this.scrollContainer} data-cy="scroll-conteianer" alignItems="flex-start">
+        <WidgetContainer alignItems="flex-start" {...this.getScrollContainerProps(false)}>
           {showScratch && <Scratch viewComponent={viewComponent} fullModal={fullModal} />}
           {col.widgets.map((widget, i) => (
             <React.Fragment key={i}>
@@ -519,7 +546,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderColumnsContentArea = ({ sectionQue, resourceCount, children = null, ...rest }) => {
-    const { cols, page, onlySratchpad, fullModal } = this.props;
+    const { cols, onlySratchpad } = this.props;
     const { collapseDirection } = this.state;
 
     return (
@@ -528,14 +555,9 @@ class AuthorTestItemPreview extends Component {
           const hideColumn = (collapseDirection === "left" && i === 0) || (collapseDirection === "right" && i === 1);
           if (hideColumn) return "";
           return (
-            <Container {...rest}>
+            <Container {...rest} {...this.getScrollContainerProps(true)}>
               {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-              <ColumnContentArea
-                isAuthoring={page === "itemAuthoring"}
-                hide={hideColumn}
-                fullModal={fullModal}
-                style={onlySratchpad ? { boxShadow: "none" } : {}}
-              >
+              <ColumnContentArea hide={hideColumn} style={onlySratchpad ? { boxShadow: "none" } : {}}>
                 {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                 {this.renderColumns(col, i, sectionQue, resourceCount)}
               </ColumnContentArea>

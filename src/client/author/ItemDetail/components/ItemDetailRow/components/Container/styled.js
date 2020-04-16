@@ -4,12 +4,12 @@ import styled from "styled-components";
 import { Button } from "antd";
 
 export const Content = styled(Paper)`
-  width: 100%;
-  height: 100%;
   left: 0;
   right: 0;
+  width: 100%;
+  max-height: calc(100vh - 135px);
   padding: ${props => (props.padding ? props.padding : "0px")};
-  overflow: hidden;
+  overflow: auto;
   position: relative;
   display: ${props => (props.hide ? "none" : "initial")};
   border: 1px solid #dadae4;

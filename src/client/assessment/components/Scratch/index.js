@@ -91,30 +91,27 @@ const ScratchPad = ({ clearClicked, viewComponent, fullModal }) => {
   const [toolbarStyle, updateToolbarStyle] = useState({ left: 40, top: 0 });
 
   useEffect(() => {
-    const { left = 40, top = 0 } = scrollContainerElement?.getBoundingClientRect() || {};
-    const styles = { left: left + 4, top };
-    if (viewComponent !== "authorPreviewPopup") {
-      styles.top = "50%";
-      styles.transform = "translateY(-50%)";
-    }
-    if (fullModal) {
-      styles.top = top + 30;
-    }
+    const { left = 40 } = scrollContainerElement?.getBoundingClientRect() || {};
+    const styles = { left: left + 4 };
+    // +48 is padding and marging of question container.
+    styles.top = "calc(50% + 48px)";
+    styles.transform = "translateY(-50%)";
     updateToolbarStyle(styles);
   }, [fullModal, scrollContainerElement]);
 
-  // useEffect(() => {
-  //   // intially, scroll container is window object at author preview
-  //   // style wont be available for the window object
-  //   if (scrollContainerElement?.style && viewComponent === "authorPreviewPopup") {
-  //     scrollContainerElement.style.marginLeft = "58px";
-  //     scrollContainerElement.style.width = "calc(100% - 58px)";
-  //     return () => {
-  //       scrollContainerElement.style.marginLeft = "0px";
-  //       scrollContainerElement.style.width = "100%";
-  //     };
-  //   }
-  // }, [scrollContainerElement]);
+  useEffect(() => {
+    // intially, scroll container is window object at author preview
+    // style wont be available for the window object
+    // 40 is toolbar width
+    if (scrollContainerElement?.style && viewComponent === "authorPreviewPopup") {
+      scrollContainerElement.style.marginLeft = "40px";
+      scrollContainerElement.style.width = "calc(100% - 40px)";
+      return () => {
+        scrollContainerElement.style.marginLeft = "0px";
+        scrollContainerElement.style.width = "100%";
+      };
+    }
+  }, [scrollContainerElement]);
 
   return (
     <Fragment>

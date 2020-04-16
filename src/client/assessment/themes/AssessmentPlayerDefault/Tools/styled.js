@@ -15,13 +15,10 @@ export const toolBoxDimension = {
 };
 
 export const ToolBox = styled(FlexContainer)`
-  width: ${`${toolBoxDimension.width}px`};
   position: ${props => (props.isWorksheet ? "absolute" : "fixed")};
   background: transparent;
   z-index: 1000;
   border-radius: 4px;
-  padding: 0;
-  height: ${props => `${props.height}px`};
   max-height: ${`${toolBoxDimension.height}px`};
   display: ${props => (props.review && !props.testMode ? "none" : "")};
   top: ${props => (props.testMode ? "100" : props.theme.HeaderHeight.xs + 30)}px;

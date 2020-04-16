@@ -5,10 +5,11 @@ import CalculatorButton from "../CalculatorButton/CalculatorButton";
 import { StyledDiv, StyledDivF } from "./styled";
 
 const keyBoardKeysSupported = "1234567890/*+-=%.".split("");
-keyBoardKeysSupported.push("Enter");
+keyBoardKeysSupported.push("Enter", "Delete");
 
 const keyCodesSupported = {
   13: "Enter",
+  46: "Delete",
   48: "0",
   49: "1",
   50: "2",

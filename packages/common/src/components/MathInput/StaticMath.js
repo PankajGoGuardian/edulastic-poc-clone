@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { MathKeyboard } from "@edulastic/common";
+import { MathKeyboard, reformatMathInputLatex } from "@edulastic/common";
 
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
@@ -81,7 +81,7 @@ const StaticMath = ({
 
   const getLatex = () => {
     if (!mathField) return;
-    return mathField.latex();
+    return reformatMathInputLatex(mathField.latex());
   };
 
   const onFocus = newInnerField => {

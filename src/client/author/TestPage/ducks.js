@@ -1766,19 +1766,13 @@ function* setAndSavePassageItems({ payload: { passageItems, page } }) {
  */
 function* updateTestAndNavigate({ payload }) {
   try {
-    if (typeof payload === "string") {
-      payload = {
-        pathname: payload
-      };
-    }
     let { pathname } = payload;
-    const { fadeSidebar = false, regradeFlow, previousTestId } = payload;
+    const { fadeSidebar = false, regradeFlow, previousTestId, testId } = payload;
     const data = yield select(getTestSelector);
     const hasUnsavedChanges = yield select(state => state?.tests?.updated);
     if (hasUnsavedChanges) {
-      const _test = data._id ? yield updateTestSaga({ payload: { data, id: data._id } }) : yield createTest(data);
-
-      if (!data._id) {
+      const _test = !testId || testId == "undefined" ? yield createTest(data) : {};
+      if (!testId) {
         pathname = pathname.replace("undefined", _test._id);
       }
     }

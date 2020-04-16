@@ -2,8 +2,10 @@ import styled from "styled-components";
 import { fadedBlack } from "@edulastic/colors";
 import { ResponsiveContainer } from "recharts";
 import { StyledTable as Table } from "../../../../common/styled";
+import { EduButton } from "@edulastic/common";
 
 export const NonSelectableResponsiveContainer = styled(ResponsiveContainer)`
+  align-self: center;
   .recharts-surface {
     user-select: none;
   }
@@ -71,4 +73,11 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+`;
+
+export const StyledChartNavButton = styled(EduButton)`
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
 `;

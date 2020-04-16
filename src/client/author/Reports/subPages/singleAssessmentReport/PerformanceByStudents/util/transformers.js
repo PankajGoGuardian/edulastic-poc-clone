@@ -135,7 +135,7 @@ export const normaliseTableData = (rawData, data) => {
       classAvg,
       assessmentScore,
       submittedDate: formatDate(studentMetric.submittedDate),
-      assessmentDate: formatDate(studentMetric.timestamp)
+      dueDate: formatDate(studentMetric.dueDate || studentMetric.endDate)
     };
   });
 };

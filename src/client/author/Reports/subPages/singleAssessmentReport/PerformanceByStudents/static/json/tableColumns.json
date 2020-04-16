@@ -35,10 +35,10 @@
     "width": 250
   },
   {
-    "title": "Assessment Date",
-    "dataIndex": "assessmentDate",
-    "key": "assessmentDate",
-    "className": "assessmentDate",
+    "title": "Due Date",
+    "dataIndex": "dueDate",
+    "key": "dueDate",
+    "className": "dueDate",
     "width": 250,
     "sortable": true,
     "type": "date"

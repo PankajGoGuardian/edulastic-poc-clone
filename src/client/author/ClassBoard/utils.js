@@ -1,4 +1,5 @@
 import { test } from "@edulastic/constants";
+import moment from "moment";
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test;
 
@@ -107,4 +108,19 @@ export const hasRandomQuestions = (itemGroups = []) => {
     group =>
       group.type === ITEM_GROUP_TYPES.AUTOSELECT || group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
   );
+};
+
+/**
+ * @param {Object} _class
+ * return date in miliseconds
+ * if assignment closed/passed close date, duedate will be close date or today + 1day
+ * if assignmnet not closed enddate will redurn
+ */
+export const getRedirectEndDate = _class => {
+  const { endDate, dueDate, closed } = _class;
+
+  if (closed || moment() > moment(endDate)) {
+    return dueDate || moment().add(1, "day").valueOf();
+  }
+  return endDate;
 };

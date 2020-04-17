@@ -11,7 +11,6 @@ export const Label = styled.label`
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
   display: ${props => (props.display ? props.display : "block")};
-  text-transform: uppercase;
   margin-top: ${props => props.mt || "0px"};
   margin-right: ${props => props.mr || "0px"};
   margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};

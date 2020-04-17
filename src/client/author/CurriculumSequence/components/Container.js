@@ -164,7 +164,7 @@ class CurriculumContainer extends Component {
         if (flag) {
           set(item, "resourceId", item.id);
         }
-      } else if (item.contentType === "tests") {
+      } else if (item.contentType === "test") {
         destinationCurriculumSequence.modules.every((module, i) => {
           if (!module.data.find(x => x.contentId === item.id)) {
             flag = true;

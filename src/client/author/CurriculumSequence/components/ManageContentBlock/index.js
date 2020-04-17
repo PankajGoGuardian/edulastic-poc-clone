@@ -241,7 +241,7 @@ const ManageContentBlock = props => {
           }
           listToRender.push(
             <ResourceItem
-              type="tests"
+              type="test"
               id={test._id}
               title={test.title}
               key={test._id}

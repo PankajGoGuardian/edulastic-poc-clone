@@ -854,6 +854,7 @@
       "ignoreAlphabeticCharacters": "Ignore alphabet characters",
       "compareSides": "Compare both sides of the in/equality",
       "treatEAsEulersNumber": "Interpret 'e' as Euler's number",
+      "interpretTrigArgAsDegree": "Use degrees instead of radians",
       "tolerance": "Allow tolerance",
       "allowDecimalMarks": "Allow decimal marks",
       "decimalSeparator": "Decimal separator",

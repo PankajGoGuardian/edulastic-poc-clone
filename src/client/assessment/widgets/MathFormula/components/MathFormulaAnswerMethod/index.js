@@ -355,6 +355,16 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.interpretAsNumber")}
             />
           );
+        case "interpretTrigArgAsDegree":
+          return (
+            <CheckOption
+              dataCy="interpret-as-degree"
+              optionKey="interpretTrigArgAsDegree"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.interpretTrigArgAsDegree")}
+            />
+          );
         case "setListTypeResponse":
           return (
             <CheckOption

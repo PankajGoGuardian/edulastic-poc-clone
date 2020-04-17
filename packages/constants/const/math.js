@@ -178,6 +178,7 @@ const methodOptionsGrouped = {
       "setDecimalSeparator",
       "setThousandsSeparator",
       "allowNumericOnly",
+      "interpretTrigArgAsDegree",
       "allowedVariables",
       "tolerance",
       "significantDecimalPlaces"

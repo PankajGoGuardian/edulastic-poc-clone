@@ -23,7 +23,7 @@ const StudentFeedback = ({ question, qId, qLabel, itemMaxScore, isPracticeQuesti
       <FeedbackText>
         <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
-      <FlexContainer alignItems="flex-start">
+      <FlexContainer justifyContent="flex-start" padding="0 1rem" alignItems="flex-start">
         <FeedbackContainer>
           <IconCheckWrapper>
             <IconCheck />

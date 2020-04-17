@@ -4,13 +4,11 @@ import styled from "styled-components";
 import { white, themeColor, grey, black, mediumDesktopExactWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 
-const EduButton = ({ children, ...restProps }) => {
-  return (
-    <StyledButton type="primary" {...restProps}>
-      {children}
-    </StyledButton>
-  );
-};
+const EduButton = ({ children, ...restProps }) => (
+  <StyledButton type="primary" {...restProps}>
+    {children}
+  </StyledButton>
+);
 
 EduButton.propTypes = {
   btnType: PropTypes.string,
@@ -42,7 +40,7 @@ const getStyle = ({ height, width, fontSize, IconBtn, style = {} }) => {
   return Object.assign({}, defaultStyle, style);
 };
 
-const getBgColor = ({ btnType, isGhost, noHover }) => {
+const getBgColor = ({ btnType, isGhost }) => {
   let bgColor;
   if (btnType == "primary") {
     bgColor = isGhost ? white : themeColor;

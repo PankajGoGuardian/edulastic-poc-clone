@@ -1,22 +1,11 @@
-import { EduButton } from "@edulastic/common";
 import { IconGraphRightArrow, IconLogout } from "@edulastic/icons";
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import Logo from "../../assets/ets-log.png";
 import { FlexContainer, HeaderLeftMenu, HeaderMainMenu, MobileMainMenu as Mobile } from "../common";
 import ProgressContainer from "./ProgressContainer";
-import { ContainerRight, FlexDisplay, HeaderPracticePlayer, PlayerTitle } from "./styled";
+import { ContainerRight, FlexDisplay, HeaderPracticePlayer, PlayerTitle, ActionButton } from "./styled";
 import Tools from "./Tools";
-
-const getButtonText = (currentPage, pages, hasSubmitButton) => {
-  if (currentPage <= 1) {
-    return "Start";
-  }
-  if (currentPage >= pages?.length && hasSubmitButton) {
-    return "Submit";
-  }
-  return "Next";
-};
 
 const PlayerHeader = ({
   title,
@@ -31,47 +20,60 @@ const PlayerHeader = ({
   handleMagnifier,
   enableMagnifier,
   hasSubmitButton
-}) => (
-  <Fragment>
-    <HeaderPracticePlayer>
-      <HeaderLeftMenu skinb="true">
-        <img src={Logo} alt="ETS" />
-      </HeaderLeftMenu>
-      <HeaderMainMenu skinb="true">
-        <FlexContainer>
-          <PlayerTitle>{title}</PlayerTitle>
-          <Tools
-            changeTool={changeTool}
-            currentTool={currentTool}
-            calculateMode={calculateMode}
-            handleMagnifier={handleMagnifier}
-            enableMagnifier={enableMagnifier}
-          />
-          <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
-          <ContainerRight>
-            <FlexDisplay>
-              <EduButton
-                isGhost
-                height="40px"
-                onClick={onNextQuestion}
-                disabled={!unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length}
-              >
-                <span>{getButtonText(currentPage, dropdownOptions, hasSubmitButton)}</span>
-                <IconGraphRightArrow />
-              </EduButton>
-              <EduButton isGhost IconBtn height="40px" title="Exit" onClick={onOpenExitPopup}>
-                <IconLogout />
-              </EduButton>
-            </FlexDisplay>
-          </ContainerRight>
-        </FlexContainer>
-        <Mobile>
-          <ProgressContainer questions={dropdownOptions} current={currentPage + 1} />
-        </Mobile>
-      </HeaderMainMenu>
-    </HeaderPracticePlayer>
-  </Fragment>
-);
+}) => {
+  let buttonText = "Next";
+  let disableButton = !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length;
+  if (currentPage <= 1) {
+    buttonText = "Start";
+    disableButton = true;
+  }
+  if (currentPage >= dropdownOptions?.length && hasSubmitButton) {
+    buttonText = "Submit";
+    disableButton = true;
+  }
+
+  const onClickHandle = e => {
+    e.target.blur();
+    onNextQuestion();
+  };
+
+  return (
+    <Fragment>
+      <HeaderPracticePlayer>
+        <HeaderLeftMenu skinb="true">
+          <img src={Logo} alt="ETS" />
+        </HeaderLeftMenu>
+        <HeaderMainMenu skinb="true">
+          <FlexContainer>
+            <PlayerTitle>{title}</PlayerTitle>
+            <Tools
+              changeTool={changeTool}
+              currentTool={currentTool}
+              calculateMode={calculateMode}
+              handleMagnifier={handleMagnifier}
+              enableMagnifier={enableMagnifier}
+            />
+            <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
+            <ContainerRight>
+              <FlexDisplay>
+                <ActionButton onClick={onClickHandle} disabled={disableButton}>
+                  <span>{buttonText}</span>
+                  <IconGraphRightArrow />
+                </ActionButton>
+                <ActionButton iconBtn title="Exit" onClick={onOpenExitPopup}>
+                  <IconLogout />
+                </ActionButton>
+              </FlexDisplay>
+            </ContainerRight>
+          </FlexContainer>
+          <Mobile>
+            <ProgressContainer questions={dropdownOptions} current={currentPage + 1} />
+          </Mobile>
+        </HeaderMainMenu>
+      </HeaderPracticePlayer>
+    </Fragment>
+  );
+};
 
 PlayerHeader.propTypes = {
   title: PropTypes.string.isRequired,

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
-import { boxShadowDefault, themeColor } from "@edulastic/colors";
+
+import { boxShadowDefault, themeColor, lightFadedBlack } from "@edulastic/colors";
 import { Header } from "../common";
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
@@ -55,25 +56,56 @@ export const PlayerTitle = styled.h1`
     white-space: nowrap;
   }
 `;
-export const ActionButton = styled(Button)`
-  border-radius: 5px;
-  height: 40px;
-  margin-left: 10px;
-  color: ${themeColor};
-  font-weight: 900;
-  font-size: 17px;
-  user-select: none;
 
-  span {
-    margin: 0px 8px;
+export const ActionButton = styled(Button)`
+  border: none;
+  height: 36px;
+  font-weight: 600;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
+  color: ${({ theme }) => theme.default.headerRightButtonIconColor};
+  border: ${({ theme }) => `1px solid ${theme.default.headerRightButtonBgColor}`};
+  width: ${({ iconBtn }) => (iconBtn ? "40px" : null)};
+  padding: ${({ iconBtn }) => (iconBtn ? "5px" : "5px 15px")};
+
+  span,
+  svg {
+    margin: ${({ iconBtn }) => (iconBtn ? 0 : "0px 5px")};
   }
 
   svg {
-    fill: ${themeColor};
+    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
   }
-  &.ant-btn[disabled] {
+
+  &:first-child {
+    margin-left: 0px;
+  }
+
+  &:focus {
+    background: ${({ theme }) => theme.default.headerButtonBgColor};
     svg {
-      fill: #d9d9d8;
+      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    }
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${({ theme }) => theme.default.headerRightButtonIconColor};
+    color: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    border: ${({ theme }) => `solid 1px ${theme.default.headerRightButtonBgColor}`};
+    svg {
+      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
+    }
+  }
+
+  &.ant-btn[disabled] {
+    color: ${lightFadedBlack};
+    svg {
+      fill: ${lightFadedBlack};
     }
   }
 `;

@@ -135,7 +135,8 @@ class PreviewModal extends React.Component {
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
         fadeSidebar: "false",
         regradeFlow,
-        previousTestId: test.previousTestId
+        previousTestId: test.previousTestId,
+        testId
       });
     } else {
       history.push(`/author/items/${itemId}/item-detail`);

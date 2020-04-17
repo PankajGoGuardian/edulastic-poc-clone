@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 import { white, red } from "@edulastic/colors";
 import useInterval from "@use-it/interval";
-import firebase from "firebase";
+import * as firebase from "firebase/app";
 import { FireBaseService as Fbs } from "@edulastic/common";
 import AssignmentTimeEndedAlert from "../common/AssignmentTimeEndedAlert";
 

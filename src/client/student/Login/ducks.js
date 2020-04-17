@@ -21,6 +21,7 @@ import { getUser } from "../../author/src/selectors/user";
 import { updateInitSearchStateAction } from "../../author/TestPage/components/AddItems/ducks";
 import { JOIN_CLASS_REQUEST_SUCCESS } from "../ManageClass/ducks";
 import * as firebase from "firebase/app";
+import "firebase/auth";
 
 // types
 export const LOGIN = "[auth] login";
@@ -712,6 +713,7 @@ function* logout() {
     yield call(segmentApi.unloadIntercom, { user });
     localStorage.clear();
     sessionStorage.removeItem("cliBannerShown");
+    sessionStorage.removeItem("cliBannerVisible");
     TokenStorage.removeKID();
     TokenStorage.initKID();
     yield put({ type: "RESET" });

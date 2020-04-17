@@ -114,7 +114,10 @@ class AssignmentsPage {
 
     this.getAssignmentButton()
       .should("be.visible")
-      .click({ force: true });
+      .click({ force: true })
+      .then(() => {
+        if (Cypress.$('[data-cy="attemptsCount"]').length === 1) this.getLaunchRetakeButton().click({ force: true });
+      });
 
     // cy.wait("@startTest");
     // cy.wait("@gettest");

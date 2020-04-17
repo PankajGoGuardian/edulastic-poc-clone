@@ -467,7 +467,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             if (index === 0) {
               cy.login("student", student.email, student.pass);
               // Response Verification
-              studentAssignment.clickOnAssigmentByTestId(testID).then(groupArray => {
+              studentAssignment.clickOnAssigmentByTestId(testID, { isFirstAttempt: false }).then(groupArray => {
                 redirected[index] = groupItemsPage.getItemDeliverySeq(groupArray, groups);
                 // UI Verification
                 redirected[index].forEach(item => {

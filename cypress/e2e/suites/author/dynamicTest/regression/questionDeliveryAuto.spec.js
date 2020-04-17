@@ -7,10 +7,7 @@ import AuthorAssignmentPage from "../../../../framework/author/assignments/Autho
 import LiveClassboardPage from "../../../../framework/author/assignments/LiveClassboardPage";
 import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../framework/student/studentTestPage";
-import {
-  attemptTypes,
-  deliverType as DELIVERY_TYPE
-} from "../../../../framework/constants/questionTypes";
+import { attemptTypes, deliverType as DELIVERY_TYPE } from "../../../../framework/constants/questionTypes";
 import CypressHelper from "../../../../framework/util/cypressHelpers";
 import StandardBasedReportPage from "../../../../framework/author/assignments/standardBasedReportPage";
 
@@ -89,16 +86,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
 
   let groups = {};
 
-  const items = [
-    "MCQ_TF.5",
-    "MCQ_TF.5",
-    "MCQ_TF.5",
-    "MCQ_TF.5",
-    "MCQ_TF.6",
-    "MCQ_TF.6",
-    "MCQ_TF.6",
-    "MCQ_TF.6"
-  ];
+  const items = ["MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.5", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6", "MCQ_TF.6"];
   const itemIds = [];
   let testID;
 
@@ -185,9 +173,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             studentTestPage.submitTest();
           });
         });
-        cy.wait(1).then(() =>
-          CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1])
-        );
+        cy.wait(1).then(() => CypressHelper.checkObjectInEquality(deliveredArray[0], deliveredArray[1], message[1]));
       });
       it(">login as teacher verify in LCB", () => {
         cy.login("teacher", Teacher.email, Teacher.pass);
@@ -199,9 +185,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.questionResponsePage.selectStudent(student.name);
           deliveredArray[index].forEach((item, ind) => {
             queNum = itemIds.indexOf(item) + 1;
-            lcb.questionResponsePage
-              .getQuestionContainer(ind)
-              .should("contain", `Q${queNum}${queText}`);
+            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
           });
         });
 
@@ -224,7 +208,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
             if (index === 0) {
               cy.login("student", student.email, student.pass);
               // Response Verification
-              studentAssignment.clickOnAssigmentByTestId(testID).then(groupArray => {
+              studentAssignment.clickOnAssigmentByTestId(testID, { isFirstAttempt: false }).then(groupArray => {
                 redirected[index] = groupItemsPage.getItemDeliverySeq(groupArray, groups);
                 // UI Verification
                 redirected[index].forEach(item => {
@@ -256,9 +240,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
                 // eslint-disable-next-line no-loop-func
                 deliveredArray[index].forEach((item, ind) => {
                   queNum = itemIds.indexOf(item) + 1;
-                  lcb.questionResponsePage
-                    .getQuestionContainer(ind)
-                    .should("contain", `Q${queNum}${queText}`);
+                  lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
                 });
               }
             }
@@ -359,9 +341,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> item groups`, () => {
           lcb.questionResponsePage.selectStudent(student.name);
           deliveredArray[index].forEach((item, ind) => {
             queNum = itemIds.indexOf(item) + 1;
-            lcb.questionResponsePage
-              .getQuestionContainer(ind)
-              .should("contain", `Q${queNum}${queText}`);
+            lcb.questionResponsePage.getQuestionContainer(ind).should("contain", `Q${queNum}${queText}`);
           });
         });
 

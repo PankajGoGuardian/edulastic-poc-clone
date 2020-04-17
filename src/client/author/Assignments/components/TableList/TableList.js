@@ -130,7 +130,7 @@ const TableList = ({
       },
       {
         dataIndex: "testType",
-        width: "10%",
+        width: "14%",
         render: (_, row) => (
           <TypeWrapper>
             {row && row.testType === test.type.PRACTICE ? (
@@ -178,12 +178,12 @@ const TableList = ({
       },
       {
         dataIndex: "submitted",
-        width: "10%",
+        width: "8%",
         render: text => <GreyFont data-cy="submitted">{text}</GreyFont>
       },
       {
         dataIndex: "graded",
-        width: "10%",
+        width: "8%",
         render: text => <GreyFont data-cy="graded">{text}</GreyFont>
       },
       {
@@ -307,7 +307,7 @@ const TableList = ({
         if (!a.testType || !b.testType) return false;
         return a.testType.localeCompare(b.testType);
       },
-      width: "10%",
+      width: "14%",
       render: (text = test.type.ASSESSMENT) => <TitleCase data-cy="testType">{text}</TitleCase>
     },
     {
@@ -328,7 +328,7 @@ const TableList = ({
       title: "Submitted",
       dataIndex: "submitted",
       sortDirections: ["descend", "ascend"],
-      width: "10%",
+      width: "8%",
       render: text => <GreyFont data-cy="testSubmitted"> {text} </GreyFont>
     },
     {
@@ -336,7 +336,7 @@ const TableList = ({
       dataIndex: "graded",
       sortDirections: ["descend", "ascend"],
       sorter: (a, b) => a.graded - b.graded,
-      width: "10%",
+      width: "8%",
       render: text => <GreyFont data-cy="testGraded"> {text} </GreyFont>
     },
     {

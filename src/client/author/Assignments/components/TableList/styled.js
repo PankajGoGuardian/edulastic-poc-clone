@@ -15,7 +15,8 @@ import {
   smallDesktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
-  desktopWidth
+  desktopWidth,
+  extraDesktopWidth
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -283,22 +284,35 @@ export const TypeIcon = styled.span`
 `;
 
 export const TypeWrapper = styled.span`
-  width: 100px;
+  width: 125px;
   display: flex;
   float: right;
   align-items: center;
   justify-content: flex-start;
+
+  @media (max-width: ${extraDesktopWidthMax}) {
+    width: 110px;
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    width: 90px;
+  }
 `;
 
 export const TimedTestIndicator = styled.span`
   height: 18px;
   max-width: 80px;
-  font-weight: 700;
+  min-width: 80px;
+  text-align: left;
+  font-weight: 600;
   margin-left: 10px;
   i {
     color: grey;
     padding-right: 6px;
     transform: scale(1.3);
+  }
+  @media (max-width: ${mediumDesktopWidth}) {
+    max-width: 60px;
+    min-width: 60px;
   }
 `;
 

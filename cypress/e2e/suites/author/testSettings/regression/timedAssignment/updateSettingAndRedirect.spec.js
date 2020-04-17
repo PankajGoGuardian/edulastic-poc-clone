@@ -1,9 +1,7 @@
 import FileHelper from "../../../../../framework/util/fileHelper";
 import TestLibrary from "../../../../../framework/author/tests/testLibraryPage";
 import AssignmentsPage from "../../../../../framework/student/assignmentsPage";
-import CypressHelper from "../../../../../framework/util/cypressHelpers";
 import StudentTestPage from "../../../../../framework/student/studentTestPage";
-import { queColor } from "../../../../../framework/constants/questionTypes";
 import AuthorAssignmentPage from "../../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../../framework/author/assignments/LiveClassboardPage";
 
@@ -56,18 +54,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
       studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 3 });
 
       studentTestPage.waitWhileAttempt("00:00:10");
-      studentTestPage.getCountdownText().then(time => {
-        startTime = CypressHelper.hoursToSeconds(time);
-        expect(
-          startTime > 160 && startTime < 180,
-          `excpected UI time is between 160 and 180 in seconds and got ${startTime}`
-        ).to.be.true;
-        studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-
+      studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
         /* wait for one minute, so that time limit becomes exactly 2 mns(1 minute is used) and save and exit */
         studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
-        studentTestPage.verifyRemainingTime("00:02:00");
-        studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
+        studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
         studentTestPage.clickOnExitTest();
       });
     });
@@ -93,19 +83,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
       studentAssignmentsPage.clickOnAssigmentByTestId(customtestid);
 
       studentTestPage.waitWhileAttempt("00:00:10");
-      studentTestPage.getCountdownText().then(time => {
-        startTime = CypressHelper.hoursToSeconds(time);
-        /* since time is updated to 10 mns and student1 is already used 1 minute, he should get 9 minutes and remaining time */
-        expect(
-          startTime > 520 && startTime < 540,
-          `excpected UI time is between 520 and 540 in seconds and got ${startTime}`
-        ).to.be.true;
+      studentTestPage.verifyAndGetRemainingTime("00:08:50", 10);
+      /* since time is updated to 10 mns and student1 is already used 1 minute, he should get 9 minutes and remaining time */
 
-        studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-        studentTestPage.getExitButton().should("not.exist");
-        studentTestPage.clickOnNext();
-        studentTestPage.submitTest();
-      });
+      studentTestPage.getExitButton().should("not.exist");
+      studentTestPage.clickOnNext();
+      studentTestPage.submitTest();
     });
 
     it(">verify at student-2-'not started'", () => {
@@ -115,19 +98,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
       studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: updatedtime, isExitAllowed: false });
 
       studentTestPage.waitWhileAttempt("00:00:10");
-      studentTestPage.getCountdownText().then(time => {
-        startTime = CypressHelper.hoursToSeconds(time);
-        /* since student2 is in not started status he should get whole 10 mns */
-        expect(
-          startTime > 580 && startTime < 600,
-          `excpected UI time is between 580 and 600 in seconds and got ${startTime}`
-        ).to.be.true;
-
-        studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-        studentTestPage.getExitButton().should("not.exist");
-        studentTestPage.clickOnNext();
-        studentTestPage.submitTest();
-      });
+      studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
+      /* since student2 is in not started status he should get whole 10 mns */
+      studentTestPage.getExitButton().should("not.exist");
+      studentTestPage.clickOnNext();
+      studentTestPage.submitTest();
     });
     context(">redirect", () => {
       before(">ridirect the test", () => {
@@ -150,19 +125,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         });
 
         studentTestPage.waitWhileAttempt("00:00:10");
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          /* for redirected test all students should get whole updated time i.e. 10 minutes as both will be are in not started state */
-          expect(
-            startTime > 580 && startTime < 600,
-            `excpected UI time is between 580 and 600 in seconds and got ${startTime}`
-          ).to.be.true;
+        studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
 
-          studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-          studentTestPage.getExitButton().should("not.exist");
-          studentTestPage.clickOnNext();
-          studentTestPage.submitTest();
-        });
+        studentTestPage.getExitButton().should("not.exist");
+        studentTestPage.clickOnNext();
+        studentTestPage.submitTest();
       });
 
       it(">verify at student-2", () => {
@@ -176,18 +143,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment-update
         });
 
         studentTestPage.waitWhileAttempt("00:00:10");
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          expect(
-            startTime > 580 && startTime < 600,
-            `excpected UI time is between 580 and 600 in seconds and got ${startTime}`
-          ).to.be.true;
+        studentTestPage.verifyAndGetRemainingTime("00:09:50", 10);
 
-          studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-          studentTestPage.getExitButton().should("not.exist");
-          studentTestPage.clickOnNext();
-          studentTestPage.submitTest();
-        });
+        studentTestPage.getExitButton().should("not.exist");
+        studentTestPage.clickOnNext();
+        studentTestPage.submitTest();
       });
     });
   });

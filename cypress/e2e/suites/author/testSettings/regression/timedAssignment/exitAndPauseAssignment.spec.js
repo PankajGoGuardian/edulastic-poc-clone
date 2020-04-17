@@ -4,8 +4,6 @@ import AssignmentsPage from "../../../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../../../framework/student/studentTestPage";
 import AuthorAssignmentPage from "../../../../../framework/author/assignments/AuthorAssignmentPage";
 import LiveClassboardPage from "../../../../../framework/author/assignments/LiveClassboardPage";
-import { queColor } from "../../../../../framework/constants/questionTypes";
-import CypressHelper from "../../../../../framework/util/cypressHelpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit and puase test`, () => {
   const testlibraryPage = new TestLibrary();
@@ -21,7 +19,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
   };
   const customtestTime = "3";
 
-  let startTime;
   let customtestid;
 
   context(">exit -test", () => {
@@ -32,7 +29,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
         testlibraryPage.createTest().then(id => {
           customtestid = id;
         });
-        testlibraryPage.assignPage.visitAssignPageById(customtestid);
       });
 
       it(">set time limit and disable allow exit", () => {
@@ -50,16 +46,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
       it(">verify at student side-'no exist'", () => {
         cy.login("student", user.student1, user.pass);
         studentAssignmentsPage.verifyTimeAvalableForTestById(customtestid, 1);
-        studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 1, exitAllowed: false });
+        studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 1, isExitAllowed: false });
 
         studentTestPage.waitWhileAttempt("00:00:10");
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          expect(
-            startTime > 40 && startTime < 60,
-            `expected UI time is between 40 and 60 in seconds and got ${startTime} seconds`
-          ).to.be.true;
-
+        studentTestPage.verifyAndGetRemainingTime("00:00:50", 10).then(startTime => {
           studentTestPage.getExitButton().should("not.exist");
           studentTestPage.waitWhileAttempt(`00:00:${startTime}`);
           studentTestPage.clickOkOnTimeOutPopUp();
@@ -95,15 +85,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
 
         it(">attempt-1 -'exit'", () => {
           studentTestPage.waitWhileAttempt("00:00:10");
-          studentTestPage.getCountdownText().then(time => {
-            startTime = CypressHelper.hoursToSeconds(time);
-            expect(
-              startTime > 160 && startTime < 180,
-              `expected UI time is between 160 and 120 seconds and got ${startTime} seconds`
-            ).to.be.true;
-
+          studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
             studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
-            studentTestPage.verifyRemainingTime("00:02:00");
+            studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
             studentTestPage.clickOnExitTest();
           });
         });
@@ -113,16 +97,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
           studentAssignmentsPage.clickOnAssigmentByTestId(customtestid);
           studentTestPage.waitWhileAttempt("00:00:10");
 
-          studentTestPage.getCountdownText().then(time => {
-            startTime = CypressHelper.hoursToSeconds(time);
-            expect(
-              startTime > 100 && startTime < 120,
-              `expected UI time is between 100 and 120 seconds and got ${startTime} seconds`
-            ).to.be.true;
-
-            studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
+          studentTestPage.verifyAndGetRemainingTime("00:01:50", 10).then(startTime => {
             studentTestPage.waitWhileAttempt(`00:00:${startTime - 60}`);
-            studentTestPage.verifyRemainingTime("00:01:00");
+
+            studentTestPage.verifyAndGetRemainingTime("00:01:00", 3);
             studentTestPage.clickOnExitTest();
           });
         });
@@ -133,14 +111,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
           studentAssignmentsPage.clickOnAssigmentByTestId(customtestid);
           studentTestPage.waitWhileAttempt("00:00:10");
 
-          studentTestPage.getCountdownText().then(time => {
-            startTime = CypressHelper.hoursToSeconds(time);
-            expect(
-              startTime > 45 && startTime < 60,
-              `expected UI time is between 45 and 60 in seconds and got ${startTime} seconds`
-            ).to.be.true;
-
-            studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
+          studentTestPage.verifyAndGetRemainingTime("00:00:50", 10).then(startTime => {
             studentTestPage.waitWhileAttempt(`00:00:${startTime}`);
             studentTestPage.clickOkOnTimeOutPopUp();
           });
@@ -174,15 +145,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
         studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: customtestTime });
         studentTestPage.waitWhileAttempt("00:00:10");
 
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          expect(
-            startTime > 160 && startTime < 180,
-            `expected UI time is between 140 and 180 in seconds and got ${startTime} seconds`
-          ).to.be.true;
-
+        studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
           studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
-          studentTestPage.verifyRemainingTime("00:02:00");
+          studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
           studentTestPage.clickOnExitTest();
         });
       });
@@ -216,14 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment -exit 
         studentAssignmentsPage.clickOnAssigmentByTestId(customtestid);
         studentTestPage.waitWhileAttempt("00:00:10");
 
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          expect(
-            startTime > 100 && startTime < 120,
-            `expected UI time is between 100 and 120 in seconds and got ${startTime} seconds`
-          ).to.be.true;
-
-          studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
+        studentTestPage.verifyAndGetRemainingTime("00:01:50", 10).then(startTime => {
           studentTestPage.waitWhileAttempt(`00:${startTime / 60}:${startTime - 60}`);
           studentTestPage.clickOkOnTimeOutPopUp();
         });

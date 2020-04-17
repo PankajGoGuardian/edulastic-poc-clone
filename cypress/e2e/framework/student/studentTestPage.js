@@ -125,7 +125,12 @@ class StudentTestPage {
         this.getExitButton()
           .should("be.visible")
           .click();
-        if (!onlyPreview) this.clickOnProceed();
+        if (!onlyPreview) {
+          cy.server();
+          cy.route("POST", "**/test-activity/*/test-item/*").as("exit-test");
+          this.clickOnProceed();
+          cy.wait("@exit-test");
+        }
       }
     });
   };
@@ -136,11 +141,7 @@ class StudentTestPage {
       .should("be.visible")
       .click();
 
-  clickOnProceed = () =>
-    cy
-      .get("[data-cy=proceed]")
-
-      .click({ force: true });
+  clickOnProceed = () => cy.get("[data-cy=proceed]").click({ force: true });
 
   clickSubmitButton = () => {
     cy.server();
@@ -921,16 +922,23 @@ class StudentTestPage {
 
   getCountdownText = () => this.getCountDown().invoke("text");
 
-  verifyRemainingTime = hours => {
+  verifyAndGetRemainingTime = (expectedTimeInHours, timeAdujst = 3) =>
+    /* expectedTimeInHours: `HH:MM:SS`, timeAdujst: integer(seconds) */
     this.getCountdownText().then(time => {
-      const timeExpectedInSeconds = CypressHelper.hoursToSeconds(hours);
-      const UITimeInSeconds = CypressHelper.hoursToSeconds(time);
-      expect(UITimeInSeconds, `Expected time in UI is ${timeExpectedInSeconds} in seconds and got ${UITimeInSeconds}`)
-        .to.be.greaterThan(timeExpectedInSeconds - 3)
-        .and.to.be.lessThan(timeExpectedInSeconds + 3);
-      /* change assertion type */
+      const expectedTimeInSeconds = CypressHelper.hoursToSeconds(expectedTimeInHours);
+      const currentInTimeInSeconds = CypressHelper.hoursToSeconds(time);
+
+      expect(
+        currentInTimeInSeconds > expectedTimeInSeconds - timeAdujst &&
+          currentInTimeInSeconds < expectedTimeInSeconds + timeAdujst,
+        `expected time in UI is ${timeAdujst} seconds around "${expectedTimeInHours}" and 
+        and got "${time}"`
+      ).to.be.true;
+
+      return this.getCountDown()
+        .should("have.css", "color", expectedTimeInSeconds > 120 ? queColor.WHITE : queColor.RED)
+        .then(() => currentInTimeInSeconds);
     });
-  };
 
   waitWhileAttempt = hours => cy.wait(CypressHelper.hoursToSeconds(hours) * 1000);
 

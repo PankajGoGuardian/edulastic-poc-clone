@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
         it(">set time limit as on-'default'", () => {
           testlibraryPage.seachTestAndGotoReviewById(defaultTestids[index]);
           testlibraryPage.header.clickOnSettings();
-          testlibraryPage.testSettings.makeAssignmentTimed();
+          testlibraryPage.testSettings.setAssignmentTime();
           testlibraryPage.testSettings.verifyTimeAssignedForTest(defaultTestItems[index]);
           testlibraryPage.testSettings.getAllowExit().should("not.be.checked");
           testlibraryPage.testSettings.verifyInfoAboutTestTime();
@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
           testlibraryPage.visitTestById(defaultTestids[index]);
           testlibraryPage.header.clickOnAssign();
           testlibraryPage.assignPage.showOverRideSetting();
-          testlibraryPage.assignPage.makeAssignmentTimed();
+          testlibraryPage.assignPage.setAssignmentTime();
           testlibraryPage.assignPage.verifyTimeAssignedForTest(defaultTestItems[index]);
           testlibraryPage.assignPage.getAllowExit().should("not.be.checked");
         });
@@ -147,27 +147,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> timed assignment`, () =
         studentAssignmentsPage.clickOnAssigmentByTestId(customtestid, { time: 3 });
 
         studentTestPage.waitWhileAttempt("00:00:10");
-        studentTestPage.getCountdownText().then(time => {
-          startTime = CypressHelper.hoursToSeconds(time);
-          expect(startTime).to.be.greaterThan(1);
-          studentTestPage.getCountDown().should("have.css", "color", queColor.WHITE);
-
+        studentTestPage.verifyAndGetRemainingTime("00:02:50", 10).then(startTime => {
           /* wait for one minute, so that time limit becomes less than 2 mns */
           studentTestPage.waitWhileAttempt(`00:00:${startTime - 120}`);
-          studentTestPage.verifyRemainingTime("00:02:00");
-          studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
+          studentTestPage.verifyAndGetRemainingTime("00:02:00", 3);
+
+          /* wait for two mns, so that time gets exhausted */
+          studentTestPage.waitWhileAttempt(`00:01:00`);
+          studentTestPage.verifyAndGetRemainingTime("00:01:00", 3);
+
+          studentTestPage.waitWhileAttempt(`00:00:59`);
+          studentTestPage.verifyAndGetRemainingTime("00:00:01", 3);
+
+          studentTestPage.clickOkOnTimeOutPopUp();
         });
-
-        /* wait for two mns, so that time gets exhausted */
-        studentTestPage.waitWhileAttempt(`00:01:00`);
-        studentTestPage.verifyRemainingTime("00:01:00");
-        studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
-
-        studentTestPage.waitWhileAttempt(`00:00:59`);
-        studentTestPage.verifyRemainingTime("00:00:01");
-        studentTestPage.getCountDown().should("have.css", "color", queColor.RED);
-
-        studentTestPage.clickOkOnTimeOutPopUp();
       });
     });
   });

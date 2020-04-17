@@ -5,7 +5,7 @@ import { some } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { assignmentApi } from "@edulastic/api";
 import { EduButton } from "@edulastic/common";
-import { getUserName } from "../utils";
+import { getUserName, getRedirectEndDate } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 import { RadioBtn, RadioGrp } from "@edulastic/common";
@@ -56,8 +56,8 @@ const RedirectPopUp = ({
   groupId,
   testActivity
 }) => {
-  const [endDate, setEndDate] = useState(moment().add(1, "day"));
-  const [dueDate, setDueDate] = useState(endDate);
+  const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData)));
+  const [dueDate, setDueDate] = useState(moment(additionalData.dueDate));
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);

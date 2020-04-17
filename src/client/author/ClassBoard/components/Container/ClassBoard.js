@@ -987,7 +987,7 @@ class ClassBoard extends Component {
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
               )}
 
-              <RedirectPopup
+              {redirectPopup && <RedirectPopup
                 open={redirectPopup}
                 allStudents={allStudents}
                 disabledList={disabledList}
@@ -1002,7 +1002,7 @@ class ClassBoard extends Component {
                 assignmentId={assignmentId}
                 groupId={classId}
                 testActivity={testActivity}
-              />
+              />}
               {showAddStudentsPopup && (
                 <AddStudentsPopup
                   open={showAddStudentsPopup}

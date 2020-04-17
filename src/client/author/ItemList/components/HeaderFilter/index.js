@@ -58,7 +58,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
 
   const getTag = (type, d, tagTitle, bodyArr, popOverArray, containerWidthObj) => {
     const widthOfTag = getWidthOfTag(tagTitle);
-    if (widthOfTag < containerWidthObj.remainingWidth) {
+    if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag;
       bodyArr.push(
         <Tag closable onClose={e => handleCloseTag(e, type, d)}>
@@ -67,9 +67,9 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
       );
     } else {
       popOverArray.push(
-        <Tag closable onClose={e => handleCloseTag(e, type, d)}>
+        <StyledPopupTag closable onClose={e => handleCloseTag(e, type, d)}>
           {tagTitle}
-        </Tag>
+        </StyledPopupTag>
       );
     }
   };
@@ -138,7 +138,7 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
       <>
         {bodyArr?.length > 0 && bodyArr.map(e => e)}
         {popOverArray?.length > 0 && (
-          <Popover content={<>{popOverArray.map(e => e)}</>}>
+          <Popover placement="bottom" content={<>{popOverArray.map(e => e)}</>}>
             <Tag>{`+${popOverArray.length}`}</Tag>
           </Popover>
         )}
@@ -171,6 +171,7 @@ const StyledPopupTag = styled(Tag)`
 `;
 
 export const FiltersWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-self: center;
   margin-right: auto;

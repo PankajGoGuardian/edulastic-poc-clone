@@ -652,6 +652,8 @@ export function* fetchUser() {
       TokenStorage.selectAccessToken(user._id, user.role);
     }
     TokenStorage.updateKID(user.kid);
+    const searchParam = yield select(state => state.router.location.search);
+    if (searchParam.includes("showCliBanner=1")) localStorage.setItem("showCLIBanner", true);
     yield put(setUserAction(user));
     yield put(
       updateInitSearchStateAction({
@@ -709,6 +711,7 @@ function* logout() {
     const user = yield select(getUser);
     yield call(segmentApi.unloadIntercom, { user });
     localStorage.clear();
+    sessionStorage.removeItem("cliBannerShown");
     TokenStorage.removeKID();
     TokenStorage.initKID();
     yield put({ type: "RESET" });

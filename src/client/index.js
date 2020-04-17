@@ -22,6 +22,10 @@ if (process.env.POI_APP_SENTRY_URI) {
   }).install();
 }
 
+if (window.location?.search?.includes("showCLIBanner=1") && !sessionStorage?.cliBannerShown) {
+  sessionStorage.cliBannerVisible = true;
+}
+
 window.isMobileDevice = isMobileDevice();
 window.isIOS = isIOS();
 

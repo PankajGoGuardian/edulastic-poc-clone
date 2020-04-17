@@ -218,7 +218,8 @@ export const getAllAssignmentsSelector = createSelector(
           ...assignment,
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
-          ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {})
+          ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {}),
+          ...(clazz.pauseAllowed !== undefined ? { pauseAllowed: clazz.pauseAllowed } : {})
         }));
       })
       .filter(assignment => isLiveAssignment(assignment, classIds));

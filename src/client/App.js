@@ -54,6 +54,7 @@ const RedirectToTest = lazy(() => import(/* webpackChunkName: "RedirecToTest" */
 const DistrictRoutes = lazy(() => import("./districtRoutes/index"));
 const ResetPassword = lazy(() => import("./resetPassword/index"));
 const SetParentPassword = lazy(() => import("./SetParentPassword"));
+const CLIAccessBanner = lazy(() => import("./author/Dashboard/components/CLIAccessBanner"));
 
 const Loading = () => (
   <div>
@@ -118,7 +119,8 @@ class App extends Component {
   };
 
   state = {
-    showAppUpdate: false
+    showAppUpdate: false,
+    canShowCliBanner: true
   };
 
   componentDidMount() {
@@ -152,6 +154,7 @@ class App extends Component {
   };
 
   render() {
+    const cliBannerVisible = sessionStorage.showCliBanner || false;
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
@@ -350,6 +353,16 @@ class App extends Component {
               <Redirect exact to={defaultRoute} />
             </Switch>
           </DndProvider>
+          {cliBannerVisible && this.state.canShowCliBanner && !sessionStorage.cliBannerShown && (
+            <CLIAccessBanner
+              visible={cliBannerVisible && this.state.canShowCliBanner}
+              location={location}
+              onClose={() => {
+                this.setState({ canShowCliBanner: false });
+                sessionStorage.cliBannerShown = true;
+              }}
+            />
+          )}
         </Suspense>
       </div>
     );

@@ -629,6 +629,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case REMOVE_TEST_ENTITY:
       return {
         ...state,
+        createdItems: [],
         entity: createBlankTest()
       };
     case RECEIVE_TEST_BY_ID_ERROR:

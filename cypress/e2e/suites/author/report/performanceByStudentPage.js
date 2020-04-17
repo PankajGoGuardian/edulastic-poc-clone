@@ -38,10 +38,7 @@ export default class PerformanceByStudentReport {
   selectStudentByName = studentName => this.getCheckBoxByStudentName(studentName).check({ force: true });
 
   clickOnActionAddToGroup = () => {
-    this.getActionButton().click({ force: true });
-    cy.get(".ant-dropdown-menu-item")
-      .contains("Add to Group")
-      .click({ force: true });
+    cy.contains("Add To Student Group").click({ force: true });
     cy.contains("Add / Remove students from groups");
   };
 

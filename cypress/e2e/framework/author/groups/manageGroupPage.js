@@ -17,8 +17,6 @@ export default class ManageGroupPage extends TeacherManageClassPage {
         return { name, students, assignments };
       });
 
-  removeStudentButton = () => cy.get(".ant-dropdown-menu-item").contains("Remove Student");
-
   getStudentRow = email => cy.get(`[data-row-key="${email}"]`);
 
   // *** ELEMENTS END ***
@@ -33,22 +31,6 @@ export default class ManageGroupPage extends TeacherManageClassPage {
 
   clickOnCreateGroupButton = () => cy.get('[data-cy="createClass"]').click();
 
-  clickOnActionButton = email =>
-    cy
-      .get(`[data-row-key="${email}"]`)
-      .contains("ACTIONS")
-      .click();
-
-  clickonRemoveStudentButton = () => this.removeStudentButton().click();
-
-  clickOnRemoveStudentPopupTextbox = () => cy.get('[class *= "ant-input styled"]').click();
-
-  clickOnRemoveButtonInPopUp = () =>
-    cy
-      .get(".ant-modal-footer")
-      .contains("span", "Yes, Remove Student(s)")
-      .click({ force: true });
-
   setDescription = description =>
     this.getDescription()
       .clear()
@@ -56,26 +38,33 @@ export default class ManageGroupPage extends TeacherManageClassPage {
 
   fillGroupDetail({ name, description, grade, subject }) {
     this.setName(name);
-    this.getClassName().should("have.value", name);
-
     if (description) {
       this.setDescription(description);
-      this.getDescription().should("have.value", description);
     }
-
     if (grade) {
       this.selectGrade(grade);
-      this.verifyGrade(grade);
     }
-
     if (subject) {
       this.selectSubject(subject);
-      this.verifySubject(subject);
     }
   }
 
   clickOnSaveGroup = () => this.clickOnSaveClass(true);
 
+  verifyGroupDetails({ name, description, grade, subject }) {
+    if (name) {
+      this.getClassName().should("have.value", name);
+    }
+    if (description) {
+      this.getDescription().should("have.value", description);
+    }
+    if (grade) {
+      this.verifyGrade(grade);
+    }
+    if (subject) {
+      this.verifySubject(subject);
+    }
+  }
   // *** ACTIONS END ***
 
   // *** APPHELPERS START ***

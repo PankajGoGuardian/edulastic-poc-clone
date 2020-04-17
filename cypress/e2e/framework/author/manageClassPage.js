@@ -52,12 +52,17 @@ export default class TeacherManageClassPage {
 
   getStudentRowByEmail = email => cy.get(`[data-row-key="${email}"]`);
 
+  removeStudentButton = () => cy.get(".ant-dropdown-menu-item").contains("Remove Student");
+
   // *** ELEMENTS END ***
 
   // *** ACTIONS START ***
 
-  clickOnActionAddToGroup = () => {
+  clickOnActionButton = () => {
     cy.get('[data-cy="actions"]').click();
+  };
+  clickOnActionAddToGroup = () => {
+    this.clickOnActionButton();
     cy.contains("Add To Group").click();
   };
 
@@ -82,6 +87,12 @@ export default class TeacherManageClassPage {
   };
 
   clickOnCancel = () => cy.get("[data-cy=cancel]").click();
+
+  clickonRemoveStudentButton = () => this.removeStudentButton().click({ force: true });
+
+  clickOnRemoveStudentPopupTextbox = () => cy.get('[class *= "ant-input styled"]').click();
+
+  clickOnRemoveButtonInPopUp = () => cy.contains("span", "Yes, Remove Student(s)").click({ force: true });
 
   setName(name) {
     this.getClassName()
@@ -320,5 +331,12 @@ export default class TeacherManageClassPage {
     });
   }
 
+  selectStudentsAndRemove = email => {
+    this.selectStudentCheckBoxByEmail(email);
+    this.clickOnActionButton();
+    this.clickonRemoveStudentButton();
+    this.clickOnRemoveStudentPopupTextbox().type("REMOVE");
+    this.clickOnRemoveButtonInPopUp();
+  };
   // *** APPHELPERS END ***
 }

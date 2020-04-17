@@ -9,6 +9,7 @@ import AssignmentsPage from "../../../../framework/student/assignmentsPage";
 import FileHelper from "../../../../framework/util/fileHelper";
 import PerformanceByStudentReport from "../../report/performanceByStudentPage";
 import GroupPopup from "../../../../framework/author/groups/groupPopup";
+import { teacherSide } from "../../../../framework/constants/assignmentStatus";
 
 const { _ } = Cypress;
 
@@ -17,6 +18,7 @@ const manageClass = new TeacherManageClassPage();
 const manageGroup = new ManageGroupPage();
 const groupPopup = new GroupPopup();
 const authorAssignmentPage = new AuthorAssignmentPage();
+const studentAssignmentsPage = new AssignmentsPage();
 const testLibrary = new TestLibrary();
 const lcb = new LiveClassboardPage();
 const pbsReport = new PerformanceByStudentReport();
@@ -54,20 +56,30 @@ const groups = {
   2: {
     name: "Group2",
     description: "This is custom group 2"
+  },
+
+  3: {
+    name: "Group3",
+    description: "This is custom group 3"
+  },
+  4: {
+    name: "Group4",
+    description: "This is custom group 4"
   }
 };
 
 const teacher = "teacher.1.studentgroup@automation.com";
-const password = "snapwiz";
+const password = "automation";
 const classNameEdit = "Automation Class - studentGroup teacher.1";
 const testIdForReport = "5e8af25af51ccb00082a12a6";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () => {
   let testId = "5e942daf982cda000755938e";
-
   const studentGroup1 = [students[1], students[2]];
   const studentGroup1Edit = [students[3], students[4]];
   const studentGroup2 = [students[3], students[4]];
+  const studentGroup3 = [students[1], students[2]];
+  const studentGroup4 = [students[2], students[3]];
   const studentGroup2Edit = [students[5]];
 
   before(() => {
@@ -295,10 +307,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
         sideBar.clickOnManageClass();
         manageGroup.clickOnGroupTab();
         manageGroup.clickOnGroupRowByName(groups[2].name);
-        manageGroup.clickOnActionButton(studentToRemove.email);
-        manageGroup.clickonRemoveStudentButton();
-        manageGroup.clickOnRemoveStudentPopupTextbox().type("REMOVE");
-        manageGroup.clickOnRemoveButtonInPopUp();
+        manageClass.selectStudentsAndRemove(studentToRemove.email);
       });
 
       it("verify removal in LCB and student group", () => {
@@ -355,5 +364,141 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Student Groups`, () =>
     });
     // TODO: edit group name/details and verify
   });
-  // TODO: write tests to cover common student scenario
+
+  context("Reassiging to same class", () => {
+    before("Delete all assignments", () => {
+      cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
+    });
+
+    it("> create new group and add students", () => {
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.clickOnCreateClass();
+      manageGroup.fillGroupDetail({ ...groups[3] });
+      manageGroup.clickOnSaveGroup();
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.clickOnCreateClass();
+      manageGroup.fillGroupDetail({ ...groups[4] });
+      manageGroup.clickOnSaveGroup();
+
+      // add students 3 & 4 from manage class
+      sideBar.clickOnManageClass();
+      manageClass.clickOnClassRowByName(classNameEdit);
+      studentGroup3.forEach(student => manageClass.selectStudentCheckBoxByEmail(student.email));
+      manageGroup.clickOnActionAddToGroup();
+      groupPopup.selectGroup(groups[3].name);
+      studentGroup3.forEach(student => groupPopup.verifyStudentInToAddList(student.studentName));
+      groupPopup.clickOnUpdate();
+      sideBar.clickOnManageClass();
+      manageClass.clickOnClassRowByName(classNameEdit);
+      studentGroup4.forEach(student => manageClass.selectStudentCheckBoxByEmail(student.email));
+      manageGroup.clickOnActionAddToGroup();
+      groupPopup.selectGroup(groups[4].name);
+      studentGroup4.forEach(student => groupPopup.verifyStudentInToAddList(student.studentName));
+      groupPopup.clickOnUpdate();
+    });
+    context("Assign test - proceed with duplicate", () => {
+      it("Assign Test 2 times", () => {
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[3].name);
+        testLibrary.assignPage.clickOnAssign();
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[3].name);
+        testLibrary.assignPage.clickOnAssign({ duplicate: true });
+      });
+
+      it("Verify Duplicate- Student Side", () => {
+        cy.login("student", students[1].email, password);
+        studentAssignmentsPage.verifyPresenceOfTest(testId);
+        studentAssignmentsPage.getAssignmentByTestId(testId).should("have.length", 2);
+      });
+    });
+    context("Assign test by removing duplicates", () => {
+      before("Delete all assignments", () => {
+        cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
+        cy.login("teacher", teacher, password);
+      });
+      it("Assign test 2 times without duplicate", () => {
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[4].name);
+        testLibrary.assignPage.clickOnAssign();
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[4].name);
+        testLibrary.assignPage.clickOnAssign({ duplicate: false, willNotAssign: true });
+      });
+      it("Verify Duplicate- Student Side", () => {
+        cy.login("student", students[3].email, password);
+        studentAssignmentsPage.verifyPresenceOfTest(testId);
+        studentAssignmentsPage.getAssignmentByTestId(testId).should("have.length", 1);
+      });
+    });
+  });
+  context("Assigning test to 2 class having a common student", () => {
+    context("Assigning test with duplicate", () => {
+      before("Delete all assignments", () => {
+        cy.login("teacher", teacher, password);
+        cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
+      });
+      it("Assign Test 2 times to common student", () => {
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[3].name);
+        testLibrary.assignPage.selectClass(groups[4].name);
+        testLibrary.assignPage.clickOnAssign({ duplicate: true });
+      });
+
+      it("Verify Duplicate- Student Side", () => {
+        cy.login("student", students[1].email, password);
+        studentAssignmentsPage.verifyPresenceOfTest(testId);
+        studentAssignmentsPage.getAssignmentByTestId(testId).should("have.length", 1);
+        cy.login("student", students[2].email, password);
+        studentAssignmentsPage.verifyPresenceOfTest(testId);
+        studentAssignmentsPage.getAssignmentByTestId(testId).should("have.length", 2);
+      });
+    });
+    context("Assign test by removing duplicates", () => {
+      before("Delete all assignments", () => {
+        cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport]);
+        cy.login("teacher", teacher, password);
+      });
+      it("Assign test 2 times without duplicate", () => {
+        testLibrary.assignPage.visitAssignPageById(testId);
+        testLibrary.assignPage.selectClass(groups[3].name);
+        testLibrary.assignPage.selectClass(groups[4].name);
+        testLibrary.assignPage.clickOnAssign({ duplicate: false, willNotAssign: true });
+      });
+      it("Verify Duplicate- Student Side", () => {
+        cy.login("student", students[2].email, password);
+        studentAssignmentsPage.verifyPresenceOfTest(testId);
+        studentAssignmentsPage.getAssignmentByTestId(testId).should("have.length", 1);
+      });
+    });
+  });
+  context("Edit group", () => {
+    const editGroupValues = {
+      name: "Group4 - Edited",
+      description: "This is custom group 4 - Edited",
+      grade: "Grade 5",
+      subject: "Science"
+    };
+    before("Delete all assignments", () => {
+      cy.login("teacher", teacher, password);
+    });
+    it("edit details", () => {
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.clickOnGroupRowByName(groups[4].name);
+      manageClass.clickOnEditClass();
+      manageGroup.fillGroupDetail(editGroupValues);
+      manageGroup.clickOnUpdateClass();
+    });
+
+    it("Verify group details", () => {
+      sideBar.clickOnManageClass();
+      manageGroup.clickOnGroupTab();
+      manageGroup.clickOnGroupRowByName(groups[4].name);
+      manageClass.clickOnEditClass();
+      manageGroup.verifyGroupDetails(editGroupValues);
+    });
+  });
 });

@@ -154,8 +154,7 @@ class App extends Component {
   };
 
   render() {
-    const cliBannerVisible =
-      (sessionStorage.cliBannerVisible && window.location.pathname.includes("dashboard")) || false;
+    const cliBannerVisible = sessionStorage.cliBannerVisible || false;
 
     /**
      * NOTE:  this logic would be called multiple times, even after redirect

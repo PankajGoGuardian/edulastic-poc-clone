@@ -429,7 +429,7 @@ class Variables extends Component {
               return (
                 <Row key={`variable${index}`} gutter={24}>
                   <Col md={3}>
-                    <Label>{variableName}</Label>
+                    <Label style={{ textTransform: "none" }}>{variableName}</Label>
                   </Col>
                   <Col md={5}>
                     <SelectInputStyled

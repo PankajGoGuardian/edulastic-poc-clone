@@ -105,7 +105,6 @@ const Launch = ({
         resource: event,
         calendarId: "primary",
         conferenceDataVersion: 1,
-        maxAttendees: 1,
         sendNotifications: true,
         sendUpdates: "all",
         supportsAttachments: false

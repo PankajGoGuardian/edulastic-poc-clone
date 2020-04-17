@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { getUser } from "../author/src/selectors/user";
 import { destroyNotificationMessage, notificationMessage } from "../common/components/Notification";
 import { FireBaseService as Fbs } from "@edulastic/common";
-import { uniqBy } from "lodash";
+import { uniqBy, pull } from "lodash";
 
 const hangoutFirestoreCollectionName = "HangoutsClassEvents";
 
@@ -27,6 +27,7 @@ const NotificationListener = ({ user }) => {
     if (status !== "closed") {
       updateNotificationStatus(key, "closed");
     }
+    setNotificationIds([...pull(notificationIds, [key])]);
   };
 
   const onNotificationClick = (event, key, status) => {
@@ -48,7 +49,7 @@ const NotificationListener = ({ user }) => {
         currentDateTime < modifiedDateTime + 60 * 60 * 1000 &&
         !notificationIds.includes(doc.__id)
       ) {
-        setNotificationIds(doc.__id);
+        setNotificationIds([...notificationIds, doc.__id]);
         notificationMessage({
           title: "Hangout Video Call",
           message: `Hangout video call is starting for ${groupInfo.name} class.`,

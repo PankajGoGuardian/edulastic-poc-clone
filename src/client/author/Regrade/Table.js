@@ -1,86 +1,70 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { Spin } from "antd";
 import * as moment from "moment";
-
-import { StyledTable } from "./styled";
 import NoDataNotification from "../../common/components/NoDataNotification";
 import { getIsloadingAssignmentSelector } from "../TestPage/components/Assign/ducks";
+import { StyledTable } from "./styled";
 
 const formatDate = date => moment(date).format("MM-DD-YYYY");
 
 const tbleColumns = [
   {
     title: "Class/Group Name",
-    dataIndex: "classes",
-    render: classes => (
-      <div>
-        {classes.map((_class, i) => (
-          <span>
-            {_class.name}
-            {classes.length > 1 && i < classes.length - 1 && ", "}
-          </span>
-        ))}
-      </div>
-    )
+    dataIndex: "className",
+    width: "25%"
   },
   {
     title: "Assigned By",
-    dataIndex: "assigned"
+    dataIndex: "assigned",
+    width: "25%"
   },
   {
     title: "Open Policy",
-    dataIndex: "openPolicy"
+    dataIndex: "openPolicy",
+    width: "14%"
   },
   {
     title: "Close Policy",
-    dataIndex: "closePolicy"
+    dataIndex: "closePolicy",
+    width: "14%"
   },
   {
     title: "Open Date",
     dataIndex: "openDate",
-    render: formatDate
+    render: formatDate,
+    width: "11%"
   },
   {
     title: "Close Date",
     dataIndex: "closeDate",
-    render: formatDate
+    render: formatDate,
+    width: "11%"
   }
 ];
 
-const AssignmentsTable = ({
-  assignments,
-  handleSettingsChange,
-  regradeType,
-  regradeSettings,
-  isAssignmentsLoading
-}) => {
-  const [list, setNewList] = useState(regradeSettings.assignmentList);
-  const rowSelection = {
-    selectedRowKeys: regradeType == "SPECIFIC" ? list : [],
-    onChange: (selectedRowKeys, selectedRows) => {
-      const assignmentList = selectedRows.map(item => item._id);
-      handleSettingsChange("assignmentList", assignmentList);
-      setNewList(assignmentList);
-    },
-    getCheckboxProps: () => ({
-      disabled: regradeType !== "SPECIFIC"
-    })
-  };
-  const tableData = assignments
-    .filter(item => !item.archived)
-    .map(item => ({
-      key: item._id,
-      _id: item._id,
-      class: item.class,
-      students: item.students,
-      openPolicy: item.openPolicy || "",
-      closePolicy: item.closePolicy || "",
-      openDate: item.startDate,
-      closeDate: item.endDate,
-      assigned: item.assignedBy.name,
-      classes: item.class
-    }));
+const AssignmentsTable = ({ assignments, isAssignmentsLoading }) => {
+  const assignmentsSpreadByClass = assignments.flatMap(assignment =>
+    assignment.class.map(_clazz => ({
+      ...assignment,
+      assignmentId: assignment._id,
+      classId: _clazz._id,
+      className: _clazz.name,
+      class: _clazz
+    }))
+  );
+  const tableData = assignmentsSpreadByClass.map(item => ({
+    key: `${item.assignmentId}_${item.classId}`,
+    _id: item._id,
+    class: item.class,
+    students: item.students,
+    openPolicy: item.openPolicy || "",
+    closePolicy: item.closePolicy || "",
+    openDate: item.startDate,
+    closeDate: item.endDate,
+    assigned: item.assignedBy.name,
+    className: item.className
+  }));
   if (isAssignmentsLoading) {
     <Spin />;
   }
@@ -89,9 +73,10 @@ const AssignmentsTable = ({
       <NoDataNotification heading="Assignments not available" description="There are no active assignments found." />
     );
   }
-  return <StyledTable rowSelection={rowSelection} columns={tbleColumns} dataSource={tableData} />;
+  return <StyledTable columns={tbleColumns} dataSource={tableData} pagination={false} bordered />;
 };
 
 export default connect(state => ({
+  assignments: state.authorTestAssignments.assignments,
   isAssignmentsLoading: getIsloadingAssignmentSelector(state)
 }))(AssignmentsTable);

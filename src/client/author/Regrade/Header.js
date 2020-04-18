@@ -1,11 +1,11 @@
 import React from "react";
 import { FlexContainer, MainHeader, EduButton } from "@edulastic/common";
-import { Title } from "./styled";
+import { TitleWrapper } from "@edulastic/common/src/components/MainHeader";
 
-const Header = ({ onApplySettings }) => {
+const Header = ({ onApplySettings, title }) => {
   return (
     <MainHeader>
-      <Title>Regrade</Title>
+      <TitleWrapper title={title}>{title}</TitleWrapper>
       <FlexContainer>
         <EduButton data-cy="applyRegrade" onClick={onApplySettings}>
           Publish & Regrade

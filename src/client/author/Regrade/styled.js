@@ -1,13 +1,10 @@
 import { Table, Button } from "antd";
-import { white, boxShadowDefault, themeColor, mediumDesktopExactWidth } from "@edulastic/colors";
+import { white, themeColor, mediumDesktopExactWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
   margin: 20px;
-  padding: 30px;
   background: ${white};
-  border-radius: 10px;
-  box-shadow: ${boxShadowDefault};
 `;
 
 export const Title = styled.h1`

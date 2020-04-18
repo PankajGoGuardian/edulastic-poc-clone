@@ -36,6 +36,7 @@ import ReportIssue from "./ReportIssue";
 import { allowDuplicateCheck } from "../../../utils/permissionCheck";
 
 import { Nav } from "../../../../../assessment/themes/common";
+import { getAssignmentsSelector } from "../../../../AssignTest/duck";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -257,7 +258,9 @@ class PreviewModal extends React.Component {
       windowWidth,
       userFeatures,
       onlySratchpad,
-      changePreviewMode
+      changePreviewMode,
+      test,
+      testAssignments
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField, fullModal } = this.state;
@@ -283,6 +286,7 @@ class PreviewModal extends React.Component {
 
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH;
 
+    const isTestInRegrade = !!test?._id && (test.isInEditAndRegrade || (testAssignments.length && test.isUsed));
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 30 }}
@@ -363,6 +367,7 @@ class PreviewModal extends React.Component {
                   showCollapseBtn
                   changePreviewTab={changePreviewMode}
                   onlySratchpad={onlySratchpad}
+                  isTestInRegrade={isTestInRegrade}
                 />
                 {/* we may need to bring hint button back */}
                 {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
@@ -425,6 +430,7 @@ const enhance = compose(
         testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
         selectedRows: getSelectedItemSelector(state),
         test: getTestSelector(state),
+        testAssignments: getAssignmentsSelector(state),
         userFeatures: getUserFeatures(state)
       };
     },

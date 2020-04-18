@@ -255,27 +255,53 @@ class AuthorTestItemPreview extends Component {
       page,
       userFeatures,
       onlySratchpad,
-      deleting
+      deleting,
+      isTestInRegrade
     } = this.props;
 
     const { isRejectMode } = this.state;
     const isOwner = item?.createdBy?._id === userId;
+    const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
     return (
       <>
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
-            {allowDuplicate && (
-              <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
-                <IconCopy color={themeColor} />
-                <span>CLONE</span>
-              </EduButton>
-            )}
-            {isEditable && (
-              <EduButton isGhost height="28px" title="Edit item" onClick={editTestItem}>
-                <IconPencilEdit color={themeColor} />
-                <span>edit</span>
-              </EduButton>
-            )}
+            {allowDuplicate &&
+              (disableEdit ? (
+                <EduButton
+                  noHover
+                  isGhost
+                  disabled
+                  height="28px"
+                  title="Cloning the question with dynamic parameters is disabled during the Test edit and regrade."
+                >
+                  <IconCopy color={themeColor} />
+                  <span>CLONE</span>
+                </EduButton>
+              ) : (
+                <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
+                  <IconCopy color={themeColor} />
+                  <span>CLONE</span>
+                </EduButton>
+              ))}
+            {isEditable &&
+              (disableEdit ? (
+                <EduButton
+                  noHover
+                  isGhost
+                  disabled
+                  height="28px"
+                  title="Editing the question with dynamic parameters is disabled during the Test edit and regrade."
+                >
+                  <IconPencilEdit color={themeColor} />
+                  <span>edit</span>
+                </EduButton>
+              ) : (
+                <EduButton isGhost height="28px" title="Edit item" onClick={editTestItem}>
+                  <IconPencilEdit color={themeColor} />
+                  <span>edit</span>
+                </EduButton>
+              ))}
             {isOwner &&
               !(userFeatures?.isPublisherAuthor && item.status === "published") &&
               (page === "addItems" || page === "itemList") && (

@@ -1,7 +1,6 @@
 import React from "react";
 import { Radio, Row } from "antd";
 import { Container, InputsWrapper, OptionTitle } from "./styled";
-
 import AssignmentsTable from "./Table";
 
 const Group = Radio.Group;
@@ -12,61 +11,30 @@ const ACTIONS = {
   DISCARD: "DISCARD"
 };
 
-const MainContent = ({
-  assignments,
-  RegradeTypes,
-  RegradeKeys,
-  handleSettingsChange,
-  regradeSettings,
-  onUpdateSettings,
-  assigmentOptions,
-  setAssignmentOptions,
-  regradeSettingsChange
-}) => {
-  const onAssignmentSettingsChange = () => {
-    const value = event.target.value;
-    const newSettings = {
-      ...regradeSettings,
-      applyChangesChoice: value,
-      assignmentList: value !== "SPECIFIC" ? [] : regradeSettings.assignmentList
-    };
-    regradeSettingsChange(newSettings);
-    setAssignmentOptions(value);
-  };
-  const { editedQuestion, removedQuestion, addedQuestion } = regradeSettings.options;
+const MainContent = ({ regradeSettings, onUpdateSettings }) => {
+  const { editedQuestion, addedQuestion } = regradeSettings.options;
   return (
     <Container>
-      <h2>
-        The test has been edited and since there are assignments that have been completed, would you like to apply the
-        changes to:
-      </h2>
-      <Group defaultValue={RegradeKeys[0]} onChange={onAssignmentSettingsChange}>
-        {RegradeKeys.map(item => (
-          <Row key={item}>
-            <Radio value={item}>{RegradeTypes[item]}</Radio>
-          </Row>
-        ))}
-      </Group>
-      <AssignmentsTable
-        assignments={assignments}
-        handleSettingsChange={handleSettingsChange}
-        regradeType={assigmentOptions}
-        regradeSettings={regradeSettings}
-      />
+      <h2>Following assignments will be updated and re-scored if applicable.</h2>
+      <AssignmentsTable />
       <InputsWrapper>
         <Row>
           <OptionTitle>Added Items</OptionTitle>
         </Row>
-        <Group defaultValue={addedQuestion} onChange={e => onUpdateSettings("addedQuestion", e.target.value)}>
+        <Group
+          style={{ marginLeft: "20px" }}
+          defaultValue={addedQuestion}
+          onChange={e => onUpdateSettings("addedQuestion", e.target.value)}
+        >
           <Row key={"addedQuestion"}>
             <Radio data-cy="no-points" value={ACTIONS.SKIP}>
-              Give 0 points
+              Give ZERO Points
             </Radio>
             <Radio data-cy="full-points" value={ACTIONS.SCORE}>
-              Give full points
+              Give FULL Points
             </Radio>
             <Radio data-cy="manual-points" value={ACTIONS.MANUAL}>
-              Manually grade
+              Manually Grade
             </Radio>
           </Row>
         </Group>
@@ -75,33 +43,29 @@ const MainContent = ({
         <Row>
           <OptionTitle>Edit Items</OptionTitle>
         </Row>
-        <Group defaultValue={editedQuestion} onChange={e => onUpdateSettings("editedQuestion", e.target.value)}>
+        <Group
+          style={{ marginLeft: "20px" }}
+          defaultValue={editedQuestion}
+          onChange={e => onUpdateSettings("editedQuestion", e.target.value)}
+        >
           <Row key={"editedQuestion"}>
             <Radio data-cy="skip-grading" value={ACTIONS.SKIP}>
-              Skip grading
+              Skip rescoring
             </Radio>
             <Radio data-cy="restore-grading" value={ACTIONS.SCORE}>
-              Rescore automatially
+              Rescore automatically
             </Radio>
             <Radio data-cy="manual-grading" value={ACTIONS.MANUAL}>
-              Mark for Manual grading
+              Mark for manual grading
             </Radio>
           </Row>
         </Group>
       </InputsWrapper>
       <InputsWrapper>
         <Row>
-          <OptionTitle>Remove Items</OptionTitle>
+          <OptionTitle>Removed items will be discard from assignment</OptionTitle>
         </Row>
-        <Group defaultValue={removedQuestion} onChange={e => onUpdateSettings("removedQuestion", e.target.value)}>
-          <Row key={"removedQuestion"}>
-            <Radio data-cy="discard-item" value={ACTIONS.DISCARD}>
-              Discard from asssignment
-            </Radio>
-          </Row>
-        </Group>
       </InputsWrapper>
-      {removedQuestion == ACTIONS.DISCARD && <p style={{ textAlign: "center" }}>REMOVED QUESTIONS WILL BE DISCARDED</p>}
     </Container>
   );
 };

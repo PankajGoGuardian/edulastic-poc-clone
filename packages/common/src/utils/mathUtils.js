@@ -14,7 +14,7 @@ const addCustomClassToMath = mathHtml => {
 };
 
 const addSpaceDynamicParameters = (latex = "") =>
-  latex.replace(new RegExp("(@.)", "g"), " $1").replace(new RegExp("#", "g"), " \\#");
+  latex.replace(new RegExp("(@.*?)", "g"), "\\text{$1}").replace(new RegExp("#", "g"), " \\#");
 
 const addSpaceMatrixFraction = (latex = "") => {
   let updated = latex;
@@ -49,7 +49,7 @@ export const getMathHtml = latex => {
    * this solution doesn't work in mathQuill, so we should add \\[0.2em] in here.
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
-  _latex = addSpaceMatrixFraction(latex);
+  _latex = addSpaceMatrixFraction(_latex);
   /**
    * Katex doesn't support the below commands
    * |--- mathQuill --|---- Katex -----|
@@ -62,7 +62,6 @@ export const getMathHtml = latex => {
     .replace(/overarc/g, "overgroup")
     .replace(/\\parallelogram/g, "\\text{▱}")
     .replace(/\\undersim/g, "\\underset{\\sim}");
-
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,

@@ -4,15 +4,14 @@ import styled from "styled-components";
 import { white } from "@edulastic/colors";
 import MathSpanWrapper from "../../../components/MathSpanWrapper";
 
-const AnswerBoxText = ({ children, isMath }) => {
-  return (
-    <Text data-cy="correct-answer-box">{isMath ? <MathSpanWrapper latex={children} /> : <span>{children}</span>}</Text>
-  );
-};
+const AnswerBoxText = ({ children }) => (
+  <Text data-cy="correct-answer-box">
+    <MathSpanWrapper latex={children} />
+  </Text>
+);
 
 AnswerBoxText.propTypes = {
-  children: PropTypes.string.isRequired,
-  isMath: PropTypes.bool.isRequired
+  children: PropTypes.string.isRequired
 };
 
 export default AnswerBoxText;

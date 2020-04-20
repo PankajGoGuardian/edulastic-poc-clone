@@ -56,8 +56,8 @@ const RedirectPopUp = ({
   groupId,
   testActivity
 }) => {
-  const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData)));
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
+  const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData, dueDate)));
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);

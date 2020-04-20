@@ -26,7 +26,7 @@ const AssessmentPlayerSkinWrapper = ({
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true);
-  
+
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible);
   };
@@ -57,12 +57,7 @@ const AssessmentPlayerSkinWrapper = ({
         />
       );
     } else if (!isUndefined(docUrl)) {
-      return (
-        <DocBasedPlayerHeader
-          {...restProps}
-          handleMagnifier={handleMagnifier}
-        />
-      );
+      return <DocBasedPlayerHeader {...restProps} handleMagnifier={handleMagnifier} />;
     } else if (defaultAP) {
       return (
         <DefaultAssessmentPlayerHeader
@@ -206,6 +201,11 @@ const Sidebar = styled.div`
 
 const StyledMainContainer = styled.div`
   main {
+    .jsx-parser {
+      p {
+        margin-bottom: 8px;
+      }
+    }
     ${({ mainContainerStyle }) => mainContainerStyle};
     @media (max-width: 768px) {
       padding: 58px 0 0;

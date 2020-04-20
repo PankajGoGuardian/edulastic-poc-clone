@@ -234,23 +234,24 @@ function* receiveStudentQuestionSaga({ payload }) {
         yield put(setTeacherEditedScore({ [qid]: score }));
       }
     }
-    const { qType, scratchPad, testItemId, _id: uqaId, testActivityId } = feedbackResponse;
 
-    const userWork = yield select(state => state.userWork?.present || {});
+    if (feedbackResponse) {
+      const { qType, scratchPad, testItemId, _id: uqaId, testActivityId } = feedbackResponse;
+      const userWork = yield select(state => state.userWork?.present || {});
 
-    if (userWork[uqaId] === undefined) {
-      if (qType === questionType.HIGHLIGHT_IMAGE && scratchPad.scratchpad === true) {
-        yield fork(getAttachmentsForItems, {
-          testActivityId,
-          testItemsIdArray: [{ uqaId, testItemId }]
-        });
+      if (userWork[uqaId] === undefined) {
+        if (qType === questionType.HIGHLIGHT_IMAGE && scratchPad.scratchpad === true) {
+          yield fork(getAttachmentsForItems, {
+            testActivityId,
+            testItemsIdArray: [{ uqaId, testItemId }]
+          });
+        }
       }
+      yield put({
+        type: RECEIVE_STUDENT_QUESTION_SUCCESS,
+        payload: feedbackResponse
+      });
     }
-
-    yield put({
-      type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-      payload: feedbackResponse
-    });
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive answer is failing";

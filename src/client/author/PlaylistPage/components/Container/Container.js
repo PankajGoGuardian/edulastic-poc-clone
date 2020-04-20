@@ -12,6 +12,7 @@ import { Content } from "../../../TestPage/components/Container/styled";
 import { get, omit } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
+  defaultImage,
   createPlaylistAction,
   receivePlaylistByIdAction,
   setTestDataAction,
@@ -27,7 +28,8 @@ import {
   resequenceTestsAction,
   setRegradeOldIdAction,
   moveContentInPlaylistAction,
-  publishPlaylistAction
+  publishPlaylistAction,
+  updateDefaultPlaylistThumbnailAction
 } from "../../ducks";
 import {
   getSelectedItemSelector,
@@ -46,6 +48,10 @@ import Setting from "../Settings";
 import TestList from "../../../TestList";
 import { CollectionsSelectModal } from "../CollectionsSelectModal/collectionsSelectModal";
 import { setDefaultInterests } from "../../../dataUtils";
+import { testsApi } from "@edulastic/api";
+
+// TODO: replace with playlistApi once api is updated
+const { getDefaultImage } = testsApi;
 
 const statusConstants = {
   DRAFT: "draft",
@@ -139,19 +145,23 @@ class Container extends PureComponent {
   };
 
   handleChangeGrade = grades => {
-    const { setData, test } = this.props;
-    setData({ ...test, grades });
+    const { setData, playlist } = this.props;
+    setData({ ...playlist, grades });
     setDefaultInterests({ grades });
   };
 
   handleChangeSubject = subjects => {
-    const { setData, test } = this.props;
-    setData({ ...test, subjects });
+    const { setData, playlist, updateDefaultPlaylistThumbnail } = this.props;
+    setData({ ...playlist, subjects });
+    getDefaultImage({
+      subject: subjects[0] || "Other Subjects",
+      standard: get(playlist, "modules[0].data[0].standardIdentifiers[0]", "")
+    }).then(thumbnail => updateDefaultPlaylistThumbnail(thumbnail));
     setDefaultInterests({ subject: subjects[0] || "" });
   };
 
   handleChangeCollection = (value, options) => {
-    const { setData, test, orgCollections, playlist } = this.props;
+    const { setData, orgCollections, playlist } = this.props;
     let data = {};
     options.forEach(o => {
       if (data[o.props._id]) {
@@ -171,7 +181,7 @@ class Container extends PureComponent {
 
     const orgCollectionIds = orgCollections.map(o => o._id);
     const extraCollections = playlist.collections.filter(c => !orgCollectionIds.includes(c._id));
-    setData({ ...test, collections: [...collectionArray, ...extraCollections] });
+    setData({ ...playlist, collections: [...collectionArray, ...extraCollections] });
   };
 
   handleSaveTestId = () => {
@@ -283,7 +293,6 @@ class Container extends PureComponent {
             setData={setData}
             test={playlist}
             current={current}
-            isPlaylist={true}
             owner={owner}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
@@ -293,6 +302,7 @@ class Container extends PureComponent {
             isTextColorPickerVisible={isTextColorPickerVisible}
             isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
             backgroundColor={bgColor || themeColor}
+            isPlaylist
           />
         );
       case "review":
@@ -464,7 +474,7 @@ class Container extends PureComponent {
           onEnableEdit={this.onEnableEdit}
           owner={owner}
           onShowSource={this.handleNavChange("source")}
-          isPlaylist={true}
+          isPlaylist
         />
         <Content>{this.renderContent()}</Content>
       </>
@@ -504,7 +514,8 @@ const enhance = compose(
       resequenceModules: resequenceModulesAction,
       resequenceTests: resequenceTestsAction,
       moveContentInPlaylist: moveContentInPlaylistAction,
-      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
+      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
+      updateDefaultPlaylistThumbnail: updateDefaultPlaylistThumbnailAction
     }
   )
 );

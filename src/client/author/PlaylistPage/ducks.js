@@ -4,7 +4,7 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { omit, get } from "lodash";
-import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
+import { curriculumSequencesApi, contentSharingApi, testsApi } from "@edulastic/api";
 import produce from "immer";
 import { white, themeColor } from "@edulastic/colors";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
@@ -17,6 +17,8 @@ const playlistStatusConstants = {
   PUBLISHED: "published",
   ARCHIVED: "archived"
 };
+
+export const defaultImage = "https://cdn2.edulastic.com/default/default-test-1.jpg";
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_PLAYLIST_REQUEST = "[playlist] create playlist request";
@@ -32,6 +34,7 @@ export const RECEIVE_PLAYLIST_BY_ID_REQUEST = "[playlists] receive playlist by i
 export const RECEIVE_PLAYLIST_BY_ID_SUCCESS = "[playlists] receive playlist by id success";
 export const RECEIVE_PLAYLIST_BY_ID_ERROR = "[playlists] receive playlist by id error";
 
+export const UPDATE_DEFAULT_PLAYLIST_THUMBNAIL = "[playlist] update default playlist thumbnail";
 export const SET_TEST_DATA = "[playlists] set playlist data";
 export const SET_DEFAULT_TEST_DATA = "[playlists] set default playlist data";
 export const SET_TEST_EDIT_ASSIGNED = "[playlists] set edit assigned";
@@ -58,7 +61,13 @@ export const REMOVE_TEST_FROM_MODULE = "[playlists] remove test from module";
 export const REMOVE_TEST_FROM_PLAYLIST = "[playlists] remove test from playlist";
 export const MOVE_CONTENT = "[playlists] move content in playlist";
 export const CHANGE_PLAYLIST_THEME = "[playlists] change playlist theme";
+
 // actions
+
+export const updateDefaultPlaylistThumbnailAction = thumbnail => ({
+  type: UPDATE_DEFAULT_PLAYLIST_THUMBNAIL,
+  payload: { thumbnail }
+});
 
 export const receivePlaylistByIdAction = id => ({
   type: RECEIVE_PLAYLIST_BY_ID_REQUEST,
@@ -157,7 +166,7 @@ const initialPlaylistState = {
     _id: "",
     name: ""
   },
-  thumbnail: "https://cdn2.edulastic.com/default/default-test-1.jpg",
+  thumbnail: defaultImage,
   derivedFrom: {
     name: ""
   },
@@ -520,6 +529,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         }
       };
     }
+    case UPDATE_DEFAULT_PLAYLIST_THUMBNAIL: {
+      const { thumbnail } = payload;
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          thumbnail
+        }
+      };
+    }
     default:
       return state;
   }
@@ -603,6 +622,13 @@ export const getTestItemsRowsSelector = createSelector(
 function* receivePlaylistByIdSaga({ payload }) {
   try {
     const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
+    if (entity.thumbnail === defaultImage) {
+      const thumbnail = yield call(testsApi.getDefaultImage, {
+        subject: get(entity, "subjects[0]", "Other Subjects"),
+        standard: get(entity, "modules[0].data[0].standardIdentifiers[0]", "")
+      });
+      yield put(updateDefaultPlaylistThumbnailAction(thumbnail));
+    }
     yield put(receivePlaylistByIdSuccess(entity));
   } catch (err) {
     const errorMessage = "Receive playlist by id is failing";

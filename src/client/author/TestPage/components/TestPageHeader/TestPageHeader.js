@@ -305,7 +305,7 @@ const TestPageHeader = ({
       />
       {windowWidth > parseInt(desktopWidth, 10) ? (
         <MainHeader
-          headingText={title || "Untitled Test"}
+          headingText={title || (isPlaylist ? "Untitled Playlist" : "Untitled Test")}
           headingSubContent={headingSubContent}
           flexDirection="column"
           alignItems="flex-start"

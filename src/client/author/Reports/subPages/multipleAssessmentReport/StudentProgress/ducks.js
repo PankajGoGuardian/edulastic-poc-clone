@@ -66,8 +66,8 @@ export const reportStudentProgressReducer = createReducer(initialState, {
 
 function* getReportsStudentProgressRequest({ payload }) {
   try {
-    // club filter for class & group
-    payload.groupIds = [payload.classId, payload.groupId].filter(i => i).join(",");
+    payload.classIds = payload?.classIds?.join(",") || payload.classId || "";
+    payload.groupIds = payload?.groupIds?.join(",") || payload.groupId || "";
     const studentProgress = yield call(reportsApi.fetchStudentProgressReport, payload);
 
     yield put({

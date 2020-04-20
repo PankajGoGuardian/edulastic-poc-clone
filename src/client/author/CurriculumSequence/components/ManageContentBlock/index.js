@@ -145,7 +145,7 @@ const ManageContentBlock = props => {
       grades: gradesFromCurriculumSequence,
       collection: collectionFromCurriculumSequence
     });
-    fetchTests();
+    !isLoading && fetchTests();
     fetchExternalToolProvidersAction({ districtId });
     // remove this condition once BE is fixed
     if (userFeatures.isCurator && !currentDistrictUsers) getCurrentDistrictUsers(districtId);

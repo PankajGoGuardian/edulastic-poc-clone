@@ -51,8 +51,8 @@ const NotificationListener = ({ user }) => {
       ) {
         setNotificationIds([...notificationIds, doc.__id]);
         notificationMessage({
-          title: "Hangout Video Call",
-          message: `Hangout video call is starting for ${groupInfo.name} class.`,
+          title: "Google Meet Video Call",
+          message: `Google Meet video call is starting for ${groupInfo.name} class.`,
           showButton: true,
           buttonLink: hangoutLink,
           buttonText: "CLICK HERE TO JOIN",

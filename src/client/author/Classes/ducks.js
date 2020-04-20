@@ -346,11 +346,11 @@ function* saveHangoutEventSaga({ payload }) {
         groupId: payload.groupId
       });
     }
-    const successMessage = "Hangouts event saved successfully";
+    const successMessage = "Google Meet event saved successfully";
     yield call(message.success, successMessage);
     yield put(saveHangoutEventSuccessAction({ savedGroup }));
   } catch (err) {
-    const errorMessage = "Hangouts event save is failing";
+    const errorMessage = "Google Meet event save is failing";
     yield call(message.error, errorMessage);
     yield put(saveHangoutEventErrorAction());
   }

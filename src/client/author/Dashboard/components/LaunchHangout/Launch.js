@@ -115,7 +115,7 @@ const Launch = ({
   };
 
   const handleError = err => {
-    if (err?.err !== "popup_closed_by_user") message.error("Failed to launch Hangouts");
+    if (err?.err !== "popup_closed_by_user") message.error("Failed to launch Google Meet");
     console.log("error", err);
   };
 
@@ -148,7 +148,7 @@ const Launch = ({
       onError={handleError}
       hangoutLink={hangoutLink}
       loading={launching}
-      title="Launch Hangouts"
+      title="Launch Google Meet"
       onSelect={setGroupId}
       selected={selectedGroup}
       checked={postMeeting}
@@ -156,7 +156,7 @@ const Launch = ({
         setPostMeeting(!postMeeting);
       }}
       classList={classList.filter(c => c.active)}
-      description="Select the class that you want to invite for the Hangouts session."
+      description="Select the class that you want to invite for the Google Meet session."
     />
   );
 };

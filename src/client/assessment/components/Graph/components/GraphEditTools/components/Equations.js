@@ -7,14 +7,13 @@ import { isEqual } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { graphEvaluateApi } from "@edulastic/api";
-import { MathModal, MathInput } from "@edulastic/common";
-import { IconTrash } from "@edulastic/icons";
+import { MathModal, MathInput, EduButton } from "@edulastic/common";
+import { IconClose } from "@edulastic/icons";
 import { math } from "@edulastic/constants";
-import { backgrounds, red, white } from "@edulastic/colors";
+import { backgrounds, greyThemeDark2 } from "@edulastic/colors";
 
 import { CONSTANT } from "../../../Builder/config/index";
 import { IconKeyboard } from "../styled/IconKeyboard";
-import { CustomStyleBtn } from "../../../../../styled/ButtonStyles";
 
 const { defaultNumberPad } = math;
 
@@ -33,7 +32,7 @@ class Equations extends Component {
 
     this.state = {
       showMathModal: false,
-      selectedEqIndex: null,
+      selectedEqIndex: -1,
       eqs: props.equations.map(e => e.latex),
       changedEqs: props.equations.map(() => false),
       newEquation: ""
@@ -92,14 +91,12 @@ class Equations extends Component {
       });
   };
 
-  handleAddEquation = () => {
+  handleAddEquation = (latex = null) => {
     const { eqs, changedEqs, newEquation } = this.state;
-
-    if (!newEquation) {
+    if (!newEquation && !latex) {
       return;
     }
-
-    eqs.push(newEquation);
+    eqs.push(newEquation || latex);
     changedEqs.push(false);
     this.setState({ eqs, changedEqs, newEquation: "" });
     this.setApiLatex(eqs[eqs.length - 1]);
@@ -112,10 +109,15 @@ class Equations extends Component {
         draft.splice(index, 1);
       })
     );
+    this.setState({ selectedEqIndex: -1 });
   };
 
-  toggleMathModal = (open, index = null) => () => {
+  toggleMathModal = (open, index = -1) => () => {
     this.setState({ showMathModal: open, selectedEqIndex: index });
+  };
+
+  handleFocus = (index = -1) => {
+    this.setState({ selectedEqIndex: index });
   };
 
   handleInput = (latex, index = null) => {
@@ -131,16 +133,10 @@ class Equations extends Component {
   };
 
   handleModalSave = latex => {
-    const { eqs, changedEqs, selectedEqIndex } = this.state;
+    const { eqs, selectedEqIndex } = this.state;
 
     if (selectedEqIndex === -1) {
-      if (!latex) {
-        return;
-      }
-      eqs.push(latex);
-      changedEqs.push(false);
-      this.setState({ eqs, changedEqs, newEquation: "" });
-      this.setApiLatex(eqs[eqs.length - 1]);
+      this.handleAddEquation(latex);
     } else {
       const { equations } = this.props;
       eqs[selectedEqIndex] = latex;
@@ -171,79 +167,53 @@ class Equations extends Component {
     return (
       <Container>
         {eqs.map((eq, index) => (
-          <Wrapper key={`equation-wrapper-${index}`} style={{ marginBottom: "7px" }}>
-            <MathInput
+          <Wrapper key={`equation-wrapper-${index}`} onFocus={() => this.handleFocus(index)}>
+            <StyledMathInput
               fullWidth
-              style={{ height: "40px", width: "160px", background: backgrounds.primary }}
+              style={{ height: "40px", background: backgrounds.primary }}
               alwaysHideKeyboard
               symbols={symbols}
               numberPad={defaultNumberPad}
               value={eq}
               onInput={latex => this.handleInput(latex, index)}
             />
-            <CustomStyleBtn
-              width="50px"
-              padding="0px"
-              margin="0px 0px 0px 5px"
-              key={`eq-math-${index}`}
-              onClick={this.toggleMathModal(true, index)}
-            >
-              <IconKeyboard color={white} />
-            </CustomStyleBtn>
-            {!changedEqs[index] && (
-              <CustomStyleBtn
-                width="50px"
-                padding="0px"
-                margin="0px 0px 0px 5px"
-                bg={red}
-                key={`eq-del-${index}`}
-                onClick={this.handleDeleteEquation(index)}
-              >
-                <IconTrash color={white} />
-              </CustomStyleBtn>
+            {selectedEqIndex === index && (
+              <IconKeyboard
+                width={25}
+                height={20}
+                color={greyThemeDark2}
+                key={`eq-math-${index}`}
+                onClick={this.toggleMathModal(true, index)}
+              />
             )}
-            {changedEqs[index] && (
-              <CustomStyleBtn
-                width="50px"
-                padding="0px"
-                margin="0px 0px 0px 5px"
-                key={`eq-plot-${index}`}
-                onClick={this.saveEquation(index)}
-                color="primary"
-              >
+            {(selectedEqIndex === index || changedEqs[index]) && (
+              <StyledEduButton key={`eq-plot-${index}`} onClick={this.saveEquation(index)}>
                 {t("component.graphing.settingsPopup.plot")}
-              </CustomStyleBtn>
+              </StyledEduButton>
             )}
+            <IconClose key={`eq-del-${index}`} color={greyThemeDark2} onClick={this.handleDeleteEquation(index)} />
           </Wrapper>
         ))}
-        <Wrapper key="equation-wrapper-add">
-          <MathInput
+        <Wrapper key="equation-wrapper-add" onFocus={this.handleFocus}>
+          <StyledMathInput
             fullWidth
-            style={{ height: "40px", width: "160px", background: backgrounds.primary }}
+            style={{ height: "40px", background: backgrounds.primary }}
             alwaysHideKeyboard
             symbols={symbols}
             numberPad={defaultNumberPad}
             value={newEquation}
             onInput={latex => this.handleInput(latex)}
           />
-          <CustomStyleBtn
-            width="50px"
-            padding="0px"
-            margin="0px 0px 0px 5px"
+          <IconKeyboard
             key="eq-math-add"
-            onClick={this.toggleMathModal(true, -1)}
-          >
-            <IconKeyboard color={white} />
-          </CustomStyleBtn>
-          <CustomStyleBtn
-            width="50px"
-            padding="0px"
-            margin="0px 0px 0px 5px"
-            key="eq-add"
-            onClick={this.handleAddEquation}
-          >
+            width={25}
+            height={20}
+            color={greyThemeDark2}
+            onClick={this.toggleMathModal(true)}
+          />
+          <StyledEduButton key="eq-add" onClick={this.handleAddEquation}>
             {t("component.graphing.settingsPopup.plot")}
-          </CustomStyleBtn>
+          </StyledEduButton>
         </Wrapper>
         <MathModal
           show={showMathModal}
@@ -271,6 +241,12 @@ export default withNamespaces("assessment")(Equations);
 
 const Container = styled.div`
   padding: 12px 17px;
+  > div {
+    margin-bottom: 7px;
+  }
+  div:last-child {
+    margin-bottom: 0px;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -278,4 +254,25 @@ const Wrapper = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  align-content: stretch;
+  > svg {
+    margin-left: 12px;
+    cursor: pointer;
+  }
+`;
+
+const StyledMathInput = styled(MathInput)`
+  min-width: 120px;
+  width: 100%;
+  .input__math {
+    border-radius: 3px;
+  }
+`;
+
+const StyledEduButton = styled(EduButton)`
+  padding: 0px;
+  margin-left: 12px;
+  height: 16px;
+  border: unset;
+  background-color: ${greyThemeDark2} !important;
 `;

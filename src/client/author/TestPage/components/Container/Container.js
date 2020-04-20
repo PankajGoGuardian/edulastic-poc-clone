@@ -570,7 +570,8 @@ class Container extends PureComponent {
     updateLastUsedCollectionList(test.collections);
 
     if (test._id) {
-      if (history.location.state?.editAssigned && test.isUsed) {
+      //Push `isInEditAndRegrade` flag in test if a user intentionally editing an assigned in progess test.
+      if ((history.location.state?.editAssigned || testAssignments.length) && test.isUsed) {
         newTest.isInEditAndRegrade = true;
       }
       updateTest(test._id, { ...newTest, currentTab });

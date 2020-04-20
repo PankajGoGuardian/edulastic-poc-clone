@@ -54,7 +54,7 @@ const HeaderSection = ({
       <FlexContainer>
         <StyledEduButton height="36px" onClick={launchHangout} isGhost>
           <IconHangouts height={21} width={19} />
-          Launch Hangouts
+          Launch Google Meet
         </StyledEduButton>
         {!premium && (
           <PopoverWrapper>

@@ -12,34 +12,39 @@ const tbleColumns = [
   {
     title: "Class/Group Name",
     dataIndex: "className",
-    width: "25%"
+    width: "20%"
   },
   {
     title: "Assigned By",
     dataIndex: "assigned",
-    width: "25%"
+    width: "20%",
+    align: "center"
   },
   {
     title: "Open Policy",
     dataIndex: "openPolicy",
-    width: "14%"
+    width: "17%",
+    align: "center"
   },
   {
     title: "Close Policy",
     dataIndex: "closePolicy",
-    width: "14%"
+    width: "17%",
+    align: "center"
   },
   {
     title: "Open Date",
     dataIndex: "openDate",
     render: formatDate,
-    width: "11%"
+    width: "13%",
+    align: "center"
   },
   {
     title: "Close Date",
     dataIndex: "closeDate",
     render: formatDate,
-    width: "11%"
+    width: "13%",
+    align: "center"
   }
 ];
 
@@ -73,7 +78,7 @@ const AssignmentsTable = ({ assignments, isAssignmentsLoading }) => {
       <NoDataNotification heading="Assignments not available" description="There are no active assignments found." />
     );
   }
-  return <StyledTable columns={tbleColumns} dataSource={tableData} pagination={false} bordered />;
+  return <StyledTable columns={tbleColumns} dataSource={tableData} pagination={false} />;
 };
 
 export default connect(state => ({

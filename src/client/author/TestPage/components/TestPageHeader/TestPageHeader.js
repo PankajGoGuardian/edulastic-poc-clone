@@ -224,6 +224,9 @@ const TestPageHeader = ({
   };
 
   const confirmCancel = () => {
+    if (history.location.state?.editTestFlow) {
+      return history.push("/author/tests");
+    }
     history.push("/author/assignments");
   };
 

@@ -266,24 +266,12 @@ class AuthorTestItemPreview extends Component {
       <>
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
-            {allowDuplicate &&
-              (disableEdit ? (
-                <EduButton
-                  noHover
-                  isGhost
-                  disabled
-                  height="28px"
-                  title="Cloning the question with dynamic parameters is disabled during the Test edit and regrade."
-                >
-                  <IconCopy color={themeColor} />
-                  <span>CLONE</span>
-                </EduButton>
-              ) : (
-                <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
-                  <IconCopy color={themeColor} />
-                  <span>CLONE</span>
-                </EduButton>
-              ))}
+            {allowDuplicate && (
+              <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
+                <IconCopy color={themeColor} />
+                <span>CLONE</span>
+              </EduButton>
+            )}
             {isEditable &&
               (disableEdit ? (
                 <EduButton

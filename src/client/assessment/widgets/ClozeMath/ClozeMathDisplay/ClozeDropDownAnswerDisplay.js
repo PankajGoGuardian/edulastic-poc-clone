@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, indexOf } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
 import { getStemNumeration } from "../../../utils/helpers";
@@ -49,8 +49,6 @@ ClozeDropDownAnswerDisplay.propTypes = {
 };
 
 export default ClozeDropDownAnswerDisplay;
-
-const StyledSelect = styled(Select)``;
 
 const SelectWrapper = styled.span`
   display: inline-block;

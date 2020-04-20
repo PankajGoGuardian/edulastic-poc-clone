@@ -111,9 +111,6 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
 
 export const replaceValues = (item, variableConfig, key = null, latexKeys = [], useMathTemplate) => {
   if (!item || !variableConfig || !variableConfig.enabled) return item;
-  if (key === "options") {
-    useMathTemplate = false;
-  }
   const { variables } = variableConfig;
   if (!variables) return item;
   if (typeof item === "string") {

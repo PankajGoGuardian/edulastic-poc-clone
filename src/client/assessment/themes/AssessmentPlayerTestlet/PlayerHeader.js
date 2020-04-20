@@ -22,14 +22,15 @@ const PlayerHeader = ({
   hasSubmitButton
 }) => {
   let buttonText = "Next";
-  let disableButton = !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length;
+  let showButton = true;
+  const disableButton = !unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length;
   if (currentPage <= 1) {
     buttonText = "Start";
-    disableButton = true;
+    showButton = false;
   }
   if (currentPage >= dropdownOptions?.length && hasSubmitButton) {
     buttonText = "Submit";
-    disableButton = true;
+    showButton = false;
   }
 
   const onClickHandle = e => {
@@ -56,10 +57,12 @@ const PlayerHeader = ({
             <ProgressContainer questions={dropdownOptions} current={currentPage} desktop="true" />
             <ContainerRight>
               <FlexDisplay>
-                <ActionButton onClick={onClickHandle} disabled={disableButton}>
-                  <span>{buttonText}</span>
-                  <IconGraphRightArrow />
-                </ActionButton>
+                {showButton && (
+                  <ActionButton onClick={onClickHandle} disabled={disableButton}>
+                    <span>{buttonText}</span>
+                    <IconGraphRightArrow />
+                  </ActionButton>
+                )}
                 <ActionButton iconBtn title="Exit" onClick={onOpenExitPopup}>
                   <IconLogout />
                 </ActionButton>

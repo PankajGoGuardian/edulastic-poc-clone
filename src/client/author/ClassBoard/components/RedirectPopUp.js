@@ -57,7 +57,7 @@ const RedirectPopUp = ({
   testActivity
 }) => {
   const [endDate, setEndDate] = useState(moment(getRedirectEndDate(additionalData)));
-  const [dueDate, setDueDate] = useState(moment(additionalData.dueDate));
+  const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
@@ -104,29 +104,33 @@ const RedirectPopUp = ({
       }
 
       if (_selected.length) {
+        const redirectAssignment = {
+          _id: groupId,
+          specificStudents: type === "entire" ? false : true,
+          students: type === "entire" ? [] : _selected,
+          showPreviousAttempt: showPrevAttempt,
+          questionsDelivery: qDeliveryState,
+          endDate: +endDate
+        }
+        if (additionalData.dueDate) {
+          redirectAssignment.dueDate = dueDate.valueOf();
+        }
         await assignmentApi
-          .redirect(assignmentId, {
-            _id: groupId,
-            specificStudents: type === "entire" ? false : true,
-            students: type === "entire" ? [] : _selected,
-            showPreviousAttempt: showPrevAttempt,
-            questionsDelivery: qDeliveryState,
-            endDate: +endDate,
-            dueDate: +dueDate
-          })
+          .redirect(assignmentId, redirectAssignment)
           .then(() => {
             message.success("Redirect Successful");
+            closePopup(true);
           })
           .catch(err => {
             message.error(err?.data?.message);
+            closePopup();
           });
-        closePopup();
       } else {
         message.error("Please select students with incorrect or skipped questions.");
       }
     }
     setLoading(false);
-  }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState]);
+  }, [studentsToRedirect, assignmentId, endDate, groupId, showPrevAttempt, qDeliveryState, dueDate]);
 
   const disabledEndDate = endDate => {
     if (!endDate) {
@@ -226,13 +230,7 @@ const RedirectPopUp = ({
                 value={dueDate}
                 showTime
                 showToday={false}
-                onChange={v => {
-                  if (!v) {
-                    setDueDate(moment().add(1, "day"));
-                  } else {
-                    setDueDate(v);
-                  }
-                }}
+                onChange={v => setDueDate(v)}
               />
             </Row>
           </Col> : <Col span={12}>
@@ -264,13 +262,7 @@ const RedirectPopUp = ({
                 value={endDate}
                 showTime
                 showToday={false}
-                onChange={v => {
-                  if (!v) {
-                    setEndDate(moment().add(1, "day"));
-                  } else {
-                    setEndDate(v);
-                  }
-                }}
+                onChange={v => setEndDate(v)}
               />
             </Row>
           </Col>

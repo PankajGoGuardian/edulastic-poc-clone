@@ -580,6 +580,15 @@ class ClassBoard extends Component {
     }
   };
 
+  closeRedirectPopup = (reload = false) => {
+    this.setState({ redirectPopup: false });
+    if (reload) {
+      const { loadTestActivity, match } = this.props;
+      const { assignmentId, classId } = match.params;
+      loadTestActivity(assignmentId, classId);
+    }
+  }
+
   render() {
     const {
       gradebook,
@@ -995,9 +1004,7 @@ class ClassBoard extends Component {
                 selectedStudents={selectedStudents}
                 additionalData={additionalData}
                 enrollmentStatus={enrollmentStatus}
-                closePopup={() => {
-                  this.setState({ redirectPopup: false });
-                }}
+                closePopup={this.closeRedirectPopup}
                 setSelected={setSelected}
                 assignmentId={assignmentId}
                 groupId={classId}

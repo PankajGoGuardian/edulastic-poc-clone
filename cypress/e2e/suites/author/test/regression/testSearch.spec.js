@@ -32,7 +32,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
   const standardToTest = {};
   let test_ids = [];
 
-  context(">searching in draft state", () => {
+  context(">searching in 'draft' state", () => {
     before(">login as author and create tests in draft-state", () => {
       cy.getAllTestsAndDelete(Author.email);
       cy.getAllItemsAndDelete(Author.email);
@@ -69,9 +69,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
     });
-    context(">searching in authored by me", () => {
+    context(">searching in 'authored by me'", () => {
       // Searched Draft Tests should Be visible in Authored By Me
-      it(">search by standards in draft-state", () => {
+      it(">search by standards", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
@@ -83,7 +83,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by tags in draft-state", () => {
+      it(">search by tags", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
@@ -94,7 +94,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by name in draft-state", () => {
+      it(">search by name", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -103,7 +103,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it(">search by id in draft-state", () => {
+      it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -113,7 +113,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
     });
-    context(">searching in entire library", () => {
+    context(">searching in 'entire library'", () => {
       // Searched Draft Tests should Not Be visible in Entire Library
       it(">search by standards in draft-state", () => {
         searchFilters.clearAll();
@@ -125,7 +125,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by tags in draft-state", () => {
+      it(">search by tags", () => {
         // techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
@@ -136,7 +136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by name in draft-state", () => {
+      it(">search by name", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           testLibrary.checkforNonExistanceOfTest(id);
         });
       });
-      it(">search by id in draft-state", () => {
+      it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -154,8 +154,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
       });
     });
   });
-  context(">searching in published state", () => {
-    context(">searching in entire library", () => {
+  context(">searching in 'published' state", () => {
+    context(">searching in 'entire library'", () => {
       // Searched Published Tests should be visible in Entire Library
       before("Publish all the tests", () => {
         techersidebar.clickOnPlayListLibrary();
@@ -165,7 +165,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
 
-      it(">search by standards-published", () => {
+      it(">search by standards", () => {
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
         Object.keys(standardToTest).forEach(ele => {
@@ -176,7 +176,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by tags-published", () => {
+      it(">search by tags", () => {
         searchFilters.clearAll();
         Object.keys(tagsToTest).forEach(ele => {
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -186,7 +186,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by name-published", () => {
+      it(">search by name", () => {
         test_ids.forEach((id, i) => {
           searchFilters.clearAll();
           searchFilters.getSearchTextBox().clear({ force: true });
@@ -194,7 +194,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it(">search by id-published", () => {
+      it(">search by id", () => {
         test_ids.forEach(id => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
@@ -204,9 +204,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
         });
       });
     });
-    context(">searching in authored by me", () => {
+    context(">searching in 'authored by me'", () => {
       // Searched Draft Tests should Be visible in Authored By Me
-      it(">search by standards in published-state", () => {
+      it(">search by standards", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(standardToTest).forEach(ele => {
@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by tags in published-state", () => {
+      it(">search by tags in", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         Object.keys(tagsToTest).forEach(ele => {
@@ -228,7 +228,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           });
         });
       });
-      it(">search by name in published-state", () => {
+      it(">search by name", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach((id, i) => {
@@ -237,7 +237,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>searching tests`, () => {
           testLibrary.getTestCardById(id).should("be.visible");
         });
       });
-      it(">search by id in published-state", () => {
+      it(">search by id", () => {
         searchFilters.clearAll();
         searchFilters.getAuthoredByMe();
         test_ids.forEach(id => {

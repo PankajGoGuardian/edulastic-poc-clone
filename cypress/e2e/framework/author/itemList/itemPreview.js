@@ -44,14 +44,17 @@ export default class PreviewItemPopup {
 
   clickOnCopyItemOnPreview = () => {
     cy.server();
-    cy.route("GET", "**/api/testitem/*").as("editItem");
+    cy.route("POST", "**/testitem/*/duplicate").as("clone-item");
     this.getCopyOnPreview().click({ force: true });
-    return cy.wait("@editItem").then(xhr => xhr.response.body.result._id);
+    return cy.wait("@clone-item").then(xhr => {
+      assert(xhr.status === 200, `item clone ${xhr.status === 200 ? "success" : "failed"}`);
+      return xhr.response.body.result._id;
+    });
   };
 
   clickEditOnPreview = () => {
     cy.server();
-    cy.route("GET", "**/api/testitem/*").as("editItem");
+    cy.route("GET", "**/testitem/*").as("editItem");
     this.getEditOnPreview().click({ force: true });
     return cy.wait("@editItem").then(xhr => xhr.response.body.result._id);
   };

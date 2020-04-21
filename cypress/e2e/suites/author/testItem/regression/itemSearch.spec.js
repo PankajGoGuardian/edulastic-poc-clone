@@ -7,7 +7,7 @@ import FileHelper from "../../../../framework/util/fileHelper";
 
 const quesData = require("../../../../../fixtures/questionAuthoring");
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using Ids and Standards`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>searching items`, () => {
   const searchFilters = new SearchFilters();
   const testLibrary = new TestLibrary();
   const itemListPage = new ItemListPage();
@@ -25,8 +25,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
   const item_ids = [];
   const queTexts = {};
 
-  context("Searching Items in Both Draft and Published State", () => {
-    before("Login As Author and Create Tests in Draft-State", () => {
+  context(">searching items in 'draft' and 'published' state", () => {
+    before("login as author and create tests items", () => {
       cy.login("teacher", Author[EMAIL], Author[PASS]);
       itemsToCreate.forEach((item, i) => {
         itemListPage.createItem(item, 0, true).then(id => {
@@ -46,10 +46,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
         });
       });
     });
-    context("Searching In Published State", () => {
-      context("Searching In Entire Library", () => {
+    context(">searching in 'published' state", () => {
+      context(">searching in 'entire library'", () => {
         // Searched Published Tests should be visible in Entire Library
-        it("Search By Standards-Published", () => {
+        it(">search by standards", () => {
           //  testLibrary.sidebar.clickOnItemBank();
           testLibrary.searchFilters.clearAll();
           Object.keys(standardToSearch).forEach(ele => {
@@ -61,7 +61,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
           });
         });
 
-        it("Search By id-Published", () => {
+        it(">search by id", () => {
           item_ids.forEach(id => {
             itemListPage.searchFilters.clearAll();
             itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
@@ -70,9 +70,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
           });
         });
       });
-      context("Searching In Authored By Me", () => {
+      context(">searching in 'authored by me'", () => {
         // Searched Draft Tests should Be visible in Authored By Me
-        it("Search By standards in Published-State", () => {
+        it(">search by standards", () => {
           itemListPage.searchFilters.clearAll();
           itemListPage.searchFilters.getAuthoredByMe();
           Object.keys(standardToSearch).forEach(ele => {
@@ -84,7 +84,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
           });
         });
 
-        it("Search By id in Published-State", () => {
+        it(">search by id", () => {
           itemListPage.searchFilters.clearAll();
           itemListPage.searchFilters.getAuthoredByMe();
           item_ids.forEach(id => {
@@ -95,8 +95,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
         });
       });
     });
-    context("Searching In Draft State", () => {
-      before("Convert Each Item To Draft", () => {
+    context(">searching in 'draft' state", () => {
+      before(">convert each item to draft", () => {
         itemListPage.searchFilters.clearAll();
         item_ids.forEach(ele => {
           itemListPage.searchFilters.getSearchTextBox().clear({ force: true });
@@ -108,9 +108,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
           itemListPage.searchFilters.clearAll();
         });
       });
-      context("Searching In Authored By Me", () => {
+      context(">searching in 'authored by me'", () => {
         // Searched Draft Tests should Be visible in Authored By Me
-        it("Search By standards in Draft-State", () => {
+        it(">search by standards", () => {
           itemListPage.searchFilters.getAuthoredByMe();
           Object.keys(standardToSearch).forEach(ele => {
             searchFilters.getSearchTextBox().clear({ force: true });
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
             });
           });
         });
-        it("Search By id in Draft-State", () => {
+        it(">search by id", () => {
           searchFilters.clearAll();
           searchFilters.getAuthoredByMe();
           item_ids.forEach(id => {
@@ -130,9 +130,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
           });
         });
       });
-      context("Searching In Entire Library", () => {
+      context(">searching in 'entire library'", () => {
         // Searched Draft Items should Not Be visible in Entire Library
-        it("Search By standards in Draft-State", () => {
+        it(">search by standards", () => {
           searchFilters.clearAll();
           Object.keys(standardToSearch).forEach(ele => {
             searchFilters.getSearchTextBox().clear({ force: true });
@@ -142,7 +142,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Searching Items Using I
             });
           });
         });
-        it("Search By id in Draft-State", () => {
+        it(">search by id", () => {
           item_ids.forEach(id => {
             searchFilters.clearAll();
             searchFilters.getSearchTextBox().clear({ force: true });

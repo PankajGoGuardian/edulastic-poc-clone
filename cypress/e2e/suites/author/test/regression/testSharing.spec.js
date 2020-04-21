@@ -32,7 +32,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
   author = dist1_school1[teacher1];
   let test_id;
   // Using SAME test in both contexts
-  context(`>test sharing with edit and viewonly-individually`, () => {
+
+  context(`>test sharing 'individually'`, () => {
     before("Login As Author And Creat Test without publishing", () => {
       cy.login("teacher", author[email], author[pass]);
       testLibrary.createTest("default", false).then(id => {
@@ -40,9 +41,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
 
-    context(">with giving edit permission-individual", () => {
+    context(">with 'Can Edit, Add/Remove Items' permission", () => {
       // Testing the Sharing context for View and Edit permission
-      context(">with draft test", () => {
+      context(">with 'draft' test", () => {
         before(">share the draft test", () => {
           testLibrary.seachTestAndGotoReviewById(test_id);
           testHeader.isDraft();
@@ -50,7 +51,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           // share to other teacher(Should be within district) using thier E-mail
           testLibrary.selectPeopletoshare(dist1_school1[teacher2][email], true);
         });
-        it("assert share- Draft", () => {
+        it(">assert share, 'draft status' and 'Edit, Add/Remove Items' permission", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -59,7 +60,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftEdit(test_id);
         });
-        it(">remove share-draft", () => {
+        it(">remove share", () => {
           // Login as Author and Remove share using thier names
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
@@ -67,7 +68,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-draft", () => {
+        it(">assert removed share", () => {
           // Check whether share is removed or not using test_id
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
@@ -77,7 +78,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
-      context(">with published test", () => {
+      context(">with 'published' test", () => {
         before("login to publish and share the test", () => {
           cy.login("teacher", author[email], author[pass]);
         });
@@ -90,7 +91,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.editsharing();
           testLibrary.selectPeopletoshare(dist1_school1[teacher2][email], true);
         });
-        it(">assert the shared test-published ", () => {
+        it(">assert share, 'published status' and 'Edit, Add/Remove Items' permission", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -99,13 +100,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedEdit(test_id);
         });
-        it(">remove share-published", () => {
+        it(">remove share", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-published", () => {
+        it(">assert removed share", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -115,9 +116,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         });
       });
     });
-    context(">without giving edit permission-individual", () => {
+    context(">with 'Can View & Duplicate' permission", () => {
       //Testing the above context for View and duplicate permission
-      context(">with published test", () => {
+      context(">with 'published' test", () => {
         before("login to publish and share the test", () => {
           cy.login("teacher", author[email], author[pass]);
         });
@@ -127,7 +128,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.selectPeopletoshare(dist1_school1[teacher2][email], false);
           cy.wait(2000);
         });
-        it(">assert the shared test-published ", () => {
+        it(">assert share, 'published status' and 'View & Duplicate' permission", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -136,13 +137,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedNoEdit(test_id);
         });
-        it(">remove share-published", () => {
+        it(">remove share", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-published", () => {
+        it(">assert removed share", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -151,7 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
-      context(">with draft test", () => {
+      context(">with 'draft' test", () => {
         before(">creating test without publishing", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
@@ -162,7 +163,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.selectPeopletoshare(dist1_school1[teacher2][email], false);
           cy.wait(2000);
         });
-        it(">assert share- draft", () => {
+        it(">assert share, 'draft status' and 'View & Duplicate' permission", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -171,14 +172,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftNoEdit();
         });
-        it(">remove share-draft", () => {
+        it(">remove share", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
           testHeader.isDraft();
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-draft", () => {
+        it(">assert removed share", () => {
           cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -188,10 +189,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         });
       });
     });
-    context(">without giving edit permission-individual-other district", () => {
+    context(">with 'Can View & Duplicate' permission with 'individual other district'", () => {
       //Testing the above context for View and duplicate permission
-      context("With draft test-User From Other District", () => {
-        before("Creating Test without publishing", () => {
+      context(">with 'draft' test", () => {
+        before(">creating test without publishing", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
         });
@@ -200,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.selectPeopletoshare(dist2_school1[teacher1][email], false, false);
           cy.wait(2000);
         });
-        it(">assert share- draft", () => {
+        it(">assert share, 'draft status' and 'View & Duplicate' permission", () => {
           cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -209,14 +210,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestDraftNoEdit();
         });
-        it(">remove share-draft", () => {
+        it(">remove share", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
           testHeader.isDraft();
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-draft", () => {
+        it(">assert removed share", () => {
           cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -225,7 +226,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.checkforNonExistanceOfTest(test_id);
         });
       });
-      context(">with published test-user from other district", () => {
+      context(">with 'published' test", () => {
         before("login to publish and share the test", () => {
           cy.login("teacher", author[email], author[pass]);
         });
@@ -236,7 +237,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.selectPeopletoshare(dist2_school1[teacher1][email], false, false);
           cy.wait(2000);
         });
-        it(">assert the shared test-published ", () => {
+        it(">assert share, 'published status' and 'View & Duplicate' permission", () => {
           cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -245,13 +246,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
           testLibrary.clickOnTestCardById(test_id);
           testLibrary.assertTestPublishedNoEdit(test_id);
         });
-        it(">remove share-published", () => {
+        it(">remove share", () => {
           cy.login("teacher", author[email], author[pass]);
           testLibrary.seachTestAndGotoReviewById(test_id);
           testLibrary.header.clickOnShare();
           testLibrary.removeShare();
         });
-        it(">assert remove share-published", () => {
+        it(">assert removed share", () => {
           cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
           techersidebar.clickOnTestLibrary();
           searchFilters.clearAll();
@@ -261,8 +262,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         });
       });
     });
-    context(">multi-share-draft-individual", () => {
-      before(">creating test without publishing", () => {
+    context(">sharing with 'different permissions to two users at same time' in 'draft' state", () => {
+      before(">creating test without publishing and share", () => {
         cy.login("teacher", author[email], author[pass]);
         testLibrary.seachTestAndGotoReviewById(test_id);
         testLibrary.publishedToDraft();
@@ -270,7 +271,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.selectPeopletoshare(dist1_school1[teacher2][email], false);
         testLibrary.selectPeopletoshare(dist1_school1[teacher3][email], true);
       });
-      it(">assert share- draft", () => {
+      it(">assert share, 'draft status' and 'View & Duplicate' permission", () => {
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -279,7 +280,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestDraftNoEdit();
       });
-      it(">assert share- draft", () => {
+      it(">assert share, 'draft status' and 'Edit, Add/Remove Items' permission", () => {
         cy.login("teacher", dist1_school1[teacher3][email], dist1_school1[teacher2][pass]);
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -289,14 +290,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.assertTestDraftEdit(test_id);
       });
     });
-    context(">multi-share-published-individual", () => {
-      before("creating test  publishing", () => {
+    context(">sharing with 'different permissions to two users at same time' in 'published' state", () => {
+      before("publish the test", () => {
         cy.login("teacher", author[email], author[pass]);
         testLibrary.seachTestAndGotoReviewById(test_id);
         testSummayTab.header.clickOnPublishButton();
         /* Proceeding without updating sharing- it should be updated automatically i.e. published or draft */
       });
-      it(">assert the shared test-published ", () => {
+      it(">assert share, 'published status' and 'View & Duplicate' permission", () => {
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -305,7 +306,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
-      it(">assert the shared test-published ", () => {
+      it(">assert share, 'published status' and 'Edit, Add/Remove Items' permission", () => {
         cy.login("teacher", dist1_school1[teacher3][email], dist1_school1[teacher2][pass]);
         techersidebar.clickOnTestLibrary();
         searchFilters.clearAll();
@@ -323,7 +324,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         test_id = id;
       });
     });
-    context(">school- allow share", () => {
+    context(">sharing at 'school level'", () => {
       it(">asserting disabled state with draft-state", () => {
         testLibrary.seachTestAndGotoReviewById(test_id);
         // testLibrary.publishedToDraft();
@@ -340,7 +341,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         // Enable sharing at School Level
         testLibrary.clickSharePop();
       });
-      it(`>for ${dist1_school1[teacher2][name]} from same school`, () => {
+      it(`>assert share and 'View & Duplicate' permission for '${
+        dist1_school1[teacher2][name]
+      }' from same school`, () => {
         // Verify sharing for techer from same school
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         testLibrary.searchByCollection(COLLECTION.school);
@@ -349,24 +352,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
 
-    context(">school- remove share", () => {
+    context(">remove share for 'school'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
 
-      before(">removesharing with school", () => {
+      before(">remove sharing with school", () => {
         testLibrary.seachTestAndGotoReviewById(test_id);
         testLibrary.header.clickOnShare();
         testLibrary.removeShare();
       });
-      it(`>for ${dist1_school1[teacher2][name]} from same school`, () => {
+      it(`>assert removed share with '${dist1_school1[teacher2][name]}' from same school`, () => {
         cy.login("teacher", dist1_school1[teacher2][email], dist1_school1[teacher2][pass]);
         testLibrary.searchByCollection(COLLECTION.school);
         testLibrary.checkforNonExistanceOfTest(test_id);
       });
     });
 
-    context(">district- allow share", () => {
+    context(">sharing at 'district level'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
@@ -378,7 +381,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.clickSharePop();
       });
 
-      it(`>for ${dist1_school2[teacher1][name]} from other school`, () => {
+      it(`>assert share and 'View & Duplicate' permission for '${
+        dist1_school2[teacher1][name]
+      }' from other school`, () => {
         // Verify sharing for techer from different school but from same district
         cy.login("teacher", dist1_school2[teacher1][email], dist1_school2[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.district);
@@ -387,17 +392,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
 
-    context(">district- remove share", () => {
+    context(">remove share for 'district'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
 
-      before(">remove-sharing with district", () => {
+      before(">remove sharing with district", () => {
         testLibrary.seachTestAndGotoReviewById(test_id);
         testLibrary.header.clickOnShare();
         testLibrary.removeShare();
       });
-      it(`>for ${dist1_school2[teacher1][name]} from other school`, () => {
+      it(`>assert removed shared with '${dist1_school2[teacher1][name]}' from other school`, () => {
         cy.login("teacher", dist1_school2[teacher1][email], dist1_school2[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.district);
         testLibrary.checkforNonExistanceOfTest(test_id);
@@ -405,7 +410,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
 
-    context(">public- allow share", () => {
+    context(">sharing at 'public level'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
@@ -417,13 +422,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
         testLibrary.getPublicRadio().click({ force: true });
         testLibrary.clickSharePop();
       });
-      it(`>for ${dist1_school2[teacher2][name]} from other district`, () => {
+      it(`>assert share and 'View & Duplicate' permission for '${
+        dist1_school2[teacher2][name]
+      }' from other district`, () => {
         cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.public);
         testLibrary.clickOnTestCardById(test_id);
         testLibrary.assertTestPublishedNoEdit(test_id);
       });
-      it(`>from other school`, () => {
+      it(`>assert share and 'View & Duplicate' for '${
+        dist1_school2[teacher1][name]
+      }' permission for from other school`, () => {
         cy.login("teacher", dist1_school2[teacher1][email], dist1_school2[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.public);
         testLibrary.clickOnTestCardById(test_id);
@@ -431,22 +440,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> test sharing`, () => {
       });
     });
 
-    context(">public- remove share", () => {
+    context(">remove share for 'district'", () => {
       before("Login", () => {
         cy.login("teacher", author[email], author[pass]);
       });
 
-      before(">remove-sharing with public", () => {
+      before(">remove sharing with district", () => {
         testLibrary.seachTestAndGotoReviewById(test_id);
         testLibrary.header.clickOnShare();
         testLibrary.removeShare();
       });
-      it(`>for ${dist1_school2[teacher2][name]} from other district`, () => {
+      it(`>assert removed share with '${dist1_school2[teacher2][name]}' from other district`, () => {
         cy.login("teacher", dist2_school1[teacher1][email], dist2_school1[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.public);
         testLibrary.checkforNonExistanceOfTest(test_id);
       });
-      it(`>for ${dist1_school2[teacher1][name]}from other school`, () => {
+      it(`>assert removed share with '${dist1_school2[teacher1][name]}'from other school`, () => {
         cy.login("teacher", dist1_school2[teacher1][email], dist1_school2[teacher1][pass]);
         testLibrary.searchByCollection(COLLECTION.public);
         testLibrary.checkforNonExistanceOfTest(test_id);

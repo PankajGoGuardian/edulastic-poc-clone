@@ -24,7 +24,6 @@ import {
   getGroupsSelector
 } from "../sharedDucks/groups";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
-import { REMOVE_TEST_FROM_MODULE } from "../PlaylistPage/ducks";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -115,8 +114,12 @@ export const GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST = "[playlist] get signed re
 export const UPDATE_SIGNED_REQUEST_FOR_RESOURCE = "[playlist] update signed request for resource";
 
 export const RESET_DESTINATION = "[playlist] reset destination";
+export const SET_DESTINATION_ORIGINAL = "[playlist] set destination original data";
+export const RESET_DESTINATION_FLAGS = "[playlist] reset destination flags";
 
 export const DUPLICATE_MANAGE_CONTENT = "[playlist] duplicate mange content";
+export const CANCEL_PLAYLIST_CUSTOMIZE = "[playlist] cancel manage content";
+export const PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST = "[playlist] publish customized playlist";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -169,6 +172,8 @@ export const addTestToDifferentationAction = createAction(ADD_TEST_TO_DIFFERENTI
 export const getSignedRequestAction = createAction(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST);
 export const updateSinedRequestAction = createAction(UPDATE_SIGNED_REQUEST_FOR_RESOURCE);
 export const duplicateManageContentAction = createAction(DUPLICATE_MANAGE_CONTENT);
+export const cancelPlaylistCustomizeAction = createAction(CANCEL_PLAYLIST_CUSTOMIZE);
+export const publishCustomizedPlaylistAction = createAction(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST);
 
 export const getAllCurriculumSequencesAction = ids => {
   if (!ids) {
@@ -198,6 +203,8 @@ export const deleteModuleCSAction = createAction(DELETE_MODULE);
 export const resequenceModulesCSAction = createAction(ORDER_MODULES);
 export const updatePlaylistCSAction = createAction(UPDATE_CUSTOMIZED_PLAYLIST);
 export const resetDestinationAction = createAction(RESET_DESTINATION);
+export const setOriginalDestinationData = createAction(SET_DESTINATION_ORIGINAL);
+export const resetDestinationFlags = createAction(RESET_DESTINATION_FLAGS);
 
 // State getters
 const getCurriculumSequenceState = state => state.curriculumSequence;
@@ -564,8 +571,14 @@ function* createAssignmentNow({ payload }) {
 
 export function* updateDestinationCurriculumSequencesaga({ payload }) {
   try {
-    const curriculumSequence = yield select(getDestinationCurriculumSequence);
-
+    let curriculumSequence = yield select(getDestinationCurriculumSequence);
+    if (payload.customizeDraft) {
+      curriculumSequence = {
+        ...curriculumSequence,
+        title: `${curriculumSequence.title} - ${moment().format("MM/DD/YYYY HH:mm")}`
+      };
+    }
+    console.log("curriculumSequence in updateDestinationCurriculumSequencesaga ", curriculumSequence);
     yield put(putCurriculumSequenceAction({ id: curriculumSequence._id, curriculumSequence }));
   } catch (err) {
     message.error("There was an error updating the curriculum sequence");
@@ -689,17 +702,18 @@ function* fetchAssigned() {
 
 function* duplicateManageContentSaga({ payload }) {
   try {
-    const { _id: originalId, onChange, groupId, title: originalTitle } = payload;
-    const duplicatedPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
+    const { _id: originalId, title: originalTitle } = payload;
+    const duplicatedDraftPlaylist = yield call(curriculumSequencesApi.duplicatePlayList, {
       _id: originalId,
       title: originalTitle,
       forUseThis: true
     });
 
-    yield put(updateCurriculumSequenceAction(duplicatedPlaylist));
+    yield put(updateCurriculumSequenceAction(duplicatedDraftPlaylist));
+    yield put(setOriginalDestinationData(payload));
     yield put(toggleManageContentActiveAction());
-    yield put(push(`/author/playlists/${duplicatedPlaylist._id}`));
-  } catch (e) {
+    yield put(push(`/author/playlists/customize/${originalId}/${duplicatedDraftPlaylist._id}`));
+  } catch (error) {
     console.error(error);
     message.error("something went wrong");
   }
@@ -831,7 +845,7 @@ function* fetchPlaylistMetricsSaga({ payload }) {
       yield put(updatePlaylistMetrics(result));
     }
   } catch (error) {
-    message.error("Fetching playlist metrics is failing...");
+    // message.error("Fetching playlist metrics is failing...");
     console.error(error);
   }
 }
@@ -960,6 +974,35 @@ function* addRecommendationsSaga({ payload }) {
   }
 }
 
+function* cancelPlaylistCustomize({ payload }) {
+  try {
+    const { parentId } = payload;
+    const parentPlaylist = yield select(state => state.curriculumSequence.originalData);
+    if (parentPlaylist && parentPlaylist._id) {
+      yield put(updateCurriculumSequenceAction(parentPlaylist));
+    } else if (parentId) {
+      yield put(makeApiRequest([parentId]));
+    } else throw new Error("Parent playlist id is missing");
+    yield put(toggleManageContentActiveAction());
+    yield put(push(`/author/playlists/playlist/${parentId}/use-this`));
+  } catch (e) {
+    console.error("Cancel customize playlist error - ", e);
+    message.error("Something went wrong while trying to cancel customization...");
+  }
+}
+
+function* publishDraftCustomizedPlaylist({ payload }) {
+  try {
+    yield put(resetDestinationFlags());
+    yield updateDestinationCurriculumSequencesaga({ payload: { customizeDraft: true } });
+    yield call(curriculumSequencesApi.publishPlaylist, payload);
+    yield put(push(`/author/playlists/playlist/${payload}/use-this`));
+  } catch (e) {
+    console.error("Customized draft playlist publish failed - ", e);
+    message.error("Something went wrong while trying to publish customized draft playlist...");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -993,7 +1036,9 @@ export function* watcherSaga() {
     yield takeLatest(ADD_RECOMMENDATIONS_ACTIONS, addRecommendationsSaga),
     yield takeEvery(UPDATE_DESTINATION_CURRICULUM_SEQUENCE_REQUEST, updateDestinationCurriculumSequencesaga),
     yield takeLatest(GET_SIGNED_REQUEST_FOR_RESOURCE_REQUEST, getSignedRequestSaga),
-    yield takeLatest(DUPLICATE_MANAGE_CONTENT, duplicateManageContentSaga)
+    yield takeLatest(DUPLICATE_MANAGE_CONTENT, duplicateManageContentSaga),
+    yield takeLatest(CANCEL_PLAYLIST_CUSTOMIZE, cancelPlaylistCustomize),
+    yield takeLatest(PUBLISH_CUSTOMIZED_DRAFT_PLAYLIST, publishDraftCustomizedPlaylist)
   ]);
 }
 
@@ -1733,6 +1778,13 @@ export default createReducer(initialState, {
     }
     state.isManageContentActive = false;
 
+    state.destinationDirty = false;
+  },
+  [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {
+    state.originalData = payload;
+  },
+  [RESET_DESTINATION_FLAGS]: state => {
+    state.isManageContentActive = false;
     state.destinationDirty = false;
   }
 });

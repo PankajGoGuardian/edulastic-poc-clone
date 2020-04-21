@@ -1,5 +1,4 @@
 import API from "./utils/API";
-import moment from "moment";
 import qs from "qs";
 
 const api = new API();
@@ -69,11 +68,13 @@ const update = ({ data, id }) =>
     })
     .then(res => res.data.result);
 
-const publishPlaylist = id =>
+const publishPlaylist = payload =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${id}/publish`
+      url: payload.unlinkFromId
+        ? `${prefix}/${payload.id}/publish?unlinkFromId=${payload.unlinkFromId}`
+        : `${prefix}/${payload}/publish`
     })
     .then(res => res);
 
@@ -90,9 +91,7 @@ const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
   api
     .callApi({
       method: "post",
-      url: `${prefix}/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}${
-        forUseThis ? `&forUseThis=1` : ""
-      }`
+      url: `${prefix}/${_id}/duplicate?title=${title}${forUseThis ? `&forUseThis=1` : ""}`
     })
     .then(res => res.data.result);
 

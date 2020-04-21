@@ -48,7 +48,9 @@ import {
   toggleManageContentActiveAction,
   updateDestinationCurriculumSequenceRequestAction,
   resetDestinationAction,
-  duplicateManageContentAction
+  duplicateManageContentAction,
+  cancelPlaylistCustomizeAction,
+  publishCustomizedPlaylistAction
 } from "../ducks";
 import { getProgressColor, getSummaryData } from "../util";
 /* eslint-enable */
@@ -372,12 +374,12 @@ class CurriculumSequence extends Component {
     const { authors } = destinationCurriculumSequence;
     const canEdit = authors.find(x => x._id === currentUserId);
 
-    if (isManageContentActive && manageContentDirty) {
-      message.warn("Changes left unsaved. Please save it first");
-      return;
-    }
+    // if (isManageContentActive && manageContentDirty) {
+    //   message.warn("Changes left unsaved. Please save it first");
+    //   return;
+    // }
+
     if (!isManageContentActive && !canEdit) {
-      //duplicateManageContent(destinationCurriculumSequence);
       Modal.confirm({
         title: "Do you want to Customize ?",
         content:
@@ -385,6 +387,12 @@ class CurriculumSequence extends Component {
         onOk: () => {
           duplicateManageContent(destinationCurriculumSequence);
           Modal.destroyAll();
+        },
+        okText: "Continue",
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: "none" }
         }
       });
       return;
@@ -452,7 +460,9 @@ class CurriculumSequence extends Component {
       collections,
       dateKeys,
       resetDestination,
-      currentUserId
+      currentUserId,
+      cancelPlaylistCustomize,
+      publishCustomizedPlaylist
     } = this.props;
 
     // check Current user's edit permission
@@ -604,6 +614,8 @@ class CurriculumSequence extends Component {
       destinationCurriculumSequence &&
       !isAuthoringFlowReview;
 
+    const { id: parentId = null, cloneId = null } = match.params;
+
     return (
       <>
         <RemoveTestModal
@@ -714,7 +726,7 @@ class CurriculumSequence extends Component {
                     </EduButton>
                   )}
 
-                  {isManageContentActive && (
+                  {isManageContentActive && !cloneId && (
                     <EduButton data-cy="save" onClick={updateDestinationPlaylist}>
                       SAVE
                     </EduButton>
@@ -788,16 +800,35 @@ class CurriculumSequence extends Component {
                           )}
                           {enableCustomize && subHeaderIcon1}
                           {enableCustomize && subHeaderIcon2}
-                          {enableCustomize && (
-                            <StyledButton
-                              width="135px"
-                              data-cy="manage-content"
-                              onClick={toggleManageContentClick}
-                              isManageContentActive={isManageContentActive}
-                            >
-                              Manage Content
-                            </StyledButton>
-                          )}
+                          {enableCustomize &&
+                            (isManageContentActive && cloneId ? (
+                              <DraftModeActionsWrapper>
+                                <StyledButton
+                                  width="100px"
+                                  data-cy="cancel-customize"
+                                  onClick={() => cancelPlaylistCustomize({ parentId })}
+                                >
+                                  Cancel
+                                </StyledButton>
+                                <StyledButton
+                                  width="100px"
+                                  data-cy="publish-customized-playlist"
+                                  onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                                  isManageContentActive={isManageContentActive}
+                                >
+                                  Update
+                                </StyledButton>
+                              </DraftModeActionsWrapper>
+                            ) : (
+                              <StyledButton
+                                width="135px"
+                                data-cy="manage-content"
+                                onClick={toggleManageContentClick}
+                                isManageContentActive={isManageContentActive}
+                              >
+                                Manage Content
+                              </StyledButton>
+                            ))}
                         </CurriculumSubHeaderRow>
                       </SubTopBarContainer>
                     </SubTopBar>
@@ -939,7 +970,9 @@ const enhance = compose(
       toggleManageContent: toggleManageContentActiveAction,
       updateDestinationPlaylist: updateDestinationCurriculumSequenceRequestAction,
       resetDestination: resetDestinationAction,
-      duplicateManageContent: duplicateManageContentAction
+      duplicateManageContent: duplicateManageContentAction,
+      cancelPlaylistCustomize: cancelPlaylistCustomizeAction,
+      publishCustomizedPlaylist: publishCustomizedPlaylistAction
     }
   )
 );
@@ -1269,4 +1302,12 @@ const BreadCrumbWrapper = styled.div`
 const ReviewBreadCrumbWrapper = styled.div`
   padding: 0px 0px 15px;
   width: 100%;
+`;
+
+const DraftModeActionsWrapper = styled.div`
+  width: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
 `;

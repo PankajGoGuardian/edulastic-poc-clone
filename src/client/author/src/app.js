@@ -45,7 +45,7 @@ const ItemList = lazy(() => import("../ItemList"));
 const ItemDetail = lazy(() => import("../ItemDetail"));
 const ItemAdd = lazy(() => import("../ItemAdd"));
 const PickUpQuestionType = lazy(() => import("../PickUpQuestionType"));
-const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
+const CurriculumSequence = lazy(() => import("../CurriculumSequence"));
 const Reports = lazy(() => import("../Reports"));
 const StandardsBasedReport = lazy(() => import("../StandardsBasedReport"));
 
@@ -202,7 +202,7 @@ const Author = ({
                         </Suspense>
                       )}
                     />
-                    <Route exact path={`${match.url}/playlists/view`} component={CurriculumContainer} />
+                    <Route exact path={`${match.url}/playlists/view`} component={CurriculumSequence} />
                     <Route
                       exact
                       path={`${match.url}/playlists/filter/:filterType`}
@@ -235,16 +235,7 @@ const Author = ({
                       path="/author/playlists/:id"
                       render={props => (
                         <Suspense fallback={<Progress />}>
-                          <CurriculumContainer {...props} />
-                        </Suspense>
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:id/customize"
-                      render={props => (
-                        <Suspense fallback={<Progress />}>
-                          <CurriculumContainer {...props} />
+                          <CurriculumSequence {...props} />
                         </Suspense>
                       )}
                     />
@@ -253,7 +244,16 @@ const Author = ({
                       path="/author/playlists/:currentTab/:id/use-this"
                       render={props => (
                         <Suspense fallback={<Progress />}>
-                          <CurriculumContainer {...props} urlHasUseThis />
+                          <CurriculumSequence {...props} urlHasUseThis />
+                        </Suspense>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/author/playlists/customize/:id/:cloneId"
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <CurriculumSequence {...props} urlHasUseThis />
                         </Suspense>
                       )}
                     />

@@ -6,7 +6,8 @@ export const Container = styled.div`
   display: ${props => (props.width > SMALL_DESKTOP_WIDTH ? "flex" : "block")};
   position: relative;
   justify-content: ${props => (props.isCollapsed ? "space-between" : "initial")};
-  overflow: auto;
+  overflow: ${({ isStudentAttempt }) => !isStudentAttempt && `auto`};
+  /* dont give overflow: auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598 */
   width: 100%;
   height: 100%;
 `;

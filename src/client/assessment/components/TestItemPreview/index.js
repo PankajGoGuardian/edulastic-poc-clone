@@ -265,7 +265,7 @@ class TestItemPreview extends Component {
             alignSelf: !LCBPreviewModal && "stretch",
             height: LCBPreviewModal && "100%",
             width: "100%",
-            overflow: "auto",
+            overflow: !isStudentAttempt && "auto", // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             flexDirection: viewAtStudentRes ? "column" : "row",
             background: isExpressGrader && showScratchpadByDefault ? white : null,
             "margin-bottom": showScratchpadByDefault && "10px"
@@ -278,6 +278,7 @@ class TestItemPreview extends Component {
               height: !isStudentAttempt && "auto",
               padding: 0
             }}
+            isStudentAttempt={isStudentAttempt}
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"

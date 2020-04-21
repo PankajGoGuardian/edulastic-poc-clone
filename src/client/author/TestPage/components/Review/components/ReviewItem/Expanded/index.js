@@ -154,23 +154,25 @@ const Expanded = ({
             </FlexContainer>
           )}
           <AnswerContext.Provider value={{ isAnswerModifiable: false, showAnswers: false }}>
-            <TestItemPreview
-              style={{
-                padding: 0,
-                boxShadow: "none",
-                display: "flex"
-              }}
-              cols={_item}
-              preview="show"
-              metaData={metaInfoData.id}
-              disableResponse
-              verticalDivider={get(_item, "[0].verticalDivider")}
-              scrolling={get(_item, "[0].scrolling")}
-              questions={widgetsWithResource}
-              windowWidth="100%"
-              isReviewTab
-              testItem
-            />
+            <div onClick={() => onPreview(metaInfoData.id)} style={{width: "100%", cursor: "pointer"}}>
+              <TestItemPreview
+                style={{
+                  padding: 0,
+                  boxShadow: "none",
+                  display: "flex"
+                }}
+                cols={_item}
+                preview="show"
+                metaData={metaInfoData.id}
+                disableResponse
+                verticalDivider={get(_item, "[0].verticalDivider")}
+                scrolling={get(_item, "[0].scrolling")}
+                questions={widgetsWithResource}
+                windowWidth="100%"
+                isReviewTab
+                testItem
+              />
+            </div>
           </AnswerContext.Provider>
         </FlexContainer>
         <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">

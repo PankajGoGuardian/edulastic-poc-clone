@@ -135,7 +135,10 @@ class SideMenu extends Component {
     if (key === "0") {
       // onClickLogout
       this.toggleMenu();
-      document.querySelector(".intercom-launcher-frame")?.contentWindow?.document?.querySelector(".intercom-launcher-active")?.click();
+      document
+        .querySelector(".intercom-launcher-frame")
+        ?.contentWindow?.document?.querySelector(".intercom-launcher-active")
+        ?.click();
       logout();
     } else if (key === "1") {
       // onClickLogoutProfile
@@ -231,30 +234,21 @@ class SideMenu extends Component {
                       <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
                     </Col>
                   ) : null}
-                  <Col span={isSidebarCollapsed ? 24 : 18} style={{ textAlign: "center" }}>
+                  <Col span={24} style={{ textAlign: isSidebarCollapsed ? "center" : "left" }}>
                     {isSidebarCollapsed ? <LogoCompact /> : <Logo />}
                   </Col>
-                  {broken ? null : (
-                    <Col
-                      span={isSidebarCollapsed ? 0 : 6}
-                      style={{
-                        textAlign: "center",
-                        color: themeColor
-                      }}
-                    >
-                      {!isSidebarCollapsed && (
-                        <AntIcon
-                          className="trigger"
-                          type={isSidebarCollapsed ? "right" : "left"}
-                          onClick={this.toggleMenu}
-                        />
-                      )}
-                    </Col>
-                  )}
                 </LogoWrapper>
               )}
 
               <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
+                <ToggleSidemenu
+                  onClick={e => {
+                    e.stopPropagation();
+                    this.toggleMenu();
+                  }}
+                >
+                  <AntIcon type={isSidebarCollapsed ? "right" : "left"} />
+                </ToggleSidemenu>
                 {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
                 <Menu
                   isSidebarCollapsed={isSidebarCollapsed}
@@ -494,6 +488,7 @@ const LogoWrapper = styled(Row)`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 15px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     height: ${({ theme }) => theme.HeaderHeight.md}px;
@@ -503,12 +498,28 @@ const LogoWrapper = styled(Row)`
   }
 `;
 
+const ToggleSidemenu = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px 0 0 4px;
+  cursor: pointer;
+  z-index: 1;
+`;
+
 const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 8px 0px;
+  padding: 24px 0px 8px;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
+  position: relative;
 `;
 
 const Menu = styled(AntMenu)`
@@ -935,8 +946,8 @@ const DropdownBtn = styled(Dropdown)`
 `;
 
 const Logo = styled(IconHeader)`
-  width: 100%;
-  height: 21px;
+  width: auto;
+  height: 25px;
   path.b {
     fill: ${white};
   }
@@ -944,7 +955,7 @@ const Logo = styled(IconHeader)`
 
 const LogoCompact = styled(IconLogoCompact)`
   width: 22px;
-  height: 22px;
+  height: 25px;
   fill: #0eb08d;
   &:hover {
     fill: #0eb08d;

@@ -102,7 +102,10 @@ const Hints = ({
                       <Label marginBottom="0px">{`${index + 1}/${hintCount}`}</Label>
                     </HintLabel>
                   </LabelWrapper>
-                  <div>
+
+                  <div style={{ width: "100%" }}>
+                    {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
+                    {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
                     <HintContent>
                       <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
                     </HintContent>

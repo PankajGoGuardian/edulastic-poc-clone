@@ -271,8 +271,8 @@ const StyledMathInput = styled(MathInput)`
 
 const StyledEduButton = styled(EduButton)`
   padding: 0px;
-  margin-left: 12px;
-  height: 16px;
+  margin-left: 12px !important;
+  max-height: 16px;
   border: unset;
   background-color: ${greyThemeDark2} !important;
 `;

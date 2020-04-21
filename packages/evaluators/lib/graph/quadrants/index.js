@@ -482,6 +482,47 @@ var checkEquations = /*#__PURE__*/ (function() {
   };
 })();
 
+var eqnToObject = function eqnToObject(validResponse) {
+  const value = validResponse?.value?.flatMap(item => {
+    if (item.type === "equation") {
+      // check if the equation belongs to a line
+      if (item.apiLatex.match("line")) {
+        // match & extract coordinates
+        const coordinates = item.apiLatex.match(/\-*[0-9]+,\-*[0-9]+/g).map(o => o.split(",").map(Number));
+        return [
+          {
+            type: "line",
+            label: item.label,
+            id: item.id,
+            subElementsIds: {
+              startPoint: `${item.id}-start`,
+              endPoint: `${item.id}-end`
+            }
+          },
+          {
+            type: "point",
+            x: coordinates[0][0],
+            y: coordinates[0][1],
+            id: `${item.id}-start`,
+            label: item.pointsLabel[0],
+            subElement: true
+          },
+          {
+            type: "point",
+            x: coordinates[1][0],
+            y: coordinates[1][1],
+            id: `${item.id}-end`,
+            label: item.pointsLabel[1],
+            subElement: true
+          }
+        ];
+      }
+    }
+    return item;
+  });
+  return { ...validResponse, value };
+};
+
 var evaluator = /*#__PURE__*/ (function() {
   var _ref3 = (0, _asyncToGenerator2["default"])(
     /*#__PURE__*/ _regenerator["default"].mark(function _callee2(_ref2) {
@@ -515,7 +556,7 @@ var evaluator = /*#__PURE__*/ (function() {
                 score = 0;
                 maxScore = 1;
                 evaluation = {};
-                answers = [validResponse];
+                answers = [eqnToObject(validResponse)];
 
                 if (altResponses) {
                   answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));

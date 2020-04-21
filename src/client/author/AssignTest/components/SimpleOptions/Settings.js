@@ -190,9 +190,15 @@ const Settings = ({
     showMagnifier = tempTestSettings.showMagnifier,
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
-    pauseAllowed = tempTestSettings.pauseAllowed
+    pauseAllowed = tempTestSettings.pauseAllowed,
+    enableScratchpad = tempTestSettings.enableScratchpad
   } = assignmentSettings;
   const playerSkinType = assignmentSettings.playerSkinType || testSettings.playerSkinType;
+
+  const accessiblilityData = {
+    showMagnifier,
+    enableScratchpad
+  };
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -697,23 +703,26 @@ const Settings = ({
               <Title>Accessibility</Title>
               {!isDocBased && (
                 <RadioWrapper disabled={forClassLevel} style={{ marginTop: "29px", marginBottom: 0 }}>
-                  {Object.keys(accessibilities).map(item => (
-                    <StyledRowSettings key={accessibilities[item]} style={{ width: "100%" }}>
+                  {Object.keys(accessibilities).map(key => {
+                    const value = accessiblilityData[key];
+                    return (
+                    <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
                       <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
                       </Col>
                       <Col span={12}>
                         <StyledRadioGroup
                           disabled={forClassLevel}
-                          onChange={e => overRideSettings("showMagnifier", e.target.value)}
-                          defaultValue={isUndefined(showMagnifier) ? true : showMagnifier}
+                          onChange={e => overRideSettings(key, e.target.value)}
+                          defaultValue={isUndefined(value) ? true : value}
                         >
                           <Radio value>ENABLE</Radio>
                           <Radio value={false}>DISABLE</Radio>
                         </StyledRadioGroup>
                       </Col>
                     </StyledRowSettings>
-                  ))}
+                    )
+                  })}
                 </RadioWrapper>
               )}
               {(assignmentSettings?.testType || testSettings.testType) !== "testlet" && !testSettings.isDocBased && (

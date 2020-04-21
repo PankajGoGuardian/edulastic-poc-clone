@@ -154,7 +154,6 @@ const PlayerHeader = ({
                         qType={qType}
                         handleMagnifier={handleMagnifier}
                         enableMagnifier={enableMagnifier}
-                        showMagnifier={showMagnifier}
                         timedAssignment={timedAssignment}
                         utaId={utaId}
                         groupId={groupId}

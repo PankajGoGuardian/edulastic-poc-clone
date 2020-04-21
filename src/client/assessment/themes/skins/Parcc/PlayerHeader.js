@@ -54,7 +54,6 @@ const PlayerHeader = ({
   items,
   toolsOpenStatus,
   handleMagnifier,
-  showMagnifier,
   enableMagnifier,
   timedAssignment,
   utaId,
@@ -78,6 +77,8 @@ const PlayerHeader = ({
   };
 
   const breadcrumbData = [{ title: "Assignments", to: "/home/assignments" }, { title: title }];
+
+  const { showMagnifier } = settings;
 
   return (
     <FlexContainer>

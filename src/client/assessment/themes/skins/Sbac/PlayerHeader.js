@@ -66,7 +66,6 @@ const PlayerHeader = ({
   isDocbased,
   toolsOpenStatus,
   handleMagnifier,
-  showMagnifier,
   enableMagnifier,
   timedAssignment,
   utaId,
@@ -97,6 +96,8 @@ const PlayerHeader = ({
     ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
     data?.tts &&
     data?.tts?.taskStatus === "COMPLETED";
+
+  const { showMagnifier } = settings;
 
   return (
     <StyledFlexContainer>

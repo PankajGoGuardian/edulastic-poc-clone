@@ -36,7 +36,7 @@ const ToolBar = ({
     changeCaculateMode(value);
   };
 
-  const { calcType } = settings;
+  const { calcType, enableScratchpad } = settings;
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -73,7 +73,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && (
+      {!isDocbased && enableScratchpad && (
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton active={tool.indexOf(5) !== -1} onClick={() => toolbarHandler(5)}>
             <ScratchPadIcon />

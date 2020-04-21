@@ -38,12 +38,11 @@ class ToolBar extends Component {
       qType,
       handleMagnifier,
       enableMagnifier,
-      showMagnifier,
       timedAssignment,
       utaId,
       groupId
     } = this.props;
-    const { calcType } = settings;
+    const { calcType, showMagnifier, enableScratchpad } = settings;
     const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
 
     return (
@@ -88,11 +87,11 @@ class ToolBar extends Component {
           </StyledButton>
         </Tooltip>
 
-        <Tooltip placement="top" title="Scratch Pad">
+        {enableScratchpad && <Tooltip placement="top" title="Scratch Pad">
           <StyledButton active={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
             <ScratchPadIcon />
           </StyledButton>
-        </Tooltip>
+        </Tooltip>}
         {showMagnifier && (
           <Tooltip placement="top" title="Magnify">
             <StyledButton active={enableMagnifier} onClick={handleMagnifier}>

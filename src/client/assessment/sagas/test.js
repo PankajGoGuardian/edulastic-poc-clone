@@ -209,7 +209,8 @@ function* loadTest({ payload }) {
       closePolicy: testActivity?.assignmentSettings?.closePolicy,
       timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
       allowedTime: testActivity?.assignmentSettings?.allowedTime,
-      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed
+      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
+      enableScratchpad: testActivity?.assignmentSettings?.enableScratchpad
     };
 
     const answerCheckByItemId = {};

@@ -52,7 +52,6 @@ const PlayerHeader = ({
   previewPlayer,
   handleMagnifier,
   enableMagnifier,
-  showMagnifier,
   timedAssignment,
   utaId,
   groupId
@@ -147,7 +146,6 @@ const PlayerHeader = ({
                     qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
-                    showMagnifier={showMagnifier}
                     timedAssignment={timedAssignment}
                     utaId={utaId}
                     groupId={groupId}

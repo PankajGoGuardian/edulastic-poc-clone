@@ -27,13 +27,8 @@ const SettingMenu = ({ user: { firstName }, onSettingsChange, showMagnifier, ena
           {key === "enableMagnifier" && enableMagnifier && <FontAwesomeIcon icon={faCheck} />}
         </Menu.Item>
       ))}
-
-      {showPause && (
-        <>
-          <Menu.Divider />
-          <Menu.Item key="save">Save & Exit</Menu.Item>
-        </>
-      )}
+      {showPause && <Menu.Divider />}
+      {showPause && <Menu.Item key="save">Save & Exit</Menu.Item>}
     </StyledMenu>
   );
 

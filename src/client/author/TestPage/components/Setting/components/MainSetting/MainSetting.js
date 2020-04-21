@@ -306,7 +306,8 @@ class MainSetting extends Component {
       showMagnifier = true,
       timedAssignment,
       allowedTime,
-      pauseAllowed
+      pauseAllowed,
+      enableScratchpad = true
     } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
@@ -352,6 +353,9 @@ class MainSetting extends Component {
       ...playerSkinTypes,
       edulastic
     };
+
+    const accessibilityData = { showMagnifier, enableScratchpad };
+
     return (
       <Container padding="30px" marginTop="10px">
         <Row style={{ padding: 0 }}>
@@ -874,24 +878,26 @@ class MainSetting extends Component {
               )}
               <Block id="accessibility" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>
-                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0 }}>
-                  {Object.keys(accessibilities).map(item => (
-                    <Row key={accessibilities[item]} style={{ width: "100%" }}>
+                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}>
+                  {Object.keys(accessibilities).map(key => {
+                    return (
+                    <Row key={accessibilities[key]} style={{ width: "100%" }}>
                       <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
                       </Col>
                       <Col span={12}>
                         <StyledRadioGroup
                           disabled={!owner || !isEditable}
-                          onChange={e => this.updateTestData("showMagnifier")(e.target.value)}
-                          defaultValue={showMagnifier}
+                          onChange={e => this.updateTestData(key)(e.target.value)}
+                          defaultValue={accessibilityData[key]}
                         >
                           <RadioBtn value>ENABLE</RadioBtn>
                           <RadioBtn value={false}>DISABLE</RadioBtn>
                         </StyledRadioGroup>
                       </Col>
                     </Row>
-                  ))}
+                    )}
+                  )}
                 </RadioWrapper>
               </Block>
               {/* {availableFeatures.includes("enableMagnifier") && (

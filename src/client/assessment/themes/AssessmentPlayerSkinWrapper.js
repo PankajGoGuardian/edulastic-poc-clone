@@ -40,7 +40,6 @@ const AssessmentPlayerSkinWrapper = ({
           defaultAP={defaultAP}
           isDocbased={!isUndefined(docUrl)}
           handleMagnifier={handleMagnifier}
-          showMagnifier={showMagnifier}
           enableMagnifier={enableMagnifier}
         />
       );
@@ -53,7 +52,6 @@ const AssessmentPlayerSkinWrapper = ({
           isDocbased={!isUndefined(docUrl)}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
-          showMagnifier={showMagnifier}
         />
       );
     } else if (!isUndefined(docUrl)) {
@@ -64,7 +62,6 @@ const AssessmentPlayerSkinWrapper = ({
           {...restProps}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
-          showMagnifier={showMagnifier}
         />
       );
     } else {
@@ -73,7 +70,6 @@ const AssessmentPlayerSkinWrapper = ({
           {...restProps}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
-          showMagnifier={showMagnifier}
         />
       );
     }

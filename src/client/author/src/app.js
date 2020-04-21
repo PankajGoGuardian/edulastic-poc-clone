@@ -464,6 +464,15 @@ const Author = ({
                         </Suspense>
                       )}
                     />
+                    <Route
+                      exact
+                      path="/author/tests/:testId/editItem/:itemId/questions/edit/:questionType" // needed as per https://snapwiz.atlassian.net/browse/EV-13426
+                      render={props => (
+                        <Suspense fallback={<Progress />}>
+                          <QuestionEditor isTestFlow isEditFlow {...props} />
+                        </Suspense>
+                      )}
+                    />
                     <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                     <Route exact path="/author/questions/create/:questionType" component={QuestionEditor} />
                     <Route exact path="/author/questions/edit/:questionType" component={QuestionEditor} />

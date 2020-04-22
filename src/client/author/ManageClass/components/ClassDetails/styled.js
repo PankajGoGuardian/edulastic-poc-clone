@@ -97,7 +97,6 @@ export const StudentsTable = styled(Table)`
         }
         &:hover:not(.ant-table-expanded-row) > td {
           opacity: 0.3;
-          background: none;
         }
         &:hover:not(.ant-table-expanded-row) > td:last-child {
           opacity: 1;

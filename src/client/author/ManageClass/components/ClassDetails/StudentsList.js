@@ -10,6 +10,7 @@ import { selectStudentAction } from "../../ducks";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { proxyUser } from "../../../authUtils";
 
 const StudentsList = ({
   loaded,
@@ -23,7 +24,7 @@ const StudentsList = ({
   allowGoogleLogin,
   allowCanvasLogin
 }) => {
-  const { groupId, active } = selectedClass;
+  const { _id: groupId, active } = selectedClass;
   const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 
   const rowSelection = {
@@ -120,7 +121,7 @@ const StudentsList = ({
     {
       title: "View as Student",
       colSpan: 0,
-      render: (_, { _id }) => <span onClick={() => {}}>View as Student</span>
+      render: (_, { _id }) => <span onClick={() => proxyUser({ userId: _id, groupId })}>View as Student</span>
     }
   ];
 

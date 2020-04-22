@@ -2,8 +2,8 @@
 import { userApi, TokenStorage } from "@edulastic/api";
 import { message } from "antd";
 
-export async function proxyUser({ userId, email }) {
-  const result = await userApi.getProxyUser({ userId, email });
+export async function proxyUser({ userId, email, groupId }) {
+  const result = await userApi.getProxyUser({ userId, email, groupId });
   console.log("proxy user", result);
   if (result.result) {
     TokenStorage.storeAccessToken(result.result.token, result.result._id, result.result.role);

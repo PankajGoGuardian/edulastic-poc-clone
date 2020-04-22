@@ -115,7 +115,10 @@ class Item extends Component {
   assignTest = e => {
     e && e.stopPropagation();
     const { history, item } = this.props;
-    history.push({ pathname: `/author/assignments/${item._id}`, state: { from: "testLibrary" } });
+    history.push({
+      pathname: `/author/assignments/${item._id}`,
+      state: { from: "testLibrary", fromText: "Test Library", toUrl: "/author/tests" }
+    });
   };
 
   closeModal = () => {

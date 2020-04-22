@@ -44,7 +44,7 @@ const { ASSESSMENT, COMMON } = testConst.type;
 const parentMenu = {
   assignments: { title: "Assignments", to: "assignments" },
   playlistLibrary: { title: "Playlist Library", to: "playlists" },
-  favouritePlaylist: { title: "My playlist", to: "favouriteLibrary" },
+  myPlaylist: { title: "My playlist", to: "myPlaylist" },
   testLibrary: { title: "Test Library", to: "tests" }
 };
 
@@ -256,7 +256,7 @@ class AssignTest extends React.Component {
     } = this.props;
     const { title, _id } = isPlaylist ? playlist : testItem;
     const exactMenu = parentMenu[location?.state?.from || from];
-    if (exactMenu.to === "favouriteLibrary") {
+    if (exactMenu?.to === "myPlaylist") {
       exactMenu.to = `playlists/playlist/${_id}/use-this`;
     }
 

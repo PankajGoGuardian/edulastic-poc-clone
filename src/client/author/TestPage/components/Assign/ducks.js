@@ -271,12 +271,15 @@ function* saveAssignment({ payload }) {
       yield call(message.success, "This assignment is shared to your Canvas class also.");
     }
     if (!assignmentId && !payload.playlistModuleId) return;
+
+    const prevLocState = yield select(state => state.router.location.state);
     yield put(
-      push(
-        `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
+      push({
+        pathname: `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
-        }/assign/${assignmentId}`
-      )
+        }/assign/${assignmentId}`,
+        state: prevLocState
+      })
     );
   } catch (err) {
     console.error("error for save assignment", err);

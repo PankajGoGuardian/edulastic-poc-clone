@@ -69,10 +69,10 @@ class SuccessPage extends React.Component {
   }
 
   handleAssign = () => {
-    const { test, history, isAssignSuccess, isRegradeSuccess } = this.props;
+    const { test, history, isAssignSuccess, isRegradeSuccess, assignment } = this.props;
     const { _id } = test;
     if (isAssignSuccess || isRegradeSuccess) {
-      history.push(`/author/assignments`);
+      history.push(`/author/classboard/${assignment._id}/${assignment.class?.[0]?._id}`);
     } else {
       history.push(`/author/assignments/${_id}`);
     }
@@ -85,11 +85,19 @@ class SuccessPage extends React.Component {
   };
 
   renderHeaderButton = () => {
-    const { isAssignSuccess, isPlaylist, isRegradeSuccess } = this.props;
+    const { isAssignSuccess, isPlaylist, isRegradeSuccess, history, location } = this.props;
+    const { fromText, toUrl } = location.state || {};
     return (
-      <EduButton data-cy="assignButton" onClick={this.handleAssign}>
-        {isAssignSuccess || isRegradeSuccess ? "VIEW RESPONSE" : "ASSIGN"}
-      </EduButton>
+      <>
+        {(isAssignSuccess || isRegradeSuccess) && (
+          <EduButton isGhost data-cy="assignButton" onClick={() => history.push(toUrl)}>
+            {`Return to ${fromText}`}
+          </EduButton>
+        )}
+        <EduButton data-cy="assignButton" onClick={this.handleAssign}>
+          {isAssignSuccess || isRegradeSuccess ? "Go to Live Classboard" : "ASSIGN"}
+        </EduButton>
+      </>
     );
   };
 
@@ -129,7 +137,7 @@ class SuccessPage extends React.Component {
     const isOwner = authors.some(o => o._id === userId);
     const playlistBreadCrumbData = [
       {
-        title: "PLAYLIST",
+        title: "MY PLAYLIST",
         to: "/author/playlists"
       },
       {
@@ -163,6 +171,19 @@ class SuccessPage extends React.Component {
       }
     ];
     const gradeSubject = { grades, subjects };
+
+    const getBreadcrumbData = () => {
+      const data = isPlaylist ? playlistBreadCrumbData : breadCrumbData;
+      if (this.props.location.state?.fromText) {
+        const { fromText, toUrl } = this.props.location.state;
+        data[0] = {
+          title: fromText,
+          to: toUrl
+        };
+      }
+      return data;
+    };
+
     return (
       <div>
         <ShareModal
@@ -178,7 +199,7 @@ class SuccessPage extends React.Component {
 
         <Container>
           <SecondHeader>
-            <BreadCrumb data={isPlaylist ? playlistBreadCrumbData : breadCrumbData} style={{ position: "unset" }} />
+            <BreadCrumb data={getBreadcrumbData()} style={{ position: "unset" }} />
           </SecondHeader>
           <FlexContainerWrapper isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
             {(isAssignSuccess || isRegradeSuccess) && (

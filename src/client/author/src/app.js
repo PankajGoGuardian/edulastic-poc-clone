@@ -260,13 +260,13 @@ const Author = ({
                     <Route
                       exact
                       path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
-                      component={props => <AssignTest {...props} isPlaylist from="favouritePlaylist" />}
+                      component={props => <AssignTest {...props} isPlaylist from="myPlaylist" />}
                     />
 
                     <Route
                       exact
                       path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
-                      component={props => <AssignTest {...props} isPlaylist from="favouritePlaylist" />}
+                      component={props => <AssignTest {...props} isPlaylist from="myPlaylist" />}
                     />
                     <Route
                       exact

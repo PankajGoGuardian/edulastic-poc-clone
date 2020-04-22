@@ -740,7 +740,7 @@ function* useThisPlayListSaga({ payload }) {
       yield put(
         push({
           pathname: `/author/playlists/playlist/${_id}/use-this`,
-          state: { from: "favouritePlaylist" }
+          state: { from: "myPlaylist" }
         })
       );
       yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }));

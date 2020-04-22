@@ -150,14 +150,17 @@ class ModuleRow extends Component {
       }
     });
     setSelectedItemsForAssign(moduleItemsIds);
-    history.push(`/author/playlists/assignments/${playlistId}/${module._id}`);
+    history.push({
+      pathname: `/author/playlists/assignments/${playlistId}/${module._id}`,
+      state: { from: "myPlaylist", fromText: "My Playlist", toUrl: `/author/playlists/playlist/${playlistId}/use-this` }
+    });
   };
 
   assignTest = (moduleId, testId) => {
     const { history, playlistId, location } = this.props;
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
-      state: location.state
+      state: { from: "myPlaylist", fromText: "My Playlist", toUrl: `/author/playlists/playlist/${playlistId}/use-this` }
     });
   };
 

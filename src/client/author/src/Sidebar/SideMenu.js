@@ -178,7 +178,7 @@ class SideMenu extends Component {
     const { path } = this.MenuItems[item.key];
     if (path !== undefined) {
       if (path.match(/playlists\/.{24}\/use-this/)) {
-        history.push({ pathname: `/${path}`, state: { from: "favouritePlaylist" } });
+        history.push({ pathname: `/${path}`, state: { from: "myPlaylist" } });
       } else {
         history.push(`/${path}`);
       }

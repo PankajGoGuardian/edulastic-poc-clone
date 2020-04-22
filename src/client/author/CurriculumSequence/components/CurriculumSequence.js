@@ -791,46 +791,49 @@ class CurriculumSequence extends Component {
                     <SubTopBar>
                       <SubTopBarContainer active={isContentExpanded} mode={isManageContentActive ? "embedded" : mode}>
                         <CurriculumSubHeaderRow>
-                          <SubHeaderTitleContainer maxWidth={enableCustomize ? "40%" : "60%"}>
+                          <SubHeaderTitleContainer>
                             <SubHeaderDescription>{description}</SubHeaderDescription>
                           </SubHeaderTitleContainer>
-                          {!enableCustomize && (
-                            <SubHeaderInfoCardWrapper>
-                              {subHeaderIcon1}
-                              {subHeaderIcon2}
-                            </SubHeaderInfoCardWrapper>
-                          )}
-                          {enableCustomize && subHeaderIcon1}
-                          {enableCustomize && subHeaderIcon2}
-                          {enableCustomize &&
-                            (isManageContentActive && cloneId ? (
-                              <DraftModeActionsWrapper>
+                          <RightColumn>
+                            {!enableCustomize && (
+                              <SubHeaderInfoCardWrapper>
+                                {subHeaderIcon1}
+                                {subHeaderIcon2}
+                              </SubHeaderInfoCardWrapper>
+                            )}
+                            {enableCustomize && subHeaderIcon1}
+                            {enableCustomize && subHeaderIcon2}
+                            {enableCustomize &&
+                              (isManageContentActive && cloneId ? (
+                                <DraftModeActionsWrapper>
+                                  <StyledButton
+                                    width="100px"
+                                    data-cy="cancel-customize"
+                                    onClick={() => cancelPlaylistCustomize({ parentId })}
+                                  >
+                                    Cancel
+                                  </StyledButton>
+                                  <StyledButton
+                                    width="100px"
+                                    data-cy="publish-customized-playlist"
+                                    onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                                    isManageContentActive={isManageContentActive}
+                                  >
+                                    Update
+                                  </StyledButton>
+                                </DraftModeActionsWrapper>
+                              ) : (
                                 <StyledButton
-                                  width="100px"
-                                  data-cy="cancel-customize"
-                                  onClick={() => cancelPlaylistCustomize({ parentId })}
-                                >
-                                  Cancel
-                                </StyledButton>
-                                <StyledButton
-                                  width="100px"
-                                  data-cy="publish-customized-playlist"
-                                  onClick={() => publishCustomizedPlaylist({ id: cloneId, unlinkFromId: parentId })}
+                                  width="135px"
+                                  style={{ marginLeft: "30px" }}
+                                  data-cy="manage-content"
+                                  onClick={toggleManageContentClick}
                                   isManageContentActive={isManageContentActive}
                                 >
-                                  Update
+                                  Manage Content
                                 </StyledButton>
-                              </DraftModeActionsWrapper>
-                            ) : (
-                              <StyledButton
-                                width="135px"
-                                data-cy="manage-content"
-                                onClick={toggleManageContentClick}
-                                isManageContentActive={isManageContentActive}
-                              >
-                                Manage Content
-                              </StyledButton>
-                            ))}
+                              ))}
+                          </RightColumn>
                         </CurriculumSubHeaderRow>
                       </SubTopBarContainer>
                     </SubTopBar>
@@ -1265,9 +1268,16 @@ const CurriculumSubHeaderRow = styled.div`
   margin-bottom: ${props => props.marginBottom || "0px"};
 `;
 
+const RightColumn = styled.div`
+  display: flex;
+  width: 55%;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
 const SubHeaderTitleContainer = styled.div`
   min-width: 200px;
-  max-width: ${props => props.maxWidth};
+  width: 45%;
   word-break: break-word;
   @media only screen and (max-width: ${tabletWidth}) {
     max-width: 100%;
@@ -1307,8 +1317,9 @@ const SubHeaderInfoCard = styled.div`
 
 const SubHeaderInfoCardText = styled.div`
   font-weight: 600;
-  padding-left: 10px;
+  padding-left: 5px;
   color: ${titleColor};
+  text-transform: uppercase;
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     font-size: 9px;
@@ -1350,4 +1361,5 @@ const DraftModeActionsWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap-reverse;
+  margin-left: 15px;
 `;

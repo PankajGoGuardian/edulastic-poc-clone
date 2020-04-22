@@ -1,6 +1,6 @@
 import { EduButton } from "@edulastic/common";
 import { Col, Icon, Input, message, Row } from "antd";
-import { get } from "lodash";
+import { get, upperFirst } from "lodash";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
@@ -16,7 +16,8 @@ import {
   setEDitableAction,
   setEditingIndexAction,
   setStandardsProficiencyProfileNameAction,
-  updateStandardsProficiencyAction
+  updateStandardsProficiencyAction,
+  setConflitAction
 } from "../../ducks";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 import {
@@ -80,9 +81,28 @@ function ProfileRow(props) {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleteText, setDeleteText] = useState("");
   const proficiencyTableInstance = useRef();
-
-  const { _id, index, deleteRow, setEditing, active, readOnly, setName, onDuplicate, decay, noOfAssessments } = props;
+  const {
+    _id,
+    index,
+    deleteRow,
+    setEditing,
+    active,
+    readOnly,
+    setName,
+    onDuplicate,
+    decay,
+    noOfAssessments,
+    setDeleteProficiencyName,
+    conflict
+  } = props;
   const profileName = get(props, "profile.name", "");
+
+  useEffect(() => {
+    if (conflict) {
+      setConfirmVisible(false);
+    }
+  }, [conflict]);
+
   return (
     <ListItemStyled>
       <ProfileModal
@@ -97,7 +117,10 @@ function ProfileRow(props) {
           <EduButton
             disabled={deleteText.toUpperCase() != "DELETE"}
             loading={props.loading}
-            onClick={() => deleteRow(_id)}
+            onClick={() => {
+              deleteRow(_id);
+              setDeleteProficiencyName(profileName);
+            }}
           >
             YES, DELETE
           </EduButton>
@@ -204,13 +227,21 @@ function StandardsProficiency(props) {
     setEditingIndex,
     setName,
     setEditable,
-    editable
+    editable,
+    conflict,
+    error
   } = props;
   const showSpin = loading || updating || creating;
   const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
+  const [conflictModalVisible, setConflictModalVisible] = useState(false);
+  const [deleteProficiencyName, setDeleteProficiencyName] = useState("");
+
+  useEffect(() => {
+    setConflictModalVisible(conflict);
+  }, [conflict]);
 
   const handleProfileLimit = () => {
     const canCreateProfile = props.profiles.filter(x => x.createdBy?._id === props.userId).length <= 10;
@@ -268,6 +299,32 @@ function StandardsProficiency(props) {
 
   return (
     <StandardsProficiencyDiv>
+      <ProfileModal
+        title="Delete Profile"
+        visible={conflictModalVisible}
+        onCancel={() => {
+          setConflictModalVisible(false);
+          props.setConflitAction(false);
+        }}
+        footer={[
+          <EduButton
+            isGhost
+            onClick={() => {
+              props.setConflitAction(false);
+              setConflictModalVisible(false);
+            }}
+          >
+            OK
+          </EduButton>
+        ]}
+      >
+        <div className="content">
+          <p>
+            <BlueBold>{deleteProficiencyName}</BlueBold> is set as the default value for{" "}
+            <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
+          </p>
+        </div>
+      </ProfileModal>
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -322,6 +379,8 @@ function StandardsProficiency(props) {
                 deleteRow={remove}
                 loading={showSpin}
                 decay={get(profile, "decay", "")}
+                setDeleteProficiencyName={setDeleteProficiencyName}
+                conflict={conflict}
                 noOfAssessments={get(profile, "noOfAssessments", "")}
               />
             )}
@@ -342,7 +401,9 @@ const enhance = connect(
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     userId: getUserId(state),
-    editingIndex: get(state, "standardsProficiencyReducer.editingIndex")
+    editingIndex: get(state, "standardsProficiencyReducer.editingIndex"),
+    conflict: get(state, ["standardsProficiencyReducer", "conflict"], false),
+    error: get(state, ["standardsProficiencyReducer", "error"], {})
   }),
   {
     create: createStandardsProficiencyAction,
@@ -351,7 +412,8 @@ const enhance = connect(
     remove: deleteStandardsProficiencyAction,
     setEditingIndex: setEditingIndexAction,
     setName: setStandardsProficiencyProfileNameAction,
-    setEditable: setEDitableAction
+    setEditable: setEDitableAction,
+    setConflitAction: setConflitAction
   }
 );
 

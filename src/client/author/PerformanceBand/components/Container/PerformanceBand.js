@@ -1,5 +1,5 @@
 import { Button, Col, Icon, message, Row, Input } from "antd";
-import { get } from "lodash";
+import { get, upperFirst } from "lodash";
 import React, { useEffect, useState, useRef } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -16,7 +16,8 @@ import {
   setPerformanceBandNameAction,
   setPerformanceBandChangesAction,
   setEditingIndexAction,
-  setEditableAction
+  setEditableAction,
+  setConflitAction
 } from "../../ducks";
 import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
 import {
@@ -55,7 +56,9 @@ function ProfileRow({
   setName,
   onDuplicate,
   setEditable,
-  hideEdit
+  hideEdit,
+  conflict,
+  setDeleteProfileName
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
@@ -63,6 +66,10 @@ function ProfileRow({
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleteText, setDeleteText] = useState("");
   const performanceBandInstance = useRef();
+
+  useEffect(() => {
+    if (conflict) setConfirmVisible(false);
+  }, [conflict]);
 
   return (
     <ListItemStyled>
@@ -81,7 +88,14 @@ function ProfileRow({
           >
             NO, CANCEL
           </EduButton>,
-          <EduButton disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+          <EduButton
+            disabled={deleteText.toUpperCase() != "DELETE"}
+            loading={loading}
+            onClick={() => {
+              remove(_id);
+              setDeleteProfileName(name);
+            }}
+          >
             YES, DELETE
           </EduButton>
         ]}
@@ -187,7 +201,9 @@ export function PerformanceBandAlt(props) {
     editingIndex,
     setEditingIndex,
     editable,
-    setEditable
+    setEditable,
+    conflict,
+    error
   } = props;
 
   const showSpin = loading || updating || creating;
@@ -197,6 +213,12 @@ export function PerformanceBandAlt(props) {
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [profileName, setProfileName] = useState("");
+  const [conflictModalVisible, setConflictModalVisible] = useState(false);
+  const [deleteProfileName, setDeleteProfileName] = useState("");
+
+  useEffect(() => {
+    setConflictModalVisible(conflict);
+  }, [conflict]);
 
   const handleProfileLimit = () => {
     const canCreateProfile = profiles.filter(x => x.createdBy?._id === currentUserId).length <= 10;
@@ -276,6 +298,33 @@ export function PerformanceBandAlt(props) {
 
   return (
     <PerformanceBandDiv>
+      <ProfileModal
+        title="Delete Profile"
+        visible={conflictModalVisible}
+        onCancel={() => {
+          setConflictModalVisible(false);
+          props.setConflitAction(false);
+        }}
+        footer={[
+          <EduButton
+            isGhost
+            onClick={() => {
+              props.setConflitAction(false);
+              setConflictModalVisible(false);
+            }}
+          >
+            OK
+          </EduButton>
+        ]}
+      >
+        <div className="content">
+          <p>
+            <BlueBold>{deleteProfileName}</BlueBold> is set as the default value for{" "}
+            <BlueBold>{upperFirst(error?.type)} Tests</BlueBold>. Please change the Test Setting before deleting.
+          </p>
+        </div>
+      </ProfileModal>
+
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
@@ -328,6 +377,8 @@ export function PerformanceBandAlt(props) {
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
                 setName={setName}
+                conflict={conflict}
+                setDeleteProfileName={setDeleteProfileName}
                 savePerformance={({ _id: id, performanceBand, ...rest }) => {
                   props.updateLocal({ id, data: performanceBand });
                 }}
@@ -348,6 +399,8 @@ const enhance = compose(
       creating: get(state, ["performanceBandReducer", "creating"], false),
       profiles: get(state, ["performanceBandReducer", "profiles"], []),
       editingIndex: get(state, ["performanceBandReducer", "editingIndex"]),
+      conflict: get(state, ["performanceBandReducer", "conflict"], false),
+      error: get(state, ["performanceBandReducer", "error"], {}),
       editable: state?.performanceBandReducer?.editable,
       orgId: getUserOrgId(state),
       role: getUserRole(state),
@@ -361,7 +414,8 @@ const enhance = compose(
       updateLocal: setPerformanceBandLocalAction,
       setName: setPerformanceBandNameAction,
       setEditingIndex: setEditingIndexAction,
-      setEditable: setEditableAction
+      setEditable: setEditableAction,
+      setConflitAction: setConflitAction
     }
   )
 );

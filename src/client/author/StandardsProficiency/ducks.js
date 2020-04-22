@@ -20,8 +20,10 @@ const SET_STANDARDS_CALCTYPE = "[Standards Proficiency] set calctype";
 const SET_STANDARDS_DECAYINGATTR = "[Standards Proficiency] set decaying attribute value";
 const SET_STANDARDS_MOVINGAVRATTR = "[Standards Proficiency] set moving average value value";
 const DELETE_STANDARDS_PROFICIENCY = "[Standards Proficiency] delete";
+const DELETE_STANDARDS_PROFICIENCY_ERROR = "[Standards Proficiency] delete error";
 const SET_EDITING_INDEX = "[Standards Proficiency] set editing index";
 const SET_EDITABLE = "[Standards Proficiency] set editable";
+const SET_CONFLICT = "[Standards Proficiency] set conflict";
 
 export const receiveStandardsProficiencyAction = createAction(RECEIVE_STANDARDS_PROFICIENCY_REQUEST);
 export const receiveStandardsProficiencySuccessAction = createAction(RECEIVE_STANDARDS_PROFICIENCY_SUCCESS);
@@ -37,8 +39,10 @@ export const setStandardsProficiencyProfileNameAction = createAction(SET_STANDAR
 
 export const setEditingIndexAction = createAction(SET_EDITING_INDEX);
 export const setEDitableAction = createAction(SET_EDITABLE);
+export const setConflitAction = createAction(SET_CONFLICT);
 
 export const deleteStandardsProficiencyAction = createAction(DELETE_STANDARDS_PROFICIENCY);
+export const deleteStandardsProficiencyErrorAction = createAction(DELETE_STANDARDS_PROFICIENCY_ERROR);
 
 export const setScaleDataAction = createAction(SET_STANDARDS_SCALE_DATA);
 export const setCalcTypeAction = createAction(SET_STANDARDS_CALCTYPE);
@@ -156,6 +160,13 @@ export const reducer = createReducer(initialState, {
     const { value, index } = payload;
     state.editingIndex = index;
     state.editable = value;
+  },
+  [DELETE_STANDARDS_PROFICIENCY_ERROR]: (state, { payload }) => {
+    state.error = payload;
+    state.conflict = true;
+  },
+  [SET_CONFLICT]: (state, { payload }) => {
+    state.conflict = payload;
   }
 });
 
@@ -208,8 +219,11 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
     yield put(receiveStandardsProficiencyAction());
     yield call(message.success, "Standard Proficiency profile deleted successfully.");
   } catch (err) {
-    console.warn("error deleting standardsProf", err);
-    yield call(message.error, "Deleting standards proficiency failed");
+    if (err.status === 409) {
+      yield put(deleteStandardsProficiencyErrorAction({ type: err.data["0"] }));
+    } else {
+      yield call(message.error, "Deleting standards proficiency failed");
+    }
   }
 }
 

@@ -16,7 +16,9 @@ const CREATE_PERFORMANCE_BAND_REQUEST = "[Performance Band] create data request"
 const CREATE_PERFORMANCE_BAND_SUCCESS = "[Performance Band] create data success";
 const CREATE_PERFORMANCE_BAND_ERROR = "[Performance Band] create data error";
 const SET_LOADING = "[Performance Band] set loading";
+const SET_CONFLICT = "[Performance Band] set conflict";
 const DELETE_PERFORMANCE_BAND_REQUEST = "[Performance Band] delete request";
+const DELETE_PERFORMANCE_BAND_ERROR = "[Performance Band] delete error";
 const SET_PERFORMANCE_BAND_NAME = "[Performance Band] set name";
 const SET_PERFORMANCE_BAND_EDITING_INDEX = "[Performance Band] set editing index";
 const SET_PERFORMANCE_BAND_EDITABLE = "[Performance Band] set editable";
@@ -40,7 +42,9 @@ export const setEditingIndexAction = createAction(SET_PERFORMANCE_BAND_EDITING_I
 export const setEditableAction = createAction(SET_PERFORMANCE_BAND_EDITABLE);
 
 const setLoadingAction = createAction(SET_LOADING);
+export const setConflitAction = createAction(SET_CONFLICT);
 export const deletePerformanceBandAction = createAction(DELETE_PERFORMANCE_BAND_REQUEST);
+export const deletePerformanceBandErrorAction = createAction(DELETE_PERFORMANCE_BAND_ERROR);
 export const setPerformanceBandNameAction = createAction(SET_PERFORMANCE_BAND_NAME);
 
 const statePerformanceBandSelector = state => state.performanceBandReducer;
@@ -72,7 +76,8 @@ const initialState = {
   creating: false,
   createError: null,
   editingIndex: undefined,
-  editable: false
+  editable: false,
+  conflict: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -146,6 +151,13 @@ export const reducer = createReducer(initialState, {
     const { value, index } = payload;
     state.editable = value;
     state.editingIndex = index;
+  },
+  [DELETE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
+    state.error = payload;
+    state.conflict = true;
+  },
+  [SET_CONFLICT]: (state, { payload }) => {
+    state.conflict = payload;
   }
 });
 
@@ -208,9 +220,14 @@ function* deletePerformanceBandSaga({ payload }) {
     yield put(receivePerformanceBandAction());
     yield call(message.success, "Performance Band profile deleted successfully.");
   } catch (err) {
-    const errorMessage = "deleting PerformanceBand is failing";
-    yield call(message.error, errorMessage);
-    yield put(createPerformanceBandErrorAction({ error: errorMessage }));
+    yield put(setLoadingAction(false));
+    if (err.status === 409) {
+      yield put(deletePerformanceBandErrorAction({ type: err.data["0"] }));
+    } else {
+      const errorMessage = "Deleting PerformanceBand is failing";
+      yield call(message.error, errorMessage);
+      yield put(createPerformanceBandErrorAction({ error: errorMessage }));
+    }
   }
 }
 

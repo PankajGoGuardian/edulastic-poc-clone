@@ -644,6 +644,8 @@ var mixAndMatchEvaluator = /*#__PURE__*/ (function() {
         maths,
         _userResponse$mathUni2,
         mathUnits,
+        _maths,
+        _mathUnits,
         alt_inputs,
         alt_dropdowns,
         altMathUnits,
@@ -683,6 +685,14 @@ var mixAndMatchEvaluator = /*#__PURE__*/ (function() {
                 (maths = _userResponse$maths2 === void 0 ? {} : _userResponse$maths2),
                 (_userResponse$mathUni2 = userResponse.mathUnits),
                 (mathUnits = _userResponse$mathUni2 === void 0 ? {} : _userResponse$mathUni2);
+              _maths = (0, _filterEmptyUserAnswers.filterEmptyAnswers)({
+                type: "maths",
+                userAnswers: maths
+              });
+              _mathUnits = (0, _filterEmptyUserAnswers.filterEmptyAnswers)({
+                type: "mathWithUnits",
+                userAnswers: mathUnits
+              });
               alt_inputs = altResponses.map(function(alt_res) {
                 return _objectSpread(
                   {
@@ -756,64 +766,64 @@ var mixAndMatchEvaluator = /*#__PURE__*/ (function() {
               _context6.t1 = validResponse;
 
               if (!_context6.t1) {
-                _context6.next = 16;
+                _context6.next = 18;
                 break;
               }
 
-              _context6.next = 15;
+              _context6.next = 17;
               return mixAndMatchMathEvaluator({
-                userResponse: maths,
+                userResponse: _maths,
                 validation: {
                   validResponse: validResponse,
                   altResponses: altResponses
                 }
               });
 
-            case 15:
+            case 17:
               _context6.t1 = _context6.sent;
 
-            case 16:
+            case 18:
               _context6.t0 = _context6.t1;
 
               if (_context6.t0) {
-                _context6.next = 19;
+                _context6.next = 21;
                 break;
               }
 
               _context6.t0 = {};
 
-            case 19:
+            case 21:
               mathEvaluation = _context6.t0;
               _context6.t3 = validResponse.mathUnits;
 
               if (!_context6.t3) {
-                _context6.next = 25;
+                _context6.next = 27;
                 break;
               }
 
-              _context6.next = 24;
+              _context6.next = 26;
               return mixAndMatchMathEvaluator({
-                userResponse: mathUnits,
+                userResponse: _mathUnits,
                 validation: {
                   validResponse: validResponse.mathUnits,
                   altResponses: altMathUnits
                 }
               });
 
-            case 24:
+            case 26:
               _context6.t3 = _context6.sent;
 
-            case 25:
+            case 27:
               _context6.t2 = _context6.t3;
 
               if (_context6.t2) {
-                _context6.next = 28;
+                _context6.next = 30;
                 break;
               }
 
               _context6.t2 = {};
 
-            case 28:
+            case 30:
               mathUnitsEvaluation = _context6.t2;
               evaluation = _objectSpread(
                 {},
@@ -848,7 +858,7 @@ var mixAndMatchEvaluator = /*#__PURE__*/ (function() {
                 maxScore: questionScore
               });
 
-            case 35:
+            case 37:
             case "end":
               return _context6.stop();
           }

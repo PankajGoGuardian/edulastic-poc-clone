@@ -47,7 +47,7 @@ const columns = [
     className: "mastery-column",
     sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
     render: mastery => (
-      <MasteryCell>
+      <MasteryCell title={mastery.masteryLevel}>
         <span style={{ color: mastery.color }}>{mastery.shortName}</span>
       </MasteryCell>
     )

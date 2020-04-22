@@ -1,16 +1,17 @@
-import styled from "styled-components";
-import { Modal } from "antd";
 import {
-  white,
-  smallDesktopWidth,
-  themeColor,
-  playlistTabLink,
-  greyThemeLight,
   backgrounds,
   borderGrey4,
+  greyThemeDark1,
+  greyThemeLight,
   mainBgColor,
-  mediumDesktopExactWidth
+  mediumDesktopExactWidth,
+  playlistTabLink,
+  smallDesktopWidth,
+  themeColor,
+  white
 } from "@edulastic/colors";
+import { Modal } from "antd";
+import styled from "styled-components";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 export const ManageContentOuterWrapper = styled.div`
@@ -19,6 +20,44 @@ export const ManageContentOuterWrapper = styled.div`
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     width: 340px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    position: fixed;
+    right: 0px;
+    top: 62px;
+    min-height: calc(100vh - 62px);
+    max-height: calc(100vh - 62px);
+    background: white;
+    padding: 15px;
+    border: 1px solid ${greyThemeLight};
+
+    .inner-wrapper {
+      overflow: auto;
+    }
+  }
+`;
+
+export const ToggleManageContent = styled.div`
+  display: none;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 32px;
+    height: 32px;
+    background: white;
+    border-radius: 10px 0px 0px 10px;
+    border: 1px solid ${greyThemeLight};
+    border-right: none;
+    position: absolute;
+    top: 10px;
+    left: -32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      width: 12px;
+      height: 12px;
+      fill: ${greyThemeDark1};
+    }
   }
 `;
 

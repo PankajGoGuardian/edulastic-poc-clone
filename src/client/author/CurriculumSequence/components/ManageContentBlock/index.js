@@ -1,35 +1,33 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { uniq, pick } from "lodash";
-import { connect } from "react-redux";
-import { Dropdown, Menu, Spin, Empty, message } from "antd";
-import { test as testsConstants } from "@edulastic/constants";
-import { FlexContainer, EduButton } from "@edulastic/common";
-import { IconFilter } from "@edulastic/icons";
-import { white, themeColor } from "@edulastic/colors";
 import { curriculumSequencesApi } from "@edulastic/api";
+import { themeColor, white } from "@edulastic/colors";
+import { FlexContainer } from "@edulastic/common";
+import { test as testsConstants } from "@edulastic/constants";
+import { IconClose, IconFilter } from "@edulastic/icons";
+import { Dropdown, Empty, Menu, message, Spin } from "antd";
+import { pick, uniq } from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import AssessmentPlayer from "../../../../assessment";
-import ResourceItem from "../ResourceItem";
+import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
 import { toggleManageModulesVisibilityCSAction } from "../../ducks";
-import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
+import { submitLTIForm } from "../CurriculumModuleRow";
+import ManageModulesModal from "../ManageModulesModal";
+import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
+import ResourceItem from "../ResourceItem";
+import ExternalLTIModalForm from "./components/ExternalLTIModalContent";
 import slice from "./ducks";
 import {
-  ManageContentOuterWrapper,
-  ManageContentContainer,
-  SearchByNavigationBar,
-  SearchByTab,
-  SearchBar,
-  FilterBtn,
   ActionsContainer,
-  ManageModuleBtn,
-  ResourceDataList,
+  FilterBtn,
   LoaderWrapper,
-  CustomModal,
-  ModalWrapper
+  ManageContentContainer,
+  ManageContentOuterWrapper,
+  ManageModuleBtn,
+  ModalWrapper,
+  ResourceDataList,
+  SearchBar,
+  ToggleManageContent
 } from "./styled";
-import PlaylistTestBoxFilter from "../PlaylistTestBoxFilter";
-import ManageModulesModal from "../ManageModulesModal";
-import ExternalLTIModalForm from "./components/ExternalLTIModalContent";
-import { submitLTIForm } from "../CurriculumModuleRow";
 
 // Static resources data
 const resourceData = [
@@ -128,7 +126,8 @@ const ManageContentBlock = props => {
     getCurrentDistrictUsers,
     userFeatures,
     fetchExternalToolProvidersAction,
-    externalToolsProviders
+    externalToolsProviders,
+    toggleManageContent
   } = props;
 
   const lastResourceItemRef = observeElement(fetchTests, tests);
@@ -261,37 +260,41 @@ const ManageContentBlock = props => {
 
   return (
     <ManageContentOuterWrapper>
-      <ActionsContainer>
-        {isDifferentiationTab ? (
-          <>
-            <ManageModuleBtn active justify="center" onClick={onShowManageContent}>
-              manage content
-            </ManageModuleBtn>
-            <Dropdown overlay={menu} placement="topCenter">
-              <ManageModuleBtn justify="space-between">
-                add resource
-                <i class="fa fa-chevron-down" aria-hidden="true" />
+      <ToggleManageContent onClick={toggleManageContent}>
+        <IconClose />
+      </ToggleManageContent>
+      <div className="inner-wrapper">
+        <ActionsContainer>
+          {isDifferentiationTab ? (
+            <>
+              <ManageModuleBtn active justify="center" onClick={onShowManageContent}>
+                manage content
               </ManageModuleBtn>
-            </Dropdown>
-          </>
-        ) : (
-          <>
-            <Dropdown data-cy="add-resource" overlay={menu} placement="topCenter">
-              <ManageModuleBtn justify="space-between">
-                add resource
-                <i class="fa fa-chevron-down" aria-hidden="true" />
+              <Dropdown overlay={menu} placement="topCenter">
+                <ManageModuleBtn justify="space-between">
+                  add resource
+                  <i class="fa fa-chevron-down" aria-hidden="true" />
+                </ManageModuleBtn>
+              </Dropdown>
+            </>
+          ) : (
+            <>
+              <Dropdown data-cy="add-resource" overlay={menu} placement="topCenter">
+                <ManageModuleBtn justify="space-between">
+                  add resource
+                  <i class="fa fa-chevron-down" aria-hidden="true" />
+                </ManageModuleBtn>
+              </Dropdown>
+
+              <ManageModuleBtn data-cy="ManageModules" justify="center" onClick={openManageModules}>
+                manage modules
               </ManageModuleBtn>
-            </Dropdown>
+            </>
+          )}
+        </ActionsContainer>
 
-            <ManageModuleBtn data-cy="ManageModules" justify="center" onClick={openManageModules}>
-              manage modules
-            </ManageModuleBtn>
-          </>
-        )}
-      </ActionsContainer>
-
-      <ManageContentContainer data-cy="play-list-search-container">
-        {/* <SearchByNavigationBar>
+        <ManageContentContainer data-cy="play-list-search-container">
+          {/* <SearchByNavigationBar>
         <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
           keywords
         </SearchByTab>
@@ -299,47 +302,47 @@ const ManageContentBlock = props => {
           standards
         </SearchByTab>
       </SearchByNavigationBar> */}
-        <FlexContainer>
-          <SearchBar
-            type="search"
-            placeholder={`Search by ${searchBy}`}
-            onChange={onSearchChange}
-            value={searchString}
-          />
-          <FilterBtn data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
-            <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
-          </FilterBtn>
-        </FlexContainer>
-        <br />
-        {isShowFilter ? (
-          <PlaylistTestBoxFilter
-            authoredList={[]} /// Send authors data
-            collectionsList={uniq(
-              [
-                ...testsConstants.collectionDefaultFilter?.filter(c => c?.value),
-                ...collections.map(o => ({ value: o?._id, text: o?.name }))
-              ],
-              "value"
-            )}
-            sourceList={sourceList}
-            filter={filter}
-            status={status}
-            authoredBy={authoredBy}
-            grades={grades}
-            subject={subject}
-            collection={collection}
-            sources={sources}
-            onFilterChange={onFilterChange}
-            onStatusChange={onStatusChange}
-            onAuthoredChange={onAuthoredChange}
-            onGradesChange={onGradesChange}
-            onSubjectChange={onSubjectChange}
-            onCollectionChange={onCollectionChange}
-            onSourceChange={onSourceChange}
-          />
-        ) : (
-          <>
-            {/* <SearchByNavigationBar justify="space-evenly">
+          <FlexContainer>
+            <SearchBar
+              type="search"
+              placeholder={`Search by ${searchBy}`}
+              onChange={onSearchChange}
+              value={searchString}
+            />
+            <FilterBtn data-cy="test-filter" onClick={toggleTestFilter} isActive={isShowFilter}>
+              <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+            </FilterBtn>
+          </FlexContainer>
+          <br />
+          {isShowFilter ? (
+            <PlaylistTestBoxFilter
+              authoredList={[]} /// Send authors data
+              collectionsList={uniq(
+                [
+                  ...testsConstants.collectionDefaultFilter?.filter(c => c?.value),
+                  ...collections.map(o => ({ value: o?._id, text: o?.name }))
+                ],
+                "value"
+              )}
+              sourceList={sourceList}
+              filter={filter}
+              status={status}
+              authoredBy={authoredBy}
+              grades={grades}
+              subject={subject}
+              collection={collection}
+              sources={sources}
+              onFilterChange={onFilterChange}
+              onStatusChange={onStatusChange}
+              onAuthoredChange={onAuthoredChange}
+              onGradesChange={onGradesChange}
+              onSubjectChange={onSubjectChange}
+              onCollectionChange={onCollectionChange}
+              onSourceChange={onSourceChange}
+            />
+          ) : (
+            <>
+              {/* <SearchByNavigationBar justify="space-evenly">
                 {resourceTabs.map(tab => (
                   <SearchByTab onClick={() => setSearchResourceBy(tab)} isTabActive={searchResourceBy === tab}>
                     {tab}
@@ -348,39 +351,42 @@ const ManageContentBlock = props => {
               </SearchByNavigationBar>
 
               <br /> */}
-            <ResourceDataList>
-              {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
-              {isLoading && loadedPage !== 0 && (
-                <LoaderWrapper>
-                  <Spin />
-                </LoaderWrapper>
-              )}
-            </ResourceDataList>
-          </>
-        )}
+              <ResourceDataList>
+                {isLoading && loadedPage === 0 ? <Spin /> : renderList()}
+                {isLoading && loadedPage !== 0 && (
+                  <LoaderWrapper>
+                    <Spin />
+                  </LoaderWrapper>
+                )}
+              </ResourceDataList>
+            </>
+          )}
 
-        {isManageModulesVisible && <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />}
+          {isManageModulesVisible && (
+            <ManageModulesModal visible={isManageModulesVisible} onClose={closeManageModules} />
+          )}
 
-        <ExternalLTIModalForm
-          onModalClose={onModalClose}
-          isShowExternalLTITool={isShowExternalLTITool}
-          externalToolsProviders={externalToolsProviders}
-          onChange={(key, value) => changeExternalLTIModal({ key, value })}
-          isAddNew={isAddNew}
-          setAddNew={setAddNew}
-          addLTIResource={addLTIResource}
-        />
-      </ManageContentContainer>
-      <ModalWrapper
-        footer={null}
-        visible={testPreviewModalVisible}
-        onCancel={closePreviewModal}
-        width="100%"
-        height="100%"
-        destroyOnClose
-      >
-        <AssessmentPlayer testId={selectedTestForPreview} preview closeTestPreviewModal={closePreviewModal} />
-      </ModalWrapper>
+          <ExternalLTIModalForm
+            onModalClose={onModalClose}
+            isShowExternalLTITool={isShowExternalLTITool}
+            externalToolsProviders={externalToolsProviders}
+            onChange={(key, value) => changeExternalLTIModal({ key, value })}
+            isAddNew={isAddNew}
+            setAddNew={setAddNew}
+            addLTIResource={addLTIResource}
+          />
+        </ManageContentContainer>
+        <ModalWrapper
+          footer={null}
+          visible={testPreviewModalVisible}
+          onCancel={closePreviewModal}
+          width="100%"
+          height="100%"
+          destroyOnClose
+        >
+          <AssessmentPlayer testId={selectedTestForPreview} preview closeTestPreviewModal={closePreviewModal} />
+        </ModalWrapper>
+      </div>
     </ManageContentOuterWrapper>
   );
 };

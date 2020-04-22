@@ -175,7 +175,8 @@ class CurriculumSequence extends Component {
     showConfirmRemoveModal: false,
     isPlayListEdited: false,
     dropPlaylistModalVisible: false,
-    curatedStudentPlaylists: []
+    curatedStudentPlaylists: [],
+    showSummary: false
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -426,7 +427,8 @@ class CurriculumSequence extends Component {
       isPlayListEdited,
       showConfirmRemoveModal,
       dropPlaylistModalVisible,
-      curatedStudentPlaylists
+      curatedStudentPlaylists,
+      showSummary
     } = this.state;
     const {
       expandedModules,
@@ -870,6 +872,7 @@ class CurriculumSequence extends Component {
                       subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
                       gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
                       collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
+                      toggleManageContent={toggleManageContentClick}
                     />
                   ) : null}
                   {urlHasUseThis &&
@@ -879,41 +882,47 @@ class CurriculumSequence extends Component {
                         subjectsFromCurriculumSequence={destinationCurriculumSequence?.subjects?.[0]}
                         gradesFromCurriculumSequence={destinationCurriculumSequence?.grades || []}
                         collectionFromCurriculumSequence={destinationCurriculumSequence?.collections?.[0]?._id}
+                        toggleManageContent={toggleManageContentClick}
                       />
                     ) : (
-                      <SummaryBlock>
-                        <SummaryBlockTitle>Summary</SummaryBlockTitle>
-                        <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
-                        <SummaryPieChart
-                          isStudent={isStudent}
-                          data={summaryData}
-                          totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
-                          colors={COLORS}
-                        />
-                        <Hr />
-                        <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
-                        <div style={{ width: "80%", margin: "20px auto" }}>
-                          {summaryData?.map(
-                            item =>
-                              ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
-                                <div style={{ opacity: item.hidden ? `.5` : `1` }}>
-                                  <Tooltip placement="topLeft" title={item.title || item.name}>
-                                    <ModuleTitle>{item.title || item.name}</ModuleTitle>
-                                  </Tooltip>
-                                  <ProgressBar
-                                    strokeColor={getProgressColor(item?.value)}
-                                    strokeWidth={13}
-                                    percent={item.value}
-                                    size="small"
-                                    color={item.value ? greyThemeDark1 : lightGrey2}
-                                    format={percent => (percent ? `${percent}%` : "NO DATA")}
-                                    padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
-                                  />
-                                </div>
-                              )
-                          )}
-                        </div>
-                      </SummaryBlock>
+                      <>
+                        <ToggleSummaryButton onClick={() => this.setState({ showSummary: !showSummary })}>
+                          {showSummary ? "Hide" : "Show"} summary
+                        </ToggleSummaryButton>
+                        <SummaryBlock showSummary={showSummary}>
+                          <SummaryBlockTitle>Summary</SummaryBlockTitle>
+                          <SummaryBlockSubTitle>Most Time Spent</SummaryBlockSubTitle>
+                          <SummaryPieChart
+                            isStudent={isStudent}
+                            data={summaryData}
+                            totalTimeSpent={summaryData?.map(x => x?.tSpent)?.reduce((a, c) => a + c, 0)}
+                            colors={COLORS}
+                          />
+                          <Hr />
+                          <SummaryBlockSubTitle>Module Proficiency</SummaryBlockSubTitle>
+                          <div style={{ width: "80%", margin: "20px auto" }}>
+                            {summaryData?.map(
+                              item =>
+                                ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
+                                  <div style={{ opacity: item.hidden ? `.5` : `1` }}>
+                                    <Tooltip placement="topLeft" title={item.title || item.name}>
+                                      <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                                    </Tooltip>
+                                    <ProgressBar
+                                      strokeColor={getProgressColor(item?.value)}
+                                      strokeWidth={13}
+                                      percent={item.value}
+                                      size="small"
+                                      color={item.value ? greyThemeDark1 : lightGrey2}
+                                      format={percent => (percent ? `${percent}%` : "NO DATA")}
+                                      padding={hasSummaryDataNoData ? "0px 30px 0px 0px" : "0px"}
+                                    />
+                                  </div>
+                                )
+                            )}
+                          </div>
+                        </SummaryBlock>
+                      </>
                     ))}
                 </StyledFlexContainer>
               </>
@@ -1019,6 +1028,28 @@ const Hr = styled.div`
   margin: 15px auto 30px auto;
 `;
 
+const ToggleSummaryButton = styled.div`
+  display: none;
+  min-width: 40px;
+  height: 32px;
+  padding: 0px 10px;
+  background: white;
+  border: 1px solid ${themeColor};
+  border-right: none;
+  border-radius: 10px 0px 0px 10px;
+  position: fixed;
+  right: 0;
+  top: 65px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    display: flex;
+  }
+`;
+
 const SummaryBlock = styled.div`
   width: 400px;
   min-height: 760px;
@@ -1038,6 +1069,15 @@ const SummaryBlock = styled.div`
 
   @media (max-width: ${mediumDesktopExactWidth}) {
     width: 340px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    position: fixed;
+    right: 0px;
+    top: 62px;
+    max-height: calc(100vh - 62px);
+    min-height: calc(100vh - 62px);
+    overflow: auto;
+    display: ${props => (props.showSummary ? "block" : "none")};
   }
 `;
 

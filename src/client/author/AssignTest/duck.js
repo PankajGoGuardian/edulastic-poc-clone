@@ -77,10 +77,8 @@ const initialState = {
 export const assignmentSettings = createReducer(initialState, {
   [UPDATE_ASSIGNMENT_SETTINGS]: (state, { payload }) => {
     Object.assign(state, payload);
-    if (
-      state.passwordPolicy &&
-      state.passwordPolicy === testConst.passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_DYNAMIC
-    ) {
+    testConst.passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_OFF;
+    if (state.passwordPolicy && state.passwordPolicy !== testConst.passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_OFF) {
       state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
     }
   }

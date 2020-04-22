@@ -2141,6 +2141,9 @@ iframe {
 }
 
 /* Migrated Question css */
+.migrated-question {
+  max-width: 910px; /*  v1 question container width*/
+}
 .migrated-question pre {
   display: block;
   padding: 9.5px;

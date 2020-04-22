@@ -315,7 +315,7 @@ const CustomEditor = ({
       videoInsertButtons: ["videoBack", "|", "videoByURL"],
       imageDefaultDisplay: "inline",
       linkAlwaysBlank: true, // adding to make link always open in blank
-      zIndex: 999,
+      zIndex: 997, // header 999 | dropdown 998
       imageDefaultWidth: imageDefaultWidth,
       videoDefaultWidth: 200,
       initOnClick,

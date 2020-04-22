@@ -57,7 +57,6 @@ const Item = ({
           checked={preview && valid !== undefined}
           dangerouslySetInnerHTML={{ __html: item }}
         />
-        {showPopover && !inPopover && "..."}
         {showIcon && <IconBox checked={showIcon}>{valid ? <IconCheck /> : <IconClose />}</IconBox>}
       </InnerWrapper>
     );

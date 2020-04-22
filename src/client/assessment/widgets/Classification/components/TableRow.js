@@ -71,7 +71,7 @@ const TableRow = ({
       minHeight: height,
       width: "100%",
       height: "100%",
-      overflow: "auto",
+      overflow: "hidden",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor,
       flex: 1

@@ -309,7 +309,7 @@ const CustomEditor = ({
     {
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
-      videoInsertButtons: ["videoBack", "|", "videoByURL", "videoEmbed"],
+      videoInsertButtons: ["videoBack", "|", "videoByURL"],
       imageDefaultDisplay: "inline",
       linkAlwaysBlank: true, // adding to make link always open in blank
       zIndex: 999,

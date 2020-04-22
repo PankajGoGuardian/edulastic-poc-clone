@@ -257,7 +257,7 @@ function* saveAssignment({ payload }) {
     });
     const assignment = result?.[0] ? formatAssignment(result[0]) : {};
     const isCanvasClass = assignment?.class?.some(c => !!c.cnvId);
-    yield put({ type: SET_ASSIGNMENT, payload: assignment });
+    yield put(setAssignmentAction(assignment));
     yield put(setAssignmentSavingAction(false));
     yield put(toggleHasCommonAssignmentsPopupAction(false));
     yield put(toggleHasDuplicateAssignmentPopupAction(false));
@@ -279,9 +279,9 @@ function* saveAssignment({ payload }) {
       )
     );
   } catch (err) {
-    console.error("error for save assignment", err);
     // enable button if call fails
     yield put(setAssignmentSavingAction(false));
+    console.error(err);
     if (err.status === 409) {
       if (err.data.commonStudents && err.data.commonStudents.length) {
         return yield put(updateAssignFailDataAction(err.data));

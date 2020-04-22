@@ -1065,9 +1065,7 @@ function* receiveTestByIdSaga({ payload }) {
         openPolicy:
           userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
             ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-            : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE,
-        passwordPolicy: entity.passwordPolicy,
-        passwordExpireIn: entity.passwordExpireIn
+            : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
       })
     );
   } catch (err) {

@@ -4,7 +4,7 @@ import { Modal, message } from "antd";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep } from "lodash";
 import produce from "immer";
-import { test as testContants } from "@edulastic/constants";
+import { test as testContants, roleuser } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import { markQuestionLabel } from "../Transformer";
@@ -36,6 +36,7 @@ import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 import { CLEAR_ITEM_EVALUATION, CHANGE_VIEW } from "../../author/src/constants/actions";
 import { addAutoselectGroupItems } from "../../author/TestPage/ducks";
 import { PREVIEW } from "../constants/constantsForQuestions";
+import { getUserRole } from "../../author/src/selectors/user";
 
 const { ITEM_GROUP_DELIVERY_TYPES } = testContants;
 
@@ -396,14 +397,22 @@ function* loadTest({ payload }) {
       payload: false
     });
   } catch (err) {
-    if (err.status === 403 && preview) {
-      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
-      Modal.destroyAll();
-    }
-    yield put({
-      type: SET_TEST_LOADING_ERROR
-    });
     console.error(err);
+    yield put({
+      type: SET_TEST_LOADING_ERROR,
+      payload: err
+    });
+    if (err.status === 403) {
+      if (preview) {
+        yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+        return Modal.destroyAll();
+      }
+      const userRole = yield select(getUserRole);
+      if (userRole === roleuser.STUDENT) {
+        message.error(err.data.message || "Failed loading the test");
+        return yield put(push("/home/assignments"));
+      }
+    }
   }
 }
 

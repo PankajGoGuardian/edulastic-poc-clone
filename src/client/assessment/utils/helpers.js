@@ -17,7 +17,7 @@ export const getFontSize = (fontSize, withRem = true) => {
     case "xxlarge":
       return withRem ? "1.5rem" : "24px";
     default:
-      return window.innerWidth < 1366 ? (withRem ? "0.875rem" : "14px") : withRem ? "1rem" : "16px";
+      return window.innerWidth < 1366 ? "16px" : withRem ? "1rem" : "16px";
   }
 };
 

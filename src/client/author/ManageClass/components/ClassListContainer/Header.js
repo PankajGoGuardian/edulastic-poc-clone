@@ -1,5 +1,5 @@
 import { EduButton, MainHeader, HeaderTabs } from "@edulastic/common";
-import { IconGoogleClassroom, IconManage, IconPlusCircle } from "@edulastic/icons";
+import { IconGoogleClassroom, IconManage, IconPlusCircle, IconClass, IconGroup } from "@edulastic/icons";
 import { StyledTabs } from "@edulastic/common/src/components/HeaderTabs";
 import { get } from "lodash";
 import { withNamespaces } from "react-i18next";
@@ -26,12 +26,12 @@ const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedI
 
   const pageNavButtons = [
     {
-      icon: null,
+      icon: <IconClass width="15px" height="15px" />,
       value: "class",
       text: "Classes"
     },
     {
-      icon: null,
+      icon: <IconGroup width="20px" height="15px" />,
       value: "group",
       text: "Groups"
     }
@@ -40,7 +40,7 @@ const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedI
   return (
     <MainHeader Icon={IconManage} headingText={t("common.manageClassTitle")}>
       <StyledTabs>
-        {pageNavButtons.map(({ value, text }, index) => {
+        {pageNavButtons.map(({ value, text, icon }, index) => {
           return (
             <HeaderTabs
               style={currentTab === value ? { cursor: "not-allowed" } : { cursor: "pointer" }}
@@ -48,6 +48,7 @@ const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedI
               isActive={currentTab === value}
               linkLabel={text}
               key={value}
+              icon={icon}
               onClickHandler={() => onClickHandler(value)}
             />
           );

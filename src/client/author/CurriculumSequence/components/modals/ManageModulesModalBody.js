@@ -194,7 +194,7 @@ const SortableModules = SortableContainer(props => (
 ));
 
 const ManageModulesModalBody = props => {
-  const [addState, toggleAddState] = useState(props.addState || false);
+  const [addState, toggleAddState] = useState(props.addState || true);
 
   const [addTitle, setAddTitle] = useState("");
   const [addDescription, setAddDescription] = useState("");
@@ -311,7 +311,7 @@ const ManageModulesModalBody = props => {
         )}
 
         {
-          <EduButton key="submit" type="primary" data-cy="addModule" onClick={() => toggleAddState(true)}>
+          <EduButton key="submit" type="primary" data-cy="addModule" onClick={() => toggleAddState(!addState)}>
             <IconPlusCircle color={white} width={15} height={15} />
             <span>ADD MODULE</span>
           </EduButton>

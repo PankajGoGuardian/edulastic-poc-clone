@@ -1,4 +1,9 @@
 {
   "presets": ["@babel/preset-env"],
-  "plugins": ["@babel/plugin-transform-runtime", "lodash", "@babel/plugin-proposal-optional-chaining"]
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    "lodash",
+    "@babel/plugin-proposal-optional-chaining", 
+    "@babel/plugin-proposal-nullish-coalescing-operator"
+  ]
 }

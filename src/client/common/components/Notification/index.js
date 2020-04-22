@@ -25,8 +25,9 @@ export const notificationMessage = ({
             href={buttonLink}
             target="_blank"
             style={{
-              "margin-top": "20px",
-              "margin-left": "0px"
+              marginTop: "20px",
+              marginLeft: "0px",
+              padding: "0px"
             }}
           >
             {buttonText}

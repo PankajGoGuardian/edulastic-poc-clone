@@ -130,66 +130,6 @@ export const DetailCardDesc = styled.div`
   font-size: 13px;
 `;
 
-export const DetailTable = styled(Table)`
-  padding: 24px;
-  .ant-table-thead > tr > th {
-    background: white;
-    border: none;
-    &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
-    & .ant-table-header-column .ant-table-column-sorters:hover::before {
-      background: white;
-    }
-    .ant-table-column-sorters {
-      text-transform: uppercase;
-      color: ${cardTitleColor};
-      font-size: 12px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      .ant-table-column-sorter {
-        position: relative;
-        top: -2px;
-        left: 5px;
-        .ant-table-column-sorter-inner {
-          .ant-table-column-sorter-up,
-          .ant-table-column-sorter-down {
-            font-size: 10px;
-          }
-        }
-        @media (max-width: ${smallDesktopWidth}) {
-          left: 0px;
-        }
-      }
-    }
-  }
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
-    @media (max-width: ${mobileWidth}) {
-      padding-right: 15px !important;
-      background-color: white;
-    }
-    @media (max-width: ${smallDesktopWidth}) {
-      padding: 8px 5px;
-    }
-  }
-  .ant-table-tbody > tr > td {
-    padding: 10px 16px;
-    background-color: ${lightGreySecondary};
-    border-bottom: 10px solid white;
-  }
-  @media (max-width: ${mobileWidthMax}) {
-    padding: 0px;
-    width: 100%;
-  }
-  i.anticon.anticon-caret-up,
-  i.anticon.anticon-caret-down {
-    display: none;
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    padding: 12px;
-  }
-`;
-
 export const StudnetCell = styled.div`
   color: ${secondaryTextColor};
   font-size: 14px;
@@ -322,6 +262,80 @@ export const MoreButton = styled.button`
   min-width: 100px;
 `;
 
+export const DetailTable = styled(Table)`
+  padding: 24px 16px;
+  .ant-table-thead > tr > th {
+    background: white;
+    border: none;
+    padding: 10px 8px;
+    &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+    & .ant-table-header-column .ant-table-column-sorters:hover::before {
+      background: white;
+    }
+    .ant-table-column-sorters {
+      text-transform: uppercase;
+      color: ${cardTitleColor};
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .ant-table-column-sorter {
+        position: relative;
+        top: -2px;
+        left: 5px;
+        .ant-table-column-sorter-inner {
+          .ant-table-column-sorter-up,
+          .ant-table-column-sorter-down {
+            font-size: 10px;
+          }
+        }
+        @media (max-width: ${smallDesktopWidth}) {
+          left: 0px;
+        }
+      }
+    }
+  }
+  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
+    @media (max-width: ${mobileWidth}) {
+      padding-right: 15px !important;
+      background-color: white;
+    }
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 8px 5px;
+    }
+  }
+  .ant-table-tbody {
+    text-align: left;
+    & > tr {
+      & > td {
+        background: ${white};
+        padding: 10px 8px;
+        border-color: #e9e9e9;
+        & > div {
+          width: 100%;
+          text-align: center;
+          margin: 0px auto;
+        }
+      }
+      &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+        background: #f2f3f2;
+      }
+    }
+  }
+  @media (max-width: ${mobileWidthMax}) {
+    padding: 0px;
+    width: 100%;
+  }
+  i.anticon.anticon-caret-up,
+  i.anticon.anticon-caret-down {
+    display: none;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 12px;
+  }
+`;
+
 export const TableData = styled(Table)`
   width: 100%;
   text-align: center;
@@ -340,6 +354,16 @@ export const TableData = styled(Table)`
           &:hover {
             background-color: ${white};
           }
+        }
+        &.performance-column,
+        &.mastery-column {
+          width: 200px;
+        }
+        &.standard-column {
+          width: 110px;
+        }
+        &.arrowIcon-column {
+          width: 50px;
         }
         .ant-table-header-column {
           .ant-table-column-sorters {
@@ -378,7 +402,7 @@ export const TableData = styled(Table)`
     & > tr {
       & > td {
         background: ${white};
-        padding: 10px 16px;
+        padding: 10px 8px;
         border-color: #e9e9e9;
         & > div {
           width: 100%;

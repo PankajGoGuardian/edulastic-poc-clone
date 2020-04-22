@@ -151,6 +151,7 @@ class TableDisplay extends Component {
         title: "Standards",
         dataIndex: "standard",
         key: "standard",
+        className: "standard-column",
         sorter: (a, b) => sortAlphaNum(a.standard.props.children, b.standard.props.children),
         render: text => <CustomStandardCell>{text}</CustomStandardCell>
       },
@@ -160,6 +161,7 @@ class TableDisplay extends Component {
         title: "Mastery Summary",
         dataIndex: "masterySummary",
         key: "masterySummary",
+        className: "mastery-column",
         sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
         render: text => (
           <MasterySummary
@@ -173,6 +175,7 @@ class TableDisplay extends Component {
         title: "Performance Summary %",
         key: "performanceSummary",
         dataIndex: "performanceSummary",
+        className: "performance-column",
         sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
         render: text => <PerformanceSummary>{round(text, 2) || 0}</PerformanceSummary>,
         defaultSortOrder: "descend"
@@ -180,7 +183,8 @@ class TableDisplay extends Component {
       {
         title: "",
         key: "icon",
-        dataIndex: "icon"
+        dataIndex: "icon",
+        className: "arrowIcon-column"
       }
     ];
     const submittedLength = testActivities.filter(act => act.status === "submitted").length;
@@ -285,11 +289,11 @@ export default connect(
 
 const CustomStandardCell = styled(StandardCell)`
   max-width: 120px;
+  margin: 0px !important;
 `;
 const CustomQuestionCell = styled(QuestionCell)`
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
   div {
     margin: 0px auto;
   }

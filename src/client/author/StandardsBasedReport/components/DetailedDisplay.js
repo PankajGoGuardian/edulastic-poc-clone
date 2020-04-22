@@ -44,6 +44,7 @@ const columns = [
     title: "Mastery",
     dataIndex: "mastery",
     key: "mastery",
+    className: "mastery-column",
     sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
     render: mastery => (
       <MasteryCell>
@@ -54,6 +55,7 @@ const columns = [
   {
     title: "Performance",
     dataIndex: "performance",
+    className: "performance-column",
     sorter: (a, b) => sortAlphaNum(a.performance.split("@")[1], b.performance.split("@")[1]),
     key: "performance",
     render: text => {

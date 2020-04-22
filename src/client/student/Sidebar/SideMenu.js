@@ -135,10 +135,6 @@ class SideMenu extends Component {
     if (key === "0") {
       // onClickLogout
       this.toggleMenu();
-      document
-        .querySelector(".intercom-launcher-frame")
-        ?.contentWindow?.document?.querySelector(".intercom-launcher-active")
-        ?.click();
       logout();
     } else if (key === "1") {
       // onClickLogoutProfile

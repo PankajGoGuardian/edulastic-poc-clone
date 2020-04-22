@@ -304,16 +304,20 @@ export const TimedTestIndicator = styled.span`
   min-width: 80px;
   text-align: left;
   font-weight: 600;
-  margin-left: 10px;
-  i {
-    color: grey;
-    padding-right: 6px;
-    transform: scale(1.3);
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 6px;
   }
   @media (max-width: ${mediumDesktopWidth}) {
-    max-width: 60px;
-    min-width: 60px;
+    max-width: 65px;
+    min-width: 65px;
   }
+`;
+
+export const IndicatorText = styled.div`
+  display: inline-block;
 `;
 
 export const ExpandDivdier = styled.div`

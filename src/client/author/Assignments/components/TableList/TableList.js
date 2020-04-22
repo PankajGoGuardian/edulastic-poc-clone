@@ -35,12 +35,14 @@ import {
   ActionsWrapper,
   TitleCase,
   TimedTestIndicator,
-  TypeWrapper
+  TypeWrapper,
+  IndicatorText
 } from "./styled";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { getUserIdSelector } from "../../../src/selectors/user";
 import { getAssignmentTestsSelector } from "../../../src/selectors/assignments";
+import { ReactComponent as TimerIcon } from "./assets/timer.svg";
 
 const convertTableData = (data, assignments = [], index) => ({
   name: data.title,
@@ -146,8 +148,8 @@ const TableList = ({
             )}
             {row.timedAssignment && (
               <TimedTestIndicator data-cy="type" type="p">
-                <AntdIcon type="clock-circle" />
-                {row.timedAssignment / (60 * 1000)}min
+                <TimerIcon />
+                <IndicatorText>{row.timedAssignment / (60 * 1000)}min</IndicatorText>
               </TimedTestIndicator>
             )}
           </TypeWrapper>

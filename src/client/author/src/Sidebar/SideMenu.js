@@ -9,7 +9,8 @@ import {
   mainTextColor,
   extraDesktopWidth,
   mediumDesktopExactWidth,
-  extraDesktopWidthMax
+  extraDesktopWidthMax,
+  greyThemeLighter
 } from "@edulastic/colors";
 import { get, cloneDeep } from "lodash";
 import { withRouter, Link } from "react-router-dom";
@@ -326,6 +327,14 @@ class SideMenu extends Component {
           collapsedWidth={broken ? "0" : "70"}
           className="sideBarwrapper"
         >
+          <ToggleSidemenu
+            onClick={e => {
+              e.stopPropagation();
+              this.toggleMenu();
+            }}
+          >
+            <AntIcon type={isCollapsed ? "right" : "left"} />
+          </ToggleSidemenu>
           <PerfectScrollbar>
             {isMobile ? (
               <AntIcon className="mobileCloseIcon" type="close" theme="outlined" onClick={this.toggleMenu} />
@@ -342,14 +351,6 @@ class SideMenu extends Component {
               </LogoWrapper>
             )}
             <MenuWrapper>
-              <ToggleSidemenu
-                onClick={e => {
-                  e.stopPropagation();
-                  this.toggleMenu();
-                }}
-              >
-                <AntIcon type={isCollapsed ? "right" : "left"} />
-              </ToggleSidemenu>
               {locationState?.fadeSidebar && <Overlay />}
               <Menu
                 selectedKeys={[defaultSelectedMenu.toString()]}
@@ -619,17 +620,22 @@ const LogoWrapper = styled(Row)`
 
 const ToggleSidemenu = styled.div`
   position: absolute;
-  right: 0;
-  top: 0;
-  background: white;
-  height: 24px;
-  width: 24px;
+  right: -10px;
+  top: 62px;
+  background: ${greyThemeLighter};
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 4px 0 0 4px;
   cursor: pointer;
   z-index: 1;
+  box-shadow: 0px 2px 5px #00000029;
+  svg {
+    width: 12px;
+    fill: ${themeColor};
+  }
 `;
 
 const MenuWrapper = styled.div`
@@ -637,7 +643,7 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 24px 0px 8px;
+  padding: 20px 0px 8px;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
 `;

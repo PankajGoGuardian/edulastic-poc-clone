@@ -1621,9 +1621,11 @@ function onErrorPlaylistInsights(state, { payload }) {
   };
 }
 
-const createNewModuleState = (title, description) => ({
+const createNewModuleState = (title, description, moduleId, moduleGroupName) => ({
   title,
   description,
+  moduleId,
+  moduleGroupName,
   data: []
 });
 
@@ -1677,7 +1679,12 @@ export default createReducer(initialState, {
   [FETCH_PLAYLIST_INSIGHTS_ERROR]: onErrorPlaylistInsights,
   [TOGGLE_MANAGE_MODULE]: toggleManageModuleHandler,
   [ADD_MODULE]: (state, { payload }) => {
-    const newModule = createNewModuleState(payload?.title || payload?.moduleName, payload?.description);
+    const newModule = createNewModuleState(
+      payload?.title || payload?.moduleName,
+      payload?.description,
+      payload.moduleId,
+      payload.moduleGroupName
+    );
     if (payload?.afterModuleIndex !== undefined) {
       state.destinationCurriculumSequence?.modules?.splice(payload.afterModuleIndex, 0, newModule);
     } else {
@@ -1686,10 +1693,12 @@ export default createReducer(initialState, {
     return state;
   },
   [UPDATE_MODULE]: (state, { payload }) => {
-    const { id, title, description } = payload;
+    const { id, title, description, moduleId, moduleGroupName } = payload;
     if (payload !== undefined) {
       state.destinationCurriculumSequence.modules[id].title = title;
       state.destinationCurriculumSequence.modules[id].description = description;
+      state.destinationCurriculumSequence.modules[id].moduleId = moduleId;
+      state.destinationCurriculumSequence.modules[id].moduleGroupName = moduleGroupName;
     }
     return state;
   },

@@ -62,29 +62,19 @@ import AssignmentDragItem from "./AssignmentDragItem";
 import { LTIResourceRow } from "./LTIResourceRow";
 import PlaylistTestDetailsModal from "./PlaylistTestDetailsModal";
 
-/**
- * @typedef {object} Props
- * @property {import('./CurriculumSequence').Module} module
- * @property {function} onCollapseExpand
- * @property {function} toggleUnitItem
- * @property {boolean} collapsed
- * @property {string[]} checkedUnitItems
- * @property {boolean} isContentExpanded
- * @property {any[]} assigned
- * @property {function} setSelectedItemsForAssign
- * @property {function} removeItemFromUnit
- * @property {function} removeUnit
- * @property {boolean} padding
- * set module item that will be assigned, also
- * when there's more than 0 elements set, modal for assignment will be shown
- * when empty array is set, modal is hidden
- */
-
-const SortableHOC = sortableContainer(({ children }) => <div onClick={e => e.stopPropagation()}>{children}</div>);
+const SortableHOC = sortableContainer(({ children }) => (
+  <div style={{ marginLeft: "30px" }} onClick={e => e.stopPropagation()}>
+    {children}
+  </div>
+));
 
 const SortableContainer = props => {
   const { mode, children } = props;
-  return mode === "embedded" ? <SortableHOC {...props}>{children}</SortableHOC> : <div>{children}</div>;
+  return mode === "embedded" ? (
+    <SortableHOC {...props}>{children}</SortableHOC>
+  ) : (
+    <div style={{ marginLeft: "30px" }}>{children}</div>
+  );
 };
 
 const SortableHandle = sortableHandle(() => (
@@ -379,7 +369,7 @@ class ModuleRow extends Component {
       hasEditAccess
     } = this.props;
 
-    const { title, _id, data = [], description = "" } = module;
+    const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
@@ -435,7 +425,9 @@ class ModuleRow extends Component {
             onClick={() => onCollapseExpand(moduleIndex)}
           >
             <ModuleHeader>
-              <ModuleCount>{moduleIndex + 1}</ModuleCount>
+              <ModuleID>
+                <span>{moduleId || moduleIndex + 1}</span>
+              </ModuleID>
               <AntRow type="flex" gutter={10} justify={urlHasUseThis && "end"} style={{ width: "calc(100% - 25px)" }}>
                 <FirstColumn
                   urlHasUseThis={urlHasUseThis}
@@ -446,7 +438,7 @@ class ModuleRow extends Component {
                   }}
                 >
                   <StyledLabel fontWeight="normal" textColor={lightGrey5}>
-                    Module {moduleIndex + 1}
+                    {moduleGroupName}
                   </StyledLabel>
                   <ModuleTitleWrapper>
                     <Tooltip title={title}>
@@ -1170,18 +1162,26 @@ const ModuleHeader = styled.div`
   padding: 20px 0px;
 `;
 
-export const ModuleCount = styled.div`
-  cursor: pointer;
-  margin-right: ${props => props.marginRight || "20px"};
-  height: 25px;
-  width: 25px;
-  min-width: 25px;
-  font: 18px Open Sans;
-  font-weight: 600;
-  text-align: center;
-  color: white;
-  background: ${greenDark6};
-  box-shadow: 0px 0px 2px ${greenDark6};
+const ModuleID = styled.div`
+  margin-right: ${props => props.marginRight || "10px"};
+  width: 100%;
+  max-width: 64px;
+  span {
+    display: block;
+    width: fit-content;
+    margin: auto;
+    min-width: 38px;
+    max-width: 64px;
+    min-height: 30px;
+    color: ${white};
+    background: ${greenDark6};
+    text-align: center;
+    font-size: 16px;
+    padding: 4px 6px;
+    border-radius: 2px;
+    font-weight: 600;
+    user-select: none;
+  }
 `;
 
 const ModuleTitle = styled.div`

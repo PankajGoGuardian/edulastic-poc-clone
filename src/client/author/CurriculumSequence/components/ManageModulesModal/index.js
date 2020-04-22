@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import Modal from "react-responsive-modal";
-import { greyish } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 import {
   createNewModuleCSAction,
   updateModuleCSAction,
@@ -37,7 +37,7 @@ const ManageModulesModal = ({
       title="Manage Modules"
       onClose={onClose}
       footer={null}
-      styles={{ modal: { minWidth: "800px", padding: "20px", background: greyish } }}
+      styles={{ modal: { minWidth: "900px", padding: "20px 30px", background: white } }}
     >
       <ManageModulesModalBody
         destinationCurriculumSequence={destinationCurriculumSequence}

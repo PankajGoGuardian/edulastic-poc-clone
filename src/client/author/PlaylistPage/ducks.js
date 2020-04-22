@@ -195,7 +195,9 @@ const initialState = {
   sharedUsersList: []
 };
 
-const createNewModuleState = (title, description) => ({
+const createNewModuleState = (moduleGroupName, moduleId, title, description) => ({
+  moduleGroupName,
+  moduleId,
   title,
   description,
   data: []
@@ -268,7 +270,12 @@ const moveContentInPlaylist = (playlist, payload) => {
 
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
-    const newModule = createNewModuleState(payload.title || payload.moduleName, payload.description);
+    const newModule = createNewModuleState(
+      payload.moduleGroupName,
+      payload.moduleId,
+      payload.title || payload.moduleName,
+      payload.description
+    );
     if (payload.afterModuleIndex !== undefined) {
       draft.modules.splice(payload.afterModuleIndex, 0, newModule);
     } else {
@@ -281,12 +288,14 @@ function addModuleToPlaylist(playlist, payload) {
 }
 
 function updateModuleInPlaylist(playlist, payload) {
-  const { id, title, description } = payload;
+  const { id, title, description, moduleId, moduleGroupName } = payload;
   const newPlaylist = produce(playlist, draft => {
     if (payload !== undefined) {
       if (title) {
         draft.modules[id].title = title;
         draft.modules[id].description = description;
+        draft.modules[id].moduleId = moduleId;
+        draft.modules[id].moduleGroupName = moduleGroupName;
         message.success("Module updated successfully");
       } else {
         message.error("Module name cannot be empty");

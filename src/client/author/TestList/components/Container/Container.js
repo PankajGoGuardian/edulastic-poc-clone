@@ -10,7 +10,7 @@ import { Button, Row, Spin, message, Dropdown, Menu } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, FlexContainer, TextInputStyled } from "@edulastic/common";
 import { IconList, IconTile, IconTestBank } from "@edulastic/icons";
-import { greyish, greyLight1, greyThemeLight } from "@edulastic/colors";
+import { white, greyLight1, greyThemeLight } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
   ScrollBox,
@@ -989,7 +989,7 @@ class TestList extends Component {
               title="Manage Modules"
               onClose={this.onCloseManageModule}
               footer={null}
-              styles={{ modal: { minWidth: "800px", padding: "20px", background: greyish } }}
+              styles={{ modal: { minWidth: "900px", padding: "20px 30px", background: white } }}
             >
               <ManageModulesModalBody
                 destinationCurriculumSequence={playlist}

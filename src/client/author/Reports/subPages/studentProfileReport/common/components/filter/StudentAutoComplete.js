@@ -82,7 +82,7 @@ const StudentAutoComplete = ({
 
   const buildDropDownData = datum => {
     let arr = [
-      <OptGroup key={"group"} label={"Students"}>
+      <OptGroup key={"group"} label={"Students [Type to find]"}>
         {datum.map((item, index) => {
           return (
             <Option key={item.key} title={item.title}>

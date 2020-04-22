@@ -387,13 +387,23 @@ const answerValidator = {
     // math with unit we are able to save without providing unit
     // TODO: fix it in UI maybe
     const hasEmpty = answers.some(answer => {
-      const textInputs = answer.textinput?.value || [];
-      const dropdowns = answer.dropdown?.value || [];
-      const mathInputs = answer.value?.[0] || [];
-      const mathUnitInputs = [answer.mathUnits?.value?.[0] || {}].filter(_answer => !isEmpty(_answer));
-      const allInputs = [...textInputs, ...dropdowns, ...mathInputs, ...mathUnitInputs];
-      const hasEmptyAnswerValues = !allInputs.length || this[questionType.SORT_LIST](allInputs);
-      return hasEmptyAnswerValues;
+      const textInputs = answer.textinput?.value || []; // get all the text inputs
+      const dropdowns = answer.dropdown?.value || []; // get all the dropdown inputs
+      const mathInputs = (answer.value || []).flatMap(input => input); // get all the math inputs
+      const mathUnitInputs = (answer.mathUnits?.value || []).filter(_answer => !isEmpty(_answer)); // get all the mathUnit inputs
+      const textInputsAndDropdowns = [...textInputs, ...dropdowns]; // combine text and dropdown as they can be validated together
+
+      // check for empty answers
+      const hasEmptyMathAnswers = mathInputs.some(mathInput => isEmpty(mathInput) || isEmpty(mathInput.value));
+      const hasEmptyMathUnitInputs = mathUnitInputs.some(input => isEmpty(input.value) || isEmpty(input));
+
+      /**
+       * dropdown and texts have similar structure for answers as in sort list
+       * get it validated from the sort list answer validator
+       */
+      const hasEmptyTextOrDropDown = this[questionType.SORT_LIST](textInputsAndDropdowns);
+
+      return hasEmptyTextOrDropDown || hasEmptyMathAnswers || hasEmptyMathUnitInputs;
     });
     return hasEmpty;
   },

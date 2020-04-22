@@ -243,6 +243,10 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } = userResponse;
+
+  const _maths = filterEmptyAnswers({ type: "maths", userAnswers: maths });
+  const _mathUnits = filterEmptyAnswers({ type: "mathWithUnits", userAnswers: mathUnits });
+
   const alt_inputs = altResponses.map(alt_res => ({ score: 1, ...alt_res.textinput }));
   const alt_dropdowns = altResponses.map(alt_res => ({ score: 1, ...alt_res.dropdown }));
   const altMathUnits = altResponses.map(alt_res => ({ score: 1, ...alt_res.mathUnits }));
@@ -290,7 +294,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const mathEvaluation =
     (validResponse &&
       (await mixAndMatchMathEvaluator({
-        userResponse: maths,
+        userResponse: _maths,
         validation: {
           validResponse,
           altResponses
@@ -302,7 +306,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const mathUnitsEvaluation =
     (validResponse.mathUnits &&
       (await mixAndMatchMathEvaluator({
-        userResponse: mathUnits,
+        userResponse: _mathUnits,
         validation: {
           validResponse: validResponse.mathUnits,
           altResponses: altMathUnits

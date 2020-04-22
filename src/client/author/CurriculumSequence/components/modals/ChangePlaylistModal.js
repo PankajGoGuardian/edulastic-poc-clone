@@ -93,24 +93,34 @@ const ChangePlaylistModal = ({
   onChange,
   isStudent,
   onExplorePlaylists,
+  countModular,
+  GridCountInARow,
   ...modalStyles
 }) => (
-  <StyledModal {...modalStyles} width="calc(100vw - 80px)">
+  <StyledModal {...modalStyles} width="100%">
     <Row type="flex" justify="space-between">
       {isStudent ? (
         <StyledCol span={24} onClick={modalStyles.onCancel}>
           {playlists.map(playlist => (
             <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
           ))}
+          {countModular.map(index => (
+            <EmptyCardsForAlignment key={index} />
+          ))}
         </StyledCol>
       ) : (
         <>
-          <StyledCol xs={12} sm={12} md={14} lg={15} xl={18} onClick={modalStyles.onCancel}>
+          <StyledCol xs={24} onClick={modalStyles.onCancel} justify="space-between">
             {playlists.map(playlist => (
-              <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
+              <>
+                <PlaylistCard {...playlist} select={onChange} activePlaylistId={activePlaylistId} />
+              </>
+            ))}
+            {countModular.map(index => (
+              <EmptyCardsForAlignment key={index} />
             ))}
           </StyledCol>
-          <StyledCol xs={12} sm={12} md={10} lg={9} xl={6} justify="flex-end" onClick={modalStyles.onCancel}>
+          <StyledCol xs={24} justify="flex-end" onClick={modalStyles.onCancel}>
             <StyledCard height={60} justify="center" style={sideCardStyle} onClick={onExplorePlaylists}>
               <Row type="flex" align="middle">
                 <IconPlaylist width={18} height={18} style={sideIconStyle} color={lightGreen5} />
@@ -144,6 +154,12 @@ const StyledCard = styled(Card)`
   }
 `;
 
+const EmptyCardsForAlignment = styled(StyledCard)`
+  background: none;
+  box-shadow: none;
+  border: none;
+`;
+
 const StyledCol = styled(Col)`
   display: flex;
   flex-wrap: wrap;
@@ -151,13 +167,17 @@ const StyledCol = styled(Col)`
 `;
 
 const StyledModal = styled(Modal)`
-  left: 40px;
-  top: 40px;
+  top: 30px;
   .ant-modal-content {
     background-color: transparent;
     box-shadow: unset;
     .ant-modal-close {
-      display: none;
+      right: 10px;
+      top: -20px;
+      svg {
+        fill: white;
+        font-size: 24px;
+      }
     }
   }
 }

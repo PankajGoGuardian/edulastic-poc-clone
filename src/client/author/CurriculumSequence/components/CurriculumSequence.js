@@ -6,7 +6,14 @@ import { groupBy, isEqual, uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import * as moment from "moment";
-import { EduButton, FlexContainer, MainHeader, ProgressBar, MainContentWrapper } from "@edulastic/common";
+import {
+  EduButton,
+  FlexContainer,
+  MainHeader,
+  ProgressBar,
+  MainContentWrapper,
+  withWindowSizes
+} from "@edulastic/common";
 import { curriculumSequencesApi } from "@edulastic/api";
 import {
   desktopWidth,
@@ -618,6 +625,9 @@ class CurriculumSequence extends Component {
 
     const { id: parentId = null, cloneId = null } = match.params;
 
+    const GridCountInARow = windowWidth >= 1600 ? 5 : 4;
+    const countModular = new Array(GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)).fill(1);
+
     return (
       <>
         <RemoveTestModal
@@ -693,6 +703,8 @@ class CurriculumSequence extends Component {
             footer={null}
             onOk={this.handleGuideSave}
             onCancel={this.handleGuideCancel}
+            countModular={countModular}
+            GridCountInARow={GridCountInARow}
           />
 
           {isStudent ? (
@@ -944,6 +956,7 @@ class CurriculumSequence extends Component {
 
 const enhance = compose(
   withRouter,
+  withWindowSizes,
   connect(
     state => ({
       curriculumGuides: state.curriculumSequence.guides,

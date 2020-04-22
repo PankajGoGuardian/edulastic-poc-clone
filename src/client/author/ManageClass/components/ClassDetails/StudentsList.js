@@ -116,6 +116,11 @@ const StudentsList = ({
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
+    },
+    {
+      title: "View as Student",
+      colSpan: 0,
+      render: (_, { _id }) => <span onClick={() => {}}>View as Student</span>
     }
   ];
 

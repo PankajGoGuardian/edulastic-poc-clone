@@ -80,14 +80,29 @@ export const StudentsTable = styled(Table)`
         border-bottom: 15px solid white;
         & > td {
           border: none;
-          &.ant-table-column-sort {
-            background: none;
-          }
           font-weight: 550;
           padding: 10px 10px;
         }
-        &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-          background: #f2f3f2;
+        & > td:last-child {
+          position: absolute;
+          left: 3em;
+          right: 0.7em;
+          text-align: center;
+          color: transparent;
+          background: none;
+          span {
+            text-transform: uppercase;
+            display: block;
+          }
+        }
+        &:hover:not(.ant-table-expanded-row) > td {
+          opacity: 0.3;
+          background: none;
+        }
+        &:hover:not(.ant-table-expanded-row) > td:last-child {
+          opacity: 1;
+          background: none;
+          color: ${secondaryTextColor};
         }
       }
     }

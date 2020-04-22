@@ -115,6 +115,15 @@ const saveHangoutEvent = data =>
     })
     .then(result => result.data.result);
 
+const updateHangoutEvent = data =>
+  api
+    .callApi({
+      url: `${prefix}/hangout`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -128,5 +137,6 @@ export default {
   fetchStudentsByGroupId,
   dropPlaylist,
   fetchPlaylistAccess,
-  saveHangoutEvent
+  saveHangoutEvent,
+  updateHangoutEvent
 };

@@ -37,6 +37,8 @@ const SAVE_HANGOUT_EVENT_SUCCESS = "[class] save hangouts event success";
 const SAVE_HANGOUT_EVENT_ERROR = "[class] save hangouts event error";
 const SET_OPEN_HANGOUT_MEETING = "[class] set open hangouts meeting";
 
+const UPDATE_HANGOUT_EVENT_REQUEST = "[class] update hangouts event request";
+
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST);
 export const receiveClassListSuccessAction = createAction(RECEIVE_CLASSLIST_SUCCESS);
 export const receiveClassListErrorAction = createAction(RECEIVE_CLASSLIST_ERROR);
@@ -66,6 +68,8 @@ export const archiveClassErrorAction = createAction(ARCHIVE_CLASS_ERROR);
 export const saveHangoutEventRequestAction = createAction(SAVE_HANGOUT_EVENT_REQUEST);
 export const saveHangoutEventSuccessAction = createAction(SAVE_HANGOUT_EVENT_SUCCESS);
 export const saveHangoutEventErrorAction = createAction(SAVE_HANGOUT_EVENT_ERROR);
+
+export const updateHangoutEventRequestAction = createAction(UPDATE_HANGOUT_EVENT_REQUEST);
 
 export const setHangoutOpenMeetingAction = createAction(SET_OPEN_HANGOUT_MEETING);
 
@@ -247,6 +251,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_OPEN_HANGOUT_MEETING]: (state, { payload }) => {
     state.openMeeting = payload.status;
+  },
+  [UPDATE_HANGOUT_EVENT_REQUEST]: state => {
+    state.saving = true;
   }
 });
 
@@ -356,6 +363,25 @@ function* saveHangoutEventSaga({ payload }) {
   }
 }
 
+function* updateHangoutEventSaga({ payload }) {
+  try {
+    const { postMeeting, ...rest } = payload;
+    const savedGroup = yield call(groupApi.updateHangoutEvent, rest);
+    if (postMeeting) {
+      yield call(googleApi.postGoogleClassRoomAnnouncement, {
+        groupId: payload.groupId
+      });
+    }
+    const successMessage = "Hangouts event updated successfully";
+    yield call(message.success, successMessage);
+    yield put(saveHangoutEventSuccessAction({ savedGroup }));
+  } catch (err) {
+    const errorMessage = "Hangouts event update is failing";
+    yield call(message.error, errorMessage);
+    yield put(saveHangoutEventErrorAction());
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_CLASSLIST_REQUEST, receiveClassListSaga)]);
   yield all([yield takeEvery(UPDATE_CLASS_REQUEST, updateClassSaga)]);
@@ -365,4 +391,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(BULK_UPDATE_CLASSES, bulkUpdateClassesSaga)]);
   yield all([yield takeEvery(ARCHIVE_CLASS_REQUEST, archiveClassSaga)]);
   yield all([yield takeEvery(SAVE_HANGOUT_EVENT_REQUEST, saveHangoutEventSaga)]);
+  yield all([yield takeEvery(UPDATE_HANGOUT_EVENT_REQUEST, updateHangoutEventSaga)]);
 }

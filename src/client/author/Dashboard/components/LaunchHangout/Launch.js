@@ -9,7 +9,8 @@ import {
   getSavedGroupHangoutEvent,
   openHangoutMeeting,
   saveHangoutEventRequestAction,
-  setHangoutOpenMeetingAction
+  setHangoutOpenMeetingAction,
+  updateHangoutEventRequestAction
 } from "../../../Classes/ducks";
 
 const Launch = ({
@@ -17,6 +18,7 @@ const Launch = ({
   isOpenLaunch,
   classList = [],
   saveHangoutEvent,
+  updateHangoutEvent,
   savedGroupHangoutInfo,
   openMeeting,
   setOpenMeeting
@@ -24,7 +26,13 @@ const Launch = ({
   const [groupId, setGroupId] = useState("");
   const [launching, setLaunching] = useState(false);
   const [postMeeting, setPostMeeting] = useState(true);
-
+  const [eventType, setEventType] = useState("create");
+  const selectedGroup = classList.find(group => group._id === groupId);
+  const isHangoutLinkExpired = !!(
+    selectedGroup &&
+    selectedGroup.eventStartDate &&
+    new Date(selectedGroup.eventStartDate).getTime() + 60 * 60 * 1000 < new Date().getTime()
+  );
   const closePopUp = () => {
     setLaunching(false);
     closeLaunchHangout();
@@ -40,30 +48,38 @@ const Launch = ({
     }
   }, [openMeeting]);
 
-  const selectedGroup = classList.find(group => group._id === groupId);
-  const hangoutLink =
-    selectedGroup && selectedGroup.hangoutLink
-      ? selectedGroup.hangoutLink
-      : savedGroupHangoutInfo && savedGroupHangoutInfo.hangoutLink && savedGroupHangoutInfo._id === groupId
-      ? savedGroupHangoutInfo.hangoutLink
-      : undefined;
+  useEffect(() => {
+    if (groupId && isHangoutLinkExpired && selectedGroup.eventId) {
+      setEventType("update");
+    }
+  }, [groupId]);
+
+  const hangoutLink = isHangoutLinkExpired
+    ? undefined
+    : selectedGroup && selectedGroup.hangoutLink
+    ? selectedGroup.hangoutLink
+    : savedGroupHangoutInfo && savedGroupHangoutInfo.hangoutLink && savedGroupHangoutInfo._id === groupId
+    ? savedGroupHangoutInfo.hangoutLink
+    : undefined;
   const saveHangoutLink = (_hangoutLink, event) => {
     if (_hangoutLink) {
       const calendarEventData = JSON.stringify(event);
       const { googleId } = selectedGroup;
-      saveHangoutEvent({
+      const data = {
         groupId,
         hangoutLink: _hangoutLink,
         calendarEventData,
         postMeeting: postMeeting && !!googleId
-      });
+      };
+      eventType === "update" ? updateHangoutEvent(data) : saveHangoutEvent(data);
     } else {
       setLaunching(false);
       console.log(`Something went wrong, please try again after some time.`);
     }
   };
-  const createCalendarEvent = () => {
-    const { code, name, _id, googleId } = selectedGroup;
+
+  const createOrUpdateCalendarEvent = () => {
+    const { name, _id, eventId, hangoutLink } = selectedGroup;
     const requestId = _id;
     const currentDate = new Date();
     const startDate = new Date(
@@ -100,18 +116,26 @@ const Launch = ({
         }
       }
     };
-    window.gapi.client.calendar.events
-      .insert({
-        resource: event,
-        calendarId: "primary",
-        conferenceDataVersion: 1,
-        sendNotifications: true,
-        sendUpdates: "all",
-        supportsAttachments: false
-      })
-      .execute(_event => {
+    let calendarEvent = {
+      resource: event,
+      calendarId: "primary",
+      conferenceDataVersion: 1,
+      sendNotifications: true,
+      sendUpdates: "all",
+      supportsAttachments: false
+    };
+    if (eventType === "update") {
+      Object.assign(event, { hangoutLink });
+      Object.assign(calendarEvent, { resource: event, eventId });
+      window.gapi.client.calendar.events.update(calendarEvent).execute(_event => {
         saveHangoutLink(_event.hangoutLink, _event);
       });
+    } else {
+      Object.assign(calendarEvent, { resource: event });
+      window.gapi.client.calendar.events.insert(calendarEvent).execute(_event => {
+        saveHangoutLink(_event.hangoutLink, _event);
+      });
+    }
   };
 
   const handleError = err => {
@@ -133,7 +157,7 @@ const Launch = ({
       const loadGapiClient = new Promise(resolve => {
         window.gapi.load("client:auth2", resolve);
       });
-      loadGapiClient.then(() => window.gapi.client.load("calendar", "v3", createCalendarEvent), handleError);
+      loadGapiClient.then(() => window.gapi.client.load("calendar", "v3", createOrUpdateCalendarEvent), handleError);
     } else {
       message.error("Google API is not configuration");
       console.log(`Google API configuration not found`);
@@ -166,6 +190,7 @@ Launch.propTypes = {
   isOpenLaunch: PropTypes.bool,
   classList: PropTypes.array,
   saveHangoutEvent: PropTypes.func.isRequired,
+  updateHangoutEvent: PropTypes.func.isRequired,
   savedGroupHangoutInfo: PropTypes.object
 };
 
@@ -179,6 +204,7 @@ export default connect(
   {
     closeLaunchHangout: launchHangoutClose,
     saveHangoutEvent: saveHangoutEventRequestAction,
-    setOpenMeeting: setHangoutOpenMeetingAction
+    setOpenMeeting: setHangoutOpenMeetingAction,
+    updateHangoutEvent: updateHangoutEventRequestAction
   }
 )(Launch);

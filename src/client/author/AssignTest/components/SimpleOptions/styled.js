@@ -54,7 +54,9 @@ export const StyledRowButton = styled(Row)`
 export const AlignRight = styled(RadioGroup)`
   display: flex;
   justify-content: flex-start;
-
+  & * {
+    cursor: ${({ forClassLevel }) => (forClassLevel ? "not-allowed" : "initial")};
+  }
   .ant-radio-wrapper {
     white-space: normal;
     margin-right: 25px;

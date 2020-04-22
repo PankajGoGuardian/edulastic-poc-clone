@@ -178,7 +178,7 @@ const Settings = ({
     calcType = tempTestSettings.calcType,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
-    scoringType = tempTestSettings.scoringType,
+    scoringType = assignmentSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION,
     penalty = tempTestSettings.penalty,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
@@ -559,8 +559,13 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={forClassLevel}
-                onChange={e => overRideSettings("scoringType", e.target.value)}
+                forClassLevel={forClassLevel}
+                // disabled={forClassLevel}
+                onChange={e => {
+                  if (!forClassLevel) {
+                    overRideSettings("scoringType", e.target.value);
+                  }
+                }}
                 value={scoringType}
               >
                 {Object.keys(evalTypes).map(item => (
@@ -706,22 +711,22 @@ const Settings = ({
                   {Object.keys(accessibilities).map(key => {
                     const value = accessiblilityData[key];
                     return (
-                    <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
-                      <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
-                      </Col>
-                      <Col span={12}>
-                        <StyledRadioGroup
-                          disabled={forClassLevel}
-                          onChange={e => overRideSettings(key, e.target.value)}
-                          defaultValue={isUndefined(value) ? true : value}
-                        >
-                          <Radio value>ENABLE</Radio>
-                          <Radio value={false}>DISABLE</Radio>
-                        </StyledRadioGroup>
-                      </Col>
-                    </StyledRowSettings>
-                    )
+                      <StyledRowSettings key={accessibilities[key]} style={{ width: "100%" }}>
+                        <Col span={12}>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
+                        </Col>
+                        <Col span={12}>
+                          <StyledRadioGroup
+                            disabled={forClassLevel}
+                            onChange={e => overRideSettings(key, e.target.value)}
+                            defaultValue={isUndefined(value) ? true : value}
+                          >
+                            <Radio value>ENABLE</Radio>
+                            <Radio value={false}>DISABLE</Radio>
+                          </StyledRadioGroup>
+                        </Col>
+                      </StyledRowSettings>
+                    );
                   })}
                 </RadioWrapper>
               )}

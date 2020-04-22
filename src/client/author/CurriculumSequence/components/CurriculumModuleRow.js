@@ -1170,9 +1170,9 @@ const ModuleHeader = styled.div`
   padding: 20px 0px;
 `;
 
-const ModuleCount = styled.div`
+export const ModuleCount = styled.div`
   cursor: pointer;
-  margin-right: 20px;
+  margin-right: ${props => props.marginRight || "20px"};
   height: 25px;
   width: 25px;
   min-width: 25px;

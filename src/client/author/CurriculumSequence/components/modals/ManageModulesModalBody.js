@@ -8,6 +8,7 @@ import { IconPlusCircle, IconTrash } from "@edulastic/icons";
 import { FaBars } from "react-icons/fa";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 import { EduButton } from "@edulastic/common";
+import { ModuleCount } from "../CurriculumModuleRow";
 
 /*
  *
@@ -81,11 +82,9 @@ const ModuleItem = SortableElement(props => {
   ) : (
     <ModuleContainer dragging={dragging} data-cy={`module-${mIndex || id + 1}`}>
       <ModuleResequenceHandle />
+      <ModuleCount marginRight="15px">{mIndex || id + 1}</ModuleCount>
       <ModuleContent>
         <ModuleTitle>
-          <StyledSpan width={30} fSize={18}>
-            {mIndex || id + 1}.
-          </StyledSpan>
           <Label>{title}</Label>
         </ModuleTitle>
         <ModuleDescription>{description}</ModuleDescription>
@@ -146,12 +145,12 @@ const ModuleContainer = styled.div`
 const DragHandle = styled.div`
   color: ${themeColor};
   width: 60px;
-  height: 60px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  margin-right: 20px;
+  margin-right: 0px;
   cursor: grab;
 
   &:active {
@@ -186,7 +185,7 @@ const ModuleActions = styled.div`
 `;
 
 const SortableModules = SortableContainer(props => (
-  <StyledModuleList>
+  <StyledModuleList addState={props.addState}>
     {props.modulesList.map((mod, i) => (
       <ModuleItem id={i} key={`module-${mod.title}-${mod.description}`} module={mod} index={i} {...props} />
     ))}
@@ -280,6 +279,7 @@ const ManageModulesModalBody = props => {
           lockOffset={["0%", "0%"]}
           lockToContainerEdges
           useDragHandle
+          addState={addState}
         />
         {addState && (
           <>
@@ -361,7 +361,7 @@ const AddNewModuleContainer = styled.div`
 
 const StyledModuleList = styled.div`
   margin-bottom: 10px;
-  max-height: 360px;
+  max-height: ${props => (props.addState ? "calc(100vh - 480px)" : "calc(100vh - 230px)")};
   overflow: auto;
 `;
 
@@ -390,7 +390,7 @@ const ModalContent = styled.div`
 const ModalFooter = styled.div`
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding: 0px;
   .ant-btn {
     font-size: 10px;
     font-weight: 600;

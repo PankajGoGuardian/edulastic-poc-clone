@@ -101,7 +101,8 @@ class PreviewModal extends React.Component {
         fadeSidebar: true,
         regradeFlow,
         previousTestId: test.previousTestId,
-        testId
+        testId,
+        isDuplicating: true
       });
     } else {
       history.push(`/author/items/${duplicatedItem._id}/item-detail`);
@@ -137,7 +138,8 @@ class PreviewModal extends React.Component {
         fadeSidebar: "false",
         regradeFlow,
         previousTestId: test.previousTestId,
-        testId
+        testId,
+        isEditing: true
       });
     } else {
       history.push(`/author/items/${itemId}/item-detail`);

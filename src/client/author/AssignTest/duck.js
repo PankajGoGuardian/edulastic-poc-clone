@@ -2,6 +2,7 @@ import * as moment from "moment";
 import { get } from "lodash";
 import { createSelector } from "reselect";
 import { createReducer } from "redux-starter-kit";
+import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 
 export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
 export const UPDATE_ASSIGNMENT_SETTINGS = "[assignment settings] update assignment settings";
@@ -73,8 +74,12 @@ const initialState = {
   closePolicy: "Automatically on Due Date"
 };
 
-const updateAssignmentSettings = (state, { payload }) => ({ ...state, ...payload });
-
 export const assignmentSettings = createReducer(initialState, {
-  [UPDATE_ASSIGNMENT_SETTINGS]: updateAssignmentSettings
+  [UPDATE_ASSIGNMENT_SETTINGS]: (state, { payload }) => {
+    Object.assign(state, payload);
+    testConst.passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_OFF;
+    if (state.passwordPolicy && state.passwordPolicy !== testConst.passwordPolicyOptions.REQUIRED_PASSWORD_POLICY_OFF) {
+      state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
+    }
+  }
 });

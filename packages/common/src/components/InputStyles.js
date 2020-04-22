@@ -137,8 +137,8 @@ export const SelectInputStyled = styled(Select)`
             display: flex;
             align-items: center;
             border: none;
-            background: ${themeColor}33;
-            color: ${themeColor};
+            background: #b3bcc4;
+            color: #676e74;
             font-weight: 600;
             margin: 5px 0 5px 5px;
           }
@@ -148,7 +148,7 @@ export const SelectInputStyled = styled(Select)`
             align-items: center;
             font-weight: bold;
             letter-spacing: 0.2px;
-            color: ${themeColor};
+            color: #676e74;
             opacity: 1;
             text-transform: uppercase;
           }
@@ -156,7 +156,7 @@ export const SelectInputStyled = styled(Select)`
       }
       .ant-select-remove-icon {
         svg {
-          fill: ${themeColor};
+          fill: #676e74;
           width: 12px;
           height: 12px;
         }

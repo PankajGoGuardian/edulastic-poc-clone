@@ -16,7 +16,8 @@ import {
   SAVE_USER_RESPONSE_ERROR,
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS,
-  CLEAR_USER_WORK
+  CLEAR_USER_WORK,
+  CLEAR_HINT_USAGE
 } from "../constants/actions";
 import { getPreviousAnswersListSelector } from "../selectors/answers";
 import { redirectPolicySelector } from "../selectors/test";
@@ -165,6 +166,9 @@ function* saveUserResponse({ payload }) {
       yield call(attachmentApi.updateAttachment, { update, filter });
     }
     yield put({ type: SAVE_USER_RESPONSE_SUCCESS });
+    yield put({
+      type: CLEAR_HINT_USAGE
+    });
     if (payload?.urlToGo) {
       yield put(push({ pathname: payload.urlToGo, state: payload?.locState }));
     }

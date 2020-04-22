@@ -1,7 +1,12 @@
-import { SAVE_HINT_USAGE, SHOW_HINTS, Hide_HINTS } from "../constants/actions";
+import { SAVE_HINT_USAGE, SHOW_HINTS, Hide_HINTS, CLEAR_HINT_USAGE } from "../constants/actions";
 
 export const saveHintUsageAction = payload => ({
   type: SAVE_HINT_USAGE,
+  payload
+});
+
+export const clearHintUsageAction = payload => ({
+  type: CLEAR_HINT_USAGE,
   payload
 });
 

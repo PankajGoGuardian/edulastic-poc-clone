@@ -86,6 +86,7 @@ export const SAVE_USER_WORK = "[userWork] save userWork";
 export const LOAD_SCRATCH_PAD = "[userWork] load scratchPad data";
 export const CLEAR_USER_WORK = "[userWork] clear userWork";
 export const SAVE_HINT_USAGE = "[hintUsage] save hintUsage";
+export const CLEAR_HINT_USAGE = "[hintUsage] clear hintUsage";
 
 // Test Level User Work
 export const SAVE_TEST_LEVEL_USER_WORK = "[testUserWork] save userWork";

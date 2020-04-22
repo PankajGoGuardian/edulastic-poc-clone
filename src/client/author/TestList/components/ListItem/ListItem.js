@@ -207,7 +207,9 @@ class ListItem extends Component {
                   <Inner>
                     <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
                     <Description title={isPlaylist ? _source.description : description}>
-                      <EllipsisWrapper view="list">{isPlaylist ? _source.description : description}</EllipsisWrapper>
+                      <EllipsisWrapper style={{ paddingRight: "15px" }} view="list">
+                        {isPlaylist ? _source.description : description}
+                      </EllipsisWrapper>
                     </Description>
                   </Inner>
                 </div>

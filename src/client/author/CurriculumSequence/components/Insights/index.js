@@ -1,23 +1,13 @@
+import { smallDesktopWidth, themeColor, white } from "@edulastic/colors";
+import { withWindowSizes } from "@edulastic/common";
+import { IconFilter } from "@edulastic/icons";
+import { Col, Row, Spin } from "antd";
+import { get } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import styled from "styled-components";
-import { get } from "lodash";
-import { Row, Col, Spin } from "antd";
-
-import InsightsFilters from "./components/InsightsFilters";
-import InsightsChart from "./components/InsightsChart";
-// import BoxedInsightsSummary from "./components/BoxedInsightsSummary";
-import AddToGroupTable from "./components/AddToGroupTable";
-import {
-  getFilterData,
-  getMergedTrendMap,
-  getFilteredMetrics,
-  getCuratedMetrics,
-  getMasteryData,
-  getBoxedSummaryData
-} from "./transformers";
-
-import { fetchPlaylistInsightsAction } from "../../ducks";
+import { FilterButton } from "../../../Assignments/components/Container/styled";
 import {
   getReportsStudentProgress,
   getReportsStudentProgressLoader,
@@ -25,6 +15,18 @@ import {
 } from "../../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
 import { useGetBandData } from "../../../Reports/subPages/multipleAssessmentReport/StudentProgress/hooks";
 import { getUser } from "../../../src/selectors/user";
+import { fetchPlaylistInsightsAction } from "../../ducks";
+// import BoxedInsightsSummary from "./components/BoxedInsightsSummary";
+import AddToGroupTable from "./components/AddToGroupTable";
+import InsightsChart from "./components/InsightsChart";
+import InsightsFilters from "./components/InsightsFilters";
+import {
+  getCuratedMetrics,
+  getFilterData,
+  getFilteredMetrics,
+  getMasteryData,
+  getMergedTrendMap
+} from "./transformers";
 
 const defaultBandInfo = [
   {
@@ -59,7 +61,8 @@ const Insights = ({
   fetchPlaylistInsightsAction,
   getStudentProgressRequestAction,
   loading,
-  loadingProgress
+  loadingProgress,
+  windowWidth
 }) => {
   const { _id: playlistId, modules } = currentPlaylist;
 
@@ -107,11 +110,17 @@ const Insights = ({
     setHighlighted({});
   };
 
+  const [showFilter, setShowFilter] = useState(false);
+
+  const toggleFilter = () => {
+    setShowFilter(!showFilter);
+  };
+
   return loading ? (
     <Spin style={{ marginTop: "400px" }} />
   ) : (
     <InsightsContainer type="flex" gutter={10} justify="center">
-      <StyledCol xs={24} sm={24} md={24} lg={4} xl={4} xxl={4}>
+      <FilterColumn xs={24} sm={24} md={4} showFilter={showFilter}>
         <InsightsFilters
           data={filterData}
           prevFilters={filters}
@@ -120,15 +129,20 @@ const Insights = ({
           setOverallProgressCheck={setOverallProgressCheck}
           clearFilter={clearFilter}
         />
-      </StyledCol>
-      <StyledCol xs={24} sm={24} md={24} lg={14} xl={14} xxl={14}>
-        {loadingProgress ? (
-          <Spin />
-        ) : (
-          <InsightsChart data={curatedMetrics} highlighted={highlighted} setHighlighted={setHighlighted} />
-        )}
-      </StyledCol>
-      <StyledCol xs={24} sm={24} md={24} lg={6} xl={6} xxl={6}>
+      </FilterColumn>
+      <GraphContainer xs={24} sm={24} md={windowWidth <= 1024 && !showFilter ? 18 : 14}>
+        <FilterIcom showFilter={showFilter} variant="filter" onClick={toggleFilter}>
+          <IconFilter data-cy="smart-filter" color={showFilter ? white : themeColor} width={20} height={20} />
+        </FilterIcom>
+        <StyledCol>
+          {loadingProgress ? (
+            <Spin />
+          ) : (
+            <InsightsChart data={curatedMetrics} highlighted={highlighted} setHighlighted={setHighlighted} />
+          )}
+        </StyledCol>
+      </GraphContainer>
+      <StyledCol xs={24} sm={24} md={6}>
         <Row style={{ width: "100%" }}>
           {/* <BoxedInsightsSummary data={getBoxedSummaryData(trendCount)} /> */}
           <AddToGroupTable studData={curatedMetrics} groupsData={filterData?.groupsData} highlighted={highlighted} />
@@ -138,18 +152,21 @@ const Insights = ({
   );
 };
 
-const enhance = connect(
-  state => ({
-    user: getUser(state),
-    loading: state?.curriculumSequence?.loadingInsights,
-    playlistInsights: state?.curriculumSequence?.playlistInsights,
-    loadingProgress: getReportsStudentProgressLoader(state),
-    studentProgress: getReportsStudentProgress(state)
-  }),
-  {
-    fetchPlaylistInsightsAction,
-    getStudentProgressRequestAction
-  }
+const enhance = compose(
+  withWindowSizes,
+  connect(
+    state => ({
+      user: getUser(state),
+      loading: state?.curriculumSequence?.loadingInsights,
+      playlistInsights: state?.curriculumSequence?.playlistInsights,
+      loadingProgress: getReportsStudentProgressLoader(state),
+      studentProgress: getReportsStudentProgress(state)
+    }),
+    {
+      fetchPlaylistInsightsAction,
+      getStudentProgressRequestAction
+    }
+  )
 );
 
 export default enhance(Insights);
@@ -157,6 +174,23 @@ export default enhance(Insights);
 const InsightsContainer = styled(Row)`
   width: 100%;
 `;
+
+const FilterIcom = styled(FilterButton)`
+  display: none;
+  background: ${props => (props.showFilter ? themeColor : white)};
+  @media (max-width: ${smallDesktopWidth}) {
+    display: block;
+    margin: 0px;
+  }
+`;
+
+const FilterColumn = styled(Col)`
+  @media (max-width: ${smallDesktopWidth}) {
+    display: ${props => (props.showFilter ? "block" : "none")};
+  }
+`;
+
+const GraphContainer = styled(Col)``;
 
 const StyledCol = styled(Col)`
   display: flex;

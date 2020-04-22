@@ -11,7 +11,7 @@ import {
 } from "@edulastic/colors";
 import { IconInfo } from "@edulastic/icons";
 import GroupsFilter from "./GroupsFilter";
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
 
 const handleModulesChange = (selected, prevFilters, updateFilters) =>
   updateFilters({
@@ -38,12 +38,10 @@ const handleGroupsChange = (selected, prevFilters, updateFilters) =>
   });
 
 const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
-  <StyledRow type="flex" gutter={[0, 10]} style={{ marginBottom: "20px" }}>
+  <StyledRow type="flex" style={{ marginBottom: "20px" }}>
     <Col span={24}>
-      <StyledSpan>{label}</StyledSpan>
-    </Col>
-    <Col span={24}>
-      <StyledSelect
+      <FieldLabel>{label}</FieldLabel>
+      <SelectInputStyled
         showArrow
         data-cy={dataCy}
         placeholder={`Select ${label}`}
@@ -59,7 +57,7 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
             {data.name}
           </Select.Option>
         ))}
-      </StyledSelect>
+      </SelectInputStyled>
     </Col>
   </StyledRow>
 );
@@ -124,13 +122,6 @@ const StyledRow = styled(Row)`
   width: 100%;
 `;
 
-const StyledSpan = styled.span`
-  font: 11px/15px Open Sans;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: ${greyThemeDark1};
-`;
-
 const StyledCheckbox = styled(Checkbox)`
   margin-bottom: 20px;
   font: 11px/15px Open Sans;
@@ -144,32 +135,6 @@ const StyledCheckbox = styled(Checkbox)`
   }
   svg {
     margin-left: 8px;
-  }
-`;
-
-const StyledSelect = styled(Select)`
-  width: 100%;
-  .ant-select-selection {
-    background: ${greyThemeLighter};
-    min-height: 40px;
-    padding: 5px;
-    border-radius: 2px;
-    border: 1px solid ${greyThemeLight};
-    .ant-select-selection__rendered {
-      .ant-select-selection__placeholder {
-        font-size: 13px;
-        letter-spacing: 0.24px;
-        color: ${lightGrey9};
-      }
-    }
-    .ant-select-arrow {
-      top: 20px;
-    }
-    .ant-select-arrow-icon {
-      svg {
-        fill: ${themeColor};
-      }
-    }
   }
 `;
 

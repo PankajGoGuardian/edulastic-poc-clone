@@ -178,7 +178,7 @@ const Settings = ({
     calcType = tempTestSettings.calcType,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
-    scoringType = tempTestSettings.scoringType,
+    scoringType = assignmentSettings.scoringType || evalTypes.ITEM_LEVEL_EVALUATION,
     penalty = tempTestSettings.penalty,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
@@ -553,8 +553,13 @@ const Settings = ({
             </Col>
             <Col span={12}>
               <AlignRight
-                disabled={forClassLevel}
-                onChange={e => overRideSettings("scoringType", e.target.value)}
+                forClassLevel={forClassLevel}
+                // disabled={forClassLevel}
+                onChange={e => {
+                  if (!forClassLevel) {
+                    overRideSettings("scoringType", e.target.value);
+                  }
+                }}
                 value={scoringType}
               >
                 {Object.keys(evalTypes).map(item => (

@@ -76,7 +76,7 @@ const columns = [
     width: "5%",
     render: (_, row) => (
       <ActionsWrapper data-cy="PresentationIcon">
-        <Tooltip placement="bottom" title="LCB">
+        <Tooltip placement="bottom" title="Live Class Board">
           <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
             <Icon src={presentationIcon} alt="Images" />
           </Link>

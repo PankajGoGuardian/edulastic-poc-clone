@@ -24,22 +24,23 @@ const Response = ({
   lessMinWidth,
   isExpressGrader
 }) => {
-  const [showIndex, toggleIndexVisibility] = useState(!lessMinWidth);
-  const handleHover = () => {
-    if (showAnswer && lessMinWidth) {
-      toggleIndexVisibility(!showIndex);
-    }
-  };
-
-  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle);
+  const { width: contentWidth } = measureText(userSelections[dropTargetIndex], btnStyle); // returns number
 
   const padding = lessMinWidth ? 4 : 30;
   const indexWidth = showAnswer ? 40 : 0;
-  const isOverConent = btnStyle.width < contentWidth + padding + indexWidth;
-  const hansAnswered = userSelections?.[dropTargetIndex];
+  const boxWidth = parseInt(btnStyle.width, 10); // need to convert string to number ( "159px" => 159 ) for comparing
+  /**
+   *
+   * content entered by user cannot be shown completely in the box
+   * need to show ellipsis in the box
+   * show entire entire answer in a popover on hover over the box
+   *
+   */
+  const isOverConent = boxWidth < contentWidth + padding + indexWidth;
+  const hasAnswered = userSelections?.[dropTargetIndex];
 
   const className = `imagelabeldragdrop-droppable active ${
-    hansAnswered ? "check-answer" : "noAnswer"
+    hasAnswered ? "check-answer" : "noAnswer"
   } ${status} show-answer`;
 
   const popoverContent = (
@@ -63,18 +64,16 @@ const Response = ({
       style={{ ...btnStyle, minHeight: `${response.minHeight}px` }}
       className={className}
       onClick={onClickHandler}
-      onMouseEnter={handleHover}
-      onMouseLeave={handleHover}
     >
       <span className="index index-box" style={{ display: checkAnswer || lessMinWidth ? "none" : "flex" }}>
         {indexStr}
       </span>
       <div className="text container" style={{ padding: lessMinWidth ? "0 0 0 4px" : null }}>
         <div className="clipText">{userSelections[dropTargetIndex]}</div>
-        {(checkAnswer || (showAnswer && !lessMinWidth)) && (
+        {(checkAnswer || showAnswer) && (
           <div>
-            {hansAnswered && (
-              <IconWrapper rightPosition={5}>
+            {hasAnswered && (
+              <IconWrapper>
                 {status === "right" && <RightIcon />}
                 {status === "wrong" && <WrongIcon />}
               </IconWrapper>
@@ -89,7 +88,8 @@ const Response = ({
     </div>
   );
 
-  return (lessMinWidth || isOverConent) && hansAnswered ? (
+  // eslint-disable-next-line max-len
+  return (isOverConent || lessMinWidth) && hasAnswered ? (
     <Popover content={popoverContent}>{content}</Popover>
   ) : (
     content

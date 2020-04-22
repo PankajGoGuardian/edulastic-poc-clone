@@ -26,7 +26,7 @@ const PopoverContent = ({ stemNumeration, index, fontSize, userSelections, statu
         </span>
         <div className="text container" style={{ maxWidth: response.maxWidth }}>
           <div style={{ whiteSpace: "normal" }}>{userSelections[index]}</div>
-          <IconWrapper rightPosition={10} style={{ top: "50%", transform: "translateY(-50%)" }}>
+          <IconWrapper rightPosition={5}>
             {userSelections.length > 0 && status === "right" && <RightIcon />}
             {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
           </IconWrapper>

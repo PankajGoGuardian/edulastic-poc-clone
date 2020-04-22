@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import get from "lodash/get";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import {
@@ -10,6 +11,7 @@ import {
   MathFormulaDisplay
 } from "@edulastic/common";
 import { themeColor, mainTextColor, backgroundGrey } from "@edulastic/colors";
+import { getFontSize } from "../../utils/helpers";
 import { Label } from "../../styled/WidgetOptions/Label";
 
 const Hints = ({
@@ -25,6 +27,7 @@ const Hints = ({
   const { hints = [], id } = question;
   const validHints = hints?.filter(hint => hint?.label);
   const hintCount = validHints.length;
+  const fontSize = getFontSize(get(question, "uiStyle.fontsize"));
 
   if (
     !hintCount ||
@@ -107,7 +110,7 @@ const Hints = ({
                     {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
                     {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
                     <HintContent>
-                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+                      <MathFormulaDisplay fontSize={fontSize} dangerouslySetInnerHTML={{ __html: label }} />
                     </HintContent>
                     {index + 1 === showCount && showCount < hintCount && (
                       <ShowMoreHint onClick={showMoreHints}>+ Get Another Hint {`1/${hintCount}`}</ShowMoreHint>

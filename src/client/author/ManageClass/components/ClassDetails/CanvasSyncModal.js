@@ -61,6 +61,7 @@ const CanvasSyncModal = ({
       canvasCourseName,
       sectionId,
       sectionName,
+      institutionId,
       districtId: user.districtId
     };
     syncClassWithCanvas(data);

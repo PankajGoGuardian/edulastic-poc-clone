@@ -2,6 +2,7 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
+import { DRAWING_TOOLS } from "../../../../constants/questionAuthoring";
 
 class HighlightImage {
   constructor() {
@@ -11,18 +12,23 @@ class HighlightImage {
 
   checkFontSize(fontSize) {
     this.header.preview();
-    Helpers.getElement("adaptiveButtonList")
-      .find('[data-cy="undo"]')
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
+    // Helpers.getElement("adaptiveButtonList")
+    //   .find('[data-cy="undo"]')
+    //   .should("have.css", "font-size")
+    //   .and("eq", fontSize);
 
-    Helpers.getElement("adaptiveButtonList")
-      .find('[data-cy="redo"]')
-      .should("have.css", "font-size")
-      .and("eq", fontSize);
+    // Helpers.getElement("adaptiveButtonList")
+    //   .find('[data-cy="redo"]')
+    //   .should("have.css", "font-size")
+    //   .and("eq", fontSize);
 
-    Helpers.getElement("adaptiveButtonList")
-      .find('[data-cy="clear"]')
+    // Helpers.getElement("adaptiveButtonList")
+    //   .find('[data-cy="clear"]')
+    //   .should("have.css", "font-size")
+    //   .and("eq", fontSize);
+
+    cy.get('[data-cy="styled-wrapped-component"]')
+      .first()
       .should("have.css", "font-size")
       .and("eq", fontSize);
 
@@ -38,8 +44,10 @@ class HighlightImage {
 
   getDropZoneImageContainer = () => cy.get('[data-cy="dropzone-image-container"]');
 
+  getQuestionText = () => cy.get('[contenteditable="true"]').first();
+
   changeImageWidth = width => {
-    cy.get('[data-cy="image-width-input"]')
+    cy.get('[placeholder="Width (px)"]')
       .click()
       .clear()
       .type("{selectall}")
@@ -49,7 +57,7 @@ class HighlightImage {
   };
 
   changeImageHeight = height => {
-    cy.get('[data-cy="image-height-input"]')
+    cy.get('[placeholder="Height (px)"]')
       .click()
       .clear()
       .type("{selectall}")
@@ -104,8 +112,30 @@ class HighlightImage {
   }
 
   getLineWidth() {
-    return Helpers.getElement("lineWidthOption");
+    return this.getLayout()
+      .find("input")
+      .first();
   }
+
+  getImagePreview = () => cy.get('[data-cy="previewImage"]');
+
+  getDrawableElementInPreview = () => cy.get('[class^="MathDraw"]').prev();
+
+  getDrawedElements = () => cy.get('[class^="SvgDraw__Path"]');
+
+  getDrawingTools = () => cy.get(".drawing-tool-button");
+
+  selectDrawingToolsByName = name => {
+    switch (name) {
+      case DRAWING_TOOLS.BREAKING_LINE:
+        this.getDrawingTools()
+          .eq(3)
+          .click();
+        break;
+      default:
+        break;
+    }
+  };
 }
 
 export default HighlightImage;

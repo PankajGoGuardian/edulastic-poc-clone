@@ -3,6 +3,7 @@ import HightlightImagePage from "../../../../framework/author/itemList/questionT
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { DRAWING_TOOLS } from "../../../../framework/constants/questionAuthoring";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Image" type question`, () => {
   const queData = {
@@ -51,12 +52,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
             });
           });
         }); */
-
+        question.getImagePreview().should("not.exist");
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
           question
-            .getDropZoneImageContainer()
-            .find("img")
-            .should("have.attr", "src");
+            .getImagePreview()
+            .should("exist")
+            .and("have.css", "background-image");
         });
 
         // test with local image
@@ -72,32 +73,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         //   .should("have.attr", "src", testImageUrl);
       });
 
-      it(" > Enter Width (px)", () => {
+      it(" > Enter Width (px) and Height (px)", () => {
         question.changeImageWidth(queData.imageWidth);
-        question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "width", queData.imageWidth);
-      });
-
-      it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "height", queData.imageHeight);
+          .getImagePreview()
+          .should("have.css", "background-size", `${queData.imageWidth}px ${queData.imageHeight}px`);
       });
 
-      it(" > Image alternative text", () => {
-        question.addImageAlternative(queData.altText);
-        question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "alt", queData.altText);
-      });
+      // it(" > Image alternative text", () => {
+      //   question.addImageAlternative(queData.altText);
+      //   question
+      //     .getDropZoneImageContainer()
+      //     .find("img")
+      //     .should("have.attr", "alt", queData.altText);
+      // });
     });
 
-    context(" > TC_239 => Line color options", () => {
+    context.skip(" > TC_239 => Line color options", () => {
       it(" > Click on color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.line_color[0] = queData.color1;
@@ -130,6 +123,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
     context(" > TC_240 => Save question", () => {
       it(" > Click on save button", () => {
+        question.getQuestionText().type(`{selectall}${queData.queText}`);
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
@@ -137,17 +131,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
     context(" > TC_241 => Preview items", () => {
       it(" > Click on preview", () => {
+        question.getDrawedElements().should("have.length", 0);
         preview = editItem.header.preview();
-        cy.get("body").contains("span", "Clear");
-        cy.get("canvas")
-          .trigger("mousedown", 100, 100)
-          .trigger("mousemove", 150, 150)
-          .trigger("mousemove", 200, 200)
-          .trigger("mouseup", 200, 200);
+        question.selectDrawingToolsByName(DRAWING_TOOLS.BREAKING_LINE);
+        question
+          .getDrawableElementInPreview()
+          .click(100, 100)
+          .click(200, 100)
+          .click(200, 200)
+          .click(100, 200)
+          .dblclick(100, 100);
+        question.getDrawedElements().should("have.length", 1);
       });
 
-      it(" > Shoud be visible Check Answer", () => {
-        cy.contains("span", "Check Answer").should("be.visible");
+      it(" > Shoud not be visible Check Answer", () => {
+        cy.contains("span", "Check Answer").should("not.be.visible");
         // cy.contains("span", "Show Answers").should("not.visible");
       });
 
@@ -156,7 +154,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .getClear()
           .should("be.visible")
           .click();
-
+        question.getDrawedElements().should("have.length", 0);
         preview.header.edit();
       });
     });
@@ -168,6 +166,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
       // create new que and select type
       editItem.chooseQuestion(queData.group, queData.queType);
+      cy.get("body")
+        .contains(" ADVANCED OPTIONS")
+        .click();
     });
 
     beforeEach(() => {
@@ -184,26 +185,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
-        select.should("be.visible").click();
+        select.click({ force: true });
 
-        question
-          .getSmallFontSizeOption()
-          .should("be.visible")
-          .click();
+        question.getSmallFontSizeOption().click({ force: true });
 
         select.should("contain", name);
+        question.getQuestionText().type(`{selectall}${queData.queText}`);
         question.checkFontSize(font);
       });
       it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
-        select.should("be.visible").click();
+        select.click({ force: true });
 
-        question
-          .getNormalFontSizeOption()
-          .should("be.visible")
-          .click();
+        question.getNormalFontSizeOption().click({ force: true });
 
         select.should("contain", name);
         question.checkFontSize(font);
@@ -212,12 +208,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
-        select.should("be.visible").click();
-
-        question
-          .getLargeFontSizeOption()
-          .should("be.visible")
-          .click();
+        select.click({ force: true });
+        question.getLargeFontSizeOption().click({ force: true });
 
         select.should("contain", name);
         question.checkFontSize(font);
@@ -226,12 +218,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
-        select.should("be.visible").click();
+        select.click({ force: true });
 
-        question
-          .getExtraLargeFontSizeOption()
-          .should("be.visible")
-          .click();
+        question.getExtraLargeFontSizeOption().click({ force: true });
 
         select.should("contain", name);
         question.checkFontSize(font);
@@ -240,12 +229,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 
-        select.should("be.visible").click();
+        select.click({ force: true });
 
-        question
-          .getHugeFontSizeOption()
-          .should("be.visible")
-          .click();
+        question.getHugeFontSizeOption().click({ force: true });
 
         select.should("contain", name);
         question.checkFontSize(font);
@@ -255,7 +241,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
         question
           .getLineWidth()
-          .should("be.visible")
           .clear()
           .type(`{selectall}${width}`)
           .should("have.value", `${width}`);
@@ -269,9 +254,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
       // create new que and select type
       editItem.chooseQuestion(queData.group, queData.queType);
-      question.header.save();
-      // edit
-      editItem.getEditButton().click();
+      question.getQuestionText().type(`{selectall}${queData.queText}`);
+
+      question.header.saveAndgetId().then(id => {
+        cy.url().should("contain", "item-detail");
+        itemList.sidebar.clickOnItemBank();
+        itemList.searchFilters.clearAll();
+        itemList.searchFilters.getAuthoredByMe();
+        itemList.clickOnViewItemById(id);
+        itemList.itemPreview.clickEditOnPreview();
+      });
     });
 
     context(" > TC_243 => Image upload area", () => {
@@ -296,9 +288,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
         cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
           question
-            .getDropZoneImageContainer()
-            .find("img")
-            .should("have.attr", "src");
+            .getImagePreview()
+            .should("exist")
+            .and("have.css", "background-image");
         });
 
         // test with local image
@@ -311,32 +303,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         // question.getDropZoneImageContainer().find('img').should("have.attr", "src", testImageUrl);
       });
 
-      it(" > Enter Width (px)", () => {
+      it(" > Enter Width (px) and Height (px)", () => {
         question.changeImageWidth(queData.imageWidth);
-        question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "width", queData.imageWidth);
-      });
-
-      it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "height", queData.imageHeight);
+          .getImagePreview()
+          .should("have.css", "background-size", `${queData.imageWidth}px ${queData.imageHeight}px`);
       });
 
-      it(" > Image alternative text", () => {
-        question.addImageAlternative(queData.altText);
-        question
-          .getDropZoneImageContainer()
-          .find("img")
-          .should("have.attr", "alt", queData.altText);
-      });
+      // it(" > Image alternative text", () => {
+      //   question.addImageAlternative(queData.altText);
+      //   question
+      //     .getDropZoneImageContainer()
+      //     .find("img")
+      //     .should("have.attr", "alt", queData.altText);
+      // });
     });
 
-    context(" > TC_244 => Line color options", () => {
+    context.skip(" > TC_244 => Line color options", () => {
       it(" > Click on color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.line_color[0] = queData.color1;
@@ -369,24 +353,28 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
     context(" > TC_245 => Save question", () => {
       it(" > Click on save button", () => {
-        question.header.save();
+        question.header.save(true);
         cy.url().should("contain", "item-detail");
       });
     });
 
     context(" > TC_246 => Preview Items", () => {
       it(" > Click on preview", () => {
+        question.getDrawedElements().should("have.length", 0);
         preview = editItem.header.preview();
-        cy.get("body").contains("span", "Clear");
-        cy.get("canvas")
-          .trigger("mousedown", 100, 100)
-          .trigger("mousemove", 150, 150)
-          .trigger("mousemove", 200, 200)
-          .trigger("mouseup", 200, 200);
+        question.selectDrawingToolsByName(DRAWING_TOOLS.BREAKING_LINE);
+        question
+          .getDrawableElementInPreview()
+          .click(100, 100)
+          .click(200, 100)
+          .click(200, 200)
+          .click(100, 200)
+          .dblclick(100, 100);
+        question.getDrawedElements().should("have.length", 1);
       });
 
-      it(" > Should be visible Check Answer", () => {
-        cy.contains("span", "Check Answer").should("be.visible");
+      it(" > Shoud not be visible Check Answer", () => {
+        cy.contains("span", "Check Answer").should("not.be.visible");
         // cy.contains("span", "Show Answers").should("not.visible");
       });
 
@@ -395,19 +383,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .getClear()
           .should("be.visible")
           .click();
-
+        question.getDrawedElements().should("have.length", 0);
         preview.header.edit();
       });
     });
 
-    context(" > TC_247 => Delete option", () => {
-      it(" > Click on delete button in Item Details page", () => {
-        editItem
-          .getDelButton()
-          .should("have.length", 1)
-          .click()
-          .should("have.length", 0);
-      });
-    });
+    // context(" > TC_247 => Delete option", () => {
+    //   it(" > Click on delete button in Item Details page", () => {
+    //     editItem
+    //       .getDelButton()
+    //       .should("have.length", 1)
+    //       .click()
+    //       .should("have.length", 0);
+    //   });
+    // });
   });
 });

@@ -54,3 +54,7 @@ export const DIFFICULTY = {
   Easy: "Easy",
   Hard: "Hard"
 };
+
+export const DRAWING_TOOLS = {
+  BREAKING_LINE: "breaking line"
+};

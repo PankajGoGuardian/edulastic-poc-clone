@@ -160,7 +160,7 @@ const MainContent = styled.div`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   display: flex;
-  overflow: visible;
+  overflow: auto; /* need auto to show scroll for lengthy content https://snapwiz.atlassian.net/browse/EV-13508 */
   width: 100%;
   flex-direction: column;
   padding: ${({ zoomed, zoomLevel }) => {

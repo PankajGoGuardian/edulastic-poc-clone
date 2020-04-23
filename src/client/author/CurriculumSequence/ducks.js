@@ -578,7 +578,6 @@ export function* updateDestinationCurriculumSequencesaga({ payload }) {
         title: `${curriculumSequence.title} - ${moment().format("MM/DD/YYYY HH:mm")}`
       };
     }
-    console.log("curriculumSequence in updateDestinationCurriculumSequencesaga ", curriculumSequence);
     yield put(putCurriculumSequenceAction({ id: curriculumSequence._id, curriculumSequence }));
   } catch (err) {
     message.error("There was an error updating the curriculum sequence");
@@ -996,7 +995,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
     yield put(resetDestinationFlags());
     yield updateDestinationCurriculumSequencesaga({ payload: { customizeDraft: true } });
     yield call(curriculumSequencesApi.publishPlaylist, payload);
-    yield put(push(`/author/playlists/playlist/${payload}/use-this`));
+    yield put(push(`/author/playlists/playlist/${payload.id}/use-this`));
   } catch (e) {
     console.error("Customized draft playlist publish failed - ", e);
     message.error("Something went wrong while trying to publish customized draft playlist...");

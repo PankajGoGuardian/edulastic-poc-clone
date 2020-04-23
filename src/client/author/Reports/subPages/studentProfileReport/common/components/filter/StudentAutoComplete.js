@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { AutoComplete, Icon, Input } from "antd";
+import { debounce, isEmpty, map } from "lodash";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { map, debounce, isEmpty } from "lodash";
-import { AutoComplete, Input, Icon } from "antd";
-import { getSPRStudentDataRequestAction, getStudentsListSelector, getStudentsLoading } from "../../filterDataDucks";
-import { getOrgDataSelector } from "../../../../../../src/selectors/user";
 import styled from "styled-components";
+import { getOrgDataSelector } from "../../../../../../src/selectors/user";
+import { getSPRStudentDataRequestAction, getStudentsListSelector, getStudentsLoading } from "../../filterDataDucks";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -115,7 +115,14 @@ const StudentAutoComplete = ({
 
   return (
     <AutoCompleteContainer>
-      <AutoComplete value={text} onSearch={onSearchTermChange} dataSource={options} onSelect={onSelect} onBlur={onBlur}>
+      <AutoComplete
+        getPopupContainer={trigger => trigger.parentNode}
+        value={text}
+        onSearch={onSearchTermChange}
+        dataSource={options}
+        onSelect={onSelect}
+        onBlur={onBlur}
+      >
         <Input suffix={<Icon type={loading ? "loading" : "search"} />} />
       </AutoComplete>
     </AutoCompleteContainer>
@@ -138,5 +145,8 @@ export default enchance(StudentAutoComplete);
 const AutoCompleteContainer = styled.div`
   .ant-select-auto-complete {
     padding: 5px;
+  }
+  .ant-select-dropdown-menu-item-group-title {
+    font-weight: bold;
   }
 `;

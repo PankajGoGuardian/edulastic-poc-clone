@@ -23,6 +23,7 @@ class TokenhighLightPage {
     return cy
       .get("[data-cy=tabs]")
       .eq(0)
+      .parent()
       .next()
       .find('[contenteditable="true"]'); //eq(0).xpath('child::div').eq(1)
   }
@@ -36,6 +37,7 @@ class TokenhighLightPage {
     cy
       .get('[data-cy="tabs"]')
       .eq(0)
+      .parent()
       .next()
       .contains("Paragraph");
 
@@ -43,6 +45,7 @@ class TokenhighLightPage {
     cy
       .get('[data-cy="tabs"]')
       .eq(0)
+      .parent()
       .next()
       .contains("Sentence");
 
@@ -50,11 +53,13 @@ class TokenhighLightPage {
     cy
       .get('[data-cy="tabs"]')
       .eq(0)
+      .parent()
       .next()
       .contains("Word");
 
   getAllTokens() {
     return this.editToken()
+      .parent()
       .parent()
       .parent()
       .siblings()

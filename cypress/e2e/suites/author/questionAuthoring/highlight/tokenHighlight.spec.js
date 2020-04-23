@@ -36,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
   const GREEN_BG = "rgb(132, 205, 54)";
   const GREEN_BD = "rgb(94, 181, 0)";
 
-  const ACTIVE = "rgb(0, 173, 80)";
+  const ACTIVE = "rgb(135, 138, 145)";
   const ACTIVEWORD = "active-word";
 
   before(() => {
@@ -77,6 +77,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         const { sel, count } = token;
         cy.get('[data-cy="tabs"]')
           .eq(0)
+          .parent()
           .next()
           .contains(sel)
           .click({ force: true })
@@ -114,7 +115,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
     });
 
     it(" > [Tc_213] : save question", () => {
-      // save que
+      // save que - temporarily passing the question content here as question editor doesnot appear
+      question.getQuestionEditor().type("This is token highlight question");
       question.header.save();
       cy.url().should("contain", "item-detail");
     });
@@ -342,78 +344,92 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("small");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getSmallFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
-        question.checkFontSize("12.8px");
+        select.scrollIntoView().should("contain", name);
+        question.checkFontSize("11px");
       });
       it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("normal");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getNormalFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
+        select.scrollIntoView().should("contain", name);
         question.checkFontSize("16px");
       });
       it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("large");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getLargeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
-        question.checkFontSize("19.2px");
+        select.scrollIntoView().should("contain", name);
+        question.checkFontSize("17px");
       });
       it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("xlarge");
 
-        select.should("be.visible").click();
-
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
         question
           .getExtraLargeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
-        question.checkFontSize("22.4px");
+        select.scrollIntoView().should("contain", name);
+        question.checkFontSize("20px");
       });
       it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("xxlarge");
 
-        select.should("be.visible").click();
+        select
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
 
         question
           .getHugeFontSizeOption()
           .should("be.visible")
           .click();
 
-        select.should("contain", name);
-        question.checkFontSize("25.6px");
+        select.scrollIntoView().should("contain", name);
+        question.checkFontSize("24px");
       });
       it(" > should be able to change max selection", () => {
         const maxSelection = 2;
 
         question
           .getMaxSelection()
-          .should("be.visible")
+          //.should("be.visible")
           .type(`{selectall}${maxSelection}`)
           .should("have.value", `${maxSelection}`);
 

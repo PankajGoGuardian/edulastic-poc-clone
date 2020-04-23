@@ -146,6 +146,15 @@ class EditItemPage {
       .click();
 
     this.selectQue(qType);
+
+    /* TODO: There is some issue in initializing frola editor after landing to 
+    author/edit page of a question, as a work around after selecting qtype always 
+    navigating to preview tab then coming back to edit to author a question in cypress
+     */
+    cy.wait(1000);
+    this.header.preview();
+    this.header.edit();
+    // TODO : to be removed above once app issue is fixed
   }
 
   cancelSource() {

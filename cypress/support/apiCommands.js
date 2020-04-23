@@ -116,35 +116,49 @@ Cypress.Commands.add("createTestData", () => {
 });
 
 Cypress.Commands.add("deleteItem", item => {
-  cy.request({
-    url: `${BASE_URL}/testitem/${item._id}`,
-    method: "DELETE",
-    headers: {
-      Authorization: item.authToken
-    },
-    failOnStatusCode: false
-  }).then(({ status }) => {
-    // if (status !== 403) {
-    expect(status).to.eq(200);
-    console.log("Item deleted with _id :", item._id);
-    // } else console.log("API forbidden , for testItem ", JSON.stringify(item));
-  });
+  return cy
+    .request({
+      url: `${BASE_URL}/testitem/${item._id}`,
+      method: "DELETE",
+      headers: {
+        Authorization: item.authToken
+      },
+      failOnStatusCode: false
+    })
+    .then(xhr => {
+      const { status } = xhr;
+      if (status === 200) {
+        expect(status).to.eq(200);
+        console.log("Item deleted with _id :", item._id);
+      } else {
+        console.log("failed to delete item for :", JSON.stringify(item));
+      }
+      return xhr;
+    });
 });
 
 Cypress.Commands.add("deleteTest", test => {
-  cy.request({
-    url: `${BASE_URL}/test/${test._id}`,
-    method: "DELETE",
-    headers: {
-      Authorization: test.authToken
-    },
-    failOnStatusCode: false
-  }).then(({ status }) => {
-    // if (status !== 403) {
-    expect(status).to.eq(200);
-    console.log("test deleted with _id :", test._id);
-    // } else console.log("API forbidden for test ", JSON.stringify(test));
-  });
+  return cy
+    .request({
+      url: `${BASE_URL}/test/${test._id}`,
+      method: "DELETE",
+      headers: {
+        Authorization: test.authToken
+      },
+      failOnStatusCode: false
+    })
+    .then(xhr => {
+      const { status } = xhr;
+      // if (status !== 403) {
+      if (status === 200) {
+        expect(status).to.eq(200);
+        console.log("test deleted with _id :", test._id);
+      } else {
+        console.log("failed to delete test for :", JSON.stringify(test));
+      }
+      return xhr;
+      // } else console.log("API forbidden for test ", JSON.stringify(test));
+    });
 });
 
 Cypress.Commands.add("deletePlayList", playListObj => {
@@ -219,6 +233,10 @@ Cypress.Commands.add("saveplayListDetailToDelete", playlistId => {
 Cypress.Commands.add("deleteTestData", () => {
   cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
     let testData;
+    let cleanupStateSuccess;
+    const failedToDeleteTests = [];
+    const failedToDeleteItems = [];
+
     if (fileContent !== null) {
       testData = JSON.parse(fileContent);
       console.log("testDataJson in deleteTestData", testData);
@@ -263,23 +281,45 @@ Cypress.Commands.add("deleteTestData", () => {
       // delete tests
       if (testData.tests && testData.tests.length > 0) {
         testData.tests.forEach(test => {
-          cy.deleteTest(test);
+          cy.deleteTest(test).then(({ status, body }) => {
+            if (status !== 200) {
+              test.status = status;
+              test.errorResponse = body.message || body || "error";
+              failedToDeleteTests.push(test);
+            }
+          });
         });
-        delete testData.tests;
+        cy.wait(1).then(() => {
+          if (failedToDeleteTests.length) testData.tests = failedToDeleteTests;
+          else delete testData.tests;
+        });
       }
 
       // delete testItems
       if (testData.testItems && testData.testItems.length > 0) {
         testData.testItems.forEach(item => {
-          cy.deleteItem(item);
+          cy.deleteItem(item).then(({ status, body }) => {
+            if (status !== 200) {
+              item.status = status;
+              item.errorResponse = body.messages || body || "error";
+              failedToDeleteItems.push(item);
+            }
+          });
         });
-        delete testData.testItems;
+        cy.wait(1).then(() => {
+          if (failedToDeleteItems.length) testData.testItems = failedToDeleteItems;
+          else delete testData.testItems;
+        });
       }
+
+      cy.wait(1).then(() => {
+        cleanupStateSuccess = failedToDeleteTests.length || failedToDeleteItems.length ? false : true;
+      });
     } else testData = {};
 
     // TODO : add other collections API
-    cy.writeFile(deleteTestDataFile, testData).then(json => {
-      expect(Object.keys(json).length).to.equal(0);
+    cy.writeFile(deleteTestDataFile, testData).then(() => {
+      expect(cleanupStateSuccess, `data clean-up stage failed - ${JSON.stringify(testData, null, 2)}`).to.be.true;
     });
   });
 });

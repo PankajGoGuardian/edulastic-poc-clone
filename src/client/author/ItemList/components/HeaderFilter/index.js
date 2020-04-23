@@ -138,7 +138,10 @@ const HeaderFilter = ({ handleCloseFilter, search, curriculumById, standardsList
       <>
         {bodyArr?.length > 0 && bodyArr.map(e => e)}
         {popOverArray?.length > 0 && (
-          <Popover placement="bottom" content={<>{popOverArray.map(e => e)}</>}>
+          <Popover
+            placement="bottom"
+            content={<PopoverContentWrapper>{popOverArray.map(e => e)}</PopoverContentWrapper>}
+          >
             <Tag>{`+${popOverArray.length}`}</Tag>
           </Popover>
         )}
@@ -181,4 +184,8 @@ export const FiltersWrapper = styled.div`
   .ant-tag {
     ${TagsStyle};
   }
+`;
+
+const PopoverContentWrapper = styled.div`
+  max-width: 250px;
 `;

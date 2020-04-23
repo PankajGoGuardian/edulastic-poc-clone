@@ -5,7 +5,7 @@ import { message } from "antd";
 import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage, settingsApi, segmentApi } from "@edulastic/api";
 import { roleuser } from "@edulastic/constants";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getFromLocalStorage, getFromSessionStorage } from "@edulastic/api/src/utils/Storage";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import {
@@ -709,17 +709,22 @@ export function* fetchV1Redirect({ payload: id }) {
 
 function* logout() {
   try {
-    const user = yield select(getUser);
-    yield call(segmentApi.unloadIntercom, { user });
-    localStorage.clear();
-    sessionStorage.removeItem("cliBannerShown");
-    sessionStorage.removeItem("cliBannerVisible");
-    TokenStorage.removeKID();
-    TokenStorage.initKID();
-    yield put({ type: "RESET" });
-
-    yield put(push(getSignOutUrl()));
-    removeSignOutUrl();
+    const sessionKey = getFromSessionStorage("tokenKey"),
+      defaultSessionKey = getFromLocalStorage("defaultTokenKey");
+    if (sessionKey && sessionKey !== defaultSessionKey) {
+      window.close();
+    } else {
+      const user = yield select(getUser);
+      yield call(segmentApi.unloadIntercom, { user });
+      localStorage.clear();
+      sessionStorage.removeItem("cliBannerShown");
+      sessionStorage.removeItem("cliBannerVisible");
+      TokenStorage.removeKID();
+      TokenStorage.initKID();
+      yield put({ type: "RESET" });
+      yield put(push(getSignOutUrl()));
+      removeSignOutUrl();
+    }
   } catch (e) {
     console.log(e);
   }

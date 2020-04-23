@@ -2,16 +2,17 @@
 import EditToolBar from "../common/editToolBar";
 import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
+import { queColor } from "../../../../constants/questionTypes";
 
 class HotspotPage {
   constructor() {
     this.editToolBar = new EditToolBar();
     this.header = new Header();
-
     this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
   // get current question from Store
+  getQuestionText = () => cy.get('[contenteditable="true"]').first();
 
   checkFontSize(fontSize) {
     this.header.preview();
@@ -96,7 +97,7 @@ class HotspotPage {
     cy.get('[data-cy="area-draw-mode"]')
       .click()
       .then($el => {
-        cy.wrap($el).should("have.css", "background-color", "rgb(255, 255, 255)");
+        cy.wrap($el).should("have.css", "background-color", queColor.GREEN_3);
       });
     return this;
   };
@@ -105,7 +106,7 @@ class HotspotPage {
     cy.get('[data-cy="area-delete-mode"]')
       .click()
       .then($el => {
-        cy.wrap($el).should("have.css", "background-color", "rgb(255, 255, 255)");
+        cy.wrap($el).should("have.css", "background-color", queColor.GREEN_3);
       });
     return this;
   };
@@ -134,8 +135,8 @@ class HotspotPage {
 
   addAlternate = () => {
     cy.get('[data-cy="alternate"]')
-      .should("be.visible")
-      .click();
+      // .should("be.visible")
+      .click({ force: true });
     return this;
   };
 

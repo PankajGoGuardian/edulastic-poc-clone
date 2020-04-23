@@ -24,6 +24,7 @@ const ActionMenu = ({
   showPreviewModal = false,
   toggleEditModal = () => {},
   toggleDeleteModal = () => {},
+  togglePrintModal = () => {},
   row = {},
   userId = "",
   userRole = "",
@@ -67,7 +68,7 @@ const ActionMenu = ({
         `View of Items is restricted by the admin if content visibility is set to "Always hidden" OR "Hide prior to grading"`
       );
     }
-    window.open(`/author/printAssessment/${currentTestId}`, "_blank");
+    togglePrintModal(currentTestId);
   };
 
   // owner of the assignment

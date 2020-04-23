@@ -102,7 +102,8 @@ const TableList = ({
   toggleDeleteModal,
   userId = "",
   status = "",
-  assignmentTests
+  assignmentTests,
+  togglePrintModal
 }) => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [details, setdetails] = useState(true);
@@ -359,7 +360,8 @@ const TableList = ({
                 toggleDeleteModal,
                 row,
                 userId,
-                assignmentTest
+                assignmentTest,
+                togglePrintModal
               })}
               placement="bottomRight"
               trigger={["click"]}
@@ -451,7 +453,8 @@ TableList.propTypes = {
   history: PropTypes.object,
   tests: PropTypes.array,
   showFilter: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  togglePrintModal: PropTypes.func
 };
 
 TableList.defaultProps = {

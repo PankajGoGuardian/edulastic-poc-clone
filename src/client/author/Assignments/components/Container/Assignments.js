@@ -55,6 +55,8 @@ import {
 } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
 import EditTestModal from "../../../src/components/common/EditTestModal";
+import PrintTestModal from "../../../src/components/common/PrintTestModal";
+
 import {
   toggleDeleteAssignmentModalAction,
   getToggleDeleteAssignmentModalState
@@ -75,7 +77,8 @@ class Assignments extends Component {
     filterState: {},
     isPreviewModalVisible: false,
     openEditPopup: false,
-    currentTestId: ""
+    currentTestId: "",
+    openPrintModal: false
   };
 
   componentDidMount() {
@@ -126,6 +129,14 @@ class Assignments extends Component {
     toggleDeleteAssignmentModalAction(true);
     this.setState({ currentTestId });
   };
+
+  togglePrintModal = (currentTestId = "") => this.setState({ openPrintModal: !this.state.openPrintModal, currentTestId});
+
+  gotoPrintView = data => {
+    const { type, customValue } = data;
+    window.open(`/author/printAssessment/${this.state.currentTestId}?type=${type}&qs=${type === "custom" ? customValue : ""}`, "_blank");
+    this.togglePrintModal();
+  }
 
   handleCreate = () => {
     const { history } = this.props;
@@ -208,7 +219,8 @@ class Assignments extends Component {
       currentTestId,
       openEditPopup,
       currentAssignmentId,
-      currentAssignmentClass
+      currentAssignmentClass,
+      openPrintModal
     } = this.state;
     const { showFilter = false } = filterState;
     const tabletWidth = 768;
@@ -234,6 +246,7 @@ class Assignments extends Component {
           currentAssignmentId={currentAssignmentId}
           currentAssignmentClass={currentAssignmentClass}
         />
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.togglePrintModal}/>}
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment
@@ -296,6 +309,7 @@ class Assignments extends Component {
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
                           status={filterState.status}
+                          togglePrintModal={this.togglePrintModal}
                         />
                       )}
                     </StyledCard>

@@ -44,6 +44,7 @@ import {
   setCurrentTestActivityIdAction
 } from "../../../src/actions/classBoard";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
+import PrintTestModal from "../../../src/components/common/PrintTestModal";
 import {
   gradebookSelectStudentAction,
   gradebookSetSelectedAction,
@@ -559,7 +560,7 @@ class ClassBoard extends Component {
     event.preventDefault();
 
     const { testActivity, selectedStudents, match } = this.props;
-    const { assignmentId, classId } = match.params;
+    
     const selectedStudentsKeys = Object.keys(selectedStudents);
 
     const studentsMap = keyBy(testActivity, "studentId");
@@ -571,14 +572,25 @@ class ClassBoard extends Component {
       );
 
     if (isPrintable && selectedStudentsKeys.length) {
-      const selectedStudentsStr = selectedStudentsKeys.join(",");
-      window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}`);
+      this.setState({ openPrintModal: true });
     } else if (!selectedStudentsKeys.length) {
       message.error("At least one student should be selected to print responses.");
     } else {
       message.error("You can print only after the assignment has been submitted by the student(s).");
     }
   };
+
+  closePrintModal = () => this.setState({ openPrintModal: false });
+
+  gotoPrintView = data => {
+    const { selectedStudents, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    const { type, customValue } = data;
+    const selectedStudentsKeys = Object.keys(selectedStudents);
+    const selectedStudentsStr = selectedStudentsKeys.join(",");
+    window.open(`/author/printpreview/${assignmentId}/${classId}?selectedStudents=${selectedStudentsStr}&type=${type}&qs=${type === "custom" ? customValue : ""}`);
+    this.closePrintModal();
+  }
 
   closeRedirectPopup = (reload = false) => {
     this.setState({ redirectPopup: false });
@@ -638,7 +650,8 @@ class ClassBoard extends Component {
       showMarkAbsentPopup,
       showRemoveStudentsPopup,
       showAddStudentsPopup,
-      showMarkSubmittedPopup
+      showMarkSubmittedPopup,
+      openPrintModal
     } = this.state;
     const { assignmentId, classId } = match.params;
     const studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
@@ -739,6 +752,7 @@ class ClassBoard extends Component {
             okText="Yes, Remove"
           />
         )}
+        {openPrintModal && <PrintTestModal onProceed={this.gotoPrintView} onCancel={this.closePrintModal}/>}
         <HooksContainer additionalData={additionalData} classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}

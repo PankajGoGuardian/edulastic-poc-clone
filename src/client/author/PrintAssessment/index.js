@@ -4,18 +4,19 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col } from "antd";
+import queryString from "query-string";
 
 import { withRouter } from "react-router-dom";
 import { testsApi } from "@edulastic/api";
 import { AnswerContext } from "@edulastic/common";
 import { roleuser, test as testConstants } from "@edulastic/constants";
-import { getOrderedQuestionsAndAnswers } from "./utils";
+import { getOrderedQuestionsAndAnswers, formatQuestionLists } from "./utils";
 import QuestionWrapper from "../../assessment/components/QuestionWrapper";
 import { getCollectionsSelector, getUserRole } from "../src/selectors/user";
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants;
 
-function useTestFetch(testId) {
+function useTestFetch(testId, type, filterQuestions) {
   const [testDetails, setTestDetails] = useState(null);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ function useTestFetch(testId) {
         testContentVisibility
       } = test;
       const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []);
-      const { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages);
+      let { questions, answers } = getOrderedQuestionsAndAnswers(testItems, passages, type, filterQuestions);
       setTestDetails({
         title,
         collections,
@@ -47,9 +48,12 @@ function useTestFetch(testId) {
   return testDetails;
 }
 
-const PrintAssessment = ({ match, userRole }) => {
+const PrintAssessment = ({ match, userRole, location }) => {
+  const query = queryString.parse(location.search);
+  const { type, qs } = query;
+  const filterQuestions = type === "custom" ? formatQuestionLists(qs) : [];
   const { testId } = match.params;
-  const test = useTestFetch(testId);
+  const test = useTestFetch(testId, type, filterQuestions);
 
   if (!test) {
     return <div> Loading... </div>;

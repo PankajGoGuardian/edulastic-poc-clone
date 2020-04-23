@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import { keyBy as _keyBy, get } from "lodash";
+import queryString from "query-string";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 import { QuestionDiv, Content } from "./styled";
+import { formatQuestionLists } from "../../../PrintAssessment/utils";
 
 function Preview({ item, passages, evaluation }) {
   const rows = getRows(item);
@@ -45,13 +48,16 @@ class StudentQuestions extends Component {
       for (let i = 0; i < textAreas.length; i++) {
         let value = textAreas[i].value;
         let parent = textAreas[i].parentNode;
-        //$(parent).append("<div>" + value + "</div>");
+        $(parent).append("<div>" + value + "</div>");
       }
     }, 3000);
   }
 
   getTestItems() {
-    const { currentStudent, questionActivities } = this.props;
+    const { currentStudent, questionActivities, location } = this.props;
+    const { type, qs } = queryString.parse(location.search);
+    // convert query string to array format
+    const formattedFilteredQs = formatQuestionLists(qs);
     let {
       classResponse: { testItems }
     } = this.props;
@@ -65,7 +71,16 @@ class StudentQuestions extends Component {
       if (!(data && data.questions)) {
         return;
       }
-      const questions = data.questions.map(question => {
+      let filterQuestions = data.questions;
+      // if search type passed as 'custom' in window location
+      if (type === "custom") {
+        filterQuestions = filterQuestions.filter(({ qLabel }) => formattedFilteredQs.includes(qLabel));
+        // if item is passage type and match the question label, then consider all questions
+        if (item.passageId && filterQuestions.length) {
+          filterQuestions = data.questions;
+        }
+      }
+      const questions = filterQuestions.map(question => {
         const { id } = question;
         let qIndex = 0;
         let qActivities = questionActivities.filter(({ qid }) => qid === id);
@@ -87,6 +102,14 @@ class StudentQuestions extends Component {
       });
       return { ...others, rows, data: { questions } };
     });
+
+    //Case Passage question type: if item don't have question, then hide the passage content also
+    testItems = testItems.filter(ti => !!ti.data?.questions?.length);
+
+    //If search type is 'manualGraded', then accept manual graded items only
+    if (type === "manualGraded") {
+      testItems = testItems.filter(ti => !ti.autoGrade);
+    }
     return [...testItems];
   }
 
@@ -117,7 +140,7 @@ class StudentQuestions extends Component {
   }
 }
 
-export default StudentQuestions;
+export default withRouter(StudentQuestions);
 
 StudentQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

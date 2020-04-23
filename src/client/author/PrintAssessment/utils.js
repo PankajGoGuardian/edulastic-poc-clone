@@ -1,25 +1,35 @@
-import { keyBy, identity, flatten, groupBy, sortBy } from "lodash";
+import { keyBy, identity, flatten, groupBy, sortBy, flattenDeep } from "lodash";
 import { questionType } from "@edulastic/constants";
 import { markQuestionLabel } from "../ClassBoard/Transformer";
 
-export const getOrderedQuestionsAndAnswers = (testItems, passages) => {
+export const getOrderedQuestionsAndAnswers = (testItems, passages, type, filterQs) => {
   passages = keyBy(passages, "_id");
   markQuestionLabel(testItems);
   let questions = testItems?.reduce((acc, item, index) => {
     // if it's a passage type question, insert passage before the questions
     // also, if the current testItem has same passageId as previous one, dont insert the passage again!
+    let qs = (item?.data?.questions || []);
+    if (type === "custom") {
+      qs = qs.filter(q => filterQs.includes(q.qLabel));
+    } else if (type === "manualGraded") {
+      qs = item.autoGrade ? [] : qs;
+    }
+
     if (item.passageId && item.passageId !== testItems?.[index - 1]?.passageId) {
       const passageStructure = passages?.[item.passageId]?.structure;
       if (passageStructure?.tabs?.length) {
         const sortedTabContentIds = sortBy(passageStructure.widgets || [], ["tabIndex"]).map(con => con.reference);
         const data = passages?.[item.passageId]?.data || [];
         const sortedData = sortedTabContentIds.map(id => data.find(d => d.id === id));
-        acc.push(...sortedData);
-      } else {
+        if (qs.length) {
+          acc.push(...sortedData);
+        }
+      } else if (qs.length) {
         acc.push(...(passages?.[item.passageId]?.data || []));
       }
     }
-    acc = [...acc, ...(item?.data?.questions || [])];
+
+    acc = [...acc, ...qs];
     return acc;
   }, []);
 
@@ -99,3 +109,21 @@ const createClozeTextAnswerChoice = question => {
   }
   return answerString;
 };
+
+export const formatQuestionLists = (qs = "") =>
+  qs
+  .split(',')
+  .map(q => {
+    const range = q.split("-");
+    let start = parseInt(range[0]);
+    let end = parseInt(range[1]);
+    if (start > end) {
+      const temp = start;
+      start = end;
+      end = temp
+    }
+    if (range.length > 1) {
+      return Array.from({ length: (end || start) - start + 1 }, (_, i) => i + start);
+    }
+    return [start, end];
+  }).flat().filter(q => !isNaN(q));

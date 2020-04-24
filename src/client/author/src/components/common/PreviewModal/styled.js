@@ -7,7 +7,6 @@ import {
   linkColor,
   red,
   mediumDesktopWidth,
-  largeDesktopWidth,
   smallDesktopWidth
 } from "@edulastic/colors";
 import { Button, Icon, Typography, Input } from "antd";
@@ -91,10 +90,7 @@ export const ButtonsWrapper = styled.div`
       }
     }
   }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    flex-wrap: wrap;
-  }
+  flex-wrap: wrap;
 `;
 
 export const ColumnContentArea = styled.div`

@@ -156,7 +156,7 @@ class AssignTest extends React.Component {
       }
       if (
         assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
-        !(assignment?.assignmentPassword?.trim()?.length || 0) > 5
+        !((assignment?.assignmentPassword?.trim()?.length || 0) > 5)
       ) {
         message.error("Please add a valid password");
         return;

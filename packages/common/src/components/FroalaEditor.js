@@ -325,7 +325,7 @@ const CustomEditor = ({
   const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons);
-  const config = Object.assign(
+  const initialConfig = Object.assign(
     {
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options

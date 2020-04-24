@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button } from "antd";
@@ -17,96 +17,94 @@ import { Tooltip } from "../../../common/utils/helpers";
 import TimedTestTimer from "./TimedTestTimer";
 
 const { calculatorTypes } = test;
-class ToolBar extends Component {
-  toolbarHandler = value => {
-    const { changeTool } = this.props;
+
+const ActionButton = ({ title, icon, ...rest }) => (
+  <Tooltip placement="top" title={title}>
+    <ButtonWithStyle {...rest}>{icon}</ButtonWithStyle>
+  </Tooltip>
+);
+
+const ToolBar = ({
+  settings,
+  tool,
+  qType,
+  handleMagnifier,
+  enableMagnifier,
+  timedAssignment,
+  utaId,
+  groupId,
+  changeTool
+}) => {
+  const { calcType, showMagnifier, enableScratchpad } = settings;
+  const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
+
+  const toolbarHandler = value => () => {
     changeTool(value);
   };
 
-  handleCalculateMode = value => {
-    const { changeTool } = this.props;
-    changeTool(2);
+  useEffect(() => {
+    if (qType === questionType.HIGHLIGHT_IMAGE) {
+      // 5 is Scratchpad mode
+      changeTool(5);
+    }
+  }, [qType]);
 
-    const { changeCaculateMode } = this.props;
-    changeCaculateMode(value);
-  };
+  return (
+    <Container>
+      <ActionButton
+        title="Pointer"
+        icon={<CursorIcon />}
+        active={tool.includes(0)}
+        onClick={toolbarHandler(0)}
+        hidden
+      />
 
-  render() {
-    const {
-      settings,
-      tool,
-      qType,
-      handleMagnifier,
-      enableMagnifier,
-      timedAssignment,
-      utaId,
-      groupId
-    } = this.props;
-    const { calcType, showMagnifier, enableScratchpad } = settings;
-    const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE;
+      <ActionButton title="Ruler" icon={<InRulerIcon />} active={tool.includes(1)} onClick={toolbarHandler(1)} hidden />
 
-    return (
-      <Container>
-        <Tooltip placement="top" title="Pointer">
-          {/* hidden prop in StyledButton can hide the button enable it
-           whenever required by removing them. */}
-          <StyledButton active={tool.indexOf(0) !== -1} onClick={() => this.toolbarHandler(0)} hidden>
-            <CursorIcon />
-          </StyledButton>
-        </Tooltip>
+      {calcType !== calculatorTypes.NONE && (
+        <ActionButton
+          title="Calculator"
+          icon={<CaculatorIcon />}
+          active={tool.includes(2)}
+          onClick={toolbarHandler(2)}
+        />
+      )}
 
-        <Tooltip placement="top" title="Ruler">
-          <StyledButton active={tool === 1} onClick={() => this.toolbarHandler(1)} hidden>
-            <InRulerIcon />
-          </StyledButton>
-        </Tooltip>
-        {calcType !== calculatorTypes.NONE && (
-          <Tooltip placement="top" title="Calculator">
-            <StyledButton active={tool.indexOf(2) !== -1} onClick={() => this.toolbarHandler(2)}>
-              <CaculatorIcon />
-            </StyledButton>
-          </Tooltip>
-        )}
+      <ActionButton
+        title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
+        icon={<CloseIcon />}
+        active={tool.includes(3)}
+        onClick={toolbarHandler(3)}
+        disabled={isDisableCrossBtn}
+      />
 
-        <Tooltip
-          placement="top"
-          title={isDisableCrossBtn ? "This option is available only for multiple choice" : "Crossout"}
-        >
-          <StyledButton
-            active={tool.indexOf(3) !== -1}
-            disabled={isDisableCrossBtn}
-            onClick={() => this.toolbarHandler(3)}
-          >
-            <CloseIcon />
-          </StyledButton>
-        </Tooltip>
+      <ActionButton
+        title="Protactor"
+        icon={<ProtactorIcon />}
+        active={tool.includes(4)}
+        onClick={toolbarHandler(4)}
+        hidden
+      />
 
-        <Tooltip placement="top" title="Protactor">
-          <StyledButton active={tool.indexOf(4) !== -1} onClick={() => this.toolbarHandler(4)} hidden>
-            <ProtactorIcon />
-          </StyledButton>
-        </Tooltip>
+      {enableScratchpad && (
+        <ActionButton
+          title="Scratch Pad"
+          icon={<ScratchPadIcon />}
+          active={tool.includes(5)}
+          onClick={toolbarHandler(5)}
+        />
+      )}
 
-        {enableScratchpad && <Tooltip placement="top" title="Scratch Pad">
-          <StyledButton active={tool.indexOf(5) !== -1} onClick={() => this.toolbarHandler(5)}>
-            <ScratchPadIcon />
-          </StyledButton>
-        </Tooltip>}
-        {showMagnifier && (
-          <Tooltip placement="top" title="Magnify">
-            <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
-              <IconSearch />
-            </StyledButton>
-          </Tooltip>
-        )}
-        {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
-      </Container>
-    );
-  }
-}
+      {showMagnifier && (
+        <ActionButton title="Magnify" icon={<IconSearch />} active={enableMagnifier} onClick={handleMagnifier} />
+      )}
+
+      {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
+    </Container>
+  );
+};
 
 ToolBar.propTypes = {
-  changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
@@ -125,7 +123,7 @@ export const Container = styled.div`
   }
 `;
 
-export const StyledButton = styled(Button)`
+const ButtonWithStyle = styled(Button)`
   border: 1px solid #FFFFFF;
   margin-right: 3px;
   border-radius: 5px;
@@ -152,15 +150,15 @@ export const StyledButton = styled(Button)`
 ${({ theme, active }) =>
   window.isIOS
     ? `
-&:focus, &:hover{
-      background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
-      svg{
-        fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
-      }
-    }
-`
+      &:focus, &:hover{
+            background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
+            svg{
+              fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};
+            }
+          }
+      `
     : `
-&:focus{
+      &:focus{
       background: ${active ? theme.default.headerButtonBgHoverColor : theme.default.headerButtonBgColor};
       svg{
         fill: ${active ? theme.header.headerButtonHoverColor : theme.header.headerButtonColor};

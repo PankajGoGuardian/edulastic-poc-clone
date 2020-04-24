@@ -1,7 +1,7 @@
 // Detect if user device/platform is runing on iOS
 
 export const isIOS = () => {
-  const iDevices = ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod", "MacIntel"];
+  const iDevices = ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"];
 
   if (!!navigator.platform) {
     while (iDevices.length) {

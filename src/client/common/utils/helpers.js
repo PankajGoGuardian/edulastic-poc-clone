@@ -1,17 +1,18 @@
-import { signUpState, test as testConst } from "@edulastic/constants";
-import { isUndefined, last, get, isEmpty } from "lodash";
-import { Partners } from "./static/partnerData";
-import { message, Tooltip as AntDTooltip } from "antd";
+import React from "react";
 import styled from "styled-components";
+import { isUndefined, last, get, isEmpty } from "lodash";
+import { message as AntMessage, Tooltip as AntDTooltip } from "antd";
+import { signUpState, test as testConst } from "@edulastic/constants";
+import { Partners } from "./static/partnerData";
 import { smallestZoomLevel } from "./static/zoom";
 import { breakpoints } from "../../student/zoomTheme";
 
 export const getWordsInURLPathName = pathname => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   let path = pathname;
-  path = path + "";
+  path += "";
   path = path.split("/");
-  path = path.filter(item => (item && item.trim() ? true : false));
+  path = path.filter(item => !!(item && item.trim()));
   return path;
 };
 
@@ -22,7 +23,8 @@ export const isLoggedInForPrivateRoute = user => {
     }
     if (user && user.user && user.user.role !== "teacher") {
       return true;
-    } else if (
+    }
+    if (
       user.user &&
       user.user.role === "teacher" &&
       (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
@@ -40,7 +42,8 @@ export const isLoggedInForLoggedOutRoute = user => {
     }
     if (user && user.user && user.user.role !== "teacher") {
       return true;
-    } else if (
+    }
+    if (
       user.user &&
       user.user.role === "teacher" &&
       (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
@@ -52,6 +55,7 @@ export const isLoggedInForLoggedOutRoute = user => {
 };
 
 export const validatePartnerUrl = partner => {
+  // eslint-disable-next-line no-restricted-globals
   const pathname = location.pathname;
   if (
     partner.keyName !== "login" &&
@@ -59,7 +63,8 @@ export const validatePartnerUrl = partner => {
     pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
   ) {
     return true;
-  } else if (partner.keyName === "login" && !pathname.toLocaleLowerCase().includes("partnerlogin")) {
+  }
+  if (partner.keyName === "login" && !pathname.toLocaleLowerCase().includes("partnerlogin")) {
     return true;
   }
   return false;
@@ -82,8 +87,8 @@ export const getPartnerGetStartedUrl = partner =>
 
 export const getPartnerKeyFromUrl = pathname => {
   const pathArr = pathname.split("/");
-  let partnersArr = Object.keys(Partners);
-  let tempPartner = pathArr[partnersArr.length - 1];
+  const partnersArr = Object.keys(Partners);
+  const tempPartner = pathArr[partnersArr.length - 1];
   const foundPartner = partnersArr.find(item => item === tempPartner);
   if (foundPartner) {
     return foundPartner;
@@ -91,21 +96,13 @@ export const getPartnerKeyFromUrl = pathname => {
   return "login";
 };
 
-export const getDistrictLoginUrl = (orgShortName, orgType) => {
-  return `/${orgType}/${orgShortName}`;
-};
+export const getDistrictLoginUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}`;
 
-export const getDistrictTeacherSignupUrl = (orgShortName, orgType) => {
-  return `/${orgType}/${orgShortName}/signup`;
-};
+export const getDistrictTeacherSignupUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/signup`;
 
-export const getDistrictStudentSignupUrl = (orgShortName, orgType) => {
-  return `/${orgType}/${orgShortName}/studentsignup`;
-};
+export const getDistrictStudentSignupUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/studentsignup`;
 
-export const getDistrictGetStartedUrl = (orgShortName, orgType) => {
-  return `/${orgType}/${orgShortName}/getstarted`;
-};
+export const getDistrictGetStartedUrl = (orgShortName, orgType) => `/${orgType}/${orgShortName}/getstarted`;
 
 export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name) => {
   if (isSignupUsingDaURL && districtPolicy && (districtPolicy[name] || isUndefined(districtPolicy[name]))) {
@@ -140,13 +137,12 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
   callback(message);
 };
 
-export const getFullNameFromAsString = obj => {
-  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + (obj.lastName ? obj.lastName : "");
-};
+export const getFullNameFromAsString = obj =>
+  `${obj.firstName} ${obj.middleName ? `${obj.middleName} ` : ""}${obj.lastName ? obj.lastName : ""}`;
 
 export const getFullNameFromString = name => {
   let nameList = name.split(" ");
-  nameList = nameList.filter(item => (item && item.trim() ? true : false));
+  nameList = nameList.filter(item => !!(item && item.trim()));
   if (!nameList.length) {
     return false;
   }
@@ -172,9 +168,7 @@ export const getFullNameFromString = name => {
   };
 };
 
-export const getInitialsFromName = obj => {
-  return obj.firstName[0] + (obj.lastName ? obj.lastName[0] : "");
-};
+export const getInitialsFromName = obj => obj.firstName[0] + (obj.lastName ? obj.lastName[0] : "");
 
 export const getDistrictSignOutUrl = generalSettings => {
   if (generalSettings.orgType === "institution") {
@@ -187,28 +181,22 @@ export const setSignOutUrl = url => {
   sessionStorage.setItem("signOutUrl", url);
 };
 
-export const getSignOutUrl = url => {
-  return sessionStorage.getItem("signOutUrl") || "/login";
-};
+export const getSignOutUrl = () => sessionStorage.getItem("signOutUrl") || "/login";
 
-export const removeSignOutUrl = () => {
-  return sessionStorage.removeItem("signOutUrl");
-};
+export const removeSignOutUrl = () => sessionStorage.removeItem("signOutUrl");
 
 export const validateQuestionsForDocBased = questions => {
   if (!questions.length) {
-    message.warning("At least one question has to be created before saving assessment");
+    AntMessage.warning("At least one question has to be created before saving assessment");
     return false;
   }
 
   const sectionTitle = questions
     .filter(question => question.type === "sectionLabel")
-    .every(question => {
-      return !!question.title.trim();
-    });
+    .every(question => !!question.title.trim());
 
   if (!sectionTitle) {
-    message.error("Section name can not be empty");
+    AntMessage.error("Section name can not be empty");
     return false;
   }
 
@@ -223,7 +211,7 @@ export const validateQuestionsForDocBased = questions => {
     });
 
   if (!correctAnswerPicked) {
-    message.warning("Correct answers have to be chosen for every question");
+    AntMessage.warning("Correct answers have to be chosen for every question");
     return false;
   }
   return true;
@@ -237,12 +225,8 @@ export const ifZoomed = zoomLevel => zoomLevel && zoomLevel !== smallestZoomLeve
 
 export const isZoomGreator = (zoomLevel, levelToCheck) => breakpoints[levelToCheck] > breakpoints[zoomLevel];
 
-export const Tooltip = props =>
-  window.isMobileDevice || window.isIOS ? (
-    <>{props.children}</>
-  ) : (
-    <AntDTooltip {...props}>{props.children}</AntDTooltip>
-  );
+export const Tooltip = ({ children, ...rest }) =>
+  window.isMobileDevice || window.isIOS ? children : <AntDTooltip {...rest}>{children}</AntDTooltip>;
 
 export const nameValidator = name => {
   const trimmedName = name.trim();

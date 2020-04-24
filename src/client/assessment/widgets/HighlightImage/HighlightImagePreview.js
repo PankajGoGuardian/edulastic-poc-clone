@@ -49,8 +49,10 @@ const HighlightImagePreview = ({
 
   const showDrawing = viewComponent === "editQuestion";
 
+  const ResolvedWrapper = showDrawing ? ScratchPadContext.Provider : React.Fragment;
+
   return (
-    <ScratchPadContext.Provider value={{ getContainer: () => containerRef.current }}>
+    <ResolvedWrapper value={{ getContainer: () => containerRef.current }}>
       <PreviewContainer
         hideInternalOverflow={hideInternalOverflow || viewComponent === "authorPreviewPopup"}
         padding={smallSize}
@@ -70,7 +72,7 @@ const HighlightImagePreview = ({
           </QuestionContentWrapper>
         </FlexContainer>
       </PreviewContainer>
-    </ScratchPadContext.Provider>
+    </ResolvedWrapper>
   );
 };
 

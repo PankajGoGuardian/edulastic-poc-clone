@@ -23,6 +23,8 @@ import headings from "./FroalaPlugins/headings";
 import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { compose } from "redux";
+import { connect } from "react-redux";
 
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
@@ -271,6 +273,21 @@ function loadImage(src) {
   });
 }
 
+/**
+ * These are the extra buttons width taken on the toolbar. If rendered extra buttons we need these widths
+ * to get the remaining width of the toolbar to render default buttons.
+ * Note: Width of the buttons will be same for all the resoution (may be slight less by 1 or 2 pixel).
+ */
+const buttonWidthMap = {
+  responseBoxes: 178,
+  response: 119,
+  textinput: 119,
+  textdropdown: 167,
+  mathinput: 42,
+  mathunit: 42,
+  paragraphNumber: 42
+};
+
 const CustomEditor = ({
   value,
   onChange,
@@ -287,6 +304,7 @@ const CustomEditor = ({
   fontSize,
   className,
   buttons,
+  advancedAreOpen,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -298,7 +316,7 @@ const CustomEditor = ({
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [toolbarExpanded, setToolbarExpanded] = useState(false);
-
+  const [configState, setConfigState] = useState(null);
   const [mathField, setMathField] = useState(null);
 
   const EditorRef = useRef(null);
@@ -637,6 +655,46 @@ const CustomEditor = ({
     additionalToolbarOptions.includes("paragraphNumber");
 
   useEffect(() => {
+    let toolbarWidth = toolbarContainerRef?.current?.clientWidth;
+    // if response button is there than subtracting the width of response button
+    if (hasResponseBoxBtn()) {
+      for (let i = 0; i < additionalToolbarOptions.length; i++) {
+        if (i === 3) break;
+        toolbarWidth -= buttonWidthMap[additionalToolbarOptions[i]];
+      }
+    }
+    /**
+     * calculating the toolbar button counts dynamically that can be displayed without moreText and the rest will be displayed
+     * in the moreText. Here each button takes the width of 42px and padding of total 31px is given to the right and left of the toolbar container
+     * so subtracting the total padding and dividing the remaining width by each button width to get the count of buttons.
+     */
+
+    let buttonCounts = Math.floor((toolbarWidth - 31) / 42);
+
+    if (initialConfig.toolbarButtons?.moreText?.buttons?.length > buttonCounts) {
+      buttonCounts = buttonCounts - 1;
+    }
+    const _toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
+    const _toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
+    const _toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
+    const _toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
+
+    const updatedConfig = {
+      ...initialConfig,
+      toolbarButtons: _toolbarButtons,
+      toolbarButtonsMD: _toolbarButtonsMD,
+      toolbarButtonsSM: _toolbarButtonsSM,
+      toolbarButtonsXS: _toolbarButtonsXS
+    };
+    // for hidden refs wait for it to be shown in the dom to set config.
+    if (toolbarContainerRef?.current?.offsetParent === null) {
+      setConfigState(null);
+    } else {
+      setConfigState(updatedConfig);
+    }
+  }, [toolbarContainerRef?.current, advancedAreOpen]);
+
+  useEffect(() => {
     // sample extension of custom buttons
     initMathField();
     if (value && hasResponseBoxBtn()) {
@@ -827,7 +885,7 @@ const CustomEditor = ({
         onClose={closeMathModal}
       />
       <BackgroundStyleWrapper
-        backgroundColor={config.backgroundColor}
+        backgroundColor={configState?.backgroundColor}
         centerContent={centerContent}
         border={border}
         theme={theme}
@@ -843,13 +901,15 @@ const CustomEditor = ({
           />
         )}
 
-        <Editor
-          tag={tag}
-          model={content}
-          onModelChange={setChange}
-          config={config}
-          onManualControllerReady={manualControl}
-        />
+        {configState && (
+          <Editor
+            tag={tag}
+            model={content}
+            onModelChange={setChange}
+            config={configState}
+            onManualControllerReady={manualControl}
+          />
+        )}
       </BackgroundStyleWrapper>
       <NoneDiv>
         <span ref={mathFieldRef} className="input__math__field" />
@@ -884,4 +944,12 @@ CustomEditor.defaultProps = {
   centerContent: false
 };
 
-export default withTheme(withMathFormula(CustomEditor));
+const enhance = compose(
+  withMathFormula,
+  withTheme,
+  connect(state => ({
+    advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen
+  }))
+);
+
+export default enhance(CustomEditor);

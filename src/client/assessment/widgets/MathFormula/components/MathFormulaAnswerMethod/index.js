@@ -88,7 +88,8 @@ const MathFormulaAnswerMethod = ({
    * key: id of input box
    * value: true/false
    */
-  const showAdditional = get(item, `showAdditional`, {});
+  const showAdditional = isClozeMath ? get(item, `showAdditional`, {}) : get(item, `showAdditional`, false);
+
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,
@@ -562,10 +563,17 @@ const MathFormulaAnswerMethod = ({
           )}
         </StyledRow>
       )}
-      <AdditionalToggle active={showAdditional[id]} onClick={() => toggleAdditional(!showAdditional[id], id)}>
-        {t("component.math.additionalOptions")} {id}
+      <AdditionalToggle
+        active={isClozeMath ? showAdditional[id] : showAdditional}
+        onClick={() => toggleAdditional(isClozeMath ? !showAdditional[id] : !showAdditional, id, isClozeMath)}
+      >
+        {t("component.math.additionalOptions")}
       </AdditionalToggle>
-      {showAdditional[id] ? (
+      {(isClozeMath ? (
+        showAdditional[id]
+      ) : (
+        showAdditional
+      )) ? (
         <AdditionalContainer>
           <Row gutter={24}>
             <Col span={10}>

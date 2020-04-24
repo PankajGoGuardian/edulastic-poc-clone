@@ -279,14 +279,31 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       })
     );
   };
-
-  const toggleAdditional = (val = false, inputId = "") => {
+  /**
+   *
+   * @param {boolean} val
+   * @param {string} inputId
+   * @param {boolean} isClozeMath
+   *
+   */
+  const toggleAdditional = (val = false, inputId = "", isClozeMath = false) => {
     setQuestionData(
       produce(item, draft => {
-        draft.showAdditional = {
-          ...draft.showAdditional,
-          ...(inputId && { [inputId]: val })
-        };
+        /**
+         * for normal math we are stroing flag value as boolean
+         * for expressionMultipart we need unique values for each math input box
+         * so store as object
+         *
+         * https://snapwiz.atlassian.net/browse/EV-12937
+         */
+        if (isClozeMath) {
+          draft.showAdditional = {
+            ...draft.showAdditional,
+            ...(inputId && { [inputId]: val })
+          };
+        } else {
+          draft.showAdditional = val;
+        }
       })
     );
   };

@@ -498,7 +498,7 @@ const LogoWrapper = styled(Row)`
 const ToggleSidemenu = styled.div`
   position: absolute;
   right: -10px;
-  top: 62px;
+  top: 52px;
   background: ${greyThemeLighter};
   height: 20px;
   width: 20px;
@@ -519,7 +519,7 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 20px 0px 8px;
+  padding: 8px 0px;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xs}px)`};
   position: relative;
 `;

@@ -170,7 +170,16 @@ const ClassDetails = ({
               institutionId={institutionId}
             />
           )}
-          <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
+          <Header
+            onEdit={handleEditClick}
+            fetchClassList={fetchClassList}
+            selectedClass={selectedClass}
+            allowCanvasLogin={allowCanvasLogin}
+            syncCanvasModal={syncCanvasModal}
+            allowGoogleLogin={allowGoogleLogin}
+            syncGCModal={() => setOpenGCModal(true)}
+            isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+          />
           <MainContentWrapper>
             <BreadCrumb ellipsis="calc(100% - 200px)" data={getBreadCrumbData()} style={{ position: "unset" }} />
             <MainInfo

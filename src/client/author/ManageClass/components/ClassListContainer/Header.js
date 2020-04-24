@@ -15,7 +15,15 @@ import { scopes } from "./ClassCreatePage";
 import { ButtonsWrapper } from "./styled";
 import { getGoogleAllowedInstitionPoliciesSelector } from "../../../src/selectors/user";
 
-const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedIn, t, currentTab, onClickHandler }) => {
+const Header = ({
+  cleverId,
+  fetchClassList,
+  googleAllowedInstitutions,
+  isUserGoogleLoggedIn,
+  t,
+  currentTab,
+  onClickHandler
+}) => {
   const handleLoginSucess = data => {
     fetchClassList({ data });
   };
@@ -55,7 +63,7 @@ const Header = ({ fetchClassList, googleAllowedInstitutions, isUserGoogleLoggedI
         })}
       </StyledTabs>
       <ButtonsWrapper>
-        {googleAllowedInstitutions.length > 0 && (
+        {googleAllowedInstitutions.length > 0 && !cleverId && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"
@@ -91,6 +99,7 @@ const enhance = compose(
   withNamespaces("header"),
   connect(
     state => ({
+      cleverId: get(state, "user.user.cleverId"),
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(state)
     }),

@@ -94,6 +94,7 @@ const SubHeader = ({
           <>
             {allowGoogleLogin !== false &&
               active === 1 &&
+              !cleverId &&
               (isUserGoogleLoggedIn ? (
                 <i
                   style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
@@ -102,7 +103,7 @@ const SubHeader = ({
                 >
                   <IconGoogleClassroom width={22} height={22} />
                 </i>
-              ) : !cleverId ? (
+              ) : (
                 <GoogleLogin
                   clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
                   render={renderProps => (
@@ -120,9 +121,9 @@ const SubHeader = ({
                   prompt="consent"
                   responseType="code"
                 />
-              ) : null)}
+              ))}
 
-            {allowCanvasLogin && active === 1 && (
+            {allowCanvasLogin && active === 1 && !cleverId && (
               <i
                 style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
                 title="Sync with Canvas Classroom"

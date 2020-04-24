@@ -13,9 +13,6 @@ const addCustomClassToMath = mathHtml => {
   return node.outerHTML; // get the complete HTML content
 };
 
-const addSpaceDynamicParameters = (latex = "") =>
-  latex.replace(new RegExp("(@.*?)", "g"), "\\text{$1}").replace(new RegExp("#", "g"), " \\#");
-
 const addSpaceMatrixFraction = (latex = "") => {
   let updated = latex;
   const matrixRegex = /\\begin{[a-z]matrix}(.*?)\\end{[a-z]matrix}/g;
@@ -33,15 +30,62 @@ const addSpaceMatrixFraction = (latex = "") => {
   return updated;
 };
 
+const sanitizeLatex = latex => {
+  let _latex = latex
+    .replace(/\\\\\$/g, "\\$")
+    .replace(/\\\\text/g, "\\text")
+    .replace(/\\\\pi/g, "\\pi")
+    .replace(/\\\\Box/g, "\\Box")
+    .replace(/\\\\times/g, "\\times")
+    .replace(/\\\\&=/g, "=")
+    .replace(/&=/g, "=")
+    .replace(/\\"/g, "")
+    .replace(/">/g, "")
+    .replace(new RegExp("(@.*?)", "g"), "\\text{$1}")
+    .replace(new RegExp("#", "g"), " \\#")
+    .replace(/overarc/g, "overgroup")
+    .replace(/\\parallelogram/g, "\\text{▱}")
+    .replace(/\\undersim/g, "\\underset{\\sim}");
+
+  if (_latex.substr(-1) === "\\") {
+    _latex = _latex.slice(0, -1);
+  }
+  return _latex;
+};
+
 export const getMathHtml = latex => {
   if (!window.katex) return latex;
 
   /**
-   * if the latex has dynamic parameters such as "2a\times3y", the katex produces an error.
+   * if the latex has dynamic parameters such as "@a\times@b",
+   * the katex produces an error.
    * that error occurred when there are some operators
    * so we need to insert spaces between operators and variables.
+   * @see https://snapwiz.atlassian.net/browse/EV-11172
+   * Katex doesn't support the below commands
+   * @see https://snapwiz.atlassian.net/browse/EV-12829
+   * |--- mathQuill --|---- Katex -----|
+   * |    overarc     |   overgroup    |
+   * |  parallelogram |     text{▱}    |
+   * |    undersim    | underset{\\sim}|
+   * |---------------------------------|
+   * Also, some of the migrated/authored questions have wrong latex.
+   * @see https://snapwiz.atlassian.net/browse/EV-11865
+   * |--- incorrect --|--- correct ----|
+   * |       //$      |      /$        |
+   * |       //$      |      /$        |
+   * |     //text     |     /text      |
+   * |      //pi      |      /pi       |
+   * |     //Box      |     /Box       |
+   * |      //&=      |       =        |
+   * |        &=      |       =        |
+   * |        \"      |                |
+   * |        ">      |                |
+   * |---------------------------------|
+   * Another issue is the latex has a backslash at last of
+   * We should remove it.
    */
-  let _latex = addSpaceDynamicParameters(latex);
+  let _latex = sanitizeLatex(latex);
 
   /**
    * Vertical spacing between fractions in {matrix} is too tight.
@@ -50,18 +94,6 @@ export const getMathHtml = latex => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(_latex);
-  /**
-   * Katex doesn't support the below commands
-   * |--- mathQuill --|---- Katex -----|
-   * |    overarc     |   overgroup    |
-   * |  parallelogram |     text{▱}    |
-   * |    undersim    | underset{\\sim}|
-   * |---------------------------------|
-   */
-  _latex = _latex
-    .replace(/overarc/g, "overgroup")
-    .replace(/\\parallelogram/g, "\\text{▱}")
-    .replace(/\\undersim/g, "\\underset{\\sim}");
 
   let katexString = window.katex.renderToString(_latex, {
     throwOnError: false,

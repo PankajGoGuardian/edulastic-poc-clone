@@ -11,7 +11,7 @@ import {
   MainActionWrapper
 } from "../common";
 import { Tooltip } from "../../../common/utils/helpers";
-import { Container, StyledButton, CaculatorIcon } from "../common/ToolBar";
+import { Container, ButtonWithStyle, CaculatorIcon } from "../common/ToolBar";
 import { MAX_MOBILE_WIDTH } from "../../constants/others";
 import { IconSearch } from "@edulastic/icons";
 import TimedTestTimer from "../common/TimedTestTimer";
@@ -63,16 +63,16 @@ const PlayerHeader = ({
                 <Container>
                   {calcType !== calculatorTypes.NONE && (
                     <Tooltip placement="top" title="Calculator">
-                      <StyledButton active={currentToolMode.calculator} onClick={() => onChangeTool("calculator")}>
+                      <ButtonWithStyle active={currentToolMode.calculator} onClick={() => onChangeTool("calculator")}>
                         <CaculatorIcon />
-                      </StyledButton>
+                      </ButtonWithStyle>
                     </Tooltip>
                   )}
                   {showMagnifier && (
                     <Tooltip placement="top" title="Magnify">
-                      <StyledButton active={enableMagnifier} onClick={handleMagnifier}>
+                      <ButtonWithStyle active={enableMagnifier} onClick={handleMagnifier}>
                         <IconSearch />
-                      </StyledButton>
+                      </ButtonWithStyle>
                     </Tooltip>
                   )}
                   {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}

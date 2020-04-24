@@ -123,7 +123,7 @@ export const Container = styled.div`
   }
 `;
 
-const ButtonWithStyle = styled(Button)`
+export const ButtonWithStyle = styled(Button)`
   border: 1px solid #FFFFFF;
   margin-right: 3px;
   border-radius: 5px;

@@ -12,6 +12,8 @@ import { IconClose } from "./styled/IconClose";
 import { AnswerBox } from "./styled/AnswerBox";
 import { InnerWrapper } from "./styled/InnerWrapper";
 
+import TriggerStyle from "./TriggerStyle";
+
 const Item = ({
   isDragging,
   isTransparent,
@@ -57,6 +59,7 @@ const Item = ({
           checked={preview && valid !== undefined}
           dangerouslySetInnerHTML={{ __html: item }}
         />
+        <TriggerStyle />
         {showIcon && <IconBox checked={showIcon}>{valid ? <IconCheck /> : <IconClose />}</IconBox>}
       </InnerWrapper>
     );

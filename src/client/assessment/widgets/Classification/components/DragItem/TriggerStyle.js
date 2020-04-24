@@ -28,9 +28,7 @@ const TriggerStyle = () => {
 
   useEffect(() => {
     if (window.$) {
-      setTimeout(() => {
-        setContainerStyle();
-      }, 250);
+      setContainerStyle();
     }
   });
   return null;

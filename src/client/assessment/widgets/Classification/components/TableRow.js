@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
@@ -13,8 +13,6 @@ import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import { IndexBox } from "./DragItem/styled/IndexBox";
-
-import TriggerStyle from "./TriggerStyle";
 
 const TableRow = ({
   startIndex,
@@ -41,7 +39,6 @@ const TableRow = ({
   dragItemSize,
   showIndex
 }) => {
-  const wrapperRef = useRef();
   const uiStyle = get(item, "uiStyle", {});
 
   const handleRowTitleDragStop = (event, data) => {
@@ -191,18 +188,13 @@ const TableRow = ({
                 />
               );
             })}
-          <TriggerStyle />
         </DropContainer>
       </ResponseRnd>
     );
   }
 
   return (
-    <div
-      ref={wrapperRef}
-      id="classification-cols-container"
-      style={{ position: "relative", minHeight: 140, overflow: "hidden" }}
-    >
+    <div id="classification-cols-container" style={{ position: "relative", minHeight: 140 }}>
       {cols}
     </div>
   );

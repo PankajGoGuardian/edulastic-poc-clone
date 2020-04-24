@@ -154,6 +154,13 @@ class AssignTest extends React.Component {
       if (!this.state.selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ["dueDate"]);
       }
+      if (
+        assignment.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+        !(assignment?.assignmentPassword?.trim()?.length || 0) > 5
+      ) {
+        message.error("Please add a valid password");
+        return;
+      }
       saveAssignment(updatedAssignment);
     }
   };

@@ -79,11 +79,26 @@ const TemplateBox = ({ resprops, id }) => {
 
   const boxHeight = response ? height : responseBtnStyle.heightpx;
   const { scrollWidth: contentWidth, scrollHeight: contentHeight } = measureText(label, style);
-  const getContent = (inPopover = false) => (
-    <div style={{ maxWidth: Dimensions.popoverMaxWidth, overflow: "auto" }}>
-      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-    </div>
-  );
+  const getContent = (inPopover = false) => {
+    const overflowProps = {};
+    /**
+     * if in popover and,
+     * if content width is greater than the max width of the popover (400px)
+     * show the scrollbar inside the popover
+     *
+     * related to https://snapwiz.atlassian.net/browse/EV-13512
+     */
+    const maxWidthInPopover = Dimensions.popoverMaxWidth;
+    if (inPopover && contentWidth > maxWidthInPopover) {
+      overflowProps.maxWidth = maxWidthInPopover;
+      overflowProps.overflowX = "auto";
+    }
+    return (
+      <div style={overflowProps}>
+        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+      </div>
+    );
+  };
   const widthOverflow = contentWidth > style.maxWidth;
   const heightOverflow = imageDimensions.height > boxHeight || contentHeight > boxHeight;
   const showPopover = label && (widthOverflow || heightOverflow);

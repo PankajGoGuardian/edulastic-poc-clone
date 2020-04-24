@@ -11,7 +11,7 @@ class ShadingPage {
     this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
-  getPoints = () => cy.get('[data-cy="points"]').should("be.visible");
+  getPoints = () => cy.get('[data-cy="points"]');
 
   getStimulus() {
     return cy.get('[data-cy="styled-wrapped-component"]');
@@ -61,12 +61,12 @@ class ShadingPage {
   }
 
   // correct ans
-  getCorrectAnsRowByIndex() {
-    return cy
-      .get('[data-cy="tabs"]')
-      .parent()
-      .parent();
-  }
+  getCorrectAnsCellCOntainer = () => cy.get('[data-cy="shadesView"]').eq(1);
+
+  getCorrectAnsRowByIndex = index =>
+    this.getCorrectAnsCellCOntainer()
+      .find("ul")
+      .eq(index);
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
@@ -116,13 +116,12 @@ class ShadingPage {
 
   // preview page
 
-  getCorrectAnsRowByIndexOnPreview(que, index) {
-    return cy
-      .get("body")
-      .contains(que)
-      .parent()
-      .parent()
-      .parent();
+  getCellContainerInPreview = () => cy.get('[data-cy="shadesView"]').first();
+
+  getCorrectAnsRowByIndexOnPreview(index) {
+    return this.getCellContainerInPreview()
+      .find("ul")
+      .eq(index);
   }
 
   getLayout() {
@@ -188,6 +187,13 @@ class ShadingPage {
   getShadesViewItems() {
     return this.getShadesView().find('[data-cy="shadesViewItem"]');
   }
+
+  getCellsRowByIndexInLayout = index =>
+    cy
+      .get('[data-cy="shadesView"]')
+      .eq(2)
+      .find("ul")
+      .eq(index);
 }
 
 export default ShadingPage;

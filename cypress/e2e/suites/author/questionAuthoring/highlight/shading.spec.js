@@ -3,6 +3,7 @@ import ShadingPage from "../../../../framework/author/itemList/questionType/high
 import FileHelper from "../../../../framework/util/fileHelper";
 import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
+import { queColor } from "../../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type question`, () => {
   describe(" > Shading", () => {
@@ -24,10 +25,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       cy.login();
     });
 
-    const RED = "rgb(221, 46, 68)";
-    const GREEN = "rgb(94, 181, 0)";
-    const CLEAR = "rgb(0, 173, 80)";
-    const BLUE = "rgba(0, 173, 80, 0.5)";
+    const RED = queColor.RED_1;
+    const GREEN = queColor.RIGHT;
+    const CLEAR = queColor.GREEN_2;
+    const BLUE = queColor.BLUE;
 
     context(" > Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
@@ -43,20 +44,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           .clear()
           .type(queData.queText)
           .should("have.text", queData.queText);
-
         // set correct ans
         question
-          .getCorrectAnsRowByIndex()
+          .getCorrectAnsRowByIndex(0)
           .find("li")
           .first()
-          .click()
+          .click({ force: true })
           .should("not.have.css", "background-color", "transparent");
 
         question
-          .getCorrectAnsRowByIndex()
+          .getCorrectAnsRowByIndex(0)
           .find("li")
           .last()
-          .click()
+          .click({ force: true })
           .should("not.have.css", "background-color", "transparent");
 
         // save que
@@ -67,35 +67,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         preview = editItem.header.preview();
         // enter right ans
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .first()
           .as("first")
-          .click();
+          .click({ force: true });
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .last()
           .as("last")
-          .click();
+          .click({ force: true });
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 1/1");
+        preview.checkScore("1/1");
 
-            cy.get("@first").should("have.css", "background-color", GREEN);
+        cy.get("@first").should("have.css", "background-color", GREEN);
 
-            cy.get("@last").should("have.css", "background-color", GREEN);
-          });
+        cy.get("@last").should("have.css", "background-color", GREEN);
 
         preview
           .getClear()
           .click()
           .then(() => {
             question
-              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .getCorrectAnsRowByIndexOnPreview(0)
               .find("li")
               .then($cells => {
                 cy.wrap($cells).each(ele => {
@@ -106,38 +101,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
         // enter partial correct ans
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(0)
           .as("wrong")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/1");
-            cy.get("@wrong").should("have.css", "background-color", GREEN);
-          });
+        preview.checkScore("0/1");
+
+        cy.get("@wrong").should("have.css", "background-color", GREEN);
 
         preview.getClear().click();
 
         // enter wrong ans1
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(1)
           .as("wrong1")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/1");
+        preview.checkScore("0/1");
 
-            cy.get("@wrong1").should("have.css", "background-color", RED);
-          });
+        cy.get("@wrong1").should("have.css", "background-color", RED);
 
         preview.getClear().click();
 
@@ -184,173 +170,183 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       describe(" > Layout", () => {
         describe(" > Hide cells", () => {
           it(" > should be able to hide an each cell", () => {
-            console.log("hiiiiiii");
-            const shadesViewItems = question.getShadesViewItems();
-
-            shadesViewItems.should("be.visible").each($el => {
-              cy.wrap($el)
-                .click()
-                .should("have.css", "background-color")
-                .and("eq", BLUE);
-            });
+            question
+              .getCellsRowByIndexInLayout(0)
+              .find("li")
+              .each($el => {
+                cy.wrap($el)
+                  .click()
+                  .should("have.css", "background-color")
+                  .and("eq", BLUE);
+              });
 
             editItem.header.preview();
-            cy.get('[data-cy="shadesViewItem"]').each($el => {
-              cy.wrap($el)
-                .should("have.attr", "visibility")
-                .and("eq", "hidden");
-            });
+            question
+              .getCorrectAnsRowByIndexOnPreview(0)
+              .find("li")
+              .each($el => {
+                cy.wrap($el)
+                  .should("have.attr", "visibility")
+                  .and("eq", "hidden");
+              });
           });
           it(" > should be able to unhide an each cell", () => {
-            const shadesViewItems = question.getShadesViewItems();
-
-            shadesViewItems.should("be.visible").each($el => {
-              cy.wrap($el)
-                .click()
-                .should("have.css", "background-color")
-                .and("eq", CLEAR);
-            });
-
+            question
+              .getCellsRowByIndexInLayout(0)
+              .find("li")
+              .each($el => {
+                cy.wrap($el)
+                  .click()
+                  .should("have.css", "background-color")
+                  .and("eq", CLEAR);
+              });
             editItem.header.preview();
-            cy.get('[data-cy="shadesViewItem"]').each($el => {
-              cy.wrap($el)
-                .should("have.attr", "visibility")
-                .and("eq", "visible");
-            });
+            question
+              .getCorrectAnsRowByIndexOnPreview(0)
+              .find("li")
+              .each($el => {
+                cy.wrap($el)
+                  .should("have.attr", "visibility")
+                  .and("eq", "visible");
+              });
           });
         });
         it(" > should be able to select border type: Outer", () => {
           const select = question.getBorderTypeSelect();
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
-          question
-            .getOuterOption()
-            .should("be.visible")
-            .click();
+          question.getOuterOption().click({ force: true });
 
           // select.should("contain", "Outer");
 
           editItem.header.preview();
-          cy.get('[data-cy="shadesView"]')
+          question
+            .getCellContainerInPreview()
             .should("have.css", "border")
             .and("eq", "2px solid rgb(6, 148, 72)");
         });
         it(" > should be able to select border type: Full", () => {
           // const select = question.getBorderTypeSelect();
-          cy.get(`[data-cy="borderTypeSelect"]`)
-            .should("be.visible")
-            .click();
+          cy.get(`[data-cy="borderTypeSelect"]`).click({ force: true });
 
           question
             .getFullOption()
-            .should("be.visible")
-            .click();
 
-          cy.get(`[data-cy="borderTypeSelect"]`)
-            .should("be.visible")
-            .should("contain", "Full");
+            .click({ force: true });
+
+          cy.get(`[data-cy="borderTypeSelect"]`).should("contain", "Full");
 
           editItem.header.preview();
-          cy.get('[data-cy="shadesViewItem"]').each($el => {
-            cy.wrap($el)
-              .should("have.css", "border-width")
-              .and("eq", "2px");
-          });
+          question
+            .getCorrectAnsRowByIndexOnPreview(0)
+            .find("li")
+            .each($el => {
+              cy.wrap($el)
+                .should("have.css", "border-width")
+                .and("eq", "2px");
+            });
         });
         it(" > should be able to select border type: None", () => {
           question
             .getBorderTypeSelect()
-            .should("be.visible")
-            .click();
+
+            .click({ force: true });
 
           question
             .getNoneOption()
-            .should("be.visible")
-            .click();
+
+            .click({ force: true });
 
           question.getBorderTypeSelect().should("contain", "None");
 
           editItem.header.preview();
-          cy.get('[data-cy="shadesViewItem"]').each($el => {
-            cy.wrap($el)
-              .should("have.css", "border-width")
-              .and("eq", "0px");
-          });
+          question
+            .getCorrectAnsRowByIndexOnPreview(0)
+            .find("li")
+            .each($el => {
+              cy.wrap($el)
+                .should("have.css", "border-width")
+                .and("eq", "0px");
+            });
         });
         it(" > should be able to set 2 selection", () => {
           const maxSelectionValue = 2;
 
           question
             .getMaxSelection()
-            .should("be.visible")
+            .scrollIntoView()
+
             //.invoke("attr", "type", "text")
-            .clear()
-            .type(maxSelectionValue)
+
+            .type(`selectall${maxSelectionValue}`)
 
             .should("have.value", `0${maxSelectionValue}`);
 
           editItem.header.preview();
-          cy.get('[data-cy="shadesViewItem"]').each(($el, index) => {
-            cy.wrap($el)
-              .should("be.visible")
-              .click()
-              .as("item");
+          question
+            .getCorrectAnsRowByIndexOnPreview(0)
+            .find("li")
+            .each(($el, index) => {
+              cy.wrap($el)
+                .should("be.visible")
+                .click()
+                .as("item");
 
-            if (index < maxSelectionValue) {
-              cy.get("@item")
-                .should("have.css", "background-color")
-                .and("eq", BLUE);
-            } else {
-              cy.get("@item")
-                .should("have.css", "background-color")
-                .and("eq", CLEAR);
-            }
-          });
+              if (index < maxSelectionValue) {
+                cy.get("@item")
+                  .should("have.css", "background-color")
+                  .and("eq", BLUE);
+              } else {
+                cy.get("@item")
+                  .should("have.css", "background-color")
+                  .and("eq", CLEAR);
+              }
+            });
         });
         it(" > should be able to set 0 selection", () => {
           const maxSelectionValue = 0;
 
           question
             .getMaxSelection()
-            .should("be.visible")
-            .invoke("attr", "type", "text")
-            .clear()
-            .type(maxSelectionValue)
+            .scrollIntoView()
+            .clear({ force: true })
+            .type(`${maxSelectionValue}`)
             .should("have.value", `0${maxSelectionValue}`);
 
           editItem.header.preview();
-          cy.get('[data-cy="shadesViewItem"]').each($el => {
-            cy.wrap($el)
-              .should("be.visible")
-              .click()
-              .as("item");
-
-            cy.get("@item")
-              .should("have.css", "background-color")
-              .and("eq", BLUE);
-          });
-        });
-        it(" > should be able to check and uncheck hover state option", () => {
           question
-            .getHoverStateOption()
-            .should("be.visible")
-            .check({ force: true })
-            .should("be.checked")
-            .uncheck({ force: true })
-            .should("not.to.be.checked");
+            .getCorrectAnsRowByIndexOnPreview(0)
+            .find("li")
+            .each($el => {
+              cy.wrap($el)
+                .should("be.visible")
+                .click()
+                .as("item");
+
+              cy.get("@item")
+                .should("have.css", "background-color")
+                .and("eq", BLUE);
+            });
         });
+        // it(" > should be able to check and uncheck hover state option", () => {
+        //   question
+        //     .getHoverStateOption()
+        //     .check({ force: true })
+        //     .should("be.checked")
+        //     .uncheck({ force: true })
+        //     .should("not.to.be.checked");
+        // });
         it(" > should be able to check Hover state checkbox", () => {
           question
             .getHoverStateOption()
-            .should("be.visible")
+
             .check({ force: true })
             .should("be.checked");
         });
         it(" > should be able to uncheck Hover state checkbox", () => {
           question
             .getHoverStateOption()
-            .should("be.visible")
             .uncheck({ force: true })
             .should("not.to.be.checked");
         });
@@ -358,12 +354,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("small");
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
-          question
-            .getSmallFontSizeOption()
-            .should("be.visible")
-            .click();
+          question.getSmallFontSizeOption().click({ force: true });
 
           select.should("contain", name);
           question.checkFontSize(font);
@@ -372,12 +365,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("normal");
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
-          question
-            .getNormalFontSizeOption()
-            .should("be.visible")
-            .click();
+          question.getNormalFontSizeOption().click({ force: true });
 
           select.should("contain", name);
           question.checkFontSize(font);
@@ -386,12 +376,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("large");
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
           question
             .getLargeFontSizeOption()
-            .should("be.visible")
-            .click();
+
+            .click({ force: true });
 
           select.should("contain", name);
           question.checkFontSize(font);
@@ -400,12 +390,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("xlarge");
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
           question
             .getExtraLargeFontSizeOption()
-            .should("be.visible")
-            .click();
+
+            .click({ force: true });
 
           select.should("contain", name);
           question.checkFontSize(font);
@@ -414,12 +404,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("xxlarge");
 
-          select.should("be.visible").click();
+          select.click({ force: true });
 
           question
             .getHugeFontSizeOption()
-            .should("be.visible")
-            .click();
+
+            .click({ force: true });
 
           select.should("contain", name);
           question.checkFontSize(font);
@@ -436,12 +426,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       });
 
       afterEach(() => {
+        preview = editItem.header.preview();
         preview
           .getClear()
           .click()
           .then(() => {
             question
-              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .getCorrectAnsRowByIndexOnPreview(0)
               .find("li")
               .then($cells => {
                 cy.wrap($cells).each(ele => {
@@ -456,11 +447,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
       it(" > Test with alternate answer", () => {
         // enter question
-        question
-          .getQuestionEditor()
-          .clear()
-          .type(queData.queText)
-          .should("have.text", queData.queText);
+        // question
+        //   .getQuestionEditor()
+        //   .clear()
+        //   .type(queData.queText)
+        //   .should("have.text", queData.queText);
 
         // set correct ans
         question
@@ -511,35 +502,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         preview = editItem.header.preview();
         // enter right ans
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .first()
           .as("first")
           .click();
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .last()
           .as("last")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 4/6");
+        preview.checkScore("4/6");
 
-            cy.get("@first").should("have.css", "background-color", GREEN);
+        cy.get("@first").should("have.css", "background-color", GREEN);
 
-            cy.get("@last").should("have.css", "background-color", GREEN);
-          });
+        cy.get("@last").should("have.css", "background-color", GREEN);
 
         preview
           .getClear()
           .click()
           .then(() => {
             question
-              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .getCorrectAnsRowByIndexOnPreview(0)
               .find("li")
               .then($cells => {
                 cy.wrap($cells).each(ele => {
@@ -549,45 +535,40 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .last()
           .as("first")
           .click();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(1)
           .as("second")
           .click();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(2)
           .as("third")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 6/6");
+        preview.checkScore("6/6");
 
-            cy.get("@first").should("have.css", "background-color", GREEN);
+        cy.get("@first").should("have.css", "background-color", GREEN);
 
-            cy.get("@second").should("have.css", "background-color", GREEN);
+        cy.get("@second").should("have.css", "background-color", GREEN);
 
-            cy.get("@third").should("have.css", "background-color", GREEN);
-          });
+        cy.get("@third").should("have.css", "background-color", GREEN);
 
         preview
           .getClear()
           .click()
           .then(() => {
             question
-              .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+              .getCorrectAnsRowByIndexOnPreview(0)
               .find("li")
               .then($cells => {
                 cy.wrap($cells).each(ele => {
@@ -597,37 +578,32 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .last()
           .as("last")
           .click();
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .first()
           .as("first")
           .click();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(1)
           .as("second")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            preview.getAntMsg().should("contain", "score: 0/6");
+        preview.checkScore("0/6");
 
-            cy.get("@first").should("have.css", "background-color", GREEN);
+        cy.get("@first").should("have.css", "background-color", GREEN);
 
-            cy.get("@second").should("have.css", "background-color", RED);
+        cy.get("@second").should("have.css", "background-color", RED);
 
-            cy.get("@last").should("have.css", "background-color", GREEN);
-          });
+        cy.get("@last").should("have.css", "background-color", GREEN);
       });
 
       it.skip(" > Test with max score", () => {
@@ -716,39 +692,33 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         preview = editItem.header.preview();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .first()
           .as("first")
           .click();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(1)
           .as("second")
           .click();
 
         question
-          .getCorrectAnsRowByIndexOnPreview(queData.queText, 0)
+          .getCorrectAnsRowByIndexOnPreview(0)
           .find("li")
           .eq(2)
           .as("fourth")
           .click();
 
-        preview
-          .getCheckAnswer()
-          .click()
-          .then(() => {
-            cy.wait(300);
-            preview.getAntMsg().should("contain", "score: 3/6");
+        preview.checkScore("3/6");
 
-            cy.get("@first").should("have.css", "background-color", RED);
+        cy.get("@first").should("have.css", "background-color", RED);
 
-            cy.get("@second").should("have.css", "background-color", GREEN);
+        cy.get("@second").should("have.css", "background-color", GREEN);
 
-            cy.get("@fourth").should("have.css", "background-color", GREEN);
-          });
+        cy.get("@fourth").should("have.css", "background-color", GREEN);
       });
     });
   });

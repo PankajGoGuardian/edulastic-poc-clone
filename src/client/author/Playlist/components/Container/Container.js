@@ -42,7 +42,8 @@ import {
   StyleChangeWrapper
 } from "../../../TestList/components/Container/styled";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
-import { clearTestDataAction, getAllTagsAction, getTestsCreatingSelector } from "../../../TestPage/ducks";
+import { getAllTagsAction, getTestsCreatingSelector } from "../../../TestPage/ducks";
+import { clearTestDataAction } from "../../../PlaylistPage/ducks";
 import {
   clearPlaylistFiltersAction,
   emptyFilters,

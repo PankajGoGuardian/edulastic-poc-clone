@@ -85,15 +85,15 @@ module.exports = {
   },
   calculators: {
     NONE: "None",
-    SCIENTIFIC: "Scientific",
     BASIC: "Basic",
+    SCIENTIFIC: "Scientific",
     GRAPHING: "Graphing"
   },
-  calculatorKeys: ["NONE", "SCIENTIFIC", "BASIC", "GRAPHING"],
+  calculatorKeys: ["NONE", "BASIC", "SCIENTIFIC", "GRAPHING"],
   calculatorTypes: {
     NONE: "NONE",
-    SCIENTIFIC: "SCIENTIFIC",
     BASIC: "BASIC",
+    SCIENTIFIC: "SCIENTIFIC",
     GRAPHING: "GRAPHING"
   },
   evalTypes: {

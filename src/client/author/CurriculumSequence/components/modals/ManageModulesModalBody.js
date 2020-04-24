@@ -55,13 +55,13 @@ const ModuleItem = SortableElement(props => {
   const [dragging] = useState(false);
 
   const handleInputChange = (e, label) => {
-    const val = e.target.value;
+    const val = e.target.value || "";
     switch (label) {
       case "moduleGroupName":
         val.toString().length <= 24 && setEditModuleGroupName(val);
         break;
       case "moduleId":
-        val.toStrinval.toString() <= 4 && setEditModuleId(val);
+        val.toString() <= 4 && setEditModuleId(val);
         break;
       case "moduleName":
         val.toString().length <= 100 && setEditModuleName(val);
@@ -313,24 +313,24 @@ const ManageModulesModalBody = props => {
   const applyHandler = () => handleApply();
 
   const handleModuleSave = () => {
-    if (moduleName.trim()) {
-      const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
-        x => x.title.trim().toLowerCase() === moduleName.trim().toLowerCase()
-      );
-      if (titleAlreadyExists) {
-        message.error(`Module with title '${moduleName}' already exists. Please use another title`);
-        return;
-      }
-      addModuleToPlaylist({ title: moduleName, description: moduleDescription, moduleId, moduleGroupName });
-      if (props.addState) {
-        handleTestAdded(0);
-        message.info(`${moduleName} module is created and added ${props.testAddedTitle} test to it`);
-      }
-      toggleAddState(false);
-      clearPreviousAddData();
-    } else {
-      message.warning("Module name cannot be empty");
+    if (!moduleGroupName.trim()) return message.warning("Module Group Name cannot be empty");
+    if (!moduleId.trim()) return message.warning("Module ID cannot be empty");
+    if (!moduleName.trim()) return message.warning("Module name cannot be empty");
+
+    const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
+      x => x.title.trim().toLowerCase() === moduleName.trim().toLowerCase()
+    );
+    if (titleAlreadyExists) {
+      message.error(`Module with title '${moduleName}' already exists. Please use another title`);
+      return;
     }
+    addModuleToPlaylist({ title: moduleName, description: moduleDescription, moduleId, moduleGroupName });
+    if (props.addState) {
+      handleTestAdded(0);
+      message.info(`${moduleName} module is created and added ${props.testAddedTitle} test to it`);
+    }
+    toggleAddState(false);
+    clearPreviousAddData();
   };
 
   const handleModuleCancel = () => {
@@ -339,7 +339,7 @@ const ManageModulesModalBody = props => {
   };
 
   const handleInputChange = (e, label) => {
-    const val = e.target.value;
+    const val = e.target.value || "";
     switch (label) {
       case "moduleGroupName":
         val.toString().length <= 24 && setModuleGroupName(val);
@@ -360,13 +360,16 @@ const ManageModulesModalBody = props => {
   };
 
   const handleModuleUpdate = ({ id, editModuleGroupName, editModuleId, editModuleName, editModuleDescription }) => {
+    if (!editModuleGroupName.trim()) return message.warning("Module Group Name cannot be empty") && false;
+    if (!editModuleId.trim()) return message.warning("Module ID cannot be empty") && false;
+    if (!editModuleName.trim()) return message.warning("Module name cannot be empty") && false;
+
     const titleAlreadyExists = destinationCurriculumSequence?.modules?.find(
       (x, ind) => x.title.trim().toLowerCase() === editModuleName.trim().toLowerCase() && ind !== id
     );
-    if (titleAlreadyExists) {
-      message.error(`Module with title '${editModuleName}' already exists. Please use another title`);
-      return false;
-    }
+    if (titleAlreadyExists)
+      return message.warning(`Module with title '${editModuleName}' already exists. Please use another title`) && false;
+
     if (editModuleName) {
       updateModuleInPlaylist({
         id,

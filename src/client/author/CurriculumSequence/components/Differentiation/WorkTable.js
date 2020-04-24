@@ -53,7 +53,7 @@ const WorkTable = ({
       isOver: !!monitor.isOver()
     }),
     drop: (item, monitor) => {
-      if (selectedData?.assignmentId && selectedData?.classId && item.contentType === "tests") {
+      if (selectedData?.assignmentId && selectedData?.classId && item.contentType === "test") {
         console.log("dropped item", item);
         addTestToDifferentiation({
           type: type.toLowerCase(),
@@ -166,7 +166,7 @@ const WorkTable = ({
           record?.testStandards?.length ? (
             <Tags tags={record.testStandards} show={1} />
           ) : (
-            <ResouceIcon type="tests" />
+            <ResouceIcon type="test" />
           )
         ) : (
           <Tag marginRight="10px">{s}</Tag>

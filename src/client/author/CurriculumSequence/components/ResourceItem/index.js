@@ -10,7 +10,7 @@ import VideoIcon from "./static/graduation-cap.svg";
 import { Tooltip } from "../../../../common/utils/helpers";
 
 export const ICONS_BY_TYPE = {
-  tests: <TestIcon />,
+  test: <TestIcon />,
   video: <img src={VideoIcon} />,
   lti_resource: <img src={LessonIcon} />
 };

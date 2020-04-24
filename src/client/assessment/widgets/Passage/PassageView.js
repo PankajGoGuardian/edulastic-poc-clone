@@ -106,7 +106,9 @@ const PassageView = ({
         $(this).attr("id", newId);
         $(this)
           .off()
-          .on("mousedown", function() {
+          .on("mousedown", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             const pos = getPostionOfEelement(this);
             setSelectedHighlight({ ...pos, id: newId });
           });
@@ -127,12 +129,8 @@ const PassageView = ({
   };
 
   const loadInit = () => {
-    // need to wait for rendering content at first time.
-    setTimeout(() => {
-      if (!disableResponse) {
-        addEventToSelectedText();
-      }
-    }, 10);
+    // need to wait for rendering content.
+    setTimeout(addEventToSelectedText, 10);
   };
 
   const closePopover = () => toggleOpen(false);
@@ -144,7 +142,6 @@ const PassageView = ({
   const onChangeColor = color => {
     if (color !== "remove") {
       highlightSelectedText("text-heighlight", highlightTag, { background: color });
-      addEventToSelectedText();
       saveHistory();
     }
     clearSelection();
@@ -171,6 +168,9 @@ const PassageView = ({
     }
   }, [previewTab]); // run everytime the previewTab is changed
 
+  const content = getContent();
+  useEffect(loadInit, [content]);
+
   return (
     <WithResources resources={[`${AppConfig.jqueryPath}/jquery.min.js`]} fallBack={<div />} onLoaded={loadInit}>
       {item.instructorStimulus && !flowLayout && (
@@ -185,11 +185,7 @@ const PassageView = ({
       {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
       {!item.paginated_content && item.content && (
         <RefContext.Provider value={{ forwardedRef: mainContentsRef }}>
-          <Stimulus
-            id="mainContents"
-            dangerouslySetInnerHTML={{ __html: getContent() }}
-            userSelect={!disableResponse}
-          />
+          <Stimulus id="mainContents" dangerouslySetInnerHTML={{ __html: content }} userSelect={!disableResponse} />
         </RefContext.Provider>
       )}
 

@@ -317,6 +317,11 @@ export const DetailTable = styled(Table)`
           text-align: center;
           margin: 0px auto;
         }
+        &.summary-student-column {
+          & > div {
+            text-align: left;
+          }
+        }
       }
       &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
         background: #f2f3f2;

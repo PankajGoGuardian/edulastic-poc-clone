@@ -37,6 +37,7 @@ const columns = [
     title: "Student",
     dataIndex: "student",
     key: "student",
+    className: "summary-student-column",
     sorter: (a, b) => sortAlphaNum(a.student, b.student),
     render: text => <StudnetCell>{text}</StudnetCell>
   },

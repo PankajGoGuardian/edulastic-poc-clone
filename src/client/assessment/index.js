@@ -133,7 +133,8 @@ AssessmentPlayer.propTypes = {
 AssessmentPlayer.defaultProps = {
   preview: false,
   testId: "",
-  test: {}
+  test: {},
+  closeTestPreviewModal: () => {}
 };
 
 // export component

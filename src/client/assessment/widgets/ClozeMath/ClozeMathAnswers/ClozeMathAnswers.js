@@ -280,10 +280,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
-  const toggleAdditional = val => {
+  const toggleAdditional = (val = false, inputId = "") => {
     setQuestionData(
       produce(item, draft => {
-        draft.showAdditional = val;
+        draft.showAdditional = {
+          ...draft.showAdditional,
+          ...(inputId && { [inputId]: val })
+        };
       })
     );
   };

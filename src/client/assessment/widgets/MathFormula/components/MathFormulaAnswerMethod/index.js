@@ -41,6 +41,7 @@ const { methods: methodsConst, methodOptions: methodOptionsConst, methodOptionsG
 const methods = Object.keys(methodsConst);
 
 const MathFormulaAnswerMethod = ({
+  id,
   onChange,
   onDelete,
   method,
@@ -82,7 +83,12 @@ const MathFormulaAnswerMethod = ({
     return [flag, warningMsg];
   };
 
-  const showAdditional = get(item, "showAdditional", false);
+  /**
+   * key value pair
+   * key: id of input box
+   * value: true/false
+   */
+  const showAdditional = get(item, `showAdditional`, {});
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,
@@ -556,10 +562,10 @@ const MathFormulaAnswerMethod = ({
           )}
         </StyledRow>
       )}
-      <AdditionalToggle active={showAdditional} onClick={() => toggleAdditional(!showAdditional)}>
-        {t("component.math.additionalOptions")}
+      <AdditionalToggle active={showAdditional[id]} onClick={() => toggleAdditional(!showAdditional[id], id)}>
+        {t("component.math.additionalOptions")} {id}
       </AdditionalToggle>
-      {showAdditional ? (
+      {showAdditional[id] ? (
         <AdditionalContainer>
           <Row gutter={24}>
             <Col span={10}>

@@ -50,7 +50,7 @@ export const getGroupList = createSelector(
 
 export const getUserRole = createSelector(
   stateSelector,
-  state => state.user.role
+  state => state?.user?.role
 );
 
 export const getUserIPZipCode = createSelector(

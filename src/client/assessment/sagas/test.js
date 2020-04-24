@@ -2,7 +2,7 @@ import { testActivityApi, testsApi, assignmentApi, attchmentApi as attachmentApi
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep } from "lodash";
+import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from "lodash";
 import produce from "immer";
 import { test as testContants, roleuser } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
@@ -168,6 +168,9 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     let [test] = isAuthorReview ? [cloneDeep(testData)] : yield all([testRequest]);
+    if (test?.testItems && demo) {
+      set(test, "itemGroups[0].items", test.testItems);
+    }
     if (
       preview &&
       test.itemGroups.some(

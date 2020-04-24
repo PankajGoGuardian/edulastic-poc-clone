@@ -240,7 +240,7 @@ const getFixedPostion = el => {
   };
 };
 
-const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons, buttonCounts) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons) => {
   const sizeMap = {
     STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
     MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
@@ -250,7 +250,6 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons,
   const cSize = sizeMap[toolbarSize][size];
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
   toolbarButtons.moreText.buttons = buttons ? [...buttons] : [...toolbarButtons.moreText.buttons];
-  toolbarButtons.moreText.buttonsVisible = buttonCounts || toolbarButtons.moreText.buttonsVisible;
   toolbarButtons.moreMisc = {
     buttons: additionalToolbarOptions,
     buttonsVisible: 3
@@ -299,7 +298,7 @@ const CustomEditor = ({
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
   const [toolbarExpanded, setToolbarExpanded] = useState(false);
-  const configStateRef = useRef(null);
+
   const [mathField, setMathField] = useState(null);
 
   const EditorRef = useRef(null);
@@ -308,7 +307,7 @@ const CustomEditor = ({
   const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons);
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons);
-  const initialConfig = Object.assign(
+  const config = Object.assign(
     {
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
@@ -638,30 +637,6 @@ const CustomEditor = ({
     additionalToolbarOptions.includes("paragraphNumber");
 
   useEffect(() => {
-    /**
-     * calculating the toolbar button counts dynamically that can be displayed without moreText and the rest will be displayed
-     * in the moreText. Here each button takes the width of 42px and padding of total 29px is given to the right and left of the toolbar container
-     * so subtracting the total padding and dividing the remaining width by each button width to get the count of buttons.
-     */
-    let buttonCounts = Math.floor((toolbarContainerRef?.current?.clientWidth - 29) / 42) - 1;
-    const _toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
-    const _toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
-    const _toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
-    const _toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions, buttons, buttonCounts);
-    if (_toolbarButtons?.moreText?.buttons?.length > buttonCounts) {
-      buttonCounts = buttonCounts - 1;
-    }
-    const updatedConfig = {
-      ...initialConfig,
-      toolbarButtons: _toolbarButtons,
-      toolbarButtonsMD: _toolbarButtonsMD,
-      toolbarButtonsSM: _toolbarButtonsSM,
-      toolbarButtonsXS: _toolbarButtonsXS
-    };
-    configStateRef.current = updatedConfig;
-  }, [toolbarContainerRef?.current]);
-
-  useEffect(() => {
     // sample extension of custom buttons
     initMathField();
     if (value && hasResponseBoxBtn()) {
@@ -852,7 +827,7 @@ const CustomEditor = ({
         onClose={closeMathModal}
       />
       <BackgroundStyleWrapper
-        backgroundColor={configStateRef?.current?.backgroundColor}
+        backgroundColor={config.backgroundColor}
         centerContent={centerContent}
         border={border}
         theme={theme}
@@ -868,15 +843,13 @@ const CustomEditor = ({
           />
         )}
 
-        {configStateRef?.current && (
-          <Editor
-            tag={tag}
-            model={content}
-            onModelChange={setChange}
-            config={configStateRef?.current}
-            onManualControllerReady={manualControl}
-          />
-        )}
+        <Editor
+          tag={tag}
+          model={content}
+          onModelChange={setChange}
+          config={config}
+          onManualControllerReady={manualControl}
+        />
       </BackgroundStyleWrapper>
       <NoneDiv>
         <span ref={mathFieldRef} className="input__math__field" />

@@ -312,7 +312,7 @@ class LeftFilter extends React.Component {
             ALL ASSIGNMENTS
           </FolderButton>
         )}
-        {orderBy(folders, ["updatedAt"], ["desc"]).map((folder, index) => {
+        {orderBy(folders, ["folderName"], ["asc"]).map((folder, index) => {
           const isActive = visibleModal.moveFolder ? folder._id === moveFolderId : folder._id === folderId;
           return (
             <FolderListItem data-cy={folder.folderName} key={index} active={isActive}>

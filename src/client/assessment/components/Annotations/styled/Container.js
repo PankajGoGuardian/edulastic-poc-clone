@@ -7,7 +7,9 @@ export const Container = styled(FlexContainer)`
   border: ${({ noBorder }) => `${noBorder ? 0 : 1}px solid ${greyThemeLight}`};
   background: ${({ isRnd }) => (isRnd ? "transparent" : greyThemeLighter)};
   height: 100%;
-  overflow: hidden;
+  overflow: ${(overflow = "") => {
+    overflow || "hidden";
+  }}; // over flow will be hidden by default
   align-items: flex-start;
   justify-content: flex-start;
 

@@ -14,7 +14,8 @@ class Annotation extends Component {
     return (
       <Row gutter={12} center>
         <Col span={22}>
-          <Container>
+          {/* overFlow is hidden by default */}
+          <Container overflow="unset">
             <FroalaEditor
               value={value}
               onChange={val => updateAnnotation(val, index)}

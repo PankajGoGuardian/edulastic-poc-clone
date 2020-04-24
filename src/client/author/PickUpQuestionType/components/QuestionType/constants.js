@@ -961,7 +961,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           type: "standard"
         },
-        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
+        options: [
+          { value: uuids[0], label: "" },
+          { value: uuids[1], label: "" },
+          { value: uuids[2], label: "" },
+          { value: uuids[3], label: "" }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
@@ -985,7 +990,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           type: "standard"
         },
-        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
+        options: [
+          { value: uuids[0], label: "" },
+          { value: uuids[1], label: "" },
+          { value: uuids[2], label: "" },
+          { value: uuids[3], label: "" }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
@@ -1034,7 +1044,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "block",
           choiceLabel: "upper-alpha"
         },
-        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
+        options: [
+          { value: uuids[0], label: "" },
+          { value: uuids[1], label: "" },
+          { value: uuids[2], label: "" },
+          { value: uuids[3], label: "" }
+        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {

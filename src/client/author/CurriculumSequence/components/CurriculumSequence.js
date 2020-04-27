@@ -487,10 +487,10 @@ class CurriculumSequence extends Component {
     // get active classes for student playlists
     const playlistClassList = [...new Set(studentPlaylists.map(playlist => playlist.groupId))];
 
-    // sliced recent playlists for changePlaylistModal
-    const slicedRecentPlaylists = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
+    // show all recent playlists in changePlaylistModal
+    const slicedRecentPlaylists = recentPlaylists || [];
 
-    const isPlaylistDetailsPage = window?.location?.hash === "#review";
+    const isPlaylistDetailsPage = window.location?.hash === "#review";
 
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     // Options for add unit

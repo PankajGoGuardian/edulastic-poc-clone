@@ -243,9 +243,9 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
 const extractFunctions = {
   [questionType.MULTIPLE_CHOICE]: (question, userResponse) => {
     return userResponse
-      .map(r => question.options.findIndex(x => x.value === r))
-      .map(x => alphabets[x]?.toUpperCase())
-      .join(",");
+      ?.map(r => question?.options.findIndex(x => x.value === r))
+      ?.map(x => alphabets[x]?.toUpperCase())
+      ?.join(",");
   }
 };
 export function getResponseTobeDisplayed(testItem, userResponse, questionId) {

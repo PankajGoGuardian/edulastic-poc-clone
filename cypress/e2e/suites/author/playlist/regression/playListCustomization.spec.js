@@ -17,8 +17,8 @@ describe("Playlist customization", () => {
     testId3: "5e832816702a3600074b2edc",
     testId4: "5e7c920bc76d000007405675",
     testId5: "5e831ac97c24fd0007a20255",
-    testId6: "5e832e48252e620008b24043",
-    testId7: "5e832e77252e620008b24047",
+    testId6: "5e832912591abd0008e5d9c7",
+    testId7: "5e832d59252e620008b24039",
     testId8: "5e8478a6fd94480008873f85"
   };
   const collection = {
@@ -74,7 +74,7 @@ describe("Playlist customization", () => {
       cy.contains("Summary").should("be.visible");
       playListCustomization.clickOnManageContent();
       playListCustomization.searchContainer.getKeywordsSearchBar();
-      playListCustomization.getManageContentButton().click();
+      playListCustomization.getManageContentButton().click({ force: true });
       cy.contains("Summary").should("be.visible");
     });
   });
@@ -180,7 +180,7 @@ describe("Playlist customization", () => {
   context("search from Shared with me folder", () => {
     it("Shared with Me", () => {
       playListCustomization.clickOnManageContent();
-      playListCustomization.searchContainer.setFilters({ SharedWithMe: true });
+      playListCustomization.searchContainer.setFilters({ SharedWithMe: true, subject: "All Subjects" });
       playListCustomization.searchContainer.verifySearchResultVisible(`${testId.testId6}`);
 
       playListCustomization.searchContainer.setFilters({ grade: "Grade 8" });

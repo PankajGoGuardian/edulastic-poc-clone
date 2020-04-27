@@ -1,41 +1,32 @@
-import React from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import Modal from "react-responsive-modal";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { Radio, Spin, Button, Row, Col, Select, message, Typography } from "antd";
-import { debounce, get as _get, isEmpty } from "lodash";
-import { withRouter } from "react-router-dom";
-
-import { FlexContainer } from "@edulastic/common";
-import { themeColor, whiteSmoke, greenDark, fadedGrey, white, backgroundGrey2 } from "@edulastic/colors";
-import { IconClose, IconShare } from "@edulastic/icons";
+import { backgroundGrey2, fadedGrey, greenDark, themeColor, whiteSmoke } from "@edulastic/colors";
+import { EduButton, FlexContainer, RadioBtn, RadioGrp, SelectInputStyled } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
-import { getUserFeatures } from "../../../../../student/Login/ducks";
-import { RadioInputWrapper } from "../RadioInput";
+import { IconClose, IconShare } from "@edulastic/icons";
+import { Col, message, Row, Select, Spin, Typography, Modal } from "antd";
+import { debounce, get as _get } from "lodash";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import styled from "styled-components";
+import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
-import { RadioBtn, RadioGrp } from "@edulastic/common";
-
+import { getUserFeatures } from "../../../../../student/Login/ducks";
 import {
-  getTestIdSelector,
-  getUserListSelector,
-  sendTestShareAction,
-  receiveSharedWithListAction,
-  deleteSharedUserAction
-} from "../../../../TestPage/ducks";
-
-import {
-  getUsersListSelector,
-  getFetchingSelector,
   fetchUsersListAction,
+  getFetchingSelector,
+  getUsersListSelector,
   updateUsersListAction
 } from "../../../../sharedDucks/userDetails";
-import { MAX_TAB_WIDTH } from "../../../constants/others";
-
+import {
+  deleteSharedUserAction,
+  getUserListSelector,
+  receiveSharedWithListAction,
+  sendTestShareAction
+} from "../../../../TestPage/ducks";
 import { getOrgDataSelector, getUserRole } from "../../../selectors/user";
-import { getFullNameFromAsString } from "../../../../../common/utils/helpers";
-import { EduButton } from "@edulastic/common";
+import { RadioInputWrapper } from "../RadioInput";
 
 const { Paragraph } = Typography;
 
@@ -69,8 +60,8 @@ class ShareModal extends React.Component {
       sharedType: sharedKeysObj.INDIVIDUAL,
       searchString: "",
       currentUser: {},
-      permission: props.features["editPermissionOnTestSharing"] ? "EDIT" : "VIEW",
-      _permissionKeys: props.features["editPermissionOnTestSharing"] ? permissionKeys : [permissionKeys[1]]
+      permission: props.features.editPermissionOnTestSharing ? "EDIT" : "VIEW",
+      _permissionKeys: props.features.editPermissionOnTestSharing ? permissionKeys : [permissionKeys[1]]
     };
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -79,11 +70,11 @@ class ShareModal extends React.Component {
     const { features, gradeSubject } = nextProps;
     const { grades, subjects } = gradeSubject || {};
     if (
-      features["editPermissionOnTestSharing"] === false &&
+      features.editPermissionOnTestSharing === false &&
       grades &&
       subjects &&
       isFeatureAccessible({
-        features: features,
+        features,
         inputFeatures: "editPermissionOnTestSharing",
         gradeSubject
       })
@@ -92,7 +83,8 @@ class ShareModal extends React.Component {
         permission: "EDIT",
         _permissionKeys: permissionKeys
       };
-    } else if (!features["editPermissionOnTestSharing"]) {
+    }
+    if (!features.editPermissionOnTestSharing) {
       return {
         permission: "VIEW",
         _permissionKeys: [permissionKeys[1]]
@@ -183,8 +175,8 @@ class ShareModal extends React.Component {
     const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
     if (!(searchString.length > 1) && !Object.keys(currentUser).length && sharedType === sharedKeysObj.INDIVIDUAL)
       return;
-    let person = {},
-      emails = [];
+    let person = {};
+    let emails = [];
     if (sharedType === sharedKeysObj.INDIVIDUAL) {
       if (Object.keys(currentUser).length === 0) {
         if (!searchString.length) return message.error("Please select any user which are not in the shared list");
@@ -221,21 +213,21 @@ class ShareModal extends React.Component {
     } = this.props;
     if (data.sharedType === "PUBLIC") {
       return "EVERYONE";
-    } else if (data.sharedType === "DISTRICT") {
-      return districtName;
-    } else {
-      return `${data.userName && data.userName !== "null" ? data.userName : ""}`;
     }
+    if (data.sharedType === "DISTRICT") {
+      return districtName;
+    }
+    return `${data.userName && data.userName !== "null" ? data.userName : ""}`;
   }
 
   getEmail(data) {
     if (data.sharedType === "PUBLIC") {
       return "";
-    } else if (data.sharedType === "DISTRICT") {
-      return "";
-    } else {
-      return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
     }
+    if (data.sharedType === "DISTRICT") {
+      return "";
+    }
+    return `${data.email && data.email !== "null" ? ` (${data.email})` : ""}`;
   }
 
   render() {
@@ -270,7 +262,7 @@ class ShareModal extends React.Component {
     if (sharedType === "DISTRICT") sharedTypeMessage = `Anyone in ${districtName}`;
     else if (sharedType === "SCHOOL") sharedTypeMessage = `Anyone in ${schools.map(s => s.name).join(", ")}`;
     return (
-      <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
+      <SharingModal width="700px" footer={null} visible={isVisible} onCancel={onClose} centered>
         <ModalContainer>
           <h2 style={{ fontWeight: "bold", fontSize: 20 }}>Share with others</h2>
           <ShareBlock>
@@ -332,10 +324,10 @@ class ShareModal extends React.Component {
               </RadioGrp>
             </RadioBtnWrapper>
             <FlexContainer style={{ marginTop: 5 }} justifyContent="flex-start">
-              {sharedType === "INDIVIDUAL" ? (
-                <Address
+              {sharedType === sharedKeysObj.INDIVIDUAL ? (
+                <SelectInputStyled
                   showSearch
-                  placeholder={"Enter names or email addresses"}
+                  placeholder="Enter names or email addresses"
                   data-cy="name-button-pop"
                   defaultActiveFirstOption={false}
                   showArrow={false}
@@ -356,30 +348,24 @@ class ShareModal extends React.Component {
                       {`(${item._source.email})`}
                     </Select.Option>
                   ))}
-                </Address>
+                </SelectInputStyled>
               ) : (
                 <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
               )}
-              <Select
-                style={
-                  sharedType === "INDIVIDUAL"
-                    ? { margin: "0px 10px", height: "35px", width: "270px" }
-                    : { display: "none" }
-                }
+              <SelectInputStyled
+                style={sharedType === sharedKeysObj.INDIVIDUAL ? { marginLeft: "10px" } : { display: "none" }}
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
-                {_permissionKeys.map(item => {
-                  return (
-                    <Select.Option value={item} key={permissions[item]}>
-                      {permissions[item]}
-                    </Select.Option>
-                  );
-                })}
-              </Select>
+                {_permissionKeys.map(item => (
+                  <Select.Option value={item} key={permissions[item]}>
+                    {permissions[item]}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
           <DoneButtonContainer>
@@ -397,7 +383,7 @@ class ShareModal extends React.Component {
             </EduButton>
           </DoneButtonContainer>
         </ModalContainer>
-      </Modal>
+      </SharingModal>
     );
   }
 }
@@ -440,9 +426,16 @@ const enhance = compose(
 
 export default enhance(ShareModal);
 
+const SharingModal = styled(Modal)`
+  .ant-modal-content {
+    margin: 15px 0px;
+  }
+  .ant-modal-body {
+    padding: 30px;
+  }
+`;
+
 const ModalContainer = styled.div`
-  width: 700px;
-  padding: 20px 30px;
   .anticon-down {
     svg {
       fill: ${themeColor};
@@ -462,14 +455,6 @@ const ShareLabel = styled.span`
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 10px;
-`;
-const ShareTitle = styled.div`
-  background-color: ${whiteSmoke};
-  border-radius: 4px;
-  display: flex;
-  padding: 10px;
-  border: 1px solid ${fadedGrey};
-  width: 100%;
 `;
 
 const ShareMessageWrapper = styled.div`
@@ -513,52 +498,10 @@ const PeopleBlock = styled.div`
   }
 `;
 
-const Address = styled(Select)`
-  min-height: 35px;
-  width: 285px;
-  .ant-select-selection {
-    height: 35px;
-  }
-  ::placeholder {
-    font-size: 13px;
-    font-style: italic;
-  }
-`;
-
-const ShareButton = styled(Button)`
-  height: 35px;
-  width: 135px;
-  background: ${themeColor};
-  border: none;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 20px;
-  &:hover,
-  &:focus {
-    background: ${themeColor};
-    border-color: ${themeColor};
-  }
-  span {
-    font-size: 12px;
-    font-weight: 600;
-    margin-left: 18px;
-  }
-`;
-
 const DoneButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
-`;
-
-const DoneButton = styled(ShareButton)`
-  margin: auto;
-  margin-top: 20px;
-  margin-left: auto;
-  > span {
-    margin: auto;
-  }
 `;
 
 const RadioBtnWrapper = styled(RadioInputWrapper)`

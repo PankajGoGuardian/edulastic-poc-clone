@@ -39,6 +39,14 @@ const fetchAssignments = testId =>
     })
     .then(result => result.data.result);
 
+const fetchRegradeAssignments = testId =>
+  api
+    .callApi({
+      url: `/test/${testId}/regrade-assignments`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const fetchAssigned = groupId =>
   api
     .callApi({
@@ -163,6 +171,7 @@ export default {
   update,
   remove,
   fetchAssignments,
+  fetchRegradeAssignments,
   fetchAssigned,
   fetchTeacherAssignments,
   fetchAssignmentsSummary,

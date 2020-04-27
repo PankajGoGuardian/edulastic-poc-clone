@@ -27,7 +27,7 @@ const Regrade = ({ title, getAssignmentsByTestId, match, setRegradeSettings, dis
   const [regradeSettings, regradeSettingsChange] = useState(settings);
 
   useEffect(() => {
-    getAssignmentsByTestId(oldTestId);
+    getAssignmentsByTestId({ testId: oldTestId, regradeAssignments: true });
   }, []);
 
   const onUpdateSettings = (key, value) => {

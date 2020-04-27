@@ -299,20 +299,29 @@ function* saveAssignment({ payload }) {
 
 function* loadAssignments({ payload }) {
   try {
-    let testId;
+    let testId,
+      regradeAssignments = false;
     if (!payload) {
       const { _id } = yield select(getTestSelector);
       testId = _id;
     } else {
-      testId = payload;
+      if (typeof payload === "object") {
+        testId = payload.testId;
+        regradeAssignments = payload.regradeAssignments;
+      } else {
+        testId = payload;
+      }
     }
 
     // test is not yet created!
     if (!testId) {
       return;
     }
-
-    const data = yield call(assignmentApi.fetchAssignments, testId);
+    //fetch assignments is for getting user assignments and regrade assignments is for getting org level assignments.
+    const getAssignmentsApi = regradeAssignments
+      ? assignmentApi.fetchRegradeAssignments
+      : assignmentApi.fetchAssignments;
+    const data = yield call(getAssignmentsApi, testId);
     const assignments = data.map(formatAssignment);
     yield put(loadAssignmentsAction(assignments));
   } catch (e) {

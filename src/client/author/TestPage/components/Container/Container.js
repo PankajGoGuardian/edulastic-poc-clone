@@ -776,8 +776,7 @@ class Container extends PureComponent {
     const showDuplicateButton =
       testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && !owner && allowDuplicate;
     const showEditButton = testStatus && testStatus === statusConstants.PUBLISHED && !editEnable && owner;
-    const showCancelButton =
-      ((test.isUsed && !!testAssignments.length) || test.isInEditAndRegrade) && !showEditButton && !showDuplicateButton;
+    const showCancelButton = test.isUsed && !!testAssignments.length && !showEditButton && !showDuplicateButton;
     const testItems = itemGroups.flatMap(itemGroup => itemGroup.items || []) || [];
     const hasPremiumQuestion = !!testItems.find(i => hasUserGotAccessToPremiumItem(i.collections, collections));
 

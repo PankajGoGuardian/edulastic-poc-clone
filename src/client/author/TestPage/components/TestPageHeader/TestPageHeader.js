@@ -135,7 +135,6 @@ const TestPageHeader = ({
   isShowFilter,
   fetchAssignments,
   testAssignments,
-  isTestLoading,
   match,
   showDuplicateButton,
   handleDuplicateTest,
@@ -157,10 +156,12 @@ const TestPageHeader = ({
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor);
 
   useEffect(() => {
+    //TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
     if (!creating && match?.params?.oldId) {
-      fetchAssignments(match?.params?.oldId);
+      fetchAssignments({ testId: match?.params?.oldId, regradeAssignments: true });
     } else if (!creating && test?._id) {
-      fetchAssignments(test?._id);
+      const testId = test.status === "draft" && test.isUsed ? test.previousTestId : test._id;
+      fetchAssignments({ testId, regradeAssignments: true });
     }
   }, [test?._id, match?.params?.oldId]);
 
@@ -240,15 +241,6 @@ const TestPageHeader = ({
     isDirectOwner = false;
   }
 
-  const ButtonWithIconStyle = {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "40px",
-    width: "45px",
-    padding: 0
-  };
-
   const onClickCuratorApprove = () => {
     const { collections = [], _id: testId } = test;
     onCuratorApproveOrReject({ testId, status: "published", collections });
@@ -279,7 +271,7 @@ const TestPageHeader = ({
     </TestStatus>
   );
 
-  const isRegradeFlow = test.isInEditAndRegrade || (test.isUsed && !!testAssignments.length);
+  const isRegradeFlow = test.isUsed && !!testAssignments.length;
   //if edit assigned there should be assignments to enable the buttons
   const disableButtons =
     isLoadingData || (history.location.state?.editAssigned && !testAssignments.length && !test.isInEditAndRegrade);

@@ -498,7 +498,7 @@ const LogoWrapper = styled(Row)`
 const ToggleSidemenu = styled.div`
   position: absolute;
   right: -10px;
-  top: 52px;
+  top: 51px;
   background: ${greyThemeLighter};
   height: 20px;
   width: 20px;

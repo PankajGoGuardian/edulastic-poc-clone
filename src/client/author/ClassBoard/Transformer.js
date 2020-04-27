@@ -240,6 +240,31 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
   }
 };
 
+const extractFunctions = {
+  [questionType.MULTIPLE_CHOICE]: (question, userResponse) => {
+    return userResponse
+      .map(r => question.options.findIndex(x => x.value === r))
+      .map(x => alphabets[x]?.toUpperCase())
+      .join(",");
+  }
+};
+export function getResponseTobeDisplayed(testItem, userResponse, questionId) {
+  const question = (testItem?.data?.questions || [])?.find(q => q.id === questionId);
+  const qType = question.type;
+
+  if (
+    testItem.data.questions.filter(x => x.type !== questionType.SECTION_LABEL).length > 1 &&
+    testItem.itemLevelScoring
+  ) {
+    //MULTIPART
+    return "TEI";
+  } else if (extractFunctions[qType]) {
+    return extractFunctions[qType](question, userResponse);
+  } else {
+    return "TEI";
+  }
+}
+
 export const transformGradeBookResponse = (
   {
     test,
@@ -411,6 +436,7 @@ export const transformGradeBookResponse = (
               graded,
               pendingEvaluation,
               scratchPad,
+              userResponse,
               ...remainingProps
             } = currentQuestionActivity;
             skipped = getSkippedStatusOfQuestion(testItemId, questionActivitiesIndexed, testItemsData, el);
@@ -445,7 +471,9 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               userId: studentId,
               qActId: currentQuestionActivity._id,
-              scratchPad
+              scratchPad,
+              responseToDisplay: getResponseTobeDisplayed(testItemsDataKeyed[testItemId], userResponse, _id),
+              userResponse
             };
           }
         );

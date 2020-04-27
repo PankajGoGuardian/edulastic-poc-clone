@@ -105,6 +105,7 @@ export function* receiveTestActivitySaga({ payload }) {
     const autoselectItemsCount = classResponse.totalItemsCount - classResponse.testItems.length;
     gradebookData.passageData = classResponse.passages;
     gradebookData.testItemsData = classResponse.testItems;
+    gradebookData.testItemsDataKeyed = keyBy(classResponse.testItems, "_id");
     gradebookData.test = classResponse;
     gradebookData.endDate = additionalData.endDate;
     markQuestionLabel(gradebookData.testItemsData);

@@ -74,7 +74,7 @@ class ScoreTable extends Component {
   }
 
   getColumnsForTable = (length, submittedLength, showColumnsCount) => {
-    const { showQuestionModal, isPresentationMode } = this.props;
+    const { showQuestionModal, isPresentationMode, scoreMode } = this.props;
 
     const columns = [
       {
@@ -91,7 +91,7 @@ class ScoreTable extends Component {
             className: "th-border-bottom",
             width: 200,
             render: record => (
-              <StyledDivMid className="name-col">
+              <StyledDivMid style={{ color: "#000" }} className="name-col">
                 {isPresentationMode ? record.fakeName : record.studentName}
               </StyledDivMid>
             ),
@@ -107,7 +107,7 @@ class ScoreTable extends Component {
               const { score = 0, maxScore = 0 } = record;
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
               return (
-                <StyledDivMid>
+                <StyledDivMid style={{ color: "#000" }}>
                   <StyledText color={greenThird}>{percent}</StyledText> ({round(score, 1)}/{maxScore})
                 </StyledDivMid>
               );
@@ -138,7 +138,7 @@ class ScoreTable extends Component {
         });
       const averageScore = successScore;
       const questionAvarageScore = (
-        <StyledDivMid>
+        <StyledDivMid style={{ color: "#000" }}>
           <StyledText color={greenThird}>
             {`${submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) || 0 : 0}%`}
           </StyledText>
@@ -166,6 +166,7 @@ class ScoreTable extends Component {
                   tableData={tableData}
                   showQuestionModal={showQuestionModal}
                   isTest={isTest}
+                  scoreMode={scoreMode}
                 />
               );
               return cell;

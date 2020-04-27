@@ -30,7 +30,7 @@ class QuestionModal extends React.Component {
   }
 
   componentDidMount() {
-    const { record, tableData } = this.props;
+    const { record, tableData, scoreMode } = this.props;
     const loaded = true;
     let maxQuestions = null;
     let maxStudents = null;
@@ -41,8 +41,7 @@ class QuestionModal extends React.Component {
       maxQuestions = tableData[rowIndex].questions;
       maxStudents = tableData.length;
     }
-
-    this.setState({ rowIndex, colIndex, loaded, maxQuestions, maxStudents });
+    this.setState({ rowIndex, colIndex, loaded, maxQuestions, maxStudents, editResponse: !scoreMode });
     document.addEventListener("keyup", this.keyListener, false);
   }
 
@@ -202,6 +201,7 @@ class QuestionModal extends React.Component {
         height="95%"
         footer={null}
         closable={false}
+        destroyOnClose
         onOk={this.hideModal}
         onCancel={this.hideModal}
         visible={isVisibleModal}

@@ -5,9 +5,22 @@ import { round } from "lodash";
 
 class QuestionScore extends Component {
   render() {
-    const { question, tableData, showQuestionModal, isTest } = this.props;
+    const { question, tableData, showQuestionModal, isTest, scoreMode = true } = this.props;
     const isQuestion = question && question.score !== undefined && question.maxScore !== undefined;
-    let { score: studentScore, graded, skipped } = question; // score, maxScore,
+    let { score: studentScore, graded, skipped, maxScore, responseToDisplay } = question; // score, maxScore,
+    let answerStatus = null;
+    if (studentScore === maxScore && maxScore > 0) {
+      answerStatus = "correct";
+    } else if (skipped) {
+      answerStatus = "skipped";
+    } else if (graded === false) {
+      answerStatus = "ungraded";
+    } else if (studentScore === 0 && maxScore > 0) {
+      answerStatus = "wrong";
+    } else if (studentScore > 0 && studentScore < maxScore && maxScore > 0) {
+      answerStatus = "partiallyCorrect";
+    }
+
     if (!isQuestion) {
       // score = 0;
       // maxScore = 1;
@@ -17,9 +30,13 @@ class QuestionScore extends Component {
     return (
       <React.Fragment>
         {isTest ? (
-          <StyledWrapper onClick={() => showQuestionModal(question, tableData)}>
+          <StyledWrapper answerStatus={answerStatus} onClick={() => showQuestionModal(question, tableData)}>
             {/* color={getScoreColor(score, maxScore)} */}
-            <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
+            {scoreMode ? (
+              <StyledText>{graded || skipped ? round(studentScore, 2) : "-"}</StyledText>
+            ) : (
+              <StyledText>{graded || skipped ? responseToDisplay : "-"}</StyledText>
+            )}
           </StyledWrapper>
         ) : (
           <StyledWrapper>

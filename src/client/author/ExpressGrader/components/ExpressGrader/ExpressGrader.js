@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 import memoizeOne from "memoize-one";
-import { ThemeProvider } from "styled-components";
+import { Switch } from "antd";
+import styled, { ThemeProvider } from "styled-components";
+import { mobileWidthLarge } from "@edulastic/colors";
 import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
@@ -27,6 +29,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
+import { toggleScoreModeAction } from "../../ducks";
 
 /**
  *
@@ -111,7 +114,15 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 768;
 
   render() {
-    const { testActivity: _testActivity = [], additionalData, match, isPresentationMode, windowWidth } = this.props;
+    const {
+      testActivity: _testActivity = [],
+      additionalData,
+      match,
+      isPresentationMode,
+      windowWidth,
+      toggleScoreMode,
+      scoreMode
+    } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
@@ -131,10 +142,14 @@ class ExpressGrader extends Component {
           <MainContentWrapper>
             <StyledFlexContainer justifyContent="space-between">
               <ClassBreadBrumb />
+              <SwitchBox>
+                RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
+              </SwitchBox>
               <PresentationToggleSwitch groupId={classId} />
             </StyledFlexContainer>
             {!isMobile && (
               <ScoreTable
+                scoreMode={scoreMode}
                 testActivity={testActivity}
                 showQuestionModal={this.showQuestionModal}
                 isPresentationMode={isPresentationMode}
@@ -142,7 +157,7 @@ class ExpressGrader extends Component {
               />
             )}
 
-            {isMobile && <ScoreCard testActivity={testActivity} />}
+            {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}
 
             {isVisibleModal && (
               <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
@@ -155,6 +170,7 @@ class ExpressGrader extends Component {
                   isPresentationMode={isPresentationMode}
                   groupId={classId}
                   windowWidth={windowWidth}
+                  scoreMode={scoreMode}
                 />
               </ThemeProvider>
             )}
@@ -172,12 +188,14 @@ const enhance = compose(
       testActivity: getSortedTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      scoreMode: state?.expressGraderReducer?.scoreMode
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
       clearFeedbackResponse: clearFeedbackResponseAction,
-      clearEgAnswers: clearAnswersAction
+      clearEgAnswers: clearAnswersAction,
+      toggleScoreMode: toggleScoreModeAction
     }
   )
 );
@@ -203,3 +221,24 @@ ExpressGrader.defaultProps = {
   clearFeedbackResponse: () => {},
   isPresentationMode: false
 };
+
+const SwitchBox = styled.span`
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  .ant-switch {
+    min-width: 32px;
+    height: 16px;
+    margin-left: 18px;
+    margin-right: 18px;
+
+    &:after {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    display: none;
+  }
+`;

@@ -36,10 +36,21 @@ export const TableData = styled(Table)`
   .ant-table td {
     white-space: nowrap;
   }
+  .ant-table-thead > tr:first-child > th:not(:first-child) {
+    background-color: #2acc00;
+    & .anticon {
+      color: #fff;
+    }
+
+    & td {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     background: ${white};
-    padding: 10px 16px;
+    padding: 3px 0px;
     border-bottom: 0px;
     width: 107px;
     @media only screen and (max-width: ${extraDesktopWidthMax}) {
@@ -54,6 +65,10 @@ export const TableData = styled(Table)`
   }
   .ant-table-tbody > tr > td {
     background-color: ${white};
+  }
+  .ant-table-tbody > tr > td > div {
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
   .ant-table-tbody > tr {
     &:last-child {
@@ -116,7 +131,7 @@ export const StyledDivColor = styled.span`
 export const StyledDivMid = styled.div`
   min-width: 35px;
   font-size: 16px;
-  color: ${title};
+  color: #fff;
   font-weight: 600;
   text-align: center;
   img {

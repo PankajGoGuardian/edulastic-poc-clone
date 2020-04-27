@@ -22,7 +22,7 @@ import {
   UPDATE_STUDENTS_DATA,
   RECEIVE_STUDENT_RESPONSE_SUCCESS
 } from "../constants/actions";
-import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
+import { transformGradeBookResponse, getMaxScoreOfQid, getResponseTobeDisplayed } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
@@ -231,6 +231,7 @@ const reducer = (state = initialState, { type, payload }) => {
       nextState = produce(state, _st => {
         for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
           const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
+
           if (entityIndex != -1) {
             const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(
               x => x._id == questionItem._id || x.testItemId === questionItem.testItemId
@@ -252,7 +253,12 @@ const reducer = (state = initialState, { type, payload }) => {
                   ...oldQAct,
                   ...questionItem,
                   score,
-                  maxScore
+                  maxScore,
+                  responseToDisplay: getResponseTobeDisplayed(
+                    _st.data.testItemsDataKeyed[questionItem.testItemId],
+                    questionItem.userResponse,
+                    questionItem._id
+                  )
                 };
               }
             }

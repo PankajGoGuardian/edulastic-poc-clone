@@ -118,10 +118,17 @@ export const replaceLatexesWithMathHtml = val => {
 
   // eslint-disable-next-line func-names
   jqueryEl.find("span.input__math").each(function() {
-    const katexHtml = getMathHtml($(this).attr("data-latex"));
-    $(this)
-      .attr("contenteditable", "false")
-      .html(katexHtml);
+    const latex = $(this).attr("data-latex");
+    /**
+     * parse math content only if there is latex attribute present
+     * @see https://snapwiz.atlassian.net/browse/EV-13580
+     */
+    if (latex) {
+      const katexHtml = getMathHtml(latex);
+      $(this)
+        .attr("contenteditable", "false")
+        .html(katexHtml);
+    }
   });
 
   return Helpers.sanitizeSelfClosingTags(jqueryEl.html());

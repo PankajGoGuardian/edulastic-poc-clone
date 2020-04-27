@@ -330,6 +330,24 @@ class MathFormulaEdit {
       .next()
       .find("textarea");
 
+  getSimplified = () => cy.get('[data-cy="answer-is-simplified"]');
+
+  getFactored = () => cy.get('[data-cy="answer-is-factorised"]');
+
+  getExpanded = () => cy.get('[data-cy="answer-is-expanded"]');
+
+  getMixedFraction = () => cy.get('[data-cy="answer-is-mixed-fraction"]');
+
+  getRationalized = () => cy.get('[data-cy="answer-rationalized"]');
+
+  getInterpretAsSet = () => cy.get('[value="interpretAsSet"]');
+
+  getInterpretAsInterval = () => cy.get('[value="interpretAsInterval"]');
+
+  getInterpretAsNumber = () => cy.get('[value="interpretAsNumber"]');
+
+  getInterpretAsResponse = () => cy.get('[value="setListTypeResponse"]');
+
   getAnswerIgnoreOrder = () => cy.get('[data-cy="answer-ignore-order"]');
 
   getAnswerAllowInterval = () => cy.get('[data-cy="answer-allow-interval"]');
@@ -378,7 +396,7 @@ class MathFormulaEdit {
 
   getAnswerInputMathTextarea = () => cy.get(`[data-cy="answer-input-math-textarea"]`);
 
-  getCorrectAnswerBox = () => cy.get('[data-cy="correct-answer-box"]');
+  getCorrectAnswerBox = () => cy.get('[class^="MathFormulaDisplay"]'); // cy.get('[data-cy="correct-answer-box"]');
 
   getComposeQuestionQuillComponent = () => cy.get(".fr-element").first();
 
@@ -507,7 +525,7 @@ class MathFormulaEdit {
 
     this[selector]()
       [inputOrder]()
-      .clear({ force: true })
+      //.clear({ force: true })
       .type("{uparrow}".repeat(input), { force: true });
   };
 
@@ -531,6 +549,7 @@ class MathFormulaEdit {
 
       .then($input => {
         expect($input[0].innerText).to.contain(data);
+        return this.getComposeQuestionTextBox().first();
       });
 
   getVirtualKeyBoardItem = value => this.getVirtualKeyBoard().find(`button[data-cy="virtual-keyboard-${value}"]`);
@@ -558,7 +577,7 @@ class MathFormulaEdit {
         cy
           .get("body")
           .children()
-          .should("contain", `score: ${isCorrect ? scoreValuse : "0/1"}`)
+          .should("contain", `Score ${isCorrect ? scoreValuse : "0/1"}`)
       );
     checkAnswerHighlightColor();
 

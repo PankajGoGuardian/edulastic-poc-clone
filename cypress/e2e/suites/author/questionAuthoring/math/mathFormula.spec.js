@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       },
       eulersNumber: {
         input: "e",
-        expected: "2.718"
+        expected: "2.71828182845904"
       },
       setDecimalSeparatorComma: {
         thousand: "Dot",
@@ -70,6 +70,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       setDecimalSeparator: {
         expected: ["1.01", "1,01"],
         input: "1.01"
+      },
+      isSimplified: {
+        input: "2(2x+2)",
+        expected: "2(2x+2)",
+        checkboxValues: ["getSimplified", null],
+        isCorrectAnswer: [false, true]
+      },
+      isFactorised: {
+        input: "x^2{downarrow}+4x+3",
+        expected: "x^2{downarrow}+4x+3",
+        checkboxValues: ["getFactored", null],
+        isCorrectAnswer: [false, true]
+      },
+      isExpanded: {
+        input: "(a+b)^{uparrow}2",
+        expected: "(a+b)^{uparrow}2",
+        checkboxValues: ["getExpanded", null],
+        isCorrectAnswer: [false, true]
+      },
+      isMixedFraction: {
+        input: "9/4",
+        expected: "9/4", //"2\frac{1}{4}",
+        checkboxValues: ["getMixedFraction", null],
+        isCorrectAnswer: [false, true]
+      },
+      isRationalised: {
+        input: "1/\\sqrt{enter}2{rightarrow}{rightarrow}*\\sqrt{enter}2{rightarrow}/\\sqrt{enter}2",
+        expected: "1/\\sqrt{enter}2{rightarrow}{rightarrow}*\\sqrt{enter}2{rightarrow}/\\sqrt{enter}2",
+        checkboxValues: ["getRationalized", null],
+        isCorrectAnswer: [false, true]
       }
     },
     equivLiteral: {
@@ -149,7 +179,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         expected: ["y-1)=2x+3", "{leftarrow}".repeat(3), "("]
       }
     },
-    isSimplified: {
+    /*  isSimplified: {
       simplifiedVersion: {
         expected: "4x+1",
         checkboxValues: ["getAnswerInverseResult", null],
@@ -168,7 +198,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       expandedForm: {
         expected: ["x^", "{uparrow}", "2", "{downarrow}", "+5x+6"]
       }
-    },
+    },*/
     isUnit: {
       expectedUnits: {
         expected: "5mi",
@@ -275,7 +305,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       it(" > give external link", () => {
         question.checkIfTextExist(queData.testtext).type("{selectall}");
-        editToolBar.clickOnMore();
+        // editToolBar.clickOnMore();
         editToolBar.linkButton().click({ force: true });
         editToolBar.linkURL().type(queData.testtext, { force: true });
         //editToolBar.linkText().type(queData.testtext ,{force: true});
@@ -290,22 +320,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           });
       });
 
-      it(" > insert formula", () => {
-        question.checkIfTextExist(queData.testtext).clear();
-      });
-      // it(" > Upload image to server", () => {
-      //   question.getComposeQuestionTextBox().focus();
-
-      //   question.getUploadImageIcon().click( {force: true});
-      //   cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() =>
-      //     question
-      //       .getEditorData()
-      //       .find("img")
-      //       .should("be.visible")
-      //   );
-
+      // it(" > insert formula", () => {
+      //   // no test case found
       //   question.getComposeQuestionTextBox().clear();
       // });
+
+      it(" > Upload image to server", () => {
+        question.getComposeQuestionTextBox().click();
+        editToolBar.clickOnInserImage();
+        //  question.getUploadImageIcon().click({ force: true });
+        //cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() =>
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+          question
+            .getComposeQuestionQuillComponent()
+            .find("img")
+            .should("be.visible");
+        });
+        question.getComposeQuestionTextBox().clear();
+      });
     });
 
     // context(" > TC_411 => Template", () => {
@@ -415,8 +447,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           question.setMethod(item);
           question.getMethodSelectionDropdow().contains("div", methods[item]);
         });
-        question.setMethod("EQUIV_VALUE");
-        cy.get('[data-cy="answer-allow-numeric-only"]').uncheck({ force: true });
+        // question.setMethod("EQUIV_VALUE");
+        // cy.get('[data-cy="answer-allow-numeric-only"]').uncheck({ force: true });
       });
       it(" > Testing equivSymbolic method", () => {
         question.setMethod("EQUIV_SYMBOLIC");
@@ -505,7 +537,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           question
             .getBody()
             .children()
-            .should("contain", "score: 1/1")
+            .should("contain", "Score 1/1")
         );
     });
 
@@ -535,7 +567,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.getAnswerValueMathOutput().should("have.length", 0);
     });
   });
-
+  // TODO - Add Test Cases for the remaining checkboxes
   context(" > TC_417 => equivSymbolic method", () => {
     before("visit items page and select question type", () => {
       editItem.createNewItem();
@@ -564,7 +596,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       question.checkCorrectAnswer(expected, preview, 0, true);
     });
-    it(" > Testing Treat 'e' as Euler's numbe", () => {
+    it(" > Testing Treat 'e' as Euler's number", () => {
       const { expected, input } = queData.equivSymbolic.eulersNumber;
       question.setValue(input);
       question.setSeparator("getAnswerTreatEasEulersNumber")();
@@ -591,6 +623,51 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
           preview,
           true
         );
+      });
+    });
+
+    it(" > Testing Simplified method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isSimplified;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Factored method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isFactorised;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Expanded method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isExpanded;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing MixedFraction method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isMixedFraction;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Rationalized method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isRationalised;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
       });
     });
 
@@ -676,7 +753,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
 
     // it(" > Testing check/uncheck Allow interval check boxl", () => {
-    //   const { expected, checkboxValues, isCorrectAnswer, input } = queData.equivLiteral.allowInterval;
+    // const { expected, checkboxValues, isCorrectAnswer, input } = queData.equivLiteral.allowInterval;
 
     //   checkboxValues.forEach((checkboxValue, index) => {
     //     question.setValue(input);
@@ -729,7 +806,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     context(" > TC_414 => Testing different answer methods", () => {
       it(" > Testing equivLiteral method", () => {
         question.setMethod("EQUIV_LITERAL");
-        question.getAnswerValueMathInput().should("be.visible");
+        question.getAnswerValueMathInput().should("exist");
         //question.getAnswerAriaLabel().should("be.visible");
         // question
         //   .getAnswerAllowInterval()
@@ -760,38 +837,38 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         question.getAnswerAllowThousandsSeparator().should("be.visible");
       });
 
-      it(" > Testing equivValue method", () => {
-        question.setMethod("EQUIV_VALUE");
+      // it(" > Testing equivValue method", () => {
+      //   question.setMethod("EQUIV_VALUE");
 
-        question.getAnswerValueMathInput().should("be.visible");
-        //question.getAnswerAriaLabel().should("be.visible");
-        question.getAnswerInverseResult().should("be.visible");
-        //question.getAnswerIgnoreTextCheckox().should("be.visible");
-        question.getAnswerSignificantDecimalPlaces().should("be.visible");
-        question.getAnswerCompareSides().should("be.visible");
-        question.getAnswerTolerance().should("be.visible");
-        question.getAnswerAllowThousandsSeparator().should("be.visible");
-      });
+      //   question.getAnswerValueMathInput().should("be.visible");
+      //   //question.getAnswerAriaLabel().should("be.visible");
+      //   question.getAnswerInverseResult().should("be.visible");
+      //   //question.getAnswerIgnoreTextCheckox().should("be.visible");
+      //   question.getAnswerSignificantDecimalPlaces().should("be.visible");
+      //   question.getAnswerCompareSides().should("be.visible");
+      //   question.getAnswerTolerance().should("be.visible");
+      //   question.getAnswerAllowThousandsSeparator().should("be.visible");
+      // });
 
-      it(" > Testing equivSimplified method", () => {
-        question.setMethod("IS_SIMPLIFIED");
+      // it(" > Testing equivSimplified method", () => {
+      //   question.setMethod("IS_SIMPLIFIED");
 
-        question.getAnswerInverseResult().should("be.visible");
-        question.getAnswerAllowThousandsSeparator().should("be.visible");
-      });
+      //   question.getAnswerInverseResult().should("be.visible");
+      //   question.getAnswerAllowThousandsSeparator().should("be.visible");
+      // });
 
-      it(" > Testing isFactorised method", () => {
-        question.setMethod("IS_FACTORISED");
+      // it(" > Testing isFactorised method", () => {
+      //   question.setMethod("IS_FACTORISED");
 
-        question.getAnswerFieldDropdown().should("be.visible");
-        question.getAnswerInverseResult().should("be.visible");
-        question.getAnswerAllowThousandsSeparator().should("be.visible");
-      });
-      it(" > Testing isExpanded method", () => {
-        question.setMethod("IS_EXPANDED");
+      //   question.getAnswerFieldDropdown().should("be.visible");
+      //   question.getAnswerInverseResult().should("be.visible");
+      //   question.getAnswerAllowThousandsSeparator().should("be.visible");
+      // });
+      // it(" > Testing isExpanded method", () => {
+      //   question.setMethod("IS_EXPANDED");
 
-        question.getAnswerAllowThousandsSeparator().should("be.visible");
-      });
+      //   question.getAnswerAllowThousandsSeparator().should("be.visible");
+      // });
       // it(" > Testing isUnits method", () => {
       //   question.setMethod('IS_UNIT');
 
@@ -800,20 +877,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       //   question.getAnswerAllowedUnits().should("be.visible");
       //   question.getAnswerAllowThousandsSeparator().should("be.visible");
       // });
-      it(" > Testing isTrue method", () => {
-        question.setMethod("CHECK_IF_TRUE");
+      // it(" > Testing isTrue method", () => {
+      //   question.setMethod("CHECK_IF_TRUE");
 
-        // question.getAnswerSignificantDecimalPlaces().should("be.visible");
-        // question.getAnswerAllowThousandsSeparator().should("be.visible");
-      });
-      it(" > Testing stringMatch method", () => {
-        question.setMethod("STRING_MATCH");
+      //   // question.getAnswerSignificantDecimalPlaces().should("be.visible");
+      //   // question.getAnswerAllowThousandsSeparator().should("be.visible");
+      // });
+      // it(" > Testing stringMatch method", () => {
+      //   question.setMethod("STRING_MATCH");
 
-        question.getAnswerValueMathInput().should("be.visible");
-        //question.getAnswerAriaLabel().should("be.visible");
-        question.getAnswerIgnoreLeadingAndTrailingSpaces().should("be.visible");
-        question.getAnswerTreatMultipleSpacesAsOne().should("be.visible");
-      });
+      //   question.getAnswerValueMathInput().should("be.visible");
+      //   //question.getAnswerAriaLabel().should("be.visible");
+      //   question.getAnswerIgnoreLeadingAndTrailingSpaces().should("be.visible");
+      //   question.getAnswerTreatMultipleSpacesAsOne().should("be.visible");
+      // });
       it(" > Testing equivSyntax method", () => {
         question.setMethod("EQUIV_SYNTAX");
 
@@ -858,12 +935,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.setRule(syntaxes.MIXED_FRACTION);
       question.checkCorrectAnswer(expected, preview, 0, true);
     });
-    /* it(" > Testing Rule : Exponent", () => {
+    it(" > Testing Rule : Exponent", () => {
       const { expected } = queData.equivSyntax.exponent;
 
       question.setRule(syntaxes.EXPONENT);
       question.checkCorrectAnswer(expected, preview, 0, true);
-    });left  */
+    });
     it(" > Testing Rule : Standard form, Argument: linear", () => {
       const { expected } = queData.equivSyntax.standardFormLinear;
 
@@ -892,6 +969,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
+  /*  <<<<< UI HAS CHANGED  >>>>>>>
   context(" > Testing isSimplified method", () => {
     before("visit items page and select question type", () => {
       editItem.createNewItem();
@@ -948,7 +1026,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.setSeparator("getAnswerInverseResult")();
       question.checkCorrectAnswer(expected, preview, 0, false);
     });
-    /* it.only(" > Testing with allow decimal marks", () => {
+     it.only(" > Testing with allow decimal marks", () => {
       const { expected } = queData.isFactorised.setThousandsSeparator;
       const { decimalSeparators, thousandsTestingSeparators } = queData;
 
@@ -957,7 +1035,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       decimalSeparators.forEach((separator, index) => {
         question.allowDecimalMarks(separator, thousandsTestingSeparators[index], 0, expected[index], preview, true);
       });
-    }); left...giving wrong ans */
+    }); left...giving wrong ans
   });
 
   context(" > Testing isExpanded method", () => {
@@ -1066,36 +1144,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  // context(" > Testing isUnit method", () => {
+  context(" > Testing isUnit method", () => {
 
-  //   beforeEach("Change to isUnit method", () => {
-  //     preview.header.edit();
-  //     question.setMethod('IS_UNIT);
-  //   });
-  //   it(" > Testing with expression contains the expected units", () => {
-  //     const { input, units } = queData.isUnit.expectedUnits;
+    beforeEach("Change to isUnit method", () => {
+      preview.header.edit();
+      question.setMethod('IS_UNIT);
+    });
+    it(" > Testing with expression contains the expected units", () => {
+      const { input, units } = queData.isUnit.expectedUnits;
 
-  //     question.setValue(input);
-  //     question.setAllowedUnitsInput(units);
-  //     question.checkCorrectAnswer(units, preview, input.length, true);
-  //   });
-  //   it(" > Testing with allowed units", () => {
-  //     const { units } = queData.isUnit.allowedUnits;
+      question.setValue(input);
+      question.setAllowedUnitsInput(units);
+      question.checkCorrectAnswer(units, preview, input.length, true);
+    });
+    it(" > Testing with allowed units", () => {
+      const { units } = queData.isUnit.allowedUnits;
 
-  //     question.setAllowedUnitsInput(units);
-  //     question.checkCorrectAnswer(units, preview, 0, true);
-  //   });
-  //   it(" > Testing with allow decimal marks", () => {
-  //     const { expected, input, units } = queData.isUnit.setThousandsSeparator;
-  //     const { decimalSeparators, thousandsTestingSeparators } = queData;
+      question.setAllowedUnitsInput(units);
+      question.checkCorrectAnswer(units, preview, 0, true);
+    });
+    it(" > Testing with allow decimal marks", () => {
+      const { expected, input, units } = queData.isUnit.setThousandsSeparator;
+      const { decimalSeparators, thousandsTestingSeparators } = queData;
 
-  //     decimalSeparators.forEach((separator, index) => {
-  //       question.setValue(input);
-  //       question.setAllowedUnitsInput(units);
-  //       question.allowDecimalMarks(separator, thousandsTestingSeparators[index], 0, expected[index], preview, true);
-  //     });
-  //   });
-  // });
+      decimalSeparators.forEach((separator, index) => {
+        question.setValue(input);
+        question.setAllowedUnitsInput(units);
+        question.allowDecimalMarks(separator, thousandsTestingSeparators[index], 0, expected[index], preview, true);
+      });
+    });
+  });
 
   context(" > Testing equivValue method", () => {
     before("visit items page and select question type", () => {
@@ -1188,7 +1266,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.checkCorrectAnswer(expected, preview, 0, true);
       question.getAnswerTolerance().clear({ force: true });
     });
-  });
+  }); */
 
   context(" > TC_415 => Save question", () => {
     before("visit items page and select question type", () => {
@@ -1199,6 +1277,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         .contains("Additional Options")
         .click({ force: true });
       question.checkIfTextExist(queData.testtext);
+      question.setValue(queData.answer.value);
+      question.getAnswerValueMathOutput().should("have.length", 6);
     });
     it(" > Click on save button", () => {
       question.header.save();

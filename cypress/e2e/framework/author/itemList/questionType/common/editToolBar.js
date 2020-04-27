@@ -44,10 +44,10 @@ class EditToolBar {
       .find('[data-cmd="math"]')
       .click();
 
-  clickOnInserImage = () =>
-    this.frToolbar()
-      .find('[data-cmd="insertImage"]')
-      .click();
+  // clickOnInserImage = () =>
+  //   this.frToolbar()
+  //     .find('[data-cmd="insertImage"]')
+  //     .click();
 
   clickOnMore = () =>
     this.frToolbar()
@@ -57,12 +57,12 @@ class EditToolBar {
   clickOnInserImage = () =>
     this.frToolbar()
       .find('[data-cmd="insertImage"]')
-      .click();
+      .click({ force: true });
 
-  clickOnInserImage = () =>
-    this.frToolbar()
-      .find('[data-cmd="insertImage"]')
-      .click();
+  // clickOnInserImage = () =>
+  //   this.frToolbar()
+  //     .find('[data-cmd="insertImage"]')
+  //     .click();
 
   textDropDown = () => this.frToolbar().find('[data-cmd="textdropdown"]');
 

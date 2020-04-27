@@ -32,15 +32,15 @@ export const STEM = {
 export const methods = {
   EQUIV_SYMBOLIC: "Symbolically Equivalent",
   EQUIV_LITERAL: "Literally Equivalent",
-  EQUIV_VALUE: "Equivalent value",
-  IS_SIMPLIFIED: "Check if expression is simplified",
-  IS_FACTORISED: "Check if expression is factored",
-  IS_EXPANDED: "Check if expression is expanded",
-  IS_RATIONALIZED: "Check if rationalized",
-  STRING_MATCH: "Plain Text",
-  EQUIV_SYNTAX: "Equivalent Syntax",
-  SET_EVALUATION: "Set Evaluation",
-  CHECK_IF_TRUE: "Check if true"
+  //EQUIV_VALUE: "Equivalent value",
+  // IS_SIMPLIFIED: "Check if expression is simplified",
+  // IS_FACTORISED: "Check if expression is factored",
+  // IS_EXPANDED: "Check if expression is expanded",
+  // IS_RATIONALIZED: "Check if rationalized",
+  // STRING_MATCH: "Plain Text",
+  EQUIV_SYNTAX: "Equivalent Syntax"
+  // SET_EVALUATION: "Set Evaluation",
+  // CHECK_IF_TRUE: "Check if true"
 };
 
 export const DOK = {

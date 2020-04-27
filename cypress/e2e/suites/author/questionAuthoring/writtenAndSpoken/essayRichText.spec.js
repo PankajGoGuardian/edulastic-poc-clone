@@ -6,7 +6,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage.js"
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with rich text" type question`, () => {
   const queData = {
     //group: "Written & Spoken",
-    group: "Reading & Comprehension",
+    group: "Writing",
     queType: "Essay with rich text",
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
@@ -31,7 +31,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     });
 
     it(" > [essay_rich_s1] => user create question with default option and save", () => {
-      // enter question
+      // temporialy visiting preview page in order to question editor box in edit page
+      question.header.preview();
+      question.header.edit();
       question
         .getQuestionEditor()
         .clear()

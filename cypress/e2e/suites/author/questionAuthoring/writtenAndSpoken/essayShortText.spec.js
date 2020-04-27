@@ -5,13 +5,15 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" type question`, () => {
   const queData = {
-    group: "Reading & Comprehension",
+    group: "Writing",
     queType: "Short text",
     queText: "What is the capital of India?",
     extlink: "www.testdomain.com",
     testtext: "testtext",
     correct: "New Delhi",
-    formula: "s=ar^2"
+    formula: "s=ar^2",
+    rgb1: "rgb(132, 205, 54)",
+    rgb2: "rgb(252, 224, 232)"
   };
 
   const ALLOW_METHOD = { exact: "Exact Match", partial: "Any text containing" };
@@ -33,7 +35,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
     });
 
     it(" > [essay_short_s1] => user create question with default option and save", () => {
-      // enter question
+      // temporialy visiting preview page in order to question editor box in edit page
+      question.header.preview();
+      question.header.edit();
       question
         .getQuestionEditor()
         .clear()
@@ -52,16 +56,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       // verify right ans
       question.getTextEditor().type(queData.correct);
 
-      preview.getCheckAnswer().click();
+      preview.checkOnCheckAnswer();
 
-      preview
-        .getAntMsg()
-        .should("be.visible")
-        .and("contain", "score: 1/1");
+      preview.getScore().should("contain", "Score 1/1");
 
-      question.ansHighLightAsRight();
+      question.ansHighLightAsRight(queData.rgb1);
 
-      preview.getClear().click();
+      preview.clickOnClear();
 
       // verify wrong ans
       question
@@ -69,16 +70,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
         .clear()
         .type(queData.testtext);
 
-      preview.getCheckAnswer().click();
+      preview.checkOnCheckAnswer();
 
-      preview
-        .getAntMsg()
-        .should("be.visible")
-        .and("contain", "score: 0/1");
+      preview.getScore().should("contain", "Score 0/1");
 
-      question.ansHighLightAsWrong();
+      question.ansHighLightAsWrong(queData.rgb2);
 
-      preview.getClear().click();
+      preview.clickOnClear();
     });
     //  TODO
     it(" > [essay_short_s3] => preview - validate ans with partial match option", () => {
@@ -92,28 +90,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       // verify right ans
       question.getTextEditor().type(`${queData.correct} ${queData.testtext}`);
 
-      preview.getCheckAnswer().click();
+      preview.checkOnCheckAnswer();
 
-      preview
-        .getAntMsg()
-        .should("be.visible")
-        .and("contain", "score: 1/1");
+      preview.getScore().should("contain", "Score 1/1");
 
       question.ansHighLightAsRight();
 
-      preview.getClear().click();
+      preview.clickOnClear();
       // verify wrong ans
       question
         .getTextEditor()
         .clear()
         .type(queData.testtext);
 
-      preview.getCheckAnswer().click();
+      preview.checkOnCheckAnswer();
 
-      preview
-        .getAntMsg()
-        .should("be.visible")
-        .and("contain", "score: 0/1");
+      preview.getScore().should("contain", "Score 0/1");
 
       question.ansHighLightAsWrong();
     });

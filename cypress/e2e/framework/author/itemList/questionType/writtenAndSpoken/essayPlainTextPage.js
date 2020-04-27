@@ -10,7 +10,7 @@ class EssayPlainTextPage {
 
   // question content
   getQuestionEditor() {
-    return cy.contains("Enter your question");
+    return cy.get(".fr-element").eq(0);
     // return cy.get('[data-placeholder="Enter question"');
   }
 
@@ -51,6 +51,16 @@ class EssayPlainTextPage {
       .eq(1)
       .should("be.visible");
   }
+
+  //ACTION STARTS
+
+  clcikOnCopy = () => this.getCopy().click();
+
+  clickOnpaste = () => this.getPaste().click();
+
+  clickOnCut = () => this.getCut().click();
+
+  //ACTION ENDS
 }
 
 export default EssayPlainTextPage;

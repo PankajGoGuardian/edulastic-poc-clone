@@ -11,7 +11,7 @@ class EssayShortTextPage {
 
   // question page
   getQuestionEditor() {
-    return cy.contains("Enter your question");
+    return cy.get(".fr-element").eq(0);
   }
 
   getPoints() {
@@ -42,13 +42,13 @@ class EssayShortTextPage {
     return cy.get(".ant-input-lg").should("be.visible");
   }
 
-  ansHighLightAsRight() {
-    this.getTextEditor().should("have.css", "background-color", "rgb(132, 205, 54)");
-  }
+  ansHighLightAsRight = rgb => {
+    this.getTextEditor().should("have.css", "background-color", rgb);
+  };
 
-  ansHighLightAsWrong() {
-    this.getTextEditor().should("have.css", "background-color", "rgba(238, 22, 88, 0.15)");
-  }
+  ansHighLightAsWrong = rgb => {
+    this.getTextEditor().should("have.css", "background-color", rgb);
+  };
 }
 
 export default EssayShortTextPage;

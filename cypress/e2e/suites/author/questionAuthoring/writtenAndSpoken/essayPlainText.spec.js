@@ -6,7 +6,7 @@ import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with plain text" type question`, () => {
   const queData = {
-    group: "Reading & Comprehension",
+    group: "Writing",
     queType: "Essay with plain text",
     queText: "Describe yourself in one sentence?",
     extlink: "www.testdomain.com",
@@ -32,7 +32,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
     });
 
     it(" > [essay_p_s1]] => user create question with default option and save", () => {
-      // enter question
+      // temporialy visiting preview page in order to question editor box in edit page
+      question.header.preview();
+      question.header.edit();
       question
         .getQuestionEditor()
         .clear()
@@ -55,13 +57,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
         $ele.select();
       });
 
-      question.getCopy().click();
+      question.clcikOnCopy();
 
       question.getTextEditor().type(queData.copycut);
 
-      question.getPaste().click();
+      question.clickOnpaste();
 
-      question.getTextEditor().should("have.text", `${queData.testtext}${queData.copycut}${queData.testtext}`);
+      question.getTextEditor().should("have.text", `${queData.copycut}${queData.testtext}`);
 
       // verify cut paste option
       question
@@ -73,11 +75,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
         $ele.select();
       });
 
-      question.getCut().click();
+      question.clickOnCut();
 
       question.getTextEditor().type(queData.copycut);
 
-      question.getPaste().click();
+      question.clickOnpaste();
 
       question.getTextEditor().should("have.text", `${queData.copycut}${queData.testtext}`);
     });

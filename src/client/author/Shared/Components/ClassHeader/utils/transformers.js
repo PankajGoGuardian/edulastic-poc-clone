@@ -1,4 +1,4 @@
-import { get, keyBy, values, groupBy, isEmpty } from "lodash";
+import { get, keyBy, values, groupBy, isEmpty, uniqBy } from "lodash";
 import next from "immer";
 
 export const getQuestions = author_classboard_testActivity => {
@@ -30,7 +30,6 @@ export const getQuestionTableData = (studentResponse, questionArr) => {
       let options = keyBy(q.options, "value");
       let correctAnswers = get(q, "validation.validResponse.value", []);
       const userResponse = item.userResponse ? item.userResponse : [];
-      item.question = item.correct;
       item.questionNumber = i + 1;
       item.yourAnswer = Array.isArray(userResponse)
         ? userResponse.map((item, index) => (options[item] ? options[item].label : ""))
@@ -45,11 +44,8 @@ export const getQuestionTableData = (studentResponse, questionArr) => {
 };
 
 export const getChartAndStandardTableData = (studentResponse, author_classboard_testActivity) => {
-  const standards = get(author_classboard_testActivity, "additionalData.standards", []);
-  const standardsMap = keyBy(standards, "_id");
-
+  const testItems = get(author_classboard_testActivity, "data.testItemsData", []);
   const questionActivities = get(studentResponse, "data.questionActivities", []);
-
   const assignmentMastery = get(author_classboard_testActivity, "additionalData.assignmentMastery", []);
   const assignmentMasteryCopy = assignmentMastery.map(item => ({
     ...item,
@@ -57,65 +53,47 @@ export const getChartAndStandardTableData = (studentResponse, author_classboard_
     total: questionActivities.length,
     fill: item.color
   }));
-  let assignmentMasteryMap = keyBy(assignmentMasteryCopy, "masteryName");
+  let assignmentMasteryMap = keyBy(assignmentMasteryCopy, "masteryLevel");
 
-  const standardsArr = questionActivities.flatMap((item, index) => {
-    let performance = Number(((item.score / item.maxScore) * 100).toFixed(2));
-    performance = !isNaN(performance) ? performance : 0;
-    let mastery = assignmentMastery.find((_item, index) => {
-      if (performance >= _item.threshold) {
-        return true;
+  const standardsTableData = uniqBy(testItems.reduce((acc, item) => {
+    const questions = item.data.questions;
+    const allDomains = questions.map(q => {
+      const domains = (q.alignment || []).map(ali => ali.domains || []).flat();
+      const qActivity = questionActivities.filter(qa => qa.qid === q.id)[0] || {};
+      let { score = 0, maxScore } = qActivity;
+      if (!maxScore) {
+        maxScore = q.validation?.validResponse?.score;
       }
-    });
-    if (mastery) {
-      assignmentMasteryMap[mastery.masteryName].count++;
-    }
-
-    return item.standards.map(_item => ({
-      ...item,
-      question: index + 1,
-      standardInfo: _item,
-      standardId: _item.id
-    }));
-  });
-
-  const groupedStandards = groupBy(standardsArr, "standardId");
-
-  const standardsTableData = Object.keys(groupedStandards).map((key, index) => {
-    const item = groupedStandards[key];
-    const questions = item.map((_item, index) => _item.question);
-
-    const totals = item.reduce(
-      (total, _item, index) => {
-        const { score = 0, maxScore = 0 } = _item;
-        total.totalScore = total.totalScore + score;
-        total.totalMaxScore = total.totalMaxScore + maxScore;
-        return total;
-      },
-      { totalScore: 0, totalMaxScore: 0 }
-    );
-
-    let performance = (totals.totalScore / totals.totalMaxScore) * 100;
-    performance = !isNaN(performance) ? performance : 0;
-    const mastery = assignmentMastery.find((_item, index) => {
-      if (performance >= _item.threshold) {
-        return true;
+      let performance = Number(((score / maxScore) * 100).toFixed(2));
+      performance = !isNaN(performance) ? performance : 0;
+      let mastery = assignmentMastery.find((_item, index) => {
+        if (performance >= _item.threshold) {
+          return true;
+        }
+      });
+      if (mastery) {
+        assignmentMasteryMap[mastery.masteryLevel].count++;
       }
-    });
 
-    return {
-      id: key,
-      standardId: key,
-      standardInfo: standardsMap[key],
-      question: questions,
-      masterySummary: mastery ? mastery.masteryName : "",
-      performance: performance,
-      score: totals.totalScore,
-      maxScore: totals.totalMaxScore
-    };
-  });
+      return domains.map(d => {
+        return (d.standards || []).map(std => (
+          {
+            ...std,
+            domain: d.name,
+            question: q.qLabel,
+            masterySummary: mastery ? mastery.masteryLevel : "",
+            performance: performance,
+            score,
+            maxScore
+          }));
+      }).flat();
+    }).flat();
+    
+    return [...acc, ...allDomains];
+  }, []), "id");
+  console.log("standardsTableData", standardsTableData);
 
   const chartData = values(assignmentMasteryMap);
 
-  return { standardsTableData, chartData, assignmentMasteryMap, standardsMap };
+  return { standardsTableData, chartData, assignmentMasteryMap };
 };

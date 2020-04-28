@@ -66,6 +66,7 @@ class StandardsBasedReport extends Component {
             assignmentId={assignmentId}
             additionalData={additionalData || {}}
             testActivityId={testActivityId}
+            testActivity={testActivity}
           />
           <HooksContainer classId={classId} assignmentId={assignmentId} />
           <MainContentWrapper>

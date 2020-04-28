@@ -1,28 +1,21 @@
-import { CheckboxLabel } from "@edulastic/common";
+import { CheckboxLabel, EduButton } from "@edulastic/common";
 import { Button, Modal } from "antd";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { StyledCard } from "../../../../Reports/common/styled";
+import { StyledCard } from "../../Reports/common/styled";
+import { secondaryTextColor, lightGreySecondary, white,
+  themeColor, lightGreen5, greenDark1, darkGrey2, greyScoreCardTitleColor } from "@edulastic/colors";
 
 const StudentReportCardMenuModal = props => {
-  const { className, visible, title, onOk, onCancel } = props;
+  const { className, visible, title, onOk, onCancel, assignmentId, groupId, selectedStudents = [] } = props;
   const [state, setState] = useState({
     performanceBand: true,
-    questionPerformance: false,
-    studentResponse: false,
-    correctAnswer: false,
-    standardsPerformance: false,
-    masteryStatus: false
+    questionPerformance: true,
+    studentResponse: true,
+    correctAnswer: true,
+    standardsPerformance: true,
+    masteryStatus: true
   });
-
-  const _onCancel = () => {
-    onCancel();
-  };
-
-  const onSubmit = event => {
-    event.preventDefault();
-    onOk({ ...state });
-  };
 
   const onCheckBoxClick = event => {
     const { name, checked } = event.currentTarget;
@@ -32,6 +25,20 @@ const StudentReportCardMenuModal = props => {
     }));
   };
 
+  const selectedOptions = Object.keys(state).filter(k => state[k]);
+
+  const footer = (
+    <StyledFooter>
+      <EduButton isGhost data-cy="CANCEL" height="40px" onClick={onCancel}>
+        CANCEL
+      </EduButton>
+      <a disabled={!selectedOptions.length} href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`} target="_blank">
+        <EduButton height="40px" data-cy="PRINT" onClick={onCancel}>
+          GENERATE
+        </EduButton>
+      </a>
+    </StyledFooter>
+  );
   return (
     <Modal
       title={title}
@@ -40,18 +47,17 @@ const StudentReportCardMenuModal = props => {
       onCancel={onCancel}
       footer={null}
       className={className}
-      width={"70%"}
+      width={"50%"}
+      footer={footer}
     >
-      <form onSubmit={onSubmit}>
+      <div className="container">
         <StyledCard bordered={false}>
           <p>
-            Print report card for all students that can be shared with their parentes. Only those students who are in
-            "Graded" status would be included.
+            Print report card for all students that can be shared with their parentes. Only those students who are in "Graded" status would be included.
           </p>
           <p>Select information you would like to print in the report card.</p>
           <div className="form-groups">
             <div className="group-seperator">
-              <p className="group-heading" />
               <div className="form-item">
                 <CheckboxLabel name="performanceBand" onClick={onCheckBoxClick} checked={state.performanceBand}>
                   Performance Band
@@ -67,7 +73,7 @@ const StudentReportCardMenuModal = props => {
               </div>
               <div className="form-item">
                 <CheckboxLabel name="studentResponse" onClick={onCheckBoxClick} checked={state.studentResponse}>
-                  Student Response
+                  Students Response
                 </CheckboxLabel>
               </div>
               <div className="form-item">
@@ -95,39 +101,92 @@ const StudentReportCardMenuModal = props => {
             </div>
           </div>
         </StyledCard>
-        <div className="model-footer">
-          <Button key="submit" htmlType="submit" type="primary" disabled={state.performanceBand ? false : true}>
-            Generate
-          </Button>
-          <Button key="back" onClick={_onCancel}>
-            Cancel
-          </Button>
-        </div>
-      </form>
+      </div>
     </Modal>
   );
 };
 
 const StyledStudentReportCardMenuModal = styled(StudentReportCardMenuModal)`
+  .container {
+    background: ${white};
+  }
   .form-groups {
-    margin: 20px;
+    disply: flex;
+    flex-direction: column;
     .group-seperator {
-      margin-bottom: 10px;
+      margin-top: 32px;
       .form-item {
-        margin-bottom: 5px;
+        margin: 14px 0;
         .ant-checkbox-wrapper span {
-          text-transform: capitalize;
+          text-transform: uppercase;
+          color: ${secondaryTextColor};
+          font-weight: 500;
+          letter-spacing: 0.22px;
         }
+      }
+      .group-heading {
+        color: ${greyScoreCardTitleColor};
+        font-weight: bold;
       }
     }
   }
   .model-footer {
     display: flex;
     flex-direction: row-reverse;
-
-    button {
-      margin: 5px;
+  }
+  .ant-modal-header {
+    padding: 29px 29px 35px;
+    border: 0;
+    .ant-modal-title {
+      color: ${secondaryTextColor};
+      font-size: 22px;
+      font-weight: bold;
     }
+  }
+  .ant-modal-close {
+    top: 5px;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+    color: black;
+  }
+  .ant-modal-body {
+    padding: 0 29px 0 29px;
+  }
+  .ant-modal-footer {
+    padding: 29px;
+    border: 0;
+    button + a {
+      margin-left: 21px;
+      button {
+        margin: 0;
+        background: ${lightGreen5}!important;
+        &:hover {
+          background: ${greenDark1}!important;
+        }
+      }
+    }
+  }
+  p {
+    color: ${darkGrey2};
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  p + p {
+    margin-bottom: 0; 
+  }
+  .ant-card-body {
+    display: flex;
+    flex-direction: column;
+  }
+`;
+
+const StyledFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
+    min-width: 200px;
   }
 `;
 

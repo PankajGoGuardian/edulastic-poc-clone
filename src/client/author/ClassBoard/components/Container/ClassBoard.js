@@ -25,8 +25,6 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import QuestionContainer from "../../../QuestionView";
 import ClassBreadBrumb from "../../../Shared/Components/ClassBreadCrumb";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
-import { StudentReportCardMenuModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardMenuModal";
-import { StudentReportCardModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardModal";
 import { GenSelect } from "../../../Shared/Components/ClassSelect/ClassSelect";
 import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
@@ -130,9 +128,6 @@ class ClassBoard extends Component {
       selectedStudentId: "",
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-      studentReportCardMenuModalVisibility: false,
-      studentReportCardModalVisibility: false,
-      studentReportCardModalColumnsFlags: {},
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
@@ -402,29 +397,6 @@ class ClassBoard extends Component {
     setMarkAsDone(assignmentId, classId);
   };
 
-  onStudentReportCardsClick = () => {
-    this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: true }));
-  };
-
-  onStudentReportCardMenuModalOk = obj => {
-    this.setState(state => ({
-      ...state,
-      studentReportCardMenuModalVisibility: false,
-      studentReportCardModalVisibility: true,
-      studentReportCardModalColumnsFlags: { ...obj }
-    }));
-  };
-
-  onStudentReportCardMenuModalCancel = () => {
-    this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: false }));
-  };
-
-  onStudentReportCardModalOk = () => {};
-
-  onStudentReportCardModalCancel = () => {
-    this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
-  };
-
   handleShowMarkAsSubmittedModal = () => {
     const { selectedStudents, testActivity, assignmentStatus } = this.props;
     if (assignmentStatus.toLowerCase() === "not open") {
@@ -599,7 +571,7 @@ class ClassBoard extends Component {
       const { assignmentId, classId } = match.params;
       loadTestActivity(assignmentId, classId);
     }
-  }
+  };
 
   render() {
     const {
@@ -764,10 +736,12 @@ class ClassBoard extends Component {
           testActivityId={testActivityId}
           selectedStudentsKeys={selectedStudentsKeys}
           resetView={this.resetView}
+          onStudentReportCardsClick={this.onStudentReportCardsClick}
+          testActivity={testActivity}
         />
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
-            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb}/>
+            <ClassBreadBrumb breadCrumb={location?.state?.breadCrumb} />
             <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
@@ -931,17 +905,6 @@ class ClassBoard extends Component {
                           <IconDownload />
                           <span>Download Response</span>
                         </MenuItems>
-                        <FeaturesSwitch
-                          inputFeatures="LCBstudentReportCard"
-                          key="LCBstudentReportCard"
-                          actionOnInaccessible="hidden"
-                          groupId={classId}
-                        >
-                          <MenuItems data-cy="studentReportCard" onClick={this.onStudentReportCardsClick}>
-                            <IconStudentReportCard />
-                            <span>Student Report Cards</span>
-                          </MenuItems>
-                        </FeaturesSwitch>
                       </DropMenu>
                     }
                     placement="bottomRight"
@@ -955,30 +918,6 @@ class ClassBoard extends Component {
                   </Dropdown>
                 </ClassBoardFeats>
               </StyledFlexContainer>
-
-              <>
-                {/* Modals */}
-                {studentReportCardMenuModalVisibility ? (
-                  <StudentReportCardMenuModal
-                    title="Student Report Card"
-                    visible={studentReportCardMenuModalVisibility}
-                    onOk={this.onStudentReportCardMenuModalOk}
-                    onCancel={this.onStudentReportCardMenuModalCancel}
-                  />
-                ) : null}
-                {studentReportCardModalVisibility ? (
-                  <StudentReportCardModal
-                    visible={studentReportCardModalVisibility}
-                    onOk={this.onStudentReportCardModalOk}
-                    onCancel={this.onStudentReportCardModalCancel}
-                    groupId={classId}
-                    selectedStudentsKeys={selectedStudentsKeys}
-                    columnsFlags={studentReportCardModalColumnsFlags}
-                    assignmentId={assignmentId}
-                  />
-                ) : null}
-              </>
-
               {flag ? (
                 <DisneyCardContainer
                   selectedStudents={selectedStudents}
@@ -1010,20 +949,22 @@ class ClassBoard extends Component {
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
               )}
 
-              {redirectPopup && <RedirectPopup
-                open={redirectPopup}
-                allStudents={allStudents}
-                disabledList={disabledList}
-                absentList={absentList}
-                selectedStudents={selectedStudents}
-                additionalData={additionalData}
-                enrollmentStatus={enrollmentStatus}
-                closePopup={this.closeRedirectPopup}
-                setSelected={setSelected}
-                assignmentId={assignmentId}
-                groupId={classId}
-                testActivity={testActivity}
-              />}
+              {redirectPopup && (
+                <RedirectPopup
+                  open={redirectPopup}
+                  allStudents={allStudents}
+                  disabledList={disabledList}
+                  absentList={absentList}
+                  selectedStudents={selectedStudents}
+                  additionalData={additionalData}
+                  enrollmentStatus={enrollmentStatus}
+                  closePopup={this.closeRedirectPopup}
+                  setSelected={setSelected}
+                  assignmentId={assignmentId}
+                  groupId={classId}
+                  testActivity={testActivity}
+                />
+              )}
               {showAddStudentsPopup && (
                 <AddStudentsPopup
                   open={showAddStudentsPopup}

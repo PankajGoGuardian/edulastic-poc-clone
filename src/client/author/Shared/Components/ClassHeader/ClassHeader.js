@@ -18,6 +18,7 @@ import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { DeleteAssignmentModal } from "../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal";
 import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
+import { StudentReportCardMenuModal } from "../../../StudentsReportCard/components/studentReportCardMenuModal";
 import {
   classListSelector,
   getCanCloseAssignmentSelector,
@@ -33,7 +34,7 @@ import {
   showScoreSelector
 } from "../../../ClassBoard/ducks";
 import { toggleDeleteAssignmentModalAction } from "../../../sharedDucks/assignments";
-import { googleSyncAssignmentAction, toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
+import { googleSyncAssignmentAction, toggleReleaseScoreSettingsAction, toggleStudentReportCardSettingsAction } from "../../../src/actions/assignments";
 import {
   canvasSyncGradesAction,
   closeAssignmentAction,
@@ -46,7 +47,7 @@ import {
 } from "../../../src/actions/classBoard";
 import WithDisableMessage from "../../../src/components/common/ToggleDisable";
 import { gradebookUnSelectAllAction } from "../../../src/reducers/gradeBook";
-import { getAssignmentSyncInProgress, getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
+import { getAssignmentSyncInProgress, getToggleReleaseGradeStateSelector, getToggleStudentReportCardStateSelector } from "../../../src/selectors/assignments";
 import { getGroupList, getOrgDataSelector } from "../../../src/selectors/user";
 import {
   CaretUp,
@@ -164,29 +165,6 @@ class ClassHeader extends Component {
     this.toggleCloseModal(false);
   };
 
-  onStudentReportCardsClick = () => {
-    this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: true }));
-  };
-
-  onStudentReportCardMenuModalOk = obj => {
-    this.setState(state => ({
-      ...state,
-      studentReportCardMenuModalVisibility: false,
-      studentReportCardModalVisibility: true,
-      studentReportCardModalColumnsFlags: { ...obj }
-    }));
-  };
-
-  onStudentReportCardMenuModalCancel = () => {
-    this.setState(state => ({ ...state, studentReportCardMenuModalVisibility: false }));
-  };
-
-  onStudentReportCardModalOk = () => {};
-
-  onStudentReportCardModalCancel = () => {
-    this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
-  };
-
   handlePauseAssignment(value) {
     const {
       togglePauseAssignment,
@@ -221,6 +199,16 @@ class ClassHeader extends Component {
     toggleViewPassword();
   };
 
+  onStudentReportCardsClick = () => {
+    const { testActivity, toggleStudentReportCardPopUp } = this.props;
+    const isAnyBodyGraded = testActivity.some(item => item.status === "submitted" && item.graded);
+    if (isAnyBodyGraded) {
+      toggleStudentReportCardPopUp(true);
+    } else {
+      message.error("No student is Graded to generate report card.");
+    }
+  };
+
   render() {
     const {
       t,
@@ -245,7 +233,9 @@ class ClassHeader extends Component {
       orgData,
       canvasSyncGrades,
       googleSyncAssignment,
-      syncWithGoogleClassroomInProgress
+      syncWithGoogleClassroomInProgress,
+      isShowStudentReportCardSettingPopup,
+      toggleStudentReportCardPopUp
     } = this.props;
 
     const { visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
@@ -335,6 +325,16 @@ class ClassHeader extends Component {
             Sync with Google Classroom
           </MenuItems>
         )}
+        <FeaturesSwitch
+          inputFeatures="LCBstudentReportCard"
+          key="LCBstudentReportCard"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems data-cy="studentReportCard" onClick={ this.onStudentReportCardsClick }>
+            Student Report Cards
+          </MenuItems>
+        </FeaturesSwitch>
       </DropMenu>
     );
 
@@ -461,6 +461,13 @@ class ClassHeader extends Component {
               classId={classId}
               lcb
             />
+            {isShowStudentReportCardSettingPopup && <StudentReportCardMenuModal
+              title="Student Report Card"
+              visible={isShowStudentReportCardSettingPopup}
+              onCancel={() => toggleStudentReportCardPopUp(false)}
+              groupId={classId}
+              assignmentId={assignmentId}
+            />}
             {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
             {isViewPassword && <ViewPasswordModal />}
             <ConfirmationModal
@@ -550,7 +557,8 @@ const enhance = compose(
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
       orgData: getOrgDataSelector(state),
-      syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state)
+      syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -564,7 +572,8 @@ const enhance = compose(
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleViewPassword: toggleViewPasswordAction,
       canvasSyncGrades: canvasSyncGradesAction,
-      googleSyncAssignment: googleSyncAssignmentAction
+      googleSyncAssignment: googleSyncAssignmentAction,
+      toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
     }
   )
 );

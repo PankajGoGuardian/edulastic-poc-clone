@@ -8,7 +8,8 @@ import {
   TOGGLE_RELEASE_GRADE_SETTINGS,
   SET_ASSIGNMENT_FILTER,
   ADVANCED_ASSIGNMENT_VIEW,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  TOGGLE_STUDENT_REPORT_CARD_SETTINGS
 } from "../constants/actions";
 
 export const googleSyncAssignmentAction = payload => ({
@@ -59,3 +60,8 @@ export const setAssignmentFiltersAction = payload => ({
   type: SET_ASSIGNMENT_FILTER,
   payload
 });
+
+export const toggleStudentReportCardSettingsAction = payload => ({
+  type: TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  payload
+})

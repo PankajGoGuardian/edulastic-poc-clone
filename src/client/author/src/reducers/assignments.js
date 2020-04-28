@@ -18,7 +18,8 @@ import {
   DELETE_ASSIGNMENT_REQUEST_FAILED,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
-  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR
+  SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
+  TOGGLE_STUDENT_REPORT_CARD_SETTINGS
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { find, keyBy } from "lodash";
@@ -141,6 +142,11 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         syncWithGoogleClassroomInProgress: false
       };
+    case TOGGLE_STUDENT_REPORT_CARD_SETTINGS:
+      return {
+        ...state,
+        toggleStudentReportCardSettings: payload
+      }
     default:
       return state;
   }

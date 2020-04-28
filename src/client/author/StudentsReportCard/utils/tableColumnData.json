@@ -4,30 +4,32 @@
       "title": "QUESTION",
       "dataIndex": "questionNumber",
       "key": "question",
-      "width": 210
+      "width": 150
     },
     {
       "title": "YOUR ANSWER",
       "dataIndex": "yourAnswer",
       "key": "yourAnswer",
-      "width": 300
+      "width": 350
     },
     {
       "title": "CORRECT ANSWER",
       "dataIndex": "correctAnswer",
       "key": "correctAnswer",
-      "width": 300
+      "width": 350
     },
     {
       "title": "SCORE",
       "dataIndex": "score",
       "key": "score",
-      "width": 150
+      "className": "column-score",
+      "width": 100
     },
     {
       "title": "MAX SCORE",
       "dataIndex": "maxScore",
       "key": "maxScore",
+      "className": "column-score",
       "width": 150
     }
   ],
@@ -36,7 +38,7 @@
       "title": "DOMAIN",
       "dataIndex": "domain",
       "key": "domain",
-      "width": 150
+      "width": 120
     },
     {
       "title": "STANDARDS",
@@ -48,18 +50,20 @@
       "title": "QUESTION",
       "dataIndex": "question",
       "key": "question",
-      "width": 190
+      "width": 240
     },
     {
       "title": "SCORE",
       "dataIndex": "score",
       "key": "score",
-      "width": 100
+      "className": "column-score",
+      "width": 80
     },
     {
       "title": "PERFORMANCE %",
       "dataIndex": "performance",
       "key": "performance",
+      "className": "column-score",
       "width": 150
     },
     {

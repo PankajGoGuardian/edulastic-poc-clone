@@ -229,6 +229,7 @@ export const RECEIVE_STUDENT_QUESTION_ERROR = "[answer] receive list success";
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST = "[LCB] sync assignment with google classroom request";
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_SUCCESS = "[LCB] sync assignment with google classroom success";
 export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR = "[LCB] sync assignment with google classroom error";
+export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS = "[assignments] show student report card popup";
 
 // answers
 export const CLEAR_ANSWERS = "[answers] clear answers";

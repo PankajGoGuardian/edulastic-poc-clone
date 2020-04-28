@@ -29,9 +29,6 @@ const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
 const AssignmentCreate = lazy(() => import("../AssignmentCreate"));
 const AssessmentPage = lazy(() => import("../AssessmentPage"));
 const ClassBoard = lazy(() => import("../ClassBoard"));
-const StudentReportCardPrintPreviewContainer = lazy(() =>
-  import("../Shared/Components/ClassHeader/components/StudentReportCardPrintPreviewContainer")
-);
 const SummaryBoard = lazy(() => import("../SummaryBoard"));
 const ClassResponses = lazy(() => import("../ClassResponses"));
 const PrintPreview = lazy(() => import("../PrintPreview"));
@@ -79,6 +76,8 @@ const ClassEnrollment = lazy(() => import("../ClassEnrollment"));
 const ContentBuckets = lazy(() => import("../ContentBuckets"));
 const Collections = lazy(() => import("../ContentCollections"));
 const ExternalTools = lazy(() => import("../ExternalTools"));
+const StudentsReportCard = lazy(() => import("../StudentsReportCard"));
+
 // eslint-disable-next-line react/prop-types
 const Author = ({
   match,
@@ -103,7 +102,7 @@ const Author = ({
   const themeToPass = themes.default;
 
   const isPrintPreview =
-    history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment");
+    history.location.pathname.includes("printpreview") || history.location.pathname.includes("printAssessment") || history.location.pathname.includes("students-report-card");
   const assessmentTabs = ["description", "addItems", "review", "settings", "worksheet", "groupItems"];
 
   return (
@@ -161,13 +160,7 @@ const Author = ({
                     />
                     <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
                     <Route path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
-                    <Route
-                      exact
-                      path={`${
-                        match.url
-                      }/classboard-student-report-card-print-preview/printpreview/:assignmentId/:classId`}
-                      component={StudentReportCardPrintPreviewContainer}
-                    />
+                    
                     <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
                     <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                     <Route exact path={`${match.url}/printpreview/:assignmentId/:classId`} component={PrintPreview} />
@@ -503,6 +496,7 @@ const Author = ({
                     <Route exact path="/author/content/tools" component={ExternalTools} />
                     <Route exact path="/author/import-test" component={ImportTest} />
                     <Route exact path="/author/import-content" component={ImportTest} />
+                    <Route exact path={`${match.url}/students-report-card/:assignmentId/:classId`} component={StudentsReportCard} />
                     <Route component={NotFound} />
                   </Switch>
                 </Suspense>

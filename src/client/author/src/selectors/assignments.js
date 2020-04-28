@@ -65,6 +65,11 @@ export const getToggleReleaseGradeStateSelector = createSelector(
   state => state.toggleReleaseGradeSettings
 );
 
+export const getToggleStudentReportCardStateSelector = createSelector(
+  stateSelector,
+  state => state.toggleStudentReportCardSettings
+);
+
 export const getDistrictIdSelector = createSelector(
   userSelector,
   state => state.user.orgData.districtId

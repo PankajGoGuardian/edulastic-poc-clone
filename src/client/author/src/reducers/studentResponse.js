@@ -10,7 +10,8 @@ import produce from "immer";
 const initialState = {
   data: {},
   error: null,
-  loading: false
+  loading: false,
+  byStudentId: {}
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -18,10 +19,13 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_STUDENT_RESPONSE_REQUEST:
       return { ...state, loading: true };
     case RECEIVE_STUDENT_RESPONSE_SUCCESS:
+      const byStudentId = { ...state.byStudentId };
+      byStudentId[payload.testActivity.userId] = payload;
       return {
         ...state,
         loading: false,
-        data: payload
+        data: payload,
+        byStudentId
       };
     case RESPONSE_ENTRY_SCORE_SUCCESS:
       const { testActivity, questionActivities } = payload;

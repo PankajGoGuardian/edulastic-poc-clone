@@ -138,6 +138,7 @@ class ExpressGrader extends Component {
             onCreate={this.handleCreate}
             additionalData={additionalData || {}}
             testActivityId={testActivityId}
+            testActivity={testActivity}
           />
           <MainContentWrapper>
             <StyledFlexContainer justifyContent="space-between">

@@ -4,7 +4,7 @@ import { Col, Icon, Row, Select, message, Tooltip } from "antd";
 import moment from "moment";
 import { test as testConst, assignmentPolicyOptions, assignmentStatusOptions } from "@edulastic/constants";
 import { MainContentWrapper } from "@edulastic/common";
-import { getAdditionalDataSelector } from "../ClassBoard/ducks";
+import { getAdditionalDataSelector, getTestActivitySelector } from "../ClassBoard/ducks";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { slice } from "./ducks";
 import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
@@ -47,7 +47,8 @@ function LCBAssignmentSettings({
   testSettings = {},
   loadTestSettings,
   changeAttrs,
-  updateAssignmentSettings
+  updateAssignmentSettings,
+  testActivity
 }) {
   const { openPolicy, closePolicy } = selectsData;
   const { assignmentId, classId } = match.params || {};
@@ -86,6 +87,7 @@ function LCBAssignmentSettings({
         assignmentId={match.params?.assignmentId}
         additionalData={additionalData || {}}
         onCreate={() => history.push(`${match.url}/create`)}
+        testActivity={testActivity}
       />
       <MainContentWrapper>
         <OptionConationer>
@@ -239,7 +241,8 @@ export default connect(
     additionalData: getAdditionalDataSelector(state),
     assignment: state?.LCBAssignmentSettings?.assignment,
     loading: state?.LCBAssignmentSettings?.loading,
-    testSettings: getTestEntitySelector(state)
+    testSettings: getTestEntitySelector(state),
+    testActivity: getTestActivitySelector(state)
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

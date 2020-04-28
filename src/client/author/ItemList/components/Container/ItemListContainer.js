@@ -3,11 +3,12 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import get from "lodash/get";
 import { withRouter } from "react-router";
+import { roleuser } from "@edulastic/constants";
 import Item from "../Item/Item";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { getTestItemsSelector, getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { addItemToCartAction } from "../../ducks";
-import { getUserId, getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { getUserId, getInterestedCurriculumsSelector, getUserRole } from "../../../src/selectors/user";
 import { previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
 import PreviewModal from "../../../src/components/common/PreviewModal";
 
@@ -22,7 +23,8 @@ const ItemListContainer = ({
   checkAnswer,
   showAnswer,
   interestedCurriculums,
-  search
+  search,
+  userRole
 }) => {
   if (!items.length) {
     return (
@@ -73,6 +75,7 @@ const ItemListContainer = ({
           showEvaluationButtons
           data={{ ...selectedItem, id: selectedItem._id }}
           isEditable={owner}
+          userRole={userRole}
           owner={owner}
           testId={test?._id}
           isTest={!!test}
@@ -112,7 +115,8 @@ export default compose(
       items: getTestItemsSelector(state),
       selectedCartItems: getSelectedItemSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
-      userId: getUserId(state)
+      userId: getUserId(state),
+      userRole: getUserRole(state)
     }),
     {
       addItemToCart: addItemToCartAction,

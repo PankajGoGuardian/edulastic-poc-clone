@@ -368,7 +368,6 @@ class ModuleRow extends Component {
       customize,
       hasEditAccess
     } = this.props;
-
     const { title, _id, data = [], description = "", moduleId, moduleGroupName } = module;
     const { assignModule, assignTest } = this;
 
@@ -1436,6 +1435,7 @@ const enhance = compose(
       checkedUnitItems: curriculumSequence.checkedUnitItems,
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
+      userRole: getUserRole({ user }),
       isStudent: getUserRole({ user }) === "student",
       classId: getCurrentGroup({ user }),
       playlistTestDetailsModalData: curriculumSequence?.playlistTestDetailsModal

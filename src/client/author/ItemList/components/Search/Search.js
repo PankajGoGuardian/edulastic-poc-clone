@@ -1,14 +1,14 @@
 import { FieldLabel, SelectInputStyled } from "@edulastic/common";
-import { questionType as questionTypes, test as testsConstants } from "@edulastic/constants";
+import { questionType as questionTypes, test as testsConstants, roleuser } from "@edulastic/constants";
 import { faExpandAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Select } from "antd";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import { getCurrentDistrictUsersAction, getCurrentDistrictUsersSelector } from "../../../../student/Login/ducks";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import StandardsSearchModal from "./StandardsSearchModal";
@@ -39,7 +39,8 @@ const Search = ({
   userFeatures,
   districtId,
   currentDistrictUsers,
-  getCurrentDistrictUsers
+  getCurrentDistrictUsers,
+  userRole
 }) => {
   const [showModal, setShowModalValue] = useState(false);
 
@@ -60,8 +61,17 @@ const Search = ({
 
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
 
+  const collectionDefaultFilter = useMemo(() => {
+    if (userRole === roleuser.EDULASTIC_CURATOR) {
+      return testsConstants.collectionDefaultFilter.filter(
+        c => !["SCHOOL", "DISTRICT", "PUBLIC", "INDIVIDUAL"].includes(c.value)
+      );
+    }
+    return testsConstants.collectionDefaultFilter;
+  }, [testsConstants.collectionDefaultFilter, userRole]);
+
   const collectionData = [
-    ...testsConstants.collectionDefaultFilter.filter(c => c.value),
+    ...collectionDefaultFilter.filter(c => c.value),
     ...collections.map(o => ({ text: o.name, value: o._id }))
   ].filter(cd =>
     // filter public, edulastic certified &
@@ -362,7 +372,8 @@ export default connect(
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),
-    currentDistrictUsers: getCurrentDistrictUsersSelector(state)
+    currentDistrictUsers: getCurrentDistrictUsersSelector(state),
+    userRole: getUserRole(state)
   }),
   { getCurrentDistrictUsers: getCurrentDistrictUsersAction }
 )(Search);

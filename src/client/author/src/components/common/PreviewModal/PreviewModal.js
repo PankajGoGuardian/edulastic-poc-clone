@@ -10,7 +10,7 @@ import { withRouter } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 import { withWindowSizes, EduButton, FlexContainer } from "@edulastic/common";
-import { questionType } from "@edulastic/constants";
+import { questionType, roleuser } from "@edulastic/constants";
 import { testItemsApi, passageApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import { IconClose, IconExpand, IconCollapse } from "@edulastic/icons";
@@ -262,7 +262,8 @@ class PreviewModal extends React.Component {
       onlySratchpad,
       changePreviewMode,
       test,
-      testAssignments
+      testAssignments,
+      userRole
     } = this.props;
 
     const { passageLoading, showHints, showReportIssueField, fullModal } = this.state;
@@ -355,7 +356,11 @@ class PreviewModal extends React.Component {
                   showHints={showHints}
                   allowDuplicate={allowDuplicate}
                   /* Giving edit test item functionality to the user who is a curator as curator can edit any test item. */
-                  isEditable={(isEditable && authorHasPermission) || userFeatures.isCurator}
+                  isEditable={
+                    (isEditable && authorHasPermission) ||
+                    userFeatures.isCurator ||
+                    userRole === roleuser.EDULASTIC_CURATOR
+                  }
                   isPassage={isPassage}
                   passageTestItems={passageTestItems}
                   handleDuplicateTestItem={this.handleDuplicateTestItem}

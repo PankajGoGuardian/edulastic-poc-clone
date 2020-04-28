@@ -243,7 +243,7 @@ class Container extends PureComponent {
     } else {
       setRegradeOldId("");
     }
-    getDefaultTestSettings();
+    if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings();
   }
 
   componentWillUnmount() {
@@ -253,7 +253,15 @@ class Container extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { receiveItemDetailById, test, history, userId, isTestLoading } = this.props;
+    const {
+      receiveItemDetailById,
+      test,
+      history,
+      userId,
+      isTestLoading,
+      userRole,
+      getDefaultTestSettings
+    } = this.props;
 
     if (test._id && !prevProps.test._id && test._id !== prevProps.test._id && test.isDocBased) {
       const testItem = test.itemGroups?.[0].items?.[0] || {};
@@ -273,6 +281,9 @@ class Container extends PureComponent {
     }
     if (test._id && !this.state.testLoaded && !isTestLoading) {
       this.setState({ testLoaded: true });
+    }
+    if (userRole === roleuser.EDULASTIC_CURATOR && prevProps?.test?._id !== test?._id) {
+      getDefaultTestSettings(test);
     }
   }
 
@@ -409,7 +420,8 @@ class Container extends PureComponent {
       questionsById,
       history,
       updated,
-      currentTab
+      currentTab,
+      userRole
     } = this.props;
     if (isTestLoading) {
       return <Spin />;
@@ -419,7 +431,8 @@ class Container extends PureComponent {
     const { editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { authors, isDocBased, docUrl, annotations, pageStructure, freeFormNotes = {} } = test;
-    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const owner =
+      (authors && authors.some(x => x._id === userId)) || !params.id || userRole === roleuser.EDULASTIC_CURATOR;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
     const props = {
@@ -446,6 +459,7 @@ class Container extends PureComponent {
               isShowFilter={isShowFilter}
               handleSaveTest={this.handleSave}
               updated={updated}
+              userRole={userRole}
             />
           </Content>
         );
@@ -555,7 +569,8 @@ class Container extends PureComponent {
       currentTab,
       updateLastUsedCollectionList,
       history,
-      testAssignments
+      testAssignments,
+      userRole
     } = this.props;
     if (!test?.title?.trim()?.length) {
       return message.error("Name field is required");
@@ -571,8 +586,12 @@ class Container extends PureComponent {
     updateLastUsedCollectionList(test.collections);
 
     if (test._id) {
-      //Push `isInEditAndRegrade` flag in test if a user intentionally editing an assigned in progess test.
-      if ((history.location.state?.editAssigned || testAssignments.length) && test.isUsed) {
+      // Push `isInEditAndRegrade` flag in test if a user intentionally editing an assigned in progess test.
+      if (
+        (history.location.state?.editAssigned || testAssignments.length) &&
+        test.isUsed &&
+        userRole !== roleuser.EDULASTIC_CURATOR
+      ) {
         newTest.isInEditAndRegrade = true;
       }
       updateTest(test._id, { ...newTest, currentTab });
@@ -700,9 +719,9 @@ class Container extends PureComponent {
   };
 
   onEnableEdit = () => {
-    const { test, userId, duplicateTest, currentTab } = this.props;
+    const { test, userId, duplicateTest, currentTab, userRole } = this.props;
     const { _id: testId, authors, title, isUsed } = test;
-    const canEdit = authors && authors.some(x => x._id === userId);
+    const canEdit = (authors && authors.some(x => x._id === userId)) || userRole === roleuser.EDULASTIC_CURATOR;
     this.setState({ editEnable: true });
     if (canEdit) {
       return this.handleSave();
@@ -765,12 +784,17 @@ class Container extends PureComponent {
       collections = [],
       userFeatures,
       currentTab,
-      testAssignments
+      testAssignments,
+      userRole
     } = this.props;
     const { showShareModal, editEnable, isShowFilter } = this.state;
     const current = currentTab;
     const { _id: testId, status, authors, grades, subjects, itemGroups, isDocBased } = test;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId || userFeatures.isCurator;
+    const owner =
+      (authors && authors.some(x => x._id === userId)) ||
+      !testId ||
+      userFeatures.isCurator ||
+      userRole === roleuser.EDULASTIC_CURATOR;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
     const allowDuplicate = allowDuplicateCheck(test.collections, collections, "test");

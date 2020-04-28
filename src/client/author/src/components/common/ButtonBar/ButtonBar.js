@@ -14,6 +14,7 @@ import {
   IconSaveNew
 } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { roleuser } from "@edulastic/constants";
 import { Button } from "antd";
 import { get } from "lodash";
 import PropTypes from "prop-types";
@@ -39,6 +40,7 @@ import {
   MobileTopRight,
   RightSide
 } from "./styled_components";
+import { getUserRole } from "../../../selectors/user";
 
 class ButtonBar extends Component {
   handleMenuClick = view => () => {
@@ -90,7 +92,8 @@ class ButtonBar extends Component {
       showMetaData,
       showAuditTrail = false,
       permissions,
-      qTitle
+      qTitle,
+      userRole
     } = this.props;
 
     return (
@@ -183,7 +186,7 @@ class ButtonBar extends Component {
                       </EduButton>
                     </>
                   ))}
-                {showPublishButton && itemStatus === "draft" && !isTestFlow && (
+                {showPublishButton && itemStatus === "draft" && !isTestFlow && userRole !== roleuser.EDULASTIC_CURATOR && (
                   <EduButton disabled={disableSave} data-cy="publishItem" onClick={onPublishTestItem}>
                     PUBLISH
                   </EduButton>
@@ -360,7 +363,8 @@ const enhance = compose(
       const isMultipart = multipartItem || isPassageWithQuestions || canAddMultipleItems || data.questions?.length > 1;
       return {
         permissions: get(state, ["user", "user", "permissions"], []),
-        qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title
+        qTitle: isMultipart ? "compination-multipart" : getCurrentQuestionSelector(state)?.title,
+        userRole: getUserRole(state)
       };
     },
     {

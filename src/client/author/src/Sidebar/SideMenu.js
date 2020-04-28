@@ -122,7 +122,7 @@ class SideMenu extends Component {
   }
 
   get MenuItems() {
-    const { lastPlayList, features, isOrganizationDistrict } = this.props;
+    const { lastPlayList, features, isOrganizationDistrict, userRole } = this.props;
 
     let _menuItems = cloneDeep(menuItems);
     if (isOrganizationDistrict) {
@@ -136,6 +136,9 @@ class SideMenu extends Component {
     if (features.isPublisherAuthor) {
       const [item1, ...rest] = _menuItems;
       _menuItems = [...rest];
+    }
+    if (userRole === roleuser.EDULASTIC_CURATOR) {
+      _menuItems = _menuItems.filter(i => ["Item Bank", "Test Library", "PlayList Library"].includes(i.label));
     }
 
     if (!lastPlayList || !lastPlayList.value) return _menuItems;
@@ -277,6 +280,8 @@ class SideMenu extends Component {
       _userRole = "District-Admin";
     } else if (userRole === roleuser.STUDENT) {
       _userRole = "Student";
+    } else if (userRole === roleuser.EDULASTIC_CURATOR) {
+      _userRole = "Edulastic Curator";
     } else {
       _userRole = "Unknown";
     }

@@ -26,7 +26,12 @@ import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeMo
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import FilterToggleBtn from "../../../src/components/common/FilterToggleBtn";
 import { getStatus } from "../../../src/utils/getStatus";
-import { publishForRegradeAction, getTestsCreatingSelector, shouldDisableSelector } from "../../ducks";
+import {
+  publishForRegradeAction,
+  getTestsCreatingSelector,
+  shouldDisableSelector,
+  getTestItemsSelector
+} from "../../ducks";
 import { fetchAssignmentsAction, getAssignmentsSelector, getIsloadingAssignmentSelector } from "../Assign/ducks";
 import TestPageNav from "../TestPageNav/TestPageNav";
 import {
@@ -144,7 +149,9 @@ const TestPageHeader = ({
   onCuratorApproveOrReject,
   userRole,
   creating,
-  isLoadingData
+  isLoadingData,
+  playlistStatus,
+  testItems
 }) => {
   let navButtons =
     buttons || (isPlaylist ? [...playlistNavButtons] : isDocBased ? [...docBasedButtons] : [...navButtonsTest]);
@@ -154,6 +161,7 @@ const TestPageHeader = ({
   const [showCancelPopup, setShowCancelPopup] = useState(false);
 
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor);
+  const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
 
   useEffect(() => {
     //TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
@@ -266,15 +274,25 @@ const TestPageHeader = ({
   };
 
   const headingSubContent = (
-    <TestStatus data-cy="status" className={isPlaylist || editEnable ? "draft" : testStatus}>
-      {isPlaylist || editEnable ? "DRAFT" : getStatus(testStatus)}
+    <TestStatus
+      data-cy="status"
+      className={(isPlaylist || editEnable) && !isEdulasticCurator ? "draft" : isPlaylist ? playlistStatus : testStatus}
+    >
+      {(isPlaylist || editEnable) && !isEdulasticCurator
+        ? "DRAFT"
+        : getStatus(isPlaylist ? playlistStatus : testStatus)}
     </TestStatus>
   );
 
-  const isRegradeFlow = test.isUsed && !!testAssignments.length;
-  //if edit assigned there should be assignments to enable the buttons
+  const isRegradeFlow = test.isUsed && !!testAssignments.length && !isEdulasticCurator;
+  // if edit assigned there should be assignments to enable the buttons
   const disableButtons =
     isLoadingData || (history.location.state?.editAssigned && !testAssignments.length && !test.isInEditAndRegrade);
+
+  const isTestContainsDraftItem = testItems.some(i => i.status === statusConstants.DRAFT);
+
+  const showPublishForEC =
+    test.status === statusConstants.PUBLISHED && isTestContainsDraftItem && isEdulasticCurator && !isPlaylist;
   return (
     <>
       <EditTestModal
@@ -319,12 +337,12 @@ const TestPageHeader = ({
                 <IconPrint />
               </EduButton>
             )} */}
-            {showShareButton && (owner || features.isCurator) && (
+            {showShareButton && (owner || features.isCurator) && !isEdulasticCurator && (
               <EduButton isGhost IconBtn title="Share" data-cy="share" onClick={onShare} disabled={disableButtons}>
                 <IconShare style={{ transform: "rotate(180deg)" }} />
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton && (
+            {showShareButton && owner && showPublishButton && !showPublishForEC && (
               <EduButton
                 isGhost
                 IconBtn
@@ -336,7 +354,7 @@ const TestPageHeader = ({
                 <IconDiskette />
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton && isDirectOwner ? (
+            {showShareButton && owner && (showPublishButton && !isEdulasticCurator) && isDirectOwner ? (
               isPlaylist ? (
                 <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
                   PUBLISH
@@ -385,18 +403,18 @@ const TestPageHeader = ({
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
                 data-cy="edit"
-                onClick={() => setOpenEditPopup(true)}
+                onClick={() => (isEdulasticCurator ? onEnableEdit() : setOpenEditPopup(true))}
               >
                 <IconPencilEdit />
               </EduButton>
             )}
-            {showDuplicateButton && (
+            {showDuplicateButton && !isEdulasticCurator && (
               <EduButton
                 isGhost
                 IconBtn
                 title="Duplicate Test"
                 disabled={editEnable || disableButtons}
-                data-cy="edit"
+                data-cy="duplicate"
                 onClick={() => handleDuplicateTest()}
               >
                 <IconCopy />
@@ -406,7 +424,8 @@ const TestPageHeader = ({
               (owner || testStatus === "published") &&
               !isPlaylist &&
               !showCancelButton &&
-              !isPublishers && (
+              !isPublishers &&
+              !isEdulasticCurator && (
                 <EduButton data-cy="assign" disabled={disableButtons} onClick={handleAssign}>
                   ASSIGN
                 </EduButton>
@@ -418,7 +437,7 @@ const TestPageHeader = ({
             )}
             {showShareButton &&
               owner &&
-              showPublishButton &&
+              ((showPublishButton && !isEdulasticCurator) || showPublishForEC) &&
               isDirectOwner &&
               !isPlaylist &&
               editEnable &&
@@ -442,13 +461,13 @@ const TestPageHeader = ({
                 <FilterToggleBtn header="true" isShowFilter={isShowFilter} toggleFilter={toggleFilter} />
               </MobileHeaderFilterIcon>
             )}
-            {(owner || features.isCurator) && (
+            {(owner || features.isCurator) && !isEdulasticCurator && (
               <EduButton isGhost IconBtn data-cy="share" disabled={disableButtons} onClick={onShare}>
                 <ShareIcon />
               </EduButton>
             )}
 
-            {owner && (
+            {owner && !showPublishForEC && (
               <EduButton
                 isGhost
                 IconBtn
@@ -460,7 +479,7 @@ const TestPageHeader = ({
                 <IconDiskette />
               </EduButton>
             )}
-            {showShareButton && owner && showPublishButton && isDirectOwner ? (
+            {showShareButton && owner && (showPublishButton && !isEdulasticCurator) && isDirectOwner ? (
               isPlaylist ? (
                 <EduButton title="Publish Playlist" data-cy="publish" onClick={handlePublish} disabled={disableButtons}>
                   PUBLISH
@@ -500,11 +519,15 @@ const TestPageHeader = ({
                 APPROVE
               </EduButton>
             )}
-            {showShareButton && (owner || testStatus === "published") && !isPlaylist && !isPublishers && (
-              <EduButton disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
-                ASSIGN
-              </EduButton>
-            )}
+            {showShareButton &&
+              (owner || testStatus === "published") &&
+              !isPlaylist &&
+              !isPublishers &&
+              !isEdulasticCurator && (
+                <EduButton disabled={disableButtons} data-cy="assign" onClick={handleAssign}>
+                  ASSIGN
+                </EduButton>
+              )}
           </RightWrapper>
           <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
         </MainHeader>
@@ -536,7 +559,8 @@ const enhance = compose(
       userId: getUserId(state),
       userRole: getUserRole(state),
       creating: getTestsCreatingSelector(state),
-      isLoadingData: shouldDisableSelector(state)
+      isLoadingData: shouldDisableSelector(state),
+      testItems: getTestItemsSelector(state)
     }),
     {
       publishForRegrade: publishForRegradeAction,

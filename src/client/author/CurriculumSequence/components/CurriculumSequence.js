@@ -31,6 +31,7 @@ import {
   mediumDesktopExactWidth
 } from "@edulastic/colors";
 import { IconBook, IconGraduationCap, IconPencilEdit, IconPlaylist, IconShare, IconTile } from "@edulastic/icons";
+import { roleuser } from "@edulastic/constants";
 import { Button, Cascader, Input, Modal, Tooltip, message } from "antd";
 import Header from "../../../student/sharedComponents/Header";
 import { getCurrentGroup, getUserFeatures } from "../../../student/Login/ducks";
@@ -377,10 +378,11 @@ class CurriculumSequence extends Component {
       isManageContentActive,
       destinationCurriculumSequence,
       currentUserId,
-      duplicateManageContent
+      duplicateManageContent,
+      role
     } = this.props;
     const { authors } = destinationCurriculumSequence;
-    const canEdit = authors.find(x => x._id === currentUserId);
+    const canEdit = authors.find(x => x._id === currentUserId) || role === roleuser.EDULASTIC_CURATOR;
 
     // if (isManageContentActive && manageContentDirty) {
     //   message.warn("Changes left unsaved. Please save it first");
@@ -618,10 +620,11 @@ class CurriculumSequence extends Component {
     const isAuthoringFlowReview = current === "review";
 
     const enableCustomize =
-      (((customize || hasEditAccess) && urlHasUseThis && isNotStudentOrParent) ||
+      ((((customize || hasEditAccess) && urlHasUseThis && isNotStudentOrParent) ||
         ((customize || hasEditAccess) && isNotStudentOrParent)) &&
-      destinationCurriculumSequence &&
-      !isAuthoringFlowReview;
+        destinationCurriculumSequence &&
+        !isAuthoringFlowReview) ||
+      role === roleuser.EDULASTIC_CURATOR;
 
     const { id: parentId = null, cloneId = null } = match.params;
 
@@ -729,7 +732,7 @@ class CurriculumSequence extends Component {
                 )}
 
                 <CurriculumHeaderButtons marginLeft={urlHasUseThis ? "unset" : "auto"}>
-                  {(showUseThisButton || urlHasUseThis || features.isCurator) && (
+                  {(showUseThisButton || urlHasUseThis || features.isCurator) && role !== roleuser.EDULASTIC_CURATOR && (
                     <EduButton isGhost data-cy="share" onClick={onShareClick}>
                       <IconShare />
                     </EduButton>
@@ -745,14 +748,14 @@ class CurriculumSequence extends Component {
                       SAVE
                     </EduButton>
                   )}
-                  {isAuthor && !urlHasUseThis && (
+                  {(isAuthor || role === roleuser.EDULASTIC_CURATOR) && !urlHasUseThis && (
                     <Tooltip placement="bottom" title="EDIT">
                       <EduButton isGhost data-cy="edit-playlist" onClick={handleEditClick}>
                         <IconPencilEdit />
                       </EduButton>
                     </Tooltip>
                   )}
-                  {showUseThisButton && (
+                  {showUseThisButton && role !== roleuser.EDULASTIC_CURATOR && (
                     <EduButton data-cy="use-this" onClick={handleUseThisClick}>
                       USE THIS
                     </EduButton>

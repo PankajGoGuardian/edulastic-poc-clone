@@ -8,8 +8,8 @@ import { white, mainTextColor, smallDesktopWidth, themeColor } from "@edulastic/
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
   let selected = items[0].path;
   if (search.filter) {
-    const getCurrent = items.find(item => item.filter === search.filter);
-    selected = getCurrent.path;
+    const getCurrent = items.find(item => item.filter === search.filter) || {};
+    selected = getCurrent?.path;
   }
   return (
     <Container onSelect={onSelect} selectedKeys={[selected]}>

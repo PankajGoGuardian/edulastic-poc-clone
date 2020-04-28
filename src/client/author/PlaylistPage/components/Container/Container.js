@@ -6,7 +6,7 @@ import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
 import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
-
+import { roleuser } from "@edulastic/constants";
 import { themeColor, white } from "@edulastic/colors";
 import { Content } from "../../../TestPage/components/Container/styled";
 import { get, omit } from "lodash";
@@ -39,7 +39,12 @@ import {
 } from "../../../TestPage/components/AddItems/ducks";
 import { loadAssignmentsAction } from "../../../TestPage/components/Assign/ducks";
 import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
-import { getUserSelector, getItemBucketsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
+import {
+  getUserSelector,
+  getItemBucketsSelector,
+  isPublisherUserSelector,
+  getUserRole
+} from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
@@ -428,13 +433,13 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {} } = this.props;
+    const { creating, windowWidth, playlist, testStatus, userId, location: { state } = {}, useRole } = this.props;
     const { showShareModal, current, editEnable, showSelectCollectionsModal } = this.state;
     const { _id: testId, status, authors, grades, subjects, collections } = playlist || {};
     const showPublishButton =
       (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable || state?.editFlow;
     const showShareButton = !!testId;
-    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId || useRole === roleuser.EDULASTIC_CURATOR;
     const gradeSubject = { grades, subjects };
 
     return (
@@ -475,6 +480,7 @@ class Container extends PureComponent {
           owner={owner}
           onShowSource={this.handleNavChange("source")}
           isPlaylist
+          playlistStatus={status}
         />
         <Content>{this.renderContent()}</Content>
       </>
@@ -497,7 +503,8 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       orgCollections: getItemBucketsSelector(state),
-      isPublisherUser: isPublisherUserSelector(state)
+      isPublisherUser: isPublisherUserSelector(state),
+      useRole: getUserRole(state)
     }),
     {
       createPlayList: createPlaylistAction,

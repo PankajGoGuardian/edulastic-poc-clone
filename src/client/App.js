@@ -204,6 +204,8 @@ class App extends Component {
             // redirecting da & sa to assignments after login as their dashboard page is not implemented
             defaultRoute = "/author/assignments";
           }
+        } else if (role === "edulastic-curator") {
+          defaultRoute = "/author/tests";
         } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
           defaultRoute = "/auth";
         }

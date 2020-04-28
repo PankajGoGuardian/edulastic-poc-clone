@@ -5,6 +5,7 @@ import Modal from "react-responsive-modal";
 import { find } from "lodash";
 import { darkGrey, themeColor, backgrounds } from "@edulastic/colors";
 import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription, IconTrashAlt } from "@edulastic/icons";
+import { roleuser } from "@edulastic/constants";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Tooltip, Icon, Select } from "antd";
 import { EduButton } from "@edulastic/common";
@@ -51,7 +52,8 @@ import {
 import {
   getInterestedCurriculumsSelector,
   getUserIdSelector,
-  getCollectionsSelector
+  getCollectionsSelector,
+  getUserRole
 } from "../../../src/selectors/user";
 import { getInterestedStandards } from "../../../dataUtils";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -113,7 +115,8 @@ class ViewModal extends React.Component {
       windowWidth,
       userId,
       collections,
-      allowDuplicate
+      allowDuplicate,
+      userRole
     } = this.props;
     const {
       title = "",
@@ -145,8 +148,13 @@ class ViewModal extends React.Component {
         borderRadius: "5px"
       }
     };
+
+    const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR;
+
     const isDeleteAllowed =
-      !!find(authors, o => o._id === userId) || (sharedWith?.find(x => x._id === userId) && permission === "EDIT");
+      !!find(authors, o => o._id === userId) ||
+      (sharedWith?.find(x => x._id === userId) && permission === "EDIT") ||
+      isEdulasticCurator;
 
     return (
       <Modal open={isShow} onClose={close} styles={modalStyles}>
@@ -181,7 +189,7 @@ class ViewModal extends React.Component {
                 <IconDescription />
                 <span>DETAILS</span>
               </EduButton>
-              {allowDuplicate && status !== "draft" && (
+              {allowDuplicate && status !== "draft" && !isEdulasticCurator && (
                 <EduButton
                   isGhost
                   height="40px"
@@ -245,7 +253,7 @@ class ViewModal extends React.Component {
                 </FeaturesSwitch>
               ) : null}
             </ButtonContainer>
-            {(permission !== "VIEW" || status === "published") && (
+            {(permission !== "VIEW" || status === "published") && !isEdulasticCurator && (
               <ButtonContainer>
                 <EduButton
                   height="40px"
@@ -402,7 +410,8 @@ export default connect(
   state => ({
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     userId: getUserIdSelector(state),
-    collections: getCollectionsSelector(state)
+    collections: getCollectionsSelector(state),
+    userRole: getUserRole(state)
   }),
   {}
 )(ViewModal);

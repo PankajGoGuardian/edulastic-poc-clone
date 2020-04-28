@@ -5,10 +5,10 @@ import { uniqBy } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser } from "@edulastic/icons";
-import { Button } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import { cardTitleColor } from "@edulastic/colors";
 import { EduButton } from "@edulastic/common";
+import { roleuser } from "@edulastic/constants";
 import {
   Container,
   Inner,
@@ -35,7 +35,12 @@ import {
   CollectionNameWrapper,
   ThinLine
 } from "./styled";
-import { getOrgDataSelector, getCollectionsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
+import {
+  getOrgDataSelector,
+  getCollectionsSelector,
+  isPublisherUserSelector,
+  getUserRole
+} from "../../../src/selectors/user";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -193,7 +198,8 @@ class Item extends Component {
       windowWidth,
       standards = [],
       orgData: { itemBanks },
-      isPublisherUser
+      isPublisherUser,
+      userRole
     } = this.props;
     const likes = analytics?.[0]?.likes || "0";
     const usage = analytics?.[0]?.usage || "0";
@@ -260,7 +266,7 @@ class Item extends Component {
                     Edit
                   </EduButton>
                 )}
-                {status === "published" && (
+                {status === "published" && userRole !== roleuser.EDULASTIC_CURATOR && (
                   <EduButton style={btnStyle} height="32px" onClick={this.assignTest}>
                     Assign
                   </EduButton>
@@ -367,7 +373,8 @@ const enhance = compose(
     state => ({
       orgData: getOrgDataSelector(state),
       orgCollections: getCollectionsSelector(state),
-      isPublisherUser: isPublisherUserSelector(state)
+      isPublisherUser: isPublisherUserSelector(state),
+      userRole: getUserRole(state)
     }),
     { approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction }
   )

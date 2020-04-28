@@ -7,7 +7,7 @@ import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulas
 import { get } from "lodash";
 import { message, Row, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { question, test as testContants } from "@edulastic/constants";
+import { question, test as testContants, roleuser } from "@edulastic/constants";
 import { MathFormulaDisplay, PremiumTag, helpers, WithResources, EduButton, CheckboxLabel } from "@edulastic/common";
 import { testItemsApi } from "@edulastic/api";
 import CollectionTag from "@edulastic/common/src/components/CollectionTag/CollectionTag";
@@ -55,7 +55,7 @@ import Tags from "../../../src/components/common/Tags";
 import appConfig from "../../../../../../app-config";
 import SelectGroupModal from "../../../TestPage/components/AddItems/SelectGroupModal";
 import { getCollectionsSelector, isPublisherUserSelector } from "../../../src/selectors/user";
-
+import { getUserRole } from "../../../src/selectors/user";
 import { TestStatus } from "../../../TestList/components/ListItem/styled";
 import TestStatusWrapper from "../../../TestList/components/TestStatusWrapper/testStatusWrapper";
 
@@ -336,7 +336,8 @@ class Item extends Component {
       passageItemsCount,
       test,
       features,
-      openPreviewModal
+      openPreviewModal,
+      userRole
     } = this.props;
     const { isOpenedDetails, selectedId, passageConfirmModalVisible, showSelectGroupModal } = this.state;
     const itemTypes = getQuestionType(item);
@@ -346,6 +347,7 @@ class Item extends Component {
       staticGroups.length === 1
         ? "Selected"
         : test?.itemGroups?.find(grp => !!grp.items.find(i => i._id === item._id))?.groupName || "Group";
+    const hideAddRemove = userRole === roleuser.EDULASTIC_CURATOR;
 
     return (
       <WithResources resources={[`${appConfig.jqueryPath}/jquery.min.js`]} fallBack={<span />}>
@@ -380,7 +382,9 @@ class Item extends Component {
                     <IconEye />
                     <span>{t("component.item.view").toUpperCase()}</span>
                   </EduButton>
-                  <CheckboxLabel checked={selectedToCart} ml="24px" onChange={this.handleToggleItemToCart(item)} />
+                  {!hideAddRemove && (
+                    <CheckboxLabel checked={selectedToCart} ml="24px" onChange={this.handleToggleItemToCart(item)} />
+                  )}
                 </ViewButton>
               ) : isPublisher ? (
                 <AddRemoveBtnPublisher
@@ -435,9 +439,11 @@ class Item extends Component {
                     {t("component.item.view")}
                     <IconEye />
                   </ViewButtonStyled>
-                  <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
-                    {selectedToCart ? "Remove" : <IconPlus />}
-                  </AddButtonStyled>
+                  {!hideAddRemove && (
+                    <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                      {selectedToCart ? "Remove" : <IconPlus />}
+                    </AddButtonStyled>
+                  )}
                 </ViewButton>
               ) : (
                 <ViewButton>
@@ -491,7 +497,8 @@ const enhance = compose(
       passageItems: state.tests.passageItems,
       features: getUserFeatures(state),
       collections: getCollectionsSelector(state),
-      isPublisherUser: isPublisherUserSelector(state)
+      isPublisherUser: isPublisherUserSelector(state),
+      userRole: getUserRole(state)
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

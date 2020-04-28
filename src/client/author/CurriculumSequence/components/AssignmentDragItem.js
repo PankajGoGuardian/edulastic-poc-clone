@@ -4,6 +4,7 @@ import { Dropdown, Icon, Button } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
 import { lightBlue, white, themeColor } from "@edulastic/colors";
+import { roleuser } from "@edulastic/constants";
 import { IconVisualization, IconTrash, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
 import Tags from "../../src/components/common/Tags";
 import { matchAssigned } from "../util";
@@ -65,7 +66,8 @@ class AssignmentDragItem extends Component {
       assigned,
       isDragging,
       togglePlaylistTestDetails,
-      showResource
+      showResource,
+      userRole
     } = this.props;
 
     return connectDragSource(
@@ -133,18 +135,19 @@ class AssignmentDragItem extends Component {
                     />
                   </CustomIcon>
                 </AssignmentIcon>
-                {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
-                  <AssignmentButton assigned={isAssigned}>
-                    <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
-                      {isAssigned ? (
-                        <IconCheckSmall color={white} />
-                      ) : (
-                        <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
-                      )}
-                      {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                    </Button>
-                  </AssignmentButton>
-                )}
+                {(!hideEditOptions || (status === "published" && mode === "embedded")) &&
+                  userRole !== roleuser.EDULASTIC_CURATOR && (
+                    <AssignmentButton assigned={isAssigned}>
+                      <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
+                        {isAssigned ? (
+                          <IconCheckSmall color={white} />
+                        ) : (
+                          <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
+                        )}
+                        {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                      </Button>
+                    </AssignmentButton>
+                  )}
                 {/* {(!hideEditOptions || mode === "embedded") && (
                 <AssignmentIcon>
                   <Dropdown overlay={moreMenu} trigger={["click"]}>

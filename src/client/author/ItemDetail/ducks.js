@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import uuid from "uuid/v4";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, attchmentApi } from "@edulastic/api";
-import { questionType } from "@edulastic/constants";
+import { questionType, roleuser } from "@edulastic/constants";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -37,7 +37,7 @@ import { changeViewAction } from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 
-import { getOrgDataSelector, isPublisherUserSelector } from "../src/selectors/user";
+import { getOrgDataSelector, isPublisherUserSelector, getUserRole } from "../src/selectors/user";
 import {
   getAlignmentFromQuestionSelector,
   setDictAlignmentFromQuestion,
@@ -1029,7 +1029,9 @@ export function* updateItemSaga({ payload }) {
       yield put(updateRecentCollectionsAction({ recentCollections: recentCollectionsList }));
     }
 
-    yield call(message.success, "Item is saved as draft", 2);
+    const userRole = yield select(getUserRole);
+    if (userRole === roleuser.EDULASTIC_CURATOR) yield call(message.success, "Item is saved", 2);
+    else yield call(message.success, "Item is saved as draft", 2);
     yield put(changeUpdatedFlagAction(false));
     if (addToTest) {
       // add item to test entity

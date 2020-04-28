@@ -4,7 +4,18 @@ import { test, roleuser, questionType, test as testConst, assignmentPolicyOption
 import { call, put, all, takeEvery, takeLatest, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty, identity, differenceBy, round } from "lodash";
+import {
+  keyBy as _keyBy,
+  omit,
+  get,
+  uniqBy,
+  uniq as _uniq,
+  isEmpty,
+  identity,
+  differenceBy,
+  round,
+  pick
+} from "lodash";
 import { testsApi, assignmentApi, contentSharingApi, tagsApi, passageApi, testItemsApi } from "@edulastic/api";
 import moment from "moment";
 import nanoid from "nanoid";
@@ -1177,10 +1188,16 @@ function* updateTestSaga({ payload }) {
 
     payload.data.itemGroups = transformItemGroupsUIToMongo(payload.data.itemGroups, scoring);
 
+    const role = yield select(getUserRole);
+    if (role === roleuser.EDULASTIC_CURATOR) {
+      payload.data.performanceBand = pick(payload.data?.performanceBand, ["_id", "name"]);
+      payload.data.standardGradingScale = pick(payload.data?.standardGradingScale, ["_id", "name"]);
+    }
+
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
-
+    const userRole = yield select(getUserRole);
     if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");
@@ -1197,7 +1214,8 @@ function* updateTestSaga({ payload }) {
         );
       }
     } else if (!payload.assignFlow) {
-      yield call(message.success, "Test saved as Draft");
+      if (userRole === roleuser.EDULASTIC_CURATOR) yield call(message.success, "Test saved");
+      else yield call(message.success, "Test saved as Draft");
     }
     yield put(setTestsLoadingAction(false));
   } catch (err) {
@@ -1354,9 +1372,22 @@ function* publishTestSaga({ payload }) {
        * during assign flow , putting default settings
        */
       yield put(updateAssingnmentSettingsAction(update));
+
       yield put(push(`/author/assignments/${id}`));
     } else {
-      yield put(push(`/author/tests/${id}/publish`));
+      const role = yield select(getUserRole);
+      if (role !== roleuser.EDULASTIC_CURATOR) yield put(push(`/author/tests/${id}/publish`));
+      else {
+        const entityTest = yield select(getTestEntitySelector);
+        entityTest.itemGroups.forEach(g => {
+          if (g.type === "STATIC") {
+            g.items.forEach(i => {
+              i.status = "published";
+            });
+          }
+        });
+        yield put(updateTestEntityAction(entityTest));
+      }
     }
   } catch (error) {
     console.error(error);
@@ -1677,7 +1708,29 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
         }
       };
     }
-    const defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload);
+    let defaultTestSettings = {};
+    if (role !== roleuser.EDULASTIC_CURATOR) {
+      defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload);
+    } else {
+      const { performanceBand, standardGradingScale } = testEntity;
+      const performanceBandProfiles = [performanceBand];
+      const standardsProficiencyProfiles = [standardGradingScale];
+      const performanceBandId = performanceBand._id;
+      const standardProficiencyId = standardGradingScale._id;
+      const defaultTestTypeProfiles = {
+        performanceBand: { common: performanceBandId, class: performanceBandId, practice: performanceBandId },
+        standardProficiency: {
+          common: standardProficiencyId,
+          class: standardProficiencyId,
+          practice: standardProficiencyId
+        }
+      };
+      defaultTestSettings = {
+        performanceBandProfiles,
+        standardsProficiencyProfiles,
+        defaultTestTypeProfiles
+      };
+    }
     const {
       performanceBandProfiles,
       standardsProficiencyProfiles,

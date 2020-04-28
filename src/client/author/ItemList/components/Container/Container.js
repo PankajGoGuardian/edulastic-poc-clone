@@ -1,6 +1,7 @@
 import { withWindowSizes } from "@edulastic/common";
 import { IconItemLibrary } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
+import { roleuser } from "@edulastic/constants";
 import { Pagination, Spin } from "antd";
 import { debounce, omit } from "lodash";
 import moment from "moment";
@@ -28,7 +29,8 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  getUserFeatures
+  getUserFeatures,
+  getUserRole
 } from "../../../src/selectors/user";
 import { ItemsMenu, PaginationInfo } from "../../../TestList/components/Container/styled";
 import {
@@ -328,7 +330,8 @@ class Contaier extends Component {
   };
 
   renderCartButton = () => {
-    const { approveOrRejectMultipleItem } = this.props;
+    const { approveOrRejectMultipleItem, userRole } = this.props;
+    if (userRole === roleuser.EDULASTIC_CURATOR) return null;
 
     return (
       <>
@@ -360,7 +363,8 @@ class Contaier extends Component {
       curriculumStandards,
       loading,
       count,
-      search
+      search,
+      userRole
     } = this.props;
 
     const { isShowFilter } = this.state;
@@ -388,7 +392,7 @@ class Contaier extends Component {
               search={search}
               getCurriculumStandards={getCurriculumStandards}
               curriculumStandards={curriculumStandards}
-              items={filterMenuItems}
+              items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
               toggleFilter={this.toggleFilter}
               t={t}
             />
@@ -473,7 +477,8 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       search: getSearchFilterStateSelector(state),
       passageItems: state.tests.passageItems || [],
-      userFeatures: getUserFeatures(state)
+      userFeatures: getUserFeatures(state),
+      userRole: getUserRole(state)
     }),
     {
       receiveItems: receiveTestItemsAction,

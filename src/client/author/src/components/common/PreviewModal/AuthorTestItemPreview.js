@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { Pagination, message, Icon } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor, red } from "@edulastic/colors";
-import { questionType } from "@edulastic/constants";
+import { questionType, roleuser } from "@edulastic/constants";
 import { Tabs, EduButton, withWindowSizes, ScrollContext, ScratchPadContext } from "@edulastic/common";
 import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy, IconTrash } from "@edulastic/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -36,7 +36,7 @@ import {
   submitReviewFeedbackAction,
   loadScratchPadAction
 } from "../../../../ItemList/ducks";
-import { getUserId, getUserFeatures, getUserSelector } from "../../../selectors/user";
+import { getUserId, getUserFeatures, getUserSelector, getUserRole } from "../../../selectors/user";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import PreviewModalWithScratchPad from "./PreviewModalWithScratchPad";
 import ScoreBlock from "../ScoreBlock";
@@ -260,24 +260,25 @@ class AuthorTestItemPreview extends Component {
       userFeatures,
       onlySratchpad,
       deleting,
-      isTestInRegrade
+      isTestInRegrade,
+      userRole
     } = this.props;
 
     const { isRejectMode } = this.state;
-    const isOwner = item?.createdBy?._id === userId;
+    const isOwner = item?.createdBy?._id === userId || userRole === roleuser.EDULASTIC_CURATOR;
     const disableEdit = item?.algoVariablesEnabled && isTestInRegrade;
     return (
       <>
         <ButtonsContainer style={onlySratchpad ? { visibility: "hidden" } : {}}>
           <ButtonsWrapper justifyContent="flex-start">
-            {allowDuplicate && (
+            {allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR && (
               <EduButton isGhost height="28px" title="CLONE" onClick={handleDuplicateTestItem}>
                 <IconCopy color={themeColor} />
                 <span>CLONE</span>
               </EduButton>
             )}
-            {isEditable &&
-              (disableEdit ? (
+            {(isEditable || userRole === roleuser.EDULASTIC_CURATOR) &&
+              (disableEdit && userRole !== roleuser.EDULASTIC_CURATOR ? (
                 <EduButton
                   noHover
                   isGhost
@@ -626,7 +627,8 @@ const enhance = compose(
       deleting: getItemDeletingSelector(state),
       userFeatures: getUserFeatures(state),
       userId: getUserId(state),
-      user: getUserSelector(state).user
+      user: getUserSelector(state).user,
+      userRole: getUserRole(state)
     }),
     {
       deleteItem: deleteItemAction,

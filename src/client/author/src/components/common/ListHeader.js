@@ -74,7 +74,7 @@ const ListHeader = ({
           !createAssignment &&
           (renderButton ? (
             renderButton()
-          ) : (
+          ) : userRole === roleuser.EDULASTIC_CURATOR ? null : (
             <EduButton data-cy="createNew" onClick={onCreate}>
               <IconPlusStyled />
               {btnTitle && btnTitle.length ? btnTitle : "NEW ITEM"}

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { themeColor, secondaryTextColor, titleColor, lightGreySecondary, smallDesktopWidth } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer, FieldLabel, SelectInputStyled } from "@edulastic/common";
 import { Select } from "antd";
-import { test as testsConstants } from "@edulastic/constants";
+import { test as testsConstants, roleuser } from "@edulastic/constants";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector, getUserFeatures, getUserOrgId } from "../../../src/selectors/user";
+import { getCollectionsSelector, getUserFeatures, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 import { getAllTagsSelector } from "../../../TestPage/ducks";
 import { getCurrentDistrictUsersSelector, getCurrentDistrictUsersAction } from "../../../../student/Login/ducks";
@@ -31,7 +31,8 @@ const TestListFilters = ({
   userFeatures,
   districtId,
   currentDistrictUsers,
-  getCurrentDistrictUsers
+  getCurrentDistrictUsers,
+  userRole
 }) => {
   const [showModal, setShowModal] = useState(false);
   const isPublishers = !!(userFeatures.isPublisherAuthor || userFeatures.isCurator);
@@ -39,6 +40,15 @@ const TestListFilters = ({
   useEffect(() => {
     if (userFeatures.isCurator && !currentDistrictUsers?.length) getCurrentDistrictUsers(districtId);
   }, []);
+
+  const collectionDefaultFilter = useMemo(() => {
+    if (userRole === roleuser.EDULASTIC_CURATOR) {
+      return testsConstants.collectionDefaultFilter.filter(
+        c => !["SCHOOL", "DISTRICT", "PUBLIC", "INDIVIDUAL"].includes(c.value)
+      );
+    }
+    return testsConstants.collectionDefaultFilter;
+  }, [testsConstants.collectionDefaultFilter, userRole]);
 
   const getAuthoredByFilterData = () => {
     if (!userFeatures.isCurator) return [];
@@ -80,7 +90,7 @@ const TestListFilters = ({
           placeholder: "All Collections",
           size: "large",
           data: [
-            ...testsConstants.collectionDefaultFilter.filter(c => c.value),
+            ...collectionDefaultFilter.filter(c => c.value),
             ...collections.map(o => ({ value: o._id, text: o.name }))
           ],
           onChange: "collections"
@@ -145,7 +155,7 @@ const TestListFilters = ({
           placeholder: "All Collections",
           size: "large",
           data: [
-            ...testsConstants.collectionDefaultFilter.filter(c => c.value),
+            ...collectionDefaultFilter.filter(c => c.value),
             ...collections.map(o => ({ value: o._id, text: o.name }))
           ],
           onChange: "collections"
@@ -203,7 +213,11 @@ const TestListFilters = ({
           CLEAR ALL
         </ClearAll>
       </FilerHeading>
-      <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
+      <TestFiltersNav
+        items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
+        onSelect={handleLabelSearch}
+        search={search}
+      />
       {mappedfilterData.map((filterItem, index) => {
         if (filterItem.title === "Authored By" && search.filter === "AUTHORED_BY_ME") return null;
         return (
@@ -273,7 +287,8 @@ export default connect(
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),
-    currentDistrictUsers: getCurrentDistrictUsersSelector(state)
+    currentDistrictUsers: getCurrentDistrictUsersSelector(state),
+    userRole: getUserRole(state)
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction

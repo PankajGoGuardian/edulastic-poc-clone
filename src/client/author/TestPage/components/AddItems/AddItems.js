@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { debounce, uniq, get } from "lodash";
 import { Pagination, Spin, message } from "antd";
-
+import { roleuser } from "@edulastic/constants";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconItemGroup } from "@edulastic/icons";
@@ -414,7 +414,8 @@ class AddItems extends PureComponent {
       isShowFilter,
       search,
       features,
-      gotoGroupItems
+      gotoGroupItems,
+      userRole
     } = this.props;
 
     return (
@@ -431,7 +432,7 @@ class AddItems extends PureComponent {
             curriculums={curriculums}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
-            items={filterMenuItems}
+            items={userRole === roleuser.EDULASTIC_CURATOR ? [filterMenuItems[0]] : filterMenuItems}
             toggleFilter={toggleFilter}
             isShowFilter={isShowFilter}
             t={t}
@@ -457,16 +458,18 @@ class AddItems extends PureComponent {
                   <span style={{ fontSize: "12px" }}>
                     {test.itemGroups.flatMap(itemGroup => itemGroup.items || []).length} SELECTED
                   </span>
-                  <StyledButton
-                    data-cy="createNewItem"
-                    type="secondary"
-                    size="large"
-                    onClick={this.handleCreateNewItem}
-                    noHover
-                  >
-                    <IconPlusCircle color={themeColor} width={15} height={15} />
-                    <span>Create new Item</span>
-                  </StyledButton>
+                  {userRole !== roleuser.EDULASTIC_CURATOR && (
+                    <StyledButton
+                      data-cy="createNewItem"
+                      type="secondary"
+                      size="large"
+                      onClick={this.handleCreateNewItem}
+                      noHover
+                    >
+                      <IconPlusCircle color={themeColor} width={15} height={15} />
+                      <span>Create new Item</span>
+                    </StyledButton>
+                  )}
                   {(features.isCurator || features.isPublisherAuthor) && (
                     <StyledButton data-cy="groupItem" type="secondary" size="large" onClick={gotoGroupItems}>
                       <IconItemGroup color={themeColor} width={15} height={15} />

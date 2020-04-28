@@ -85,6 +85,7 @@ const AssessmentPlayer = ({
         test={test}
         defaultAP
         preview
+        demo={demo}
         showTools={showTools}
         showScratchPad={isShowStudentWork}
         passages={passages}

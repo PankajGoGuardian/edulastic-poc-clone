@@ -19,6 +19,7 @@ const PlayerHeader = ({
   calculateMode,
   handleMagnifier,
   enableMagnifier,
+  previewPlayer,
   hasSubmitButton
 }) => {
   let buttonText = "Next";
@@ -32,8 +33,11 @@ const PlayerHeader = ({
     buttonText = "Submit";
     showButton = false;
   }
+  if (previewPlayer && currentPage >= dropdownOptions?.length) {
+    showButton = false;
+  }
 
-  const onClickHandle = e => {
+  const onClickHandler = e => {
     e.target.blur();
     onNextQuestion();
   };
@@ -58,7 +62,7 @@ const PlayerHeader = ({
             <ContainerRight>
               <FlexDisplay>
                 {showButton && (
-                  <ActionButton onClick={onClickHandle} disabled={disableButton}>
+                  <ActionButton onClick={onClickHandler} disabled={disableButton}>
                     <span>{buttonText}</span>
                     <IconGraphRightArrow />
                   </ActionButton>

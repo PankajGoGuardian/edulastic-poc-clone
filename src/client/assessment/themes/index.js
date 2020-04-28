@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin, message } from "antd";
 import { isUndefined, get } from "lodash";
-import { ScratchPadContext } from "@edulastic/common";
 import { test as testTypes, assignmentPolicyOptions } from "@edulastic/constants";
 import useInterval from "@use-it/interval";
 
@@ -187,11 +186,15 @@ const AssessmentContainer = ({
   };
 
   const gotoSummary = async () => {
-    if (!testletType) {
-      const timeSpent = Date.now() - lastTime.current;
-      await saveUserAnswer(currentItem, timeSpent, false, groupId);
+    if (!preview) {
+      if (!testletType) {
+        const timeSpent = Date.now() - lastTime.current;
+        await saveUserAnswer(currentItem, timeSpent, false, groupId);
+      }
+      history.push(`${url}/test-summary`);
+    } else {
+      history.push(`/login`);
     }
-    history.push(`${url}/test-summary`);
   };
 
   const moveToPrev = () => {

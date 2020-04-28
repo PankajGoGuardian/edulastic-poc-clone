@@ -275,6 +275,7 @@ class Container extends PureComponent {
       this.setState({ testLoaded: true });
     }
   }
+
   // Make use of the router Prompt Component. No custom beforeunload method is required.
   beforeUnload = () => {
     const {

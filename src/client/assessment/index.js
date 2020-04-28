@@ -123,6 +123,7 @@ const AssessmentPlayer = ({
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
   loadTest: PropTypes.func.isRequired,
+  closeTestPreviewModal: PropTypes.func,
   match: PropTypes.any.isRequired,
   preview: PropTypes.any,
   testId: PropTypes.string,

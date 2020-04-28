@@ -94,17 +94,7 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   render() {
-    const {
-      theme,
-      items,
-      currentItem,
-      selectedTheme = "default",
-      settings,
-      timedAssignment = false,
-      currentAssignmentTime = null,
-      stopTimerFlag = false,
-      groupId
-    } = this.props;
+    const { theme, items, currentItem, selectedTheme = "default", settings, timedAssignment = false } = this.props;
     const { showExitPopup, currentTool } = this.state;
     const item = items[currentItem];
     if (!item) {
@@ -153,7 +143,6 @@ class AssessmentPlayerTestlet extends React.Component {
 export default connect(
   state => ({
     evaluation: state.evaluation,
-    preview: state.view.preview,
     testActivityId: state.test ? state.test.testActivityId : "",
     questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,

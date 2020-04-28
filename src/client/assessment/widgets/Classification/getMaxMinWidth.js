@@ -5,12 +5,10 @@ import minBy from "lodash/minBy";
 import { measureText, getImageDimensions } from "@edulastic/common";
 
 const getMaxMinWidth = (choices, fontSize) => {
-  const [, updateData] = useState(0);
   const dimensionsRef = useRef([null]);
 
   const setDimensions = (dimensions, index) => {
     dimensionsRef.current[index] = dimensions;
-    updateData(index);
   };
 
   const measureTemplate = () => {
@@ -42,7 +40,7 @@ const getMaxMinWidth = (choices, fontSize) => {
 
   useEffect(() => {
     dimensionsRef.current = Array.from({ length: choices.length }).fill(null);
-    measureTemplate();
+    if (window.$) measureTemplate();
   }, [choices]);
 
   const dimensions = dimensionsRef.current;

@@ -12,6 +12,8 @@ import { startAssessmentAction } from "./actions/assessment";
 import { testActivityLoadingSelector } from "./selectors/test";
 import RequirePassword from "./RequirePassword";
 
+const isPublic = window.location.href.indexOf("/public/") > -1;
+
 const AssessmentPlayer = ({
   defaultAP,
   loadTest,
@@ -65,6 +67,10 @@ const AssessmentPlayer = ({
   };
 
   useEffect(() => {
+    if (isPublic) {
+      //can't return undefined from useEffect hook
+      return () => {};
+    }
     window.addEventListener("beforeunload", confirmBeforeQuitting);
     return () => {
       window.removeEventListener("beforeunload", confirmBeforeQuitting);
@@ -135,7 +141,11 @@ AssessmentPlayer.defaultProps = {
   preview: false,
   testId: "",
   test: {},
-  closeTestPreviewModal: () => {}
+  closeTestPreviewModal: () => {
+    if (isPublic) {
+      window.location.href = "/";
+    }
+  }
 };
 
 // export component

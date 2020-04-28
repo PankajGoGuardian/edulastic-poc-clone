@@ -15,6 +15,8 @@ export default class PlayListAddTest {
 
   getModuleNameByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter module name"]');
 
+  getModuleIdByModule = mod => this.getModuleContainerByModule(mod).find('[placeholder="Enter ID"]');
+
   getModuleSaveByModuleNo = mod => this.getModuleContainerByModule(mod).find('[data-cy="manageModuleApply"]');
 
   getEditByModuleNo = mod => this.getModuleContainerByModule(mod).contains("span", "EDIT");
@@ -58,6 +60,8 @@ export default class PlayListAddTest {
 
   setModuleName = (mod, name) => this.getModuleNameByModule(mod).type(`{selectall}${name}`);
 
+  setModuleId = (mod, id) => this.getModuleIdByModule(mod).type(`{selectall}${id}`);
+
   clickOnActions = () => this.getActionsButton().click();
 
   clickOnBulkAdd = () => this.getBulkAdd().click();
@@ -65,6 +69,7 @@ export default class PlayListAddTest {
   clickBulkRemove = () => this.getBulkRemove().click();
 
   clickYesWhileBulkRemove = () => this.getYesButtonWhileBulkRemove().click();
+
   checkTestById = id => this.getCheckBoxById(id).check({ force: true });
 
   clickOnViewTestById = id => {

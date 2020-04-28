@@ -451,7 +451,7 @@ const ManageModulesModalBody = props => {
                       CANCEL
                     </StyledSpan>
                   </ThemeButton>
-                  <ThemeButton data-cy="addNewModule" key="submit" type="primary" onClick={handleModuleSave}>
+                  <ThemeButton data-cy="manageModuleApply" key="submit" type="primary" onClick={handleModuleSave}>
                     <StyledSpan width={80} fSize={12}>
                       ADD
                     </StyledSpan>

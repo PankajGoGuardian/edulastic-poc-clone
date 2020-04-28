@@ -55,6 +55,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         testlibraryPage.header.clickOnPublishButton();
       });
     }
+
     cy.wait(1).then(() => {
       plalistdata.moduledata.module1 = testIds.slice(0, 2);
       plalistdata.moduledata.module2 = testIds.slice(2, 4);
@@ -97,7 +98,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.playlistCustom.searchContainer.setFilters({ collection: "Private Library" });
         playlistlibraryPage.playlistCustom.searchContainer.typeInSearchBar(newtest);
         playlistlibraryPage.playlistCustom.dragTestFromSearchToModule(1, newtest);
-        playlistlibraryPage.header.clickOnSave();
+        playlistlibraryPage.playlistCustom.clickUpdatePlaylist();
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
       });
       it(">assign the whole module-'re-assign'", () => {
@@ -120,9 +121,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
       before(">login", () => {
         cy.login("teacher", teacher.email, teacher.pass);
       });
-      it(">search and use playlist", () => {
-        playlistlibraryPage.searchByCollection(collection);
-        playlistlibraryPage.clickOnPlayListCardById(playlisid);
+      it(">search and use customizesd playlist", () => {
+        playlistlibraryPage.seachAndClickPlayListById(customplaylist);
         playlistlibraryPage.header.clickOnUseThis();
         cy.url().should("contain", customplaylist);
       });
@@ -131,6 +131,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.reviewTab.moveTestBetweenModule(2, 1, 1);
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 4);
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);
+        // TODO: need to clarify as playlist will be in draft state and publish button is not visible there
       });
 
       it(">assign the test", () => {
@@ -148,8 +149,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         cy.login("teacher", teacher.email, teacher.pass);
       });
       it(">search and use playlist", () => {
-        playlistlibraryPage.searchByCollection(collection);
-        playlistlibraryPage.clickOnPlayListCardById(playlisid);
+        playlistlibraryPage.seachAndClickPlayListById(customplaylist);
         playlistlibraryPage.header.clickOnUseThis();
         cy.url().should("contain", customplaylist);
       });
@@ -157,6 +157,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> spark playlist customiz
         playlistlibraryPage.playlistCustom.clickOnManageContent();
         playlistlibraryPage.reviewTab.clickExpandByModule(1);
         playlistlibraryPage.reviewTab.clickOnDeleteByTestByModule(1, 4);
+        // TODO: need to clarify as playlist will be in draft state and publish button is not visible there
         playlistlibraryPage.header.clickOnSave();
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(1).should("have.length", 3);
         playlistlibraryPage.reviewTab.getTestsInModuleByModule(2).should("have.length", 1);

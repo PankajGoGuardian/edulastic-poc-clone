@@ -73,9 +73,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>> play list basics`, () =
     it(">author playlist-'create modules'", () => {
       playListLibrary.header.clickOnAddTests();
       playListLibrary.addTestTab.clickOnManageModule();
+      // playListLibrary.addTestTab.setModuleName(1, `module-1`);
+      // playListLibrary.addTestTab.setModuleId(1, `module-id-1}`);
+      // playListLibrary.addTestTab.clickOnSaveByModule(1);
+
       for (let i = 0; i < tests.length; i++) {
-        playListLibrary.addTestTab.clickOnAddModule();
+        if (i !== 0) playListLibrary.addTestTab.clickOnAddModule();
         playListLibrary.addTestTab.setModuleName(i + 1, `module-${i + 1}`);
+        playListLibrary.addTestTab.setModuleId(i + 1, `module-id-${i + 1}`);
         playListLibrary.addTestTab.clickOnSaveByModule(i + 1);
       }
       playListLibrary.addTestTab.clickOnDone(true).then(id => {

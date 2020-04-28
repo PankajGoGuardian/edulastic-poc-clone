@@ -127,13 +127,14 @@ export default class PlayListLibrary {
     this.addTestTab.clickOnManageModule();
 
     for (let i = 0; i < NoOfModules; i++) {
-      this.addTestTab.clickOnAddModule();
+      if (i !== 0) this.addTestTab.clickOnAddModule();
       this.addTestTab.setModuleName(i + 1, `module-${i + 1}`);
+      this.addTestTab.setModuleId(i + 1, `mod${i + 1}`);
       this.addTestTab.clickOnSaveByModule(i + 1);
     }
-
     return this.addTestTab.clickOnDone(true);
   };
+
   createPlayListWithTests = playListData => {
     /* const playListData = {
       metadata: {

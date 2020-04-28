@@ -15,7 +15,9 @@ class PlaylistCustom extends PlayListReview {
     cy
       .get(".ant-modal-confirm-btns")
       .find("button")
-      .contains("span", "OK");
+      .contains("span", "Continue");
+
+  getUpdatePlaylist = () => cy.get('[data-cy="publish-customized-playlist"]');
 
   clickOnManageContent = (customize = false) => {
     cy.server();
@@ -31,6 +33,15 @@ class PlaylistCustom extends PlayListReview {
           cy.saveplayListDetailToDelete(xhr.response.body.result._id).then(() => xhr.response.body.result._id)
         );
     } else return cy.wait(2000);
+  };
+
+  clickUpdatePlaylist = () => {
+    cy.server();
+    cy.route("PUT", "**/playlists/*").as("update-playlist");
+    this.getUpdatePlaylist().click();
+    cy.wait("@update-playlist").then(xhr => {
+      expect(xhr.status).to.eq(200);
+    });
   };
 
   /* APP HELPERS */

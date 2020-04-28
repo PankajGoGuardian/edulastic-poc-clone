@@ -33,9 +33,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>module authoring and ass
   const testIds = [];
   const dynamicPassword = [];
   const playListData = {
-    name: "Play List",
-    grade: "Grade 10",
-    subject: "Social Studies"
+    metadata: {
+      name: "Play List",
+      grade: "Grade 10",
+      subject: "Social Studies"
+    },
+    moduledata: {}
   };
   const student = {
     email: "student.playlistBasic@snapwiz.com",
@@ -70,15 +73,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)}>>module authoring and ass
   context("> authoring", () => {
     before("create play list", () => {
       cy.deleteAllAssignments("", teacher.email);
+      playListData.moduledata.module1 = testIds;
       cy.login("teacher", teacher.email, teacher.pass);
-      playListLibrary.createPlayList(playListData);
-    });
-    it(">add test to modules", () => {
-      playListLibrary.searchFilter.clearAll();
-      testIds.forEach((id, index) => {
-        playListLibrary.addTestTab.addTestByIdByModule(id, 1);
-      });
-      playListLibrary.header.clickOnPublish();
+      playListLibrary.createPlayListWithTests(playListData);
     });
     it(">assign whole module", () => {
       playListLibrary.header.clickOnUseThis();

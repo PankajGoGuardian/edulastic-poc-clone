@@ -189,7 +189,7 @@ const PlayerContent = ({
     if (!LCBPreviewModal) {
       const { currentPageIds } = frameController;
       const scoringIds = Object.keys(currentPageIds);
-      if (!isEmpty(scoringIds)) {
+      if (!isEmpty(scoringIds) && !previewPlayer) {
         const currentItem = findItemIdMap(scoringIds[0]);
         if (currentItem) {
           const timeSpent = Date.now() - lastTime.current;
@@ -413,7 +413,9 @@ const PlayerContent = ({
           });
         }
 
-        setUserAnswer(cQuestion.id, data);
+        if (!previewPlayer) {
+          setUserAnswer(cQuestion.id, data);
+        }
       }
     }
   };
@@ -457,12 +459,14 @@ const PlayerContent = ({
             if (enableMagnifier) {
               setTimeout(showMagnifier, 1000);
             }
-            setTestUserWork({
-              [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
-            });
+            if (!previewPlayer) {
+              setTestUserWork({
+                [testActivityId]: { testletState: { state: itemState, response: itemResponse } }
+              });
+            }
           }
         },
-        handleLog: saveTestletLog,
+        handleLog: previewPlayer ? () => null : saveTestletLog,
         submitTest: nextQuestion
       });
       if (enableMagnifier) {
@@ -481,7 +485,7 @@ const PlayerContent = ({
 
   useEffect(() => {
     if (currentPage > 0) {
-      if (!LCBPreviewModal) {
+      if (!LCBPreviewModal && !previewPlayer) {
         saveTestletState();
       }
       window.localStorage.assessmentLastTime = Date.now();

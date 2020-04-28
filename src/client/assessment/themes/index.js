@@ -84,6 +84,7 @@ const AssessmentContainer = ({
   enableMagnifier,
   studentReportModal,
   hideHints,
+  demo,
   ...restProps
 }) => {
   const qid = preview || testletType ? 0 : match.params.qid || 0;
@@ -164,7 +165,7 @@ const AssessmentContainer = ({
       gotoQuestion(Number(currentItem) + 1);
     }
 
-    if (isLast() && preview) {
+    if (isLast() && preview && !demo) {
       closeTestPreviewModal();
     }
 

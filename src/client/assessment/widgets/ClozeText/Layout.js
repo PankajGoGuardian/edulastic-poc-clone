@@ -4,11 +4,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { clamp, differenceBy } from "lodash";
 
-import { Select, TextField } from "@edulastic/common";
+import { Select } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { response as responseDimensions } from "@edulastic/constants";
-
-import { Checkbox } from "antd";
 
 import { getFormattedAttrId } from "@edulastic/common/src/helpers";
 import { Block } from "../../styled/WidgetOptions/Block";
@@ -19,7 +17,6 @@ import { Label } from "../../styled/WidgetOptions/Label";
 import { CustomStyleBtn } from "../../styled/ButtonStyles";
 
 import { Container } from "./components/Options/styled/Container";
-import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
 import Question from "../../components/Question";
 import { CheckboxLabel } from "../../styled/CheckboxWithLabel";

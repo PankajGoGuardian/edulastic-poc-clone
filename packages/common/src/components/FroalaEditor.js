@@ -242,7 +242,7 @@ const getFixedPostion = el => {
   };
 };
 
-const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons, buttonCounts) => {
   const sizeMap = {
     STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
     MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
@@ -252,6 +252,7 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions, buttons)
   const cSize = sizeMap[toolbarSize][size];
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
   toolbarButtons.moreText.buttons = buttons ? [...buttons] : [...toolbarButtons.moreText.buttons];
+  toolbarButtons.moreText.buttonsVisible = buttonCounts || toolbarButtons.moreText.buttonsVisible;
   toolbarButtons.moreMisc = {
     buttons: additionalToolbarOptions,
     buttonsVisible: 3
@@ -686,6 +687,7 @@ const CustomEditor = ({
       toolbarButtonsSM: _toolbarButtonsSM,
       toolbarButtonsXS: _toolbarButtonsXS
     };
+
     // for hidden refs wait for it to be shown in the dom to set config.
     if (toolbarContainerRef?.current?.offsetParent === null) {
       setConfigState(null);

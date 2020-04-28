@@ -555,11 +555,8 @@ class MainSetting extends Component {
                   />
                   <Description>
                     {"If set to "}
-                    <BlueText>ON</BlueText>
-                    , answer choices for multiple choice and multiple select questions will be randomly shuffled for
-                    students.
-                    <br />
-                    Text to speech does not work when the answer choices are shuffled.
+                    <BlueText>ON</BlueText>, answer choices for multiple choice and multiple select questions will be
+                    randomly shuffled for students.
                   </Description>
                 </Body>
               </Block>
@@ -878,26 +875,29 @@ class MainSetting extends Component {
               )}
               <Block id="accessibility" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>
-                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}>
+                <RadioWrapper
+                  disabled={!owner || !isEditable}
+                  style={{ marginTop: "29px", marginBottom: 0, flexDirection: "row" }}
+                >
                   {Object.keys(accessibilities).map(key => {
                     return (
-                    <Row key={accessibilities[key]} style={{ width: "100%" }}>
-                      <Col span={12}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
-                      </Col>
-                      <Col span={12}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={e => this.updateTestData(key)(e.target.value)}
-                          defaultValue={accessibilityData[key]}
-                        >
-                          <RadioBtn value>ENABLE</RadioBtn>
-                          <RadioBtn value={false}>DISABLE</RadioBtn>
-                        </StyledRadioGroup>
-                      </Col>
-                    </Row>
-                    )}
-                  )}
+                      <Row key={accessibilities[key]} style={{ width: "100%" }}>
+                        <Col span={12}>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[key]}</span>
+                        </Col>
+                        <Col span={12}>
+                          <StyledRadioGroup
+                            disabled={!owner || !isEditable}
+                            onChange={e => this.updateTestData(key)(e.target.value)}
+                            defaultValue={accessibilityData[key]}
+                          >
+                            <RadioBtn value>ENABLE</RadioBtn>
+                            <RadioBtn value={false}>DISABLE</RadioBtn>
+                          </StyledRadioGroup>
+                        </Col>
+                      </Row>
+                    );
+                  })}
                 </RadioWrapper>
               </Block>
               {/* {availableFeatures.includes("enableMagnifier") && (

@@ -248,12 +248,12 @@ const extractFunctions = {
       ?.join(",");
   }
 };
-export function getResponseTobeDisplayed(testItem, userResponse, questionId) {
-  const question = (testItem?.data?.questions || [])?.find(q => q.id === questionId);
+export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId) {
+  const question = (testItem.data?.questions || [])?.find(q => q.id === questionId) || {};
   const qType = question.type;
 
   if (
-    testItem.data.questions.filter(x => x.type !== questionType.SECTION_LABEL).length > 1 &&
+    testItem.data?.questions?.filter(x => x.type !== questionType.SECTION_LABEL)?.length > 1 &&
     testItem.itemLevelScoring
   ) {
     //MULTIPART

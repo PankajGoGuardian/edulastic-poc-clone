@@ -52,7 +52,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t("common.dashboard")}>
       <FlexContainer>
-        <StyledEduButton height="36px" onClick={launchHangout} isGhost>
+        <StyledEduButton onClick={launchHangout} isGhost>
           <IconHangouts height={21} width={19} />
           Launch Google Meet
         </StyledEduButton>

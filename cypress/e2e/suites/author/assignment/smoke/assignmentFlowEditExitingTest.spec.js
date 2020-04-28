@@ -116,11 +116,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Assignment Flows`, () 
               testLibrary.testSummary.setName(testdata.assignmentName);
               // add items
               testLibrary.header.clickOnAddItems();
+              testLibrary.searchFilters.routeSearch();
               test.itemKeys.forEach((itemKey, index) => {
                 // create new items
                 if (index === 2) {
                   itemListPage.createItem(itemKey, index, false);
-                  testLibrary.searchFilters.waitForSearchResponse(); // Redirect has been changed back to add-item tab in app
+                  testLibrary.searchFilters.waitForSearchResponse();
+                  testLibrary.searchFilters.waitForSearchResponse();
+                  // Redirect has been changed back to add-item tab in app
                   cy.wait(1000);
                 }
               });

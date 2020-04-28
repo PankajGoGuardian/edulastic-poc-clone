@@ -66,6 +66,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         separators: ["Space"],
         expected: ["100,000.1", "100 000.1"],
         input: "100000.1"
+      },
+      isSimplified: {
+        input: "4x+2x",
+        expected: ["6x", "4x+2x"],
+        checkboxValues: ["getSimplified", "getSimplified"],
+        isCorrectAnswer: [true, false]
+      },
+      isFactorised: {
+        input: "x^2{downarrow}-16",
+        expected: ["(x-4)(x+4)", "x^2{downarrow}-16"],
+        checkboxValues: ["getFactored", "getFactored"],
+        isCorrectAnswer: [true, false]
+      },
+      isExpanded: {
+        input: "(a+b)^{uparrow}2",
+        expected: ["a^2{downarrow}+b^2{downarrow}+2ab", "(a+b)^{uparrow}2"],
+        checkboxValues: ["getExpanded", "getExpanded"],
+        isCorrectAnswer: [true, false]
+      },
+      isMixedFraction: {
+        input: "9/4",
+        expected: ["2\\frac{enter}1{downarrow}4", "9/4"], //"2\frac{1}{4}",
+        checkboxValues: ["getMixedFraction", "getMixedFraction"],
+        isCorrectAnswer: [true, false]
+      },
+      isRationalised: {
+        input: "1/\\sqrt{enter}2{rightarrow}",
+        expected: ["\\sqrt{enter}2{rightarrow}/2", "1/\\sqrt{enter}2{rightarrow}"],
+        checkboxValues: ["getRationalized", "getRationalized"],
+        isCorrectAnswer: [true, false]
       }
     },
     equivLiteral: {
@@ -332,16 +362,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
       // TODO insert formula
 
-      it.skip(" > Upload image to server", () => {
+      it(" > Upload image to server", () => {
         question
           .getComposeQuestionTextBox()
           .first()
           .click({ force: true });
-
+        cy.get('[data-cmd="moreText"]').click();
         cy.get("[data-cmd='insertImage']").click();
         cy.uploadFile("testImages/sample.jpg", ".fr-form > input").then(() =>
           cy
-            .get(".ql-editor p")
+            .get('[contenteditable="true"]')
             .find("img")
             .should("be.visible")
         );
@@ -623,6 +653,51 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         question.allowDecimalMarks(separator, separators[index], input.length, expected[index], preview, true);
       });
     });
+
+    it(" > Testing Simplified method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isSimplified;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Factored method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isFactorised;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Expanded method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isExpanded;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing MixedFraction method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isMixedFraction;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+      });
+    });
+
+    it(" > Testing Rationalized method", () => {
+      const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isRationalised;
+      question.setValue(input);
+      checkboxValues.forEach((checkboxValue, index) => {
+        question.setSeparator(checkboxValue)();
+        question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+      });
+    });
     // it(" > Testing with significant decimal '3'", () => {
     //   const { input, expected, value } = queData.equivSymbolic.significantDecimalPlaces;
     //   question.enterAnswerValueMathInput(input);
@@ -813,7 +888,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  context(" > TC_448 => equivValue method", () => {
+  /* context.skip(" > TC_448 => equivValue method", () => {
     before("Set method to equivLiteral", () => {
       editItem.createNewItem();
       // create new que and select type
@@ -922,7 +997,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  context(" > TC_449 => isSimplified method", () => {
+  context.skip(" > TC_449 => isSimplified method", () => {
     before("Set method to isSimplified", () => {
       editItem.createNewItem();
       // create new que and select type
@@ -983,7 +1058,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  context(" > TC_450 => isFactorised method", () => {
+  context.skip(" > TC_450 => isFactorised method", () => {
     before("Set method to isSimplified", () => {
       editItem.createNewItem();
       // create new que and select type
@@ -1061,7 +1136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  context(" > TC_451 => isExpanded method", () => {
+  context.skip(" > TC_451 => isExpanded method", () => {
     before("Set method to isExpanded", () => {
       editItem.createNewItem();
       // create new que and select type
@@ -1113,7 +1188,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       });
     });
   });
-
+ */
   // context (" > TC_453 => isTrue method", () => {
   //   before("Set method to isTrue", () => {
   //     editItem.header.edit();
@@ -1169,7 +1244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   //   // });
   // });
 
-  context(" > TC_454 => stringMatch method", () => {
+  /*  context.skip(" > TC_454 => stringMatch method", () => {
     before("Set method to stringMatch", () => {
       editItem.createNewItem();
       // create new que and select type
@@ -1211,7 +1286,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
       question.setSeparator("getAnswerTreatMultipleSpacesAsOne")();
       question.checkCorrectAnswer(expected, preview, 0, true);
     });
-  });
+  }); */
 
   // context.only(" > TC_452 => isUnit method", () => {
   //   before("Set method to isUnit", () => {
@@ -1355,7 +1430,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     });
   });
 
-  context(" > TC_453 => isTrue method", () => {
+  /* context.skip(" > TC_453 => isTrue method", () => {
     before("Set method to isTrue", () => {
       editItem.createNewItem();
       editItem.chooseQuestion(queData.group, queData.queType);
@@ -1413,5 +1488,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
     //     question.getAnswerAllowThousandsSeparator().uncheck({ force: true });
     //   });
     // });
-  });
+  }); */
 });

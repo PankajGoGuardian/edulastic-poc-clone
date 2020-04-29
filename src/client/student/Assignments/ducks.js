@@ -84,8 +84,8 @@ export const getRedirect = (assignment, groupId, userId, classIds) => {
   const attempts = redirects.length;
 
   const dueDate = Math.max(...redirects.map(x => x.endDate));
-
-  return { attempts, dueDate };
+  const { allowedTime } = redirects[redirects.length - 1];
+  return { attempts, dueDate, allowedTime };
 };
 
 export const transformAssignmentForRedirect = (groupId, userId, classIds, assignment) => {
@@ -98,7 +98,13 @@ export const transformAssignmentForRedirect = (groupId, userId, classIds, assign
   let { endDate } = assignment;
   endDate = redirect.dueDate;
   maxAttempts += redirect.attempts;
-  return { ...assignment, endDate, maxAttempts, redir: true };
+  return {
+    ...assignment,
+    endDate,
+    maxAttempts,
+    redir: true,
+    ...(redirect.allowedTime ? { allowedTime: redirect.allowedTime } : {})
+  };
 };
 
 // selectors

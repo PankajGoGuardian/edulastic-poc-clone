@@ -449,7 +449,7 @@ class Variables extends Component {
                         value={variable.formula}
                         showResponse={false}
                         onInput={latex => handleChangeVariableList(variableName, "formula", latex)}
-                        // onBlur={handleCalculateFormula}
+                        onBlur={handleCalculateFormula}
                       />
                     </Col>
                   )}

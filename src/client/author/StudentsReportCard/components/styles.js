@@ -23,6 +23,7 @@ export const StyledPage = styled.div`
       margin: 15px;
       height: 29.7cm;
       width: 25cm;
+      size: A4;
     }
     .hide-on-print {
       display: none;

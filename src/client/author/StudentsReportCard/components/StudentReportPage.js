@@ -13,7 +13,6 @@ import { getQuestionTableData, getChartAndStandardTableData } from "../utils/tra
 
 import { StyledTableWrapper, StyledPage } from "./styles";
 const A4_HEIGHT = 1200;
-const PERFORMANCE_BAND_MARGIN = 30;
 const QUESTION_TABLE_MARGIN = 30;
 const STANDARD_TABLE_MARGIN = 30;
 const USER_INFO_HEIGHT = 37;
@@ -105,14 +104,13 @@ const StudentReportPage = ({
     let counter = 0;
     let totalHeight = 0;
     let extraHeight = PAGE_SIZE_HEIGHT + TABLE_HEADER_HEIGHT;
-    totalHeight = extraHeight;
+    totalHeight = extraHeight + performanceBlockHeight;
 
-    if (showQuestionsTable) {
-      const questionValues = Object.values(questionTableDims);
+    const questionValues = Object.values(questionTableDims);
+    const standardValues = Object.values(standardTableDims);
+
+    if (showQuestionsTable && questionValues.length) {
       questionValues.forEach((value, i) => {
-        if (i === 0 && !printData[counter]) {
-          totalHeight = totalHeight + performanceBlockHeight + PERFORMANCE_BAND_MARGIN;
-        }
         if (totalHeight + value > A4_HEIGHT) {
           printData[counter] = {
             questionEnd: i,
@@ -120,12 +118,11 @@ const StudentReportPage = ({
             footerMargin: A4_HEIGHT - totalHeight
           };
           totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN;
-          if (i === questionValues.length - 1) {
-            totalHeight += QUESTION_TABLE_MARGIN;
-          }
           counter++;
         }
-
+        if (i === questionValues.length - 1) {
+          totalHeight += QUESTION_TABLE_MARGIN;
+        }
         totalHeight += value;
       });
 
@@ -137,12 +134,8 @@ const StudentReportPage = ({
       };
     }
 
-    if (showStandardTable) {
-      const standardValues = Object.values(standardTableDims);
+    if (showStandardTable && standardValues.length) {
       standardValues.forEach((value, i) => {
-        if (!showQuestionsTable && i === 0 && !printData[counter]) {
-          totalHeight = totalHeight + performanceBlockHeight + PERFORMANCE_BAND_MARGIN;
-        }
         if (totalHeight + value > A4_HEIGHT) {
           printData[counter] = {
             ...(printData[counter] || {}),
@@ -151,10 +144,10 @@ const StudentReportPage = ({
             footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
           };
           totalHeight = extraHeight + USER_INFO_HEIGHT + USER_INFO_MARGIN;
-          if (i === standardValues.length - 1) {
-            totalHeight += STANDARD_TABLE_MARGIN;
-          }
           counter++;
+        }
+        if (i === standardValues.length - 1) {
+          totalHeight += STANDARD_TABLE_MARGIN;
         }
         totalHeight += value;
       });
@@ -168,16 +161,14 @@ const StudentReportPage = ({
 
     //if nothing is selected, then also student details should be display. So, atleast one page will be default
     if (!Object.keys(printData).length) {
-      totalHeight = performanceBlockHeight + PERFORMANCE_BAND_MARGIN;
-      const questionsLength = Object.values(questionTableDims).length;
-      const standardLength = Object.values(standardTableDims).length;
-      if (questionsLength) totalHeight += QUESTION_TABLE_MARGIN;
-      if (standardLength) totalHeight += STANDARD_TABLE_MARGIN;
+      totalHeight = performanceBlockHeight;
+      if (questionValues.length) totalHeight += QUESTION_TABLE_MARGIN;
+      if (standardValues.length) totalHeight += STANDARD_TABLE_MARGIN;
 
       printData = {
         0: {
-          questionEnd: questionsLength,
-          standardEnd: standardLength,
+          questionEnd: questionValues.length,
+          standardEnd: standardValues.length,
           footerMargin: A4_HEIGHT - totalHeight > 0 ? A4_HEIGHT - totalHeight : 0
         }
       };
@@ -197,12 +188,12 @@ const StudentReportPage = ({
             className="hide-on-print"
           />
         }
-        {showQuestionsTable && (
+        {showQuestionsTable && data.questionTableData?.length && (
           <StyledTableWrapper className="student-report-card-question-table-container hide-on-print">
             <QuestionTableContainer dataSource={data.questionTableData} columnsFlags={sections} />
           </StyledTableWrapper>
         )}
-        {showStandardTable && (
+        {showStandardTable && data.standardsTableData?.length && (
           <StyledTableWrapper className="student-report-card-standard-table-container hide-on-print">
             <StandardTableContainer
               dataSource={data.standardsTableData}

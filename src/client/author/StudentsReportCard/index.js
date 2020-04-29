@@ -9,21 +9,15 @@ import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { getSortedTestActivitySelector } from "../ClassBoard/ducks";
 import StudentReportPage from "./components/StudentReportPage";
 
-const StudentsReportCard = ({
-  location,
-  match,
-  loadTestActivity,
-  testActivity,
-  classResponse
-}) => {
+const StudentsReportCard = ({ location, match, loadTestActivity, testActivity, classResponse }) => {
   const { assignmentId, classId } = match.params;
-  const gradedTestActivities = testActivity.filter(ta => ta.status === "submitted" && ta.graded === "IN GRADING");
+  const gradedTestActivities = testActivity.filter(ta => ta.status === "submitted" && ta.graded === "GRADED");
   let { options } = queryString.parse(location.search);
   options = options.split(",").map(o => o.trim());
   options = options.reduce((acc, option) => {
     acc[option] = true;
     return acc;
-   } , {});
+  }, {});
 
   //load all test activity;
   useEffect(() => {
@@ -32,23 +26,17 @@ const StudentsReportCard = ({
 
   //change page title to <test title> - <date>
   useEffect(() => {
-    document.title = `${classResponse?.title} - ${Moment().format("MMM DD, YYYY")}`
+    document.title = `${classResponse?.title} - ${Moment().format("MMM DD, YYYY")}`;
   }, [classResponse]);
 
   return (
     <StudentsReportCardContainer>
       {gradedTestActivities.map(ta => (
-        <StudentReportPage
-          testActivity={ta}
-          groupId={classId}
-          sections={options}
-          classResponse={classResponse}
-        />
+        <StudentReportPage testActivity={ta} groupId={classId} sections={options} classResponse={classResponse} />
       ))}
     </StudentsReportCardContainer>
-  )
+  );
 };
-
 
 const StudentsReportCardContainer = styled.div`
   width: 25cm;

@@ -7,7 +7,8 @@ import memoizeOne from "memoize-one";
 import { Switch } from "antd";
 import styled, { ThemeProvider } from "styled-components";
 import { mobileWidthLarge } from "@edulastic/colors";
-import { withWindowSizes, MainContentWrapper } from "@edulastic/common";
+import AppConfig from "../../../../../../app-config";
+import { withWindowSizes, MainContentWrapper, WithResources } from "@edulastic/common";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -141,40 +142,45 @@ class ExpressGrader extends Component {
             testActivity={testActivity}
           />
           <MainContentWrapper>
-            <StyledFlexContainer justifyContent="space-between">
-              <ClassBreadBrumb />
-              <SwitchBox>
-                RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
-              </SwitchBox>
-              <PresentationToggleSwitch groupId={classId} />
-            </StyledFlexContainer>
-            {!isMobile && (
-              <ScoreTable
-                scoreMode={scoreMode}
-                testActivity={testActivity}
-                showQuestionModal={this.showQuestionModal}
-                isPresentationMode={isPresentationMode}
-                windowWidth={windowWidth}
-              />
-            )}
-
-            {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}
-
-            {isVisibleModal && (
-              <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
-                <QuestionModal
-                  record={record}
-                  tableData={tableData}
-                  isVisibleModal={isVisibleModal}
-                  showQuestionModal={this.showQuestionModal}
-                  hideQuestionModal={this.hideQuestionModal}
-                  isPresentationMode={isPresentationMode}
-                  groupId={classId}
-                  windowWidth={windowWidth}
+            <WithResources
+              resources={[`${AppConfig.katexPath}/katex.min.css`, `${AppConfig.katexPath}/katex.min.js`]}
+              fallBack={<span />}
+            >
+              <StyledFlexContainer justifyContent="space-between">
+                <ClassBreadBrumb />
+                <SwitchBox>
+                  RESPONSE <Switch checked={scoreMode} onChange={() => toggleScoreMode()} /> SCORE
+                </SwitchBox>
+                <PresentationToggleSwitch groupId={classId} />
+              </StyledFlexContainer>
+              {!isMobile && (
+                <ScoreTable
                   scoreMode={scoreMode}
+                  testActivity={testActivity}
+                  showQuestionModal={this.showQuestionModal}
+                  isPresentationMode={isPresentationMode}
+                  windowWidth={windowWidth}
                 />
-              </ThemeProvider>
-            )}
+              )}
+
+              {isMobile && <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />}
+
+              {isVisibleModal && (
+                <ThemeProvider theme={{ twoColLayout: { first: "75% !important", second: "25% !important" } }}>
+                  <QuestionModal
+                    record={record}
+                    tableData={tableData}
+                    isVisibleModal={isVisibleModal}
+                    showQuestionModal={this.showQuestionModal}
+                    hideQuestionModal={this.hideQuestionModal}
+                    isPresentationMode={isPresentationMode}
+                    groupId={classId}
+                    windowWidth={windowWidth}
+                    scoreMode={scoreMode}
+                  />
+                </ThemeProvider>
+              )}
+            </WithResources>
           </MainContentWrapper>
         </div>
       </FeaturesSwitch>

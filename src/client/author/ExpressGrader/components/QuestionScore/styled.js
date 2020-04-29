@@ -19,4 +19,8 @@ export const StyledText = styled.span`
   color: #434b5d;
   font-size: 14px;
   font-weight: 600;
+  padding-left: 4px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

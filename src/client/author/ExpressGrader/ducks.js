@@ -101,11 +101,12 @@ function* submitResponse({ payload }) {
     const { questionActivities } = scoreRes;
     yield put(
       gradebookTestItemAddAction(
-        questionActivities.map(({ qid: _id, score, maxScore, testActivityId }) => ({
+        questionActivities.map(({ qid: _id, score, maxScore, testActivityId, ...question }) => ({
           testActivityId,
-          _id,
           score,
-          maxScore
+          maxScore,
+          ...question,
+          _id
         }))
       )
     );

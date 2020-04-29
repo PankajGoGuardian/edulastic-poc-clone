@@ -325,15 +325,17 @@ function* updateStudentScore({ payload }) {
       maxScore,
       testActivityId: _testActivityId,
       graded,
-      skipped
+      skipped,
+      ...question
     } of questionActivities) {
       gradeBookTestItemAddPayload.push({
         testActivityId: _testActivityId,
-        _id,
         score: _score,
         maxScore,
         graded,
-        skipped
+        skipped,
+        ...question,
+        _id
       });
     }
 

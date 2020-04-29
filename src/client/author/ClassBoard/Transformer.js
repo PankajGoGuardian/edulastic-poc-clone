@@ -3,6 +3,7 @@
 import { keyBy, groupBy, get, values, flatten } from "lodash";
 import { testActivityStatus, questionType } from "@edulastic/constants";
 import DotProp from "dot-prop";
+import { getMathHtml } from "@edulastic/common";
 
 const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -240,12 +241,43 @@ export const transformTestItems = ({ passageData, testItemsData }) => {
   }
 };
 
+//writing this ouside `stripHtml` for performance optimisation
+let temporalDivElement = document.createElement("div");
+
+export function stripHtml(html) {
+  // Set the HTML content with the providen
+  temporalDivElement.innerHTML = html;
+  // Retrieve the text property of the element (cross-browser support)
+  return temporalDivElement.textContent || temporalDivElement.innerText || "";
+}
+
 const extractFunctions = {
   [questionType.MULTIPLE_CHOICE]: (question, userResponse) => {
     return userResponse
       ?.map(r => question?.options.findIndex(x => x.value === r))
       ?.map(x => alphabets[x]?.toUpperCase())
       ?.join(",");
+  },
+  [questionType.CLOZE_DRAG_DROP]: (question, userResponse) => {
+    return userResponse
+      ?.map(r => question?.options.find(x => x.value === r)?.label)
+      ?.map(x => stripHtml(x))
+      ?.join(",");
+  },
+  [questionType.CLOZE_DROP_DOWN]: (question, userResponse) => {
+    return userResponse
+      ?.map(x => x.value)
+      ?.map(x => stripHtml(x))
+      ?.join(",");
+  },
+  [questionType.CLOZE_TEXT]: (question, userResponse) => {
+    return userResponse
+      ?.map(x => x.value)
+      ?.map(x => stripHtml(x))
+      ?.join(",");
+  },
+  [questionType.MATH]: (question, userResponse) => {
+    return getMathHtml(userResponse, { throwOnError: false });
   }
 };
 export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId) {

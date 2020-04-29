@@ -50,10 +50,10 @@ class AssessmentPlayerTestlet extends React.Component {
   };
 
   openExitPopup = () => {
-    const { closeTestPreviewModal, updateTestPlayer } = this.props;
+    const { closeTestPreviewModal, updateTestPlayer, previewPlayer } = this.props;
     updateTestPlayer({ enableMagnifier: false });
     this.setState({ showExitPopup: true }, () => {
-      if (closeTestPreviewModal) {
+      if (closeTestPreviewModal && !previewPlayer) {
         closeTestPreviewModal();
       }
     });

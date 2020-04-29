@@ -69,6 +69,10 @@ const PerformanceBrand = (props, ref) => {
                 <Col className="student-report-card-key">Subject: </Col>
                 <Col className="student-report-card-value">{classResponse?.subjects?.join(", ")}</Col>
               </Row>
+              <Row className="student-report-card-details" type="flex" justify="start">
+                <Col className="student-report-card-key">Teacher: </Col>
+                <Col className="student-report-card-value">{testData.createdBy?.name || ""}</Col>
+              </Row>
               {feedback && (
                 <Row className="student-report-card-details">
                   <p className="student-report-card-key">Overall Feedback </p>

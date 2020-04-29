@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { values } from "lodash";
+import { hasValidAnswers } from "../utils/answer";
 
 export const getAnswersListSelector = state => state.answers;
 export const getPreviousAnswersListSelector = state => state.previousAnswers;
@@ -69,10 +70,9 @@ export const getSkippedAnswerSelector = createSelector(
   [itemsSelector, answersSelector],
   (items, answers) => {
     const skippedItems = [];
-    const answeredQids = Object.keys(answers).filter(ans => !!answers[ans]);
     items.forEach((item, index) => {
-      const qIds = item.data.questions.map(q => q.id);
-      const isAnswered = qIds.some(id => answeredQids.includes(id));
+      const questions = item.data.questions.map(q => ({ id: q.id, type: q.type }));
+      const isAnswered = questions.some(q => hasValidAnswers(q.type, answers[q.id]));
       skippedItems[index] = !isAnswered;
     });
     return skippedItems;

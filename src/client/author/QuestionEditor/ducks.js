@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
-import { cloneDeep, values, get, omit, set, uniqBy } from "lodash";
+import { cloneDeep, values, get, omit, set, uniqBy, intersection } from "lodash";
 import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
@@ -593,6 +593,33 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
 /**
  *
+ * @param {Object} variables
+ */
+const containsEmptyField = variables => {
+  const _keys = Object.keys(variables);
+  for (const key of _keys) {
+    const { type = "", exampleValue = "", formula = "", set: _set = "", sequence = "" } = variables[key];
+    switch (true) {
+      // variables must be set
+      case type !== "FORMULA" && !exampleValue:
+        return { hasEmptyField: true, errMessage: "dynamic parameters has empty fields" };
+      // formula must be set
+      case type === "FORMULA" && !formula:
+        return { hasEmptyField: true, errMessage: "formula is required" };
+      // avoids recursion
+      case !!intersection(_keys, _set.split(",")).length:
+        return { hasEmptyField: true, errMessage: "dynamic parameters can not use variable name inside set" };
+      case !!intersection(_keys, sequence.split(",")).length:
+        return { hasEmptyField: true, errMessage: "dynamic parameters can not use variable name inside sequence" };
+      default:
+        break;
+    }
+  }
+  return { hasEmptyField: false, errMessage: "" };
+};
+
+/**
+ *
  * @param {*} payload should be an object with testId and isEditFlow flags
  *
  */
@@ -681,6 +708,16 @@ function* calculateFormulaSaga({ payload }) {
     const variables = payload.data.variables || question.variable.variables || {};
     const examples = payload.data.examples || question.variable.examples || {};
     const latexValuePairs = [getLatexValuePairs("definition", variables)];
+
+    const { hasEmptyField = false, errMessage = "" } = containsEmptyField(variables);
+    if (hasEmptyField) {
+      yield put({
+        type: CALCULATE_FORMULA_FAILED
+      });
+      message.warning(errMessage);
+      return true;
+    }
+
     if (examples) {
       for (const example of examples) {
         const pair = getLatexValuePairs(`example${example.key}`, variables, example);

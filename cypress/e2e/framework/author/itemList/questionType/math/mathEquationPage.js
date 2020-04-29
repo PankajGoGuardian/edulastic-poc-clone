@@ -17,7 +17,7 @@ class MathEquationPage extends MathMatricesPage {
 
   getQuestionContainer = () => cy.get('[data-cy="question-container"]');
 
-  typeInResponseBox = () => this.getQuestionContainer().find(".ql-editor textarea");
+  typeInResponseBox = () => this.getQuestionContainer().find(".mq-textarea > textarea");
 
   getLastCollapseItem = () => this.getQuestionArea().find(".ant-collapse-item");
 

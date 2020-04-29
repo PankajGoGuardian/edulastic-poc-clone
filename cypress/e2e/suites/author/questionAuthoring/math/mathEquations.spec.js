@@ -42,7 +42,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         isCorrectAnswer: [true]
       },
       eulersNumber: {
-        input: ["2.718", "2.718"],
+        input: ["2.71828182845904", "2.71828182845904"],
         expected: ["e", "e"],
         checkboxValues: ["getAnswerTreatEasEulersNumber", "getAnswerTreatEasEulersNumber"],
         isCorrectAnswer: [true]
@@ -182,7 +182,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         input: "7+3=10"
       },
       eulersNumber: {
-        input: "2.718",
+        input: "2.71828182845904",
         expected: "e"
       },
       significantDecimal: {
@@ -191,8 +191,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         decimalPlaces: 2
       },
       setThousandsSeparator: {
-        expected: ["1,000,000", "1.000.000"],
-        input: "1000000"
+        // expected: ["1,000,000", "1.000.000"],
+        // input: "1000000"
+        expected: ["\\frac{enter}1{downarrow}1,000", "\\frac{enter}1{downarrow}1.000"],
+        input: ["0.001", "0,001"]
       },
       combinationIgnoreTxt: {
         expected: "7.00001m",
@@ -208,6 +210,36 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
       setDecimalSeparator: {
         expected: ["1.01", "1,01"],
         input: "1.01"
+      },
+      isSimplified: {
+        input: "4x+2x",
+        expected: ["6x", "4x+2x"],
+        checkboxValues: ["getSimplified", "getSimplified"],
+        isCorrectAnswer: [true, false]
+      },
+      isFactorised: {
+        input: "x^2{downarrow}-16",
+        expected: ["(x-4)(x+4)", "x^2{downarrow}-16"],
+        checkboxValues: ["getFactored", "getFactored"],
+        isCorrectAnswer: [true, false]
+      },
+      isExpanded: {
+        input: "(a+b)^{uparrow}2",
+        expected: "(a+b)^{uparrow}2",
+        checkboxValues: ["getExpanded", null],
+        isCorrectAnswer: [false, true]
+      },
+      isMixedFraction: {
+        input: "9/4",
+        expected: "9/4", //"2\frac{1}{4}",
+        checkboxValues: ["getMixedFraction", null],
+        isCorrectAnswer: [false, true]
+      },
+      isRationalised: {
+        input: "1/\\sqrt{enter}2{rightarrow}",
+        expected: ["\\sqrt{enter}2{rightarrow}/2", "1/\\sqrt{enter}2{rightarrow}"],
+        checkboxValues: ["getRationalized", "getRationalized"],
+        isCorrectAnswer: [true, false]
       }
     },
     equivLiteral: {
@@ -410,7 +442,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
 
         it(" > give external link", () => {
           question.checkIfTextExist(queData.testtext).type("{selectall}");
-          editToolBar.clickOnMore();
+          // editToolBar.clickOnMore();
           editToolBar.linkButton().click({ force: true });
           editToolBar.linkURL().type(queData.testtext, { force: true });
           //editToolBar.linkText().type(queData.testtext ,{force: true});
@@ -428,26 +460,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         it(" > insert formula", () => {
           question.checkIfTextExist(queData.testtext).clear();
         });
-        it.skip(" > Upload image to server", () => {
-          question
-            .getComposeQuestionTextBox()
-            .first()
-            .focus();
+        it(" > Upload image to server", () => {
+          question.getComposeQuestionTextBox().click();
+          //.focus();
 
-          question
-            .getUploadImageIcon()
-            .first()
-            .click();
-          cy.uploadFile("testImages/sample.jpg", "input.ql-image[type=file]").then(() =>
+          editToolBar.clickOnInserImage();
+          cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() =>
             question
-              .getEditorData()
+              .getComposeQuestionQuillComponent()
               .find("img")
               .should("be.visible")
           );
 
           question
             .getComposeQuestionTextBox()
-            .first()
+            // .first()
             .clear();
         });
       });
@@ -521,39 +548,40 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
           });
         });
       });
-      // context(" > TC_562 => isUnit method", () => {
-      //   beforeEach("Change to isUnit method", () => {
-      //     preview.header.edit();
-      //   });
-      //   it(" > Testing with expression contains the expected units", () => {
-      //     const { input, units } = queData.isUnit.expectedUnits;
+      /*
+      context(" > TC_562 => isUnit method", () => {
+        beforeEach("Change to isUnit method", () => {
+          preview.header.edit();
+        });
+        it(" > Testing with expression contains the expected units", () => {
+          const { input, units } = queData.isUnit.expectedUnits;
 
-      //     // question.setMethodAndResponse(methods.IS_UNIT);
-      //     question.setMethodAndResponse('IS_UNIT');
-      //     question.setValue(input, 0);
-      //     question.setAllowedUnitsInput(units);
-      //     question.checkMathClozeCorrectAnswer(units, preview, input.length, true);
-      //   });
+          // question.setMethodAndResponse(methods.IS_UNIT);
+          question.setMethodAndResponse('IS_UNIT');
+          question.setValue(input, 0);
+          question.setAllowedUnitsInput(units);
+          question.checkMathClozeCorrectAnswer(units, preview, input.length, true);
+        });
 
-      //   it(" > Testing with allowed units", () => {
-      //     const { units } = queData.isUnit.allowedUnits;
+        it(" > Testing with allowed units", () => {
+          const { units } = queData.isUnit.allowedUnits;
 
-      //     question.setAllowedUnitsInput(units);
-      //     question.checkMathClozeCorrectAnswer(units, preview, 0, true);
-      //   });
-      //   it(" > Testing with allow decimal marks", () => {
-      //     const { expected, separators, thousands, input, units } = queData.isUnit.setThousandsSeparator;
+          question.setAllowedUnitsInput(units);
+          question.checkMathClozeCorrectAnswer(units, preview, 0, true);
+        });
+        it(" > Testing with allow decimal marks", () => {
+          const { expected, separators, thousands, input, units } = queData.isUnit.setThousandsSeparator;
 
-      //     thousands.forEach((thousand, index) => {
-      //       question.setValue(input, 0);
-      //       question.setAllowedUnitsInput(units);
-      //       question.allowDecimalMarksWithMathCloze(separators[index], thousand, 0, expected[index], preview, true);
-      //     });
-      //   });
-      // });
+          thousands.forEach((thousand, index) => {
+            question.setValue(input, 0);
+            question.setAllowedUnitsInput(units);
+            question.allowDecimalMarksWithMathCloze(separators[index], thousand, 0, expected[index], preview, true);
+          });
+        });
+      }); */
     });
-
-    context(" > TC_563 =>  isTrue method", () => {
+    /*
+    context.skip(" > TC_563 =>  isTrue method", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
         // create new que and select type
@@ -594,7 +622,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
       //     );
       //   });
       // });
-    });
+    }); */
     context(" > TC_565 =>  equivSyntax method", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
@@ -675,7 +703,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         //question.checkMathClozeCorrectAnswer(expected, preview, 0, true);
       });
     });
-    context(" > TC_560 => isFactorised method", () => {
+    /*
+    context.skip(" > TC_560 => isFactorised method", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
         // create new que and select type
@@ -724,7 +753,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
       //   });
       // });
     });
-    context(" > TC_564 =>  stringMatch method", () => {
+    context.skip(" > TC_564 =>  stringMatch method", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
         // create new que and select type
@@ -758,7 +787,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         // question.checkMathClozeCorrectAnswer(expected, preview, 0, true);
         question.checkCorrectAnswer(expected, preview, 0, true);
       });
-    });
+    }); */
     context(" > TC_556 => equivSymbolic method", () => {
       before("", () => {
         // question.setMethod('EQUIV_VALUE');
@@ -798,32 +827,33 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         question.checkCorrectAnswer(expected, preview, input.length, true);
       });
 
-      // it(" > Testing Treat 'e' as Euler's numbe", () => {
-      //   const { expected, input } = queData.equivSymbolic.eulersNumber;
+      it(" > Testing Treat 'e' as Euler's numbe", () => {
+        const { expected, input } = queData.equivSymbolic.eulersNumber;
 
-      //   question.setValue(input, 0);
-      //   question.setSeparator("getAnswerTreatEasEulersNumber")();
-      //   question.checkMathClozeCorrectAnswer(expected, preview, input.length, true);
-      // });
+        question.setValue(input, 0);
+        question.setSeparator("getAnswerTreatEasEulersNumber")();
+        question.checkCorrectAnswer(expected, preview, input.length, true);
+        question.getAnswerTreatEasEulersNumber().uncheck({ force: true });
+      });
 
-      // it(" > Testing significant decimal places", () => {
-      //   const { input, expected, decimalPlaces } = queData.equivSymbolic.significantDecimal;
+      it(" > Testing significant decimal places", () => {
+        const { input, expected, decimalPlaces } = queData.equivSymbolic.significantDecimal;
 
-      //   question.setValue(input, 0);
-      //   question.setArgumentInputSignDec("getAnswerSignificantDecimalPlaces", decimalPlaces);
-      //   question.checkCorrectAnswer(expected, preview, 0, true);
-      // });
+        question.setValue(input, 0);
+        question.setArgumentInputSignDec("getAnswerSignificantDecimalPlaces", decimalPlaces);
+        question.checkCorrectAnswer(expected, preview, 0, true);
+      });
 
       it(" > Testing with thousands separators - Space and Comma", () => {
         const { input, expected } = queData.equivSymbolic.setThousandsSeparator;
         const { thousandsTestingSeparators, decimalSeparators } = queData;
 
         question.unCheckAllCheckBox();
-        thousandsTestingSeparators.forEach((thousand, index) => {
-          question.setValue(input, 0);
-          question.allowDecimalMarksWithMathCloze(
-            decimalSeparators[index],
-            thousand,
+        decimalSeparators.forEach((separator, index) => {
+          question.setValue(input[index]);
+          question.allowDecimalMarks(
+            separator,
+            thousandsTestingSeparators[index],
             input.length,
             expected[index],
             preview,
@@ -831,7 +861,50 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
           );
         });
       });
+      it(" > Testing Simplified method", () => {
+        const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isSimplified;
+        question.setValue(input);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+        });
+      });
 
+      it(" > Testing Factored method", () => {
+        const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isFactorised;
+        question.setValue(input);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+        });
+      });
+
+      it(" > Testing Expanded method", () => {
+        const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isExpanded;
+        question.setValue(input);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+        });
+      });
+
+      it(" > Testing MixedFraction method", () => {
+        const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isMixedFraction;
+        question.setValue(input);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected, preview, 0, isCorrectAnswer[index]);
+        });
+      });
+
+      it(" > Testing Rationalized method", () => {
+        const { input, expected, isCorrectAnswer, checkboxValues } = queData.equivSymbolic.isRationalised;
+        question.setValue(input);
+        checkboxValues.forEach((checkboxValue, index) => {
+          question.setSeparator(checkboxValue)();
+          question.checkCorrectAnswer(expected[index], preview, 0, isCorrectAnswer[index]);
+        });
+      });
       // it(" > Combination of methods ignoreText and significantDecimalPlaces", () => {
       //   const { input, decimalPlaces, expected } = queData.equivSymbolic.combinationIgnoreTxt;
 
@@ -859,9 +932,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
       });
       it(" > Testing Value", () => {
         const { input, expected } = queData.equivLiteral.value;
-        question.setMethod("IS_EXPANDED");
+        // question.setMethod("IS_EXPANDED");
         question.setMethod("EQUIV_LITERAL");
-        question.setValue(input, 0);
+        question.setValue(input);
         question.checkCorrectAnswer(expected, preview, input.length, true);
       });
 
@@ -887,18 +960,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         question.checkUncheckMathClozeChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
       });
 
-      it(" > Testing check/uncheck Ignore coefficient of 1 check box", () => {
-        const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.ignoreCoefficientOfOne;
-
-        question.checkUncheckMathClozeChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
-      });
-
-      it(" > Testing check/uncheck Inverse result check box", () => {
-        const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.inverseResult;
-
-        question.checkUncheckMathClozeChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
-      });
-
       it(" > Testing Allow decimal marks", () => {
         const { expected, input } = queData.equivSymbolic.setDecimalSeparator;
         const { thousandsTestingSeparators, decimalSeparators } = queData;
@@ -914,7 +975,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
           );
         });
       });
+
+      it(" > Testing check/uncheck Ignore coefficient of 1 check box", () => {
+        const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.ignoreCoefficientOfOne;
+
+        question.checkUncheckMathClozeChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
+      });
+      // TODO - setValue method has to be fixed to handle delete of "(x+2)2" input
+      it(" > Testing check/uncheck Inverse result check box", () => {
+        const { input, expected, checkboxValues, isCorrectAnswer } = queData.equivLiteral.inverseResult;
+
+        question.checkUncheckMathClozeChecbox(preview, input, expected, checkboxValues, isCorrectAnswer);
+      });
     });
+    /*
     context(" > TC_561 => isExpanded method", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
@@ -970,8 +1044,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         const { expected } = queData.equivSymbolic.setThousandsSeparator;
         const { thousandsTestingSeparators, decimalSeparators } = queData;
         question.unCheckAllCheckBox();
-        question.setMethod("EQUIV_VALUE");
-        question.allowNumeric().uncheck({ force: true });
+        // question.setMethod("EQUIV_VALUE");
+        // question.allowNumeric().uncheck({ force: true });
         question.setMethod("IS_SIMPLIFIED");
         thousandsTestingSeparators.forEach((thousand, index) => {
           question.allowDecimalMarksWithMathCloze(
@@ -1078,16 +1152,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         question.checkCorrectAnswer(expected, preview, input.length, true);
         question.getAnswerTolerance().clear({ force: true });
       });
-    });
+    });   */
     context("TC_556 => equivSymbolic method-1", () => {
       before("visit items page and select question type", () => {
         editItem.createNewItem();
         // create new que and select type
         editItem.chooseQuestion(queData.group, queData.queType);
         question.getAddOptions();
-        question.setMethod("IS_EXPANDED");
-        question.setMethod("EQUIV_VALUE");
-        question.allowNumeric().uncheck({ force: true });
+        // question.setMethod("IS_EXPANDED");
+        // question.setMethod("EQUIV_VALUE");
+        // question.allowNumeric().uncheck({ force: true });
 
         question.setMethod("EQUIV_SYMBOLIC");
       });
@@ -1308,8 +1382,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
           );
         });
       });
-
-      context(" > TC_569 => equivValue method", () => {
+      /*
+      context.skip(" > TC_569 => equivValue method", () => {
         beforeEach("Change to equivValue method", () => {
           preview.header.edit();
         });
@@ -1396,7 +1470,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         });
       });
 
-      context(" > TC_570 => isSimplified method", () => {
+      context.skip(" > TC_570 => isSimplified method", () => {
         beforeEach("Change to isSimplified method", () => {
           preview.header.edit();
         });
@@ -1429,7 +1503,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         });
       });
 
-      context(" > TC_571 => isFactorised method", () => {
+      context.skip(" > TC_571 => isFactorised method", () => {
         beforeEach("Change to isFactorised method", () => {
           preview.header.edit();
         });
@@ -1478,7 +1552,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         });
       });
 
-      context(" > TC_564 =>  stringMatch method", () => {
+      context.skip(" > TC_564 =>  stringMatch method", () => {
         beforeEach("Change to stringMatch method", () => {
           preview.header.edit();
         });
@@ -1508,7 +1582,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
 
           question.setAndCheckMathClozeCorrectAnswer(multipleSpaces, preview, responseBoxQuantity);
         });
-      });
+      });  */
 
       context(" > TC_568 => Save question", () => {
         it(" > Click on save button", () => {
@@ -1539,7 +1613,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
               question
                 .getBody()
                 .children()
-                .should("contain", "score: 1/1");
+                .should("contain", "Score 1/1");
               question.checkAnswerHighlightColor(true);
             });
         });
@@ -1559,12 +1633,29 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         });
       });
 
-      context(" > TC_570 => delete the question after creation", () => {
-        it(" > Click on delete button", () => {
-          preview.header.edit();
-          editItem.getDelButton().click();
-          question.getQuestionContainer().should("not.exist");
-        });
+      // context(" > TC_570 => delete the question after creation", () => {
+      //   it(" > Click on delete button", () => {
+      //     preview.header.edit();
+      //     editItem.getDelButton().click();
+      //     question.getQuestionContainer().should("not.exist");
+      //   });
+      // });
+    });
+    context(" > TC_573 => Save question", () => {
+      before("visit items page and select question type", () => {
+        editItem.createNewItem();
+        // create new que and select type
+        editItem.chooseQuestion(queData.group, queData.queType);
+        cy.get("body")
+          .contains("Additional Options")
+          .click({ force: true });
+        question.checkIfTextExist(queData.testtext);
+        question.setValue(queData.answer.value);
+        question.getAnswerValueMathOutput().should("have.length", 4);
+      });
+      it(" > Click on save button", () => {
+        question.header.save();
+        cy.url().should("contain", "item-detail");
       });
     });
   });

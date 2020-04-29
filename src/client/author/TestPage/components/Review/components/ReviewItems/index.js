@@ -1,8 +1,10 @@
 import React from "react";
+import { Spin } from "antd";
 import { get } from "lodash";
 import { helpers } from "@edulastic/common";
 import SortableList from "./SortableList";
 import { getQuestionType } from "../../../../../dataUtils";
+import { StyledSpinnerContainer } from "./styled";
 
 const ReviewItems = ({
   items,
@@ -22,7 +24,8 @@ const ReviewItems = ({
   setSelected,
   selected,
   questions,
-  getContainer
+  getContainer,
+  isFetchingAutoselectItems = false
 }) => {
   const container = getContainer();
   if (!container) return null;
@@ -88,26 +91,34 @@ const ReviewItems = ({
   };
 
   return (
-    <SortableList
-      items={data}
-      useDragHandle
-      passagesKeyed={passagesKeyed}
-      onChangePoints={onChangePoints}
-      handlePreview={handlePreview}
-      isEditable={isEditable}
-      isCollapse={isCollapse}
-      mobile={!isSmallSize}
-      owner={owner}
-      onSortEnd={moveTestItems}
-      lockToContainerEdges
-      lockOffset={["10%", "10%"]}
-      onSelect={handleCheckboxChange}
-      selected={selected}
-      questions={questions}
-      rows={rows}
-      removeItem={removeTestItem}
-      getContainer={getContainer}
-    />
+    <>
+      <SortableList
+        items={data}
+        useDragHandle
+        passagesKeyed={passagesKeyed}
+        onChangePoints={onChangePoints}
+        handlePreview={handlePreview}
+        isEditable={isEditable}
+        isCollapse={isCollapse}
+        mobile={!isSmallSize}
+        owner={owner}
+        onSortEnd={moveTestItems}
+        lockToContainerEdges
+        lockOffset={["10%", "10%"]}
+        onSelect={handleCheckboxChange}
+        selected={selected}
+        questions={questions}
+        rows={rows}
+        removeItem={removeTestItem}
+        getContainer={getContainer}
+      />
+
+      {isFetchingAutoselectItems && (
+        <StyledSpinnerContainer>
+          <Spin />
+        </StyledSpinnerContainer>
+      )}
+    </>
   );
 };
 

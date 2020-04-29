@@ -29,3 +29,13 @@ export const QuestionCheckbox = styled(Checkbox)`
 `;
 
 export const QuestionIndex = styled.div``;
+
+export const StyledSpinnerContainer = styled.div`
+  padding: 10px;
+  > div {
+    position: relative;
+    top: unset;
+    left: unset;
+    transform: unset;
+  }
+`;

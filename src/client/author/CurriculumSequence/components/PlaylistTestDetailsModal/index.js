@@ -1,8 +1,14 @@
 import React, { useEffect } from "react";
 import { themeColor } from "@edulastic/colors";
+import { Spin } from "antd";
 import { IconEye, IconClose } from "@edulastic/icons";
 import { connect } from "react-redux";
-import { receiveTestByIdAction, getTestSelector, getTestItemsRowsSelector } from "../../../TestPage/ducks";
+import {
+  receiveTestByIdAction,
+  getTestSelector,
+  getTestItemsRowsSelector,
+  getTestsLoadingSelector
+} from "../../../TestPage/ducks";
 import Review from "../../../TestPage/components/Review";
 import { ModalWrapper, Wrapper, SubHeader, BreadCrumb, ActionsWrapper, ActionBtn } from "./styled";
 
@@ -13,7 +19,8 @@ const PlaylistTestDetailsModal = ({
   test = {},
   rows = [],
   userId = "",
-  viewAsStudent
+  viewAsStudent,
+  isTestLoading
 }) => {
   useEffect(() => {
     receiveTestById(currentTestId, true, false, true);
@@ -53,16 +60,20 @@ const PlaylistTestDetailsModal = ({
       </SubHeader>
 
       <Wrapper>
-        <Review
-          test={test}
-          rows={rows}
-          owner={test?.authors?.some(x => x._id === userId)}
-          isEditable={false}
-          current={"review"}
-          showCancelButton={true}
-          {...defaultPropsForReview}
-          isPlaylistTestReview
-        />
+        {isTestLoading ? (
+          <Spin />
+        ) : (
+          <Review
+            test={test}
+            rows={rows}
+            owner={test?.authors?.some(x => x._id === userId)}
+            isEditable={false}
+            current="review"
+            showCancelButton
+            {...defaultPropsForReview}
+            isPlaylistTestReview
+          />
+        )}
       </Wrapper>
     </ModalWrapper>
   );
@@ -72,6 +83,7 @@ export default connect(
   state => ({
     test: getTestSelector(state),
     rows: getTestItemsRowsSelector(state),
+    isTestLoading: getTestsLoadingSelector(state),
     userId: state?.user?.user?._id
   }),
   {

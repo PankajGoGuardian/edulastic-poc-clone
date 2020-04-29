@@ -20,7 +20,8 @@ import {
   updateDefaultThumbnailAction,
   getCurrentGroupIndexSelector,
   getTestItemsSelector,
-  addItemsToAutoselectGroupsRequestAction
+  addItemsToAutoselectGroupsRequestAction,
+  getAutoSelectItemsLoadingStatusSelector
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { clearEvaluationAction } from "../../../../../../assessment/actions/evaluation";
@@ -385,7 +386,8 @@ class Review extends PureComponent {
       showCancelButton,
       userFeatures,
       testItems,
-      isPlaylistTestReview = false
+      isPlaylistTestReview = false,
+      isFetchingAutoselectItems = false
     } = this.props;
     const {
       isCollapse,
@@ -482,6 +484,7 @@ class Review extends PureComponent {
                   selected={selected}
                   questions={questions}
                   owner={owner}
+                  isFetchingAutoselectItems={isFetchingAutoselectItems}
                 />
               </Paper>
             </ReviewLeftContainer>
@@ -548,7 +551,8 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       userFeatures: getUserFeatures(state),
       currentGroupIndex: getCurrentGroupIndexSelector(state),
-      testItems: getTestItemsSelector(state)
+      testItems: getTestItemsSelector(state),
+      isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state)
     }),
     {
       setData: setTestDataAction,

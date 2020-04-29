@@ -202,6 +202,7 @@ export const SET_TEST_PASSAGE_AFTER_CREATE = "[test] set passage after passage c
 export const UPDATE_LAST_USED_COLLECTION_LIST = "[test] update recent collections";
 export const UPDATE_CREATING = "[test] create test request initiated";
 export const SET_DEFAULT_SETTINGS_LOADING = "[test] deafult settings loading";
+export const SET_AUTOSELECT_ITEMS_FETCHING_STATUS = "[test] set autoselect items fetching status";
 
 // actions
 
@@ -232,6 +233,7 @@ export const updateTestEntityAction = createAction(SET_TEST_DATA);
 export const updateLastUsedCollectionListAction = createAction(UPDATE_LAST_USED_COLLECTION_LIST);
 export const setIsCreatingAction = createAction(UPDATE_CREATING);
 export const setDefaultSettingsLoadingAction = createAction(SET_DEFAULT_SETTINGS_LOADING);
+export const setAutoselectItemsFetchingStatusAction = createAction(SET_AUTOSELECT_ITEMS_FETCHING_STATUS);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned, isPlaylist = false) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -435,6 +437,11 @@ export const getTestsLoadingSelector = createSelector(
   state => state.loading
 );
 
+export const getAutoSelectItemsLoadingStatusSelector = createSelector(
+  stateSelector,
+  state => state.isFetchingAutoselectItems
+);
+
 export const getDefaultSettingsLoadingSelector = createSelector(
   stateSelector,
   state => state.isSettingsLoading
@@ -579,7 +586,8 @@ const initialState = {
   lastUsedCollectionList: [],
   tagsList: { playlist: [], test: [], group: [], testitem: [] },
   defaultTestTypeProfiles: {},
-  currentGroupIndex: 0
+  currentGroupIndex: 0,
+  isFetchingAutoselectItems: false
 };
 
 export const testTypeAsProfileNameType = {
@@ -922,6 +930,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         isSettingsLoading: payload
+      };
+    case SET_AUTOSELECT_ITEMS_FETCHING_STATUS:
+      return {
+        ...state,
+        isFetchingAutoselectItems: payload
       };
     default:
       return state;
@@ -1906,6 +1919,7 @@ function* fetchAutoselectGroupItemsSaga(payload) {
 
 function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   try {
+    yield put(setAutoselectItemsFetchingStatusAction(true));
     const transformedData = getItemGroupsTransformed(_test);
     for (const { isFetchItems, data, groupName } of transformedData) {
       if (isFetchItems) {
@@ -1915,7 +1929,9 @@ function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
         }
       }
     }
+    yield put(setAutoselectItemsFetchingStatusAction(false));
   } catch (err) {
+    yield put(setAutoselectItemsFetchingStatusAction(false));
     console.error(err);
   }
 }

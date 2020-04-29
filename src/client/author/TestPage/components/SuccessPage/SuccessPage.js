@@ -1,5 +1,5 @@
-import { themeColor } from "@edulastic/colors";
-import { EduButton } from "@edulastic/common";
+import { themeColor, darkGrey } from "@edulastic/colors";
+import { EduButton, FlexContainer } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import { IconLock, IconPencilEdit } from "@edulastic/icons";
 import { Divider } from "antd";
@@ -35,11 +35,13 @@ import {
   FlexTextWrapper,
   FlexTitle,
   IconWrapper,
-  ImageWrapper,
   SecondHeader,
   ShareUrlDiv,
-  TitleCopy
+  TitleCopy,
+  FlexWrapperUrlBox
 } from "./styled";
+
+import ImageCard from "./ImageCard";
 
 const { statusConstants, passwordPolicy } = test;
 
@@ -124,16 +126,14 @@ class SuccessPage extends React.Component {
       isRegradeSuccess,
       assignment = {},
       userId,
-      collections
+      collections,
+      published
     } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [], summary = {} } = isPlaylist
-      ? playlist
-      : test;
-    const totalPoints = isPlaylist ? scoring.total : summary.totalPoints;
+    const { title, _id, status, grades, subjects, authors = [] } = isPlaylist ? playlist : test;
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const currentClass = (assignment.class && assignment.class[0]) || {};
-    const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "IN PROGRESS" : "NOT OPEN";
+    const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "In-Progress" : "Not-Open";
     const isOwner = authors.some(o => o._id === userId);
     const playlistBreadCrumbData = [
       {
@@ -202,12 +202,9 @@ class SuccessPage extends React.Component {
             <BreadCrumb data={getBreadcrumbData()} style={{ position: "unset" }} />
           </SecondHeader>
           <FlexContainerWrapper isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
-            {(isAssignSuccess || isRegradeSuccess) && (
+            {(isAssignSuccess || isRegradeSuccess || published) && (
               <FlexContainerWrapperLeft>
-                <ImageWrapper imgUrl={thumbnail} />
-                <FlexShareWithBox width={"100%"}>
-                  <b>Total Points</b> &nbsp; {totalPoints}
-                </FlexShareWithBox>
+                <ImageCard _source={isPlaylist ? playlist : test} isPlaylist={isPlaylist} collections={collections} />
               </FlexContainerWrapperLeft>
             )}
             <FlexContainerWrapperRight isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
@@ -215,7 +212,7 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
-                    Assignment <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{assignmentStatus}</b> &nbsp; status
+                    {title}&nbsp; has been assigned in&nbsp;{assignmentStatus}&nbsp;status.
                   </FlexTextWrapper>
                   {assignment.passwordPolicy === passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
                     <FlexText style={{ textAlign: "justify" }}>
@@ -227,8 +224,8 @@ class SuccessPage extends React.Component {
                     </FlexText>
                   ) : (
                     <FlexText>
-                      Your students can begin work on this assessment right away. You can monitor their progress and
-                      responses by clicking on the &nbsp;
+                      <FlexText>Your students can begin work on this assessment right away.</FlexText>
+                      You can monitor student progress and responses by clicking on the &nbsp;
                       <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
                         View Response
                       </span>
@@ -250,43 +247,67 @@ class SuccessPage extends React.Component {
                   <Divider />
                 </>
               )}
+              {published && (
+                <>
+                  <FlexTitle>Success!</FlexTitle>
+                  <FlexTextWrapper>
+                    {title} has been published and has been added to your private library.
+                  </FlexTextWrapper>
+                  <FlexText>
+                    You can assign this to your students to begin working on this test by clicking on the &nbsp;
+                    <span onClick={this.handleAssign} style={{ color: themeColor, cursor: "pointer" }}>
+                      Assign
+                    </span>{" "}
+                    button
+                  </FlexText>
+                  <Divider />
+                </>
+              )}
               {isOwner && (
                 <>
                   <FlexTitle>Share With Others</FlexTitle>
                   <FlexTextWrapper>
-                    <b>{title}</b>&nbsp;has been added to your&nbsp;<b>{this.getHighPriorityShared}</b>.
+                    {title}&nbsp;has been added to your&nbsp;{this.getHighPriorityShared}.
                   </FlexTextWrapper>
-                  <FlexText>
-                    Click on &nbsp;
-                    <span onClick={this.onShareModalChange} style={{ color: themeColor, cursor: "pointer" }}>
-                      Edit
-                    </span>
-                    &nbsp;icon to share it with your colleagues.
-                  </FlexText>
                 </>
               )}
               <FlexShareContainer>
                 {isOwner && (
                   <>
                     <FlexShareTitle>Shared With</FlexShareTitle>
-                    <FlexShareWithBox>
-                      <IconWrapper>
-                        <IconLock />
-                      </IconWrapper>
-                      <FlexText>{this.getHighPriorityShared}</FlexText>
+                    <FlexShareWithBox style={{ lineHeight: "40px", alignItems: "center", padding: "0 17px" }}>
+                      <FlexContainer>
+                        <IconWrapper>
+                          <IconLock />
+                        </IconWrapper>
+                        <FlexText style={{ margin: "0 0 0 17px", fontWeight: "500" }}>
+                          {this.getHighPriorityShared}
+                        </FlexText>
+                      </FlexContainer>
                       <IconWrapper onClick={this.onShareModalChange}>
                         <IconPencilEdit color={themeColor} />
+                        <FlexText style={{ color: themeColor, margin: "0 0 0 10px", fontSize: "11px" }}>EDIT</FlexText>
                       </IconWrapper>
                     </FlexShareWithBox>
                   </>
                 )}
-
-                <FlexShareTitle>Share</FlexShareTitle>
-                <FlexShareBox>
-                  <TitleCopy copyable={{ text: shareUrl }}>
-                    <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
-                  </TitleCopy>
-                </FlexShareBox>
+                {isOwner && (
+                  <FlexText style={{ fontSize: "13px", marginBottom: "35px", color: darkGrey }}>
+                    Click on &nbsp;
+                    <span onClick={this.onShareModalChange} style={{ color: themeColor, cursor: "pointer" }}>
+                      Edit
+                    </span>
+                    &nbsp;button to share it with your colleagues.
+                  </FlexText>
+                )}
+                <FlexWrapperUrlBox>
+                  <FlexShareTitle>Url to Share</FlexShareTitle>
+                  <FlexShareBox>
+                    <TitleCopy copyable={{ text: shareUrl }}>
+                      <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
+                    </TitleCopy>
+                  </FlexShareBox>
+                </FlexWrapperUrlBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>

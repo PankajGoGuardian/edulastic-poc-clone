@@ -13,7 +13,8 @@ import {
   getAssignmentsSelector,
   getTestEntitySelector,
   getClassListSelector,
-  updateAssingnmentSettingsAction
+  updateAssingnmentSettingsAction,
+  clearAssignmentSettingsAction
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
@@ -121,6 +122,11 @@ class AssignTest extends React.Component {
         fetchTestByID(testId);
       }
     }
+  }
+
+  componentWillUnmount() {
+    const { clearAssignmentSettings } = this.props;
+    clearAssignmentSettings();
   }
 
   handleAssign = () => {
@@ -343,7 +349,8 @@ export default connect(
     fetchTestByID: receiveTestByIdAction,
     getDefaultTestSettings: getDefaultTestSettingsAction,
     resetStudents: resetStudentAction,
-    updateAssignmentSettings: updateAssingnmentSettingsAction
+    updateAssignmentSettings: updateAssingnmentSettingsAction,
+    clearAssignmentSettings: clearAssignmentSettingsAction
   }
 )(AssignTest);
 

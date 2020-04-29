@@ -1,11 +1,12 @@
 import * as moment from "moment";
 import { get } from "lodash";
 import { createSelector } from "reselect";
-import { createReducer } from "redux-starter-kit";
+import { createReducer, createAction } from "redux-starter-kit";
 import { test as testConst, roleuser, assignmentPolicyOptions } from "@edulastic/constants";
 
 export const FETCH_ASSIGNMENTS = "[assignments] fetch assignments";
 export const UPDATE_ASSIGNMENT_SETTINGS = "[assignment settings] update assignment settings";
+export const CLEAR_ASSIGNMENT_SETTINGS = "[assignment settings] clear assignment settings";
 
 export const fetchAssignmentsAction = payload => ({
   type: FETCH_ASSIGNMENTS,
@@ -16,6 +17,7 @@ export const updateAssingnmentSettingsAction = payload => ({
   type: UPDATE_ASSIGNMENT_SETTINGS,
   payload
 });
+export const clearAssignmentSettingsAction = createAction(CLEAR_ASSIGNMENT_SETTINGS);
 
 // selectors
 const module = "authorTestAssignments";
@@ -80,5 +82,8 @@ export const assignmentSettings = createReducer(initialState, {
     if (state.passwordPolicy && state.passwordPolicy === testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
       state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS;
     }
+  },
+  [CLEAR_ASSIGNMENT_SETTINGS]: state => {
+    state = initialState;
   }
 });

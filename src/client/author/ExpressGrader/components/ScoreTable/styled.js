@@ -95,6 +95,7 @@ export const TableData = styled(Table)`
     font-size: 14px;
   }
   .ant-table-thead > tr > th {
+    text-align: center;
     &.main-heading {
       text-align: left;
     }

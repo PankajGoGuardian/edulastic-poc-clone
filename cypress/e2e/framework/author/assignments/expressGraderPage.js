@@ -1,4 +1,4 @@
-import { attemptTypes } from "../../constants/questionTypes";
+import { attemptTypes, queColor } from "../../constants/questionTypes";
 import LiveClassboardPage from "./LiveClassboardPage";
 import StudentTestPage from "../../student/studentTestPage";
 
@@ -121,13 +121,15 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       );
   };
 
-  getScoreforQueNum = queNum => {
+  getScoreforQueNum = queNum => this.getCellforQueNum(queNum).find("span");
+
+  getCellforQueNum = queNum => {
     const queIndex = Number(queNum.slice(1)) - 1;
     return cy
       .get(`@${this.rowAlias}`)
       .find(".sub-thead-th")
       .eq(queIndex)
-      .find("span");
+      .find("div");
   };
 
   verifyScoreAndPerformanceForQueNum = (queNum, score, perf) => {
@@ -155,6 +157,18 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.getScoreforQueNum(queNum).should("have.text", score.toString());
   };
 
+  verifyCellColorForQuestion = (queNum, attemptType) => {
+    const color =
+      attemptType === attemptTypes.RIGHT
+        ? queColor.GREEN_4
+        : attemptType === attemptTypes.WRONG
+        ? queColor.RED_2
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? queColor.YELLOW_1
+        : queColor.GREY_1;
+    this.getCellforQueNum(queNum).should("have.css", "background-color", color);
+  };
+
   verifyScoreGrid(studentName, studentAttempts, score, perfValue, questionTypeMap) {
     this.getGridRowByStudent(studentName);
 
@@ -165,6 +179,15 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       const { points, attemptData, queKey } = questionTypeMap[queNum];
       //   console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
       this.verifyScoreForStudent(queNum, points, attemptType, attemptData, queKey);
+    });
+  }
+
+  verifyScoreGridColor(studentName, studentAttempts) {
+    this.getGridRowByStudent(studentName);
+
+    Object.keys(studentAttempts).forEach(queNum => {
+      const attemptType = studentAttempts[queNum];
+      this.verifyCellColorForQuestion(queNum, attemptType);
     });
   }
 
@@ -287,7 +310,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     });
   };
 
-  verifyUpdateScore = (studentName, queNum, score) => {
+  verifyUpdateScore = (studentName, queNum, score, attemptType) => {
     let previousScore;
     this.routeAPIs();
     this.getGridRowByStudent(studentName);
@@ -299,6 +322,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         this.waitForStudentData();
         this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, score);
         this.clickOnExit(true);
+        this.verifyCellColorForQuestion(queNum, attemptTypes.PARTIAL_CORRECT);
       })
       .then(() => {
         this.getScoreforQueNum(queNum)
@@ -307,6 +331,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
         console.log("previousScore ::", previousScore);
         this.questionResponsePage.updateScoreAndFeedbackForStudent(studentName, previousScore);
         this.clickOnExit(true);
+        this.verifyCellColorForQuestion(queNum, attemptType);
       });
   };
 

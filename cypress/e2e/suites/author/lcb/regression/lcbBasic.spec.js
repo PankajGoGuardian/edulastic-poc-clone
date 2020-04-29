@@ -351,13 +351,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     context(" > verify scores", () => {
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
-        it(` > verify for student :: ${studentName}`, () => {
+        it(` > verify scores and color for student :: ${studentName}`, () => {
           const { attempt, score, perfValue } = statsMap[studentName];
           expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
+          expressg.verifyScoreGridColor(studentName, attempt, questionTypeMap); // assert color
         });
       });
     });
 
+    // [TODO] context >> verify response
     context(" > verify question level data", () => {
       queList.forEach(queNum => {
         // ["Q1"].forEach(queNum => {
@@ -528,7 +530,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       lcb.header.clickOnExpressGraderTab();
     });
 
-    context(" > verify updating responses", () => {
+    context(" > verify updating responses and color", () => {
       const { stuName: updatingResponseStudent } = students[7];
 
       queList.forEach(queNum => {
@@ -545,6 +547,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
             questionTypeMap[queNum].attemptData
           );
           expressg.clickOnExit();
+          expressg.verifyCellColorForQuestion(queNum, attemptTypes.RIGHT);
         });
       });
 
@@ -571,7 +574,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
     });
 
-    context(" > verify updating score", () => {
+    context(" > verify updating score and color", () => {
       beforeEach(() => {
         expressg.clickOnExit();
       });
@@ -583,7 +586,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       queList.forEach(queNum => {
         it(` > update the score for :: ${queNum}`, () => {
           // below will update the score for 1 student all question and then revert back to original score
-          expressg.verifyUpdateScore(submittedStudentList[0], queNum, "0.5");
+          const { attempt } = statsMap[submittedStudentList[0]];
+          expressg.verifyUpdateScore(submittedStudentList[0], queNum, "0.5", attempt[queNum]);
         });
       });
     });

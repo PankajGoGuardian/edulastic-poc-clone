@@ -430,10 +430,7 @@ class Container extends Component {
           when={!!hasUnsavedChanges}
           onUnload
           message={loc => {
-            const allow = loc.pathname.includes("/item-detail") || location.pathname.includes("/create");
-            if (allow) {
-              return true;
-            }
+            console.log("path: ", loc.pathname); // TODO: keep this comment for now, then remove
             return "There are unsaved changes. Are you sure you want to leave?";
           }}
         />
@@ -515,7 +512,8 @@ Container.defaultProps = {
   onModalClose: () => {},
   authorQuestions: {},
   savedWindowScrollTop: 0,
-  testId: ""
+  testId: "",
+  testName: ""
 };
 
 const enhance = compose(

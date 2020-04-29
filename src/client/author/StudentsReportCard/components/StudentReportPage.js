@@ -188,12 +188,12 @@ const StudentReportPage = ({
             className="hide-on-print"
           />
         }
-        {showQuestionsTable && data.questionTableData?.length && (
+        {showQuestionsTable && !!data.questionTableData?.length && (
           <StyledTableWrapper className="student-report-card-question-table-container hide-on-print">
             <QuestionTableContainer dataSource={data.questionTableData} columnsFlags={sections} />
           </StyledTableWrapper>
         )}
-        {showStandardTable && data.standardsTableData?.length && (
+        {showStandardTable && !!data.standardsTableData?.length && (
           <StyledTableWrapper className="student-report-card-standard-table-container hide-on-print">
             <StandardTableContainer
               dataSource={data.standardsTableData}

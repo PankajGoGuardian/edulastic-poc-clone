@@ -67,6 +67,7 @@ export const TableData = styled(Table)`
     background-color: ${white};
   }
   .ant-table-tbody > tr > td > div {
+    min-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
   }

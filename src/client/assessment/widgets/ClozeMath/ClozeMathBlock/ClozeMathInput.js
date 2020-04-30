@@ -1,5 +1,11 @@
 import { greyThemeLight, greyThemeLighter } from "@edulastic/colors";
-import { AnswerContext, MathKeyboard, StaticMath, reformatMathInputLatex } from "@edulastic/common";
+import {
+  AnswerContext,
+  MathKeyboard,
+  StaticMath,
+  reformatMathInputLatex,
+  getInnerValuesForStatic
+} from "@edulastic/common";
 import { Popover } from "antd";
 import { find, get, isEmpty } from "lodash";
 import PropTypes from "prop-types";
@@ -379,6 +385,9 @@ const MathInput = ({ resprops = {}, id, responseindex }) => {
     onBlur: () => null
   };
 
+  // this is used for values in the response boxes in template
+  const innerValues = getInnerValuesForStatic(studentTemplate, _mathAnswers[id]?.value || "");
+
   const StaticOrMathInput = useTemplate ? (
     <StaticMath
       {...mathInputProps}
@@ -387,6 +396,7 @@ const MathInput = ({ resprops = {}, id, responseindex }) => {
       onBlur={val => save({ value: val, index: responseindex }, "maths", id)}
       onInput={() => null}
       id={id}
+      innerValues={innerValues}
     />
   ) : (
     <ClozeMathInput resprops={{ ...resprops, height, width }} id={id} />

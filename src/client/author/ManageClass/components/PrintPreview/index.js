@@ -58,7 +58,7 @@ class PrintPreviewClass extends React.Component {
 
     let tableData = selectedStudent;
     if (isEmpty(tableData)) {
-      tableData = students;
+      tableData = students.filter(student => student.enrollmentStatus === 1);
     }
 
     let pages = tableData.length / numOfCard;

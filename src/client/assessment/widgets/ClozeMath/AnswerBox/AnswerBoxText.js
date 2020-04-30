@@ -2,16 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { white } from "@edulastic/colors";
-import { MathFormulaDisplay } from "@edulastic/common";
 import MathSpanWrapper from "../../../components/MathSpanWrapper";
 
-const AnswerBoxText = ({ children, isMath }) => (
+const AnswerBoxText = ({ children }) => (
   <Text data-cy="correct-answer-box">
-    {isMath ? (
-      <MathSpanWrapper latex={children} />
-    ) : (
-      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
-    )}
+    <MathSpanWrapper latex={children} />
   </Text>
 );
 

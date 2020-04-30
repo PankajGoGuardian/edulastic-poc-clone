@@ -53,8 +53,6 @@ const AnswerBox = ({
       "\\$": "\\$",
       "%": "\\%",
       "&": "\\&",
-      "{": "\\{",
-      "}": "\\}",
       _: "\\_"
     };
     const { index } = find(mathUnits, d => d.id === ans.id) || { index: 0 };

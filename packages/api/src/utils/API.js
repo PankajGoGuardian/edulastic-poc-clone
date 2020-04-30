@@ -113,16 +113,16 @@ export default class API {
     this.instance.interceptors.request.use(_config => {
       const token = getParentsStudentToken(_config) || defaultToken || getAccessToken();
       if (token) {
-        config.headers.Authorization = token;
+        _config.headers.Authorization = token;
       }
       // Initialise browser tab id
       initTID();
       // Initialise kid for unauthenticated user
       initKID();
       if (window.sessionStorage) {
-        config.headers["X-Amzn-Trace-Id"] = getTraceId();
+        _config.headers["X-Amzn-Trace-Id"] = getTraceId();
       }
-      return config;
+      return _config;
     });
     this.instance.interceptors.response.use(
       response => {

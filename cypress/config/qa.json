@@ -1,6 +1,5 @@
 {
   "baseUrl": "https://edulasticqa-poc.snapwiz.net",
-  "API_URL": "https://edulasticqa-poc.snapwiz.net/api",
   "env": {
     "ENVIRONMENT": "qa"
   }

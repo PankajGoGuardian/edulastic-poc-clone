@@ -42,7 +42,8 @@ module.exports = (on, config) => {
   const confFile = config.env.configFile || "common";
   const commonConfig = JSON.parse(getConfigurationByFile("common"));
   const envConfig = JSON.parse(getConfigurationByFile(confFile));
-  if (["prod", "uat"].indexOf(envConfig.env.ENVIRONMENT) >= 0) envConfig.API_URL = `${envConfig.baseUrl}/api`;
+  envConfig.env.testExecutionEnv = config.env.testExecutionEnv || "local";
+  if (["prod", "uat", "qa"].indexOf(envConfig.env.ENVIRONMENT) >= 0) envConfig.API_URL = `${envConfig.baseUrl}/api`;
   const configuration = { ...commonConfig, ...envConfig };
 
   return configuration;

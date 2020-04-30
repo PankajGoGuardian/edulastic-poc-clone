@@ -11,6 +11,8 @@ const addContext = require("mochawesome/addContext");
 
 const screenResolutions = Cypress.config("SCREEN_SIZES");
 
+const executionEnv = Cypress.env("testExecutionEnv");
+
 /*
  *  Global before hook to delete testdata
  */
@@ -20,8 +22,14 @@ before("create testData file", () => {
   cy.createTestDataFile();
 });
 
-// TODO: revisit, for now moving the cleanup stage to after hook, since it blocks the suite when API fails
-after("delete test data", () => {
+/*
+ * Making cleanup hook order configurable !!!
+ * @before - we need this while developping tests, any interruption in mid of execution causes data not to delete and impacts consecutive runs in some case when there is static data dependencies.
+ * @after - we need to this when running in CI(Jenkins/docker), so that running consecutive suites are not blocked when any API error out for DELETE
+ */
+const cleanupHook = executionEnv === "CI" ? after : before;
+
+cleanupHook("delete test data", () => {
   cy.deleteTestData();
 });
 

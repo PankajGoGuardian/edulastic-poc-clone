@@ -7,6 +7,9 @@
     "json": true
   },
   "mochaJunitReporterReporterOptions": {
-    "mochaFile": "cypress/results/results-[hash].xml"
+    "mochaFile": "cypress/results/results-[hash].xml",
+    "testsuitesTitle": true,
+    "suiteTitleSeparatedBy": ".",
+    "testCaseSwitchClassnameAndName": true
   }
 }

@@ -7,8 +7,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
-
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
@@ -50,32 +48,8 @@ function _objectSpread(target) {
 
 var ROUND_DOWN = _rounding.rounding.ROUND_DOWN,
   NONE = _rounding.rounding.NONE;
-var PARTIAL_MATCH = _scoring.ScoringType.PARTIAL_MATCH;
-/**
- *
- * @param {Array} allAnswers
- * Group all the answers together
- * Input: [{ value: [ [0], [1] ] }, { value: [ [1], [1] ] }
- * Output: [ [0,1], [0,1] ]
- */
-
-var getAnswerSet = function getAnswerSet(allAnswers) {
-  var answerSet = [];
-  allAnswers.forEach(function(answer) {
-    answer.value.forEach(function(row, rowIndex) {
-      answerSet[rowIndex] = answerSet[rowIndex] || [];
-
-      if (row) {
-        row.forEach(function(ans) {
-          if (!answerSet[rowIndex].includes(ans)) {
-            answerSet[rowIndex].push(ans);
-          }
-        });
-      }
-    });
-  });
-  return answerSet;
-};
+var PARTIAL_MATCH = _scoring.ScoringType.PARTIAL_MATCH,
+  EXACT_MATCH = _scoring.ScoringType.EXACT_MATCH;
 /**
  *
  * @param {Array} allAnswers
@@ -94,16 +68,19 @@ var getMaxScore = function getMaxScore(allAnswers) {
 };
 /**
  *
- * @param {Array} userAnswers
- * transform the user answer for showing correct validation
- * put the value to the correct index
- * Input: [[0], [1], [0], [0]]
- * Output: [[0], [undefined, 1], [0]]
+ * @param {Array<Number[]>} arr
+ *
+ *  put the value to the correct index
+ *
+ * Input: [[0], [1], [0], [1]]
+ * Output: [[0], [empty, 1], [0], [empty, 1]]
+ *
+ * needed for determining the evaluation highlight for each cell
  */
 
-var transformUserAnswer = function transformUserAnswer() {
-  var userAnswers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  return userAnswers.map(function(row) {
+var transformArray = function transformArray() {
+  var arr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  return arr.map(function(row) {
     var _row = [];
 
     if (row) {
@@ -117,39 +94,232 @@ var transformUserAnswer = function transformUserAnswer() {
 };
 /**
  *
- * @param {Array} userAnswers
- * @param {Array} answerSet
+ * @param {Array<Number[]>} userResponse
+ * @param {Array<Object>} allAnswers
+ *
+ * validate the user response against all the answers
+ * get evaluations against all the answers
+ * also store the total correct, incorrect attempts against each answer set
  */
 
-var evaluateAnswers = function evaluateAnswers(userAnswers, answerSet) {
-  var transformedUserAnswers = transformUserAnswer(userAnswers);
-  var evaluation = transformedUserAnswers.map(function(row, rowIndex) {
-    if (row) {
-      return row.map(function(ans) {
-        return answerSet[rowIndex].includes(ans);
-      });
+var getEvaluationExactMatch = function getEvaluationExactMatch(userResponse, allAnswers) {
+  var evaluations = allAnswers.map(function(answer) {
+    var value = answer.value,
+      maxScoreForAllCorrect = answer.score;
+    var actualCorrectAnswers = value.reduce(function(acc, curr) {
+      return acc.concat(curr);
+    }).length; // total correct answers set by user for current answer set
+
+    var correctAttempts = 0;
+    var incorrectAttempts = 0;
+
+    if (!userResponse.length) {
+      // user did not attempt, no score and evaluation highlights
+      return {
+        // allCorrect: false,
+        result: [],
+        maxScore: maxScoreForAllCorrect,
+        correctAttempts: correctAttempts,
+        incorrectAttempts: incorrectAttempts,
+        actualCorrectAnswers: actualCorrectAnswers
+      };
     }
 
-    return row;
+    var transformedAnswer = transformArray(value); // get the evaluation and score
+
+    var evaluation = userResponse.map(function(row, rowIndex) {
+      var rowEvaluation = [];
+
+      if (Array.isArray(row)) {
+        rowEvaluation = row.map(function(col, columnIndex) {
+          var correct = transformedAnswer[rowIndex][columnIndex] === col;
+          correct ? correctAttempts++ : incorrectAttempts++;
+          return correct;
+        });
+      }
+
+      return {
+        evaluation: rowEvaluation
+      };
+    });
+    return {
+      result: evaluation.map(function(obj) {
+        return obj.evaluation;
+      }),
+      correctAttempts: correctAttempts,
+      incorrectAttempts: incorrectAttempts,
+      maxScore: maxScoreForAllCorrect,
+      actualCorrectAnswers: actualCorrectAnswers
+    };
   });
-  return evaluation;
+  return evaluations;
 };
 /**
  *
- * @param {Array.<number[]>} evaluation
+ * @param {Array<Number[]>} userResponse
+ * @param {Object} validation
+ *
+ * scoring is given on all or nothing basis
+ * highlights are shown according to best match from all answer sets
  */
 
-var getAnswerCount = function getAnswerCount(evaluation) {
-  var correct = 0;
-  var incorrect = 0;
-  evaluation.forEach(function(row) {
-    if (row) {
-      row.forEach(function(ans) {
-        ans === true ? correct++ : incorrect++;
-      });
-    }
+var exactMatchEvaluator = function exactMatchEvaluator() {
+  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var validation = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _validation$validResp = validation.validResponse,
+    validResponse = _validation$validResp === void 0 ? {} : _validation$validResp,
+    _validation$altRespon = validation.altResponses,
+    altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon;
+  var allAnswers = [_objectSpread({}, validResponse)].concat((0, _toConsumableArray2["default"])(altResponses));
+  var score = 0;
+  var maxScore = getMaxScore(allAnswers);
+  var evaluation = [];
+
+  if (!userResponse.length) {
+    // user did not attempt any answer, return back without evaluating anything
+    return {
+      score: score,
+      maxScore: maxScore,
+      evaluation: evaluation
+    };
+  }
+
+  var transformedUserAnswer = transformArray(userResponse);
+  var evaluations = getEvaluationExactMatch(transformedUserAnswer, allAnswers);
+  var allCorrectAnswerAttempt = evaluations.find(function(obj) {
+    var correctAttempts = obj.correctAttempts,
+      incorrectAttempts = obj.incorrectAttempts,
+      actualCorrectAnswers = obj.actualCorrectAnswers;
+    return incorrectAttempts === 0 && correctAttempts === actualCorrectAnswers; // no incorrect answer, and exactly same answer as set by user
   });
-  return [correct, incorrect];
+
+  if (allCorrectAnswerAttempt) {
+    maxScore = allCorrectAnswerAttempt.maxScore;
+    score = maxScore;
+    evaluation = allCorrectAnswerAttempt.result;
+  } else {
+    /**
+     * show highlight against the best possible match
+     * in case of a tie,
+     * it will show the hightlights against the first, among the ones having a tie
+     *
+     * consider score of individual answer set when determining the best match
+     * sets having higher score will have higher priority than others
+     */
+    var bestMatch = evaluations.reduce(function(acc, curr) {
+      var correctAttempts = acc.correctAttempts,
+        incorrectAttempts = acc.incorrectAttempts,
+        maxScoreForAllCorrect = acc.maxScore,
+        actualCorrectAnswers = acc.actualCorrectAnswers;
+      var individualScore = maxScoreForAllCorrect / actualCorrectAnswers;
+      var accScore = (correctAttempts - incorrectAttempts) * individualScore;
+      var currentCorrectAtttempts = curr.correctAttempts,
+        currentIncorrectAttempts = curr.incorrectAttempts,
+        currMaxScoreForAllCorrect = curr.maxScore,
+        actualCorrectAnswersCurrent = curr.actualCorrectAnswers;
+      var individualScoreCurrent = currMaxScoreForAllCorrect / actualCorrectAnswersCurrent;
+      var currScore = (currentCorrectAtttempts - currentIncorrectAttempts) * individualScoreCurrent;
+
+      if (currScore > accScore) {
+        return curr;
+      }
+
+      return acc;
+    });
+    evaluation = bestMatch.result;
+  }
+
+  return {
+    score: score,
+    maxScore: maxScore,
+    evaluation: evaluation
+  };
+};
+/**
+ *
+ * @param {Array<Number[]>} userResponse
+ * @param {Array<Object>} allAnswers
+ * @param {Number} penalty
+ *
+ * get the evaluation against all answers and score for each answer set
+ * score and penalty are calculated on individual option basis
+ */
+
+var getEvaluationPartialMatch = function getEvaluationPartialMatch(userResponse, allAnswers, penalty) {
+  var evaluations = allAnswers.map(function(answer) {
+    var correctAnsMaxScore = answer.score,
+      value = answer.value;
+    var actualCorrectAnswers = value.reduce(function(acc, curr) {
+      return acc.concat(curr);
+    }).length; // total correct answers set by user for current answer set
+
+    var scorePerCorrectAnswer = correctAnsMaxScore / actualCorrectAnswers;
+    var penaltyPerIncorrectAnswer = penalty / actualCorrectAnswers;
+    var transformedAnswer = transformArray(value); // move values in array to proper indexes
+
+    var currentScore = 0;
+    var correctAnswers = 0;
+    var incorrectAnswers = 0; // get the evaluation for the current answer set
+
+    var currentEvaluation = userResponse.map(function(row, rowIndex) {
+      if (Array.isArray(row)) {
+        return row.map(function(col, colIndex) {
+          var isCorrect = transformedAnswer[rowIndex][colIndex] === col;
+          isCorrect ? correctAnswers++ : incorrectAnswers++;
+          return isCorrect;
+        });
+      }
+
+      return [];
+    });
+    var correctAnswerScore = correctAnswers * scorePerCorrectAnswer;
+    var penalisation = incorrectAnswers * penaltyPerIncorrectAnswer;
+    currentScore = Math.max(0, correctAnswerScore - penalisation); // score achieved for current answer set
+
+    return {
+      evaluation: currentEvaluation,
+      score: currentScore,
+      maxScore: correctAnsMaxScore
+    };
+  });
+  return evaluations;
+};
+
+var partialMatchEvaluator = function partialMatchEvaluator(userResponse, validation) {
+  var _validation$validResp2 = validation.validResponse,
+    validResponse = _validation$validResp2 === void 0 ? {} : _validation$validResp2,
+    _validation$altRespon2 = validation.altResponses,
+    altResponses = _validation$altRespon2 === void 0 ? [] : _validation$altRespon2,
+    _validation$penalty = validation.penalty,
+    penalty = _validation$penalty === void 0 ? 0 : _validation$penalty,
+    _validation$rounding = validation.rounding,
+    rounding = _validation$rounding === void 0 ? NONE : _validation$rounding;
+  var allAnswers = [_objectSpread({}, validResponse)].concat((0, _toConsumableArray2["default"])(altResponses));
+  var score = 0;
+  var maxScore = getMaxScore(allAnswers);
+  var evaluation = [];
+  var transformedUserAnswer = transformArray(userResponse);
+  var evaluations = getEvaluationPartialMatch(transformedUserAnswer, allAnswers, penalty);
+
+  if (evaluations.length > 0) {
+    var maxByScore = evaluations.reduce(function(acc, curr) {
+      if (curr.score > acc.score) {
+        return curr;
+      }
+
+      return acc;
+    }); // if rounding is selected, round down, otherwise keep the score as it is.
+
+    score = rounding === ROUND_DOWN ? Math.floor(maxByScore.score) : maxByScore.score;
+    maxScore = maxByScore.maxScore;
+    evaluation = maxByScore.evaluation;
+  }
+
+  return {
+    score: score,
+    maxScore: maxScore,
+    evaluation: evaluation
+  };
 };
 /**
  *
@@ -162,64 +332,33 @@ var evaluator = function evaluator(_ref) {
     userResponse = _ref$userResponse === void 0 ? {} : _ref$userResponse,
     _ref$validation = _ref.validation,
     validation = _ref$validation === void 0 ? {} : _ref$validation;
-  var _userResponse$value = userResponse.value,
-    userAnswers = _userResponse$value === void 0 ? [] : _userResponse$value;
-  var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    scoringType = validation.scoringType,
-    _validation$penalty = validation.penalty,
-    penalty = _validation$penalty === void 0 ? 0 : _validation$penalty,
-    _validation$rounding = validation.rounding,
-    rounding = _validation$rounding === void 0 ? NONE : _validation$rounding;
-  var allAnswers = [_objectSpread({}, validResponse)].concat((0, _toConsumableArray2["default"])(altResponses));
-  var score = 0; // initial score
+  var scoringType = validation.scoringType;
 
-  var maxScore = getMaxScore(allAnswers);
-
-  if (!userAnswers.length) {
+  if (scoringType !== PARTIAL_MATCH && scoringType !== EXACT_MATCH) {
     return {
-      score: score,
-      maxScore: maxScore,
+      score: 0,
+      maxScore: 0,
       evaluation: []
     };
   }
 
-  var answerSet = getAnswerSet(allAnswers);
-  var evaluation = evaluateAnswers(userAnswers, answerSet);
-  var correctAnswerRows = evaluation.filter(function(arr) {
-    return (
-      arr.length > 0 &&
-      arr.every(function(ans) {
-        return ans === true;
-      })
-    );
-  });
+  var _userResponse$value = userResponse.value,
+    value = _userResponse$value === void 0 ? [] : _userResponse$value;
 
-  var _getAnswerCount = getAnswerCount(evaluation),
-    _getAnswerCount2 = (0, _slicedToArray2["default"])(_getAnswerCount, 2),
-    correctAnswers = _getAnswerCount2[0],
-    incorrectAnswers = _getAnswerCount2[1];
+  switch (scoringType) {
+    case EXACT_MATCH:
+      return exactMatchEvaluator(value, validation);
 
-  if (scoringType === PARTIAL_MATCH) {
-    var individualScore = maxScore / evaluation.length;
-    var correctAnswerScore = Math.min(correctAnswers * individualScore, maxScore);
-    var penalisation = incorrectAnswers * penalty;
-    score = Math.max(correctAnswerScore - penalisation, 0).toPrecision(2);
+    case PARTIAL_MATCH:
+      return partialMatchEvaluator(value, validation);
 
-    if (rounding === ROUND_DOWN) {
-      score = Math.floor(score);
-    }
-  } else if (correctAnswerRows.length === evaluation.length) {
-    // exact match with all answers correct
-    score = maxScore;
+    default:
+      return {
+        score: 0,
+        maxScore: 0,
+        evaluation: []
+      };
   }
-
-  var evaluationObject = {
-    score: parseFloat(score),
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
-  return evaluationObject;
 };
 
 var _default = evaluator;

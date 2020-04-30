@@ -165,13 +165,16 @@ class Container extends Component {
           checkedRight={useTabsRight}
           disableRight={singleLayout || (isMultipart && !isPassageQuestion && isMultiDimensionLayout)}
         />
-        <SettingsFlowLayout
-          onChangeLeft={this.handleChangeLeftFlowLayout}
-          onChangeRight={this.handleChangeRightFlowLayout}
-          checkedLeft={useFlowLayoutLeft}
-          checkedRight={useFlowLayoutRight}
-          disableRight={singleLayout}
-        />
+        {!isMultipart && (
+          <SettingsFlowLayout
+            onChangeLeft={this.handleChangeLeftFlowLayout}
+            onChangeRight={this.handleChangeRightFlowLayout}
+            checkedLeft={useFlowLayoutLeft}
+            checkedRight={useFlowLayoutRight}
+            disableRight={singleLayout}
+          />
+        )}
+
         {questionsCount > 1 && (
           <Row
             type="flex"
@@ -209,14 +212,16 @@ class Container extends Component {
             </Row>
           </Row>
         )}
-        <Checkboxes>
-          <CheckboxLabel style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
-            {t("author:component.settingsBar.showVerticalDivider")}
-          </CheckboxLabel>
-          <CheckboxLabel checked={scrolling} onChange={onScrollingChange}>
-            {t("author:component.settingsBar.enableScrolling")}
-          </CheckboxLabel>
-        </Checkboxes>
+        {!isMultipart && (
+          <Checkboxes>
+            <CheckboxLabel style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
+              {t("author:component.settingsBar.showVerticalDivider")}
+            </CheckboxLabel>
+            <CheckboxLabel checked={scrolling} onChange={onScrollingChange}>
+              {t("author:component.settingsBar.enableScrolling")}
+            </CheckboxLabel>
+          </Checkboxes>
+        )}
       </>
     );
 

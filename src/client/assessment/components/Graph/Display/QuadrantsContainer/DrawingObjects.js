@@ -187,11 +187,17 @@ const Wrapper = styled.div`
 
 const Button = styled(CustomStyleBtn).attrs(() => ({
   width: "100%",
+  height: "auto",
   ghost: true,
   padding: "5px",
   justifyContent: "flex-start"
 }))`
   box-shadow: ${({ shadowColor }) => `inset 0 0 1em ${shadowColor || "#00b2ff"}`};
+
+  & span {
+    white-space: normal;
+    text-align: left;
+  }
 
   & svg {
     margin-left: 5px;

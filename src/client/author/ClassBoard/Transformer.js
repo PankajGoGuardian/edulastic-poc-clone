@@ -252,33 +252,44 @@ export function stripHtml(html) {
 }
 
 const extractFunctions = {
-  [questionType.MULTIPLE_CHOICE]: (question, userResponse) => {
+  [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) => {
     return userResponse
-      ?.map(r => question?.options.findIndex(x => x.value === r))
-      ?.map(x => alphabets[x]?.toUpperCase())
-      ?.join(",");
+      .map(r => question?.options?.findIndex(x => x?.value === r))
+      .map(x => alphabets[x]?.toUpperCase())
+      .join(",");
   },
-  [questionType.CLOZE_DRAG_DROP]: (question, userResponse) => {
+  [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) => {
     return userResponse
-      ?.map(r => question?.options.find(x => x.value === r)?.label)
-      ?.map(x => stripHtml(x))
-      ?.join(",");
+      .filter(x => x)
+      .map(r => question?.options?.find(x => x?.value === r)?.label)
+      .map(x => stripHtml(x || ""))
+      .join(",");
   },
-  [questionType.CLOZE_DROP_DOWN]: (question, userResponse) => {
+  [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) => {
     return userResponse
-      ?.map(x => x.value)
-      ?.map(x => stripHtml(x))
-      ?.join(",");
+      .filter(x => x)
+      .map(x => x?.value)
+      .map(x => stripHtml(x || ""))
+      .join(",");
   },
-  [questionType.CLOZE_TEXT]: (question, userResponse) => {
+  [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) => {
     return userResponse
-      ?.map(x => x.value)
-      ?.map(x => stripHtml(x))
-      ?.join(",");
+      .filter(x => x)
+      .map(x => x?.value)
+      .map(x => stripHtml(x || ""))
+      .join(",");
   },
-  [questionType.MATH]: (question, userResponse) => {
-    return getMathHtml(userResponse, { throwOnError: false });
-  }
+  [questionType.MATH]: (question, userResponse = "") => {
+    const restrictedMathTypes = ["Matrices", "Complete the Equation", "Formula Essay"];
+    if (restrictedMathTypes.includes(question.title)) return "TEI";
+    if (question.title === "Units" && typeof userResponse === "object")
+      return getMathHtml(`${userResponse.expression} ${userResponse.unit}`);
+    return getMathHtml(userResponse);
+  },
+  [questionType.SHORT_TEXT]: () => "CR",
+  [questionType.ESSAY_PLAIN_TEXT]: () => "CR",
+  [questionType.ESSAY_RICH_TEXT]: () => "CR",
+  [questionType.FORMULA_ESSAY]: () => "CR"
 };
 export function getResponseTobeDisplayed(testItem = {}, userResponse, questionId) {
   const question = (testItem.data?.questions || [])?.find(q => q.id === questionId) || {};
